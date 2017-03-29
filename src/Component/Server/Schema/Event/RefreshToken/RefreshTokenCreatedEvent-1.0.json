@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "https://oauth2-framework.spomky-labs.com/schemas/events/refresh-token/created/1.0/schema",
+  "description":"Refresh Token created.",
+  "type": "object",
+  "allOf": [
+    {"$ref": "https://oauth2-framework.spomky-labs.com/schemas/event/1.0/schema"},
+    {"payload": {
+      "type": "object",
+      "required": ["resource_owner_id", "resource_owner_class", "client_id", "parameters", "expires_at", "scopes", "metadatas", "resource_server_id"],
+      "properties": {
+        "resource_owner_id":{"type":"string"},
+        "resource_owner_class":{"type":"string"},
+        "client_id":{"type":"string"},
+        "expires_at":{"type":"integer"},
+        "parameters":{"type":"object"},
+        "metadatas":{"type":"object"},
+        "scopes":{"type":"array"},
+        "resource_server_id":{"type":["string", "null"]}
+      }
+    }
+    }
+  ],
+  "required": ["payload"]
+}

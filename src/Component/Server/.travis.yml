@@ -1,0 +1,31 @@
+language: php
+
+sudo: false
+
+matrix:
+  fast_finish: true
+  allow_failures:
+    - php: nightly
+    - php: hhvm
+  include:
+    - php: hhvm
+    - php: hhvm
+      env: deps=low
+    - php: 7.1
+    - php: 7.1
+      env: deps=low
+    - php: nightly
+    - php: nightly
+      env: deps=low
+
+before_install:
+  - if [[ ! $TRAVIS_PHP_VERSION = hhvm* ]]; then phpenv config-rm xdebug.ini || echo "xdebug not available"; fi
+  - if [[ $TRAVIS_PHP_VERSION = hhvm* ]]; then echo hhvm.php7.all=1 >> /etc/hhvm/php.ini; fi
+
+install:
+  # install dependencies
+  - if [[ $deps = low ]]; then composer update --no-interaction --prefer-lowest; fi
+  - if [[ !$deps ]]; then composer install --no-interaction ; fi
+
+script:
+  - ./vendor/bin/behat -v

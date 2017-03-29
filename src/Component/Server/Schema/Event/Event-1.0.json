@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "https://oauth2-framework.spomky-labs.com/schemas/event/1.0/schema",
+  "type": "object",
+  "description": "Event raised by the OAuth2 Server Library.",
+  "properties": {
+    "event_id": {"type": "string"},
+    "type": {"type": "string"},
+    "domain_id": {"type": "string"},
+    "recorded_on": {"type": "integer"},
+    "payload": {"type": "object"}
+  },
+  "additionalProperties":false,
+  "required": ["event_id", "type", "domain_id", "recorded_on"]
+}

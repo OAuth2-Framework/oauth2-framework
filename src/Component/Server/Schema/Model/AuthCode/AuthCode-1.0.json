@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "https://oauth2-framework.spomky-labs.com/schemas/model/auth-code/1.0/schema",
+  "description":"Authorization Code.",
+  "type": "object",
+  "allOf": [
+    {"$ref": "https://oauth2-framework.spomky-labs.com/schemas/model/token/1.0/schema"},
+    {"payload": {
+      "type": "object",
+      "required": ["auth_code_id", "with_refresh_token", "query_parameters", "redirect_uri", "is_used"],
+      "properties": {
+        "auth_code_id":{"type":"string"},
+        "with_refresh_token":{"type":"boolean"},
+        "query_parameters":{"type":"object"},
+        "redirect_uri":{"type":"string"},
+        "is_used":{"type": "boolean"}
+      }
+    }
+    }
+  ]
+}

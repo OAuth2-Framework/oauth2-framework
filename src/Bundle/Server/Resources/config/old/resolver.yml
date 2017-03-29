@@ -1,0 +1,7 @@
+services:
+    oauth2_server.security.value_resolver.access_token:
+        class: 'OAuth2Framework\Bundle\Server\SecurityPlugin\Resolver\AccessTokenResolver'
+        arguments:
+            - '@security.token_storage'
+        tags:
+            - { name: 'controller.argument_value_resolver', priority: '50' }

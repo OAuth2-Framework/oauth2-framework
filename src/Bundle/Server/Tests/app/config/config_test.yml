@@ -1,0 +1,300 @@
+imports:
+    - { resource: security.yml }
+
+framework:
+    test: ~
+    secret: 'test'
+    translator: ~
+    default_locale:  'en'
+    form: ~
+    csrf_protection: ~
+    validation:
+        enable_annotations: true
+    session:
+        storage_id: session.storage.mock_file
+    router:
+        resource: '%kernel.root_dir%/config/routing.yml'
+        strict_requirements: ~
+    templating:
+        enabled: true
+        engines: ['twig']
+    assets:
+        enabled: false
+    trusted_hosts:   ~
+    trusted_proxies: ~
+    fragments:       ~
+    http_method_override: true
+
+# Twig Configuration
+twig:
+    debug:            true
+    strict_variables: true
+
+jose:
+    key_sets:
+        signature_none:
+            auto:
+                storage_path: '%kernel.cache_dir%/signature_none.keyset'
+                is_rotatable: false
+                nb_keys: 1
+                key_configuration:
+                    kty: 'none'
+                    alg: 'none'
+                    use: 'sig'
+        signature_rsa:
+            auto:
+                storage_path: '%kernel.cache_dir%/signature_rsa.keyset'
+                is_rotatable: true
+                nb_keys: 2
+                key_configuration:
+                    kty: 'RSA'
+                    size: 4096
+                    alg: 'RS256'
+                    use: 'sig'
+        signature_ec:
+            auto:
+                storage_path: '%kernel.cache_dir%/signature_ec.keyset'
+                is_rotatable: true
+                nb_keys: 2
+                key_configuration:
+                    kty: 'EC'
+                    crv: 'P-256'
+                    alg: 'ES256'
+                    use: 'sig'
+        signature_none:
+            auto:
+                storage_path: '%kernel.cache_dir%/signature_ec.keyset'
+                is_rotatable: false
+                nb_keys: 1
+                key_configuration:
+                    kty: 'none'
+                    use: 'sig'
+        signature:
+            jwksets:
+                id:
+                    - 'jose.key_set.signature_rsa'
+                    - 'jose.key_set.signature_ec'
+                    - 'jose.key_set.signature_none'
+        encryption:
+            auto:
+                storage_path: '%kernel.cache_dir%/encryption.keyset'
+                is_rotatable: true
+                nb_keys: 2
+                key_configuration:
+                    kty: 'RSA'
+                    size: 4096
+                    alg: 'RSA-OAEP-256'
+                    use: 'enc'
+        all_in_one:
+            jwksets:
+                id:
+                    - 'jose.key_set.signature'
+                    - 'jose.key_set.encryption'
+        all_in_one_public:
+            public_jwkset:
+                id: 'jose.key_set.all_in_one'
+                path: '/public.jwkset'
+
+oauth2_server:
+    server_uri: 'https://oauth2.test/'
+    user_account:
+        manager: 'OAuth2Framework\Component\Server\Model\UserAccount\UserAccountManagerInterface'
+        repository: 'OAuth2Framework\Component\Server\Model\UserAccount\UserAccountRepositoryInterface'
+    resource_server:
+        enabled: true
+        repository: 'OAuth2Framework\Component\Server\Model\ResourceServer\ResourceServerRepositoryInterface'
+#    scope:
+#        enabled: true
+#        available_scope: ['openid', 'email', 'profile', 'address', 'phone', 'offline_access']
+#        policy:
+#            default: 'none'
+#            error:
+#                enabled: true
+#            default:
+#                enabled: true
+#                scope: ['openid']
+#    access_token:
+#        lifetime: 1800
+#        jwt:
+#            enabled: true
+#            issuer: 'https://my.authorization.server/'
+#            signature_algorithm: 'RS256'
+#            signature_key_set: 'jose.key_set.signature'
+#            key_encryption_algorithm: 'RSA-OAEP-256'
+#            content_encryption_algorithm: 'A256CBC-HS512'
+#            key_encryption_key_set: 'jose.key_set.encryption'
+#        random_string:
+#            enabled: true
+#            min_length: 50
+#            max_length: 100
+    token_type:
+        default: 'Bearer'
+        bearer_token:
+            enabled: true
+            realm: 'My super service'
+            authorization_header: true
+            query_string: true
+            request_body: true
+        mac_token:
+            enabled: true
+            min_length: 50
+            max_length: 100
+            algorithm: 'hmac-sha-256'
+            timestamp_lifetime: 10
+    token_endpoint_auth_method:
+        none:
+            enabled: true
+        client_secret_post:
+            enabled: true
+        client_secret_basic:
+            enabled: true
+            realm: 'My OAuth2 Server'
+        client_assertion_jwt:
+            enabled: true
+            signature_algorithms: ['RS256', 'RS512', 'HS256', 'HS512', 'ES256', 'ES512']
+            claim_checkers: ['exp', 'iat', 'nbf']
+            header_checkers: ['crit']
+            encryption:
+                enabled: true
+                required: false
+                key_set: 'jose.key_set.encryption'
+                key_encryption_algorithms: ['RSA-OAEP-256']
+                content_encryption_algorithms: ['A128CBC-HS256']
+    endpoint:
+        client_registration:
+            enabled: true
+            path: '/client/management'
+            initial_access_token:
+                enabled: true
+                required: false
+                realm: 'Client Registration'
+                class: 'OAuth2Framework\Bundle\Server\Tests\TestBundle\Entity\InitialAccessToken'
+            software_statement:
+                enabled: true
+                required: false
+                key_set: 'jose.key_set.signature'
+                allowed_signature_algorithms: ['RS256']
+        client_configuration:
+            enabled: true
+            realm: 'Client Configuration'
+            path: '/client/configure/{client_id}'
+        token_revocation:
+            enabled: true
+            path: '/token/revocation'
+            allow_callback: true
+        token_introspection:
+            enabled: true
+            path: '/token/introspection'
+        token:
+            enabled: true
+            path: '/token/get'
+        userinfo:
+            enabled: true
+            path: '/userinfo'
+            signature:
+                enabled: true
+                signature_algorithms: ['RS256', 'RS512', 'HS256', 'HS512', 'ES256', 'ES512', 'none']
+                key_set: 'jose.key_set.signature'
+#            encryption:
+#                enabled: true
+#                key_set: 'jose.key_set.encryption'
+#                key_encryption_algorithms: ['RSA-OAEP-256']
+#                content_encryption_algorithms: ['A128CBC-HS256']
+        jwks_uri:
+            enabled: true
+            route_name: 'jwkset_all_in_one_public_json'
+#        metadata:
+#            enabled: true
+#            path: '/.well-known/openid-configuration'
+        session_management:
+            enabled: true
+            path: '/session/manager/iframe'
+        issuer_discovery:
+            main:
+                path: '/.well-known/webfinger'
+                resource_repository: 'OAuth2Framework\Bundle\Server\Tests\TestBundle\Entity\ResourceRepository'
+                server: 'https://my-service.com:9000/'
+        authorization:
+            enabled: true
+            path: '/authorize'
+            #allow_scope_selection: true
+            login_route_name: 'app_login'
+            pre_configured_authorization:
+                enabled: true
+            id_token_hint:
+                enabled: true
+#            request_object:
+#                enabled: true
+#                signature_algorithms: ['RS512', 'HS512']
+#                claim_checkers: ['exp', 'iat', 'nbf', 'authorization_endpoint_aud']
+#                header_checkers: ['crit']
+#                encryption:
+#                    enabled: true
+#                    required: true
+#                    key_set: 'jose.key_set.encryption'
+#                    key_encryption_algorithms: ['RSA-OAEP-256']
+#                    content_encryption_algorithms: ['A256CBC-HS512']
+#                reference:
+#                    enabled: true
+#                    uris_registration_required: true
+#            pre_configured_authorization:
+#                enabled: true
+#            enforce_secured_redirect_uri:
+#                enabled: true
+#            enforce_redirect_uri_storage:
+#                enabled: true
+#            enforce_state:
+#                enabled: true
+#            allow_response_mode_parameter:
+#                enabled: true
+    grant:
+        authorization_code:
+            enabled: true
+            min_length: 50
+            max_length: 100
+            enforce_pkce: false
+        refresh_token:
+            enabled: true
+            min_length: 50
+            max_length: 100
+            lifetime: 604800
+        none:
+            enabled: true
+        implicit:
+            enabled: true
+        client_credentials:
+            enabled: true
+        resource_owner_password_credential:
+            enabled: true
+        id_token:
+            enabled: true
+            default_signature_algorithm: 'RS256'
+            signature_algorithms: ['RS256', 'RS512', 'HS256', 'HS512', 'ES256', 'ES512']
+            key_set: 'jose.key_set.signature'
+            claim_checkers: ['exp', 'iat', 'nbf']
+            header_checkers: ['crit']
+            encryption:
+                enabled: true
+                required: false #Only for the id_token_hint. Should always be false.
+                key_set: 'jose.key_set.encryption'
+                key_encryption_algorithms: ['RSA-OAEP-256']
+                content_encryption_algorithms: ['A256CBC-HS512']
+            pairwise_subject:
+                enabled: true
+                service: 'pairwise_subject_identifier'
+                is_default: true
+        jwt_bearer:
+            enabled: true
+            issue_refresh_token: true
+            signature_algorithms: ['RS256', 'RS512', 'HS256', 'HS512', 'ES256', 'ES512']
+            claim_checkers: ['exp', 'iat', 'nbf']
+            header_checkers: ['crit']
+            encryption:
+                enabled: true
+                required: false
+                key_set: 'jose.key_set.encryption'
+                key_encryption_algorithms: ['RSA-OAEP-256']
+                content_encryption_algorithms: ['A256CBC-HS512']
+#    openid_connect:
+#        claims_supported: ['sub', 'name', 'given_name', 'family_name', 'middle_name', 'nickname', 'preferred_username', 'profile', 'picture', 'website', 'email', 'email_verified', 'gender', 'birthdate', 'zoneinfo', 'locale', 'phone_number', 'phone_number_verified', 'address', 'updated_at']
+#        claims_locales_supported: ['en', 'fr', 'de']

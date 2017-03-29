@@ -1,0 +1,10 @@
+services:
+    oauth2_server.security.annotation_driver:
+        class: 'OAuth2Framework\Bundle\Server\SecurityPlugin\Annotation\AnnotationDriver'
+        arguments:
+            - '@annotation_reader'
+            - '@security.token_storage'
+            - '@oauth2_server.token_type_manager'
+            - '@oauth2_server.exception.manager'
+        tags:
+            - { name: 'kernel.event_listener', event: 'kernel.controller', method: 'onKernelController' }

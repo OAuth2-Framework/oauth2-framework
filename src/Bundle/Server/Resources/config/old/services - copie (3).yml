@@ -1,0 +1,7 @@
+services:
+    oauth2_server.client_credentials_grant_type:
+        class: 'OAuth2Framework\Component\Server\Grant\ClientCredentialsGrantType'
+        arguments:
+            - '@oauth2_server.exception.manager'
+        tags:
+            - { name: 'oauth2_server.grant_type' }

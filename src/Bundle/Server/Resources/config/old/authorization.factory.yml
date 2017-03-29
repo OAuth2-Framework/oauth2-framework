@@ -1,0 +1,15 @@
+services:
+    oauth2_server.authorization_factory:
+        class: 'OAuth2Framework\Component\Server\Endpoint\Authorization\AuthorizationFactory'
+        arguments:
+            - '@oauth2_server.authorization_request_loader'
+            - '@oauth2_server.response_type.manager'
+            - '@oauth2_server.response_mode.manager'
+            - '@oauth2_server.authorization_factory.parameter_checker.manager'
+            - '@oauth2_server.exception.manager'
+
+    oauth2_server.authorization_request_loader:
+        class: 'OAuth2Framework\Component\Server\Endpoint\Authorization\AuthorizationRequestLoader'
+        arguments:
+            - '@oauth2_server.client_manager'
+            - '@oauth2_server.exception.manager'

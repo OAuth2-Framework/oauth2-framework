@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "https://oauth2-framework.spomky-labs.com/schemas/events/client/parameters-updated/1.0/schema",
+  "description":"Client parameters updated.",
+  "type": "object",
+  "allOf": [
+    {"$ref": "https://oauth2-framework.spomky-labs.com/schemas/event/1.0/schema"},
+    {"payload": {
+      "type": "object",
+      "required": ["parameters"],
+      "properties": {
+        "parameters":{"type":"object"}
+      }
+    }
+    }
+  ],
+  "required": ["payload"]
+}

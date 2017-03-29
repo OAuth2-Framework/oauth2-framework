@@ -1,0 +1,17 @@
+services:
+    oauth2_server.grant_type.manager:
+        class: 'OAuth2Framework\Component\Server\Grant\GrantTypeManager'
+        public: false
+
+    oauth2_server.response_type.manager:
+        class: 'OAuth2Framework\Component\Server\Grant\ResponseTypeManager'
+        public: false
+
+    oauth2_server.response_mode.manager:
+        class: 'OAuth2Framework\Component\Server\ResponseMode\ResponseModeManager'
+        public: false
+
+    oauth2_server.route_loader:
+        class: 'OAuth2Framework\Bundle\Server\CorePlugin\Routing\RouteLoader'
+        tags:
+            - { name: 'routing.loader' }

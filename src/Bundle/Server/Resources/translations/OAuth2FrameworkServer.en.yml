@@ -1,0 +1,8 @@
+authorization:
+    form:
+        save: "Allow next authorization requests for this client with the same parameters"
+        accept: 'Accept'
+        reject: 'Reject'
+        message: 'A client, with public Id "%client_id%", needs your authorization to get access on your resources.'
+        scope: "The client request access to the following scope(s)"
+        no_scope: "The client does not request any scope"

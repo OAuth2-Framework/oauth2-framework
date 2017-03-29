@@ -1,0 +1,9 @@
+{% spaceless %}
+<body onload='submitform();'>
+    <form method="post" action="{{ redirect_uri }}">
+        {% for key,value in inputs %}
+        <input type="hidden" name="{{ key }}" value="{{ value }}" />
+        {% endfor %}
+    </form>
+</body>
+{% endspaceless %}

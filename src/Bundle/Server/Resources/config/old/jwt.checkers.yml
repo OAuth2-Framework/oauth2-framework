@@ -1,0 +1,9 @@
+services:
+    oauth2_server.authorization_endpoint.audience_checker:
+        class: 'OAuth2Framework\Bundle\Server\Checker\AudienceChecker'
+        arguments:
+            - '@router'
+            - '%oauth2_server.authorization_endpoint.login_route_name%'
+            - '%oauth2_server.authorization_endpoint.login_route_parameters%'
+        tags:
+            - { name: 'jose.checker.claim', alias: 'authorization_endpoint_aud' }

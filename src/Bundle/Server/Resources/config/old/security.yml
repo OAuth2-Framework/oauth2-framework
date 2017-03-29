@@ -1,0 +1,27 @@
+services:
+    oauth2_server.security.authentication.provider:
+        class: 'OAuth2Framework\Bundle\Server\SecurityPlugin\Security\Authentication\Provider\OAuth2Provider'
+        public: false
+        arguments:
+            - '@security.user_checker'
+            - '@oauth2_server.token_type_manager'
+            - '@oauth2_server.client_manager'
+            - '@oauth2_server.token_endpoint.user_account_manager'
+            - '@oauth2_server.token_endpoint.client_manager'
+
+    oauth2_server.security.authentication.listener:
+        class: 'OAuth2Framework\Bundle\Server\SecurityPlugin\Security\Firewall\OAuth2Listener'
+        public: false
+        arguments:
+            - '@security.token_storage'
+            - '@security.authentication.manager'
+            - '@oauth2_server.token_type_manager'
+            - ''
+            - '@oauth2_server.exception.manager'
+
+    oauth2_server.security.entry_point:
+        class: 'OAuth2Framework\Bundle\Server\SecurityPlugin\Security\EntryPoint\OAuth2EntryPoint'
+        public: false
+        arguments:
+            - '@oauth2_server.token_type_manager'
+            - '@oauth2_server.exception.manager'

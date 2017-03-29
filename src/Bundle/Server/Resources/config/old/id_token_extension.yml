@@ -1,0 +1,8 @@
+services:
+    oauth2_server.openid_connect.extension:
+        class: 'OAuth2Framework\Component\Server\OpenIdConnect\OpenIdConnectTokenEndpointExtension'
+        arguments:
+            - '@oauth2_server.openid_connect.id_token.manager'
+            - '@oauth2_server.openid_connect.user_account_manager'
+        tags:
+            - { name: 'oauth2_server.token_endpoint_extension' }
