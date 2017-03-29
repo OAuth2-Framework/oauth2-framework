@@ -1,0 +1,9 @@
+OAuth2Framework\Bundle\Server\Tests\TestBundle\Entity\AuthCode:
+    type: 'entity'
+    table: 'auth_codes'
+    id:
+        id:
+            column: 'id'
+            type: 'string'
+            nullable: false
+            generator: { strategy: 'AUTO' }

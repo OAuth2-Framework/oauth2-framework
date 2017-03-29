@@ -1,0 +1,4 @@
+spomky_labs:
+    oauth2_server:
+      password:
+          mismatch: 'The entered passwords do not match'

@@ -1,0 +1,14 @@
+{
+  "type":"object",
+  "description":"Pre-Configured Authorization.",
+  "properties":{
+    "type":{"type":"string"},
+    "pre_configured_authorization_id":{"type":"string"},
+    "user_account_id":{"type":"string"},
+    "client_id":{"type":"string"},
+    "scopes":{"type":"array"},
+    "is_revoked":{"type":"boolean"}
+  },
+  "additionalProperties":false,
+  "required":["type", "pre_configured_authorization_id", "user_account_id", "client_id", "scopes", "is_revoked"]
+}

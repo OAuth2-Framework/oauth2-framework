@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "https://oauth2-framework.spomky-labs.com/schemas/events/client/created/1.0/schema",
+  "description":"Client created.",
+  "type": "object",
+  "allOf": [
+    {"$ref": "https://oauth2-framework.spomky-labs.com/schemas/event/1.0/schema"},
+    {"payload": {
+        "type": "object",
+        "required": ["user_account_id", "parameters"],
+        "properties": {
+          "user_account_id": {"type": ["string", "null"]},
+          "parameters": {"type": "object"}
+        }
+      }
+    }
+  ],
+  "required": ["payload"]
+}

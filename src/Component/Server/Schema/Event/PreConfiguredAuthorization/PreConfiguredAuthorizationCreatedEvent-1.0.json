@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "https://oauth2-framework.spomky-labs.com/schemas/events/pre-configured-authorization/created/1.0/schema",
+  "description":"Pre-Configured Authorization created.",
+  "type": "object",
+  "allOf": [
+    {"$ref": "https://oauth2-framework.spomky-labs.com/schemas/event/1.0/schema"},
+    {"payload": {
+      "type": "object",
+      "required": ["pre_configured_authorization_id", "client_id", "user_account_id", "scopes"],
+      "properties": {
+        "pre_configured_authorization_id":{"type":"string"},
+        "client_id":{"type":"string"},
+        "user_account_id":{"type":"string"},
+        "scopes":{"type":"array"}
+      }
+    }
+    }
+  ],
+  "required": ["payload"]
+}

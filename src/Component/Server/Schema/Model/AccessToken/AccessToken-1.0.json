@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "https://oauth2-framework.spomky-labs.com/schemas/model/access-token/1.0/schema",
+  "description":"Access Token.",
+  "type": "object",
+  "allOf": [
+    {"$ref": "https://oauth2-framework.spomky-labs.com/schemas/model/token/1.0/schema"},
+    {"payload": {
+      "type": "object",
+      "required": ["refresh_token_id", "resource_server_id"],
+      "properties": {
+        "refresh_token_id":{"type":["string", "null"]},
+        "resource_server_id":{"type":["string", "null"]}
+      }
+    }
+    }
+  ]
+}

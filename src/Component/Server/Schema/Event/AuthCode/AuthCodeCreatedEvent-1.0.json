@@ -1,0 +1,27 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "https://oauth2-framework.spomky-labs.com/schemas/events/auth-code/created/1.0/schema",
+  "description":"Authorization Code created.",
+  "type": "object",
+  "allOf": [
+    {"$ref": "https://oauth2-framework.spomky-labs.com/schemas/event/1.0/schema"},
+    {"payload": {
+      "type": "object",
+      "required": ["user_account_id", "client_id", "expires_at", "parameters", "metadatas", "scopes", "redirect_uri", "query_parameters", "with_refresh_token", "resource_server_id"],
+      "properties": {
+        "user_account_id":{"type":"string"},
+        "client_id":{"type":"string"},
+        "expires_at":{"type":"integer"},
+        "parameters":{"type":"object"},
+        "metadatas":{"type":"object"},
+        "scopes":{"type":"array"},
+        "redirect_uri":{"type":"string"},
+        "query_parameters":{"type":"object"},
+        "with_refresh_token":{"type":"boolean"},
+        "resource_server_id":{"type":["string", "null"]}
+      }
+    }
+    }
+  ],
+  "required": ["payload"]
+}

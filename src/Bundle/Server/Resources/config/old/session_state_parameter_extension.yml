@@ -1,0 +1,15 @@
+services:
+    oauth2_server.openid_connect.session_management.session_state_parameter_extension:
+        class: 'OAuth2Framework\Bundle\Server\OpenIdConnectPlugin\Service\SessionStateParameterExtension'
+        arguments:
+            - '@session'
+            - '%oauth2_server.openid_connect.session_state_parameter_extension.storage_name%'
+        tags:
+            - { name: 'oauth2_server_authorization_endpoint_extension' }
+
+    oauth2_server.openid_connect.session_management.iframe.controller:
+        class: 'OAuth2Framework\Bundle\Server\OpenIdConnectPlugin\Controller\SessionIFrameController'
+        arguments:
+            - '@templating'
+            - '%oauth2_server.openid_connect.session_state_parameter_extension.template%'
+            - '%oauth2_server.openid_connect.session_state_parameter_extension.storage_name%'

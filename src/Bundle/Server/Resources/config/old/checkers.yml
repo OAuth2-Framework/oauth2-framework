@@ -1,0 +1,32 @@
+services:
+    oauth2_server.security.checker.client_public_id:
+        class: 'OAuth2Framework\Bundle\Server\SecurityPlugin\Annotation\Checker\ClientPublicIdChecker'
+        public: false
+        tags:
+            - { name: 'oauth2_server.security.checker' }
+
+    oauth2_server.security.checker.resource_owner_public_id:
+        class: 'OAuth2Framework\Bundle\Server\SecurityPlugin\Annotation\Checker\ResourceOwnerPublicIdChecker'
+        public: false
+        tags:
+            - { name: 'oauth2_server.security.checker' }
+
+    oauth2_server.security.checker.scope:
+        class: 'OAuth2Framework\Bundle\Server\SecurityPlugin\Annotation\Checker\ScopeChecker'
+        public: false
+        arguments:
+            - '@oauth2_server.scope_manager'
+        tags:
+            - { name: 'oauth2_server.security.checker' }
+
+    oauth2_server.security.checker.resource_owner_type:
+        class: 'OAuth2Framework\Bundle\Server\SecurityPlugin\Annotation\Checker\ResourceOwnerType'
+        public: false
+        tags:
+            - { name: 'oauth2_server.security.checker' }
+
+    oauth2_server.security.checker.client_type:
+        class: 'OAuth2Framework\Bundle\Server\SecurityPlugin\Annotation\Checker\ClientType'
+        public: false
+        tags:
+            - { name: 'oauth2_server.security.checker' }

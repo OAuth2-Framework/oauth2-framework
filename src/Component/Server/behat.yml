@@ -1,0 +1,67 @@
+default:
+    suites:
+        client:
+            paths:
+                - '%paths.base%/Features/client'
+            contexts:
+                - 'OAuth2Framework\Component\Server\Tests\Context\ApplicationContext'
+                - 'OAuth2Framework\Component\Server\Tests\Context\ResponseContext'
+                - 'OAuth2Framework\Component\Server\Tests\Context\ClientContext'
+        issuer_discovery:
+            paths:
+                - '%paths.base%/Features/issuer_discovery'
+            contexts:
+                - 'OAuth2Framework\Component\Server\Tests\Context\ApplicationContext'
+                - 'OAuth2Framework\Component\Server\Tests\Context\ResponseContext'
+                - 'OAuth2Framework\Component\Server\Tests\Context\IssuerDiscoveryContext'
+        grant_type:
+            paths:
+                - '%paths.base%/Features/grant_type'
+            contexts:
+                - 'OAuth2Framework\Component\Server\Tests\Context\ApplicationContext'
+                - 'OAuth2Framework\Component\Server\Tests\Context\ResponseContext'
+                - 'OAuth2Framework\Component\Server\Tests\Context\RefreshTokenGrantTypeContext'
+                - 'OAuth2Framework\Component\Server\Tests\Context\ClientCredentialsGrantTypeContext'
+                - 'OAuth2Framework\Component\Server\Tests\Context\JwtBearerGrantTypeContext'
+                - 'OAuth2Framework\Component\Server\Tests\Context\ResourceOwnerPasswordCredentialsGrantTypeContext'
+                - 'OAuth2Framework\Component\Server\Tests\Context\AuthorizationCodeGrantTypeContext'
+        response_type:
+            paths:
+                - '%paths.base%/Features/response_type'
+            contexts:
+                - 'OAuth2Framework\Component\Server\Tests\Context\ApplicationContext'
+                - 'OAuth2Framework\Component\Server\Tests\Context\ResponseContext'
+                - 'OAuth2Framework\Component\Server\Tests\Context\ResponseTypeContext'
+                - 'OAuth2Framework\Component\Server\Tests\Context\CodeResponseTypeContext'
+                - 'OAuth2Framework\Component\Server\Tests\Context\TokenResponseTypeContext'
+                - 'OAuth2Framework\Component\Server\Tests\Context\IdTokenResponseTypeContext'
+                - 'OAuth2Framework\Component\Server\Tests\Context\NoneResponseTypeContext'
+                - 'OAuth2Framework\Component\Server\Tests\Context\HybridFlowContext'
+        oidc:
+            paths:
+                - '%paths.base%/Features/oidc'
+            contexts:
+                - 'OAuth2Framework\Component\Server\Tests\Context\ApplicationContext'
+                - 'OAuth2Framework\Component\Server\Tests\Context\ResponseContext'
+                - 'OAuth2Framework\Component\Server\Tests\Context\ResponseTypeContext'
+                - 'OAuth2Framework\Component\Server\Tests\Context\OIDCContext'
+        introspection:
+            paths:
+                - '%paths.base%/Features/introspection'
+            contexts:
+                - 'OAuth2Framework\Component\Server\Tests\Context\ApplicationContext'
+                - 'OAuth2Framework\Component\Server\Tests\Context\ResponseContext'
+                - 'OAuth2Framework\Component\Server\Tests\Context\IntrospectionContext'
+        revocation:
+            paths:
+                - '%paths.base%/Features/revocation'
+            contexts:
+                - 'OAuth2Framework\Component\Server\Tests\Context\ApplicationContext'
+                - 'OAuth2Framework\Component\Server\Tests\Context\ResponseContext'
+                - 'OAuth2Framework\Component\Server\Tests\Context\RevocationContext'
+        schema:
+            paths:
+                - '%paths.base%/Features/schema'
+            contexts:
+                - 'OAuth2Framework\Component\Server\Tests\Context\ApplicationContext'
+                - 'OAuth2Framework\Component\Server\Tests\Context\SchemaContext'

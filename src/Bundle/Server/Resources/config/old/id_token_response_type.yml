@@ -1,0 +1,9 @@
+services:
+    oauth2_server.openid_connect.id_token.response_type:
+        class: 'OAuth2Framework\Component\Server\OpenIdConnect\IdTokenGrantType'
+        arguments:
+            - '@oauth2_server.token_type_manager'
+            - '@oauth2_server.openid_connect.id_token.manager'
+            - '@oauth2_server.exception.manager'
+        tags:
+            - { name: 'oauth2_server.response_type' }

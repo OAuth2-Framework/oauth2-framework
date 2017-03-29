@@ -1,0 +1,8 @@
+services:
+    oauth2_server.form_post_response_mode:
+        class: 'OAuth2Framework\Bundle\Server\FormPostResponseModePlugin\Service\FormPostResponseMode'
+        arguments:
+            - '@templating'
+            - '%oauth2_server.form_post_response_mode.template%'
+        tags:
+            - { name: 'oauth2_server.response_mode' }

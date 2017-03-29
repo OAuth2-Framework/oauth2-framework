@@ -1,0 +1,8 @@
+services:
+    oauth2_server.jwt_bearer_grant_type:
+        class: 'OAuth2Framework\Component\Server\Grant\JWTBearerGrantType'
+        arguments:
+            - '@jose.jwt_loader.jwt_bearer_grant_type'
+            - '@oauth2_server.exception.manager'
+        tags:
+            - { name: 'oauth2_server.grant_type' }

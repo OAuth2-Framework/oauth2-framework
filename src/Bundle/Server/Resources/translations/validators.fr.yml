@@ -1,0 +1,4 @@
+spomky_labs:
+    oauth2_server:
+      password:
+          mismatch: 'Les deux mots de passe ne sont pas identiques'

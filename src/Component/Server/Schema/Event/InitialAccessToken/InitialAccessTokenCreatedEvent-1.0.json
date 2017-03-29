@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "https://oauth2-framework.spomky-labs.com/schemas/events/initial-access-token/created/1.0/schema",
+  "description":"Initial Access Token created.",
+  "type": "object",
+  "allOf": [
+    {"$ref": "https://oauth2-framework.spomky-labs.com/schemas/event/1.0/schema"},
+    {"payload": {
+      "type": "object",
+      "required": ["user_account_id", "expires_at"],
+      "properties": {
+        "user_account_id":{"type":["string", "null"]},
+        "expires_at":{"type":["integer", "null"]}
+      }
+    }
+    }
+  ],
+  "required": ["payload"]
+}

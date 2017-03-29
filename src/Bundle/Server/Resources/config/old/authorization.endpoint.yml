@@ -1,0 +1,20 @@
+services:
+    oauth2_server.authorization_endpoint.controller:
+        class: 'OAuth2Framework\Bundle\Server\Controller\AuthorizationEndpointController'
+        arguments:
+            - '@security.token_storage'
+            - '@session'
+            - '@router'
+            - '%oauth2_server.authorization_endpoint.login_route_name%'
+            - '%oauth2_server.authorization_endpoint.login_route_parameters%'
+            - '@security.authorization_checker'
+            - '%oauth2_server.authorization_endpoint.template%'
+            - '@templating'
+            - '%oauth2_server.authorization_endpoint.allow_scope_selection%'
+            - '@oauth2_server.authorization_endpoint.form_handler'
+            - '@oauth2_server.authorization_endpoint.form.factory'
+            - '@oauth2_server.authorization_factory'
+            - '@oauth2_server.scope_manager'
+            - '@oauth2_server.exception.manager'
+            - '@event_dispatcher'
+            - '@translator'

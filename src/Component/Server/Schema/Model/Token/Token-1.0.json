@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "https://oauth2-framework.spomky-labs.com/schemas/model/token/1.0/schema",
+  "description":"Token.",
+  "type": "object",
+  "properties":{
+    "type":{"type":"string"},
+    "expires_at":{"type":"integer"},
+    "client_id":{"type":"string"},
+    "parameters":{"type":"object"},
+    "metadatas":{"type":"object"},
+    "scopes":{"type":["array", "null"]},
+    "is_revoked":{"type":"boolean"},
+    "resource_owner_id":{"type":"string"},
+    "resource_owner_class":{"type":"string"},
+    "resource_server_id":{"type":["string", "null"]}
+  },
+  "required":["type", "expires_at", "client_id", "parameters", "metadatas", "scopes", "is_revoked", "resource_owner_id", "resource_owner_class", "resource_server_id"]
+}
