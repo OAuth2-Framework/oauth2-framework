@@ -27,9 +27,9 @@ final class DistributedClaimSource implements ClaimSourceInterface
         if ('user2' === $userAccount->getPublicId()->getValue()) {
             $claims = ['address', 'email', 'email_verified'];
             $source = [
-                'endpoint'     => 'https://external.service.local/user/info',
+                'endpoint' => 'https://external.service.local/user/info',
                 'access_token' => '0123456789',
-                'token_type'   => 'Bearer',
+                'token_type' => 'Bearer',
             ];
 
             return new Source($claims, $source);

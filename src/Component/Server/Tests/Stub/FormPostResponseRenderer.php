@@ -48,7 +48,7 @@ EOT;
         }
         $replacements = [
             '{{redirect_uri}}' => $redirectUri,
-            '{{input}}'        => implode(PHP_EOL, $input),
+            '{{input}}' => implode(PHP_EOL, $input),
         ];
 
         return str_replace(array_keys($replacements), $replacements, $content);

@@ -109,7 +109,7 @@ final class AuthCodeRepository implements AuthCodeRepositoryInterface
             ClientId::create('client1'),
             UserAccountId::create('john.1'),
             [
-                'code_challenge'        => 'E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM',
+                'code_challenge' => 'E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM',
                 'code_challenge_method' => 'plain',
             ],
             'https://www.example.com/callback',
@@ -125,7 +125,7 @@ final class AuthCodeRepository implements AuthCodeRepositoryInterface
             ClientId::create('client1'),
             UserAccountId::create('john.1'),
             [
-                'code_challenge'        => 'DSmbHrVIcI0EU05-BQxCe1bt-hXRNjejSEvdYbq_g4Q',
+                'code_challenge' => 'DSmbHrVIcI0EU05-BQxCe1bt-hXRNjejSEvdYbq_g4Q',
                 'code_challenge_method' => 'S256',
             ],
             'https://www.example.com/callback',

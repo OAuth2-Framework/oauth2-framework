@@ -62,10 +62,10 @@ final class TokenResponseTypeContext implements Context
         $this->minkContext->getSession()->getDriver()->getClient()->request(
             'GET', 'https://oauth2.test/authorize',
             [
-                'client_id'     => 'client1',
-                'redirect_uri'  => 'https://example.com/redirection/callback',
+                'client_id' => 'client1',
+                'redirect_uri' => 'https://example.com/redirection/callback',
                 'response_type' => 'token',
-                'state'         => '0123456789',
+                'state' => '0123456789',
             ]
         );
     }

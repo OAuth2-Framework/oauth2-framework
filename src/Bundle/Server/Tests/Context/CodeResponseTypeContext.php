@@ -65,12 +65,12 @@ final class CodeResponseTypeContext implements Context
         $this->minkContext->getSession()->getDriver()->getClient()->request(
             'GET', 'https://oauth2.test/authorize',
             [
-                'client_id'             => 'client1',
-                'redirect_uri'          => 'https://example.com/redirection/callback',
-                'response_type'         => 'code',
-                'code_challenge'        => 'E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM',
+                'client_id' => 'client1',
+                'redirect_uri' => 'https://example.com/redirection/callback',
+                'response_type' => 'code',
+                'code_challenge' => 'E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM',
                 'code_challenge_method' => 'foo',
-                'state'                 => '0123456789',
+                'state' => '0123456789',
             ]
         );
     }
@@ -83,10 +83,10 @@ final class CodeResponseTypeContext implements Context
         $this->minkContext->getSession()->getDriver()->getClient()->request(
             'GET', 'https://oauth2.test/authorize',
             [
-                'client_id'     => 'client1',
-                'redirect_uri'  => 'https://example.com/redirection/callback',
+                'client_id' => 'client1',
+                'redirect_uri' => 'https://example.com/redirection/callback',
                 'response_type' => 'code',
-                'state'         => '0123456789',
+                'state' => '0123456789',
             ]
         );
     }
@@ -99,12 +99,12 @@ final class CodeResponseTypeContext implements Context
         $this->minkContext->getSession()->getDriver()->getClient()->request(
             'GET', 'https://oauth2.test/authorize',
             [
-                'client_id'             => 'client1',
-                'redirect_uri'          => 'https://example.com/redirection/callback',
-                'response_type'         => 'code',
-                'code_challenge'        => 'E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM',
+                'client_id' => 'client1',
+                'redirect_uri' => 'https://example.com/redirection/callback',
+                'response_type' => 'code',
+                'code_challenge' => 'E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM',
                 'code_challenge_method' => 'S256',
-                'state'                 => '0123456789',
+                'state' => '0123456789',
             ]
         );
     }
@@ -135,14 +135,14 @@ final class CodeResponseTypeContext implements Context
         $this->minkContext->getSession()->getDriver()->getClient()->request(
             'GET', 'https://oauth2.test/authorize',
             [
-                'client_id'             => 'client1',
-                'redirect_uri'          => 'https://example.com/redirection/callback',
-                'response_type'         => 'code',
-                'code_challenge'        => 'E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM',
+                'client_id' => 'client1',
+                'redirect_uri' => 'https://example.com/redirection/callback',
+                'response_type' => 'code',
+                'code_challenge' => 'E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM',
                 'code_challenge_method' => 'plain',
-                'state'                 => '0123456789',
-                'scope'                 => 'openid offline_access',
-                'prompt'                => 'consent',
+                'state' => '0123456789',
+                'scope' => 'openid offline_access',
+                'prompt' => 'consent',
             ]
         );
     }
@@ -155,14 +155,14 @@ final class CodeResponseTypeContext implements Context
         $code = $this->getAuthorizationCodeFromTheResponse();
 
         $this->minkContext->getSession()->getDriver()->getClient()->request('POST', 'https://oauth2.test/token/get', [
-            'grant_type'    => 'authorization_code',
-            'code'          => $code,
-            'redirect_uri'  => 'https://example.com/redirection/callback',
-            'scope'         => 'openid offline_access',
+            'grant_type' => 'authorization_code',
+            'code' => $code,
+            'redirect_uri' => 'https://example.com/redirection/callback',
+            'scope' => 'openid offline_access',
             'code_verifier' => 'E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM',
         ],
             [], [
-                'HTTP_Content-Type'  => 'application/x-www-form-urlencoded',
+                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );

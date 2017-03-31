@@ -57,10 +57,10 @@ final class AuthorizationCodeGrantTypeContext implements Context
     {
         $this->minkContext->getSession()->getDriver()->getClient()->request('POST', 'https://oauth2.test/token/get', [
             'grant_type' => 'authorization_code',
-            'scope'      => 'openid email phone address',
+            'scope' => 'openid email phone address',
         ],
             [], [
-                'HTTP_Content-Type'  => 'application/x-www-form-urlencoded',
+                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );
@@ -73,11 +73,11 @@ final class AuthorizationCodeGrantTypeContext implements Context
     {
         $this->minkContext->getSession()->getDriver()->getClient()->request('POST', 'https://oauth2.test/token/get', [
             'grant_type' => 'authorization_code',
-            'code'       => 'VALID_AUTH_CODE',
-            'scope'      => 'openid email phone address',
+            'code' => 'VALID_AUTH_CODE',
+            'scope' => 'openid email phone address',
         ],
             [], [
-                'HTTP_Content-Type'  => 'application/x-www-form-urlencoded',
+                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );
@@ -89,13 +89,13 @@ final class AuthorizationCodeGrantTypeContext implements Context
     public function aClientSendsAnAuthorizationCodeGrantTypeRequestButTheRedirectionUriParameterMismatch()
     {
         $this->minkContext->getSession()->getDriver()->getClient()->request('POST', 'https://oauth2.test/token/get', [
-            'grant_type'   => 'authorization_code',
-            'code'         => 'VALID_AUTH_CODE',
+            'grant_type' => 'authorization_code',
+            'code' => 'VALID_AUTH_CODE',
             'redirect_uri' => 'http://127.0.0.1/',
-            'scope'        => 'openid email phone address',
+            'scope' => 'openid email phone address',
         ],
             [], [
-                'HTTP_Content-Type'  => 'application/x-www-form-urlencoded',
+                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );
@@ -107,13 +107,13 @@ final class AuthorizationCodeGrantTypeContext implements Context
     public function aClientSendsAValidAuthorizationCodeGrantTypeRequest()
     {
         $this->minkContext->getSession()->getDriver()->getClient()->request('POST', 'https://oauth2.test/token/get', [
-            'grant_type'   => 'authorization_code',
-            'code'         => 'VALID_AUTH_CODE',
+            'grant_type' => 'authorization_code',
+            'code' => 'VALID_AUTH_CODE',
             'redirect_uri' => 'https://www.example.com/callback',
-            'scope'        => 'openid email phone address',
+            'scope' => 'openid email phone address',
         ],
             [], [
-                'HTTP_Content-Type'  => 'application/x-www-form-urlencoded',
+                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );
@@ -134,13 +134,13 @@ final class AuthorizationCodeGrantTypeContext implements Context
     public function aClientSendsAValidAuthorizationCodeGrantTypeRequestWithReducedScope()
     {
         $this->minkContext->getSession()->getDriver()->getClient()->request('POST', 'https://oauth2.test/token/get', [
-            'grant_type'   => 'authorization_code',
-            'code'         => 'VALID_AUTH_CODE',
+            'grant_type' => 'authorization_code',
+            'code' => 'VALID_AUTH_CODE',
             'redirect_uri' => 'https://www.example.com/callback',
-            'scope'        => 'openid',
+            'scope' => 'openid',
         ],
             [], [
-                'HTTP_Content-Type'  => 'application/x-www-form-urlencoded',
+                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );
@@ -152,13 +152,13 @@ final class AuthorizationCodeGrantTypeContext implements Context
     public function aClientSendsAnAuthorizationCodeGrantTypeRequestButAScopeIsNotAllowed()
     {
         $this->minkContext->getSession()->getDriver()->getClient()->request('POST', 'https://oauth2.test/token/get', [
-            'grant_type'   => 'authorization_code',
-            'code'         => 'VALID_AUTH_CODE',
+            'grant_type' => 'authorization_code',
+            'code' => 'VALID_AUTH_CODE',
             'redirect_uri' => 'https://www.example.com/callback',
-            'scope'        => 'openid write',
+            'scope' => 'openid write',
         ],
             [], [
-                'HTTP_Content-Type'  => 'application/x-www-form-urlencoded',
+                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );
@@ -170,11 +170,11 @@ final class AuthorizationCodeGrantTypeContext implements Context
     public function aClientSendsAnAuthorizationCodeGrantTypeRequestButAAuthorizationCodeIsForAnotherClient()
     {
         $this->minkContext->getSession()->getDriver()->getClient()->request('POST', 'https://oauth2.test/token/get', [
-            'grant_type'   => 'authorization_code',
-            'code'         => 'VALID_AUTH_CODE',
+            'grant_type' => 'authorization_code',
+            'code' => 'VALID_AUTH_CODE',
             'redirect_uri' => 'https://www.example.com/callback',
-            'scope'        => 'openid',
-            'client_id'    => 'client2',
+            'scope' => 'openid',
+            'client_id' => 'client2',
         ],
             [], [
                 'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
@@ -188,13 +188,13 @@ final class AuthorizationCodeGrantTypeContext implements Context
     public function aClientSendsAnAuthorizationCodeGrantTypeRequestButTheAuthorizationCodeExpired()
     {
         $this->minkContext->getSession()->getDriver()->getClient()->request('POST', 'https://oauth2.test/token/get', [
-            'grant_type'   => 'authorization_code',
-            'code'         => 'EXPIRED_AUTH_CODE',
+            'grant_type' => 'authorization_code',
+            'code' => 'EXPIRED_AUTH_CODE',
             'redirect_uri' => 'https://www.example.com/callback',
-            'scope'        => 'openid',
+            'scope' => 'openid',
         ],
             [], [
-                'HTTP_Content-Type'  => 'application/x-www-form-urlencoded',
+                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );
@@ -206,13 +206,13 @@ final class AuthorizationCodeGrantTypeContext implements Context
     public function aClientSendsAnAuthorizationCodeGrantTypeRequestButTheAuthorizationCodeRequiresACodeVerifierParameter()
     {
         $this->minkContext->getSession()->getDriver()->getClient()->request('POST', 'https://oauth2.test/token/get', [
-            'grant_type'   => 'authorization_code',
-            'code'         => 'AUTH_CODE_WITH_CODE_VERIFIER_PLAIN',
+            'grant_type' => 'authorization_code',
+            'code' => 'AUTH_CODE_WITH_CODE_VERIFIER_PLAIN',
             'redirect_uri' => 'https://www.example.com/callback',
-            'scope'        => 'openid',
+            'scope' => 'openid',
         ],
             [], [
-                'HTTP_Content-Type'  => 'application/x-www-form-urlencoded',
+                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );
@@ -224,14 +224,14 @@ final class AuthorizationCodeGrantTypeContext implements Context
     public function aClientSendsAnAuthorizationCodeGrantTypeRequestButTheCodeVerifierParameterOfTheAuthorizationCodeIsInvalid()
     {
         $this->minkContext->getSession()->getDriver()->getClient()->request('POST', 'https://oauth2.test/token/get', [
-            'grant_type'    => 'authorization_code',
-            'code'          => 'AUTH_CODE_WITH_CODE_VERIFIER_PLAIN',
-            'redirect_uri'  => 'https://www.example.com/callback',
-            'scope'         => 'openid',
+            'grant_type' => 'authorization_code',
+            'code' => 'AUTH_CODE_WITH_CODE_VERIFIER_PLAIN',
+            'redirect_uri' => 'https://www.example.com/callback',
+            'scope' => 'openid',
             'code_verifier' => 'BAD CODE VERIFIER',
         ],
             [], [
-                'HTTP_Content-Type'  => 'application/x-www-form-urlencoded',
+                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );
@@ -243,14 +243,14 @@ final class AuthorizationCodeGrantTypeContext implements Context
     public function aClientSendsAValidAuthorizationCodeGrantTypeRequestWithCodeVerifierThatUsesPlainMethod()
     {
         $this->minkContext->getSession()->getDriver()->getClient()->request('POST', 'https://oauth2.test/token/get', [
-            'grant_type'    => 'authorization_code',
-            'code'          => 'AUTH_CODE_WITH_CODE_VERIFIER_PLAIN',
-            'redirect_uri'  => 'https://www.example.com/callback',
-            'scope'         => 'openid',
+            'grant_type' => 'authorization_code',
+            'code' => 'AUTH_CODE_WITH_CODE_VERIFIER_PLAIN',
+            'redirect_uri' => 'https://www.example.com/callback',
+            'scope' => 'openid',
             'code_verifier' => 'E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM',
         ],
             [], [
-                'HTTP_Content-Type'  => 'application/x-www-form-urlencoded',
+                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );
@@ -262,14 +262,14 @@ final class AuthorizationCodeGrantTypeContext implements Context
     public function aClientSendsAValidAuthorizationCodeGrantTypeRequestWithCodeVerifierThatUsesSMethod()
     {
         $this->minkContext->getSession()->getDriver()->getClient()->request('POST', 'https://oauth2.test/token/get', [
-            'grant_type'    => 'authorization_code',
-            'code'          => 'AUTH_CODE_WITH_CODE_VERIFIER_S256',
-            'redirect_uri'  => 'https://www.example.com/callback',
-            'scope'         => 'openid',
+            'grant_type' => 'authorization_code',
+            'code' => 'AUTH_CODE_WITH_CODE_VERIFIER_S256',
+            'redirect_uri' => 'https://www.example.com/callback',
+            'scope' => 'openid',
             'code_verifier' => 'E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM',
         ],
             [], [
-                'HTTP_Content-Type'  => 'application/x-www-form-urlencoded',
+                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );
@@ -281,13 +281,13 @@ final class AuthorizationCodeGrantTypeContext implements Context
     public function aClientSendsAAuthorizationCodeGrantTypeRequestButTheCodeParameterIsMissing()
     {
         $this->minkContext->getSession()->getDriver()->getClient()->request('POST', 'https://oauth2.test/token/get', [
-            'grant_type'    => 'authorization_code',
-            'redirect_uri'  => 'https://www.example.com/callback',
-            'scope'         => 'openid',
+            'grant_type' => 'authorization_code',
+            'redirect_uri' => 'https://www.example.com/callback',
+            'scope' => 'openid',
             'code_verifier' => 'E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM',
         ],
             [], [
-                'HTTP_Content-Type'  => 'application/x-www-form-urlencoded',
+                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );
@@ -299,13 +299,13 @@ final class AuthorizationCodeGrantTypeContext implements Context
     public function aClientSendsAAuthorizationCodeGrantTypeRequestButTheRedirectionUriParameterIsMissing()
     {
         $this->minkContext->getSession()->getDriver()->getClient()->request('POST', 'https://oauth2.test/token/get', [
-            'grant_type'    => 'authorization_code',
-            'code'          => 'AUTH_CODE_WITH_CODE_VERIFIER_S256',
-            'scope'         => 'openid',
+            'grant_type' => 'authorization_code',
+            'code' => 'AUTH_CODE_WITH_CODE_VERIFIER_S256',
+            'scope' => 'openid',
             'code_verifier' => 'E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM',
         ],
             [], [
-                'HTTP_Content-Type'  => 'application/x-www-form-urlencoded',
+                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );
@@ -317,14 +317,14 @@ final class AuthorizationCodeGrantTypeContext implements Context
     public function aClientSendsAAuthorizationCodeGrantTypeRequestButTheRedirectionUriParameterMismatch()
     {
         $this->minkContext->getSession()->getDriver()->getClient()->request('POST', 'https://oauth2.test/token/get', [
-            'grant_type'    => 'authorization_code',
-            'code'          => 'AUTH_CODE_WITH_CODE_VERIFIER_S256',
-            'redirect_uri'  => 'https://bad.callback.foo',
-            'scope'         => 'openid',
+            'grant_type' => 'authorization_code',
+            'code' => 'AUTH_CODE_WITH_CODE_VERIFIER_S256',
+            'redirect_uri' => 'https://bad.callback.foo',
+            'scope' => 'openid',
             'code_verifier' => 'E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM',
         ],
             [], [
-                'HTTP_Content-Type'  => 'application/x-www-form-urlencoded',
+                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );
@@ -336,14 +336,14 @@ final class AuthorizationCodeGrantTypeContext implements Context
     public function aClientSendsAAuthorizationCodeGrantTypeRequestButAScopeIsNotAllowed()
     {
         $this->minkContext->getSession()->getDriver()->getClient()->request('POST', 'https://oauth2.test/token/get', [
-            'grant_type'    => 'authorization_code',
-            'code'          => 'AUTH_CODE_WITH_CODE_VERIFIER_S256',
-            'redirect_uri'  => 'https://www.example.com/callback',
-            'scope'         => 'openid profile email phone address',
+            'grant_type' => 'authorization_code',
+            'code' => 'AUTH_CODE_WITH_CODE_VERIFIER_S256',
+            'redirect_uri' => 'https://www.example.com/callback',
+            'scope' => 'openid profile email phone address',
             'code_verifier' => 'E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM',
         ],
             [], [
-                'HTTP_Content-Type'  => 'application/x-www-form-urlencoded',
+                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );
@@ -355,14 +355,14 @@ final class AuthorizationCodeGrantTypeContext implements Context
     public function aClientSendsAAuthorizationCodeGrantTypeRequestButAAuthorizationCodeIsForAnotherClient()
     {
         $this->minkContext->getSession()->getDriver()->getClient()->request('POST', 'https://oauth2.test/token/get', [
-            'grant_type'   => 'authorization_code',
-            'code'         => 'VALID_AUTH_CODE',
+            'grant_type' => 'authorization_code',
+            'code' => 'VALID_AUTH_CODE',
             'redirect_uri' => 'https://www.example.com/callback',
-            'scope'        => 'openid',
-            'client_id'    => 'client2',
+            'scope' => 'openid',
+            'client_id' => 'client2',
         ],
             [], [
-                'HTTP_Content-Type'  => 'application/x-www-form-urlencoded',
+                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
             ]
         );
     }
@@ -373,14 +373,14 @@ final class AuthorizationCodeGrantTypeContext implements Context
     public function aClientSendsAAuthorizationCodeGrantTypeRequestButTheAuthorizationCodeExpired()
     {
         $this->minkContext->getSession()->getDriver()->getClient()->request('POST', 'https://oauth2.test/token/get', [
-            'grant_type'    => 'authorization_code',
-            'code'          => 'EXPIRED_AUTH_CODE',
-            'redirect_uri'  => 'https://www.example.com/callback',
-            'scope'         => 'openid',
+            'grant_type' => 'authorization_code',
+            'code' => 'EXPIRED_AUTH_CODE',
+            'redirect_uri' => 'https://www.example.com/callback',
+            'scope' => 'openid',
             'code_verifier' => 'E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM',
         ],
             [], [
-                'HTTP_Content-Type'  => 'application/x-www-form-urlencoded',
+                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );
@@ -392,14 +392,14 @@ final class AuthorizationCodeGrantTypeContext implements Context
     public function aClientSendsAAuthorizationCodeGrantTypeRequestButTheAuthorizationCodeIsRevoked()
     {
         $this->minkContext->getSession()->getDriver()->getClient()->request('POST', 'https://oauth2.test/token/get', [
-            'grant_type'    => 'authorization_code',
-            'code'          => 'AUTH_CODE_REVOKED',
-            'redirect_uri'  => 'https://www.example.com/callback',
-            'scope'         => 'openid',
+            'grant_type' => 'authorization_code',
+            'code' => 'AUTH_CODE_REVOKED',
+            'redirect_uri' => 'https://www.example.com/callback',
+            'scope' => 'openid',
             'code_verifier' => 'E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM',
         ],
             [], [
-                'HTTP_Content-Type'  => 'application/x-www-form-urlencoded',
+                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );
@@ -411,14 +411,14 @@ final class AuthorizationCodeGrantTypeContext implements Context
     public function aClientSendsAAuthorizationCodeGrantTypeRequestButTheAuthorizationCodeIsUsed()
     {
         $this->minkContext->getSession()->getDriver()->getClient()->request('POST', 'https://oauth2.test/token/get', [
-            'grant_type'    => 'authorization_code',
-            'code'          => 'AUTH_CODE_USED',
-            'redirect_uri'  => 'https://www.example.com/callback',
-            'scope'         => 'openid',
+            'grant_type' => 'authorization_code',
+            'code' => 'AUTH_CODE_USED',
+            'redirect_uri' => 'https://www.example.com/callback',
+            'scope' => 'openid',
             'code_verifier' => 'E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM',
         ],
             [], [
-                'HTTP_Content-Type'  => 'application/x-www-form-urlencoded',
+                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );
@@ -430,13 +430,13 @@ final class AuthorizationCodeGrantTypeContext implements Context
     public function aClientSendsAAuthorizationCodeGrantTypeRequestButTheAuthorizationCodeRequiresACodeVerifierParameter()
     {
         $this->minkContext->getSession()->getDriver()->getClient()->request('POST', 'https://oauth2.test/token/get', [
-            'grant_type'    => 'authorization_code',
-            'code'          => 'AUTH_CODE_WITH_CODE_VERIFIER_S256',
-            'redirect_uri'  => 'https://www.example.com/callback',
-            'scope'         => 'openid',
+            'grant_type' => 'authorization_code',
+            'code' => 'AUTH_CODE_WITH_CODE_VERIFIER_S256',
+            'redirect_uri' => 'https://www.example.com/callback',
+            'scope' => 'openid',
         ],
             [], [
-                'HTTP_Content-Type'  => 'application/x-www-form-urlencoded',
+                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );
@@ -448,14 +448,14 @@ final class AuthorizationCodeGrantTypeContext implements Context
     public function aClientSendsAAuthorizationCodeGrantTypeRequestButTheCodeVerifierParameterOfTheAuthorizationCodeIsInvalid()
     {
         $this->minkContext->getSession()->getDriver()->getClient()->request('POST', 'https://oauth2.test/token/get', [
-            'grant_type'    => 'authorization_code',
-            'code'          => 'AUTH_CODE_WITH_CODE_VERIFIER_S256',
-            'redirect_uri'  => 'https://www.example.com/callback',
-            'scope'         => 'openid',
+            'grant_type' => 'authorization_code',
+            'code' => 'AUTH_CODE_WITH_CODE_VERIFIER_S256',
+            'redirect_uri' => 'https://www.example.com/callback',
+            'scope' => 'openid',
             'code_verifier' => 'INVALID CODE VERIFIER',
         ],
             [], [
-                'HTTP_Content-Type'  => 'application/x-www-form-urlencoded',
+                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );

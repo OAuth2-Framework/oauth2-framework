@@ -92,7 +92,7 @@ final class IssuerDiscoveryContext implements Context
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([
-            'rel'      => 'http://openid.net/specs/connect/1.0/issuer',
+            'rel' => 'http://openid.net/specs/connect/1.0/issuer',
             'resource' => '@foo',
         ]);
         $request = $request->withHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -108,7 +108,7 @@ final class IssuerDiscoveryContext implements Context
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([
-            'rel'      => 'http://openid.net/specs/connect/1.0/issuer',
+            'rel' => 'http://openid.net/specs/connect/1.0/issuer',
             'resource' => 'acct:john@example.com',
         ]);
         $request = $request->withHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -124,7 +124,7 @@ final class IssuerDiscoveryContext implements Context
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([
-            'rel'      => 'http://openid.net/specs/connect/1.0/issuer',
+            'rel' => 'http://openid.net/specs/connect/1.0/issuer',
             'resource' => 'https://example.com:8080/+john',
         ]);
         $request = $request->withHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -140,7 +140,7 @@ final class IssuerDiscoveryContext implements Context
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([
-            'rel'      => 'http://openid.net/specs/connect/1.0/issuer',
+            'rel' => 'http://openid.net/specs/connect/1.0/issuer',
             'resource' => 'acct:john@my-service.com:9000',
         ]);
         $request = $request->withHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -156,7 +156,7 @@ final class IssuerDiscoveryContext implements Context
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([
-            'rel'      => 'http://openid.net/specs/connect/1.0/issuer',
+            'rel' => 'http://openid.net/specs/connect/1.0/issuer',
             'resource' => 'https://my-service.com:9000/+john',
         ]);
         $request = $request->withHeader('Content-Type', 'application/x-www-form-urlencoded');

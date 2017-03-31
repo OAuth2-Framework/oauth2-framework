@@ -197,7 +197,7 @@ final class RevocationContext implements Context
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
-            'token'           => 'ACCESS_TOKEN_#2',
+            'token' => 'ACCESS_TOKEN_#2',
             'token_type_hint' => 'bad_hint',
         ]);
         $request = $request->withHeader('Authorization', 'Basic '.base64_encode('client1:secret'));
@@ -214,7 +214,7 @@ final class RevocationContext implements Context
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([
-            'token'           => 'ACCESS_TOKEN_#2',
+            'token' => 'ACCESS_TOKEN_#2',
             'token_type_hint' => 'bad_hint',
         ]);
         $request = $request->withHeader('Authorization', 'Basic '.base64_encode('client1:secret'));
@@ -230,7 +230,7 @@ final class RevocationContext implements Context
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
-            'token'           => 'UNKNOWN_REFRESH_TOKEN_#2',
+            'token' => 'UNKNOWN_REFRESH_TOKEN_#2',
             'token_type_hint' => 'refresh_token',
         ]);
         $request = $request->withHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -247,7 +247,7 @@ final class RevocationContext implements Context
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([
-            'token'           => 'UNKNOWN_REFRESH_TOKEN_#2',
+            'token' => 'UNKNOWN_REFRESH_TOKEN_#2',
             'token_type_hint' => 'refresh_token',
         ]);
         $request = $request->withHeader('Authorization', 'Basic '.base64_encode('client1:secret'));
@@ -263,9 +263,9 @@ final class RevocationContext implements Context
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([
-            'token'           => 'UNKNOWN_REFRESH_TOKEN_#2',
+            'token' => 'UNKNOWN_REFRESH_TOKEN_#2',
             'token_type_hint' => 'refresh_token',
-            'callback'        => 'callback',
+            'callback' => 'callback',
         ]);
         $request = $request->withHeader('Authorization', 'Basic '.base64_encode('client1:secret'));
 

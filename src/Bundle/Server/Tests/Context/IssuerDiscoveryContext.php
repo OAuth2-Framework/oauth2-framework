@@ -103,7 +103,7 @@ final class IssuerDiscoveryContext implements Context
             'GET',
             'https://oauth2.test/.well-known/webfinger',
             [
-                'rel'      => 'http://openid.net/specs/connect/1.0/issuer',
+                'rel' => 'http://openid.net/specs/connect/1.0/issuer',
                 'resource' => '@foo',
             ],
             [],
@@ -120,7 +120,7 @@ final class IssuerDiscoveryContext implements Context
             'GET',
             'https://oauth2.test/.well-known/webfinger',
             [
-                'rel'      => 'http://openid.net/specs/connect/1.0/issuer',
+                'rel' => 'http://openid.net/specs/connect/1.0/issuer',
                 'resource' => 'acct:john@example.com',
             ],
             [],
@@ -137,7 +137,7 @@ final class IssuerDiscoveryContext implements Context
             'GET',
             'https://oauth2.test/.well-known/webfinger',
             [
-                'rel'      => 'http://openid.net/specs/connect/1.0/issuer',
+                'rel' => 'http://openid.net/specs/connect/1.0/issuer',
                 'resource' => 'https://example.com:8080/+john',
             ],
             [],
@@ -154,7 +154,7 @@ final class IssuerDiscoveryContext implements Context
             'GET',
             'https://oauth2.test/.well-known/webfinger',
             [
-                'rel'      => 'http://openid.net/specs/connect/1.0/issuer',
+                'rel' => 'http://openid.net/specs/connect/1.0/issuer',
                 'resource' => 'acct:john@my-service.com:9000',
             ],
             [],
@@ -171,7 +171,7 @@ final class IssuerDiscoveryContext implements Context
             'GET',
             'https://oauth2.test/.well-known/webfinger',
             [
-                'rel'      => 'http://openid.net/specs/connect/1.0/issuer',
+                'rel' => 'http://openid.net/specs/connect/1.0/issuer',
                 'resource' => 'https://my-service.com:9000/+john',
             ],
             [],

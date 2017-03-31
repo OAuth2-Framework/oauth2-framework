@@ -73,7 +73,7 @@ final class ClientCredentialsGrantTypeContext implements Context
     {
         $this->minkContext->getSession()->getDriver()->getClient()->request('POST', 'https://oauth2.test/token/get', [
             'grant_type' => 'client_credentials',
-            'client_id'  => 'client2',
+            'client_id' => 'client2',
         ],
             [], [
                 'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
@@ -88,10 +88,10 @@ final class ClientCredentialsGrantTypeContext implements Context
     {
         $this->minkContext->getSession()->getDriver()->getClient()->request('POST', 'https://oauth2.test/token/get', [
             'grant_type' => 'client_credentials',
-            'scope'      => 'email phone address',
+            'scope' => 'email phone address',
         ],
             [], [
-                'HTTP_Content-Type'  => 'application/x-www-form-urlencoded',
+                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );
@@ -103,10 +103,10 @@ final class ClientCredentialsGrantTypeContext implements Context
     public function aClientAuthenticatedWithAJwtAssertionSendsAValidClientCredentialsGrantTypeRequest()
     {
         $this->minkContext->getSession()->getDriver()->getClient()->request('POST', 'https://oauth2.test/token/get', [
-            'grant_type'            => 'client_credentials',
+            'grant_type' => 'client_credentials',
             'client_assertion_type' => 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
-            'client_assertion'      => $this->generateValidClientAssertion(),
-            'scope'                 => 'email phone address',
+            'client_assertion' => $this->generateValidClientAssertion(),
+            'scope' => 'email phone address',
         ],
             [], [
                 'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
@@ -120,8 +120,8 @@ final class ClientCredentialsGrantTypeContext implements Context
     public function aClientSendsAValidClientCredentialsGrantTypeRequestButTheGrantTypeIsNotAllowed()
     {
         $this->minkContext->getSession()->getDriver()->getClient()->request('POST', 'https://oauth2.test/token/get', [
-            'grant_type'    => 'client_credentials',
-            'client_id'     => 'client4',
+            'grant_type' => 'client_credentials',
+            'client_id' => 'client4',
             'client_secret' => 'secret',
         ],
             [], [
@@ -136,13 +136,13 @@ final class ClientCredentialsGrantTypeContext implements Context
     public function aClientSendsAClientCredentialsGrantTypeRequestButCredentialsExpired()
     {
         $this->minkContext->getSession()->getDriver()->getClient()->request('POST', 'https://oauth2.test/token/get', [
-            'grant_type'    => 'client_credentials',
-            'scope'         => 'email phone address',
-            'client_id'     => 'client5',
+            'grant_type' => 'client_credentials',
+            'scope' => 'email phone address',
+            'client_id' => 'client5',
             'client_secret' => 'secret',
         ],
             [], [
-                'HTTP_Content-Type'  => 'application/x-www-form-urlencoded',
+                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
             ]
         );
     }
@@ -153,13 +153,13 @@ final class ClientCredentialsGrantTypeContext implements Context
     public function aDeletedClientSendsAClientCredentialsGrantTypeRequest()
     {
         $this->minkContext->getSession()->getDriver()->getClient()->request('POST', 'https://oauth2.test/token/get', [
-            'grant_type'    => 'client_credentials',
-            'scope'         => 'email phone address',
-            'client_id'     => 'client6',
+            'grant_type' => 'client_credentials',
+            'scope' => 'email phone address',
+            'client_id' => 'client6',
             'client_secret' => 'secret',
         ],
             [], [
-                'HTTP_Content-Type'  => 'application/x-www-form-urlencoded',
+                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
             ]
         );
     }
