@@ -27,15 +27,15 @@ class ClientType implements CheckerInterface
     public function check(OAuth2Token $token, OAuth2 $configuration)
     {
         if (null === $configuration->getClientType()) {
-            return;
+            return null;
         }
 
         if (self::TYPE_PUBLIC === $configuration->getClientType() && 'none' === $token->getClient()->get('token_endpoint_auth_method')) {
-            return;
+            return null;
         }
 
         if (self::TYPE_CONFIDENTIAL === $configuration->getClientType() && 'none' !== $token->getClient()->get('token_endpoint_auth_method')) {
-            return;
+            return null;
         }
 
         return 'Resource owner not authorized.';

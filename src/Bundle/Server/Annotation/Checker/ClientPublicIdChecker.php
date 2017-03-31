@@ -24,7 +24,7 @@ class ClientPublicIdChecker implements CheckerInterface
     public function check(OAuth2Token $token, OAuth2 $configuration)
     {
         if (null === $configuration->getClientPublicId()) {
-            return;
+            return null;
         }
 
         if ($configuration->getClientPublicId() !== $token->getClient()->getPublicId()) {

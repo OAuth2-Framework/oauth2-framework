@@ -41,7 +41,7 @@ final class ScopeChecker implements CheckerInterface
     public function check(OAuth2Token $token, OAuth2 $configuration)
     {
         if (null === $configuration->getScope()) {
-            return;
+            return null;
         }
 
         $language = $this->getExpressionLanguage();
@@ -56,6 +56,8 @@ final class ScopeChecker implements CheckerInterface
         if (false === $result) {
             return sprintf('Insufficient scope. The scope rule is: %s', $configuration->getScope());
         }
+
+        return  null;
     }
 
     /**

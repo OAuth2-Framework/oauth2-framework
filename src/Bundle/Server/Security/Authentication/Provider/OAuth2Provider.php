@@ -74,7 +74,7 @@ class OAuth2Provider implements AuthenticationProviderInterface
     public function authenticate(TokenInterface $token)
     {
         if (!$this->supports($token)) {
-            return;
+            return null;
         }
 
         /**

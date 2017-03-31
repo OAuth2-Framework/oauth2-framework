@@ -106,6 +106,8 @@ final class ClientRepository implements ClientRepositoryInterface
                 return $item->get();
             }
         }
+
+        return null;
     }
 
     /**

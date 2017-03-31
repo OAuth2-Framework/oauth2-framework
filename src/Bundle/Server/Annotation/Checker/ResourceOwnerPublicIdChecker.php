@@ -24,7 +24,7 @@ final class ResourceOwnerPublicIdChecker implements CheckerInterface
     public function check(OAuth2Token $token, OAuth2 $configuration)
     {
         if (null === $configuration->getResourceOwnerPublicId()) {
-            return;
+            return null;
         }
 
         if ($configuration->getResourceOwnerPublicId() !== $token->getResourceOwner()->getPublicId()) {

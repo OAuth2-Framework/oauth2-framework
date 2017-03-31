@@ -136,6 +136,8 @@ final class AccessTokenRepository implements AccessTokenRepositoryInterface
                 return $item->get();
             }
         }
+
+        return null;
     }
 
     /**

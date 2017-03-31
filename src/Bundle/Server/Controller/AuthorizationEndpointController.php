@@ -228,7 +228,7 @@ final class AuthorizationEndpointController extends AuthorizationEndpoint
     private function getUiLocale(Authorization $authorization)
     {
         if (!method_exists($this->translator, 'getCatalogue') || !$authorization->hasQueryParam('ui_locales')) {
-            return;
+            return null;
         }
 
         foreach ($authorization->getUiLocales() as $locale) {

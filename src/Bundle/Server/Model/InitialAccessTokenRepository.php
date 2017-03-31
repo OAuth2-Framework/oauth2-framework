@@ -120,6 +120,8 @@ final class InitialAccessTokenRepository implements InitialAccessTokenRepository
                 return $item->get();
             }
         }
+
+        return null;
     }
 
     /**

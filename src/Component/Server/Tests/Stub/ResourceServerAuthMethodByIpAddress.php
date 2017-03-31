@@ -31,6 +31,8 @@ final class ResourceServerAuthMethodByIpAddress implements TokenIntrospectionEnd
                 return ResourceServerId::create($id[0]);
             }
         }
+
+        return null;
     }
 
     /**

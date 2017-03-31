@@ -123,6 +123,8 @@ final class PreConfiguredAuthorizationRepository implements PreConfiguredAuthori
                 return $item->get();
             }
         }
+
+        return null;
     }
 
     /**

@@ -37,6 +37,8 @@ final class None implements TokenEndpointAuthMethodInterface
         if (array_key_exists('client_id', $parameters) && !array_key_exists('client_secret', $parameters)) {
             return ClientId::create($parameters['client_id']);
         }
+
+        return null;
     }
 
     /**

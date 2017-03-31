@@ -29,15 +29,15 @@ final class ResourceOwnerType implements CheckerInterface
     public function check(OAuth2Token $token, OAuth2 $configuration)
     {
         if (null === $configuration->getResourceOwnerType()) {
-            return;
+            return null;
         }
 
         if (self::TYPE_CLIENT === $configuration->getResourceOwnerType() && $token->getResourceOwner() instanceof Client) {
-            return;
+            return null;
         }
 
         if (self::TYPE_USER === $configuration->getResourceOwnerType() && $token->getResourceOwner() instanceof UserAccountInterface) {
-            return;
+            return null;
         }
 
         return 'Resource owner not authorized.';

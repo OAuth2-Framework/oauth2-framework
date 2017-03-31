@@ -218,5 +218,7 @@ final class JWTBearerGrantType implements GrantTypeInterface
         if (null !== $client) {
             return $client->getPublicId();
         }
+
+        return null;
     }
 }

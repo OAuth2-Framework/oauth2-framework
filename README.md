@@ -18,7 +18,7 @@ Help me out for a couple of :beers:!
 
 [![Build Status](https://travis-ci.org/OAuth2-Framework/oauth2-framework.svg?branch=master)](https://travis-ci.org/OAuth2-Framework/oauth2-framework)
 [![HHVM Status](http://hhvm.h4cc.de/badge/oauth2-framework/oauth2-framework.svg)](http://hhvm.h4cc.de/package/oauth2-framework/oauth2-framework)
-[![PHP 7 ready](http://php7ready.timesplinter.ch/OAuth2-Framework/auth2-framework/badge.svg)](https://travis-ci.org/OAuth2-Framework/auth2-framework)
+[![PHP 7 ready](http://php7ready.timesplinter.ch/OAuth2-Framework/oauth2-framework/master/badge.svg)](https://travis-ci.org/OAuth2-Framework/oauth2-framework)
 
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/d4172a6f-b7ac-4123-87d3-86baf36cf9a9/big.png)](https://insight.sensiolabs.com/projects/d4172a6f-b7ac-4123-87d3-86baf36cf9a9)
 
@@ -31,7 +31,7 @@ OAuth2 Framework protocol ([RFC6749](https://tools.ietf.org/html/rfc6749)) and a
 
 Install **OAuth2 Framework for PHP** with Composer: `composer require oauth2-framework/oauth2-framework`.
 
-This project follows the [semantic versioning][5] strictly.
+This project follows the [semantic versioning](http://semver.org/) strictly.
 
 # Documentation
 

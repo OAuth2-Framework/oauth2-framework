@@ -109,13 +109,15 @@ abstract class ClientAssertionJwt implements TokenEndpointAuthMethodInterface
     {
         $parameters = $request->getParsedBody() ?? [];
         if (!array_key_exists('client_assertion_type', $parameters)) {
-            return;
+
+            return null;
         }
         $clientAssertionType = $parameters['client_assertion_type'];
 
         //We verify the client assertion type in the request
         if ('urn:ietf:params:oauth:client-assertion-type:jwt-bearer' !== $clientAssertionType) {
-            return;
+
+            return null;
         }
 
         try {

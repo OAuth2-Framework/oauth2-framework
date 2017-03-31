@@ -52,6 +52,8 @@ final class ResourceServerRepository implements ResourceServerRepositoryInterfac
         if (array_key_exists($resourceServerId->getValue(), $this->resourceServers)) {
             return $this->resourceServers[$resourceServerId->getValue()];
         }
+
+        return null;
     }
 
     private function createAndSaveResourceServer(ResourceServerId $resourceServerId, DataBag $parameters, $markAsDeleted = false)
