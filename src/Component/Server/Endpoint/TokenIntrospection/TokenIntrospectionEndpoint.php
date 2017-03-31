@@ -69,7 +69,7 @@ final class TokenIntrospectionEndpoint implements MiddlewareInterface
             throw new OAuth2Exception(
                 400,
                 [
-                    'error'             => 'unsupported_token_type',
+                    'error' => 'unsupported_token_type',
                     'error_description' => sprintf('The token type hint \'%s\' is not supported. Please use one of the following values: %s.', $tokenTypeHint, implode(', ', array_keys($tokenTypeHints))),
                 ]
             );
@@ -108,7 +108,7 @@ final class TokenIntrospectionEndpoint implements MiddlewareInterface
                     throw new OAuth2Exception(
                         400,
                         [
-                            'error'             => OAuth2ResponseFactoryManager::ERROR_INVALID_REQUEST,
+                            'error' => OAuth2ResponseFactoryManager::ERROR_INVALID_REQUEST,
                             'error_description' => 'The parameter \'token\' is invalid.',
                         ]
                     );
@@ -140,7 +140,7 @@ final class TokenIntrospectionEndpoint implements MiddlewareInterface
             throw new OAuth2Exception(
                 401,
                 [
-                    'error'             => OAuth2ResponseFactoryManager::ERROR_INVALID_RESOURCE_SERVER,
+                    'error' => OAuth2ResponseFactoryManager::ERROR_INVALID_RESOURCE_SERVER,
                     'error_description' => 'Resource Server authentication failed.',
                 ]
             );
@@ -163,7 +163,7 @@ final class TokenIntrospectionEndpoint implements MiddlewareInterface
             throw new OAuth2Exception(
                 400,
                 [
-                    'error'             => OAuth2ResponseFactoryManager::ERROR_INVALID_REQUEST,
+                    'error' => OAuth2ResponseFactoryManager::ERROR_INVALID_REQUEST,
                     'error_description' => 'The parameter \'token\' is missing.',
                 ]
             );
@@ -190,7 +190,7 @@ final class TokenIntrospectionEndpoint implements MiddlewareInterface
                 throw new OAuth2Exception(
                     400,
                     [
-                        'error'             => 'unsupported_token_type',
+                        'error' => 'unsupported_token_type',
                         'error_description' => sprintf('The token type hint \'%s\' is not supported. Please use one of the following values: %s.', $params['token_type_hint'], implode(', ', array_keys($tokenTypeHints))),
                     ]
                 );

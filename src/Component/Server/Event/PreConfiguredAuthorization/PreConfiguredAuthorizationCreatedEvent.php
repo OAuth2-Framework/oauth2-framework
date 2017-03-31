@@ -130,9 +130,9 @@ final class PreConfiguredAuthorizationCreatedEvent extends Event
     {
         return (object) [
             'pre_configured_authorization_id' => $this->preConfiguredAuthorizationId->getValue(),
-            'client_id'                       => $this->clientId->getValue(),
-            'user_account_id'                 => $this->userAccountId->getValue(),
-            'scopes'                          => $this->scopes,
+            'client_id' => $this->clientId->getValue(),
+            'user_account_id' => $this->userAccountId->getValue(),
+            'scopes' => $this->scopes,
         ];
     }
 

@@ -303,23 +303,23 @@ class OpenIdConnectPlugin extends CommonPluginMethod implements BundlePlugin, Pr
         $files = ['id_token_manager', 'userinfo', 'userinfo.scope_support', 'id_token_extension', 'metadata', 'issuer_discovery', 'claim_source_manager'];
 
         $parameters = [
-            'oauth2_server.openid_connect.user_account_manager'                 => ['type' => 'alias', 'path' => '[user_account_manager]'],
-            'oauth2_server.openid_connect.id_token.manager'                     => ['type' => 'alias', 'path' => '[id_token][manager]'],
-            'oauth2_server.openid_connect.id_token.manager.signature_key_set'   => ['type' => 'alias', 'path' => '[id_token][signature_key_set]'],
-            'oauth2_server.openid_connect.id_token.manager.header_checkers'     => ['type' => 'parameter', 'path' => '[id_token][header_checkers]'],
-            'oauth2_server.openid_connect.id_token.manager.claim_checkers'      => ['type' => 'parameter', 'path' => '[id_token][claim_checkers]'],
-            'oauth2_server.openid_connect.issuer_discovery'                     => ['type' => 'parameter', 'path' => '[issuer_discovery]'],
-            'oauth2_server.openid_connect.pairwise_subject_identifier'          => ['type' => 'parameter', 'path' => '[pairwise_subject_identifier]'],
-            'oauth2_server.openid_connect.id_token.manager.issuer'              => ['type' => 'parameter', 'path' => '[id_token][issuer]'],
+            'oauth2_server.openid_connect.user_account_manager' => ['type' => 'alias', 'path' => '[user_account_manager]'],
+            'oauth2_server.openid_connect.id_token.manager' => ['type' => 'alias', 'path' => '[id_token][manager]'],
+            'oauth2_server.openid_connect.id_token.manager.signature_key_set' => ['type' => 'alias', 'path' => '[id_token][signature_key_set]'],
+            'oauth2_server.openid_connect.id_token.manager.header_checkers' => ['type' => 'parameter', 'path' => '[id_token][header_checkers]'],
+            'oauth2_server.openid_connect.id_token.manager.claim_checkers' => ['type' => 'parameter', 'path' => '[id_token][claim_checkers]'],
+            'oauth2_server.openid_connect.issuer_discovery' => ['type' => 'parameter', 'path' => '[issuer_discovery]'],
+            'oauth2_server.openid_connect.pairwise_subject_identifier' => ['type' => 'parameter', 'path' => '[pairwise_subject_identifier]'],
+            'oauth2_server.openid_connect.id_token.manager.issuer' => ['type' => 'parameter', 'path' => '[id_token][issuer]'],
             'oauth2_server.openid_connect.id_token.manager.signature_algorithm' => ['type' => 'parameter', 'path' => '[id_token][signature_algorithm]'],
-            'oauth2_server.openid_connect.userinfo_endpoint.enabled'            => ['type' => 'parameter', 'path' => '[userinfo_endpoint][enabled]'],
-            'oauth2_server.openid_connect.userinfo_endpoint.signature.enabled'  => ['type' => 'parameter', 'path' => '[userinfo_endpoint][signature][enabled]'],
-            'oauth2_server.openid_connect.metadata.enabled'                     => ['type' => 'parameter', 'path' => '[metadata][enabled]'],
-            'oauth2_server.openid_connect.id_token.response_type.id_token'      => ['type' => 'parameter', 'path' => '[response_type][id_token]'],
-            'oauth2_server.openid_connect.claims_supported'                     => ['type' => 'parameter', 'path' => '[claims_supported]', 'callback' => function ($data) {
+            'oauth2_server.openid_connect.userinfo_endpoint.enabled' => ['type' => 'parameter', 'path' => '[userinfo_endpoint][enabled]'],
+            'oauth2_server.openid_connect.userinfo_endpoint.signature.enabled' => ['type' => 'parameter', 'path' => '[userinfo_endpoint][signature][enabled]'],
+            'oauth2_server.openid_connect.metadata.enabled' => ['type' => 'parameter', 'path' => '[metadata][enabled]'],
+            'oauth2_server.openid_connect.id_token.response_type.id_token' => ['type' => 'parameter', 'path' => '[response_type][id_token]'],
+            'oauth2_server.openid_connect.claims_supported' => ['type' => 'parameter', 'path' => '[claims_supported]', 'callback' => function ($data) {
                 return array_unique($data);
             }],
-            'oauth2_server.openid_connect.claims_locales_supported'             => ['type' => 'parameter', 'path' => '[claims_locales_supported]', 'callback' => function ($data) {
+            'oauth2_server.openid_connect.claims_locales_supported' => ['type' => 'parameter', 'path' => '[claims_locales_supported]', 'callback' => function ($data) {
                 return array_unique($data);
             }],
         ];

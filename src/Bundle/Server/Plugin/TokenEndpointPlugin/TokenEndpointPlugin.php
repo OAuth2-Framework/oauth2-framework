@@ -77,10 +77,10 @@ class TokenEndpointPlugin extends CommonPluginMethod implements BundlePlugin
         }
 
         $parameters = [
-            'oauth2_server.token_endpoint.access_token_manager'  => ['type' => 'alias', 'path' => '[access_token_manager]'],
-            'oauth2_server.token_endpoint.client_manager'        => ['type' => 'alias', 'path' => '[client_manager]'],
-            'oauth2_server.token_endpoint.user_account_manager'  => ['type' => 'alias', 'path' => '[user_account_manager]'],
-            'oauth2_server.token_endpoint.path'                  => ['type' => 'parameter', 'path' => '[path]'],
+            'oauth2_server.token_endpoint.access_token_manager' => ['type' => 'alias', 'path' => '[access_token_manager]'],
+            'oauth2_server.token_endpoint.client_manager' => ['type' => 'alias', 'path' => '[client_manager]'],
+            'oauth2_server.token_endpoint.user_account_manager' => ['type' => 'alias', 'path' => '[user_account_manager]'],
+            'oauth2_server.token_endpoint.path' => ['type' => 'parameter', 'path' => '[path]'],
         ];
         if (null !== $pluginConfiguration['refresh_token_manager']) {
             $parameters['oauth2_server.token_endpoint.refresh_token_manager'] = ['type' => 'alias', 'path' => '[refresh_token_manager]'];

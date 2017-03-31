@@ -83,7 +83,7 @@ class ClientManagerPlugin extends CommonPluginMethod implements BundlePlugin, Pr
         $files = ['services'];
 
         $parameters = [
-            'oauth2_server.client_manager'       => ['type' => 'alias', 'path' => '[manager]'],
+            'oauth2_server.client_manager' => ['type' => 'alias', 'path' => '[manager]'],
             'oauth2_server.client_manager.class' => ['type' => 'parameter', 'path' => '[class]'],
         ];
 

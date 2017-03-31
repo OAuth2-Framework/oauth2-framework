@@ -29,9 +29,9 @@ class AuthCodeManagerConfigurationCompilerPass implements CompilerPassInterface
 
         $definition = $container->getDefinition('oauth2_server.auth_code.manager.default');
         $options = [
-            'setAuthorizationCodeMaxLength'  => 'oauth2_server.auth_code.max_length',
-            'setAuthorizationCodeMinLength'  => 'oauth2_server.auth_code.min_length',
-            'setAuthorizationCodeLifetime'   => 'oauth2_server.auth_code.lifetime',
+            'setAuthorizationCodeMaxLength' => 'oauth2_server.auth_code.max_length',
+            'setAuthorizationCodeMinLength' => 'oauth2_server.auth_code.min_length',
+            'setAuthorizationCodeLifetime' => 'oauth2_server.auth_code.lifetime',
         ];
         foreach ($options as $method => $value) {
             $definition->addMethodCall($method, [$container->getParameter($value)]);

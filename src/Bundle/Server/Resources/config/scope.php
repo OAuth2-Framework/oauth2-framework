@@ -18,7 +18,6 @@ use function Fluent\create;
 use function Fluent\get;
 
 return [
-
     ScopeRepository::class => create()
         ->arguments(
             ['openid', 'phone', 'email', 'address', 'profile', 'offline_access'] // Fixme

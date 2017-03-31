@@ -110,7 +110,7 @@ final class ClientCreatedEvent extends Event
     {
         return (object) [
             'user_account_id' => $this->userAccountId ? $this->userAccountId->getValue() : null,
-            'parameters'      => (object) $this->parameters->all(),
+            'parameters' => (object) $this->parameters->all(),
         ];
     }
 

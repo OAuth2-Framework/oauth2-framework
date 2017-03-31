@@ -84,7 +84,7 @@ final class ServerMetadata implements ServerMetadataInterface
 
         $params = [
             CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_URL            => $url,
+            CURLOPT_URL => $url,
         ];
         if (false === $allow_unsecured_connection) {
             $params[CURLOPT_SSL_VERIFYPEER] = true;

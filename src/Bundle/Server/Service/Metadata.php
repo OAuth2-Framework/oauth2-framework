@@ -57,8 +57,8 @@ class Metadata extends BaseMetadata
     public function setTokenEndpointAuthAssertionJwt(ClientAssertionJwt $client_assertion_jwt)
     {
         $methods = [
-            'getSupportedSignatureAlgorithms'         => 'token_endpoint_auth_signing_alg_values_supported',
-            'getSupportedKeyEncryptionAlgorithms'     => 'token_endpoint_auth_encryption_alg_values_supported',
+            'getSupportedSignatureAlgorithms' => 'token_endpoint_auth_signing_alg_values_supported',
+            'getSupportedKeyEncryptionAlgorithms' => 'token_endpoint_auth_encryption_alg_values_supported',
             'getSupportedContentEncryptionAlgorithms' => 'token_endpoint_auth_encryption_enc_values_supported',
         ];
 
@@ -93,8 +93,8 @@ class Metadata extends BaseMetadata
     public function setIdTokenManager(IdTokenManagerInterface $id_token_manager)
     {
         $methods = [
-            'getSupportedSignatureAlgorithms'         => 'id_token_signing_alg_values_supported',
-            'getSupportedKeyEncryptionAlgorithms'     => 'id_token_encryption_alg_values_supported',
+            'getSupportedSignatureAlgorithms' => 'id_token_signing_alg_values_supported',
+            'getSupportedKeyEncryptionAlgorithms' => 'id_token_encryption_alg_values_supported',
             'getSupportedContentEncryptionAlgorithms' => 'id_token_encryption_enc_values_supported',
         ];
 
@@ -124,8 +124,8 @@ class Metadata extends BaseMetadata
     public function setUserinfoEndpoint(UserInfoEndpointInterface $userinfo_endpoint, UserInfoInterface $userinfo)
     {
         $methods = [
-            'getSupportedSignatureAlgorithms'         => 'userinfo_signing_alg_values_supported',
-            'getSupportedKeyEncryptionAlgorithms'     => 'userinfo_encryption_alg_values_supported',
+            'getSupportedSignatureAlgorithms' => 'userinfo_signing_alg_values_supported',
+            'getSupportedKeyEncryptionAlgorithms' => 'userinfo_encryption_alg_values_supported',
             'getSupportedContentEncryptionAlgorithms' => 'userinfo_encryption_enc_values_supported',
         ];
 
@@ -163,8 +163,8 @@ class Metadata extends BaseMetadata
                 $this->set('require_request_uri_registration', $authorization_request_loader->isRequestUriRegistrationRequired());
             }
             $methods = [
-                'getSupportedSignatureAlgorithms'         => 'request_object_signing_alg_values_supported',
-                'getSupportedKeyEncryptionAlgorithms'     => 'request_object_encryption_alg_values_supported',
+                'getSupportedSignatureAlgorithms' => 'request_object_signing_alg_values_supported',
+                'getSupportedKeyEncryptionAlgorithms' => 'request_object_encryption_alg_values_supported',
                 'getSupportedContentEncryptionAlgorithms' => 'request_object_encryption_enc_values_supported',
             ];
 

@@ -89,7 +89,7 @@ final class ClientRegistrationEndpoint implements MiddlewareInterface
             throw new OAuth2Exception(
                 405,
                 [
-                    'error'             => OAuth2ResponseFactoryManager::ERROR_INVALID_REQUEST,
+                    'error' => OAuth2ResponseFactoryManager::ERROR_INVALID_REQUEST,
                     'error_description' => 'Unsupported method.',
                 ]
             );

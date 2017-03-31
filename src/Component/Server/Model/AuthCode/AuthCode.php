@@ -272,11 +272,11 @@ final class AuthCode extends Token
     public function jsonSerialize()
     {
         $data = parent::jsonSerialize() + [
-                'auth_code_id'       => $this->getAuthCodeId()->getValue(),
+                'auth_code_id' => $this->getAuthCodeId()->getValue(),
                 'with_refresh_token' => $this->isRefreshTokenIssued(),
-                'query_parameters'   => (object) $this->getQueryParameters(),
-                'redirect_uri'       => $this->getRedirectUri(),
-                'is_used'            => $this->isUsed(),
+                'query_parameters' => (object) $this->getQueryParameters(),
+                'redirect_uri' => $this->getRedirectUri(),
+                'is_used' => $this->isUsed(),
             ];
 
         return $data;
@@ -305,9 +305,9 @@ final class AuthCode extends Token
     private function getEventMap(): array
     {
         return [
-            AuthCodeEvent\AuthCodeCreatedEvent::class      => 'applyAuthCodeCreatedEvent',
+            AuthCodeEvent\AuthCodeCreatedEvent::class => 'applyAuthCodeCreatedEvent',
             AuthCodeEvent\AuthCodeMarkedAsUsedEvent::class => 'applyAuthCodeMarkedAsUsedEvent',
-            AuthCodeEvent\AuthCodeRevokedEvent::class      => 'applyAuthCodeRevokedEvent',
+            AuthCodeEvent\AuthCodeRevokedEvent::class => 'applyAuthCodeRevokedEvent',
         ];
     }
 

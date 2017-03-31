@@ -108,13 +108,13 @@ class AuthCodeGrantTypePlugin extends CommonPluginMethod implements BundlePlugin
     private function initConfigurationParametersAndAliases(array $pluginConfiguration, ContainerBuilder $container)
     {
         $parameters = [
-            'oauth2_server.auth_code.class'                => ['type' => 'parameter', 'path' => '[class]'],
-            'oauth2_server.auth_code.min_length'           => ['type' => 'parameter', 'path' => '[min_length]'],
-            'oauth2_server.auth_code.max_length'           => ['type' => 'parameter', 'path' => '[max_length]'],
-            'oauth2_server.auth_code.lifetime'             => ['type' => 'parameter', 'path' => '[lifetime]'],
-            'oauth2_server.auth_code.enforce_pkce'         => ['type' => 'parameter', 'path' => '[enforce_pkce]'],
+            'oauth2_server.auth_code.class' => ['type' => 'parameter', 'path' => '[class]'],
+            'oauth2_server.auth_code.min_length' => ['type' => 'parameter', 'path' => '[min_length]'],
+            'oauth2_server.auth_code.max_length' => ['type' => 'parameter', 'path' => '[max_length]'],
+            'oauth2_server.auth_code.lifetime' => ['type' => 'parameter', 'path' => '[lifetime]'],
+            'oauth2_server.auth_code.enforce_pkce' => ['type' => 'parameter', 'path' => '[enforce_pkce]'],
             'oauth2_server.auth_code.allow_public_clients' => ['type' => 'parameter', 'path' => '[allow_public_clients]'],
-            'oauth2_server.auth_code.manager'              => ['type' => 'alias',     'path' => '[manager]'],
+            'oauth2_server.auth_code.manager' => ['type' => 'alias',     'path' => '[manager]'],
         ];
         $this->loadParameters($parameters, $pluginConfiguration, $container);
     }

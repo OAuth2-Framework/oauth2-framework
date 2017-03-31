@@ -29,9 +29,9 @@ class SimpleStringAccessTokenConfigurationCompilerPass implements CompilerPassIn
 
         $definition = $container->getDefinition('oauth2_server.simple_string_access_token.manager.default');
         $options = [
-            'setAccessTokenMaxLength'    => 'oauth2_server.simple_string_access_token.max_length',
-            'setAccessTokenMinLength'    => 'oauth2_server.simple_string_access_token.min_length',
-            'setAccessTokenLifetime'     => 'oauth2_server.simple_string_access_token.lifetime',
+            'setAccessTokenMaxLength' => 'oauth2_server.simple_string_access_token.max_length',
+            'setAccessTokenMinLength' => 'oauth2_server.simple_string_access_token.min_length',
+            'setAccessTokenLifetime' => 'oauth2_server.simple_string_access_token.lifetime',
         ];
 
         foreach ($options as $method => $value) {

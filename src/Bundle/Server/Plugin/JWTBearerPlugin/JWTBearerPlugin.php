@@ -61,7 +61,7 @@ class JWTBearerPlugin extends CommonPluginMethod implements BundlePlugin, Prepen
 
         $parameters = [
             'oauth2_server.jwt_bearer_grant_type.issue_refresh_token' => ['type' => 'parameter', 'path' => '[issue_refresh_token]'],
-            'oauth2_server.jwt_bearer_grant_type.encryption.enabled'  => ['type' => 'parameter', 'path' => '[encryption][enabled]'],
+            'oauth2_server.jwt_bearer_grant_type.encryption.enabled' => ['type' => 'parameter', 'path' => '[encryption][enabled]'],
         ];
 
         $accessor = PropertyAccess::createPropertyAccessor();

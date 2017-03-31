@@ -229,17 +229,17 @@ abstract class Token implements \JsonSerializable, ContainsRecordedMessages, Dom
     public function jsonSerialize()
     {
         $data = [
-            '$schema'              => $this->getSchema(),
-            'type'                 => get_class($this),
-            'expires_at'           => $this->getExpiresAt()->getTimestamp(),
-            'client_id'            => $this->getClientId()->getValue(),
-            'parameters'           => (object) $this->getParameters()->all(),
-            'metadatas'            => (object) $this->getMetadatas()->all(),
-            'scopes'               => $this->getScopes(),
-            'is_revoked'           => $this->isRevoked(),
-            'resource_owner_id'    => $this->getResourceOwnerId()->getValue(),
+            '$schema' => $this->getSchema(),
+            'type' => get_class($this),
+            'expires_at' => $this->getExpiresAt()->getTimestamp(),
+            'client_id' => $this->getClientId()->getValue(),
+            'parameters' => (object) $this->getParameters()->all(),
+            'metadatas' => (object) $this->getMetadatas()->all(),
+            'scopes' => $this->getScopes(),
+            'is_revoked' => $this->isRevoked(),
+            'resource_owner_id' => $this->getResourceOwnerId()->getValue(),
             'resource_owner_class' => get_class($this->getResourceOwnerId()),
-            'resource_server_id'   => $this->getResourceServerId() ? $this->getResourceServerId()->getValue() : null,
+            'resource_server_id' => $this->getResourceServerId() ? $this->getResourceServerId()->getValue() : null,
         ];
 
         return $data;

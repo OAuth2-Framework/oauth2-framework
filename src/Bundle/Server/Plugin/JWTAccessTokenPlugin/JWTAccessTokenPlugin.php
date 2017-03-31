@@ -49,15 +49,15 @@ class JWTAccessTokenPlugin extends CommonPluginMethod implements BundlePlugin, P
         $loader->load('services.yml');
 
         $parameters = [
-            'oauth2_server.jwt_access_token.manager.issuer'                       => ['type' => 'parameter', 'path' => '[issuer]'],
-            'oauth2_server.jwt_access_token.manager.token_lifetime'               => ['type' => 'parameter', 'path' => '[token_lifetime]'],
-            'oauth2_server.jwt_access_token.manager.signature_algorithm'          => ['type' => 'parameter', 'path' => '[signature_algorithm]'],
-            'oauth2_server.jwt_access_token.manager.signature_key_set'            => ['type' => 'alias',     'path' => '[signature_key_set]'],
-            'oauth2_server.jwt_access_token.manager.key_encryption_algorithm'     => ['type' => 'parameter', 'path' => '[key_encryption_algorithm]'],
+            'oauth2_server.jwt_access_token.manager.issuer' => ['type' => 'parameter', 'path' => '[issuer]'],
+            'oauth2_server.jwt_access_token.manager.token_lifetime' => ['type' => 'parameter', 'path' => '[token_lifetime]'],
+            'oauth2_server.jwt_access_token.manager.signature_algorithm' => ['type' => 'parameter', 'path' => '[signature_algorithm]'],
+            'oauth2_server.jwt_access_token.manager.signature_key_set' => ['type' => 'alias',     'path' => '[signature_key_set]'],
+            'oauth2_server.jwt_access_token.manager.key_encryption_algorithm' => ['type' => 'parameter', 'path' => '[key_encryption_algorithm]'],
             'oauth2_server.jwt_access_token.manager.content_encryption_algorithm' => ['type' => 'parameter', 'path' => '[content_encryption_algorithm]'],
-            'oauth2_server.jwt_access_token.manager.claim_checkers'               => ['type' => 'parameter', 'path' => '[claim_checkers]'],
-            'oauth2_server.jwt_access_token.manager.header_checkers'              => ['type' => 'parameter', 'path' => '[header_checkers]'],
-            'oauth2_server.jwt_access_token.manager.key_encryption_key_set'       => ['type' => 'alias',     'path' => '[key_encryption_key_set]'],
+            'oauth2_server.jwt_access_token.manager.claim_checkers' => ['type' => 'parameter', 'path' => '[claim_checkers]'],
+            'oauth2_server.jwt_access_token.manager.header_checkers' => ['type' => 'parameter', 'path' => '[header_checkers]'],
+            'oauth2_server.jwt_access_token.manager.key_encryption_key_set' => ['type' => 'alias',     'path' => '[key_encryption_key_set]'],
         ];
 
         $this->loadParameters($parameters, $pluginConfiguration, $container);

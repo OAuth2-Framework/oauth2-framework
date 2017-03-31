@@ -49,7 +49,7 @@ final class FormPostResponseRenderer implements FormPostResponseRendererInterfac
             $this->template,
             [
                 'redirect_uri' => $redirect_uri,
-                'inputs'       => $data,
+                'inputs' => $data,
             ]
         );
     }

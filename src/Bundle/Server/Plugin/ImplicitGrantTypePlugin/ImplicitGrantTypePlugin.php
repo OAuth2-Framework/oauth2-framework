@@ -46,7 +46,7 @@ class ImplicitGrantTypePlugin extends CommonPluginMethod implements BundlePlugin
 
         $parameters = [
             'oauth2_server.implicit_grant_type.allow_confidential_clients' => ['type' => 'parameter', 'path' => '[allow_confidential_clients]'],
-            'oauth2_server.implicit_grant_type.access_token_manager'       => ['type' => 'alias', 'path' => '[access_token_manager]'],
+            'oauth2_server.implicit_grant_type.access_token_manager' => ['type' => 'alias', 'path' => '[access_token_manager]'],
         ];
 
         $this->loadParameters($parameters, $pluginConfiguration, $container);

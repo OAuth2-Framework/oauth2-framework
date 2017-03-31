@@ -49,7 +49,7 @@ final class OAuth2
     private $resourceOwnerPublicId = null;
 
     /**
-     * @param array $data An array of key/value parameters.
+     * @param array $data an array of key/value parameters
      *
      * @throws \BadMethodCallException
      */

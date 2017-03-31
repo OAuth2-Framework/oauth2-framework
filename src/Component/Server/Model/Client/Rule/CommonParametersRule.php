@@ -41,8 +41,8 @@ final class CommonParametersRule extends AbstractInternationalizedRule
             'client_name' => function () {
             },
             'client_uri' => $this->getUriVerificationClosure(),
-            'logo_uri'   => $this->getUriVerificationClosure(),
-            'tos_uri'    => $this->getUriVerificationClosure(),
+            'logo_uri' => $this->getUriVerificationClosure(),
+            'tos_uri' => $this->getUriVerificationClosure(),
             'policy_uri' => $this->getUriVerificationClosure(),
         ];
     }

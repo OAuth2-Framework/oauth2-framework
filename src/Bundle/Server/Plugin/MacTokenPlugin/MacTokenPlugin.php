@@ -43,9 +43,9 @@ class MacTokenPlugin extends CommonPluginMethod implements BundlePlugin
         }
 
         $parameters = [
-            'oauth2_server.mac_token.min_length'         => ['type' => 'parameter', 'path' => '[min_length]'],
-            'oauth2_server.mac_token.max_length'         => ['type' => 'parameter', 'path' => '[max_length]'],
-            'oauth2_server.mac_token.algorithm'          => ['type' => 'parameter', 'path' => '[algorithm]'],
+            'oauth2_server.mac_token.min_length' => ['type' => 'parameter', 'path' => '[min_length]'],
+            'oauth2_server.mac_token.max_length' => ['type' => 'parameter', 'path' => '[max_length]'],
+            'oauth2_server.mac_token.algorithm' => ['type' => 'parameter', 'path' => '[algorithm]'],
             'oauth2_server.mac_token.timestamp_lifetime' => ['type' => 'parameter', 'path' => '[timestamp_lifetime]'],
         ];
 
