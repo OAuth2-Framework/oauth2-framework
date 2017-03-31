@@ -11,6 +11,8 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
+use OAuth2Framework\Bundle\Server\Model\ClientRepository;
+use OAuth2Framework\Bundle\Server\Rule\ClientIdRule;
 use OAuth2Framework\Component\Server\Command\Client;
 use OAuth2Framework\Component\Server\Endpoint\UserInfo\UserInfo;
 use OAuth2Framework\Component\Server\GrantType\GrantTypeManager;
@@ -18,10 +20,8 @@ use OAuth2Framework\Component\Server\Model\Client\Rule;
 use OAuth2Framework\Component\Server\Model\Client\Rule\RuleManager;
 use OAuth2Framework\Component\Server\ResponseType\ResponseTypeManager;
 use OAuth2Framework\Component\Server\TokenEndpointAuthMethod\TokenEndpointAuthMethodManager;
-use OAuth2Framework\Bundle\Server\Rule\ClientIdRule;
 use function Fluent\create;
 use function Fluent\get;
-use OAuth2Framework\Bundle\Server\Model\ClientRepository;
 
 return [
     /*'oauth2_server.event_store.client' => create(OAuth2Framework\Bundle\Server\EventStore\EventStore::class)

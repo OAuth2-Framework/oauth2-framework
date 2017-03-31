@@ -62,7 +62,7 @@ final class ClientContext implements Context
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
-            'redirect_uris' => ['https://www.foo.com'],
+            'redirect_uris'              => ['https://www.foo.com'],
             'token_endpoint_auth_method' => 'client_secret_basic',
         ]);
         $request = $request->withHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -142,9 +142,9 @@ final class ClientContext implements Context
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
-            'redirect_uris' => ['https://www.foo.com'],
+            'redirect_uris'              => ['https://www.foo.com'],
             'token_endpoint_auth_method' => 'client_secret_basic',
-            'software_statement' => $this->createSoftwareStatement(),
+            'software_statement'         => $this->createSoftwareStatement(),
         ]);
         $request = $request->withHeader('Content-Type', 'application/x-www-form-urlencoded');
         $request = $request->withHeader('Authorization', 'Bearer INITIAL_ACCESS_TOKEN_VALID');
@@ -166,16 +166,16 @@ final class ClientContext implements Context
             ClientId::create('79b407fb-acc0-4880-ab98-254062c214ce'),
             DataBag::createFromArray([
                 'registration_access_token' => 'JNWuIxHkTKtUmmtEpipDtPlTc3ordUNpSVVPLbQXKrFKyYVDR7N3k1ZzrHmPWXoibr2J2HrTSSozN6zIhHuypA',
-                'grant_types' => [],
-                'response_types' => [],
-                'redirect_uris' => ['https://www.foo.com'],
-                'software_statement' => 'eyJhbGciOiJFUzI1NiJ9.eyJzb2Z0d2FyZV92ZXJzaW9uIjoiMS4wIiwic29mdHdhcmVfbmFtZSI6Ik15IGFwcGxpY2F0aW9uIiwic29mdHdhcmVfbmFtZSNlbiI6Ik15IGFwcGxpY2F0aW9uIiwic29mdHdhcmVfbmFtZSNmciI6Ik1vbiBhcHBsaWNhdGlvbiJ9.88m8-YyguCCx1QNChwfNnMZ9APKpNC--nnfB1rVBpAYyHLixtsyMuuI09svqxuiRfTxwgXuRUvsg_5RozmtusQ',
-                'software_version' => '1.0',
-                'software_name' => 'My application',
-                'software_name#en' => 'My application',
-                'software_name#fr' => 'Mon application',
-                'registration_client_uri' => 'https://www.config.example.com/client/79b407fb-acc0-4880-ab98-254062c214ce',
-                'client_id_issued_at' => 1482177703,
+                'grant_types'               => [],
+                'response_types'            => [],
+                'redirect_uris'             => ['https://www.foo.com'],
+                'software_statement'        => 'eyJhbGciOiJFUzI1NiJ9.eyJzb2Z0d2FyZV92ZXJzaW9uIjoiMS4wIiwic29mdHdhcmVfbmFtZSI6Ik15IGFwcGxpY2F0aW9uIiwic29mdHdhcmVfbmFtZSNlbiI6Ik15IGFwcGxpY2F0aW9uIiwic29mdHdhcmVfbmFtZSNmciI6Ik1vbiBhcHBsaWNhdGlvbiJ9.88m8-YyguCCx1QNChwfNnMZ9APKpNC--nnfB1rVBpAYyHLixtsyMuuI09svqxuiRfTxwgXuRUvsg_5RozmtusQ',
+                'software_version'          => '1.0',
+                'software_name'             => 'My application',
+                'software_name#en'          => 'My application',
+                'software_name#fr'          => 'Mon application',
+                'registration_client_uri'   => 'https://www.config.example.com/client/79b407fb-acc0-4880-ab98-254062c214ce',
+                'client_id_issued_at'       => 1482177703,
             ]),
             UserAccountId::create('john.1')
         );
@@ -197,16 +197,16 @@ final class ClientContext implements Context
             ClientId::create('79b407fb-acc0-4880-ab98-254062c214ce'),
             DataBag::createFromArray([
                 'registration_access_token' => 'JNWuIxHkTKtUmmtEpipDtPlTc3ordUNpSVVPLbQXKrFKyYVDR7N3k1ZzrHmPWXoibr2J2HrTSSozN6zIhHuypA',
-                'grant_types' => [],
-                'response_types' => [],
-                'redirect_uris' => ['https://www.foo.com'],
-                'software_statement' => 'eyJhbGciOiJFUzI1NiJ9.eyJzb2Z0d2FyZV92ZXJzaW9uIjoiMS4wIiwic29mdHdhcmVfbmFtZSI6Ik15IGFwcGxpY2F0aW9uIiwic29mdHdhcmVfbmFtZSNlbiI6Ik15IGFwcGxpY2F0aW9uIiwic29mdHdhcmVfbmFtZSNmciI6Ik1vbiBhcHBsaWNhdGlvbiJ9.88m8-YyguCCx1QNChwfNnMZ9APKpNC--nnfB1rVBpAYyHLixtsyMuuI09svqxuiRfTxwgXuRUvsg_5RozmtusQ',
-                'software_version' => '1.0',
-                'software_name' => 'My application',
-                'software_name#en' => 'My application',
-                'software_name#fr' => 'Mon application',
-                'registration_client_uri' => 'https://www.config.example.com/client/79b407fb-acc0-4880-ab98-254062c214ce',
-                'client_id_issued_at' => 1482177703,
+                'grant_types'               => [],
+                'response_types'            => [],
+                'redirect_uris'             => ['https://www.foo.com'],
+                'software_statement'        => 'eyJhbGciOiJFUzI1NiJ9.eyJzb2Z0d2FyZV92ZXJzaW9uIjoiMS4wIiwic29mdHdhcmVfbmFtZSI6Ik15IGFwcGxpY2F0aW9uIiwic29mdHdhcmVfbmFtZSNlbiI6Ik15IGFwcGxpY2F0aW9uIiwic29mdHdhcmVfbmFtZSNmciI6Ik1vbiBhcHBsaWNhdGlvbiJ9.88m8-YyguCCx1QNChwfNnMZ9APKpNC--nnfB1rVBpAYyHLixtsyMuuI09svqxuiRfTxwgXuRUvsg_5RozmtusQ',
+                'software_version'          => '1.0',
+                'software_name'             => 'My application',
+                'software_name#en'          => 'My application',
+                'software_name#fr'          => 'Mon application',
+                'registration_client_uri'   => 'https://www.config.example.com/client/79b407fb-acc0-4880-ab98-254062c214ce',
+                'client_id_issued_at'       => 1482177703,
             ]),
             UserAccountId::create('john.1')
         );
@@ -229,16 +229,16 @@ final class ClientContext implements Context
             ClientId::create('79b407fb-acc0-4880-ab98-254062c214ce'),
             DataBag::createFromArray([
                 'registration_access_token' => 'JNWuIxHkTKtUmmtEpipDtPlTc3ordUNpSVVPLbQXKrFKyYVDR7N3k1ZzrHmPWXoibr2J2HrTSSozN6zIhHuypA',
-                'grant_types' => [],
-                'response_types' => [],
-                'redirect_uris' => ['https://www.foo.com'],
-                'software_statement' => 'eyJhbGciOiJFUzI1NiJ9.eyJzb2Z0d2FyZV92ZXJzaW9uIjoiMS4wIiwic29mdHdhcmVfbmFtZSI6Ik15IGFwcGxpY2F0aW9uIiwic29mdHdhcmVfbmFtZSNlbiI6Ik15IGFwcGxpY2F0aW9uIiwic29mdHdhcmVfbmFtZSNmciI6Ik1vbiBhcHBsaWNhdGlvbiJ9.88m8-YyguCCx1QNChwfNnMZ9APKpNC--nnfB1rVBpAYyHLixtsyMuuI09svqxuiRfTxwgXuRUvsg_5RozmtusQ',
-                'software_version' => '1.0',
-                'software_name' => 'My application',
-                'software_name#en' => 'My application',
-                'software_name#fr' => 'Mon application',
-                'registration_client_uri' => 'https://www.config.example.com/client/79b407fb-acc0-4880-ab98-254062c214ce',
-                'client_id_issued_at' => 1482177703,
+                'grant_types'               => [],
+                'response_types'            => [],
+                'redirect_uris'             => ['https://www.foo.com'],
+                'software_statement'        => 'eyJhbGciOiJFUzI1NiJ9.eyJzb2Z0d2FyZV92ZXJzaW9uIjoiMS4wIiwic29mdHdhcmVfbmFtZSI6Ik15IGFwcGxpY2F0aW9uIiwic29mdHdhcmVfbmFtZSNlbiI6Ik15IGFwcGxpY2F0aW9uIiwic29mdHdhcmVfbmFtZSNmciI6Ik1vbiBhcHBsaWNhdGlvbiJ9.88m8-YyguCCx1QNChwfNnMZ9APKpNC--nnfB1rVBpAYyHLixtsyMuuI09svqxuiRfTxwgXuRUvsg_5RozmtusQ',
+                'software_version'          => '1.0',
+                'software_name'             => 'My application',
+                'software_name#en'          => 'My application',
+                'software_name#fr'          => 'Mon application',
+                'registration_client_uri'   => 'https://www.config.example.com/client/79b407fb-acc0-4880-ab98-254062c214ce',
+                'client_id_issued_at'       => 1482177703,
             ]),
             UserAccountId::create('john.1')
         );
@@ -302,7 +302,7 @@ final class ClientContext implements Context
         $request = $request->withMethod('PUT');
         $request = $request->withHeader('Content-Type', 'application/x-www-form-urlencoded');
         $request = $request->withParsedBody([
-            'redirect_uris' => ['https://www.bar.com'],
+            'redirect_uris'              => ['https://www.bar.com'],
             'token_endpoint_auth_method' => 'client_secret_basic',
         ]);
         $request = $request->withHeader('Authorization', 'Bearer JNWuIxHkTKtUmmtEpipDtPlTc3ordUNpSVVPLbQXKrFKyYVDR7N3k1ZzrHmPWXoibr2J2HrTSSozN6zIhHuypA');
@@ -333,9 +333,9 @@ final class ClientContext implements Context
         $request = $request->withMethod('PUT');
         $request = $request->withHeader('Content-Type', 'application/x-www-form-urlencoded');
         $request = $request->withParsedBody([
-            'redirect_uris' => ['https://www.bar.com'],
+            'redirect_uris'              => ['https://www.bar.com'],
             'token_endpoint_auth_method' => 'client_secret_basic',
-            'software_statement' => $this->createSoftwareStatement(),
+            'software_statement'         => $this->createSoftwareStatement(),
         ]);
         $request = $request->withHeader('Authorization', 'Bearer JNWuIxHkTKtUmmtEpipDtPlTc3ordUNpSVVPLbQXKrFKyYVDR7N3k1ZzrHmPWXoibr2J2HrTSSozN6zIhHuypA');
         $client = Client::createEmpty();
@@ -343,11 +343,11 @@ final class ClientContext implements Context
             ClientId::create('79b407fb-acc0-4880-ab98-254062c214ce'),
             DataBag::createFromArray([
                 'registration_access_token' => 'JNWuIxHkTKtUmmtEpipDtPlTc3ordUNpSVVPLbQXKrFKyYVDR7N3k1ZzrHmPWXoibr2J2HrTSSozN6zIhHuypA',
-                'grant_types' => [],
-                'response_types' => [],
-                'redirect_uris' => ['https://www.foo.com'],
-                'registration_client_uri' => 'https://www.config.example.com/client/79b407fb-acc0-4880-ab98-254062c214ce',
-                'client_id_issued_at' => 1482177703,
+                'grant_types'               => [],
+                'response_types'            => [],
+                'redirect_uris'             => ['https://www.foo.com'],
+                'registration_client_uri'   => 'https://www.config.example.com/client/79b407fb-acc0-4880-ab98-254062c214ce',
+                'client_id_issued_at'       => 1482177703,
             ]),
             UserAccountId::create('john.1')
         );
@@ -366,9 +366,9 @@ final class ClientContext implements Context
         $request = $request->withMethod('PUT');
         $request = $request->withHeader('Content-Type', 'application/x-www-form-urlencoded');
         $request = $request->withParsedBody([
-            'redirect_uris' => ['https://www.bar.com'],
+            'redirect_uris'              => ['https://www.bar.com'],
             'token_endpoint_auth_method' => 'client_secret_basic',
-            'software_statement' => $this->createInvalidSoftwareStatement(),
+            'software_statement'         => $this->createInvalidSoftwareStatement(),
         ]);
         $request = $request->withHeader('Authorization', 'Bearer JNWuIxHkTKtUmmtEpipDtPlTc3ordUNpSVVPLbQXKrFKyYVDR7N3k1ZzrHmPWXoibr2J2HrTSSozN6zIhHuypA');
         $client = Client::createEmpty();
@@ -376,11 +376,11 @@ final class ClientContext implements Context
             ClientId::create('79b407fb-acc0-4880-ab98-254062c214ce'),
             DataBag::createFromArray([
                 'registration_access_token' => 'JNWuIxHkTKtUmmtEpipDtPlTc3ordUNpSVVPLbQXKrFKyYVDR7N3k1ZzrHmPWXoibr2J2HrTSSozN6zIhHuypA',
-                'grant_types' => [],
-                'response_types' => [],
-                'redirect_uris' => ['https://www.foo.com'],
-                'registration_client_uri' => 'https://www.config.example.com/client/79b407fb-acc0-4880-ab98-254062c214ce',
-                'client_id_issued_at' => 1482177703,
+                'grant_types'               => [],
+                'response_types'            => [],
+                'redirect_uris'             => ['https://www.foo.com'],
+                'registration_client_uri'   => 'https://www.config.example.com/client/79b407fb-acc0-4880-ab98-254062c214ce',
+                'client_id_issued_at'       => 1482177703,
             ]),
             UserAccountId::create('john.1')
         );
@@ -479,7 +479,7 @@ final class ClientContext implements Context
     {
         $claims = [
             'software_version' => '1.0',
-            'software_name' => 'My application',
+            'software_name'    => 'My application',
             'software_name#en' => 'My application',
             'software_name#fr' => 'Mon application',
         ];
@@ -498,7 +498,7 @@ final class ClientContext implements Context
     {
         $claims = [
             'software_version' => '1.0',
-            'software_name' => 'My application',
+            'software_name'    => 'My application',
             'software_name#en' => 'My application',
             'software_name#fr' => 'Mon application',
         ];

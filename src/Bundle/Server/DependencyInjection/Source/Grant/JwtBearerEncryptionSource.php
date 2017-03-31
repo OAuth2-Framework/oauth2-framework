@@ -28,7 +28,6 @@ final class JwtBearerEncryptionSource extends ActionableSource
             $container->setParameter($path.'.'.$k, $config[$k]);
         }
         $container->setAlias($path.'.key_set', $config['key_set']);
-
     }
 
     /**

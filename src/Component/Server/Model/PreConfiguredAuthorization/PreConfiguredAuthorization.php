@@ -188,13 +188,13 @@ final class PreConfiguredAuthorization implements ContainsRecordedMessages, Doma
     public function jsonSerialize()
     {
         $data = [
-                '$schema' => $this->getSchema(),
-                'type' => get_class($this),
+                '$schema'                         => $this->getSchema(),
+                'type'                            => get_class($this),
                 'pre_configured_authorization_id' => $this->getPreConfiguredAuthorizationId()->getValue(),
-                'user_account_id' => $this->getUserAccountId()->getValue(),
-                'client_id' => $this->getClientId()->getValue(),
-                'scopes' => $this->getScopes(),
-                'is_revoked' => $this->isRevoked(),
+                'user_account_id'                 => $this->getUserAccountId()->getValue(),
+                'client_id'                       => $this->getClientId()->getValue(),
+                'scopes'                          => $this->getScopes(),
+                'is_revoked'                      => $this->isRevoked(),
             ];
 
         return $data;

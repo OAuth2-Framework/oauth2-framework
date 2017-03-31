@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014-2017 Spomky-Labs
+ *
+ * This software may be modified and distributed under the terms
+ * of the MIT license.  See the LICENSE file for details.
+ */
+
 namespace OAuth2Framework\Component\Client\Response;
 
 use Assert\Assertion;
@@ -9,7 +18,7 @@ use Psr\Http\Message\ResponseInterface;
 abstract class OAuth2Response implements OAuth2ResponseInterface
 {
     use Metadata;
-    
+
     /**
      * @var array
      */
@@ -23,7 +32,7 @@ abstract class OAuth2Response implements OAuth2ResponseInterface
         $content = $response->getBody()->getContents();
         $json = json_decode($content, true);
         Assertion::isArray($json, 'The response is not a valid OAuth2 Response.');
-        
+
         if (array_key_exists('error', $json)) {
             $class = Error::class;
         } elseif (array_key_exists('access_token', $json)) {
@@ -33,11 +42,11 @@ abstract class OAuth2Response implements OAuth2ResponseInterface
         }
 
         /**
-         * @var $object self
+         * @var self
          */
         $object = new $class();
         $object->values = $json;
-        
+
         return $object;
     }
 

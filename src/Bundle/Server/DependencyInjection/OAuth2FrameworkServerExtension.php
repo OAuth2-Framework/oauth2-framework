@@ -115,7 +115,7 @@ final class OAuth2FrameworkServerExtension extends Extension implements PrependE
     }
 
     /**
-     * @param array $mergedConfig
+     * @param array            $mergedConfig
      * @param ContainerBuilder $container
      */
     protected function loadInternal(array $mergedConfig, ContainerBuilder $container)

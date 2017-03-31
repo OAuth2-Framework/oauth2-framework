@@ -42,7 +42,7 @@ final class TokenTypeProcessor
             throw new OAuth2Exception(
                 400,
                 [
-                    'error' => OAuth2ResponseFactoryManager::ERROR_INVALID_REQUEST,
+                    'error'             => OAuth2ResponseFactoryManager::ERROR_INVALID_REQUEST,
                     'error_description' => sprintf('The token type \'%s\' is not allowed for the client.', $tokenType->name()),
                 ]
             );

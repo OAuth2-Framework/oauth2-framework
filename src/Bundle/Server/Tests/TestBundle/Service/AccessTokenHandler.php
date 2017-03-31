@@ -44,5 +44,4 @@ final class AccessTokenHandler implements AccessTokenHandlerInterface
     {
         return $this->accessTokenRepository->find(AccessTokenId::create($token));
     }
-
 }

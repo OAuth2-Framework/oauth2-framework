@@ -108,7 +108,7 @@ final class AccessTokenRepository implements AccessTokenRepositoryInterface
     /**
      * {@inheritdoc}
      */
-    public function create(ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, array $scopes, ?RefreshTokenId $refreshTokenId, ?ResourceServerId $resourceServerId , ?\DateTimeImmutable $expiresAt): AccessToken
+    public function create(ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, array $scopes, ?RefreshTokenId $refreshTokenId, ?ResourceServerId $resourceServerId, ?\DateTimeImmutable $expiresAt): AccessToken
     {
         if (null === $expiresAt) {
             $expiresAt = new \DateTimeImmutable(sprintf('now +%u seconds', $this->lifetime));
@@ -136,8 +136,6 @@ final class AccessTokenRepository implements AccessTokenRepositoryInterface
                 return $item->get();
             }
         }
-
-        return null;
     }
 
     /**

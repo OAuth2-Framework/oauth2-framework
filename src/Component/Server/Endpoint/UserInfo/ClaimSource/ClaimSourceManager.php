@@ -52,7 +52,7 @@ final class ClaimSourceManager
     public function getUserInfo(UserAccountInterface $userAccount, array $scope, array $claims)
     {
         $claims = [
-            '_claim_names' => [],
+            '_claim_names'  => [],
             '_claimSources' => [],
         ];
         $i = 0;

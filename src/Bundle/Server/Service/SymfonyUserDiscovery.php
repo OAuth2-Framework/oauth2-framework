@@ -36,7 +36,7 @@ final class SymfonyUserDiscovery implements UserAccountDiscoveryInterface
     /**
      * SymfonyUserDiscovery constructor.
      *
-     * @param TokenStorageInterface $tokenStorage
+     * @param TokenStorageInterface         $tokenStorage
      * @param AuthorizationCheckerInterface $authorizationChecker
      */
     public function __construct(TokenStorageInterface $tokenStorage, AuthorizationCheckerInterface $authorizationChecker)
@@ -47,8 +47,8 @@ final class SymfonyUserDiscovery implements UserAccountDiscoveryInterface
 
     /**
      * @param ServerRequestInterface $request
-     * @param Authorization $authorization
-     * @param callable $next
+     * @param Authorization          $authorization
+     * @param callable               $next
      *
      * @return Authorization
      */
@@ -71,7 +71,7 @@ final class SymfonyUserDiscovery implements UserAccountDiscoveryInterface
 
     /**
      * @param UserAccountInterface $userAccount
-     * @param Authorization $authorization
+     * @param Authorization        $authorization
      *
      * @throws RedirectToLoginPageException
      */

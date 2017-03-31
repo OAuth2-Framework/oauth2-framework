@@ -86,10 +86,10 @@ abstract class Event implements DomainObjectInterface
     public function jsonSerialize()
     {
         $data = [
-            '$schema' => $this->getSchema(),
-            'event_id' => $this->getEventId()->getValue(),
-            'type' => get_class($this),
-            'domain_id' => $this->getDomainId()->getValue(),
+            '$schema'     => $this->getSchema(),
+            'event_id'    => $this->getEventId()->getValue(),
+            'type'        => get_class($this),
+            'domain_id'   => $this->getDomainId()->getValue(),
             'recorded_on' => $this->getRecordedOn()->getTimestamp(),
         ];
         $payload = $this->getPayload();

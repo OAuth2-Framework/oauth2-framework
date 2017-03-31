@@ -167,7 +167,7 @@ abstract class AuthorizationEndpoint implements MiddlewareInterface
     private function throwRedirectionException(Authorization $authorization, string $error, string $error_description)
     {
         $params = [
-            'error' => $error,
+            'error'             => $error,
             'error_description' => $error_description,
         ];
         $params += $authorization->getResponseParameters();
@@ -177,7 +177,7 @@ abstract class AuthorizationEndpoint implements MiddlewareInterface
         }
         $params += [
             'response_mode' => $authorization->getResponseMode(),
-            'redirect_uri' => $authorization->getRedirectUri(),
+            'redirect_uri'  => $authorization->getRedirectUri(),
         ];
 
         throw new OAuth2Exception(302, $params);

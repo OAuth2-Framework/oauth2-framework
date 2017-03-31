@@ -30,7 +30,7 @@ final class HttpsError implements MiddlewareInterface
             throw new OAuth2Exception(
                 400,
                 [
-                    'error' => OAuth2ResponseFactoryManager::ERROR_INVALID_REQUEST,
+                    'error'             => OAuth2ResponseFactoryManager::ERROR_INVALID_REQUEST,
                     'error_description' => 'The request must be secured.',
                 ]
             );

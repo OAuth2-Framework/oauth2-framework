@@ -72,6 +72,5 @@ final class HashedSubjectIdentifier implements PairwiseSubjectIdentifierAlgorith
      */
     public function getPublicIdFromSubjectIdentifier(string $subjectIdentifier): ?string
     {
-        return null;
     }
 }

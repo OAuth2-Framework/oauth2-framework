@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Server\Command;
 
-use OAuth2Framework\Component\Server\Model\Client\Client;
 use OAuth2Framework\Bundle\Server\Model\ClientRepository;
+use OAuth2Framework\Component\Server\Model\Client\Client;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -64,7 +64,7 @@ EOT
     /**
      * @param InputInterface  $input
      * @param OutputInterface $output
-     * @param Client $client
+     * @param Client          $client
      */
     private function selectTokenEndpointAuthenticationMethod(InputInterface $input, OutputInterface $output, Client $client)
     {
@@ -84,7 +84,7 @@ EOT
     /**
      * @param InputInterface  $input
      * @param OutputInterface $output
-     * @param Client $client
+     * @param Client          $client
      */
     private function selectRedirectUris(InputInterface $input, OutputInterface $output, Client $client)
     {
@@ -111,7 +111,7 @@ EOT
     /**
      * @param InputInterface  $input
      * @param OutputInterface $output
-     * @param Client $client
+     * @param Client          $client
      */
     private function selectResponseTypes(InputInterface $input, OutputInterface $output, Client $client)
     {
@@ -132,7 +132,7 @@ EOT
     /**
      * @param InputInterface  $input
      * @param OutputInterface $output
-     * @param Client $client
+     * @param Client          $client
      */
     private function selectGrantTypes(InputInterface $input, OutputInterface $output, Client $client)
     {

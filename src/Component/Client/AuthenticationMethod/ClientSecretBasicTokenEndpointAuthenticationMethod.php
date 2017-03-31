@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014-2017 Spomky-Labs
+ *
+ * This software may be modified and distributed under the terms
+ * of the MIT license.  See the LICENSE file for details.
+ */
+
 namespace OAuth2Framework\Component\Client\AuthenticationMethod;
 
 use Assert\Assertion;
@@ -16,7 +25,7 @@ final class ClientSecretBasicTokenEndpointAuthenticationMethod extends AbstractA
     {
         return 'client_secret_basic';
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -30,7 +39,7 @@ final class ClientSecretBasicTokenEndpointAuthenticationMethod extends AbstractA
             $client->getConfiguration()['client_id'],
             $client->getConfiguration()['client_secret']
         ));
-        
+
         $request = $request->withHeader('Authorization', sprintf('Basic %s', $encoded));
     }
 }

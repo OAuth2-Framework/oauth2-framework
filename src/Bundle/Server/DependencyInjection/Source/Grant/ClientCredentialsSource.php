@@ -28,7 +28,7 @@ final class ClientCredentialsSource extends ActionableSource
     {
         $container->setParameter($path.'.issue_refresh_token', $config['issue_refresh_token']);
 
-        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__ . '/../../../Resources/config/grant'));
+        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/grant'));
         $loader->load('client_credentials.php');
     }
 

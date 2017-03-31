@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Server\SecurityPlugin\Resolver;
 
-use OAuth2Framework\Component\Server\Model\AccessToken\AccessToken;
 use OAuth2Framework\Bundle\Server\SecurityPlugin\Security\Authentication\Token\OAuth2Token;
+use OAuth2Framework\Component\Server\Model\AccessToken\AccessToken;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ArgumentValueResolverInterface;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;

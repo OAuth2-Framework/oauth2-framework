@@ -11,19 +11,19 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use OAuth2Framework\Bundle\Server\Model\ClientRepository;
 use Interop\Http\Factory\ResponseFactoryInterface;
+use OAuth2Framework\Bundle\Server\Model\ClientRepository;
 use OAuth2Framework\Component\Server\Endpoint\UserInfo\UserInfo;
 use OAuth2Framework\Component\Server\Endpoint\UserInfo\UserInfoEndpoint;
-use function Fluent\create;
-use function Fluent\get;
-use OAuth2Framework\Component\Server\Middleware\Pipe;
 use OAuth2Framework\Component\Server\Middleware\OAuth2ResponseMiddleware;
 use OAuth2Framework\Component\Server\Middleware\OAuth2SecurityMiddleware;
-use OAuth2Framework\Component\Server\TokenType\TokenTypeManager;
-use OAuth2Framework\Component\Server\Security\AccessTokenHandlerManager;
+use OAuth2Framework\Component\Server\Middleware\Pipe;
 use OAuth2Framework\Component\Server\Model\IdToken\IdTokenBuilderFactory;
 use OAuth2Framework\Component\Server\Model\UserAccount\UserAccountRepositoryInterface;
+use OAuth2Framework\Component\Server\Security\AccessTokenHandlerManager;
+use OAuth2Framework\Component\Server\TokenType\TokenTypeManager;
+use function Fluent\create;
+use function Fluent\get;
 
 return [
     UserInfoEndpoint::class => create()

@@ -90,7 +90,5 @@ final class IdTokenLoader
         } catch (\Exception $e) {
             //Nothing to do
         }
-
-        return null;
     }
 }

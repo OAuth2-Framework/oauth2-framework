@@ -16,7 +16,6 @@ namespace OAuth2Framework\Bundle\Server\ClientManagerPlugin;
 use Assert\Assertion;
 use Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\DoctrineOrmMappingsPass;
 use Matthias\BundlePlugins\BundlePlugin;
-use SpomkyLabs\JoseBundle\Helper\ConfigurationHelper;
 use OAuth2Framework\Bundle\Server\ClientManagerPlugin\DependencyInjection\Compiler\AssertionJwtMetadataCompilerPass;
 use OAuth2Framework\Bundle\Server\ClientManagerPlugin\DependencyInjection\Compiler\ClientAssertionJWTEncryptionSupportConfigurationCompilerPass;
 use OAuth2Framework\Bundle\Server\ClientManagerPlugin\DependencyInjection\Compiler\ClientConfigurationRouteCompilerPass;
@@ -24,6 +23,7 @@ use OAuth2Framework\Bundle\Server\ClientManagerPlugin\DependencyInjection\Compil
 use OAuth2Framework\Bundle\Server\ClientManagerPlugin\DependencyInjection\Compiler\ClientRegistrationRouteCompilerPass;
 use OAuth2Framework\Bundle\Server\ClientManagerPlugin\DependencyInjection\Compiler\ClientRuleCompilerPass;
 use OAuth2Framework\Bundle\Server\CommonPluginMethod;
+use SpomkyLabs\JoseBundle\Helper\ConfigurationHelper;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;

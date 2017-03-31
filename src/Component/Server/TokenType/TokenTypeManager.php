@@ -121,7 +121,7 @@ final class TokenTypeManager
 
     /**
      * @param \OAuth2Framework\Component\Server\TokenType\TokenTypeInterface $type
-     * @param array                                $additionalAuthenticationParameters
+     * @param array                                                          $additionalAuthenticationParameters
      *
      * @return string
      */

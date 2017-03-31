@@ -86,9 +86,9 @@ final class RefreshTokenTypeHint implements TokenTypeHintInterface
         }
 
         $result = [
-            'active' => !$token->hasExpired(),
+            'active'    => !$token->hasExpired(),
             'client_id' => $token->getClientId(),
-            'exp' => $token->getExpiresAt()->getTimestamp(),
+            'exp'       => $token->getExpiresAt()->getTimestamp(),
         ];
 
         if (!empty($token->getScopes())) {

@@ -28,8 +28,8 @@ use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use Behat\MinkExtension\Context\MinkContext;
 use Behat\Symfony2Extension\Context\KernelDictionary;
 use Jose\Factory\JWSFactory;
-use OAuth2Framework\Component\Server\Model\Client\ClientId;
 use OAuth2Framework\Bundle\Server\Model\ClientRepository;
+use OAuth2Framework\Component\Server\Model\Client\ClientId;
 
 final class ClientCredentialsGrantTypeContext implements Context
 {

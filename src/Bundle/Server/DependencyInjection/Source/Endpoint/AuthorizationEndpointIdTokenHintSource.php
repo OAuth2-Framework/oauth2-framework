@@ -26,7 +26,7 @@ final class AuthorizationEndpointIdTokenHintSource extends ActionableSource
      */
     protected function continueLoading(string $path, ContainerBuilder $container, array $config)
     {
-        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__ . '/../../../Resources/config/endpoint'));
+        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint'));
         $loader->load('id_token_hint.php');
     }
 

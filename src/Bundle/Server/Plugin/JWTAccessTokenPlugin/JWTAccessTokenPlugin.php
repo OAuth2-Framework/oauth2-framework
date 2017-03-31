@@ -14,8 +14,8 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\Server\JWTAccessTokenPlugin;
 
 use Matthias\BundlePlugins\BundlePlugin;
-use SpomkyLabs\JoseBundle\Helper\ConfigurationHelper;
 use OAuth2Framework\Bundle\Server\CommonPluginMethod;
+use SpomkyLabs\JoseBundle\Helper\ConfigurationHelper;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;

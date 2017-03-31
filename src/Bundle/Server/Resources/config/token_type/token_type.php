@@ -11,10 +11,10 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use function Fluent\create;
-use function Fluent\get;
 use OAuth2Framework\Component\Server\Middleware\TokenTypeMiddleware;
 use OAuth2Framework\Component\Server\TokenType\TokenTypeManager;
+use function Fluent\create;
+use function Fluent\get;
 
 return [
     TokenTypeMiddleware::class => create()

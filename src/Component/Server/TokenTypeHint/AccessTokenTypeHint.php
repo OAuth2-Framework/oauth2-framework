@@ -86,10 +86,10 @@ final class AccessTokenTypeHint implements TokenTypeHintInterface
         }
 
         $values = [
-            'active' => !$token->hasExpired(),
-            'client_id' => $token->getClientId(),
+            'active'         => !$token->hasExpired(),
+            'client_id'      => $token->getClientId(),
             'resource_owner' => $token->getResourceOwnerId(),
-            'expires_in' => $token->getExpiresIn(),
+            'expires_in'     => $token->getExpiresIn(),
         ];
         if (!empty($token->getScopes())) {
             $values['scope'] = implode(' ', $token->getScopes());

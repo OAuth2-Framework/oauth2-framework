@@ -13,9 +13,9 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Server\Tests\TestBundle\Service;
 
-use OAuth2Framework\Component\Server\Model\UserAccount\UserAccountRepositoryInterface;
 use OAuth2Framework\Bundle\Server\Tests\TestBundle\Entity\User;
 use OAuth2Framework\Bundle\Server\Tests\TestBundle\Entity\UserRepository;
+use OAuth2Framework\Component\Server\Model\UserAccount\UserAccountRepositoryInterface;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;

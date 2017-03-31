@@ -75,8 +75,6 @@ abstract class ClientSecretBasic implements TokenEndpointAuthMethodInterface
                 }
             }
         }
-
-        return null;
     }
 
     /**

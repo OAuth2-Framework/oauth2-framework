@@ -62,16 +62,16 @@ final class User implements UserInterface, UserAccountInterface
     private $parameters = [];
 
     /**
-     * @param string $username
-     * @param string $password
-     * @param string|null $salt
-     * @param string[] $roles
-     * @param string[] $oauth2Passwords
-     * @param UserAccountId $publicId
+     * @param string                  $username
+     * @param string                  $password
+     * @param string|null             $salt
+     * @param string[]                $roles
+     * @param string[]                $oauth2Passwords
+     * @param UserAccountId           $publicId
      * @param \DateTimeImmutable|null $lastLoginAt
-     * @param array $parameters
+     * @param array                   $parameters
      */
-    public function __construct(string $username, string $password, string $salt = null, array $roles, array $oauth2Passwords = [], UserAccountId $publicId, \DateTimeImmutable $lastLoginAt = null,array $parameters = [])
+    public function __construct(string $username, string $password, string $salt = null, array $roles, array $oauth2Passwords, UserAccountId $publicId, \DateTimeImmutable $lastLoginAt = null, array $parameters = [])
     {
         $this->username = $username;
         $this->password = $password;
@@ -84,20 +84,20 @@ final class User implements UserInterface, UserAccountInterface
     }
 
     /**
-     * @param string $username
-     * @param string $password
-     * @param string|null $salt
-     * @param string[] $roles
-     * @param string[] $oauth2Passwords
-     * @param UserAccountId $publicId
+     * @param string                  $username
+     * @param string                  $password
+     * @param string|null             $salt
+     * @param string[]                $roles
+     * @param string[]                $oauth2Passwords
+     * @param UserAccountId           $publicId
      * @param \DateTimeImmutable|null $lastLoginAt
-     * @param array $parameters
+     * @param array                   $parameters
      *
      * @return User
      */
-    public static function create(string $username, string $password, string $salt = null, array $roles, array $oauth2Passwords = [], UserAccountId $publicId, \DateTimeImmutable $lastLoginAt = null,array $parameters = [])
+    public static function create(string $username, string $password, string $salt = null, array $roles, array $oauth2Passwords, UserAccountId $publicId, \DateTimeImmutable $lastLoginAt = null, array $parameters = [])
     {
-        return new self($username, $password, $salt, $roles, $oauth2Passwords, $publicId, $lastLoginAt,$parameters);
+        return new self($username, $password, $salt, $roles, $oauth2Passwords, $publicId, $lastLoginAt, $parameters);
     }
 
     /**

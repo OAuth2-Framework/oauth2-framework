@@ -47,7 +47,7 @@ final class HttpMethod implements MiddlewareInterface
             throw new OAuth2Exception(
                 405,
                 [
-                    'error' => 'not_implemented',
+                    'error'             => 'not_implemented',
                     'error_description' => sprintf('The method \'%s\' is not supported.', $method),
                 ]
             );

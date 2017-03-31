@@ -14,8 +14,8 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\Server\DependencyInjection\Source\TokenEndpointAuthMethod;
 
 use Fluent\PhpConfigFileLoader;
-use SpomkyLabs\JoseBundle\Helper\ConfigurationHelper;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\ActionableSource;
+use SpomkyLabs\JoseBundle\Helper\ConfigurationHelper;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -100,7 +100,7 @@ final class ClientAssertionJwtTokenEndpointAuthMethodSource extends ActionableSo
     public function prepend(array $bundleConfig, string $path, ContainerBuilder $container)
     {
         $currentPath = $path.'['.$this->name().']';
-        $accessor =  PropertyAccess::createPropertyAccessor();
+        $accessor = PropertyAccess::createPropertyAccessor();
         $sourceConfig = $accessor->getValue($bundleConfig, $currentPath);
 
         if (true === $sourceConfig['enabled']) {

@@ -12,8 +12,8 @@ declare(strict_types=1);
  */
 
 use OAuth2Framework\Bundle\Server\Model\ClientRepository;
-use OAuth2Framework\Component\Server\Model\UserAccount\UserAccountRepositoryInterface;
 use OAuth2Framework\Component\Server\GrantType\JWTBearerGrantType;
+use OAuth2Framework\Component\Server\Model\UserAccount\UserAccountRepositoryInterface;
 use function Fluent\create;
 use function Fluent\get;
 

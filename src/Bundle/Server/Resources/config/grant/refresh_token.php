@@ -11,13 +11,13 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
+use OAuth2Framework\Bundle\Server\Model\RefreshTokenRepository;
 use OAuth2Framework\Component\Server\Command\RefreshToken;
 use OAuth2Framework\Component\Server\GrantType\RefreshTokenGrantType;
+use OAuth2Framework\Component\Server\Model\RefreshToken\RefreshTokenRepositoryInterface;
+use OAuth2Framework\Component\Server\TokenTypeHint\RefreshTokenTypeHint;
 use function Fluent\create;
 use function Fluent\get;
-use OAuth2Framework\Component\Server\TokenTypeHint\RefreshTokenTypeHint;
-use OAuth2Framework\Bundle\Server\Model\RefreshTokenRepository;
-use OAuth2Framework\Component\Server\Model\RefreshToken\RefreshTokenRepositoryInterface;
 
 return [
     /*'oauth2_server.event_store.refresh_token' => create(OAuth2Framework\Bundle\Server\EventStore\EventStore::class)

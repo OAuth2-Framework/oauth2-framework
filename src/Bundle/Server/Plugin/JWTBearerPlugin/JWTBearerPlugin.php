@@ -15,9 +15,9 @@ namespace OAuth2Framework\Bundle\Server\JWTBearerPlugin;
 
 use Assert\Assertion;
 use Matthias\BundlePlugins\BundlePlugin;
-use SpomkyLabs\JoseBundle\Helper\ConfigurationHelper;
 use OAuth2Framework\Bundle\Server\CommonPluginMethod;
 use OAuth2Framework\Bundle\Server\JWTBearerPlugin\DependencyInjection\Compiler\JWTBearerConfigurationCompilerPass;
+use SpomkyLabs\JoseBundle\Helper\ConfigurationHelper;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;

@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Server\Security\Authentication\Provider;
 
+use OAuth2Framework\Bundle\Server\Security\Authentication\Token\OAuth2Token;
 use OAuth2Framework\Component\Server\Model\AccessToken\AccessToken;
 use OAuth2Framework\Component\Server\Model\Client\Client;
 use OAuth2Framework\Component\Server\Model\Client\ClientId;
@@ -21,7 +22,6 @@ use OAuth2Framework\Component\Server\Model\ResourceOwner\ResourceOwnerInterface;
 use OAuth2Framework\Component\Server\Model\UserAccount\UserAccountId;
 use OAuth2Framework\Component\Server\Model\UserAccount\UserAccountRepositoryInterface;
 use OAuth2Framework\Component\Server\TokenType\TokenTypeManager;
-use OAuth2Framework\Bundle\Server\Security\Authentication\Token\OAuth2Token;
 use Symfony\Component\Security\Core\Authentication\Provider\AuthenticationProviderInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AccountStatusException;
@@ -78,7 +78,7 @@ class OAuth2Provider implements AuthenticationProviderInterface
         }
 
         /**
-         * @var $token \OAuth2Framework\Bundle\Server\Security\Authentication\Token\OAuth2Token
+         * @var \OAuth2Framework\Bundle\Server\Security\Authentication\Token\OAuth2Token
          */
         $accessToken = $token->getAccessToken();
 

@@ -11,20 +11,20 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
+use OAuth2Framework\Bundle\Server\Tests\TestBundle\Entity\ResourceRepository;
+use OAuth2Framework\Bundle\Server\Tests\TestBundle\Entity\UserManager;
+use OAuth2Framework\Bundle\Server\Tests\TestBundle\Entity\UserRepository;
+use OAuth2Framework\Bundle\Server\Tests\TestBundle\Listener;
+use OAuth2Framework\Bundle\Server\Tests\TestBundle\Service\AccessTokenHandler;
+use OAuth2Framework\Bundle\Server\Tests\TestBundle\Service\UserProvider;
+use OAuth2Framework\Component\Server\Endpoint\UserInfo\Pairwise\EncryptedSubjectIdentifier;
 use OAuth2Framework\Component\Server\Event\AccessToken;
 use OAuth2Framework\Component\Server\Event\AuthCode;
 use OAuth2Framework\Component\Server\Event\Client;
 use OAuth2Framework\Component\Server\Event\RefreshToken;
-use OAuth2Framework\Bundle\Server\Tests\TestBundle\Listener;
-use OAuth2Framework\Bundle\Server\Tests\TestBundle\Service\UserProvider;
+use OAuth2Framework\Component\Server\Tests\Stub\ResourceServerRepository;
 use function Fluent\create;
 use function Fluent\get;
-use OAuth2Framework\Bundle\Server\Tests\TestBundle\Service\AccessTokenHandler;
-use OAuth2Framework\Bundle\Server\Tests\TestBundle\Entity\UserManager;
-use OAuth2Framework\Bundle\Server\Tests\TestBundle\Entity\UserRepository;
-use OAuth2Framework\Component\Server\Tests\Stub\ResourceServerRepository;
-use OAuth2Framework\Component\Server\Endpoint\UserInfo\Pairwise\EncryptedSubjectIdentifier;
-use OAuth2Framework\Bundle\Server\Tests\TestBundle\Entity\ResourceRepository;
 
 return [
     'oauth2_server.event_store.access_token' => create(\OAuth2Framework\Bundle\Server\Tests\TestBundle\Service\EventStore::class)
@@ -83,7 +83,6 @@ return [
         )
         ->tag('oauth2_server_access_token_handler'),
 
-
     'pairwise_subject_identifier' => create(EncryptedSubjectIdentifier::class)
         ->arguments(
             'This is my secret Key !!!',
@@ -91,7 +90,6 @@ return [
             mb_substr('This is my salt or my IV !!!', 0, 16, '8bit'),
             mb_substr('This is my salt or my IV !!!', 0, 16, '8bit')
         ),
-
 
     ResourceRepository::class => create(),
 

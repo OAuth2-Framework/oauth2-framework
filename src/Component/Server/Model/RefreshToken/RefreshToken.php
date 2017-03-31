@@ -54,14 +54,14 @@ final class RefreshToken extends Token
     }
 
     /**
-     * @param RefreshTokenId          $refreshTokenId
-     * @param ResourceOwnerId         $resourceOwnerId
-     * @param ClientId                $clientId
-     * @param DataBag                 $parameters
-     * @param DataBag                 $metadatas
-     * @param array                   $scopes
-     * @param \DateTimeImmutable $expiresAt
-     * @param ResourceServerId|null   $resourceServerId
+     * @param RefreshTokenId        $refreshTokenId
+     * @param ResourceOwnerId       $resourceOwnerId
+     * @param ClientId              $clientId
+     * @param DataBag               $parameters
+     * @param DataBag               $metadatas
+     * @param array                 $scopes
+     * @param \DateTimeImmutable    $expiresAt
+     * @param ResourceServerId|null $resourceServerId
      *
      * @return RefreshToken
      */
@@ -137,7 +137,7 @@ final class RefreshToken extends Token
         $data = $this->getParameters();
         $data = $data->withParameters([
             'access_token' => $this->getTokenId()->getValue(),
-            'expires_in' => $this->getExpiresIn(),
+            'expires_in'   => $this->getExpiresIn(),
         ]);
         if (!empty($this->getScopes())) {
             $data = $data->with('scope', implode(' ', $this->getScopes()));
@@ -192,8 +192,8 @@ final class RefreshToken extends Token
     public function jsonSerialize()
     {
         $data = parent::jsonSerialize() + [
-                'refresh_token_id' => $this->getRefreshTokenId()->getValue(),
-                'access_token_ids' => array_keys($this->getAccessTokenIds()),
+                'refresh_token_id'   => $this->getRefreshTokenId()->getValue(),
+                'access_token_ids'   => array_keys($this->getAccessTokenIds()),
                 'resource_server_id' => $this->getResourceServerId() ? $this->getResourceServerId()->getValue() : null,
             ];
 
@@ -244,9 +244,9 @@ final class RefreshToken extends Token
     private function getEventMap(): array
     {
         return [
-            RefreshTokenEvent\RefreshTokenCreatedEvent::class => 'applyRefreshTokenCreatedEvent',
+            RefreshTokenEvent\RefreshTokenCreatedEvent::class            => 'applyRefreshTokenCreatedEvent',
             RefreshTokenEvent\AccessTokenAddedToRefreshTokenEvent::class => 'applyAccessTokenAddedToRefreshTokenEvent',
-            RefreshTokenEvent\RefreshTokenRevokedEvent::class => 'applyRefreshTokenRevokedEvent',
+            RefreshTokenEvent\RefreshTokenRevokedEvent::class            => 'applyRefreshTokenRevokedEvent',
         ];
     }
 

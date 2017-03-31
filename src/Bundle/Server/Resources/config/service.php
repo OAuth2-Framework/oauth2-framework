@@ -11,13 +11,13 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use function Fluent\create;
-use function Fluent\get;
-use Jose\JWTLoaderInterface;
+use Jose\Checker\CheckerManagerInterface;
 use Jose\JWTCreatorInterface;
+use Jose\JWTLoaderInterface;
 use Jose\Signer;
 use Jose\Verifier;
-use Jose\Checker\CheckerManagerInterface;
+use function Fluent\create;
+use function Fluent\get;
 
 return [
     \Interop\Http\Factory\ResponseFactoryInterface::class => create(\Http\Factory\Diactoros\ResponseFactory::class),

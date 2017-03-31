@@ -161,12 +161,12 @@ final class InitialAccessToken implements ContainsRecordedMessages, DomainObject
     public function jsonSerialize()
     {
         $data = [
-            '$schema' => $this->getSchema(),
-            'type' => get_class($this),
+            '$schema'                 => $this->getSchema(),
+            'type'                    => get_class($this),
             'initial_access_token_id' => $this->getInitialAccessTokenId() ? $this->getInitialAccessTokenId()->getValue() : null,
-            'user_account_id' => $this->getUserAccountId() ? $this->getUserAccountId()->getValue() : null,
-            'expires_at' => $this->getExpiresAt() ? $this->getExpiresAt()->getTimestamp() : null,
-            'is_revoked' => $this->isRevoked(),
+            'user_account_id'         => $this->getUserAccountId() ? $this->getUserAccountId()->getValue() : null,
+            'expires_at'              => $this->getExpiresAt() ? $this->getExpiresAt()->getTimestamp() : null,
+            'is_revoked'              => $this->isRevoked(),
         ];
 
         return $data;

@@ -59,8 +59,8 @@ abstract class MacToken implements TokenTypeInterface
     public function getInformation(): array
     {
         return [
-            'token_type' => $this->name(),
-            'mac_key' => $this->generateMacKey(),
+            'token_type'    => $this->name(),
+            'mac_key'       => $this->generateMacKey(),
             'mac_algorithm' => $this->getMacAlgorithm(),
         ];
     }
@@ -155,13 +155,13 @@ abstract class MacToken implements TokenTypeInterface
         $ext = array_key_exists('ext', $values) ? $values['ext'] : null;
 
         $basestr =
-            $timestamp . "\n" .
-            $nonce . "\n" .
-            $method . "\n" .
-            $request_uri . "\n" .
-            $host . "\n" .
-            $port . "\n" .
-            $ext . "\n";
+            $timestamp."\n".
+            $nonce."\n".
+            $method."\n".
+            $request_uri."\n".
+            $host."\n".
+            $port."\n".
+            $ext."\n";
 
         $algorithms = $this->getAlgorithmMap();
         Assertion::keyExists($algorithms, $token->getParameter('mac_algorithm'), sprintf('The MAC algorithm \'%s\' is not supported.', $token->getParameter('mac_algorithm')));
@@ -180,7 +180,7 @@ abstract class MacToken implements TokenTypeInterface
     protected function getAlgorithmMap(): array
     {
         return [
-            'hmac-sha-1' => 'sha1',
+            'hmac-sha-1'   => 'sha1',
             'hmac-sha-256' => 'sha256',
         ];
     }

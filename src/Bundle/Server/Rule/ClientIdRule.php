@@ -21,7 +21,7 @@ final class ClientIdRule implements ClientIdRuleInterface
     /**
      * @return string
      */
-    function generateUniqueClientId(): string
+    public function generateUniqueClientId(): string
     {
         return Uuid::uuid4()->toString();
     }

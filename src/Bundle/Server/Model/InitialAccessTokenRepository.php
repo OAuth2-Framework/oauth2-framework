@@ -42,8 +42,8 @@ final class InitialAccessTokenRepository implements InitialAccessTokenRepository
     /**
      * InitialAccessTokenRepository constructor.
      *
-     * @param EventStoreInterface    $eventStore
-     * @param RecordsMessages        $eventRecorder
+     * @param EventStoreInterface $eventStore
+     * @param RecordsMessages     $eventRecorder
      */
     public function __construct(EventStoreInterface $eventStore, RecordsMessages $eventRecorder)
     {
@@ -120,8 +120,6 @@ final class InitialAccessTokenRepository implements InitialAccessTokenRepository
                 return $item->get();
             }
         }
-
-        return null;
     }
 
     /**

@@ -11,14 +11,14 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
+use OAuth2Framework\Bundle\Server\Model\AuthCodeRepository;
 use OAuth2Framework\Component\Server\Command\AuthCode;
 use OAuth2Framework\Component\Server\GrantType\AuthorizationCodeGrantType;
 use OAuth2Framework\Component\Server\GrantType\PKCEMethod;
 use OAuth2Framework\Component\Server\ResponseType\CodeResponseType;
+use OAuth2Framework\Component\Server\TokenTypeHint\AuthCodeTypeHint;
 use function Fluent\create;
 use function Fluent\get;
-use OAuth2Framework\Component\Server\TokenTypeHint\AuthCodeTypeHint;
-use OAuth2Framework\Bundle\Server\Model\AuthCodeRepository;
 
 return [
     /*'oauth2_server.event_store.auth_code' => create(OAuth2Framework\Bundle\Server\EventStore\EventStore::class)
@@ -64,7 +64,6 @@ return [
     PKCEMethod\S256::class => create()
         ->tag('oauth2_server_pkce_method', ['alias' => 'S256']),
 
-
     // Commands
     AuthCode\CreateAuthCodeCommandHandler::class => create()
         ->arguments(
@@ -83,7 +82,6 @@ return [
             get(AuthCodeRepository::class)
         )
         ->tag('command_handler', ['handles' => AuthCode\RevokeAuthCodeCommand::class]),
-
 
     // For token introspection and revocation
     AuthCodeTypeHint::class => create()

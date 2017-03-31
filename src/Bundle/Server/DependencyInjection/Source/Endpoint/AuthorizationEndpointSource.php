@@ -32,7 +32,7 @@ final class AuthorizationEndpointSource extends ActionableSource
      */
     public function __construct()
     {
-        $this->subSources =[
+        $this->subSources = [
             new AuthorizationEndpointPreConfiguredAuthorizationSource(),
             new AuthorizationEndpointIdTokenHintSource(),
         ];
@@ -47,7 +47,7 @@ final class AuthorizationEndpointSource extends ActionableSource
             $container->setParameter($path.'.'.$k, $v);
         }
 
-        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__ . '/../../../Resources/config/endpoint'));
+        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint'));
         $loader->load('authorization.php');
         $loader->load('response_mode.php');
         foreach ($this->subSources as $source) {

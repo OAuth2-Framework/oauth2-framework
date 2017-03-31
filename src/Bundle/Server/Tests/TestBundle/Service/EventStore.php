@@ -43,7 +43,7 @@ final class EventStore implements EventStoreInterface
      */
     public function __construct(string $storagePath, string $folder)
     {
-        $this->storagePath = sprintf(self::STORAGE_PATH,$storagePath, $folder);
+        $this->storagePath = sprintf(self::STORAGE_PATH, $storagePath, $folder);
         $this->domainConverter = new DomainConverter();
     }
 

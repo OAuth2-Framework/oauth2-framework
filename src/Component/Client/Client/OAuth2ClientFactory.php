@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014-2017 Spomky-Labs
+ *
+ * This software may be modified and distributed under the terms
+ * of the MIT license.  See the LICENSE file for details.
+ */
+
 namespace OAuth2Framework\Component\Client\Client;
 
 use Assert\Assertion;
@@ -21,13 +30,13 @@ class OAuth2ClientFactory
         Assertion::keyExists($values, 'public_id');
         Assertion::keyExists($values, 'token_endpoint_auth_method');
         $authentication_method = self::getAuthenticationMethod($values['token_endpoint_auth_method']);
-        
+
         return new OAuth2Client($authentication_method, $values);
     }
 
     /**
      * @param string $method
-     * 
+     *
      * @return \OAuth2Framework\Component\Client\AuthenticationMethod\TokenEndpointAuthenticationMethodInterface
      */
     private static function getAuthenticationMethod($method)
@@ -35,7 +44,7 @@ class OAuth2ClientFactory
         $methods = self::getAuthenticationMethods();
         Assertion::keyExists($methods, $method);
         $class = $methods[$method];
-        
+
         return new $class();
     }
 

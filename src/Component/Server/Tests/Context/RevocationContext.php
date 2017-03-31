@@ -76,7 +76,7 @@ final class RevocationContext implements Context
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
         ]);
-        $request = $request->withHeader('Authorization', 'Basic ' . base64_encode('client1:secret'));
+        $request = $request->withHeader('Authorization', 'Basic '.base64_encode('client1:secret'));
         $request = $request->withHeader('Content-Type', 'application/x-www-form-urlencoded');
 
         $this->responseContext->setResponse($this->applicationContext->getApplication()->getTokenRevocationPipe()->dispatch($request));
@@ -91,7 +91,7 @@ final class RevocationContext implements Context
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([
         ]);
-        $request = $request->withHeader('Authorization', 'Basic ' . base64_encode('client1:secret'));
+        $request = $request->withHeader('Authorization', 'Basic '.base64_encode('client1:secret'));
 
         $this->responseContext->setResponse($this->applicationContext->getApplication()->getTokenRevocationPipe()->dispatch($request));
     }
@@ -106,7 +106,7 @@ final class RevocationContext implements Context
         $request = $request->withParsedBody([
             'callback' => 'foo',
         ]);
-        $request = $request->withHeader('Authorization', 'Basic ' . base64_encode('client1:secret'));
+        $request = $request->withHeader('Authorization', 'Basic '.base64_encode('client1:secret'));
         $request = $request->withHeader('Content-Type', 'application/x-www-form-urlencoded');
 
         $this->responseContext->setResponse($this->applicationContext->getApplication()->getTokenRevocationPipe()->dispatch($request));
@@ -122,7 +122,7 @@ final class RevocationContext implements Context
         $request = $request->withQueryParams([
             'callback' => 'foo',
         ]);
-        $request = $request->withHeader('Authorization', 'Basic ' . base64_encode('client1:secret'));
+        $request = $request->withHeader('Authorization', 'Basic '.base64_encode('client1:secret'));
 
         $this->responseContext->setResponse($this->applicationContext->getApplication()->getTokenRevocationPipe()->dispatch($request));
     }
@@ -137,7 +137,7 @@ final class RevocationContext implements Context
         $request = $request->withParsedBody([
             'token' => 'ACCESS_TOKEN_#1',
         ]);
-        $request = $request->withHeader('Authorization', 'Basic ' . base64_encode('client1:secret'));
+        $request = $request->withHeader('Authorization', 'Basic '.base64_encode('client1:secret'));
         $request = $request->withHeader('Content-Type', 'application/x-www-form-urlencoded');
 
         $this->responseContext->setResponse($this->applicationContext->getApplication()->getTokenRevocationPipe()->dispatch($request));
@@ -153,7 +153,7 @@ final class RevocationContext implements Context
         $request = $request->withQueryParams([
             'token' => 'ACCESS_TOKEN_#1',
         ]);
-        $request = $request->withHeader('Authorization', 'Basic ' . base64_encode('client1:secret'));
+        $request = $request->withHeader('Authorization', 'Basic '.base64_encode('client1:secret'));
 
         $this->responseContext->setResponse($this->applicationContext->getApplication()->getTokenRevocationPipe()->dispatch($request));
     }
@@ -168,7 +168,7 @@ final class RevocationContext implements Context
         $request = $request->withParsedBody([
             'token' => 'ACCESS_TOKEN_#2',
         ]);
-        $request = $request->withHeader('Authorization', 'Basic ' . base64_encode('client1:secret'));
+        $request = $request->withHeader('Authorization', 'Basic '.base64_encode('client1:secret'));
         $request = $request->withHeader('Content-Type', 'application/x-www-form-urlencoded');
 
         $this->responseContext->setResponse($this->applicationContext->getApplication()->getTokenRevocationPipe()->dispatch($request));
@@ -184,7 +184,7 @@ final class RevocationContext implements Context
         $request = $request->withQueryParams([
             'token' => 'ACCESS_TOKEN_#2',
         ]);
-        $request = $request->withHeader('Authorization', 'Basic ' . base64_encode('client1:secret'));
+        $request = $request->withHeader('Authorization', 'Basic '.base64_encode('client1:secret'));
 
         $this->responseContext->setResponse($this->applicationContext->getApplication()->getTokenRevocationPipe()->dispatch($request));
     }
@@ -197,10 +197,10 @@ final class RevocationContext implements Context
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
-            'token' => 'ACCESS_TOKEN_#2',
+            'token'           => 'ACCESS_TOKEN_#2',
             'token_type_hint' => 'bad_hint',
         ]);
-        $request = $request->withHeader('Authorization', 'Basic ' . base64_encode('client1:secret'));
+        $request = $request->withHeader('Authorization', 'Basic '.base64_encode('client1:secret'));
         $request = $request->withHeader('Content-Type', 'application/x-www-form-urlencoded');
 
         $this->responseContext->setResponse($this->applicationContext->getApplication()->getTokenRevocationPipe()->dispatch($request));
@@ -214,10 +214,10 @@ final class RevocationContext implements Context
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([
-            'token' => 'ACCESS_TOKEN_#2',
+            'token'           => 'ACCESS_TOKEN_#2',
             'token_type_hint' => 'bad_hint',
         ]);
-        $request = $request->withHeader('Authorization', 'Basic ' . base64_encode('client1:secret'));
+        $request = $request->withHeader('Authorization', 'Basic '.base64_encode('client1:secret'));
 
         $this->responseContext->setResponse($this->applicationContext->getApplication()->getTokenRevocationPipe()->dispatch($request));
     }
@@ -230,11 +230,11 @@ final class RevocationContext implements Context
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
-            'token' => 'UNKNOWN_REFRESH_TOKEN_#2',
+            'token'           => 'UNKNOWN_REFRESH_TOKEN_#2',
             'token_type_hint' => 'refresh_token',
         ]);
         $request = $request->withHeader('Content-Type', 'application/x-www-form-urlencoded');
-        $request = $request->withHeader('Authorization', 'Basic ' . base64_encode('client1:secret'));
+        $request = $request->withHeader('Authorization', 'Basic '.base64_encode('client1:secret'));
 
         $this->responseContext->setResponse($this->applicationContext->getApplication()->getTokenRevocationPipe()->dispatch($request));
     }
@@ -247,10 +247,10 @@ final class RevocationContext implements Context
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([
-            'token' => 'UNKNOWN_REFRESH_TOKEN_#2',
+            'token'           => 'UNKNOWN_REFRESH_TOKEN_#2',
             'token_type_hint' => 'refresh_token',
         ]);
-        $request = $request->withHeader('Authorization', 'Basic ' . base64_encode('client1:secret'));
+        $request = $request->withHeader('Authorization', 'Basic '.base64_encode('client1:secret'));
 
         $this->responseContext->setResponse($this->applicationContext->getApplication()->getTokenRevocationPipe()->dispatch($request));
     }
@@ -263,11 +263,11 @@ final class RevocationContext implements Context
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([
-            'token' => 'UNKNOWN_REFRESH_TOKEN_#2',
+            'token'           => 'UNKNOWN_REFRESH_TOKEN_#2',
             'token_type_hint' => 'refresh_token',
-            'callback' => 'callback',
+            'callback'        => 'callback',
         ]);
-        $request = $request->withHeader('Authorization', 'Basic ' . base64_encode('client1:secret'));
+        $request = $request->withHeader('Authorization', 'Basic '.base64_encode('client1:secret'));
 
         $this->responseContext->setResponse($this->applicationContext->getApplication()->getTokenRevocationPipe()->dispatch($request));
     }

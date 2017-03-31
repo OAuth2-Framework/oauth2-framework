@@ -11,11 +11,11 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
+use OAuth2Framework\Bundle\Server\Model\InitialAccessTokenRepository;
 use OAuth2Framework\Component\Server\Middleware\InitialAccessTokenMiddleware;
 use OAuth2Framework\Component\Server\TokenType\BearerToken;
 use function Fluent\create;
 use function Fluent\get;
-use OAuth2Framework\Bundle\Server\Model\InitialAccessTokenRepository;
 
 return [
     /*'oauth2_server.event_store.initial_access_token' => create(OAuth2Framework\Bundle\Server\EventStore\EventStore::class)

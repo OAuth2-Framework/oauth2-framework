@@ -79,7 +79,7 @@ final class EncryptedSubjectIdentifier implements PairwiseSubjectIdentifierAlgor
         $decoded = openssl_decrypt(Base64Url::decode($subjectIdentifier), $this->algorithm, $this->pairwiseEncryptionKey, OPENSSL_RAW_DATA, $this->iv);
         $parts = explode(':', $decoded);
         if (3 !== count($parts)) {
-            return null;
+            return;
         }
 
         return $parts[1];

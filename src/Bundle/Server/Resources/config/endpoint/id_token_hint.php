@@ -11,12 +11,12 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use function Fluent\create;
-use function Fluent\get;
+use Jose\JWTLoaderInterface;
 use OAuth2Framework\Component\Server\Endpoint\Authorization\UserAccountDiscovery\IdTokenHintDiscovery;
 use OAuth2Framework\Component\Server\Model\IdToken\IdTokenLoader;
 use OAuth2Framework\Component\Server\Model\UserAccount\UserAccountRepositoryInterface;
-use Jose\JWTLoaderInterface;
+use function Fluent\create;
+use function Fluent\get;
 
 return [
     IdTokenLoader::class => create()

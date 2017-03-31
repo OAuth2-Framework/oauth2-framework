@@ -13,10 +13,10 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Server\Form\Handler;
 
+use OAuth2Framework\Bundle\Server\Form\Model\AuthorizationModel;
 use OAuth2Framework\Component\Server\Endpoint\Authorization\Authorization;
 use OAuth2Framework\Component\Server\Response\OAuth2Exception;
 use Psr\Http\Message\ServerRequestInterface;
-use OAuth2Framework\Bundle\Server\Form\Model\AuthorizationModel;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Component\Form\ClickableInterface;
 use Symfony\Component\Form\Exception\InvalidArgumentException;
@@ -30,9 +30,9 @@ class AuthorizationFormHandler
      * @param Authorization          $authorization
      * @param AuthorizationModel     $authorization_model
      *
-     * @return Authorization
-     *
      * @throws OAuth2Exception
+     *
+     * @return Authorization
      */
     public function handle(FormInterface $form, ServerRequestInterface $request, Authorization $authorization, AuthorizationModel $authorization_model): Authorization
     {

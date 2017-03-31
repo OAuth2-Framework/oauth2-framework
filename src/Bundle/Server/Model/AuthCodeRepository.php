@@ -159,8 +159,6 @@ final class AuthCodeRepository implements AuthCodeRepositoryInterface
                 return $item->get();
             }
         }
-
-        return null;
     }
 
     /**

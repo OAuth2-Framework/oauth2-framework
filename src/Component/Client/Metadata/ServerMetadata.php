@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014-2017 Spomky-Labs
+ *
+ * This software may be modified and distributed under the terms
+ * of the MIT license.  See the LICENSE file for details.
+ */
+
 namespace OAuth2Framework\Component\Client\Metadata;
 
 use Assert\Assertion;
@@ -22,7 +31,7 @@ final class ServerMetadata implements ServerMetadataInterface
     /**
      * {@inheritdoc}
      */
-    static public function createFromServerUri($server_uri, $allow_unsecured_connection = false)
+    public static function createFromServerUri($server_uri, $allow_unsecured_connection = false)
     {
         $metadata = self::downloadContent($server_uri, $allow_unsecured_connection);
 
@@ -32,7 +41,7 @@ final class ServerMetadata implements ServerMetadataInterface
     /**
      * {@inheritdoc}
      */
-    static public function createFromValues(array $values)
+    public static function createFromValues(array $values)
     {
         return new self($values);
     }
@@ -69,7 +78,7 @@ final class ServerMetadata implements ServerMetadataInterface
             'Invalid URL.'
         );
         Assertion::false(
-            false === $allow_unsecured_connection && 'https://' !==  mb_substr($url, 0, 8, '8bit'),
+            false === $allow_unsecured_connection && 'https://' !== mb_substr($url, 0, 8, '8bit'),
             'Unsecured connection.'
         );
 

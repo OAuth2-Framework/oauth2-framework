@@ -30,7 +30,7 @@ final class RefreshTokenSource extends ActionableSource
             $container->setParameter($path.'.'.$k, $v);
         }
 
-        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__ . '/../../../Resources/config/grant'));
+        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/grant'));
         $loader->load('refresh_token.php');
     }
 
@@ -53,7 +53,7 @@ final class RefreshTokenSource extends ActionableSource
             ->children()
                 ->integerNode('min_length')->defaultValue(50)->end()
                 ->integerNode('max_length')->defaultValue(100)->end()
-                ->integerNode('lifetime')->defaultValue(60*60*24*7)->end()
+                ->integerNode('lifetime')->defaultValue(60 * 60 * 24 * 7)->end()
             ->end();
     }
 }

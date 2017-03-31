@@ -11,10 +11,10 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use function Fluent\create;
-use function Fluent\get;
 use OAuth2Framework\Bundle\Server\Service\SymfonyUserDiscovery;
 use OAuth2Framework\Component\Server\Endpoint\Authorization\UserAccountDiscovery;
+use function Fluent\create;
+use function Fluent\get;
 
 return [
     UserAccountDiscovery\LoginParameterChecker::class => create()

@@ -56,11 +56,11 @@ final class CodeResponseTypeContext implements Context
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([
-            'client_id' => 'client1',
-            'redirect_uri' => 'https://example.com/redirection/callback',
-            'response_type' => 'code',
-            'state' => '0123456789',
-            'code_challenge' => 'E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM',
+            'client_id'             => 'client1',
+            'redirect_uri'          => 'https://example.com/redirection/callback',
+            'response_type'         => 'code',
+            'state'                 => '0123456789',
+            'code_challenge'        => 'E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM',
             'code_challenge_method' => 'foo',
         ]);
 
@@ -76,10 +76,10 @@ final class CodeResponseTypeContext implements Context
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([
-            'client_id' => 'client1',
-            'redirect_uri' => 'https://example.com/redirection/callback',
+            'client_id'     => 'client1',
+            'redirect_uri'  => 'https://example.com/redirection/callback',
             'response_type' => 'code',
-            'state' => '0123456789',
+            'state'         => '0123456789',
         ]);
 
         $this->responseTypeContext->setAuthorizationRequest($request);
@@ -94,12 +94,12 @@ final class CodeResponseTypeContext implements Context
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([
-            'client_id' => 'client1',
-            'redirect_uri' => 'https://example.com/redirection/callback',
-            'response_type' => 'code',
-            'code_challenge' => 'E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM',
+            'client_id'             => 'client1',
+            'redirect_uri'          => 'https://example.com/redirection/callback',
+            'response_type'         => 'code',
+            'code_challenge'        => 'E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM',
             'code_challenge_method' => 'S256',
-            'state' => '0123456789',
+            'state'                 => '0123456789',
         ]);
 
         $this->responseTypeContext->setAuthorizationRequest($request);
@@ -132,14 +132,14 @@ final class CodeResponseTypeContext implements Context
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([
-            'client_id' => 'client1',
-            'redirect_uri' => 'https://example.com/redirection/callback',
-            'response_type' => 'code',
-            'code_challenge' => 'E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM',
+            'client_id'             => 'client1',
+            'redirect_uri'          => 'https://example.com/redirection/callback',
+            'response_type'         => 'code',
+            'code_challenge'        => 'E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM',
             'code_challenge_method' => 'plain',
-            'state' => '0123456789',
-            'scope' => 'openid offline_access',
-            'prompt' => 'consent',
+            'state'                 => '0123456789',
+            'scope'                 => 'openid offline_access',
+            'prompt'                => 'consent',
         ]);
 
         $this->responseTypeContext->setAuthorizationRequest($request);
@@ -156,13 +156,13 @@ final class CodeResponseTypeContext implements Context
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
-            'grant_type' => 'authorization_code',
-            'code' => $code,
-            'redirect_uri' => 'https://example.com/redirection/callback',
-            'scope' => 'openid',
+            'grant_type'    => 'authorization_code',
+            'code'          => $code,
+            'redirect_uri'  => 'https://example.com/redirection/callback',
+            'scope'         => 'openid',
             'code_verifier' => 'E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM',
         ]);
-        $request = $request->withHeader('Authorization', 'Basic ' . base64_encode('client1:secret'));
+        $request = $request->withHeader('Authorization', 'Basic '.base64_encode('client1:secret'));
         $request = $request->withHeader('Content-Type', 'application/x-www-form-urlencoded');
 
         $this->responseContext->setResponse($this->applicationContext->getApplication()->getTokenEndpointPipe()->dispatch($request));
