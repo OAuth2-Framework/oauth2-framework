@@ -13,9 +13,9 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Server\Security\Firewall;
 
+use OAuth2Framework\Bundle\Server\Security\Authentication\Token\OAuth2Token;
 use OAuth2Framework\Component\Server\Security\AccessTokenHandlerInterface;
 use OAuth2Framework\Component\Server\TokenType\TokenTypeManager;
-use OAuth2Framework\Bundle\Server\Security\Authentication\Token\OAuth2Token;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;

@@ -13,10 +13,10 @@ declare(strict_types=1);
 
 use Interop\Http\Factory\ResponseFactoryInterface;
 use Interop\Http\Factory\UriFactoryInterface;
+use OAuth2Framework\Bundle\Server\Service\FormPostResponseRenderer;
 use OAuth2Framework\Component\Server\ResponseMode;
 use function Fluent\create;
 use function Fluent\get;
-use OAuth2Framework\Bundle\Server\Service\FormPostResponseRenderer;
 
 return [
     ResponseMode\ResponseModeManager::class => create(),

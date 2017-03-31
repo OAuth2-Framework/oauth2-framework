@@ -11,11 +11,11 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use function Fluent\create;
-use function Fluent\get;
+use OAuth2Framework\Bundle\Server\Model\ScopeRepository;
 use OAuth2Framework\Component\Server\Model\Client\Rule;
 use OAuth2Framework\Component\Server\Model\Scope;
-use OAuth2Framework\Bundle\Server\Model\ScopeRepository;
+use function Fluent\create;
+use function Fluent\get;
 
 return [
 
@@ -35,7 +35,6 @@ return [
         ->tag('oauth2_server_scope_policy', ['policy_name' => 'default']),
     Scope\ErrorScopePolicy::class => create()
         ->tag('oauth2_server_scope_policy', ['policy_name' => 'error']),
-
 
     Rule\ScopeRule::class => create()
         ->arguments(

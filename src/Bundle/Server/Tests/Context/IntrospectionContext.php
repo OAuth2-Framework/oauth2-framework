@@ -69,9 +69,9 @@ final class IntrospectionContext implements Context
             [],
             [],
             [
-                'HTTP_Content-Type'  => 'application/x-www-form-urlencoded',
+                'HTTP_Content-Type'         => 'application/x-www-form-urlencoded',
                 'HTTP_X-Resource-Server-Id' => 'ResourceServer1',
-                'REMOTE_ADDR' => '127.0.0.1',
+                'REMOTE_ADDR'               => '127.0.0.1',
             ]
         );
     }
@@ -85,9 +85,9 @@ final class IntrospectionContext implements Context
             'token' => 'ACCESS_TOKEN_#1',
         ],
         [], [
-            'HTTP_Content-Type'  => 'application/x-www-form-urlencoded',
+            'HTTP_Content-Type'         => 'application/x-www-form-urlencoded',
             'HTTP_X-Resource-Server-Id' => 'ResourceServer2',
-            'REMOTE_ADDR' => '127.0.0.1',
+            'REMOTE_ADDR'               => '127.0.0.1',
         ]);
     }
 
@@ -100,9 +100,9 @@ final class IntrospectionContext implements Context
             'token' => 'ACCESS_TOKEN_#1',
         ],
         [], [
-            'HTTP_Content-Type'  => 'application/x-www-form-urlencoded',
+            'HTTP_Content-Type'         => 'application/x-www-form-urlencoded',
             'HTTP_X-Resource-Server-Id' => 'ResourceServer1',
-            'REMOTE_ADDR' => '127.0.0.1',
+            'REMOTE_ADDR'               => '127.0.0.1',
         ]);
     }
 
@@ -115,9 +115,9 @@ final class IntrospectionContext implements Context
             'token' => 'REVOKED_REFRESH_TOKEN',
         ],
             [], [
-                'HTTP_Content-Type'  => 'application/x-www-form-urlencoded',
+                'HTTP_Content-Type'         => 'application/x-www-form-urlencoded',
                 'HTTP_X-Resource-Server-Id' => 'ResourceServer1',
-                'REMOTE_ADDR' => '127.0.0.1',
+                'REMOTE_ADDR'               => '127.0.0.1',
             ]);
     }
 }

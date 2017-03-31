@@ -79,7 +79,7 @@ final class UserinfoSignatureSource extends ActionableSource
     public function prepend(array $bundleConfig, string $path, ContainerBuilder $container)
     {
         $currentPath = $path.'['.$this->name().']';
-        $accessor =  PropertyAccess::createPropertyAccessor();
+        $accessor = PropertyAccess::createPropertyAccessor();
         $sourceConfig = $accessor->getValue($bundleConfig, $currentPath);
 
         if (true === $sourceConfig['enabled']) {

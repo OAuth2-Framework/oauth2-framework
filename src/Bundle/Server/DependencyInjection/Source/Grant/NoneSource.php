@@ -25,7 +25,7 @@ final class NoneSource extends ActionableSource
      */
     protected function continueLoading(string $path, ContainerBuilder $container, array $config)
     {
-        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__ . '/../../../Resources/config/grant'));
+        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/grant'));
         $loader->load('none.php');
     }
 

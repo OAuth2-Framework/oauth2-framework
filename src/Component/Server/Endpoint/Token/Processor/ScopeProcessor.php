@@ -63,7 +63,7 @@ final class ScopeProcessor
             throw new OAuth2Exception(
                 400,
                 [
-                    'error' => OAuth2ResponseFactoryManager::ERROR_INVALID_SCOPE,
+                    'error'             => OAuth2ResponseFactoryManager::ERROR_INVALID_SCOPE,
                     'error_description' => $e->getMessage(), ]
             );
         }
@@ -75,7 +75,7 @@ final class ScopeProcessor
             throw new OAuth2Exception(
                 400,
                 [
-                    'error' => OAuth2ResponseFactoryManager::ERROR_INVALID_SCOPE,
+                    'error'             => OAuth2ResponseFactoryManager::ERROR_INVALID_SCOPE,
                     'error_description' => sprintf('An unsupported scope was requested. Available scopes are %s.', implode(', ', $availableScope)),
                 ]
             );

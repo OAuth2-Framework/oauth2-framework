@@ -11,11 +11,11 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use OAuth2Framework\Component\Server\Endpoint\Authorization\BeforeConsentScreen;
+use OAuth2Framework\Bundle\Server\Model\PreConfiguredAuthorizationRepository;
 use OAuth2Framework\Component\Server\Endpoint\Authorization\AfterConsentScreen;
+use OAuth2Framework\Component\Server\Endpoint\Authorization\BeforeConsentScreen;
 use function Fluent\create;
 use function Fluent\get;
-use OAuth2Framework\Bundle\Server\Model\PreConfiguredAuthorizationRepository;
 
 return [
     BeforeConsentScreen\PreConfiguredAuthorizationExtension::class => create()
@@ -29,7 +29,6 @@ return [
             get(PreConfiguredAuthorizationRepository::class)
         )
         ->tag('oauth2_server_after_consent_screen'),
-
 
     /*'oauth2_server.event_store.pre_configured_authorization' => create(OAuth2Framework\Bundle\Server\EventStore\EventStore::class)
         ->arguments(

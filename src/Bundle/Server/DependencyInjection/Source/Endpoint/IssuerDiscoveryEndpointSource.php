@@ -58,6 +58,4 @@ final class IssuerDiscoveryEndpointSource implements SourceInterface
     public function prepend(array $bundleConfig, string $path, ContainerBuilder $container)
     {
     }
-
-
 }

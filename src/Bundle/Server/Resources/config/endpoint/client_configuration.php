@@ -11,13 +11,13 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use OAuth2Framework\Bundle\Server\Model\ClientRepository;
 use Interop\Http\Factory\ResponseFactoryInterface;
+use OAuth2Framework\Bundle\Server\Controller\ClientConfigurationMiddleware;
+use OAuth2Framework\Bundle\Server\Model\ClientRepository;
 use OAuth2Framework\Component\Server\Endpoint\ClientConfiguration\ClientConfigurationEndpoint;
 use OAuth2Framework\Component\Server\Middleware\OAuth2ResponseMiddleware;
 use OAuth2Framework\Component\Server\Middleware\Pipe;
 use OAuth2Framework\Component\Server\TokenType\BearerToken;
-use OAuth2Framework\Bundle\Server\Controller\ClientConfigurationMiddleware;
 use function Fluent\create;
 use function Fluent\get;
 

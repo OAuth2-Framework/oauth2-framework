@@ -126,7 +126,7 @@ final class ResourceOwnerPasswordCredentialsGrantType implements GrantTypeInterf
             throw new OAuth2Exception(
                 400,
                 [
-                    'error' => OAuth2ResponseFactoryManager::ERROR_INVALID_GRANT,
+                    'error'             => OAuth2ResponseFactoryManager::ERROR_INVALID_GRANT,
                     'error_description' => 'Invalid username and password combination.',
                 ]
             );

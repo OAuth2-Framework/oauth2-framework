@@ -31,8 +31,8 @@ interface SourceInterface
     public function addConfiguration(NodeDefinition $node);
 
     /**
-     * @param array             $bundleConfig
-     * @param string            $path
+     * @param array            $bundleConfig
+     * @param string           $path
      * @param ContainerBuilder $container
      */
     public function prepend(array $bundleConfig, string $path, ContainerBuilder $container);

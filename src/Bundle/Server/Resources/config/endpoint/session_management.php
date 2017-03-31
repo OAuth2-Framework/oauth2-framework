@@ -21,7 +21,7 @@ use function Fluent\get;
 return [
     'session_management_pipe' => create(Pipe::class)
         ->arguments([
-            get(IFrameEndpoint::class)
+            get(IFrameEndpoint::class),
         ]),
 
     IFrameEndpoint::class => create()

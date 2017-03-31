@@ -14,11 +14,11 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\Server\Annotation;
 
 use Doctrine\Common\Annotations\Reader;
+use OAuth2Framework\Bundle\Server\Annotation\Checker\CheckerInterface;
+use OAuth2Framework\Bundle\Server\Security\Authentication\Token\OAuth2Token;
 use OAuth2Framework\Component\Server\Response\OAuth2Exception;
 use OAuth2Framework\Component\Server\Response\OAuth2ResponseFactoryManager;
 use OAuth2Framework\Component\Server\TokenType\TokenTypeManager;
-use OAuth2Framework\Bundle\Server\Annotation\Checker\CheckerInterface;
-use OAuth2Framework\Bundle\Server\Security\Authentication\Token\OAuth2Token;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;

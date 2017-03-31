@@ -24,6 +24,10 @@ namespace OAuth2Framework\Bundle\Server\Tests\Context;
 
 use Behat\Behat\Context\Context;
 use Behat\Symfony2Extension\Context\KernelDictionary;
+use OAuth2Framework\Bundle\Server\Model\AuthCodeRepository;
+use OAuth2Framework\Bundle\Server\Model\ClientRepository;
+use OAuth2Framework\Bundle\Server\Model\InitialAccessTokenRepository;
+use OAuth2Framework\Bundle\Server\Model\PreConfiguredAuthorizationRepository;
 use OAuth2Framework\Component\Server\Model\AccessToken\AccessToken;
 use OAuth2Framework\Component\Server\Model\AccessToken\AccessTokenId;
 use OAuth2Framework\Component\Server\Model\AccessToken\AccessTokenRepositoryInterface;
@@ -39,10 +43,6 @@ use OAuth2Framework\Component\Server\Model\RefreshToken\RefreshTokenId;
 use OAuth2Framework\Component\Server\Model\RefreshToken\RefreshTokenRepositoryInterface;
 use OAuth2Framework\Component\Server\Model\ResourceServer\ResourceServerId;
 use OAuth2Framework\Component\Server\Model\UserAccount\UserAccountId;
-use OAuth2Framework\Bundle\Server\Model\AuthCodeRepository;
-use OAuth2Framework\Bundle\Server\Model\ClientRepository;
-use OAuth2Framework\Bundle\Server\Model\InitialAccessTokenRepository;
-use OAuth2Framework\Bundle\Server\Model\PreConfiguredAuthorizationRepository;
 use Symfony\Component\Filesystem\Filesystem;
 
 final class FixturesContext implements Context
@@ -73,9 +73,6 @@ final class FixturesContext implements Context
         $fs->remove($storagePath);
     }
 
-    /**
-     *
-     */
     private function loadClients()
     {
         $clientRepository = $this->getContainer()->get(ClientRepository::class);
@@ -184,9 +181,6 @@ final class FixturesContext implements Context
         ];
     }
 
-    /**
-     *
-     */
     private function loadInitialAccessTokens()
     {
         $manager = $this->getContainer()->get(InitialAccessTokenRepository::class);
@@ -232,9 +226,6 @@ final class FixturesContext implements Context
         ];
     }
 
-    /**
-     *
-     */
     private function loadAccessTokens()
     {
         $manager = $this->getContainer()->get(AccessTokenRepositoryInterface::class);
@@ -331,9 +322,6 @@ final class FixturesContext implements Context
         ];
     }
 
-    /**
-     *
-     */
     private function loadAuthorizationCodes()
     {
         $manager = $this->getContainer()->get(AuthCodeRepository::class);
@@ -468,9 +456,6 @@ final class FixturesContext implements Context
         ];
     }
 
-    /**
-     *
-     */
     private function loadRefreshTokens()
     {
         $manager = $this->getContainer()->get(RefreshTokenRepositoryInterface::class);
@@ -536,9 +521,6 @@ final class FixturesContext implements Context
         ];
     }
 
-    /**
-     *
-     */
     private function loadPreConfiguredAuthorizations()
     {
         $manager = $this->getContainer()->get(PreConfiguredAuthorizationRepository::class);

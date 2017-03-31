@@ -78,6 +78,6 @@ class SessionStateParameterExtension extends Base
     {
         $url_parts = parse_url($redirectUri);
 
-        return sprintf('%s://%s%s', $url_parts['scheme'], $url_parts['host'], isset($url_parts['port']) ? ':' . $url_parts['port'] : '');
+        return sprintf('%s://%s%s', $url_parts['scheme'], $url_parts['host'], isset($url_parts['port']) ? ':'.$url_parts['port'] : '');
     }
 }

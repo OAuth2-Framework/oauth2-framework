@@ -12,10 +12,10 @@ declare(strict_types=1);
  */
 
 use Interop\Http\Factory\ResponseFactoryInterface;
+use OAuth2Framework\Bundle\Server\Rule\ClientRegistrationManagementRule;
 use OAuth2Framework\Component\Server\Endpoint\ClientRegistration\ClientRegistrationEndpoint;
 use OAuth2Framework\Component\Server\Middleware\OAuth2ResponseMiddleware;
 use OAuth2Framework\Component\Server\Middleware\Pipe;
-use OAuth2Framework\Bundle\Server\Rule\ClientRegistrationManagementRule;
 use function Fluent\create;
 use function Fluent\get;
 

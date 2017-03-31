@@ -69,7 +69,7 @@ abstract class TokenRevocationEndpoint implements MiddlewareInterface
             throw new OAuth2Exception(
                 400,
                 [
-                    'error' => 'unsupported_token_type',
+                    'error'             => 'unsupported_token_type',
                     'error_description' => sprintf('The token type hint \'%s\' is not supported. Please use one of the following values: %s.', $tokenTypeHint, implode(', ', array_keys($tokenTypeHints))),
                 ]
             );
@@ -104,7 +104,7 @@ abstract class TokenRevocationEndpoint implements MiddlewareInterface
                         throw new OAuth2Exception(
                             400,
                             [
-                                'error' => OAuth2ResponseFactoryManager::ERROR_INVALID_REQUEST,
+                                'error'             => OAuth2ResponseFactoryManager::ERROR_INVALID_REQUEST,
                                 'error_description' => 'The parameter \'token\' is invalid.',
                             ]
                         );
@@ -155,7 +155,7 @@ abstract class TokenRevocationEndpoint implements MiddlewareInterface
             throw new OAuth2Exception(
                 401,
                 [
-                    'error' => OAuth2ResponseFactoryManager::ERROR_INVALID_CLIENT,
+                    'error'             => OAuth2ResponseFactoryManager::ERROR_INVALID_CLIENT,
                     'error_description' => 'Client authentication failed.',
                 ]
             );
@@ -178,7 +178,7 @@ abstract class TokenRevocationEndpoint implements MiddlewareInterface
             throw new OAuth2Exception(
                 400,
                 [
-                    'error' => OAuth2ResponseFactoryManager::ERROR_INVALID_REQUEST,
+                    'error'             => OAuth2ResponseFactoryManager::ERROR_INVALID_REQUEST,
                     'error_description' => 'The parameter \'token\' is missing.',
                 ]
             );
@@ -205,7 +205,7 @@ abstract class TokenRevocationEndpoint implements MiddlewareInterface
                 throw new OAuth2Exception(
                     400,
                     [
-                        'error' => 'unsupported_token_type',
+                        'error'             => 'unsupported_token_type',
                         'error_description' => sprintf('The token type hint \'%s\' is not supported. Please use one of the following values: %s.', $params['token_type_hint'], implode(', ', array_keys($tokenTypeHints))),
                     ]
                 );

@@ -31,8 +31,6 @@ final class ResourceServerAuthMethodByIpAddress implements TokenIntrospectionEnd
                 return ResourceServerId::create($id[0]);
             }
         }
-
-        return null;
     }
 
     /**
@@ -50,7 +48,7 @@ final class ResourceServerAuthMethodByIpAddress implements TokenIntrospectionEnd
             return false;
         }
         $params = $request->getServerParams();
-        if(!array_key_exists('REMOTE_ADDR', $params)) {
+        if (!array_key_exists('REMOTE_ADDR', $params)) {
             return false;
         }
 

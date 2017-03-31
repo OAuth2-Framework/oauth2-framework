@@ -55,12 +55,12 @@ final class HybridFlowContext implements Context
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([
-            'client_id' => 'client1',
-            'redirect_uri' => 'https://example.com/redirection/callback',
+            'client_id'     => 'client1',
+            'redirect_uri'  => 'https://example.com/redirection/callback',
             'response_type' => 'code id_token token',
-            'state' => '0123456789',
-            'nonce' => 'ABCDEFGHIJ',
-            'scope' => 'openid profile address email phone',
+            'state'         => '0123456789',
+            'nonce'         => 'ABCDEFGHIJ',
+            'scope'         => 'openid profile address email phone',
         ]);
 
         $this->responseTypeContext->setAuthorizationRequest($request);

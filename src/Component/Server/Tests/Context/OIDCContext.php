@@ -136,11 +136,11 @@ final class OIDCContext implements Context
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([
-            'client_id' => 'client1',
-            'redirect_uri' => 'https://example.com/redirection/callback',
+            'client_id'     => 'client1',
+            'redirect_uri'  => 'https://example.com/redirection/callback',
             'response_type' => 'code',
-            'state' => '0123456789',
-            'max_age' => '60',
+            'state'         => '0123456789',
+            'max_age'       => '60',
         ]);
 
         $this->responseContext->setResponse($this->applicationContext->getApplication()->getAuthorizationEndpointPipe()->dispatch($request));
@@ -154,11 +154,11 @@ final class OIDCContext implements Context
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([
-            'client_id' => 'client1',
-            'redirect_uri' => 'https://example.com/redirection/callback',
+            'client_id'     => 'client1',
+            'redirect_uri'  => 'https://example.com/redirection/callback',
             'response_type' => 'code',
-            'state' => '0123456789',
-            'max_age' => '3600',
+            'state'         => '0123456789',
+            'max_age'       => '3600',
         ]);
 
         $this->responseContext->setResponse($this->applicationContext->getApplication()->getAuthorizationEndpointPipe()->dispatch($request));
@@ -172,11 +172,11 @@ final class OIDCContext implements Context
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([
-            'client_id' => 'client1',
-            'redirect_uri' => 'https://example.com/redirection/callback',
+            'client_id'     => 'client1',
+            'redirect_uri'  => 'https://example.com/redirection/callback',
             'response_type' => 'code',
-            'state' => '0123456789',
-            'prompt' => 'none',
+            'state'         => '0123456789',
+            'prompt'        => 'none',
         ]);
 
         $this->responseContext->setResponse($this->applicationContext->getApplication()->getAuthorizationEndpointPipe()->dispatch($request));
@@ -190,11 +190,11 @@ final class OIDCContext implements Context
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([
-            'client_id' => 'client1',
-            'redirect_uri' => 'https://example.com/redirection/callback',
+            'client_id'     => 'client1',
+            'redirect_uri'  => 'https://example.com/redirection/callback',
             'response_type' => 'code',
-            'state' => '0123456789',
-            'prompt' => 'none consent',
+            'state'         => '0123456789',
+            'prompt'        => 'none consent',
         ]);
 
         $this->responseContext->setResponse($this->applicationContext->getApplication()->getAuthorizationEndpointPipe()->dispatch($request));
@@ -208,11 +208,11 @@ final class OIDCContext implements Context
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([
-            'client_id' => 'client1',
-            'redirect_uri' => 'https://example.com/redirection/callback',
+            'client_id'     => 'client1',
+            'redirect_uri'  => 'https://example.com/redirection/callback',
             'response_type' => 'code',
-            'state' => '0123456789',
-            'prompt' => 'login',
+            'state'         => '0123456789',
+            'prompt'        => 'login',
         ]);
 
         $this->responseContext->setResponse($this->applicationContext->getApplication()->getAuthorizationEndpointPipe()->dispatch($request));
@@ -226,11 +226,11 @@ final class OIDCContext implements Context
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([
-            'client_id' => 'client1',
-            'redirect_uri' => 'https://example.com/redirection/callback',
+            'client_id'     => 'client1',
+            'redirect_uri'  => 'https://example.com/redirection/callback',
             'response_type' => 'code',
-            'state' => '0123456789',
-            'scope' => 'openid profile phone address email',
+            'state'         => '0123456789',
+            'scope'         => 'openid profile phone address email',
         ]);
 
         $this->responseContext->setResponse($this->applicationContext->getApplication()->getAuthorizationEndpointPipe()->dispatch($request));
@@ -244,12 +244,12 @@ final class OIDCContext implements Context
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([
-            'client_id' => 'client1',
-            'redirect_uri' => 'https://example.com/redirection/callback',
+            'client_id'     => 'client1',
+            'redirect_uri'  => 'https://example.com/redirection/callback',
             'response_type' => 'code',
-            'state' => '0123456789',
-            'prompt' => 'consent',
-            'scope' => 'openid profile phone address email',
+            'state'         => '0123456789',
+            'prompt'        => 'consent',
+            'scope'         => 'openid profile phone address email',
         ]);
 
         $this->responseContext->setResponse($this->applicationContext->getApplication()->getAuthorizationEndpointPipe()->dispatch($request));
@@ -263,11 +263,11 @@ final class OIDCContext implements Context
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([
-            'client_id' => 'client1',
-            'redirect_uri' => 'https://example.com/redirection/callback',
+            'client_id'     => 'client1',
+            'redirect_uri'  => 'https://example.com/redirection/callback',
             'response_type' => 'code',
-            'state' => '0123456789',
-            'ui_locales' => 'fr en',
+            'state'         => '0123456789',
+            'ui_locales'    => 'fr en',
         ]);
 
         $this->responseContext->setResponse($this->applicationContext->getApplication()->getAuthorizationEndpointPipe()->dispatch($request));
@@ -292,11 +292,11 @@ final class OIDCContext implements Context
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([
-            'client_id' => 'client1',
-            'redirect_uri' => 'https://example.com/redirection/callback',
+            'client_id'     => 'client1',
+            'redirect_uri'  => 'https://example.com/redirection/callback',
             'response_type' => 'code',
-            'state' => '0123456789',
-            'ui_locales' => 'ru de',
+            'state'         => '0123456789',
+            'ui_locales'    => 'ru de',
         ]);
 
         $this->responseContext->setResponse($this->applicationContext->getApplication()->getAuthorizationEndpointPipe()->dispatch($request));
@@ -321,10 +321,10 @@ final class OIDCContext implements Context
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([
-            'client_id' => 'client1',
-            'redirect_uri' => 'https://example.com/redirection/callback',
+            'client_id'     => 'client1',
+            'redirect_uri'  => 'https://example.com/redirection/callback',
             'response_type' => 'code',
-            'state' => '0123456789',
+            'state'         => '0123456789',
             'id_token_hint' => $this->generateValidIdToken(),
         ]);
 
@@ -339,10 +339,10 @@ final class OIDCContext implements Context
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([
-            'client_id' => 'client1',
-            'redirect_uri' => 'https://example.com/redirection/callback',
+            'client_id'     => 'client1',
+            'redirect_uri'  => 'https://example.com/redirection/callback',
             'response_type' => 'code',
-            'state' => '0123456789',
+            'state'         => '0123456789',
             'id_token_hint' => $this->generateValidIdToken(),
         ]);
 
@@ -357,10 +357,10 @@ final class OIDCContext implements Context
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([
-            'client_id' => 'client1',
-            'redirect_uri' => 'https://example.com/redirection/callback',
+            'client_id'     => 'client1',
+            'redirect_uri'  => 'https://example.com/redirection/callback',
             'response_type' => 'code',
-            'state' => '0123456789',
+            'state'         => '0123456789',
             'id_token_hint' => 'BAD_VALUE !!!!!!!!!!!!!!!!!!!!!!!!!!',
         ]);
 
@@ -375,10 +375,10 @@ final class OIDCContext implements Context
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([
-            'client_id' => 'client1',
-            'redirect_uri' => 'https://example.com/redirection/callback',
+            'client_id'     => 'client1',
+            'redirect_uri'  => 'https://example.com/redirection/callback',
             'response_type' => 'code',
-            'state' => '0123456789',
+            'state'         => '0123456789',
             'id_token_hint' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJub25lIiwia2lkIjoiS1JTV3dLcENFODFrb0hTa0ZwbFhBOTFnOTFkM253YTQ1MVdGWnd0enlGSGxDMHl4cjluaU13Ymd1NmFBY21yMkFkZ01GcU1Sd2phWlFXLXdYMURTTEEifQ.eyJuYW1lIjoiSm9obiBEb2UiLCJnaXZlbl9uYW1lIjoiSm9obiIsIm1pZGRsZV9uYW1lIjoiSmFjayIsImZhbWlseV9uYW1lIjoiRG9lIiwibmlja25hbWUiOiJMaXR0bGUgSm9obiIsInByZWZlcnJlZF91c2VybmFtZSI6ImotZCIsInByb2ZpbGUiOiJodHRwczpcL1wvcHJvZmlsZS5kb2UuZnJcL2pvaG5cLyIsInBpY3R1cmUiOiJodHRwczpcL1wvd3d3Lmdvb2dsZS5jb20iLCJ3ZWJzaXRlIjoiaHR0cHM6XC9cL2pvaG4uZG9lLmNvbSIsImdlbmRlciI6Ik0iLCJiaXJ0aGRhdGUiOiIxOTUwLTAxLTAxIiwiem9uZWluZm8iOiJFdXJvcGVcL1BhcmlzIiwibG9jYWxlIjoiZW4iLCJ1cGRhdGVkX2F0IjoxNDg1NDMxMjMyLCJlbWFpbCI6InJvb3RAbG9jYWxob3N0LmNvbSIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwicGhvbmVfbnVtYmVyIjoiKzAxMjM0NTY3ODkiLCJwaG9uZV9udW1iZXJfdmVyaWZpZWQiOnRydWUsInN1YiI6IlVncU80U0xjTnVwWUJYekdKNXVuQjR0SWY1UTlabzVHYXU1cDJ2QjJGbGZyQTZ2MU1YS09Ib2JvOS12STU1Q2kiLCJpYXQiOjE0ODk2NjU4MjAsIm5iZiI6MTQ4OTY2NTgyMCwiZXhwIjoxNDg5NjY5NDIwLCJqdGkiOiJBNllYZDM5MkdKSGRTZTl5dHhaNGc4ZUpORjg1c0pRdS13IiwiaXNzIjoiaHR0cHM6XC9cL3d3dy5teS1zZXJ2aWNlLmNvbSJ9.',
         ]);
 
@@ -409,30 +409,30 @@ final class OIDCContext implements Context
         ];
 
         $payload = [
-            'name' => 'John Doe',
-            'given_name' => 'John',
-            'middle_name' => 'Jack',
-            'family_name' => 'Doe',
-            'nickname' => 'Little John',
-            'preferred_username' => 'j-d',
-            'profile' => 'https://profile.doe.fr/john/',
-            'picture' => 'https://www.google.com',
-            'website' => 'https://john.doe.com',
-            'gender' => 'M',
-            'birthdate' => '1950-01-01',
-            'zoneinfo' => 'Europe/Paris',
-            'locale' => 'en',
-            'updated_at' => time() - 10,
-            'email' => 'root@localhost.com',
-            'email_verified' => false,
-            'phone_number' => '+0123456789',
+            'name'                  => 'John Doe',
+            'given_name'            => 'John',
+            'middle_name'           => 'Jack',
+            'family_name'           => 'Doe',
+            'nickname'              => 'Little John',
+            'preferred_username'    => 'j-d',
+            'profile'               => 'https://profile.doe.fr/john/',
+            'picture'               => 'https://www.google.com',
+            'website'               => 'https://john.doe.com',
+            'gender'                => 'M',
+            'birthdate'             => '1950-01-01',
+            'zoneinfo'              => 'Europe/Paris',
+            'locale'                => 'en',
+            'updated_at'            => time() - 10,
+            'email'                 => 'root@localhost.com',
+            'email_verified'        => false,
+            'phone_number'          => '+0123456789',
             'phone_number_verified' => true,
-            'sub' => 'UgqO4SLcNupYBXzGJ5unB4tIf5Q9Zo5Gau5p2vB2FlfrA6v1MXKOHobo9-vI55Ci',
-            'iat' => time(),
-            'nbf' => time(),
-            'exp' => time() + 1800,
-            'jti' => 'A6YXd392GJHdSe9ytxZ4g8eJNF85sJQu-w',
-            'iss' => 'https://www.my-service.com',
+            'sub'                   => 'UgqO4SLcNupYBXzGJ5unB4tIf5Q9Zo5Gau5p2vB2FlfrA6v1MXKOHobo9-vI55Ci',
+            'iat'                   => time(),
+            'nbf'                   => time(),
+            'exp'                   => time() + 1800,
+            'jti'                   => 'A6YXd392GJHdSe9ytxZ4g8eJNF85sJQu-w',
+            'iss'                   => 'https://www.my-service.com',
         ];
 
         $key = $this->applicationContext->getApplication()->getPrivateKeys()->selectKey('sig', 'RS256');

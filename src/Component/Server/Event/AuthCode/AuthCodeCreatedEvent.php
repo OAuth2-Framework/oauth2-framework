@@ -243,14 +243,14 @@ final class AuthCodeCreatedEvent extends Event
     public function getPayload()
     {
         return (object) [
-            'user_account_id' => $this->userAccountId->getValue(),
-            'client_id' => $this->clientId->getValue(),
-            'expires_at' => $this->expiresAt->getTimestamp(),
-            'parameters' => (object) $this->parameters->all(),
-            'metadatas' => (object) $this->metadatas->all(),
-            'scopes' => $this->scopes,
-            'redirect_uri' => $this->redirectUri,
-            'query_parameters' => (object) $this->queryParameters,
+            'user_account_id'    => $this->userAccountId->getValue(),
+            'client_id'          => $this->clientId->getValue(),
+            'expires_at'         => $this->expiresAt->getTimestamp(),
+            'parameters'         => (object) $this->parameters->all(),
+            'metadatas'          => (object) $this->metadatas->all(),
+            'scopes'             => $this->scopes,
+            'redirect_uri'       => $this->redirectUri,
+            'query_parameters'   => (object) $this->queryParameters,
             'with_refresh_token' => $this->withRefreshToken,
             'resource_server_id' => $this->resourceServerId ? $this->resourceServerId->getValue() : null,
         ];

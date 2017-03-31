@@ -52,8 +52,6 @@ abstract class ClientSecretPost implements TokenEndpointAuthMethodInterface
 
             return ClientId::create($parameters['client_id']);
         }
-
-        return null;
     }
 
     /**

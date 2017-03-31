@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 use OAuth2Framework\Component\Server\TokenType;
 use function Fluent\create;
-use OAuth2Framework\Bundle\Server\TokenType\MacToken;
 
 return [
     TokenType\BearerToken::class => create()

@@ -164,9 +164,9 @@ final class JWTBearerGrantType implements GrantTypeInterface
      * @param GrantTypeData $grantTypeResponse
      * @param JWSInterface  $jws
      *
-     * @return GrantTypeData
-     *
      * @throws OAuth2Exception
+     *
+     * @return GrantTypeData
      */
     private function checkJWTSignature(GrantTypeData $grantTypeResponse, JWSInterface $jws): GrantTypeData
     {
@@ -218,7 +218,5 @@ final class JWTBearerGrantType implements GrantTypeInterface
         if (null !== $client) {
             return $client->getPublicId();
         }
-
-        return null;
     }
 }

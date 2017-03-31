@@ -14,9 +14,9 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\Server\DependencyInjection\Source\Grant;
 
 use Fluent\PhpConfigFileLoader;
-use SpomkyLabs\JoseBundle\Helper\ConfigurationHelper;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\ActionableSource;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\SourceInterface;
+use SpomkyLabs\JoseBundle\Helper\ConfigurationHelper;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -49,7 +49,7 @@ final class IdTokenSource extends ActionableSource
             $source->prepend($bundleConfig, $path.'['.$this->name().']', $container);
         }
         $currentPath = $path.'['.$this->name().']';
-        $accessor =  PropertyAccess::createPropertyAccessor();
+        $accessor = PropertyAccess::createPropertyAccessor();
         $sourceConfig = $accessor->getValue($bundleConfig, $currentPath);
 
         if (true === $sourceConfig['enabled']) {
@@ -71,7 +71,7 @@ final class IdTokenSource extends ActionableSource
         foreach ($this->subSources as $source) {
             $source->load($path, $container, $config);
         }
-        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__ . '/../../../Resources/config/grant'));
+        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/grant'));
         $loader->load('id_token.php');
         $loader->load('userinfo_scope_support.php');
     }

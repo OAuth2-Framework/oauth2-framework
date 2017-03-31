@@ -16,6 +16,6 @@ use OAuth2Framework\Component\Server\ResponseType\ResponseTypeManager;
 use function Fluent\create;
 
 return [
-    GrantTypeManager::class => create(),
+    GrantTypeManager::class    => create(),
     ResponseTypeManager::class => create(),
 ];

@@ -19,9 +19,9 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 abstract class ArraySource implements SourceInterface
 {
     /**
-     * @param string $path
+     * @param string           $path
      * @param ContainerBuilder $container
-     * @param array $config
+     * @param array            $config
      */
     public function load(string $path, ContainerBuilder $container, array $config)
     {
@@ -46,9 +46,10 @@ abstract class ArraySource implements SourceInterface
     }
 
     /**
-     * @param string $path
+     * @param string           $path
      * @param ContainerBuilder $container
-     * @param array $config
+     * @param array            $config
+     *
      * @return mixed
      */
     abstract protected function continueLoading(string $path, ContainerBuilder $container, array $config);

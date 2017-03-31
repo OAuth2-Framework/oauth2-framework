@@ -1,12 +1,21 @@
 <?php
 
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014-2017 Spomky-Labs
+ *
+ * This software may be modified and distributed under the terms
+ * of the MIT license.  See the LICENSE file for details.
+ */
+
 namespace OAuth2Framework\Component\Client\Request;
 
 interface OAuth2RequestInterface
 {
     /**
      * If this method is called, requests using the https scheme without a valid certificates are allowed.
-     * We do not recommend you to call this method
+     * We do not recommend you to call this method.
      */
     public function allowUnsecuredRequests();
 
@@ -28,20 +37,21 @@ interface OAuth2RequestInterface
     public function setProxy($proxy);
 
     /**
-     * Returns the proxy settings
+     * Returns the proxy settings.
      *
      * @return null|string
      */
     public function getProxy();
 
     /**
-     * Unset the proxy settings
+     * Unset the proxy settings.
      */
     public function unsetProxy();
 
     /**
      * This method will send a request against the resource server.
-     * The
+     * The.
+     *
      * @param string $method
      * @param string $resource
      *

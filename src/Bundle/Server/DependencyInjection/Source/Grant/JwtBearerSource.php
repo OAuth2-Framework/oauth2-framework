@@ -14,9 +14,9 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\Server\DependencyInjection\Source\Grant;
 
 use Fluent\PhpConfigFileLoader;
-use SpomkyLabs\JoseBundle\Helper\ConfigurationHelper;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\ActionableSource;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\SourceInterface;
+use SpomkyLabs\JoseBundle\Helper\ConfigurationHelper;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -51,7 +51,7 @@ final class JwtBearerSource extends ActionableSource
         foreach ($this->subSources as $source) {
             $source->load($path, $container, $config);
         }
-        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__ . '/../../../Resources/config/grant'));
+        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/grant'));
         $loader->load('jwt_bearer.php');
     }
 
@@ -107,7 +107,7 @@ final class JwtBearerSource extends ActionableSource
     public function prepend(array $bundleConfig, string $path, ContainerBuilder $container)
     {
         $currentPath = $path.'['.$this->name().']';
-        $accessor =  PropertyAccess::createPropertyAccessor();
+        $accessor = PropertyAccess::createPropertyAccessor();
         $sourceConfig = $accessor->getValue($bundleConfig, $currentPath);
 
         if (true === $sourceConfig['enabled']) {
@@ -159,6 +159,4 @@ final class JwtBearerSource extends ActionableSource
         }
         ConfigurationHelper::addJWTLoader($container, $this->name(), sprintf('jose.verifier.%s', $this->name()), sprintf('jose.checker.%s', $this->name()), $decrypter, false);
     }
-
-
 }

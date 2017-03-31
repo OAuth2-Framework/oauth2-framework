@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014-2017 Spomky-Labs
+ *
+ * This software may be modified and distributed under the terms
+ * of the MIT license.  See the LICENSE file for details.
+ */
+
 namespace OAuth2Framework\Component\Client\Behaviour;
 
 use Assert\Assertion;
@@ -16,7 +25,7 @@ trait Metadata
      * @param mixed  $value
      */
     abstract protected function setValue($key, $value);
-    
+
     /**
      * @param string $name
      * @param $arguments
@@ -41,7 +50,7 @@ trait Metadata
         }
         throw new \BadMethodCallException(sprintf('Method "%s" does not exists.', $name));
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -64,6 +73,7 @@ trait Metadata
         if (property_exists($this, $key)) {
             return $this->$key;
         }
+
         return $this->getValues()[$key];
     }
 
@@ -76,10 +86,10 @@ trait Metadata
 
         if (property_exists($this, $key)) {
             $this->$key = $value;
-            
+
             return;
         }
-        
+
         $this->setValue($key, $value);
     }
 
@@ -92,7 +102,9 @@ trait Metadata
     {
         return preg_replace_callback(
             '/(^|[a-z])([A-Z])/',
-            function ($m) { return mb_strtolower(mb_strlen($m[1], '8bit') ? sprintf('%s_%s', $m[1], $m[2]) : $m[2], '8bit'); },
+            function ($m) {
+                return mb_strtolower(mb_strlen($m[1], '8bit') ? sprintf('%s_%s', $m[1], $m[2]) : $m[2], '8bit');
+            },
             $word
         );
     }

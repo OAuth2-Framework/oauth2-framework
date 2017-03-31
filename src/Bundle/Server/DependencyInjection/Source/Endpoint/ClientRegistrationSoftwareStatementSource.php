@@ -14,8 +14,8 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\Server\DependencyInjection\Source\Endpoint;
 
 use Fluent\PhpConfigFileLoader;
-use SpomkyLabs\JoseBundle\Helper\ConfigurationHelper;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\ActionableSource;
+use SpomkyLabs\JoseBundle\Helper\ConfigurationHelper;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -33,7 +33,7 @@ final class ClientRegistrationSoftwareStatementSource extends ActionableSource
         }
         $container->setAlias($path.'.key_set', $config['key_set']);
 
-        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__ . '/../../../Resources/config/endpoint'));
+        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint'));
         $loader->load('client_registration_software_statement.php');
     }
 
@@ -82,7 +82,7 @@ final class ClientRegistrationSoftwareStatementSource extends ActionableSource
     public function prepend(array $bundleConfig, string $path, ContainerBuilder $container)
     {
         $currentPath = $path.'['.$this->name().']';
-        $accessor =  PropertyAccess::createPropertyAccessor();
+        $accessor = PropertyAccess::createPropertyAccessor();
         $sourceConfig = $accessor->getValue($bundleConfig, $currentPath);
 
         if (true === $sourceConfig['enabled']) {

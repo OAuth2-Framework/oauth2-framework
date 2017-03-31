@@ -164,8 +164,6 @@ final class RefreshTokenRepository implements RefreshTokenRepositoryInterface
                 return $item->get();
             }
         }
-
-        return null;
     }
 
     /**

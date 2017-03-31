@@ -11,9 +11,8 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use OAuth2Framework\Component\Server\TokenType;
-use function Fluent\create;
 use OAuth2Framework\Bundle\Server\TokenType\MacToken;
+use function Fluent\create;
 
 return [
     MacToken::class => create()

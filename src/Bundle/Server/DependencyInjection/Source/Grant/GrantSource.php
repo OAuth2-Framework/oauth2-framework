@@ -63,7 +63,7 @@ final class GrantSource extends ArraySource
             $source->load($path, $container, $config);
         }
 
-        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__ . '/../../../Resources/config/grant'));
+        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/grant'));
         $loader->load('grant.php');
     }
 

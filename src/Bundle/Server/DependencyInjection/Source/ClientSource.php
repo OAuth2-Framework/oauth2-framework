@@ -33,7 +33,7 @@ final class ClientSource extends ArraySource
      */
     protected function continueLoading(string $path, ContainerBuilder $container, array $config)
     {
-        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__ . '/../../Resources/config'));
+        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../Resources/config'));
         $loader->load('client.php');
     }
 

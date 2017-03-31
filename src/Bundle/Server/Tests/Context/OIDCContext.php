@@ -32,11 +32,9 @@ use Behat\Symfony2Extension\Context\KernelDictionary;
 use Jose\JWTCreatorInterface;
 use Jose\Loader;
 use Jose\Object\JWSInterface;
+use OAuth2Framework\Bundle\Server\Model\ClientRepository;
 use OAuth2Framework\Component\Server\Model\Client\Client;
 use OAuth2Framework\Component\Server\Model\Client\ClientId;
-use OAuth2Framework\Component\Server\Model\IdToken\IdTokenId;
-use OAuth2Framework\Component\Server\Model\IdToken\IdTokenLoader;
-use OAuth2Framework\Bundle\Server\Model\ClientRepository;
 
 final class OIDCContext implements Context
 {
@@ -308,7 +306,6 @@ final class OIDCContext implements Context
             [],
             []
         );
-
     }
 
     /**
@@ -509,30 +506,30 @@ final class OIDCContext implements Context
         ];
 
         $payload = [
-            'name' => 'John Doe',
-            'given_name' => 'John',
-            'middle_name' => 'Jack',
-            'family_name' => 'Doe',
-            'nickname' => 'Little John',
-            'preferred_username' => 'j-d',
-            'profile' => 'https://profile.doe.fr/john/',
-            'picture' => 'https://www.google.com',
-            'website' => 'https://john.doe.com',
-            'gender' => 'M',
-            'birthdate' => '1950-01-01',
-            'zoneinfo' => 'Europe/Paris',
-            'locale' => 'en',
-            'updated_at' => time() - 10,
-            'email' => 'root@localhost.com',
-            'email_verified' => false,
-            'phone_number' => '+0123456789',
+            'name'                  => 'John Doe',
+            'given_name'            => 'John',
+            'middle_name'           => 'Jack',
+            'family_name'           => 'Doe',
+            'nickname'              => 'Little John',
+            'preferred_username'    => 'j-d',
+            'profile'               => 'https://profile.doe.fr/john/',
+            'picture'               => 'https://www.google.com',
+            'website'               => 'https://john.doe.com',
+            'gender'                => 'M',
+            'birthdate'             => '1950-01-01',
+            'zoneinfo'              => 'Europe/Paris',
+            'locale'                => 'en',
+            'updated_at'            => time() - 10,
+            'email'                 => 'root@localhost.com',
+            'email_verified'        => false,
+            'phone_number'          => '+0123456789',
             'phone_number_verified' => true,
-            'sub' => 'UgqO4SLcNupYBXzGJ5unB4tIf5Q9Zo5Gau5p2vB2FlfrA6v1MXKOHobo9-vI55Ci',
-            'iat' => time(),
-            'nbf' => time(),
-            'exp' => time() + 1800,
-            'jti' => 'A6YXd392GJHdSe9ytxZ4g8eJNF85sJQu-w',
-            'iss' => 'https://www.my-service.com',
+            'sub'                   => 'UgqO4SLcNupYBXzGJ5unB4tIf5Q9Zo5Gau5p2vB2FlfrA6v1MXKOHobo9-vI55Ci',
+            'iat'                   => time(),
+            'nbf'                   => time(),
+            'exp'                   => time() + 1800,
+            'jti'                   => 'A6YXd392GJHdSe9ytxZ4g8eJNF85sJQu-w',
+            'iss'                   => 'https://www.my-service.com',
         ];
 
         $key = $this->getContainer()->get('oauth2_server.grant.id_token.key_set')->selectKey('sig', 'RS256');

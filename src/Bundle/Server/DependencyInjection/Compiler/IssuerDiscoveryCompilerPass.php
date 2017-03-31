@@ -13,11 +13,11 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Server\DependencyInjection\Compiler;
 
+use OAuth2Framework\Bundle\Server\Routing\RouteLoader;
+use OAuth2Framework\Bundle\Server\Service\IssuerDiscoveryFactory;
 use OAuth2Framework\Component\Server\Endpoint\IssuerDiscovery\IssuerDiscoveryEndpoint;
 use OAuth2Framework\Component\Server\Middleware\OAuth2ResponseMiddleware;
 use OAuth2Framework\Component\Server\Middleware\Pipe;
-use OAuth2Framework\Bundle\Server\Routing\RouteLoader;
-use OAuth2Framework\Bundle\Server\Service\IssuerDiscoveryFactory;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;

@@ -15,7 +15,6 @@ namespace OAuth2Framework\Bundle\Server\OpenIdConnectPlugin;
 
 use Assert\Assertion;
 use Matthias\BundlePlugins\BundlePlugin;
-use SpomkyLabs\JoseBundle\Helper\ConfigurationHelper;
 use OAuth2Framework\Bundle\Server\CommonPluginMethod;
 use OAuth2Framework\Bundle\Server\OpenIdConnectPlugin\DependencyInjection\Compiler\ClaimSourceCompilerPass;
 use OAuth2Framework\Bundle\Server\OpenIdConnectPlugin\DependencyInjection\Compiler\IdTokenMetadataCompilerPass;
@@ -27,6 +26,7 @@ use OAuth2Framework\Bundle\Server\OpenIdConnectPlugin\DependencyInjection\Compil
 use OAuth2Framework\Bundle\Server\OpenIdConnectPlugin\DependencyInjection\Compiler\UserInfoEndpointSignatureSupportCompilerPass;
 use OAuth2Framework\Bundle\Server\OpenIdConnectPlugin\DependencyInjection\Compiler\UserinfoRouteCompilerPass;
 use OAuth2Framework\Bundle\Server\OpenIdConnectPlugin\DependencyInjection\Compiler\UserInfoScopeSupportCompilerPass;
+use SpomkyLabs\JoseBundle\Helper\ConfigurationHelper;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;

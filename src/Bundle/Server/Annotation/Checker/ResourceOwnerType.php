@@ -13,10 +13,10 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Server\Annotation\Checker;
 
-use OAuth2Framework\Component\Server\Model\Client\Client;
-use OAuth2Framework\Component\Server\Model\UserAccount\UserAccountInterface;
 use OAuth2Framework\Bundle\Server\Annotation\OAuth2;
 use OAuth2Framework\Bundle\Server\Security\Authentication\Token\OAuth2Token;
+use OAuth2Framework\Component\Server\Model\Client\Client;
+use OAuth2Framework\Component\Server\Model\UserAccount\UserAccountInterface;
 
 final class ResourceOwnerType implements CheckerInterface
 {

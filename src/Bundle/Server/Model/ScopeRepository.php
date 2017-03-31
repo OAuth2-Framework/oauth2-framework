@@ -60,7 +60,7 @@ final class ScopeRepository implements ScopeRepositoryInterface
         $name = $scopePolicy->name();
         $this->scopePolicies[$name] = $scopePolicy;
 
-        if (true === $isDefault ) {
+        if (true === $isDefault) {
             $this->defaultScopePolicy = $name;
         }
 

@@ -11,22 +11,22 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use OAuth2Framework\Bundle\Server\Model\ClientRepository;
+use Interop\Http\Factory\ResponseFactoryInterface;
+use OAuth2Framework\Bundle\Server\Controller\AuthorizationEndpointController;
 use OAuth2Framework\Bundle\Server\Form\FormFactory;
 use OAuth2Framework\Bundle\Server\Form\Handler\AuthorizationFormHandler;
-use OAuth2Framework\Bundle\Server\Controller\AuthorizationEndpointController;
-use Interop\Http\Factory\ResponseFactoryInterface;
-use OAuth2Framework\Component\Server\Endpoint\Authorization\AuthorizationFactory;
-use OAuth2Framework\Component\Server\Endpoint\Authorization\UserAccountDiscovery\UserAccountDiscoveryManager;
-use OAuth2Framework\Component\Server\Endpoint\Authorization\BeforeConsentScreen\BeforeConsentScreenManager;
-use OAuth2Framework\Component\Server\Endpoint\Authorization\AfterConsentScreen\AfterConsentScreenManager;
-use OAuth2Framework\Component\Server\Endpoint\Authorization\AuthorizationRequestLoader;
-use OAuth2Framework\Component\Server\Endpoint\Authorization\ParameterChecker\ParameterCheckerManager;
 use OAuth2Framework\Bundle\Server\Form\Type\AuthorizationType;
-use OAuth2Framework\Component\Server\Endpoint\Authorization\ParameterChecker;
-use OAuth2Framework\Component\Server\ResponseType\ResponseTypeManager;
-use OAuth2Framework\Component\Server\ResponseMode\ResponseModeManager;
+use OAuth2Framework\Bundle\Server\Model\ClientRepository;
 use OAuth2Framework\Bundle\Server\Model\ScopeRepository;
+use OAuth2Framework\Component\Server\Endpoint\Authorization\AfterConsentScreen\AfterConsentScreenManager;
+use OAuth2Framework\Component\Server\Endpoint\Authorization\AuthorizationFactory;
+use OAuth2Framework\Component\Server\Endpoint\Authorization\AuthorizationRequestLoader;
+use OAuth2Framework\Component\Server\Endpoint\Authorization\BeforeConsentScreen\BeforeConsentScreenManager;
+use OAuth2Framework\Component\Server\Endpoint\Authorization\ParameterChecker;
+use OAuth2Framework\Component\Server\Endpoint\Authorization\ParameterChecker\ParameterCheckerManager;
+use OAuth2Framework\Component\Server\Endpoint\Authorization\UserAccountDiscovery\UserAccountDiscoveryManager;
+use OAuth2Framework\Component\Server\ResponseMode\ResponseModeManager;
+use OAuth2Framework\Component\Server\ResponseType\ResponseTypeManager;
 use OAuth2Framework\Component\Server\TokenType\TokenTypeManager;
 use function Fluent\create;
 use function Fluent\get;
@@ -65,7 +65,7 @@ return [
         ->arguments([
             get(\OAuth2Framework\Component\Server\Middleware\OAuth2ResponseMiddleware::class),
             get(\OAuth2Framework\Component\Server\Middleware\TokenTypeMiddleware::class),
-            get(AuthorizationEndpointController::class)
+            get(AuthorizationEndpointController::class),
         ]),
 
     AuthorizationFactory::class => create()
@@ -125,6 +125,6 @@ return [
         ->tag('oauth2_server_authorization_parameter_checker'),
 
     UserAccountDiscoveryManager::class => create(),
-    BeforeConsentScreenManager::class => create(),
-    AfterConsentScreenManager::class => create(),
+    BeforeConsentScreenManager::class  => create(),
+    AfterConsentScreenManager::class   => create(),
 ];

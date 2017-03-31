@@ -154,7 +154,7 @@ final class AuthorizationCodeGrantType implements GrantTypeInterface
             throw new OAuth2Exception(
                 400,
                 [
-                    'error' => OAuth2ResponseFactoryManager::ERROR_INVALID_GRANT,
+                    'error'             => OAuth2ResponseFactoryManager::ERROR_INVALID_GRANT,
                     'error_description' => 'Code does not exist or is invalid for the client.',
                 ]
             );
@@ -176,7 +176,7 @@ final class AuthorizationCodeGrantType implements GrantTypeInterface
                 throw new OAuth2Exception(
                     400,
                     [
-                        'error' => OAuth2ResponseFactoryManager::ERROR_INVALID_REQUEST,
+                        'error'             => OAuth2ResponseFactoryManager::ERROR_INVALID_REQUEST,
                         'error_description' => 'The \'client_id\' parameter is required for non-confidential clients.',
                     ]
                 );
@@ -186,7 +186,7 @@ final class AuthorizationCodeGrantType implements GrantTypeInterface
 
     /**
      * @param \OAuth2Framework\Component\Server\Model\AuthCode\AuthCode $authCode
-     * @param array                           $parameters
+     * @param array                                                     $parameters
      *
      * @throws OAuth2Exception
      */
@@ -208,7 +208,7 @@ final class AuthorizationCodeGrantType implements GrantTypeInterface
             throw new OAuth2Exception(
                 400,
                 [
-                    'error' => OAuth2ResponseFactoryManager::ERROR_INVALID_REQUEST,
+                    'error'             => OAuth2ResponseFactoryManager::ERROR_INVALID_REQUEST,
                     'error_description' => $e->getMessage(),
                 ]
             );
@@ -218,7 +218,7 @@ final class AuthorizationCodeGrantType implements GrantTypeInterface
             throw new OAuth2Exception(
                 400,
                 [
-                    'error' => OAuth2ResponseFactoryManager::ERROR_INVALID_GRANT,
+                    'error'             => OAuth2ResponseFactoryManager::ERROR_INVALID_GRANT,
                     'error_description' => 'The parameter \'code_verifier\' is invalid.',
                 ]
             );
@@ -227,7 +227,7 @@ final class AuthorizationCodeGrantType implements GrantTypeInterface
 
     /**
      * @param \OAuth2Framework\Component\Server\Model\AuthCode\AuthCode $authCode
-     * @param string                          $redirectUri
+     * @param string                                                    $redirectUri
      *
      * @throws OAuth2Exception
      */
@@ -237,7 +237,7 @@ final class AuthorizationCodeGrantType implements GrantTypeInterface
             throw new OAuth2Exception(
                 400,
                 [
-                    'error' => OAuth2ResponseFactoryManager::ERROR_INVALID_REQUEST,
+                    'error'             => OAuth2ResponseFactoryManager::ERROR_INVALID_REQUEST,
                     'error_description' => 'The parameter \'redirect_uri\' is invalid.',
                 ]
             );
@@ -246,7 +246,7 @@ final class AuthorizationCodeGrantType implements GrantTypeInterface
 
     /**
      * @param \OAuth2Framework\Component\Server\Model\AuthCode\AuthCode $authCode
-     * @param Client                          $client
+     * @param Client                                                    $client
      *
      * @throws OAuth2Exception
      */
@@ -256,7 +256,7 @@ final class AuthorizationCodeGrantType implements GrantTypeInterface
             throw new OAuth2Exception(
                 400,
                 [
-                    'error' => OAuth2ResponseFactoryManager::ERROR_INVALID_GRANT,
+                    'error'             => OAuth2ResponseFactoryManager::ERROR_INVALID_GRANT,
                     'error_description' => 'Code does not exist or is invalid for the client.',
                 ]
             );
@@ -266,7 +266,7 @@ final class AuthorizationCodeGrantType implements GrantTypeInterface
             throw new OAuth2Exception(
                 400,
                 [
-                    'error' => OAuth2ResponseFactoryManager::ERROR_INVALID_GRANT,
+                    'error'             => OAuth2ResponseFactoryManager::ERROR_INVALID_GRANT,
                     'error_description' => 'The authorization code has expired.',
                 ]
             );

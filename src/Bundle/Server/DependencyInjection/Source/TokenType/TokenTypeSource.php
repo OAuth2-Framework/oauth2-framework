@@ -32,7 +32,7 @@ final class TokenTypeSource extends ArraySource
      */
     public function __construct()
     {
-        $this->tokenTypes =[
+        $this->tokenTypes = [
             new BearerTokenTypeSource(),
             new MacTokenTypeSource(),
         ];
@@ -58,7 +58,6 @@ final class TokenTypeSource extends ArraySource
     {
         return 'token_type';
     }
-
 
     /**
      * {@inheritdoc}

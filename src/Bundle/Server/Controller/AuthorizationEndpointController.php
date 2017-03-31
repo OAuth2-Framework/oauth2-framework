@@ -14,6 +14,9 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\Server\Controller;
 
 use Interop\Http\Factory\ResponseFactoryInterface;
+use OAuth2Framework\Bundle\Server\Form\FormFactory;
+use OAuth2Framework\Bundle\Server\Form\Handler\AuthorizationFormHandler;
+use OAuth2Framework\Bundle\Server\Form\Model\AuthorizationModel;
 use OAuth2Framework\Component\Server\Endpoint\Authorization\AfterConsentScreen\AfterConsentScreenManager;
 use OAuth2Framework\Component\Server\Endpoint\Authorization\Authorization;
 use OAuth2Framework\Component\Server\Endpoint\Authorization\AuthorizationEndpoint;
@@ -23,9 +26,6 @@ use OAuth2Framework\Component\Server\Endpoint\Authorization\Exception\ProcessAut
 use OAuth2Framework\Component\Server\Endpoint\Authorization\UserAccountDiscovery\UserAccountDiscoveryManager;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use OAuth2Framework\Bundle\Server\Form\FormFactory;
-use OAuth2Framework\Bundle\Server\Form\Handler\AuthorizationFormHandler;
-use OAuth2Framework\Bundle\Server\Form\Model\AuthorizationModel;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -88,22 +88,22 @@ final class AuthorizationEndpointController extends AuthorizationEndpoint
     /**
      * AuthorizationEndpointController constructor.
      *
-     * @param EngineInterface $templateEngine
-     * @param string $template
-     * @param FormFactory $formFactory
-     * @param AuthorizationFormHandler $formHandler
-     * @param TranslatorInterface $translator
-     * @param RouterInterface $router
-     * @param string $loginRoute
-     * @param array $loginRouteParams
-     * @param ResponseFactoryInterface $responseFactory
-     * @param SessionInterface $session
-     * @param AuthorizationFactory $authorizationFactory
+     * @param EngineInterface             $templateEngine
+     * @param string                      $template
+     * @param FormFactory                 $formFactory
+     * @param AuthorizationFormHandler    $formHandler
+     * @param TranslatorInterface         $translator
+     * @param RouterInterface             $router
+     * @param string                      $loginRoute
+     * @param array                       $loginRouteParams
+     * @param ResponseFactoryInterface    $responseFactory
+     * @param SessionInterface            $session
+     * @param AuthorizationFactory        $authorizationFactory
      * @param UserAccountDiscoveryManager $userAccountDiscoveryManager
-     * @param BeforeConsentScreenManager $beforeConsentScreenManager
-     * @param AfterConsentScreenManager $afterConsentScreenManager
+     * @param BeforeConsentScreenManager  $beforeConsentScreenManager
+     * @param AfterConsentScreenManager   $afterConsentScreenManager
      */
-    public function __construct(EngineInterface $templateEngine, string $template, FormFactory $formFactory, AuthorizationFormHandler $formHandler,TranslatorInterface $translator, RouterInterface $router, string $loginRoute, array $loginRouteParams, ResponseFactoryInterface $responseFactory, SessionInterface $session, AuthorizationFactory $authorizationFactory, UserAccountDiscoveryManager $userAccountDiscoveryManager, BeforeConsentScreenManager $beforeConsentScreenManager, AfterConsentScreenManager $afterConsentScreenManager)
+    public function __construct(EngineInterface $templateEngine, string $template, FormFactory $formFactory, AuthorizationFormHandler $formHandler, TranslatorInterface $translator, RouterInterface $router, string $loginRoute, array $loginRouteParams, ResponseFactoryInterface $responseFactory, SessionInterface $session, AuthorizationFactory $authorizationFactory, UserAccountDiscoveryManager $userAccountDiscoveryManager, BeforeConsentScreenManager $beforeConsentScreenManager, AfterConsentScreenManager $afterConsentScreenManager)
     {
         parent::__construct($authorizationFactory, $userAccountDiscoveryManager, $beforeConsentScreenManager, $afterConsentScreenManager);
 
@@ -120,8 +120,6 @@ final class AuthorizationEndpointController extends AuthorizationEndpoint
 
         //$this->allowScopeSelection = $allowScopeSelection;
     }
-
-
 
     /**
      * @param ServerRequestInterface $request
@@ -161,11 +159,11 @@ final class AuthorizationEndpointController extends AuthorizationEndpoint
 
     /**
      * @param ServerRequestInterface $request
-     * @param Authorization $authorization
-     *
-     * @return ResponseInterface
+     * @param Authorization          $authorization
      *
      * @throws ProcessAuthorizationException
+     *
+     * @return ResponseInterface
      */
     protected function processConsentScreen(ServerRequestInterface $request, Authorization $authorization): ResponseInterface
     {
@@ -188,7 +186,6 @@ final class AuthorizationEndpointController extends AuthorizationEndpoint
 
             if (is_bool($authorization->isAuthorized())) {
                 throw new ProcessAuthorizationException($authorization);
-
                 /*return [
                     'save_authorization' => $authorization_model->isSaveConfiguration(),
                 ];*/
@@ -201,7 +198,7 @@ final class AuthorizationEndpointController extends AuthorizationEndpoint
     /**
      * @param Authorization $authorization
      * @param FormInterface $form
-     * @param string|null $ui_locale
+     * @param string|null   $ui_locale
      *
      * @return ResponseInterface
      */

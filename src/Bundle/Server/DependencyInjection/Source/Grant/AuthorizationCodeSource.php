@@ -30,7 +30,7 @@ final class AuthorizationCodeSource extends ActionableSource
             $container->setParameter($path.'.'.$k, $v);
         }
 
-        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__ . '/../../../Resources/config/grant'));
+        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/grant'));
         $loader->load('authorization_code.php');
     }
 

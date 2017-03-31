@@ -12,11 +12,11 @@ declare(strict_types=1);
  */
 
 use Interop\Http\Factory\ResponseFactoryInterface;
+use OAuth2Framework\Bundle\Server\Response\AuthenticateResponseFactory;
 use OAuth2Framework\Component\Server\Middleware\OAuth2ResponseMiddleware;
 use OAuth2Framework\Component\Server\Response\Factory;
 use OAuth2Framework\Component\Server\Response\OAuth2ResponseFactoryManager;
 use OAuth2Framework\Component\Server\TokenEndpointAuthMethod\TokenEndpointAuthMethodManager;
-use OAuth2Framework\Bundle\Server\Response\AuthenticateResponseFactory;
 use function Fluent\create;
 use function Fluent\get;
 

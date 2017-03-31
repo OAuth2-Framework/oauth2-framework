@@ -233,15 +233,15 @@ final class AccessTokenCreatedEvent extends Event
     public function getPayload()
     {
         return (object) [
-            'resource_owner_id' => $this->resourceOwnerId->getValue(),
+            'resource_owner_id'    => $this->resourceOwnerId->getValue(),
             'resource_owner_class' => get_class($this->resourceOwnerId),
-            'client_id' => $this->clientId->getValue(),
-            'parameters' => (object) $this->parameters->all(),
-            'metadatas' => (object) $this->metadatas->all(),
-            'scopes' => $this->scopes,
-            'expires_at' => $this->expiresAt->getTimestamp(),
-            'refresh_token_id' => $this->refreshTokenId ? $this->refreshTokenId->getValue() : null,
-            'resource_server_id' => $this->resourceServerId ? $this->resourceServerId->getValue() : null,
+            'client_id'            => $this->clientId->getValue(),
+            'parameters'           => (object) $this->parameters->all(),
+            'metadatas'            => (object) $this->metadatas->all(),
+            'scopes'               => $this->scopes,
+            'expires_at'           => $this->expiresAt->getTimestamp(),
+            'refresh_token_id'     => $this->refreshTokenId ? $this->refreshTokenId->getValue() : null,
+            'resource_server_id'   => $this->resourceServerId ? $this->resourceServerId->getValue() : null,
         ];
     }
 }

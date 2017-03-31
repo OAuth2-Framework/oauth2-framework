@@ -111,8 +111,8 @@ final class BearerToken implements TokenTypeInterface
     {
         $methods = [
             'isTokenFromAuthorizationHeaderAllowed' => 'getTokenFromAuthorizationHeaders',
-            'isTokenFromQueryStringAllowed' => 'getTokenFromQuery',
-            'isTokenFromRequestBodyAllowed' => 'getTokenFromRequestBody',
+            'isTokenFromQueryStringAllowed'         => 'getTokenFromQuery',
+            'isTokenFromRequestBodyAllowed'         => 'getTokenFromRequestBody',
         ];
 
         foreach ($methods as $test => $method) {
@@ -146,7 +146,7 @@ final class BearerToken implements TokenTypeInterface
         }
 
         foreach ($authorization_headers as $authorization_header) {
-            if (1 === preg_match('/' . preg_quote('Bearer', '/') . '\s([a-zA-Z0-9\-_\+~\/\.]+)/', $authorization_header, $matches)) {
+            if (1 === preg_match('/'.preg_quote('Bearer', '/').'\s([a-zA-Z0-9\-_\+~\/\.]+)/', $authorization_header, $matches)) {
                 return $matches[1];
             }
         }

@@ -11,17 +11,17 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use OAuth2Framework\Component\Server\ResponseType\IdTokenResponseType;
-use OAuth2Framework\Component\Server\Model\IdToken\IdTokenBuilderFactory;
-use function Fluent\create;
-use function Fluent\get;
 use OAuth2Framework\Component\Server\Endpoint\UserInfo\ClaimSource\ClaimSourceManager;
 use OAuth2Framework\Component\Server\Endpoint\UserInfo\ScopeSupport\UserInfoScopeSupportManager;
 use OAuth2Framework\Component\Server\Endpoint\UserInfo\UserInfo;
+use OAuth2Framework\Component\Server\Model\IdToken\IdTokenBuilderFactory;
+use OAuth2Framework\Component\Server\ResponseType\IdTokenResponseType;
+use function Fluent\create;
+use function Fluent\get;
 
 return [
     UserInfoScopeSupportManager::class => create(),
-    ClaimSourceManager::class => create(),
+    ClaimSourceManager::class          => create(),
 
     UserInfo::class => create()
         ->arguments(

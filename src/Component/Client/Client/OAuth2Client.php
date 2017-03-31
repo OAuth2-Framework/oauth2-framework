@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014-2017 Spomky-Labs
+ *
+ * This software may be modified and distributed under the terms
+ * of the MIT license.  See the LICENSE file for details.
+ */
+
 namespace OAuth2Framework\Component\Client\Client;
 
 use Assert\Assertion;
@@ -21,7 +30,7 @@ class OAuth2Client implements OAuth2ClientInterface
      * @var \OAuth2Framework\Component\Client\AuthenticationMethod\TokenEndpointAuthenticationMethodInterface
      */
     private $authentication_method;
-    
+
     /**
      * @var array
      */
@@ -31,7 +40,7 @@ class OAuth2Client implements OAuth2ClientInterface
      * OAuth2Client constructor.
      *
      * @param \OAuth2Framework\Component\Client\AuthenticationMethod\TokenEndpointAuthenticationMethodInterface $authentication_method
-     * @param array                                                                         $configuration
+     * @param array                                                                                             $configuration
      */
     public function __construct(TokenEndpointAuthenticationMethodInterface $authentication_method, array $configuration)
     {

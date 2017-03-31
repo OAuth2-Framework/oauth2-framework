@@ -26,7 +26,7 @@ final class AuthorizationEndpointPreConfiguredAuthorizationSource extends Action
      */
     protected function continueLoading(string $path, ContainerBuilder $container, array $config)
     {
-        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__ . '/../../../Resources/config/endpoint'));
+        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint'));
         $loader->load('pre_configured_authorization.php');
     }
 
