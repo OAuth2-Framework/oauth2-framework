@@ -88,7 +88,7 @@ final class RevocationContext implements Context
             [],
             [],
             [
-                'HTTP_Content-Type'  => 'application/x-www-form-urlencoded',
+                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );
@@ -121,7 +121,7 @@ final class RevocationContext implements Context
             ],
             [],
             [
-                'HTTP_Content-Type'  => 'application/x-www-form-urlencoded',
+                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );
@@ -156,7 +156,7 @@ final class RevocationContext implements Context
             ],
             [],
             [
-                'HTTP_Content-Type'  => 'application/x-www-form-urlencoded',
+                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );
@@ -191,7 +191,7 @@ final class RevocationContext implements Context
             ],
             [],
             [
-                'HTTP_Content-Type'  => 'application/x-www-form-urlencoded',
+                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );
@@ -222,12 +222,12 @@ final class RevocationContext implements Context
         $this->minkContext->getSession()->getDriver()->getClient()->request(
             'POST', 'https://oauth2.test/token/revocation',
             [
-                'token'           => 'ACCESS_TOKEN_#2',
+                'token' => 'ACCESS_TOKEN_#2',
                 'token_type_hint' => 'bad_hint',
             ],
             [],
             [
-                'HTTP_Content-Type'  => 'application/x-www-form-urlencoded',
+                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );
@@ -241,7 +241,7 @@ final class RevocationContext implements Context
         $this->minkContext->getSession()->getDriver()->getClient()->request(
             'GET', 'https://oauth2.test/token/revocation',
             [
-                'token'           => 'ACCESS_TOKEN_#2',
+                'token' => 'ACCESS_TOKEN_#2',
                 'token_type_hint' => 'bad_hint',
             ],
             [],
@@ -259,12 +259,12 @@ final class RevocationContext implements Context
         $this->minkContext->getSession()->getDriver()->getClient()->request(
             'POST', 'https://oauth2.test/token/revocation',
             [
-                'token'           => 'UNKNOWN_REFRESH_TOKEN_#2',
+                'token' => 'UNKNOWN_REFRESH_TOKEN_#2',
                 'token_type_hint' => 'refresh_token',
             ],
             [],
             [
-                'HTTP_Content-Type'  => 'application/x-www-form-urlencoded',
+                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );
@@ -278,7 +278,7 @@ final class RevocationContext implements Context
         $this->minkContext->getSession()->getDriver()->getClient()->request(
             'GET', 'https://oauth2.test/token/revocation',
             [
-                'token'           => 'UNKNOWN_REFRESH_TOKEN_#2',
+                'token' => 'UNKNOWN_REFRESH_TOKEN_#2',
                 'token_type_hint' => 'refresh_token',
             ],
             [],
@@ -296,9 +296,9 @@ final class RevocationContext implements Context
         $this->minkContext->getSession()->getDriver()->getClient()->request(
             'GET', 'https://oauth2.test/token/revocation',
             [
-                'token'           => 'UNKNOWN_REFRESH_TOKEN_#2',
+                'token' => 'UNKNOWN_REFRESH_TOKEN_#2',
                 'token_type_hint' => 'refresh_token',
-                'callback'        => 'callback',
+                'callback' => 'callback',
             ],
             [],
             [

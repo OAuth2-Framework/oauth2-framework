@@ -67,7 +67,7 @@ final class ClientCredentialsGrantTypeContext implements Context
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
             'grant_type' => 'client_credentials',
-            'client_id'  => 'client2',
+            'client_id' => 'client2',
         ]);
         $request = $request->withHeader('Content-Type', 'application/x-www-form-urlencoded');
 
@@ -83,7 +83,7 @@ final class ClientCredentialsGrantTypeContext implements Context
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
             'grant_type' => 'client_credentials',
-            'scope'      => 'email phone address',
+            'scope' => 'email phone address',
         ]);
         $request = $request->withHeader('Authorization', 'Basic '.base64_encode('client5:secret'));
         $request = $request->withHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -100,7 +100,7 @@ final class ClientCredentialsGrantTypeContext implements Context
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
             'grant_type' => 'client_credentials',
-            'scope'      => 'email phone address',
+            'scope' => 'email phone address',
         ]);
         $request = $request->withHeader('Authorization', 'Basic '.base64_encode('client1:secret'));
         $request = $request->withHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -117,7 +117,7 @@ final class ClientCredentialsGrantTypeContext implements Context
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
             'grant_type' => 'client_credentials',
-            'scope'      => 'email phone address',
+            'scope' => 'email phone address',
         ]);
         $request = $request->withHeader('Authorization', 'Basic '.base64_encode('DISABLED_CLIENT:secret'));
         $request = $request->withHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -133,10 +133,10 @@ final class ClientCredentialsGrantTypeContext implements Context
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
-            'grant_type'            => 'client_credentials',
+            'grant_type' => 'client_credentials',
             'client_assertion_type' => 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
-            'client_assertion'      => $this->generateValidClientAssertion(),
-            'scope'                 => 'email phone address',
+            'client_assertion' => $this->generateValidClientAssertion(),
+            'scope' => 'email phone address',
         ]);
         $request = $request->withHeader('Content-Type', 'application/x-www-form-urlencoded');
 
@@ -151,8 +151,8 @@ final class ClientCredentialsGrantTypeContext implements Context
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
-            'grant_type'    => 'client_credentials',
-            'client_id'     => 'client4',
+            'grant_type' => 'client_credentials',
+            'client_id' => 'client4',
             'client_secret' => 'secret',
         ]);
         $request = $request->withHeader('Content-Type', 'application/x-www-form-urlencoded');

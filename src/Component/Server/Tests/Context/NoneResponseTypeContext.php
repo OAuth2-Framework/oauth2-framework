@@ -55,10 +55,10 @@ final class NoneResponseTypeContext implements Context
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([
-            'client_id'     => 'client1',
-            'redirect_uri'  => 'https://example.com/redirection/callback',
+            'client_id' => 'client1',
+            'redirect_uri' => 'https://example.com/redirection/callback',
             'response_type' => 'none',
-            'state'         => '0123456789',
+            'state' => '0123456789',
         ]);
 
         $this->responseTypeContext->setAuthorizationRequest($request);

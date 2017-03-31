@@ -22,8 +22,8 @@ class RequestFactoryTest extends \PHPUnit_Framework_TestCase
     public function testRequestCreation()
     {
         $client = OAuth2ClientFactory::createFromValues([
-            'public_id'                  => 'foo',
-            'public_secret'              => 'secret',
+            'public_id' => 'foo',
+            'public_secret' => 'secret',
             'token_endpoint_auth_method' => 'client_secret_basic',
         ]);
 

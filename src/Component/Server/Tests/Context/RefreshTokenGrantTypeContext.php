@@ -65,7 +65,7 @@ final class RefreshTokenGrantTypeContext implements Context
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
-            'grant_type'    => 'refresh_token',
+            'grant_type' => 'refresh_token',
             'refresh_token' => 'EXPIRED_REFRESH_TOKEN',
         ]);
         $request = $request->withHeader('Authorization', 'Basic '.base64_encode('client1:secret'));
@@ -82,7 +82,7 @@ final class RefreshTokenGrantTypeContext implements Context
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
-            'grant_type'    => 'refresh_token',
+            'grant_type' => 'refresh_token',
             'refresh_token' => 'REVOKED_REFRESH_TOKEN',
         ]);
         $request = $request->withHeader('Authorization', 'Basic '.base64_encode('client1:secret'));
@@ -99,7 +99,7 @@ final class RefreshTokenGrantTypeContext implements Context
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
-            'grant_type'    => 'refresh_token',
+            'grant_type' => 'refresh_token',
             'refresh_token' => 'VALID_REFRESH_TOKEN',
         ]);
         $request = $request->withHeader('Authorization', 'Basic '.base64_encode('client1:secret'));
@@ -116,9 +116,9 @@ final class RefreshTokenGrantTypeContext implements Context
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
-            'grant_type'    => 'refresh_token',
+            'grant_type' => 'refresh_token',
             'refresh_token' => 'VALID_REFRESH_TOKEN',
-            'client_id'     => 'client2',
+            'client_id' => 'client2',
         ]);
         $request = $request->withHeader('Content-Type', 'application/x-www-form-urlencoded');
 

@@ -51,7 +51,7 @@ final class AuthorizationCodeGrantTypeContext implements Context
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
             'grant_type' => 'authorization_code',
-            'scope'      => 'openid email phone address',
+            'scope' => 'openid email phone address',
         ]);
         $request = $request->withHeader('Authorization', 'Basic '.base64_encode('client1:secret'));
         $request = $request->withHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -68,8 +68,8 @@ final class AuthorizationCodeGrantTypeContext implements Context
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
             'grant_type' => 'authorization_code',
-            'code'       => 'VALID_AUTH_CODE',
-            'scope'      => 'openid email phone address',
+            'code' => 'VALID_AUTH_CODE',
+            'scope' => 'openid email phone address',
         ]);
         $request = $request->withHeader('Authorization', 'Basic '.base64_encode('client1:secret'));
         $request = $request->withHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -85,10 +85,10 @@ final class AuthorizationCodeGrantTypeContext implements Context
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
-            'grant_type'   => 'authorization_code',
-            'code'         => 'VALID_AUTH_CODE',
+            'grant_type' => 'authorization_code',
+            'code' => 'VALID_AUTH_CODE',
             'redirect_uri' => 'http://127.0.0.1/',
-            'scope'        => 'openid email phone address',
+            'scope' => 'openid email phone address',
         ]);
         $request = $request->withHeader('Authorization', 'Basic '.base64_encode('client1:secret'));
         $request = $request->withHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -104,10 +104,10 @@ final class AuthorizationCodeGrantTypeContext implements Context
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
-            'grant_type'   => 'authorization_code',
-            'code'         => 'VALID_AUTH_CODE',
+            'grant_type' => 'authorization_code',
+            'code' => 'VALID_AUTH_CODE',
             'redirect_uri' => 'https://www.example.com/callback',
-            'scope'        => 'openid email phone address',
+            'scope' => 'openid email phone address',
         ]);
         $request = $request->withHeader('Authorization', 'Basic '.base64_encode('client1:secret'));
         $request = $request->withHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -132,10 +132,10 @@ final class AuthorizationCodeGrantTypeContext implements Context
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
-            'grant_type'   => 'authorization_code',
-            'code'         => 'VALID_AUTH_CODE',
+            'grant_type' => 'authorization_code',
+            'code' => 'VALID_AUTH_CODE',
             'redirect_uri' => 'https://www.example.com/callback',
-            'scope'        => 'openid',
+            'scope' => 'openid',
         ]);
         $request = $request->withHeader('Authorization', 'Basic '.base64_encode('client1:secret'));
         $request = $request->withHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -151,10 +151,10 @@ final class AuthorizationCodeGrantTypeContext implements Context
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
-            'grant_type'   => 'authorization_code',
-            'code'         => 'VALID_AUTH_CODE',
+            'grant_type' => 'authorization_code',
+            'code' => 'VALID_AUTH_CODE',
             'redirect_uri' => 'https://www.example.com/callback',
-            'scope'        => 'openid write',
+            'scope' => 'openid write',
         ]);
         $request = $request->withHeader('Authorization', 'Basic '.base64_encode('client1:secret'));
         $request = $request->withHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -170,11 +170,11 @@ final class AuthorizationCodeGrantTypeContext implements Context
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
-            'grant_type'   => 'authorization_code',
-            'code'         => 'VALID_AUTH_CODE',
+            'grant_type' => 'authorization_code',
+            'code' => 'VALID_AUTH_CODE',
             'redirect_uri' => 'https://www.example.com/callback',
-            'scope'        => 'openid',
-            'client_id'    => 'client2',
+            'scope' => 'openid',
+            'client_id' => 'client2',
         ]);
         $request = $request->withHeader('Content-Type', 'application/x-www-form-urlencoded');
 
@@ -189,10 +189,10 @@ final class AuthorizationCodeGrantTypeContext implements Context
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
-            'grant_type'   => 'authorization_code',
-            'code'         => 'EXPIRED_AUTH_CODE',
+            'grant_type' => 'authorization_code',
+            'code' => 'EXPIRED_AUTH_CODE',
             'redirect_uri' => 'https://www.example.com/callback',
-            'scope'        => 'openid',
+            'scope' => 'openid',
         ]);
         $request = $request->withHeader('Authorization', 'Basic '.base64_encode('client1:secret'));
         $request = $request->withHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -208,10 +208,10 @@ final class AuthorizationCodeGrantTypeContext implements Context
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
-            'grant_type'   => 'authorization_code',
-            'code'         => 'REVOKED_AUTH_CODE',
+            'grant_type' => 'authorization_code',
+            'code' => 'REVOKED_AUTH_CODE',
             'redirect_uri' => 'https://www.example.com/callback',
-            'scope'        => 'openid',
+            'scope' => 'openid',
         ]);
         $request = $request->withHeader('Authorization', 'Basic '.base64_encode('client1:secret'));
         $request = $request->withHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -227,10 +227,10 @@ final class AuthorizationCodeGrantTypeContext implements Context
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
-            'grant_type'   => 'authorization_code',
-            'code'         => 'USED_AUTH_CODE',
+            'grant_type' => 'authorization_code',
+            'code' => 'USED_AUTH_CODE',
             'redirect_uri' => 'https://www.example.com/callback',
-            'scope'        => 'openid',
+            'scope' => 'openid',
         ]);
         $request = $request->withHeader('Authorization', 'Basic '.base64_encode('client1:secret'));
         $request = $request->withHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -246,10 +246,10 @@ final class AuthorizationCodeGrantTypeContext implements Context
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
-            'grant_type'   => 'authorization_code',
-            'code'         => 'AUTH_CODE_WITH_CODE_VERIFIER_PLAIN',
+            'grant_type' => 'authorization_code',
+            'code' => 'AUTH_CODE_WITH_CODE_VERIFIER_PLAIN',
             'redirect_uri' => 'https://www.example.com/callback',
-            'scope'        => 'openid',
+            'scope' => 'openid',
         ]);
         $request = $request->withHeader('Authorization', 'Basic '.base64_encode('client1:secret'));
         $request = $request->withHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -265,10 +265,10 @@ final class AuthorizationCodeGrantTypeContext implements Context
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
-            'grant_type'    => 'authorization_code',
-            'code'          => 'AUTH_CODE_WITH_CODE_VERIFIER_PLAIN',
-            'redirect_uri'  => 'https://www.example.com/callback',
-            'scope'         => 'openid',
+            'grant_type' => 'authorization_code',
+            'code' => 'AUTH_CODE_WITH_CODE_VERIFIER_PLAIN',
+            'redirect_uri' => 'https://www.example.com/callback',
+            'scope' => 'openid',
             'code_verifier' => 'BAD CODE VERIFIER',
         ]);
         $request = $request->withHeader('Authorization', 'Basic '.base64_encode('client1:secret'));
@@ -285,10 +285,10 @@ final class AuthorizationCodeGrantTypeContext implements Context
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
-            'grant_type'    => 'authorization_code',
-            'code'          => 'AUTH_CODE_WITH_CODE_VERIFIER_PLAIN',
-            'redirect_uri'  => 'https://www.example.com/callback',
-            'scope'         => 'openid',
+            'grant_type' => 'authorization_code',
+            'code' => 'AUTH_CODE_WITH_CODE_VERIFIER_PLAIN',
+            'redirect_uri' => 'https://www.example.com/callback',
+            'scope' => 'openid',
             'code_verifier' => 'E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM',
         ]);
         $request = $request->withHeader('Authorization', 'Basic '.base64_encode('client1:secret'));
@@ -305,10 +305,10 @@ final class AuthorizationCodeGrantTypeContext implements Context
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
-            'grant_type'    => 'authorization_code',
-            'code'          => 'AUTH_CODE_WITH_CODE_VERIFIER_S256',
-            'redirect_uri'  => 'https://www.example.com/callback',
-            'scope'         => 'openid',
+            'grant_type' => 'authorization_code',
+            'code' => 'AUTH_CODE_WITH_CODE_VERIFIER_S256',
+            'redirect_uri' => 'https://www.example.com/callback',
+            'scope' => 'openid',
             'code_verifier' => 'E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM',
         ]);
         $request = $request->withHeader('Authorization', 'Basic '.base64_encode('client1:secret'));
