@@ -55,10 +55,10 @@ class OAuth2ClientFactory
     {
         return [
             'client_secret_basic' => ClientSecretBasicTokenEndpointAuthenticationMethod::class,
-            'client_secret_post'  => ClientSecretPostTokenEndpointAuthenticationMethod::class,
-            'client_secret_jwt'   => ClientSecretJwtTokenEndpointAuthenticationMethod::class,
-            'none'                => NoneTokenEndpointAuthenticationMethod::class,
-            'private_key_jwt'     => PrivateKeyJwtTokenEndpointAuthenticationMethod::class,
+            'client_secret_post' => ClientSecretPostTokenEndpointAuthenticationMethod::class,
+            'client_secret_jwt' => ClientSecretJwtTokenEndpointAuthenticationMethod::class,
+            'none' => NoneTokenEndpointAuthenticationMethod::class,
+            'private_key_jwt' => PrivateKeyJwtTokenEndpointAuthenticationMethod::class,
         ];
     }
 }

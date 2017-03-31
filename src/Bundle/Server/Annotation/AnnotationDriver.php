@@ -124,9 +124,9 @@ final class AnnotationDriver
         $exception = new OAuth2Exception(
             401,
             [
-                'error'             => OAuth2ResponseFactoryManager::ERROR_ACCESS_DENIED,
+                'error' => OAuth2ResponseFactoryManager::ERROR_ACCESS_DENIED,
                 'error_description' => $message,
-                'schemes'           => $schemes,
+                'schemes' => $schemes,
             ]
         );
 
@@ -142,7 +142,7 @@ final class AnnotationDriver
         $exception = new OAuth2Exception(
             403,
             [
-                'error'             => OAuth2ResponseFactoryManager::ERROR_ACCESS_DENIED,
+                'error' => OAuth2ResponseFactoryManager::ERROR_ACCESS_DENIED,
                 'error_description' => $message,
             ]
         );

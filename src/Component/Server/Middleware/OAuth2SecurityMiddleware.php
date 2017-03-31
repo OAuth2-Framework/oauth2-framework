@@ -122,7 +122,7 @@ final class OAuth2SecurityMiddleware implements MiddlewareInterface
     private function getOAuth2Exception(int $code, string $error, string $errorDescription)
     {
         $data = $this->additionalData + [
-            'error'             => $error,
+            'error' => $error,
             'error_description' => $errorDescription,
         ];
         if (null !== $this->scope) {

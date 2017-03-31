@@ -23,5 +23,4 @@ return [
             '%oauth2_server.token_type.mac_token.max_length%'
         )
         ->tag('oauth2_server_token_type', ['scheme' => 'MAC']),
-
 ];

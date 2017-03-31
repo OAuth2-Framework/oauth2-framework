@@ -69,7 +69,7 @@ final class ClientAuthenticationMiddleware implements MiddlewareInterface
             throw new OAuth2Exception(
                 401,
                 [
-                    'error'             => OAuth2ResponseFactoryManager::ERROR_INVALID_CLIENT,
+                    'error' => OAuth2ResponseFactoryManager::ERROR_INVALID_CLIENT,
                     'error_description' => 'Client authentication failed.',
                 ]
             );

@@ -272,20 +272,20 @@ class AuthorizationEndpointPlugin extends CommonPluginMethod implements BundlePl
         $files = [];
         $accessor = PropertyAccess::createPropertyAccessor();
         $parameters = [
-            'oauth2_server.authorization_endpoint.form_handler'                          => ['type' => 'alias',     'path' => '[form][handler]'],
-            'oauth2_server.authorization_endpoint.user_account_manager'                  => ['type' => 'alias',     'path' => '[user_account_manager]'],
-            'oauth2_server.authorization_endpoint.template'                              => ['type' => 'parameter', 'path' => '[template]'],
-            'oauth2_server.authorization_endpoint.allow_scope_selection'                 => ['type' => 'parameter', 'path' => '[allow_scope_selection]'],
-            'oauth2_server.authorization_endpoint.type'                                  => ['type' => 'parameter', 'path' => '[form][type]'],
-            'oauth2_server.authorization_endpoint.name'                                  => ['type' => 'parameter', 'path' => '[form][name]'],
-            'oauth2_server.authorization_endpoint.validation_groups'                     => ['type' => 'parameter', 'path' => '[form][validation_groups]'],
-            'oauth2_server.authorization_endpoint.login_route_name'                      => ['type' => 'parameter', 'path' => '[login_route_name]'],
-            'oauth2_server.authorization_endpoint.login_route_parameters'                => ['type' => 'parameter', 'path' => '[login_route_parameters]'],
-            'oauth2_server.authorization_endpoint.path'                                  => ['type' => 'parameter', 'path' => '[path]'],
-            'oauth2_server.authorization_endpoint.option.allow_response_mode_parameter'  => ['type' => 'parameter', 'path' => '[option][allow_response_mode_parameter]'],
-            'oauth2_server.authorization_endpoint.option.enforce_secured_redirect_uri'   => ['type' => 'parameter', 'path' => '[option][enforce_secured_redirect_uri]'],
-            'oauth2_server.authorization_endpoint.option.enforce_redirect_uri_storage'   => ['type' => 'parameter', 'path' => '[option][enforce_secured_redirect_uri]'],
-            'oauth2_server.authorization_endpoint.option.enforce_state'                  => ['type' => 'parameter', 'path' => '[option][enforce_state]'],
+            'oauth2_server.authorization_endpoint.form_handler' => ['type' => 'alias',     'path' => '[form][handler]'],
+            'oauth2_server.authorization_endpoint.user_account_manager' => ['type' => 'alias',     'path' => '[user_account_manager]'],
+            'oauth2_server.authorization_endpoint.template' => ['type' => 'parameter', 'path' => '[template]'],
+            'oauth2_server.authorization_endpoint.allow_scope_selection' => ['type' => 'parameter', 'path' => '[allow_scope_selection]'],
+            'oauth2_server.authorization_endpoint.type' => ['type' => 'parameter', 'path' => '[form][type]'],
+            'oauth2_server.authorization_endpoint.name' => ['type' => 'parameter', 'path' => '[form][name]'],
+            'oauth2_server.authorization_endpoint.validation_groups' => ['type' => 'parameter', 'path' => '[form][validation_groups]'],
+            'oauth2_server.authorization_endpoint.login_route_name' => ['type' => 'parameter', 'path' => '[login_route_name]'],
+            'oauth2_server.authorization_endpoint.login_route_parameters' => ['type' => 'parameter', 'path' => '[login_route_parameters]'],
+            'oauth2_server.authorization_endpoint.path' => ['type' => 'parameter', 'path' => '[path]'],
+            'oauth2_server.authorization_endpoint.option.allow_response_mode_parameter' => ['type' => 'parameter', 'path' => '[option][allow_response_mode_parameter]'],
+            'oauth2_server.authorization_endpoint.option.enforce_secured_redirect_uri' => ['type' => 'parameter', 'path' => '[option][enforce_secured_redirect_uri]'],
+            'oauth2_server.authorization_endpoint.option.enforce_redirect_uri_storage' => ['type' => 'parameter', 'path' => '[option][enforce_secured_redirect_uri]'],
+            'oauth2_server.authorization_endpoint.option.enforce_state' => ['type' => 'parameter', 'path' => '[option][enforce_state]'],
         ];
 
         $parameters['oauth2_server.authorization_request_loader.request_object.enabled'] = ['type' => 'parameter', 'path' => '[request_object][enabled]'];
@@ -350,7 +350,7 @@ class AuthorizationEndpointPlugin extends CommonPluginMethod implements BundlePl
     {
         $mappings = [
             realpath(__DIR__.'/Resources/config/doctrine-mapping/library') => 'OAuth2Framework\Component\Server\Endpoint\Authorization\PreConfiguredAuthorization',
-            realpath(__DIR__.'/Resources/config/doctrine-mapping/bundle')  => 'OAuth2Framework\Bundle\Server\Model',
+            realpath(__DIR__.'/Resources/config/doctrine-mapping/bundle') => 'OAuth2Framework\Bundle\Server\Model',
         ];
         if (class_exists('Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\DoctrineOrmMappingsPass')) {
             $container->addCompilerPass(DoctrineOrmMappingsPass::createYamlMappingDriver($mappings, []));

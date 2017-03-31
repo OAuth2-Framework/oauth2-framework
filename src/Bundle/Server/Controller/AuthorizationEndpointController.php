@@ -143,8 +143,8 @@ final class AuthorizationEndpointController extends AuthorizationEndpoint
     protected function redirectToLoginPage(Authorization $authorization, ServerRequestInterface $request): ResponseInterface
     {
         $session_data = [
-            'uri'           => $request->getUri()->__toString(),
-            'ui_locale'     => $this->getUiLocale($authorization),
+            'uri' => $request->getUri()->__toString(),
+            'ui_locale' => $this->getUiLocale($authorization),
         ];
         foreach (['display', 'id_token_hint', 'login_hint', 'acr_values'] as $key) {
             $session_data[$key] = $authorization->hasQueryParam($key) ? $authorization->getQueryParam($key) : null;
@@ -172,8 +172,8 @@ final class AuthorizationEndpointController extends AuthorizationEndpoint
         $options = array_merge(
             //$options,
             [
-                'locale'                => $ui_locale,
-                'scopes'                => $authorization->getScopes(),
+                'locale' => $ui_locale,
+                'scopes' => $authorization->getScopes(),
                 //'allowScopeSelection' => $this->allowScopeSelection,
             ]
         );
@@ -207,9 +207,9 @@ final class AuthorizationEndpointController extends AuthorizationEndpoint
         $content = $this->templateEngine->render(
             $this->template,
             [
-                'form'                                    => $form->createView(),
-                'authorization'                           => $authorization,
-                'ui_locale'                               => $ui_locale,
+                'form' => $form->createView(),
+                'authorization' => $authorization,
+                'ui_locale' => $ui_locale,
                 //'is_pre_configured_authorization_enabled' => true,
             ]
         );

@@ -113,7 +113,7 @@ final class InitialAccessTokenCreatedEvent extends Event
     {
         return (object) [
             'user_account_id' => $this->userAccountId ? $this->userAccountId->getValue() : null,
-            'expires_at'      => $this->expiresAt ? $this->expiresAt->getTimestamp() : null,
+            'expires_at' => $this->expiresAt ? $this->expiresAt->getTimestamp() : null,
         ];
     }
 

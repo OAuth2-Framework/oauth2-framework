@@ -59,8 +59,8 @@ abstract class MacToken implements TokenTypeInterface
     public function getInformation(): array
     {
         return [
-            'token_type'    => $this->name(),
-            'mac_key'       => $this->generateMacKey(),
+            'token_type' => $this->name(),
+            'mac_key' => $this->generateMacKey(),
             'mac_algorithm' => $this->getMacAlgorithm(),
         ];
     }
@@ -180,7 +180,7 @@ abstract class MacToken implements TokenTypeInterface
     protected function getAlgorithmMap(): array
     {
         return [
-            'hmac-sha-1'   => 'sha1',
+            'hmac-sha-1' => 'sha1',
             'hmac-sha-256' => 'sha256',
         ];
     }

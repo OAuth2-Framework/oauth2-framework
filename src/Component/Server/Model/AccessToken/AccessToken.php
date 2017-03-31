@@ -132,7 +132,7 @@ final class AccessToken extends Token
         $data = $this->getParameters();
         $data = $data->withParameters([
             'access_token' => $this->getTokenId()->getValue(),
-            'expires_in'   => $this->getExpiresIn(),
+            'expires_in' => $this->getExpiresIn(),
         ]);
         if (!empty($this->getScopes())) {
             $data = $data->with('scope', implode(' ', $this->getScopes()));
@@ -150,7 +150,7 @@ final class AccessToken extends Token
     public function jsonSerialize()
     {
         $data = parent::jsonSerialize() + [
-            'access_token_id'  => $this->getAccessTokenId()->getValue(),
+            'access_token_id' => $this->getAccessTokenId()->getValue(),
             'refresh_token_id' => $this->getRefreshTokenId() ? $this->getRefreshTokenId()->getValue() : null,
         ];
 

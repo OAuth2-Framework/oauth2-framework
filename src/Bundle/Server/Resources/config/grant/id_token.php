@@ -21,7 +21,7 @@ use function Fluent\get;
 
 return [
     UserInfoScopeSupportManager::class => create(),
-    ClaimSourceManager::class          => create(),
+    ClaimSourceManager::class => create(),
 
     UserInfo::class => create()
         ->arguments(
@@ -57,5 +57,4 @@ return [
             get('oauth2_server.user_account.repository')
         )
         ->tag('oauth2_server_user_account_discovery'),*/
-
 ];

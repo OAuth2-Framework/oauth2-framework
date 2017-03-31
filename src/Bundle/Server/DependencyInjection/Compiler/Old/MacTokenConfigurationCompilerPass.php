@@ -29,9 +29,9 @@ class MacTokenConfigurationCompilerPass implements CompilerPassInterface
 
         $definition = $container->getDefinition('oauth2_server.mac_token');
         $options = [
-            'setMacKeyMaxLength'   => 'oauth2_server.mac_token.max_length',
-            'setMacKeyMinLength'   => 'oauth2_server.mac_token.min_length',
-            'setMacAlgorithm'      => 'oauth2_server.mac_token.algorithm',
+            'setMacKeyMaxLength' => 'oauth2_server.mac_token.max_length',
+            'setMacKeyMinLength' => 'oauth2_server.mac_token.min_length',
+            'setMacAlgorithm' => 'oauth2_server.mac_token.algorithm',
             'setTimestampLifetime' => 'oauth2_server.mac_token.timestamp_lifetime',
         ];
 

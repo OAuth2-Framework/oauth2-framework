@@ -29,9 +29,9 @@ class RefreshTokenConfigurationCompilerPass implements CompilerPassInterface
 
         $definition = $container->getDefinition('oauth2_server.refresh_token.manager.default');
         $options = [
-            'setRefreshTokenMaxLength'    => 'oauth2_server.refresh_token.max_length',
-            'setRefreshTokenMinLength'    => 'oauth2_server.refresh_token.min_length',
-            'setRefreshTokenLifetime'     => 'oauth2_server.refresh_token.lifetime',
+            'setRefreshTokenMaxLength' => 'oauth2_server.refresh_token.max_length',
+            'setRefreshTokenMinLength' => 'oauth2_server.refresh_token.min_length',
+            'setRefreshTokenLifetime' => 'oauth2_server.refresh_token.lifetime',
         ];
 
         foreach ($options as $method => $value) {

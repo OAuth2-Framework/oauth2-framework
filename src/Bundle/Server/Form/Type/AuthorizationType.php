@@ -64,13 +64,13 @@ class AuthorizationType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'translation_domain'                      => 'OAuth2FrameworkServer',
-            'data_class'                              => 'OAuth2Framework\Bundle\Server\Form\Model\AuthorizationModel',
-            'scopes'                                  => [],
-            'allow_scope_selection'                   => false,
+            'translation_domain' => 'OAuth2FrameworkServer',
+            'data_class' => 'OAuth2Framework\Bundle\Server\Form\Model\AuthorizationModel',
+            'scopes' => [],
+            'allow_scope_selection' => false,
             'is_pre_configured_authorization_enabled' => false,
-            'locale'                                  => null,
-            'translator'                              => null,
+            'locale' => null,
+            'translator' => null,
         ]);
         $resolver->setAllowedTypes('locale', ['string', 'null']);
         $resolver->setAllowedTypes('scopes', 'array');

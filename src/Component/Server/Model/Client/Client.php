@@ -277,7 +277,7 @@ final class Client implements ResourceOwnerInterface, ContainsRecordedMessages, 
             $key = new JWK([
                 'kty' => 'oct',
                 'use' => 'sig',
-                'k'   => $this->get('client_secret'),
+                'k' => $this->get('client_secret'),
             ]);
             if (null === $jwkset) {
                 $jwk_set = new JWKSet();
@@ -337,10 +337,10 @@ final class Client implements ResourceOwnerInterface, ContainsRecordedMessages, 
     public function jsonSerialize()
     {
         $data = [
-            '$schema'    => $this->getSchema(),
-            'type'       => get_class($this),
-            'client_id'  => $this->getPublicId()->getValue(),
-            'owner_id'   => $this->getOwnerId()->getValue(),
+            '$schema' => $this->getSchema(),
+            'type' => get_class($this),
+            'client_id' => $this->getPublicId()->getValue(),
+            'owner_id' => $this->getOwnerId()->getValue(),
             'parameters' => (object) $this->all(),
             'is_deleted' => $this->isDeleted(),
         ];
@@ -390,9 +390,9 @@ final class Client implements ResourceOwnerInterface, ContainsRecordedMessages, 
     private function getEventMap(): array
     {
         return [
-            ClientEvent\ClientCreatedEvent::class           => 'applyClientCreatedEvent',
-            ClientEvent\ClientOwnerChangedEvent::class      => 'applyClientOwnerChangedEvent',
-            ClientEvent\ClientDeletedEvent::class           => 'applyClientDeletedEvent',
+            ClientEvent\ClientCreatedEvent::class => 'applyClientCreatedEvent',
+            ClientEvent\ClientOwnerChangedEvent::class => 'applyClientOwnerChangedEvent',
+            ClientEvent\ClientDeletedEvent::class => 'applyClientDeletedEvent',
             ClientEvent\ClientParametersUpdatedEvent::class => 'applyClientParametersUpdatedEvent',
         ];
     }

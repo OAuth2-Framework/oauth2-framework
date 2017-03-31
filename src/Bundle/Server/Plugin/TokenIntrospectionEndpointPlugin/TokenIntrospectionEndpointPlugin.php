@@ -76,7 +76,7 @@ class TokenIntrospectionEndpointPlugin extends CommonPluginMethod implements Bun
         $files = ['introspection.endpoint', 'access_token_introspection'];
 
         $parameters = [
-            'oauth2_server.token_introspection_endpoint.path'                 => ['type' => 'parameter', 'path' => '[path]'],
+            'oauth2_server.token_introspection_endpoint.path' => ['type' => 'parameter', 'path' => '[path]'],
             'oauth2_server.token_introspection_endpoint.access_token_manager' => ['type' => 'alias', 'path' => '[access_token_manager]'],
         ];
         if (null !== $pluginConfiguration['refresh_token_manager']) {

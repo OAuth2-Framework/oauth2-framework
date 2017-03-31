@@ -90,7 +90,7 @@ final class IssuerDiscoveryEndpoint implements MiddlewareInterface
             throw new OAuth2Exception(
                 400,
                 [
-                    'error'             => OAuth2ResponseFactoryManager::ERROR_INVALID_REQUEST,
+                    'error' => OAuth2ResponseFactoryManager::ERROR_INVALID_REQUEST,
                     'error_description' => $e->getMessage(),
                 ]
             );
@@ -107,9 +107,9 @@ final class IssuerDiscoveryEndpoint implements MiddlewareInterface
     {
         return [
             'subject' => $resourceName->getValue(),
-            'links'   => [
+            'links' => [
                 [
-                    'rel'  => self::REL_NAME,
+                    'rel' => self::REL_NAME,
                     'href' => $resource->getIssuer(),
                 ],
             ],

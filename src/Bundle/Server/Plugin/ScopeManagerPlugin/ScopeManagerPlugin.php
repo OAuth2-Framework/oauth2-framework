@@ -47,7 +47,7 @@ class ScopeManagerPlugin extends CommonPluginMethod implements BundlePlugin
 
         $parameters = [
             'oauth2_server.scope_manager.scope_policy' => ['type' => 'parameter', 'path' => '[policy]'],
-            'oauth2_server.scope.available_scope'      => ['type' => 'parameter', 'path' => '[available_scope]', 'callback' => function ($value) {
+            'oauth2_server.scope.available_scope' => ['type' => 'parameter', 'path' => '[available_scope]', 'callback' => function ($value) {
                 return array_unique($value);
             }],
         ];

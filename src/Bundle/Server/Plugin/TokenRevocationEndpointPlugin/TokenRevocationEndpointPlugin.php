@@ -76,7 +76,7 @@ class TokenRevocationEndpointPlugin extends CommonPluginMethod implements Bundle
         $files = ['revocation.endpoint', 'access_token_revocation'];
 
         $parameters = [
-            'oauth2_server.token_revocation_endpoint.path'                 => ['type' => 'parameter', 'path' => '[path]'],
+            'oauth2_server.token_revocation_endpoint.path' => ['type' => 'parameter', 'path' => '[path]'],
             'oauth2_server.token_revocation_endpoint.access_token_manager' => ['type' => 'alias', 'path' => '[access_token_manager]'],
         ];
         if (null !== $pluginConfiguration['refresh_token_manager']) {

@@ -49,9 +49,9 @@ class BearerTokenPlugin extends CommonPluginMethod implements BundlePlugin
     {
         $parameters = [
             'oauth2_server.bearer_token.authorization_header' => ['type' => 'parameter', 'path' => '[authorization_header]'],
-            'oauth2_server.bearer_token.query_string'         => ['type' => 'parameter', 'path' => '[query_string]'],
-            'oauth2_server.bearer_token.request_body'         => ['type' => 'parameter', 'path' => '[request_body]'],
-            'oauth2_server.bearer_token.realm'                => ['type' => 'parameter', 'path' => '[realm]'],
+            'oauth2_server.bearer_token.query_string' => ['type' => 'parameter', 'path' => '[query_string]'],
+            'oauth2_server.bearer_token.request_body' => ['type' => 'parameter', 'path' => '[request_body]'],
+            'oauth2_server.bearer_token.realm' => ['type' => 'parameter', 'path' => '[realm]'],
         ];
 
         $this->loadParameters($parameters, $pluginConfiguration, $container);

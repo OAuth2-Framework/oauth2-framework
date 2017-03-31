@@ -31,8 +31,8 @@ class BearerTokenConfigurationCompilerPass implements CompilerPassInterface
 
         $options = [
             'TokenFromAuthorizationHeader' => 'oauth2_server.bearer_token.authorization_header',
-            'TokenFromQueryString'         => 'oauth2_server.bearer_token.query_string',
-            'TokenFromRequestBody'         => 'oauth2_server.bearer_token.request_body',
+            'TokenFromQueryString' => 'oauth2_server.bearer_token.query_string',
+            'TokenFromRequestBody' => 'oauth2_server.bearer_token.request_body',
         ];
 
         foreach ($options as $method => $param) {

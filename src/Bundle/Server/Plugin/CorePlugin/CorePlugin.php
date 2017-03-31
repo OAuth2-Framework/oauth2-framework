@@ -82,9 +82,9 @@ class CorePlugin extends CommonPluginMethod implements BundlePlugin, PrependExte
     {
         $mappings = [
             realpath(__DIR__.'/Resources/config/doctrine-mapping/resource-owner') => 'OAuth2Framework\Component\Server\ResourceOwner',
-            realpath(__DIR__.'/Resources/config/doctrine-mapping/token')          => 'OAuth2Framework\Component\Server\Token',
-            realpath(__DIR__.'/Resources/config/doctrine-mapping/user-account')   => 'OAuth2Framework\Component\Server\UserAccount',
-            realpath(__DIR__.'/Resources/config/doctrine-mapping/client')         => 'OAuth2Framework\Component\Server\Client',
+            realpath(__DIR__.'/Resources/config/doctrine-mapping/token') => 'OAuth2Framework\Component\Server\Token',
+            realpath(__DIR__.'/Resources/config/doctrine-mapping/user-account') => 'OAuth2Framework\Component\Server\UserAccount',
+            realpath(__DIR__.'/Resources/config/doctrine-mapping/client') => 'OAuth2Framework\Component\Server\Client',
         ];
         if (class_exists('Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\DoctrineOrmMappingsPass')) {
             $container->addCompilerPass(DoctrineOrmMappingsPass::createYamlMappingDriver($mappings, []));

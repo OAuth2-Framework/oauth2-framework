@@ -125,6 +125,6 @@ return [
         ->tag('oauth2_server_authorization_parameter_checker'),
 
     UserAccountDiscoveryManager::class => create(),
-    BeforeConsentScreenManager::class  => create(),
-    AfterConsentScreenManager::class   => create(),
+    BeforeConsentScreenManager::class => create(),
+    AfterConsentScreenManager::class => create(),
 ];

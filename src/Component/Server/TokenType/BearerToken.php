@@ -111,8 +111,8 @@ final class BearerToken implements TokenTypeInterface
     {
         $methods = [
             'isTokenFromAuthorizationHeaderAllowed' => 'getTokenFromAuthorizationHeaders',
-            'isTokenFromQueryStringAllowed'         => 'getTokenFromQuery',
-            'isTokenFromRequestBodyAllowed'         => 'getTokenFromRequestBody',
+            'isTokenFromQueryStringAllowed' => 'getTokenFromQuery',
+            'isTokenFromRequestBodyAllowed' => 'getTokenFromRequestBody',
         ];
 
         foreach ($methods as $test => $method) {
