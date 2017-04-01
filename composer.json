@@ -63,14 +63,11 @@
             "OAuth2Framework\\Bundle\\Client\\": "src/Bundle/Client",
             "OAuth2Framework\\Component\\Server\\": "src/Component/Server",
             "OAuth2Framework\\Component\\Client\\": "src/Component/Client"
-        },
-        "exclude-from-classmap": [
-            "**/Tests/"
-        ]
+        }
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "10.0-dev"
+            "dev-master": "1.0-dev"
         }
     }
 }
