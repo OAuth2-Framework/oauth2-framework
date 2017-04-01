@@ -26,7 +26,7 @@ class UserInfoPairwiseSubjectCompilerPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        if (!$container->hasDefinition(UserInfo::class) && true === $container->getParameter('oauth2_server.endpoint.userinfo.enabled') && true === $container->getParameter('oauth2_server.endpoint.userinfo.pairwise_subject.enabled')) {
+        if (!$container->hasDefinition(UserInfo::class) || !$container->getParameter('oauth2_server.endpoint.userinfo.enabled') || !$container->getParameter('oauth2_server.grant.id_token.pairwise_subject.enabled')) {
             return;
         }
 
