@@ -54,3 +54,7 @@ Instead, all security issues must be sent to security [at] spomky-labs.com.
 # Licence
 
 This library is release under [MIT licence](LICENSE).
+
+# Chengelog
+
+The changelog for 1.0@dev [is available here](CHANGELOG-1.0dev.md).
