@@ -14,6 +14,7 @@ declare(strict_types=1);
 use Interop\Http\Factory\ResponseFactoryInterface;
 use OAuth2Framework\Component\Server\Endpoint\TokenIntrospection\TokenIntrospectionEndpoint;
 use OAuth2Framework\Component\Server\Middleware;
+use OAuth2Framework\Component\Server\Model\ResourceServer\ResourceServerRepositoryInterface;
 use OAuth2Framework\Component\Server\TokenIntrospectionEndpointAuthMethod\TokenIntrospectionEndpointAuthMethodManager;
 use OAuth2Framework\Component\Server\TokenTypeHint\TokenTypeHintManager;
 use function Fluent\create;
@@ -28,7 +29,7 @@ return [
 
     Middleware\ResourceServerAuthenticationMiddleware::class => create()
         ->arguments(
-            get('oauth2_server.resource_server.repository'),
+            get(ResourceServerRepositoryInterface::class),
             get(TokenIntrospectionEndpointAuthMethodManager::class)
         ),
 
