@@ -11,7 +11,6 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use Interop\Http\Factory\ResponseFactoryInterface;
 use OAuth2Framework\Bundle\Server\Response\AuthenticateResponseFactory;
 use OAuth2Framework\Component\Server\Middleware\OAuth2ResponseMiddleware;
 use OAuth2Framework\Component\Server\Response\Factory;
