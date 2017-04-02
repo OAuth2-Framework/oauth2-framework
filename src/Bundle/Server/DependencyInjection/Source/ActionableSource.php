@@ -34,6 +34,7 @@ abstract class ActionableSource extends ArraySource
      */
     protected function continueConfiguration(NodeDefinition $node)
     {
+        parent::continueConfiguration($node);
         $node
             ->children()
                 ->booleanNode('enabled')->defaultFalse()->end()

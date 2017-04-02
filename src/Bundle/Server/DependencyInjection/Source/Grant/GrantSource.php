@@ -80,6 +80,7 @@ final class GrantSource extends ArraySource
      */
     protected function continueConfiguration(NodeDefinition $node)
     {
+        parent::continueConfiguration($node);
         foreach ($this->grants as $source) {
             $source->addConfiguration($node);
         }

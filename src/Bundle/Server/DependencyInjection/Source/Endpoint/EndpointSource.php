@@ -78,6 +78,7 @@ final class EndpointSource extends ArraySource
      */
     protected function continueConfiguration(NodeDefinition $node)
     {
+        parent::continueConfiguration($node);
         foreach ($this->endpoints as $source) {
             $source->addConfiguration($node);
         }
