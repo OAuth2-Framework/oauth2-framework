@@ -53,7 +53,7 @@ final class ClientRuleCompilerPass implements CompilerPassInterface
             '', // condition
         ]);
 
-        $path = '/client/register';
+        $path = $container->getParameter('oauth2_server.endpoint.client_registration.path');
         $route_loader = $container->getDefinition(RouteLoader::class);
         $route_loader->addMethodCall('addRoute', [
             'client_registration',
