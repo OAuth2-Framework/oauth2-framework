@@ -1,6 +1,0 @@
-services:
-    oauth2_server.authorization_endpoint.pre_configured_authorization_manager.default:
-        class: 'OAuth2Framework\Bundle\Server\Model\PreConfiguredAuthorizationManager'
-        arguments:
-            - '%oauth2_server.authorization_endpoint.pre_configured_authorization.class%'
-            - '@doctrine'
