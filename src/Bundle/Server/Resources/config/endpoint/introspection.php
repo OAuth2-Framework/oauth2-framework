@@ -24,7 +24,7 @@ return [
     TokenIntrospectionEndpoint::class => create()
         ->arguments(
             get(TokenTypeHintManager::class),
-            get(ResponseFactoryInterface::class)
+            get('oauth2_server.http.response_factory')
         ),
 
     Middleware\ResourceServerAuthenticationMiddleware::class => create()

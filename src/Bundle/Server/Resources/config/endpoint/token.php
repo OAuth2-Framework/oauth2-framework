@@ -11,7 +11,6 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use Interop\Http\Factory\ResponseFactoryInterface;
 use OAuth2Framework\Bundle\Server\Model\ClientRepository;
 use OAuth2Framework\Bundle\Server\Model\ScopeRepository;
 use OAuth2Framework\Component\Server\Endpoint\Token\Processor\ProcessorManager;
@@ -38,7 +37,7 @@ return [
 
     ProcessorManager::class => create()
         ->arguments(
-            get(ScopeRepository::class)
+            get(ScopeRepository::class)->ignoreIfMissing()
         ),
 
     TokenEndpointExtensionManager::class => create(),
@@ -49,7 +48,7 @@ return [
             get(ClientRepository::class),
             get('oauth2_server.user_account.repository'),
             get(TokenEndpointExtensionManager::class),
-            get(ResponseFactoryInterface::class),
+            get('oauth2_server.http.response_factory'),
             get('command_bus')
         ),
 

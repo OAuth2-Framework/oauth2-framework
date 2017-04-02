@@ -12,6 +12,7 @@ declare(strict_types=1);
  */
 
 use OAuth2Framework\Bundle\Server\Model\ScopeRepository;
+use OAuth2Framework\Component\Server\Endpoint\Authorization\ParameterChecker\ScopeParameterChecker;
 use OAuth2Framework\Component\Server\Model\Client\Rule;
 use OAuth2Framework\Component\Server\Model\Scope;
 use function Fluent\create;
@@ -22,10 +23,6 @@ return [
         ->arguments(
             ['openid', 'phone', 'email', 'address', 'profile', 'offline_access'] // Fixme
         ),
-
-    // This scope policy is added by default
-    //Scope\NoScopePolicy::class => create()
-    //    ->tag('oauth2_server_scope_policy', ['policy_name' => 'none']),
 
     Scope\DefaultScopePolicy::class => create()
         ->arguments(
@@ -40,4 +37,10 @@ return [
             get(ScopeRepository::class)
         )
         ->tag('oauth2_server_client_rule'),
+
+    ScopeParameterChecker::class => create()
+        ->arguments(
+            get(ScopeRepository::class)
+        )
+        ->tag('oauth2_server_authorization_parameter_checker'),
 ];

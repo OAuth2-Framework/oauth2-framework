@@ -43,6 +43,7 @@ final class IdTokenEncryptionSource extends ActionableSource
 
         if (true === $sourceConfig['enabled']) {
             $this->updateJoseBundleConfigurationForEncrypter($container, $sourceConfig);
+            $this->updateJoseBundleConfigurationForDecrypter($container, $sourceConfig);
         }
     }
 
@@ -89,5 +90,14 @@ final class IdTokenEncryptionSource extends ActionableSource
     private function updateJoseBundleConfigurationForEncrypter(ContainerBuilder $container, array $sourceConfig)
     {
         ConfigurationHelper::addEncrypter($container, 'id_token', $sourceConfig['key_encryption_algorithms'], $sourceConfig['content_encryption_algorithms'], [], false);
+    }
+
+    /**
+     * @param ContainerBuilder $container
+     * @param array            $sourceConfig
+     */
+    private function updateJoseBundleConfigurationForDecrypter(ContainerBuilder $container, array $sourceConfig)
+    {
+        ConfigurationHelper::addDecrypter($container, 'id_token', $sourceConfig['key_encryption_algorithms'], $sourceConfig['content_encryption_algorithms'], [], false);
     }
 }

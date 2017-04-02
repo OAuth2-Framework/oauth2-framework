@@ -11,7 +11,6 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use Jose\JWTLoaderInterface;
 use OAuth2Framework\Component\Server\Endpoint\Authorization\UserAccountDiscovery\IdTokenHintDiscovery;
 use OAuth2Framework\Component\Server\Model\IdToken\IdTokenLoader;
 use OAuth2Framework\Component\Server\Model\UserAccount\UserAccountRepositoryInterface;
@@ -21,7 +20,7 @@ use function Fluent\get;
 return [
     IdTokenLoader::class => create()
         ->arguments(
-            get(JWTLoaderInterface::class), //FIXME
+            get('jose.jwt_loader.id_token'),
             get('oauth2_server.grant.id_token.key_set'),
             '%oauth2_server.grant.id_token.default_signature_algorithm%'
         ),

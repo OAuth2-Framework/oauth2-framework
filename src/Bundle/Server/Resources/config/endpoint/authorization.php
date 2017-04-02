@@ -11,13 +11,11 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use Interop\Http\Factory\ResponseFactoryInterface;
 use OAuth2Framework\Bundle\Server\Controller\AuthorizationEndpointController;
 use OAuth2Framework\Bundle\Server\Form\FormFactory;
 use OAuth2Framework\Bundle\Server\Form\Handler\AuthorizationFormHandler;
 use OAuth2Framework\Bundle\Server\Form\Type\AuthorizationType;
 use OAuth2Framework\Bundle\Server\Model\ClientRepository;
-use OAuth2Framework\Bundle\Server\Model\ScopeRepository;
 use OAuth2Framework\Component\Server\Endpoint\Authorization\AfterConsentScreen\AfterConsentScreenManager;
 use OAuth2Framework\Component\Server\Endpoint\Authorization\AuthorizationFactory;
 use OAuth2Framework\Component\Server\Endpoint\Authorization\AuthorizationRequestLoader;
@@ -53,7 +51,7 @@ return [
             get('router'),
             '%oauth2_server.endpoint.authorization.login_route_name%',
             '%oauth2_server.endpoint.authorization.login_route_parameters%',
-            get(ResponseFactoryInterface::class),
+            get('oauth2_server.http.response_factory'),
             get('session'),
             get(AuthorizationFactory::class),
             get(UserAccountDiscoveryManager::class),
@@ -103,12 +101,6 @@ return [
         ->tag('oauth2_server_authorization_parameter_checker'),
 
     ParameterChecker\PromptParameterChecker::class => create()
-        ->tag('oauth2_server_authorization_parameter_checker'),
-
-    ParameterChecker\ScopeParameterChecker::class => create()
-        ->arguments(
-            get(ScopeRepository::class)
-        )
         ->tag('oauth2_server_authorization_parameter_checker'),
 
     ParameterChecker\StateParameterChecker::class => create()

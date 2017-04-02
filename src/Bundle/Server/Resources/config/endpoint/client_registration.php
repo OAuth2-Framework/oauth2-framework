@@ -28,7 +28,7 @@ return [
 
     ClientRegistrationEndpoint::class => create()
         ->arguments(
-            get(ResponseFactoryInterface::class),
+            get('oauth2_server.http.response_factory'),
             get('command_bus')
         ),
 

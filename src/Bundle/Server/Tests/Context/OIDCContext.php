@@ -29,7 +29,7 @@ use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\MinkExtension\Context\MinkContext;
 use Behat\Symfony2Extension\Context\KernelDictionary;
-use Jose\JWTCreatorInterface;
+use Jose\Factory\JWSFactory;
 use Jose\Loader;
 use Jose\Object\JWSInterface;
 use OAuth2Framework\Bundle\Server\Model\ClientRepository;
@@ -535,6 +535,6 @@ final class OIDCContext implements Context
         $key = $this->getContainer()->get('oauth2_server.grant.id_token.key_set')->selectKey('sig', 'RS256');
         Assertion::notNull($key);
 
-        return $this->getContainer()->get(JWTCreatorInterface::class)->sign($payload, $headers, $key);
+        return JWSFactory::createJWSToCompactJSON($payload, $key, $headers);
     }
 }

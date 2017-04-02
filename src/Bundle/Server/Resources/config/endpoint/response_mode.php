@@ -23,15 +23,15 @@ return [
 
     ResponseMode\QueryResponseMode::class => create()
         ->arguments(
-            get(UriFactoryInterface::class),
-            get(ResponseFactoryInterface::class)
+            get('oauth2_server.http.uri_factory'),
+            get('oauth2_server.http.response_factory')
         )
         ->tag('oauth2_server_response_mode'),
 
     ResponseMode\FragmentResponseMode::class => create()
         ->arguments(
-            get(UriFactoryInterface::class),
-            get(ResponseFactoryInterface::class)
+            get('oauth2_server.http.uri_factory'),
+            get('oauth2_server.http.response_factory')
         )
         ->tag('oauth2_server_response_mode'),
 
@@ -44,7 +44,7 @@ return [
     ResponseMode\FormPostResponseMode::class => create()
         ->arguments(
             get(FormPostResponseRenderer::class),
-            get(ResponseFactoryInterface::class)
+            get('oauth2_server.http.response_factory')
         )
         ->tag('oauth2_server_response_mode'),
 ];

@@ -65,7 +65,7 @@ final class ClientContext implements Context
      */
     public function aValidClientRegistrationRequestIsReceived()
     {
-        $this->minkContext->getSession()->getDriver()->getClient()->request('POST', 'https://oauth2.test/client/register', [
+        $this->minkContext->getSession()->getDriver()->getClient()->request('POST', 'https://oauth2.test/client/management', [
             'redirect_uris' => ['https://www.foo.com'],
             'token_endpoint_auth_method' => 'none',
         ],
@@ -80,7 +80,7 @@ final class ClientContext implements Context
      */
     public function aClientRegistrationRequestIsReceivedWithAnExpiredInitialAccessToken()
     {
-        $this->minkContext->getSession()->getDriver()->getClient()->request('POST', 'https://oauth2.test/client/register', [
+        $this->minkContext->getSession()->getDriver()->getClient()->request('POST', 'https://oauth2.test/client/management', [
             'redirect_uris' => ['https://www.foo.com'],
             'token_endpoint_auth_method' => 'none',
         ],
@@ -95,7 +95,7 @@ final class ClientContext implements Context
      */
     public function aClientRegistrationRequestIsReceivedWithARevokedInitialAccessToken()
     {
-        $this->minkContext->getSession()->getDriver()->getClient()->request('POST', 'https://oauth2.test/client/register', [
+        $this->minkContext->getSession()->getDriver()->getClient()->request('POST', 'https://oauth2.test/client/management', [
             'redirect_uris' => ['https://www.foo.com'],
             'token_endpoint_auth_method' => 'none',
         ],
@@ -110,7 +110,7 @@ final class ClientContext implements Context
      */
     public function aClientRegistrationRequestIsReceivedButNotInitialAccessTokenIsSet()
     {
-        $this->minkContext->getSession()->getDriver()->getClient()->request('POST', 'https://oauth2.test/client/register', [
+        $this->minkContext->getSession()->getDriver()->getClient()->request('POST', 'https://oauth2.test/client/management', [
             'redirect_uris' => ['https://www.foo.com'],
             'token_endpoint_auth_method' => 'none',
         ],
@@ -124,7 +124,7 @@ final class ClientContext implements Context
      */
     public function aClientRegistrationRequestIsReceivedButAnInvalidInitialAccessTokenIsSet()
     {
-        $this->minkContext->getSession()->getDriver()->getClient()->request('POST', 'https://oauth2.test/client/register', [
+        $this->minkContext->getSession()->getDriver()->getClient()->request('POST', 'https://oauth2.test/client/management', [
             'redirect_uris' => ['https://www.foo.com'],
             'token_endpoint_auth_method' => 'none',
         ],
@@ -139,7 +139,7 @@ final class ClientContext implements Context
      */
     public function aValidClientRegistrationRequestWithSoftwareStatementIsReceived()
     {
-        $this->minkContext->getSession()->getDriver()->getClient()->request('POST', 'https://oauth2.test/client/register', [
+        $this->minkContext->getSession()->getDriver()->getClient()->request('POST', 'https://oauth2.test/client/management', [
             'redirect_uris' => ['https://www.foo.com'],
             'token_endpoint_auth_method' => 'none',
             'software_statement' => $this->createSoftwareStatement(),

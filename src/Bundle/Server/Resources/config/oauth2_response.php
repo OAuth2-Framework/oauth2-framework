@@ -27,7 +27,7 @@ return [
         ),
     OAuth2ResponseFactoryManager::class => create()
         ->arguments(
-            get(ResponseFactoryInterface::class)
+            get('oauth2_server.http.response_factory')
         ),
     Factory\AccessDeniedResponseFactory::class => create()
         ->tag('oauth2_server_response_factory'),

@@ -24,10 +24,6 @@ use function Fluent\create;
 use function Fluent\get;
 
 return [
-    /*'oauth2_server.event_store.client' => create(OAuth2Framework\Bundle\Server\EventStore\EventStore::class)
-        ->arguments(
-            get('cache.app')
-        ),*/
     'oauth2_server.event_store.client' => create(\OAuth2Framework\Bundle\Server\Tests\TestBundle\Service\EventStore::class)
         ->arguments(
             '%kernel.cache_dir%',
@@ -63,13 +59,12 @@ return [
     Rule\RequestUriRule::class => create()
         ->tag('oauth2_server_client_rule'),
 
-/*    Rule\SectorIdentifierUriRule::class => create()
+    Rule\SectorIdentifierUriRule::class => create()
         ->arguments(
-            get(RequestFactoryInterface::class),
-            get(JsonDecoder::class),
-            get(HttpClient::class)
+            get('oauth2_server.http.request_factory'),
+            get('oauth2_server.http.client')
         )
-        ->tag('oauth2_server_client_rule'),*/
+        ->tag('oauth2_server_client_rule'),
 
     Rule\SubjectTypeRule::class => create()
         ->arguments(

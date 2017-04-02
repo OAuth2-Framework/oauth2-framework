@@ -123,13 +123,12 @@ final class OAuth2FrameworkServerExtension extends Extension implements PrependE
         $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $files = [
             'service',
-            'scope',
+            'scope', // FIXME. Scope support must be enabled when the OpenID Connect extension is used
             'access_token',
             'access_token_handler',
             'route_loader',
             'token_type_hint',
             'oauth2_response',
-            'security',
             'user_account_discovery',
         ];
         foreach ($files as $basename) {

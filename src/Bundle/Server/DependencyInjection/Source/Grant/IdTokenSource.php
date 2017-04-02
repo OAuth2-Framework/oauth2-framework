@@ -54,7 +54,10 @@ final class IdTokenSource extends ActionableSource
 
         if (true === $sourceConfig['enabled']) {
             $this->updateJoseBundleConfigurationForSigner($container, $sourceConfig);
+            $this->updateJoseBundleConfigurationForVerifier($container, $sourceConfig);
+            $this->updateJoseBundleConfigurationForChecker($container, $sourceConfig);
             $this->updateJoseBundleConfigurationForJWTCreator($container, $sourceConfig);
+            $this->updateJoseBundleConfigurationForJWTLoader($container, $sourceConfig);
         }
     }
 
@@ -149,6 +152,24 @@ final class IdTokenSource extends ActionableSource
      * @param ContainerBuilder $container
      * @param array            $sourceConfig
      */
+    private function updateJoseBundleConfigurationForVerifier(ContainerBuilder $container, array $sourceConfig)
+    {
+        ConfigurationHelper::addVerifier($container, $this->name(), $sourceConfig['signature_algorithms'], false);
+    }
+
+    /**
+     * @param ContainerBuilder $container
+     * @param array            $sourceConfig
+     */
+    private function updateJoseBundleConfigurationForChecker(ContainerBuilder $container, array $sourceConfig)
+    {
+        ConfigurationHelper::addChecker($container, $this->name(), $sourceConfig['header_checkers'], $sourceConfig['claim_checkers'], false);
+    }
+
+    /**
+     * @param ContainerBuilder $container
+     * @param array            $sourceConfig
+     */
     private function updateJoseBundleConfigurationForJWTCreator(ContainerBuilder $container, array $sourceConfig)
     {
         $encrypter = null;
@@ -156,5 +177,18 @@ final class IdTokenSource extends ActionableSource
             $encrypter = sprintf('jose.encrypter.%s', $this->name());
         }
         ConfigurationHelper::addJWTCreator($container, $this->name(), sprintf('jose.signer.%s', $this->name()), $encrypter, false);
+    }
+
+    /**
+     * @param ContainerBuilder $container
+     * @param array            $sourceConfig
+     */
+    private function updateJoseBundleConfigurationForJWTLoader(ContainerBuilder $container, array $sourceConfig)
+    {
+        $decrypter = null;
+        if (true === $sourceConfig['encryption']['enabled']) {
+            $decrypter = sprintf('jose.decrypter.%s', $this->name());
+        }
+        ConfigurationHelper::addJWTLoader($container, $this->name(), sprintf('jose.verifier.%s', $this->name()), sprintf('jose.checker.%s', $this->name()), $decrypter, false);
     }
 }

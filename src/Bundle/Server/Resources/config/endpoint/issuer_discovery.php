@@ -20,7 +20,7 @@ use function Fluent\get;
 return [
     IssuerDiscoveryFactory::class => create()
         ->arguments(
-            get(ResponseFactoryInterface::class),
-            get(UriFactoryInterface::class)
+            get('oauth2_server.http.response_factory'),
+            get('oauth2_server.http.uri_factory')
         ),
 ];

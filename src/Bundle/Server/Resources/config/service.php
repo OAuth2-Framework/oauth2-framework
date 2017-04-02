@@ -11,44 +11,14 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use Jose\Checker\CheckerManagerInterface;
-use Jose\JWTCreatorInterface;
-use Jose\JWTLoaderInterface;
-use Jose\Signer;
-use Jose\Verifier;
+use Http\Factory\Diactoros\RequestFactory;
+use Http\Factory\Diactoros\ResponseFactory;
+use Http\Factory\Diactoros\UriFactory;
 use function Fluent\create;
-use function Fluent\get;
 
 return [
-    \Interop\Http\Factory\ResponseFactoryInterface::class => create(\Http\Factory\Diactoros\ResponseFactory::class),
-
-    \Interop\Http\Factory\UriFactoryInterface::class => create(\Http\Factory\Diactoros\UriFactory::class),
-
-    // FIXME
-    JWTLoaderInterface::class => create(\Jose\JWTLoader::class)
-        ->arguments(
-            get(CheckerManagerInterface::class),
-            get(Verifier::class)
-        ),
-
-    // FIXME
-    JWTCreatorInterface::class => create(\Jose\JWTCreator::class)
-        ->arguments(
-            get(Signer::class)
-        ),
-
-    // FIXME
-    Signer::class => create()
-        ->arguments(
-            ['RS256', 'HS256']
-        ),
-
-    // FIXME
-    Verifier::class => create()
-        ->arguments(
-            ['RS256', 'HS256']
-        ),
-
-    // FIXME
-    CheckerManagerInterface::class => create(\Jose\Checker\CheckerManager::class),
+    'oauth2_server.http.client' => create(Http\Mock\Client::class),
+    'oauth2_server.http.request_factory' => create(RequestFactory::class),
+    'oauth2_server.http.response_factory' => create(ResponseFactory::class),
+    'oauth2_server.http.uri_factory' => create(UriFactory::class),
 ];

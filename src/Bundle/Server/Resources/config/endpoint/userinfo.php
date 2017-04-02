@@ -31,7 +31,7 @@ return [
             get('id_token_builder_factory_for_userinfo_endpoint'),
             get(ClientRepository::class),
             get(UserAccountRepositoryInterface::class),
-            get(ResponseFactoryInterface::class)
+            get('oauth2_server.http.response_factory')
         ),
 
     'userinfo_security_middleware' => create(OAuth2SecurityMiddleware::class)

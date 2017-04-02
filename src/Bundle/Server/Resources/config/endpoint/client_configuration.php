@@ -46,6 +46,6 @@ return [
         ->arguments(
             get('client_configuration_bearer_token'),
             get('command_bus'),
-            get(ResponseFactoryInterface::class)
+            get('oauth2_server.http.response_factory')
         ),
 ];

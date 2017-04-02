@@ -28,11 +28,13 @@ final class ProcessorManager
     /**
      * RuleManager constructor.
      *
-     * @param ScopeRepositoryInterface $scopeRepository
+     * @param ScopeRepositoryInterface|null $scopeRepository
      */
-    public function __construct(ScopeRepositoryInterface $scopeRepository)
+    public function __construct(?ScopeRepositoryInterface $scopeRepository)
     {
-        $this->processors[] = new ScopeProcessor($scopeRepository);
+        if (null !== $scopeRepository) {
+            $this->processors[] = new ScopeProcessor($scopeRepository);
+        }
         $this->processors[] = new TokenTypeProcessor();
     }
 
