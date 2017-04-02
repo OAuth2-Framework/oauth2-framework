@@ -49,10 +49,10 @@ abstract class ArraySource implements SourceInterface
      * @param string           $path
      * @param ContainerBuilder $container
      * @param array            $config
-     *
-     * @return mixed
      */
-    abstract protected function continueLoading(string $path, ContainerBuilder $container, array $config);
+    protected function continueLoading(string $path, ContainerBuilder $container, array $config)
+    {
+    }
 
     /**
      * @return string
@@ -62,5 +62,8 @@ abstract class ArraySource implements SourceInterface
     /**
      * @param NodeDefinition $node
      */
-    abstract protected function continueConfiguration(NodeDefinition $node);
+    protected function continueConfiguration(NodeDefinition $node)
+    {
+        $node->addDefaultsIfNotSet();
+    }
 }

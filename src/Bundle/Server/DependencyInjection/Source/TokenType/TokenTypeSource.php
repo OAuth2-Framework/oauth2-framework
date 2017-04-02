@@ -77,6 +77,7 @@ final class TokenTypeSource extends ArraySource
      */
     protected function continueConfiguration(NodeDefinition $node)
     {
+        parent::continueConfiguration($node);
         $node
             ->children()
                 ->scalarNode('default')

@@ -76,6 +76,7 @@ final class TokenEndpointAuthMethodSource extends ArraySource
      */
     protected function continueConfiguration(NodeDefinition $node)
     {
+        parent::continueConfiguration($node);
         foreach ($this->tokenEndpointAuthMethods as $source) {
             $source->addConfiguration($node);
         }

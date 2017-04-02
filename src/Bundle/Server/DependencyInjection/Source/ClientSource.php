@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\Server\DependencyInjection\Source;
 
 use Fluent\PhpConfigFileLoader;
-use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -35,14 +34,5 @@ final class ClientSource extends ArraySource
     {
         $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../Resources/config'));
         $loader->load('client.php');
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function continueConfiguration(NodeDefinition $node)
-    {
-        $node
-            ->addDefaultsIfNotSet();
     }
 }

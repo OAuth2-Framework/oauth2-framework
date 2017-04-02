@@ -15,7 +15,6 @@ namespace OAuth2Framework\Bundle\Server\DependencyInjection\Source\Endpoint;
 
 use Fluent\PhpConfigFileLoader;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\ActionableSource;
-use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -36,15 +35,5 @@ final class AuthorizationEndpointPreConfiguredAuthorizationSource extends Action
     protected function name(): string
     {
         return 'pre_configured_authorization';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function continueConfiguration(NodeDefinition $node)
-    {
-        parent::continueConfiguration($node);
-        $node
-            ->addDefaultsIfNotSet();
     }
 }

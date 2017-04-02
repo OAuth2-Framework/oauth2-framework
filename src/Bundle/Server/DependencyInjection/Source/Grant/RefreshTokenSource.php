@@ -49,7 +49,6 @@ final class RefreshTokenSource extends ActionableSource
     {
         parent::continueConfiguration($node);
         $node
-            ->addDefaultsIfNotSet()
             ->children()
                 ->integerNode('min_length')->defaultValue(50)->end()
                 ->integerNode('max_length')->defaultValue(100)->end()

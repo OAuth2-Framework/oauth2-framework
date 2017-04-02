@@ -43,7 +43,6 @@ final class ResourceServerRepositorySource extends ActionableSource
     {
         parent::continueConfiguration($node);
         $node
-            ->addDefaultsIfNotSet()
             ->validate()
                 ->ifTrue(function ($config) {
                     return true === $config['enabled'] && empty($config['repository']);

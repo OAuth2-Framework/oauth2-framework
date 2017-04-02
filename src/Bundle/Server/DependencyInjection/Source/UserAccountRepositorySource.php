@@ -41,6 +41,7 @@ final class UserAccountRepositorySource extends ArraySource
      */
     protected function continueConfiguration(NodeDefinition $node)
     {
+        parent::continueConfiguration($node);
         $node
             ->children()
                 ->scalarNode('repository')

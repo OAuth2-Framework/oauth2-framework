@@ -64,7 +64,6 @@ final class SessionManagementEndpointSource extends ActionableSource
                     return true === $config['enabled'] && empty($config['template']);
                 })->thenInvalid('The option "template" must be set.')
             ->end()
-            ->addDefaultsIfNotSet()
             ->children()
                 ->scalarNode('path')
                 ->end()
