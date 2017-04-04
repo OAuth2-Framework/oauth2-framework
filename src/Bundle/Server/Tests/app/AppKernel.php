@@ -11,16 +11,6 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Bundle\Server\Tests\App;
-
-use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
-use Symfony\Bundle\SecurityBundle\SecurityBundle;
-use Symfony\Bundle\TwigBundle\TwigBundle;
-use SpomkyLabs\JoseBundle\SpomkyLabsJoseBundle;
-use SimpleBus\SymfonyBridge\SimpleBusEventBusBundle;
-use SimpleBus\SymfonyBridge\SimpleBusCommandBusBundle;
-use OAuth2Framework\Bundle\Server\Tests\TestBundle\SpomkyLabsTestBundle;
-use Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle;
 use OAuth2Framework\Bundle\Server\OAuth2FrameworkServerBundle;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\HttpKernel\Kernel;
@@ -30,18 +20,18 @@ final class AppKernel extends Kernel
     public function registerBundles()
     {
         $bundles = [
-            new FrameworkBundle(),
-            new SecurityBundle(),
-            new TwigBundle(),
+            new Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
+            new Symfony\Bundle\SecurityBundle\SecurityBundle(),
+            new Symfony\Bundle\TwigBundle\TwigBundle(),
 
-            new SensioFrameworkExtraBundle(),
+            new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
 
-            new SpomkyLabsJoseBundle(),
+            new SpomkyLabs\JoseBundle\SpomkyLabsJoseBundle(),
             new OAuth2FrameworkServerBundle(),
-            new SpomkyLabsTestBundle(),
+            new OAuth2Framework\Bundle\Server\Tests\TestBundle\SpomkyLabsTestBundle(),
 
-            new SimpleBusEventBusBundle(),
-            new SimpleBusCommandBusBundle(),
+            new SimpleBus\SymfonyBridge\SimpleBusEventBusBundle(),
+            new SimpleBus\SymfonyBridge\SimpleBusCommandBusBundle(),
         ];
 
         return $bundles;

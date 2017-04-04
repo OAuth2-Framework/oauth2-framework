@@ -1,14 +1,12 @@
 default:
     formatters:
         pretty: true
-#    autoload:
-#        '': '%paths.base%/Tests/autoload.php'
     extensions:
         Behat\Symfony2Extension:
             kernel:
                 env: 'test'
                 debug: true
-                class: 'OAuth2Framework\Bundle\Server\Tests\App\AppKernel'
+                path: 'Tests/App/AppKernel.php'
                 bootstrap: 'Tests/autoload.php'
         Behat\MinkExtension:
             base_url: 'https://oauth2.test/'
