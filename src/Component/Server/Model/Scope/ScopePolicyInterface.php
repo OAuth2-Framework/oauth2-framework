@@ -29,6 +29,8 @@ interface ScopePolicyInterface
      * @param Client   $client The client
      *
      * @throws \InvalidArgumentException
+     *
+     * @return array
      */
-    public function checkScopePolicy(array &$scope, Client $client);
+    public function checkScopePolicy(array $scope, Client $client): array;
 }

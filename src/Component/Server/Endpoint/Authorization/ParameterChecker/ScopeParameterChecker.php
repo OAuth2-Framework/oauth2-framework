@@ -15,6 +15,7 @@ namespace OAuth2Framework\Component\Server\Endpoint\Authorization\ParameterCheck
 
 use Assert\Assertion;
 use OAuth2Framework\Component\Server\Endpoint\Authorization\Authorization;
+use OAuth2Framework\Component\Server\Model\Scope\ScopePolicyManager;
 use OAuth2Framework\Component\Server\Model\Scope\ScopeRepositoryInterface;
 use OAuth2Framework\Component\Server\Response\OAuth2Exception;
 use OAuth2Framework\Component\Server\Response\OAuth2ResponseFactoryManager;
@@ -27,11 +28,20 @@ final class ScopeParameterChecker implements ParameterCheckerInterface
     private $scopeRepository;
 
     /**
-     * @param ScopeRepositoryInterface $scopeRepository
+     * @var null|ScopePolicyManager
      */
-    public function __construct(ScopeRepositoryInterface $scopeRepository)
+    private $scopePolicyManager;
+
+    /**
+     * ScopeParameterChecker constructor.
+     *
+     * @param ScopeRepositoryInterface $scopeRepository
+     * @param null|ScopePolicyManager  $scopePolicyManager
+     */
+    public function __construct(ScopeRepositoryInterface $scopeRepository, ?ScopePolicyManager $scopePolicyManager)
     {
         $this->scopeRepository = $scopeRepository;
+        $this->scopePolicyManager = $scopePolicyManager;
     }
 
     /**
@@ -46,7 +56,9 @@ final class ScopeParameterChecker implements ParameterCheckerInterface
             } else {
                 $scope = [];
             }
-            $scope = $this->scopeRepository->checkScopePolicy($scope, $authorization->getClient());
+            if (null !== $this->scopePolicyManager) {
+                $scope = $this->scopePolicyManager->check($scope, $authorization->getClient());
+            }
             $availableScope = $this->scopeRepository->getAvailableScopesForClient($authorization->getClient());
             Assertion::true($this->scopeRepository->areRequestedScopesAvailable($scope, $availableScope), sprintf('An unsupported scope was requested. Available scopes for the client are %s.', implode(', ', $availableScope)));
             $authorization = $authorization->withScopes($scope);

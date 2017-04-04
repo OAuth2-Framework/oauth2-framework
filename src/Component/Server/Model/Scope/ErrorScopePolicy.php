@@ -28,7 +28,7 @@ final class ErrorScopePolicy implements ScopePolicyInterface
     /**
      * {@inheritdoc}
      */
-    public function checkScopePolicy(array &$scope, Client $client)
+    public function checkScopePolicy(array $scope, Client $client): array
     {
         throw new \InvalidArgumentException('No scope was requested.');
     }

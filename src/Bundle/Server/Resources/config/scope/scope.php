@@ -11,36 +11,24 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use OAuth2Framework\Bundle\Server\Model\ScopeRepository;
 use OAuth2Framework\Component\Server\Endpoint\Authorization\ParameterChecker\ScopeParameterChecker;
 use OAuth2Framework\Component\Server\Model\Client\Rule;
-use OAuth2Framework\Component\Server\Model\Scope;
+use OAuth2Framework\Component\Server\Model\Scope\ScopeRepositoryInterface;
+use OAuth2Framework\Component\Server\Model\Scope\ScopePolicyManager;
 use function Fluent\create;
 use function Fluent\get;
 
 return [
-    ScopeRepository::class => create()
-        ->arguments(
-            ['openid', 'phone', 'email', 'address', 'profile', 'offline_access'] // Fixme
-        ),
-
-    Scope\DefaultScopePolicy::class => create()
-        ->arguments(
-            [] //FIXME
-        )
-        ->tag('oauth2_server_scope_policy', ['policy_name' => 'default']),
-    Scope\ErrorScopePolicy::class => create()
-        ->tag('oauth2_server_scope_policy', ['policy_name' => 'error']),
-
     Rule\ScopeRule::class => create()
         ->arguments(
-            get(ScopeRepository::class)
+            get(ScopeRepositoryInterface::class)
         )
         ->tag('oauth2_server_client_rule'),
 
     ScopeParameterChecker::class => create()
         ->arguments(
-            get(ScopeRepository::class)
+            get(ScopeRepositoryInterface::class),
+            get(ScopePolicyManager::class)->nullIfMissing()
         )
         ->tag('oauth2_server_authorization_parameter_checker'),
 ];

@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\Server\DependencyInjection\Compiler;
 
 use Assert\Assertion;
-use OAuth2Framework\Component\Server\Model\Scope\ScopeRepositoryInterface;
+use OAuth2Framework\Component\Server\Model\Scope\ScopePolicyManager;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
@@ -26,13 +26,12 @@ class ScopePolicyCompilerPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        if (!$container->hasDefinition(ScopeRepositoryInterface::class)) {
+        if (!$container->hasDefinition(ScopePolicyManager::class)) {
             return;
         }
 
-        $definition = $container->getDefinition(ScopeRepositoryInterface::class);
-        //$default = $container->getParameter('oauth2_server.scope_manager.scope_policy');
-        $default = 'none';
+        $definition = $container->getDefinition(ScopePolicyManager::class);
+        $default = $container->getParameter('oauth2_server.scope.policy.by_default');
 
         $taggedServices = $container->findTaggedServiceIds('oauth2_server_scope_policy');
         $default_found = false;
@@ -45,7 +44,7 @@ class ScopePolicyCompilerPass implements CompilerPassInterface
                 if (true === $is_default) {
                     $default_found = true;
                 }
-                $definition->addMethodCall('addScopePolicy', [new Reference($id), $is_default]);
+                $definition->addMethodCall('add', [new Reference($id), $is_default]);
             }
         }
 
