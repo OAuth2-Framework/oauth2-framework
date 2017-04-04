@@ -28,7 +28,7 @@ return [
     AccessToken\CreateAccessTokenWithRefreshTokenCommandHandler::class => create()
         ->arguments(
             get(AccessTokenRepositoryInterface::class),
-            get(RefreshTokenRepositoryInterface::class)->ignoreIfMissing()
+            get(RefreshTokenRepositoryInterface::class)->nullIfMissing()
         )
         ->tag('command_handler', ['handles' => AccessToken\CreateAccessTokenWithRefreshTokenCommand::class]),
 
