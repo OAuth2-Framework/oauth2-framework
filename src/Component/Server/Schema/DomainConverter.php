@@ -37,7 +37,7 @@ final class DomainConverter
      */
     public function __construct()
     {
-        $this->options = JSON_NUMERIC_CHECK|JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE;
+        $this->options = JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE;
         $domainUriLoader = new DomainUriLoader();
         $loaderManager = new LoaderManager(['https' => $domainUriLoader]);
         $this->dereferencer = new Dereferencer($loaderManager);
