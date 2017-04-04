@@ -28,6 +28,7 @@ final class ProcessorManager
 
     /**
      * ProcessorManager constructor.
+     *
      * @param null|ScopeRepositoryInterface $scopeRepository
      * @param null|ScopePolicyManager       $scopePolicyManager
      */

@@ -48,6 +48,7 @@ final class ScopePolicyManager
 
     /**
      * @param string $scopePolicy
+     *
      * @return bool
      */
     public function has(string $scopePolicy): bool
@@ -57,6 +58,7 @@ final class ScopePolicyManager
 
     /**
      * @param string $scopePolicyName
+     *
      * @return ScopePolicyInterface
      */
     public function get(string $scopePolicyName): ScopePolicyInterface
@@ -79,7 +81,7 @@ final class ScopePolicyManager
     }
 
     /**
-     * @param array $scope
+     * @param array  $scope
      * @param Client $client
      *
      * @return array
