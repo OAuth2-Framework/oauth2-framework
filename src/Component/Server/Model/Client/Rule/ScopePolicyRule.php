@@ -15,22 +15,22 @@ namespace OAuth2Framework\Component\Server\Model\Client\Rule;
 
 use Assert\Assertion;
 use OAuth2Framework\Component\Server\Model\DataBag\DataBag;
-use OAuth2Framework\Component\Server\Model\Scope\ScopeRepositoryInterface;
+use OAuth2Framework\Component\Server\Model\Scope\ScopePolicyManager;
 use OAuth2Framework\Component\Server\Model\UserAccount\UserAccountId;
 
-final class ScopeRule implements RuleInterface
+final class ScopePolicyRule implements RuleInterface
 {
     /**
-     * @var ScopeRepositoryInterface
+     * @var ScopePolicyManager
      */
-    private $scopeManager;
+    private $scopePolicyManager;
 
     /**
-     * @param ScopeRepositoryInterface $scopeManager
+     * @param ScopePolicyManager $scopePolicyManager
      */
-    public function __construct(ScopeRepositoryInterface $scopeManager)
+    public function __construct(ScopePolicyManager $scopePolicyManager)
     {
-        $this->scopeManager = $scopeManager;
+        $this->scopePolicyManager = $scopePolicyManager;
     }
 
     /**
@@ -38,9 +38,9 @@ final class ScopeRule implements RuleInterface
      */
     public function handle(DataBag $commandParameters, DataBag $validatedParameters, ?UserAccountId $userAccountId, callable $next): DataBag
     {
-        if ($commandParameters->has('scope')) {
-            Assertion::regex($commandParameters->get('scope'), '/^[\x20\x23-\x5B\x5D-\x7E]+$/', 'Invalid characters found in the \'scope\' parameter.');
-            $validatedParameters = $validatedParameters->with('scope', $commandParameters->get('scope'));
+        if ($commandParameters->has('scope_policy')) {
+            Assertion::true($this->scopePolicyManager->has($commandParameters->get('scope_policy')), sprintf('The scope policy \'%s\' is not supported.', $commandParameters->get('scope_policy')));
+            $validatedParameters = $validatedParameters->with('scope_policy', $commandParameters->get('scope_policy'));
         }
 
         return $next($commandParameters, $validatedParameters, $userAccountId);

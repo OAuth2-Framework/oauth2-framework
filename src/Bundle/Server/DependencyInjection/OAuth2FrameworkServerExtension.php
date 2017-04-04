@@ -18,6 +18,7 @@ use OAuth2Framework\Bundle\Server\DependencyInjection\Source\ClientSource;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\Endpoint\EndpointSource;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\Grant\GrantSource;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\ResourceServerRepositorySource;
+use OAuth2Framework\Bundle\Server\DependencyInjection\Source\Scope\ScopeSource;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\ServerNameSource;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\SourceInterface;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\TokenEndpointAuthMethod\TokenEndpointAuthMethodSource;
@@ -123,7 +124,6 @@ final class OAuth2FrameworkServerExtension extends Extension implements PrependE
         $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $files = [
             'service',
-            'scope', // FIXME. Scope support must be enabled when the OpenID Connect extension is used
             'access_token',
             'access_token_handler',
             'route_loader',
@@ -147,6 +147,7 @@ final class OAuth2FrameworkServerExtension extends Extension implements PrependE
             new TokenEndpointAuthMethodSource(),
             new GrantSource(),
             new EndpointSource(),
+            new ScopeSource(),
         ];
     }
 }

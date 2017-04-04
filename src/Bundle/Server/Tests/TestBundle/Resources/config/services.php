@@ -11,6 +11,7 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
+use OAuth2Framework\Component\Server\Model\Scope\ScopeRepository;
 use OAuth2Framework\Bundle\Server\Tests\TestBundle\Entity\ResourceRepository;
 use OAuth2Framework\Bundle\Server\Tests\TestBundle\Entity\UserManager;
 use OAuth2Framework\Bundle\Server\Tests\TestBundle\Entity\UserRepository;
@@ -27,6 +28,11 @@ use function Fluent\create;
 use function Fluent\get;
 
 return [
+    'MyScopeRepository' => create(ScopeRepository::class)
+        ->arguments(
+            ['openid', 'email', 'profile', 'address', 'phone', 'offline_access']
+        ),
+
     'oauth2_server.event_store.access_token' => create(\OAuth2Framework\Bundle\Server\Tests\TestBundle\Service\EventStore::class)
         ->arguments(
             '%kernel.cache_dir%',

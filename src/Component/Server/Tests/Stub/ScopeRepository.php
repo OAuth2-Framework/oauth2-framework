@@ -15,7 +15,6 @@ namespace OAuth2Framework\Component\Server\Tests\Stub;
 
 use Assert\Assertion;
 use OAuth2Framework\Component\Server\Model\Client\Client;
-use OAuth2Framework\Component\Server\Model\Scope\NoScopePolicy;
 use OAuth2Framework\Component\Server\Model\Scope\ScopePolicyInterface;
 use OAuth2Framework\Component\Server\Model\Scope\ScopeRepositoryInterface;
 use OAuth2Framework\Component\Server\Response\OAuth2Exception;
@@ -46,33 +45,6 @@ class ScopeRepository implements ScopeRepositoryInterface
     public function __construct(array $availableScopes = [])
     {
         $this->availableScopes = $availableScopes;
-        $this->addScopePolicy(new NoScopePolicy(), true);
-    }
-
-    /**
-     * @param ScopePolicyInterface $scopePolicy
-     * @param bool                 $isDefault
-     *
-     * @return ScopeRepository
-     */
-    public function addScopePolicy(ScopePolicyInterface $scopePolicy, bool $isDefault = false): ScopeRepository
-    {
-        $name = $scopePolicy->name();
-        $this->scopePolicies[$name] = $scopePolicy;
-
-        if (true === $isDefault) {
-            $this->defaultScopePolicy = $name;
-        }
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function hasScopePolicy(string $scopePolicy): bool
-    {
-        return array_key_exists($scopePolicy, $this->scopePolicies);
     }
 
     /**

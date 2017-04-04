@@ -15,6 +15,7 @@ namespace OAuth2Framework\Component\Server\Endpoint\Token\Processor;
 
 use OAuth2Framework\Component\Server\Endpoint\Token\GrantTypeData;
 use OAuth2Framework\Component\Server\GrantType\GrantTypeInterface;
+use OAuth2Framework\Component\Server\Model\Scope\ScopePolicyManager;
 use OAuth2Framework\Component\Server\Model\Scope\ScopeRepositoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -26,14 +27,14 @@ final class ProcessorManager
     private $processors = [];
 
     /**
-     * RuleManager constructor.
-     *
-     * @param ScopeRepositoryInterface|null $scopeRepository
+     * ProcessorManager constructor.
+     * @param null|ScopeRepositoryInterface $scopeRepository
+     * @param null|ScopePolicyManager       $scopePolicyManager
      */
-    public function __construct(?ScopeRepositoryInterface $scopeRepository)
+    public function __construct(?ScopeRepositoryInterface $scopeRepository, ?ScopePolicyManager $scopePolicyManager)
     {
         if (null !== $scopeRepository) {
-            $this->processors[] = new ScopeProcessor($scopeRepository);
+            $this->processors[] = new ScopeProcessor($scopeRepository, $scopePolicyManager);
         }
         $this->processors[] = new TokenTypeProcessor();
     }

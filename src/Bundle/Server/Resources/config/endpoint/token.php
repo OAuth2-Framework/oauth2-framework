@@ -12,7 +12,6 @@ declare(strict_types=1);
  */
 
 use OAuth2Framework\Bundle\Server\Model\ClientRepository;
-use OAuth2Framework\Bundle\Server\Model\ScopeRepository;
 use OAuth2Framework\Component\Server\Endpoint\Token\Processor\ProcessorManager;
 use OAuth2Framework\Component\Server\Endpoint\Token\TokenEndpoint;
 use OAuth2Framework\Component\Server\Endpoint\Token\TokenEndpointExtensionManager;
@@ -22,6 +21,8 @@ use OAuth2Framework\Component\Server\Middleware\GrantTypeMiddleware;
 use OAuth2Framework\Component\Server\Middleware\OAuth2ResponseMiddleware;
 use OAuth2Framework\Component\Server\Middleware\Pipe;
 use OAuth2Framework\Component\Server\Middleware\TokenTypeMiddleware;
+use OAuth2Framework\Component\Server\Model\Scope\ScopeRepositoryInterface;
+use OAuth2Framework\Component\Server\Model\Scope\ScopePolicyManager;
 use function Fluent\create;
 use function Fluent\get;
 
@@ -37,7 +38,8 @@ return [
 
     ProcessorManager::class => create()
         ->arguments(
-            get(ScopeRepository::class)->ignoreIfMissing()
+            get(ScopeRepositoryInterface::class)->nullIfMissing(),
+            get(ScopePolicyManager::class)->nullIfMissing()
         ),
 
     TokenEndpointExtensionManager::class => create(),

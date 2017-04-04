@@ -43,9 +43,9 @@ final class DefaultScopePolicy implements ScopePolicyInterface
     /**
      * {@inheritdoc}
      */
-    public function checkScopePolicy(array &$scope, Client $client)
+    public function checkScopePolicy(array $scope, Client $client): array
     {
-        $scope = $this->getDefaultScopesForClient($client);
+        return ($client->has('default_scope')) && null !== $client->get('default_scope') ? $client->get('default_scope') : $this->getDefaultScopes();
     }
 
     /**
@@ -54,15 +54,5 @@ final class DefaultScopePolicy implements ScopePolicyInterface
     private function getDefaultScopes(): array
     {
         return $this->defaultScopes;
-    }
-
-    /**
-     * @param Client $client
-     *
-     * @return string[]
-     */
-    private function getDefaultScopesForClient(Client $client): array
-    {
-        return ($client->has('default_scope')) && null !== $client->get('default_scope') ? $client->get('default_scope') : $this->getDefaultScopes();
     }
 }

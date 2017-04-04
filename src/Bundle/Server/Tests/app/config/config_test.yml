@@ -103,16 +103,17 @@ oauth2_server:
     resource_server:
         enabled: true
         repository: 'OAuth2Framework\Component\Server\Model\ResourceServer\ResourceServerRepositoryInterface'
-#    scope:
-#        enabled: true
-#        available_scope: ['openid', 'email', 'profile', 'address', 'phone', 'offline_access']
-#        policy:
-#            default: 'none'
-#            error:
-#                enabled: true
-#            default:
-#                enabled: true
-#                scope: ['openid']
+    scope:
+        enabled: true
+        repository: 'MyScopeRepository'
+        policy:
+            enabled: true
+            by_default: 'none'
+            error:
+                enabled: true
+            default:
+                enabled: true
+                scope: ['openid']
 #    access_token:
 #        lifetime: 1800
 #        jwt:
@@ -219,6 +220,11 @@ oauth2_server:
             path: '/authorize'
             #allow_scope_selection: true
             login_route_name: 'app_login'
+#            response_mode:
+#                allow_response_mode_parameter: true
+#                form_post:
+#                    enabled: false
+#                    template: '@OAuth2FrameworkServerBundle/form_post/response.html.twig'
             pre_configured_authorization:
                 enabled: true
             id_token_hint:
@@ -244,8 +250,6 @@ oauth2_server:
 #            enforce_redirect_uri_storage:
 #                enabled: true
 #            enforce_state:
-#                enabled: true
-#            allow_response_mode_parameter:
 #                enabled: true
     grant:
         authorization_code:

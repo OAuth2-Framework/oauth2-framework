@@ -28,8 +28,8 @@ final class NoScopePolicy implements ScopePolicyInterface
     /**
      * {@inheritdoc}
      */
-    public function checkScopePolicy(array &$scope, Client $client)
+    public function checkScopePolicy(array $scope, Client $client): array
     {
-        //This scope policy does nothing
+        return $scope;
     }
 }

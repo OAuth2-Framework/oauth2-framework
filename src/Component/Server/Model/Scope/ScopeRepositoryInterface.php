@@ -18,38 +18,6 @@ use OAuth2Framework\Component\Server\Model\Client\Client;
 interface ScopeRepositoryInterface
 {
     /**
-     * @param string $scopePolicy
-     *
-     * @return bool
-     */
-    public function hasScopePolicy(string $scopePolicy): bool;
-
-    /**
-     * @return ScopePolicyInterface
-     */
-    public function getDefaultScopePolicy(): ScopePolicyInterface;
-
-    /**
-     * This function returns the scope policy. If a valid Client object is set as parameter, the function will return scope policy for the client.
-     *
-     * @param string $scopePolicyName Scope policy
-     *
-     * @throws \InvalidArgumentException
-     *
-     * @return ScopePolicyInterface
-     */
-    public function getScopePolicy(string $scopePolicyName): ScopePolicyInterface;
-
-    /**
-     * This function returns the scope policy. If a valid Client object is set as parameter, the function will return scope policy for the client.
-     *
-     * @param Client $client A client
-     *
-     * @return ScopePolicyInterface
-     */
-    public function getScopePolicyForClient(Client $client): ScopePolicyInterface;
-
-    /**
      * @return string[]
      */
     public function getSupportedScopes(): array;
@@ -62,16 +30,6 @@ interface ScopeRepositoryInterface
      * @return string[] Return an array scope
      */
     public function getAvailableScopesForClient(Client $client): array;
-
-    /**
-     * This function check if the scopes respect the scope policy for the client.
-     *
-     * @param string[] $scope  The scopes
-     * @param Client   $client A client
-     *
-     * @return string[] An array scopes according to the scope policy
-     */
-    public function checkScopePolicy(array $scope, Client $client): array;
 
     /**
      * @param string[] $requestedScopes An array of scopes that represents requested scopes

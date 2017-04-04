@@ -15,6 +15,7 @@ namespace OAuth2Framework\Component\Server\Endpoint\Token\Processor;
 
 use OAuth2Framework\Component\Server\Endpoint\Token\GrantTypeData;
 use OAuth2Framework\Component\Server\GrantType\GrantTypeInterface;
+use OAuth2Framework\Component\Server\Model\Scope\ScopePolicyManager;
 use OAuth2Framework\Component\Server\Model\Scope\ScopeRepositoryInterface;
 use OAuth2Framework\Component\Server\Response\OAuth2Exception;
 use OAuth2Framework\Component\Server\Response\OAuth2ResponseFactoryManager;
@@ -28,13 +29,20 @@ final class ScopeProcessor
     private $scopeRepository;
 
     /**
+     * @var ScopePolicyManager|null
+     */
+    private $scopePolicyManager;
+
+    /**
      * ScopeProcessor constructor.
      *
      * @param ScopeRepositoryInterface $scopeRepository
+     * @param ScopePolicyManager|null  $scopePolicyManager
      */
-    public function __construct(ScopeRepositoryInterface $scopeRepository)
+    public function __construct(ScopeRepositoryInterface $scopeRepository, ?ScopePolicyManager $scopePolicyManager)
     {
         $this->scopeRepository = $scopeRepository;
+        $this->scopePolicyManager = $scopePolicyManager;
     }
 
     /**
@@ -58,7 +66,9 @@ final class ScopeProcessor
 
         //Modify the scope according to the scope policy
         try {
-            $scope = $this->scopeRepository->checkScopePolicy($scope, $grantTypeData->getClient());
+            if (null !== $this->scopePolicyManager) {
+                $scope = $this->scopePolicyManager->check($scope, $grantTypeData->getClient());
+            }
         } catch (\InvalidArgumentException $e) {
             throw new OAuth2Exception(
                 400,
