@@ -146,8 +146,6 @@ use OAuth2Framework\Component\Server\Model\Client\Rule\CommonParametersRule;
 use OAuth2Framework\Component\Server\Model\Client\Rule\GrantTypeFlowRule;
 use OAuth2Framework\Component\Server\Model\Client\Rule\RedirectionUriRule;
 use OAuth2Framework\Component\Server\Model\Client\Rule\RuleManager;
-use OAuth2Framework\Component\Server\Model\Client\Rule\ScopePolicyDefaultRule;
-use OAuth2Framework\Component\Server\Model\Client\Rule\ScopePolicyRule;
 use OAuth2Framework\Component\Server\Model\Client\Rule\ScopeRule;
 use OAuth2Framework\Component\Server\Model\Client\Rule\SoftwareRule;
 use OAuth2Framework\Component\Server\Model\Client\Rule\SubjectTypeRule;
@@ -1036,8 +1034,6 @@ final class Application
                 ->add($this->getGrantTypeFlowRule())
                 ->add(new RedirectionUriRule())
                 ->add(new ScopeRule($this->getScopeRepository()))
-                ->add(new ScopePolicyRule($this->getScopePolicyManager()))
-                ->add(new ScopePolicyDefaultRule())
                 ->add($this->getSoftwareRule())
                 ->add(new SubjectTypeRule($this->getUserInfo()))
                 ->add(new TokenEndpointAuthMethodEndpointRule($this->getTokenEndpointAuthMethodManager()));
@@ -1524,6 +1520,10 @@ final class Application
             $this->scopeRepository = new ScopeRepository(
                 ['data_read', 'data_write', 'openid', 'profile', 'email', 'phone', 'address', 'offline_access']
             );
+            $this->scopeRepository
+                ->addScopePolicy($this->getScopePolicyNone())
+                ->addScopePolicy($this->getScopePolicyDefault())
+                ->addScopePolicy($this->getScopePolicyError());
         }
 
         return $this->scopeRepository;
@@ -2557,8 +2557,7 @@ final class Application
     {
         if (null === $this->processorManager) {
             $this->processorManager = new ProcessorManager(
-                $this->getScopeRepository(),
-                $this->getScopePolicyManager()
+                $this->getScopeRepository()
             );
         }
 
@@ -3184,7 +3183,7 @@ final class Application
             $this->parameterCheckerManager->add(new PromptParameterChecker());
             $this->parameterCheckerManager->add(new ScopeParameterChecker(
                 $this->getScopeRepository(),
-                $this->getScopePolicyManager()));
+                $this->getScopePolicyManager));
             $this->parameterCheckerManager->add(new StateParameterChecker(true));
             $this->parameterCheckerManager->add(new TokenTypeParameterChecker($this->getTokenTypeManager(), true));
         }
