@@ -11,7 +11,6 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use Interop\Http\Factory\ResponseFactoryInterface;
 use OAuth2Framework\Component\Server\Endpoint\Metadata\Metadata;
 use OAuth2Framework\Component\Server\Endpoint\Metadata\MetadataEndpoint;
 use function Fluent\create;

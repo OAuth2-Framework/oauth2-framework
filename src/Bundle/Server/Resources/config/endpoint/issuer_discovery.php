@@ -11,8 +11,6 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use Interop\Http\Factory\ResponseFactoryInterface;
-use Interop\Http\Factory\UriFactoryInterface;
 use OAuth2Framework\Bundle\Server\Service\IssuerDiscoveryFactory;
 use function Fluent\create;
 use function Fluent\get;

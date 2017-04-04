@@ -11,7 +11,6 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use Interop\Http\Factory\ResponseFactoryInterface;
 use OAuth2Framework\Component\Server\Endpoint\TokenIntrospection\TokenIntrospectionEndpoint;
 use OAuth2Framework\Component\Server\Middleware;
 use OAuth2Framework\Component\Server\Model\ResourceServer\ResourceServerRepositoryInterface;
