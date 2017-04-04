@@ -25,12 +25,11 @@ use OAuth2Framework\Component\Server\Schema\DomainConverter;
 use Ramsey\Uuid\Uuid;
 use SimpleBus\Message\Recorder\RecordsMessages;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
-use Webmozart\Json\Conversion\JsonConverter;
 
 final class RefreshTokenRepository implements RefreshTokenRepositoryInterface
 {
     /**
-     * @var JsonConverter
+     * @var DomainConverter
      */
     private $domainConverter;
 

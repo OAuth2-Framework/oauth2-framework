@@ -18,7 +18,7 @@
         "simple-bus/symfony-bridge": "^4.1",
         "mnapoli/fluent-symfony": "^0.1.5",
         "oauth2-framework/server-library": "^1.0@dev",
-        "webmozart/json": "^1.3@dev"
+        "league/json-guard": "dev-master"
     },
     "require-dev": {
         "behat/symfony2-extension": "^2.1",

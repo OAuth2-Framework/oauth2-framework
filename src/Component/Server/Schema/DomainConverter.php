@@ -14,46 +14,49 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\Server\Schema;
 
 use Assert\Assertion;
+use League\JsonGuard\Dereferencer;
+use League\JsonGuard\Validator;
 use OAuth2Framework\Component\Server\Response\OAuth2Exception;
 use OAuth2Framework\Component\Server\Response\OAuth2ResponseFactoryManager;
-use Webmozart\Json\JsonDecoder;
-use Webmozart\Json\JsonEncoder;
-use Webmozart\Json\JsonValidator;
+use League\JsonGuard\LoaderManager;
 
 final class DomainConverter
 {
     /**
-     * @var JsonValidator
+     * @var Dereferencer
      */
-    private $validator;
+    private $dereferencer;
 
     /**
-     * @var JsonDecoder
+     * @var int
      */
-    private $decoder;
-
-    /**
-     * @var JsonEncoder
-     */
-    private $encoder;
+    private $options;
 
     /**
      * EventConverter constructor.
      */
     public function __construct()
     {
-        $this->validator = new JsonValidator(null, new DomainUriRetriever());
-        $this->decoder = new JsonDecoder();
-        $this->encoder = new JsonEncoder();
+        $this->options = JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE;
+        $domainUriLoader = new DomainUriLoader();
+        $loaderManager = new LoaderManager(['https' => $domainUriLoader]);
+        $this->dereferencer = new Dereferencer($loaderManager);
     }
 
     public function fromJson(string $jsonData): DomainObjectInterface
     {
         try {
-            $decoded = $this->decoder->decode($jsonData);
-            $errors = $this->validator->validate($decoded);
-            Assertion::true(0 === count($errors), sprintf('Errors: %s', implode(', ', $errors)));
+            $decoded = json_decode($jsonData, false, $this->options);
             Assertion::isInstanceOf($decoded, \stdClass::class, 'Unable to decode');
+            Assertion::propertyExists($decoded, '$schema', 'The object is not a valid Json object from the domain.');
+            $schema = $this->dereferencer->dereference($decoded->{'$schema'});
+
+            $validator = new Validator($decoded, $schema);
+
+            if ($validator->fails()) {
+                throw new \InvalidArgumentException('The domain object cannot be verified with the selected schema.');
+            }
+
             $class = $decoded->type;
             Assertion::classExists($class, sprintf('Unsupported class \'%s\'', $class));
             $domainObject = $class::createFromJson($decoded);
@@ -68,12 +71,17 @@ final class DomainConverter
     {
         try {
             $jsonData = (object) $domainObject->jsonSerialize();
-            $errors = $this->validator->validate($jsonData);
-            Assertion::true(0 === count($errors), sprintf('Errors: %s', implode(', ', $errors)));
+            $schema = $this->dereferencer->dereference($jsonData->{'$schema'});
+
+            $validator = new Validator($jsonData, $schema);
+
+            if ($validator->fails()) {
+                throw new \InvalidArgumentException('The domain object cannot be verified with the selected schema.');
+            }
         } catch (\Exception $e) {
             throw new OAuth2Exception(500, ['error' => OAuth2ResponseFactoryManager::ERROR_INTERNAL, 'error-description' => 'The server encountered and internal error.']);
         }
 
-        return $this->encoder->encode($jsonData);
+        return json_encode($jsonData, $this->options);
     }
 }

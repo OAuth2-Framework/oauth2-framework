@@ -1520,10 +1520,6 @@ final class Application
             $this->scopeRepository = new ScopeRepository(
                 ['data_read', 'data_write', 'openid', 'profile', 'email', 'phone', 'address', 'offline_access']
             );
-            $this->scopeRepository
-                ->addScopePolicy($this->getScopePolicyNone())
-                ->addScopePolicy($this->getScopePolicyDefault())
-                ->addScopePolicy($this->getScopePolicyError());
         }
 
         return $this->scopeRepository;
@@ -2557,7 +2553,8 @@ final class Application
     {
         if (null === $this->processorManager) {
             $this->processorManager = new ProcessorManager(
-                $this->getScopeRepository()
+                $this->getScopeRepository(),
+                $this->getScopePolicyManager()
             );
         }
 
@@ -3183,7 +3180,7 @@ final class Application
             $this->parameterCheckerManager->add(new PromptParameterChecker());
             $this->parameterCheckerManager->add(new ScopeParameterChecker(
                 $this->getScopeRepository(),
-                $this->getScopePolicyManager));
+                $this->getScopePolicyManager()));
             $this->parameterCheckerManager->add(new StateParameterChecker(true));
             $this->parameterCheckerManager->add(new TokenTypeParameterChecker($this->getTokenTypeManager(), true));
         }
