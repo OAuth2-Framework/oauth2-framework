@@ -4,6 +4,7 @@
   "description":"Token.",
   "type": "object",
   "properties":{
+    "$schema": {"type": "string"},
     "type":{"type":"string"},
     "expires_at":{"type":"integer"},
     "client_id":{"type":"string"},
@@ -15,5 +16,5 @@
     "resource_owner_class":{"type":"string"},
     "resource_server_id":{"type":["string", "null"]}
   },
-  "required":["type", "expires_at", "client_id", "parameters", "metadatas", "scopes", "is_revoked", "resource_owner_id", "resource_owner_class", "resource_server_id"]
+  "required":["$schema", "type", "expires_at", "client_id", "parameters", "metadatas", "scopes", "is_revoked", "resource_owner_id", "resource_owner_class", "resource_server_id"]
 }

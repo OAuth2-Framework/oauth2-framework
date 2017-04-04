@@ -2,6 +2,7 @@
   "type":"object",
   "description":"Initial Access Token.",
   "properties":{
+    "$schema": {"type": "string"},
     "type":{"type":"string"},
     "initial_access_token_id":{"type":"string"},
     "user_account_id":{"type":["string", "null"]},
@@ -9,5 +10,5 @@
     "is_revoked":{"type":"boolean"}
   },
   "additionalProperties":false,
-  "required":["type", "initial_access_token_id", "user_account_id", "expires_at", "is_revoked"]
+  "required":["$schema", "type", "initial_access_token_id", "user_account_id", "expires_at", "is_revoked"]
 }

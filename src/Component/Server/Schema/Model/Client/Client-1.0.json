@@ -4,6 +4,7 @@
   "type":"object",
   "description":"Client.",
   "properties":{
+    "$schema": {"type": "string"},
     "type":{"type":"string"},
     "client_id":{"type":"string"},
     "owner_id":{"type":"string"},
@@ -11,5 +12,5 @@
     "is_deleted":{"type":"boolean"}
   },
   "additionalProperties":false,
-  "required":["type", "client_id", "owner_id", "parameters", "is_deleted"]
+  "required":["$schema", "type", "client_id", "owner_id", "parameters", "is_deleted"]
 }

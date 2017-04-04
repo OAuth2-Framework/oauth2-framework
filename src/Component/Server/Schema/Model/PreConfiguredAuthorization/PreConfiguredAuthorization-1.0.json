@@ -2,6 +2,7 @@
   "type":"object",
   "description":"Pre-Configured Authorization.",
   "properties":{
+    "$schema": {"type": "string"},
     "type":{"type":"string"},
     "pre_configured_authorization_id":{"type":"string"},
     "user_account_id":{"type":"string"},
@@ -10,5 +11,5 @@
     "is_revoked":{"type":"boolean"}
   },
   "additionalProperties":false,
-  "required":["type", "pre_configured_authorization_id", "user_account_id", "client_id", "scopes", "is_revoked"]
+  "required":["$schema", "type", "pre_configured_authorization_id", "user_account_id", "client_id", "scopes", "is_revoked"]
 }
