@@ -8,7 +8,7 @@ default:
             kernel:
                 env: 'test'
                 debug: true
-                path: 'Tests/App/AppKernel.php'
+                class: 'OAuth2Framework\Bundle\Server\Tests\App\AppKernel'
                 bootstrap: 'Tests/autoload.php'
         Behat\MinkExtension:
             base_url: 'https://oauth2.test/'
