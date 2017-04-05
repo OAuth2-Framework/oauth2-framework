@@ -18,19 +18,11 @@ use function Fluent\create;
 use function Fluent\get;
 
 return [
-    /*'oauth2_server.event_store.initial_access_token' => create(OAuth2Framework\Bundle\Server\EventStore\EventStore::class)
-        ->arguments(
-            get('cache.app')
-        ),*/
-    'oauth2_server.event_store.initial_access_token' => create(\OAuth2Framework\Bundle\Server\Tests\TestBundle\Service\EventStore::class)
-        ->arguments(
-            '%kernel.cache_dir%',
-            'initial_access_token'
-        ),
-
     InitialAccessTokenRepository::class => create()
         ->arguments(
-            get('oauth2_server.event_store.initial_access_token'),
+            '%oauth2_server.endpoint.client_registration.initial_access_token.min_length%',
+            '%oauth2_server.endpoint.client_registration.initial_access_token.max_length%',
+            get('oauth2_server.endpoint.client_registration.initial_access_token.event_store'),
             get('event_recorder')
         ),
 

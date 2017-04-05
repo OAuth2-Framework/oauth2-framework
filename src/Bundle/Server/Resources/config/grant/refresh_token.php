@@ -20,22 +20,12 @@ use function Fluent\create;
 use function Fluent\get;
 
 return [
-    /*'oauth2_server.event_store.refresh_token' => create(OAuth2Framework\Bundle\Server\EventStore\EventStore::class)
-        ->arguments(
-            get('cache.app')
-        ),*/
-    'oauth2_server.event_store.refresh_token' => create(\OAuth2Framework\Bundle\Server\Tests\TestBundle\Service\EventStore::class)
-        ->arguments(
-            '%kernel.cache_dir%',
-            'refresh_token'
-        ),
-
     RefreshTokenRepositoryInterface::class => create(RefreshTokenRepository::class)
         ->arguments(
             '%oauth2_server.grant.refresh_token.min_length%',
             '%oauth2_server.grant.refresh_token.max_length%',
             '%oauth2_server.grant.refresh_token.lifetime%',
-            get('oauth2_server.event_store.refresh_token'),
+            get('oauth2_server.grant.refresh_token.event_store'),
             get('event_recorder')
         ),
 

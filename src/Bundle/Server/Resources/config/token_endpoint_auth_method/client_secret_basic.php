@@ -18,7 +18,7 @@ return [
     ClientSecretBasic::class => create()
         ->arguments(
             '%oauth2_server.token_endpoint_auth_method.client_secret_basic.realm%',
-            0 // FixMe: Secret lifetime
+            '%oauth2_server.token_endpoint_auth_method.client_secret_basic.secret_lifetime%'
         )
         ->tag('oauth2_server_token_endpoint_auth_method'),
 ];

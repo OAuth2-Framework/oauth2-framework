@@ -15,6 +15,7 @@ namespace OAuth2Framework\Bundle\Server\DependencyInjection\Source\Endpoint;
 
 use Fluent\PhpConfigFileLoader;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\ActionableSource;
+use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -25,6 +26,8 @@ final class AuthorizationEndpointPreConfiguredAuthorizationSource extends Action
      */
     protected function continueLoading(string $path, ContainerBuilder $container, array $config)
     {
+        $container->setAlias($path.'.event_store', $config['event_store']);
+
         $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint'));
         $loader->load('pre_configured_authorization.php');
     }
@@ -35,5 +38,23 @@ final class AuthorizationEndpointPreConfiguredAuthorizationSource extends Action
     protected function name(): string
     {
         return 'pre_configured_authorization';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function continueConfiguration(NodeDefinition $node)
+    {
+        parent::continueConfiguration($node);
+        $node
+            ->validate()
+                ->ifTrue(function ($config) {
+                    return true === $config['enabled'] && empty($config['event_store']);
+                })
+                ->thenInvalid('The option "event_store" must be set.')
+            ->end()
+            ->children()
+                ->scalarNode('event_store')->defaultNull()->end()
+            ->end();
     }
 }

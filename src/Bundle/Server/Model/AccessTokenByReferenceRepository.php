@@ -13,25 +13,36 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Server\Model;
 
+use OAuth2Framework\Bundle\Server\Service\RandomIdGenerator;
 use OAuth2Framework\Component\Server\Model\AccessToken\AccessToken;
 use OAuth2Framework\Component\Server\Model\AccessToken\AccessTokenId;
 use OAuth2Framework\Component\Server\Model\AccessToken\AccessTokenRepositoryInterface;
 use OAuth2Framework\Component\Server\Model\Client\ClientId;
 use OAuth2Framework\Component\Server\Model\DataBag\DataBag;
+use OAuth2Framework\Component\Server\Model\Event\Event;
 use OAuth2Framework\Component\Server\Model\Event\EventStoreInterface;
 use OAuth2Framework\Component\Server\Model\RefreshToken\RefreshTokenId;
 use OAuth2Framework\Component\Server\Model\ResourceOwner\ResourceOwnerId;
 use OAuth2Framework\Component\Server\Model\ResourceServer\ResourceServerId;
-use Ramsey\Uuid\Uuid;
 use SimpleBus\Message\Recorder\RecordsMessages;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 
-final class AccessTokenRepository implements AccessTokenRepositoryInterface
+final class AccessTokenByReferenceRepository implements AccessTokenRepositoryInterface
 {
     /**
-     * @var AdapterInterface
+     * @var int
      */
-    private $cache;
+    private $lifetime;
+
+    /**
+     * @var int
+     */
+    private $minLength;
+
+    /**
+     * @var int
+     */
+    private $maxLength;
 
     /**
      * @var EventStoreInterface
@@ -44,22 +55,26 @@ final class AccessTokenRepository implements AccessTokenRepositoryInterface
     private $eventRecorder;
 
     /**
-     * @var int
+     * @var AdapterInterface|null
      */
-    private $lifetime;
+    private $cache;
 
     /**
-     * AccessTokenRepository constructor.
+     * AccessTokenByReferenceRepository constructor.
      *
+     * @param int                 $minLength
+     * @param int                 $maxLength
+     * @param int                 $lifetime
      * @param EventStoreInterface $eventStore
      * @param RecordsMessages     $eventRecorder
-     * @param int                 $lifetime
      */
-    public function __construct(EventStoreInterface $eventStore, RecordsMessages $eventRecorder, int $lifetime)
+    public function __construct(int $minLength, int $maxLength, int $lifetime, EventStoreInterface $eventStore, RecordsMessages $eventRecorder)
     {
+        $this->minLength = $minLength;
+        $this->maxLength = $maxLength;
+        $this->lifetime = $lifetime;
         $this->eventStore = $eventStore;
         $this->eventRecorder = $eventRecorder;
-        $this->lifetime = $lifetime;
     }
 
     /**
@@ -79,11 +94,7 @@ final class AccessTokenRepository implements AccessTokenRepositoryInterface
         if (null === $accessToken) {
             $events = $this->eventStore->getEvents($accessTokenId);
             if (!empty($events)) {
-                $accessToken = AccessToken::createEmpty();
-                foreach ($events as $event) {
-                    $accessToken = $accessToken->apply($event);
-                }
-
+                $accessToken = $this->getFromEvents($events);
                 $this->cacheObject($accessToken);
             }
         }
@@ -114,10 +125,24 @@ final class AccessTokenRepository implements AccessTokenRepositoryInterface
             $expiresAt = new \DateTimeImmutable(sprintf('now +%u seconds', $this->lifetime));
         }
 
+        $accessTokenId = AccessTokenId::create(RandomIdGenerator::generate($this->minLength, $this->maxLength));
         $accessToken = AccessToken::createEmpty();
-        $accessToken = $accessToken->create(
-            AccessTokenId::create(Uuid::uuid4()->toString()),
-            $resourceOwnerId, $clientId, $parameters, $metadatas, $scopes, $expiresAt, $refreshTokenId, $resourceServerId);
+        $accessToken = $accessToken->create($accessTokenId, $resourceOwnerId, $clientId, $parameters, $metadatas, $scopes, $expiresAt, $refreshTokenId, $resourceServerId);
+
+        return $accessToken;
+    }
+
+    /**
+     * @param Event[] $events
+     *
+     * @return AccessToken
+     */
+    private function getFromEvents(array $events): AccessToken
+    {
+        $accessToken = AccessToken::createEmpty();
+        foreach ($events as $event) {
+            $accessToken = $accessToken->apply($event);
+        }
 
         return $accessToken;
     }
@@ -129,8 +154,8 @@ final class AccessTokenRepository implements AccessTokenRepositoryInterface
      */
     private function getFromCache(AccessTokenId $accessTokenId): ? AccessToken
     {
-        $itemKey = sprintf('oauth2-access_token-%s', $accessTokenId->getValue());
         if (null !== $this->cache) {
+            $itemKey = sprintf('oauth2-access_token-%s', $accessTokenId->getValue());
             $item = $this->cache->getItem($itemKey);
             if ($item->isHit()) {
                 return $item->get();
@@ -145,8 +170,8 @@ final class AccessTokenRepository implements AccessTokenRepositoryInterface
      */
     private function cacheObject(AccessToken $accessToken)
     {
-        $itemKey = sprintf('oauth2-access_token-%s', $accessToken->getTokenId()->getValue());
         if (null !== $this->cache) {
+            $itemKey = sprintf('oauth2-access_token-%s', $accessToken->getTokenId()->getValue());
             $item = $this->cache->getItem($itemKey);
             $item->set($accessToken);
             $item->tag(['oauth2_server', 'access_token', $itemKey]);

@@ -17,7 +17,7 @@ use function Fluent\create;
 return [
     ClientSecretPost::class => create()
         ->arguments(
-            0 // FixMe: Secret lifetime
+            '%oauth2_server.token_endpoint_auth_method.client_secret_post.secret_lifetime%'
         )
         ->tag('oauth2_server_token_endpoint_auth_method'),
 ];

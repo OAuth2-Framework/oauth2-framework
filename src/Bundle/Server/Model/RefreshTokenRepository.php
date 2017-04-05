@@ -13,41 +13,21 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Server\Model;
 
+use OAuth2Framework\Bundle\Server\Service\RandomIdGenerator;
 use OAuth2Framework\Component\Server\Model\Client\ClientId;
 use OAuth2Framework\Component\Server\Model\DataBag\DataBag;
+use OAuth2Framework\Component\Server\Model\Event\Event;
 use OAuth2Framework\Component\Server\Model\Event\EventStoreInterface;
 use OAuth2Framework\Component\Server\Model\RefreshToken\RefreshToken;
 use OAuth2Framework\Component\Server\Model\RefreshToken\RefreshTokenId;
 use OAuth2Framework\Component\Server\Model\RefreshToken\RefreshTokenRepositoryInterface;
 use OAuth2Framework\Component\Server\Model\ResourceOwner\ResourceOwnerId;
 use OAuth2Framework\Component\Server\Model\ResourceServer\ResourceServerId;
-use OAuth2Framework\Component\Server\Schema\DomainConverter;
-use Ramsey\Uuid\Uuid;
 use SimpleBus\Message\Recorder\RecordsMessages;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 
 final class RefreshTokenRepository implements RefreshTokenRepositoryInterface
 {
-    /**
-     * @var DomainConverter
-     */
-    private $domainConverter;
-
-    /**
-     * @var AdapterInterface
-     */
-    private $cache;
-
-    /**
-     * @var EventStoreInterface
-     */
-    private $eventStore;
-
-    /**
-     * @var RecordsMessages
-     */
-    private $eventRecorder;
-
     /**
      * @var int
      */
@@ -64,7 +44,22 @@ final class RefreshTokenRepository implements RefreshTokenRepositoryInterface
     private $maxLength;
 
     /**
-     * AccessTokenRepository constructor.
+     * @var EventStoreInterface
+     */
+    private $eventStore;
+
+    /**
+     * @var RecordsMessages
+     */
+    private $eventRecorder;
+
+    /**
+     * @var AdapterInterface|null
+     */
+    private $cache;
+
+    /**
+     * RefreshTokenRepository constructor.
      *
      * @param int                 $minLength
      * @param int                 $maxLength
@@ -77,9 +72,16 @@ final class RefreshTokenRepository implements RefreshTokenRepositoryInterface
         $this->minLength = $minLength;
         $this->maxLength = $maxLength;
         $this->lifetime = $lifetime;
-        $this->domainConverter = new DomainConverter();
         $this->eventStore = $eventStore;
         $this->eventRecorder = $eventRecorder;
+    }
+
+    /**
+     * @param AdapterInterface $cache
+     */
+    public function enableDomainObjectCaching(AdapterInterface $cache)
+    {
+        $this->cache = $cache;
     }
 
     /**
@@ -91,17 +93,9 @@ final class RefreshTokenRepository implements RefreshTokenRepositoryInterface
             $expiresAt = new \DateTimeImmutable(sprintf('now +%u seconds', $this->lifetime));
         }
 
+        $refreshTokenId = RefreshTokenId::create(RandomIdGenerator::generate($this->minLength, $this->maxLength));
         $refreshToken = RefreshToken::createEmpty();
-        $refreshToken = $refreshToken->create(
-            RefreshTokenId::create(Uuid::uuid4()->toString()),
-            $resourceOwnerId,
-            $clientId,
-            $parameters,
-            $metadatas,
-            $scopes,
-            $expiresAt,
-            $resourceServerId
-        );
+        $refreshToken = $refreshToken->create($refreshTokenId, $resourceOwnerId, $clientId, $parameters, $metadatas, $scopes, $expiresAt, $resourceServerId);
 
         return $refreshToken;
     }
@@ -115,11 +109,7 @@ final class RefreshTokenRepository implements RefreshTokenRepositoryInterface
         if (null === $refreshToken) {
             $events = $this->eventStore->getEvents($refreshTokenId);
             if (!empty($events)) {
-                $refreshToken = RefreshToken::createEmpty();
-                foreach ($events as $event) {
-                    $refreshToken = $refreshToken->apply($event);
-                }
-
+                $refreshToken = $this->getFromEvents($events);
                 $this->cacheObject($refreshToken);
             }
         }
@@ -142,11 +132,18 @@ final class RefreshTokenRepository implements RefreshTokenRepositoryInterface
     }
 
     /**
-     * @param AdapterInterface $cache
+     * @param Event[] $events
+     *
+     * @return RefreshToken
      */
-    public function enableDomainObjectCaching(AdapterInterface $cache)
+    private function getFromEvents(array $events): RefreshToken
     {
-        $this->cache = $cache;
+        $refreshToken = RefreshToken::createEmpty();
+        foreach ($events as $event) {
+            $refreshToken = $refreshToken->apply($event);
+        }
+
+        return $refreshToken;
     }
 
     /**
@@ -156,8 +153,8 @@ final class RefreshTokenRepository implements RefreshTokenRepositoryInterface
      */
     private function getFromCache(RefreshTokenId $refreshTokenId): ? RefreshToken
     {
-        $itemKey = sprintf('oauth2-refresh_token-%s', $refreshTokenId->getValue());
         if (null !== $this->cache) {
+            $itemKey = sprintf('oauth2-refresh_token-%s', $refreshTokenId->getValue());
             $item = $this->cache->getItem($itemKey);
             if ($item->isHit()) {
                 return $item->get();
@@ -172,8 +169,8 @@ final class RefreshTokenRepository implements RefreshTokenRepositoryInterface
      */
     private function cacheObject(RefreshToken $refreshToken)
     {
-        $itemKey = sprintf('oauth2-refresh_token-%s', $refreshToken->getTokenId()->getValue());
         if (null !== $this->cache) {
+            $itemKey = sprintf('oauth2-refresh_token-%s', $refreshToken->getTokenId()->getValue());
             $item = $this->cache->getItem($itemKey);
             $item->set($refreshToken);
             $item->tag(['oauth2_server', 'refresh_token', $itemKey]);

@@ -44,6 +44,7 @@ final class ClientAssertionJwtTokenEndpointAuthMethodSource extends ActionableSo
         $container->setParameter($path.'.signature_algorithms', $config['signature_algorithms']);
         $container->setParameter($path.'.claim_checkers', $config['claim_checkers']);
         $container->setParameter($path.'.header_checkers', $config['header_checkers']);
+        $container->setParameter($path.'.secret_lifetime', $config['secret_lifetime']);
         $this->encryptionSupport->load($path, $container, $config);
 
         $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/token_endpoint_auth_method'));
@@ -72,6 +73,7 @@ final class ClientAssertionJwtTokenEndpointAuthMethodSource extends ActionableSo
                 ->thenInvalid('At least one signature algorithm must be set.')
             ->end()
             ->children()
+                ->integerNode('secret_lifetime')->defaultValue(60*60*24*14)->min(0)->end()
                 ->arrayNode('signature_algorithms')
                     ->info('Supported signature algorithms.')
                     ->useAttributeAsKey('name')

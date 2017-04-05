@@ -19,7 +19,7 @@ return [
     ClientAssertionJwt::class => create()
         ->arguments(
             get('jose.jwt_loader.client_assertion_jwt'),
-            0 // FixMe: Secret lifetime
+            '%oauth2_server.token_endpoint_auth_method.client_assertion_jwt.secret_lifetime%'
         )
         ->tag('oauth2_server_token_endpoint_auth_method'),
 ];

@@ -16,17 +16,13 @@ namespace OAuth2Framework\Bundle\Server\Model;
 use OAuth2Framework\Component\Server\Model\Client\Client;
 use OAuth2Framework\Component\Server\Model\Client\ClientId;
 use OAuth2Framework\Component\Server\Model\Client\ClientRepositoryInterface;
+use OAuth2Framework\Component\Server\Model\Event\Event;
 use OAuth2Framework\Component\Server\Model\Event\EventStoreInterface;
 use SimpleBus\Message\Recorder\RecordsMessages;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 
 final class ClientRepository implements ClientRepositoryInterface
 {
-    /**
-     * @var AdapterInterface
-     */
-    private $cache;
-
     /**
      * @var EventStoreInterface
      */
@@ -36,6 +32,11 @@ final class ClientRepository implements ClientRepositoryInterface
      * @var RecordsMessages
      */
     private $eventRecorder;
+
+    /**
+     * @var AdapterInterface|null
+     */
+    private $cache;
 
     /**
      * ClientRepository constructor.
@@ -58,11 +59,7 @@ final class ClientRepository implements ClientRepositoryInterface
         if (null === $client) {
             $events = $this->eventStore->getEvents($clientId);
             if (!empty($events)) {
-                $client = Client::createEmpty();
-                foreach ($events as $event) {
-                    $client = $client->apply($event);
-                }
-
+                $client = $this->getFromEvents($events);
                 $this->cacheObject($client);
             }
         }
@@ -93,14 +90,29 @@ final class ClientRepository implements ClientRepositoryInterface
     }
 
     /**
+     * @param Event[] $events
+     *
+     * @return Client
+     */
+    private function getFromEvents(array $events): Client
+    {
+        $client = Client::createEmpty();
+        foreach ($events as $event) {
+            $client = $client->apply($event);
+        }
+
+        return $client;
+    }
+
+    /**
      * @param ClientId $clientId
      *
      * @return Client|null
      */
     private function getFromCache(ClientId $clientId): ? Client
     {
-        $itemKey = sprintf('oauth2-client-%s', $clientId->getValue());
         if (null !== $this->cache) {
+            $itemKey = sprintf('oauth2-client-%s', $clientId->getValue());
             $item = $this->cache->getItem($itemKey);
             if ($item->isHit()) {
                 return $item->get();
@@ -115,8 +127,8 @@ final class ClientRepository implements ClientRepositoryInterface
      */
     private function cacheObject(Client $client)
     {
-        $itemKey = sprintf('oauth2-client-%s', $client->getPublicId()->getValue());
         if (null !== $this->cache) {
+            $itemKey = sprintf('oauth2-client-%s', $client->getPublicId()->getValue());
             $item = $this->cache->getItem($itemKey);
             $item->set($client);
             $item->tag(['oauth2_server', 'client', $itemKey]);

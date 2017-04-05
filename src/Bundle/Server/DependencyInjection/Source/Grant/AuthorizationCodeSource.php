@@ -26,9 +26,10 @@ final class AuthorizationCodeSource extends ActionableSource
      */
     protected function continueLoading(string $path, ContainerBuilder $container, array $config)
     {
-        foreach ($config as $k => $v) {
-            $container->setParameter($path.'.'.$k, $v);
+        foreach (['min_length', 'max_length', 'lifetime', 'enforce_pkce'] as $k) {
+            $container->setParameter($path.'.'.$k, $config[$k]);
         }
+        $container->setAlias($path.'.event_store', $config['event_store']);
 
         $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/grant'));
         $loader->load('authorization_code.php');
@@ -49,10 +50,23 @@ final class AuthorizationCodeSource extends ActionableSource
     {
         parent::continueConfiguration($node);
         $node
+            ->validate()
+                ->ifTrue(function ($config) {
+                    return true === $config['enabled'] && empty($config['event_store']);
+                })
+                ->thenInvalid('The option "event_store" must be set.')
+            ->end()
+            ->validate()
+                ->ifTrue(function ($config) {
+                    return true === $config['enabled'] && $config['max_length'] < $config['min_length'];
+                })
+                ->thenInvalid('The option "max_length" must be greater than "min_length".')
+            ->end()
             ->children()
-                ->integerNode('min_length')->defaultValue(50)->end()
-                ->integerNode('max_length')->defaultValue(100)->end()
-                ->integerNode('lifetime')->defaultValue(30)->end()
+                ->integerNode('min_length')->defaultValue(50)->min(0)->end()
+                ->integerNode('max_length')->defaultValue(100)->min(1)->end()
+                ->integerNode('lifetime')->defaultValue(30)->min(1)->end()
+                ->scalarNode('event_store')->defaultNull()->end()
                 ->booleanNode('enforce_pkce')->defaultFalse()->end()
             ->end();
     }

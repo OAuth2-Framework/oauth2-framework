@@ -26,9 +26,10 @@ final class ClientRegistrationInitialAccessTokenSource extends ActionableSource
      */
     protected function continueLoading(string $path, ContainerBuilder $container, array $config)
     {
-        foreach ($config as $k => $v) {
-            $container->setParameter($path.'.'.$k, $v);
+        foreach (['required', 'realm', 'class', 'authorization_header', 'query_string', 'request_body', 'min_length', 'max_length'] as $k) {
+            $container->setParameter($path.'.'.$k, $config[$k]);
         }
+        $container->setAlias($path.'.event_store', $config['event_store']);
 
         $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint'));
         $loader->load('client_registration_initial_access_token.php');
@@ -61,20 +62,28 @@ final class ClientRegistrationInitialAccessTokenSource extends ActionableSource
                 })
                 ->thenInvalid('The option "class" must be set.')
             ->end()
-            /*->validate()
+            ->validate()
                 ->ifTrue(function ($config) {
-                    return true === $config['enabled'] && empty($config['manager']);
+                    return true === $config['enabled'] && empty($config['event_store']);
                 })
-                ->thenInvalid('The option "manager" must be set.')
-            ->end()*/
+                ->thenInvalid('The option "event_store" must be set.')
+            ->end()
+            ->validate()
+                ->ifTrue(function ($config) {
+                    return true === $config['enabled'] && $config['max_length'] < $config['min_length'];
+                })
+                ->thenInvalid('The option "max_length" must be greater than "min_length".')
+            ->end()
             ->children()
                 ->booleanNode('required')->defaultFalse()->end()
                 ->scalarNode('realm')->defaultNull()->end()
                 ->scalarNode('class')->defaultNull()->end()
-                ->scalarNode('manager')->defaultNull()->end()
                 ->booleanNode('authorization_header')->defaultTrue()->end()
                 ->booleanNode('query_string')->defaultFalse()->end()
                 ->booleanNode('request_body')->defaultFalse()->end()
+                ->integerNode('min_length')->defaultValue(50)->min(0)->end()
+                ->integerNode('max_length')->defaultValue(100)->min(1)->end()
+                ->scalarNode('event_store')->defaultNull()->end()
             ->end();
     }
 }

@@ -15,6 +15,7 @@ namespace OAuth2Framework\Bundle\Server\DependencyInjection\Source\TokenEndpoint
 
 use Fluent\PhpConfigFileLoader;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\ActionableSource;
+use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -25,6 +26,8 @@ final class ClientSecretPostTokenEndpointAuthMethodSource extends ActionableSour
      */
     protected function continueLoading(string $path, ContainerBuilder $container, array $config)
     {
+        $container->setParameter($path.'.secret_lifetime', $config['secret_lifetime']);
+
         $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/token_endpoint_auth_method'));
         $loader->load('client_secret_post.php');
     }
@@ -35,5 +38,17 @@ final class ClientSecretPostTokenEndpointAuthMethodSource extends ActionableSour
     protected function name(): string
     {
         return 'client_secret_post';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function continueConfiguration(NodeDefinition $node)
+    {
+        parent::continueConfiguration($node);
+        $node
+            ->children()
+                ->integerNode('secret_lifetime')->defaultValue(60*60*24*14)->min(0)->end()
+            ->end();
     }
 }

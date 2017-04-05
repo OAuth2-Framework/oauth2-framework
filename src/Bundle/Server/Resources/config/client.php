@@ -24,15 +24,9 @@ use function Fluent\create;
 use function Fluent\get;
 
 return [
-    'oauth2_server.event_store.client' => create(\OAuth2Framework\Bundle\Server\Tests\TestBundle\Service\EventStore::class)
-        ->arguments(
-            '%kernel.cache_dir%',
-            'client'
-        ),
-
     ClientRepository::class => create()
         ->arguments(
-            get('oauth2_server.event_store.client'),
+            get('oauth2_server.client.event_store'),
             get('event_recorder')
         ),
 

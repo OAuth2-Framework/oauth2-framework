@@ -15,6 +15,7 @@ namespace OAuth2Framework\Bundle\Server\DependencyInjection\Source\Grant;
 
 use Fluent\PhpConfigFileLoader;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\ActionableSource;
+use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -35,5 +36,20 @@ final class NoneSource extends ActionableSource
     protected function name(): string
     {
         return 'none';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function continueConfiguration(NodeDefinition $node)
+    {
+        parent::continueConfiguration($node);
+        $node
+            ->validate()
+                ->ifTrue(function ($config) {
+                    return true === $config['enabled'];
+                })
+                ->thenInvalid('The grant type "none" is not fully implemented. Please disable it.')
+            ->end();
     }
 }

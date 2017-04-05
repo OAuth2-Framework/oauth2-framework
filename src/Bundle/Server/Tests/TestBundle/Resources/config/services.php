@@ -11,6 +11,9 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
+use OAuth2Framework\Bundle\Server\Model\AccessTokenByReferenceRepository;
+use OAuth2Framework\Component\Server\Model\AccessToken\AccessTokenRepositoryInterface;
+use OAuth2Framework\Component\Server\Model\ResourceServer\ResourceServerRepositoryInterface;
 use OAuth2Framework\Component\Server\Model\Scope\ScopeRepository;
 use OAuth2Framework\Bundle\Server\Tests\TestBundle\Entity\ResourceRepository;
 use OAuth2Framework\Bundle\Server\Tests\TestBundle\Entity\UserManager;
@@ -18,11 +21,15 @@ use OAuth2Framework\Bundle\Server\Tests\TestBundle\Entity\UserRepository;
 use OAuth2Framework\Bundle\Server\Tests\TestBundle\Listener;
 use OAuth2Framework\Bundle\Server\Tests\TestBundle\Service\AccessTokenHandler;
 use OAuth2Framework\Bundle\Server\Tests\TestBundle\Service\UserProvider;
+use OAuth2Framework\Bundle\Server\Tests\TestBundle\Service\EventStore;
 use OAuth2Framework\Component\Server\Endpoint\UserInfo\Pairwise\EncryptedSubjectIdentifier;
 use OAuth2Framework\Component\Server\Event\AccessToken;
 use OAuth2Framework\Component\Server\Event\AuthCode;
 use OAuth2Framework\Component\Server\Event\Client;
 use OAuth2Framework\Component\Server\Event\RefreshToken;
+use OAuth2Framework\Component\Server\Model\UserAccount\UserAccountManagerInterface;
+use OAuth2Framework\Component\Server\Model\UserAccount\UserAccountRepositoryInterface;
+use OAuth2Framework\Component\Server\Tests\Stub\ResourceServerAuthMethodByIpAddress;
 use OAuth2Framework\Component\Server\Tests\Stub\ResourceServerRepository;
 use function Fluent\create;
 use function Fluent\get;
@@ -33,28 +40,60 @@ return [
             ['openid', 'email', 'profile', 'address', 'phone', 'offline_access']
         ),
 
-    'oauth2_server.event_store.access_token' => create(\OAuth2Framework\Bundle\Server\Tests\TestBundle\Service\EventStore::class)
+    'EventStore.RefreshToken' => create(EventStore::class)
+        ->arguments(
+            '%kernel.cache_dir%',
+            'refresh_token'
+        ),
+
+    'oauth2_server.event_store.access_token' => create(EventStore::class)
         ->arguments(
             '%kernel.cache_dir%',
             'access_token'
         ),
 
-    OAuth2Framework\Component\Server\Model\AccessToken\AccessTokenRepositoryInterface::class => create(OAuth2Framework\Bundle\Server\Model\AccessTokenRepository::class) //Fixme
+    'EventStore.Client' => create(EventStore::class)
         ->arguments(
-            get('oauth2_server.event_store.access_token'),
-            get('event_recorder'),
-            1800
+            '%kernel.cache_dir%',
+            'client'
         ),
 
-    OAuth2Framework\Component\Server\Model\UserAccount\UserAccountManagerInterface::class => create(UserManager::class),
+    'EventStore.InitialAccessToken' => create(EventStore::class)
+        ->arguments(
+            '%kernel.cache_dir%',
+            'initial_access_token'
+        ),
 
-    OAuth2Framework\Component\Server\Model\UserAccount\UserAccountRepositoryInterface::class => create(UserRepository::class),
+    'EventStore.PreConfiguredAuthorization' => create(EventStore::class)
+        ->arguments(
+            '%kernel.cache_dir%',
+            'pre_configured_authorization'
+        ),
 
-    OAuth2Framework\Component\Server\Model\ResourceServer\ResourceServerRepositoryInterface::class => create(ResourceServerRepository::class),
+    'EventStore.AuthCode' => create(EventStore::class)
+        ->arguments(
+            '%kernel.cache_dir%',
+            'auth_code'
+        ),
+
+    AccessTokenRepositoryInterface::class => create(AccessTokenByReferenceRepository::class) //Fixme
+        ->arguments(
+            100,
+            150,
+            1800,
+            get('oauth2_server.event_store.access_token'),
+            get('event_recorder')
+        ),
+
+    UserAccountManagerInterface::class => create(UserManager::class),
+
+    UserAccountRepositoryInterface::class => create(UserRepository::class),
+
+    ResourceServerRepositoryInterface::class => create(ResourceServerRepository::class),
 
     'oauth2_server.test_bundle.user_provider' => create(UserProvider::class)
         ->arguments(
-            get(OAuth2Framework\Component\Server\Model\UserAccount\UserAccountRepositoryInterface::class)
+            get(UserAccountRepositoryInterface::class)
         ),
 
     Listener\ClientCreatedListener::class => create()
@@ -85,7 +124,7 @@ return [
 
     AccessTokenHandler::class => create()
         ->arguments(
-            get(OAuth2Framework\Component\Server\Model\AccessToken\AccessTokenRepositoryInterface::class)
+            get(AccessTokenRepositoryInterface::class)
         )
         ->tag('oauth2_server_access_token_handler'),
 
@@ -99,6 +138,6 @@ return [
 
     ResourceRepository::class => create(),
 
-    \OAuth2Framework\Component\Server\Tests\Stub\ResourceServerAuthMethodByIpAddress::class => create()
+    ResourceServerAuthMethodByIpAddress::class => create()
         ->tag('token_introspection_endpoint_auth_method'),
 ];

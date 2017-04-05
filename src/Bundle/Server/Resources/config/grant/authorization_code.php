@@ -21,22 +21,12 @@ use function Fluent\create;
 use function Fluent\get;
 
 return [
-    /*'oauth2_server.event_store.auth_code' => create(OAuth2Framework\Bundle\Server\EventStore\EventStore::class)
-        ->arguments(
-            get('cache.app')
-        ),*/
-    'oauth2_server.event_store.auth_code' => create(\OAuth2Framework\Bundle\Server\Tests\TestBundle\Service\EventStore::class)
-        ->arguments(
-            '%kernel.cache_dir%',
-            'auth_code'
-        ),
-
     AuthCodeRepository::class => create()
         ->arguments(
             '%oauth2_server.grant.authorization_code.min_length%',
             '%oauth2_server.grant.authorization_code.max_length%',
             '%oauth2_server.grant.authorization_code.lifetime%',
-            get('oauth2_server.event_store.auth_code'),
+            get('oauth2_server.grant.authorization_code.event_store'),
             get('event_recorder')
         ),
 

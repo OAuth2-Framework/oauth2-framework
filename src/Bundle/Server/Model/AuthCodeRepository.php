@@ -13,24 +13,35 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Server\Model;
 
+use OAuth2Framework\Bundle\Server\Service\RandomIdGenerator;
 use OAuth2Framework\Component\Server\Model\AuthCode\AuthCode;
 use OAuth2Framework\Component\Server\Model\AuthCode\AuthCodeId;
 use OAuth2Framework\Component\Server\Model\AuthCode\AuthCodeRepositoryInterface;
 use OAuth2Framework\Component\Server\Model\Client\ClientId;
 use OAuth2Framework\Component\Server\Model\DataBag\DataBag;
+use OAuth2Framework\Component\Server\Model\Event\Event;
 use OAuth2Framework\Component\Server\Model\Event\EventStoreInterface;
 use OAuth2Framework\Component\Server\Model\ResourceServer\ResourceServerId;
 use OAuth2Framework\Component\Server\Model\UserAccount\UserAccountId;
-use Ramsey\Uuid\Uuid;
 use SimpleBus\Message\Recorder\RecordsMessages;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 
 final class AuthCodeRepository implements AuthCodeRepositoryInterface
 {
     /**
-     * @var AdapterInterface
+     * @var int
      */
-    private $cache;
+    private $minLength;
+
+    /**
+     * @var int
+     */
+    private $maxLength;
+
+    /**
+     * @var int
+     */
+    private $lifetime;
 
     /**
      * @var RecordsMessages
@@ -43,19 +54,9 @@ final class AuthCodeRepository implements AuthCodeRepositoryInterface
     private $eventStore;
 
     /**
-     * @var int
+     * @var AdapterInterface|null
      */
-    private $lifetime;
-
-    /**
-     * @var int
-     */
-    private $minLength;
-
-    /**
-     * @var int
-     */
-    private $maxLength;
+    private $cache;
 
     /**
      * AuthCodeRepository constructor.
@@ -84,20 +85,9 @@ final class AuthCodeRepository implements AuthCodeRepositoryInterface
             $expiresAt = new \DateTimeImmutable(sprintf('now +%u seconds', $this->lifetime));
         }
 
+        $authCodeId = AuthCodeId::create(RandomIdGenerator::generate($this->minLength, $this->maxLength));
         $authCode = AuthCode::createEmpty();
-        $authCode = $authCode->create(
-            AuthCodeId::create(Uuid::uuid4()->toString()),
-            $clientId,
-            $userAccountId,
-            $queryParameters,
-            $redirectUri,
-            $expiresAt,
-            $parameters,
-            $metadatas,
-            $scopes,
-            $withRefreshToken,
-            $resourceServerId
-        );
+        $authCode = $authCode->create($authCodeId, $clientId, $userAccountId, $queryParameters, $redirectUri, $expiresAt, $parameters, $metadatas, $scopes, $withRefreshToken, $resourceServerId);
 
         return $authCode;
     }
@@ -111,11 +101,7 @@ final class AuthCodeRepository implements AuthCodeRepositoryInterface
         if (null === $authCode) {
             $events = $this->eventStore->getEvents($authCodeId);
             if (!empty($events)) {
-                $authCode = AuthCode::createEmpty();
-                foreach ($events as $event) {
-                    $authCode = $authCode->apply($event);
-                }
-
+                $authCode = $this->getFromEvents($events);
                 $this->cacheObject($authCode);
             }
         }
@@ -146,14 +132,29 @@ final class AuthCodeRepository implements AuthCodeRepositoryInterface
     }
 
     /**
+     * @param Event[] $events
+     *
+     * @return AuthCode
+     */
+    private function getFromEvents(array $events): AuthCode
+    {
+        $authCode = AuthCode::createEmpty();
+        foreach ($events as $event) {
+            $authCode = $authCode->apply($event);
+        }
+
+        return $authCode;
+    }
+
+    /**
      * @param AuthCodeId $authCodeId
      *
      * @return AuthCode|null
      */
     private function getFromCache(AuthCodeId $authCodeId): ? AuthCode
     {
-        $itemKey = sprintf('oauth2-auth_code-%s', $authCodeId->getValue());
         if (null !== $this->cache) {
+            $itemKey = sprintf('oauth2-auth_code-%s', $authCodeId->getValue());
             $item = $this->cache->getItem($itemKey);
             if ($item->isHit()) {
                 return $item->get();
@@ -168,8 +169,8 @@ final class AuthCodeRepository implements AuthCodeRepositoryInterface
      */
     private function cacheObject(AuthCode $authCode)
     {
-        $itemKey = sprintf('oauth2-auth_code-%s', $authCode->getTokenId()->getValue());
         if (null !== $this->cache) {
+            $itemKey = sprintf('oauth2-auth_code-%s', $authCode->getTokenId()->getValue());
             $item = $this->cache->getItem($itemKey);
             $item->set($authCode);
             $item->tag(['oauth2_server', 'auth_code', $itemKey]);

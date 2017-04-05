@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\Server\Model;
 
 use OAuth2Framework\Component\Server\Model\Client\ClientId;
+use OAuth2Framework\Component\Server\Model\Event\Event;
 use OAuth2Framework\Component\Server\Model\Event\EventStoreInterface;
 use OAuth2Framework\Component\Server\Model\PreConfiguredAuthorization\PreConfiguredAuthorization;
 use OAuth2Framework\Component\Server\Model\PreConfiguredAuthorization\PreConfiguredAuthorizationId;
@@ -75,11 +76,7 @@ final class PreConfiguredAuthorizationRepository implements PreConfiguredAuthori
         if (null === $preConfiguredAuthorization) {
             $events = $this->eventStore->getEvents($hash);
             if (!empty($events)) {
-                $preConfiguredAuthorization = PreConfiguredAuthorization::createEmpty();
-                foreach ($events as $event) {
-                    $preConfiguredAuthorization = $preConfiguredAuthorization->apply($event);
-                }
-
+                $preConfiguredAuthorization = $this->getFromEvents($events);
                 $this->cacheObject($preConfiguredAuthorization);
             }
         }
@@ -116,8 +113,8 @@ final class PreConfiguredAuthorizationRepository implements PreConfiguredAuthori
      */
     private function getFromCache(PreConfiguredAuthorizationId $preConfiguredAuthorizationId): ? PreConfiguredAuthorization
     {
-        $itemKey = sprintf('oauth2-pre_configured_authorization-%s', $preConfiguredAuthorizationId->getValue());
         if (null !== $this->cache) {
+            $itemKey = sprintf('oauth2-pre_configured_authorization-%s', $preConfiguredAuthorizationId->getValue());
             $item = $this->cache->getItem($itemKey);
             if ($item->isHit()) {
                 return $item->get();
@@ -128,12 +125,27 @@ final class PreConfiguredAuthorizationRepository implements PreConfiguredAuthori
     }
 
     /**
+     * @param Event[] $events
+     *
+     * @return PreConfiguredAuthorization
+     */
+    private function getFromEvents(array $events): PreConfiguredAuthorization
+    {
+        $preConfiguredAuthorization = PreConfiguredAuthorization::createEmpty();
+        foreach ($events as $event) {
+            $preConfiguredAuthorization = $preConfiguredAuthorization->apply($event);
+        }
+
+        return $preConfiguredAuthorization;
+    }
+
+    /**
      * @param PreConfiguredAuthorization $preConfiguredAuthorization
      */
     private function cacheObject(PreConfiguredAuthorization $preConfiguredAuthorization)
     {
-        $itemKey = sprintf('oauth2-pre_configured_authorization-%s', $preConfiguredAuthorization->getPreConfiguredAuthorizationId()->getValue());
         if (null !== $this->cache) {
+            $itemKey = sprintf('oauth2-pre_configured_authorization-%s', $preConfiguredAuthorization->getPreConfiguredAuthorizationId()->getValue());
             $item = $this->cache->getItem($itemKey);
             $item->set($preConfiguredAuthorization);
             $item->tag(['oauth2_server', 'pre_configured_authorization', $itemKey]);

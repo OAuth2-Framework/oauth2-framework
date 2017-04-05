@@ -27,6 +27,7 @@ final class ClientSecretBasicTokenEndpointAuthMethodSource extends ActionableSou
     protected function continueLoading(string $path, ContainerBuilder $container, array $config)
     {
         $container->setParameter($path.'.realm', $config['realm']);
+        $container->setParameter($path.'.secret_lifetime', $config['secret_lifetime']);
 
         $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/token_endpoint_auth_method'));
         $loader->load('client_secret_basic.php');
@@ -55,6 +56,7 @@ final class ClientSecretBasicTokenEndpointAuthMethodSource extends ActionableSou
             ->end()
             ->children()
                 ->scalarNode('realm')->end()
+                ->integerNode('secret_lifetime')->defaultValue(60*60*24*14)->min(0)->end()
             ->end();
     }
 }

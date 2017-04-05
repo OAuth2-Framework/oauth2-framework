@@ -30,19 +30,9 @@ return [
         )
         ->tag('oauth2_server_after_consent_screen'),
 
-    /*'oauth2_server.event_store.pre_configured_authorization' => create(OAuth2Framework\Bundle\Server\EventStore\EventStore::class)
-        ->arguments(
-            get('cache.app')
-        ),*/
-    'oauth2_server.event_store.pre_configured_authorization' => create(\OAuth2Framework\Bundle\Server\Tests\TestBundle\Service\EventStore::class)
-        ->arguments(
-            '%kernel.cache_dir%',
-            'pre_configured_authorization'
-        ),
-
     PreConfiguredAuthorizationRepository::class => create()
         ->arguments(
-            get('oauth2_server.event_store.pre_configured_authorization'),
+            get('oauth2_server.endpoint.authorization.pre_configured_authorization.event_store'),
             get('event_recorder')
         ),
 ];

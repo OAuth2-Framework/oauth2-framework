@@ -13,21 +13,27 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Server\Model;
 
+use OAuth2Framework\Bundle\Server\Service\RandomIdGenerator;
+use OAuth2Framework\Component\Server\Model\Event\Event;
 use OAuth2Framework\Component\Server\Model\Event\EventStoreInterface;
 use OAuth2Framework\Component\Server\Model\InitialAccessToken\InitialAccessToken;
 use OAuth2Framework\Component\Server\Model\InitialAccessToken\InitialAccessTokenId;
 use OAuth2Framework\Component\Server\Model\InitialAccessToken\InitialAccessTokenRepositoryInterface;
 use OAuth2Framework\Component\Server\Model\UserAccount\UserAccountId;
-use Ramsey\Uuid\Uuid;
 use SimpleBus\Message\Recorder\RecordsMessages;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 
 final class InitialAccessTokenRepository implements InitialAccessTokenRepositoryInterface
 {
     /**
-     * @var AdapterInterface
+     * @var int
      */
-    private $cache;
+    private $minLength;
+
+    /**
+     * @var int
+     */
+    private $maxLength;
 
     /**
      * @var EventStoreInterface
@@ -40,13 +46,22 @@ final class InitialAccessTokenRepository implements InitialAccessTokenRepository
     private $eventRecorder;
 
     /**
+     * @var AdapterInterface|null
+     */
+    private $cache;
+
+    /**
      * InitialAccessTokenRepository constructor.
      *
+     * @param int                 $minLength
+     * @param int                 $maxLength
      * @param EventStoreInterface $eventStore
      * @param RecordsMessages     $eventRecorder
      */
-    public function __construct(EventStoreInterface $eventStore, RecordsMessages $eventRecorder)
+    public function __construct(int $minLength, int $maxLength, EventStoreInterface $eventStore, RecordsMessages $eventRecorder)
     {
+        $this->minLength = $minLength;
+        $this->maxLength = $maxLength;
         $this->eventStore = $eventStore;
         $this->eventRecorder = $eventRecorder;
     }
@@ -56,7 +71,7 @@ final class InitialAccessTokenRepository implements InitialAccessTokenRepository
      */
     public function create(? UserAccountId $userAccountId, ? \DateTimeImmutable $expiresAt): InitialAccessToken
     {
-        $initialAccessTokeId = InitialAccessTokenId::create(Uuid::uuid4()->toString());
+        $initialAccessTokeId = InitialAccessTokenId::create(RandomIdGenerator::generate($this->minLength, $this->maxLength));
         $initialAccessToken = InitialAccessToken::createEmpty();
         $initialAccessToken = $initialAccessToken->create($initialAccessTokeId, $userAccountId, $expiresAt);
 
@@ -72,11 +87,7 @@ final class InitialAccessTokenRepository implements InitialAccessTokenRepository
         if (null === $initialAccessToken) {
             $events = $this->eventStore->getEvents($initialAccessTokenId);
             if (!empty($events)) {
-                $initialAccessToken = InitialAccessToken::createEmpty();
-                foreach ($events as $event) {
-                    $initialAccessToken = $initialAccessToken->apply($event);
-                }
-
+                $initialAccessToken = $this->getFromEvents($events);
                 $this->cacheObject($initialAccessToken);
             }
         }
@@ -107,14 +118,29 @@ final class InitialAccessTokenRepository implements InitialAccessTokenRepository
     }
 
     /**
+     * @param Event[] $events
+     *
+     * @return InitialAccessToken
+     */
+    private function getFromEvents(array $events): InitialAccessToken
+    {
+        $initialAccessToken = InitialAccessToken::createEmpty();
+        foreach ($events as $event) {
+            $initialAccessToken = $initialAccessToken->apply($event);
+        }
+
+        return $initialAccessToken;
+    }
+
+    /**
      * @param InitialAccessTokenId $initialAccessTokenId
      *
      * @return InitialAccessToken|null
      */
     private function getFromCache(InitialAccessTokenId $initialAccessTokenId): ? InitialAccessToken
     {
-        $itemKey = sprintf('oauth2-initial_access_token-%s', $initialAccessTokenId->getValue());
         if (null !== $this->cache) {
+            $itemKey = sprintf('oauth2-initial_access_token-%s', $initialAccessTokenId->getValue());
             $item = $this->cache->getItem($itemKey);
             if ($item->isHit()) {
                 return $item->get();
@@ -129,8 +155,8 @@ final class InitialAccessTokenRepository implements InitialAccessTokenRepository
      */
     private function cacheObject(InitialAccessToken $initialAccessToken)
     {
-        $itemKey = sprintf('oauth2-initial_access_token-%s', $initialAccessToken->getUserAccountId()->getValue());
         if (null !== $this->cache) {
+            $itemKey = sprintf('oauth2-initial_access_token-%s', $initialAccessToken->getUserAccountId()->getValue());
             $item = $this->cache->getItem($itemKey);
             $item->set($initialAccessToken);
             $item->tag(['oauth2_server', 'initial_access_token', $itemKey]);
