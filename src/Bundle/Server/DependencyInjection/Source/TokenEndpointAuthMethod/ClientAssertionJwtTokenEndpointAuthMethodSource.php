@@ -73,7 +73,7 @@ final class ClientAssertionJwtTokenEndpointAuthMethodSource extends ActionableSo
                 ->thenInvalid('At least one signature algorithm must be set.')
             ->end()
             ->children()
-                ->integerNode('secret_lifetime')->defaultValue(60*60*24*14)->min(0)->end()
+                ->integerNode('secret_lifetime')->defaultValue(60 * 60 * 24 * 14)->min(0)->end()
                 ->arrayNode('signature_algorithms')
                     ->info('Supported signature algorithms.')
                     ->useAttributeAsKey('name')
