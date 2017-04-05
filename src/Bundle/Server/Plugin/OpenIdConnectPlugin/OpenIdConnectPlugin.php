@@ -24,8 +24,8 @@ use OAuth2Framework\Bundle\Server\OpenIdConnectPlugin\DependencyInjection\Compil
 use OAuth2Framework\Bundle\Server\OpenIdConnectPlugin\DependencyInjection\Compiler\PairwiseSubjectIdentifierCompilerPass;
 use OAuth2Framework\Bundle\Server\OpenIdConnectPlugin\DependencyInjection\Compiler\SessionIFrameRouteCompilerPass;
 use OAuth2Framework\Bundle\Server\OpenIdConnectPlugin\DependencyInjection\Compiler\UserInfoEndpointSignatureSupportCompilerPass;
-use OAuth2Framework\Bundle\Server\OpenIdConnectPlugin\DependencyInjection\Compiler\UserinfoRouteCompilerPass;
 use OAuth2Framework\Bundle\Server\OpenIdConnectPlugin\DependencyInjection\Compiler\UserInfoScopeSupportCompilerPass;
+use OAuth2Framework\Bundle\Server\OpenIdConnectPlugin\DependencyInjection\Compiler\UserinfoRouteCompilerPass;
 use SpomkyLabs\JoseBundle\Helper\ConfigurationHelper;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\FileLocator;

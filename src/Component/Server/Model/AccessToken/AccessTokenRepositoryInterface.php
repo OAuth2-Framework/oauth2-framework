@@ -26,7 +26,7 @@ interface AccessTokenRepositoryInterface
      * @param ClientId                $clientId
      * @param DataBag                 $parameters
      * @param DataBag                 $metadatas
-     * @param array                   $scopes
+     * @param string[]                $scopes
      * @param null|RefreshTokenId     $refreshTokenId
      * @param null|ResourceServerId   $resourceServerId
      * @param \DateTimeImmutable|null $expiresAt
