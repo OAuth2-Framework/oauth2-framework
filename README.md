@@ -35,11 +35,11 @@ This project follows the [semantic versioning](http://semver.org/) strictly.
 
 # Documentation
 
-The documentation of this library [is available here](https://oauth2-framework.spomky-labs.com).
+The documentation of this project [is available here](https://oauth2-framework.spomky-labs.com).
 
 # Contributing
 
-Requests for new features, bug fixed and all other ideas to make this library useful are welcome.
+Requests for new features, bug fixed and all other ideas to make this project useful are welcome.
 The best contribution you could provide is by fixing the [opened issues where help is wanted](https://github.com/OAuth2-Framework/oauth2-framework/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22).
 
 Please report all issues in [the main repository](https://github.com/OAuth2-Framework/oauth2-framework/issues).
@@ -53,7 +53,7 @@ Instead, all security issues must be sent to security [at] spomky-labs.com.
 
 # Licence
 
-This library is release under [MIT licence](LICENSE).
+This project is release under [MIT licence](LICENSE).
 
 # Changelog
 
