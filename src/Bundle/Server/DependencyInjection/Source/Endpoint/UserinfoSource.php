@@ -23,7 +23,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 final class UserinfoSource extends ActionableSource
 {
     /**
-     * @var SourceInterface
+     * @var SourceInterface[]
      */
     private $subSources = [];
 
