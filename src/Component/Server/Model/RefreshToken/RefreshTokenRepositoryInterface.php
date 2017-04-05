@@ -35,7 +35,7 @@ interface RefreshTokenRepositoryInterface
      *
      * @return RefreshToken
      */
-    public function create(ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, array $scopes, ?ResourceServerId $resourceServerId, ?\DateTimeImmutable $expiresAt): RefreshToken;
+    public function create(ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, array $scopes, ? ResourceServerId $resourceServerId, ? \DateTimeImmutable $expiresAt): RefreshToken;
 
     /**
      * @param RefreshToken $refreshToken

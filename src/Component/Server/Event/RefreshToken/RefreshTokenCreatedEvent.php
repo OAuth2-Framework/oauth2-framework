@@ -79,7 +79,7 @@ final class RefreshTokenCreatedEvent extends Event
      * @param \DateTimeImmutable|null $recordedOn
      * @param null|EventId            $eventId
      */
-    protected function __construct(RefreshTokenId $refreshTokenId, ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, \DateTimeImmutable $expiresAt, array $scopes, ?ResourceServerId $resourceServerId, ?\DateTimeImmutable $recordedOn, ?EventId $eventId)
+    protected function __construct(RefreshTokenId $refreshTokenId, ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, \DateTimeImmutable $expiresAt, array $scopes, ? ResourceServerId $resourceServerId, ? \DateTimeImmutable $recordedOn, ? EventId $eventId)
     {
         parent::__construct($recordedOn, $eventId);
         $this->refreshTokenId = $refreshTokenId;
@@ -112,7 +112,7 @@ final class RefreshTokenCreatedEvent extends Event
      *
      * @return RefreshTokenCreatedEvent
      */
-    public static function create(RefreshTokenId $refreshTokenId, ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, \DateTimeImmutable $expiresAt, array $scopes, ?ResourceServerId $resourceServerId): RefreshTokenCreatedEvent
+    public static function create(RefreshTokenId $refreshTokenId, ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, \DateTimeImmutable $expiresAt, array $scopes, ? ResourceServerId $resourceServerId): RefreshTokenCreatedEvent
     {
         return new self($refreshTokenId, $resourceOwnerId, $clientId, $parameters, $metadatas, $expiresAt, $scopes, $resourceServerId, null, null);
     }
@@ -176,7 +176,7 @@ final class RefreshTokenCreatedEvent extends Event
     /**
      * @return ResourceServerId
      */
-    public function getResourceServerId(): ?ResourceServerId
+    public function getResourceServerId(): ? ResourceServerId
     {
         return $this->resourceServerId;
     }

@@ -33,7 +33,7 @@ final class AuthCodeRevokedEvent extends Event
      * @param \DateTimeImmutable|null $recordedOn
      * @param EventId|null            $eventId
      */
-    protected function __construct(AuthCodeId $authCodeId, ?\DateTimeImmutable $recordedOn, ?EventId $eventId)
+    protected function __construct(AuthCodeId $authCodeId, ? \DateTimeImmutable $recordedOn, ? EventId $eventId)
     {
         parent::__construct($recordedOn, $eventId);
         $this->authCodeId = $authCodeId;

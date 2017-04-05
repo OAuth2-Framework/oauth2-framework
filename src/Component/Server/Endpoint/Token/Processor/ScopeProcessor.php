@@ -39,7 +39,7 @@ final class ScopeProcessor
      * @param ScopeRepositoryInterface $scopeRepository
      * @param ScopePolicyManager|null  $scopePolicyManager
      */
-    public function __construct(ScopeRepositoryInterface $scopeRepository, ?ScopePolicyManager $scopePolicyManager)
+    public function __construct(ScopeRepositoryInterface $scopeRepository, ? ScopePolicyManager $scopePolicyManager)
     {
         $this->scopeRepository = $scopeRepository;
         $this->scopePolicyManager = $scopePolicyManager;

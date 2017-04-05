@@ -58,7 +58,7 @@ abstract class ClientSecretBasic implements TokenEndpointAuthMethodInterface
     /**
      * {@inheritdoc}
      */
-    public function findClientId(ServerRequestInterface $request, &$client_credentials = null): ?ClientId
+    public function findClientId(ServerRequestInterface $request, &$client_credentials = null): ? ClientId
     {
         $server_params = $request->getServerParams();
         if (array_key_exists('PHP_AUTH_USER', $server_params) && array_key_exists('PHP_AUTH_PW', $server_params)) {

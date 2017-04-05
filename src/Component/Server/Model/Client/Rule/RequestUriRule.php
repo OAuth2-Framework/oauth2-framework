@@ -22,7 +22,7 @@ final class RequestUriRule implements RuleInterface
     /**
      * {@inheritdoc}
      */
-    public function handle(DataBag $commandParameters, DataBag $validatedParameters, ?UserAccountId $userAccountId, callable $next): DataBag
+    public function handle(DataBag $commandParameters, DataBag $validatedParameters, ? UserAccountId $userAccountId, callable $next): DataBag
     {
         if ($commandParameters->has('request_uris')) {
             Assertion::isArray($commandParameters->get('request_uris'), 'The parameter \'request_uris\' must be a list of URI.');

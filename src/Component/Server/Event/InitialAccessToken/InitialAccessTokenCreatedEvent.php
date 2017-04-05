@@ -46,7 +46,7 @@ final class InitialAccessTokenCreatedEvent extends Event
      * @param \DateTimeImmutable|null $recordedOn
      * @param EventId|null            $eventId
      */
-    protected function __construct(InitialAccessTokenId $initialAccessTokenId, ?UserAccountId $userAccountId, ?\DateTimeImmutable $expiresAt, ?\DateTimeImmutable $recordedOn, ?EventId $eventId)
+    protected function __construct(InitialAccessTokenId $initialAccessTokenId, ? UserAccountId $userAccountId, ? \DateTimeImmutable $expiresAt, ? \DateTimeImmutable $recordedOn, ? EventId $eventId)
     {
         parent::__construct($recordedOn, $eventId);
         $this->initialAccessTokenId = $initialAccessTokenId;
@@ -69,7 +69,7 @@ final class InitialAccessTokenCreatedEvent extends Event
      *
      * @return InitialAccessTokenCreatedEvent
      */
-    public static function create(InitialAccessTokenId $initialAccessTokenId, ?UserAccountId $userAccountId, ?\DateTimeImmutable $expiresAt): InitialAccessTokenCreatedEvent
+    public static function create(InitialAccessTokenId $initialAccessTokenId, ? UserAccountId $userAccountId, ? \DateTimeImmutable $expiresAt): InitialAccessTokenCreatedEvent
     {
         return new self($initialAccessTokenId, $userAccountId, $expiresAt, null, null);
     }

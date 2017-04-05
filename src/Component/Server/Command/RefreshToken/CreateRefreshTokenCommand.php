@@ -62,7 +62,7 @@ final class CreateRefreshTokenCommand extends CommandWithDataTransporter
      * @param \DateTimeImmutable|null $expiresAt
      * @param DataTransporter|null    $dataTransporter
      */
-    protected function __construct(ResourceOwnerId $userAccountId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, array $scopes, ?\DateTimeImmutable $expiresAt, ?DataTransporter $dataTransporter)
+    protected function __construct(ResourceOwnerId $userAccountId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, array $scopes, ? \DateTimeImmutable $expiresAt, ? DataTransporter $dataTransporter)
     {
         parent::__construct($dataTransporter);
         $this->expiresAt = $expiresAt;
@@ -84,7 +84,7 @@ final class CreateRefreshTokenCommand extends CommandWithDataTransporter
      *
      * @return CreateRefreshTokenCommand
      */
-    public static function create(ResourceOwnerId $userAccountId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, array $scopes, ?\DateTimeImmutable $expiresAt, ?DataTransporter $dataTransporter): CreateRefreshTokenCommand
+    public static function create(ResourceOwnerId $userAccountId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, array $scopes, ? \DateTimeImmutable $expiresAt, ? DataTransporter $dataTransporter): CreateRefreshTokenCommand
     {
         return new self($userAccountId, $clientId, $parameters, $metadatas, $scopes, $expiresAt, $dataTransporter);
     }
@@ -92,7 +92,7 @@ final class CreateRefreshTokenCommand extends CommandWithDataTransporter
     /**
      * @return \DateTimeImmutable|null
      */
-    public function getExpiresAt(): ?\DateTimeImmutable
+    public function getExpiresAt(): ? \DateTimeImmutable
     {
         return $this->expiresAt;
     }

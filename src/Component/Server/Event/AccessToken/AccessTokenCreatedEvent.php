@@ -86,7 +86,7 @@ final class AccessTokenCreatedEvent extends Event
      * @param \DateTimeImmutable|null $recordedOn
      * @param EventId|null            $eventId
      */
-    protected function __construct(AccessTokenId $accessTokenId, ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, array $scopes, \DateTimeImmutable $expiresAt, ?RefreshTokenId $refreshTokenId, ?ResourceServerId $resourceServerId, ?\DateTimeImmutable $recordedOn, ?EventId $eventId)
+    protected function __construct(AccessTokenId $accessTokenId, ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, array $scopes, \DateTimeImmutable $expiresAt, ? RefreshTokenId $refreshTokenId, ? ResourceServerId $resourceServerId, ? \DateTimeImmutable $recordedOn, ? EventId $eventId)
     {
         parent::__construct($recordedOn, $eventId);
         $this->accessTokenId = $accessTokenId;
@@ -121,7 +121,7 @@ final class AccessTokenCreatedEvent extends Event
      *
      * @return AccessTokenCreatedEvent
      */
-    public static function create(AccessTokenId $accessTokenId, ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, array $scopes, \DateTimeImmutable $expiresAt, ?RefreshTokenId $refreshTokenId, ?ResourceServerId $resourceServerId): AccessTokenCreatedEvent
+    public static function create(AccessTokenId $accessTokenId, ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, array $scopes, \DateTimeImmutable $expiresAt, ? RefreshTokenId $refreshTokenId, ? ResourceServerId $resourceServerId): AccessTokenCreatedEvent
     {
         return new self($accessTokenId, $resourceOwnerId, $clientId, $parameters, $metadatas, $scopes, $expiresAt, $refreshTokenId, $resourceServerId, null, null);
     }
@@ -158,7 +158,7 @@ final class AccessTokenCreatedEvent extends Event
     /**
      * @return null|RefreshTokenId
      */
-    public function getRefreshTokenId(): ?RefreshTokenId
+    public function getRefreshTokenId(): ? RefreshTokenId
     {
         return $this->refreshTokenId;
     }
@@ -214,7 +214,7 @@ final class AccessTokenCreatedEvent extends Event
     /**
      * @return null|ResourceServerId
      */
-    public function getResourceServerId(): ?ResourceServerId
+    public function getResourceServerId(): ? ResourceServerId
     {
         return $this->resourceServerId;
     }

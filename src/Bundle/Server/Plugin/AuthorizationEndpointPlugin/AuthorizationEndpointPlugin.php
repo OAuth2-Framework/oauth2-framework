@@ -272,8 +272,8 @@ class AuthorizationEndpointPlugin extends CommonPluginMethod implements BundlePl
         $files = [];
         $accessor = PropertyAccess::createPropertyAccessor();
         $parameters = [
-            'oauth2_server.authorization_endpoint.form_handler' => ['type' => 'alias',     'path' => '[form][handler]'],
-            'oauth2_server.authorization_endpoint.user_account_manager' => ['type' => 'alias',     'path' => '[user_account_manager]'],
+            'oauth2_server.authorization_endpoint.form_handler' => ['type' => 'alias', 'path' => '[form][handler]'],
+            'oauth2_server.authorization_endpoint.user_account_manager' => ['type' => 'alias', 'path' => '[user_account_manager]'],
             'oauth2_server.authorization_endpoint.template' => ['type' => 'parameter', 'path' => '[template]'],
             'oauth2_server.authorization_endpoint.allow_scope_selection' => ['type' => 'parameter', 'path' => '[allow_scope_selection]'],
             'oauth2_server.authorization_endpoint.type' => ['type' => 'parameter', 'path' => '[form][type]'],
@@ -301,7 +301,7 @@ class AuthorizationEndpointPlugin extends CommonPluginMethod implements BundlePl
                 $parameters['oauth2_server.authorization_request_loader.request_object.encryption.key_encryption_algorithms'] = ['type' => 'parameter', 'path' => '[request_object][encryption][key_encryption_algorithms]'];
                 $parameters['oauth2_server.authorization_request_loader.request_object.encryption.content_encryption_algorithms'] = ['type' => 'parameter', 'path' => '[request_object][encryption][content_encryption_algorithms]'];
                 $parameters['oauth2_server.authorization_request_loader.request_object.encryption.required'] = ['type' => 'parameter', 'path' => '[request_object][encryption][required]'];
-                $parameters['oauth2_server.authorization_request_loader.request_object.encryption.key_set'] = ['type' => 'alias',     'path' => '[request_object][encryption][key_set]'];
+                $parameters['oauth2_server.authorization_request_loader.request_object.encryption.key_set'] = ['type' => 'alias', 'path' => '[request_object][encryption][key_set]'];
             }
 
             $parameters['oauth2_server.authorization_request_loader.request_object.reference_enabled'] = ['type' => 'parameter', 'path' => '[request_object][reference][enabled]'];

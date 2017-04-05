@@ -63,8 +63,8 @@ final class FormFactory
     }
 
     /**
-     * @param array      $options
-     * @param mixed|null $data
+     * @param array                    $options
+     * @param Model\AuthorizationModel $data
      *
      * @return FormInterface
      */

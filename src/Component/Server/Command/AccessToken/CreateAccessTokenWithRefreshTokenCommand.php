@@ -70,7 +70,7 @@ final class CreateAccessTokenWithRefreshTokenCommand extends CommandWithDataTran
      * @param ResourceServerId|null   $resourceServerId
      * @param DataTransporter|null    $dataTransporter
      */
-    protected function __construct(ClientId $clientId, ResourceOwnerId $resourceOwnerId, DataBag $parameters, DataBag $metadatas, array $scopes, ?\DateTimeImmutable $expiresAt, ?ResourceServerId $resourceServerId, ?DataTransporter $dataTransporter)
+    protected function __construct(ClientId $clientId, ResourceOwnerId $resourceOwnerId, DataBag $parameters, DataBag $metadatas, array $scopes, ? \DateTimeImmutable $expiresAt, ? ResourceServerId $resourceServerId, ? DataTransporter $dataTransporter)
     {
         $this->resourceOwnerId = $resourceOwnerId;
         $this->clientId = $clientId;
@@ -94,7 +94,7 @@ final class CreateAccessTokenWithRefreshTokenCommand extends CommandWithDataTran
      *
      * @return CreateAccessTokenWithRefreshTokenCommand
      */
-    public static function create(ClientId $clientId, ResourceOwnerId $resourceOwnerId, DataBag $parameters, DataBag $metadatas, array $scopes, ?\DateTimeImmutable $expiresAt, ?ResourceServerId $resourceServerId, ?DataTransporter $dataTransporter): CreateAccessTokenWithRefreshTokenCommand
+    public static function create(ClientId $clientId, ResourceOwnerId $resourceOwnerId, DataBag $parameters, DataBag $metadatas, array $scopes, ? \DateTimeImmutable $expiresAt, ? ResourceServerId $resourceServerId, ? DataTransporter $dataTransporter): CreateAccessTokenWithRefreshTokenCommand
     {
         return new self($clientId, $resourceOwnerId, $parameters, $metadatas, $scopes, $expiresAt, $resourceServerId, $dataTransporter);
     }
@@ -190,7 +190,7 @@ final class CreateAccessTokenWithRefreshTokenCommand extends CommandWithDataTran
     /**
      * @return \DateTimeImmutable|null
      */
-    public function getExpiresAt(): ?\DateTimeImmutable
+    public function getExpiresAt(): ? \DateTimeImmutable
     {
         return $this->expiresAt;
     }
@@ -198,7 +198,7 @@ final class CreateAccessTokenWithRefreshTokenCommand extends CommandWithDataTran
     /**
      * @return ResourceServerId|null
      */
-    public function getResourceServerId(): ?ResourceServerId
+    public function getResourceServerId(): ? ResourceServerId
     {
         return $this->resourceServerId;
     }

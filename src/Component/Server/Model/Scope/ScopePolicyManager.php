@@ -71,7 +71,7 @@ final class ScopePolicyManager
     /**
      * @return ScopePolicyInterface|null
      */
-    public function default(): ?ScopePolicyInterface
+    public function default(): ? ScopePolicyInterface
     {
         if (null === $this->defaultScopePolicy) {
             return null;
@@ -104,7 +104,7 @@ final class ScopePolicyManager
      *
      * @return ScopePolicyInterface|null
      */
-    private function getForClient(Client $client): ?ScopePolicyInterface
+    private function getForClient(Client $client): ? ScopePolicyInterface
     {
         if ($client->has('scope_policy') && $this->has($client->get('scope_policy'))) {
             $policyName = $client->get('scope_policy');

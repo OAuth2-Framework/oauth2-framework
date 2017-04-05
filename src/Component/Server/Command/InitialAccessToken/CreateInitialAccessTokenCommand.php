@@ -36,7 +36,7 @@ final class CreateInitialAccessTokenCommand extends CommandWithDataTransporter
      * @param \DateTimeImmutable|null $expiresAt
      * @param DataTransporter|null    $dataTransporter
      */
-    protected function __construct(UserAccountId $userAccountId, ?\DateTimeImmutable $expiresAt, ?DataTransporter $dataTransporter)
+    protected function __construct(UserAccountId $userAccountId, ? \DateTimeImmutable $expiresAt, ? DataTransporter $dataTransporter)
     {
         $this->userAccountId = $userAccountId;
         $this->expiresAt = $expiresAt;
@@ -50,7 +50,7 @@ final class CreateInitialAccessTokenCommand extends CommandWithDataTransporter
      *
      * @return CreateInitialAccessTokenCommand
      */
-    public static function create(UserAccountId $userAccountId, ?\DateTimeImmutable $expiresAt, ?DataTransporter $dataTransporter): CreateInitialAccessTokenCommand
+    public static function create(UserAccountId $userAccountId, ? \DateTimeImmutable $expiresAt, ? DataTransporter $dataTransporter): CreateInitialAccessTokenCommand
     {
         return new self($userAccountId, $expiresAt, $dataTransporter);
     }
@@ -66,7 +66,7 @@ final class CreateInitialAccessTokenCommand extends CommandWithDataTransporter
     /**
      * @return null|\DateTimeImmutable
      */
-    public function getExpiresAt(): ?\DateTimeImmutable
+    public function getExpiresAt(): ? \DateTimeImmutable
     {
         return $this->expiresAt;
     }

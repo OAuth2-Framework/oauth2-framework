@@ -27,7 +27,7 @@ interface TokenIntrospectionEndpointAuthMethodInterface
      *
      * @return null|ResourceServerId Return the Resource Server public ID if found else null. If credentials have are needed to authenticate the Resource Server, they are set to the variable $resourceServerCredentials
      */
-    public function findResourceServerId(ServerRequestInterface $request, &$resourceServerCredentials = null): ?ResourceServerId;
+    public function findResourceServerId(ServerRequestInterface $request, &$resourceServerCredentials = null): ? ResourceServerId;
 
     /**
      * This method verifies the Resource Server credentials in the request.

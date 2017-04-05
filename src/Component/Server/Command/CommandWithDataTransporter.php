@@ -27,7 +27,7 @@ abstract class CommandWithDataTransporter
      *
      * @param DataTransporter|null $dataTransporter
      */
-    protected function __construct(?DataTransporter $dataTransporter)
+    protected function __construct(? DataTransporter $dataTransporter)
     {
         $this->dataTransporter = $dataTransporter;
     }
@@ -35,7 +35,7 @@ abstract class CommandWithDataTransporter
     /**
      * @return null|DataTransporter
      */
-    public function getDataTransporter(): ?DataTransporter
+    public function getDataTransporter(): ? DataTransporter
     {
         return $this->dataTransporter;
     }

@@ -38,7 +38,7 @@ final class SubjectTypeRule implements RuleInterface
     /**
      * {@inheritdoc}
      */
-    public function handle(DataBag $commandParameters, DataBag $validatedParameters, ?UserAccountId $userAccountId, callable $next): DataBag
+    public function handle(DataBag $commandParameters, DataBag $validatedParameters, ? UserAccountId $userAccountId, callable $next): DataBag
     {
         if ($commandParameters->has('subject_type')) {
             Assertion::string($commandParameters->get('subject_type'), 'Invalid parameter \'subject_type\'. The value must be a string.');

@@ -64,7 +64,7 @@ final class UserInfo
      *
      * @return array
      */
-    public function getUserinfo(Client $client, UserAccountInterface $userAccount, string $redirectUri, array $requestClaims, array $scopes, ?string $claimsLocales): array
+    public function getUserinfo(Client $client, UserAccountInterface $userAccount, string $redirectUri, array $requestClaims, array $scopes, ? string $claimsLocales): array
     {
         $requestClaims = array_merge(
             $this->getClaimsFromClaimScope($scopes),
@@ -108,7 +108,7 @@ final class UserInfo
      *
      * @return array
      */
-    private function getClaimValues(UserAccountInterface $userAccount, array $claims, ?string $claimsLocales): array
+    private function getClaimValues(UserAccountInterface $userAccount, array $claims, ? string $claimsLocales): array
     {
         $result = [];
         if (null === $claimsLocales) {
@@ -184,7 +184,7 @@ final class UserInfo
     /**
      * @return PairwiseSubjectIdentifierAlgorithmInterface|null
      */
-    public function getPairwiseSubjectIdentifierAlgorithm(): ?PairwiseSubjectIdentifierAlgorithmInterface
+    public function getPairwiseSubjectIdentifierAlgorithm(): ? PairwiseSubjectIdentifierAlgorithmInterface
     {
         return $this->pairwiseAlgorithm;
     }

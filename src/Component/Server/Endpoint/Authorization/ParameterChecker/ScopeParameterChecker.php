@@ -38,7 +38,7 @@ final class ScopeParameterChecker implements ParameterCheckerInterface
      * @param ScopeRepositoryInterface $scopeRepository
      * @param null|ScopePolicyManager  $scopePolicyManager
      */
-    public function __construct(ScopeRepositoryInterface $scopeRepository, ?ScopePolicyManager $scopePolicyManager)
+    public function __construct(ScopeRepositoryInterface $scopeRepository, ? ScopePolicyManager $scopePolicyManager)
     {
         $this->scopeRepository = $scopeRepository;
         $this->scopePolicyManager = $scopePolicyManager;

@@ -78,7 +78,7 @@ final class AuthCodeRepository implements AuthCodeRepositoryInterface
     /**
      * {@inheritdoc}
      */
-    public function create(ClientId $clientId, UserAccountId $userAccountId, array $queryParameters, string $redirectUri, DataBag $parameters, DataBag $metadatas, array $scopes, bool $withRefreshToken, ?ResourceServerId $resourceServerId, ?\DateTimeImmutable $expiresAt): AuthCode
+    public function create(ClientId $clientId, UserAccountId $userAccountId, array $queryParameters, string $redirectUri, DataBag $parameters, DataBag $metadatas, array $scopes, bool $withRefreshToken, ? ResourceServerId $resourceServerId, ? \DateTimeImmutable $expiresAt): AuthCode
     {
         if (null === $expiresAt) {
             $expiresAt = new \DateTimeImmutable(sprintf('now +%u seconds', $this->lifetime));
@@ -105,7 +105,7 @@ final class AuthCodeRepository implements AuthCodeRepositoryInterface
     /**
      * {@inheritdoc}
      */
-    public function find(AuthCodeId $authCodeId): ?AuthCode
+    public function find(AuthCodeId $authCodeId): ? AuthCode
     {
         $authCode = $this->getFromCache($authCodeId);
         if (null === $authCode) {
@@ -150,7 +150,7 @@ final class AuthCodeRepository implements AuthCodeRepositoryInterface
      *
      * @return AuthCode|null
      */
-    private function getFromCache(AuthCodeId $authCodeId): ?AuthCode
+    private function getFromCache(AuthCodeId $authCodeId): ? AuthCode
     {
         $itemKey = sprintf('oauth2-auth_code-%s', $authCodeId->getValue());
         if (null !== $this->cache) {

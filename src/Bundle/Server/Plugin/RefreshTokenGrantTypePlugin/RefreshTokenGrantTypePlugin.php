@@ -61,7 +61,7 @@ class RefreshTokenGrantTypePlugin extends CommonPluginMethod implements BundlePl
         }
 
         $parameters = [
-            'oauth2_server.refresh_token.token_manager' => ['type' => 'alias',     'path' => '[manager]'],
+            'oauth2_server.refresh_token.token_manager' => ['type' => 'alias', 'path' => '[manager]'],
             'oauth2_server.refresh_token.token_class' => ['type' => 'parameter', 'path' => '[class]'],
             'oauth2_server.refresh_token.min_length' => ['type' => 'parameter', 'path' => '[min_length]'],
             'oauth2_server.refresh_token.max_length' => ['type' => 'parameter', 'path' => '[max_length]'],

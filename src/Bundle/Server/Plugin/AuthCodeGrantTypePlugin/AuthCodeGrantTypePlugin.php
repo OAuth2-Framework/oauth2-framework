@@ -114,7 +114,7 @@ class AuthCodeGrantTypePlugin extends CommonPluginMethod implements BundlePlugin
             'oauth2_server.auth_code.lifetime' => ['type' => 'parameter', 'path' => '[lifetime]'],
             'oauth2_server.auth_code.enforce_pkce' => ['type' => 'parameter', 'path' => '[enforce_pkce]'],
             'oauth2_server.auth_code.allow_public_clients' => ['type' => 'parameter', 'path' => '[allow_public_clients]'],
-            'oauth2_server.auth_code.manager' => ['type' => 'alias',     'path' => '[manager]'],
+            'oauth2_server.auth_code.manager' => ['type' => 'alias', 'path' => '[manager]'],
         ];
         $this->loadParameters($parameters, $pluginConfiguration, $container);
     }

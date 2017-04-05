@@ -38,7 +38,7 @@ final class TokenEndpointAuthMethodEndpointRule implements RuleInterface
     /**
      * {@inheritdoc}
      */
-    public function handle(DataBag $commandParameters, DataBag $validatedParameters, ?UserAccountId $userAccountId, callable $next): DataBag
+    public function handle(DataBag $commandParameters, DataBag $validatedParameters, ? UserAccountId $userAccountId, callable $next): DataBag
     {
         Assertion::true($commandParameters->has('token_endpoint_auth_method'), 'The parameter \'token_endpoint_auth_method\' is missing.');
         Assertion::string($commandParameters->get('token_endpoint_auth_method'), 'The parameter \'token_endpoint_auth_method\' must be a string.');

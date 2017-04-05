@@ -110,7 +110,7 @@ class ClientManagerPlugin extends CommonPluginMethod implements BundlePlugin, Pr
                 $parameters['oauth2_server.token_endpoint_auth_method.client_assertion_jwt.encryption.key_encryption_algorithms'] = ['type' => 'parameter', 'path' => '[token_endpoint_auth_methods][client_assertion_jwt][encryption][key_encryption_algorithms]'];
                 $parameters['oauth2_server.token_endpoint_auth_method.client_assertion_jwt.encryption.content_encryption_algorithms'] = ['type' => 'parameter', 'path' => '[token_endpoint_auth_methods][client_assertion_jwt][encryption][content_encryption_algorithms]'];
                 $parameters['oauth2_server.token_endpoint_auth_method.client_assertion_jwt.encryption.required'] = ['type' => 'parameter', 'path' => '[token_endpoint_auth_methods][client_assertion_jwt][encryption][required]'];
-                $parameters['oauth2_server.token_endpoint_auth_method.client_assertion_jwt.encryption.key_set'] = ['type' => 'alias',     'path' => '[token_endpoint_auth_methods][client_assertion_jwt][encryption][key_set]'];
+                $parameters['oauth2_server.token_endpoint_auth_method.client_assertion_jwt.encryption.key_set'] = ['type' => 'alias', 'path' => '[token_endpoint_auth_methods][client_assertion_jwt][encryption][key_set]'];
             }
         }
 

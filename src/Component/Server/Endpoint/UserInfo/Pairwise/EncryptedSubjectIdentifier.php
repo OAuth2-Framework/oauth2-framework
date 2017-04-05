@@ -47,7 +47,7 @@ final class EncryptedSubjectIdentifier implements PairwiseSubjectIdentifierAlgor
      * @param null|string $iv
      * @param string      $salt
      */
-    public function __construct(string $pairwiseEncryptionKey, string $algorithm, string $salt, ?string $iv)
+    public function __construct(string $pairwiseEncryptionKey, string $algorithm, string $salt, ? string $iv)
     {
         Assertion::inArray($algorithm, openssl_get_cipher_methods(), sprintf('The algorithm \'%s\' is not supported.', $algorithm));
         $this->pairwiseEncryptionKey = $pairwiseEncryptionKey;
@@ -74,7 +74,7 @@ final class EncryptedSubjectIdentifier implements PairwiseSubjectIdentifierAlgor
     /**
      * {@inheritdoc}
      */
-    public function getPublicIdFromSubjectIdentifier(string $subjectIdentifier): ?string
+    public function getPublicIdFromSubjectIdentifier(string $subjectIdentifier): ? string
     {
         $decoded = openssl_decrypt(Base64Url::decode($subjectIdentifier), $this->algorithm, $this->pairwiseEncryptionKey, OPENSSL_RAW_DATA, $this->iv);
         $parts = explode(':', $decoded);

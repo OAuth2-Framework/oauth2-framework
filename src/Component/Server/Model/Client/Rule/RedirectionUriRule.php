@@ -22,7 +22,7 @@ final class RedirectionUriRule implements RuleInterface
     /**
      * {@inheritdoc}
      */
-    public function handle(DataBag $commandParameters, DataBag $validatedParameters, ?UserAccountId $userAccountId, callable $next): DataBag
+    public function handle(DataBag $commandParameters, DataBag $validatedParameters, ? UserAccountId $userAccountId, callable $next): DataBag
     {
         if ($commandParameters->has('redirect_uris')) {
             Assertion::isArray($commandParameters->get('redirect_uris'), 'The parameter \'redirect_uris\' must be a list of URI.');

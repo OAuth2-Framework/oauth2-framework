@@ -101,7 +101,7 @@ final class UserInfoEndpoint implements MiddlewareInterface
      *
      * @return string
      */
-    private function buildUserinfoContent(Client $client, UserAccountInterface $userAccount, AccessToken $accessToken, ?bool &$isJwt): string
+    private function buildUserinfoContent(Client $client, UserAccountInterface $userAccount, AccessToken $accessToken, ? bool &$isJwt): string
     {
         $isJwt = false;
         $requestedClaims = $this->getEndpointClaims($accessToken);

@@ -46,7 +46,7 @@ final class GrantTypeFlowRule implements RuleInterface
     /**
      * {@inheritdoc}
      */
-    public function handle(DataBag $commandParameters, DataBag $validatedParameters, ?UserAccountId $userAccountId, callable $next): DataBag
+    public function handle(DataBag $commandParameters, DataBag $validatedParameters, ? UserAccountId $userAccountId, callable $next): DataBag
     {
         if (!$commandParameters->has('grant_types')) {
             $commandParameters = $commandParameters->with('grant_types', []);

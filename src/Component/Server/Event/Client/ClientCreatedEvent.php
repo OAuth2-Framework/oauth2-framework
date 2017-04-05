@@ -47,7 +47,7 @@ final class ClientCreatedEvent extends Event
      * @param \DateTimeImmutable|null $recordedOn
      * @param EventId|null            $eventId
      */
-    protected function __construct(ClientId $clientId, DataBag $parameters, ?UserAccountId $userAccountId, ?\DateTimeImmutable $recordedOn, ?EventId $eventId)
+    protected function __construct(ClientId $clientId, DataBag $parameters, ? UserAccountId $userAccountId, ? \DateTimeImmutable $recordedOn, ? EventId $eventId)
     {
         parent::__construct($recordedOn, $eventId);
         $this->clientId = $clientId;
@@ -62,7 +62,7 @@ final class ClientCreatedEvent extends Event
      *
      * @return ClientCreatedEvent
      */
-    public static function create(ClientId $clientId, DataBag $parameters, ?UserAccountId $userAccountId): ClientCreatedEvent
+    public static function create(ClientId $clientId, DataBag $parameters, ? UserAccountId $userAccountId): ClientCreatedEvent
     {
         return new self($clientId, $parameters, $userAccountId, null, null);
     }
@@ -133,7 +133,7 @@ final class ClientCreatedEvent extends Event
     /**
      * @return null|UserAccountId
      */
-    public function getOwnerId(): ?UserAccountId
+    public function getOwnerId(): ? UserAccountId
     {
         return $this->userAccountId;
     }

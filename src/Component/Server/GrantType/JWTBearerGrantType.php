@@ -208,7 +208,7 @@ final class JWTBearerGrantType implements GrantTypeInterface
      *
      * @return ResourceOwnerId|null
      */
-    private function findResourceOwner(string $subject): ?ResourceOwnerId
+    private function findResourceOwner(string $subject): ? ResourceOwnerId
     {
         $userAccount = $this->userAccountRepository->findUserAccount(UserAccountId::create($subject));
         if (null !== $userAccount) {

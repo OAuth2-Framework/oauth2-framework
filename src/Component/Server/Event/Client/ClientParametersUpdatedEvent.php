@@ -40,7 +40,7 @@ final class ClientParametersUpdatedEvent extends Event
      * @param \DateTimeImmutable|null $recordedOn
      * @param null|EventId            $eventId
      */
-    protected function __construct(ClientId $clientId, DataBag $parameters, ?\DateTimeImmutable $recordedOn, ?EventId $eventId)
+    protected function __construct(ClientId $clientId, DataBag $parameters, ? \DateTimeImmutable $recordedOn, ? EventId $eventId)
     {
         parent::__construct($recordedOn, $eventId);
         $this->clientId = $clientId;

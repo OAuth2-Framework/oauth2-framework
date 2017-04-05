@@ -66,7 +66,7 @@ final class SoftwareRule implements RuleInterface
     /**
      * {@inheritdoc}
      */
-    public function handle(DataBag $commandParameters, DataBag $validatedParameters, ?UserAccountId $userAccountId, callable $next): DataBag
+    public function handle(DataBag $commandParameters, DataBag $validatedParameters, ? UserAccountId $userAccountId, callable $next): DataBag
     {
         Assertion::false($this->isSoftwareStatementRequired() && !$commandParameters->has('software_statement'), 'The parameter \'software_statement\' is mandatory.');
         if ($commandParameters->has('software_statement')) {

@@ -30,5 +30,5 @@ interface PairwiseSubjectIdentifierAlgorithmInterface
      *
      * @return string|null
      */
-    public function getPublicIdFromSubjectIdentifier(string $subjectIdentifier): ?string;
+    public function getPublicIdFromSubjectIdentifier(string $subjectIdentifier): ? string;
 }

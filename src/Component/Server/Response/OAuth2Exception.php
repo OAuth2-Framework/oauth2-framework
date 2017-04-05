@@ -27,7 +27,7 @@ final class OAuth2Exception extends \Exception implements \Throwable
      * @param array           $data
      * @param \Exception|null $previous
      */
-    public function __construct(int $code, array $data, ?\Exception $previous = null)
+    public function __construct(int $code, array $data, ? \Exception $previous = null)
     {
         $this->data = $data;
         parent::__construct('', $code, $previous);

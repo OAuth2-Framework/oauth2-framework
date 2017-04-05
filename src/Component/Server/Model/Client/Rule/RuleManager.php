@@ -70,7 +70,7 @@ final class RuleManager
      *
      * @return DataBag
      */
-    public function handle(DataBag $commandParameters, ?UserAccountId $userAccountId): DataBag
+    public function handle(DataBag $commandParameters, ? UserAccountId $userAccountId): DataBag
     {
         return call_user_func($this->callableForNextRule(0), $commandParameters, new DataBag(), $userAccountId);
     }
@@ -93,7 +93,7 @@ final class RuleManager
         }
         $rule = $this->rules[$index];
 
-        return function (DataBag $commandParameters, DataBag $validatedParameters, ?UserAccountId $userAccountId) use ($rule, $index): DataBag {
+        return function (DataBag $commandParameters, DataBag $validatedParameters, ? UserAccountId $userAccountId) use ($rule, $index): DataBag {
             return $rule->handle($commandParameters, $validatedParameters, $userAccountId, $this->callableForNextRule($index + 1));
         };
     }

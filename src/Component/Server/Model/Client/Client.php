@@ -90,7 +90,7 @@ final class Client implements ResourceOwnerInterface, ContainsRecordedMessages, 
      *
      * @return Client
      */
-    public function create(ClientId $clientId, DataBag $parameters, ?UserAccountId $ownerId): Client
+    public function create(ClientId $clientId, DataBag $parameters, ? UserAccountId $ownerId): Client
     {
         $clone = clone $this;
         $clone->clientId = $clientId;
@@ -106,7 +106,7 @@ final class Client implements ResourceOwnerInterface, ContainsRecordedMessages, 
     /**
      * @return UserAccountId|null
      */
-    public function getOwnerId(): ?UserAccountId
+    public function getOwnerId(): ? UserAccountId
     {
         return $this->ownerId;
     }

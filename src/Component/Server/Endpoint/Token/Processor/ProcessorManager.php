@@ -32,7 +32,7 @@ final class ProcessorManager
      * @param null|ScopeRepositoryInterface $scopeRepository
      * @param null|ScopePolicyManager       $scopePolicyManager
      */
-    public function __construct(?ScopeRepositoryInterface $scopeRepository, ?ScopePolicyManager $scopePolicyManager)
+    public function __construct(? ScopeRepositoryInterface $scopeRepository, ? ScopePolicyManager $scopePolicyManager)
     {
         if (null !== $scopeRepository) {
             $this->processors[] = new ScopeProcessor($scopeRepository, $scopePolicyManager);

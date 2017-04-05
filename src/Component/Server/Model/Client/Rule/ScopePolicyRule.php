@@ -36,7 +36,7 @@ final class ScopePolicyRule implements RuleInterface
     /**
      * {@inheritdoc}
      */
-    public function handle(DataBag $commandParameters, DataBag $validatedParameters, ?UserAccountId $userAccountId, callable $next): DataBag
+    public function handle(DataBag $commandParameters, DataBag $validatedParameters, ? UserAccountId $userAccountId, callable $next): DataBag
     {
         if ($commandParameters->has('scope_policy')) {
             Assertion::true($this->scopePolicyManager->has($commandParameters->get('scope_policy')), sprintf('The scope policy \'%s\' is not supported.', $commandParameters->get('scope_policy')));

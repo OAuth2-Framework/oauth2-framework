@@ -97,7 +97,7 @@ final class AuthCodeCreatedEvent extends Event
      * @param \DateTimeImmutable|null $recordedOn
      * @param EventId|null            $eventId
      */
-    protected function __construct(AuthCodeId $authCodeId, ClientId $clientId, UserAccountId $userAccountId, array $queryParameters, string $redirectUri, \DateTimeImmutable $expiresAt, DataBag $parameters, DataBag $metadatas, array $scopes, bool $withRefreshToken, ?ResourceServerId $resourceServerId, ?\DateTimeImmutable $recordedOn, ?EventId $eventId)
+    protected function __construct(AuthCodeId $authCodeId, ClientId $clientId, UserAccountId $userAccountId, array $queryParameters, string $redirectUri, \DateTimeImmutable $expiresAt, DataBag $parameters, DataBag $metadatas, array $scopes, bool $withRefreshToken, ? ResourceServerId $resourceServerId, ? \DateTimeImmutable $recordedOn, ? EventId $eventId)
     {
         parent::__construct($recordedOn, $eventId);
         $this->authCodeId = $authCodeId;
@@ -136,7 +136,7 @@ final class AuthCodeCreatedEvent extends Event
      *
      * @return AuthCodeCreatedEvent
      */
-    public static function create(AuthCodeId $authCodeId, ClientId $clientId, UserAccountId $userAccountId, array $queryParameters, string $redirectUri, \DateTimeImmutable $expiresAt, DataBag $parameters, DataBag $metadatas, array $scopes, bool $withRefreshToken, ?ResourceServerId $resourceServerId): AuthCodeCreatedEvent
+    public static function create(AuthCodeId $authCodeId, ClientId $clientId, UserAccountId $userAccountId, array $queryParameters, string $redirectUri, \DateTimeImmutable $expiresAt, DataBag $parameters, DataBag $metadatas, array $scopes, bool $withRefreshToken, ? ResourceServerId $resourceServerId): AuthCodeCreatedEvent
     {
         return new self($authCodeId, $clientId, $userAccountId, $queryParameters, $redirectUri, $expiresAt, $parameters, $metadatas, $scopes, $withRefreshToken, $resourceServerId, null, null);
     }
@@ -216,7 +216,7 @@ final class AuthCodeCreatedEvent extends Event
     /**
      * @return ResourceServerId|null
      */
-    public function getResourceServerId(): ?ResourceServerId
+    public function getResourceServerId(): ? ResourceServerId
     {
         return $this->resourceServerId;
     }

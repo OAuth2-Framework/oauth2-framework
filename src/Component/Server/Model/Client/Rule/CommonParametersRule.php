@@ -22,7 +22,7 @@ final class CommonParametersRule extends AbstractInternationalizedRule
     /**
      * {@inheritdoc}
      */
-    public function handle(DataBag $commandParameters, DataBag $validatedParameters, ?UserAccountId $userAccountId, callable $next): DataBag
+    public function handle(DataBag $commandParameters, DataBag $validatedParameters, ? UserAccountId $userAccountId, callable $next): DataBag
     {
         foreach ($this->getSupportedParameters() as $parameter => $closure) {
             $id = $this->getInternationalizedParameters($commandParameters, $parameter, $closure);

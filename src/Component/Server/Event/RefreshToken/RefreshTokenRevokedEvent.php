@@ -33,7 +33,7 @@ final class RefreshTokenRevokedEvent extends Event
      * @param \DateTimeImmutable|null $recordedOn
      * @param null|EventId            $eventId
      */
-    protected function __construct(RefreshTokenId $refreshTokenId, ?\DateTimeImmutable $recordedOn, ?EventId $eventId)
+    protected function __construct(RefreshTokenId $refreshTokenId, ? \DateTimeImmutable $recordedOn, ? EventId $eventId)
     {
         parent::__construct($recordedOn, $eventId);
         $this->refreshTokenId = $refreshTokenId;

@@ -66,7 +66,7 @@ final class AccessToken extends Token
      *
      * @return AccessToken
      */
-    public function create(AccessTokenId $accessTokenId, ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, array $scopes, \DateTimeImmutable $expiresAt, ?RefreshTokenId $refreshTokenId, ?ResourceServerId $resourceServerId)
+    public function create(AccessTokenId $accessTokenId, ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, array $scopes, \DateTimeImmutable $expiresAt, ? RefreshTokenId $refreshTokenId, ? ResourceServerId $resourceServerId)
     {
         $clone = clone $this;
         $clone->accessTokenId = $accessTokenId;
@@ -106,7 +106,7 @@ final class AccessToken extends Token
     /**
      * @return null|RefreshTokenId
      */
-    public function getRefreshTokenId(): ?RefreshTokenId
+    public function getRefreshTokenId(): ? RefreshTokenId
     {
         return $this->refreshTokenId;
     }

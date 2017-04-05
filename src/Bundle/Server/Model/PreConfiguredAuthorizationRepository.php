@@ -56,7 +56,7 @@ final class PreConfiguredAuthorizationRepository implements PreConfiguredAuthori
     /**
      * {@inheritdoc}
      */
-    public function create(UserAccountId $userAccountId, ClientId $clientId, array $scopes, ?ResourceServerId $resourceServerId): PreConfiguredAuthorization
+    public function create(UserAccountId $userAccountId, ClientId $clientId, array $scopes, ? ResourceServerId $resourceServerId): PreConfiguredAuthorization
     {
         $hash = $this->calculateHash($userAccountId, $clientId, $scopes, $resourceServerId);
         $preConfiguredAuthorization = PreConfiguredAuthorization::createEmpty();
@@ -68,7 +68,7 @@ final class PreConfiguredAuthorizationRepository implements PreConfiguredAuthori
     /**
      * {@inheritdoc}
      */
-    public function find(UserAccountId $userAccountId, ClientId $clientId, array $scopes, ?ResourceServerId $resourceServerId): ?PreConfiguredAuthorization
+    public function find(UserAccountId $userAccountId, ClientId $clientId, array $scopes, ? ResourceServerId $resourceServerId): ? PreConfiguredAuthorization
     {
         $hash = $this->calculateHash($userAccountId, $clientId, $scopes, $resourceServerId);
         $preConfiguredAuthorization = $this->getFromCache($hash);
@@ -114,7 +114,7 @@ final class PreConfiguredAuthorizationRepository implements PreConfiguredAuthori
      *
      * @return PreConfiguredAuthorization|null
      */
-    private function getFromCache(PreConfiguredAuthorizationId $preConfiguredAuthorizationId): ?PreConfiguredAuthorization
+    private function getFromCache(PreConfiguredAuthorizationId $preConfiguredAuthorizationId): ? PreConfiguredAuthorization
     {
         $itemKey = sprintf('oauth2-pre_configured_authorization-%s', $preConfiguredAuthorizationId->getValue());
         if (null !== $this->cache) {
@@ -149,7 +149,7 @@ final class PreConfiguredAuthorizationRepository implements PreConfiguredAuthori
      *
      * @return PreConfiguredAuthorizationId
      */
-    private function calculateHash(ResourceOwnerId $resourceOwnerId, ClientId $clientId, array $scope, ?ResourceServerId $resourceServerId): PreConfiguredAuthorizationId
+    private function calculateHash(ResourceOwnerId $resourceOwnerId, ClientId $clientId, array $scope, ? ResourceServerId $resourceServerId): PreConfiguredAuthorizationId
     {
         return PreConfiguredAuthorizationId::create(hash(
             'sha512',

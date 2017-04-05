@@ -87,7 +87,7 @@ final class CreateAuthCodeCommand extends CommandWithDataTransporter
      * @param ResourceServerId|null   $resourceServerId
      * @param DataTransporter|null    $dataTransporter
      */
-    protected function __construct(ClientId $clientId, UserAccountId $userAccountId, array $queryParameters, string $redirectUri, DataBag $parameters, DataBag $metadatas, array $scopes, bool $withRefreshToken, ?\DateTimeImmutable $expiresAt, ?ResourceServerId $resourceServerId, ?DataTransporter $dataTransporter)
+    protected function __construct(ClientId $clientId, UserAccountId $userAccountId, array $queryParameters, string $redirectUri, DataBag $parameters, DataBag $metadatas, array $scopes, bool $withRefreshToken, ? \DateTimeImmutable $expiresAt, ? ResourceServerId $resourceServerId, ? DataTransporter $dataTransporter)
     {
         $this->clientId = $clientId;
         $this->userAccountId = $userAccountId;
@@ -117,7 +117,7 @@ final class CreateAuthCodeCommand extends CommandWithDataTransporter
      *
      * @return CreateAuthCodeCommand
      */
-    public static function create(ClientId $clientId, UserAccountId $userAccountId, array $queryParameters, string $redirectUri, DataBag $parameters, DataBag $metadatas, array $scopes, bool $withRefreshToken, ?\DateTimeImmutable $expiresAt, ?ResourceServerId $resourceServerId, ?DataTransporter $dataTransporter): CreateAuthCodeCommand
+    public static function create(ClientId $clientId, UserAccountId $userAccountId, array $queryParameters, string $redirectUri, DataBag $parameters, DataBag $metadatas, array $scopes, bool $withRefreshToken, ? \DateTimeImmutable $expiresAt, ? ResourceServerId $resourceServerId, ? DataTransporter $dataTransporter): CreateAuthCodeCommand
     {
         return new self($clientId, $userAccountId, $queryParameters, $redirectUri, $parameters, $metadatas, $scopes, $withRefreshToken, $expiresAt, $resourceServerId, $dataTransporter);
     }
@@ -157,7 +157,7 @@ final class CreateAuthCodeCommand extends CommandWithDataTransporter
     /**
      * @return \DateTimeImmutable|null
      */
-    public function getExpiresAt(): ?\DateTimeImmutable
+    public function getExpiresAt(): ? \DateTimeImmutable
     {
         return $this->expiresAt;
     }
@@ -197,7 +197,7 @@ final class CreateAuthCodeCommand extends CommandWithDataTransporter
     /**
      * @return null|ResourceServerId
      */
-    public function getResourcesServerId(): ?ResourceServerId
+    public function getResourcesServerId(): ? ResourceServerId
     {
         return $this->resourceServerId;
     }

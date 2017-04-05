@@ -57,7 +57,7 @@ class SimpleStringAccessTokenPlugin extends CommonPluginMethod implements Bundle
         $loader->load('services.yml');
 
         $parameters = [
-            'oauth2_server.simple_string_access_token.token_manager' => ['type' => 'alias',     'path' => '[manager]'],
+            'oauth2_server.simple_string_access_token.token_manager' => ['type' => 'alias', 'path' => '[manager]'],
             'oauth2_server.simple_string_access_token.token_class' => ['type' => 'parameter', 'path' => '[class]'],
             'oauth2_server.simple_string_access_token.min_length' => ['type' => 'parameter', 'path' => '[min_length]'],
             'oauth2_server.simple_string_access_token.max_length' => ['type' => 'parameter', 'path' => '[max_length]'],

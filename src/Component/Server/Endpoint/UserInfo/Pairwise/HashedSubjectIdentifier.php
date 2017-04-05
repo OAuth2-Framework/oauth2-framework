@@ -70,7 +70,7 @@ final class HashedSubjectIdentifier implements PairwiseSubjectIdentifierAlgorith
     /**
      * {@inheritdoc}
      */
-    public function getPublicIdFromSubjectIdentifier(string $subjectIdentifier): ?string
+    public function getPublicIdFromSubjectIdentifier(string $subjectIdentifier): ? string
     {
     }
 }

@@ -40,7 +40,7 @@ final class ClientOwnerChangedEvent extends Event
      * @param \DateTimeImmutable|null $recordedOn
      * @param EventId|null            $eventId
      */
-    protected function __construct(ClientId $clientId, UserAccountId $newOwnerId, ?\DateTimeImmutable $recordedOn, ?EventId $eventId)
+    protected function __construct(ClientId $clientId, UserAccountId $newOwnerId, ? \DateTimeImmutable $recordedOn, ? EventId $eventId)
     {
         parent::__construct($recordedOn, $eventId);
         $this->clientId = $clientId;

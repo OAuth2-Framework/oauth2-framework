@@ -34,7 +34,7 @@ interface TokenEndpointAuthMethodInterface
      *
      * @return null|ClientId Return the client public ID if found else null. If credentials have are needed to authenticate the client, they are set to the variable $clientCredentials
      */
-    public function findClientId(ServerRequestInterface $request, &$clientCredentials = null): ?ClientId;
+    public function findClientId(ServerRequestInterface $request, &$clientCredentials = null): ? ClientId;
 
     /**
      * @param DataBag $command_parameters

@@ -52,7 +52,7 @@ final class ClientRepository implements ClientRepositoryInterface
     /**
      * {@inheritdoc}
      */
-    public function find(ClientId $clientId): ?Client
+    public function find(ClientId $clientId): ? Client
     {
         $client = $this->getFromCache($clientId);
         if (null === $client) {
@@ -97,7 +97,7 @@ final class ClientRepository implements ClientRepositoryInterface
      *
      * @return Client|null
      */
-    private function getFromCache(ClientId $clientId): ?Client
+    private function getFromCache(ClientId $clientId): ? Client
     {
         $itemKey = sprintf('oauth2-client-%s', $clientId->getValue());
         if (null !== $this->cache) {

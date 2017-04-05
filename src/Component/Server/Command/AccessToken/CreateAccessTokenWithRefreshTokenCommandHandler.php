@@ -34,7 +34,7 @@ final class CreateAccessTokenWithRefreshTokenCommandHandler
      * @param AccessTokenRepositoryInterface       $accessTokenRepository
      * @param RefreshTokenRepositoryInterface|null $refreshTokenRepository
      */
-    public function __construct(AccessTokenRepositoryInterface $accessTokenRepository, ?RefreshTokenRepositoryInterface $refreshTokenRepository)
+    public function __construct(AccessTokenRepositoryInterface $accessTokenRepository, ? RefreshTokenRepositoryInterface $refreshTokenRepository)
     {
         $this->accessTokenRepository = $accessTokenRepository;
         $this->refreshTokenRepository = $refreshTokenRepository;

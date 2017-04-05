@@ -60,7 +60,7 @@ final class GrantTypeData
      *
      * @param Client|null $client
      */
-    private function __construct(?Client $client)
+    private function __construct(? Client $client)
     {
         $this->parameters = new DataBag();
         $this->metadatas = new DataBag();
@@ -72,7 +72,7 @@ final class GrantTypeData
      *
      * @return GrantTypeData
      */
-    public static function create(?Client $client): GrantTypeData
+    public static function create(? Client $client): GrantTypeData
     {
         return new self($client);
     }
@@ -181,7 +181,7 @@ final class GrantTypeData
     /**
      * @return Client|null
      */
-    public function getClient(): ?Client
+    public function getClient(): ? Client
     {
         return $this->client;
     }
@@ -310,7 +310,7 @@ final class GrantTypeData
     /**
      * @return string[]|null
      */
-    public function getAvailableScopes(): ?array
+    public function getAvailableScopes(): ? array
     {
         return $this->availableScopes;
     }
