@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /*
  * The MIT License (MIT)
@@ -53,13 +53,13 @@ final class ClientRegistrationSoftwareStatementSource extends ActionableSource
         parent::continueConfiguration($node);
         $node
             ->validate()
-                ->ifTrue(function ($config) {
+                ->ifTrue(function($config) {
                     return true === $config['enabled'] && empty($config['key_set']);
                 })
                 ->thenInvalid('The option "key_set" must be set.')
             ->end()
             ->validate()
-            ->ifTrue(function ($config) {
+            ->ifTrue(function($config) {
                 return true === $config['enabled'] && empty($config['allowed_signature_algorithms']);
             })
             ->thenInvalid('At least one signature algorithm must be set.')

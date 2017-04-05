@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /*
  * The MIT License (MIT)
@@ -47,7 +47,7 @@ class SessionStateParameterExtension extends Base
     /**
      * {@inheritdoc}
      */
-    protected function getBrowserState(ServerRequestInterface $request, Authorization &$authorization): string
+    protected function getBrowserState(ServerRequestInterface $request, Authorization & $authorization): string
     {
         if ($this->session->has($this->storageName)) {
             return $this->session->get($this->storageName);

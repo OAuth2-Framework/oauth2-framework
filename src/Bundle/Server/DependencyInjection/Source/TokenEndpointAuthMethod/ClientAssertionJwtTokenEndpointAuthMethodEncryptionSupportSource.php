@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /*
  * The MIT License (MIT)
@@ -46,19 +46,19 @@ final class ClientAssertionJwtTokenEndpointAuthMethodEncryptionSupportSource ext
         parent::continueConfiguration($node);
         $node
             ->validate()
-                ->ifTrue(function ($config) {
+                ->ifTrue(function($config) {
                     return true === $config['enabled'] && empty($config['key_encryption_algorithms']);
                 })
                 ->thenInvalid('At least one key encryption algorithm must be set.')
             ->end()
             ->validate()
-                ->ifTrue(function ($config) {
+                ->ifTrue(function($config) {
                     return true === $config['enabled'] && empty($config['content_encryption_algorithms']);
                 })
                 ->thenInvalid('At least one content encryption algorithm must be set.')
             ->end()
             ->validate()
-                ->ifTrue(function ($config) {
+                ->ifTrue(function($config) {
                     return true === $config['enabled'] && empty($config['key_set']);
                 })
                 ->thenInvalid('The KeySet must be set.')

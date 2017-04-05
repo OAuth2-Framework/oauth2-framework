@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /*
  * The MIT License (MIT)
@@ -70,7 +70,7 @@ final class RuleManager
      *
      * @return DataBag
      */
-    public function handle(DataBag $commandParameters, ?UserAccountId $userAccountId): DataBag
+    public function handle(DataBag $commandParameters, ? UserAccountId $userAccountId) : DataBag
     {
         return call_user_func($this->callableForNextRule(0), $commandParameters, new DataBag(), $userAccountId);
     }
@@ -83,7 +83,7 @@ final class RuleManager
     private function callableForNextRule(int $index): \Closure
     {
         if (!isset($this->rules[$index])) {
-            return function (DataBag $commandParameters, DataBag $validatedParameters): DataBag {
+            return function(DataBag $commandParameters, DataBag $validatedParameters): DataBag {
                 $clientId = $this->clientIdRule->generateUniqueClientId();
                 $validatedParameters = $validatedParameters->with('client_id', $clientId);
                 $validatedParameters = $validatedParameters->with('client_id_issued_at', time());
@@ -93,7 +93,7 @@ final class RuleManager
         }
         $rule = $this->rules[$index];
 
-        return function (DataBag $commandParameters, DataBag $validatedParameters, ?UserAccountId $userAccountId) use ($rule, $index): DataBag {
+        return function(DataBag $commandParameters, DataBag $validatedParameters, ? UserAccountId $userAccountId) use ($rule, $index) : DataBag {
             return $rule->handle($commandParameters, $validatedParameters, $userAccountId, $this->callableForNextRule($index + 1));
         };
     }

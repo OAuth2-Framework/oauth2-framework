@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /*
  * The MIT License (MIT)
@@ -218,7 +218,7 @@ abstract class Token implements \JsonSerializable, ContainsRecordedMessages, Dom
     /**
      * @return null|ResourceServerId
      */
-    public function getResourceServerId(): ?ResourceServerId
+    public function getResourceServerId(): ? ResourceServerId
     {
         return $this->resourceServerId;
     }

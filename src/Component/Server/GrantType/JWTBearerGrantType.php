@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /*
  * The MIT License (MIT)
@@ -208,7 +208,7 @@ final class JWTBearerGrantType implements GrantTypeInterface
      *
      * @return ResourceOwnerId|null
      */
-    private function findResourceOwner(string $subject): ?ResourceOwnerId
+    private function findResourceOwner(string $subject): ? ResourceOwnerId
     {
         $userAccount = $this->userAccountRepository->findUserAccount(UserAccountId::create($subject));
         if (null !== $userAccount) {

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /*
  * The MIT License (MIT)
@@ -40,7 +40,7 @@ final class AccessTokenAddedToRefreshTokenEvent extends Event
      * @param \DateTimeImmutable|null $recordedOn
      * @param null|EventId            $eventId
      */
-    protected function __construct(RefreshTokenId $refreshTokenId, AccessTokenId $accessTokenId, ?\DateTimeImmutable $recordedOn, ?EventId $eventId)
+    protected function __construct(RefreshTokenId $refreshTokenId, AccessTokenId $accessTokenId, ? \DateTimeImmutable $recordedOn, ? EventId $eventId)
     {
         parent::__construct($recordedOn, $eventId);
         $this->refreshTokenId = $refreshTokenId;

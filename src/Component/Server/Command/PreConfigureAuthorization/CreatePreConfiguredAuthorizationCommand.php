@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /*
  * The MIT License (MIT)
@@ -43,7 +43,7 @@ final class CreatePreConfiguredAuthorizationCommand extends CommandWithDataTrans
      * @param array                $scopes
      * @param DataTransporter|null $dataTransporter
      */
-    protected function __construct(ClientId $clientId, UserAccountId $userAccountId, array $scopes, ?DataTransporter $dataTransporter)
+    protected function __construct(ClientId $clientId, UserAccountId $userAccountId, array $scopes, ? DataTransporter $dataTransporter)
     {
         parent::__construct($dataTransporter);
         $this->clientId = $clientId;
@@ -58,7 +58,7 @@ final class CreatePreConfiguredAuthorizationCommand extends CommandWithDataTrans
      *
      * @return CreatePreConfiguredAuthorizationCommand
      */
-    public static function create(ClientId $clientId, UserAccountId $userAccountId, array $scopes, ?DataTransporter $dataTransporter): CreatePreConfiguredAuthorizationCommand
+    public static function create(ClientId $clientId, UserAccountId $userAccountId, array $scopes, ? DataTransporter $dataTransporter) : CreatePreConfiguredAuthorizationCommand
     {
         return new self($clientId, $userAccountId, $scopes, $dataTransporter);
     }

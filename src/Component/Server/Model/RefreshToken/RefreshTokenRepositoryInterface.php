@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /*
  * The MIT License (MIT)
@@ -35,7 +35,7 @@ interface RefreshTokenRepositoryInterface
      *
      * @return RefreshToken
      */
-    public function create(ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, array $scopes, ?ResourceServerId $resourceServerId, ?\DateTimeImmutable $expiresAt): RefreshToken;
+    public function create(ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, array $scopes, ? ResourceServerId $resourceServerId, ? \DateTimeImmutable $expiresAt) : RefreshToken;
 
     /**
      * @param RefreshToken $refreshToken

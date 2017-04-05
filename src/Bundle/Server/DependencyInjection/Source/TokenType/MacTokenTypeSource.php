@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /*
  * The MIT License (MIT)
@@ -50,13 +50,13 @@ final class MacTokenTypeSource extends ActionableSource
         parent::continueConfiguration($node);
         $node
             ->validate()
-                ->ifTrue(function ($config) {
+                ->ifTrue(function($config) {
                     return $config['min_length'] > $config['max_length'];
                 })
                 ->thenInvalid('The option "min_length" must not be greater than "max_length".')
             ->end()
             ->validate()
-                ->ifTrue(function ($config) {
+                ->ifTrue(function($config) {
                     return !in_array($config['algorithm'], ['hmac-sha-256', 'hmac-sha-1']);
                 })
                 ->thenInvalid('The algorithm is not supported. Please use one of the following one: "hmac-sha-1", "hmac-sha-256".')

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /*
  * The MIT License (MIT)
@@ -84,7 +84,7 @@ final class Pipe implements MiddlewareInterface
      */
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        $this->middlewares[] = new Delegate(function (ServerRequestInterface $request) use ($delegate) {
+        $this->middlewares[] = new Delegate(function(ServerRequestInterface $request) use ($delegate) {
             return $delegate->process($request);
         });
 
@@ -121,12 +121,12 @@ final class Pipe implements MiddlewareInterface
         if (isset($this->middlewares[$index])) {
             $middleware = $this->middlewares[$index];
 
-            return new Delegate(function (ServerRequestInterface $request) use ($middleware, $index) {
+            return new Delegate(function(ServerRequestInterface $request) use ($middleware, $index) {
                 return $middleware->process($request, $this->resolve($index + 1));
             });
         }
 
-        return new Delegate(function () {
+        return new Delegate(function() {
             throw new \LogicException('Unresolved request: middleware exhausted with no result.');
         });
     }

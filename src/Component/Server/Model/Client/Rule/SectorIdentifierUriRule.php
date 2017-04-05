@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /*
  * The MIT License (MIT)
@@ -46,7 +46,7 @@ final class SectorIdentifierUriRule implements RuleInterface
     /**
      * {@inheritdoc}
      */
-    public function handle(DataBag $commandParameters, DataBag $validatedParameters, ?UserAccountId $userAccountId, callable $next): DataBag
+    public function handle(DataBag $commandParameters, DataBag $validatedParameters, ? UserAccountId $userAccountId, callable $next) : DataBag
     {
         if ($commandParameters->has('sector_identifier_uri')) {
             Assertion::url($commandParameters->get('sector_identifier_uri'), sprintf('The sector identifier URI \'%s\' is not valid.', $commandParameters->get('sector_identifier_uri')));

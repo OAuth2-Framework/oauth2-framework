@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /*
  * The MIT License (MIT)
@@ -70,7 +70,7 @@ final class HashedSubjectIdentifier implements PairwiseSubjectIdentifierAlgorith
     /**
      * {@inheritdoc}
      */
-    public function getPublicIdFromSubjectIdentifier(string $subjectIdentifier): ?string
+    public function getPublicIdFromSubjectIdentifier(string $subjectIdentifier): ? string
     {
     }
 }

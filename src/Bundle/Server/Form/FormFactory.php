@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /*
  * The MIT License (MIT)
@@ -64,7 +64,7 @@ final class FormFactory
 
     /**
      * @param array      $options
-     * @param mixed|null $data
+     * @param Model\AuthorizationModel $data
      *
      * @return FormInterface
      */

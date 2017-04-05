@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /*
  * The MIT License (MIT)
@@ -66,7 +66,7 @@ class JWTBearerPlugin extends CommonPluginMethod implements BundlePlugin, Prepen
 
         $accessor = PropertyAccess::createPropertyAccessor();
         if (true === $accessor->getValue($pluginConfiguration, '[encryption][enabled]')) {
-            $parameters['oauth2_server.jwt_bearer_grant_type.encryption.key_set'] = ['type' => 'alias',     'path' => '[encryption][key_set]'];
+            $parameters['oauth2_server.jwt_bearer_grant_type.encryption.key_set'] = ['type' => 'alias', 'path' => '[encryption][key_set]'];
             $parameters['oauth2_server.jwt_bearer_grant_type.encryption.required'] = ['type' => 'parameter', 'path' => '[encryption][required]'];
         }
 
@@ -207,7 +207,7 @@ class JWTBearerPlugin extends CommonPluginMethod implements BundlePlugin, Prepen
      */
     private function isClientAssertionEncryptionParameterInvalid($parameter)
     {
-        return function ($data) use ($parameter) {
+        return function($data) use ($parameter) {
             if (false === $data['encryption']['enabled']) {
                 return false;
             }

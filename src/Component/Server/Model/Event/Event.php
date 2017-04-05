@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /*
  * The MIT License (MIT)
@@ -35,7 +35,7 @@ abstract class Event implements DomainObjectInterface
      * @param \DateTimeImmutable|null $recordedOn
      * @param EventId|null            $eventId
      */
-    protected function __construct(?\DateTimeImmutable $recordedOn, ?EventId $eventId)
+    protected function __construct(? \DateTimeImmutable $recordedOn, ? EventId $eventId)
     {
         if (null === $recordedOn || null === $eventId) {
             $this->recordedOn = new \DateTimeImmutable();

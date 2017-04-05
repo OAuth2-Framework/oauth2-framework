@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /*
  * The MIT License (MIT)
@@ -23,7 +23,7 @@ abstract class ClientRegistrationManagementRule implements RuleInterface
     /**
      * {@inheritdoc}
      */
-    public function handle(DataBag $commandParameters, DataBag $validatedParameters, ?UserAccountId $userAccountId, callable $next): DataBag
+    public function handle(DataBag $commandParameters, DataBag $validatedParameters, ? UserAccountId $userAccountId, callable $next) : DataBag
     {
         $validatedParameters = $next($commandParameters, $validatedParameters, $userAccountId);
         Assertion::true($validatedParameters->has('client_id'));

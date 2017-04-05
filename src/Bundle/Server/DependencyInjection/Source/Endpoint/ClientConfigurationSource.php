@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /*
  * The MIT License (MIT)
@@ -50,7 +50,7 @@ final class ClientConfigurationSource extends ActionableSource
         parent::continueConfiguration($node);
         $node
             ->validate()
-                ->ifTrue(function ($config) {
+                ->ifTrue(function($config) {
                     return true === $config['enabled'] && empty($config['realm']);
                 })
                 ->thenInvalid('The option "realm" must be set.')

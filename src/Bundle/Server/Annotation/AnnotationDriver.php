@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /*
  * The MIT License (MIT)
@@ -118,7 +118,7 @@ final class AnnotationDriver
      * @param FilterControllerEvent $event
      * @param string                $message
      */
-    private function createAuthenticationException(FilterControllerEvent &$event, $message)
+    private function createAuthenticationException(FilterControllerEvent & $event, $message)
     {
         $schemes = $this->tokenTypeManager->getSchemes();
         $exception = new OAuth2Exception(
@@ -137,7 +137,7 @@ final class AnnotationDriver
      * @param FilterControllerEvent $event
      * @param string                $message
      */
-    private function createAccessDeniedException(FilterControllerEvent &$event, $message)
+    private function createAccessDeniedException(FilterControllerEvent & $event, $message)
     {
         $exception = new OAuth2Exception(
             403,
@@ -154,9 +154,9 @@ final class AnnotationDriver
      * @param FilterControllerEvent $event
      * @param OAuth2Exception       $exception
      */
-    private function updateFilterControllerEvent(FilterControllerEvent &$event, OAuth2Exception $exception)
+    private function updateFilterControllerEvent(FilterControllerEvent & $event, OAuth2Exception $exception)
     {
-        $event->setController(function () use ($exception) {
+        $event->setController(function() use ($exception) {
             $response = new Response();
             //$exception->getHttpResponse($response);
             $response->getBody()->rewind();

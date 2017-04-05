@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /*
  * The MIT License (MIT)
@@ -66,7 +66,7 @@ final class ClientAssertionJwtTokenEndpointAuthMethodSource extends ActionableSo
         parent::continueConfiguration($node);
         $node
             ->validate()
-                ->ifTrue(function ($config) {
+                ->ifTrue(function($config) {
                     return true === $config['enabled'] && empty($config['signature_algorithms']);
                 })
                 ->thenInvalid('At least one signature algorithm must be set.')

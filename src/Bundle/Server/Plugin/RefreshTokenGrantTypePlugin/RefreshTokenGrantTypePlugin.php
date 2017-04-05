@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /*
  * The MIT License (MIT)
@@ -61,7 +61,7 @@ class RefreshTokenGrantTypePlugin extends CommonPluginMethod implements BundlePl
         }
 
         $parameters = [
-            'oauth2_server.refresh_token.token_manager' => ['type' => 'alias',     'path' => '[manager]'],
+            'oauth2_server.refresh_token.token_manager' => ['type' => 'alias', 'path' => '[manager]'],
             'oauth2_server.refresh_token.token_class' => ['type' => 'parameter', 'path' => '[class]'],
             'oauth2_server.refresh_token.min_length' => ['type' => 'parameter', 'path' => '[min_length]'],
             'oauth2_server.refresh_token.max_length' => ['type' => 'parameter', 'path' => '[max_length]'],
@@ -80,7 +80,7 @@ class RefreshTokenGrantTypePlugin extends CommonPluginMethod implements BundlePl
             ->isRequired()
             ->addDefaultsIfNotSet()
                 ->validate()
-                    ->ifTrue(function ($value) {
+                    ->ifTrue(function($value) {
                         return $value['min_length'] >= $value['max_length'];
                     })
                     ->thenInvalid('The configuration option "min_length" must be lower than "max_length".')
@@ -104,7 +104,7 @@ class RefreshTokenGrantTypePlugin extends CommonPluginMethod implements BundlePl
                 ->scalarNode('class')
                     ->info('Refresh token class.')
                     ->validate()
-                        ->ifTrue(function ($value) {
+                        ->ifTrue(function($value) {
                             return !class_exists($value);
                         })->thenInvalid('The class does not exist.')
                     ->end()

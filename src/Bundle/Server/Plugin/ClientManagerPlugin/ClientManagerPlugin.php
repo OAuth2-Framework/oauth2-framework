@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /*
  * The MIT License (MIT)
@@ -110,7 +110,7 @@ class ClientManagerPlugin extends CommonPluginMethod implements BundlePlugin, Pr
                 $parameters['oauth2_server.token_endpoint_auth_method.client_assertion_jwt.encryption.key_encryption_algorithms'] = ['type' => 'parameter', 'path' => '[token_endpoint_auth_methods][client_assertion_jwt][encryption][key_encryption_algorithms]'];
                 $parameters['oauth2_server.token_endpoint_auth_method.client_assertion_jwt.encryption.content_encryption_algorithms'] = ['type' => 'parameter', 'path' => '[token_endpoint_auth_methods][client_assertion_jwt][encryption][content_encryption_algorithms]'];
                 $parameters['oauth2_server.token_endpoint_auth_method.client_assertion_jwt.encryption.required'] = ['type' => 'parameter', 'path' => '[token_endpoint_auth_methods][client_assertion_jwt][encryption][required]'];
-                $parameters['oauth2_server.token_endpoint_auth_method.client_assertion_jwt.encryption.key_set'] = ['type' => 'alias',     'path' => '[token_endpoint_auth_methods][client_assertion_jwt][encryption][key_set]'];
+                $parameters['oauth2_server.token_endpoint_auth_method.client_assertion_jwt.encryption.key_set'] = ['type' => 'alias', 'path' => '[token_endpoint_auth_methods][client_assertion_jwt][encryption][key_set]'];
             }
         }
 
@@ -156,7 +156,7 @@ class ClientManagerPlugin extends CommonPluginMethod implements BundlePlugin, Pr
                     ->info('The Client class.')
                     ->isRequired()
                     ->validate()
-                    ->ifTrue(function ($value) {
+                    ->ifTrue(function($value) {
                         return !class_exists($value);
                     })
                     ->thenInvalid('The class does not exist.')
@@ -426,7 +426,7 @@ class ClientManagerPlugin extends CommonPluginMethod implements BundlePlugin, Pr
      */
     private function areClientAssertionSignatureAlgorithmsInvalid()
     {
-        return function ($data) {
+        return function($data) {
             if (false === $data['enabled']) {
                 return false;
             }
@@ -442,7 +442,7 @@ class ClientManagerPlugin extends CommonPluginMethod implements BundlePlugin, Pr
      */
     private function isClientAssertionEncryptionParameterInvalid($parameter)
     {
-        return function ($data) use ($parameter) {
+        return function($data) use ($parameter) {
             if (false === $data['encryption']['enabled']) {
                 return false;
             }
@@ -456,7 +456,7 @@ class ClientManagerPlugin extends CommonPluginMethod implements BundlePlugin, Pr
      */
     private function isClientSecretBasicRealmInvalid()
     {
-        return function ($data) {
+        return function($data) {
             if (false === $data['enabled']) {
                 return false;
             }
@@ -470,7 +470,7 @@ class ClientManagerPlugin extends CommonPluginMethod implements BundlePlugin, Pr
      */
     private function isRegistrationPathValid()
     {
-        return function ($data) {
+        return function($data) {
             return true === $data['enabled'] && empty($data['registration_path']);
         };
     }
@@ -480,7 +480,7 @@ class ClientManagerPlugin extends CommonPluginMethod implements BundlePlugin, Pr
      */
     private function isConfigurationPathValid()
     {
-        return function ($data) {
+        return function($data) {
             return true === $data['enabled'] && empty($data['configuration_path']);
         };
     }
@@ -490,7 +490,7 @@ class ClientManagerPlugin extends CommonPluginMethod implements BundlePlugin, Pr
      */
     private function isInitialAccessTokenClassValid()
     {
-        return function ($data) {
+        return function($data) {
             return true === $data['enabled'] && (empty($data['class']) || !class_exists($data['class']));
         };
     }
@@ -500,7 +500,7 @@ class ClientManagerPlugin extends CommonPluginMethod implements BundlePlugin, Pr
      */
     private function isInitialAccessTokenManagerValid()
     {
-        return function ($data) {
+        return function($data) {
             return true === $data['enabled'] && empty($data['class']);
         };
     }
@@ -510,7 +510,7 @@ class ClientManagerPlugin extends CommonPluginMethod implements BundlePlugin, Pr
      */
     private function isSoftwareStatementKeySetValid()
     {
-        return function ($data) {
+        return function($data) {
             return true === $data['enabled'] && empty($data['key_set']);
         };
     }
@@ -520,7 +520,7 @@ class ClientManagerPlugin extends CommonPluginMethod implements BundlePlugin, Pr
      */
     private function isSoftwareStatementAlgorithmValid()
     {
-        return function ($data) {
+        return function($data) {
             return true === $data['enabled'] && empty($data['signature_algorithm']);
         };
     }

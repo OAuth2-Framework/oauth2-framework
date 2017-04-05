@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /*
  * The MIT License (MIT)
@@ -79,7 +79,7 @@ final class ScopePolicySource extends ActionableSource
         parent::continueConfiguration($node);
         $node
             ->validate()
-                ->ifTrue(function ($config) {
+                ->ifTrue(function($config) {
                     return true === $config['enabled'] && empty($config['by_default']);
                 })
                 ->thenInvalid('The option "repository" must be set.')

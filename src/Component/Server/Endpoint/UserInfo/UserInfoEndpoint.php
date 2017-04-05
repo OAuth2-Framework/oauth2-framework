@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /*
  * The MIT License (MIT)
@@ -101,7 +101,7 @@ final class UserInfoEndpoint implements MiddlewareInterface
      *
      * @return string
      */
-    private function buildUserinfoContent(Client $client, UserAccountInterface $userAccount, AccessToken $accessToken, ?bool &$isJwt): string
+    private function buildUserinfoContent(Client $client, UserAccountInterface $userAccount, AccessToken $accessToken, ? bool & $isJwt) : string
     {
         $isJwt = false;
         $requestedClaims = $this->getEndpointClaims($accessToken);

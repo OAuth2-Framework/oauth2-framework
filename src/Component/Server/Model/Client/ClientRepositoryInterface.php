@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /*
  * The MIT License (MIT)
@@ -29,5 +29,5 @@ interface ClientRepositoryInterface
      *
      * @return null|Client return the client object or null if no client is found
      */
-    public function find(ClientId $clientId): ?Client;
+    public function find(ClientId $clientId): ? Client;
 }

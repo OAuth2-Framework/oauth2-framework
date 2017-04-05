@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /*
  * The MIT License (MIT)
@@ -83,7 +83,7 @@ final class OAuth2FrameworkServerExtension extends Extension implements PrependE
 
     /**
      * @param string           $path
-     * @param array            $sources
+     * @param SourceInterface[]            $sources
      * @param array            $mergedConfig
      * @param ContainerBuilder $container
      */
@@ -101,7 +101,7 @@ final class OAuth2FrameworkServerExtension extends Extension implements PrependE
     /**
      * @param array            $bundleConfig
      * @param string           $path
-     * @param array            $sources
+     * @param SourceInterface[]            $sources
      * @param ContainerBuilder $container
      */
     private function prependSources(array $bundleConfig, string $path, array $sources, ContainerBuilder $container)

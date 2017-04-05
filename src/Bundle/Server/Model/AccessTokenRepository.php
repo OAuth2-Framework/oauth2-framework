@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /*
  * The MIT License (MIT)
@@ -108,7 +108,7 @@ final class AccessTokenRepository implements AccessTokenRepositoryInterface
     /**
      * {@inheritdoc}
      */
-    public function create(ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, array $scopes, ?RefreshTokenId $refreshTokenId, ?ResourceServerId $resourceServerId, ?\DateTimeImmutable $expiresAt): AccessToken
+    public function create(ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, array $scopes, ? RefreshTokenId $refreshTokenId, ? ResourceServerId $resourceServerId, ? \DateTimeImmutable $expiresAt) : AccessToken
     {
         if (null === $expiresAt) {
             $expiresAt = new \DateTimeImmutable(sprintf('now +%u seconds', $this->lifetime));
@@ -127,7 +127,7 @@ final class AccessTokenRepository implements AccessTokenRepositoryInterface
      *
      * @return AccessToken|null
      */
-    private function getFromCache(AccessTokenId $accessTokenId): ?AccessToken
+    private function getFromCache(AccessTokenId $accessTokenId): ? AccessToken
     {
         $itemKey = sprintf('oauth2-access_token-%s', $accessTokenId->getValue());
         if (null !== $this->cache) {

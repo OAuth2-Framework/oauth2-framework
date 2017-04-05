@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /*
  * The MIT License (MIT)
@@ -54,7 +54,7 @@ final class InitialAccessTokenRepository implements InitialAccessTokenRepository
     /**
      * {@inheritdoc}
      */
-    public function create(?UserAccountId $userAccountId, ?\DateTimeImmutable $expiresAt): InitialAccessToken
+    public function create(? UserAccountId $userAccountId, ? \DateTimeImmutable $expiresAt) : InitialAccessToken
     {
         $initialAccessTokeId = InitialAccessTokenId::create(Uuid::uuid4()->toString());
         $initialAccessToken = InitialAccessToken::createEmpty();
@@ -66,7 +66,7 @@ final class InitialAccessTokenRepository implements InitialAccessTokenRepository
     /**
      * {@inheritdoc}
      */
-    public function find(InitialAccessTokenId $initialAccessTokenId): ?InitialAccessToken
+    public function find(InitialAccessTokenId $initialAccessTokenId): ? InitialAccessToken
     {
         $initialAccessToken = $this->getFromCache($initialAccessTokenId);
         if (null === $initialAccessToken) {
@@ -111,7 +111,7 @@ final class InitialAccessTokenRepository implements InitialAccessTokenRepository
      *
      * @return InitialAccessToken|null
      */
-    private function getFromCache(InitialAccessTokenId $initialAccessTokenId): ?InitialAccessToken
+    private function getFromCache(InitialAccessTokenId $initialAccessTokenId): ? InitialAccessToken
     {
         $itemKey = sprintf('oauth2-initial_access_token-%s', $initialAccessTokenId->getValue());
         if (null !== $this->cache) {

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /*
  * The MIT License (MIT)
@@ -47,7 +47,7 @@ final class TokenIntrospectionEndpointAuthMethodManager
      *
      * @return null|ResourceServerId
      */
-    public function findResourceServerInformationInTheRequest(ServerRequestInterface $request, ?TokenIntrospectionEndpointAuthMethodInterface &$authenticationMethod, &$resourceServerCredentials = null): ?ResourceServerId
+    public function findResourceServerInformationInTheRequest(ServerRequestInterface $request, ? TokenIntrospectionEndpointAuthMethodInterface & $authenticationMethod, &$resourceServerCredentials = null) : ? ResourceServerId
     {
         $resourceServerId = null;
         $resourceServerCredentials = null;

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /*
  * The MIT License (MIT)
@@ -67,7 +67,7 @@ class ResourceOwnerPasswordCredentialsGrantTypePlugin extends CommonPluginMethod
         }
 
         $parameters = [
-            'oauth2_server.resource_owner_password_credentials_grant_type.user_account_manager' => ['type' => 'alias',     'path' => '[user_account_manager]'],
+            'oauth2_server.resource_owner_password_credentials_grant_type.user_account_manager' => ['type' => 'alias', 'path' => '[user_account_manager]'],
         ];
 
         $this->loadParameters($parameters, $pluginConfiguration, $container);

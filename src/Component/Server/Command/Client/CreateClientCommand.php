@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /*
  * The MIT License (MIT)
@@ -37,7 +37,7 @@ final class CreateClientCommand extends CommandWithDataTransporter
      * @param DataBag              $parameters
      * @param DataTransporter|null $dataTransporter
      */
-    protected function __construct(?UserAccountId $userAccountId, DataBag $parameters, ?DataTransporter $dataTransporter)
+    protected function __construct(? UserAccountId $userAccountId, DataBag $parameters, ? DataTransporter $dataTransporter)
     {
         $this->parameters = $parameters;
         $this->userAccountId = $userAccountId;
@@ -51,7 +51,7 @@ final class CreateClientCommand extends CommandWithDataTransporter
      *
      * @return CreateClientCommand
      */
-    public static function create(?UserAccountId $userAccountId, DataBag $parameters, ?DataTransporter $dataTransporter): CreateClientCommand
+    public static function create(? UserAccountId $userAccountId, DataBag $parameters, ? DataTransporter $dataTransporter) : CreateClientCommand
     {
         return new self($userAccountId, $parameters, $dataTransporter);
     }
@@ -67,7 +67,7 @@ final class CreateClientCommand extends CommandWithDataTransporter
     /**
      * @return UserAccountId|null
      */
-    public function getUserAccountId(): ?UserAccountId
+    public function getUserAccountId(): ? UserAccountId
     {
         return $this->userAccountId;
     }

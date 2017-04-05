@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /*
  * The MIT License (MIT)
@@ -30,7 +30,7 @@ final class CreateResourceServerCommand extends CommandWithDataTransporter
      * @param DataBag              $parameters
      * @param DataTransporter|null $dataTransporter
      */
-    protected function __construct(DataBag $parameters, ?DataTransporter $dataTransporter)
+    protected function __construct(DataBag $parameters, ? DataTransporter $dataTransporter)
     {
         $this->parameters = $parameters;
         parent::__construct($dataTransporter);
@@ -42,7 +42,7 @@ final class CreateResourceServerCommand extends CommandWithDataTransporter
      *
      * @return CreateResourceServerCommand
      */
-    public static function create(DataBag $parameters, ?DataTransporter $dataTransporter): CreateResourceServerCommand
+    public static function create(DataBag $parameters, ? DataTransporter $dataTransporter) : CreateResourceServerCommand
     {
         return new self($parameters, $dataTransporter);
     }

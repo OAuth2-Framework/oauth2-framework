@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /*
  * The MIT License (MIT)
@@ -77,7 +77,7 @@ final class IdTokenLoader
      *
      * @return IdToken|null
      */
-    public function load(IdTokenId $idTokenId): ?IdToken
+    public function load(IdTokenId $idTokenId): ? IdToken
     {
         try {
             $jwt = $this->jwtLoader->load($idTokenId->getValue());

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /*
  * The MIT License (MIT)
@@ -34,7 +34,7 @@ interface AuthCodeRepositoryInterface
      *
      * @return AuthCode
      */
-    public function create(ClientId $clientId, UserAccountId $userAccountId, array $queryParameters, string $redirectUri, DataBag $parameters, DataBag $metadatas, array $scopes, bool $withRefreshToken, ?ResourceServerId $resourceServerId, ?\DateTimeImmutable $expiresAt): AuthCode;
+    public function create(ClientId $clientId, UserAccountId $userAccountId, array $queryParameters, string $redirectUri, DataBag $parameters, DataBag $metadatas, array $scopes, bool $withRefreshToken, ? ResourceServerId $resourceServerId, ? \DateTimeImmutable $expiresAt) : AuthCode;
 
     /**
      * @param AuthCode $authCode
@@ -50,5 +50,5 @@ interface AuthCodeRepositoryInterface
      *
      * @see     http://tools.ietf.org/html/rfc6749#section-4.1
      */
-    public function find(AuthCodeId $authCodeId): ?AuthCode;
+    public function find(AuthCodeId $authCodeId): ? AuthCode;
 }

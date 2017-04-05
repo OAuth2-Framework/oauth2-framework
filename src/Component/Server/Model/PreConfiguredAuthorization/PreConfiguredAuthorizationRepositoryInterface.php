@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /*
  * The MIT License (MIT)
@@ -27,7 +27,7 @@ interface PreConfiguredAuthorizationRepositoryInterface
      *
      * @return PreConfiguredAuthorization
      */
-    public function create(UserAccountId $userAccountId, ClientId $clientId, array $scopes, ?ResourceServerId $resourceServerId): PreConfiguredAuthorization;
+    public function create(UserAccountId $userAccountId, ClientId $clientId, array $scopes, ? ResourceServerId $resourceServerId) : PreConfiguredAuthorization;
 
     /**
      * @param PreConfiguredAuthorization $preConfiguredAuthorization
@@ -42,5 +42,5 @@ interface PreConfiguredAuthorizationRepositoryInterface
      *
      * @return PreConfiguredAuthorization|null
      */
-    public function find(UserAccountId $userAccountId, ClientId $clientId, array $scopes, ?ResourceServerId $resourceServerId): ?PreConfiguredAuthorization;
+    public function find(UserAccountId $userAccountId, ClientId $clientId, array $scopes, ? ResourceServerId $resourceServerId) : ? PreConfiguredAuthorization;
 }

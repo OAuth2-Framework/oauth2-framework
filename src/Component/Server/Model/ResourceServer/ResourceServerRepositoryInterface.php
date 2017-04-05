@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /*
  * The MIT License (MIT)
@@ -20,5 +20,5 @@ interface ResourceServerRepositoryInterface
      *
      * @return ResourceServerInterface|null Return the resource server or null if the argument is not a valid resource server ID
      */
-    public function find(ResourceServerId $resourceServer): ?ResourceServerInterface;
+    public function find(ResourceServerId $resourceServer): ? ResourceServerInterface;
 }

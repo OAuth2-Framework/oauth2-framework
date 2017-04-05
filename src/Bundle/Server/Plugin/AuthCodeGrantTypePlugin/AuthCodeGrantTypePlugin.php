@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /*
  * The MIT License (MIT)
@@ -46,7 +46,7 @@ class AuthCodeGrantTypePlugin extends CommonPluginMethod implements BundlePlugin
             ->isRequired()
             ->addDefaultsIfNotSet()
             ->validate()
-                ->ifTrue(function ($value) {
+                ->ifTrue(function($value) {
                     return $value['min_length'] >= $value['max_length'];
                 })
                 ->thenInvalid('The configuration option "min_length" must be lower than "max_length".')
@@ -56,7 +56,7 @@ class AuthCodeGrantTypePlugin extends CommonPluginMethod implements BundlePlugin
                     ->info('Authorization Code class.')
                     ->isRequired()
                     ->validate()
-                        ->ifTrue(function ($value) {
+                        ->ifTrue(function($value) {
                             return !class_exists($value);
                         })
                         ->thenInvalid('The class does not exist.')
@@ -114,7 +114,7 @@ class AuthCodeGrantTypePlugin extends CommonPluginMethod implements BundlePlugin
             'oauth2_server.auth_code.lifetime' => ['type' => 'parameter', 'path' => '[lifetime]'],
             'oauth2_server.auth_code.enforce_pkce' => ['type' => 'parameter', 'path' => '[enforce_pkce]'],
             'oauth2_server.auth_code.allow_public_clients' => ['type' => 'parameter', 'path' => '[allow_public_clients]'],
-            'oauth2_server.auth_code.manager' => ['type' => 'alias',     'path' => '[manager]'],
+            'oauth2_server.auth_code.manager' => ['type' => 'alias', 'path' => '[manager]'],
         ];
         $this->loadParameters($parameters, $pluginConfiguration, $container);
     }

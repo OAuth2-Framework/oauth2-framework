@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /*
  * The MIT License (MIT)
@@ -125,13 +125,13 @@ abstract class MacToken implements TokenTypeInterface
     private function getParametersToCheck(): array
     {
         return [
-            'id' => function ($value, AccessToken $accessToken) {
+            'id' => function($value, AccessToken $accessToken) {
                 return hash_equals($accessToken->getTokenId()->getValue(), $value);
             },
-            'ts' => function ($value) {
+            'ts' => function($value) {
                 return time() < $this->getTimestampLifetime() + (int) $value;
             },
-            'nonce' => function () {
+            'nonce' => function() {
                 return true;
             },
         ];
@@ -192,7 +192,7 @@ abstract class MacToken implements TokenTypeInterface
      *
      * @return bool
      */
-    private function isHeaderValid(string $header, array &$additionalCredentialValues, string &$token = null): bool
+    private function isHeaderValid(string $header, array &$additionalCredentialValues, string & $token = null): bool
     {
         if (1 === preg_match('/(\w+)=("((?:[^"\\\\]|\\\\.)+)"|([^\s,$]+))/', $header, $matches)) {
             preg_match_all('/(\w+)=("((?:[^"\\\\]|\\\\.)+)"|([^\s,$]+))/', $header, $matches, PREG_SET_ORDER);

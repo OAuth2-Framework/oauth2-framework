@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /*
  * The MIT License (MIT)
@@ -85,7 +85,7 @@ final class RefreshTokenRepository implements RefreshTokenRepositoryInterface
     /**
      * {@inheritdoc}
      */
-    public function create(ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, array $scopes, ?ResourceServerId $resourceServerId, ?\DateTimeImmutable $expiresAt): RefreshToken
+    public function create(ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, array $scopes, ? ResourceServerId $resourceServerId, ? \DateTimeImmutable $expiresAt) : RefreshToken
     {
         if (null === $expiresAt) {
             $expiresAt = new \DateTimeImmutable(sprintf('now +%u seconds', $this->lifetime));
@@ -154,7 +154,7 @@ final class RefreshTokenRepository implements RefreshTokenRepositoryInterface
      *
      * @return RefreshToken|null
      */
-    private function getFromCache(RefreshTokenId $refreshTokenId): ?RefreshToken
+    private function getFromCache(RefreshTokenId $refreshTokenId): ? RefreshToken
     {
         $itemKey = sprintf('oauth2-refresh_token-%s', $refreshTokenId->getValue());
         if (null !== $this->cache) {

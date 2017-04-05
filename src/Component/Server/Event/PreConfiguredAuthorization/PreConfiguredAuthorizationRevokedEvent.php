@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /*
  * The MIT License (MIT)
@@ -33,7 +33,7 @@ final class PreConfiguredAuthorizationRevokedEvent extends Event
      * @param \DateTimeImmutable|null      $recordedOn
      * @param null|EventId                 $eventId
      */
-    protected function __construct(PreConfiguredAuthorizationId $preConfiguredAuthorizationId, ?\DateTimeImmutable $recordedOn, ?EventId $eventId)
+    protected function __construct(PreConfiguredAuthorizationId $preConfiguredAuthorizationId, ? \DateTimeImmutable $recordedOn, ? EventId $eventId)
     {
         parent::__construct($recordedOn, $eventId);
         $this->preConfiguredAuthorizationId = $preConfiguredAuthorizationId;

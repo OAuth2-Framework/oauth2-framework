@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /*
  * The MIT License (MIT)
@@ -38,7 +38,7 @@ abstract class SessionStateParameterExtension implements AfterConsentScreenInter
      *
      * @return string
      */
-    abstract protected function getBrowserState(ServerRequestInterface $request, Authorization &$authorization): string;
+    abstract protected function getBrowserState(ServerRequestInterface $request, Authorization & $authorization): string;
 
     /**
      * @param ServerRequestInterface $request

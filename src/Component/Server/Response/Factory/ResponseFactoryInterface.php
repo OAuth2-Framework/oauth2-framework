@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /*
  * The MIT License (MIT)
@@ -29,5 +29,5 @@ interface ResponseFactoryInterface
      *
      * @return OAuth2ResponseInterface
      */
-    public function createResponse(array $data, ResponseInterface &$response): OAuth2ResponseInterface;
+    public function createResponse(array $data, ResponseInterface & $response): OAuth2ResponseInterface;
 }

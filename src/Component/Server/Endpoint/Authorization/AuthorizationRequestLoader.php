@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /*
  * The MIT License (MIT)
@@ -325,7 +325,7 @@ final class AuthorizationRequestLoader
      *
      * @return JWSInterface
      */
-    private function loadRequest(array $params, string $request, Client &$client = null): JWSInterface
+    private function loadRequest(array $params, string $request, Client & $client = null): JWSInterface
     {
         try {
             $jwt = $this->jwtLoader->load($request, $this->keyEncryptionKeySet, $this->requireEncryption);
