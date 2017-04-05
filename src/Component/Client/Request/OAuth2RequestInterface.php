@@ -16,13 +16,11 @@ interface OAuth2RequestInterface
     /**
      * If this method is called, requests using the https scheme without a valid certificates are allowed.
      * We do not recommend you to call this method.
-     * @return void
      */
     public function allowUnsecuredRequests();
 
     /**
      * If this method is called, requests using the https scheme without a valid certificates are not allowed (default behaviour).
-     * @return void
      */
     public function disallowUnsecuredRequests();
 
@@ -35,7 +33,6 @@ interface OAuth2RequestInterface
 
     /**
      * @param string $proxy
-     * @return void
      */
     public function setProxy($proxy);
 
@@ -48,7 +45,6 @@ interface OAuth2RequestInterface
 
     /**
      * Unset the proxy settings.
-     * @return void
      */
     public function unsetProxy();
 

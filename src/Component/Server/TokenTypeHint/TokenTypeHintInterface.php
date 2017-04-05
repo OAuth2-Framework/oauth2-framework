@@ -31,7 +31,6 @@ interface TokenTypeHintInterface
 
     /**
      * @param Token $token
-     * @return void
      */
     public function revoke(Token $token);
 

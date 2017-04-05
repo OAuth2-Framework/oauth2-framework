@@ -19,7 +19,6 @@ interface EventStoreInterface
 {
     /**
      * @param Event $event
-     * @return void
      */
     public function save(Event $event);
 
