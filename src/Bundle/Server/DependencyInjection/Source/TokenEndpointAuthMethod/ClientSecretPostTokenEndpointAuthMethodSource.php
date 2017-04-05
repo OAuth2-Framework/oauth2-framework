@@ -48,7 +48,7 @@ final class ClientSecretPostTokenEndpointAuthMethodSource extends ActionableSour
         parent::continueConfiguration($node);
         $node
             ->children()
-                ->integerNode('secret_lifetime')->defaultValue(60*60*24*14)->min(0)->end()
+                ->integerNode('secret_lifetime')->defaultValue(60 * 60 * 24 * 14)->min(0)->end()
             ->end();
     }
 }
