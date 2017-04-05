@@ -16,8 +16,8 @@ namespace OAuth2Framework\Bundle\Server\DependencyInjection\Source\Scope;
 use Fluent\PhpConfigFileLoader;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\ActionableSource;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\SourceInterface;
-use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
+use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 final class ScopePolicySource extends ActionableSource

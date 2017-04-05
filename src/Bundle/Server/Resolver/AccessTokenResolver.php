@@ -16,8 +16,8 @@ namespace OAuth2Framework\Bundle\Server\SecurityPlugin\Resolver;
 use OAuth2Framework\Bundle\Server\SecurityPlugin\Security\Authentication\Token\OAuth2Token;
 use OAuth2Framework\Component\Server\Model\AccessToken\AccessToken;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Controller\ArgumentValueResolverInterface;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
+use Symfony\Component\HttpKernel\Controller\ArgumentValueResolverInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 final class AccessTokenResolver implements ArgumentValueResolverInterface

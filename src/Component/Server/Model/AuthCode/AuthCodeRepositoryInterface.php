@@ -38,6 +38,7 @@ interface AuthCodeRepositoryInterface
 
     /**
      * @param AuthCode $authCode
+     * @return void
      */
     public function save(AuthCode $authCode);
 

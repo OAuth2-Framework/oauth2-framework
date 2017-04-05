@@ -39,6 +39,7 @@ interface GrantTypeInterface
      * @param ServerRequestInterface $request The request
      *
      * @throws OAuth2Exception
+     * @return void
      */
     public function checkTokenRequest(ServerRequestInterface $request);
 

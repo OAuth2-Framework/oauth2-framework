@@ -64,6 +64,7 @@ trait Metadata
 
     /**
      * {@inheritdoc}
+     * @param string $key
      */
     public function get($key)
     {

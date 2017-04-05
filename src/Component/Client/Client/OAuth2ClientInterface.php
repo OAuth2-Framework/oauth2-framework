@@ -44,6 +44,7 @@ interface OAuth2ClientInterface extends \JsonSerializable
     /**
      * @param string $key
      * @param mixed  $value
+     * @return void
      */
     public function set($key, $value);
 

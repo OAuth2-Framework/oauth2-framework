@@ -31,6 +31,7 @@ interface PreConfiguredAuthorizationRepositoryInterface
 
     /**
      * @param PreConfiguredAuthorization $preConfiguredAuthorization
+     * @return void
      */
     public function save(PreConfiguredAuthorization $preConfiguredAuthorization);
 
