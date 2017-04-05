@@ -30,5 +30,5 @@ interface TokenEndpointAuthenticationMethodInterface
      *
      * @return mixed
      */
-    public function prepareRequest(ServerMetadata $server_metadata, OAuth2ClientInterface $client, RequestInterface & $request, array &$post_request);
+    public function prepareRequest(ServerMetadata $server_metadata, OAuth2ClientInterface $client, RequestInterface &$request, array &$post_request);
 }

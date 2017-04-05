@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * The MIT License (MIT)
@@ -112,7 +112,7 @@ final class RefreshTokenCreatedEvent extends Event
      *
      * @return RefreshTokenCreatedEvent
      */
-    public static function create(RefreshTokenId $refreshTokenId, ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, \DateTimeImmutable $expiresAt, array $scopes, ? ResourceServerId $resourceServerId) : RefreshTokenCreatedEvent
+    public static function create(RefreshTokenId $refreshTokenId, ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, \DateTimeImmutable $expiresAt, array $scopes, ? ResourceServerId $resourceServerId): RefreshTokenCreatedEvent
     {
         return new self($refreshTokenId, $resourceOwnerId, $clientId, $parameters, $metadatas, $expiresAt, $scopes, $resourceServerId, null, null);
     }

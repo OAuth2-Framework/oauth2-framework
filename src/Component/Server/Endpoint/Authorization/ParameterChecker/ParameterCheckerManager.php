@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * The MIT License (MIT)
@@ -52,13 +52,13 @@ final class ParameterCheckerManager
     private function callableForNextExtension($index)
     {
         if (!array_key_exists($index, $this->parameterCheckers)) {
-            return function(Authorization $authorization): Authorization {
+            return function (Authorization $authorization): Authorization {
                 return $authorization;
             };
         }
         $parameterChecker = $this->parameterCheckers[$index];
 
-        return function(Authorization $authorization) use ($parameterChecker, $index): Authorization {
+        return function (Authorization $authorization) use ($parameterChecker, $index): Authorization {
             return $parameterChecker->process($authorization, $this->callableForNextExtension($index + 1));
         };
     }

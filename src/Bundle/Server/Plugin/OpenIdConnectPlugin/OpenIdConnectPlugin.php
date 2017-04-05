@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * The MIT License (MIT)
@@ -75,17 +75,17 @@ class OpenIdConnectPlugin extends CommonPluginMethod implements BundlePlugin, Pr
             ->children()
                 ->arrayNode('session_management')
                     ->validate()
-                        ->ifTrue(function($value) {
+                        ->ifTrue(function ($value) {
                             return $value['enabled'] && empty($value['path']);
                         })->thenInvalid('The option "path" must be set when the Session Management is enabled.')
                     ->end()
                     ->validate()
-                        ->ifTrue(function($value) {
+                        ->ifTrue(function ($value) {
                             return $value['enabled'] && empty($value['storage_name']);
                         })->thenInvalid('The option "storage_name" must be set when the Session Management is enabled.')
                     ->end()
                     ->validate()
-                        ->ifTrue(function($value) {
+                        ->ifTrue(function ($value) {
                             return $value['enabled'] && empty($value['template']);
                         })->thenInvalid('The option "template" must be set when the Session Management is enabled.')
                     ->end()
@@ -316,10 +316,10 @@ class OpenIdConnectPlugin extends CommonPluginMethod implements BundlePlugin, Pr
             'oauth2_server.openid_connect.userinfo_endpoint.signature.enabled' => ['type' => 'parameter', 'path' => '[userinfo_endpoint][signature][enabled]'],
             'oauth2_server.openid_connect.metadata.enabled' => ['type' => 'parameter', 'path' => '[metadata][enabled]'],
             'oauth2_server.openid_connect.id_token.response_type.id_token' => ['type' => 'parameter', 'path' => '[response_type][id_token]'],
-            'oauth2_server.openid_connect.claims_supported' => ['type' => 'parameter', 'path' => '[claims_supported]', 'callback' => function($data) {
+            'oauth2_server.openid_connect.claims_supported' => ['type' => 'parameter', 'path' => '[claims_supported]', 'callback' => function ($data) {
                 return array_unique($data);
             }],
-            'oauth2_server.openid_connect.claims_locales_supported' => ['type' => 'parameter', 'path' => '[claims_locales_supported]', 'callback' => function($data) {
+            'oauth2_server.openid_connect.claims_locales_supported' => ['type' => 'parameter', 'path' => '[claims_locales_supported]', 'callback' => function ($data) {
                 return array_unique($data);
             }],
         ];

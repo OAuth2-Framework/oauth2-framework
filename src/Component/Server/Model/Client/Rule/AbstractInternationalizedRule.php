@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * The MIT License (MIT)
@@ -24,7 +24,7 @@ abstract class AbstractInternationalizedRule implements RuleInterface
      *
      * @return array
      */
-    protected function getInternationalizedParameters(DataBag $requestedParameters, string $base, ? \Closure $closure) : array
+    protected function getInternationalizedParameters(DataBag $requestedParameters, string $base, ? \Closure $closure): array
     {
         $result = [];
         foreach ($requestedParameters->all() as $k => $v) {

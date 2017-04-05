@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * The MIT License (MIT)
@@ -50,7 +50,7 @@ final class CreateInitialAccessTokenCommand extends CommandWithDataTransporter
      *
      * @return CreateInitialAccessTokenCommand
      */
-    public static function create(UserAccountId $userAccountId, ? \DateTimeImmutable $expiresAt, ? DataTransporter $dataTransporter) : CreateInitialAccessTokenCommand
+    public static function create(UserAccountId $userAccountId, ? \DateTimeImmutable $expiresAt, ? DataTransporter $dataTransporter): CreateInitialAccessTokenCommand
     {
         return new self($userAccountId, $expiresAt, $dataTransporter);
     }

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * The MIT License (MIT)
@@ -207,7 +207,7 @@ class JWTBearerPlugin extends CommonPluginMethod implements BundlePlugin, Prepen
      */
     private function isClientAssertionEncryptionParameterInvalid($parameter)
     {
-        return function($data) use ($parameter) {
+        return function ($data) use ($parameter) {
             if (false === $data['encryption']['enabled']) {
                 return false;
             }

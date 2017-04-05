@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * The MIT License (MIT)
@@ -60,13 +60,13 @@ final class ProcessorManager
     private function callableForNextRule(int $index): \Closure
     {
         if (!isset($this->processors[$index])) {
-            return function(ServerRequestInterface $request, GrantTypeData $grantTypeData, GrantTypeInterface $grantType): GrantTypeData {
+            return function (ServerRequestInterface $request, GrantTypeData $grantTypeData, GrantTypeInterface $grantType): GrantTypeData {
                 return $grantType->grant($request, $grantTypeData);
             };
         }
         $processor = $this->processors[$index];
 
-        return function(ServerRequestInterface $request, GrantTypeData $grantTypeData, GrantTypeInterface $grantType) use ($processor, $index): GrantTypeData {
+        return function (ServerRequestInterface $request, GrantTypeData $grantTypeData, GrantTypeInterface $grantType) use ($processor, $index): GrantTypeData {
             return $processor($request, $grantTypeData, $grantType, $this->callableForNextRule($index + 1));
         };
     }

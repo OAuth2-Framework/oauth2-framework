@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * The MIT License (MIT)
@@ -80,7 +80,7 @@ class RefreshTokenGrantTypePlugin extends CommonPluginMethod implements BundlePl
             ->isRequired()
             ->addDefaultsIfNotSet()
                 ->validate()
-                    ->ifTrue(function($value) {
+                    ->ifTrue(function ($value) {
                         return $value['min_length'] >= $value['max_length'];
                     })
                     ->thenInvalid('The configuration option "min_length" must be lower than "max_length".')
@@ -104,7 +104,7 @@ class RefreshTokenGrantTypePlugin extends CommonPluginMethod implements BundlePl
                 ->scalarNode('class')
                     ->info('Refresh token class.')
                     ->validate()
-                        ->ifTrue(function($value) {
+                        ->ifTrue(function ($value) {
                             return !class_exists($value);
                         })->thenInvalid('The class does not exist.')
                     ->end()

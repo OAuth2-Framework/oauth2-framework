@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * The MIT License (MIT)
@@ -30,7 +30,7 @@ final class BadRequestResponseFactory implements ResponseFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function createResponse(array $data, ResponseInterface & $response): OAuth2ResponseInterface
+    public function createResponse(array $data, ResponseInterface &$response): OAuth2ResponseInterface
     {
         return new OAuth2Error(400, $data, $response);
     }

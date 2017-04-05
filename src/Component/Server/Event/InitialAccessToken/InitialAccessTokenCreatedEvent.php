@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * The MIT License (MIT)
@@ -69,7 +69,7 @@ final class InitialAccessTokenCreatedEvent extends Event
      *
      * @return InitialAccessTokenCreatedEvent
      */
-    public static function create(InitialAccessTokenId $initialAccessTokenId, ? UserAccountId $userAccountId, ? \DateTimeImmutable $expiresAt) : InitialAccessTokenCreatedEvent
+    public static function create(InitialAccessTokenId $initialAccessTokenId, ? UserAccountId $userAccountId, ? \DateTimeImmutable $expiresAt): InitialAccessTokenCreatedEvent
     {
         return new self($initialAccessTokenId, $userAccountId, $expiresAt, null, null);
     }

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * The MIT License (MIT)
@@ -33,7 +33,7 @@ interface AccessTokenRepositoryInterface
      *
      * @return AccessToken
      */
-    public function create(ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, array $scopes, ? RefreshTokenId $refreshTokenId, ? ResourceServerId $resourceServerId, ? \DateTimeImmutable $expiresAt) : AccessToken;
+    public function create(ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, array $scopes, ? RefreshTokenId $refreshTokenId, ? ResourceServerId $resourceServerId, ? \DateTimeImmutable $expiresAt): AccessToken;
 
     /**
      * @param AccessToken $token

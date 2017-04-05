@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * The MIT License (MIT)
@@ -90,7 +90,7 @@ final class Client implements ResourceOwnerInterface, ContainsRecordedMessages, 
      *
      * @return Client
      */
-    public function create(ClientId $clientId, DataBag $parameters, ? UserAccountId $ownerId) : Client
+    public function create(ClientId $clientId, DataBag $parameters, ? UserAccountId $ownerId): Client
     {
         $clone = clone $this;
         $clone->clientId = $clientId;

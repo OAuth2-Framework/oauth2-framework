@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * The MIT License (MIT)
@@ -117,7 +117,7 @@ final class CreateAuthCodeCommand extends CommandWithDataTransporter
      *
      * @return CreateAuthCodeCommand
      */
-    public static function create(ClientId $clientId, UserAccountId $userAccountId, array $queryParameters, string $redirectUri, DataBag $parameters, DataBag $metadatas, array $scopes, bool $withRefreshToken, ? \DateTimeImmutable $expiresAt, ? ResourceServerId $resourceServerId, ? DataTransporter $dataTransporter) : CreateAuthCodeCommand
+    public static function create(ClientId $clientId, UserAccountId $userAccountId, array $queryParameters, string $redirectUri, DataBag $parameters, DataBag $metadatas, array $scopes, bool $withRefreshToken, ? \DateTimeImmutable $expiresAt, ? ResourceServerId $resourceServerId, ? DataTransporter $dataTransporter): CreateAuthCodeCommand
     {
         return new self($clientId, $userAccountId, $queryParameters, $redirectUri, $parameters, $metadatas, $scopes, $withRefreshToken, $expiresAt, $resourceServerId, $dataTransporter);
     }

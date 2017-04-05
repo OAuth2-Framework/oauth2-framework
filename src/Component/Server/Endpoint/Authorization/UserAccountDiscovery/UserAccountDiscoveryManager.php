@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * The MIT License (MIT)
@@ -50,13 +50,13 @@ final class UserAccountDiscoveryManager
     private function callableForNextRule(int $index): \Closure
     {
         if (!isset($this->extensions[$index])) {
-            return function(ServerRequestInterface $request, Authorization $authorization): Authorization {
+            return function (ServerRequestInterface $request, Authorization $authorization): Authorization {
                 return $authorization;
             };
         }
         $extension = $this->extensions[$index];
 
-        return function(ServerRequestInterface $request, Authorization $authorization) use ($extension, $index): Authorization {
+        return function (ServerRequestInterface $request, Authorization $authorization) use ($extension, $index): Authorization {
             return $extension->find($request, $authorization, $this->callableForNextRule($index + 1));
         };
     }

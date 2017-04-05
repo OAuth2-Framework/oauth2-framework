@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * The MIT License (MIT)
@@ -60,7 +60,7 @@ final class InitialAccessToken implements ContainsRecordedMessages, DomainObject
      *
      * @return InitialAccessToken
      */
-    public function create(InitialAccessTokenId $initialAccessTokenId, ? UserAccountId $userAccountId, ? \DateTimeImmutable $expiresAt) : InitialAccessToken
+    public function create(InitialAccessTokenId $initialAccessTokenId, ? UserAccountId $userAccountId, ? \DateTimeImmutable $expiresAt): InitialAccessToken
     {
         $clone = clone $this;
         $clone->initialAccessTokenId = $initialAccessTokenId;

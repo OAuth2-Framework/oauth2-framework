@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * The MIT License (MIT)
@@ -121,7 +121,7 @@ final class AccessTokenCreatedEvent extends Event
      *
      * @return AccessTokenCreatedEvent
      */
-    public static function create(AccessTokenId $accessTokenId, ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, array $scopes, \DateTimeImmutable $expiresAt, ? RefreshTokenId $refreshTokenId, ? ResourceServerId $resourceServerId) : AccessTokenCreatedEvent
+    public static function create(AccessTokenId $accessTokenId, ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, array $scopes, \DateTimeImmutable $expiresAt, ? RefreshTokenId $refreshTokenId, ? ResourceServerId $resourceServerId): AccessTokenCreatedEvent
     {
         return new self($accessTokenId, $resourceOwnerId, $clientId, $parameters, $metadatas, $scopes, $expiresAt, $refreshTokenId, $resourceServerId, null, null);
     }

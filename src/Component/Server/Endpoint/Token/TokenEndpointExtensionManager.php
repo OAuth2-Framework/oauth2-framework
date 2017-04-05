@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * The MIT License (MIT)
@@ -54,13 +54,13 @@ final class TokenEndpointExtensionManager
     private function callableForNextExtension($index)
     {
         if (!array_key_exists($index, $this->extensions)) {
-            return function(Client $client, ResourceOwnerInterface $resourceOwner, AccessToken $accessToken): array {
+            return function (Client $client, ResourceOwnerInterface $resourceOwner, AccessToken $accessToken): array {
                 return $accessToken->getResponseData();
             };
         }
         $extension = $this->extensions[$index];
 
-        return function(Client $client, ResourceOwnerInterface $resourceOwner, AccessToken $accessToken) use ($extension, $index): array {
+        return function (Client $client, ResourceOwnerInterface $resourceOwner, AccessToken $accessToken) use ($extension, $index): array {
             return $extension->process($client, $resourceOwner, $accessToken, $this->callableForNextExtension($index + 1));
         };
     }

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * The MIT License (MIT)
@@ -96,7 +96,7 @@ final class TokenEndpointAuthMethodManager
      *
      * @return null|ClientId
      */
-    public function findClientInformationInTheRequest(ServerRequestInterface $request, TokenEndpointAuthMethodInterface & $authenticationMethod = null, &$clientCredentials = null)
+    public function findClientInformationInTheRequest(ServerRequestInterface $request, TokenEndpointAuthMethodInterface &$authenticationMethod = null, &$clientCredentials = null)
     {
         $clientId = null;
         $clientCredentials = null;

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * The MIT License (MIT)
@@ -94,7 +94,7 @@ final class CreateAccessTokenWithRefreshTokenCommand extends CommandWithDataTran
      *
      * @return CreateAccessTokenWithRefreshTokenCommand
      */
-    public static function create(ClientId $clientId, ResourceOwnerId $resourceOwnerId, DataBag $parameters, DataBag $metadatas, array $scopes, ? \DateTimeImmutable $expiresAt, ? ResourceServerId $resourceServerId, ? DataTransporter $dataTransporter) : CreateAccessTokenWithRefreshTokenCommand
+    public static function create(ClientId $clientId, ResourceOwnerId $resourceOwnerId, DataBag $parameters, DataBag $metadatas, array $scopes, ? \DateTimeImmutable $expiresAt, ? ResourceServerId $resourceServerId, ? DataTransporter $dataTransporter): CreateAccessTokenWithRefreshTokenCommand
     {
         return new self($clientId, $resourceOwnerId, $parameters, $metadatas, $scopes, $expiresAt, $resourceServerId, $dataTransporter);
     }

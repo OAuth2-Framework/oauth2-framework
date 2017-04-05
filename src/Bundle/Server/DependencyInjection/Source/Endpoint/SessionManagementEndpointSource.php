@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * The MIT License (MIT)
@@ -49,18 +49,18 @@ final class SessionManagementEndpointSource extends ActionableSource
         parent::continueConfiguration($node);
         $node
             ->validate()
-                ->ifTrue(function($config) {
+                ->ifTrue(function ($config) {
                     return true === $config['enabled'] && empty($config['path']);
                 })
                 ->thenInvalid('The route name must be set.')
             ->end()
             ->validate()
-                ->ifTrue(function($config) {
+                ->ifTrue(function ($config) {
                     return true === $config['enabled'] && empty($config['storage_name']);
                 })->thenInvalid('The option "storage_name" must be set.')
             ->end()
             ->validate()
-                ->ifTrue(function($config) {
+                ->ifTrue(function ($config) {
                     return true === $config['enabled'] && empty($config['template']);
                 })->thenInvalid('The option "template" must be set.')
             ->end()

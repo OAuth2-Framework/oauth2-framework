@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * The MIT License (MIT)
@@ -23,7 +23,7 @@ interface InitialAccessTokenRepositoryInterface
      *
      * @return InitialAccessToken
      */
-    public function create(? UserAccountId $userAccountId, ? \DateTimeImmutable $expiresAt) : InitialAccessToken;
+    public function create(? UserAccountId $userAccountId, ? \DateTimeImmutable $expiresAt): InitialAccessToken;
 
     /**
      * @param InitialAccessToken $initialAccessToken

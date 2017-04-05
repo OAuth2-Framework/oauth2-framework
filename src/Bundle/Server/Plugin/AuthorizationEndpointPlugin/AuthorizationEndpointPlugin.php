@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * The MIT License (MIT)
@@ -225,7 +225,7 @@ class AuthorizationEndpointPlugin extends CommonPluginMethod implements BundlePl
             ->children()
                 ->arrayNode('pre_configured_authorization')
                     ->validate()
-                        ->ifTrue(function($value) {
+                        ->ifTrue(function ($value) {
                             if (false === $value['enabled']) {
                                 return false;
                             }
@@ -449,7 +449,7 @@ class AuthorizationEndpointPlugin extends CommonPluginMethod implements BundlePl
      */
     private function areClientAssertionSignatureAlgorithmsInvalid()
     {
-        return function($data) {
+        return function ($data) {
             if (false === $data['enabled']) {
                 return false;
             }
@@ -465,7 +465,7 @@ class AuthorizationEndpointPlugin extends CommonPluginMethod implements BundlePl
      */
     private function isClientAssertionEncryptionParameterInvalid($parameter)
     {
-        return function($data) use ($parameter) {
+        return function ($data) use ($parameter) {
             if (false === $data['encryption']['enabled']) {
                 return false;
             }

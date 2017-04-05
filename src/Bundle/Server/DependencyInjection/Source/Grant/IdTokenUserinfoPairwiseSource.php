@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * The MIT License (MIT)
@@ -44,7 +44,7 @@ final class IdTokenUserinfoPairwiseSource extends ActionableSource
         parent::continueConfiguration($node);
         $node
             ->validate()
-                ->ifTrue(function($config) {
+                ->ifTrue(function ($config) {
                     return true === $config['enabled'] && empty($config['service']);
                 })
                 ->thenInvalid('The pairwise subject service must be set.')

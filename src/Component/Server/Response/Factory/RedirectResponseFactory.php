@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * The MIT License (MIT)
@@ -32,7 +32,7 @@ final class RedirectResponseFactory implements ResponseFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function createResponse(array $data, ResponseInterface & $response): OAuth2ResponseInterface
+    public function createResponse(array $data, ResponseInterface &$response): OAuth2ResponseInterface
     {
         Assertion::keyExists($data, 'response_mode', 'The \'response_mode\' parameter is missing.');
         Assertion::keyExists($data, 'redirect_uri', 'The \'redirect_uri\' parameter is missing.');

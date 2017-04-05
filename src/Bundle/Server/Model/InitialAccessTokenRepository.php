@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * The MIT License (MIT)
@@ -54,7 +54,7 @@ final class InitialAccessTokenRepository implements InitialAccessTokenRepository
     /**
      * {@inheritdoc}
      */
-    public function create(? UserAccountId $userAccountId, ? \DateTimeImmutable $expiresAt) : InitialAccessToken
+    public function create(? UserAccountId $userAccountId, ? \DateTimeImmutable $expiresAt): InitialAccessToken
     {
         $initialAccessTokeId = InitialAccessTokenId::create(Uuid::uuid4()->toString());
         $initialAccessToken = InitialAccessToken::createEmpty();
