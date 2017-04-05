@@ -38,7 +38,7 @@ final class FormFactory
      * @var array|null
      */
     private $validationGroups;
-    
+
     /**
      * @var TranslatorInterface
      */
