@@ -19,7 +19,6 @@ interface ClientRepositoryInterface
      * Save the client.
      *
      * @param Client $client
-     * @return void
      */
     public function save(Client $client);
 

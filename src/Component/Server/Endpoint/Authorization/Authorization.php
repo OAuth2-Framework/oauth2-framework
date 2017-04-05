@@ -313,7 +313,7 @@ final class Authorization
 
     /**
      * @param string $responseHeader
-     * @param string  $value
+     * @param string $value
      *
      * @return Authorization
      */

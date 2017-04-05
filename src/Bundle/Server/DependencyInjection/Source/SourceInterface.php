@@ -22,13 +22,11 @@ interface SourceInterface
      * @param string           $path
      * @param ContainerBuilder $container
      * @param array            $config
-     * @return void
      */
     public function load(string $path, ContainerBuilder $container, array $config);
 
     /**
      * @param NodeDefinition $node
-     * @return void
      */
     public function addConfiguration(NodeDefinition $node);
 
@@ -36,7 +34,6 @@ interface SourceInterface
      * @param array            $bundleConfig
      * @param string           $path
      * @param ContainerBuilder $container
-     * @return void
      */
     public function prepend(array $bundleConfig, string $path, ContainerBuilder $container);
 }

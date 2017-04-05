@@ -39,7 +39,6 @@ interface RefreshTokenRepositoryInterface
 
     /**
      * @param RefreshToken $refreshToken
-     * @return void
      */
     public function save(RefreshToken $refreshToken);
 

@@ -27,7 +27,6 @@ interface InitialAccessTokenRepositoryInterface
 
     /**
      * @param InitialAccessToken $initialAccessToken
-     * @return void
      */
     public function save(InitialAccessToken $initialAccessToken);
 
