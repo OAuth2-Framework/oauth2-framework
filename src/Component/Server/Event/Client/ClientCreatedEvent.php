@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * The MIT License (MIT)
@@ -62,7 +62,7 @@ final class ClientCreatedEvent extends Event
      *
      * @return ClientCreatedEvent
      */
-    public static function create(ClientId $clientId, DataBag $parameters, ? UserAccountId $userAccountId) : ClientCreatedEvent
+    public static function create(ClientId $clientId, DataBag $parameters, ? UserAccountId $userAccountId): ClientCreatedEvent
     {
         return new self($clientId, $parameters, $userAccountId, null, null);
     }

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * The MIT License (MIT)
@@ -56,7 +56,7 @@ final class PreConfiguredAuthorizationRepository implements PreConfiguredAuthori
     /**
      * {@inheritdoc}
      */
-    public function create(UserAccountId $userAccountId, ClientId $clientId, array $scopes, ? ResourceServerId $resourceServerId) : PreConfiguredAuthorization
+    public function create(UserAccountId $userAccountId, ClientId $clientId, array $scopes, ? ResourceServerId $resourceServerId): PreConfiguredAuthorization
     {
         $hash = $this->calculateHash($userAccountId, $clientId, $scopes, $resourceServerId);
         $preConfiguredAuthorization = PreConfiguredAuthorization::createEmpty();
@@ -68,7 +68,7 @@ final class PreConfiguredAuthorizationRepository implements PreConfiguredAuthori
     /**
      * {@inheritdoc}
      */
-    public function find(UserAccountId $userAccountId, ClientId $clientId, array $scopes, ? ResourceServerId $resourceServerId) : ? PreConfiguredAuthorization
+    public function find(UserAccountId $userAccountId, ClientId $clientId, array $scopes, ? ResourceServerId $resourceServerId): ? PreConfiguredAuthorization
     {
         $hash = $this->calculateHash($userAccountId, $clientId, $scopes, $resourceServerId);
         $preConfiguredAuthorization = $this->getFromCache($hash);
@@ -149,7 +149,7 @@ final class PreConfiguredAuthorizationRepository implements PreConfiguredAuthori
      *
      * @return PreConfiguredAuthorizationId
      */
-    private function calculateHash(ResourceOwnerId $resourceOwnerId, ClientId $clientId, array $scope, ? ResourceServerId $resourceServerId) : PreConfiguredAuthorizationId
+    private function calculateHash(ResourceOwnerId $resourceOwnerId, ClientId $clientId, array $scope, ? ResourceServerId $resourceServerId): PreConfiguredAuthorizationId
     {
         return PreConfiguredAuthorizationId::create(hash(
             'sha512',

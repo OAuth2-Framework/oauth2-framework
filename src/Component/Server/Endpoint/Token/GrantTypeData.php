@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * The MIT License (MIT)
@@ -72,7 +72,7 @@ final class GrantTypeData
      *
      * @return GrantTypeData
      */
-    public static function create(? Client $client) : GrantTypeData
+    public static function create(? Client $client): GrantTypeData
     {
         return new self($client);
     }

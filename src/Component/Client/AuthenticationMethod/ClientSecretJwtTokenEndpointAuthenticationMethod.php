@@ -61,7 +61,7 @@ final class ClientSecretJwtTokenEndpointAuthenticationMethod extends AbstractAut
     /**
      * {@inheritdoc}
      */
-    public function prepareRequest(ServerMetadata $server_metadata, OAuth2ClientInterface $client, RequestInterface & $request, array &$post_request)
+    public function prepareRequest(ServerMetadata $server_metadata, OAuth2ClientInterface $client, RequestInterface &$request, array &$post_request)
     {
         Assertion::keyExists($client->getConfiguration(), 'client_secret');
         $this->checkClientTokenEndpointAuthenticationMethod($client);

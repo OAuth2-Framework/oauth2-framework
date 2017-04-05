@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * The MIT License (MIT)
@@ -92,13 +92,13 @@ final class IdTokenSource extends ActionableSource
         parent::continueConfiguration($node);
         $node
             ->validate()
-                ->ifTrue(function($config) {
+                ->ifTrue(function ($config) {
                     return true === $config['enabled'] && empty($config['signature_algorithms']);
                 })
                 ->thenInvalid('The option "signature_algorithm" must contain at least one signature algorithm.')
             ->end()
             ->validate()
-                ->ifTrue(function($config) {
+                ->ifTrue(function ($config) {
                     return true === $config['enabled'] && empty($config['key_set']);
                 })
                 ->thenInvalid('The option "key_set" must be set.')

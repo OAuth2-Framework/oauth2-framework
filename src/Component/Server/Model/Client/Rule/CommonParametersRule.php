@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * The MIT License (MIT)
@@ -22,7 +22,7 @@ final class CommonParametersRule extends AbstractInternationalizedRule
     /**
      * {@inheritdoc}
      */
-    public function handle(DataBag $commandParameters, DataBag $validatedParameters, ? UserAccountId $userAccountId, callable $next) : DataBag
+    public function handle(DataBag $commandParameters, DataBag $validatedParameters, ? UserAccountId $userAccountId, callable $next): DataBag
     {
         foreach ($this->getSupportedParameters() as $parameter => $closure) {
             $id = $this->getInternationalizedParameters($commandParameters, $parameter, $closure);
@@ -38,7 +38,7 @@ final class CommonParametersRule extends AbstractInternationalizedRule
     private function getSupportedParameters(): array
     {
         return [
-            'client_name' => function() {
+            'client_name' => function () {
             },
             'client_uri' => $this->getUriVerificationClosure(),
             'logo_uri' => $this->getUriVerificationClosure(),
@@ -52,7 +52,7 @@ final class CommonParametersRule extends AbstractInternationalizedRule
      */
     private function getUriVerificationClosure(): \Closure
     {
-        return function($k, $v) {
+        return function ($k, $v) {
             Assertion::url($v, sprintf('The parameter with key \'%s\' is not a valid URL.', $k));
         };
     }

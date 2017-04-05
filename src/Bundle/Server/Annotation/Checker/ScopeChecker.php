@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * The MIT License (MIT)
@@ -66,9 +66,9 @@ final class ScopeChecker implements CheckerInterface
     private function getExpressionLanguage()
     {
         $language = new ExpressionLanguage();
-        $language->register('has', function($str) {
+        $language->register('has', function ($str) {
             return sprintf('(in_array(%1$s, scope))', $str);
-        }, function($arguments, $str) {
+        }, function ($arguments, $str) {
             return in_array($str, $arguments['scope']);
         });
 

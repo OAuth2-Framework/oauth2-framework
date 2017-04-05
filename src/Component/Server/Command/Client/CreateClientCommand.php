@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * The MIT License (MIT)
@@ -51,7 +51,7 @@ final class CreateClientCommand extends CommandWithDataTransporter
      *
      * @return CreateClientCommand
      */
-    public static function create(? UserAccountId $userAccountId, DataBag $parameters, ? DataTransporter $dataTransporter) : CreateClientCommand
+    public static function create(? UserAccountId $userAccountId, DataBag $parameters, ? DataTransporter $dataTransporter): CreateClientCommand
     {
         return new self($userAccountId, $parameters, $dataTransporter);
     }

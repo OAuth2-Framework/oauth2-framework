@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * The MIT License (MIT)
@@ -64,13 +64,13 @@ final class ResponseTypeProcessor
     private function callableForNextRule(int $index): \Closure
     {
         if (!isset($this->responseTypes[$index])) {
-            return function(Authorization $authorization) {
+            return function (Authorization $authorization) {
                 return $authorization;
             };
         }
         $responseType = $this->responseTypes[$index];
 
-        return function(Authorization $authorization) use ($responseType, $index): Authorization {
+        return function (Authorization $authorization) use ($responseType, $index): Authorization {
             return $responseType->process($authorization, $this->callableForNextRule($index + 1));
         };
     }

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * The MIT License (MIT)
@@ -89,7 +89,7 @@ final class TokenTypeManager
      *
      * @return string|null
      */
-    public function findToken(ServerRequestInterface $request, array &$additionalCredentialValues, TokenTypeInterface & $type = null)
+    public function findToken(ServerRequestInterface $request, array &$additionalCredentialValues, TokenTypeInterface &$type = null)
     {
         foreach ($this->all() as $tmp_type) {
             $tmpAdditionalCredentialValues = [];
