@@ -117,6 +117,9 @@ final class OAuth2FrameworkServerBundle extends Bundle
             new Compiler\SessionManagementRouteCompilerPass(),
             new Compiler\ClientConfigurationEndpointRouteCompilerPass(),
             new Compiler\ClientRegistrationEndpointRouteCompilerPass(),
+            new Compiler\MetadataRouteCompilerPass(),
+            new Compiler\IdTokenMetadataCompilerPass(),
+            new Compiler\JwksUriEndpointRouteCompilerPass(),
         ];
     }
 }

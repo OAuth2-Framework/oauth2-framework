@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\Server\DependencyInjection\Compiler;
 
 use OAuth2Framework\Bundle\Server\Routing\RouteLoader;
+use OAuth2Framework\Bundle\Server\Service\MetadataBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
@@ -45,47 +46,12 @@ class AuthorizationEndpointRouteCompilerPass implements CompilerPassInterface
             '', // condition
         ]);
 
-        /*$definition = $container->getDefinition('oauth2_server.openid_connect.metadata');
-
-        $definition->addMethodCall('setRoute', ['authorization_endpoint', 'oauth2_server_authorization_endpoint']);
-        $definition->addMethodCall('setAuthorizationFactory', [new Reference('oauth2_server.authorization_factory')]);
-        $definition->addMethodCall('setAuthorizationRequestLoader', [new Reference('oauth2_server.authorization_request_loader')]);
-
-        $this->callFactory($container);*/
-    }
-
-    /**
-     * @param ContainerBuilder $container
-     */
-    private function loadRoute(ContainerBuilder $container)
-    {
-        $path = $container->getParameter('oauth2_server.authorization_endpoint.path');
-        $route_loader = $container->getDefinition('oauth2_server.route_loader');
-        $route_loader->addMethodCall('addRoute', [
-            'authorization_endpoint',
-            'authorization_endpoint_pipe',
-            'authorizationAction',
-            $path, // path
-            [], // defaults
-            [], // requirements
-            [], // options
-            '', // host
-            ['https'], // schemes
-            ['GET', 'POST'], // methods
-            '', // condition
-        ]);
-    }
-
-    /**
-     * @param ContainerBuilder $container
-     */
-    private function callFactory(ContainerBuilder $container)
-    {
-        $factory = $container->getDefinition('authorization_endpoint_pipe');
-
-        $taggedServices = $container->findTaggedServiceIds('oauth2_server_authorization_endpoint_extension');
-        foreach ($taggedServices as $id => $attributes) {
-            $factory->addMethodCall('addExtension', [new Reference($id)]);
+        if (!$container->hasDefinition(MetadataBuilder::class)) {
+            return;
         }
+        $definition = $container->getDefinition(MetadataBuilder::class);
+        $definition->addMethodCall('setRoute', ['authorization_endpoint', 'oauth2_server_authorization_endpoint']);
+        //$definition->addMethodCall('setAuthorizationFactory', [new Reference('oauth2_server.authorization_factory')]); FIXME
+        //$definition->addMethodCall('setAuthorizationRequestLoader', [new Reference('oauth2_server.authorization_request_loader')]); FIXME
     }
 }

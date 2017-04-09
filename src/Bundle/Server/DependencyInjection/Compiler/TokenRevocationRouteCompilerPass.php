@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\Server\DependencyInjection\Compiler;
 
 use OAuth2Framework\Bundle\Server\Routing\RouteLoader;
+use OAuth2Framework\Bundle\Server\Service\MetadataBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -44,11 +45,11 @@ class TokenRevocationRouteCompilerPass implements CompilerPassInterface
             '', // condition
         ]);
 
-        /*if (!$container->hasDefinition('oauth2_server.openid_connect.metadata')) {
+        if (!$container->hasDefinition(MetadataBuilder::class)) {
             return;
         }
 
-        $definition = $container->getDefinition('oauth2_server.openid_connect.metadata');
-        $definition->addMethodCall('setRoute', ['token_revocation_endpoint', 'oauth2_server_token_revocation_endpoint']);*/
+        $definition = $container->getDefinition(MetadataBuilder::class);
+        $definition->addMethodCall('setRoute', ['token_revocation_endpoint', 'oauth2_server_token_revocation_endpoint']);
     }
 }

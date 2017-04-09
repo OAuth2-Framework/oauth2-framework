@@ -173,7 +173,6 @@ final class OIDCContext implements Context
      */
     public function aClientSendARequestToTheMetadataEndpoint()
     {
-        throw new PendingException();
         $this->minkContext->getSession()->getDriver()->getClient()->request(
             'GET',
             'https://oauth2.test/.well-known/openid-configuration',
@@ -181,6 +180,7 @@ final class OIDCContext implements Context
             [],
             []
         );
+        var_dump(substr($this->minkContext->getSession()->getPage()->getContent(), 0, 2500));
     }
 
     /**

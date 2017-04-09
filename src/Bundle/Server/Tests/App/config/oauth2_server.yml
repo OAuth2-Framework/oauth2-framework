@@ -65,7 +65,6 @@ oauth2_server:
                 enabled: true
                 required: true
                 realm: 'Client Registration'
-                class: 'OAuth2Framework\Bundle\Server\Tests\TestBundle\Entity\InitialAccessToken'
                 event_store: 'EventStore.InitialAccessToken'
             software_statement:
                 enabled: true
@@ -88,10 +87,10 @@ oauth2_server:
             path: '/token/get'
         jwks_uri:
             enabled: true
-            route_name: 'jwkset_all_in_one_public_json'
-#        metadata:
-#            enabled: true
-#            path: '/.well-known/openid-configuration'
+            route_name: 'jwkset_all_in_one_public'
+        metadata:
+            enabled: true
+            path: '/.well-known/openid-configuration'
         session_management:
             enabled: true
             path: '/session/manager/iframe'

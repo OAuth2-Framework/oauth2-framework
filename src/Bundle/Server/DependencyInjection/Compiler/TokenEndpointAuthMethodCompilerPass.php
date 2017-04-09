@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Server\DependencyInjection\Compiler;
 
+use OAuth2Framework\Bundle\Server\Service\MetadataBuilder;
 use OAuth2Framework\Component\Server\TokenEndpointAuthMethod\TokenEndpointAuthMethodManager;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -33,12 +34,14 @@ class TokenEndpointAuthMethodCompilerPass implements CompilerPassInterface
 
         $taggedServices = $container->findTaggedServiceIds('oauth2_server_token_endpoint_auth_method');
         foreach ($taggedServices as $id => $attributes) {
-            $definition->addMethodCall('addTokenEndpointAuthMethod', [new Reference($id)]);
+            $definition->addMethodCall('add', [new Reference($id)]);
         }
 
-        /*if ($container->hasDefinition('oauth2_server.openid_connect.metadata')) {
-            $metadata = $container->getDefinition('oauth2_server.openid_connect.metadata');
-            $metadata->addMethodCall('setTokenEndpointAuthMethodManager', [new Reference(TokenEndpointAuthMethodManager::class)]);
-        }*/
+        if (!$container->hasDefinition(MetadataBuilder::class)) {
+            return;
+        }
+
+        $metadata = $container->getDefinition(MetadataBuilder::class);
+        $metadata->addMethodCall('setTokenEndpointAuthMethodManager', [new Reference(TokenEndpointAuthMethodManager::class)]);
     }
 }

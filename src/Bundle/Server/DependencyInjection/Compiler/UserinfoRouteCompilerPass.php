@@ -14,9 +14,9 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\Server\DependencyInjection\Compiler;
 
 use OAuth2Framework\Bundle\Server\Routing\RouteLoader;
+use OAuth2Framework\Bundle\Server\Service\MetadataBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Reference;
 
 class UserinfoRouteCompilerPass implements CompilerPassInterface
 {
@@ -45,12 +45,17 @@ class UserinfoRouteCompilerPass implements CompilerPassInterface
             '', // condition
         ]);
 
-        /*if (!$container->hasDefinition('oauth2_server.openid_connect.metadata')) {
+        if (!$container->hasDefinition(MetadataBuilder::class)) {
             return;
         }
 
-        $definition = $container->getDefinition('oauth2_server.openid_connect.metadata');
-        $definition->addMethodCall('setUserinfoEndpoint', [new Reference('oauth2_server_userinfo_pipe'), new Reference('oauth2_server.openid_connect.userinfo')]);
-        $definition->addMethodCall('setRoute', ['userinfo_endpoint', 'oauth2_server_openid_connect_userinfo_endpoint']);*/
+        $definition = $container->getDefinition(MetadataBuilder::class);
+        $definition->addMethodCall('setRoute', ['userinfo_endpoint', 'oauth2_server_openid_connect_userinfo_endpoint']);
+        $definition->addMethodCall('addKeyValuePair', ['userinfo_signing_alg_values_supported', $container->getParameter('oauth2_server.openid_connect.id_token.signature_algorithms')]);
+        if (true === $container->getParameter('oauth2_server.openid_connect.id_token.encryption.enabled')) {
+            $definition->addMethodCall('addKeyValuePair', ['userinfo_encryption_alg_values_supported', $container->getParameter('oauth2_server.openid_connect.id_token.encryption.key_encryption_algorithms')]);
+            $definition->addMethodCall('addKeyValuePair', ['userinfo_encryption_enc_values_supported', $container->getParameter('oauth2_server.openid_connect.id_token.encryption.content_encryption_algorithms')]);
+        }
+
     }
 }

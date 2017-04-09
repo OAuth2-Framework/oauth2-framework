@@ -14,26 +14,25 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\Server\DependencyInjection\Compiler;
 
 use OAuth2Framework\Bundle\Server\Routing\RouteLoader;
-use OAuth2Framework\Bundle\Server\Service\MetadataBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-class TokenIntrospectionRouteCompilerPass implements CompilerPassInterface
+class MetadataRouteCompilerPass implements CompilerPassInterface
 {
     /**
      * {@inheritdoc}
      */
     public function process(ContainerBuilder $container)
     {
-        if (!$container->hasDefinition('token_introspection_pipe')) {
+        if (!$container->hasDefinition('metadata_endpoint_pipe')) {
             return;
         }
 
-        $path = $container->getParameter('oauth2_server.endpoint.token_introspection.path');
+        $path = $container->getParameter('oauth2_server.endpoint.metadata.path');
         $route_loader = $container->getDefinition(RouteLoader::class);
         $route_loader->addMethodCall('addRoute', [
-            'token_introspection_endpoint',
-            'token_introspection_pipe',
+            'metadata_endpoint',
+            'metadata_endpoint_pipe',
             'dispatch',
             $path, // path
             [], // defaults
@@ -41,15 +40,8 @@ class TokenIntrospectionRouteCompilerPass implements CompilerPassInterface
             [], // options
             '', // host
             ['https'], // schemes
-            ['POST'], // methods
+            ['GET'], // methods
             '', // condition
         ]);
-
-        if (!$container->hasDefinition(MetadataBuilder::class)) {
-            return;
-        }
-
-        $definition = $container->getDefinition(MetadataBuilder::class);
-        $definition->addMethodCall('setRoute', ['token_introspection_endpoint', 'oauth2_server_token_introspection_endpoint']);
     }
 }

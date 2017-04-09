@@ -13,35 +13,24 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Server\DependencyInjection\Compiler;
 
+use OAuth2Framework\Bundle\Server\Routing\RouteLoader;
 use OAuth2Framework\Bundle\Server\Service\MetadataBuilder;
-use OAuth2Framework\Component\Server\ResponseMode\ResponseModeManager;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Reference;
 
-class ResponseModeCompilerPass implements CompilerPassInterface
+class CommonMetadataCompilerPass implements CompilerPassInterface
 {
     /**
      * {@inheritdoc}
      */
     public function process(ContainerBuilder $container)
     {
-        if (!$container->hasDefinition(ResponseModeManager::class)) {
-            return;
-        }
-
-        $definition = $container->getDefinition(ResponseModeManager::class);
-
-        $taggedServices = $container->findTaggedServiceIds('oauth2_server_response_mode');
-        foreach ($taggedServices as $id => $attributes) {
-            $definition->addMethodCall('add', [new Reference($id)]);
-        }
-
         if (!$container->hasDefinition(MetadataBuilder::class)) {
             return;
         }
 
         $metadata = $container->getDefinition(MetadataBuilder::class);
-        $metadata->addMethodCall('setResponseModeManager', [new Reference(ResponseModeManager::class)]);
+        $issuer = $container->getParameter('oauth2_server.issuer');
+        $metadata->addMethodCall('addKeyValuePair', ['issuer', $issuer]);
     }
 }

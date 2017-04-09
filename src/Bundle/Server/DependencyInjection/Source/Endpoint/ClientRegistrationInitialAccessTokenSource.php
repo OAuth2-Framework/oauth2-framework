@@ -26,7 +26,7 @@ final class ClientRegistrationInitialAccessTokenSource extends ActionableSource
      */
     protected function continueLoading(string $path, ContainerBuilder $container, array $config)
     {
-        foreach (['required', 'realm', 'class', 'authorization_header', 'query_string', 'request_body', 'min_length', 'max_length'] as $k) {
+        foreach (['required', 'realm', 'authorization_header', 'query_string', 'request_body', 'min_length', 'max_length'] as $k) {
             $container->setParameter($path.'.'.$k, $config[$k]);
         }
         $container->setAlias($path.'.event_store', $config['event_store']);
@@ -58,12 +58,6 @@ final class ClientRegistrationInitialAccessTokenSource extends ActionableSource
             ->end()
             ->validate()
                 ->ifTrue(function ($config) {
-                    return true === $config['enabled'] && empty($config['class']);
-                })
-                ->thenInvalid('The option "class" must be set.')
-            ->end()
-            ->validate()
-                ->ifTrue(function ($config) {
                     return true === $config['enabled'] && empty($config['event_store']);
                 })
                 ->thenInvalid('The option "event_store" must be set.')
@@ -77,7 +71,6 @@ final class ClientRegistrationInitialAccessTokenSource extends ActionableSource
             ->children()
                 ->booleanNode('required')->defaultFalse()->end()
                 ->scalarNode('realm')->defaultNull()->end()
-                ->scalarNode('class')->defaultNull()->end()
                 ->booleanNode('authorization_header')->defaultTrue()->end()
                 ->booleanNode('query_string')->defaultFalse()->end()
                 ->booleanNode('request_body')->defaultFalse()->end()

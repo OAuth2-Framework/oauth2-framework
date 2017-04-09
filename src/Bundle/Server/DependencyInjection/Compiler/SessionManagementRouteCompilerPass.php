@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\Server\DependencyInjection\Compiler;
 
 use OAuth2Framework\Bundle\Server\Routing\RouteLoader;
+use OAuth2Framework\Bundle\Server\Service\MetadataBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -44,10 +45,10 @@ class SessionManagementRouteCompilerPass implements CompilerPassInterface
             '', // condition
         ]);
 
-        /*if (!$container->hasDefinition('oauth2_server.openid_connect.metadata')) {
+        if (!$container->hasDefinition(MetadataBuilder::class)) {
             return;
         }
-        $medata = $container->getDefinition('oauth2_server.openid_connect.metadata');
-        $medata->addMethodCall('setRoute', ['check_session_iframe', 'oauth2_server_openid_connect_iframe_endpoint']);*/
+        $medata = $container->getDefinition(MetadataBuilder::class);
+        $medata->addMethodCall('setRoute', ['check_session_iframe', 'oauth2_server_openid_connect_iframe_endpoint']);
     }
 }

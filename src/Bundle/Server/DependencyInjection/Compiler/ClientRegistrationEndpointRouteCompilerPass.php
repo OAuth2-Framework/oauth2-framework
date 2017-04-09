@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\Server\DependencyInjection\Compiler;
 
 use OAuth2Framework\Bundle\Server\Routing\RouteLoader;
+use OAuth2Framework\Bundle\Server\Service\MetadataBuilder;
 use OAuth2Framework\Component\Server\Endpoint\ClientRegistration\ClientRegistrationEndpoint;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -44,5 +45,11 @@ final class ClientRegistrationEndpointRouteCompilerPass implements CompilerPassI
             ['POST'], // methods
             '', // condition
         ]);
+
+        if (!$container->hasDefinition(MetadataBuilder::class)) {
+            return;
+        }
+        $definition = $container->getDefinition(MetadataBuilder::class);
+        $definition->addMethodCall('setRoute', ['registration_endpoint', 'oauth2_server_client_registration']);
     }
 }
