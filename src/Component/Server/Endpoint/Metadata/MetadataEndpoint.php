@@ -62,7 +62,7 @@ final class MetadataEndpoint implements MiddlewareInterface
     }
 
     /**
-     * @param SignerInterface      $signer
+     * @param SignerInterface $signer
      * @param JWKSetInterface $signatureKeySet
      * @param string          $signatureAlgorithm
      */
