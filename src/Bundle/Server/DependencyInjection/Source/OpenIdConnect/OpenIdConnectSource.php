@@ -71,7 +71,6 @@ final class OpenIdConnectSource extends ActionableSource
         }
     }
 
-
     /**
      * {@inheritdoc}
      */

@@ -52,7 +52,6 @@ final class UserinfoEndpointAlgorithmsRule implements RuleInterface
             Assertion::string($commandParameters['userinfo_signed_response_alg'], 'Invalid parameter \'userinfo_signed_response_alg\'. The value must be a string.');
             Assertion::inArray($commandParameters['userinfo_signed_response_alg'], $this->signer->getSupportedSignatureAlgorithms(), sprintf('The ID Token signature response algorithm \'%s\' is not supported. Please choose one of the following algorithm: %s', $commandParameters->get('userinfo_signed_response_alg'), implode(', ', $this->signer->getSupportedSignatureAlgorithms())));
             $validatedParameters = $validatedParameters->with('userinfo_signed_response_alg', $commandParameters['userinfo_signed_response_alg']);
-
         }
 
         if ($commandParameters->has('userinfo_encrypted_response_alg') && $commandParameters->has('userinfo_encrypted_response_enc') && null !== $this->encrypter) {

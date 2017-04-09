@@ -51,6 +51,7 @@ final class OpenIdConnectExtension implements TokenEndpointExtensionInterface
 
     /**
      * OpenIdConnectExtension constructor.
+     *
      * @param IdTokenBuilderFactory   $idTokenBuilderFactory
      * @param string                  $defaultSignatureAlgorithm
      * @param SignerInterface         $signer

@@ -38,7 +38,6 @@ use Jose\Object\JWKSets;
 use Jose\Object\StorableJWKSet;
 use Jose\Signer;
 use Jose\Verifier;
-use OAuth2Framework\Bundle\Server\DependencyInjection\Source\Scope\ScopePolicyErrorSource;
 use OAuth2Framework\Component\Server\Command\AccessToken\CreateAccessTokenCommand;
 use OAuth2Framework\Component\Server\Command\AccessToken\CreateAccessTokenCommandHandler;
 use OAuth2Framework\Component\Server\Command\AccessToken\CreateAccessTokenWithRefreshTokenCommand;
@@ -251,7 +250,6 @@ use SimpleBus\Message\Recorder\HandlesRecordedMessagesMiddleware;
 use SimpleBus\Message\Recorder\PublicMessageRecorder;
 use SimpleBus\Message\Subscriber\NotifiesMessageSubscribersMiddleware;
 use SimpleBus\Message\Subscriber\Resolver\NameBasedMessageSubscriberResolver;
-use function Sodium\add;
 
 final class Application
 {

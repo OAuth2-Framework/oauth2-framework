@@ -136,11 +136,11 @@ final class PreConfiguredAuthorizationRepository implements PreConfiguredAuthori
      */
     private function cacheObject(PreConfiguredAuthorization $preConfiguredAuthorization)
     {
-            $itemKey = sprintf('oauth2-pre_configured_authorization-%s', $preConfiguredAuthorization->getPreConfiguredAuthorizationId()->getValue());
-            $item = $this->cache->getItem($itemKey);
-            $item->set($preConfiguredAuthorization);
-            $item->tag(['oauth2_server', 'pre_configured_authorization', $itemKey]);
-            $this->cache->save($item);
+        $itemKey = sprintf('oauth2-pre_configured_authorization-%s', $preConfiguredAuthorization->getPreConfiguredAuthorizationId()->getValue());
+        $item = $this->cache->getItem($itemKey);
+        $item->set($preConfiguredAuthorization);
+        $item->tag(['oauth2_server', 'pre_configured_authorization', $itemKey]);
+        $this->cache->save($item);
     }
 
     /**
