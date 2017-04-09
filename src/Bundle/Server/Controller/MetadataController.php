@@ -31,6 +31,7 @@ class MetadataController implements MiddlewareInterface
 
     /**
      * MetadataController constructor.
+     *
      * @param ResponseFactoryInterface $responseFactory
      * @param MetadataBuilder          $metadataBuilder
      */
