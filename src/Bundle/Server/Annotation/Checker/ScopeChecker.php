@@ -16,7 +16,6 @@ namespace OAuth2Framework\Bundle\Server\Annotation\Checker;
 use OAuth2Framework\Bundle\Server\Annotation\OAuth2;
 use OAuth2Framework\Bundle\Server\Security\Authentication\Token\OAuth2Token;
 use OAuth2Framework\Component\Server\Model\Scope\ScopeRepositoryInterface;
-use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
 final class ScopeChecker implements CheckerInterface
 {

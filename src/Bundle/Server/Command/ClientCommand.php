@@ -50,7 +50,6 @@ EOT
         $service = $this->getContainer()->get(ClientRepository::class);
         $client = Client::createEmpty();
         $client = $client->create(
-
         );
 
         $this->selectResponseTypes($input, $output, $client);

@@ -52,7 +52,6 @@ final class IdTokenAlgorithmsRule implements RuleInterface
             Assertion::string($commandParameters['id_token_signed_response_alg'], 'Invalid parameter \'id_token_signed_response_alg\'. The value must be a string.');
             Assertion::inArray($commandParameters['id_token_signed_response_alg'], $this->signer->getSupportedSignatureAlgorithms(), sprintf('The ID Token signature response algorithm \'%s\' is not supported. Please choose one of the following algorithm: %s', $commandParameters->get('id_token_signed_response_alg'), implode(', ', $this->signer->getSupportedSignatureAlgorithms())));
             $validatedParameters = $validatedParameters->with('id_token_signed_response_alg', $commandParameters['id_token_signed_response_alg']);
-
         }
 
         if ($commandParameters->has('id_token_encrypted_response_alg') && $commandParameters->has('id_token_encrypted_response_enc') && null !== $this->encrypter) {

@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\Model\IdToken;
 
-use Jose\Object\JWKSetInterface;
 use OAuth2Framework\Component\Server\Endpoint\UserInfo\UserInfo;
 use OAuth2Framework\Component\Server\Model\Client\Client;
 use OAuth2Framework\Component\Server\Model\UserAccount\UserAccountInterface;

@@ -12,7 +12,6 @@ declare(strict_types=1);
  */
 
 use OAuth2Framework\Component\Server\Command\AccessToken;
-use OAuth2Framework\Component\Server\Model\AccessToken\AccessTokenRepositoryInterface;
 use OAuth2Framework\Component\Server\Model\RefreshToken\RefreshTokenRepositoryInterface;
 use OAuth2Framework\Component\Server\TokenTypeHint\AccessTokenTypeHint;
 use function Fluent\create;
