@@ -16,7 +16,6 @@ namespace OAuth2Framework\Bundle\Server\Annotation\Checker;
 use OAuth2Framework\Bundle\Server\Annotation\OAuth2;
 use OAuth2Framework\Bundle\Server\Security\Authentication\Token\OAuth2Token;
 use OAuth2Framework\Component\Server\Model\Scope\ScopeRepositoryInterface;
-use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
 final class ScopeChecker implements CheckerInterface
 {
@@ -38,40 +37,20 @@ final class ScopeChecker implements CheckerInterface
     /**
      * {@inheritdoc}
      */
-    public function check(OAuth2Token $token, OAuth2 $configuration)
+    public function check(OAuth2Token $token, OAuth2 $configuration): ?string
     {
-        if (null === $configuration->getScope()) {
+        $scope = $configuration->getScope();
+        if (null === $scope) {
             return null;
         }
 
-        $language = $this->getExpressionLanguage();
-        $result = $language->evaluate(
-            $configuration->getScope(),
-            [
-                'scope' => $token->getAccessToken()->getScope(),
-            ]
-        );
+        $scopes = explode(' ', $scope);
+        $diff = array_diff($scopes, $token->getAccessToken()->getScopes());
 
-        // If the scope of the access token does not fulfill the scope rule, then returns an authentication error
-        if (false === $result) {
+        if (!empty($diff)) {
             return sprintf('Insufficient scope. The scope rule is: %s', $configuration->getScope());
         }
 
         return  null;
-    }
-
-    /**
-     * @return \Symfony\Component\ExpressionLanguage\ExpressionLanguage
-     */
-    private function getExpressionLanguage()
-    {
-        $language = new ExpressionLanguage();
-        $language->register('has', function ($str) {
-            return sprintf('(in_array(%1$s, scope))', $str);
-        }, function ($arguments, $str) {
-            return in_array($str, $arguments['scope']);
-        });
-
-        return $language;
     }
 }

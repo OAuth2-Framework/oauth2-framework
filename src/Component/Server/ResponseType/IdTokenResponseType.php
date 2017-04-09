@@ -14,6 +14,9 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\Server\ResponseType;
 
 use Assert\Assertion;
+use Jose\EncrypterInterface;
+use Jose\Object\JWKSetInterface;
+use Jose\SignerInterface;
 use OAuth2Framework\Component\Server\Endpoint\Authorization\Authorization;
 use OAuth2Framework\Component\Server\Model\AccessToken\AccessTokenId;
 use OAuth2Framework\Component\Server\Model\AuthCode\AuthCodeId;
@@ -23,6 +26,21 @@ use OAuth2Framework\Component\Server\Response\OAuth2ResponseFactoryManager;
 
 final class IdTokenResponseType implements ResponseTypeInterface
 {
+    /**
+     * @var JWKSetInterface
+     */
+    private $signatureKeys;
+
+    /**
+     * @var SignerInterface
+     */
+    private $signer;
+
+    /**
+     * @var EncrypterInterface|null
+     */
+    private $encrypter;
+
     /**
      * @var IdTokenBuilderFactory
      */
@@ -36,14 +54,20 @@ final class IdTokenResponseType implements ResponseTypeInterface
     /**
      * IdTokenResponseType constructor.
      *
-     * @param IdTokenBuilderFactory $idTokenBuilderFactory
-     * @param string                $defaultSignatureAlgorithm
+     * @param IdTokenBuilderFactory   $idTokenBuilderFactory
+     * @param string                  $defaultSignatureAlgorithm
+     * @param SignerInterface         $signer
+     * @param JWKSetInterface         $signatureKeys
+     * @param EncrypterInterface|null $encrypter
      */
-    public function __construct(IdTokenBuilderFactory $idTokenBuilderFactory, string $defaultSignatureAlgorithm)
+    public function __construct(IdTokenBuilderFactory $idTokenBuilderFactory, string $defaultSignatureAlgorithm, SignerInterface $signer, JWKSetInterface $signatureKeys, ?EncrypterInterface $encrypter)
     {
         Assertion::notEq($defaultSignatureAlgorithm, 'none', 'The algorithm \'none\' is not allowed for ID Tokens issued through the authorization endpoint.');
         $this->idTokenBuilderFactory = $idTokenBuilderFactory;
         $this->defaultSignatureAlgorithm = $defaultSignatureAlgorithm;
+        $this->signer = $signer;
+        $this->signatureKeys = $signatureKeys;
+        $this->encrypter = $encrypter;
     }
 
     /**
@@ -134,14 +158,14 @@ final class IdTokenResponseType implements ResponseTypeInterface
             if ('none' === $signatureAlgorithm) {
                 throw new OAuth2Exception(400, ['error' => OAuth2ResponseFactoryManager::ERROR_INVALID_CLIENT, 'error_description' => 'The ID Token signature algorithm set for the client (parameter \'id_token_signed_response_alg\') is \'none\' but this algorithm is not allowed for ID Tokens issued through the authorization endpoint.']);
             }
-            $idTokenBuilder = $idTokenBuilder->withSignatureAlgorithm($signatureAlgorithm);
+            $idTokenBuilder = $idTokenBuilder->withSignature($this->signer, $this->signatureKeys, $signatureAlgorithm);
         } else {
-            $idTokenBuilder = $idTokenBuilder->withSignatureAlgorithm($this->defaultSignatureAlgorithm);
+            $idTokenBuilder = $idTokenBuilder->withSignature($this->signer, $this->signatureKeys, $this->defaultSignatureAlgorithm);
         }
-        if ($authorization->getClient()->has('id_token_encrypted_response_alg') && $authorization->getClient()->has('id_token_encrypted_response_enc')) {
+        if ($authorization->getClient()->has('id_token_encrypted_response_alg') && $authorization->getClient()->has('id_token_encrypted_response_enc') && null !== $this->encrypter) {
             $keyEncryptionAlgorithm = $authorization->getClient()->get('id_token_encrypted_response_alg');
             $contentEncryptionAlgorithm = $authorization->getClient()->get('id_token_encrypted_response_enc');
-            $idTokenBuilder = $idTokenBuilder->withEncryptionAlgorithms($keyEncryptionAlgorithm, $contentEncryptionAlgorithm);
+            $idTokenBuilder = $idTokenBuilder->withEncryption($this->encrypter, $keyEncryptionAlgorithm, $contentEncryptionAlgorithm);
         }
 
         $idToken = $idTokenBuilder->build();

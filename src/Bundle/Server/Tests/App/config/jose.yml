@@ -1,0 +1,64 @@
+jose:
+    key_sets:
+        signature_none:
+            auto:
+                storage_path: '%kernel.cache_dir%/signature_none.keyset'
+                is_rotatable: false
+                nb_keys: 1
+                key_configuration:
+                    kty: 'none'
+                    alg: 'none'
+                    use: 'sig'
+        signature_rsa:
+            auto:
+                storage_path: '%kernel.cache_dir%/signature_rsa.keyset'
+                is_rotatable: true
+                nb_keys: 2
+                key_configuration:
+                    kty: 'RSA'
+                    size: 4096
+                    alg: 'RS256'
+                    use: 'sig'
+        signature_ec:
+            auto:
+                storage_path: '%kernel.cache_dir%/signature_ec.keyset'
+                is_rotatable: true
+                nb_keys: 2
+                key_configuration:
+                    kty: 'EC'
+                    crv: 'P-256'
+                    alg: 'ES256'
+                    use: 'sig'
+        signature_none:
+            auto:
+                storage_path: '%kernel.cache_dir%/signature_ec.keyset'
+                is_rotatable: false
+                nb_keys: 1
+                key_configuration:
+                    kty: 'none'
+                    use: 'sig'
+        signature:
+            jwksets:
+                id:
+                    - 'jose.key_set.signature_rsa'
+                    - 'jose.key_set.signature_ec'
+                    - 'jose.key_set.signature_none'
+        encryption:
+            auto:
+                storage_path: '%kernel.cache_dir%/encryption.keyset'
+                is_rotatable: true
+                nb_keys: 2
+                key_configuration:
+                    kty: 'RSA'
+                    size: 4096
+                    alg: 'RSA-OAEP-256'
+                    use: 'enc'
+        all_in_one:
+            jwksets:
+                id:
+                    - 'jose.key_set.signature'
+                    - 'jose.key_set.encryption'
+        all_in_one_public:
+            public_jwkset:
+                id: 'jose.key_set.all_in_one'
+                path: '/public.jwkset'

@@ -34,7 +34,7 @@ final class ClientRepository implements ClientRepositoryInterface
     private $eventRecorder;
 
     /**
-     * @var AdapterInterface|null
+     * @var AdapterInterface
      */
     private $cache;
 
@@ -43,11 +43,13 @@ final class ClientRepository implements ClientRepositoryInterface
      *
      * @param EventStoreInterface $eventStore
      * @param RecordsMessages     $eventRecorder
+     * @param AdapterInterface    $cache
      */
-    public function __construct(EventStoreInterface $eventStore, RecordsMessages $eventRecorder)
+    public function __construct(EventStoreInterface $eventStore, RecordsMessages $eventRecorder, AdapterInterface $cache)
     {
         $this->eventStore = $eventStore;
         $this->eventRecorder = $eventRecorder;
+        $this->cache = $cache;
     }
 
     /**
@@ -82,14 +84,6 @@ final class ClientRepository implements ClientRepositoryInterface
     }
 
     /**
-     * @param AdapterInterface $cache
-     */
-    public function enableDomainObjectCaching(AdapterInterface $cache)
-    {
-        $this->cache = $cache;
-    }
-
-    /**
      * @param Event[] $events
      *
      * @return Client
@@ -111,12 +105,10 @@ final class ClientRepository implements ClientRepositoryInterface
      */
     private function getFromCache(ClientId $clientId): ? Client
     {
-        if (null !== $this->cache) {
-            $itemKey = sprintf('oauth2-client-%s', $clientId->getValue());
-            $item = $this->cache->getItem($itemKey);
-            if ($item->isHit()) {
-                return $item->get();
-            }
+        $itemKey = sprintf('oauth2-client-%s', $clientId->getValue());
+        $item = $this->cache->getItem($itemKey);
+        if ($item->isHit()) {
+            return $item->get();
         }
 
         return null;
@@ -127,12 +119,10 @@ final class ClientRepository implements ClientRepositoryInterface
      */
     private function cacheObject(Client $client)
     {
-        if (null !== $this->cache) {
-            $itemKey = sprintf('oauth2-client-%s', $client->getPublicId()->getValue());
-            $item = $this->cache->getItem($itemKey);
-            $item->set($client);
-            $item->tag(['oauth2_server', 'client', $itemKey]);
-            $this->cache->save($item);
-        }
+        $itemKey = sprintf('oauth2-client-%s', $client->getPublicId()->getValue());
+        $item = $this->cache->getItem($itemKey);
+        $item->set($client);
+        $item->tag(['oauth2_server', 'client', $itemKey]);
+        $this->cache->save($item);
     }
 }

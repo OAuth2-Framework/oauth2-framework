@@ -47,11 +47,13 @@ final class PreConfiguredAuthorizationRepository implements PreConfiguredAuthori
      *
      * @param EventStoreInterface $eventStore
      * @param RecordsMessages     $eventRecorder
+     * @param AdapterInterface    $cache
      */
-    public function __construct(EventStoreInterface $eventStore, RecordsMessages $eventRecorder)
+    public function __construct(EventStoreInterface $eventStore, RecordsMessages $eventRecorder, AdapterInterface $cache)
     {
         $this->eventStore = $eventStore;
         $this->eventRecorder = $eventRecorder;
+        $this->cache = $cache;
     }
 
     /**
@@ -99,26 +101,16 @@ final class PreConfiguredAuthorizationRepository implements PreConfiguredAuthori
     }
 
     /**
-     * @param AdapterInterface $cache
-     */
-    public function enableDomainObjectCaching(AdapterInterface $cache)
-    {
-        $this->cache = $cache;
-    }
-
-    /**
      * @param PreConfiguredAuthorizationId $preConfiguredAuthorizationId
      *
      * @return PreConfiguredAuthorization|null
      */
     private function getFromCache(PreConfiguredAuthorizationId $preConfiguredAuthorizationId): ? PreConfiguredAuthorization
     {
-        if (null !== $this->cache) {
-            $itemKey = sprintf('oauth2-pre_configured_authorization-%s', $preConfiguredAuthorizationId->getValue());
-            $item = $this->cache->getItem($itemKey);
-            if ($item->isHit()) {
-                return $item->get();
-            }
+        $itemKey = sprintf('oauth2-pre_configured_authorization-%s', $preConfiguredAuthorizationId->getValue());
+        $item = $this->cache->getItem($itemKey);
+        if ($item->isHit()) {
+            return $item->get();
         }
 
         return null;
@@ -144,13 +136,11 @@ final class PreConfiguredAuthorizationRepository implements PreConfiguredAuthori
      */
     private function cacheObject(PreConfiguredAuthorization $preConfiguredAuthorization)
     {
-        if (null !== $this->cache) {
-            $itemKey = sprintf('oauth2-pre_configured_authorization-%s', $preConfiguredAuthorization->getPreConfiguredAuthorizationId()->getValue());
-            $item = $this->cache->getItem($itemKey);
-            $item->set($preConfiguredAuthorization);
-            $item->tag(['oauth2_server', 'pre_configured_authorization', $itemKey]);
-            $this->cache->save($item);
-        }
+        $itemKey = sprintf('oauth2-pre_configured_authorization-%s', $preConfiguredAuthorization->getPreConfiguredAuthorizationId()->getValue());
+        $item = $this->cache->getItem($itemKey);
+        $item->set($preConfiguredAuthorization);
+        $item->tag(['oauth2_server', 'pre_configured_authorization', $itemKey]);
+        $this->cache->save($item);
     }
 
     /**

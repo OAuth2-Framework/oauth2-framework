@@ -46,7 +46,7 @@ final class InitialAccessTokenRepository implements InitialAccessTokenRepository
     private $eventRecorder;
 
     /**
-     * @var AdapterInterface|null
+     * @var AdapterInterface
      */
     private $cache;
 
@@ -57,13 +57,15 @@ final class InitialAccessTokenRepository implements InitialAccessTokenRepository
      * @param int                 $maxLength
      * @param EventStoreInterface $eventStore
      * @param RecordsMessages     $eventRecorder
+     * @param AdapterInterface    $cache
      */
-    public function __construct(int $minLength, int $maxLength, EventStoreInterface $eventStore, RecordsMessages $eventRecorder)
+    public function __construct(int $minLength, int $maxLength, EventStoreInterface $eventStore, RecordsMessages $eventRecorder, AdapterInterface $cache)
     {
         $this->minLength = $minLength;
         $this->maxLength = $maxLength;
         $this->eventStore = $eventStore;
         $this->eventRecorder = $eventRecorder;
+        $this->cache = $cache;
     }
 
     /**
@@ -110,14 +112,6 @@ final class InitialAccessTokenRepository implements InitialAccessTokenRepository
     }
 
     /**
-     * @param AdapterInterface $cache
-     */
-    public function enableDomainObjectCaching(AdapterInterface $cache)
-    {
-        $this->cache = $cache;
-    }
-
-    /**
      * @param Event[] $events
      *
      * @return InitialAccessToken
@@ -139,12 +133,10 @@ final class InitialAccessTokenRepository implements InitialAccessTokenRepository
      */
     private function getFromCache(InitialAccessTokenId $initialAccessTokenId): ? InitialAccessToken
     {
-        if (null !== $this->cache) {
-            $itemKey = sprintf('oauth2-initial_access_token-%s', $initialAccessTokenId->getValue());
-            $item = $this->cache->getItem($itemKey);
-            if ($item->isHit()) {
-                return $item->get();
-            }
+        $itemKey = sprintf('oauth2-initial_access_token-%s', $initialAccessTokenId->getValue());
+        $item = $this->cache->getItem($itemKey);
+        if ($item->isHit()) {
+            return $item->get();
         }
 
         return null;
@@ -155,12 +147,10 @@ final class InitialAccessTokenRepository implements InitialAccessTokenRepository
      */
     private function cacheObject(InitialAccessToken $initialAccessToken)
     {
-        if (null !== $this->cache) {
-            $itemKey = sprintf('oauth2-initial_access_token-%s', $initialAccessToken->getUserAccountId()->getValue());
-            $item = $this->cache->getItem($itemKey);
-            $item->set($initialAccessToken);
-            $item->tag(['oauth2_server', 'initial_access_token', $itemKey]);
-            $this->cache->save($item);
-        }
+        $itemKey = sprintf('oauth2-initial_access_token-%s', $initialAccessToken->getUserAccountId()->getValue());
+        $item = $this->cache->getItem($itemKey);
+        $item->set($initialAccessToken);
+        $item->tag(['oauth2_server', 'initial_access_token', $itemKey]);
+        $this->cache->save($item);
     }
 }

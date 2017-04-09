@@ -13,6 +13,9 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\Endpoint\Token\Extension;
 
+use Jose\EncrypterInterface;
+use Jose\Object\JWKSetInterface;
+use Jose\SignerInterface;
 use OAuth2Framework\Component\Server\Model\AccessToken\AccessToken;
 use OAuth2Framework\Component\Server\Model\Client\Client;
 use OAuth2Framework\Component\Server\Model\IdToken\IdTokenBuilderFactory;
@@ -21,6 +24,21 @@ use OAuth2Framework\Component\Server\Model\UserAccount\UserAccountInterface;
 
 final class OpenIdConnectExtension implements TokenEndpointExtensionInterface
 {
+    /**
+     * @var JWKSetInterface
+     */
+    private $signatureKeys;
+
+    /**
+     * @var SignerInterface
+     */
+    private $signer;
+
+    /**
+     * @var EncrypterInterface|null
+     */
+    private $encrypter;
+
     /**
      * @var IdTokenBuilderFactory
      */
@@ -34,13 +52,19 @@ final class OpenIdConnectExtension implements TokenEndpointExtensionInterface
     /**
      * OpenIdConnectExtension constructor.
      *
-     * @param IdTokenBuilderFactory $idTokenBuilderFactory
-     * @param string                $defaultSignatureAlgorithm
+     * @param IdTokenBuilderFactory   $idTokenBuilderFactory
+     * @param string                  $defaultSignatureAlgorithm
+     * @param SignerInterface         $signer
+     * @param JWKSetInterface         $signatureKeys
+     * @param EncrypterInterface|null $encrypter
      */
-    public function __construct(IdTokenBuilderFactory $idTokenBuilderFactory, string $defaultSignatureAlgorithm)
+    public function __construct(IdTokenBuilderFactory $idTokenBuilderFactory, string $defaultSignatureAlgorithm, SignerInterface $signer, JWKSetInterface $signatureKeys, ?EncrypterInterface $encrypter)
     {
         $this->idTokenBuilderFactory = $idTokenBuilderFactory;
         $this->defaultSignatureAlgorithm = $defaultSignatureAlgorithm;
+        $this->signer = $signer;
+        $this->signatureKeys = $signatureKeys;
+        $this->encrypter = $encrypter;
     }
 
     public function process(Client $client, ResourceOwnerInterface $resourceOwner, AccessToken $accessToken, callable $next): array
@@ -75,14 +99,14 @@ final class OpenIdConnectExtension implements TokenEndpointExtensionInterface
 
         if ($client->has('id_token_signed_response_alg')) {
             $signatureAlgorithm = $client->get('id_token_signed_response_alg');
-            $idTokenBuilder = $idTokenBuilder->withSignatureAlgorithm($signatureAlgorithm);
+            $idTokenBuilder = $idTokenBuilder->withSignature($this->signer, $this->signatureKeys, $signatureAlgorithm);
         } else {
-            $idTokenBuilder = $idTokenBuilder->withSignatureAlgorithm($this->defaultSignatureAlgorithm);
+            $idTokenBuilder = $idTokenBuilder->withSignature($this->signer, $this->signatureKeys, $this->defaultSignatureAlgorithm);
         }
-        if ($client->has('id_token_encrypted_response_alg') && $client->has('id_token_encrypted_response_enc')) {
+        if ($client->has('id_token_encrypted_response_alg') && $client->has('id_token_encrypted_response_enc') && null !== $this->encrypter) {
             $keyEncryptionAlgorithm = $client->get('id_token_encrypted_response_alg');
             $contentEncryptionAlgorithm = $client->get('id_token_encrypted_response_enc');
-            $idTokenBuilder = $idTokenBuilder->withEncryptionAlgorithms($keyEncryptionAlgorithm, $contentEncryptionAlgorithm);
+            $idTokenBuilder = $idTokenBuilder->withEncryption($this->encrypter, $keyEncryptionAlgorithm, $contentEncryptionAlgorithm);
         }
         $idTokenBuilder = $idTokenBuilder->withAccessToken($accessToken);
 

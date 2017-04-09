@@ -30,7 +30,6 @@ use OAuth2Framework\Bundle\Server\Model\InitialAccessTokenRepository;
 use OAuth2Framework\Bundle\Server\Model\PreConfiguredAuthorizationRepository;
 use OAuth2Framework\Component\Server\Model\AccessToken\AccessToken;
 use OAuth2Framework\Component\Server\Model\AccessToken\AccessTokenId;
-use OAuth2Framework\Component\Server\Model\AccessToken\AccessTokenRepositoryInterface;
 use OAuth2Framework\Component\Server\Model\AuthCode\AuthCode;
 use OAuth2Framework\Component\Server\Model\AuthCode\AuthCodeId;
 use OAuth2Framework\Component\Server\Model\Client\Client;
@@ -228,7 +227,7 @@ final class FixturesContext implements Context
 
     private function loadAccessTokens()
     {
-        $manager = $this->getContainer()->get(AccessTokenRepositoryInterface::class);
+        $manager = $this->getContainer()->get('oauth2_server.access_token.repository');
 
         foreach ($this->getAccessTokens() as $accessTokenInformation) {
             $accessToken = AccessToken::createEmpty();

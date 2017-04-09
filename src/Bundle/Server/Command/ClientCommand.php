@@ -21,7 +21,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\Question;
 
-class ClientCommand extends ContainerAwareCommand
+final class ClientCommand extends ContainerAwareCommand
 {
     /**
      * {@inheritdoc}
@@ -44,11 +44,13 @@ EOT
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        /*
+        /**
          * @var ClientRepository
          */
-        $service = $this->getContainer()->get('oauth2_server.client_manager');
-        $client = $service->createClient();
+        $service = $this->getContainer()->get(ClientRepository::class);
+        $client = Client::createEmpty();
+        $client = $client->create(
+        );
 
         $this->selectResponseTypes($input, $output, $client);
         $this->selectGrantTypes($input, $output, $client);
@@ -58,7 +60,7 @@ EOT
         $service->saveClient($client);
 
         $output->writeln('A client has been created');
-        $output->writeln(sprintf('Its public ID is "%s"', $client->getPublicId()));
+        $output->writeln(sprintf('Its configuration is "%s"', json_encode($client)));
     }
 
     /**

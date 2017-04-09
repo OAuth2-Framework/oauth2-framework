@@ -11,10 +11,10 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Bundle\Server\DependencyInjection\Source\Grant;
+namespace OAuth2Framework\Bundle\Server\DependencyInjection\Source\OpenIdConnect;
 
 use Fluent\PhpConfigFileLoader;
-use OAuth2Framework\Bundle\Server\DependencyInjection\Source\ActionableSource;
+use OAuth2Framework\Bundle\Server\DependencyInjection\Source\ArraySource;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\SourceInterface;
 use SpomkyLabs\JoseBundle\Helper\ConfigurationHelper;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
@@ -22,7 +22,7 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
-final class IdTokenSource extends ActionableSource
+final class IdTokenSource extends ArraySource
 {
     /**
      * @var SourceInterface[]
@@ -35,8 +35,8 @@ final class IdTokenSource extends ActionableSource
     public function __construct()
     {
         $this->subSources = [
+            new IdTokenResponseTypeSource(),
             new IdTokenEncryptionSource(),
-            new IdTokenUserinfoPairwiseSource(),
         ];
     }
 
@@ -51,14 +51,10 @@ final class IdTokenSource extends ActionableSource
         $currentPath = $path.'['.$this->name().']';
         $accessor = PropertyAccess::createPropertyAccessor();
         $sourceConfig = $accessor->getValue($bundleConfig, $currentPath);
-
-        if (true === $sourceConfig['enabled']) {
-            $this->updateJoseBundleConfigurationForSigner($container, $sourceConfig);
-            $this->updateJoseBundleConfigurationForVerifier($container, $sourceConfig);
-            $this->updateJoseBundleConfigurationForChecker($container, $sourceConfig);
-            $this->updateJoseBundleConfigurationForJWTCreator($container, $sourceConfig);
-            $this->updateJoseBundleConfigurationForJWTLoader($container, $sourceConfig);
-        }
+        $this->updateJoseBundleConfigurationForSigner($container, $sourceConfig);
+        $this->updateJoseBundleConfigurationForVerifier($container, $sourceConfig);
+        $this->updateJoseBundleConfigurationForChecker($container, $sourceConfig);
+        $this->updateJoseBundleConfigurationForJWTLoader($container, $sourceConfig);
     }
 
     /**
@@ -74,8 +70,7 @@ final class IdTokenSource extends ActionableSource
         foreach ($this->subSources as $source) {
             $source->load($path, $container, $config);
         }
-        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/grant'));
-        $loader->load('id_token.php');
+        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/openid_connect'));
         $loader->load('userinfo_scope_support.php');
     }
 
@@ -93,13 +88,25 @@ final class IdTokenSource extends ActionableSource
         $node
             ->validate()
                 ->ifTrue(function ($config) {
-                    return true === $config['enabled'] && empty($config['signature_algorithms']);
+                    return empty($config['default_signature_algorithm']);
+                })
+                ->thenInvalid('The option "default_signature_algorithm" must be set.')
+            ->end()
+            ->validate()
+                ->ifTrue(function ($config) {
+                    return empty($config['signature_algorithms']);
                 })
                 ->thenInvalid('The option "signature_algorithm" must contain at least one signature algorithm.')
             ->end()
             ->validate()
                 ->ifTrue(function ($config) {
-                    return true === $config['enabled'] && empty($config['key_set']);
+                    return !in_array($config['default_signature_algorithm'], $config['signature_algorithms']);
+                })
+                ->thenInvalid('The default signature algorithm must be in the supported signature algorithms.')
+            ->end()
+            ->validate()
+                ->ifTrue(function ($config) {
+                    return empty($config['key_set']);
                 })
                 ->thenInvalid('The option "key_set" must be set.')
             ->end()
@@ -145,7 +152,7 @@ final class IdTokenSource extends ActionableSource
      */
     private function updateJoseBundleConfigurationForSigner(ContainerBuilder $container, array $sourceConfig)
     {
-        ConfigurationHelper::addSigner($container, $this->name(), $sourceConfig['signature_algorithms'], false);
+        ConfigurationHelper::addSigner($container, $this->name(), $sourceConfig['signature_algorithms'], false, false);
     }
 
     /**
@@ -164,19 +171,6 @@ final class IdTokenSource extends ActionableSource
     private function updateJoseBundleConfigurationForChecker(ContainerBuilder $container, array $sourceConfig)
     {
         ConfigurationHelper::addChecker($container, $this->name(), $sourceConfig['header_checkers'], $sourceConfig['claim_checkers'], false);
-    }
-
-    /**
-     * @param ContainerBuilder $container
-     * @param array            $sourceConfig
-     */
-    private function updateJoseBundleConfigurationForJWTCreator(ContainerBuilder $container, array $sourceConfig)
-    {
-        $encrypter = null;
-        if (true === $sourceConfig['encryption']['enabled']) {
-            $encrypter = sprintf('jose.encrypter.%s', $this->name());
-        }
-        ConfigurationHelper::addJWTCreator($container, $this->name(), sprintf('jose.signer.%s', $this->name()), $encrypter, false);
     }
 
     /**

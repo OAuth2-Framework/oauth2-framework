@@ -41,7 +41,10 @@ abstract class ArraySource implements SourceInterface
      */
     public function addConfiguration(NodeDefinition $node)
     {
-        $sourceNode = $node->children()->arrayNode($this->name());
+        $sourceNode = $node
+            ->children()
+                ->arrayNode($this->name())
+                    ->addDefaultsIfNotSet();
         $this->continueConfiguration($sourceNode);
     }
 

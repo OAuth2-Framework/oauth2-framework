@@ -11,29 +11,29 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Bundle\Server\DependencyInjection\Source\Scope;
+namespace OAuth2Framework\Bundle\Server\DependencyInjection\Source\OpenIdConnect;
 
 use Fluent\PhpConfigFileLoader;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\ActionableSource;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-final class ScopePolicyError extends ActionableSource
+final class AuthorizationEndpointIdTokenHintSource extends ActionableSource
 {
-    /**
-     * {@inheritdoc}
-     */
-    protected function name(): string
-    {
-        return 'error';
-    }
-
     /**
      * {@inheritdoc}
      */
     protected function continueLoading(string $path, ContainerBuilder $container, array $config)
     {
-        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/scope'));
-        $loader->load('policy_error.php');
+        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/openid_connect'));
+        $loader->load('id_token_hint.php');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function name(): string
+    {
+        return 'id_token_hint';
     }
 }

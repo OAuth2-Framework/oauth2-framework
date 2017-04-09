@@ -26,7 +26,8 @@ return [
             '%oauth2_server.grant.refresh_token.max_length%',
             '%oauth2_server.grant.refresh_token.lifetime%',
             get('oauth2_server.grant.refresh_token.event_store'),
-            get('event_recorder')
+            get('event_recorder'),
+            get('cache.app')
         ),
 
     RefreshTokenGrantType::class => create()

@@ -314,9 +314,9 @@ final class OIDCContext implements Context
     }
 
     /**
-     * @When A client sends a valid authorization request with a valid id_token_hint parameter
+     * @When A client sends a valid authorization request with a valid id_token_hint parameter but no user authenticated
      */
-    public function aClientSendsAValidAuthorizationRequestWithAValidIdTokenHintParameter()
+    public function aClientSendsAValidAuthorizationRequestWithAValidIdTokenHintParameterButNoUserAuthenticated()
     {
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
         $request = $request->withMethod('GET');

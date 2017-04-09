@@ -55,7 +55,7 @@ final class AccessTokenByReferenceRepository implements AccessTokenRepositoryInt
     private $eventRecorder;
 
     /**
-     * @var AdapterInterface|null
+     * @var AdapterInterface
      */
     private $cache;
 
@@ -67,21 +67,15 @@ final class AccessTokenByReferenceRepository implements AccessTokenRepositoryInt
      * @param int                 $lifetime
      * @param EventStoreInterface $eventStore
      * @param RecordsMessages     $eventRecorder
+     * @param AdapterInterface    $cache
      */
-    public function __construct(int $minLength, int $maxLength, int $lifetime, EventStoreInterface $eventStore, RecordsMessages $eventRecorder)
+    public function __construct(int $minLength, int $maxLength, int $lifetime, EventStoreInterface $eventStore, RecordsMessages $eventRecorder, AdapterInterface $cache)
     {
         $this->minLength = $minLength;
         $this->maxLength = $maxLength;
         $this->lifetime = $lifetime;
         $this->eventStore = $eventStore;
         $this->eventRecorder = $eventRecorder;
-    }
-
-    /**
-     * @param AdapterInterface $cache
-     */
-    public function enableDomainObjectCaching(AdapterInterface $cache)
-    {
         $this->cache = $cache;
     }
 
@@ -154,12 +148,10 @@ final class AccessTokenByReferenceRepository implements AccessTokenRepositoryInt
      */
     private function getFromCache(AccessTokenId $accessTokenId): ? AccessToken
     {
-        if (null !== $this->cache) {
-            $itemKey = sprintf('oauth2-access_token-%s', $accessTokenId->getValue());
-            $item = $this->cache->getItem($itemKey);
-            if ($item->isHit()) {
-                return $item->get();
-            }
+        $itemKey = sprintf('oauth2-access_token-%s', $accessTokenId->getValue());
+        $item = $this->cache->getItem($itemKey);
+        if ($item->isHit()) {
+            return $item->get();
         }
 
         return null;
@@ -170,12 +162,10 @@ final class AccessTokenByReferenceRepository implements AccessTokenRepositoryInt
      */
     private function cacheObject(AccessToken $accessToken)
     {
-        if (null !== $this->cache) {
-            $itemKey = sprintf('oauth2-access_token-%s', $accessToken->getTokenId()->getValue());
-            $item = $this->cache->getItem($itemKey);
-            $item->set($accessToken);
-            $item->tag(['oauth2_server', 'access_token', $itemKey]);
-            $this->cache->save($item);
-        }
+        $itemKey = sprintf('oauth2-access_token-%s', $accessToken->getTokenId()->getValue());
+        $item = $this->cache->getItem($itemKey);
+        $item->set($accessToken);
+        $item->tag(['oauth2_server', 'access_token', $itemKey]);
+        $this->cache->save($item);
     }
 }

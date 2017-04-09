@@ -54,7 +54,7 @@ final class RefreshTokenRepository implements RefreshTokenRepositoryInterface
     private $eventRecorder;
 
     /**
-     * @var AdapterInterface|null
+     * @var AdapterInterface
      */
     private $cache;
 
@@ -66,21 +66,15 @@ final class RefreshTokenRepository implements RefreshTokenRepositoryInterface
      * @param int                 $lifetime
      * @param EventStoreInterface $eventStore
      * @param RecordsMessages     $eventRecorder
+     * @param AdapterInterface    $cache
      */
-    public function __construct(int $minLength, int $maxLength, int $lifetime, EventStoreInterface $eventStore, RecordsMessages $eventRecorder)
+    public function __construct(int $minLength, int $maxLength, int $lifetime, EventStoreInterface $eventStore, RecordsMessages $eventRecorder, AdapterInterface $cache)
     {
         $this->minLength = $minLength;
         $this->maxLength = $maxLength;
         $this->lifetime = $lifetime;
         $this->eventStore = $eventStore;
         $this->eventRecorder = $eventRecorder;
-    }
-
-    /**
-     * @param AdapterInterface $cache
-     */
-    public function enableDomainObjectCaching(AdapterInterface $cache)
-    {
         $this->cache = $cache;
     }
 
@@ -153,12 +147,10 @@ final class RefreshTokenRepository implements RefreshTokenRepositoryInterface
      */
     private function getFromCache(RefreshTokenId $refreshTokenId): ? RefreshToken
     {
-        if (null !== $this->cache) {
-            $itemKey = sprintf('oauth2-refresh_token-%s', $refreshTokenId->getValue());
-            $item = $this->cache->getItem($itemKey);
-            if ($item->isHit()) {
-                return $item->get();
-            }
+        $itemKey = sprintf('oauth2-refresh_token-%s', $refreshTokenId->getValue());
+        $item = $this->cache->getItem($itemKey);
+        if ($item->isHit()) {
+            return $item->get();
         }
 
         return null;
@@ -169,12 +161,10 @@ final class RefreshTokenRepository implements RefreshTokenRepositoryInterface
      */
     private function cacheObject(RefreshToken $refreshToken)
     {
-        if (null !== $this->cache) {
-            $itemKey = sprintf('oauth2-refresh_token-%s', $refreshToken->getTokenId()->getValue());
-            $item = $this->cache->getItem($itemKey);
-            $item->set($refreshToken);
-            $item->tag(['oauth2_server', 'refresh_token', $itemKey]);
-            $this->cache->save($item);
-        }
+        $itemKey = sprintf('oauth2-refresh_token-%s', $refreshToken->getTokenId()->getValue());
+        $item = $this->cache->getItem($itemKey);
+        $item->set($refreshToken);
+        $item->tag(['oauth2_server', 'refresh_token', $itemKey]);
+        $this->cache->save($item);
     }
 }

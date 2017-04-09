@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Server\DependencyInjection\Compiler;
 
-use OAuth2Framework\Bundle\Server\Routing\RouteLoader;
 use OAuth2Framework\Component\Server\Model\Client\Rule\RuleManager;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -36,37 +35,5 @@ final class ClientRuleCompilerPass implements CompilerPassInterface
         foreach ($taggedServices as $id => $attributes) {
             $client_manager->addMethodCall('add', [new Reference($id)]);
         }
-
-        $path = $container->getParameter('oauth2_server.endpoint.client_configuration.path');
-        $route_loader = $container->getDefinition(RouteLoader::class);
-        $route_loader->addMethodCall('addRoute', [
-            'client_configuration',
-            'client_configuration_endpoint_pipe',
-            'dispatch',
-            $path, // path
-            [], // defaults
-            [], // requirements
-            [], // options
-            '', // host
-            ['https'], // schemes
-            ['GET', 'PUT', 'DELETE'], // methods
-            '', // condition
-        ]);
-
-        $path = $container->getParameter('oauth2_server.endpoint.client_registration.path');
-        $route_loader = $container->getDefinition(RouteLoader::class);
-        $route_loader->addMethodCall('addRoute', [
-            'client_registration',
-            'client_registration_endpoint_pipe',
-            'dispatch',
-            $path, // path
-            [], // defaults
-            [], // requirements
-            [], // options
-            '', // host
-            ['https'], // schemes
-            ['POST'], // methods
-            '', // condition
-        ]);
     }
 }

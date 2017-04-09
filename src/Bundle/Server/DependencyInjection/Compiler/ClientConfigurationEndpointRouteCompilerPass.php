@@ -14,26 +14,26 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\Server\DependencyInjection\Compiler;
 
 use OAuth2Framework\Bundle\Server\Routing\RouteLoader;
+use OAuth2Framework\Component\Server\Endpoint\ClientConfiguration\ClientConfigurationEndpoint;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Reference;
 
-class UserinfoRouteCompilerPass implements CompilerPassInterface
+final class ClientConfigurationEndpointRouteCompilerPass implements CompilerPassInterface
 {
     /**
      * {@inheritdoc}
      */
     public function process(ContainerBuilder $container)
     {
-        if (!$container->hasDefinition('oauth2_server_userinfo_pipe')) {
+        if (!$container->hasDefinition(ClientConfigurationEndpoint::class)) {
             return;
         }
 
-        $path = $container->getParameter('oauth2_server.openid_connect.userinfo_endpoint.path');
+        $path = $container->getParameter('oauth2_server.endpoint.client_configuration.path');
         $route_loader = $container->getDefinition(RouteLoader::class);
         $route_loader->addMethodCall('addRoute', [
-            'openid_connect_userinfo_endpoint',
-            'oauth2_server_userinfo_pipe',
+            'client_configuration',
+            'client_configuration_endpoint_pipe',
             'dispatch',
             $path, // path
             [], // defaults
@@ -41,16 +41,8 @@ class UserinfoRouteCompilerPass implements CompilerPassInterface
             [], // options
             '', // host
             ['https'], // schemes
-            ['GET'], // methods
+            ['GET', 'PUT', 'DELETE'], // methods
             '', // condition
         ]);
-
-        /*if (!$container->hasDefinition('oauth2_server.openid_connect.metadata')) {
-            return;
-        }
-
-        $definition = $container->getDefinition('oauth2_server.openid_connect.metadata');
-        $definition->addMethodCall('setUserinfoEndpoint', [new Reference('oauth2_server_userinfo_pipe'), new Reference('oauth2_server.openid_connect.userinfo')]);
-        $definition->addMethodCall('setRoute', ['userinfo_endpoint', 'oauth2_server_openid_connect_userinfo_endpoint']);*/
     }
 }

@@ -12,7 +12,6 @@ declare(strict_types=1);
  */
 
 use OAuth2Framework\Bundle\Server\Model\AccessTokenByReferenceRepository;
-use OAuth2Framework\Component\Server\Model\AccessToken\AccessTokenRepositoryInterface;
 use OAuth2Framework\Component\Server\Model\ResourceServer\ResourceServerRepositoryInterface;
 use OAuth2Framework\Component\Server\Model\Scope\ScopeRepository;
 use OAuth2Framework\Bundle\Server\Tests\TestBundle\Entity\ResourceRepository;
@@ -46,7 +45,7 @@ return [
             'refresh_token'
         ),
 
-    'oauth2_server.event_store.access_token' => create(EventStore::class)
+    'EventStore.AccessToken' => create(EventStore::class)
         ->arguments(
             '%kernel.cache_dir%',
             'access_token'
@@ -76,13 +75,14 @@ return [
             'auth_code'
         ),
 
-    AccessTokenRepositoryInterface::class => create(AccessTokenByReferenceRepository::class) //Fixme
+    'MyAccessTokenRepository' => create(AccessTokenByReferenceRepository::class)
         ->arguments(
             100,
             150,
             1800,
-            get('oauth2_server.event_store.access_token'),
-            get('event_recorder')
+            get('EventStore.AccessToken'),
+            get('event_recorder'),
+            get('cache.app')
         ),
 
     UserAccountManagerInterface::class => create(UserManager::class),
@@ -124,7 +124,7 @@ return [
 
     AccessTokenHandler::class => create()
         ->arguments(
-            get(AccessTokenRepositoryInterface::class)
+            get('oauth2_server.access_token.repository')
         )
         ->tag('oauth2_server_access_token_handler'),
 

@@ -68,6 +68,7 @@ final class IdTokenHintDiscovery implements UserAccountDiscoveryInterface
      */
     public function find(ServerRequestInterface $request, Authorization $authorization, callable $next): Authorization
     {
+        $authorization = $next($request, $authorization);
         if ($authorization->hasQueryParam('id_token_hint')) {
             try {
                 $idTokenId = IdTokenId::create($authorization->getQueryParam('id_token_hint'));
@@ -88,8 +89,6 @@ final class IdTokenHintDiscovery implements UserAccountDiscoveryInterface
                         if ($tmp->getPublicId()->getValue() !== $authorization->getUserAccount()->getPublicId()->getValue()) {
                             throw new RedirectToLoginPageException($authorization);
                         }
-                    } else {
-                        $authorization = $authorization->withUserAccount($tmp, false);
                     }
                 }
             } catch (\InvalidArgumentException $e) {
@@ -97,6 +96,6 @@ final class IdTokenHintDiscovery implements UserAccountDiscoveryInterface
             }
         }
 
-        return $next($request, $authorization);
+        return $authorization;
     }
 }

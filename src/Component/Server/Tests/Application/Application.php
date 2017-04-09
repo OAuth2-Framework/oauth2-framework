@@ -144,12 +144,18 @@ use OAuth2Framework\Component\Server\Model\AccessToken\AccessTokenRepositoryInte
 use OAuth2Framework\Component\Server\Model\AuthCode\AuthCodeRepositoryInterface;
 use OAuth2Framework\Component\Server\Model\Client\Rule\CommonParametersRule;
 use OAuth2Framework\Component\Server\Model\Client\Rule\GrantTypeFlowRule;
+use OAuth2Framework\Component\Server\Model\Client\Rule\IdTokenAlgorithmsRule;
 use OAuth2Framework\Component\Server\Model\Client\Rule\RedirectionUriRule;
+use OAuth2Framework\Component\Server\Model\Client\Rule\RequestUriRule;
 use OAuth2Framework\Component\Server\Model\Client\Rule\RuleManager;
+use OAuth2Framework\Component\Server\Model\Client\Rule\ScopePolicyDefaultRule;
+use OAuth2Framework\Component\Server\Model\Client\Rule\ScopePolicyRule;
 use OAuth2Framework\Component\Server\Model\Client\Rule\ScopeRule;
+use OAuth2Framework\Component\Server\Model\Client\Rule\SectorIdentifierUriRule;
 use OAuth2Framework\Component\Server\Model\Client\Rule\SoftwareRule;
 use OAuth2Framework\Component\Server\Model\Client\Rule\SubjectTypeRule;
 use OAuth2Framework\Component\Server\Model\Client\Rule\TokenEndpointAuthMethodEndpointRule;
+use OAuth2Framework\Component\Server\Model\Client\Rule\UserinfoEndpointAlgorithmsRule;
 use OAuth2Framework\Component\Server\Model\Event\EventStoreInterface;
 use OAuth2Framework\Component\Server\Model\IdToken\IdTokenBuilderFactory;
 use OAuth2Framework\Component\Server\Model\IdToken\IdTokenLoader;
@@ -1032,11 +1038,17 @@ final class Application
                 ->add(new ClientRegistrationManagementRule())
                 ->add(new CommonParametersRule())
                 ->add($this->getGrantTypeFlowRule())
+                ->add(new IdTokenAlgorithmsRule($this->getJwtSigner(), $this->getJwtEncrypter()))
                 ->add(new RedirectionUriRule())
+                ->add(new RequestUriRule())
+                ->add(new ScopePolicyDefaultRule())
+                ->add(new ScopePolicyRule($this->getScopePolicyManager()))
                 ->add(new ScopeRule($this->getScopeRepository()))
+                //->add(new SectorIdentifierUriRule()) //FIXME
                 ->add($this->getSoftwareRule())
                 ->add(new SubjectTypeRule($this->getUserInfo()))
-                ->add(new TokenEndpointAuthMethodEndpointRule($this->getTokenEndpointAuthMethodManager()));
+                ->add(new TokenEndpointAuthMethodEndpointRule($this->getTokenEndpointAuthMethodManager()))
+                ->add(new UserinfoEndpointAlgorithmsRule($this->getJwtSigner(), $this->getJwtEncrypter()));
         }
 
         return $this->ruleManager;
@@ -2491,7 +2503,10 @@ final class Application
         if (null === $this->idTokenResponseType) {
             $this->idTokenResponseType = new IdTokenResponseType(
                 $this->getIdTokenBuilderFactory(),
-                'RS256'
+                'RS256',
+                $this->getJwtSigner(),
+                $this->getPrivateKeys(),
+                $this->getJwtEncrypter()
             );
         }
 
@@ -2695,7 +2710,10 @@ final class Application
                 $this->getIdTokenBuilderFactory(),
                 $this->getClientRepository(),
                 $this->getUserAccountRepository(),
-                $this->getResponseFactory()
+                $this->getResponseFactory(),
+                $this->getJwtSigner(),
+                $this->getPrivateKeys(),
+                $this->getJwtEncrypter()
             );
         }
 
@@ -3110,7 +3128,10 @@ final class Application
         if (null === $this->openIdConnectExtension) {
             $this->openIdConnectExtension = new OpenIdConnectExtension(
                 $this->getIdTokenBuilderFactory(),
-                'RS256'
+                'RS256',
+                $this->getJwtSigner(),
+                $this->getPrivateKeys(),
+                $this->getJwtEncrypter()
             );
         }
 
@@ -3129,10 +3150,8 @@ final class Application
     {
         if (null === $this->idTokenBuilderFactory) {
             $this->idTokenBuilderFactory = new IdTokenBuilderFactory(
-                $this->getJwtCreator(),
                 'https://www.my-service.com',
                 $this->getUserInfo(),
-                $this->getPrivateKeys(),
                 600
             );
         }
@@ -3154,7 +3173,7 @@ final class Application
             $this->idTokenLoader = new IdTokenLoader(
                 $this->getJwtLoader(),
                 $this->getPrivateKeys(),
-                'RS256'
+                ['HS256', 'RS256', 'ES256']
             );
         }
 

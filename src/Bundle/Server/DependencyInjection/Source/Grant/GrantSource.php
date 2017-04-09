@@ -38,7 +38,6 @@ final class GrantSource extends ArraySource
             new ImplicitSource(),
             new NoneSource(),
             new ResourceOwnerPasswordCredentialSource(),
-            new IdTokenSource(),
             new JwtBearerSource(),
             new RefreshTokenSource(),
         ];

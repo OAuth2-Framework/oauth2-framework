@@ -31,17 +31,7 @@ final class OAuth2
     /**
      * @var null|string
      */
-    private $clientType = null;
-
-    /**
-     * @var null|string
-     */
     private $clientPublicId = null;
-
-    /**
-     * @var null|string
-     */
-    private $resourceOwnerType = null;
 
     /**
      * @var null|string
@@ -70,26 +60,9 @@ final class OAuth2
     }
 
     /**
-     * @param string $clientType
-     */
-    public function setClientType(string $clientType)
-    {
-        Assertion::inArray($clientType, ['public', 'confidential'], sprintf('Invalid client type. Please use one of the following value: ', json_encode(['public', 'confidential'])));
-        $this->clientType = $clientType;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getClientType()
-    {
-        return $this->clientType;
-    }
-
-    /**
      * @param string $clientPublicId
      */
-    public function setClientPublicId(string $clientPublicId)
+    protected function setClientPublicId(string $clientPublicId)
     {
         Assertion::string($clientPublicId, 'The client public ID should be a string.');
         $this->clientPublicId = $clientPublicId;
@@ -98,32 +71,15 @@ final class OAuth2
     /**
      * @return null|string
      */
-    public function getClientPublicId()
+    public function getClientPublicId(): ?string
     {
         return $this->clientPublicId;
     }
 
     /**
-     * @param string $resourceOwnerType
-     */
-    public function setResourceOwnerType(string $resourceOwnerType)
-    {
-        Assertion::inArray($resourceOwnerType, ['end_user', 'client'], sprintf('Invalid resource owner type. Please use one of the following value: ', json_encode(['end_user', 'client'])));
-        $this->resourceOwnerType = $resourceOwnerType;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getResourceOwnerType()
-    {
-        return $this->resourceOwnerType;
-    }
-
-    /**
      * @param string $resourceOwnerPublicId
      */
-    public function setResourceOwnerPublicId(string $resourceOwnerPublicId)
+    protected function setResourceOwnerPublicId(string $resourceOwnerPublicId)
     {
         Assertion::string($resourceOwnerPublicId, 'The resource owner public ID should be a string.');
         $this->resourceOwnerPublicId = $resourceOwnerPublicId;
@@ -132,7 +88,7 @@ final class OAuth2
     /**
      * @return null|string
      */
-    public function getResourceOwnerPublicId()
+    public function getResourceOwnerPublicId(): ?string
     {
         return $this->resourceOwnerPublicId;
     }
@@ -140,7 +96,7 @@ final class OAuth2
     /**
      * @param string $scope
      */
-    public function setScope(string $scope)
+    protected function setScope(string $scope)
     {
         $this->scope = $scope;
     }
@@ -148,7 +104,7 @@ final class OAuth2
     /**
      * @return null|string
      */
-    public function getScope()
+    public function getScope(): ?string
     {
         return $this->scope;
     }

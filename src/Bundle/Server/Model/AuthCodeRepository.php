@@ -54,7 +54,7 @@ final class AuthCodeRepository implements AuthCodeRepositoryInterface
     private $eventStore;
 
     /**
-     * @var AdapterInterface|null
+     * @var AdapterInterface
      */
     private $cache;
 
@@ -66,14 +66,16 @@ final class AuthCodeRepository implements AuthCodeRepositoryInterface
      * @param int                 $lifetime
      * @param EventStoreInterface $eventStore
      * @param RecordsMessages     $eventRecorder
+     * @param AdapterInterface    $cache
      */
-    public function __construct(int $minLength, int $maxLength, int $lifetime, EventStoreInterface $eventStore, RecordsMessages $eventRecorder)
+    public function __construct(int $minLength, int $maxLength, int $lifetime, EventStoreInterface $eventStore, RecordsMessages $eventRecorder, AdapterInterface $cache)
     {
         $this->minLength = $minLength;
         $this->maxLength = $maxLength;
         $this->lifetime = $lifetime;
         $this->eventStore = $eventStore;
         $this->eventRecorder = $eventRecorder;
+        $this->cache = $cache;
     }
 
     /**
@@ -124,14 +126,6 @@ final class AuthCodeRepository implements AuthCodeRepositoryInterface
     }
 
     /**
-     * @param AdapterInterface $cache
-     */
-    public function enableDomainObjectCaching(AdapterInterface $cache)
-    {
-        $this->cache = $cache;
-    }
-
-    /**
      * @param Event[] $events
      *
      * @return AuthCode
@@ -153,12 +147,10 @@ final class AuthCodeRepository implements AuthCodeRepositoryInterface
      */
     private function getFromCache(AuthCodeId $authCodeId): ? AuthCode
     {
-        if (null !== $this->cache) {
-            $itemKey = sprintf('oauth2-auth_code-%s', $authCodeId->getValue());
-            $item = $this->cache->getItem($itemKey);
-            if ($item->isHit()) {
-                return $item->get();
-            }
+        $itemKey = sprintf('oauth2-auth_code-%s', $authCodeId->getValue());
+        $item = $this->cache->getItem($itemKey);
+        if ($item->isHit()) {
+            return $item->get();
         }
 
         return null;
@@ -169,12 +161,10 @@ final class AuthCodeRepository implements AuthCodeRepositoryInterface
      */
     private function cacheObject(AuthCode $authCode)
     {
-        if (null !== $this->cache) {
-            $itemKey = sprintf('oauth2-auth_code-%s', $authCode->getTokenId()->getValue());
-            $item = $this->cache->getItem($itemKey);
-            $item->set($authCode);
-            $item->tag(['oauth2_server', 'auth_code', $itemKey]);
-            $this->cache->save($item);
-        }
+        $itemKey = sprintf('oauth2-auth_code-%s', $authCode->getTokenId()->getValue());
+        $item = $this->cache->getItem($itemKey);
+        $item->set($authCode);
+        $item->tag(['oauth2_server', 'auth_code', $itemKey]);
+        $this->cache->save($item);
     }
 }
