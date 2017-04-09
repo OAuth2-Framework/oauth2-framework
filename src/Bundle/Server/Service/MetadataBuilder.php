@@ -65,7 +65,6 @@ final class MetadataBuilder
         $path = $this->router->generate($routeName, $routeParameters, RouterInterface::ABSOLUTE_URL);
         $this->metadata->set($name, $path);
 
-
         /*
         $this->metadata->set('service_documentation', 'https://my.server.com/documentation');
         $this->metadata->set('op_policy_uri', 'https://my.server.com/policy.html');
