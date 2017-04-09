@@ -11,8 +11,8 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
+use OAuth2Framework\Component\Server\Model\Client\Rule\UserinfoEndpointAlgorithmsRule;
 use OAuth2Framework\Bundle\Server\Model\ClientRepository;
-use OAuth2Framework\Component\Server\Endpoint\UserInfo\UserInfo;
 use OAuth2Framework\Component\Server\Endpoint\UserInfo\UserInfoEndpoint;
 use OAuth2Framework\Component\Server\Middleware\OAuth2ResponseMiddleware;
 use OAuth2Framework\Component\Server\Middleware\OAuth2SecurityMiddleware;
@@ -27,10 +27,13 @@ use function Fluent\get;
 return [
     UserInfoEndpoint::class => create()
         ->arguments(
-            get('id_token_builder_factory_for_userinfo_endpoint'),
+            get(IdTokenBuilderFactory::class),
             get(ClientRepository::class),
             get(UserAccountRepositoryInterface::class),
-            get('oauth2_server.http.response_factory')
+            get('oauth2_server.http.response_factory'),
+            get('jose.signer.id_token')->nullIfMissing(),
+            get('oauth2_server.openid_connect.id_token.key_set')->nullIfMissing(),
+            get('jose.encrypter.id_token')->nullIfMissing()
         ),
 
     'userinfo_security_middleware' => create(OAuth2SecurityMiddleware::class)
@@ -48,12 +51,11 @@ return [
             get(UserInfoEndpoint::class),
         ]),
 
-    'id_token_builder_factory_for_userinfo_endpoint' => create(IdTokenBuilderFactory::class)
-    ->arguments(
-        get('jose.jwt_creator.userinfo_endpoint'),
-        '%oauth2_server.server_uri%',
-        get(UserInfo::class),
-        get('oauth2_server.endpoint.userinfo.signature.key_set'),
-        0 // This lifetime will never be used as the ID Token will expire at the same time than the access token
-    ),
+    UserinfoEndpointAlgorithmsRule::class => create()
+        ->arguments(
+            get('jose.signer.id_token')->nullIfMissing(),
+            get('oauth2_server.endpoint.id_token.signature.key_set')->nullIfMissing(),
+            get('jose.encrypter.id_token')->nullIfMissing()
+        )
+        ->tag('oauth2_server_client_rule'),
 ];

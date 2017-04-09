@@ -14,9 +14,11 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\Server\DependencyInjection;
 
 use Fluent\PhpConfigFileLoader;
+use OAuth2Framework\Bundle\Server\DependencyInjection\Source\AccessTokenRepositorySource;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\ClientSource;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\Endpoint\EndpointSource;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\Grant\GrantSource;
+use OAuth2Framework\Bundle\Server\DependencyInjection\Source\OpenIdConnect\OpenIdConnectSource;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\ResourceServerRepositorySource;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\Scope\ScopeSource;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\ServerNameSource;
@@ -141,6 +143,7 @@ final class OAuth2FrameworkServerExtension extends Extension implements PrependE
         $this->sourceMap = [
             new ClientSource(),
             new ServerNameSource(),
+            new AccessTokenRepositorySource(),
             new UserAccountRepositorySource(),
             new ResourceServerRepositorySource(),
             new TokenTypeSource(),
@@ -148,6 +151,7 @@ final class OAuth2FrameworkServerExtension extends Extension implements PrependE
             new GrantSource(),
             new EndpointSource(),
             new ScopeSource(),
+            new OpenIdConnectSource(),
         ];
     }
 }

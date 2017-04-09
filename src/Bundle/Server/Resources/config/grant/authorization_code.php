@@ -27,7 +27,8 @@ return [
             '%oauth2_server.grant.authorization_code.max_length%',
             '%oauth2_server.grant.authorization_code.lifetime%',
             get('oauth2_server.grant.authorization_code.event_store'),
-            get('event_recorder')
+            get('event_recorder'),
+            get('cache.app')
         ),
 
     AuthorizationCodeGrantType::class => create()

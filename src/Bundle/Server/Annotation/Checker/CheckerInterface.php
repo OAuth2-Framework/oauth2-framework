@@ -24,5 +24,5 @@ interface CheckerInterface
      *
      * @return null|string
      */
-    public function check(OAuth2Token $token, OAuth2 $configuration);
+    public function check(OAuth2Token $token, OAuth2 $configuration): ?string;
 }

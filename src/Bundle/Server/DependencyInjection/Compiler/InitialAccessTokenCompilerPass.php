@@ -25,7 +25,7 @@ final class InitialAccessTokenCompilerPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        if (!$container->hasDefinition('client_registration_endpoint_pipe') && true === $container->getParameter('oauth2_server.endpoint.client_registration.initial_access_token.enabled')) {
+        if (!$container->hasDefinition(InitialAccessTokenMiddleware::class) || !$container->hasDefinition('client_registration_endpoint_pipe')) {
             return;
         }
 

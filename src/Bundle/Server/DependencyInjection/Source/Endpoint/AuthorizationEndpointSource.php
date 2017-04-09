@@ -34,7 +34,6 @@ final class AuthorizationEndpointSource extends ActionableSource
     {
         $this->subSources = [
             new AuthorizationEndpointPreConfiguredAuthorizationSource(),
-            new AuthorizationEndpointIdTokenHintSource(),
         ];
     }
 
@@ -61,6 +60,14 @@ final class AuthorizationEndpointSource extends ActionableSource
     protected function name(): string
     {
         return 'authorization';
+    }
+
+    public function prepend(array $bundleConfig, string $path, ContainerBuilder $container)
+    {
+        parent::prepend($bundleConfig, $path, $container);
+        foreach ($this->subSources as $source) {
+            $source->prepend($bundleConfig, $path.'['.$this->name().']', $container);
+        }
     }
 
     /**

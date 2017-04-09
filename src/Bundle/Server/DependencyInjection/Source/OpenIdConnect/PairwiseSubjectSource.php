@@ -11,13 +11,13 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Bundle\Server\DependencyInjection\Source\Grant;
+namespace OAuth2Framework\Bundle\Server\DependencyInjection\Source\OpenIdConnect;
 
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\ActionableSource;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-final class IdTokenUserinfoPairwiseSource extends ActionableSource
+final class PairwiseSubjectSource extends ActionableSource
 {
     /**
      * {@inheritdoc}

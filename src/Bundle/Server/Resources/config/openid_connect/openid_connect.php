@@ -11,11 +11,12 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
+use OAuth2Framework\Component\Server\Model\Client\Rule;
+use OAuth2Framework\Component\Server\Endpoint\Token\Extension\OpenIdConnectExtension;
 use OAuth2Framework\Component\Server\Endpoint\UserInfo\ClaimSource\ClaimSourceManager;
 use OAuth2Framework\Component\Server\Endpoint\UserInfo\ScopeSupport\UserInfoScopeSupportManager;
 use OAuth2Framework\Component\Server\Endpoint\UserInfo\UserInfo;
 use OAuth2Framework\Component\Server\Model\IdToken\IdTokenBuilderFactory;
-use OAuth2Framework\Component\Server\ResponseType\IdTokenResponseType;
 use function Fluent\create;
 use function Fluent\get;
 
@@ -29,32 +30,33 @@ return [
             get(ClaimSourceManager::class)
         ),
 
-    IdTokenResponseType::class => create()
+    OpenIdConnectExtension::class => create()
         ->arguments(
-            get('id_token_builder_factory_for_response_type'),
-            '%oauth2_server.grant.id_token.default_signature_algorithm%'
+            get(IdTokenBuilderFactory::class),
+            '%oauth2_server.openid_connect.id_token.default_signature_algorithm%',
+            get('jose.signer.id_token'),
+            get('oauth2_server.openid_connect.id_token.key_set'),
+            get('jose.encrypter.id_token')->nullIfMissing()
         )
-        ->tag('oauth2_server_response_type'),
+        ->tag('oauth2_server_token_endpoint_extension'),
 
-    'id_token_builder_factory_for_response_type' => create(IdTokenBuilderFactory::class)
+    IdTokenBuilderFactory::class => create()
         ->arguments(
-            get('jose.jwt_creator.id_token'),
             '%oauth2_server.server_uri%',
             get(UserInfo::class),
-            get('oauth2_server.grant.id_token.key_set'),
-            '%oauth2_server.grant.id_token.lifetime%'
+            '%oauth2_server.openid_connect.id_token.lifetime%'
         ),
 
-    /*IdTokenEncryptionAlgorithmsRule::class => create()
+    Rule\IdTokenAlgorithmsRule::class => create()
         ->arguments(
-            get(IdTokenRepository::class)
+            get('jose.signer.id_token'),
+            get('jose.encrypter.id_token')->nullIfMissing()
         )
         ->tag('oauth2_server_client_rule'),
 
-    IdTokenHintDiscovery::class => create()
+    Rule\SubjectTypeRule::class => create()
         ->arguments(
-            get(IdTokenRepository::class),
-            get('oauth2_server.user_account.repository')
+            get(UserInfo::class)
         )
-        ->tag('oauth2_server_user_account_discovery'),*/
+        ->tag('oauth2_server_client_rule'),
 ];

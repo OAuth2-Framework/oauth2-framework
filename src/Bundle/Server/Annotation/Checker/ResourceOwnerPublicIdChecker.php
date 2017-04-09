@@ -21,7 +21,7 @@ final class ResourceOwnerPublicIdChecker implements CheckerInterface
     /**
      * {@inheritdoc}
      */
-    public function check(OAuth2Token $token, OAuth2 $configuration)
+    public function check(OAuth2Token $token, OAuth2 $configuration): ?string
     {
         if (null === $configuration->getResourceOwnerPublicId()) {
             return null;
@@ -30,5 +30,7 @@ final class ResourceOwnerPublicIdChecker implements CheckerInterface
         if ($configuration->getResourceOwnerPublicId() !== $token->getResourceOwner()->getPublicId()) {
             return 'Resource owner not authorized.';
         }
+
+        return null;
     }
 }

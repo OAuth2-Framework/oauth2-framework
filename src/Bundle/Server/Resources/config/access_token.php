@@ -21,26 +21,26 @@ use function Fluent\get;
 return [
     AccessToken\CreateAccessTokenCommandHandler::class => create()
         ->arguments(
-            get(AccessTokenRepositoryInterface::class)
+            get('oauth2_server.access_token.repository')
         )
         ->tag('command_handler', ['handles' => AccessToken\CreateAccessTokenCommand::class]),
 
     AccessToken\CreateAccessTokenWithRefreshTokenCommandHandler::class => create()
         ->arguments(
-            get(AccessTokenRepositoryInterface::class),
+            get('oauth2_server.access_token.repository'),
             get(RefreshTokenRepositoryInterface::class)->nullIfMissing()
         )
         ->tag('command_handler', ['handles' => AccessToken\CreateAccessTokenWithRefreshTokenCommand::class]),
 
     AccessToken\RevokeAccessTokenCommandHandler::class => create()
         ->arguments(
-            get(AccessTokenRepositoryInterface::class)
+            get('oauth2_server.access_token.repository')
         )
         ->tag('command_handler', ['handles' => AccessToken\RevokeAccessTokenCommand::class]),
 
     AccessTokenTypeHint::class => create()
         ->arguments(
-            get(AccessTokenRepositoryInterface::class),
+            get('oauth2_server.access_token.repository'),
             get('command_bus')
         )
         ->tag('oauth2_server_token_type_hint'),

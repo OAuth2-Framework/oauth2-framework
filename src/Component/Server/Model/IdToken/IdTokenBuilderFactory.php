@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\Model\IdToken;
 
-use Jose\JWTCreatorInterface;
 use Jose\Object\JWKSetInterface;
 use OAuth2Framework\Component\Server\Endpoint\UserInfo\UserInfo;
 use OAuth2Framework\Component\Server\Model\Client\Client;
@@ -21,11 +20,6 @@ use OAuth2Framework\Component\Server\Model\UserAccount\UserAccountInterface;
 
 final class IdTokenBuilderFactory
 {
-    /**
-     * @var JWTCreatorInterface
-     */
-    private $jwtCreator;
-
     /**
      * @var string
      */
@@ -37,11 +31,6 @@ final class IdTokenBuilderFactory
     private $userinfo;
 
     /**
-     * @var JWKSetInterface
-     */
-    private $signatureKeys;
-
-    /**
      * @var
      */
     private $lifetime;
@@ -49,18 +38,14 @@ final class IdTokenBuilderFactory
     /**
      * IdTokenBuilder constructor.
      *
-     * @param JWTCreatorInterface $jwtCreator
-     * @param string              $issuer
-     * @param UserInfo            $userinfo
-     * @param JWKSetInterface     $signatureKeys
-     * @param int                 $lifetime
+     * @param string   $issuer
+     * @param UserInfo $userinfo
+     * @param int      $lifetime
      */
-    public function __construct(JWTCreatorInterface $jwtCreator, string $issuer, UserInfo $userinfo, JWKSetInterface $signatureKeys, int $lifetime)
+    public function __construct(string $issuer, UserInfo $userinfo, int $lifetime)
     {
-        $this->jwtCreator = $jwtCreator;
         $this->issuer = $issuer;
         $this->userinfo = $userinfo;
-        $this->signatureKeys = $signatureKeys;
         $this->lifetime = $lifetime;
     }
 
@@ -73,6 +58,6 @@ final class IdTokenBuilderFactory
      */
     public function createBuilder(Client $client, UserAccountInterface $userAccount, string $redirectUri)
     {
-        return IdTokenBuilder::create($this->jwtCreator, $this->issuer, $this->userinfo, $this->signatureKeys, $this->lifetime, $client, $userAccount, $redirectUri);
+        return IdTokenBuilder::create($this->issuer, $this->userinfo, $this->lifetime, $client, $userAccount, $redirectUri);
     }
 }

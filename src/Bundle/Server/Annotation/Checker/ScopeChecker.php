@@ -38,40 +38,20 @@ final class ScopeChecker implements CheckerInterface
     /**
      * {@inheritdoc}
      */
-    public function check(OAuth2Token $token, OAuth2 $configuration)
+    public function check(OAuth2Token $token, OAuth2 $configuration): ?string
     {
-        if (null === $configuration->getScope()) {
+        $scope = $configuration->getScope();
+        if (null === $scope) {
             return null;
         }
 
-        $language = $this->getExpressionLanguage();
-        $result = $language->evaluate(
-            $configuration->getScope(),
-            [
-                'scope' => $token->getAccessToken()->getScope(),
-            ]
-        );
+        $scopes = explode(' ', $scope);
+        $diff = array_diff($scopes, $token->getAccessToken()->getScopes());
 
-        // If the scope of the access token does not fulfill the scope rule, then returns an authentication error
-        if (false === $result) {
+        if (!empty($diff)) {
             return sprintf('Insufficient scope. The scope rule is: %s', $configuration->getScope());
         }
 
         return  null;
-    }
-
-    /**
-     * @return \Symfony\Component\ExpressionLanguage\ExpressionLanguage
-     */
-    private function getExpressionLanguage()
-    {
-        $language = new ExpressionLanguage();
-        $language->register('has', function ($str) {
-            return sprintf('(in_array(%1$s, scope))', $str);
-        }, function ($arguments, $str) {
-            return in_array($str, $arguments['scope']);
-        });
-
-        return $language;
     }
 }

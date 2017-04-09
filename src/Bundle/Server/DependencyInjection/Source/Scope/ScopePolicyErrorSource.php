@@ -16,17 +16,16 @@ namespace OAuth2Framework\Bundle\Server\DependencyInjection\Source\Scope;
 use Fluent\PhpConfigFileLoader;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\ActionableSource;
 use Symfony\Component\Config\FileLocator;
-use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-final class ScopePolicyDefault extends ActionableSource
+final class ScopePolicyErrorSource extends ActionableSource
 {
     /**
      * {@inheritdoc}
      */
     protected function name(): string
     {
-        return 'default';
+        return 'error';
     }
 
     /**
@@ -34,27 +33,7 @@ final class ScopePolicyDefault extends ActionableSource
      */
     protected function continueLoading(string $path, ContainerBuilder $container, array $config)
     {
-        foreach (['scope'] as $k) {
-            $container->setParameter($path.'.'.$k, $config[$k]);
-        }
         $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/scope'));
-        $loader->load('policy_default.php');
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function continueConfiguration(NodeDefinition $node)
-    {
-        parent::continueConfiguration($node);
-        $node
-            ->children()
-                ->arrayNode('scope')
-                    ->info('Scope added by default.')
-                    ->useAttributeAsKey('name')
-                    ->prototype('scalar')->end()
-                    ->treatNullLike([])
-                ->end()
-            ->end();
+        $loader->load('policy_error.php');
     }
 }

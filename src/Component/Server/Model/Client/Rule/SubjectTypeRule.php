@@ -41,14 +41,15 @@ final class SubjectTypeRule implements RuleInterface
     public function handle(DataBag $commandParameters, DataBag $validatedParameters, ? UserAccountId $userAccountId, callable $next): DataBag
     {
         if ($commandParameters->has('subject_type')) {
-            Assertion::string($commandParameters->get('subject_type'), 'Invalid parameter \'subject_type\'. The value must be a string.');
+            $subjectType = $commandParameters->get('subject_type');
+            Assertion::string($subjectType, 'Invalid parameter \'subject_type\'. The value must be a string.');
             $supported_types = ['public'];
             if ($this->userinfo->isPairwiseSubjectIdentifierSupported()) {
                 $supported_types[] = 'pairwise';
             }
 
-            Assertion::inArray($commandParameters->get('subject_type'), $supported_types, sprintf('The subject type \'%s\' is not supported. Please use one of the following value: %s', $commandParameters->get('subject_type'), implode(', ', $supported_types)));
-            $validatedParameters = $validatedParameters->with('subject_type', $commandParameters->get('subject_type'));
+            Assertion::inArray($subjectType, $supported_types, sprintf('The subject type \'%s\' is not supported. Please use one of the following value: %s', $subjectType, implode(', ', $supported_types)));
+            $validatedParameters = $validatedParameters->with('subject_type', $subjectType);
         }
 
         return $next($commandParameters, $validatedParameters, $userAccountId);

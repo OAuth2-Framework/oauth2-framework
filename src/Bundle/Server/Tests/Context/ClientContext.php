@@ -321,7 +321,7 @@ final class ClientContext implements Context
     public function noClientShouldBeCreated()
     {
         $events = $this->getContainer()->get(Listener\ClientCreatedListener::class)->getEvents();
-        Assertion::eq(0, count($events));
+        Assertion::eq(0, count($events), sprintf('Received the following event(s): %s', json_encode($events)));
     }
 
     /**

@@ -15,7 +15,10 @@ namespace OAuth2Framework\Component\Server\Model\IdToken;
 
 use Assert\Assertion;
 use Base64Url\Base64Url;
-use Jose\JWTCreatorInterface;
+use Jose\EncrypterInterface;
+use Jose\Factory\JWEFactory;
+use Jose\Factory\JWSFactory;
+use Jose\SignerInterface;
 use Jose\Object\JWKInterface;
 use Jose\Object\JWKSetInterface;
 use OAuth2Framework\Component\Server\Endpoint\UserInfo\UserInfo;
@@ -28,11 +31,6 @@ use OAuth2Framework\Component\Server\Model\UserAccount\UserAccountInterface;
 
 final class IdTokenBuilder
 {
-    /**
-     * @var JWTCreatorInterface
-     */
-    private $jwtCreator;
-
     /**
      * @var string
      */
@@ -104,9 +102,19 @@ final class IdTokenBuilder
     private $withAuthenticationTime = false;
 
     /**
+     * @var SignerInterface|null
+     */
+    private $signer = null;
+
+    /**
      * @var string|null
      */
     private $signatureAlgorithm = null;
+
+    /**
+     * @var EncrypterInterface|null
+     */
+    private $encrypter;
 
     /**
      * @var string|null
@@ -126,21 +134,17 @@ final class IdTokenBuilder
     /**
      * IdTokenBuilder constructor.
      *
-     * @param JWTCreatorInterface  $jwtCreator
      * @param string               $issuer
      * @param UserInfo             $userinfo
-     * @param JWKSetInterface      $signatureKeys
      * @param int                  $lifetime
      * @param Client               $client
      * @param UserAccountInterface $userAccount
      * @param string               $redirectUri
      */
-    private function __construct(JWTCreatorInterface $jwtCreator, string $issuer, UserInfo $userinfo, JWKSetInterface $signatureKeys, int $lifetime, Client $client, UserAccountInterface $userAccount, string $redirectUri)
+    private function __construct(string $issuer, UserInfo $userinfo, int $lifetime, Client $client, UserAccountInterface $userAccount, string $redirectUri)
     {
-        $this->jwtCreator = $jwtCreator;
         $this->issuer = $issuer;
         $this->userinfo = $userinfo;
-        $this->signatureKeys = $signatureKeys;
         $this->lifetime = $lifetime;
         $this->client = $client;
         $this->userAccount = $userAccount;
@@ -148,10 +152,8 @@ final class IdTokenBuilder
     }
 
     /**
-     * @param JWTCreatorInterface  $jwtCreator
      * @param string               $issuer
      * @param UserInfo             $userinfo
-     * @param JWKSetInterface      $signatureKeys
      * @param int                  $lifetime
      * @param Client               $client
      * @param UserAccountInterface $userAccount
@@ -159,9 +161,9 @@ final class IdTokenBuilder
      *
      * @return IdTokenBuilder
      */
-    public static function create(JWTCreatorInterface $jwtCreator, string $issuer, UserInfo $userinfo, JWKSetInterface $signatureKeys, int $lifetime, Client $client, UserAccountInterface $userAccount, string $redirectUri)
+    public static function create(string $issuer, UserInfo $userinfo, int $lifetime, Client $client, UserAccountInterface $userAccount, string $redirectUri)
     {
-        return new self($jwtCreator, $issuer, $userinfo, $signatureKeys, $lifetime, $client, $userAccount, $redirectUri);
+        return new self($issuer, $userinfo, $lifetime, $client, $userAccount, $redirectUri);
     }
 
     /**
@@ -305,30 +307,37 @@ final class IdTokenBuilder
     }
 
     /**
-     * @param string $signatureAlgorithm
+     * @param SignerInterface $signer
+     * @param JWKSetInterface $signatureKeys
+     * @param string          $signatureAlgorithm
      *
      * @return IdTokenBuilder
      */
-    public function withSignatureAlgorithm(string $signatureAlgorithm): IdTokenBuilder
+    public function withSignature(SignerInterface $signer, JWKSetInterface $signatureKeys, string $signatureAlgorithm): IdTokenBuilder
     {
-        Assertion::inArray($signatureAlgorithm, $this->jwtCreator->getSupportedSignatureAlgorithms(), sprintf('Unsupported signature algorithm \'%s\'. Please use one of the following one: %s', $signatureAlgorithm, implode(', ', $this->jwtCreator->getSupportedSignatureAlgorithms())));
+        Assertion::inArray($signatureAlgorithm, $signer->getSupportedSignatureAlgorithms(), sprintf('Unsupported signature algorithm \'%s\'. Please use one of the following one: %s', $signatureAlgorithm, implode(', ', $signer->getSupportedSignatureAlgorithms())));
+        Assertion::true(0 !== $signatureKeys->countKeys(), 'The signature key set must contain at least one key.');
         $clone = clone $this;
+        $clone->signer = $signer;
+        $clone->signatureKeys = $signatureKeys;
         $clone->signatureAlgorithm = $signatureAlgorithm;
 
         return $clone;
     }
 
     /**
-     * @param string $keyEncryptionAlgorithm
-     * @param string $contentEncryptionAlgorithm
+     * @param EncrypterInterface $encrypter
+     * @param string             $keyEncryptionAlgorithm
+     * @param string             $contentEncryptionAlgorithm
      *
      * @return IdTokenBuilder
      */
-    public function withEncryptionAlgorithms(string $keyEncryptionAlgorithm, string $contentEncryptionAlgorithm): IdTokenBuilder
+    public function withEncryption(EncrypterInterface $encrypter, string $keyEncryptionAlgorithm, string $contentEncryptionAlgorithm): IdTokenBuilder
     {
-        Assertion::inArray($keyEncryptionAlgorithm, $this->jwtCreator->getSupportedKeyEncryptionAlgorithms(), sprintf('Unsupported key encryption algorithm \'%s\'. Please use one of the following one: %s', $keyEncryptionAlgorithm, implode(', ', $this->jwtCreator->getSupportedKeyEncryptionAlgorithms())));
-        Assertion::inArray($contentEncryptionAlgorithm, $this->jwtCreator->getSupportedContentEncryptionAlgorithms(), sprintf('Unsupported key encryption algorithm \'%s\'. Please use one of the following one: %s', $contentEncryptionAlgorithm, implode(', ', $this->jwtCreator->getSupportedContentEncryptionAlgorithms())));
+        Assertion::inArray($keyEncryptionAlgorithm, $encrypter->getSupportedKeyEncryptionAlgorithms(), sprintf('Unsupported key encryption algorithm \'%s\'. Please use one of the following one: %s', $keyEncryptionAlgorithm, implode(', ', $encrypter->getSupportedKeyEncryptionAlgorithms())));
+        Assertion::inArray($contentEncryptionAlgorithm, $encrypter->getSupportedContentEncryptionAlgorithms(), sprintf('Unsupported key encryption algorithm \'%s\'. Please use one of the following one: %s', $contentEncryptionAlgorithm, implode(', ', $encrypter->getSupportedContentEncryptionAlgorithms())));
         $clone = clone $this;
+        $clone->encrypter = $encrypter;
         $clone->keyEncryptionAlgorithm = $keyEncryptionAlgorithm;
         $clone->contentEncryptionAlgorithm = $contentEncryptionAlgorithm;
 
@@ -436,9 +445,11 @@ final class IdTokenBuilder
     {
         $signatureKey = $this->getSignatureKey($this->signatureAlgorithm);
         $headers = $this->getHeaders($signatureKey, $this->signatureAlgorithm);
-        $jwt = $this->jwtCreator->sign($claims, $headers, $signatureKey);
+        $jws = JWSFactory::createJWS($claims);
+        $jws = $jws->addSignatureInformation($signatureKey, $headers);
+        $this->signer->sign($jws);
 
-        return $jwt;
+        return $jws->toJson(0);
     }
 
     /**
@@ -458,8 +469,11 @@ final class IdTokenBuilder
             'alg' => $this->keyEncryptionAlgorithm,
             'enc' => $this->contentEncryptionAlgorithm,
         ];
+        $jwe = JWEFactory::createJWE($jwt, $headers);
+        $jwe = $jwe->addRecipientInformation($encryptionKey);
+        $this->encrypter->encrypt($jwe);
 
-        return $this->jwtCreator->encrypt($jwt, $headers, $encryptionKey);
+        return $jwe->toJson(0);
     }
 
     /**

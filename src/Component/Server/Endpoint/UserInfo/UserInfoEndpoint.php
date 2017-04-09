@@ -13,9 +13,13 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\Endpoint\UserInfo;
 
+use Assert\Assertion;
 use Interop\Http\Factory\ResponseFactoryInterface;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use Jose\EncrypterInterface;
+use Jose\Object\JWKSetInterface;
+use Jose\SignerInterface;
 use OAuth2Framework\Component\Server\Model\AccessToken\AccessToken;
 use OAuth2Framework\Component\Server\Model\Client\Client;
 use OAuth2Framework\Component\Server\Model\Client\ClientRepositoryInterface;
@@ -29,6 +33,21 @@ use Psr\Http\Message\ServerRequestInterface;
 
 final class UserInfoEndpoint implements MiddlewareInterface
 {
+    /**
+     * @var JWKSetInterface|null
+     */
+    private $signatureKeys = null;
+
+    /**
+     * @var SignerInterface|null
+     */
+    private $signer = null;
+
+    /**
+     * @var EncrypterInterface|null
+     */
+    private $encrypter;
+
     /**
      * @var ClientRepositoryInterface
      */
@@ -56,13 +75,20 @@ final class UserInfoEndpoint implements MiddlewareInterface
      * @param ClientRepositoryInterface      $clientRepository
      * @param UserAccountRepositoryInterface $userAccountRepository
      * @param ResponseFactoryInterface       $responseFactory
+     * @param SignerInterface|null           $signer
+     * @param JWKSetInterface|null           $signatureKeys
+     * @param EncrypterInterface|null        $encrypter
      */
-    public function __construct(IdTokenBuilderFactory $idTokenBuilderFactory, ClientRepositoryInterface $clientRepository, UserAccountRepositoryInterface $userAccountRepository, ResponseFactoryInterface $responseFactory)
+    public function __construct(IdTokenBuilderFactory $idTokenBuilderFactory, ClientRepositoryInterface $clientRepository, UserAccountRepositoryInterface $userAccountRepository, ResponseFactoryInterface $responseFactory, ?SignerInterface $signer, ?JWKSetInterface $signatureKeys, ?EncrypterInterface $encrypter)
     {
+        Assertion::false($signer xor $signatureKeys, 'Signature support requires both signer an key set.');
         $this->idTokenBuilderFactory = $idTokenBuilderFactory;
         $this->clientRepository = $clientRepository;
         $this->userAccountRepository = $userAccountRepository;
         $this->responseFactory = $responseFactory;
+        $this->signer = $signer;
+        $this->signatureKeys = $signatureKeys;
+        $this->encrypter = $encrypter;
     }
 
     /**
@@ -85,7 +111,7 @@ final class UserInfoEndpoint implements MiddlewareInterface
 
         $response = $this->responseFactory->createResponse();
         $response->getBody()->write($idToken);
-        $headers = ['Content-Type' => $isJwt ? 'application/jwt; charset=UTF-8' : 'application/json; charset=UTF-8', 'Cache-Control' => 'no-cache, no-store, max-age=0, must-revalidate, private', 'Pragma' => 'no-cache'];
+        $headers = ['Content-Type' => sprintf('application/%s; charset=UTF-8', $isJwt ? 'jwt' : 'json'), 'Cache-Control' => 'no-cache, no-store, max-age=0, must-revalidate, private', 'Pragma' => 'no-cache'];
         foreach ($headers as $k => $v) {
             $response = $response->withHeader($k, $v);
         }
@@ -107,16 +133,16 @@ final class UserInfoEndpoint implements MiddlewareInterface
         $requestedClaims = $this->getEndpointClaims($accessToken);
         $idTokenBuilder = $this->idTokenBuilderFactory->createBuilder($client, $userAccount, $accessToken->getMetadata('redirect_uri'));
 
-        if ($client->has('userinfo_signed_response_alg')) {
+        if ($client->has('userinfo_signed_response_alg') && null !== $this->signer) {
             $isJwt = true;
             $signatureAlgorithm = $client->get('userinfo_signed_response_alg');
-            $idTokenBuilder = $idTokenBuilder->withSignatureAlgorithm($signatureAlgorithm);
+            $idTokenBuilder = $idTokenBuilder->withSignature($this->signer, $this->signatureKeys, $signatureAlgorithm);
         }
-        if ($client->has('userinfo_encrypted_response_alg') && $client->has('userinfo_encrypted_response_enc')) {
+        if ($client->has('userinfo_encrypted_response_alg') && $client->has('userinfo_encrypted_response_enc') && null !== $this->encrypter) {
             $isJwt = true;
             $keyEncryptionAlgorithm = $client->get('userinfo_encrypted_response_alg');
             $contentEncryptionAlgorithm = $client->get('userinfo_encrypted_response_enc');
-            $idTokenBuilder = $idTokenBuilder->withEncryptionAlgorithms($keyEncryptionAlgorithm, $contentEncryptionAlgorithm);
+            $idTokenBuilder = $idTokenBuilder->withEncryption($this->encrypter, $keyEncryptionAlgorithm, $contentEncryptionAlgorithm);
         }
         $idTokenBuilder = $idTokenBuilder->withAccessToken($accessToken);
         $idTokenBuilder = $idTokenBuilder->withRequestedClaims($requestedClaims);

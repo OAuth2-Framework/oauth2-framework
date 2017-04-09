@@ -390,10 +390,12 @@ final class OIDCContext implements Context
     }
 
     /**
-     * @When A client sends a valid authorization request with a valid id_token_hint parameter
+     * @When A client sends a valid authorization request with a valid id_token_hint parameter but no user authenticated
      */
-    public function aClientSendsAValidAuthorizationRequestWithAValidIdTokenHintParameter()
+    public function aClientSendsAValidAuthorizationRequestWithAValidIdTokenHintParameterButNoUserAuthenticated()
     {
+        $isFollowingRedirects = $this->minkContext->getSession()->getDriver()->getClient()->isFollowingRedirects();
+        $this->minkContext->getSession()->getDriver()->getClient()->followRedirects(false);
         $this->minkContext->getSession()->getDriver()->getClient()->request(
             'GET',
             'https://oauth2.test/authorize',
@@ -407,6 +409,7 @@ final class OIDCContext implements Context
             [],
             []
         );
+        $this->minkContext->getSession()->getDriver()->getClient()->followRedirects($isFollowingRedirects);
     }
 
     /**
@@ -532,7 +535,7 @@ final class OIDCContext implements Context
             'iss' => 'https://www.my-service.com',
         ];
 
-        $key = $this->getContainer()->get('oauth2_server.grant.id_token.key_set')->selectKey('sig', 'RS256');
+        $key = $this->getContainer()->get('oauth2_server.openid_connect.id_token.key_set')->selectKey('sig', 'RS256');
         Assertion::notNull($key);
 
         return JWSFactory::createJWSToCompactJSON($payload, $key, $headers);

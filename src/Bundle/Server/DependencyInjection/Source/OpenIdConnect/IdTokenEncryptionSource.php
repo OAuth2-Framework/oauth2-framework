@@ -11,7 +11,7 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Bundle\Server\DependencyInjection\Source\Grant;
+namespace OAuth2Framework\Bundle\Server\DependencyInjection\Source\OpenIdConnect;
 
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\ActionableSource;
 use SpomkyLabs\JoseBundle\Helper\ConfigurationHelper;
@@ -26,7 +26,7 @@ final class IdTokenEncryptionSource extends ActionableSource
      */
     protected function continueLoading(string $path, ContainerBuilder $container, array $config)
     {
-        foreach (['key_encryption_algorithms', 'content_encryption_algorithms', 'required'] as $k) {
+        foreach (['key_encryption_algorithms', 'content_encryption_algorithms'] as $k) {
             $container->setParameter($path.'.'.$k, $config[$k]);
         }
         $container->setAlias($path.'.key_set', $config['key_set']);
@@ -60,10 +60,6 @@ final class IdTokenEncryptionSource extends ActionableSource
         parent::continueConfiguration($node);
         $node
             ->children()
-                ->booleanNode('required')
-                    ->info('If set to true, all ID Token sent to the server must be encrypted.')
-                    ->defaultFalse()
-                ->end()
                 ->scalarNode('key_set')
                     ->info('Key set that contains a suitable encryption key for the selected encryption algorithms.')
                     ->defaultNull()
@@ -89,7 +85,7 @@ final class IdTokenEncryptionSource extends ActionableSource
      */
     private function updateJoseBundleConfigurationForEncrypter(ContainerBuilder $container, array $sourceConfig)
     {
-        ConfigurationHelper::addEncrypter($container, 'id_token', $sourceConfig['key_encryption_algorithms'], $sourceConfig['content_encryption_algorithms'], [], false);
+        ConfigurationHelper::addEncrypter($container, 'id_token', $sourceConfig['key_encryption_algorithms'], $sourceConfig['content_encryption_algorithms'], ['DEF'], false, false);
     }
 
     /**
@@ -98,6 +94,6 @@ final class IdTokenEncryptionSource extends ActionableSource
      */
     private function updateJoseBundleConfigurationForDecrypter(ContainerBuilder $container, array $sourceConfig)
     {
-        ConfigurationHelper::addDecrypter($container, 'id_token', $sourceConfig['key_encryption_algorithms'], $sourceConfig['content_encryption_algorithms'], [], false);
+        ConfigurationHelper::addDecrypter($container, 'id_token', $sourceConfig['key_encryption_algorithms'], $sourceConfig['content_encryption_algorithms'], ['DEF'], false);
     }
 }

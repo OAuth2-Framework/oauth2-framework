@@ -115,6 +115,8 @@ final class OAuth2FrameworkServerBundle extends Bundle
             new Compiler\InitialAccessTokenCompilerPass(),
             new Compiler\ClientAssertionJWTEncryptionSupportConfigurationCompilerPass(),
             new Compiler\SessionManagementRouteCompilerPass(),
+            new Compiler\ClientConfigurationEndpointRouteCompilerPass(),
+            new Compiler\ClientRegistrationEndpointRouteCompilerPass(),
         ];
     }
 }

@@ -36,7 +36,6 @@ final class EndpointSource extends ArraySource
         $this->endpoints[] = new TokenEndpointSource();
         $this->endpoints[] = new TokenIntrospectionEndpointSource();
         $this->endpoints[] = new TokenRevocationEndpointSource();
-        $this->endpoints[] = new UserinfoSource();
         $this->endpoints[] = new JwksUriEndpointSource();
         $this->endpoints[] = new IssuerDiscoveryEndpointSource();
         $this->endpoints[] = new SessionManagementEndpointSource();

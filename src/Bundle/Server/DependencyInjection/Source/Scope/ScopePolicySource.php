@@ -33,8 +33,8 @@ final class ScopePolicySource extends ActionableSource
     public function __construct()
     {
         $this->subSources = [
-            new ScopePolicyError(),
-            new ScopePolicyDefault(),
+            new ScopePolicyErrorSource(),
+            new ScopePolicyDefaultSource(),
         ];
     }
 

@@ -23,7 +23,8 @@ return [
             '%oauth2_server.endpoint.client_registration.initial_access_token.min_length%',
             '%oauth2_server.endpoint.client_registration.initial_access_token.max_length%',
             get('oauth2_server.endpoint.client_registration.initial_access_token.event_store'),
-            get('event_recorder')
+            get('event_recorder'),
+            get('cache.app')
         ),
 
     'client_registration_bearer_token' => create(BearerToken::class)

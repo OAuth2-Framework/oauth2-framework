@@ -30,21 +30,21 @@ final class IdTokenLoader
     private $jwtLoader;
 
     /**
-     * @var string
+     * @var string[]
      */
-    private $signatureAlgorithm;
+    private $signatureAlgorithms;
 
     /**
      * IdTokenLoader constructor.
      *
      * @param JWTLoaderInterface $jwtLoader
      * @param JWKSetInterface    $signatureKeySet
-     * @param string             $signatureAlgorithm
+     * @param array              $signatureAlgorithms
      */
-    public function __construct(JWTLoaderInterface $jwtLoader, JWKSetInterface $signatureKeySet, string $signatureAlgorithm)
+    public function __construct(JWTLoaderInterface $jwtLoader, JWKSetInterface $signatureKeySet, array $signatureAlgorithms)
     {
         $this->signatureKeySet = $signatureKeySet;
-        $this->signatureAlgorithm = $signatureAlgorithm;
+        $this->signatureAlgorithms = $signatureAlgorithms;
         $this->jwtLoader = $jwtLoader;
     }
 
@@ -83,7 +83,7 @@ final class IdTokenLoader
             $jwt = $this->jwtLoader->load($idTokenId->getValue());
             Assertion::true($jwt->hasClaims(), 'Invalid ID Token');
             $validSignature = $this->jwtLoader->verify($jwt, $this->signatureKeySet);
-            Assertion::eq($this->signatureAlgorithm, $jwt->getSignature($validSignature)->getProtectedHeader('alg'));
+            Assertion::inArray($jwt->getSignature($validSignature)->getProtectedHeader('alg'), $this->signatureAlgorithms);
             $idToken = IdToken::create($idTokenId, $jwt->getClaims());
 
             return $idToken;

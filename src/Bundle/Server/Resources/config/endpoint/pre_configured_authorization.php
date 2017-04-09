@@ -33,6 +33,7 @@ return [
     PreConfiguredAuthorizationRepository::class => create()
         ->arguments(
             get('oauth2_server.endpoint.authorization.pre_configured_authorization.event_store'),
-            get('event_recorder')
+            get('event_recorder'),
+            get('cache.app')
         ),
 ];

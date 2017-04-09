@@ -21,8 +21,8 @@ return [
     IdTokenLoader::class => create()
         ->arguments(
             get('jose.jwt_loader.id_token'),
-            get('oauth2_server.grant.id_token.key_set'),
-            '%oauth2_server.grant.id_token.default_signature_algorithm%'
+            get('oauth2_server.openid_connect.id_token.key_set'),
+            '%oauth2_server.openid_connect.id_token.signature_algorithms%'
         ),
 
     IdTokenHintDiscovery::class => create()

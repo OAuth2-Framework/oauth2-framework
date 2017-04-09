@@ -49,6 +49,7 @@ final class Configuration implements ConfigurationInterface
     {
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root($this->alias);
+        $rootNode->addDefaultsIfNotSet();
 
         $this->buildFromSources($this->sourceMap, $rootNode);
 

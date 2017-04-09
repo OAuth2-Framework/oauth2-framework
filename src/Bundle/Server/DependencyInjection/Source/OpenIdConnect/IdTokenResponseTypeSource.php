@@ -11,22 +11,22 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Bundle\Server\DependencyInjection\Source\Endpoint;
+namespace OAuth2Framework\Bundle\Server\DependencyInjection\Source\OpenIdConnect;
 
 use Fluent\PhpConfigFileLoader;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\ActionableSource;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-final class AuthorizationEndpointIdTokenHintSource extends ActionableSource
+final class IdTokenResponseTypeSource extends ActionableSource
 {
     /**
      * {@inheritdoc}
      */
     protected function continueLoading(string $path, ContainerBuilder $container, array $config)
     {
-        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint'));
-        $loader->load('id_token_hint.php');
+        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/openid_connect'));
+        $loader->load('id_token_response_type.php');
     }
 
     /**
@@ -34,6 +34,6 @@ final class AuthorizationEndpointIdTokenHintSource extends ActionableSource
      */
     protected function name(): string
     {
-        return 'id_token_hint';
+        return 'response_type';
     }
 }
