@@ -24,6 +24,7 @@ namespace OAuth2Framework\Bundle\Server\Tests\Context;
 
 use Behat\Behat\Context\Context;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
+use Behat\Behat\Tester\Exception\PendingException;
 use Behat\MinkExtension\Context\MinkContext;
 use Behat\Symfony2Extension\Context\KernelDictionary;
 
@@ -59,6 +60,7 @@ final class NoneResponseTypeContext implements Context
      */
     public function aClientSendsAAuthorizationRequestsWithTheNoneResponseType()
     {
+        throw new PendingException();
         $this->minkContext->getSession()->getDriver()->getClient()->request(
             'GET', 'https://oauth2.test/authorize',
             [
