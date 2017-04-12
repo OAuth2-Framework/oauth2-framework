@@ -17,7 +17,6 @@ use OAuth2Framework\Bundle\Server\Service\MetadataBuilder;
 use OAuth2Framework\Component\Server\Endpoint\Authorization\AuthorizationRequestLoader;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 
 final class AuthorizationRequestMetadataCompilerPass implements CompilerPassInterface
