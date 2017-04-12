@@ -16,22 +16,20 @@
     ],
     "autoload": {
         "psr-4": {
-            "OAuth2Framework\Component\Client\\":  "src/"
+            "OAuth2Framework\\Component\\Client\\":  "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Test\\OAuth2Framework\Component\Client\\":  "tests/"
+            "Test\\OAuth2Framework\\Component\\Client\\":  "tests/"
         }
     },
     "require": {
         "php": "^5.5|^7.0",
         "guzzlehttp/guzzle": "^6.0",
-        "spomky-labs/jose": "^5.0.5"
+        "spomky-labs/jose": "^6.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^4.5|^5.0",
-        "satooshi/php-coveralls": "^1.0"
     },
     "extra": {
         "branch-alias": {
