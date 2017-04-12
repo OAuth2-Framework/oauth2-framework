@@ -39,13 +39,12 @@ final class CustomMetadataCompilerPass implements CompilerPassInterface
         foreach ($customValues as $key => $parameters) {
             $this->addMethodCall($definition, 'addKeyValuePair', [$key, $parameters]);
         }
-
     }
 
     /**
      * @param Definition $definition
-     * @param string $method
-     * @param array $parameters
+     * @param string     $method
+     * @param array      $parameters
      */
     private function addMethodCall(Definition $definition, string $method, array $parameters)
     {
