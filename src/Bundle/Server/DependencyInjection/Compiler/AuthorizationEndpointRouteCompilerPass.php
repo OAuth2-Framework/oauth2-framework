@@ -17,7 +17,6 @@ use OAuth2Framework\Bundle\Server\Routing\RouteLoader;
 use OAuth2Framework\Bundle\Server\Service\MetadataBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Reference;
 
 class AuthorizationEndpointRouteCompilerPass implements CompilerPassInterface
 {
@@ -51,7 +50,5 @@ class AuthorizationEndpointRouteCompilerPass implements CompilerPassInterface
         }
         $definition = $container->getDefinition(MetadataBuilder::class);
         $definition->addMethodCall('setRoute', ['authorization_endpoint', 'oauth2_server_authorization_endpoint']);
-        //$definition->addMethodCall('setAuthorizationFactory', [new Reference('oauth2_server.authorization_factory')]); FIXME
-        //$definition->addMethodCall('setAuthorizationRequestLoader', [new Reference('oauth2_server.authorization_request_loader')]); FIXME
     }
 }

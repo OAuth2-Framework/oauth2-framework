@@ -65,12 +65,6 @@ final class MetadataBuilder
     {
         $path = $this->router->generate($routeName, $routeParameters, RouterInterface::ABSOLUTE_URL);
         $this->metadata->set($name, $path);
-
-        /*
-        $this->metadata->set('service_documentation', 'https://my.server.com/documentation');
-        $this->metadata->set('op_policy_uri', 'https://my.server.com/policy.html');
-        $this->metadata->set('op_tos_uri', 'https://my.server.com/tos.html');
-        */
     }
 
     /**
@@ -147,13 +141,6 @@ final class MetadataBuilder
     public function addKeyValuePair(string $name, $value)
     {
         $this->metadata->set($name, $value);
-        /*
-        $this->metadata->set('acr_values_supported', []);
-        $this->metadata->set('display_values_supported', ['page']);
-        $this->metadata->set('claim_types_supported', false);
-        $this->metadata->set('ui_locales_supported', ['en_US', 'fr_FR']);
-        $this->metadata->set('claims_parameter_supported', false);
-        */
     }
 
     /**
