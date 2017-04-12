@@ -6,8 +6,8 @@ default:
             kernel:
                 env: 'test'
                 debug: true
-                path: 'Tests/App/AppKernel.php'
-                bootstrap: 'Tests/autoload.php'
+                path: '%paths.base%/Tests/App/AppKernel.php'
+                bootstrap: '%paths.base%/Tests/autoload.php'
         Behat\MinkExtension:
             base_url: 'https://oauth2.test/'
             default_session: 'symfony2'
