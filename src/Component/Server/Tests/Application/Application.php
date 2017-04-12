@@ -3081,8 +3081,8 @@ final class Application
             $this->metadata->set('token_endpoint_auth_encryption_alg_values_supported', $this->getJWTLoader()->getSupportedKeyEncryptionAlgorithms());
             $this->metadata->set('token_endpoint_auth_encryption_enc_values_supported', $this->getJWTLoader()->getSupportedContentEncryptionAlgorithms());
             $this->metadata->set('display_values_supported', ['page']);
-            $this->metadata->set('claim_types_supported', false);
-            $this->metadata->set('claims_supported', false);
+            $this->metadata->set('claim_types_supported', ['normal', 'aggregated', 'distributed']);
+            $this->metadata->set('claims_supported', $this->getUserInfo()->getClaimsSupported());
             $this->metadata->set('service_documentation', 'https://my.server.com/documentation');
             $this->metadata->set('claims_locales_supported', []);
             $this->metadata->set('ui_locales_supported', ['en_US', 'fr_FR']);

@@ -23,6 +23,14 @@ final class UserInfoScopeSupportManager
     private $userinfoScopeSupports = [];
 
     /**
+     * UserInfoScopeSupportManager constructor.
+     */
+    public function __construct()
+    {
+        $this->userinfoScopeSupports['openid'] = new OpenIdScopeSupport();
+    }
+
+    /**
      * @param UserInfoScopeSupportInterface $userinfoScopeSupport
      *
      * @return UserInfoScopeSupportManager
@@ -56,5 +64,13 @@ final class UserInfoScopeSupportManager
         Assertion::true($this->has($scope), sprintf('The userinfo scope \'%s\' is not supported.', $scope));
 
         return $this->userinfoScopeSupports[$scope];
+    }
+
+    /**
+     * @return UserinfoScopeSupportInterface[]
+     */
+    public function all(): array
+    {
+        return $this->userinfoScopeSupports;
     }
 }

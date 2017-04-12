@@ -91,6 +91,24 @@ oauth2_server:
         metadata:
             enabled: true
             path: '/.well-known/openid-configuration'
+            custom_routes:
+                service_documentation:
+                    route_name: 'service_documentation'
+                    route_parameters:
+                        'hello': 'developer'
+                op_policy_uri:
+                    route_name: 'op_policy_uri'
+                    route_parameters: []
+                op_tos_uri:
+                    route_name: 'op_tos_uri'
+                    route_parameters: []
+            custom_values:
+                acr_values_supported:
+                    - 'urn:mace:incommon:iap:silver'
+                    - 'urn:mace:incommon:iap:bronze'
+                display_values_supported: ['page']
+                ui_locales_supported: ['fr', 'en']
+                claims_locales_supported: ['en', 'fr', 'de']
         session_management:
             enabled: true
             path: '/session/manager/iframe'
@@ -171,8 +189,6 @@ oauth2_server:
             enabled: true
             service: 'pairwise_subject_identifier'
             is_default: true
-        claims_supported: ['sub', 'name', 'given_name', 'family_name', 'middle_name', 'nickname', 'preferred_username', 'profile', 'picture', 'website', 'email', 'email_verified', 'gender', 'birthdate', 'zoneinfo', 'locale', 'phone_number', 'phone_number_verified', 'address', 'updated_at']
-        claims_locales_supported: ['en', 'fr', 'de']
         id_token:
             response_type:
                 enabled: true

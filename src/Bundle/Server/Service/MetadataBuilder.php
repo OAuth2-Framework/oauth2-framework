@@ -137,6 +137,7 @@ final class MetadataBuilder
     public function setUserinfo(UserInfo $userInfo)
     {
         $this->metadata->set('subject_types_supported', $userInfo->isPairwiseSubjectIdentifierSupported() ? ['public', 'pairwise'] : ['public']);
+        $this->metadata->set('claims_supported', $userInfo->getClaimsSupported());
     }
 
     /**

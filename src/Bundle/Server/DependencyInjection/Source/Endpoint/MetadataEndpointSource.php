@@ -26,7 +26,7 @@ final class MetadataEndpointSource extends ActionableSource
      */
     protected function continueLoading(string $path, ContainerBuilder $container, array $config)
     {
-        foreach (['path'] as $key) {
+        foreach (['path', 'custom_values', 'custom_routes'] as $key) {
             $container->setParameter($path.'.'.$key, $config[$key]);
         }
         $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint'));
@@ -56,6 +56,31 @@ final class MetadataEndpointSource extends ActionableSource
             ->end()
             ->children()
                 ->scalarNode('path')->defaultValue('/.well-known/openid-configuration')->end()
+                ->arrayNode('custom_routes')
+                    ->info('Custom routes added to the metadata response.')
+                    ->useAttributeAsKey('name')
+                    ->prototype('array')
+                        ->children()
+                            ->scalarNode('route_name')
+                                ->info('Route name.')
+                                ->isRequired()
+                            ->end()
+                            ->arrayNode('route_parameters')
+                                ->info('Parameters associated to the route (if needed).')
+                                ->useAttributeAsKey('name')
+                                ->prototype('variable')->end()
+                                ->treatNullLike([])
+                            ->end()
+                        ->end()
+                    ->end()
+                    ->treatNullLike([])
+                ->end()
+                ->arrayNode('custom_values')
+                    ->info('Custom values added to the metadata response.')
+                    ->useAttributeAsKey('name')
+                    ->prototype('variable')->end()
+                    ->treatNullLike([])
+                ->end()
             ->end(); //FIXME: add signature support
     }
 }

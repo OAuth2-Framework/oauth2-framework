@@ -122,6 +122,7 @@ final class OAuth2FrameworkServerBundle extends Bundle
             new Compiler\ClientJwtAssertionMetadataCompilerPass(),
             new Compiler\JwksUriEndpointRouteCompilerPass(),
             new Compiler\CommonMetadataCompilerPass(),
+            new Compiler\CustomMetadataCompilerPass(),
             new Compiler\ScopeMetadataCompilerPass(),
         ];
     }
