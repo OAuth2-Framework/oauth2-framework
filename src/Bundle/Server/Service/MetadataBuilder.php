@@ -22,8 +22,8 @@ use OAuth2Framework\Component\Server\Model\Scope\ScopeRepositoryInterface;
 use OAuth2Framework\Component\Server\ResponseMode\ResponseModeManager;
 use OAuth2Framework\Component\Server\ResponseType\ResponseTypeManager;
 use OAuth2Framework\Component\Server\TokenEndpointAuthMethod\TokenEndpointAuthMethodManager;
-use Symfony\Component\Routing\RouterInterface;
 use OAuth2Framework\Component\Server\Endpoint\Metadata\Metadata;
+use Symfony\Component\Routing\RouterInterface;
 
 final class MetadataBuilder
 {
