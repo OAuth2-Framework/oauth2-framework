@@ -18,9 +18,9 @@
     "require": {
         "php": "^7.1",
         "psr/http-message": "^1.0",
-        "spomky-labs/jose": "^6.1.1",
+        "spomky-labs/jose": "^6.1.4",
         "spomky-labs/jose-bundle": "^2.2",
-        "beberlei/assert": "^2.6.4",
+        "beberlei/assert": "^2.7.4",
         "php-http/httplug": "^1.1",
         "http-interop/http-middleware": "^0.4",
         "http-interop/http-factory": "^0.2",
@@ -29,7 +29,7 @@
         "symfony/symfony": "^3.2",
         "sensio/framework-extra-bundle": "^3.0.8",
         "simple-bus/message-bus": "^2.2",
-        "simple-bus/symfony-bridge": "^4.1",
+        "simple-bus/symfony-bridge": "^4.1.5",
         "mnapoli/fluent-symfony": "^0.1.5"
     },
     "replace": {
