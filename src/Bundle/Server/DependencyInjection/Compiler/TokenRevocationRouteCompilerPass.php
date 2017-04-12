@@ -18,7 +18,7 @@ use OAuth2Framework\Bundle\Server\Service\MetadataBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-class TokenRevocationRouteCompilerPass implements CompilerPassInterface
+final class TokenRevocationRouteCompilerPass implements CompilerPassInterface
 {
     /**
      * {@inheritdoc}

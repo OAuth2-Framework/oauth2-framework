@@ -17,7 +17,7 @@ use OAuth2Framework\Bundle\Server\Service\MetadataBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-class CommonMetadataCompilerPass implements CompilerPassInterface
+final class CommonMetadataCompilerPass implements CompilerPassInterface
 {
     /**
      * {@inheritdoc}
@@ -29,7 +29,7 @@ class CommonMetadataCompilerPass implements CompilerPassInterface
         }
 
         $metadata = $container->getDefinition(MetadataBuilder::class);
-        $issuer = $container->getParameter('oauth2_server.issuer');
+        $issuer = $container->getParameter('oauth2_server.server_uri');
         $metadata->addMethodCall('addKeyValuePair', ['issuer', $issuer]);
     }
 }

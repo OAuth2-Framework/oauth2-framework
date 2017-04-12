@@ -18,7 +18,7 @@ use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
-class ClientAssertionJWTEncryptionSupportConfigurationCompilerPass implements CompilerPassInterface
+final class ClientAssertionJWTEncryptionSupportConfigurationCompilerPass implements CompilerPassInterface
 {
     /**
      * {@inheritdoc}

@@ -20,7 +20,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
-class SessionStateParameterExtension extends Base
+final class SessionStateParameterExtension extends Base
 {
     /**
      * @var string

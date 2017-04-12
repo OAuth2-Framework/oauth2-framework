@@ -22,7 +22,7 @@ use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
-class IssuerDiscoveryCompilerPass implements CompilerPassInterface
+final class IssuerDiscoveryCompilerPass implements CompilerPassInterface
 {
     /**
      * {@inheritdoc}

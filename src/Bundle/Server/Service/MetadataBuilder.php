@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Server\Service;
 
+use OAuth2Framework\Bundle\Server\TokenEndpointAuthMethod\ClientAssertionJwt;
 use OAuth2Framework\Component\Server\Endpoint\Authorization\AuthorizationRequestLoader;
 use OAuth2Framework\Component\Server\Endpoint\UserInfo\UserInfo;
 use OAuth2Framework\Component\Server\GrantType\GrantTypeManager;
@@ -81,6 +82,16 @@ final class MetadataBuilder
     }
 
     /**
+     * @param ClientAssertionJwt $clientAssertionJwt
+     */
+    public function setClientAssertionJwt(ClientAssertionJwt $clientAssertionJwt)
+    {
+        $this->metadata->set('token_endpoint_auth_signing_alg_values_supported', $clientAssertionJwt->getSupportedSignatureAlgorithms());
+        $this->metadata->set('token_endpoint_auth_encryption_alg_values_supported', $clientAssertionJwt->getSupportedKeyEncryptionAlgorithms());
+        $this->metadata->set('token_endpoint_auth_encryption_enc_values_supported', $clientAssertionJwt->getSupportedContentEncryptionAlgorithms());
+    }
+
+    /**
      * @param GrantTypeManager $grantTypeManager
      */
     public function setGrantTypeManager(GrantTypeManager $grantTypeManager)
@@ -137,9 +148,6 @@ final class MetadataBuilder
         $this->metadata->set($name, $value);
         /*
         $this->metadata->set('acr_values_supported', []);
-        $this->metadata->set('request_object_signing_alg_values_supported', $this->getJWTLoader()->getSupportedSignatureAlgorithms());
-        $this->metadata->set('request_object_encryption_alg_values_supported', $this->getJWTLoader()->getSupportedKeyEncryptionAlgorithms());
-        $this->metadata->set('request_object_encryption_enc_values_supported', $this->getJWTLoader()->getSupportedContentEncryptionAlgorithms());
         $this->metadata->set('display_values_supported', ['page']);
         $this->metadata->set('claim_types_supported', false);
         $this->metadata->set('ui_locales_supported', ['en_US', 'fr_FR']);
@@ -155,5 +163,8 @@ final class MetadataBuilder
         $this->metadata->set('request_parameter_supported', $authorizationRequestLoader->isRequestObjectSupportEnabled());
         $this->metadata->set('request_uri_parameter_supported', $authorizationRequestLoader->isRequestObjectReferenceSupportEnabled());
         $this->metadata->set('require_request_uri_registration', $authorizationRequestLoader->isRequestUriRegistrationRequired());
+        $this->metadata->set('request_object_signing_alg_values_supported', $authorizationRequestLoader->getSupportedSignatureAlgorithms());
+        $this->metadata->set('request_object_encryption_alg_values_supported', $authorizationRequestLoader->getSupportedKeyEncryptionAlgorithms());
+        $this->metadata->set('request_object_encryption_enc_values_supported', $authorizationRequestLoader->getSupportedContentEncryptionAlgorithms());
     }
 }

@@ -18,7 +18,7 @@ use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
-class BeforeConsentScreenCompilerPass implements CompilerPassInterface
+final class BeforeConsentScreenCompilerPass implements CompilerPassInterface
 {
     /**
      * {@inheritdoc}
