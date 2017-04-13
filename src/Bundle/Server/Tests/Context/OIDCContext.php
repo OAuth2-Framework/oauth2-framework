@@ -25,7 +25,6 @@ namespace OAuth2Framework\Bundle\Server\Tests\Context;
 use Assert\Assertion;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
-use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\MinkExtension\Context\MinkContext;
 use Behat\Symfony2Extension\Context\KernelDictionary;
@@ -173,7 +172,6 @@ final class OIDCContext implements Context
      */
     public function aClientSendARequestToTheMetadataEndpoint()
     {
-        throw new PendingException();
         $this->minkContext->getSession()->getDriver()->getClient()->request(
             'GET',
             'https://oauth2.test/.well-known/openid-configuration',

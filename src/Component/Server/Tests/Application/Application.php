@@ -514,10 +514,10 @@ final class Application
     {
         if (null === $this->tokenEndpointAuthMethodManager) {
             $this->tokenEndpointAuthMethodManager = new TokenEndpointAuthMethodManager();
-            $this->tokenEndpointAuthMethodManager->addTokenEndpointAuthMethod(new None());
-            $this->tokenEndpointAuthMethodManager->addTokenEndpointAuthMethod(new ClientSecretBasic('My service'));
-            $this->tokenEndpointAuthMethodManager->addTokenEndpointAuthMethod(new ClientSecretPost());
-            $this->tokenEndpointAuthMethodManager->addTokenEndpointAuthMethod(new ClientAssertionJwt(
+            $this->tokenEndpointAuthMethodManager->add(new None());
+            $this->tokenEndpointAuthMethodManager->add(new ClientSecretBasic('My service'));
+            $this->tokenEndpointAuthMethodManager->add(new ClientSecretPost());
+            $this->tokenEndpointAuthMethodManager->add(new ClientAssertionJwt(
                 $this->getJwtLoader()
             ));
         }
@@ -3032,7 +3032,7 @@ final class Application
                 $this->getMetadata()
             );
             $this->metadataEndpoint->enableSignedMetadata(
-                $this->getJwtCreator(),
+                $this->getJwtSigner(),
                 'RS256',
                 $this->getPrivateKeys()
             );
@@ -3062,7 +3062,7 @@ final class Application
             $this->metadata->set('scopes_supported', $this->getScopeRepository()->getSupportedScopes());
             $this->metadata->set('response_types_supported', $this->getResponseTypeManager()->all());
             if ($this->getResponseTypeAndResponseModeParameterChecker()->isResponseModeParameterInAuthorizationRequestAllowed()) {
-                $this->metadata->set('response_modes_supported', $this->getResponseModeManager()->getSupportedResponseModes());
+                $this->metadata->set('response_modes_supported', $this->getResponseModeManager()->all());
             }
             $this->metadata->set('grant_types_supported', $this->getGrantTypeManager()->getSupportedGrantTypes());
             $this->metadata->set('acr_values_supported', []);
@@ -3076,13 +3076,13 @@ final class Application
             $this->metadata->set('request_object_signing_alg_values_supported', $this->getJWTLoader()->getSupportedSignatureAlgorithms());
             $this->metadata->set('request_object_encryption_alg_values_supported', $this->getJWTLoader()->getSupportedKeyEncryptionAlgorithms());
             $this->metadata->set('request_object_encryption_enc_values_supported', $this->getJWTLoader()->getSupportedContentEncryptionAlgorithms());
-            $this->metadata->set('token_endpoint_auth_methods_supported', $this->getTokenEndpointAuthMethodManager()->getSupportedTokenEndpointAuthMethods());
+            $this->metadata->set('token_endpoint_auth_methods_supported', $this->getTokenEndpointAuthMethodManager()->all());
             $this->metadata->set('token_endpoint_auth_signing_alg_values_supported', $this->getJWTLoader()->getSupportedSignatureAlgorithms());
             $this->metadata->set('token_endpoint_auth_encryption_alg_values_supported', $this->getJWTLoader()->getSupportedKeyEncryptionAlgorithms());
             $this->metadata->set('token_endpoint_auth_encryption_enc_values_supported', $this->getJWTLoader()->getSupportedContentEncryptionAlgorithms());
             $this->metadata->set('display_values_supported', ['page']);
-            $this->metadata->set('claim_types_supported', false);
-            $this->metadata->set('claims_supported', false);
+            $this->metadata->set('claim_types_supported', ['normal', 'aggregated', 'distributed']);
+            $this->metadata->set('claims_supported', $this->getUserInfo()->getClaimsSupported());
             $this->metadata->set('service_documentation', 'https://my.server.com/documentation');
             $this->metadata->set('claims_locales_supported', []);
             $this->metadata->set('ui_locales_supported', ['en_US', 'fr_FR']);

@@ -11,24 +11,26 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use OAuth2Framework\Component\Server\Endpoint\Metadata\Metadata;
-use OAuth2Framework\Component\Server\Endpoint\Metadata\MetadataEndpoint;
+use OAuth2Framework\Bundle\Server\Service\MetadataBuilder;
+use OAuth2Framework\Bundle\Server\Controller\MetadataController;
+use OAuth2Framework\Component\Server\Middleware\Pipe;
 use function Fluent\create;
 use function Fluent\get;
 
 return [
-    Metadata::class => create(),
+    'metadata_endpoint_pipe' => create(Pipe::class)
+        ->arguments([
+            get(MetadataController::class),
+        ]),
 
-    /*
-    oauth2_server.openid_connect.metadata:
-        class: 'OAuth2Framework\Bundle\Server\OpenIdConnectPlugin\Service\Metadata'
-        arguments:
-            - '@router'
-
-     */
-    MetadataEndpoint::class => create()
+    MetadataController::class => create()
         ->arguments(
             get('oauth2_server.http.response_factory'),
-            get(Metadata::class)
+            get(MetadataBuilder::class)
+        ),
+
+    MetadataBuilder::class => create()
+        ->arguments(
+            get('router')
         ),
 ];

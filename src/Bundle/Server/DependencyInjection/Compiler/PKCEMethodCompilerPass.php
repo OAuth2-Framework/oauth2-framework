@@ -14,12 +14,13 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\Server\DependencyInjection\Compiler;
 
 use Assert\Assertion;
+use OAuth2Framework\Bundle\Server\Service\MetadataBuilder;
 use OAuth2Framework\Component\Server\GrantType\PKCEMethod\PKCEMethodManager;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
-class PKCEMethodCompilerPass implements CompilerPassInterface
+final class PKCEMethodCompilerPass implements CompilerPassInterface
 {
     /**
      * {@inheritdoc}
@@ -42,20 +43,11 @@ class PKCEMethodCompilerPass implements CompilerPassInterface
             }
         }
 
-        //$this->processMetadata($container, $loaded);
-    }
-
-    /**
-     * @param ContainerBuilder $container
-     * @param string[]         $loaded
-     */
-    private function processMetadata(ContainerBuilder $container, array $loaded)
-    {
-        if (!$container->hasDefinition('oauth2_server.openid_connect.metadata')) {
+        if (!$container->hasDefinition(MetadataBuilder::class)) {
             return;
         }
-        $definition = $container->getDefinition('oauth2_server.openid_connect.metadata');
 
+        $definition = $container->getDefinition(MetadataBuilder::class);
         $definition->addMethodCall('setCodeChallengeMethodsSupported', [new Reference(PKCEMethodManager::class)]);
     }
 }

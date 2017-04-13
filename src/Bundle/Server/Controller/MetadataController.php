@@ -11,38 +11,51 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Bundle\Server\OpenIdConnectPlugin\Controller;
+namespace OAuth2Framework\Bundle\Server\Controller;
 
-use OAuth2Framework\Bundle\Server\Service\Metadata;
-use Symfony\Component\HttpFoundation\Response;
+use Interop\Http\Factory\ResponseFactoryInterface;
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use Jose\Object\JWKSetInterface;
+use Jose\SignerInterface;
+use OAuth2Framework\Bundle\Server\Service\MetadataBuilder;
+use OAuth2Framework\Component\Server\Endpoint\Metadata\MetadataEndpoint;
+use Psr\Http\Message\ServerRequestInterface;
 
-class MetadataController
+class MetadataController implements MiddlewareInterface
 {
     /**
-     * @var Metadata
+     * @var MetadataEndpoint
      */
-    private $metadata;
+    private $metadataEndpoint;
 
     /**
      * MetadataController constructor.
      *
-     * @param Metadata $metadata
+     * @param ResponseFactoryInterface $responseFactory
+     * @param MetadataBuilder          $metadataBuilder
      */
-    public function __construct(Metadata $metadata)
+    public function __construct(ResponseFactoryInterface $responseFactory, MetadataBuilder $metadataBuilder)
     {
-        $this->metadata = $metadata;
+        $metadata = $metadataBuilder->getMetadata();
+        $this->metadataEndpoint = new MetadataEndpoint($responseFactory, $metadata);
     }
 
-    public function metadataAction()
+    /**
+     * @param SignerInterface $signer
+     * @param JWKSetInterface $signatureKeySet
+     * @param string          $signatureAlgorithm
+     */
+    public function enableSignedMetadata(SignerInterface $signer, string $signatureAlgorithm, JWKSetInterface $signatureKeySet)
     {
-        $response = new Response(
-            json_encode($this->metadata),
-            200,
-            [
-                'Content-Type' => 'application/json; charset=UTF-8',
-            ]
-        );
+        $this->metadataEndpoint->enableSignedMetadata($signer, $signatureAlgorithm, $signatureKeySet);
+    }
 
-        return $response;
+    /**
+     * {@inheritdoc}
+     */
+    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    {
+        return $this->metadataEndpoint->process($request, $delegate);
     }
 }

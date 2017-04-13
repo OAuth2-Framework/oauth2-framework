@@ -25,7 +25,7 @@ final class ResponseModeManager
     /**
      * @return string[]
      */
-    public function getSupportedResponseModes(): array
+    public function all(): array
     {
         return array_keys($this->responseModes);
     }

@@ -449,7 +449,7 @@ final class IdTokenBuilder
         $jws = $jws->addSignatureInformation($signatureKey, $headers);
         $this->signer->sign($jws);
 
-        return $jws->toJson(0);
+        return $jws->toCompactJSON(0);
     }
 
     /**
@@ -473,7 +473,7 @@ final class IdTokenBuilder
         $jwe = $jwe->addRecipientInformation($encryptionKey);
         $this->encrypter->encrypt($jwe);
 
-        return $jwe->toJson(0);
+        return $jwe->toCompactJSON(0);
     }
 
     /**

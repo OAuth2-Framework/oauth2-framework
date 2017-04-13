@@ -13,12 +13,13 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Server\DependencyInjection\Compiler;
 
+use OAuth2Framework\Bundle\Server\Service\MetadataBuilder;
 use OAuth2Framework\Component\Server\ResponseMode\ResponseModeManager;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
-class ResponseModeCompilerPass implements CompilerPassInterface
+final class ResponseModeCompilerPass implements CompilerPassInterface
 {
     /**
      * {@inheritdoc}
@@ -36,9 +37,11 @@ class ResponseModeCompilerPass implements CompilerPassInterface
             $definition->addMethodCall('add', [new Reference($id)]);
         }
 
-        /*if ($container->hasDefinition('oauth2_server.openid_connect.metadata')) {
-            $metadata = $container->getDefinition('oauth2_server.openid_connect.metadata');
-            $metadata->addMethodCall('setResponseModeManager', [new Reference(ResponseModeManager::class)]);
-        }*/
+        if (!$container->hasDefinition(MetadataBuilder::class)) {
+            return;
+        }
+
+        $metadata = $container->getDefinition(MetadataBuilder::class);
+        $metadata->addMethodCall('setResponseModeManager', [new Reference(ResponseModeManager::class)]);
     }
 }

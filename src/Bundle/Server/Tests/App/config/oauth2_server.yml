@@ -65,7 +65,6 @@ oauth2_server:
                 enabled: true
                 required: true
                 realm: 'Client Registration'
-                class: 'OAuth2Framework\Bundle\Server\Tests\TestBundle\Entity\InitialAccessToken'
                 event_store: 'EventStore.InitialAccessToken'
             software_statement:
                 enabled: true
@@ -88,10 +87,32 @@ oauth2_server:
             path: '/token/get'
         jwks_uri:
             enabled: true
-            route_name: 'jwkset_all_in_one_public_json'
-#        metadata:
-#            enabled: true
-#            path: '/.well-known/openid-configuration'
+            route_name: 'jwkset_all_in_one_public'
+        metadata:
+            enabled: true
+            path: '/.well-known/openid-configuration'
+            signature:
+                enabled: true
+                algorithm: 'RS256'
+                key_set: 'jose.key_set.signature'
+            custom_routes:
+                service_documentation:
+                    route_name: 'service_documentation'
+                    route_parameters:
+                        'hello': 'developer'
+                op_policy_uri:
+                    route_name: 'op_policy_uri'
+                    route_parameters: []
+                op_tos_uri:
+                    route_name: 'op_tos_uri'
+                    route_parameters: []
+            custom_values:
+                acr_values_supported:
+                    - 'urn:mace:incommon:iap:silver'
+                    - 'urn:mace:incommon:iap:bronze'
+                display_values_supported: ['page']
+                ui_locales_supported: ['fr', 'en']
+                claims_locales_supported: ['en', 'fr', 'de']
         session_management:
             enabled: true
             path: '/session/manager/iframe'
@@ -172,8 +193,6 @@ oauth2_server:
             enabled: true
             service: 'pairwise_subject_identifier'
             is_default: true
-        claims_supported: ['sub', 'name', 'given_name', 'family_name', 'middle_name', 'nickname', 'preferred_username', 'profile', 'picture', 'website', 'email', 'email_verified', 'gender', 'birthdate', 'zoneinfo', 'locale', 'phone_number', 'phone_number_verified', 'address', 'updated_at']
-        claims_locales_supported: ['en', 'fr', 'de']
         id_token:
             response_type:
                 enabled: true

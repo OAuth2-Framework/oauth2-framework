@@ -55,6 +55,19 @@ final class UserInfo
     }
 
     /**
+     * @return string[]
+     */
+    public function getClaimsSupported(): array
+    {
+        $claimsSupported = [];
+        foreach ($this->userinfoScopeSupportManager->all() as $infoScopeSupport) {
+            $claimsSupported += $infoScopeSupport->getClaims();
+        }
+
+        return array_unique($claimsSupported);
+    }
+
+    /**
      * @param Client               $client
      * @param UserAccountInterface $userAccount
      * @param string               $redirectUri
@@ -70,7 +83,6 @@ final class UserInfo
             $this->getClaimsFromClaimScope($scopes),
             $requestClaims
         );
-        $requestClaims['sub'] = null;
         $claims = $this->getClaimValues($userAccount, $requestClaims, $claimsLocales);
         $claims = array_merge(
             $claims,

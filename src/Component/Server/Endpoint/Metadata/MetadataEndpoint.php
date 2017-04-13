@@ -17,7 +17,8 @@ use Assert\Assertion;
 use Interop\Http\Factory\ResponseFactoryInterface;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
-use Jose\JWTCreator;
+use Jose\Factory\JWSFactory;
+use Jose\SignerInterface;
 use Jose\Object\JWKSetInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -44,9 +45,9 @@ final class MetadataEndpoint implements MiddlewareInterface
     private $signatureAlgorithm = null;
 
     /**
-     * @var null|JWTCreator
+     * @var null|SignerInterface
      */
-    private $jwtCreator = null;
+    private $signer = null;
 
     /**
      * MetadataEndpoint constructor.
@@ -61,13 +62,13 @@ final class MetadataEndpoint implements MiddlewareInterface
     }
 
     /**
-     * @param JWTCreator      $jwtCreator
+     * @param SignerInterface $signer
      * @param JWKSetInterface $signatureKeySet
      * @param string          $signatureAlgorithm
      */
-    public function enableSignedMetadata(JWTCreator $jwtCreator, string $signatureAlgorithm, JWKSetInterface $signatureKeySet)
+    public function enableSignedMetadata(SignerInterface $signer, string $signatureAlgorithm, JWKSetInterface $signatureKeySet)
     {
-        $this->jwtCreator = $jwtCreator;
+        $this->signer = $signer;
         $this->signatureKeySet = $signatureKeySet;
         $this->signatureAlgorithm = $signatureAlgorithm;
     }
@@ -93,7 +94,7 @@ final class MetadataEndpoint implements MiddlewareInterface
      */
     private function isSignedMetadataEnabled(): bool
     {
-        return null !== $this->jwtCreator;
+        return null !== $this->signer;
     }
 
     /**
@@ -108,8 +109,10 @@ final class MetadataEndpoint implements MiddlewareInterface
         ];
         $key = $this->signatureKeySet->selectKey('sig', $this->signatureAlgorithm);
         Assertion::notNull($key, sprintf('Unable to find a signed key for the algorithm \'%s\'.', $this->signatureAlgorithm));
-        $jwt = $this->jwtCreator->sign($metadata, $headers, $key);
+        $jws = JWSFactory::createJWS($metadata);
+        $jws = $jws->addSignatureInformation($key, $headers);
+        $this->signer->sign($jws);
 
-        return $jwt;
+        return $jws->toCompactJSON(0);
     }
 }

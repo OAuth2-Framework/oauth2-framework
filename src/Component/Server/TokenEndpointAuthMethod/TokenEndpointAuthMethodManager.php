@@ -37,7 +37,7 @@ final class TokenEndpointAuthMethodManager
      *
      * @return TokenEndpointAuthMethodManager
      */
-    public function addTokenEndpointAuthMethod(TokenEndpointAuthMethodInterface $tokenEndpointAuthMethod): TokenEndpointAuthMethodManager
+    public function add(TokenEndpointAuthMethodInterface $tokenEndpointAuthMethod): TokenEndpointAuthMethodManager
     {
         $this->tokenEndpointAuthMethods[] = $tokenEndpointAuthMethod;
         foreach ($tokenEndpointAuthMethod->getSupportedAuthenticationMethods() as $method_name) {
@@ -50,7 +50,7 @@ final class TokenEndpointAuthMethodManager
     /**
      * @return string[]
      */
-    public function getSupportedTokenEndpointAuthMethods(): array
+    public function all(): array
     {
         return array_keys($this->tokenEndpointAuthMethodNames);
     }
@@ -60,7 +60,7 @@ final class TokenEndpointAuthMethodManager
      *
      * @return bool
      */
-    public function hasTokenEndpointAuthMethod(string $tokenEndpointAuthMethod): bool
+    public function has(string $tokenEndpointAuthMethod): bool
     {
         return array_key_exists($tokenEndpointAuthMethod, $this->tokenEndpointAuthMethodNames);
     }
@@ -72,9 +72,9 @@ final class TokenEndpointAuthMethodManager
      *
      * @return TokenEndpointAuthMethodInterface
      */
-    public function getTokenEndpointAuthMethod(string $tokenEndpointAuthMethod): TokenEndpointAuthMethodInterface
+    public function get(string $tokenEndpointAuthMethod): TokenEndpointAuthMethodInterface
     {
-        Assertion::true($this->hasTokenEndpointAuthMethod($tokenEndpointAuthMethod), sprintf('The token endpoint authentication method \'%s\' is not supported. Please use one of the following values: %s', $tokenEndpointAuthMethod, implode(', ', $this->getSupportedTokenEndpointAuthMethods())));
+        Assertion::true($this->has($tokenEndpointAuthMethod), sprintf('The token endpoint authentication method \'%s\' is not supported. Please use one of the following values: %s', $tokenEndpointAuthMethod, implode(', ', $this->all())));
 
         return $this->tokenEndpointAuthMethodNames[$tokenEndpointAuthMethod];
     }

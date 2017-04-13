@@ -13,27 +13,24 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Server\DependencyInjection\Compiler;
 
-use OAuth2Framework\Component\Server\TokenTypeHint\TokenTypeHintManager;
+use OAuth2Framework\Bundle\Server\Service\MetadataBuilder;
+use OAuth2Framework\Component\Server\Endpoint\Authorization\AuthorizationRequestLoader;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
-final class TokenTypeHintCompilerPass implements CompilerPassInterface
+final class AuthorizationRequestMetadataCompilerPass implements CompilerPassInterface
 {
     /**
      * {@inheritdoc}
      */
     public function process(ContainerBuilder $container)
     {
-        if (!$container->hasDefinition(TokenTypeHintManager::class)) {
+        if (!$container->hasDefinition(MetadataBuilder::class) || !$container->hasDefinition(AuthorizationRequestLoader::class)) {
             return;
         }
 
-        $definition = $container->getDefinition(TokenTypeHintManager::class);
-
-        $taggedServices = $container->findTaggedServiceIds('oauth2_server_token_type_hint');
-        foreach ($taggedServices as $id => $attributes) {
-            $definition->addMethodCall('add', [new Reference($id)]);
-        }
+        $metadata = $container->getDefinition(MetadataBuilder::class);
+        $metadata->addMethodCall('setAuthorizationRequestLoader', [new Reference(AuthorizationRequestLoader::class)]);
     }
 }

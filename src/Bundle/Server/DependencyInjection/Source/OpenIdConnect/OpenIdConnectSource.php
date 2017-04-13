@@ -56,9 +56,6 @@ final class OpenIdConnectSource extends ActionableSource
         foreach ($this->subSources as $source) {
             $source->load($path, $container, $config);
         }
-        foreach (['claims_supported', 'claims_locales_supported'] as $k) {
-            $container->setParameter($path.'.'.$k, $config[$k]);
-        }
         $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/openid_connect'));
         $loader->load('openid_connect.php');
     }
@@ -77,21 +74,6 @@ final class OpenIdConnectSource extends ActionableSource
     protected function continueConfiguration(NodeDefinition $node)
     {
         parent::continueConfiguration($node);
-        $node
-            ->children()
-                ->arrayNode('claims_supported')
-                    ->info('Supported claims.')
-                    ->useAttributeAsKey('name')
-                    ->prototype('scalar')->end()
-                    ->treatNullLike([])
-                ->end()
-                ->arrayNode('claims_locales_supported')
-                    ->info('Supported claims locales.')
-                    ->useAttributeAsKey('name')
-                    ->prototype('scalar')->end()
-                    ->treatNullLike([])
-                ->end()
-            ->end();
         foreach ($this->subSources as $source) {
             $source->addConfiguration($node);
         }

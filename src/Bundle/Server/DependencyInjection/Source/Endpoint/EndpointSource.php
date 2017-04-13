@@ -39,6 +39,7 @@ final class EndpointSource extends ArraySource
         $this->endpoints[] = new JwksUriEndpointSource();
         $this->endpoints[] = new IssuerDiscoveryEndpointSource();
         $this->endpoints[] = new SessionManagementEndpointSource();
+        $this->endpoints[] = new MetadataEndpointSource();
     }
 
     /**
