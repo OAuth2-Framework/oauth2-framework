@@ -7,7 +7,7 @@ security:
 
     providers:
         test_bundle:
-            id: 'oauth2_server.test_bundle.user_provider'
+            id: 'MyUserProvider'
 
     firewalls:
 #        api:

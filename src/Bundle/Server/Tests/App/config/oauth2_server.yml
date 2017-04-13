@@ -3,13 +3,13 @@ oauth2_server:
     client:
         event_store: 'EventStore.Client'
     user_account:
-        manager: 'OAuth2Framework\Component\Server\Model\UserAccount\UserAccountManagerInterface'
-        repository: 'OAuth2Framework\Component\Server\Model\UserAccount\UserAccountRepositoryInterface'
+        manager: 'MyUserAccountManager'
+        repository: 'MyUserAccountRepository'
     access_token:
         repository: 'MyAccessTokenRepository'
     resource_server:
         enabled: true
-        repository: 'OAuth2Framework\Component\Server\Model\ResourceServer\ResourceServerRepositoryInterface'
+        repository: 'MyResourceServerRepository'
     scope:
         enabled: true
         repository: 'MyScopeRepository'
@@ -119,7 +119,7 @@ oauth2_server:
         issuer_discovery:
             main:
                 path: '/.well-known/webfinger'
-                resource_repository: 'OAuth2Framework\Bundle\Server\Tests\TestBundle\Entity\ResourceRepository'
+                resource_repository: 'MyResourceRepository'
                 server: 'https://my-service.com:9000/'
         authorization:
             enabled: true
@@ -191,7 +191,7 @@ oauth2_server:
         enabled: true
         pairwise_subject:
             enabled: true
-            service: 'pairwise_subject_identifier'
+            service: 'MyPairwiseSubjectIdentifier'
             is_default: true
         id_token:
             response_type:

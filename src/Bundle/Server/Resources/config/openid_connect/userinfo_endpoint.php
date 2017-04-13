@@ -18,7 +18,6 @@ use OAuth2Framework\Component\Server\Middleware\OAuth2ResponseMiddleware;
 use OAuth2Framework\Component\Server\Middleware\OAuth2SecurityMiddleware;
 use OAuth2Framework\Component\Server\Middleware\Pipe;
 use OAuth2Framework\Component\Server\Model\IdToken\IdTokenBuilderFactory;
-use OAuth2Framework\Component\Server\Model\UserAccount\UserAccountRepositoryInterface;
 use OAuth2Framework\Component\Server\Security\AccessTokenHandlerManager;
 use OAuth2Framework\Component\Server\TokenType\TokenTypeManager;
 use function Fluent\create;
@@ -29,7 +28,7 @@ return [
         ->arguments(
             get(IdTokenBuilderFactory::class),
             get(ClientRepository::class),
-            get(UserAccountRepositoryInterface::class),
+            get('oauth2_server.user_account.repository'),
             get('oauth2_server.http.response_factory'),
             get('jose.signer.id_token')->nullIfMissing(),
             get('oauth2_server.openid_connect.id_token.key_set')->nullIfMissing(),
