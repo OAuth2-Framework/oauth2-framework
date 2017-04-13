@@ -16,7 +16,7 @@ namespace OAuth2Framework\Bundle\Server\DependencyInjection\Source;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-final class UserAccountRepositorySource extends ArraySource
+final class UserAccountSource extends ArraySource
 {
     /**
      * {@inheritdoc}

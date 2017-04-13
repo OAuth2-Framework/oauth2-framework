@@ -12,7 +12,6 @@ declare(strict_types=1);
  */
 
 use OAuth2Framework\Bundle\Server\Model\AccessTokenByReferenceRepository;
-use OAuth2Framework\Component\Server\Model\ResourceServer\ResourceServerRepositoryInterface;
 use OAuth2Framework\Component\Server\Model\Scope\ScopeRepository;
 use OAuth2Framework\Bundle\Server\Tests\TestBundle\Entity\ResourceRepository;
 use OAuth2Framework\Bundle\Server\Tests\TestBundle\Entity\UserManager;
@@ -26,10 +25,9 @@ use OAuth2Framework\Component\Server\Event\AccessToken;
 use OAuth2Framework\Component\Server\Event\AuthCode;
 use OAuth2Framework\Component\Server\Event\Client;
 use OAuth2Framework\Component\Server\Event\RefreshToken;
-use OAuth2Framework\Component\Server\Model\UserAccount\UserAccountManagerInterface;
-use OAuth2Framework\Component\Server\Model\UserAccount\UserAccountRepositoryInterface;
 use OAuth2Framework\Component\Server\Tests\Stub\ResourceServerAuthMethodByIpAddress;
 use OAuth2Framework\Component\Server\Tests\Stub\ResourceServerRepository;
+use function Fluent\autowire;
 use function Fluent\create;
 use function Fluent\get;
 
@@ -85,16 +83,10 @@ return [
             get('cache.app')
         ),
 
-    UserAccountManagerInterface::class => create(UserManager::class),
-
-    UserAccountRepositoryInterface::class => create(UserRepository::class),
-
-    ResourceServerRepositoryInterface::class => create(ResourceServerRepository::class),
-
-    'oauth2_server.test_bundle.user_provider' => create(UserProvider::class)
-        ->arguments(
-            get(UserAccountRepositoryInterface::class)
-        ),
+    'MyUserAccountManager' => create(UserManager::class),
+    'MyUserAccountRepository' => create(UserRepository::class),
+    'MyResourceServerRepository' => create(ResourceServerRepository::class),
+    'MyUserProvider' => autowire(UserProvider::class),
 
     Listener\ClientCreatedListener::class => create()
         ->tag('event_subscriber', ['subscribes_to' => Client\ClientCreatedEvent::class]),
@@ -122,13 +114,10 @@ return [
     Listener\AuthCodeMarkedAsUsedListener::class => create()
         ->tag('event_subscriber', ['subscribes_to' => AuthCode\AuthCodeMarkedAsUsedEvent::class]),
 
-    AccessTokenHandler::class => create()
-        ->arguments(
-            get('oauth2_server.access_token.repository')
-        )
+    AccessTokenHandler::class => autowire()
         ->tag('oauth2_server_access_token_handler'),
 
-    'pairwise_subject_identifier' => create(EncryptedSubjectIdentifier::class)
+    'MyPairwiseSubjectIdentifier' => create(EncryptedSubjectIdentifier::class)
         ->arguments(
             'This is my secret Key !!!',
             'aes-128-cbc',
@@ -136,7 +125,7 @@ return [
             mb_substr('This is my salt or my IV !!!', 0, 16, '8bit')
         ),
 
-    ResourceRepository::class => create(),
+    'MyResourceRepository' => create(ResourceRepository::class),
 
     ResourceServerAuthMethodByIpAddress::class => create()
         ->tag('token_introspection_endpoint_auth_method'),

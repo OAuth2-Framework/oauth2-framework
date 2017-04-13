@@ -25,7 +25,7 @@ use OAuth2Framework\Bundle\Server\DependencyInjection\Source\ServerNameSource;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\SourceInterface;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\TokenEndpointAuthMethod\TokenEndpointAuthMethodSource;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\TokenType\TokenTypeSource;
-use OAuth2Framework\Bundle\Server\DependencyInjection\Source\UserAccountRepositorySource;
+use OAuth2Framework\Bundle\Server\DependencyInjection\Source\UserAccountSource;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
@@ -144,7 +144,7 @@ final class OAuth2FrameworkServerExtension extends Extension implements PrependE
             new ClientSource(),
             new ServerNameSource(),
             new AccessTokenRepositorySource(),
-            new UserAccountRepositorySource(),
+            new UserAccountSource(),
             new ResourceServerRepositorySource(),
             new TokenTypeSource(),
             new TokenEndpointAuthMethodSource(),

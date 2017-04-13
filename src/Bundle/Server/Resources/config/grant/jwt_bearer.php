@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 use OAuth2Framework\Bundle\Server\Model\ClientRepository;
 use OAuth2Framework\Component\Server\GrantType\JWTBearerGrantType;
-use OAuth2Framework\Component\Server\Model\UserAccount\UserAccountRepositoryInterface;
 use function Fluent\create;
 use function Fluent\get;
 
@@ -22,7 +21,7 @@ return [
         ->arguments(
             get('jose.jwt_loader.jwt_bearer'),
             get(ClientRepository::class),
-            get(UserAccountRepositoryInterface::class)
+            get('oauth2_server.user_account.repository')
         )
         ->tag('oauth2_server_grant_type'),
 ];
