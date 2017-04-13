@@ -91,6 +91,10 @@ oauth2_server:
         metadata:
             enabled: true
             path: '/.well-known/openid-configuration'
+            signature:
+                enabled: true
+                algorithm: 'RS256'
+                key_set: 'jose.key_set.signature'
             custom_routes:
                 service_documentation:
                     route_name: 'service_documentation'

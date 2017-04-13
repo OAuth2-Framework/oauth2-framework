@@ -179,7 +179,6 @@ final class OIDCContext implements Context
             [],
             []
         );
-        var_dump(substr($this->minkContext->getSession()->getPage()->getContent(), 0, 5000));
     }
 
     /**
