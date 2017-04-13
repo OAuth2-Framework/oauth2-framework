@@ -15,7 +15,6 @@ use OAuth2Framework\Bundle\Server\Model\ClientRepository;
 use OAuth2Framework\Component\Server\Endpoint\Token\Processor\ProcessorManager;
 use OAuth2Framework\Component\Server\Endpoint\Token\TokenEndpoint;
 use OAuth2Framework\Component\Server\Endpoint\Token\TokenEndpointExtensionManager;
-use OAuth2Framework\Component\Server\GrantType\GrantTypeManager;
 use OAuth2Framework\Component\Server\Middleware\ClientAuthenticationMiddleware;
 use OAuth2Framework\Component\Server\Middleware\GrantTypeMiddleware;
 use OAuth2Framework\Component\Server\Middleware\OAuth2ResponseMiddleware;
@@ -23,6 +22,7 @@ use OAuth2Framework\Component\Server\Middleware\Pipe;
 use OAuth2Framework\Component\Server\Middleware\TokenTypeMiddleware;
 use OAuth2Framework\Component\Server\Model\Scope\ScopeRepositoryInterface;
 use OAuth2Framework\Component\Server\Model\Scope\ScopePolicyManager;
+use function Fluent\autowire;
 use function Fluent\create;
 use function Fluent\get;
 
@@ -54,8 +54,5 @@ return [
             get('command_bus')
         ),
 
-    GrantTypeMiddleware::class => create()
-        ->arguments(
-            get(GrantTypeManager::class)
-        ),
+    GrantTypeMiddleware::class => autowire(),
 ];

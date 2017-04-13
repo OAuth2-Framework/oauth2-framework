@@ -15,6 +15,7 @@ use OAuth2Framework\Bundle\Server\Rule\ClientRegistrationManagementRule;
 use OAuth2Framework\Component\Server\Endpoint\ClientRegistration\ClientRegistrationEndpoint;
 use OAuth2Framework\Component\Server\Middleware\OAuth2ResponseMiddleware;
 use OAuth2Framework\Component\Server\Middleware\Pipe;
+use function Fluent\autowire;
 use function Fluent\create;
 use function Fluent\get;
 
@@ -31,9 +32,6 @@ return [
             get('command_bus')
         ),
 
-    ClientRegistrationManagementRule::class => create()
-        ->arguments(
-            get('router')
-        )
+    ClientRegistrationManagementRule::class => autowire()
         ->tag('oauth2_server_client_rule'),
 ];

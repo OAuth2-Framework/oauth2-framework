@@ -12,13 +12,8 @@ declare(strict_types=1);
  */
 
 use OAuth2Framework\Bundle\Server\Service\IssuerDiscoveryFactory;
-use function Fluent\create;
-use function Fluent\get;
+use function Fluent\autowire;
 
 return [
-    IssuerDiscoveryFactory::class => create()
-        ->arguments(
-            get('oauth2_server.http.response_factory'),
-            get('oauth2_server.http.uri_factory')
-        ),
+    IssuerDiscoveryFactory::class => autowire(),
 ];

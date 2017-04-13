@@ -13,19 +13,13 @@ declare(strict_types=1);
 
 use OAuth2Framework\Component\Server\Endpoint\TokenIntrospection\TokenIntrospectionEndpoint;
 use OAuth2Framework\Component\Server\Middleware;
-use OAuth2Framework\Component\Server\Model\ResourceServer\ResourceServerRepositoryInterface;
 use OAuth2Framework\Component\Server\TokenIntrospectionEndpointAuthMethod\TokenIntrospectionEndpointAuthMethodManager;
-use OAuth2Framework\Component\Server\TokenTypeHint\TokenTypeHintManager;
 use function Fluent\autowire;
 use function Fluent\create;
 use function Fluent\get;
 
 return [
-    TokenIntrospectionEndpoint::class => create()
-        ->arguments(
-            get(TokenTypeHintManager::class),
-            get('oauth2_server.http.response_factory')
-        ),
+    TokenIntrospectionEndpoint::class => autowire(),
 
     Middleware\ResourceServerAuthenticationMiddleware::class => autowire(),
 

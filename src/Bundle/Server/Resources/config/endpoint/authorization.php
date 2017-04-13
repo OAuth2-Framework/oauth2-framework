@@ -15,7 +15,6 @@ use OAuth2Framework\Bundle\Server\Controller\AuthorizationEndpointController;
 use OAuth2Framework\Bundle\Server\Form\FormFactory;
 use OAuth2Framework\Bundle\Server\Form\Handler\AuthorizationFormHandler;
 use OAuth2Framework\Bundle\Server\Form\Type\AuthorizationType;
-use OAuth2Framework\Bundle\Server\Model\ClientRepository;
 use OAuth2Framework\Component\Server\Endpoint\Authorization\AfterConsentScreen\AfterConsentScreenManager;
 use OAuth2Framework\Component\Server\Endpoint\Authorization\AuthorizationFactory;
 use OAuth2Framework\Component\Server\Endpoint\Authorization\AuthorizationRequestLoader;
@@ -77,14 +76,14 @@ return [
         ->arguments(
             get(ResponseTypeManager::class),
             get(ResponseModeManager::class),
-            true
+            true //FIXME
         )
         ->tag('oauth2_server_authorization_parameter_checker'),
 
     ParameterChecker\RedirectUriParameterChecker::class => create()
         ->arguments(
-            true,
-            true
+            true, //FIXME
+            true //FIXME
         )
         ->tag('oauth2_server_authorization_parameter_checker'),
 
@@ -99,14 +98,14 @@ return [
 
     ParameterChecker\StateParameterChecker::class => create()
         ->arguments(
-            true
+            true //FIXME
         )
         ->tag('oauth2_server_authorization_parameter_checker'),
 
     ParameterChecker\TokenTypeParameterChecker::class => create()
         ->arguments(
             get(TokenTypeManager::class),
-            true
+            true //FIXME
         )
         ->tag('oauth2_server_authorization_parameter_checker'),
 
