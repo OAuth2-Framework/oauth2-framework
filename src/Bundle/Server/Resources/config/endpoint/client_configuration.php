@@ -17,6 +17,7 @@ use OAuth2Framework\Component\Server\Endpoint\ClientConfiguration\ClientConfigur
 use OAuth2Framework\Component\Server\Middleware\OAuth2ResponseMiddleware;
 use OAuth2Framework\Component\Server\Middleware\Pipe;
 use OAuth2Framework\Component\Server\TokenType\BearerToken;
+use function Fluent\autowire;
 use function Fluent\create;
 use function Fluent\get;
 
@@ -36,10 +37,7 @@ return [
             '%oauth2_server.endpoint.client_configuration.query_string%'
         ),
 
-    ClientConfigurationMiddleware::class => create()
-        ->arguments(
-            get(ClientRepository::class)
-        ),
+    ClientConfigurationMiddleware::class => autowire(),
 
     ClientConfigurationEndpoint::class => create()
         ->arguments(

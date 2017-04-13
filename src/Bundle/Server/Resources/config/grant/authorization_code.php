@@ -17,6 +17,7 @@ use OAuth2Framework\Component\Server\GrantType\AuthorizationCodeGrantType;
 use OAuth2Framework\Component\Server\GrantType\PKCEMethod;
 use OAuth2Framework\Component\Server\ResponseType\CodeResponseType;
 use OAuth2Framework\Component\Server\TokenTypeHint\AuthCodeTypeHint;
+use function Fluent\autowire;
 use function Fluent\create;
 use function Fluent\get;
 
@@ -56,22 +57,13 @@ return [
         ->tag('oauth2_server_pkce_method', ['alias' => 'S256']),
 
     // Commands
-    AuthCode\CreateAuthCodeCommandHandler::class => create()
-        ->arguments(
-            get(AuthCodeRepository::class)
-        )
+    AuthCode\CreateAuthCodeCommandHandler::class => autowire()
         ->tag('command_handler', ['handles' => AuthCode\CreateAuthCodeCommand::class]),
 
-    AuthCode\MarkAuthCodeAsUsedCommandHandler::class => create()
-        ->arguments(
-            get(AuthCodeRepository::class)
-        )
+    AuthCode\MarkAuthCodeAsUsedCommandHandler::class => autowire()
         ->tag('command_handler', ['handles' => AuthCode\MarkAuthCodeAsUsedCommand::class]),
 
-    AuthCode\RevokeAuthCodeCommandHandler::class => create()
-        ->arguments(
-            get(AuthCodeRepository::class)
-        )
+    AuthCode\RevokeAuthCodeCommandHandler::class => autowire()
         ->tag('command_handler', ['handles' => AuthCode\RevokeAuthCodeCommand::class]),
 
     // For token introspection and revocation

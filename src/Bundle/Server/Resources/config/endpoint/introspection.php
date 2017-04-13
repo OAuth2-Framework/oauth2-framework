@@ -16,6 +16,7 @@ use OAuth2Framework\Component\Server\Middleware;
 use OAuth2Framework\Component\Server\Model\ResourceServer\ResourceServerRepositoryInterface;
 use OAuth2Framework\Component\Server\TokenIntrospectionEndpointAuthMethod\TokenIntrospectionEndpointAuthMethodManager;
 use OAuth2Framework\Component\Server\TokenTypeHint\TokenTypeHintManager;
+use function Fluent\autowire;
 use function Fluent\create;
 use function Fluent\get;
 
@@ -26,11 +27,7 @@ return [
             get('oauth2_server.http.response_factory')
         ),
 
-    Middleware\ResourceServerAuthenticationMiddleware::class => create()
-        ->arguments(
-            get(ResourceServerRepositoryInterface::class),
-            get(TokenIntrospectionEndpointAuthMethodManager::class)
-        ),
+    Middleware\ResourceServerAuthenticationMiddleware::class => autowire(),
 
     TokenIntrospectionEndpointAuthMethodManager::class => create(),
 

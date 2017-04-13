@@ -26,6 +26,7 @@ use OAuth2Framework\Component\Server\Endpoint\Authorization\UserAccountDiscovery
 use OAuth2Framework\Component\Server\ResponseMode\ResponseModeManager;
 use OAuth2Framework\Component\Server\ResponseType\ResponseTypeManager;
 use OAuth2Framework\Component\Server\TokenType\TokenTypeManager;
+use function Fluent\autowire;
 use function Fluent\create;
 use function Fluent\get;
 
@@ -66,16 +67,9 @@ return [
             get(AuthorizationEndpointController::class),
         ]),
 
-    AuthorizationFactory::class => create()
-        ->arguments(
-            get(AuthorizationRequestLoader::class),
-            get(ParameterCheckerManager::class)
-        ),
+    AuthorizationFactory::class => autowire(),
 
-    AuthorizationRequestLoader::class => create()
-        ->arguments(
-            get(ClientRepository::class)
-        ),
+    AuthorizationRequestLoader::class => autowire(),
 
     ParameterCheckerManager::class => create(),
 

@@ -15,19 +15,14 @@ use OAuth2Framework\Bundle\Server\Response\AuthenticateResponseFactory;
 use OAuth2Framework\Component\Server\Middleware\OAuth2ResponseMiddleware;
 use OAuth2Framework\Component\Server\Response\Factory;
 use OAuth2Framework\Component\Server\Response\OAuth2ResponseFactoryManager;
-use OAuth2Framework\Component\Server\TokenEndpointAuthMethod\TokenEndpointAuthMethodManager;
 use function Fluent\create;
-use function Fluent\get;
+use function Fluent\autowire;
 
 return [
-    OAuth2ResponseMiddleware::class => create()
-        ->arguments(
-            get(OAuth2ResponseFactoryManager::class)
-        ),
-    OAuth2ResponseFactoryManager::class => create()
-        ->arguments(
-            get('oauth2_server.http.response_factory')
-        ),
+    OAuth2ResponseMiddleware::class => autowire(),
+
+    OAuth2ResponseFactoryManager::class => autowire(),
+
     Factory\AccessDeniedResponseFactory::class => create()
         ->tag('oauth2_server_response_factory'),
     Factory\BadRequestResponseFactory::class => create()
@@ -38,9 +33,6 @@ return [
         ->tag('oauth2_server_response_factory'),
     Factory\RedirectResponseFactory::class => create()
         ->tag('oauth2_server_response_factory'),
-    AuthenticateResponseFactory::class => create()
-        ->arguments(
-            get(TokenEndpointAuthMethodManager::class)
-        )
+    AuthenticateResponseFactory::class => autowire()
         ->tag('oauth2_server_response_factory'),
 ];

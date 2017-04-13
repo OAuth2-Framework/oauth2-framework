@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 use OAuth2Framework\Component\Server\Endpoint\Authorization\UserAccountDiscovery\IdTokenHintDiscovery;
 use OAuth2Framework\Component\Server\Model\IdToken\IdTokenLoader;
-use OAuth2Framework\Component\Server\Model\UserAccount\UserAccountRepositoryInterface;
+use function Fluent\autowire;
 use function Fluent\create;
 use function Fluent\get;
 
@@ -25,10 +25,6 @@ return [
             '%oauth2_server.openid_connect.id_token.signature_algorithms%'
         ),
 
-    IdTokenHintDiscovery::class => create()
-        ->arguments(
-            get(IdTokenLoader::class),
-            get(UserAccountRepositoryInterface::class)
-        )
+    IdTokenHintDiscovery::class => autowire()
         ->tag('oauth2_server_user_account_discovery'),
 ];

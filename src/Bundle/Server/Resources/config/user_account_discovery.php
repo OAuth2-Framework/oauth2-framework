@@ -14,7 +14,7 @@ declare(strict_types=1);
 use OAuth2Framework\Bundle\Server\Service\SymfonyUserDiscovery;
 use OAuth2Framework\Component\Server\Endpoint\Authorization\UserAccountDiscovery;
 use function Fluent\create;
-use function Fluent\get;
+use function Fluent\autowire;
 
 return [
     UserAccountDiscovery\LoginParameterChecker::class => create()
@@ -26,10 +26,6 @@ return [
     UserAccountDiscovery\MaxAgeParameterChecker::class => create()
         ->tag('oauth2_server_user_account_discovery'),
 
-    SymfonyUserDiscovery::class => create()
-        ->arguments(
-            get('security.token_storage'),
-            get('security.authorization_checker')
-        )
+    SymfonyUserDiscovery::class => autowire()
         ->tag('oauth2_server_user_account_discovery'),
 ];
