@@ -42,7 +42,7 @@ abstract class ArraySource implements SourceInterface
     public function prepend(array $bundleConfig, string $path, ContainerBuilder $container)
     {
         foreach ($this->subSources as $subSource) {
-            $subSource->prepend($bundleConfig[$this->name()], $path.'['.$this->name().']', $container);
+            $subSource->prepend($bundleConfig, $path.'['.$this->name().']', $container);
         }
     }
 
