@@ -171,7 +171,6 @@ abstract class AuthorizationEndpoint implements MiddlewareInterface
             'error_description' => $error_description,
         ];
         $params += $authorization->getResponseParameters();
-
         if (null === $authorization->getResponseMode() || null === $authorization->getRedirectUri()) {
             throw new OAuth2Exception(400, $params);
         }

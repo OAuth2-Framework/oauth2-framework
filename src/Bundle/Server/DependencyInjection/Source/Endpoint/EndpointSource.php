@@ -14,55 +14,24 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\Server\DependencyInjection\Source\Endpoint;
 
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\ArraySource;
-use OAuth2Framework\Bundle\Server\DependencyInjection\Source\SourceInterface;
-use Symfony\Component\Config\Definition\Builder\NodeDefinition;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 final class EndpointSource extends ArraySource
 {
-    /**
-     * @var SourceInterface[]
-     */
-    private $endpoints = [];
-
     /**
      * TokenEndpointAuthMethodSource constructor.
      */
     public function __construct()
     {
-        $this->endpoints[] = new AuthorizationEndpointSource();
-        $this->endpoints[] = new ClientConfigurationSource();
-        $this->endpoints[] = new ClientRegistrationSource();
-        $this->endpoints[] = new TokenEndpointSource();
-        $this->endpoints[] = new TokenIntrospectionEndpointSource();
-        $this->endpoints[] = new TokenRevocationEndpointSource();
-        $this->endpoints[] = new JwksUriEndpointSource();
-        $this->endpoints[] = new IssuerDiscoveryEndpointSource();
-        $this->endpoints[] = new SessionManagementEndpointSource();
-        $this->endpoints[] = new MetadataEndpointSource();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function prepend(array $bundleConfig, string $path, ContainerBuilder $container)
-    {
-        foreach ($this->endpoints as $source) {
-            $source->prepend($bundleConfig, $path.'['.$this->name().']', $container);
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function continueLoading(string $path, ContainerBuilder $container, array $config)
-    {
-        foreach ($this->endpoints as $source) {
-            $source->load($path, $container, $config);
-        }
-
-        //$loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/token_endpoint_auth_method'));
-        //$loader->load('token_endpoint_auth_method.php');
+        $this->addSubSource(new AuthorizationEndpointSource());
+        $this->addSubSource(new ClientConfigurationSource());
+        $this->addSubSource(new ClientRegistrationSource());
+        $this->addSubSource(new TokenEndpointSource());
+        $this->addSubSource(new TokenIntrospectionEndpointSource());
+        $this->addSubSource(new TokenRevocationEndpointSource());
+        $this->addSubSource(new JwksUriEndpointSource());
+        $this->addSubSource(new IssuerDiscoveryEndpointSource());
+        $this->addSubSource(new SessionManagementEndpointSource());
+        $this->addSubSource(new MetadataEndpointSource());
     }
 
     /**
@@ -71,16 +40,5 @@ final class EndpointSource extends ArraySource
     protected function name(): string
     {
         return 'endpoint';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function continueConfiguration(NodeDefinition $node)
-    {
-        parent::continueConfiguration($node);
-        foreach ($this->endpoints as $source) {
-            $source->addConfiguration($node);
-        }
     }
 }

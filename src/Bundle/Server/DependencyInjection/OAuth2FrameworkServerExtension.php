@@ -18,6 +18,7 @@ use OAuth2Framework\Bundle\Server\DependencyInjection\Source\AccessTokenReposito
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\ClientSource;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\Endpoint\EndpointSource;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\Grant\GrantSource;
+use OAuth2Framework\Bundle\Server\DependencyInjection\Source\HttpSource;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\OpenIdConnect\OpenIdConnectSource;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\ResourceServerRepositorySource;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\Scope\ScopeSource;
@@ -125,7 +126,6 @@ final class OAuth2FrameworkServerExtension extends Extension implements PrependE
     {
         $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $files = [
-            'service',
             'access_token',
             'access_token_handler',
             'route_loader',
@@ -152,6 +152,7 @@ final class OAuth2FrameworkServerExtension extends Extension implements PrependE
             new EndpointSource(),
             new ScopeSource(),
             new OpenIdConnectSource(),
+            new HttpSource(),
         ];
     }
 }

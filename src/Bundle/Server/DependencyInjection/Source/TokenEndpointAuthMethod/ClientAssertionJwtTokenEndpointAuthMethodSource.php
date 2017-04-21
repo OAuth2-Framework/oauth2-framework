@@ -24,16 +24,11 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 final class ClientAssertionJwtTokenEndpointAuthMethodSource extends ActionableSource
 {
     /**
-     * @var ClientAssertionJwtTokenEndpointAuthMethodEncryptionSupportSource
-     */
-    private $encryptionSupport;
-
-    /**
      * ClientAssertionJwtTokenEndpointAuthMethodSource constructor.
      */
     public function __construct()
     {
-        $this->encryptionSupport = new ClientAssertionJwtTokenEndpointAuthMethodEncryptionSupportSource();
+        $this->addSubSource(new ClientAssertionJwtTokenEndpointAuthMethodEncryptionSupportSource());
     }
 
     /**
@@ -45,7 +40,6 @@ final class ClientAssertionJwtTokenEndpointAuthMethodSource extends ActionableSo
         $container->setParameter($path.'.claim_checkers', $config['claim_checkers']);
         $container->setParameter($path.'.header_checkers', $config['header_checkers']);
         $container->setParameter($path.'.secret_lifetime', $config['secret_lifetime']);
-        $this->encryptionSupport->load($path, $container, $config);
 
         $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/token_endpoint_auth_method'));
         $loader->load('client_assertion_jwt.php');
@@ -93,7 +87,6 @@ final class ClientAssertionJwtTokenEndpointAuthMethodSource extends ActionableSo
                     ->treatNullLike([])
                 ->end()
             ->end();
-        $this->encryptionSupport->addConfiguration($node);
     }
 
     /**
@@ -101,10 +94,10 @@ final class ClientAssertionJwtTokenEndpointAuthMethodSource extends ActionableSo
      */
     public function prepend(array $bundleConfig, string $path, ContainerBuilder $container)
     {
+        parent::prepend($bundleConfig, $path, $container);
         $currentPath = $path.'['.$this->name().']';
         $accessor = PropertyAccess::createPropertyAccessor();
         $sourceConfig = $accessor->getValue($bundleConfig, $currentPath);
-
         if (true === $sourceConfig['enabled']) {
             $this->updateJoseBundleConfigurationForVerifier($container, $sourceConfig);
             $this->updateJoseBundleConfigurationForDecrypter($container, $sourceConfig);

@@ -14,20 +14,19 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\Server\DependencyInjection\Source\Endpoint;
 
 use Fluent\PhpConfigFileLoader;
-use OAuth2Framework\Bundle\Server\DependencyInjection\Source\ActionableSource;
+use OAuth2Framework\Bundle\Server\DependencyInjection\Source\ArraySource;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-final class ClientRegistrationSource extends ActionableSource
+final class AuthorizationEndpointResponseModeSource extends ArraySource
 {
     /**
-     * ClientRegistrationSource constructor.
+     * AuthorizationEndpointSource constructor.
      */
     public function __construct()
     {
-        $this->addSubSource(new ClientRegistrationInitialAccessTokenSource());
-        $this->addSubSource(new ClientRegistrationSoftwareStatementSource());
+        $this->addSubSource(new AuthorizationEndpointFormPostResponseModeSource());
     }
 
     /**
@@ -40,7 +39,7 @@ final class ClientRegistrationSource extends ActionableSource
         }
 
         $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint'));
-        $loader->load('client_registration.php');
+        $loader->load('response_mode.php');
     }
 
     /**
@@ -48,7 +47,7 @@ final class ClientRegistrationSource extends ActionableSource
      */
     protected function name(): string
     {
-        return 'client_registration';
+        return 'response_mode';
     }
 
     /**
@@ -59,7 +58,9 @@ final class ClientRegistrationSource extends ActionableSource
         parent::continueConfiguration($node);
         $node
             ->children()
-                ->scalarNode('path')->defaultValue('/client/management')->end()
+                ->booleanNode('allow_response_mode_parameter')
+                    ->defaultFalse()
+                ->end()
             ->end();
     }
 }

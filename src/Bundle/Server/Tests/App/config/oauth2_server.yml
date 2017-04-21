@@ -1,4 +1,9 @@
 oauth2_server:
+    http:
+        client: 'Http\Mock\Client'
+        response_factory: 'Http\Factory\Diactoros\ResponseFactory'
+        request_factory: 'Http\Factory\Diactoros\RequestFactory'
+        uri_factory: 'Http\Factory\Diactoros\UriFactory'
     server_uri: 'https://oauth2.test/'
     client:
         event_store: 'EventStore.Client'
@@ -126,34 +131,30 @@ oauth2_server:
             path: '/authorize'
             #allow_scope_selection: true
             login_route_name: 'app_login'
-#            response_mode:
-#                allow_response_mode_parameter: true
-#                form_post:
-#                    enabled: true
-#                    template: '@OAuth2FrameworkServerBundle/form_post/response.html.twig'
-#            request_object:
-#                enabled: true
-#                signature_algorithms: ['RS512', 'HS512']
-#                claim_checkers: ['exp', 'iat', 'nbf', 'authorization_endpoint_aud']
-#                header_checkers: ['crit']
-#                encryption:
-#                    enabled: true
-#                    required: true
-#                    key_set: 'jose.key_set.encryption'
-#                    key_encryption_algorithms: ['RSA-OAEP-256']
-#                    content_encryption_algorithms: ['A256CBC-HS512']
-#                reference:
-#                    enabled: true
-#                    uris_registration_required: true
+            allow_token_type_parameter: true
+            enforce_state: false
+            enforce_secured_redirect_uri: false
+            enforce_redirect_uri_storage: false
+            response_mode:
+                allow_response_mode_parameter: true
+                form_post:
+                    enabled: true
+                    template: '@OAuth2FrameworkServerBundle/form_post/response.html.twig'
+            request_object:
+                enabled: true
+                signature_algorithms: ['RS512', 'HS512']
+                encryption:
+                    enabled: true
+                    required: true
+                    key_set: 'jose.key_set.encryption'
+                    key_encryption_algorithms: ['RSA-OAEP-256']
+                    content_encryption_algorithms: ['A256CBC-HS512']
+                reference:
+                    enabled: true
+                    uris_registration_required: true
             pre_configured_authorization:
                 enabled: true
                 event_store: 'EventStore.PreConfiguredAuthorization'
-#            enforce_secured_redirect_uri:
-#                enabled: true
-#            enforce_redirect_uri_storage:
-#                enabled: true
-#            enforce_state:
-#                enabled: true
     grant:
         authorization_code:
             enabled: true

@@ -19,17 +19,8 @@ use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-final class ClientRegistrationSource extends ActionableSource
+final class AuthorizationEndpointFormPostResponseModeSource extends ActionableSource
 {
-    /**
-     * ClientRegistrationSource constructor.
-     */
-    public function __construct()
-    {
-        $this->addSubSource(new ClientRegistrationInitialAccessTokenSource());
-        $this->addSubSource(new ClientRegistrationSoftwareStatementSource());
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -40,7 +31,7 @@ final class ClientRegistrationSource extends ActionableSource
         }
 
         $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint'));
-        $loader->load('client_registration.php');
+        $loader->load('form_post_response_mode.php');
     }
 
     /**
@@ -48,7 +39,7 @@ final class ClientRegistrationSource extends ActionableSource
      */
     protected function name(): string
     {
-        return 'client_registration';
+        return 'form_post';
     }
 
     /**
@@ -59,7 +50,10 @@ final class ClientRegistrationSource extends ActionableSource
         parent::continueConfiguration($node);
         $node
             ->children()
-                ->scalarNode('path')->defaultValue('/client/management')->end()
+                ->scalarNode('template')
+                    ->info('The template used to render the form.')
+                    ->defaultValue('@OAuth2FrameworkServerBundle/form_post/response.html.twig')
+                ->end()
             ->end();
     }
 }

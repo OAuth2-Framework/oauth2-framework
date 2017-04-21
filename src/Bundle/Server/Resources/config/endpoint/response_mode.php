@@ -11,38 +11,27 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use OAuth2Framework\Bundle\Server\Service\FormPostResponseRenderer;
 use OAuth2Framework\Component\Server\ResponseMode;
+use OAuth2Framework\Component\Server\ResponseType\ResponseTypeManager;
+use OAuth2Framework\Component\Server\Endpoint\Authorization\ParameterChecker\ResponseTypeAndResponseModeParameterChecker;
+use function Fluent\autowire;
 use function Fluent\create;
 use function Fluent\get;
 
 return [
-    ResponseMode\ResponseModeManager::class => create(),
+    ResponseMode\ResponseModeManager::class => autowire(),
 
-    ResponseMode\QueryResponseMode::class => create()
-        ->arguments(
-            get('oauth2_server.http.uri_factory'),
-            get('oauth2_server.http.response_factory')
-        )
+    ResponseMode\QueryResponseMode::class => autowire()
         ->tag('oauth2_server_response_mode'),
 
-    ResponseMode\FragmentResponseMode::class => create()
-        ->arguments(
-            get('oauth2_server.http.uri_factory'),
-            get('oauth2_server.http.response_factory')
-        )
+    ResponseMode\FragmentResponseMode::class => autowire()
         ->tag('oauth2_server_response_mode'),
 
-    FormPostResponseRenderer::class => create()
+    ResponseTypeAndResponseModeParameterChecker::class => create()
         ->arguments(
-            get('templating'),
-            '@OAuth2FrameworkServerBundle/form_post/response.html.twig' //'%oauth2_server.form_post_response_mode.template%' FIXME
-        ),
-
-    ResponseMode\FormPostResponseMode::class => create()
-        ->arguments(
-            get(FormPostResponseRenderer::class),
-            get('oauth2_server.http.response_factory')
+            get(ResponseTypeManager::class),
+            get(ResponseMode\ResponseModeManager::class),
+            'oauth2_server.endpoint.authorization.response_mode.allow_response_mode_parameter'
         )
-        ->tag('oauth2_server_response_mode'),
+        ->tag('oauth2_server_authorization_parameter_checker'),
 ];

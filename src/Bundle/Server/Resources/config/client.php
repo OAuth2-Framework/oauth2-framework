@@ -55,8 +55,8 @@ return [
 
     Rule\SectorIdentifierUriRule::class => create()
         ->arguments(
-            get('oauth2_server.http.request_factory'), //FIXME
-            get('oauth2_server.http.client') //FIXME
+            get('oauth2_server.http.request_factory'),
+            get('oauth2_server.http.client')
         )
         ->tag('oauth2_server_client_rule'),
 

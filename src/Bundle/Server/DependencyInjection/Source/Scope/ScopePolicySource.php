@@ -15,7 +15,6 @@ namespace OAuth2Framework\Bundle\Server\DependencyInjection\Source\Scope;
 
 use Fluent\PhpConfigFileLoader;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\ActionableSource;
-use OAuth2Framework\Bundle\Server\DependencyInjection\Source\SourceInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -23,19 +22,12 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 final class ScopePolicySource extends ActionableSource
 {
     /**
-     * @var SourceInterface[]
-     */
-    private $subSources = [];
-
-    /**
-     * UserinfoSource constructor.
+     * ScopePolicySource constructor.
      */
     public function __construct()
     {
-        $this->subSources = [
-            new ScopePolicyErrorSource(),
-            new ScopePolicyDefaultSource(),
-        ];
+        $this->addSubSource(new ScopePolicyErrorSource());
+        $this->addSubSource(new ScopePolicyDefaultSource());
     }
 
     /**
@@ -49,21 +41,8 @@ final class ScopePolicySource extends ActionableSource
     /**
      * {@inheritdoc}
      */
-    public function prepend(array $bundleConfig, string $path, ContainerBuilder $container)
-    {
-        foreach ($this->subSources as $source) {
-            $source->prepend($bundleConfig, $path.'['.$this->name().']', $container);
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     protected function continueLoading(string $path, ContainerBuilder $container, array $config)
     {
-        foreach ($this->subSources as $source) {
-            $source->load($path, $container, $config);
-        }
         foreach (['by_default'] as $k) {
             $container->setParameter($path.'.'.$k, $config[$k]);
         }
@@ -90,8 +69,5 @@ final class ScopePolicySource extends ActionableSource
                     ->defaultValue('none')
                 ->end()
             ->end();
-        foreach ($this->subSources as $source) {
-            $source->addConfiguration($node);
-        }
     }
 }

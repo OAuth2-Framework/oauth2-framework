@@ -126,6 +126,7 @@ final class OAuth2FrameworkServerBundle extends Bundle
             new Compiler\CustomMetadataCompilerPass(),
             new Compiler\ScopeMetadataCompilerPass(),
             new Compiler\AuthorizationRequestMetadataCompilerPass(),
+            new Compiler\RequestObjectCompilerPass(),
         ];
     }
 }

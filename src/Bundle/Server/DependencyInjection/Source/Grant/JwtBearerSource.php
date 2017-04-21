@@ -15,7 +15,6 @@ namespace OAuth2Framework\Bundle\Server\DependencyInjection\Source\Grant;
 
 use Fluent\PhpConfigFileLoader;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\ActionableSource;
-use OAuth2Framework\Bundle\Server\DependencyInjection\Source\SourceInterface;
 use SpomkyLabs\JoseBundle\Helper\ConfigurationHelper;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\FileLocator;
@@ -25,18 +24,11 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 final class JwtBearerSource extends ActionableSource
 {
     /**
-     * @var SourceInterface[]
-     */
-    private $subSources = [];
-
-    /**
      * JwtBearerSource constructor.
      */
     public function __construct()
     {
-        $this->subSources = [
-            new JwtBearerEncryptionSource(),
-        ];
+        $this->addSubSource(new JwtBearerEncryptionSource());
     }
 
     /**
@@ -48,9 +40,6 @@ final class JwtBearerSource extends ActionableSource
             $container->setParameter($path.'.'.$k, $config[$k]);
         }
 
-        foreach ($this->subSources as $source) {
-            $source->load($path, $container, $config);
-        }
         $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/grant'));
         $loader->load('jwt_bearer.php');
     }
@@ -96,9 +85,6 @@ final class JwtBearerSource extends ActionableSource
                     ->treatNullLike(['crit'])
                 ->end()
             ->end();
-        foreach ($this->subSources as $source) {
-            $source->addConfiguration($node);
-        }
     }
 
     /**
@@ -106,6 +92,7 @@ final class JwtBearerSource extends ActionableSource
      */
     public function prepend(array $bundleConfig, string $path, ContainerBuilder $container)
     {
+        parent::prepend($bundleConfig, $path, $container);
         $currentPath = $path.'['.$this->name().']';
         $accessor = PropertyAccess::createPropertyAccessor();
         $sourceConfig = $accessor->getValue($bundleConfig, $currentPath);

@@ -13,23 +13,12 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Server\DependencyInjection\Source\Endpoint;
 
-use Fluent\PhpConfigFileLoader;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\ActionableSource;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
-use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-final class ClientRegistrationSource extends ActionableSource
+final class AuthorizationEndpointRequestObjectReferenceSource extends ActionableSource
 {
-    /**
-     * ClientRegistrationSource constructor.
-     */
-    public function __construct()
-    {
-        $this->addSubSource(new ClientRegistrationInitialAccessTokenSource());
-        $this->addSubSource(new ClientRegistrationSoftwareStatementSource());
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -38,9 +27,6 @@ final class ClientRegistrationSource extends ActionableSource
         foreach ($config as $k => $v) {
             $container->setParameter($path.'.'.$k, $v);
         }
-
-        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint'));
-        $loader->load('client_registration.php');
     }
 
     /**
@@ -48,7 +34,7 @@ final class ClientRegistrationSource extends ActionableSource
      */
     protected function name(): string
     {
-        return 'client_registration';
+        return 'reference';
     }
 
     /**
@@ -59,7 +45,10 @@ final class ClientRegistrationSource extends ActionableSource
         parent::continueConfiguration($node);
         $node
             ->children()
-                ->scalarNode('path')->defaultValue('/client/management')->end()
+                ->booleanNode('uris_registration_required')
+                    ->info('If true, request object reference Uris must be registered to be used (highly recommended).')
+                    ->defaultTrue()
+                ->end()
             ->end();
     }
 }

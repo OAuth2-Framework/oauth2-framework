@@ -15,7 +15,6 @@ namespace OAuth2Framework\Bundle\Server\DependencyInjection\Source\OpenIdConnect
 
 use Fluent\PhpConfigFileLoader;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\ArraySource;
-use OAuth2Framework\Bundle\Server\DependencyInjection\Source\SourceInterface;
 use SpomkyLabs\JoseBundle\Helper\ConfigurationHelper;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\FileLocator;
@@ -25,19 +24,12 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 final class IdTokenSource extends ArraySource
 {
     /**
-     * @var SourceInterface[]
-     */
-    private $subSources = [];
-
-    /**
      * UserinfoSource constructor.
      */
     public function __construct()
     {
-        $this->subSources = [
-            new IdTokenResponseTypeSource(),
-            new IdTokenEncryptionSource(),
-        ];
+        $this->addSubSource(new IdTokenResponseTypeSource());
+        $this->addSubSource(new IdTokenEncryptionSource());
     }
 
     /**
@@ -45,9 +37,7 @@ final class IdTokenSource extends ArraySource
      */
     public function prepend(array $bundleConfig, string $path, ContainerBuilder $container)
     {
-        foreach ($this->subSources as $source) {
-            $source->prepend($bundleConfig, $path.'['.$this->name().']', $container);
-        }
+        parent::prepend($bundleConfig, $path, $container);
         $currentPath = $path.'['.$this->name().']';
         $accessor = PropertyAccess::createPropertyAccessor();
         $sourceConfig = $accessor->getValue($bundleConfig, $currentPath);
@@ -67,9 +57,6 @@ final class IdTokenSource extends ArraySource
         }
         $container->setAlias($path.'.key_set', $config['key_set']);
 
-        foreach ($this->subSources as $source) {
-            $source->load($path, $container, $config);
-        }
         $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/openid_connect'));
         $loader->load('userinfo_scope_support.php');
     }
@@ -141,9 +128,6 @@ final class IdTokenSource extends ArraySource
                     ->min(1)
                 ->end()
             ->end();
-        foreach ($this->subSources as $source) {
-            $source->addConfiguration($node);
-        }
     }
 
     /**

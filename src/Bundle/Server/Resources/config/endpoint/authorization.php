@@ -23,8 +23,6 @@ use OAuth2Framework\Component\Server\Endpoint\Authorization\BeforeConsentScreen\
 use OAuth2Framework\Component\Server\Endpoint\Authorization\ParameterChecker;
 use OAuth2Framework\Component\Server\Endpoint\Authorization\ParameterChecker\ParameterCheckerManager;
 use OAuth2Framework\Component\Server\Endpoint\Authorization\UserAccountDiscovery\UserAccountDiscoveryManager;
-use OAuth2Framework\Component\Server\ResponseMode\ResponseModeManager;
-use OAuth2Framework\Component\Server\ResponseType\ResponseTypeManager;
 use OAuth2Framework\Component\Server\TokenType\TokenTypeManager;
 use function Fluent\create;
 use function Fluent\get;
@@ -79,18 +77,10 @@ return [
 
     ParameterCheckerManager::class => create(),
 
-    ParameterChecker\ResponseTypeAndResponseModeParameterChecker::class => create()
-        ->arguments(
-            get(ResponseTypeManager::class),
-            get(ResponseModeManager::class),
-            true
-        )
-        ->tag('oauth2_server_authorization_parameter_checker'),
-
     ParameterChecker\RedirectUriParameterChecker::class => create()
         ->arguments(
-            true,
-            true
+            'oauth2_server.endpoint.authorization.enforce_state',
+            'oauth2_server.endpoint.authorization.enforce_state'
         )
         ->tag('oauth2_server_authorization_parameter_checker'),
 
@@ -105,14 +95,14 @@ return [
 
     ParameterChecker\StateParameterChecker::class => create()
         ->arguments(
-            true
+            'oauth2_server.endpoint.authorization.enforce_state'
         )
         ->tag('oauth2_server_authorization_parameter_checker'),
 
     ParameterChecker\TokenTypeParameterChecker::class => create()
         ->arguments(
             get(TokenTypeManager::class),
-            true
+            'oauth2_server.endpoint.authorization.allow_token_type_parameter'
         )
         ->tag('oauth2_server_authorization_parameter_checker'),
 
