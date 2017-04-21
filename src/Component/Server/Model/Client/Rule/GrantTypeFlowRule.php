@@ -73,12 +73,12 @@ final class GrantTypeFlowRule implements RuleInterface
         Assertion::isArray($parameters->get('grant_types'), 'The parameter \'grant_types\' must be an array of strings.');
         Assertion::allString($parameters->get('grant_types'), 'The parameter \'grant_types\' must be an array of strings.');
 
-        foreach ($parameters->get('grant_types') as $grant_type) {
+        /*foreach ($parameters->get('grant_types') as $grant_type) {
             $type = $this->grantTypeManager->get($grant_type);
             $associated_response_types = $type->getAssociatedResponseTypes();
             $diff = array_diff($associated_response_types, $parameters->get('response_types'));
             Assertion::true(empty($diff), sprintf('The grant type \'%s\' is associated with the response types \'%s\' but this response type is missing.', $type->getGrantType(), implode(', ', $diff)));
-        }
+        }*/
     }
 
     /**
@@ -91,13 +91,13 @@ final class GrantTypeFlowRule implements RuleInterface
         Assertion::isArray($parameters->get('response_types'), 'The parameter \'response_types\' must be an array of strings.');
         Assertion::allString($parameters->get('response_types'), 'The parameter \'response_types\' must be an array of strings.');
 
-        foreach ($parameters->get('response_types') as $response_type) {
+        /*foreach ($parameters->get('response_types') as $response_type) {
             $types = $this->responseTypeManager->find($response_type);
             foreach ($types as $type) {
                 $associated_grant_types = $type->getAssociatedGrantTypes();
                 $diff = array_diff($associated_grant_types, $parameters->get('grant_types'));
                 Assertion::true(empty($diff), sprintf('The response type \'%s\' is associated with the grant types \'%s\' but this response type is missing.', $type->getResponseType(), implode(', ', $diff)));
             }
-        }
+        }*/
     }
 }
