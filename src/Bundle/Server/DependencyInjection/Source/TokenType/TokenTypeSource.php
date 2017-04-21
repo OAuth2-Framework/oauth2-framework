@@ -31,16 +31,6 @@ final class TokenTypeSource extends ArraySource
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function prepend(array $bundleConfig, string $path, ContainerBuilder $container)
-    {
-        parent::prepend($bundleConfig, $path, $container);
-        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/token_type'));
-        $loader->load('token_type.php');
-    }
-
-    /**
      * @return string
      */
     protected function name(): string
@@ -56,6 +46,8 @@ final class TokenTypeSource extends ArraySource
         foreach ($config as $k => $v) {
             $container->setParameter($path.'.'.$k, $v);
         }
+        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/token_type'));
+        $loader->load('token_type.php');
     }
 
     /**
