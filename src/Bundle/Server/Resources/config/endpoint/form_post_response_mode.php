@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 use OAuth2Framework\Bundle\Server\Service\FormPostResponseRenderer;
 use OAuth2Framework\Component\Server\ResponseMode;
-use function Fluent\autowire;
 use function Fluent\create;
 use function Fluent\get;
 
