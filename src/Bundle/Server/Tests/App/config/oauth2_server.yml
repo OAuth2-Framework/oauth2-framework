@@ -47,7 +47,6 @@ oauth2_server:
             enabled: true
             secret_lifetime: 0
         client_secret_basic:
-            enabled: true
             secret_lifetime: 0
             realm: 'My OAuth2 Server'
         client_assertion_jwt:
