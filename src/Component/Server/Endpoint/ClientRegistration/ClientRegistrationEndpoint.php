@@ -68,7 +68,7 @@ final class ClientRegistrationEndpoint implements MiddlewareInterface
             } else {
                 $userAccountId = null;
             }
-            $commandParameters = DataBag::createFromArray(is_array($request->getParsedBody()) ? $request->getParsedBody() : json_decode($request->getBody()->getContents(), true));
+            $commandParameters = DataBag::createFromArray(json_decode($request->getBody()->getContents(), true));
             $command = CreateClientCommand::create($userAccountId, $commandParameters, $data);
             $this->messageBus->handle($command);
         } catch (\InvalidArgumentException $e) {

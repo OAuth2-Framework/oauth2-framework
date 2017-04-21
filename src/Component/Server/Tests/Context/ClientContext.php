@@ -16,6 +16,7 @@ namespace OAuth2Framework\Component\Server\Tests\Context;
 use Assert\Assertion;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
+use Http\Factory\Diactoros\StreamFactory;
 use OAuth2Framework\Component\Server\Model\Client\Client;
 use OAuth2Framework\Component\Server\Model\Client\ClientId;
 use OAuth2Framework\Component\Server\Model\DataBag\DataBag;
@@ -61,10 +62,10 @@ final class ClientContext implements Context
     {
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('POST');
-        $request = $request->withParsedBody([
+        $request = $request->withBody((new StreamFactory())->createStream(json_encode([
             'redirect_uris' => ['https://www.foo.com'],
             'token_endpoint_auth_method' => 'client_secret_basic',
-        ]);
+        ])));
         $request = $request->withHeader('Content-Type', 'application/json');
         $request = $request->withHeader('Authorization', 'Bearer INITIAL_ACCESS_TOKEN_VALID');
 
@@ -78,9 +79,9 @@ final class ClientContext implements Context
     {
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('POST');
-        $request = $request->withParsedBody([
+        $request = $request->withBody((new StreamFactory())->createStream(json_encode([
             'redirect_uris' => ['https://www.foo.com'],
-        ]);
+        ])));
         $request = $request->withHeader('Content-Type', 'application/json');
         $request = $request->withHeader('Authorization', 'Bearer INITIAL_ACCESS_TOKEN_EXPIRED');
 
@@ -94,9 +95,9 @@ final class ClientContext implements Context
     {
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('POST');
-        $request = $request->withParsedBody([
+        $request = $request->withBody((new StreamFactory())->createStream(json_encode([
             'redirect_uris' => ['https://www.foo.com'],
-        ]);
+        ])));
         $request = $request->withHeader('Content-Type', 'application/json');
         $request = $request->withHeader('Authorization', 'Bearer INITIAL_ACCESS_TOKEN_REVOKED');
 
@@ -110,9 +111,9 @@ final class ClientContext implements Context
     {
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('POST');
-        $request = $request->withParsedBody([
+        $request = $request->withBody((new StreamFactory())->createStream(json_encode([
             'redirect_uris' => ['https://www.foo.com'],
-        ]);
+        ])));
         $request = $request->withHeader('Content-Type', 'application/json');
 
         $this->responseContext->setResponse($this->applicationContext->getApplication()->getClientRegistrationPipe()->dispatch($request));
@@ -125,9 +126,9 @@ final class ClientContext implements Context
     {
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('POST');
-        $request = $request->withParsedBody([
+        $request = $request->withBody((new StreamFactory())->createStream(json_encode([
             'redirect_uris' => ['https://www.foo.com'],
-        ]);
+        ])));
         $request = $request->withHeader('Content-Type', 'application/json');
         $request = $request->withHeader('Authorization', 'Bearer ***INVALID_INITIAL_ACCESS_TOKEN***');
 
@@ -141,11 +142,11 @@ final class ClientContext implements Context
     {
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('POST');
-        $request = $request->withParsedBody([
+        $request = $request->withBody((new StreamFactory())->createStream(json_encode([
             'redirect_uris' => ['https://www.foo.com'],
             'token_endpoint_auth_method' => 'client_secret_basic',
             'software_statement' => $this->createSoftwareStatement(),
-        ]);
+        ])));
         $request = $request->withHeader('Content-Type', 'application/json');
         $request = $request->withHeader('Authorization', 'Bearer INITIAL_ACCESS_TOKEN_VALID');
 
@@ -283,9 +284,9 @@ final class ClientContext implements Context
     {
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('PUT');
-        $request = $request->withParsedBody([
+        $request = $request->withBody((new StreamFactory())->createStream(json_encode([
             'redirect_uris' => ['https://www.foo.com'],
-        ]);
+        ])));
         $request = $request->withHeader('Content-Type', 'application/json');
         $client = $this->applicationContext->getApplication()->getClientRepository()->find(ClientId::create('79b407fb-acc0-4880-ab98-254062c214ce'));
         $request = $request->withAttribute('client', $client);
@@ -301,10 +302,10 @@ final class ClientContext implements Context
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('PUT');
         $request = $request->withHeader('Content-Type', 'application/json');
-        $request = $request->withParsedBody([
+        $request = $request->withBody((new StreamFactory())->createStream(json_encode([
             'redirect_uris' => ['https://www.bar.com'],
             'token_endpoint_auth_method' => 'client_secret_basic',
-        ]);
+        ])));
         $request = $request->withHeader('Authorization', 'Bearer JNWuIxHkTKtUmmtEpipDtPlTc3ordUNpSVVPLbQXKrFKyYVDR7N3k1ZzrHmPWXoibr2J2HrTSSozN6zIhHuypA');
         $client = $this->applicationContext->getApplication()->getClientRepository()->find(ClientId::create('79b407fb-acc0-4880-ab98-254062c214ce'));
         $request = $request->withAttribute('client', $client);
@@ -332,11 +333,11 @@ final class ClientContext implements Context
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('PUT');
         $request = $request->withHeader('Content-Type', 'application/json');
-        $request = $request->withParsedBody([
+        $request = $request->withBody((new StreamFactory())->createStream(json_encode([
             'redirect_uris' => ['https://www.bar.com'],
             'token_endpoint_auth_method' => 'client_secret_basic',
             'software_statement' => $this->createSoftwareStatement(),
-        ]);
+        ])));
         $request = $request->withHeader('Authorization', 'Bearer JNWuIxHkTKtUmmtEpipDtPlTc3ordUNpSVVPLbQXKrFKyYVDR7N3k1ZzrHmPWXoibr2J2HrTSSozN6zIhHuypA');
         $client = Client::createEmpty();
         $client = $client->create(
@@ -365,11 +366,11 @@ final class ClientContext implements Context
         $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('PUT');
         $request = $request->withHeader('Content-Type', 'application/json');
-        $request = $request->withParsedBody([
+        $request = $request->withBody((new StreamFactory())->createStream(json_encode([
             'redirect_uris' => ['https://www.bar.com'],
             'token_endpoint_auth_method' => 'client_secret_basic',
             'software_statement' => $this->createInvalidSoftwareStatement(),
-        ]);
+        ])));
         $request = $request->withHeader('Authorization', 'Bearer JNWuIxHkTKtUmmtEpipDtPlTc3ordUNpSVVPLbQXKrFKyYVDR7N3k1ZzrHmPWXoibr2J2HrTSSozN6zIhHuypA');
         $client = Client::createEmpty();
         $client = $client->create(
