@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\Server\DependencyInjection\Source\Endpoint;
 
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\ActionableSource;
-use OAuth2Framework\Bundle\Server\DependencyInjection\Source\SourceInterface;
 use SpomkyLabs\JoseBundle\Helper\ConfigurationHelper;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -23,19 +22,12 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 final class AuthorizationEndpointRequestObjectSource extends ActionableSource
 {
     /**
-     * @var SourceInterface[]
-     */
-    private $subSources;
-
-    /**
      * AuthorizationEndpointRequestObjectSource constructor.
      */
     public function __construct()
     {
-        $this->subSources = [
-            new AuthorizationEndpointRequestObjectReferenceSource(),
-            new AuthorizationEndpointRequestObjectEncryptionSource(),
-        ];
+        $this->addSubSource(new AuthorizationEndpointRequestObjectReferenceSource());
+        $this->addSubSource(new AuthorizationEndpointRequestObjectEncryptionSource());
     }
 
     /**
@@ -43,9 +35,6 @@ final class AuthorizationEndpointRequestObjectSource extends ActionableSource
      */
     protected function continueLoading(string $path, ContainerBuilder $container, array $config)
     {
-        foreach ($this->subSources as $source) {
-            $source->load($path, $container, $config);
-        }
         foreach ($config as $k => $v) {
             $container->setParameter($path.'.'.$k, $v);
         }
@@ -74,9 +63,6 @@ final class AuthorizationEndpointRequestObjectSource extends ActionableSource
                     ->treatNullLike([])
                 ->end()
             ->end();
-        foreach ($this->subSources as $source) {
-            $source->addConfiguration($node);
-        }
     }
 
     /**

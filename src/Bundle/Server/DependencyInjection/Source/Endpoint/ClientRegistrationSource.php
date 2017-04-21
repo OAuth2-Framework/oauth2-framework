@@ -15,7 +15,6 @@ namespace OAuth2Framework\Bundle\Server\DependencyInjection\Source\Endpoint;
 
 use Fluent\PhpConfigFileLoader;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\ActionableSource;
-use OAuth2Framework\Bundle\Server\DependencyInjection\Source\SourceInterface;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -23,29 +22,12 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 final class ClientRegistrationSource extends ActionableSource
 {
     /**
-     * @var SourceInterface[]
-     */
-    private $subSections = [];
-
-    /**
      * ClientRegistrationSource constructor.
      */
     public function __construct()
     {
-        $this->subSections = [
-            new ClientRegistrationInitialAccessTokenSource(),
-            new ClientRegistrationSoftwareStatementSource(),
-        ];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function prepend(array $bundleConfig, string $path, ContainerBuilder $container)
-    {
-        foreach ($this->subSections as $source) {
-            $source->prepend($bundleConfig, $path.'['.$this->name().']', $container);
-        }
+        $this->addSubSource(new ClientRegistrationInitialAccessTokenSource());
+        $this->addSubSource(new ClientRegistrationSoftwareStatementSource());
     }
 
     /**
@@ -59,10 +41,6 @@ final class ClientRegistrationSource extends ActionableSource
 
         $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint'));
         $loader->load('client_registration.php');
-
-        foreach ($this->subSections as $source) {
-            $source->load($path, $container, $config);
-        }
     }
 
     /**
@@ -79,9 +57,6 @@ final class ClientRegistrationSource extends ActionableSource
     protected function continueConfiguration(NodeDefinition $node)
     {
         parent::continueConfiguration($node);
-        foreach ($this->subSections as $source) {
-            $source->addConfiguration($node);
-        }
         $node
             ->children()
                 ->scalarNode('path')->defaultValue('/client/management')->end()

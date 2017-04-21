@@ -81,6 +81,7 @@ final class ClientRegistrationSoftwareStatementSource extends ActionableSource
      */
     public function prepend(array $bundleConfig, string $path, ContainerBuilder $container)
     {
+        parent::prepend($bundleConfig, $path, $container);
         $currentPath = $path.'['.$this->name().']';
         $accessor = PropertyAccess::createPropertyAccessor();
         $sourceConfig = $accessor->getValue($bundleConfig, $currentPath);

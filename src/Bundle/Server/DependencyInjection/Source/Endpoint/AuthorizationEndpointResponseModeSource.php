@@ -15,7 +15,6 @@ namespace OAuth2Framework\Bundle\Server\DependencyInjection\Source\Endpoint;
 
 use Fluent\PhpConfigFileLoader;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\ArraySource;
-use OAuth2Framework\Bundle\Server\DependencyInjection\Source\SourceInterface;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -23,18 +22,11 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 final class AuthorizationEndpointResponseModeSource extends ArraySource
 {
     /**
-     * @var SourceInterface[]
-     */
-    private $subSources;
-
-    /**
      * AuthorizationEndpointSource constructor.
      */
     public function __construct()
     {
-        $this->subSources = [
-            new AuthorizationEndpointFormPostResponseModeSource(),
-        ];
+        $this->addSubSource(new AuthorizationEndpointFormPostResponseModeSource());
     }
 
     /**
@@ -48,9 +40,6 @@ final class AuthorizationEndpointResponseModeSource extends ArraySource
 
         $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint'));
         $loader->load('response_mode.php');
-        foreach ($this->subSources as $source) {
-            $source->load($path, $container, $config);
-        }
     }
 
     /**
@@ -59,14 +48,6 @@ final class AuthorizationEndpointResponseModeSource extends ArraySource
     protected function name(): string
     {
         return 'response_mode';
-    }
-
-    public function prepend(array $bundleConfig, string $path, ContainerBuilder $container)
-    {
-        parent::prepend($bundleConfig, $path, $container);
-        foreach ($this->subSources as $source) {
-            $source->prepend($bundleConfig, $path.'['.$this->name().']', $container);
-        }
     }
 
     /**
@@ -81,8 +62,5 @@ final class AuthorizationEndpointResponseModeSource extends ArraySource
                     ->defaultFalse()
                 ->end()
             ->end();
-        foreach ($this->subSources as $source) {
-            $source->addConfiguration($node);
-        }
     }
 }

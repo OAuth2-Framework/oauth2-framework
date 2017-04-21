@@ -15,29 +15,20 @@ namespace OAuth2Framework\Bundle\Server\DependencyInjection\Source\OpenIdConnect
 
 use Fluent\PhpConfigFileLoader;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\ActionableSource;
-use OAuth2Framework\Bundle\Server\DependencyInjection\Source\SourceInterface;
 use Symfony\Component\Config\FileLocator;
-use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 final class OpenIdConnectSource extends ActionableSource
 {
     /**
-     * @var SourceInterface[]
-     */
-    private $subSources;
-
-    /**
      * OpenIdConnectSource constructor.
      */
     public function __construct()
     {
-        $this->subSources = [
-            new UserinfoEndpointSource(),
-            new IdTokenSource(),
-            new AuthorizationEndpointIdTokenHintSource(),
-            new PairwiseSubjectSource(),
-        ];
+        $this->addSubSource(new UserinfoEndpointSource());
+        $this->addSubSource(new IdTokenSource());
+        $this->addSubSource(new AuthorizationEndpointIdTokenHintSource());
+        $this->addSubSource(new PairwiseSubjectSource());
     }
 
     /**
@@ -53,29 +44,7 @@ final class OpenIdConnectSource extends ActionableSource
      */
     protected function continueLoading(string $path, ContainerBuilder $container, array $config)
     {
-        foreach ($this->subSources as $source) {
-            $source->load($path, $container, $config);
-        }
         $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/openid_connect'));
         $loader->load('openid_connect.php');
-    }
-
-    public function prepend(array $bundleConfig, string $path, ContainerBuilder $container)
-    {
-        parent::prepend($bundleConfig, $path, $container);
-        foreach ($this->subSources as $source) {
-            $source->prepend($bundleConfig, $path.'['.$this->name().']', $container);
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function continueConfiguration(NodeDefinition $node)
-    {
-        parent::continueConfiguration($node);
-        foreach ($this->subSources as $source) {
-            $source->addConfiguration($node);
-        }
     }
 }

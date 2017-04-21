@@ -15,7 +15,6 @@ namespace OAuth2Framework\Bundle\Server\DependencyInjection\Source\Endpoint;
 
 use Fluent\PhpConfigFileLoader;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\ActionableSource;
-use OAuth2Framework\Bundle\Server\DependencyInjection\Source\SourceInterface;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -23,20 +22,13 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 final class AuthorizationEndpointSource extends ActionableSource
 {
     /**
-     * @var SourceInterface[]
-     */
-    private $subSources;
-
-    /**
      * AuthorizationEndpointSource constructor.
      */
     public function __construct()
     {
-        $this->subSources = [
-            new AuthorizationEndpointRequestObjectSource(),
-            new AuthorizationEndpointResponseModeSource(),
-            new AuthorizationEndpointPreConfiguredAuthorizationSource(),
-        ];
+        $this->addSubSource(new AuthorizationEndpointRequestObjectSource());
+        $this->addSubSource(new AuthorizationEndpointResponseModeSource());
+        $this->addSubSource(new AuthorizationEndpointPreConfiguredAuthorizationSource());
     }
 
     /**
@@ -44,9 +36,6 @@ final class AuthorizationEndpointSource extends ActionableSource
      */
     protected function continueLoading(string $path, ContainerBuilder $container, array $config)
     {
-        foreach ($this->subSources as $source) {
-            $source->load($path, $container, $config);
-        }
         foreach ($config as $k => $v) {
             $container->setParameter($path.'.'.$k, $v);
         }
@@ -61,14 +50,6 @@ final class AuthorizationEndpointSource extends ActionableSource
     protected function name(): string
     {
         return 'authorization';
-    }
-
-    public function prepend(array $bundleConfig, string $path, ContainerBuilder $container)
-    {
-        parent::prepend($bundleConfig, $path, $container);
-        foreach ($this->subSources as $source) {
-            $source->prepend($bundleConfig, $path.'['.$this->name().']', $container);
-        }
     }
 
     /**
@@ -113,8 +94,5 @@ final class AuthorizationEndpointSource extends ActionableSource
                     ->defaultTrue()
                 ->end()
             ->end();
-        foreach ($this->subSources as $source) {
-            $source->addConfiguration($node);
-        }
     }
 }
