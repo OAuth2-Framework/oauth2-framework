@@ -46,7 +46,7 @@ final class IssuerDiscoveryContext implements Context
      */
     public function aClientSendAnIssuerDiscoveryRequestWithoutRelParameter()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([]);
         $request = $request->withHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -59,7 +59,7 @@ final class IssuerDiscoveryContext implements Context
      */
     public function aClientSendAnIssuerDiscoveryRequestWithAnInvalidRelParameter()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([
             'rel' => 'foo.bar',
@@ -74,7 +74,7 @@ final class IssuerDiscoveryContext implements Context
      */
     public function aClientSendAnIssuerDiscoveryRequestWithoutResourceParameter()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([
             'rel' => 'http://openid.net/specs/connect/1.0/issuer',
@@ -89,7 +89,7 @@ final class IssuerDiscoveryContext implements Context
      */
     public function aClientSendAnIssuerDiscoveryRequestWithAnInvalidResourceParameterBasedOnAnXRI()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([
             'rel' => 'http://openid.net/specs/connect/1.0/issuer',
@@ -105,7 +105,7 @@ final class IssuerDiscoveryContext implements Context
      */
     public function aClientSendAnIssuerDiscoveryRequestWithAnInvalidResourceParameterBasedOnAnEmail()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([
             'rel' => 'http://openid.net/specs/connect/1.0/issuer',
@@ -121,7 +121,7 @@ final class IssuerDiscoveryContext implements Context
      */
     public function aClientSendAnIssuerDiscoveryRequestWithAnInvalidResourceParameterBasedOnAnUrl()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([
             'rel' => 'http://openid.net/specs/connect/1.0/issuer',
@@ -137,7 +137,7 @@ final class IssuerDiscoveryContext implements Context
      */
     public function aClientSendAnIssuerDiscoveryRequestWithAValidResourceParameterBasedOnAnEmail()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([
             'rel' => 'http://openid.net/specs/connect/1.0/issuer',
@@ -153,7 +153,7 @@ final class IssuerDiscoveryContext implements Context
      */
     public function aClientSendAnIssuerDiscoveryRequestWithAValidResourceParameterBasedOnAnUrl()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([
             'rel' => 'http://openid.net/specs/connect/1.0/issuer',

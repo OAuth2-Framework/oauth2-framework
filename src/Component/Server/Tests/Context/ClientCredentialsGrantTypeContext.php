@@ -48,7 +48,7 @@ final class ClientCredentialsGrantTypeContext implements Context
      */
     public function anUnauthenticatedClientSendsAClientCredentialsGrantTypeRequest()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
             'grant_type' => 'client_credentials',
@@ -63,7 +63,7 @@ final class ClientCredentialsGrantTypeContext implements Context
      */
     public function anPublicClientSendsAClientCredentialsGrantTypeRequest()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
             'grant_type' => 'client_credentials',
@@ -79,7 +79,7 @@ final class ClientCredentialsGrantTypeContext implements Context
      */
     public function aClientSendsAClientCredentialsGrantTypeRequestButCredentialsExpired()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
             'grant_type' => 'client_credentials',
@@ -96,7 +96,7 @@ final class ClientCredentialsGrantTypeContext implements Context
      */
     public function aClientSendsAValidClientCredentialsGrantTypeRequest()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
             'grant_type' => 'client_credentials',
@@ -113,7 +113,7 @@ final class ClientCredentialsGrantTypeContext implements Context
      */
     public function aDeletedClientSendsAClientCredentialsGrantTypeRequest()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
             'grant_type' => 'client_credentials',
@@ -130,7 +130,7 @@ final class ClientCredentialsGrantTypeContext implements Context
      */
     public function aClientAuthenticatedWithAJwtAssertionSendsAValidClientCredentialsGrantTypeRequest()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
             'grant_type' => 'client_credentials',
@@ -148,7 +148,7 @@ final class ClientCredentialsGrantTypeContext implements Context
      */
     public function aClientSendsAValidClientCredentialsGrantTypeRequestButTheGrantTypeIsNotAllowed()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
             'grant_type' => 'client_credentials',

@@ -53,7 +53,7 @@ final class CodeResponseTypeContext implements Context
      */
     public function aClientSendsAnAuthorizationRequestsWithTheAuthorizationCodeResponseTypeAndACodeChallengeButTheMethodIsNotSupported()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([
             'client_id' => 'client1',
@@ -73,7 +73,7 @@ final class CodeResponseTypeContext implements Context
      */
     public function aClientSendsAnAuthorizationRequestsWithTheAuthorizationCodeResponseType()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([
             'client_id' => 'client1',
@@ -91,7 +91,7 @@ final class CodeResponseTypeContext implements Context
      */
     public function aClientSendsAnAuthorizationRequestsWithTheAuthorizationCodeResponseTypeAndACodeVerifier()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([
             'client_id' => 'client1',
@@ -129,7 +129,7 @@ final class CodeResponseTypeContext implements Context
      */
     public function aClientSendsAnAuthorizationRequestsWithTheAuthorizationCodeResponseTypeACodeVerifierAndTheScopeOpenId()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([
             'client_id' => 'client1',
@@ -153,7 +153,7 @@ final class CodeResponseTypeContext implements Context
     {
         $code = $this->getAuthorizationCodeFromTheResponse();
 
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
             'grant_type' => 'authorization_code',

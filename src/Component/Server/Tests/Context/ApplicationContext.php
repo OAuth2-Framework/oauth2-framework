@@ -46,14 +46,6 @@ final class ApplicationContext implements Context
     }
 
     /**
-     * @return StreamFactoryInterface
-     */
-    public function getStreamFactory(): StreamFactoryInterface
-    {
-        return $this->getApplication()->getStreamFactory();
-    }
-
-    /**
      * @return ServerRequestFactoryInterface
      */
     public function getServerRequestFactory(): ServerRequestFactoryInterface

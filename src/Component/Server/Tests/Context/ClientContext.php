@@ -59,7 +59,7 @@ final class ClientContext implements Context
      */
     public function aValidClientRegistrationRequestIsReceived()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
             'redirect_uris' => ['https://www.foo.com'],
@@ -76,7 +76,7 @@ final class ClientContext implements Context
      */
     public function aClientRegistrationRequestIsReceivedWithAnExpiredInitialAccessToken()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
             'redirect_uris' => ['https://www.foo.com'],
@@ -92,7 +92,7 @@ final class ClientContext implements Context
      */
     public function aClientRegistrationRequestIsReceivedWithARevokedInitialAccessToken()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
             'redirect_uris' => ['https://www.foo.com'],
@@ -108,7 +108,7 @@ final class ClientContext implements Context
      */
     public function aClientRegistrationRequestIsReceivedButNotInitialAccessTokenIsSet()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
             'redirect_uris' => ['https://www.foo.com'],
@@ -123,7 +123,7 @@ final class ClientContext implements Context
      */
     public function aClientRegistrationRequestIsReceivedButAnInvalidInitialAccessTokenIsSet()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
             'redirect_uris' => ['https://www.foo.com'],
@@ -139,7 +139,7 @@ final class ClientContext implements Context
      */
     public function aValidClientRegistrationRequestWithSoftwareStatementIsReceived()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
             'redirect_uris' => ['https://www.foo.com'],
@@ -157,7 +157,7 @@ final class ClientContext implements Context
      */
     public function aValidClientConfigurationGetRequestIsReceived()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('GET');
         $request = $request->withHeader('Content-Type', 'application/x-www-form-urlencoded');
         $request = $request->withHeader('Authorization', 'Bearer JNWuIxHkTKtUmmtEpipDtPlTc3ordUNpSVVPLbQXKrFKyYVDR7N3k1ZzrHmPWXoibr2J2HrTSSozN6zIhHuypA');
@@ -189,7 +189,7 @@ final class ClientContext implements Context
      */
     public function aClientConfigurationGetRequestIsReceivedButNoRegistrationTokenIsSet()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('GET');
         $request = $request->withHeader('Content-Type', 'application/x-www-form-urlencoded');
         $client = Client::createEmpty();
@@ -220,7 +220,7 @@ final class ClientContext implements Context
      */
     public function aClientConfigurationGetRequestIsReceivedButTheRegistrationTokenIsInvalid()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('GET');
         $request = $request->withHeader('Content-Type', 'application/x-www-form-urlencoded');
         $request = $request->withHeader('Authorization', 'Bearer InvALID_ToKEn');
@@ -252,7 +252,7 @@ final class ClientContext implements Context
      */
     public function aValidClientConfigurationDeleteRequestIsReceived()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('DELETE');
         $request = $request->withHeader('Content-Type', 'application/x-www-form-urlencoded');
         $request = $request->withHeader('Authorization', 'Bearer JNWuIxHkTKtUmmtEpipDtPlTc3ordUNpSVVPLbQXKrFKyYVDR7N3k1ZzrHmPWXoibr2J2HrTSSozN6zIhHuypA');
@@ -267,7 +267,7 @@ final class ClientContext implements Context
      */
     public function aClientConfigurationDeleteRequestIsReceivedButNoRegistrationTokenIsSet()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('DELETE');
         $request = $request->withHeader('Content-Type', 'application/x-www-form-urlencoded');
         $client = $this->applicationContext->getApplication()->getClientRepository()->find(ClientId::create('79b407fb-acc0-4880-ab98-254062c214ce'));
@@ -281,7 +281,7 @@ final class ClientContext implements Context
      */
     public function aClientConfigurationPutRequestIsReceivedButNoRegistrationTokenIsSet()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('PUT');
         $request = $request->withParsedBody([
             'redirect_uris' => ['https://www.foo.com'],
@@ -298,7 +298,7 @@ final class ClientContext implements Context
      */
     public function aValidClientConfigurationPutRequestIsReceived()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('PUT');
         $request = $request->withHeader('Content-Type', 'application/x-www-form-urlencoded');
         $request = $request->withParsedBody([
@@ -329,7 +329,7 @@ final class ClientContext implements Context
      */
     public function aValidClientConfigurationPutRequestWithSoftwareStatementIsReceived()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('PUT');
         $request = $request->withHeader('Content-Type', 'application/x-www-form-urlencoded');
         $request = $request->withParsedBody([
@@ -362,7 +362,7 @@ final class ClientContext implements Context
      */
     public function aValidClientConfigurationPutRequestWithSoftwareStatementIsReceivedButTheAlgorithmIsNotSupported()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('PUT');
         $request = $request->withHeader('Content-Type', 'application/x-www-form-urlencoded');
         $request = $request->withParsedBody([

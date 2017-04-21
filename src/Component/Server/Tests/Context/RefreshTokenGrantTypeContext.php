@@ -46,7 +46,7 @@ final class RefreshTokenGrantTypeContext implements Context
      */
     public function aClientSendsARefreshTokenGrantTypeRequestWithoutRefreshTokenParameter()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
             'grant_type' => 'refresh_token',
@@ -62,7 +62,7 @@ final class RefreshTokenGrantTypeContext implements Context
      */
     public function aClientSendsARefreshTokenGrantTypeRequestWithAnExpiredRefreshToken()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
             'grant_type' => 'refresh_token',
@@ -79,7 +79,7 @@ final class RefreshTokenGrantTypeContext implements Context
      */
     public function aClientSendsARefreshTokenGrantTypeRequestWithARevokedRefreshToken()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
             'grant_type' => 'refresh_token',
@@ -96,7 +96,7 @@ final class RefreshTokenGrantTypeContext implements Context
      */
     public function aClientSendsAValidRefreshTokenGrantTypeRequest()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
             'grant_type' => 'refresh_token',
@@ -113,7 +113,7 @@ final class RefreshTokenGrantTypeContext implements Context
      */
     public function aClientSendsAValidRefreshTokenGrantTypeRequestButTheGrantTypeIsNotAllowed()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
             'grant_type' => 'refresh_token',

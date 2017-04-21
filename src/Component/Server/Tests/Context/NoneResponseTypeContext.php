@@ -52,7 +52,7 @@ final class NoneResponseTypeContext implements Context
      */
     public function aClientSendsAAuthorizationRequestsWithTheNoneResponseType()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([
             'client_id' => 'client1',

@@ -47,7 +47,7 @@ final class AuthorizationCodeGrantTypeContext implements Context
      */
     public function aClientSendsAAuthorizationCodeGrantTypeRequestButTheCodeParameterIsMissing()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
             'grant_type' => 'authorization_code',
@@ -64,7 +64,7 @@ final class AuthorizationCodeGrantTypeContext implements Context
      */
     public function aClientSendsAAuthorizationCodeGrantTypeRequestButTheRedirectionUriParameterIsMissing()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
             'grant_type' => 'authorization_code',
@@ -82,7 +82,7 @@ final class AuthorizationCodeGrantTypeContext implements Context
      */
     public function aClientSendsAAuthorizationCodeGrantTypeRequestButTheRedirectionUriParameterMismatch()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
             'grant_type' => 'authorization_code',
@@ -101,7 +101,7 @@ final class AuthorizationCodeGrantTypeContext implements Context
      */
     public function aClientSendsAValidAuthorizationCodeGrantTypeRequest()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
             'grant_type' => 'authorization_code',
@@ -129,7 +129,7 @@ final class AuthorizationCodeGrantTypeContext implements Context
      */
     public function aClientSendsAValidAuthorizationCodeGrantTypeRequestWithReducedScope()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
             'grant_type' => 'authorization_code',
@@ -148,7 +148,7 @@ final class AuthorizationCodeGrantTypeContext implements Context
      */
     public function aClientSendsAAuthorizationCodeGrantTypeRequestButAScopeIsNotAllowed()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
             'grant_type' => 'authorization_code',
@@ -167,7 +167,7 @@ final class AuthorizationCodeGrantTypeContext implements Context
      */
     public function aClientSendsAAuthorizationCodeGrantTypeRequestButAAuthorizationCodeIsForAnotherClient()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
             'grant_type' => 'authorization_code',
@@ -186,7 +186,7 @@ final class AuthorizationCodeGrantTypeContext implements Context
      */
     public function aClientSendsAAuthorizationCodeGrantTypeRequestButTheAuthorizationCodeExpired()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
             'grant_type' => 'authorization_code',
@@ -205,7 +205,7 @@ final class AuthorizationCodeGrantTypeContext implements Context
      */
     public function aClientSendsAAuthorizationCodeGrantTypeRequestButTheAuthorizationCodeIsRevoked()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
             'grant_type' => 'authorization_code',
@@ -224,7 +224,7 @@ final class AuthorizationCodeGrantTypeContext implements Context
      */
     public function aClientSendsAAuthorizationCodeGrantTypeRequestButTheAuthorizationCodeIsUsed()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
             'grant_type' => 'authorization_code',
@@ -243,7 +243,7 @@ final class AuthorizationCodeGrantTypeContext implements Context
      */
     public function aClientSendsAAuthorizationCodeGrantTypeRequestButTheAuthorizationCodeRequiresACodeVerifierParameter()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
             'grant_type' => 'authorization_code',
@@ -262,7 +262,7 @@ final class AuthorizationCodeGrantTypeContext implements Context
      */
     public function aClientSendsAAuthorizationCodeGrantTypeRequestButTheCodeVerifierParameterOfTheAuthorizationCodeIsInvalid()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
             'grant_type' => 'authorization_code',
@@ -282,7 +282,7 @@ final class AuthorizationCodeGrantTypeContext implements Context
      */
     public function aClientSendsAValidAuthorizationCodeGrantTypeRequestWithCodeVerifierThatUsesPlainMethod()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
             'grant_type' => 'authorization_code',
@@ -302,7 +302,7 @@ final class AuthorizationCodeGrantTypeContext implements Context
      */
     public function aClientSendsAValidAuthorizationCodeGrantTypeRequestWithCodeVerifierThatUsesSMethod()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
             'grant_type' => 'authorization_code',
