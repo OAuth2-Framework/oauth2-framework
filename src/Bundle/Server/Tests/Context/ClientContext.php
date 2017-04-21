@@ -70,7 +70,7 @@ final class ClientContext implements Context
             'token_endpoint_auth_method' => 'none',
         ],
         [], [
-            'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
+            'HTTP_Content-Type' => 'application/json',
             'HTTP_Authorization' => 'Bearer INITIAL_ACCESS_TOKEN_VALID',
         ]);
     }
@@ -85,7 +85,7 @@ final class ClientContext implements Context
             'token_endpoint_auth_method' => 'none',
         ],
         [], [
-                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
+                'HTTP_Content-Type' => 'application/json',
                 'HTTP_Authorization' => 'Bearer INITIAL_ACCESS_TOKEN_EXPIRED',
         ]);
     }
@@ -100,7 +100,7 @@ final class ClientContext implements Context
             'token_endpoint_auth_method' => 'none',
         ],
             [], [
-                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
+                'HTTP_Content-Type' => 'application/json',
                 'HTTP_Authorization' => 'Bearer INITIAL_ACCESS_TOKEN_REVOKED',
             ]);
     }
@@ -115,7 +115,7 @@ final class ClientContext implements Context
             'token_endpoint_auth_method' => 'none',
         ],
         [], [
-            'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
+            'HTTP_Content-Type' => 'application/json',
         ]);
     }
 
@@ -129,7 +129,7 @@ final class ClientContext implements Context
             'token_endpoint_auth_method' => 'none',
         ],
         [], [
-            'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
+            'HTTP_Content-Type' => 'application/json',
             'HTTP_Authorization' => 'Bearer **Invalid Initial Access Token**',
         ]);
     }
@@ -145,7 +145,7 @@ final class ClientContext implements Context
             'software_statement' => $this->createSoftwareStatement(),
         ],
         [], [
-            'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
+            'HTTP_Content-Type' => 'application/json',
             'HTTP_Authorization' => 'Bearer INITIAL_ACCESS_TOKEN_VALID',
         ]);
     }
