@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\Command\Client;
 
-use Assert\Assertion;
 use OAuth2Framework\Component\Server\Model\Client\Client;
 use OAuth2Framework\Component\Server\Model\Client\ClientId;
 use OAuth2Framework\Component\Server\Model\Client\ClientRepositoryInterface;
@@ -51,9 +50,7 @@ final class CreateClientCommandHandler
         $parameters = $command->getParameters();
         $userAccountId = $command->getUserAccountId();
         $validatedParameters = $this->ruleManager->handle($parameters, $userAccountId);
-        Assertion::true($validatedParameters->has('client_id'), 'Client ID not in the parameters.');
         $clientId = $validatedParameters->get('client_id');
-        Assertion::string($clientId, 'Invalid client ID parameter.');
         $client = Client::createEmpty();
         $client = $client->create(ClientId::create($clientId), $validatedParameters, $userAccountId);
         $this->clientRepository->save($client);
