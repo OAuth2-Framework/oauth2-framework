@@ -69,7 +69,7 @@ final class ClientContext implements Context
         [], [
             'HTTP_Content-Type' => 'application/json',
             'HTTP_Authorization' => 'Bearer INITIAL_ACCESS_TOKEN_VALID',
-        ],json_encode([
+        ], json_encode([
             'redirect_uris' => ['https://www.foo.com'],
             'token_endpoint_auth_method' => 'none',
         ]));
@@ -84,7 +84,7 @@ final class ClientContext implements Context
         [], [
                 'HTTP_Content-Type' => 'application/json',
                 'HTTP_Authorization' => 'Bearer INITIAL_ACCESS_TOKEN_EXPIRED',
-        ],json_encode([
+        ], json_encode([
             'redirect_uris' => ['https://www.foo.com'],
             'token_endpoint_auth_method' => 'none',
         ]));
@@ -213,7 +213,7 @@ final class ClientContext implements Context
     {
         $this->minkContext->getSession()->getDriver()->getClient()->request('PUT', 'https://oauth2.test/client/configure/client1', [], [], [
             'HTTP_Authorization' => 'Bearer REGISTRATION_ACCESS_TOKEN',
-        ],json_encode([
+        ], json_encode([
             'token_endpoint_auth_method' => 'client_secret_basic',
         ]));
     }
