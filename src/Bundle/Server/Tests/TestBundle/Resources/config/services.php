@@ -35,10 +35,10 @@ use function Fluent\create;
 use function Fluent\get;
 
 return [
-    'oauth2_server.http.client' => create(Http\Mock\Client::class), //FIXME
-    'oauth2_server.http.request_factory' => create(RequestFactory::class), //FIXME
-    'oauth2_server.http.response_factory' => create(ResponseFactory::class), //FIXME
-    'oauth2_server.http.uri_factory' => create(UriFactory::class), //FIXME
+    Http\Mock\Client::class => autowire(),
+    RequestFactory::class => autowire(),
+    ResponseFactory::class => autowire(),
+    UriFactory::class => autowire(),
 
     'MyScopeRepository' => create(ScopeRepository::class)
         ->arguments(

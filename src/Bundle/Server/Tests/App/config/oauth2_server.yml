@@ -1,4 +1,9 @@
 oauth2_server:
+    http:
+        client: 'Http\Mock\Client'
+        response_factory: 'Http\Factory\Diactoros\ResponseFactory'
+        request_factory: 'Http\Factory\Diactoros\RequestFactory'
+        uri_factory: 'Http\Factory\Diactoros\UriFactory'
     server_uri: 'https://oauth2.test/'
     client:
         event_store: 'EventStore.Client'

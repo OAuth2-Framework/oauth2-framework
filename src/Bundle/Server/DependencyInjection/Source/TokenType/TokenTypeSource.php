@@ -15,7 +15,6 @@ namespace OAuth2Framework\Bundle\Server\DependencyInjection\Source\TokenType;
 
 use Fluent\PhpConfigFileLoader;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\ArraySource;
-use OAuth2Framework\Bundle\Server\DependencyInjection\Source\SourceInterface;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -23,19 +22,12 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 final class TokenTypeSource extends ArraySource
 {
     /**
-     * @var SourceInterface[]
-     */
-    private $tokenTypes = [];
-
-    /**
      * TokenTypeSource constructor.
      */
     public function __construct()
     {
-        $this->tokenTypes = [
-            new BearerTokenTypeSource(),
-            new MacTokenTypeSource(),
-        ];
+        $this->addSubSource(new BearerTokenTypeSource());
+        $this->addSubSource(new MacTokenTypeSource());
     }
 
     /**
@@ -43,10 +35,7 @@ final class TokenTypeSource extends ArraySource
      */
     public function prepend(array $bundleConfig, string $path, ContainerBuilder $container)
     {
-        foreach ($this->tokenTypes as $source) {
-            $source->prepend($bundleConfig, $path.'['.$this->name().']', $container);
-        }
-
+        parent::prepend($bundleConfig, $path, $container);
         $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/token_type'));
         $loader->load('token_type.php');
     }
@@ -67,9 +56,6 @@ final class TokenTypeSource extends ArraySource
         foreach ($config as $k => $v) {
             $container->setParameter($path.'.'.$k, $v);
         }
-        foreach ($this->tokenTypes as $source) {
-            $source->load($path, $container, $config);
-        }
     }
 
     /**
@@ -89,8 +75,5 @@ final class TokenTypeSource extends ArraySource
                     ->info('If true, the "token_type" parameter will be allowed in requests.')
                 ->end()
             ->end();
-        foreach ($this->tokenTypes as $source) {
-            $source->addConfiguration($node);
-        }
     }
 }

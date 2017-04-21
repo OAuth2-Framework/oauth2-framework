@@ -84,6 +84,7 @@ final class AuthorizationEndpointRequestObjectSource extends ActionableSource
      */
     public function prepend(array $bundleConfig, string $path, ContainerBuilder $container)
     {
+        parent::prepend($bundleConfig, $path, $container);
         $currentPath = $path.'['.$this->name().']';
         $accessor = PropertyAccess::createPropertyAccessor();
         $sourceConfig = $accessor->getValue($bundleConfig, $currentPath);
@@ -94,9 +95,6 @@ final class AuthorizationEndpointRequestObjectSource extends ActionableSource
             $this->updateJoseBundleConfigurationForChecker($container, ['header_checkers' => $header_checkers, 'claim_checkers' => $claim_checkers]);
             $this->updateJoseBundleConfigurationForDecrypter($container, $sourceConfig);
             $this->updateJoseBundleConfigurationForJWTLoader($container, $sourceConfig);
-        }
-        foreach ($this->subSources as $source) {
-            $source->prepend($bundleConfig, $path.'['.$this->name().']', $container);
         }
     }
 

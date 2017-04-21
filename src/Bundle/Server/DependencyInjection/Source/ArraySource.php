@@ -19,12 +19,20 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 abstract class ArraySource implements SourceInterface
 {
     /**
+     * @var SourceInterface[]
+     */
+    private $subSources = [];
+
+    /**
      * @param string           $path
      * @param ContainerBuilder $container
      * @param array            $config
      */
     public function load(string $path, ContainerBuilder $container, array $config)
     {
+        foreach ($this->subSources as $subSource) {
+            $subSource->load($path.'.'.$this->name(), $container, $config[$this->name()]);
+        }
         $this->continueLoading($path.'.'.$this->name(), $container, $config[$this->name()]);
     }
 
@@ -33,7 +41,9 @@ abstract class ArraySource implements SourceInterface
      */
     public function prepend(array $bundleConfig, string $path, ContainerBuilder $container)
     {
-        // Nothing to do
+        foreach ($this->subSources as $subSource) {
+            $subSource->prepend($bundleConfig[$this->name()], $path.'['.$this->name().']', $container);
+        }
     }
 
     /**
@@ -46,6 +56,9 @@ abstract class ArraySource implements SourceInterface
                 ->arrayNode($this->name())
                     ->addDefaultsIfNotSet();
         $this->continueConfiguration($sourceNode);
+        foreach ($this->subSources as $subSource) {
+            $subSource->addConfiguration($sourceNode);
+        }
     }
 
     /**
@@ -68,5 +81,13 @@ abstract class ArraySource implements SourceInterface
     protected function continueConfiguration(NodeDefinition $node)
     {
         $node->addDefaultsIfNotSet();
+    }
+
+    /**
+     * @param SourceInterface $source
+     */
+    protected function addSubSource(SourceInterface $source)
+    {
+        $this->subSources[] = $source;
     }
 }
