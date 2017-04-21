@@ -13,25 +13,42 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Server\DependencyInjection\Source\Endpoint;
 
-use Fluent\PhpConfigFileLoader;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\ActionableSource;
+use OAuth2Framework\Bundle\Server\DependencyInjection\Source\SourceInterface;
+use SpomkyLabs\JoseBundle\Helper\ConfigurationHelper;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
-use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 
 final class AuthorizationEndpointRequestObjectSource extends ActionableSource
 {
+    /**
+     * @var SourceInterface[]
+     */
+    private $subSources;
+
+    /**
+     * AuthorizationEndpointRequestObjectSource constructor.
+     */
+    public function __construct()
+    {
+        $this->subSources = [
+            new AuthorizationEndpointRequestObjectReferenceSource(),
+            new AuthorizationEndpointRequestObjectEncryptionSource(),
+        ];
+    }
+
     /**
      * {@inheritdoc}
      */
     protected function continueLoading(string $path, ContainerBuilder $container, array $config)
     {
+        foreach ($this->subSources as $source) {
+            $source->load($path, $container, $config);
+        }
         foreach ($config as $k => $v) {
             $container->setParameter($path.'.'.$k, $v);
         }
-
-        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint'));
-        $loader->load('authorization.php');
     }
 
     /**
@@ -50,53 +67,78 @@ final class AuthorizationEndpointRequestObjectSource extends ActionableSource
         parent::continueConfiguration($node);
         $node
             ->children()
-                ->scalarNode('path')
-                    ->info('The path to the authorization endpoint.')
-                    ->defaultValue('/authorize')
-                ->end()
-                ->scalarNode('login_route_name')
-                    ->info('The name of the login route. Will be converted into URL and used to redirect the user if not logged in. If you use "FOSUserBundle", the route name should be "fos_user_security_login".')
-                ->end()
-                ->arrayNode('login_route_parameters')
-                    ->info('Parameters associated to the login route (if needed).')
+                ->arrayNode('signature_algorithms')
+                    ->info('Supported signature algorithms.')
                     ->useAttributeAsKey('name')
                     ->prototype('scalar')->end()
                     ->treatNullLike([])
                 ->end()
-                ->scalarNode('template')
-                    ->info('The consent page template.')
-                    ->cannotBeEmpty()
-                    ->defaultValue('@OAuth2FrameworkServerBundle/authorization/authorization.html.twig')
-                ->end()
             ->end();
+        foreach ($this->subSources as $source) {
+            $source->addConfiguration($node);
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function prepend(array $bundleConfig, string $path, ContainerBuilder $container)
+    {
+        $currentPath = $path.'['.$this->name().']';
+        $accessor = PropertyAccess::createPropertyAccessor();
+        $sourceConfig = $accessor->getValue($bundleConfig, $currentPath);
+        if (true === $sourceConfig['enabled']) {
+            $claim_checkers = ['exp', 'iat', 'nbf', /*'authorization_endpoint_aud'*/]; // FIXME
+            $header_checkers = ['crit'];
+            $this->updateJoseBundleConfigurationForVerifier($container, ['signature_algorithms' => $sourceConfig['signature_algorithms']]);
+            $this->updateJoseBundleConfigurationForChecker($container, ['header_checkers' => $header_checkers, 'claim_checkers' => $claim_checkers]);
+            $this->updateJoseBundleConfigurationForDecrypter($container, $sourceConfig);
+            $this->updateJoseBundleConfigurationForJWTLoader($container, $sourceConfig);
+        }
+        foreach ($this->subSources as $source) {
+            $source->prepend($bundleConfig, $path.'['.$this->name().']', $container);
+        }
+    }
+
+    /**
+     * @param ContainerBuilder $container
+     * @param array            $sourceConfig
+     */
+    private function updateJoseBundleConfigurationForDecrypter(ContainerBuilder $container, array $sourceConfig)
+    {
+        if (true === $sourceConfig['encryption']['enabled']) {
+            ConfigurationHelper::addDecrypter($container, $this->name(), $sourceConfig['encryption']['key_encryption_algorithms'], $sourceConfig['encryption']['content_encryption_algorithms'], ['DEF'], false);
+        }
+    }
+
+    /**
+     * @param ContainerBuilder $container
+     * @param array            $sourceConfig
+     */
+    private function updateJoseBundleConfigurationForVerifier(ContainerBuilder $container, array $sourceConfig)
+    {
+        ConfigurationHelper::addVerifier($container, $this->name(), $sourceConfig['signature_algorithms'], false);
+    }
+
+    /**
+     * @param ContainerBuilder $container
+     * @param array            $sourceConfig
+     */
+    private function updateJoseBundleConfigurationForChecker(ContainerBuilder $container, array $sourceConfig)
+    {
+        ConfigurationHelper::addChecker($container, $this->name(), $sourceConfig['header_checkers'], $sourceConfig['claim_checkers'], false);
+    }
+
+    /**
+     * @param ContainerBuilder $container
+     * @param array            $sourceConfig
+     */
+    private function updateJoseBundleConfigurationForJWTLoader(ContainerBuilder $container, array $sourceConfig)
+    {
+        $decrypter = null;
+        if (true === $sourceConfig['encryption']['enabled']) {
+            $decrypter = sprintf('jose.decrypter.%s', $this->name());
+        }
+        ConfigurationHelper::addJWTLoader($container, $this->name(), sprintf('jose.verifier.%s', $this->name()), sprintf('jose.checker.%s', $this->name()), $decrypter, false);
     }
 }
-/*
-path:
-            #allow_scope_selection: true
-            :
-            request_object:
-                enabled: true
-                signature_algorithms: ['RS512', 'HS512']
-                claim_checkers: ['exp', 'iat', 'nbf', 'authorization_endpoint_aud']
-                header_checkers: ['crit']
-                encryption:
-                    enabled: true
-                    required: true
-                    key_set: 'jose.key_set.encryption'
-                    key_encryption_algorithms: ['RSA-OAEP-256']
-                    content_encryption_algorithms: ['A256CBC-HS512']
-                reference:
-                    enabled: true
-                    uris_registration_required: true
-            pre_configured_authorization:
-                enabled: true
-            enforce_secured_redirect_uri:
-                enabled: true
-            enforce_redirect_uri_storage:
-                enabled: true
-            enforce_state:
-                enabled: true
-            allow_response_mode_parameter:
-                enabled: true
-*/

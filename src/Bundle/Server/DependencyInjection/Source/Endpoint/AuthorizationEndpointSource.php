@@ -33,6 +33,8 @@ final class AuthorizationEndpointSource extends ActionableSource
     public function __construct()
     {
         $this->subSources = [
+            new AuthorizationEndpointRequestObjectSource(),
+            new AuthorizationEndpointResponseModeSource(),
             new AuthorizationEndpointPreConfiguredAuthorizationSource(),
         ];
     }
@@ -42,16 +44,15 @@ final class AuthorizationEndpointSource extends ActionableSource
      */
     protected function continueLoading(string $path, ContainerBuilder $container, array $config)
     {
+        foreach ($this->subSources as $source) {
+            $source->load($path, $container, $config);
+        }
         foreach ($config as $k => $v) {
             $container->setParameter($path.'.'.$k, $v);
         }
 
         $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint'));
         $loader->load('authorization.php');
-        $loader->load('response_mode.php');
-        foreach ($this->subSources as $source) {
-            $source->load($path, $container, $config);
-        }
     }
 
     /**
@@ -93,8 +94,23 @@ final class AuthorizationEndpointSource extends ActionableSource
                 ->end()
                 ->scalarNode('template')
                     ->info('The consent page template.')
-                    ->cannotBeEmpty()
                     ->defaultValue('@OAuth2FrameworkServerBundle/authorization/authorization.html.twig')
+                ->end()
+                ->scalarNode('allow_token_type_parameter')
+                    ->info('If true the "token_type" parameter is allowed, else it will be ignored.')
+                    ->defaultFalse()
+                ->end()
+                ->scalarNode('enforce_state')
+                    ->info('If true the "state" parameter is mandatory (highly recommended).')
+                    ->defaultFalse()
+                ->end()
+                ->scalarNode('enforce_secured_redirect_uri')
+                    ->info('If true only secured redirect URIs are allowed.')
+                    ->defaultTrue()
+                ->end()
+                ->scalarNode('enforce_redirect_uri_storage')
+                    ->info('If true redirect URIs must be registered by the client to be used.')
+                    ->defaultTrue()
                 ->end()
             ->end();
         foreach ($this->subSources as $source) {
@@ -102,32 +118,3 @@ final class AuthorizationEndpointSource extends ActionableSource
         }
     }
 }
-/*
-path:
-            #allow_scope_selection: true
-            :
-            request_object:
-                enabled: true
-                signature_algorithms: ['RS512', 'HS512']
-                claim_checkers: ['exp', 'iat', 'nbf', 'authorization_endpoint_aud']
-                header_checkers: ['crit']
-                encryption:
-                    enabled: true
-                    required: true
-                    key_set: 'jose.key_set.encryption'
-                    key_encryption_algorithms: ['RSA-OAEP-256']
-                    content_encryption_algorithms: ['A256CBC-HS512']
-                reference:
-                    enabled: true
-                    uris_registration_required: true
-            pre_configured_authorization:
-                enabled: true
-            enforce_secured_redirect_uri:
-                enabled: true
-            enforce_redirect_uri_storage:
-                enabled: true
-            enforce_state:
-                enabled: true
-            allow_response_mode_parameter:
-                enabled: true
-*/

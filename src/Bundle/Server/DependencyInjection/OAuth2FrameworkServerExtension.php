@@ -125,7 +125,6 @@ final class OAuth2FrameworkServerExtension extends Extension implements PrependE
     {
         $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $files = [
-            'service',
             'access_token',
             'access_token_handler',
             'route_loader',

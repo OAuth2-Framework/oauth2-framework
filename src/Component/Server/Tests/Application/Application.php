@@ -14,10 +14,12 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\Server\Tests\Application;
 
 use Http\Client\HttpClient;
+use Http\Factory\Diactoros\RequestFactory;
 use Http\Factory\Diactoros\ResponseFactory;
 use Http\Factory\Diactoros\ServerRequestFactory;
 use Http\Factory\Diactoros\UriFactory;
 use Http\Mock\Client;
+use Interop\Http\Factory\RequestFactoryInterface;
 use Interop\Http\Factory\ResponseFactoryInterface;
 use Interop\Http\Factory\ServerRequestFactoryInterface;
 use Interop\Http\Factory\UriFactoryInterface;
@@ -1044,7 +1046,7 @@ final class Application
                 ->add(new ScopePolicyDefaultRule())
                 ->add(new ScopePolicyRule($this->getScopePolicyManager()))
                 ->add(new ScopeRule($this->getScopeRepository()))
-                //->add(new SectorIdentifierUriRule()) //FIXME
+                ->add(new SectorIdentifierUriRule($this->getRequestFactory(), $this->getHttpClient()))
                 ->add($this->getSoftwareRule())
                 ->add(new SubjectTypeRule($this->getUserInfo()))
                 ->add(new TokenEndpointAuthMethodEndpointRule($this->getTokenEndpointAuthMethodManager()))
@@ -1181,6 +1183,23 @@ final class Application
         }
 
         return $this->privateRSAKeys;
+    }
+
+    /**
+     * @var null|RequestFactoryInterface
+     */
+    private $requestFactory = null;
+
+    /**
+     * @return RequestFactoryInterface
+     */
+    public function getRequestFactory(): RequestFactoryInterface
+    {
+        if (null === $this->requestFactory) {
+            $this->requestFactory = new RequestFactory();
+        }
+
+        return $this->requestFactory;
     }
 
     /**
