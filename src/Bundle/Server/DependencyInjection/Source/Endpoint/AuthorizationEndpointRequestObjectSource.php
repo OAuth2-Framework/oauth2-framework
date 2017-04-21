@@ -75,7 +75,7 @@ final class AuthorizationEndpointRequestObjectSource extends ActionableSource
         $accessor = PropertyAccess::createPropertyAccessor();
         $sourceConfig = $accessor->getValue($bundleConfig, $currentPath);
         if (true === $sourceConfig['enabled']) {
-            $claim_checkers = ['exp', 'iat', 'nbf', /*'authorization_endpoint_aud'*/]; // FIXME
+            $claim_checkers = ['exp', 'iat', 'nbf'/*'authorization_endpoint_aud'*/]; // FIXME
             $header_checkers = ['crit'];
             $this->updateJoseBundleConfigurationForVerifier($container, ['signature_algorithms' => $sourceConfig['signature_algorithms']]);
             $this->updateJoseBundleConfigurationForChecker($container, ['header_checkers' => $header_checkers, 'claim_checkers' => $claim_checkers]);
