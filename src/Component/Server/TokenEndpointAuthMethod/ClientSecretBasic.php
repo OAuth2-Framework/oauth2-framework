@@ -64,7 +64,7 @@ abstract class ClientSecretBasic implements TokenEndpointAuthMethodInterface
         if (array_key_exists('PHP_AUTH_USER', $server_params) && array_key_exists('PHP_AUTH_PW', $server_params)) {
             $client_credentials = $server_params['PHP_AUTH_PW'];
 
-            return $server_params['PHP_AUTH_USER'];
+            return ClientId::create($server_params['PHP_AUTH_USER']);
         }
         $authorization_headers = $request->getHeader('Authorization');
         if (0 < count($authorization_headers)) {
