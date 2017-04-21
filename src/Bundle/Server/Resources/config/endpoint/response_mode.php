@@ -14,17 +14,24 @@ declare(strict_types=1);
 use OAuth2Framework\Component\Server\ResponseMode;
 use OAuth2Framework\Component\Server\ResponseType\ResponseTypeManager;
 use OAuth2Framework\Component\Server\Endpoint\Authorization\ParameterChecker\ResponseTypeAndResponseModeParameterChecker;
-use function Fluent\autowire;
 use function Fluent\create;
 use function Fluent\get;
 
 return [
-    ResponseMode\ResponseModeManager::class => autowire(),
+    ResponseMode\ResponseModeManager::class => create(),
 
-    ResponseMode\QueryResponseMode::class => autowire()
+    ResponseMode\QueryResponseMode::class => create()
+        ->arguments(
+            get('oauth2_server.http.uri_factory'),
+            get('oauth2_server.http.response_factory')
+        )
         ->tag('oauth2_server_response_mode'),
 
-    ResponseMode\FragmentResponseMode::class => autowire()
+    ResponseMode\FragmentResponseMode::class => create()
+        ->arguments(
+            get('oauth2_server.http.uri_factory'),
+            get('oauth2_server.http.response_factory')
+        )
         ->tag('oauth2_server_response_mode'),
 
     ResponseTypeAndResponseModeParameterChecker::class => create()

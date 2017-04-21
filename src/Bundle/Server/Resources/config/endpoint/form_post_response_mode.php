@@ -24,6 +24,10 @@ return [
             '%oauth2_server.endpoint.authorization.response_mode.form_post.template%'
         ),
 
-    ResponseMode\FormPostResponseMode::class => autowire()
+    ResponseMode\FormPostResponseMode::class => create()
+        ->arguments(
+            get(FormPostResponseRenderer::class),
+            get('oauth2_server.http.response_factory')
+        )
         ->tag('oauth2_server_response_mode'),
 ];
