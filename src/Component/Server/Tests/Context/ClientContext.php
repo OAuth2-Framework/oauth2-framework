@@ -115,7 +115,7 @@ final class ClientContext implements Context
         $request = $request->withMethod('POST');
         $request = $request->withBody((new StreamFactory())->createStream(json_encode([
             'contacts' => [
-                'hello!'
+                'hello!',
             ],
             'redirect_uris' => ['https://www.foo.com'],
             'token_endpoint_auth_method' => 'client_secret_basic',
