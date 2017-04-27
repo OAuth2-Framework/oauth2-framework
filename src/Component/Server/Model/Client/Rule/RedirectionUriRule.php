@@ -41,7 +41,7 @@ final class RedirectionUriRule implements RuleInterface
 
     /**
      * @param DataBag $validatedParameters
-     * @param array $redirectUris
+     * @param array   $redirectUris
      */
     private function checkRedirectUris(DataBag $validatedParameters, array $redirectUris)
     {
