@@ -25,10 +25,9 @@ final class ContactsParametersRule implements RuleInterface
     public function handle(DataBag $commandParameters, DataBag $validatedParameters, ? UserAccountId $userAccountId, callable $next): DataBag
     {
         if ($commandParameters->has('contacts')) {
-            $contacts = $commandParameters->has('contacts');
+            $contacts = $commandParameters->get('contacts');
             Assertion::isArray($contacts, 'The parameter \'contacts\' must be a list of e-mail addresses.');
-            Assertion::allEmail($contacts, sprintf('The parameter \'contacts\' must be a list of e-mail addresses.', $k));
-
+            Assertion::allEmail($contacts, 'The parameter \'contacts\' must be a list of e-mail addresses.');
             $validatedParameters = $validatedParameters->with('contacts', $contacts);
         }
 
