@@ -213,6 +213,7 @@ final class ClientContext implements Context
             'HTTP_Authorization' => 'Bearer REGISTRATION_ACCESS_TOKEN',
             'CONTENT_TYPE' => 'application/json',
         ], json_encode([
+            'redirect_uris' => ['https://www.bar.com'],
             'token_endpoint_auth_method' => 'client_secret_basic',
         ]));
     }
@@ -238,6 +239,7 @@ final class ClientContext implements Context
             'HTTP_Authorization' => 'Bearer REGISTRATION_ACCESS_TOKEN',
             'CONTENT_TYPE' => 'application/json',
         ], json_encode([
+            'redirect_uris' => ['https://www.bar.com'],
             'token_endpoint_auth_method' => 'client_secret_basic',
             'software_statement' => $this->createSoftwareStatement(),
         ]));
@@ -252,6 +254,7 @@ final class ClientContext implements Context
             'HTTP_Authorization' => 'Bearer REGISTRATION_ACCESS_TOKEN',
             'CONTENT_TYPE' => 'application/json',
         ], json_encode([
+            'redirect_uris' => ['https://www.bar.com'],
             'token_endpoint_auth_method' => 'client_secret_basic',
             'software_statement' => $this->createInvalidSoftwareStatement(),
         ]));

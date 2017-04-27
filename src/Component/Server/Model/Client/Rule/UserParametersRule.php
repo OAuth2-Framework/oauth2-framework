@@ -17,7 +17,7 @@ use Assert\Assertion;
 use OAuth2Framework\Component\Server\Model\DataBag\DataBag;
 use OAuth2Framework\Component\Server\Model\UserAccount\UserAccountId;
 
-final class UserLoginParametersRule implements RuleInterface
+final class UserParametersRule implements RuleInterface
 {
     /**
      * {@inheritdoc}
@@ -34,6 +34,12 @@ final class UserLoginParametersRule implements RuleInterface
             Assertion::integer($default_max_age, 'The parameter \'default_max_age\' must be a positive integer.');
             Assertion::min($default_max_age, 0, 'The parameter \'default_max_age\' must be a positive integer.');
             $validatedParameters = $validatedParameters->with('default_max_age', $default_max_age);
+        }
+        if ($commandParameters->has('default_acr_values')) {
+            $default_acr_values = $commandParameters->get('default_acr_values');
+            Assertion::isArray($default_acr_values, 'The parameter \'default_acr_values\' must be an array of strings.');
+            Assertion::allString($default_acr_values, 'The parameter \'default_acr_values\' must be an array of strings.');
+            $validatedParameters = $validatedParameters->with('default_acr_values', $default_acr_values);
         }
 
         return $next($commandParameters, $validatedParameters, $userAccountId);

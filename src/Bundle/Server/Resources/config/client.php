@@ -37,7 +37,7 @@ return [
             get(ClientIdRule::class)
         ),
 
-    Rule\UserLoginParametersRule::class => create()
+    Rule\UserParametersRule::class => create()
         ->tag('oauth2_server_client_rule'),
 
     Rule\ApplicationTypeParametersRule::class => create()

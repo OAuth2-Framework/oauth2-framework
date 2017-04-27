@@ -1034,7 +1034,7 @@ final class Application
                 ->add(new Rule\RedirectionUriRule())
                 ->add(new Rule\ApplicationTypeParametersRule())
                 ->add(new Rule\ContactsParametersRule())
-                ->add(new Rule\UserLoginParametersRule())
+                ->add(new Rule\UserParametersRule())
                 ->add(new Rule\RequestUriRule())
                 ->add(new Rule\ScopePolicyDefaultRule())
                 ->add(new Rule\ScopePolicyRule($this->getScopePolicyManager()))
