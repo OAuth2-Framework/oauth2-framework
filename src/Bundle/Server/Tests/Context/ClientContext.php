@@ -211,7 +211,7 @@ final class ClientContext implements Context
     {
         $this->minkContext->getSession()->getDriver()->getClient()->request('PUT', 'https://oauth2.test/client/configure/client1', [], [], [
             'HTTP_Authorization' => 'Bearer REGISTRATION_ACCESS_TOKEN',
-            'CONTENT_TYPE'  => 'application/json',
+            'CONTENT_TYPE' => 'application/json',
         ], json_encode([
             'token_endpoint_auth_method' => 'client_secret_basic',
         ]));
@@ -236,7 +236,7 @@ final class ClientContext implements Context
     {
         $this->minkContext->getSession()->getDriver()->getClient()->request('PUT', 'https://oauth2.test/client/configure/client1', [], [], [
             'HTTP_Authorization' => 'Bearer REGISTRATION_ACCESS_TOKEN',
-            'CONTENT_TYPE'  => 'application/json',
+            'CONTENT_TYPE' => 'application/json',
         ], json_encode([
             'token_endpoint_auth_method' => 'client_secret_basic',
             'software_statement' => $this->createSoftwareStatement(),
@@ -250,7 +250,7 @@ final class ClientContext implements Context
     {
         $this->minkContext->getSession()->getDriver()->getClient()->request('PUT', 'https://oauth2.test/client/configure/client1', [], [], [
             'HTTP_Authorization' => 'Bearer REGISTRATION_ACCESS_TOKEN',
-            'CONTENT_TYPE'  => 'application/json',
+            'CONTENT_TYPE' => 'application/json',
         ], json_encode([
             'token_endpoint_auth_method' => 'client_secret_basic',
             'software_statement' => $this->createInvalidSoftwareStatement(),
