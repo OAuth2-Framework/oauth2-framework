@@ -185,7 +185,7 @@ final class ClientContext implements Context
                 'CONTENT_TYPE' => 'application/json',
             ], json_encode([
                 'redirect_uris' => [
-                    'https://www.foo.com/'
+                    'https://www.foo.com/',
                 ],
                 'contacts' => true,
                 'token_endpoint_auth_method' => 'none',
@@ -203,7 +203,7 @@ final class ClientContext implements Context
                 'CONTENT_TYPE' => 'application/json',
             ], json_encode([
                 'redirect_uris' => [
-                    'https://www.foo.com/'
+                    'https://www.foo.com/',
                 ],
                 'contacts' => 'BAD!!!',
                 'token_endpoint_auth_method' => 'none',
@@ -221,7 +221,7 @@ final class ClientContext implements Context
                 'CONTENT_TYPE' => 'application/json',
             ], json_encode([
                 'redirect_uris' => [
-                    'https://www.foo.com/#not_allowed=trur'
+                    'https://www.foo.com/#not_allowed=trur',
                 ],
                 'response_types' => ['id_token token'],
                 'token_endpoint_auth_method' => 'none',
@@ -239,7 +239,7 @@ final class ClientContext implements Context
                 'CONTENT_TYPE' => 'application/json',
             ], json_encode([
                 'redirect_uris' => [
-                    'https://localhost/'
+                    'https://localhost/',
                 ],
                 'response_types' => ['id_token token'],
                 'token_endpoint_auth_method' => 'none',
@@ -257,7 +257,7 @@ final class ClientContext implements Context
                 'CONTENT_TYPE' => 'application/json',
             ], json_encode([
                 'redirect_uris' => [
-                    'http://www.foo.com/'
+                    'http://www.foo.com/',
                 ],
                 'response_types' => ['id_token token'],
                 'token_endpoint_auth_method' => 'none',
