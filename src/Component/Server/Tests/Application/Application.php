@@ -1876,9 +1876,9 @@ final class Application
     {
         if (null === $this->tokenTypeHintManager) {
             $this->tokenTypeHintManager = new TokenTypeHintManager();
-            $this->tokenTypeHintManager->add($this->getAccessTokenTypeHint()); // Access Token
-            $this->tokenTypeHintManager->add($this->getRefreshTokenTypeHint()); // Refresh Token
             $this->tokenTypeHintManager->add($this->getAuthCodeTypeHint()); // Auth Code
+            $this->tokenTypeHintManager->add($this->getRefreshTokenTypeHint()); // Refresh Token
+            $this->tokenTypeHintManager->add($this->getAccessTokenTypeHint()); // Access Token
         }
 
         return $this->tokenTypeHintManager;

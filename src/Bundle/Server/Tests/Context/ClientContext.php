@@ -161,6 +161,110 @@ final class ClientContext implements Context
     }
 
     /**
+     * @Given a client registration request without redirect Uris is received
+     */
+    public function aClientRegistrationRequestWithoutRedirectUrisIsReceived()
+    {
+        $this->minkContext->getSession()->getDriver()->getClient()->request('POST', 'https://oauth2.test/client/management', [],
+            [], [
+                'HTTP_Authorization' => 'Bearer INITIAL_ACCESS_TOKEN_VALID',
+                'CONTENT_TYPE' => 'application/json',
+            ], json_encode([
+                'token_endpoint_auth_method' => 'none',
+            ]));
+    }
+
+    /**
+     * @Given a client registration request but the contact list is not an array
+     */
+    public function aClientRegistrationRequestButTheContactListIsNotAnArray()
+    {
+        $this->minkContext->getSession()->getDriver()->getClient()->request('POST', 'https://oauth2.test/client/management', [],
+            [], [
+                'HTTP_Authorization' => 'Bearer INITIAL_ACCESS_TOKEN_VALID',
+                'CONTENT_TYPE' => 'application/json',
+            ], json_encode([
+                'redirect_uris' => [
+                    'https://www.foo.com/'
+                ],
+                'contacts' => true,
+                'token_endpoint_auth_method' => 'none',
+            ]));
+    }
+
+    /**
+     * @Given a client registration request but the contact list contains invalid values
+     */
+    public function aClientRegistrationRequestButTheContactListContainsInvalidValues()
+    {
+        $this->minkContext->getSession()->getDriver()->getClient()->request('POST', 'https://oauth2.test/client/management', [],
+            [], [
+                'HTTP_Authorization' => 'Bearer INITIAL_ACCESS_TOKEN_VALID',
+                'CONTENT_TYPE' => 'application/json',
+            ], json_encode([
+                'redirect_uris' => [
+                    'https://www.foo.com/'
+                ],
+                'contacts' => 'BAD!!!',
+                'token_endpoint_auth_method' => 'none',
+            ]));
+    }
+
+    /**
+     * @Given a client registration request with redirect Uris that contain fragments is received
+     */
+    public function aClientRegistrationRequestWithRedirectUrisThatContainFragmentsIsReceived()
+    {
+        $this->minkContext->getSession()->getDriver()->getClient()->request('POST', 'https://oauth2.test/client/management', [],
+            [], [
+                'HTTP_Authorization' => 'Bearer INITIAL_ACCESS_TOKEN_VALID',
+                'CONTENT_TYPE' => 'application/json',
+            ], json_encode([
+                'redirect_uris' => [
+                    'https://www.foo.com/#not_allowed=trur'
+                ],
+                'response_types' => ['id_token token'],
+                'token_endpoint_auth_method' => 'none',
+            ]));
+    }
+
+    /**
+     * @Given a web client registration request is received with a redirect Uri that contain has localhost as host but the client uses the Implicit Grant Type
+     */
+    public function aWebClientRegistrationRequestIsReceivedWithARedirectUriThatContainHasLocalhostAsHostButTheClientUsesTheImplicitGrantType()
+    {
+        $this->minkContext->getSession()->getDriver()->getClient()->request('POST', 'https://oauth2.test/client/management', [],
+            [], [
+                'HTTP_Authorization' => 'Bearer INITIAL_ACCESS_TOKEN_VALID',
+                'CONTENT_TYPE' => 'application/json',
+            ], json_encode([
+                'redirect_uris' => [
+                    'https://localhost/'
+                ],
+                'response_types' => ['id_token token'],
+                'token_endpoint_auth_method' => 'none',
+            ]));
+    }
+
+    /**
+     * @Given a web client registration request is received with an unsecured redirect Uri but the client uses the Implicit Grant Type
+     */
+    public function aWebClientRegistrationRequestIsReceivedWithAnUnsecuredRedirectUriButTheClientUsesTheImplicitGrantType()
+    {
+        $this->minkContext->getSession()->getDriver()->getClient()->request('POST', 'https://oauth2.test/client/management', [],
+            [], [
+                'HTTP_Authorization' => 'Bearer INITIAL_ACCESS_TOKEN_VALID',
+                'CONTENT_TYPE' => 'application/json',
+            ], json_encode([
+                'redirect_uris' => [
+                    'http://www.foo.com/'
+                ],
+                'response_types' => ['id_token token'],
+                'token_endpoint_auth_method' => 'none',
+            ]));
+    }
+
+    /**
      * @Given a client configuration GET request is received but no Registration Token is set
      */
     public function aClientConfigurationGetRequestIsReceivedButNoRegistrationTokenIsSet()
