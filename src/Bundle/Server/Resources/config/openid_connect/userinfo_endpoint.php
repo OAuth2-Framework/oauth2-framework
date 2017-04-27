@@ -22,6 +22,7 @@ use OAuth2Framework\Component\Server\Security\AccessTokenHandlerManager;
 use OAuth2Framework\Component\Server\TokenType\TokenTypeManager;
 use function Fluent\create;
 use function Fluent\get;
+use OAuth2Framework\Component\Server\Middleware\FormPostBodyParserMiddleware;
 
 return [
     UserInfoEndpoint::class => create()
@@ -46,6 +47,7 @@ return [
     'oauth2_server_userinfo_pipe' => create(Pipe::class)
         ->arguments([
             get(OAuth2ResponseMiddleware::class),
+            get(FormPostBodyParserMiddleware::class),
             get('userinfo_security_middleware'),
             get(UserInfoEndpoint::class),
         ]),

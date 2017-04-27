@@ -162,7 +162,7 @@ final class CodeResponseTypeContext implements Context
             'code_verifier' => 'E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM',
         ],
             [], [
-                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
+                'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );

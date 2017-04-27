@@ -67,7 +67,7 @@ final class ClientContext implements Context
     {
         $this->minkContext->getSession()->getDriver()->getClient()->request('POST', 'https://oauth2.test/client/management', [],
         [], [
-            'HTTP_Content-Type' => 'application/json',
+            'CONTENT_TYPE' => 'application/json',
             'HTTP_Authorization' => 'Bearer INITIAL_ACCESS_TOKEN_VALID',
         ], json_encode([
             'redirect_uris' => ['https://www.foo.com'],
@@ -82,7 +82,7 @@ final class ClientContext implements Context
     {
         $this->minkContext->getSession()->getDriver()->getClient()->request('POST', 'https://oauth2.test/client/management', [],
         [], [
-                'HTTP_Content-Type' => 'application/json',
+                'CONTENT_TYPE' => 'application/json',
                 'HTTP_Authorization' => 'Bearer INITIAL_ACCESS_TOKEN_EXPIRED',
         ], json_encode([
             'redirect_uris' => ['https://www.foo.com'],
@@ -97,7 +97,7 @@ final class ClientContext implements Context
     {
         $this->minkContext->getSession()->getDriver()->getClient()->request('POST', 'https://oauth2.test/client/management', [],
         [], [
-            'HTTP_Content-Type' => 'application/json',
+            'CONTENT_TYPE' => 'application/json',
             'HTTP_Authorization' => 'Bearer INITIAL_ACCESS_TOKEN_REVOKED',
         ], json_encode([
             'redirect_uris' => ['https://www.foo.com'],
@@ -110,13 +110,13 @@ final class ClientContext implements Context
      */
     public function aClientRegistrationRequestIsReceivedButNotInitialAccessTokenIsSet()
     {
-        $this->minkContext->getSession()->getDriver()->getClient()->request('POST', 'https://oauth2.test/client/management', [
+        $this->minkContext->getSession()->getDriver()->getClient()->request('POST', 'https://oauth2.test/client/management', [],
+        [], [
+            'CONTENT_TYPE' => 'application/json',
+        ], json_encode([
             'redirect_uris' => ['https://www.foo.com'],
             'token_endpoint_auth_method' => 'none',
-        ],
-        [], [
-            'HTTP_Content-Type' => 'application/json',
-        ]);
+        ]));
     }
 
     /**
@@ -126,7 +126,7 @@ final class ClientContext implements Context
     {
         $this->minkContext->getSession()->getDriver()->getClient()->request('POST', 'https://oauth2.test/client/management', [],
         [], [
-            'HTTP_Content-Type' => 'application/json',
+            'CONTENT_TYPE' => 'application/json',
             'HTTP_Authorization' => 'Bearer **Invalid Initial Access Token**',
         ], json_encode([
             'redirect_uris' => ['https://www.foo.com'],
@@ -141,7 +141,7 @@ final class ClientContext implements Context
     {
         $this->minkContext->getSession()->getDriver()->getClient()->request('POST', 'https://oauth2.test/client/management', [],
         [], [
-            'HTTP_Content-Type' => 'application/json',
+            'CONTENT_TYPE' => 'application/json',
             'HTTP_Authorization' => 'Bearer INITIAL_ACCESS_TOKEN_VALID',
         ], json_encode([
             'redirect_uris' => ['https://www.foo.com'],
@@ -201,9 +201,7 @@ final class ClientContext implements Context
      */
     public function aClientConfigurationPutRequestIsReceivedButNoRegistrationTokenIsSet()
     {
-        $this->minkContext->getSession()->getDriver()->getClient()->request('PUT', 'https://oauth2.test/client/configure/client1', [
-            'token_endpoint_auth_method' => 'client_secret_basic',
-        ]);
+        $this->minkContext->getSession()->getDriver()->getClient()->request('PUT', 'https://oauth2.test/client/configure/client1');
     }
 
     /**
@@ -213,6 +211,7 @@ final class ClientContext implements Context
     {
         $this->minkContext->getSession()->getDriver()->getClient()->request('PUT', 'https://oauth2.test/client/configure/client1', [], [], [
             'HTTP_Authorization' => 'Bearer REGISTRATION_ACCESS_TOKEN',
+            'CONTENT_TYPE' => 'application/json',
         ], json_encode([
             'token_endpoint_auth_method' => 'client_secret_basic',
         ]));
@@ -237,6 +236,7 @@ final class ClientContext implements Context
     {
         $this->minkContext->getSession()->getDriver()->getClient()->request('PUT', 'https://oauth2.test/client/configure/client1', [], [], [
             'HTTP_Authorization' => 'Bearer REGISTRATION_ACCESS_TOKEN',
+            'CONTENT_TYPE' => 'application/json',
         ], json_encode([
             'token_endpoint_auth_method' => 'client_secret_basic',
             'software_statement' => $this->createSoftwareStatement(),
@@ -250,6 +250,7 @@ final class ClientContext implements Context
     {
         $this->minkContext->getSession()->getDriver()->getClient()->request('PUT', 'https://oauth2.test/client/configure/client1', [], [], [
             'HTTP_Authorization' => 'Bearer REGISTRATION_ACCESS_TOKEN',
+            'CONTENT_TYPE' => 'application/json',
         ], json_encode([
             'token_endpoint_auth_method' => 'client_secret_basic',
             'software_statement' => $this->createInvalidSoftwareStatement(),

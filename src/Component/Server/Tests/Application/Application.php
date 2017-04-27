@@ -134,9 +134,11 @@ use OAuth2Framework\Component\Server\GrantType\PKCEMethod\S256;
 use OAuth2Framework\Component\Server\GrantType\RefreshTokenGrantType;
 use OAuth2Framework\Component\Server\GrantType\ResourceOwnerPasswordCredentialsGrantType;
 use OAuth2Framework\Component\Server\Middleware\ClientAuthenticationMiddleware;
+use OAuth2Framework\Component\Server\Middleware\FormPostBodyParserMiddleware;
 use OAuth2Framework\Component\Server\Middleware\GrantTypeMiddleware;
 use OAuth2Framework\Component\Server\Middleware\HttpMethod;
 use OAuth2Framework\Component\Server\Middleware\InitialAccessTokenMiddleware;
+use OAuth2Framework\Component\Server\Middleware\JsonBodyParserMiddleware;
 use OAuth2Framework\Component\Server\Middleware\OAuth2ResponseMiddleware;
 use OAuth2Framework\Component\Server\Middleware\OAuth2SecurityMiddleware;
 use OAuth2Framework\Component\Server\Middleware\Pipe;
@@ -435,6 +437,7 @@ final class Application
             $this->clientRegistrationPipe = new Pipe();
 
             $this->clientRegistrationPipe->appendMiddleware($this->getOAuth2ResponseMiddleware());
+            $this->clientRegistrationPipe->appendMiddleware(new JsonBodyParserMiddleware());
             $this->clientRegistrationPipe->appendMiddleware($this->getInitialAccessTokenMiddleware());
             $this->clientRegistrationPipe->appendMiddleware($this->getClientRegistrationEndpoint());
         }
@@ -1864,6 +1867,7 @@ final class Application
             $this->clientConfigurationPipe = new Pipe();
 
             $this->clientConfigurationPipe->appendMiddleware($this->getOAuth2ResponseMiddleware());
+            $this->clientConfigurationPipe->appendMiddleware(new JsonBodyParserMiddleware());
             $this->clientConfigurationPipe->appendMiddleware($this->getClientConfigurationEndpoint());
         }
 
@@ -1945,6 +1949,7 @@ final class Application
             $this->tokenRevocationPipe = new Pipe();
 
             $this->tokenRevocationPipe->appendMiddleware($this->getOAuth2ResponseMiddleware());
+            $this->tokenRevocationPipe->appendMiddleware(new FormPostBodyParserMiddleware());
             $this->tokenRevocationPipe->appendMiddleware($this->getClientAuthenticationMiddlewareWithRequirement());
             $this->tokenRevocationPipe->appendMiddleware($this->getTokenRevocationHttpMethod());
         }
@@ -2006,6 +2011,7 @@ final class Application
 
             $this->tokenIntrospectionPipe->appendMiddleware(new IpAddressMiddleware());
             $this->tokenIntrospectionPipe->appendMiddleware($this->getOAuth2ResponseMiddleware());
+            $this->tokenIntrospectionPipe->appendMiddleware(new FormPostBodyParserMiddleware());
             $this->tokenIntrospectionPipe->appendMiddleware($this->getResourceServerAuthenticationMiddleware());
             $this->tokenIntrospectionPipe->appendMiddleware($this->getTokenIntrospectionHttpMethod());
         }
@@ -2645,6 +2651,7 @@ final class Application
     {
         if (null === $this->tokenEndpointPipe) {
             $this->tokenEndpointPipe = new Pipe();
+            $this->tokenEndpointPipe->appendMiddleware(new FormPostBodyParserMiddleware());
             $this->tokenEndpointPipe->appendMiddleware($this->getOAuth2ResponseMiddleware());
             $this->tokenEndpointPipe->appendMiddleware($this->getClientAuthenticationMiddleware());
             $this->tokenEndpointPipe->appendMiddleware($this->getGrantTypeMiddleware());
@@ -2837,6 +2844,7 @@ final class Application
         if (null === $this->userInfoEndpointPipe) {
             $this->userInfoEndpointPipe = new Pipe();
             $this->userInfoEndpointPipe->appendMiddleware($this->getOAuth2ResponseMiddleware());
+            $this->userInfoEndpointPipe->appendMiddleware(new FormPostBodyParserMiddleware());
             $this->userInfoEndpointPipe->appendMiddleware($this->getSecurityMiddleware());
             $this->userInfoEndpointPipe->appendMiddleware($this->getUserInfoEndpoint());
         }
@@ -2937,6 +2945,7 @@ final class Application
         if (null === $this->issuerDiscoveryPipe) {
             $this->issuerDiscoveryPipe = new Pipe();
             $this->issuerDiscoveryPipe->appendMiddleware($this->getOAuth2ResponseMiddleware());
+            $this->issuerDiscoveryPipe->appendMiddleware(new FormPostBodyParserMiddleware());
             $this->issuerDiscoveryPipe->appendMiddleware($this->getIssuerDiscoveryEndpoint());
         }
 

@@ -60,7 +60,7 @@ final class RevocationContext implements Context
             [],
             [],
             [
-                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
+                'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
             ]
         );
     }
@@ -88,7 +88,7 @@ final class RevocationContext implements Context
             [],
             [],
             [
-                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
+                'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );
@@ -121,7 +121,7 @@ final class RevocationContext implements Context
             ],
             [],
             [
-                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
+                'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );
@@ -156,7 +156,7 @@ final class RevocationContext implements Context
             ],
             [],
             [
-                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
+                'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );
@@ -191,7 +191,7 @@ final class RevocationContext implements Context
             ],
             [],
             [
-                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
+                'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );
@@ -227,7 +227,7 @@ final class RevocationContext implements Context
             ],
             [],
             [
-                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
+                'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );
@@ -264,7 +264,7 @@ final class RevocationContext implements Context
             ],
             [],
             [
-                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
+                'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );

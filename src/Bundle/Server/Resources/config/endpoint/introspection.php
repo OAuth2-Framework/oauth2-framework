@@ -36,6 +36,7 @@ return [
     'token_introspection_pipe' => create(Middleware\Pipe::class)
         ->arguments([
             get(Middleware\OAuth2ResponseMiddleware::class),
+            get(Middleware\FormPostBodyParserMiddleware::class),
             get(Middleware\ResourceServerAuthenticationMiddleware::class),
             get(TokenIntrospectionEndpoint::class),
         ]),

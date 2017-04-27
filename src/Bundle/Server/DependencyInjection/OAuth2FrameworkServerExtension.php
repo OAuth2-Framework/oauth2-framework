@@ -132,6 +132,7 @@ final class OAuth2FrameworkServerExtension extends Extension implements PrependE
             'token_type_hint',
             'oauth2_response',
             'user_account_discovery',
+            'content_parser_middleware',
         ];
         foreach ($files as $basename) {
             $loader->load(sprintf('%s.php', $basename));

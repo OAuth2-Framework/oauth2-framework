@@ -161,7 +161,7 @@ final class BearerToken implements TokenTypeInterface
      */
     protected function getTokenFromRequestBody(ServerRequestInterface $request)
     {
-        $request_params = $request->getParsedBody();
+        $request_params = $request->getParsedBody() ?? [];
         if (is_array($request_params)) {
             return $this->getAccessTokenFromParameters($request_params);
         }

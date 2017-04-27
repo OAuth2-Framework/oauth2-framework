@@ -117,7 +117,7 @@ final class ResourceOwnerPasswordCredentialsGrantType implements GrantTypeInterf
      */
     public function grant(ServerRequestInterface $request, GrantTypeData $grantTypeResponse): GrantTypeData
     {
-        $parsedBody = $request->getParsedBody();
+        $parsedBody = $request->getParsedBody() ?? [];
         $username = $parsedBody['username'];
         $password = $parsedBody['password'];
 
