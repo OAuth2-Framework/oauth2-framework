@@ -19,11 +19,13 @@ use OAuth2Framework\Component\Server\Middleware\Pipe;
 use OAuth2Framework\Component\Server\TokenType\BearerToken;
 use function Fluent\create;
 use function Fluent\get;
+use OAuth2Framework\Component\Server\Middleware\JsonBodyParserMiddleware;
 
 return [
     'client_configuration_endpoint_pipe' => create(Pipe::class)
         ->arguments([
             get(OAuth2ResponseMiddleware::class),
+            get(JsonBodyParserMiddleware::class),
             get(ClientConfigurationMiddleware::class),
             get(ClientConfigurationEndpoint::class),
         ]),

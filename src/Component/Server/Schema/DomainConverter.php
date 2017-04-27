@@ -14,11 +14,11 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\Server\Schema;
 
 use Assert\Assertion;
-use League\JsonGuard\Dereferencer;
 use League\JsonGuard\Validator;
+use League\JsonReference\Dereferencer;
 use OAuth2Framework\Component\Server\Response\OAuth2Exception;
 use OAuth2Framework\Component\Server\Response\OAuth2ResponseFactoryManager;
-use League\JsonGuard\LoaderManager;
+use League\JsonReference\LoaderManager;
 
 final class DomainConverter
 {
@@ -40,7 +40,8 @@ final class DomainConverter
         $this->options = JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE;
         $domainUriLoader = new DomainUriLoader();
         $loaderManager = new LoaderManager(['https' => $domainUriLoader]);
-        $this->dereferencer = new Dereferencer($loaderManager);
+        $this->dereferencer = new Dereferencer();
+        $this->dereferencer->setLoaderManager($loaderManager);
     }
 
     public function fromJson(string $jsonData): DomainObjectInterface

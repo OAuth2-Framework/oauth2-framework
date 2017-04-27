@@ -42,6 +42,7 @@ return [
     'token_revocation_pipe' => create(Middleware\Pipe::class)
         ->arguments([
             get(Middleware\OAuth2ResponseMiddleware::class),
+            get(Middleware\FormPostBodyParserMiddleware::class),
             get('token_revocation_endpoint_client_authentication_middleware'),
             get('token_revocation_method_handler'),
         ]),

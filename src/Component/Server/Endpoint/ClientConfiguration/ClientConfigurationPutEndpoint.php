@@ -56,7 +56,7 @@ final class ClientConfigurationPutEndpoint implements MiddlewareInterface
         $client = $request->getAttribute('client');
 
         $data = new DataTransporter();
-        $command_parameters = DataBag::createFromArray(json_decode($request->getBody()->getContents(), true));
+        $command_parameters = DataBag::createFromArray($request->getParsedBody() ?? []);
         $command = UpdateClientCommand::create($client, $command_parameters, $data);
 
         try {

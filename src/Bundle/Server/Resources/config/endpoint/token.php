@@ -25,11 +25,13 @@ use OAuth2Framework\Component\Server\Model\Scope\ScopeRepositoryInterface;
 use OAuth2Framework\Component\Server\Model\Scope\ScopePolicyManager;
 use function Fluent\create;
 use function Fluent\get;
+use OAuth2Framework\Component\Server\Middleware\FormPostBodyParserMiddleware;
 
 return [
     'token_endpoint_pipe' => create(Pipe::class)
         ->arguments([
             get(OAuth2ResponseMiddleware::class),
+            get(FormPostBodyParserMiddleware::class),
             get(ClientAuthenticationMiddleware::class),
             get(GrantTypeMiddleware::class),
             get(TokenTypeMiddleware::class),
