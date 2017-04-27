@@ -398,7 +398,7 @@ final class IdTokenBuilder
      */
     private function updateClaimsWithAuthenticationTime(array $claims, UserAccountInterface $userAccount): array
     {
-        if (true === $this->withAuthenticationTime && null !== $userAccount->getLastLoginAt()) {
+        if (true === $this->withAuthenticationTime && null !== $userAccount->getLastLoginAt()) { //FIXME: check if the client has a require_auth_time parameter
             $claims['auth_time'] = $userAccount->getLastLoginAt()->getTimestamp();
         }
 
