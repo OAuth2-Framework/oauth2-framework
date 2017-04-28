@@ -25,7 +25,7 @@ final class ApplicationTypeParametersRule implements RuleInterface
     public function handle(DataBag $commandParameters, DataBag $validatedParameters, ? UserAccountId $userAccountId, callable $next): DataBag
     {
         if ($commandParameters->has('application_type')) {
-            $application_type = $commandParameters->has('application_type');
+            $application_type = $commandParameters->get('application_type');
             Assertion::inArray($application_type, ['native', 'web'], 'The parameter \'application_type\' must be either \'native\' or \'web\'.');
             $validatedParameters = $validatedParameters->with('application_type', $application_type);
         } else {
