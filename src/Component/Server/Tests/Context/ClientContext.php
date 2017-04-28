@@ -73,6 +73,113 @@ final class ClientContext implements Context
     }
 
     /**
+     * @Given a client registration request without redirect Uris is received
+     */
+    public function aClientRegistrationRequestWithoutRedirectUrisIsReceived()
+    {
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
+        $request = $request->withMethod('POST');
+        $request = $request->withBody((new StreamFactory())->createStream(json_encode([
+            'token_endpoint_auth_method' => 'client_secret_basic',
+        ])));
+        $request = $request->withHeader('Content-Type', 'application/json');
+        $request = $request->withHeader('Authorization', 'Bearer INITIAL_ACCESS_TOKEN_VALID');
+
+        $this->responseContext->setResponse($this->applicationContext->getApplication()->getClientRegistrationPipe()->dispatch($request));
+    }
+
+    /**
+     * @Given a client registration request but the contact list is not an array
+     */
+    public function aClientRegistrationRequestButTheContactListIsNotAnArray()
+    {
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
+        $request = $request->withMethod('POST');
+        $request = $request->withBody((new StreamFactory())->createStream(json_encode([
+            'contacts' => false,
+            'redirect_uris' => ['https://www.foo.com'],
+            'token_endpoint_auth_method' => 'client_secret_basic',
+        ])));
+        $request = $request->withHeader('Content-Type', 'application/json');
+        $request = $request->withHeader('Authorization', 'Bearer INITIAL_ACCESS_TOKEN_VALID');
+
+        $this->responseContext->setResponse($this->applicationContext->getApplication()->getClientRegistrationPipe()->dispatch($request));
+    }
+
+    /**
+     * @Given a client registration request but the contact list contains invalid values
+     */
+    public function aClientRegistrationRequestButTheContactListContainsInvalidValues()
+    {
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
+        $request = $request->withMethod('POST');
+        $request = $request->withBody((new StreamFactory())->createStream(json_encode([
+            'contacts' => [
+                'hello!',
+            ],
+            'redirect_uris' => ['https://www.foo.com'],
+            'token_endpoint_auth_method' => 'client_secret_basic',
+        ])));
+        $request = $request->withHeader('Content-Type', 'application/json');
+        $request = $request->withHeader('Authorization', 'Bearer INITIAL_ACCESS_TOKEN_VALID');
+
+        $this->responseContext->setResponse($this->applicationContext->getApplication()->getClientRegistrationPipe()->dispatch($request));
+    }
+
+    /**
+     * @Given a client registration request with redirect Uris that contain fragments is received
+     */
+    public function aClientRegistrationRequestWithRedirectUrisThatContainFragmentsIsReceived()
+    {
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
+        $request = $request->withMethod('POST');
+        $request = $request->withBody((new StreamFactory())->createStream(json_encode([
+            'redirect_uris' => ['https://www.foo.com#fragment'],
+            'token_endpoint_auth_method' => 'client_secret_basic',
+        ])));
+        $request = $request->withHeader('Content-Type', 'application/json');
+        $request = $request->withHeader('Authorization', 'Bearer INITIAL_ACCESS_TOKEN_VALID');
+
+        $this->responseContext->setResponse($this->applicationContext->getApplication()->getClientRegistrationPipe()->dispatch($request));
+    }
+
+    /**
+     * @Given a web client registration request is received with a redirect Uri that contain has localhost as host but the client uses the Implicit Grant Type
+     */
+    public function aWebClientRegistrationRequestIsReceivedWithARedirectUriThatContainHasLocalhostAsHostButTheClientUsesTheImplicitGrantType()
+    {
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
+        $request = $request->withMethod('POST');
+        $request = $request->withBody((new StreamFactory())->createStream(json_encode([
+            'redirect_uris' => ['https://localhost/foo/bar'],
+            'response_types' => ['id_token token'],
+            'token_endpoint_auth_method' => 'client_secret_basic',
+        ])));
+        $request = $request->withHeader('Content-Type', 'application/json');
+        $request = $request->withHeader('Authorization', 'Bearer INITIAL_ACCESS_TOKEN_VALID');
+
+        $this->responseContext->setResponse($this->applicationContext->getApplication()->getClientRegistrationPipe()->dispatch($request));
+    }
+
+    /**
+     * @Given a web client registration request is received with an unsecured redirect Uri but the client uses the Implicit Grant Type
+     */
+    public function aWebClientRegistrationRequestIsReceivedWithAnUnsecuredRedirectUriButTheClientUsesTheImplicitGrantType()
+    {
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
+        $request = $request->withMethod('POST');
+        $request = $request->withBody((new StreamFactory())->createStream(json_encode([
+            'redirect_uris' => ['http://www.foo.com/'],
+            'response_types' => ['id_token token'],
+            'token_endpoint_auth_method' => 'client_secret_basic',
+        ])));
+        $request = $request->withHeader('Content-Type', 'application/json');
+        $request = $request->withHeader('Authorization', 'Bearer INITIAL_ACCESS_TOKEN_VALID');
+
+        $this->responseContext->setResponse($this->applicationContext->getApplication()->getClientRegistrationPipe()->dispatch($request));
+    }
+
+    /**
      * @Given a client registration request is received with an expired initial access token
      */
     public function aClientRegistrationRequestIsReceivedWithAnExpiredInitialAccessToken()

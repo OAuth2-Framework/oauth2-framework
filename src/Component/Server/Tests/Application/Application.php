@@ -146,20 +146,7 @@ use OAuth2Framework\Component\Server\Middleware\ResourceServerAuthenticationMidd
 use OAuth2Framework\Component\Server\Middleware\TokenTypeMiddleware;
 use OAuth2Framework\Component\Server\Model\AccessToken\AccessTokenRepositoryInterface;
 use OAuth2Framework\Component\Server\Model\AuthCode\AuthCodeRepositoryInterface;
-use OAuth2Framework\Component\Server\Model\Client\Rule\CommonParametersRule;
-use OAuth2Framework\Component\Server\Model\Client\Rule\GrantTypeFlowRule;
-use OAuth2Framework\Component\Server\Model\Client\Rule\IdTokenAlgorithmsRule;
-use OAuth2Framework\Component\Server\Model\Client\Rule\RedirectionUriRule;
-use OAuth2Framework\Component\Server\Model\Client\Rule\RequestUriRule;
-use OAuth2Framework\Component\Server\Model\Client\Rule\RuleManager;
-use OAuth2Framework\Component\Server\Model\Client\Rule\ScopePolicyDefaultRule;
-use OAuth2Framework\Component\Server\Model\Client\Rule\ScopePolicyRule;
-use OAuth2Framework\Component\Server\Model\Client\Rule\ScopeRule;
-use OAuth2Framework\Component\Server\Model\Client\Rule\SectorIdentifierUriRule;
-use OAuth2Framework\Component\Server\Model\Client\Rule\SoftwareRule;
-use OAuth2Framework\Component\Server\Model\Client\Rule\SubjectTypeRule;
-use OAuth2Framework\Component\Server\Model\Client\Rule\TokenEndpointAuthMethodEndpointRule;
-use OAuth2Framework\Component\Server\Model\Client\Rule\UserinfoEndpointAlgorithmsRule;
+use OAuth2Framework\Component\Server\Model\Client\Rule;
 use OAuth2Framework\Component\Server\Model\Event\EventStoreInterface;
 use OAuth2Framework\Component\Server\Model\IdToken\IdTokenBuilderFactory;
 use OAuth2Framework\Component\Server\Model\IdToken\IdTokenLoader;
@@ -1026,51 +1013,54 @@ final class Application
     }
 
     /**
-     * @var null|RuleManager
+     * @var null|Rule\RuleManager
      */
     private $ruleManager = null;
 
     /**
-     * @return RuleManager
+     * @return Rule\RuleManager
      */
-    public function getRuleManager(): RuleManager
+    public function getRuleManager(): Rule\RuleManager
     {
         if (null === $this->ruleManager) {
-            $this->ruleManager = new RuleManager(
+            $this->ruleManager = new Rule\RuleManager(
                 new ClientIdRule()
             );
             $this->ruleManager
                 ->add(new ClientRegistrationManagementRule())
-                ->add(new CommonParametersRule())
+                ->add(new Rule\CommonParametersRule())
                 ->add($this->getGrantTypeFlowRule())
-                ->add(new IdTokenAlgorithmsRule($this->getJwtSigner(), $this->getJwtEncrypter()))
-                ->add(new RedirectionUriRule())
-                ->add(new RequestUriRule())
-                ->add(new ScopePolicyDefaultRule())
-                ->add(new ScopePolicyRule($this->getScopePolicyManager()))
-                ->add(new ScopeRule($this->getScopeRepository()))
-                ->add(new SectorIdentifierUriRule($this->getRequestFactory(), $this->getHttpClient()))
+                ->add(new Rule\IdTokenAlgorithmsRule($this->getJwtSigner(), $this->getJwtEncrypter()))
+                ->add(new Rule\RedirectionUriRule())
+                ->add(new Rule\ApplicationTypeParametersRule())
+                ->add(new Rule\ContactsParametersRule())
+                ->add(new Rule\UserParametersRule())
+                ->add(new Rule\RequestUriRule())
+                ->add(new Rule\ScopePolicyDefaultRule())
+                ->add(new Rule\ScopePolicyRule($this->getScopePolicyManager()))
+                ->add(new Rule\ScopeRule($this->getScopeRepository()))
+                ->add(new Rule\SectorIdentifierUriRule($this->getRequestFactory(), $this->getHttpClient()))
                 ->add($this->getSoftwareRule())
-                ->add(new SubjectTypeRule($this->getUserInfo()))
-                ->add(new TokenEndpointAuthMethodEndpointRule($this->getTokenEndpointAuthMethodManager()))
-                ->add(new UserinfoEndpointAlgorithmsRule($this->getJwtSigner(), $this->getJwtEncrypter()));
+                ->add(new Rule\SubjectTypeRule($this->getUserInfo()))
+                ->add(new Rule\TokenEndpointAuthMethodEndpointRule($this->getTokenEndpointAuthMethodManager()))
+                ->add(new Rule\UserinfoEndpointAlgorithmsRule($this->getJwtSigner(), $this->getJwtEncrypter()));
         }
 
         return $this->ruleManager;
     }
 
     /**
-     * @var null|SoftwareRule
+     * @var null|Rule\SoftwareRule
      */
     private $softwareRule = null;
 
     /**
-     * @return SoftwareRule
+     * @return Rule\SoftwareRule
      */
-    private function getSoftwareRule(): SoftwareRule
+    private function getSoftwareRule(): Rule\SoftwareRule
     {
         if (null === $this->softwareRule) {
-            $this->softwareRule = new SoftwareRule(
+            $this->softwareRule = new Rule\SoftwareRule(
                 $this->getJwtLoader(),
                 $this->getPublicKeys(),
                 false,
@@ -1261,17 +1251,17 @@ final class Application
     }
 
     /**
-     * @var null|GrantTypeFlowRule
+     * @var null|Rule\GrantTypeFlowRule
      */
     private $grantTypeFlowRule = null;
 
     /**
-     * @return GrantTypeFlowRule
+     * @return Rule\GrantTypeFlowRule
      */
-    public function getGrantTypeFlowRule(): GrantTypeFlowRule
+    public function getGrantTypeFlowRule(): Rule\GrantTypeFlowRule
     {
         if (null === $this->grantTypeFlowRule) {
-            $this->grantTypeFlowRule = new GrantTypeFlowRule(
+            $this->grantTypeFlowRule = new Rule\GrantTypeFlowRule(
                 $this->getGrantTypeManager(),
                 $this->getResponseTypeManager()
             );
@@ -1886,9 +1876,9 @@ final class Application
     {
         if (null === $this->tokenTypeHintManager) {
             $this->tokenTypeHintManager = new TokenTypeHintManager();
-            $this->tokenTypeHintManager->add($this->getAccessTokenTypeHint()); // Access Token
-            $this->tokenTypeHintManager->add($this->getRefreshTokenTypeHint()); // Refresh Token
             $this->tokenTypeHintManager->add($this->getAuthCodeTypeHint()); // Auth Code
+            $this->tokenTypeHintManager->add($this->getRefreshTokenTypeHint()); // Refresh Token
+            $this->tokenTypeHintManager->add($this->getAccessTokenTypeHint()); // Access Token
         }
 
         return $this->tokenTypeHintManager;

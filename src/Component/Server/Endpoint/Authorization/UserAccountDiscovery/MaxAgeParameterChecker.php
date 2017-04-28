@@ -28,7 +28,7 @@ final class MaxAgeParameterChecker implements UserAccountDiscoveryInterface
         $userAccount = $authorization->getUserAccount();
         if (null !== $userAccount) {
             // Whatever the prompt is, if the max_age constraint is not satisfied, the user is redirected to the login page
-            if ($authorization->hasQueryParam('max_age') && null !== $userAccount->getLastLoginAt() && time() - $userAccount->getLastLoginAt()->getTimestamp() > (int) $authorization->getQueryParam('max_age')) {
+            if ($authorization->hasQueryParam('max_age') && null !== $userAccount->getLastLoginAt() && time() - $userAccount->getLastLoginAt()->getTimestamp() > (int) $authorization->getQueryParam('max_age')) { //FIXME: check if the client has a default_max_age parameter
                 throw new RedirectToLoginPageException($authorization);
             }
         }

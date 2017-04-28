@@ -37,6 +37,15 @@ return [
             get(ClientIdRule::class)
         ),
 
+    Rule\UserParametersRule::class => create()
+        ->tag('oauth2_server_client_rule'),
+
+    Rule\ApplicationTypeParametersRule::class => create()
+        ->tag('oauth2_server_client_rule'),
+
+    Rule\ContactsParametersRule::class => create()
+        ->tag('oauth2_server_client_rule'),
+
     Rule\CommonParametersRule::class => create()
         ->tag('oauth2_server_client_rule'),
 
