@@ -14,8 +14,8 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\Server\Endpoint\Token;
 
 use Interop\Http\Factory\ResponseFactoryInterface;
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use Interop\Http\Server\RequestHandlerInterface;
+use Interop\Http\Server\MiddlewareInterface;
 use OAuth2Framework\Component\Server\Command\AccessToken\CreateAccessTokenCommand;
 use OAuth2Framework\Component\Server\Command\AccessToken\CreateAccessTokenWithRefreshTokenCommand;
 use OAuth2Framework\Component\Server\DataTransporter;
@@ -90,7 +90,7 @@ final class TokenEndpoint implements MiddlewareInterface
     /**
      * {@inheritdoc}
      */
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $requestHandler)
     {
         $grantTypeData = GrantTypeData::create($request->getAttribute('client'));
 

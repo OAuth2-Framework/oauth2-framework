@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\Middleware;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use Interop\Http\Server\RequestHandlerInterface;
+use Interop\Http\Server\MiddlewareInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -82,10 +82,10 @@ final class Pipe implements MiddlewareInterface
     /**
      * {@inheritdoc}
      */
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $requestHandler)
     {
-        $this->middlewares[] = new Delegate(function (ServerRequestInterface $request) use ($delegate) {
-            return $delegate->process($request);
+        $this->middlewares[] = new RequestHandler(function (ServerRequestInterface $request) use ($requestHandler) {
+            return $requestHandler->handle($request);
         });
 
         $response = $this->dispatch($request);
@@ -108,25 +108,25 @@ final class Pipe implements MiddlewareInterface
     {
         $resolved = $this->resolve(0);
 
-        return $resolved->process($request);
+        return $resolved->handle($request);
     }
 
     /**
      * @param int $index Middleware index
      *
-     * @return DelegateInterface
+     * @return RequestHandlerInterface
      */
-    private function resolve(int $index): DelegateInterface
+    private function resolve(int $index): RequestHandlerInterface
     {
         if (isset($this->middlewares[$index])) {
             $middleware = $this->middlewares[$index];
 
-            return new Delegate(function (ServerRequestInterface $request) use ($middleware, $index) {
+            return new RequestHandler(function (ServerRequestInterface $request) use ($middleware, $index) {
                 return $middleware->process($request, $this->resolve($index + 1));
             });
         }
 
-        return new Delegate(function () {
+        return new RequestHandler(function () {
             throw new \LogicException('Unresolved request: middleware exhausted with no result.');
         });
     }

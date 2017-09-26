@@ -14,8 +14,8 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\Server\Endpoint\TokenRevocation;
 
 use Interop\Http\Factory\ResponseFactoryInterface;
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use Interop\Http\Server\RequestHandlerInterface;
+use Interop\Http\Server\MiddlewareInterface;
 use OAuth2Framework\Component\Server\Model\Client\Client;
 use OAuth2Framework\Component\Server\Response\OAuth2Exception;
 use OAuth2Framework\Component\Server\Response\OAuth2ResponseFactoryManager;
@@ -85,7 +85,7 @@ abstract class TokenRevocationEndpoint implements MiddlewareInterface
     /**
      * {@inheritdoc}
      */
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $requestHandler)
     {
         $callback = $this->getCallback($request);
         try {

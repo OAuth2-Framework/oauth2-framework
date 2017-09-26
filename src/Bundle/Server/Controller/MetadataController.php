@@ -14,8 +14,8 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\Server\Controller;
 
 use Interop\Http\Factory\ResponseFactoryInterface;
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use Interop\Http\Server\RequestHandlerInterface;
+use Interop\Http\Server\MiddlewareInterface;
 use Jose\Object\JWKSetInterface;
 use Jose\SignerInterface;
 use OAuth2Framework\Bundle\Server\Service\MetadataBuilder;
@@ -54,8 +54,8 @@ class MetadataController implements MiddlewareInterface
     /**
      * {@inheritdoc}
      */
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $requestHandler)
     {
-        return $this->metadataEndpoint->process($request, $delegate);
+        return $this->metadataEndpoint->process($request, $requestHandler);
     }
 }

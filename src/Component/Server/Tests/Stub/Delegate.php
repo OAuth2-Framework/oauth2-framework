@@ -13,10 +13,10 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\Tests\Stub;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-final class Delegate implements DelegateInterface
+final class Delegate implements RequestHandlerInterface
 {
     /**
      * @var callable

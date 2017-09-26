@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\Middleware;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use Interop\Http\Server\RequestHandlerInterface;
+use Interop\Http\Server\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 final class JsonBodyParserMiddleware implements MiddlewareInterface
@@ -22,7 +22,7 @@ final class JsonBodyParserMiddleware implements MiddlewareInterface
     /**
      * {@inheritdoc}
      */
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $requestHandler)
     {
         $headers = $request->getHeader('content-type');
         foreach ($headers as $header) {
@@ -36,6 +36,6 @@ final class JsonBodyParserMiddleware implements MiddlewareInterface
             }
         }
 
-        return $delegate->process($request);
+        return $requestHandler->handle($request);
     }
 }

@@ -14,8 +14,8 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\Server\Middleware;
 
 use Assert\Assertion;
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use Interop\Http\Server\RequestHandlerInterface;
+use Interop\Http\Server\MiddlewareInterface;
 use OAuth2Framework\Component\Server\Model\InitialAccessToken\InitialAccessTokenId;
 use OAuth2Framework\Component\Server\Model\InitialAccessToken\InitialAccessTokenRepositoryInterface;
 use OAuth2Framework\Component\Server\Response\OAuth2Exception;
@@ -51,7 +51,7 @@ final class InitialAccessTokenMiddleware implements MiddlewareInterface
     /**
      * {@inheritdoc}
      */
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate): ResponseInterface
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $requestHandler): ResponseInterface
     {
         try {
             $values = [];
@@ -68,6 +68,6 @@ final class InitialAccessTokenMiddleware implements MiddlewareInterface
             throw new OAuth2Exception(400, ['error' => OAuth2ResponseFactoryManager::ERROR_INVALID_REQUEST, 'error_description' => $e->getMessage()]);
         }
 
-        return $delegate->process($request);
+        return $requestHandler->handle($request);
     }
 }

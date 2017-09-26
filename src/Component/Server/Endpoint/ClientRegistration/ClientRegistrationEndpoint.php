@@ -15,8 +15,8 @@ namespace OAuth2Framework\Component\Server\Endpoint\ClientRegistration;
 
 use Assert\Assertion;
 use Interop\Http\Factory\ResponseFactoryInterface;
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use Interop\Http\Server\RequestHandlerInterface;
+use Interop\Http\Server\MiddlewareInterface;
 use OAuth2Framework\Component\Server\Command\Client\CreateClientCommand;
 use OAuth2Framework\Component\Server\DataTransporter;
 use OAuth2Framework\Component\Server\Model\Client\Client;
@@ -55,7 +55,7 @@ final class ClientRegistrationEndpoint implements MiddlewareInterface
     /**
      * {@inheritdoc}
      */
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate = null): ResponseInterface
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $requestHandler = null): ResponseInterface
     {
         $this->checkRequest($request);
         $data = new DataTransporter();

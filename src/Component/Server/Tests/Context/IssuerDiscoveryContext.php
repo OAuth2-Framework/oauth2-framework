@@ -168,7 +168,7 @@ final class IssuerDiscoveryContext implements Context
     {
         $request = $this->createRequest('/?resource=acct:john%40my-service.com:9000&rel=http%3A%2F%2Fopenid.net%2Fspecs%2Fconnect%2F1.0%2Fissuer', 'GET', [], ['HTTPS' => 'on']);
 
-        $response = $this->getIssuerDiscoveryEndpoint()->process($request, $delegate);
+        $response = $this->getIssuerDiscoveryEndpoint()->process($request, $requestHandler);
 
         $response->getBody()->rewind();
 
@@ -180,7 +180,7 @@ final class IssuerDiscoveryContext implements Context
     public function testDomainForUriResourceInTheRequest()
     {
         $request = $this->createRequest('/?resource=https%3A%2F%2Fmy-service.com:9000%2F%2Bjohn&rel=http%3A%2F%2Fopenid.net%2Fspecs%2Fconnect%2F1.0%2Fissuer', 'GET', [], ['HTTPS' => 'on']);
-        $response = $this->getIssuerDiscoveryEndpoint()->process($request, $delegate);
+        $response = $this->getIssuerDiscoveryEndpoint()->process($request, $requestHandler);
 
         $response->getBody()->rewind();
 

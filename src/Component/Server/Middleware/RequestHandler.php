@@ -13,13 +13,13 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\Middleware;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * @internal
  */
-final class Delegate implements DelegateInterface
+final class RequestHandler implements RequestHandlerInterface
 {
     /**
      * @var callable
@@ -35,11 +35,9 @@ final class Delegate implements DelegateInterface
     }
 
     /**
-     * @param \Psr\Http\Message\ServerRequestInterface $request
-     *
-     * @return \Psr\Http\Message\ResponseInterface
+     * {@inheritdoc}
      */
-    public function process(ServerRequestInterface $request)
+    public function handle(ServerRequestInterface $request)
     {
         return call_user_func($this->callback, $request);
     }

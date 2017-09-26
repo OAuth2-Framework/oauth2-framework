@@ -14,8 +14,8 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\Server\Endpoint\IFrame;
 
 use Interop\Http\Factory\ResponseFactoryInterface;
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use Interop\Http\Server\RequestHandlerInterface;
+use Interop\Http\Server\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 final class IFrameEndpoint implements MiddlewareInterface
@@ -38,7 +38,7 @@ final class IFrameEndpoint implements MiddlewareInterface
     /**
      * {@inheritdoc}
      */
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $requestHandler)
     {
         $content = $this->renderTemplate();
 

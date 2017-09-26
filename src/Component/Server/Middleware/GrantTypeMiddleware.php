@@ -14,8 +14,8 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\Server\Middleware;
 
 use Assert\Assertion;
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use Interop\Http\Server\RequestHandlerInterface;
+use Interop\Http\Server\MiddlewareInterface;
 use OAuth2Framework\Component\Server\GrantType\GrantTypeManager;
 use OAuth2Framework\Component\Server\Response\OAuth2Exception;
 use OAuth2Framework\Component\Server\Response\OAuth2ResponseFactoryManager;
@@ -41,7 +41,7 @@ final class GrantTypeMiddleware implements MiddlewareInterface
     /**
      * {@inheritdoc}
      */
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $requestHandler)
     {
         try {
             $requestParameters = $request->getParsedBody() ?? [];
@@ -51,7 +51,7 @@ final class GrantTypeMiddleware implements MiddlewareInterface
             $type = $this->grantTypeManager->get($grant_type);
             $request = $request->withAttribute('grant_type', $type);
 
-            return $delegate->process($request);
+            return $requestHandler->handle($request);
         } catch (\InvalidArgumentException $e) {
             throw new OAuth2Exception(400,
                 [

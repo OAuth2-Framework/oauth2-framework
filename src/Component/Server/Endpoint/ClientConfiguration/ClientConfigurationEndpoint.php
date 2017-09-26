@@ -15,8 +15,8 @@ namespace OAuth2Framework\Component\Server\Endpoint\ClientConfiguration;
 
 use Assert\Assertion;
 use Interop\Http\Factory\ResponseFactoryInterface;
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use Interop\Http\Server\RequestHandlerInterface;
+use Interop\Http\Server\MiddlewareInterface;
 use OAuth2Framework\Component\Server\Model\Client\Client;
 use OAuth2Framework\Component\Server\Response\OAuth2Exception;
 use OAuth2Framework\Component\Server\Response\OAuth2ResponseFactoryManager;
@@ -58,7 +58,7 @@ final class ClientConfigurationEndpoint implements MiddlewareInterface
     /**
      * {@inheritdoc}
      */
-    public function process(ServerRequestInterface $request, DelegateInterface $next)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $next)
     {
         $this->checkClient($request);
         switch ($request->getMethod()) {

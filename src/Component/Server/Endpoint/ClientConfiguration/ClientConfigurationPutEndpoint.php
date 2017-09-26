@@ -14,8 +14,8 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\Server\Endpoint\ClientConfiguration;
 
 use Interop\Http\Factory\ResponseFactoryInterface;
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use Interop\Http\Server\RequestHandlerInterface;
+use Interop\Http\Server\MiddlewareInterface;
 use OAuth2Framework\Component\Server\Command\Client\UpdateClientCommand;
 use OAuth2Framework\Component\Server\DataTransporter;
 use OAuth2Framework\Component\Server\Model\DataBag\DataBag;
@@ -51,7 +51,7 @@ final class ClientConfigurationPutEndpoint implements MiddlewareInterface
     /**
      * {@inheritdoc}
      */
-    public function process(ServerRequestInterface $request, DelegateInterface $next)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $next)
     {
         $client = $request->getAttribute('client');
 
