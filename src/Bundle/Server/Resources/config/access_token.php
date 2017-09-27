@@ -11,36 +11,14 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use OAuth2Framework\Component\Server\Command\AccessToken;
-use OAuth2Framework\Component\Server\Model\RefreshToken\RefreshTokenRepositoryInterface;
 use OAuth2Framework\Component\Server\TokenTypeHint\AccessTokenTypeHint;
 use function Fluent\create;
 use function Fluent\get;
 
 return [
-    AccessToken\CreateAccessTokenCommandHandler::class => create()
-        ->arguments(
-            get('oauth2_server.access_token.repository')
-        )
-        ->tag('command_handler', ['handles' => AccessToken\CreateAccessTokenCommand::class]),
-
-    AccessToken\CreateAccessTokenWithRefreshTokenCommandHandler::class => create()
-        ->arguments(
-            get('oauth2_server.access_token.repository'),
-            get(RefreshTokenRepositoryInterface::class)->nullIfMissing()
-        )
-        ->tag('command_handler', ['handles' => AccessToken\CreateAccessTokenWithRefreshTokenCommand::class]),
-
-    AccessToken\RevokeAccessTokenCommandHandler::class => create()
-        ->arguments(
-            get('oauth2_server.access_token.repository')
-        )
-        ->tag('command_handler', ['handles' => AccessToken\RevokeAccessTokenCommand::class]),
-
     AccessTokenTypeHint::class => create()
         ->arguments(
-            get('oauth2_server.access_token.repository'),
-            get('command_bus')
+            get('oauth2_server.access_token.repository')
         )
         ->tag('oauth2_server_token_type_hint'),
 ];

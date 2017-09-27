@@ -13,12 +13,10 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\TokenTypeHint;
 
-use OAuth2Framework\Component\Server\Command\AccessToken\RevokeAccessTokenCommand;
 use OAuth2Framework\Component\Server\Model\AccessToken\AccessToken;
 use OAuth2Framework\Component\Server\Model\AccessToken\AccessTokenId;
 use OAuth2Framework\Component\Server\Model\AccessToken\AccessTokenRepositoryInterface;
 use OAuth2Framework\Component\Server\Model\Token\Token;
-use SimpleBus\Message\Bus\MessageBus;
 
 final class AccessTokenTypeHint implements TokenTypeHintInterface
 {
@@ -28,20 +26,13 @@ final class AccessTokenTypeHint implements TokenTypeHintInterface
     private $accessTokenRepository;
 
     /**
-     * @var MessageBus
-     */
-    private $commandBus;
-
-    /**
      * AccessToken constructor.
      *
      * @param AccessTokenRepositoryInterface $accessTokenRepository
-     * @param MessageBus                     $commandBus
      */
-    public function __construct(AccessTokenRepositoryInterface $accessTokenRepository, MessageBus $commandBus)
+    public function __construct(AccessTokenRepositoryInterface $accessTokenRepository)
     {
         $this->accessTokenRepository = $accessTokenRepository;
-        $this->commandBus = $commandBus;
     }
 
     /**
@@ -70,8 +61,8 @@ final class AccessTokenTypeHint implements TokenTypeHintInterface
         if (!$token instanceof AccessToken || true === $token->isRevoked()) {
             return;
         }
-        $revokeAccessTokenCommand = RevokeAccessTokenCommand::create($token->getAccessTokenId());
-        $this->commandBus->handle($revokeAccessTokenCommand);
+        $token = $token->markAsRevoked();
+        $this->accessTokenRepository->save($token);
     }
 
     /**

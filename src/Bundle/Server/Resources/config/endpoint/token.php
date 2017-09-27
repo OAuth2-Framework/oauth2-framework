@@ -21,6 +21,7 @@ use OAuth2Framework\Component\Server\Middleware\GrantTypeMiddleware;
 use OAuth2Framework\Component\Server\Middleware\OAuth2ResponseMiddleware;
 use OAuth2Framework\Component\Server\Middleware\Pipe;
 use OAuth2Framework\Component\Server\Middleware\TokenTypeMiddleware;
+use OAuth2Framework\Component\Server\Model\RefreshToken\RefreshTokenRepositoryInterface;
 use OAuth2Framework\Component\Server\Model\Scope\ScopeRepositoryInterface;
 use OAuth2Framework\Component\Server\Model\Scope\ScopePolicyManager;
 use function Fluent\create;
@@ -53,7 +54,8 @@ return [
             get('oauth2_server.user_account.repository'),
             get(TokenEndpointExtensionManager::class),
             get('oauth2_server.http.response_factory'),
-            get('command_bus')
+            get('oauth2_server.access_token.repository'),
+            get(RefreshTokenRepositoryInterface::class)
         ),
 
     GrantTypeMiddleware::class => create()

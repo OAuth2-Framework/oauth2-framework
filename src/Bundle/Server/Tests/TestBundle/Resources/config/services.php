@@ -87,7 +87,7 @@ return [
             150,
             1800,
             get('EventStore.AccessToken'),
-            get('event_recorder'),
+            get('event_bus'),
             get('cache.app')
         ),
 

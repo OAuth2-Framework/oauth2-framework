@@ -24,10 +24,6 @@ use Interop\Http\Factory\ResponseFactoryInterface;
 use Interop\Http\Factory\ServerRequestFactoryInterface;
 use Interop\Http\Factory\UriFactoryInterface;
 use Jose\Checker\CheckerManager;
-use Jose\Checker\CriticalHeaderChecker;
-use Jose\Checker\ExpirationTimeChecker;
-use Jose\Checker\IssuedAtChecker;
-use Jose\Checker\NotBeforeChecker;
 use Jose\Decrypter;
 use Jose\Encrypter;
 use Jose\Factory\JWKFactory;
@@ -40,12 +36,6 @@ use Jose\Object\JWKSets;
 use Jose\Object\StorableJWKSet;
 use Jose\Signer;
 use Jose\Verifier;
-use OAuth2Framework\Component\Server\Command\AccessToken\CreateAccessTokenCommand;
-use OAuth2Framework\Component\Server\Command\AccessToken\CreateAccessTokenCommandHandler;
-use OAuth2Framework\Component\Server\Command\AccessToken\CreateAccessTokenWithRefreshTokenCommand;
-use OAuth2Framework\Component\Server\Command\AccessToken\CreateAccessTokenWithRefreshTokenCommandHandler;
-use OAuth2Framework\Component\Server\Command\AccessToken\RevokeAccessTokenCommand;
-use OAuth2Framework\Component\Server\Command\AccessToken\RevokeAccessTokenCommandHandler;
 use OAuth2Framework\Component\Server\Command\AuthCode\CreateAuthCodeCommand;
 use OAuth2Framework\Component\Server\Command\AuthCode\CreateAuthCodeCommandHandler;
 use OAuth2Framework\Component\Server\Command\AuthCode\MarkAuthCodeAsUsedCommand;
@@ -58,10 +48,6 @@ use OAuth2Framework\Component\Server\Command\Client\DeleteClientCommand;
 use OAuth2Framework\Component\Server\Command\Client\DeleteClientCommandHandler;
 use OAuth2Framework\Component\Server\Command\Client\UpdateClientCommand;
 use OAuth2Framework\Component\Server\Command\Client\UpdateClientCommandHandler;
-use OAuth2Framework\Component\Server\Command\RefreshToken\CreateRefreshTokenCommand;
-use OAuth2Framework\Component\Server\Command\RefreshToken\CreateRefreshTokenCommandHandler;
-use OAuth2Framework\Component\Server\Command\RefreshToken\RevokeRefreshTokenCommand;
-use OAuth2Framework\Component\Server\Command\RefreshToken\RevokeRefreshTokenCommandHandler;
 use OAuth2Framework\Component\Server\Command\ResourceServer\CreateResourceServerCommand;
 use OAuth2Framework\Component\Server\Command\ResourceServer\CreateResourceServerCommandHandler;
 use OAuth2Framework\Component\Server\Command\ResourceServer\DeleteResourceServerCommand;
@@ -215,7 +201,6 @@ use OAuth2Framework\Component\Server\Tests\Stub\ScopeRepository;
 use OAuth2Framework\Component\Server\Tests\Stub\SecurityLayer;
 use OAuth2Framework\Component\Server\Tests\Stub\ServiceLocator;
 use OAuth2Framework\Component\Server\Tests\Stub\SessionStateParameterExtension;
-use OAuth2Framework\Component\Server\Tests\Stub\SubjectChecker;
 use OAuth2Framework\Component\Server\Tests\Stub\TrustedIssuer;
 use OAuth2Framework\Component\Server\Tests\Stub\UriExtension;
 use OAuth2Framework\Component\Server\Tests\Stub\UserAccountManager;
@@ -683,12 +668,6 @@ final class Application
                     CreateResourceServerCommand::class => CreateResourceServerCommandHandler::class,
                     DeleteResourceServerCommand::class => DeleteResourceServerCommandHandler::class,
                     UpdateResourceServerCommand::class => UpdateResourceServerCommandHandler::class,
-                    CreateAccessTokenCommand::class => CreateAccessTokenCommandHandler::class,
-                    CreateAccessTokenWithRefreshTokenCommand::class => CreateAccessTokenWithRefreshTokenCommandHandler::class,
-                    RevokeAccessTokenCommand::class => RevokeAccessTokenCommandHandler::class,
-
-                    CreateRefreshTokenCommand::class => CreateRefreshTokenCommandHandler::class,
-                    RevokeRefreshTokenCommand::class => RevokeRefreshTokenCommandHandler::class,
 
                     CreateAuthCodeCommand::class => CreateAuthCodeCommandHandler::class,
                     MarkAuthCodeAsUsedCommand::class => MarkAuthCodeAsUsedCommandHandler::class,
@@ -741,13 +720,6 @@ final class Application
             $this->container->add($this->getCreateResourceServerCommandHandler());
             $this->container->add($this->getDeleteResourceServerCommandHandler());
             $this->container->add($this->getUpdateResourceServerCommandHandler());
-
-            $this->container->add($this->getCreateAccessTokenCommandHandler());
-            $this->container->add($this->getCreateAccessTokenWithRefreshTokenCommandHandler());
-            $this->container->add($this->getRevokeAccessTokenCommandHandler());
-
-            $this->container->add($this->getCreateRefreshTokenCommandHandler());
-            $this->container->add($this->getRevokeRefreshTokenCommandHandler());
 
             $this->container->add($this->getCreateAuthCodeCommandHandler());
             $this->container->add($this->getMarkAuthCodeAsUsedCommandHandler());
@@ -2039,8 +2011,7 @@ final class Application
     {
         if (null === $this->accessTokenTypeHint) {
             $this->accessTokenTypeHint = new AccessTokenTypeHint(
-                $this->getAccessTokenRepository(),
-                $this->getCommandBus()
+                $this->getAccessTokenRepository()
             );
         }
 
@@ -2100,7 +2071,7 @@ final class Application
         if (null === $this->accessTokenRepository) {
             $this->accessTokenRepository = new AccessTokenRepository(
                 $this->getAccessTokenEventStore(),
-                $this->getPublicMessageRecorder(),
+                $this->getEventBus(),
                 'now +10 minutes'
             );
         }
@@ -2121,7 +2092,7 @@ final class Application
         if (null === $this->refreshTokenRepository) {
             $this->refreshTokenRepository = new RefreshTokenRepository(
                 $this->getRefreshTokenEventStore(),
-                $this->getPublicMessageRecorder(),
+                $this->getEventBus(),
                 'now +7 day'
             );
         }
@@ -2284,25 +2255,6 @@ final class Application
     }
 
     /**
-     * @var null|RevokeAccessTokenCommandHandler
-     */
-    private $revokeAccessTokenCommandHandler = null;
-
-    /**
-     * @return RevokeAccessTokenCommandHandler
-     */
-    public function getRevokeAccessTokenCommandHandler(): RevokeAccessTokenCommandHandler
-    {
-        if (null === $this->revokeAccessTokenCommandHandler) {
-            $this->revokeAccessTokenCommandHandler = new RevokeAccessTokenCommandHandler(
-                $this->getAccessTokenRepository()
-            );
-        }
-
-        return $this->revokeAccessTokenCommandHandler;
-    }
-
-    /**
      * @var null|AccessTokenRevokedEventHandler
      */
     private $accessTokenRevokedEventHandler = null;
@@ -2368,44 +2320,6 @@ final class Application
         }
 
         return $this->refreshTokenRevokedEventHandler;
-    }
-
-    /**
-     * @var null|CreateRefreshTokenCommandHandler
-     */
-    private $createRefreshTokenCommandHandler = null;
-
-    /**
-     * @return CreateRefreshTokenCommandHandler
-     */
-    public function getCreateRefreshTokenCommandHandler(): CreateRefreshTokenCommandHandler
-    {
-        if (null === $this->createRefreshTokenCommandHandler) {
-            $this->createRefreshTokenCommandHandler = new CreateRefreshTokenCommandHandler(
-                $this->getRefreshTokenRepository()
-            );
-        }
-
-        return $this->createRefreshTokenCommandHandler;
-    }
-
-    /**
-     * @var null|RevokeRefreshTokenCommandHandler
-     */
-    private $revokeRefreshTokenCommandHandler = null;
-
-    /**
-     * @return RevokeRefreshTokenCommandHandler
-     */
-    public function getRevokeRefreshTokenCommandHandler(): RevokeRefreshTokenCommandHandler
-    {
-        if (null === $this->revokeRefreshTokenCommandHandler) {
-            $this->revokeRefreshTokenCommandHandler = new RevokeRefreshTokenCommandHandler(
-                $this->getRefreshTokenRepository()
-            );
-        }
-
-        return $this->revokeRefreshTokenCommandHandler;
     }
 
     /**
@@ -2498,7 +2412,7 @@ final class Application
     {
         if (null === $this->tokenResponseType) {
             $this->tokenResponseType = new TokenResponseType(
-                $this->getCommandBus()
+                $this->getAccessTokenRepository()
             );
         }
 
@@ -2564,7 +2478,8 @@ final class Application
                 $this->getUserAccountRepository(),
                 $this->getTokenEndpointExtensionManager(),
                 $this->getResponseFactory(),
-                $this->getCommandBus()
+                $this->getAccessTokenRepository(),
+                $this->getRefreshTokenRepository()
             );
         }
 
@@ -2670,45 +2585,6 @@ final class Application
         }
 
         return $this->tokenTypeMiddleware;
-    }
-
-    /**
-     * @var null|CreateAccessTokenCommandHandler
-     */
-    private $createAccessTokenCommandHandler = null;
-
-    /**
-     * @return CreateAccessTokenCommandHandler
-     */
-    public function getCreateAccessTokenCommandHandler(): CreateAccessTokenCommandHandler
-    {
-        if (null === $this->createAccessTokenCommandHandler) {
-            $this->createAccessTokenCommandHandler = new CreateAccessTokenCommandHandler(
-                $this->getAccessTokenRepository()
-            );
-        }
-
-        return $this->createAccessTokenCommandHandler;
-    }
-
-    /**
-     * @var null|CreateAccessTokenWithRefreshTokenCommandHandler
-     */
-    private $createAccessTokenWithRefreshTokenCommandHandler = null;
-
-    /**
-     * @return CreateAccessTokenWithRefreshTokenCommandHandler
-     */
-    public function getCreateAccessTokenWithRefreshTokenCommandHandler(): CreateAccessTokenWithRefreshTokenCommandHandler
-    {
-        if (null === $this->createAccessTokenWithRefreshTokenCommandHandler) {
-            $this->createAccessTokenWithRefreshTokenCommandHandler = new CreateAccessTokenWithRefreshTokenCommandHandler(
-                $this->getAccessTokenRepository(),
-                $this->getRefreshTokenRepository()
-            );
-        }
-
-        return $this->createAccessTokenWithRefreshTokenCommandHandler;
     }
 
     /**

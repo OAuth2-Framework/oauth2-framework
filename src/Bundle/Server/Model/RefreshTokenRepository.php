@@ -23,7 +23,7 @@ use OAuth2Framework\Component\Server\Model\RefreshToken\RefreshTokenId;
 use OAuth2Framework\Component\Server\Model\RefreshToken\RefreshTokenRepositoryInterface;
 use OAuth2Framework\Component\Server\Model\ResourceOwner\ResourceOwnerId;
 use OAuth2Framework\Component\Server\Model\ResourceServer\ResourceServerId;
-use SimpleBus\Message\Recorder\RecordsMessages;
+use SimpleBus\Message\Bus\MessageBus;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 
 final class RefreshTokenRepository implements RefreshTokenRepositoryInterface
@@ -49,9 +49,9 @@ final class RefreshTokenRepository implements RefreshTokenRepositoryInterface
     private $eventStore;
 
     /**
-     * @var RecordsMessages
+     * @var MessageBus
      */
-    private $eventRecorder;
+    private $eventBus;
 
     /**
      * @var AdapterInterface
@@ -65,16 +65,16 @@ final class RefreshTokenRepository implements RefreshTokenRepositoryInterface
      * @param int                 $maxLength
      * @param int                 $lifetime
      * @param EventStoreInterface $eventStore
-     * @param RecordsMessages     $eventRecorder
+     * @param MessageBus          $eventBus
      * @param AdapterInterface    $cache
      */
-    public function __construct(int $minLength, int $maxLength, int $lifetime, EventStoreInterface $eventStore, RecordsMessages $eventRecorder, AdapterInterface $cache)
+    public function __construct(int $minLength, int $maxLength, int $lifetime, EventStoreInterface $eventStore, MessageBus $eventBus, AdapterInterface $cache)
     {
         $this->minLength = $minLength;
         $this->maxLength = $maxLength;
         $this->lifetime = $lifetime;
         $this->eventStore = $eventStore;
-        $this->eventRecorder = $eventRecorder;
+        $this->eventBus = $eventBus;
         $this->cache = $cache;
     }
 
@@ -119,7 +119,7 @@ final class RefreshTokenRepository implements RefreshTokenRepositoryInterface
         $events = $refreshToken->recordedMessages();
         foreach ($events as $event) {
             $this->eventStore->save($event);
-            $this->eventRecorder->record($event);
+            $this->eventBus->handle($event);
         }
         $refreshToken->eraseMessages();
         $this->cacheObject($refreshToken);

@@ -22,6 +22,7 @@ final class AccessTokenRevokedEventHandler extends EventHandler
      */
     public function handle(AccessTokenRevokedEvent $event)
     {
+        var_dump($event);
         $this->save($event);
     }
 }

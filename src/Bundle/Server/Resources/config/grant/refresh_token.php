@@ -26,7 +26,7 @@ return [
             '%oauth2_server.grant.refresh_token.max_length%',
             '%oauth2_server.grant.refresh_token.lifetime%',
             get('oauth2_server.grant.refresh_token.event_store'),
-            get('event_recorder'),
+            get('event_bus'),
             get('cache.app')
         ),
 
@@ -35,19 +35,6 @@ return [
             get(RefreshTokenRepositoryInterface::class)
         )
         ->tag('oauth2_server_grant_type'),
-
-    //Commands
-    RefreshToken\CreateRefreshTokenCommandHandler::class => create()
-        ->arguments(
-            get(RefreshTokenRepositoryInterface::class)
-        )
-        ->tag('command_handler', ['handles' => RefreshToken\CreateRefreshTokenCommand::class]),
-
-    RefreshToken\RevokeRefreshTokenCommandHandler::class => create()
-        ->arguments(
-            get(RefreshTokenRepositoryInterface::class)
-        )
-        ->tag('command_handler', ['handles' => RefreshToken\RevokeRefreshTokenCommand::class]),
 
     RefreshTokenTypeHint::class => create()
         ->arguments(

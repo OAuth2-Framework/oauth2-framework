@@ -23,7 +23,7 @@ use OAuth2Framework\Component\Server\Model\RefreshToken\RefreshTokenId;
 use OAuth2Framework\Component\Server\Model\ResourceOwner\ResourceOwnerId;
 use OAuth2Framework\Component\Server\Model\ResourceServer\ResourceServerId;
 use OAuth2Framework\Component\Server\Model\UserAccount\UserAccountId;
-use SimpleBus\Message\Recorder\RecordsMessages;
+use SimpleBus\Message\Bus\MessageBus;
 
 final class AccessTokenRepository implements AccessTokenRepositoryInterface
 {
@@ -33,9 +33,9 @@ final class AccessTokenRepository implements AccessTokenRepositoryInterface
     private $eventStore;
 
     /**
-     * @var RecordsMessages
+     * @var MessageBus
      */
-    private $eventRecorder;
+    private $eventBus;
 
     /**
      * @var string
@@ -45,16 +45,15 @@ final class AccessTokenRepository implements AccessTokenRepositoryInterface
     /**
      * AccessTokenRepository constructor.
      *
-     *
      * @param EventStoreInterface $eventStore
-     * @param RecordsMessages     $eventRecorder
+     * @param MessageBus          $eventBus
      * @param string              $lifetime
      */
-    public function __construct(EventStoreInterface $eventStore, RecordsMessages $eventRecorder, string $lifetime)
+    public function __construct(EventStoreInterface $eventStore, MessageBus $eventBus, string $lifetime)
     {
         $this->eventStore = $eventStore;
         $this->lifetime = $lifetime;
-        $this->eventRecorder = $eventRecorder;
+        $this->eventBus = $eventBus;
 
         $this->createAndSaveAccessToken(
             AccessTokenId::create('ACCESS_TOKEN_#1'),
@@ -154,7 +153,7 @@ final class AccessTokenRepository implements AccessTokenRepositoryInterface
         $events = $accessToken->recordedMessages();
         foreach ($events as $event) {
             $this->eventStore->save($event);
-            $this->eventRecorder->record($event);
+            $this->eventBus->handle($event);
         }
         $accessToken->eraseMessages();
     }
