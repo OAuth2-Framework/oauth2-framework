@@ -104,9 +104,11 @@ abstract class AuthorizationEndpoint implements MiddlewareInterface
                 if (null !== $redirectUri && null !== $responseMode) {
                     $data['redirect_uri'] = $redirectUri;
                     $data['response_mode'] = $responseMode;
+
                     throw new OAuth2Exception(302, $data, $e);
                 }
             }
+
             throw $e;
         } catch (Exception\ProcessAuthorizationException $e) {
             $authorization = $e->getAuthorization();

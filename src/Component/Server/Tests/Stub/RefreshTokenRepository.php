@@ -24,7 +24,6 @@ use OAuth2Framework\Component\Server\Model\ResourceOwner\ResourceOwnerId;
 use OAuth2Framework\Component\Server\Model\ResourceServer\ResourceServerId;
 use OAuth2Framework\Component\Server\Model\UserAccount\UserAccountId;
 use SimpleBus\Message\Bus\MessageBus;
-use SimpleBus\Message\Recorder\RecordsMessages;
 
 final class RefreshTokenRepository implements RefreshTokenRepositoryInterface
 {

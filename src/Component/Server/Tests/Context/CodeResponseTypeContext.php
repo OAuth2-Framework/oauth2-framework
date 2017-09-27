@@ -183,6 +183,7 @@ final class CodeResponseTypeContext implements Context
                 return $data['code'];
             }
         }
+
         throw new \InvalidArgumentException(sprintf('The location header is "%s".', implode(', ', $locations)));
     }
 }

@@ -88,6 +88,7 @@ abstract class TokenRevocationEndpoint implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $requestHandler)
     {
         $callback = $this->getCallback($request);
+
         try {
             $client = $this->getClient($request);
             $token = $this->getToken($request);

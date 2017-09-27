@@ -63,6 +63,7 @@ final class DomainUriLoader implements LoaderInterface
 
             return json_decode($content);
         }
+
         throw SchemaLoadingException::notFound(sprintf('The schema \'%s\' is not supported.', $path));
     }
 }

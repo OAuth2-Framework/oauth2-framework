@@ -83,6 +83,7 @@ final class AuthorizationEndpoint extends Base
             } else {
                 $authorization = $authorization->deny();
             }
+
             throw new ProcessAuthorizationException($authorization);
         }
 

@@ -36,5 +36,4 @@ final class ClientIdRule implements RuleInterface
 
         return $next($commandParameters, $validatedParameters, $userAccountId);
     }
-
 }

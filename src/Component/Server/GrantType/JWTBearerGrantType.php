@@ -134,6 +134,7 @@ final class JWTBearerGrantType implements GrantTypeInterface
     {
         $parameters = $request->getParsedBody() ?? [];
         $assertion = $parameters['assertion'];
+
         try {
             $jws = $this->jwtLoader->load($assertion, $this->keyEncryptionKeySet, $this->encryptionRequired);
             Assertion::isInstanceOf($jws, JWSInterface::class, 'Assertion does not contain signed claims.');
