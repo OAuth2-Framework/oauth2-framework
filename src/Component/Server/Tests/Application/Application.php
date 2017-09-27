@@ -46,6 +46,10 @@ use OAuth2Framework\Component\Server\Command\InitialAccessToken\CreateInitialAcc
 use OAuth2Framework\Component\Server\Command\InitialAccessToken\CreateInitialAccessTokenCommandHandler;
 use OAuth2Framework\Component\Server\Command\InitialAccessToken\RevokeInitialAccessTokenCommand;
 use OAuth2Framework\Component\Server\Command\InitialAccessToken\RevokeInitialAccessTokenCommandHandler;
+use OAuth2Framework\Component\Server\Command\PreConfiguredAuthorization\CreatePreConfiguredAuthorizationCommand;
+use OAuth2Framework\Component\Server\Command\PreConfiguredAuthorization\CreatePreConfiguredAuthorizationCommandHandler;
+use OAuth2Framework\Component\Server\Command\PreConfiguredAuthorization\RevokePreConfiguredAuthorizationCommand;
+use OAuth2Framework\Component\Server\Command\PreConfiguredAuthorization\RevokePreConfiguredAuthorizationCommandHandler;
 use OAuth2Framework\Component\Server\Command\ResourceServer\CreateResourceServerCommand;
 use OAuth2Framework\Component\Server\Command\ResourceServer\CreateResourceServerCommandHandler;
 use OAuth2Framework\Component\Server\Command\ResourceServer\DeleteResourceServerCommand;
@@ -580,9 +584,7 @@ final class Application
     public function getClientCreatedEventHandler(): ClientCreatedEventHandler
     {
         if (null === $this->clientCreatedEventHandler) {
-            $this->clientCreatedEventHandler = new ClientCreatedEventHandler(
-                $this->getClientRepository()
-            );
+            $this->clientCreatedEventHandler = new ClientCreatedEventHandler();
         }
 
         return $this->clientCreatedEventHandler;
@@ -669,6 +671,9 @@ final class Application
 
                     CreateInitialAccessTokenCommand::class => CreateInitialAccessTokenCommandHandler::class,
                     RevokeInitialAccessTokenCommand::class => RevokeInitialAccessTokenCommandHandler::class,
+
+                    CreatePreConfiguredAuthorizationCommand::class => CreatePreConfiguredAuthorizationCommandHandler::class,
+                    RevokePreConfiguredAuthorizationCommand::class => RevokePreConfiguredAuthorizationCommandHandler::class,
                 ],
                 $this->getServiceLocatorAwareCallableResolver()
             );
@@ -720,6 +725,9 @@ final class Application
 
             $this->container->add($this->getCreateInitialAccessTokenCommandHandler());
             $this->container->add($this->getRevokeInitialAccessTokenCommandHandler());
+
+            $this->container->add($this->getCreatePreConfiguredAuthorizationCommandHandler());
+            $this->container->add($this->getRevokePreConfiguredAuthorizationCommandHandler());
 
             $this->container->add($this->getClientCreatedEventHandler());
             $this->container->add($this->getClientDeletedEventHandler());
@@ -891,6 +899,44 @@ final class Application
         }
 
         return $this->revokeInitialAccessTokenCommandHandler;
+    }
+
+    /**
+     * @var null|CreatePreConfiguredAuthorizationCommandHandler
+     */
+    private $createPreConfiguredAuthorizationCommandHandler = null;
+
+    /**
+     * @return CreatePreConfiguredAuthorizationCommandHandler
+     */
+    public function getCreatePreConfiguredAuthorizationCommandHandler(): CreatePreConfiguredAuthorizationCommandHandler
+    {
+        if (null === $this->createPreConfiguredAuthorizationCommandHandler) {
+            $this->createPreConfiguredAuthorizationCommandHandler = new CreatePreConfiguredAuthorizationCommandHandler(
+                $this->getPreConfiguredAuthorizationRepository()
+            );
+        }
+
+        return $this->createPreConfiguredAuthorizationCommandHandler;
+    }
+
+    /**
+     * @var null|RevokePreConfiguredAuthorizationCommandHandler
+     */
+    private $revokePreConfiguredAuthorizationCommandHandler = null;
+
+    /**
+     * @return RevokePreConfiguredAuthorizationCommandHandler
+     */
+    public function getRevokePreConfiguredAuthorizationCommandHandler(): RevokePreConfiguredAuthorizationCommandHandler
+    {
+        if (null === $this->revokePreConfiguredAuthorizationCommandHandler) {
+            $this->revokePreConfiguredAuthorizationCommandHandler = new RevokePreConfiguredAuthorizationCommandHandler(
+                $this->getPreConfiguredAuthorizationRepository()
+            );
+        }
+
+        return $this->revokePreConfiguredAuthorizationCommandHandler;
     }
 
     /**

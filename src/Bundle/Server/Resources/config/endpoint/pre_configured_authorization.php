@@ -12,6 +12,7 @@ declare(strict_types=1);
  */
 
 use OAuth2Framework\Bundle\Server\Model\PreConfiguredAuthorizationRepository;
+use OAuth2Framework\Component\Server\Command\PreConfiguredAuthorization;
 use OAuth2Framework\Component\Server\Endpoint\Authorization\AfterConsentScreen;
 use OAuth2Framework\Component\Server\Endpoint\Authorization\BeforeConsentScreen;
 use function Fluent\create;
@@ -36,4 +37,16 @@ return [
             get('event_recorder'),
             get('cache.app')
         ),
+
+    PreConfiguredAuthorization\CreatePreConfiguredAuthorizationCommandHandler::class => create()
+        ->arguments(
+            get(PreConfiguredAuthorizationRepository::class)
+        )
+        ->tag('command_handler', ['handles' => PreConfiguredAuthorization\CreatePreConfiguredAuthorizationCommand::class]),
+
+    PreConfiguredAuthorization\RevokePreConfiguredAuthorizationCommandHandler::class => create()
+        ->arguments(
+            get(PreConfiguredAuthorizationRepository::class)
+        )
+        ->tag('command_handler', ['handles' => PreConfiguredAuthorization\RevokePreConfiguredAuthorizationCommand::class]),
 ];
