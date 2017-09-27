@@ -12,7 +12,6 @@ declare(strict_types=1);
  */
 
 use OAuth2Framework\Bundle\Server\Model\ClientRepository;
-use OAuth2Framework\Bundle\Server\Rule\ClientIdRule;
 use OAuth2Framework\Component\Server\Command\Client;
 use OAuth2Framework\Component\Server\GrantType\GrantTypeManager;
 use OAuth2Framework\Component\Server\Model\Client\Rule;
@@ -30,12 +29,7 @@ return [
             get('cache.app')
         ),
 
-    ClientIdRule::class => create(),
-
-    RuleManager::class => create()
-        ->arguments(
-            get(ClientIdRule::class)
-        ),
+    RuleManager::class => create(),
 
     Rule\UserParametersRule::class => create()
         ->tag('oauth2_server_client_rule'),
@@ -57,6 +51,9 @@ return [
         ->tag('oauth2_server_client_rule'),
 
     Rule\RedirectionUriRule::class => create()
+        ->tag('oauth2_server_client_rule'),
+
+    Rule\ClientIdRule::class => create()
         ->tag('oauth2_server_client_rule'),
 
     Rule\RequestUriRule::class => create()

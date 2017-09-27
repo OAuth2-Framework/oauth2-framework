@@ -13,21 +13,21 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\Command\InitialAccessToken;
 
-use OAuth2Framework\Component\Server\Model\InitialAccessToken\InitialAccessTokenManagerInterface;
+use OAuth2Framework\Component\Server\Model\InitialAccessToken\InitialAccessTokenRepositoryInterface;
 
 final class CreateInitialAccessTokenCommandHandler
 {
     /**
-     * @var InitialAccessTokenManagerInterface
+     * @var InitialAccessTokenRepositoryInterface
      */
     private $initialAccessTokenManager;
 
     /**
      * CreateInitialAccessTokenCommandHandler constructor.
      *
-     * @param InitialAccessTokenManagerInterface $initialAccessTokenManager
+     * @param InitialAccessTokenRepositoryInterface $initialAccessTokenManager
      */
-    public function __construct(InitialAccessTokenManagerInterface $initialAccessTokenManager)
+    public function __construct(InitialAccessTokenRepositoryInterface $initialAccessTokenManager)
     {
         $this->initialAccessTokenManager = $initialAccessTokenManager;
     }

@@ -20,12 +20,14 @@ use Interop\Http\Server\MiddlewareInterface;
 use OAuth2Framework\Component\Server\Command\Client\CreateClientCommand;
 use OAuth2Framework\Component\Server\DataTransporter;
 use OAuth2Framework\Component\Server\Model\Client\Client;
+use OAuth2Framework\Component\Server\Model\Client\ClientId;
 use OAuth2Framework\Component\Server\Model\DataBag\DataBag;
 use OAuth2Framework\Component\Server\Model\InitialAccessToken\InitialAccessToken;
 use OAuth2Framework\Component\Server\Response\OAuth2Exception;
 use OAuth2Framework\Component\Server\Response\OAuth2ResponseFactoryManager;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Ramsey\Uuid\Uuid;
 use SimpleBus\Message\Bus\MessageBus;
 
 final class ClientRegistrationEndpoint implements MiddlewareInterface
@@ -69,7 +71,9 @@ final class ClientRegistrationEndpoint implements MiddlewareInterface
                 $userAccountId = null;
             }
             $commandParameters = DataBag::createFromArray($request->getParsedBody() ?? []);
-            $command = CreateClientCommand::create($userAccountId, $commandParameters, $data);
+            // Allow custom client id generators
+            $clientId = ClientId::create(Uuid::uuid4()->toString());
+            $command = CreateClientCommand::create($clientId, $userAccountId, $commandParameters, $data);
             $this->messageBus->handle($command);
         } catch (\InvalidArgumentException $e) {
             throw new OAuth2Exception(400, ['error' => OAuth2ResponseFactoryManager::ERROR_INVALID_REQUEST, 'error_description' => $e->getMessage()]);

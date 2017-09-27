@@ -12,6 +12,7 @@ declare(strict_types=1);
  */
 
 use OAuth2Framework\Bundle\Server\Model\InitialAccessTokenRepository;
+use OAuth2Framework\Component\Server\Command\InitialAccessToken;
 use OAuth2Framework\Component\Server\Middleware\InitialAccessTokenMiddleware;
 use OAuth2Framework\Component\Server\TokenType\BearerToken;
 use function Fluent\create;
@@ -40,4 +41,16 @@ return [
             get('client_registration_bearer_token'),
             get(InitialAccessTokenRepository::class)
         ),
+
+    InitialAccessToken\CreateInitialAccessTokenCommandHandler::class => create()
+        ->arguments(
+            get(InitialAccessTokenRepository::class)
+        )
+        ->tag('command_handler', ['handles' => InitialAccessToken\CreateInitialAccessTokenCommand::class]),
+
+    InitialAccessToken\RevokeInitialAccessTokenCommandHandler::class => create()
+        ->arguments(
+            get(InitialAccessTokenRepository::class)
+        )
+        ->tag('command_handler', ['handles' => InitialAccessToken\RevokeInitialAccessTokenCommand::class]),
 ];

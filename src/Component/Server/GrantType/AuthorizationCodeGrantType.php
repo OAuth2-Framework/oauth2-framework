@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\Server\GrantType;
 
 use Assert\Assertion;
-use OAuth2Framework\Component\Server\Command\AuthCode\MarkAuthCodeAsUsedCommand;
 use OAuth2Framework\Component\Server\Endpoint\Token\GrantTypeData;
 use OAuth2Framework\Component\Server\GrantType\PKCEMethod\PKCEMethodManager;
 use OAuth2Framework\Component\Server\Model\AuthCode\AuthCode;
@@ -24,7 +23,6 @@ use OAuth2Framework\Component\Server\Model\Client\Client;
 use OAuth2Framework\Component\Server\Response\OAuth2Exception;
 use OAuth2Framework\Component\Server\Response\OAuth2ResponseFactoryManager;
 use Psr\Http\Message\ServerRequestInterface;
-use SimpleBus\Message\Bus\MessageBus;
 
 final class AuthorizationCodeGrantType implements GrantTypeInterface
 {
@@ -39,22 +37,15 @@ final class AuthorizationCodeGrantType implements GrantTypeInterface
     private $pkceMethodManager;
 
     /**
-     * @var MessageBus
-     */
-    private $commandBus;
-
-    /**
      * AuthorizationCodeGrantType constructor.
      *
      * @param AuthCodeRepositoryInterface $authCodeRepository
      * @param PKCEMethodManager           $pkceMethodManager
-     * @param MessageBus                  $commandBus
      */
-    public function __construct(AuthCodeRepositoryInterface $authCodeRepository, PKCEMethodManager $pkceMethodManager, MessageBus $commandBus)
+    public function __construct(AuthCodeRepositoryInterface $authCodeRepository, PKCEMethodManager $pkceMethodManager)
     {
         $this->authCodeRepository = $authCodeRepository;
         $this->pkceMethodManager = $pkceMethodManager;
-        $this->commandBus = $commandBus;
     }
 
     /**
@@ -132,9 +123,8 @@ final class AuthorizationCodeGrantType implements GrantTypeInterface
         } else {
             $grantTypeResponse = $grantTypeResponse->withoutRefreshToken();
         }
-
-        $authCodeUsedCommand = MarkAuthCodeAsUsedCommand::create($authCode->getTokenId());
-        $this->commandBus->handle($authCodeUsedCommand);
+        $authCode = $authCode->markAsUsed();
+        $this->authCodeRepository->save($authCode);
 
         return $grantTypeResponse;
     }

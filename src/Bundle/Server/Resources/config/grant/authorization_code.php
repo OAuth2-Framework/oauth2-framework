@@ -12,7 +12,6 @@ declare(strict_types=1);
  */
 
 use OAuth2Framework\Bundle\Server\Model\AuthCodeRepository;
-use OAuth2Framework\Component\Server\Command\AuthCode;
 use OAuth2Framework\Component\Server\GrantType\AuthorizationCodeGrantType;
 use OAuth2Framework\Component\Server\GrantType\PKCEMethod;
 use OAuth2Framework\Component\Server\ResponseType\CodeResponseType;
@@ -27,21 +26,20 @@ return [
             '%oauth2_server.grant.authorization_code.max_length%',
             '%oauth2_server.grant.authorization_code.lifetime%',
             get('oauth2_server.grant.authorization_code.event_store'),
-            get('event_recorder'),
+            get('event_bus'),
             get('cache.app')
         ),
 
     AuthorizationCodeGrantType::class => create()
         ->arguments(
             get(AuthCodeRepository::class),
-            get(PKCEMethod\PKCEMethodManager::class),
-            get('command_bus')
+            get(PKCEMethod\PKCEMethodManager::class)
         )
         ->tag('oauth2_server_grant_type'),
 
     CodeResponseType::class => create()
         ->arguments(
-            get('command_bus'),
+            get(AuthCodeRepository::class),
             get(PKCEMethod\PKCEMethodManager::class),
             '%oauth2_server.grant.authorization_code.enforce_pkce%'
         )
@@ -54,25 +52,6 @@ return [
 
     PKCEMethod\S256::class => create()
         ->tag('oauth2_server_pkce_method', ['alias' => 'S256']),
-
-    // Commands
-    AuthCode\CreateAuthCodeCommandHandler::class => create()
-        ->arguments(
-            get(AuthCodeRepository::class)
-        )
-        ->tag('command_handler', ['handles' => AuthCode\CreateAuthCodeCommand::class]),
-
-    AuthCode\MarkAuthCodeAsUsedCommandHandler::class => create()
-        ->arguments(
-            get(AuthCodeRepository::class)
-        )
-        ->tag('command_handler', ['handles' => AuthCode\MarkAuthCodeAsUsedCommand::class]),
-
-    AuthCode\RevokeAuthCodeCommandHandler::class => create()
-        ->arguments(
-            get(AuthCodeRepository::class)
-        )
-        ->tag('command_handler', ['handles' => AuthCode\RevokeAuthCodeCommand::class]),
 
     // For token introspection and revocation
     AuthCodeTypeHint::class => create()
