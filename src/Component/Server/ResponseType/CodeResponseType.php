@@ -44,7 +44,7 @@ final class CodeResponseType implements ResponseTypeInterface
      * @param PKCEMethodManager           $pkceMethodManager
      * @param bool                        $pkceForPublicClientsEnforced
      */
-    public function __construct(AuthCodeRepositoryInterface $authCodeRepository,PKCEMethodManager $pkceMethodManager, bool $pkceForPublicClientsEnforced)
+    public function __construct(AuthCodeRepositoryInterface $authCodeRepository, PKCEMethodManager $pkceMethodManager, bool $pkceForPublicClientsEnforced)
     {
         $this->authCodeRepository = $authCodeRepository;
         $this->pkceMethodManager = $pkceMethodManager;

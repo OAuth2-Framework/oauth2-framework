@@ -70,7 +70,6 @@ final class TokenEndpoint implements MiddlewareInterface
      */
     private $refreshTokenRepository;
 
-
     /**
      * TokenEndpoint constructor.
      *

@@ -237,6 +237,7 @@ final class ResponseContext implements Context
                 return;
             }
         }
+
         throw new \InvalidArgumentException(sprintf('The location header is "%s".', implode(', ', $locations)));
     }
 
@@ -255,6 +256,7 @@ final class ResponseContext implements Context
                 return;
             }
         }
+
         throw new \InvalidArgumentException(sprintf('The location header is "%s".', implode(', ', $locations)));
     }
 
@@ -275,6 +277,7 @@ final class ResponseContext implements Context
                 return;
             }
         }
+
         throw new \InvalidArgumentException(sprintf('The location header is "%s".', implode(', ', $locations)));
     }
 
@@ -293,6 +296,7 @@ final class ResponseContext implements Context
                 return;
             }
         }
+
         throw new \InvalidArgumentException(sprintf('The location header is "%s".', implode(', ', $locations)));
     }
 
@@ -313,6 +317,7 @@ final class ResponseContext implements Context
                 return;
             }
         }
+
         throw new \InvalidArgumentException(sprintf('The location header is "%s".', implode(', ', $locations)));
     }
 
@@ -327,6 +332,7 @@ final class ResponseContext implements Context
                 return;
             }
         }
+
         throw new \InvalidArgumentException(sprintf('The location header is "%s".', implode(', ', $locations)));
     }
 
@@ -347,6 +353,7 @@ final class ResponseContext implements Context
                 return;
             }
         }
+
         throw new \InvalidArgumentException(sprintf('The location header is "%s".', implode(', ', $locations)));
     }
 

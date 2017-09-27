@@ -12,7 +12,6 @@ declare(strict_types=1);
  */
 
 use OAuth2Framework\Bundle\Server\Model\RefreshTokenRepository;
-use OAuth2Framework\Component\Server\Command\RefreshToken;
 use OAuth2Framework\Component\Server\GrantType\RefreshTokenGrantType;
 use OAuth2Framework\Component\Server\Model\RefreshToken\RefreshTokenRepositoryInterface;
 use OAuth2Framework\Component\Server\TokenTypeHint\RefreshTokenTypeHint;

@@ -52,6 +52,7 @@ class PreConfiguredAuthorizationExtension implements BeforeConsentScreenInterfac
             }
 
             $authorization = $authorization->allow();
+
             throw new ProcessAuthorizationException($authorization);
         } else {
             if ($authorization->hasPrompt('none')) {

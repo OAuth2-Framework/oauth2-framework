@@ -172,7 +172,6 @@ use OAuth2Framework\Component\Server\Tests\Stub\AuthenticateResponseFactory;
 use OAuth2Framework\Component\Server\Tests\Stub\AuthenticateResponseFactoryForTokenIntrospection;
 use OAuth2Framework\Component\Server\Tests\Stub\AuthorizationEndpoint;
 use OAuth2Framework\Component\Server\Tests\Stub\ClientAssertionJwt;
-use OAuth2Framework\Component\Server\Tests\Stub\ClientIdRule;
 use OAuth2Framework\Component\Server\Tests\Stub\ClientRegistrationManagementRule;
 use OAuth2Framework\Component\Server\Tests\Stub\ClientRepository;
 use OAuth2Framework\Component\Server\Tests\Stub\ClientSecretBasic;
