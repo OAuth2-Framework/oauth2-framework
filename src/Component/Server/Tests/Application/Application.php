@@ -506,7 +506,8 @@ final class Application
             $this->tokenEndpointAuthMethodManager->add(new ClientSecretBasic('My service'));
             $this->tokenEndpointAuthMethodManager->add(new ClientSecretPost());
             $this->tokenEndpointAuthMethodManager->add(new ClientAssertionJwt(
-                $this->getJwsLoader()
+                $this->getJwsLoader(),
+                $this->getClaimCheckerManager()
             ));
         }
 

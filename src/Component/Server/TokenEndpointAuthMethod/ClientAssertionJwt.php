@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\Server\TokenEndpointAuthMethod;
 
 use Assert\Assertion;
+use Jose\Component\Checker\ClaimCheckerManager;
 use Jose\Component\Core\JWKSet;
 use Jose\Component\Encryption\JWELoader;
 use Jose\Component\Signature\JWSLoader;
@@ -52,15 +53,21 @@ abstract class ClientAssertionJwt implements TokenEndpointAuthMethodInterface
     private $secretLifetime;
 
     /**
+     * @var ClaimCheckerManager
+     */
+    private $claimCheckerManager;
+
+    /**
      * ClientAssertionJwt constructor.
      *
      * @param JWSLoader $jwsLoader
      * @param int       $secretLifetime
      */
-    public function __construct(JWSLoader $jwsLoader, int $secretLifetime = 0)
+    public function __construct(JWSLoader $jwsLoader, ClaimCheckerManager $claimCheckerManager, int $secretLifetime = 0)
     {
         Assertion::greaterOrEqualThan($secretLifetime, 0);
         $this->jwsLoader = $jwsLoader;
+        $this->claimCheckerManager = $claimCheckerManager;
         $this->secretLifetime = $secretLifetime;
     }
 
@@ -125,18 +132,44 @@ abstract class ClientAssertionJwt implements TokenEndpointAuthMethodInterface
         try {
             Assertion::keyExists($parameters, 'client_assertion', 'Parameter \'client_assertion\' is missing.');
             $client_assertion = $parameters['client_assertion'];
-            $jwt = $this->jwsLoader->load($client_assertion, $this->keyEncryptionKeySet, $this->encryptionRequired);
+            $client_assertion = $this->tryToDecryptClientAssertion($client_assertion);
+            $jwt = $this->jwsLoader->load($client_assertion);
+            $this->claimCheckerManager->check($jwt);
+            $claims = json_decode($jwt->getPayload(), true);
 
-            $diff = array_diff(['iss', 'sub', 'aud', 'jti', 'exp'], array_keys($jwt->getClaims()));
+            $diff = array_diff(['iss', 'sub', 'aud', 'jti', 'exp'], array_keys($claims));
             Assertion::eq(0, count($diff), sprintf('The following claim(s) is/are mandatory: \'%s\'.', implode(', ', array_values($diff))));
-            Assertion::eq($jwt->getClaim('sub'), $jwt->getClaim('iss'), 'The claims \'sub\' and \'iss\' must contain the client public ID.');
+            Assertion::eq($claims['sub'], $claims['iss'], 'The claims \'sub\' and \'iss\' must contain the client public ID.');
         } catch (\Exception $e) {
             throw new OAuth2Exception(400, ['error' => OAuth2ResponseFactoryManager::ERROR_INVALID_REQUEST, 'error_description' => $e->getMessage()]);
         }
 
         $clientCredentials = $jwt;
 
-        return ClientId::create($jwt->getClaim('sub'));
+        return ClientId::create($claims['sub']);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    private function tryToDecryptClientAssertion(string $clientAssertion): string
+    {
+        if (null === $this->jweLoader) {
+            return $clientAssertion;
+        }
+
+        try {
+            $jwe = $this->jweLoader->load($clientAssertion);
+            $jwe = $this->jweLoader->decryptUsingKeySet($jwe, $this->keyEncryptionKeySet);
+
+            return $jwe->getPayload();
+        } catch (\Exception $e) {
+            if (true === $this->encryptionRequired) {
+                throw new OAuth2Exception(400, ['error' => OAuth2ResponseFactoryManager::ERROR_INVALID_REQUEST, 'error_description' => $e->getMessage()]);
+            }
+
+            return $clientAssertion;
+        }
     }
 
     /**
