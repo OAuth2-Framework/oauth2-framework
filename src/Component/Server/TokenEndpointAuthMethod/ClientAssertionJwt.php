@@ -14,10 +14,9 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\Server\TokenEndpointAuthMethod;
 
 use Assert\Assertion;
-use Jose\Factory\JWKFactory;
-use Jose\JWTLoaderInterface;
-use Jose\Object\JWKSet;
-use Jose\Object\JWKSetInterface;
+use Jose\Component\Core\JWKSet;
+use Jose\Component\Encryption\JWELoader;
+use Jose\Component\Signature\JWSLoader;
 use OAuth2Framework\Component\Server\Model\Client\Client;
 use OAuth2Framework\Component\Server\Model\Client\ClientId;
 use OAuth2Framework\Component\Server\Model\DataBag\DataBag;
@@ -28,9 +27,14 @@ use Psr\Http\Message\ServerRequestInterface;
 abstract class ClientAssertionJwt implements TokenEndpointAuthMethodInterface
 {
     /**
-     * @var JWTLoaderInterface
+     * @var JWSLoader
      */
-    private $jwtLoader;
+    private $jwsLoader;
+
+    /**
+     * @var JWELoader
+     */
+    private $jweLoader;
 
     /**
      * @var bool
@@ -38,7 +42,7 @@ abstract class ClientAssertionJwt implements TokenEndpointAuthMethodInterface
     private $encryptionRequired = false;
 
     /**
-     * @var \Jose\Object\JWKSetInterface|null
+     * @var JWKSet|null
      */
     private $keyEncryptionKeySet = null;
 
@@ -50,21 +54,21 @@ abstract class ClientAssertionJwt implements TokenEndpointAuthMethodInterface
     /**
      * ClientAssertionJwt constructor.
      *
-     * @param \Jose\JWTLoaderInterface $jwtLoader
-     * @param int                      $secretLifetime
+     * @param JWSLoader $jwsLoader
+     * @param int       $secretLifetime
      */
-    public function __construct(JWTLoaderInterface $jwtLoader, int $secretLifetime = 0)
+    public function __construct(JWSLoader $jwsLoader, int $secretLifetime = 0)
     {
         Assertion::greaterOrEqualThan($secretLifetime, 0);
-        $this->jwtLoader = $jwtLoader;
+        $this->jwsLoader = $jwsLoader;
         $this->secretLifetime = $secretLifetime;
     }
 
     /**
      * @param bool                         $encryptionRequired
-     * @param \Jose\Object\JWKSetInterface $keyEncryptionKeySet
+     * @param JWKSet $keyEncryptionKeySet
      */
-    public function enableEncryptedAssertions(bool $encryptionRequired, JWKSetInterface $keyEncryptionKeySet)
+    public function enableEncryptedAssertions(bool $encryptionRequired, JWKSet $keyEncryptionKeySet)
     {
         $this->encryptionRequired = $encryptionRequired;
         $this->keyEncryptionKeySet = $keyEncryptionKeySet;
@@ -75,7 +79,7 @@ abstract class ClientAssertionJwt implements TokenEndpointAuthMethodInterface
      */
     public function getSupportedSignatureAlgorithms(): array
     {
-        return $this->jwtLoader->getSupportedSignatureAlgorithms();
+        return $this->jwsLoader->getSupportedSignatureAlgorithms();
     }
 
     /**
@@ -83,7 +87,7 @@ abstract class ClientAssertionJwt implements TokenEndpointAuthMethodInterface
      */
     public function getSupportedContentEncryptionAlgorithms(): array
     {
-        return $this->jwtLoader->getSupportedContentEncryptionAlgorithms();
+        return $this->jweLoader->getSupportedContentEncryptionAlgorithms();
     }
 
     /**
@@ -91,7 +95,7 @@ abstract class ClientAssertionJwt implements TokenEndpointAuthMethodInterface
      */
     public function getSupportedKeyEncryptionAlgorithms(): array
     {
-        return $this->jwtLoader->getSupportedKeyEncryptionAlgorithms();
+        return $this->jweLoader->getSupportedKeyEncryptionAlgorithms();
     }
 
     /**
@@ -121,7 +125,7 @@ abstract class ClientAssertionJwt implements TokenEndpointAuthMethodInterface
         try {
             Assertion::keyExists($parameters, 'client_assertion', 'Parameter \'client_assertion\' is missing.');
             $client_assertion = $parameters['client_assertion'];
-            $jwt = $this->jwtLoader->load($client_assertion, $this->keyEncryptionKeySet, $this->encryptionRequired);
+            $jwt = $this->jwsLoader->load($client_assertion, $this->keyEncryptionKeySet, $this->encryptionRequired);
 
             $diff = array_diff(['iss', 'sub', 'aud', 'jti', 'exp'], array_keys($jwt->getClaims()));
             Assertion::eq(0, count($diff), sprintf('The following claim(s) is/are mandatory: \'%s\'.', implode(', ', array_values($diff))));
@@ -142,8 +146,8 @@ abstract class ClientAssertionJwt implements TokenEndpointAuthMethodInterface
     {
         try {
             $jwkSet = $client->getPublicKeySet();
-            Assertion::isInstanceOf($jwkSet, JWKSetInterface::class);
-            $this->jwtLoader->verify($clientCredentials, $jwkSet);
+            Assertion::isInstanceOf($jwkSet, JWKSet::class);
+            $this->jwsLoader->verifyWithKeySet($clientCredentials, $jwkSet);
         } catch (\Exception $e) {
             return false;
         }
@@ -170,14 +174,14 @@ abstract class ClientAssertionJwt implements TokenEndpointAuthMethodInterface
         } elseif ('private_key_jwt' === $commandParameters->get('token_endpoint_auth_method')) {
             Assertion::true($commandParameters->has('jwks') xor $commandParameters->has('jwks_uri'), 'The parameter \'jwks\' or \'jwks_uri\' must be set.');
             if ($commandParameters->has('jwks')) {
-                $jwks = new JWKSet($commandParameters->get('jwks'));
-                Assertion::isInstanceOf($jwks, JWKSetInterface::class, 'The parameter \'jwks\' must be a valid JWKSet object.');
+                $jwks = JWKSet::createFromKeyData($commandParameters->get('jwks'));
+                Assertion::isInstanceOf($jwks, JWKSet::class, 'The parameter \'jwks\' must be a valid JWKSet object.');
                 $validatedParameters = $validatedParameters->with('jwks', $commandParameters->get('jwks'));
-            } else {
+            }/* else {
                 $jwks = JWKFactory::createFromJKU($commandParameters->get('jwks_uri'));
-                Assertion::isInstanceOf($jwks, JWKSetInterface::class, 'The parameter \'jwks_uri\' must be a valid uri that provide a valid JWKSet.');
+                Assertion::isInstanceOf($jwks, JWKSet::class, 'The parameter \'jwks_uri\' must be a valid uri that provide a valid JWKSet.');
                 $validatedParameters = $validatedParameters->with('jwks_uri', $commandParameters->get('jwks_uri'));
-            }
+            }*/
         } else {
             throw new \InvalidArgumentException('Unsupported token endpoint authentication method.');
         }

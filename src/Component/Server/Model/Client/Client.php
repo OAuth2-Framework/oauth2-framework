@@ -14,10 +14,8 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\Server\Model\Client;
 
 use Assert\Assertion;
-use Jose\Factory\JWKFactory;
-use Jose\Object\JWK;
-use Jose\Object\JWKSet;
-use Jose\Object\JWKSetInterface;
+use Jose\Component\Core\JWK;
+use Jose\Component\Core\JWKSet;
 use OAuth2Framework\Component\Server\Event\Client as ClientEvent;
 use OAuth2Framework\Component\Server\Model\DataBag\DataBag;
 use OAuth2Framework\Component\Server\Model\Event\Event;
@@ -260,32 +258,33 @@ final class Client implements ResourceOwnerInterface, ContainsRecordedMessages, 
     }
 
     /**
-     * @return JWKSetInterface
+     * @return JWKSet
      */
-    public function getPublicKeySet(): JWKSetInterface
+    public function getPublicKeySet(): JWKSet
     {
         Assertion::true($this->hasPublicKeySet(), 'The client has no public key set');
 
         $jwkset = null;
         if ($this->has('jwks')) {
-            $jwkset = new JWKSet($this->get('jwks'));
+            $jwkset = JWKSet::createFromKeyData($this->get('jwks'));
         }
-        if ($this->has('jwks_uri')) {
-            $jwkset = JWKFactory::createFromJKU($this->get('jwks_uri'));
-        }
+        //FIXME: find a way to allow jku
+        /*if ($this->has('jwks_uri')) {
+            $jwkset = JKUFactory::createFromJKU($this->get('jwks_uri'));
+        }*/
         if ($this->has('client_secret')) {
-            $key = new JWK([
+            $key = JWK::create([
                 'kty' => 'oct',
                 'use' => 'sig',
                 'k' => $this->get('client_secret'),
             ]);
             if (null === $jwkset) {
-                $jwk_set = new JWKSet();
-                $jwk_set->addKey($key);
+                $jwkset = JWKSet::createFromKeys([]);
+                $jwkset = $jwkset->with($key);
 
-                return $jwk_set;
+                return $jwkset;
             } else {
-                $jwkset->addKey($key);
+                $jwkset = $jwkset->with($key);
             }
         }
 

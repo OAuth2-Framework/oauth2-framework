@@ -17,6 +17,8 @@ use Assert\Assertion;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use Http\Factory\Diactoros\StreamFactory;
+use Jose\Component\KeyManagement\JWKFactory;
+use Jose\Component\Signature\Serializer\CompactSerializer;
 use OAuth2Framework\Component\Server\Model\Client\Client;
 use OAuth2Framework\Component\Server\Model\Client\ClientId;
 use OAuth2Framework\Component\Server\Model\DataBag\DataBag;
@@ -589,9 +591,15 @@ final class ClientContext implements Context
         $headers = [
             'alg' => 'ES256',
         ];
-        $key = $this->applicationContext->getApplication()->getPrivateKeys()->getKey(0);
+        $key = $this->applicationContext->getApplication()->getPrivateKeys()->get(0);
+        $jws = $this->applicationContext->getApplication()->getJwsBuilder()
+            ->create()
+            ->withPayload($claims)
+            ->addSignature($key, $headers)
+            ->build();
+        $serializer = new CompactSerializer();
 
-        return $this->applicationContext->getApplication()->getJwTCreator()->sign($claims, $headers, $key);
+        return $serializer->serialize($jws, 0);
     }
 
     /**
@@ -608,8 +616,15 @@ final class ClientContext implements Context
         $headers = [
             'alg' => 'none',
         ];
-        $key = \Jose\Factory\JWKFactory::createNoneKey([]);
+        $key = JWKFactory::createNoneKey();
 
-        return $this->applicationContext->getApplication()->getJwTCreator()->sign($claims, $headers, $key);
+        $jws = $this->applicationContext->getApplication()->getJwsBuilder()
+            ->create()
+            ->withPayload($claims)
+            ->addSignature($key, $headers)
+            ->build();
+        $serializer = new CompactSerializer();
+
+        return $serializer->serialize($jws, 0);
     }
 }

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "f5270db547214c4f11297d0a4feab2c6",
+    "content-hash": "9f1b594c49479c0bccb0980ab4ced53d",
     "packages": [
         {
             "name": "beberlei/assert",
@@ -466,24 +466,24 @@
         },
         {
             "name": "fgrosse/phpasn1",
-            "version": "1.5.2",
+            "version": "2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fgrosse/PHPASN1.git",
-                "reference": "a18b162eca6aa70f8f15615f4ac8c852dffbc7dd"
+                "reference": "101e378aa9c82c76d9928fa6698471c9282df048"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fgrosse/PHPASN1/zipball/a18b162eca6aa70f8f15615f4ac8c852dffbc7dd",
-                "reference": "a18b162eca6aa70f8f15615f4ac8c852dffbc7dd",
+                "url": "https://api.github.com/repos/fgrosse/PHPASN1/zipball/101e378aa9c82c76d9928fa6698471c9282df048",
+                "reference": "101e378aa9c82c76d9928fa6698471c9282df048",
                 "shasum": ""
             },
             "require": {
                 "ext-gmp": "*",
-                "php": ">=5.6.0"
+                "php": ">=7.0.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "~4.5",
+                "phpunit/phpunit": "~6.3",
                 "satooshi/php-coveralls": "dev-master"
             },
             "suggest": {
@@ -492,7 +492,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.5.x-dev"
+                    "dev-master": "2.0.x-dev"
                 }
             },
             "autoload": {
@@ -531,7 +531,7 @@
                 "x509",
                 "x690"
             ],
-            "time": "2016-10-29T15:46:46+00:00"
+            "time": "2017-09-17T14:43:07+00:00"
         },
         {
             "name": "fig/link-util",
@@ -813,72 +813,6 @@
             "time": "2017-04-29T23:08:31+00:00"
         },
         {
-            "name": "mdanter/ecc",
-            "version": "v0.4.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/phpecc/phpecc.git",
-                "reference": "fdd1fa9be8184c9f319433437cb1d9f9d4294164"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/phpecc/phpecc/zipball/fdd1fa9be8184c9f319433437cb1d9f9d4294164",
-                "reference": "fdd1fa9be8184c9f319433437cb1d9f9d4294164",
-                "shasum": ""
-            },
-            "require": {
-                "ext-gmp": "*",
-                "fgrosse/phpasn1": "~1.5",
-                "paragonie/random_compat": "^1|^2",
-                "php": ">=5.6.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "~4.1|~5.0",
-                "squizlabs/php_codesniffer": "~2",
-                "symfony/yaml": "~2.6|~3.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Mdanter\\Ecc\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Matyas Danter",
-                    "homepage": "http://matejdanter.com/",
-                    "role": "Author"
-                },
-                {
-                    "name": "Thibaud Fabre",
-                    "email": "thibaud@aztech.io",
-                    "homepage": "http://aztech.io",
-                    "role": "Maintainer"
-                }
-            ],
-            "description": "PHP Elliptic Curve Cryptography library",
-            "homepage": "https://github.com/phpecc/phpecc",
-            "keywords": [
-                "Diffie",
-                "ECDSA",
-                "Hellman",
-                "curve",
-                "ecdh",
-                "elliptic",
-                "nistp192",
-                "nistp224",
-                "nistp256",
-                "nistp521",
-                "phpecc",
-                "secp256k1"
-            ],
-            "time": "2017-01-04T12:13:24+00:00"
-        },
-        {
             "name": "mnapoli/fluent-symfony",
             "version": "0.1.6",
             "source": {
@@ -918,16 +852,16 @@
         },
         {
             "name": "paragonie/random_compat",
-            "version": "v2.0.10",
+            "version": "v2.0.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/paragonie/random_compat.git",
-                "reference": "634bae8e911eefa89c1abfbf1b66da679ac8f54d"
+                "reference": "5da4d3c796c275c55f057af5a643ae297d96b4d8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/paragonie/random_compat/zipball/634bae8e911eefa89c1abfbf1b66da679ac8f54d",
-                "reference": "634bae8e911eefa89c1abfbf1b66da679ac8f54d",
+                "url": "https://api.github.com/repos/paragonie/random_compat/zipball/5da4d3c796c275c55f057af5a643ae297d96b4d8",
+                "reference": "5da4d3c796c275c55f057af5a643ae297d96b4d8",
                 "shasum": ""
             },
             "require": {
@@ -962,7 +896,88 @@
                 "pseudorandom",
                 "random"
             ],
-            "time": "2017-03-13T16:27:32+00:00"
+            "time": "2017-09-27T21:40:39+00:00"
+        },
+        {
+            "name": "paragonie/sodium_compat",
+            "version": "v1.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/paragonie/sodium_compat.git",
+                "reference": "110b1707f45e3b59311bb488b3af7251673de9b7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/paragonie/sodium_compat/zipball/110b1707f45e3b59311bb488b3af7251673de9b7",
+                "reference": "110b1707f45e3b59311bb488b3af7251673de9b7",
+                "shasum": ""
+            },
+            "require": {
+                "paragonie/random_compat": "^1|^2",
+                "php": "^5.2.4|^5.3|^5.4|^5.5|^5.6|^7"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^3|^4|^5"
+            },
+            "suggest": {
+                "ext-libsodium": "Better performance, password hashing (Argon2i), secure memory management (memzero), and better security."
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "autoload.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "ISC"
+            ],
+            "authors": [
+                {
+                    "name": "Paragon Initiative Enterprises",
+                    "email": "security@paragonie.com"
+                },
+                {
+                    "name": "Frank Denis",
+                    "email": "jedisct1@pureftpd.org"
+                }
+            ],
+            "description": "Pure PHP implementation of libsodium; uses the PHP extension if it exists",
+            "keywords": [
+                "Authentication",
+                "BLAKE2b",
+                "ChaCha20",
+                "ChaCha20-Poly1305",
+                "Chapoly",
+                "Curve25519",
+                "Ed25519",
+                "EdDSA",
+                "Edwards-curve Digital Signature Algorithm",
+                "Elliptic Curve Diffie-Hellman",
+                "Poly1305",
+                "Pure-PHP cryptography",
+                "RFC 7748",
+                "RFC 8032",
+                "Salpoly",
+                "Salsa20",
+                "X25519",
+                "XChaCha20-Poly1305",
+                "XSalsa20-Poly1305",
+                "Xchacha20",
+                "Xsalsa20",
+                "aead",
+                "cryptography",
+                "ecdh",
+                "elliptic curve",
+                "elliptic curve cryptography",
+                "encryption",
+                "libsodium",
+                "php",
+                "public-key cryptography",
+                "secret-key cryptography",
+                "side-channel resistant"
+            ],
+            "time": "2017-09-01T01:19:04+00:00"
         },
         {
             "name": "php-http/httplug",
@@ -1019,6 +1034,56 @@
                 "http"
             ],
             "time": "2016-08-31T08:30:17+00:00"
+        },
+        {
+            "name": "php-http/message-factory",
+            "version": "v1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-http/message-factory.git",
+                "reference": "a478cb11f66a6ac48d8954216cfed9aa06a501a1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-http/message-factory/zipball/a478cb11f66a6ac48d8954216cfed9aa06a501a1",
+                "reference": "a478cb11f66a6ac48d8954216cfed9aa06a501a1",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4",
+                "psr/http-message": "^1.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Http\\Message\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Márk Sági-Kazár",
+                    "email": "mark.sagikazar@gmail.com"
+                }
+            ],
+            "description": "Factory interfaces for PSR-7 HTTP Message",
+            "homepage": "http://php-http.org",
+            "keywords": [
+                "factory",
+                "http",
+                "message",
+                "stream",
+                "uri"
+            ],
+            "time": "2015-12-19T14:08:53+00:00"
         },
         {
             "name": "php-http/promise",
@@ -1684,32 +1749,31 @@
         },
         {
             "name": "spomky-labs/aes-key-wrap",
-            "version": "v3.0.3",
+            "version": "v4.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Spomky-Labs/aes-key-wrap.git",
-                "reference": "072e312ea119c4cc33012edc5e7e8c3f3def0d66"
+                "reference": "fa6436dc8874df778427d49a4ee04435635a1cf4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Spomky-Labs/aes-key-wrap/zipball/072e312ea119c4cc33012edc5e7e8c3f3def0d66",
-                "reference": "072e312ea119c4cc33012edc5e7e8c3f3def0d66",
+                "url": "https://api.github.com/repos/Spomky-Labs/aes-key-wrap/zipball/fa6436dc8874df778427d49a4ee04435635a1cf4",
+                "reference": "fa6436dc8874df778427d49a4ee04435635a1cf4",
                 "shasum": ""
             },
             "require": {
-                "beberlei/assert": "^2.4",
                 "ext-mbstring": "*",
                 "lib-openssl": "*",
-                "php": "^5.4|^7.0"
+                "php": "^7.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "^4.5|^5.0",
+                "phpunit/phpunit": "^6.0",
                 "satooshi/php-coveralls": "^1.0"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.0.x-dev"
+                    "dev-master": "4.0.x-dev"
                 }
             },
             "autoload": {
@@ -1740,7 +1804,7 @@
                 "padding",
                 "wrap"
             ],
-            "time": "2017-03-25T21:07:11+00:00"
+            "time": "2017-03-26T12:26:24+00:00"
         },
         {
             "name": "spomky-labs/base64url",
@@ -1796,45 +1860,57 @@
         },
         {
             "name": "spomky-labs/jose",
-            "version": "v6.1.5",
+            "version": "v7.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Spomky-Labs/jose.git",
-                "reference": "66ab874570f920e97bade761dd1a8a6b2b03ca3a"
+                "reference": "e082db19e0df9fb2fae881596dc53c993e17eb65"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Spomky-Labs/jose/zipball/66ab874570f920e97bade761dd1a8a6b2b03ca3a",
-                "reference": "66ab874570f920e97bade761dd1a8a6b2b03ca3a",
+                "url": "https://api.github.com/repos/Spomky-Labs/jose/zipball/e082db19e0df9fb2fae881596dc53c993e17eb65",
+                "reference": "e082db19e0df9fb2fae881596dc53c993e17eb65",
                 "shasum": ""
             },
             "require": {
-                "beberlei/assert": "^2.4",
-                "fgrosse/phpasn1": "^1.5",
+                "ext-gmp": "*",
+                "ext-mbstring": "*",
+                "fgrosse/phpasn1": "^2.0",
                 "lib-openssl": "*",
-                "mdanter/ecc": "0.4.*",
-                "php": "^5.6|^7.0",
-                "psr/cache": "^1.0",
-                "spomky-labs/aes-key-wrap": "^3.0",
+                "paragonie/sodium_compat": "^1.1",
+                "php": "^7.1",
+                "php-http/httplug": "^1.1",
+                "php-http/message-factory": "^1.0",
+                "spomky-labs/aes-key-wrap": "^4.0",
                 "spomky-labs/base64url": "^1.0",
-                "spomky-labs/php-aes-gcm": "^1.2",
-                "symfony/polyfill-mbstring": "^1.1",
-                "symfony/polyfill-php70": "^1.1"
+                "symfony/config": "^3.3",
+                "symfony/console": "^3.3",
+                "symfony/dependency-injection": "^3.3",
+                "symfony/framework-bundle": "^3.3",
+                "symfony/http-kernel": "^3.3"
             },
             "require-dev": {
-                "phpunit/phpunit": "^5.0",
+                "behat/behat": "^3.1",
+                "behat/mink": "^1.5",
+                "behat/mink-browserkit-driver": "^1.1",
+                "behat/mink-extension": "^2.0",
+                "behat/symfony2-extension": "^2.1",
+                "bjeavons/zxcvbn-php": "^0.3.0",
+                "ext-curl": "*",
+                "padraic/phar-updater": "^1.0",
+                "php-http/guzzle6-adapter": "^1.1.1",
+                "phpbench/phpbench": "^0.13.0",
+                "phpunit/phpunit": "^6.0",
                 "satooshi/php-coveralls": "^1.0",
-                "symfony/cache": "^2.0|^3.0"
+                "symfony/finder": "^3.3"
             },
             "suggest": {
-                "ext-crypto": "Highly recommended when you use AES GCM based algorithms.",
-                "ext-curve25519": "For EdDSA with X25519 curves support.",
-                "ext-ed25519": "For EdDSA with Ed25519 curves support."
+                "bjeavons/zxcvbn-php": "Adds key quality check for oct keys."
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "6.1.x-dev"
+                    "dev-master": "7.0.x-dev"
                 }
             },
             "autoload": {
@@ -1856,7 +1932,7 @@
                     "homepage": "https://github.com/Spomky-Labs/jose/contributors"
                 }
             ],
-            "description": "JSON Object Signing and Encryption library for PHP.",
+            "description": "JSON Object Signing and Encryption library for PHP and Symfony Bundle.",
             "homepage": "https://github.com/Spomky-Labs/Jose",
             "keywords": [
                 "JOSE",
@@ -1871,140 +1947,12 @@
                 "RFC7518",
                 "RFC7519",
                 "RFC7520",
-                "jwa",
-                "jwt"
-            ],
-            "time": "2017-09-23T19:40:44+00:00"
-        },
-        {
-            "name": "spomky-labs/jose-bundle",
-            "version": "v2.2.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Spomky-Labs/jose-bundle.git",
-                "reference": "624507f57ccc7b57327140204cef528e356cd940"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Spomky-Labs/jose-bundle/zipball/624507f57ccc7b57327140204cef528e356cd940",
-                "reference": "624507f57ccc7b57327140204cef528e356cd940",
-                "shasum": ""
-            },
-            "require": {
-                "spomky-labs/jose": "^6.1",
-                "symfony/config": "^2.8|^3.0",
-                "symfony/console": "^2.8|^3.0",
-                "symfony/dependency-injection": "^2.8|^3.0",
-                "symfony/framework-bundle": "^2.8|^3.0",
-                "symfony/http-kernel": "^2.8|^3.0"
-            },
-            "require-dev": {
-                "behat/behat": "^3.1",
-                "behat/mink": "^1.5",
-                "behat/mink-browserkit-driver": "^1.1",
-                "behat/mink-extension": "^2.0",
-                "behat/symfony2-extension": "^2.1",
-                "ext-curl": "*",
-                "symfony/finder": "^2.8|^3.0",
-                "symfony/var-dumper": "^2.8|^3.0"
-            },
-            "type": "symfony-bundle",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.1.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "SpomkyLabs\\JoseBundle\\": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Florent Morselli"
-                }
-            ],
-            "description": "Symfony2 Jose Bundle",
-            "homepage": "https://github.com/Spomky-Labs/jose-bundle",
-            "keywords": [
-                "JOSE",
-                "JWE",
-                "JWK",
-                "JWKSet",
-                "JWS",
-                "Jot",
                 "bundle",
                 "jwa",
                 "jwt",
                 "symfony"
             ],
-            "time": "2017-02-15T20:13:32+00:00"
-        },
-        {
-            "name": "spomky-labs/php-aes-gcm",
-            "version": "v1.2.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Spomky-Labs/php-aes-gcm.git",
-                "reference": "b655bef0d4f0fa2f36c11c5122e284951e81961c"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Spomky-Labs/php-aes-gcm/zipball/b655bef0d4f0fa2f36c11c5122e284951e81961c",
-                "reference": "b655bef0d4f0fa2f36c11c5122e284951e81961c",
-                "shasum": ""
-            },
-            "require": {
-                "beberlei/assert": "^2.4",
-                "lib-openssl": "*",
-                "php": ">=5.4",
-                "symfony/polyfill-mbstring": "^1.1"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^4.5|^5.0",
-                "satooshi/php-coveralls": "^1.0"
-            },
-            "suggest": {
-                "ext-crypto": "Highly recommended for better performance."
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.2.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "AESGCM\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Florent Morselli",
-                    "homepage": "https://github.com/Spomky"
-                },
-                {
-                    "name": "All contributors",
-                    "homepage": "https://github.com/Spomky-Labs/php-aes-gcm/contributors"
-                }
-            ],
-            "description": "AES GCM (Galois Counter Mode) PHP implementation.",
-            "homepage": "https://github.com/Spomky-Labs/php-aes-gcm",
-            "keywords": [
-                "AES-GCM",
-                "Galois Counter Mode",
-                "aes",
-                "gcm"
-            ],
-            "time": "2016-11-22T21:11:11+00:00"
+            "time": "2017-09-26T13:03:51+00:00"
         },
         {
             "name": "symfony/polyfill-apcu",
@@ -2498,16 +2446,16 @@
         },
         {
             "name": "twig/twig",
-            "version": "v2.4.3",
+            "version": "v2.4.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "eab7c3288ae6603d7d6f92b531626af2b162d1f2"
+                "reference": "eddb97148ad779f27e670e1e3f19fb323aedafeb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/eab7c3288ae6603d7d6f92b531626af2b162d1f2",
-                "reference": "eab7c3288ae6603d7d6f92b531626af2b162d1f2",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/eddb97148ad779f27e670e1e3f19fb323aedafeb",
+                "reference": "eddb97148ad779f27e670e1e3f19fb323aedafeb",
                 "shasum": ""
             },
             "require": {
@@ -2560,7 +2508,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2017-06-07T18:47:58+00:00"
+            "time": "2017-09-27T18:10:31+00:00"
         }
     ],
     "packages-dev": [
@@ -3596,56 +3544,6 @@
             "time": "2017-07-05T06:40:53+00:00"
         },
         {
-            "name": "php-http/message-factory",
-            "version": "v1.0.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/php-http/message-factory.git",
-                "reference": "a478cb11f66a6ac48d8954216cfed9aa06a501a1"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/php-http/message-factory/zipball/a478cb11f66a6ac48d8954216cfed9aa06a501a1",
-                "reference": "a478cb11f66a6ac48d8954216cfed9aa06a501a1",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.4",
-                "psr/http-message": "^1.0"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.0-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Http\\Message\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Márk Sági-Kazár",
-                    "email": "mark.sagikazar@gmail.com"
-                }
-            ],
-            "description": "Factory interfaces for PSR-7 HTTP Message",
-            "homepage": "http://php-http.org",
-            "keywords": [
-                "factory",
-                "http",
-                "message",
-                "stream",
-                "uri"
-            ],
-            "time": "2015-12-19T14:08:53+00:00"
-        },
-        {
             "name": "php-http/mock-client",
             "version": "v0.3.3",
             "source": {
@@ -3820,7 +3718,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "spomky-labs/jose": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

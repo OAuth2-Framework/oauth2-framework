@@ -14,9 +14,11 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\Server\GrantType;
 
 use Assert\Assertion;
-use Jose\JWTLoaderInterface;
-use Jose\Object\JWKSetInterface;
-use Jose\Object\JWSInterface;
+use Jose\Component\Checker\ClaimCheckerManager;
+use Jose\Component\Core\JWKSet;
+use Jose\Component\Encryption\JWELoader;
+use Jose\Component\Signature\JWS;
+use Jose\Component\Signature\JWSLoader;
 use OAuth2Framework\Component\Server\Endpoint\Token\GrantTypeData;
 use OAuth2Framework\Component\Server\Model\Client\ClientId;
 use OAuth2Framework\Component\Server\Model\Client\ClientRepositoryInterface;
@@ -31,9 +33,19 @@ use Psr\Http\Message\ServerRequestInterface;
 final class JWTBearerGrantType implements GrantTypeInterface
 {
     /**
-     * @var JWTLoaderInterface
+     * @var JWSLoader
      */
-    private $jwtLoader;
+    private $jwsLoader;
+
+    /**
+     * @var JWELoader
+     */
+    private $jweLoader;
+
+    /**
+     * @var ClaimCheckerManager
+     */
+    private $claimCheckerManager;
 
     /**
      * @var ClientRepositoryInterface
@@ -51,7 +63,7 @@ final class JWTBearerGrantType implements GrantTypeInterface
     private $encryptionRequired = false;
 
     /**
-     * @var JWKSetInterface|null
+     * @var JWKSet|null
      */
     private $keyEncryptionKeySet = null;
 
@@ -63,13 +75,15 @@ final class JWTBearerGrantType implements GrantTypeInterface
     /**
      * JWTBearerGrantType constructor.
      *
-     * @param JWTLoaderInterface             $jwsLoader
+     * @param JWSLoader                      $jwsLoader
+     * @param ClaimCheckerManager            $claimCheckerManager
      * @param ClientRepositoryInterface      $clientRepository
      * @param UserAccountRepositoryInterface $userAccountRepository
      */
-    public function __construct(JWTLoaderInterface $jwsLoader, ClientRepositoryInterface $clientRepository, UserAccountRepositoryInterface $userAccountRepository)
+    public function __construct(JWSLoader $jwsLoader, ClaimCheckerManager $claimCheckerManager, ClientRepositoryInterface $clientRepository, UserAccountRepositoryInterface $userAccountRepository)
     {
-        $this->jwtLoader = $jwsLoader;
+        $this->jwsLoader = $jwsLoader;
+        $this->claimCheckerManager = $claimCheckerManager;
         $this->clientRepository = $clientRepository;
         $this->userAccountRepository = $userAccountRepository;
     }
@@ -96,13 +110,13 @@ final class JWTBearerGrantType implements GrantTypeInterface
     }
 
     /**
-     * @param bool            $encryptionRequired
-     * @param JWKSetInterface $keyEncryptionKeySet
+     * @param JWELoader $jweLoader
+     * @param bool      $encryptionRequired
+     * @param JWKSet    $keyEncryptionKeySet
      */
-    public function enableEncryptedAssertions(bool $encryptionRequired, JWKSetInterface $keyEncryptionKeySet)
+    public function enableEncryptedAssertions(JWELoader $jweLoader, bool $encryptionRequired, JWKSet $keyEncryptionKeySet)
     {
-        Assertion::boolean($encryptionRequired);
-
+        $this->jweLoader = $jweLoader;
         $this->encryptionRequired = $encryptionRequired;
         $this->keyEncryptionKeySet = $keyEncryptionKeySet;
     }
@@ -134,13 +148,15 @@ final class JWTBearerGrantType implements GrantTypeInterface
     {
         $parameters = $request->getParsedBody() ?? [];
         $assertion = $parameters['assertion'];
+        $assertion = $this->tryToDecryptTheAssertion($assertion);
 
         try {
-            $jws = $this->jwtLoader->load($assertion, $this->keyEncryptionKeySet, $this->encryptionRequired);
-            Assertion::isInstanceOf($jws, JWSInterface::class, 'Assertion does not contain signed claims.');
+            $jws = $this->jwsLoader->load($assertion);
             Assertion::eq(1, $jws->countSignatures(), 'Assertion must have only one signature.');
-            Assertion::true($jws->hasClaim('iss'), 'Assertion does not contain \'iss\' claims.');
-            Assertion::true($jws->hasClaim('sub'), 'Assertion does not contain \'sub\' claims.');
+            $this->claimCheckerManager->check($jws);
+            $claims = json_decode($jws->getPayload(), true);
+            Assertion::keyExists($claims, 'iss', 'Assertion does not contain \'iss\' claims.');
+            Assertion::keyExists($claims, 'sub', 'Assertion does not contain \'sub\' claims.');
             $grantTypeResponse = $this->checkJWTSignature($grantTypeResponse, $jws);
         } catch (OAuth2Exception $e) {
             throw $e;
@@ -150,6 +166,32 @@ final class JWTBearerGrantType implements GrantTypeInterface
         $grantTypeResponse = $grantTypeResponse->withoutRefreshToken();
 
         return $grantTypeResponse;
+    }
+
+    /**
+     * @param string $assertion
+     *
+     * @return string
+     *
+     * @throws OAuth2Exception
+     */
+    public function tryToDecryptTheAssertion(string $assertion): string
+    {
+        if (null === $this->jweLoader) {
+            return $assertion;
+        }
+        try {
+            $jwe = $this->jweLoader->load($assertion);
+            $jwe = $this->jweLoader->decryptUsingKeySet($jwe, $this->keyEncryptionKeySet);
+
+            return $jwe->getPayload();
+        } catch (\Exception $e) {
+            if (true === $this->encryptionRequired) {
+                throw new OAuth2Exception(400, ['error' => OAuth2ResponseFactoryManager::ERROR_INVALID_REQUEST, 'error_description' => $e->getMessage()]);
+            }
+
+            return $assertion;
+        }
     }
 
     /**
@@ -163,16 +205,17 @@ final class JWTBearerGrantType implements GrantTypeInterface
 
     /**
      * @param GrantTypeData $grantTypeResponse
-     * @param JWSInterface  $jws
+     * @param JWS  $jws
      *
      * @throws OAuth2Exception
      *
      * @return GrantTypeData
      */
-    private function checkJWTSignature(GrantTypeData $grantTypeResponse, JWSInterface $jws): GrantTypeData
+    private function checkJWTSignature(GrantTypeData $grantTypeResponse, JWS $jws): GrantTypeData
     {
-        $iss = $jws->getClaim('iss');
-        $sub = $jws->getClaim('sub');
+        $claims = json_decode($jws->getPayload(), true);
+        $iss = $claims['iss'];
+        $sub = $claims['sub'];
         if (array_key_exists($iss, $this->trustedIssuers)) {
             $issuer = $this->trustedIssuers[$iss];
             $allowedSignatureAlgorithms = $issuer->getAllowedSignatureAlgorithms();
@@ -191,14 +234,14 @@ final class JWTBearerGrantType implements GrantTypeInterface
             }
             Assertion::eq($sub, $iss, 'When the client is the assertion issuer then the subject must be the client.');
             $grantTypeResponse = $grantTypeResponse->withResourceOwnerId($client->getPublicId());
-            $allowedSignatureAlgorithms = $this->jwtLoader->getSupportedSignatureAlgorithms();
+            $allowedSignatureAlgorithms = $this->jwsLoader->getSupportedSignatureAlgorithms();
             $signatureKeys = $client->getPublicKeySet();
         }
 
         Assertion::true($jws->getSignature(0)->hasProtectedHeader('alg'), 'Invalid assertion');
         $alg = $jws->getSignature(0)->getProtectedHeader('alg');
         Assertion::inArray($alg, $allowedSignatureAlgorithms, sprintf('The signature algorithm \'%s\' is not allowed.', $alg));
-        $this->jwtLoader->verify($jws, $signatureKeys);
+        $this->jwsLoader->verifyWithKeySet($jws, $signatureKeys);
         $grantTypeResponse = $grantTypeResponse->withMetadata('jwt', $jws);
 
         return $grantTypeResponse;

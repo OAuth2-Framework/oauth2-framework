@@ -16,6 +16,7 @@ namespace OAuth2Framework\Component\Server\Tests\Context;
 use Base64Url\Base64Url;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
+use Jose\Component\Signature\Serializer\CompactSerializer;
 use OAuth2Framework\Component\Server\Model\Client\ClientId;
 
 final class ClientCredentialsGrantTypeContext implements Context
@@ -174,6 +175,13 @@ final class ClientCredentialsGrantTypeContext implements Context
         ];
         $client = $this->applicationContext->getApplication()->getClientRepository()->find(ClientId::create('client3'));
 
-        return $this->applicationContext->getApplication()->getJwTCreator()->sign($claims, $headers, $client->getPublicKeySet()->getKey(0));
+        $jws = $this->applicationContext->getApplication()->getJwsBuilder()
+            ->create()
+            ->withPayload($claims)
+            ->addSignature($client->getPublicKeySet()->get(0), $headers)
+            ->build();
+        $serializer = new CompactSerializer();
+
+        return $serializer->serialize($jws, 0);
     }
 }

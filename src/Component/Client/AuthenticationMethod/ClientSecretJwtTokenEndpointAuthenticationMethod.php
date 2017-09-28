@@ -13,8 +13,9 @@ namespace OAuth2Framework\Component\Client\AuthenticationMethod;
 
 use Assert\Assertion;
 use Base64Url\Base64Url;
-use Jose\JWTCreatorInterface;
-use Jose\Object\JWKInterface;
+use Jose\Component\Core\JWK;
+use Jose\Component\Signature\JWSBuilder;
+use Jose\Component\Signature\Serializer\CompactSerializer;
 use OAuth2Framework\Component\Client\Client\OAuth2ClientInterface;
 use OAuth2Framework\Component\Client\Metadata\ServerMetadata;
 use Psr\Http\Message\RequestInterface;
@@ -22,14 +23,14 @@ use Psr\Http\Message\RequestInterface;
 final class ClientSecretJwtTokenEndpointAuthenticationMethod extends AbstractAuthenticationMethod implements TokenEndpointAuthenticationMethodInterface
 {
     /**
-     * @var \Jose\JWTCreatorInterface
+     * @var JWSBuilder
      */
-    private $jwt_creator;
+    private $jwsBuilder;
 
     /**
-     * @var \Jose\Object\JWKInterface
+     * @var JWK
      */
-    private $signature_key;
+    private $signatureKey;
 
     /**
      * @var string
@@ -39,14 +40,14 @@ final class ClientSecretJwtTokenEndpointAuthenticationMethod extends AbstractAut
     /**
      * ClientSecretJwtTokenEndpointAuthenticationMethod constructor.
      *
-     * @param \Jose\JWTCreatorInterface $jwt_creator
-     * @param \Jose\Object\JWKInterface $signature_key
-     * @param string                    $signature_algorithm
+     * @param JWSBuilder $jwsBuilder
+     * @param JWK        $signatureKey
+     * @param string     $signature_algorithm
      */
-    public function __construct(JWTCreatorInterface $jwt_creator, JWKInterface $signature_key, $signature_algorithm)
+    public function __construct(JWSBuilder $jwsBuilder, JWK $signatureKey, $signature_algorithm)
     {
-        $this->jwt_creator = $jwt_creator;
-        $this->signature_key = $signature_key;
+        $this->jwsBuilder = $jwsBuilder;
+        $this->signatureKey = $signatureKey;
         $this->signature_algorithm = $signature_algorithm;
     }
 
@@ -67,10 +68,16 @@ final class ClientSecretJwtTokenEndpointAuthenticationMethod extends AbstractAut
         $this->checkClientTokenEndpointAuthenticationMethod($client);
 
         $claims = $this->getClaims($server_metadata, $client);
-        $jwt = $this->jwt_creator->sign($claims, ['alg' => $this->signature_algorithm], $this->signature_key);
+        $jws = $this->jwsBuilder
+            ->create()
+            ->withPayload($claims)
+            ->addSignature($this->signatureKey, ['alg' => $this->signature_algorithm])
+            ->build();
+        $serializer = new CompactSerializer();
+        $assertion = $serializer->serialize($jws, 0);
 
         $post_request['client_assertion_type'] = 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer';
-        $post_request['client_assertion'] = $jwt;
+        $post_request['client_assertion'] = $assertion;
     }
 
     /**

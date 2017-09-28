@@ -15,9 +15,11 @@ namespace OAuth2Framework\Component\Server\Endpoint\Authorization;
 
 use Assert\Assertion;
 use Http\Client\HttpClient;
-use Jose\JWTLoaderInterface;
-use Jose\Object\JWKSetInterface;
-use Jose\Object\JWSInterface;
+use Jose\Component\Checker\ClaimCheckerManager;
+use Jose\Component\Core\JWKSet;
+use Jose\Component\Encryption\JWELoader;
+use Jose\Component\Signature\JWS;
+use Jose\Component\Signature\JWSLoader;
 use OAuth2Framework\Component\Server\Model\Client\Client;
 use OAuth2Framework\Component\Server\Model\Client\ClientId;
 use OAuth2Framework\Component\Server\Model\Client\ClientRepositoryInterface;
@@ -45,7 +47,7 @@ final class AuthorizationRequestLoader
     private $requestObjectReferenceAllowed = false;
 
     /**
-     * @var JWKSetInterface|null
+     * @var JWKSet
      */
     private $keyEncryptionKeySet = null;
 
@@ -70,9 +72,19 @@ final class AuthorizationRequestLoader
     private $client = null;
 
     /**
-     * @var null|JWTLoaderInterface
+     * @var JWSLoader
      */
-    private $jwtLoader = null;
+    private $jwsLoader = null;
+
+    /**
+     * @var ClaimCheckerManager
+     */
+    private $claimCheckerManager = null;
+
+    /**
+     * @var JWELoader
+     */
+    private $jweLoader = null;
 
     /**
      * AuthorizationRequestLoader constructor.
@@ -113,7 +125,7 @@ final class AuthorizationRequestLoader
      */
     public function getSupportedSignatureAlgorithms(): array
     {
-        return null === $this->jwtLoader ? [] : $this->jwtLoader->getSupportedSignatureAlgorithms();
+        return null === $this->jwsLoader ? [] : $this->jwsLoader->getSupportedSignatureAlgorithms();
     }
 
     /**
@@ -121,7 +133,7 @@ final class AuthorizationRequestLoader
      */
     public function getSupportedKeyEncryptionAlgorithms(): array
     {
-        return null === $this->jwtLoader ? [] : $this->jwtLoader->getSupportedKeyEncryptionAlgorithms();
+        return null === $this->jweLoader ? [] : $this->jweLoader->getSupportedKeyEncryptionAlgorithms();
     }
 
     /**
@@ -129,17 +141,19 @@ final class AuthorizationRequestLoader
      */
     public function getSupportedContentEncryptionAlgorithms(): array
     {
-        return null === $this->jwtLoader ? [] : $this->jwtLoader->getSupportedContentEncryptionAlgorithms();
+        return null === $this->jweLoader ? [] : $this->jweLoader->getSupportedContentEncryptionAlgorithms();
     }
 
     /**
-     * @param JWTLoaderInterface $jwtLoader
-     * @param string[]           $mandatoryClaims
+     * @param JWSLoader           $jwsLoader
+     * @param ClaimCheckerManager $claimCheckerManager
+     * @param string[]            $mandatoryClaims
      */
-    public function enableRequestObjectSupport(JWTLoaderInterface $jwtLoader, array $mandatoryClaims = [])
+    public function enableRequestObjectSupport(JWSLoader $jwsLoader, ClaimCheckerManager $claimCheckerManager, array $mandatoryClaims = [])
     {
         Assertion::allString($mandatoryClaims, 'The mandatory claims array should contain only claims.');
-        $this->jwtLoader = $jwtLoader;
+        $this->jwsLoader = $jwsLoader;
+        $this->claimCheckerManager = $claimCheckerManager;
         $this->requestObjectAllowed = true;
         $this->mandatoryClaims = $mandatoryClaims;
     }
@@ -157,13 +171,15 @@ final class AuthorizationRequestLoader
     }
 
     /**
-     * @param JWKSetInterface $keyEncryptionKeySet
-     * @param bool            $requireEncryption
+     * @param JWELoader $jweLoader
+     * @param JWKSet    $keyEncryptionKeySet
+     * @param bool      $requireEncryption
      */
-    public function enableEncryptedRequestObjectSupport(JWKSetInterface $keyEncryptionKeySet, bool $requireEncryption)
+    public function enableEncryptedRequestObjectSupport(JWELoader $jweLoader, JWKSet $keyEncryptionKeySet, bool $requireEncryption)
     {
         Assertion::true($this->isRequestObjectSupportEnabled(), 'Request object support must be enabled first.');
-        Assertion::greaterThan($keyEncryptionKeySet->countKeys(), 0, 'The encryption key set must have at least one key.');
+        Assertion::greaterThan($keyEncryptionKeySet->count(), 0, 'The encryption key set must have at least one key.');
+        $this->jweLoader = $jweLoader;
         $this->requireEncryption = $requireEncryption;
         $this->keyEncryptionKeySet = $keyEncryptionKeySet;
     }
@@ -214,7 +230,8 @@ final class AuthorizationRequestLoader
         Assertion::string($request);
 
         $jws = $this->loadRequest($params, $request, $client);
-        $params = array_merge($params, $jws->getClaims(), ['client' => $client]);
+        $claims = json_decode($jws->getPayload(), true);
+        $params = array_merge($params, $claims, ['client' => $client]);
         $this->checkIssuerAndClientId($params);
 
         return $params;
@@ -251,7 +268,8 @@ final class AuthorizationRequestLoader
         if (true === $this->isRequestUriRegistrationRequired()) {
             $this->checkRequestUri($client, $requestUri);
         }
-        $params = array_merge($params, $jws->getClaims(), ['client' => $client]);
+        $claims = json_decode($jws->getPayload(), true);
+        $params = array_merge($params, $claims, ['client' => $client]);
         $this->checkIssuerAndClientId($params);
 
         return $params;
@@ -324,19 +342,22 @@ final class AuthorizationRequestLoader
      *
      * @throws OAuth2Exception
      *
-     * @return JWSInterface
+     * @return JWS
      */
-    private function loadRequest(array $params, string $request, Client &$client = null): JWSInterface
+    private function loadRequest(array $params, string $request, Client &$client = null): JWS
     {
+        $request = $this->tryToLoadEncryptedRequest($request);
         try {
-            $jwt = $this->jwtLoader->load($request, $this->keyEncryptionKeySet, $this->requireEncryption);
-            Assertion::true($jwt->hasClaims(), 'The request object does not contain claims.');
-            $client = $this->getClient(array_merge($params, $jwt->getClaims()));
+            $jwt = $this->jwsLoader->load($request);
+            $this->claimCheckerManager->check($jwt);
+            $claims = json_decode($jwt->getPayload(), true);
+
+            $client = $this->getClient(array_merge($params, $claims));
             $public_key_set = $client->getPublicKeySet();
             Assertion::notNull($public_key_set, 'The client does not have signature capabilities.');
-            $index = $this->jwtLoader->verify($jwt, $public_key_set);
+            $index = $this->jwsLoader->verifyWithKeySet($jwt, $public_key_set);
             $this->checkAlgorithms($jwt, $index, $client);
-            $missing_claims = array_keys(array_diff_key(array_flip($this->mandatoryClaims), $jwt->getClaims()));
+            $missing_claims = array_keys(array_diff_key(array_flip($this->mandatoryClaims), $claims));
             Assertion::true(0 === count($missing_claims), 'The following mandatory claims are missing: %s.', implode(', ', $missing_claims));
         } catch (\Exception $e) {
             throw new OAuth2Exception(400, ['error' => OAuth2ResponseFactoryManager::ERROR_INVALID_REQUEST_OBJECT, 'error_description' => $e->getMessage()]);
@@ -346,11 +367,38 @@ final class AuthorizationRequestLoader
     }
 
     /**
-     * @param JWSInterface $jwt
-     * @param int          $index
-     * @param Client       $client
+     * @param string $request
+     *
+     * @return string
+     *
+     * @throws OAuth2Exception
      */
-    private function checkAlgorithms(JWSInterface $jwt, int $index, Client $client)
+    private function tryToLoadEncryptedRequest(string $request): string
+    {
+        if (null === $this->jweLoader) {
+            return $request;
+        }
+
+        try {
+            $jwe = $this->jweLoader->load($request);
+            $jwe = $this->jweLoader->decryptUsingKeySet($jwe, $this->keyEncryptionKeySet);
+
+            return $jwe->getPayload();
+        } catch (\Exception $e) {
+            if (true === $this->requireEncryption) {
+                throw new OAuth2Exception(400, ['error' => OAuth2ResponseFactoryManager::ERROR_INVALID_REQUEST_OBJECT, 'error_description' => $e->getMessage()]);
+            }
+
+            return $request;
+        }
+    }
+
+    /**
+     * @param JWS    $jwt
+     * @param int    $index
+     * @param Client $client
+     */
+    private function checkAlgorithms(JWS $jwt, int $index, Client $client)
     {
         Assertion::true($client->has('request_object_signing_alg'), 'Request Object signature algorithm not defined for the client.');
         Assertion::eq($jwt->getSignature($index)->getProtectedHeader('alg'), $client->get('request_object_signing_alg'), 'Request Object signature algorithm not supported by the client.');

@@ -16,6 +16,8 @@ namespace OAuth2Framework\Component\Server\Tests\Context;
 use Base64Url\Base64Url;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
+use Jose\Component\Core\JWK;
+use Jose\Component\Signature\Serializer\CompactSerializer;
 use OAuth2Framework\Component\Server\Model\Client\ClientId;
 
 final class JwtBearerGrantTypeContext implements Context
@@ -140,7 +142,14 @@ final class JwtBearerGrantTypeContext implements Context
         ];
         $client = $this->applicationContext->getApplication()->getClientRepository()->find(ClientId::create('client1'));
 
-        return $this->applicationContext->getApplication()->getJwTCreator()->sign($claims, $headers, $client->getPublicKeySet()->getKey(0));
+        $jws = $this->applicationContext->getApplication()->getJwsBuilder()
+            ->create()
+            ->withPayload($claims)
+            ->addSignature($client->getPublicKeySet()->get(0), $headers)
+            ->build();
+        $serializer = new CompactSerializer();
+
+        return $serializer->serialize($jws, 0);
     }
 
     private function generateValidAssertionFromTrustedIssuer()
@@ -155,7 +164,7 @@ final class JwtBearerGrantTypeContext implements Context
         $headers = [
             'alg' => 'RS256',
         ];
-        $key = new \Jose\Object\JWK([
+        $key = JWK::create([
             'kty' => 'RSA',
             'kid' => 'bilbo.baggins@hobbiton.example',
             'use' => 'sig',
@@ -169,7 +178,14 @@ final class JwtBearerGrantTypeContext implements Context
             'qi' => '3PiqvXQN0zwMeE-sBvZgi289XP9XCQF3VWqPzMKnIgQp7_Tugo6-NZBKCQsMf3HaEGBjTVJs_jcK8-TRXvaKe-7ZMaQj8VfBdYkssbu0NKDDhjJ-GtiseaDVWt7dcH0cfwxgFUHpQh7FoCrjFJ6h6ZEpMF6xmujs4qMpPz8aaI4',
         ]);
 
-        return $this->applicationContext->getApplication()->getJwTCreator()->sign($claims, $headers, $key);
+        $jws = $this->applicationContext->getApplication()->getJwsBuilder()
+            ->create()
+            ->withPayload($claims)
+            ->addSignature($key, $headers)
+            ->build();
+        $serializer = new CompactSerializer();
+
+        return $serializer->serialize($jws, 0);
     }
 
     private function generateValidAssertionButClientNotAllowed()
@@ -186,7 +202,14 @@ final class JwtBearerGrantTypeContext implements Context
         ];
         $client = $this->applicationContext->getApplication()->getClientRepository()->find(ClientId::create('client3'));
 
-        return $this->applicationContext->getApplication()->getJwTCreator()->sign($claims, $headers, $client->getPublicKeySet()->getKey(0));
+        $jws = $this->applicationContext->getApplication()->getJwsBuilder()
+            ->create()
+            ->withPayload($claims)
+            ->addSignature($client->getPublicKeySet()->get(0), $headers)
+            ->build();
+        $serializer = new CompactSerializer();
+
+        return $serializer->serialize($jws, 0);
     }
 
     private function generateValidClientAssertion()
@@ -203,6 +226,13 @@ final class JwtBearerGrantTypeContext implements Context
         ];
         $client = $this->applicationContext->getApplication()->getClientRepository()->find(ClientId::create('client3'));
 
-        return $this->applicationContext->getApplication()->getJwTCreator()->sign($claims, $headers, $client->getPublicKeySet()->getKey(0));
+        $jws = $this->applicationContext->getApplication()->getJwsBuilder()
+            ->create()
+            ->withPayload($claims)
+            ->addSignature($client->getPublicKeySet()->get(0), $headers)
+            ->build();
+        $serializer = new CompactSerializer();
+
+        return $serializer->serialize($jws, 0);
     }
 }

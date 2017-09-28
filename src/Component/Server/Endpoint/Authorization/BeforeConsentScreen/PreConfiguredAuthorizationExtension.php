@@ -22,7 +22,7 @@ use OAuth2Framework\Component\Server\Response\OAuth2Exception;
 use OAuth2Framework\Component\Server\Response\OAuth2ResponseFactoryManager;
 use Psr\Http\Message\ServerRequestInterface;
 
-class PreConfiguredAuthorizationExtension implements BeforeConsentScreenInterface
+final class PreConfiguredAuthorizationExtension implements BeforeConsentScreenInterface
 {
     /**
      * @var PreConfiguredAuthorizationRepositoryInterface

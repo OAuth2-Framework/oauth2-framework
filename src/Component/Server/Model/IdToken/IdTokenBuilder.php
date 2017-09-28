@@ -15,12 +15,12 @@ namespace OAuth2Framework\Component\Server\Model\IdToken;
 
 use Assert\Assertion;
 use Base64Url\Base64Url;
-use Jose\EncrypterInterface;
-use Jose\Factory\JWEFactory;
-use Jose\Factory\JWSFactory;
-use Jose\SignerInterface;
-use Jose\Object\JWKInterface;
-use Jose\Object\JWKSetInterface;
+use Jose\Component\Core\JWK;
+use Jose\Component\Core\JWKSet;
+use Jose\Component\Encryption\JWEBuilder;
+use Jose\Component\Signature\JWSBuilder;
+use Jose\Component\Signature\Serializer\CompactSerializer as JwsCompactSerializer;
+use Jose\Component\Encryption\Serializer\CompactSerializer as JweCompactSerializer;
 use OAuth2Framework\Component\Server\Endpoint\UserInfo\UserInfo;
 use OAuth2Framework\Component\Server\Model\AccessToken\AccessToken;
 use OAuth2Framework\Component\Server\Model\AccessToken\AccessTokenId;
@@ -57,7 +57,7 @@ final class IdTokenBuilder
     private $userinfo;
 
     /**
-     * @var JWKSetInterface
+     * @var JWKSet
      */
     private $signatureKeys;
 
@@ -102,9 +102,9 @@ final class IdTokenBuilder
     private $withAuthenticationTime = false;
 
     /**
-     * @var SignerInterface|null
+     * @var JWSBuilder|null
      */
-    private $signer = null;
+    private $jwsBuilder = null;
 
     /**
      * @var string|null
@@ -112,9 +112,9 @@ final class IdTokenBuilder
     private $signatureAlgorithm = null;
 
     /**
-     * @var EncrypterInterface|null
+     * @var JWEBuilder|null
      */
-    private $encrypter;
+    private $jweBuilder;
 
     /**
      * @var string|null
@@ -307,18 +307,18 @@ final class IdTokenBuilder
     }
 
     /**
-     * @param SignerInterface $signer
-     * @param JWKSetInterface $signatureKeys
+     * @param JWSBuilder $jwsBuilder
+     * @param JWKSet $signatureKeys
      * @param string          $signatureAlgorithm
      *
      * @return IdTokenBuilder
      */
-    public function withSignature(SignerInterface $signer, JWKSetInterface $signatureKeys, string $signatureAlgorithm): IdTokenBuilder
+    public function withSignature(JWSBuilder $jwsBuilder, JWKSet $signatureKeys, string $signatureAlgorithm): IdTokenBuilder
     {
-        Assertion::inArray($signatureAlgorithm, $signer->getSupportedSignatureAlgorithms(), sprintf('Unsupported signature algorithm \'%s\'. Please use one of the following one: %s', $signatureAlgorithm, implode(', ', $signer->getSupportedSignatureAlgorithms())));
-        Assertion::true(0 !== $signatureKeys->countKeys(), 'The signature key set must contain at least one key.');
+        Assertion::inArray($signatureAlgorithm, $jwsBuilder->getSupportedSignatureAlgorithms(), sprintf('Unsupported signature algorithm \'%s\'. Please use one of the following one: %s', $signatureAlgorithm, implode(', ', $jwsBuilder->getSupportedSignatureAlgorithms())));
+        Assertion::true(0 !== $signatureKeys->count(), 'The signature key set must contain at least one key.');
         $clone = clone $this;
-        $clone->signer = $signer;
+        $clone->jwsBuilder = $jwsBuilder;
         $clone->signatureKeys = $signatureKeys;
         $clone->signatureAlgorithm = $signatureAlgorithm;
 
@@ -326,18 +326,18 @@ final class IdTokenBuilder
     }
 
     /**
-     * @param EncrypterInterface $encrypter
+     * @param JWEBuilder $jweBuilder
      * @param string             $keyEncryptionAlgorithm
      * @param string             $contentEncryptionAlgorithm
      *
      * @return IdTokenBuilder
      */
-    public function withEncryption(EncrypterInterface $encrypter, string $keyEncryptionAlgorithm, string $contentEncryptionAlgorithm): IdTokenBuilder
+    public function withEncryption(JWEBuilder $jweBuilder, string $keyEncryptionAlgorithm, string $contentEncryptionAlgorithm): IdTokenBuilder
     {
-        Assertion::inArray($keyEncryptionAlgorithm, $encrypter->getSupportedKeyEncryptionAlgorithms(), sprintf('Unsupported key encryption algorithm \'%s\'. Please use one of the following one: %s', $keyEncryptionAlgorithm, implode(', ', $encrypter->getSupportedKeyEncryptionAlgorithms())));
-        Assertion::inArray($contentEncryptionAlgorithm, $encrypter->getSupportedContentEncryptionAlgorithms(), sprintf('Unsupported key encryption algorithm \'%s\'. Please use one of the following one: %s', $contentEncryptionAlgorithm, implode(', ', $encrypter->getSupportedContentEncryptionAlgorithms())));
+        Assertion::inArray($keyEncryptionAlgorithm, $jweBuilder->getSupportedKeyEncryptionAlgorithms(), sprintf('Unsupported key encryption algorithm \'%s\'. Please use one of the following one: %s', $keyEncryptionAlgorithm, implode(', ', $jweBuilder->getSupportedKeyEncryptionAlgorithms())));
+        Assertion::inArray($contentEncryptionAlgorithm, $jweBuilder->getSupportedContentEncryptionAlgorithms(), sprintf('Unsupported key encryption algorithm \'%s\'. Please use one of the following one: %s', $contentEncryptionAlgorithm, implode(', ', $jweBuilder->getSupportedContentEncryptionAlgorithms())));
         $clone = clone $this;
-        $clone->encrypter = $encrypter;
+        $clone->jweBuilder = $jweBuilder;
         $clone->keyEncryptionAlgorithm = $keyEncryptionAlgorithm;
         $clone->contentEncryptionAlgorithm = $contentEncryptionAlgorithm;
 
@@ -445,11 +445,14 @@ final class IdTokenBuilder
     {
         $signatureKey = $this->getSignatureKey($this->signatureAlgorithm);
         $headers = $this->getHeaders($signatureKey, $this->signatureAlgorithm);
-        $jws = JWSFactory::createJWS($claims);
-        $jws = $jws->addSignatureInformation($signatureKey, $headers);
-        $this->signer->sign($jws);
+        $jws = $this->jwsBuilder
+            ->create()
+            ->withPayload($claims)
+            ->addSignature($signatureKey, $headers)
+            ->build();
+        $serializer = new JwsCompactSerializer();
 
-        return $jws->toCompactJSON(0);
+        return $serializer->serialize($jws, 0);
     }
 
     /**
@@ -469,19 +472,23 @@ final class IdTokenBuilder
             'alg' => $this->keyEncryptionAlgorithm,
             'enc' => $this->contentEncryptionAlgorithm,
         ];
-        $jwe = JWEFactory::createJWE($jwt, $headers);
-        $jwe = $jwe->addRecipientInformation($encryptionKey);
-        $this->encrypter->encrypt($jwe);
+        $jwe = $this->jweBuilder
+            ->create()
+            ->withPayload($jwt)
+            ->withSharedProtectedHeaders($headers)
+            ->addRecipient($encryptionKey)
+            ->build();
+        $serializer = new JweCompactSerializer();
 
-        return $jwe->toCompactJSON(0);
+        return $serializer->serialize($jwe, 0);
     }
 
     /**
      * @param string $signatureAlgorithm
      *
-     * @return JWKInterface
+     * @return JWK
      */
-    private function getSignatureKey(string $signatureAlgorithm): JWKInterface
+    private function getSignatureKey(string $signatureAlgorithm): JWK
     {
         $signatureKey = $this->signatureKeys->selectKey('sig', $signatureAlgorithm);
         Assertion::notNull($signatureKey, 'Unable to find a key to sign the ID Token. Please verify the selected key set contains suitable keys.');
@@ -490,12 +497,12 @@ final class IdTokenBuilder
     }
 
     /**
-     * @param JWKInterface $signatureKey
+     * @param JWK $signatureKey
      * @param string       $signatureAlgorithm
      *
      * @return array
      */
-    private function getHeaders(JWKInterface $signatureKey, string $signatureAlgorithm): array
+    private function getHeaders(JWK $signatureKey, string $signatureAlgorithm): array
     {
         $headers = [
             'typ' => 'JWT',

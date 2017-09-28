@@ -23,19 +23,34 @@ use Interop\Http\Factory\RequestFactoryInterface;
 use Interop\Http\Factory\ResponseFactoryInterface;
 use Interop\Http\Factory\ServerRequestFactoryInterface;
 use Interop\Http\Factory\UriFactoryInterface;
-use Jose\Checker\CheckerManager;
-use Jose\Decrypter;
-use Jose\Encrypter;
-use Jose\Factory\JWKFactory;
-use Jose\JWTCreator;
-use Jose\JWTLoader;
-use Jose\Object\JWK;
-use Jose\Object\JWKSet;
-use Jose\Object\JWKSetInterface;
-use Jose\Object\JWKSets;
-use Jose\Object\StorableJWKSet;
-use Jose\Signer;
-use Jose\Verifier;
+use Jose\Component\Checker\ClaimCheckerManager;
+use Jose\Component\Checker\ExpirationTimeChecker;
+use Jose\Component\Checker\HeaderCheckerManager;
+use Jose\Component\Checker\IssuedAtChecker;
+use Jose\Component\Checker\NotBeforeChecker;
+use Jose\Component\Core\AlgorithmManager;
+use Jose\Component\Core\Converter\StandardJsonConverter;
+use Jose\Component\Core\JWK;
+use Jose\Component\Core\JWKSet;
+use Jose\Component\Encryption\Algorithm\ContentEncryption\A256CBCHS512;
+use Jose\Component\Encryption\Algorithm\ContentEncryption\A256GCM;
+use Jose\Component\Encryption\Algorithm\KeyEncryption\RSAOAEP;
+use Jose\Component\Encryption\Algorithm\KeyEncryption\RSAOAEP256;
+use Jose\Component\Encryption\Compression\CompressionMethodManager;
+use Jose\Component\Encryption\Compression\Deflate;
+use Jose\Component\Encryption\JWEBuilder;
+use Jose\Component\Encryption\JWELoader;
+use Jose\Component\Encryption\Serializer\JWESerializerManager;
+use Jose\Component\KeyManagement\JWKFactory;
+use Jose\Component\Signature\Algorithm\ES256;
+use Jose\Component\Signature\Algorithm\HS256;
+use Jose\Component\Signature\Algorithm\RS256;
+use Jose\Component\Signature\Algorithm\None as NoneAlgorithm;
+use Jose\Component\Signature\JWSBuilder;
+use Jose\Component\Signature\JWSLoader;
+use Jose\Component\Signature\Serializer\CompactSerializer as JwsCompactSerializer;
+use Jose\Component\Encryption\Serializer\CompactSerializer as JweCompactSerializer;
+use Jose\Component\Signature\Serializer\JWSSerializerManager;
 use OAuth2Framework\Component\Server\Command\Client\CreateClientCommand;
 use OAuth2Framework\Component\Server\Command\Client\CreateClientCommandHandler;
 use OAuth2Framework\Component\Server\Command\Client\DeleteClientCommand;
@@ -250,11 +265,6 @@ final class Application
     {
         if (PHP_SESSION_ACTIVE === session_status()) {
             session_destroy();
-        }
-
-        foreach (['getPrivateECKeys', 'getPrivateRSAKeys', 'getPrivateNoneKeys'] as $method) {
-            $keyset = $this->$method();
-            $keyset->delete();
         }
     }
 
@@ -496,7 +506,7 @@ final class Application
             $this->tokenEndpointAuthMethodManager->add(new ClientSecretBasic('My service'));
             $this->tokenEndpointAuthMethodManager->add(new ClientSecretPost());
             $this->tokenEndpointAuthMethodManager->add(new ClientAssertionJwt(
-                $this->getJwtLoader()
+                $this->getJwsLoader()
             ));
         }
 
@@ -1080,7 +1090,7 @@ final class Application
                 ->add(new Rule\ClientIdRule())
                 ->add(new Rule\CommonParametersRule())
                 ->add($this->getGrantTypeFlowRule())
-                ->add(new Rule\IdTokenAlgorithmsRule($this->getJwtSigner(), $this->getJwtEncrypter()))
+                ->add(new Rule\IdTokenAlgorithmsRule($this->getJwsBuilder(), $this->getJweBuilder()))
                 ->add(new Rule\RedirectionUriRule())
                 ->add(new Rule\ApplicationTypeParametersRule())
                 ->add(new Rule\ContactsParametersRule())
@@ -1093,7 +1103,7 @@ final class Application
                 ->add($this->getSoftwareRule())
                 ->add(new Rule\SubjectTypeRule($this->getUserInfo()))
                 ->add(new Rule\TokenEndpointAuthMethodEndpointRule($this->getTokenEndpointAuthMethodManager()))
-                ->add(new Rule\UserinfoEndpointAlgorithmsRule($this->getJwtSigner(), $this->getJwtEncrypter()));
+                ->add(new Rule\UserinfoEndpointAlgorithmsRule($this->getJwsBuilder(), $this->getJweBuilder()));
         }
 
         return $this->ruleManager;
@@ -1111,7 +1121,7 @@ final class Application
     {
         if (null === $this->softwareRule) {
             $this->softwareRule = new Rule\SoftwareRule(
-                $this->getJwtLoader(),
+                $this->getJwsLoader(),
                 $this->getPublicKeys(),
                 false,
                 ['ES256']
@@ -1122,107 +1132,105 @@ final class Application
     }
 
     /**
-     * @return JWKSetInterface
+     * @var null|JWKSet
      */
-    private function getPublicKeys(): JWKSetInterface
+    private $publicKeyset = null;
+
+    /**
+     * @return JWKSet
+     */
+    private function getPublicKeys(): JWKSet
     {
-        return JWKFactory::createPublicKeySet($this->getPrivateKeys());
+        if (null === $this->publicKeyset) {
+            $this->publicKeyset = JWKSet::createFromKeys([]);
+            foreach($this->getPrivateKeys() as $privateKey) {
+                $this->publicKeyset = $this->publicKeyset->with($privateKey->toPublic());
+            }
+        }
+
+        return $this->publicKeyset;
     }
 
     /**
-     * @var null|JWKSetInterface
+     * @var null|JWKSet
      */
     private $privateKeys = null;
 
     /**
-     * @return JWKSetInterface
+     * @return JWKSet
      */
-    public function getPrivateKeys(): JWKSetInterface
+    public function getPrivateKeys(): JWKSet
     {
         if (null === $this->privateKeys) {
-            $ecKeys = $this->getPrivateECKeys();
-            $rsaKeys = $this->getPrivateRSAKeys();
-            $noneKeys = $this->getPrivateNoneKeys();
-
-            $this->privateKeys = new JWKSets([
-                $ecKeys,
-                $rsaKeys,
-                $noneKeys,
-            ]);
+            $this->privateKeys = JWKSet::createFromKeys([]);
+            foreach($this->getPrivateECKeys() as $privateKey) {
+                $this->privateKeys = $this->privateKeys->with($privateKey);
+            }
+            foreach($this->getPrivateRSAKeys() as $privateKey) {
+                $this->privateKeys = $this->privateKeys->with($privateKey);
+            }
+            foreach($this->getPrivateNoneKeys() as $privateKey) {
+                $this->privateKeys = $this->privateKeys->with($privateKey);
+            }
         }
 
         return $this->privateKeys;
     }
 
     /**
-     * @var null|StorableJWKSet
+     * @var null|JWKSet
      */
     private $privateECKeys = null;
 
     /**
-     * @return StorableJWKSet
+     * @return JWKSet
      */
-    public function getPrivateECKeys(): StorableJWKSet
+    public function getPrivateECKeys(): JWKSet
     {
         if (null === $this->privateECKeys) {
-            $this->privateECKeys = JWKFactory::createStorableKeySet(
-                tempnam(sys_get_temp_dir(), 'EC.keys'),
-                [
-                    'kty' => 'EC',
-                    'alg' => 'ES256',
-                    'crv' => 'P-256',
-                ],
-                2
-            );
+            $this->privateECKeys = JWKSet::createFromKeys([
+                JWKFactory::createECKey('P-256', ['alg' => 'ES256']),
+                JWKFactory::createECKey('P-256', ['alg' => 'ES256']),
+            ]);
         }
 
         return $this->privateECKeys;
     }
 
     /**
-     * @var null|StorableJWKSet
+     * @var null|JWKSet
      */
     private $privateNoneKeys = null;
 
     /**
-     * @return StorableJWKSet
+     * @return JWKSet
      */
-    public function getPrivateNoneKeys(): StorableJWKSet
+    public function getPrivateNoneKeys(): JWKSet
     {
         if (null === $this->privateNoneKeys) {
-            $this->privateNoneKeys = JWKFactory::createStorableKeySet(
-                tempnam(sys_get_temp_dir(), 'none.keys'),
-                [
-                    'kty' => 'none',
-                    'alg' => 'none',
-                ],
-                1
-            );
+            $this->privateNoneKeys = JWKSet::createFromKeys([
+                JWKFactory::createNoneKey(),
+            ]);
         }
 
         return $this->privateNoneKeys;
     }
 
     /**
-     * @var null|StorableJWKSet
+     * @var null|JWKSet
      */
     private $privateRSAKeys = null;
 
     /**
-     * @return StorableJWKSet
+     * @return JWKSet
      */
-    public function getPrivateRSAKeys(): StorableJWKSet
+    public function getPrivateRSAKeys(): JWKSet
     {
         if (null === $this->privateRSAKeys) {
-            $this->privateRSAKeys = JWKFactory::createStorableKeySet(
-                tempnam(sys_get_temp_dir(), 'RSA.keys'),
-                [
-                    'kty' => 'RSA',
-                    'alg' => 'RS256',
-                    'size' => '1024',
-                ],
-                2
-            );
+            $this->privateRSAKeys = JWKSet::createFromKeys([
+                JWKFactory::createRSAKey(1024, ['alg' => 'RS256']),
+                JWKFactory::createRSAKey(1024, ['alg' => 'RS256']),
+            ]);
         }
 
         return $this->privateRSAKeys;
@@ -1452,11 +1460,19 @@ final class Application
     public function getJWTBearerGrantType(): JWTBearerGrantType
     {
         if (null === $this->jwtBearerGrantType) {
-            $this->jwtBearerGrantType = new JWTBearerGrantType($this->getJwtLoader(), $this->getClientRepository(), $this->getUserAccountRepository());
-            $this->jwtBearerGrantType->enableEncryptedAssertions(false, $this->getPrivateKeys());
+            $this->jwtBearerGrantType = new JWTBearerGrantType(
+                $this->getJwsLoader(),
+                $this->getClaimCheckerManager(),
+                $this->getClientRepository(),
+                $this->getUserAccountRepository()
+            );
+            $this->jwtBearerGrantType->enableEncryptedAssertions(
+                $this->getJweLoader(),
+                false,
+                $this->getPrivateKeys()
+            );
 
-            $publicKeys = new JWKSet();
-            $publicKeys->addKey(new JWK([
+            $key = JWK::create([
                 'kty' => 'RSA',
                 'kid' => 'bilbo.baggins@hobbiton.example',
                 'use' => 'sig',
@@ -1468,7 +1484,10 @@ final class Application
                 'dp' => 'B8PVvXkvJrj2L-GYQ7v3y9r6Kw5g9SahXBwsWUzp19TVlgI-YV85q1NIb1rxQtD-IsXXR3-TanevuRPRt5OBOdiMGQp8pbt26gljYfKU_E9xn-RULHz0-ed9E9gXLKD4VGngpz-PfQ_q29pk5xWHoJp009Qf1HvChixRX59ehik',
                 'dq' => 'CLDmDGduhylc9o7r84rEUVn7pzQ6PF83Y-iBZx5NT-TpnOZKF1pErAMVeKzFEl41DlHHqqBLSM0W1sOFbwTxYWZDm6sI6og5iTbwQGIC3gnJKbi_7k_vJgGHwHxgPaX2PnvP-zyEkDERuf-ry4c_Z11Cq9AqC2yeL6kdKT1cYF8',
                 'qi' => '3PiqvXQN0zwMeE-sBvZgi289XP9XCQF3VWqPzMKnIgQp7_Tugo6-NZBKCQsMf3HaEGBjTVJs_jcK8-TRXvaKe-7ZMaQj8VfBdYkssbu0NKDDhjJ-GtiseaDVWt7dcH0cfwxgFUHpQh7FoCrjFJ6h6ZEpMF6xmujs4qMpPz8aaI4',
-            ]));
+            ]);
+            $publicKeys = JWKSet::createFromKeys([
+                $key->toPublic()
+            ]);
             $this->jwtBearerGrantType->addTrustedIssuer(new TrustedIssuer(
                 'https://my.trusted.issuer',
                 ['RS256'],
@@ -1733,142 +1752,144 @@ final class Application
     }
 
     /**
-     * @var null|JWTCreator
+     * @var null|JWSBuilder
      */
-    private $jwtCreator = null;
+    private $jwsBuilder = null;
 
     /**
-     * @var null|JWTLoader
+     * @var null|JWSLoader
      */
-    private $jwtLoader = null;
+    private $jwsLoader = null;
 
     /**
-     * @var null|Signer
+     * @var null|JWEBuilder
      */
-    private $jwtSigner = null;
+    private $jweBuilder = null;
 
     /**
-     * @var null|Verifier
+     * @var null|JWELoader
      */
-    private $jwtVerifier = null;
+    private $jweLoader = null;
 
     /**
-     * @var null|Encrypter
+     * @var null|ClaimCheckerManager
      */
-    private $jwtEncrypter = null;
+    private $claimCheckerManager = null;
 
     /**
-     * @var null|Decrypter
+     * @return ClaimCheckerManager
      */
-    private $jwtDecrypter = null;
-
-    /**
-     * @var null|CheckerManager
-     */
-    private $jwtCheckerManager = null;
-
-    /**
-     * @return JWTCreator
-     */
-    public function getJwtCreator(): JWTCreator
+    public function getClaimCheckerManager(): ClaimCheckerManager
     {
-        if (null === $this->jwtCreator) {
-            $this->jwtCreator = new JWTCreator(
-                $this->getJwtSigner()
-            );
-            $this->jwtCreator->enableEncryptionSupport(
-                $this->getJwtEncrypter()
+        if (null === $this->claimCheckerManager) {
+            $this->claimCheckerManager = new ClaimCheckerManager(
+                new StandardJsonConverter(),
+                []
             );
         }
 
-        return $this->jwtCreator;
+        return $this->claimCheckerManager;
     }
 
     /**
-     * @return JWTLoader
+     * @return JWSBuilder
      */
-    public function getJwtLoader(): JWTLoader
+    public function getJwsBuilder(): JWSBuilder
     {
-        if (null === $this->jwtLoader) {
-            $this->jwtLoader = new JWTLoader(
-                $this->getJwtChecker(),
-                $this->getJwtVerifier()
-            );
-
-            $this->jwtLoader->enableDecryptionSupport(
-                $this->getJwtDecrypter()
-            );
-        }
-
-        return $this->jwtLoader;
-    }
-
-    private function getJwtChecker(): CheckerManager
-    {
-        if (null === $this->jwtCheckerManager) {
-            $this->jwtCheckerManager = new CheckerManager();
-            //$this->jwtCheckerManager->addHeaderChecker(new CriticalHeaderChecker());
-            //$this->jwtCheckerManager->addClaimChecker(new IssuedAtChecker());
-            //$this->jwtCheckerManager->addClaimChecker(new NotBeforeChecker());
-            //$this->jwtCheckerManager->addClaimChecker(new ExpirationTimeChecker());
-            //$this->jwtCheckerManager->addClaimChecker(new SubjectChecker());
-        }
-
-        return $this->jwtCheckerManager;
-    }
-
-    private function getJwtSigner(): Signer
-    {
-        if (null === $this->jwtSigner) {
-            $this->jwtSigner = new Signer([
-                'HS256',
-                'RS256',
-                'ES256',
-                'none',
-            ]);
-        }
-
-        return $this->jwtSigner;
-    }
-
-    private function getJwtVerifier(): Verifier
-    {
-        if (null === $this->jwtVerifier) {
-            $this->jwtVerifier = new Verifier([
-                'HS256',
-                'RS256',
-                'ES256',
-                'none',
-            ]);
-        }
-
-        return $this->jwtVerifier;
-    }
-
-    private function getJwtEncrypter(): Encrypter
-    {
-        if (null === $this->jwtEncrypter) {
-            $this->jwtEncrypter = new Encrypter(
-                ['RSA-OAEP', 'RSA-OAEP-256'],
-                ['A256GCM', 'A256CBC-HS512'],
-                ['DEF']
+        if (null === $this->jwsBuilder) {
+            $this->jwsBuilder = new JWSBuilder(
+                new StandardJsonConverter(),
+                AlgorithmManager::create([
+                    new HS256(),
+                    new RS256(),
+                    new ES256(),
+                    new NoneAlgorithm(),
+                ])
             );
         }
 
-        return $this->jwtEncrypter;
+        return $this->jwsBuilder;
     }
 
-    private function getJwtDecrypter(): Decrypter
+    /**
+     * @return JWSLoader
+     */
+    public function getJwsLoader(): JWSLoader
     {
-        if (null === $this->jwtDecrypter) {
-            $this->jwtDecrypter = new Decrypter(
-                ['RSA-OAEP', 'RSA-OAEP-256'],
-                ['A256GCM', 'A256CBC-HS512'],
-                ['DEF']
+        if (null === $this->jwsLoader) {
+            $this->jwsLoader = new JWSLoader(
+                AlgorithmManager::create([
+                    new HS256(),
+                    new RS256(),
+                    new ES256(),
+                    new NoneAlgorithm(),
+                ]),
+                HeaderCheckerManager::create([
+                    new IssuedAtChecker(),
+                    new NotBeforeChecker(),
+                    new ExpirationTimeChecker()
+                ]),
+                JWSSerializerManager::create([
+                    new JwsCompactSerializer()
+                ])
             );
         }
 
-        return $this->jwtDecrypter;
+        return $this->jwsLoader;
+    }
+
+    /**
+     * @return JWEBuilder
+     */
+    private function getJweBuilder(): JWEBuilder
+    {
+        if (null === $this->jweBuilder) {
+            $this->jweBuilder = new JWEBuilder(
+                new StandardJsonConverter(),
+                AlgorithmManager::create([
+                    new RSAOAEP(),
+                    new RSAOAEP256(),
+                ]),
+                AlgorithmManager::create([
+                    new A256GCM(),
+                    new A256CBCHS512()
+                ]),
+                CompressionMethodManager::create([
+                    new Deflate()
+                ])
+            );
+        }
+
+        return $this->jweBuilder;
+    }
+
+    private function getJweLoader(): JWELoader
+    {
+        if (null === $this->jweLoader) {
+            $this->jweLoader = new JWELoader(
+                AlgorithmManager::create([
+                    new RSAOAEP(),
+                    new RSAOAEP256(),
+                ]),
+                AlgorithmManager::create([
+                    new A256GCM(),
+                    new A256CBCHS512()
+                ]),
+                CompressionMethodManager::create([
+                    new Deflate()
+                ]),
+                HeaderCheckerManager::create([
+                    new IssuedAtChecker(),
+                    new NotBeforeChecker(),
+                    new ExpirationTimeChecker()
+                ]),
+                JWESerializerManager::create([
+                    new JweCompactSerializer()
+                ])
+            );
+        }
+
+        return $this->jweLoader;
     }
 
     /**
@@ -2452,9 +2473,9 @@ final class Application
             $this->idTokenResponseType = new IdTokenResponseType(
                 $this->getIdTokenBuilderFactory(),
                 'RS256',
-                $this->getJwtSigner(),
+                $this->getJwsBuilder(),
                 $this->getPrivateKeys(),
-                $this->getJwtEncrypter()
+                $this->getJweBuilder()
             );
         }
 
@@ -2622,9 +2643,9 @@ final class Application
                 $this->getClientRepository(),
                 $this->getUserAccountRepository(),
                 $this->getResponseFactory(),
-                $this->getJwtSigner(),
+                $this->getJwsBuilder(),
                 $this->getPrivateKeys(),
-                $this->getJwtEncrypter()
+                $this->getJweBuilder()
             );
         }
 
@@ -2945,7 +2966,7 @@ final class Application
                 $this->getMetadata()
             );
             $this->metadataEndpoint->enableSignedMetadata(
-                $this->getJwtSigner(),
+                $this->getJwsBuilder(),
                 'RS256',
                 $this->getPrivateKeys()
             );
@@ -2980,19 +3001,19 @@ final class Application
             $this->metadata->set('grant_types_supported', $this->getGrantTypeManager()->getSupportedGrantTypes());
             $this->metadata->set('acr_values_supported', []);
             $this->metadata->set('subject_types_supported', $this->getUserInfo()->isPairwiseSubjectIdentifierSupported() ? ['public', 'pairwise'] : ['public']);
-            $this->metadata->set('id_token_signing_alg_values_supported', $this->getJwtCreator()->getSupportedSignatureAlgorithms());
-            $this->metadata->set('id_token_encryption_alg_values_supported', $this->getJwtCreator()->getSupportedKeyEncryptionAlgorithms());
-            $this->metadata->set('id_token_encryption_enc_values_supported', $this->getJwtCreator()->getSupportedContentEncryptionAlgorithms());
-            $this->metadata->set('userinfo_signing_alg_values_supported', $this->getJwtCreator()->getSupportedSignatureAlgorithms());
-            $this->metadata->set('userinfo_encryption_alg_values_supported', $this->getJwtCreator()->getSupportedKeyEncryptionAlgorithms());
-            $this->metadata->set('userinfo_encryption_enc_values_supported', $this->getJwtCreator()->getSupportedContentEncryptionAlgorithms());
-            $this->metadata->set('request_object_signing_alg_values_supported', $this->getJWTLoader()->getSupportedSignatureAlgorithms());
-            $this->metadata->set('request_object_encryption_alg_values_supported', $this->getJWTLoader()->getSupportedKeyEncryptionAlgorithms());
-            $this->metadata->set('request_object_encryption_enc_values_supported', $this->getJWTLoader()->getSupportedContentEncryptionAlgorithms());
+            $this->metadata->set('id_token_signing_alg_values_supported', $this->getJwsBuilder()->getSupportedSignatureAlgorithms());
+            $this->metadata->set('id_token_encryption_alg_values_supported', $this->getJwEBuilder()->getSupportedKeyEncryptionAlgorithms());
+            $this->metadata->set('id_token_encryption_enc_values_supported', $this->getJwEBuilder()->getSupportedContentEncryptionAlgorithms());
+            $this->metadata->set('userinfo_signing_alg_values_supported', $this->getJwsBuilder()->getSupportedSignatureAlgorithms());
+            $this->metadata->set('userinfo_encryption_alg_values_supported', $this->getJwEBuilder()->getSupportedKeyEncryptionAlgorithms());
+            $this->metadata->set('userinfo_encryption_enc_values_supported', $this->getJwEBuilder()->getSupportedContentEncryptionAlgorithms());
+            $this->metadata->set('request_object_signing_alg_values_supported', $this->getJwsLoader()->getSupportedSignatureAlgorithms());
+            $this->metadata->set('request_object_encryption_alg_values_supported', $this->getJWELoader()->getSupportedKeyEncryptionAlgorithms());
+            $this->metadata->set('request_object_encryption_enc_values_supported', $this->getJWELoader()->getSupportedContentEncryptionAlgorithms());
             $this->metadata->set('token_endpoint_auth_methods_supported', $this->getTokenEndpointAuthMethodManager()->all());
-            $this->metadata->set('token_endpoint_auth_signing_alg_values_supported', $this->getJWTLoader()->getSupportedSignatureAlgorithms());
-            $this->metadata->set('token_endpoint_auth_encryption_alg_values_supported', $this->getJWTLoader()->getSupportedKeyEncryptionAlgorithms());
-            $this->metadata->set('token_endpoint_auth_encryption_enc_values_supported', $this->getJWTLoader()->getSupportedContentEncryptionAlgorithms());
+            $this->metadata->set('token_endpoint_auth_signing_alg_values_supported', $this->getJwsLoader()->getSupportedSignatureAlgorithms());
+            $this->metadata->set('token_endpoint_auth_encryption_alg_values_supported', $this->getJWELoader()->getSupportedKeyEncryptionAlgorithms());
+            $this->metadata->set('token_endpoint_auth_encryption_enc_values_supported', $this->getJWELoader()->getSupportedContentEncryptionAlgorithms());
             $this->metadata->set('display_values_supported', ['page']);
             $this->metadata->set('claim_types_supported', ['normal', 'aggregated', 'distributed']);
             $this->metadata->set('claims_supported', $this->getUserInfo()->getClaimsSupported());
@@ -3042,9 +3063,9 @@ final class Application
             $this->openIdConnectExtension = new OpenIdConnectExtension(
                 $this->getIdTokenBuilderFactory(),
                 'RS256',
-                $this->getJwtSigner(),
+                $this->getJwsBuilder(),
                 $this->getPrivateKeys(),
-                $this->getJwtEncrypter()
+                $this->getJweBuilder()
             );
         }
 
@@ -3084,7 +3105,7 @@ final class Application
     {
         if (null === $this->idTokenLoader) {
             $this->idTokenLoader = new IdTokenLoader(
-                $this->getJwtLoader(),
+                $this->getJwsLoader(),
                 $this->getPrivateKeys(),
                 ['HS256', 'RS256', 'ES256']
             );
@@ -3199,8 +3220,15 @@ final class Application
     {
         if (null === $this->authorizationRequestLoader) {
             $this->authorizationRequestLoader = new AuthorizationRequestLoader($this->getClientRepository());
-            $this->authorizationRequestLoader->enableRequestObjectSupport($this->getJwtLoader());
-            $this->authorizationRequestLoader->enableEncryptedRequestObjectSupport($this->getPrivateKeys(), false);
+            $this->authorizationRequestLoader->enableRequestObjectSupport(
+                $this->getJwsLoader(),
+                $this->getClaimCheckerManager()
+            );
+            $this->authorizationRequestLoader->enableEncryptedRequestObjectSupport(
+                $this->getJweLoader(),
+                $this->getPrivateKeys(),
+                false
+            );
             $this->authorizationRequestLoader->enableRequestObjectReferenceSupport($this->getHttpClient(), true);
         }
 

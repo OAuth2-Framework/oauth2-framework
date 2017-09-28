@@ -17,6 +17,9 @@ use Assert\Assertion;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use Behat\Gherkin\Node\PyStringNode;
+use Jose\Component\Signature\JWS;
+use OAuth2Framework\Component\Server\Model\Client\Client;
+use OAuth2Framework\Component\Server\Model\Client\ClientId;
 use Psr\Http\Message\ResponseInterface;
 
 final class ResponseContext implements Context
@@ -89,13 +92,13 @@ final class ResponseContext implements Context
      */
     public function theResponseContainsAnIdTokenWithTheFollowingClaims($client_id, PyStringNode $response)
     {
-        $client = $this->applicationContext->getApplication()->getClientRepository()->find(\OAuth2Framework\Component\Server\Model\Client\ClientId::create($client_id));
-        Assertion::isInstanceOf($client, \OAuth2Framework\Component\Server\Model\Client\Client::class);
+        $client = $this->applicationContext->getApplication()->getClientRepository()->find(ClientId::create($client_id));
+        Assertion::isInstanceOf($client, Client::class);
         $claims = json_decode($response->getRaw(), true);
         $response = (string) $this->getResponse()->getBody()->getContents();
-        $jwt = $this->applicationContext->getApplication()->getJwtLoader()->load($response);
-        Assertion::isInstanceOf($jwt, \Jose\Object\JWSInterface::class);
-        Assertion::true(empty(array_diff($claims, $jwt->getClaims())));
+        $jwt = $this->applicationContext->getApplication()->getJwsLoader()->load($response);
+        Assertion::isInstanceOf($jwt, JWS::class);
+        Assertion::true(empty(array_diff($claims, $claims)));
     }
 
     /**

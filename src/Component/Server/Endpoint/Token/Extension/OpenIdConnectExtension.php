@@ -13,9 +13,9 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\Endpoint\Token\Extension;
 
-use Jose\EncrypterInterface;
-use Jose\Object\JWKSetInterface;
-use Jose\SignerInterface;
+use Jose\Component\Core\JWKSet;
+use Jose\Component\Encryption\JWEBuilder;
+use Jose\Component\Signature\JWSBuilder;
 use OAuth2Framework\Component\Server\Model\AccessToken\AccessToken;
 use OAuth2Framework\Component\Server\Model\Client\Client;
 use OAuth2Framework\Component\Server\Model\IdToken\IdTokenBuilderFactory;
@@ -25,19 +25,19 @@ use OAuth2Framework\Component\Server\Model\UserAccount\UserAccountInterface;
 final class OpenIdConnectExtension implements TokenEndpointExtensionInterface
 {
     /**
-     * @var JWKSetInterface
+     * @var JWKSet
      */
     private $signatureKeys;
 
     /**
-     * @var SignerInterface
+     * @var JWSBuilder
      */
-    private $signer;
+    private $jwsBuilder;
 
     /**
-     * @var EncrypterInterface|null
+     * @var JWEBuilder|null
      */
-    private $encrypter;
+    private $jweBuilder;
 
     /**
      * @var IdTokenBuilderFactory
@@ -54,17 +54,17 @@ final class OpenIdConnectExtension implements TokenEndpointExtensionInterface
      *
      * @param IdTokenBuilderFactory   $idTokenBuilderFactory
      * @param string                  $defaultSignatureAlgorithm
-     * @param SignerInterface         $signer
-     * @param JWKSetInterface         $signatureKeys
-     * @param EncrypterInterface|null $encrypter
+     * @param JWSBuilder         $jwsBuilder
+     * @param JWKSet         $signatureKeys
+     * @param JWEBuilder|null $jweBuilder
      */
-    public function __construct(IdTokenBuilderFactory $idTokenBuilderFactory, string $defaultSignatureAlgorithm, SignerInterface $signer, JWKSetInterface $signatureKeys, ?EncrypterInterface $encrypter)
+    public function __construct(IdTokenBuilderFactory $idTokenBuilderFactory, string $defaultSignatureAlgorithm, JWSBuilder $jwsBuilder, JWKSet $signatureKeys, ?JWEBuilder $jweBuilder)
     {
         $this->idTokenBuilderFactory = $idTokenBuilderFactory;
         $this->defaultSignatureAlgorithm = $defaultSignatureAlgorithm;
-        $this->signer = $signer;
+        $this->jwsBuilder = $jwsBuilder;
         $this->signatureKeys = $signatureKeys;
-        $this->encrypter = $encrypter;
+        $this->jweBuilder = $jweBuilder;
     }
 
     public function process(Client $client, ResourceOwnerInterface $resourceOwner, AccessToken $accessToken, callable $next): array
@@ -99,14 +99,14 @@ final class OpenIdConnectExtension implements TokenEndpointExtensionInterface
 
         if ($client->has('id_token_signed_response_alg')) {
             $signatureAlgorithm = $client->get('id_token_signed_response_alg');
-            $idTokenBuilder = $idTokenBuilder->withSignature($this->signer, $this->signatureKeys, $signatureAlgorithm);
+            $idTokenBuilder = $idTokenBuilder->withSignature($this->jwsBuilder, $this->signatureKeys, $signatureAlgorithm);
         } else {
-            $idTokenBuilder = $idTokenBuilder->withSignature($this->signer, $this->signatureKeys, $this->defaultSignatureAlgorithm);
+            $idTokenBuilder = $idTokenBuilder->withSignature($this->jwsBuilder, $this->signatureKeys, $this->defaultSignatureAlgorithm);
         }
-        if ($client->has('id_token_encrypted_response_alg') && $client->has('id_token_encrypted_response_enc') && null !== $this->encrypter) {
+        if ($client->has('id_token_encrypted_response_alg') && $client->has('id_token_encrypted_response_enc') && null !== $this->jweBuilder) {
             $keyEncryptionAlgorithm = $client->get('id_token_encrypted_response_alg');
             $contentEncryptionAlgorithm = $client->get('id_token_encrypted_response_enc');
-            $idTokenBuilder = $idTokenBuilder->withEncryption($this->encrypter, $keyEncryptionAlgorithm, $contentEncryptionAlgorithm);
+            $idTokenBuilder = $idTokenBuilder->withEncryption($this->jweBuilder, $keyEncryptionAlgorithm, $contentEncryptionAlgorithm);
         }
         $idTokenBuilder = $idTokenBuilder->withAccessToken($accessToken);
 

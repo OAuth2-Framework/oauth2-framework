@@ -16,6 +16,7 @@ namespace OAuth2Framework\Component\Server\Tests\Context;
 use Assert\Assertion;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
+use Jose\Component\Signature\Serializer\CompactSerializer;
 
 final class OIDCContext implements Context
 {
@@ -438,6 +439,13 @@ final class OIDCContext implements Context
         $key = $this->applicationContext->getApplication()->getPrivateKeys()->selectKey('sig', 'RS256');
         Assertion::notNull($key);
 
-        return $this->applicationContext->getApplication()->getJwtCreator()->sign($payload, $headers, $key);
+        $jws = $this->applicationContext->getApplication()->getJwsBuilder()
+            ->create()
+            ->withPayload($payload)
+            ->addSignature($key, $headers)
+            ->build();
+        $serializer = new CompactSerializer();
+
+        return $serializer->serialize($jws, 0);
     }
 }

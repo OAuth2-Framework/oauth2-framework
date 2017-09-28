@@ -16,7 +16,7 @@ namespace OAuth2Framework\Component\Server\Endpoint\JWKSet;
 use Interop\Http\Factory\ResponseFactoryInterface;
 use Interop\Http\Server\RequestHandlerInterface;
 use Interop\Http\Server\MiddlewareInterface;
-use Jose\Object\JWKSetInterface;
+use Jose\Component\Core\JWKSet;
 use Psr\Http\Message\ServerRequestInterface;
 
 final class JWKSetEndpoint implements MiddlewareInterface
@@ -27,20 +27,20 @@ final class JWKSetEndpoint implements MiddlewareInterface
     private $responseFactory;
 
     /**
-     * @var JWKSetInterface
+     * @var JWKSet
      */
-    private $JWKSet;
+    private $jwkSet;
 
     /**
      * JWKSetEndpoint constructor.
      *
      * @param ResponseFactoryInterface $responseFactory
-     * @param JWKSetInterface          $JWKSet
+     * @param JWKSet                   $jwkSet
      */
-    public function __construct(ResponseFactoryInterface $responseFactory, JWKSetInterface $JWKSet)
+    public function __construct(ResponseFactoryInterface $responseFactory, JWKSet $jwkSet)
     {
         $this->responseFactory = $responseFactory;
-        $this->JWKSet = $JWKSet;
+        $this->jwkSet = $jwkSet;
     }
 
     /**
@@ -49,7 +49,7 @@ final class JWKSetEndpoint implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $requestHandler)
     {
         $response = $this->responseFactory->createResponse();
-        $response->getBody()->write(json_encode($this->JWKSet));
+        $response->getBody()->write(json_encode($this->jwkSet));
         $response = $response->withHeader('Content-Type', 'application/jwk-set+json; charset=UTF-8');
 
         return $response;

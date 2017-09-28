@@ -17,9 +17,9 @@ use Assert\Assertion;
 use Interop\Http\Factory\ResponseFactoryInterface;
 use Interop\Http\Server\RequestHandlerInterface;
 use Interop\Http\Server\MiddlewareInterface;
-use Jose\EncrypterInterface;
-use Jose\Object\JWKSetInterface;
-use Jose\SignerInterface;
+use Jose\Component\Core\JWKSet;
+use Jose\Component\Encryption\JWEBuilder;
+use Jose\Component\Signature\JWSBuilder;
 use OAuth2Framework\Component\Server\Model\AccessToken\AccessToken;
 use OAuth2Framework\Component\Server\Model\Client\Client;
 use OAuth2Framework\Component\Server\Model\Client\ClientRepositoryInterface;
@@ -34,19 +34,19 @@ use Psr\Http\Message\ServerRequestInterface;
 final class UserInfoEndpoint implements MiddlewareInterface
 {
     /**
-     * @var JWKSetInterface|null
+     * @var JWKSet|null
      */
     private $signatureKeys = null;
 
     /**
-     * @var SignerInterface|null
+     * @var JWSBuilder|null
      */
-    private $signer = null;
+    private $jwsBuilder = null;
 
     /**
-     * @var EncrypterInterface|null
+     * @var JWSBuilder|null
      */
-    private $encrypter;
+    private $jweBuilder;
 
     /**
      * @var ClientRepositoryInterface
@@ -75,20 +75,20 @@ final class UserInfoEndpoint implements MiddlewareInterface
      * @param ClientRepositoryInterface      $clientRepository
      * @param UserAccountRepositoryInterface $userAccountRepository
      * @param ResponseFactoryInterface       $responseFactory
-     * @param SignerInterface|null           $signer
-     * @param JWKSetInterface|null           $signatureKeys
-     * @param EncrypterInterface|null        $encrypter
+     * @param JWSBuilder|null           $jwsBuilder
+     * @param JWKSet|null           $signatureKeys
+     * @param JWEBuilder|null        $jweBuilder
      */
-    public function __construct(IdTokenBuilderFactory $idTokenBuilderFactory, ClientRepositoryInterface $clientRepository, UserAccountRepositoryInterface $userAccountRepository, ResponseFactoryInterface $responseFactory, ?SignerInterface $signer, ?JWKSetInterface $signatureKeys, ?EncrypterInterface $encrypter)
+    public function __construct(IdTokenBuilderFactory $idTokenBuilderFactory, ClientRepositoryInterface $clientRepository, UserAccountRepositoryInterface $userAccountRepository, ResponseFactoryInterface $responseFactory, ?JWSBuilder $jwsBuilder, ?JWKSet $signatureKeys, ?JWEBuilder $jweBuilder)
     {
-        Assertion::false($signer xor $signatureKeys, 'Signature support requires both signer an key set.');
+        Assertion::false($jwsBuilder xor $signatureKeys, 'Signature support requires both signer an key set.');
         $this->idTokenBuilderFactory = $idTokenBuilderFactory;
         $this->clientRepository = $clientRepository;
         $this->userAccountRepository = $userAccountRepository;
         $this->responseFactory = $responseFactory;
-        $this->signer = $signer;
+        $this->jwsBuilder = $jwsBuilder;
         $this->signatureKeys = $signatureKeys;
-        $this->encrypter = $encrypter;
+        $this->jweBuilder = $jweBuilder;
     }
 
     /**
@@ -133,16 +133,16 @@ final class UserInfoEndpoint implements MiddlewareInterface
         $requestedClaims = $this->getEndpointClaims($accessToken);
         $idTokenBuilder = $this->idTokenBuilderFactory->createBuilder($client, $userAccount, $accessToken->getMetadata('redirect_uri'));
 
-        if ($client->has('userinfo_signed_response_alg') && null !== $this->signer) {
+        if ($client->has('userinfo_signed_response_alg') && null !== $this->jwsBuilder) {
             $isJwt = true;
             $signatureAlgorithm = $client->get('userinfo_signed_response_alg');
-            $idTokenBuilder = $idTokenBuilder->withSignature($this->signer, $this->signatureKeys, $signatureAlgorithm);
+            $idTokenBuilder = $idTokenBuilder->withSignature($this->jwsBuilder, $this->signatureKeys, $signatureAlgorithm);
         }
-        if ($client->has('userinfo_encrypted_response_alg') && $client->has('userinfo_encrypted_response_enc') && null !== $this->encrypter) {
+        if ($client->has('userinfo_encrypted_response_alg') && $client->has('userinfo_encrypted_response_enc') && null !== $this->jweBuilder) {
             $isJwt = true;
             $keyEncryptionAlgorithm = $client->get('userinfo_encrypted_response_alg');
             $contentEncryptionAlgorithm = $client->get('userinfo_encrypted_response_enc');
-            $idTokenBuilder = $idTokenBuilder->withEncryption($this->encrypter, $keyEncryptionAlgorithm, $contentEncryptionAlgorithm);
+            $idTokenBuilder = $idTokenBuilder->withEncryption($this->jweBuilder, $keyEncryptionAlgorithm, $contentEncryptionAlgorithm);
         }
         $idTokenBuilder = $idTokenBuilder->withAccessToken($accessToken);
         $idTokenBuilder = $idTokenBuilder->withRequestedClaims($requestedClaims);

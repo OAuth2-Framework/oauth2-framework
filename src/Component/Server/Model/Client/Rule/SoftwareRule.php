@@ -14,17 +14,17 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\Server\Model\Client\Rule;
 
 use Assert\Assertion;
-use Jose\JWTLoaderInterface;
-use Jose\Object\JWKSetInterface;
+use Jose\Component\Core\JWKSet;
+use Jose\Component\Signature\JWSLoader;
 use OAuth2Framework\Component\Server\Model\DataBag\DataBag;
 use OAuth2Framework\Component\Server\Model\UserAccount\UserAccountId;
 
 final class SoftwareRule implements RuleInterface
 {
     /**
-     * @var JWTLoaderInterface
+     * @var JWSLoader
      */
-    private $jwtLoader;
+    private $jwsLoader;
 
     /**
      * @var bool
@@ -32,7 +32,7 @@ final class SoftwareRule implements RuleInterface
     private $isSoftwareStatementRequired;
 
     /**
-     * @var JWKSetInterface
+     * @var JWKSet
      */
     private $softwareStatementSignatureKeySet;
 
@@ -50,14 +50,14 @@ final class SoftwareRule implements RuleInterface
     }
 
     /**
-     * @param JWTLoaderInterface $jwtLoader
-     * @param JWKSetInterface    $signatureKeySet
+     * @param JWSLoader $jwsLoader
+     * @param JWKSet    $signatureKeySet
      * @param bool               $isSoftwareStatementRequired
      * @param array              $allowedSignatureAlgorithms
      */
-    public function __construct(JWTLoaderInterface $jwtLoader, JWKSetInterface $signatureKeySet, bool $isSoftwareStatementRequired, array $allowedSignatureAlgorithms)
+    public function __construct(JWSLoader $jwsLoader, JWKSet $signatureKeySet, bool $isSoftwareStatementRequired, array $allowedSignatureAlgorithms)
     {
-        $this->jwtLoader = $jwtLoader;
+        $this->jwsLoader = $jwsLoader;
         $this->softwareStatementSignatureKeySet = $signatureKeySet;
         $this->isSoftwareStatementRequired = $isSoftwareStatementRequired;
         $this->allowedSignatureAlgorithms = $allowedSignatureAlgorithms;
@@ -98,11 +98,13 @@ final class SoftwareRule implements RuleInterface
     private function loadSoftwareStatement(string $software_statement): array
     {
         try {
-            $jws = $this->jwtLoader->load($software_statement);
-            $signatureVerified = $this->jwtLoader->verify($jws, $this->softwareStatementSignatureKeySet);
+            $jws = $this->jwsLoader->load($software_statement);
+            $signatureVerified = $this->jwsLoader->verifyWithKeySet($jws, $this->softwareStatementSignatureKeySet);
             Assertion::inArray($jws->getSignature($signatureVerified)->getProtectedHeader('alg'), $this->allowedSignatureAlgorithms);
+            $claims = json_decode($jws->getPayload(), true);
+            Assertion::isArray($claims, 'Invalid Software Statement.');
 
-            return $jws->getClaims();
+            return $claims;
         } catch (\Exception $e) {
             throw new \InvalidArgumentException('Invalid Software Statement.', $e->getCode(), $e);
         }

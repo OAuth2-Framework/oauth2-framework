@@ -17,9 +17,9 @@ use Assert\Assertion;
 use Interop\Http\Factory\ResponseFactoryInterface;
 use Interop\Http\Server\RequestHandlerInterface;
 use Interop\Http\Server\MiddlewareInterface;
-use Jose\Factory\JWSFactory;
-use Jose\SignerInterface;
-use Jose\Object\JWKSetInterface;
+use Jose\Component\Core\JWKSet;
+use Jose\Component\Signature\JWSBuilder;
+use Jose\Component\Signature\Serializer\CompactSerializer;
 use Psr\Http\Message\ServerRequestInterface;
 
 final class MetadataEndpoint implements MiddlewareInterface
@@ -35,7 +35,7 @@ final class MetadataEndpoint implements MiddlewareInterface
     private $metadata;
 
     /**
-     * @var null|JWKSetInterface
+     * @var null|JWKSet
      */
     private $signatureKeySet = null;
 
@@ -45,9 +45,9 @@ final class MetadataEndpoint implements MiddlewareInterface
     private $signatureAlgorithm = null;
 
     /**
-     * @var null|SignerInterface
+     * @var null|JWSBuilder
      */
-    private $signer = null;
+    private $jwsBuilder = null;
 
     /**
      * MetadataEndpoint constructor.
@@ -62,13 +62,13 @@ final class MetadataEndpoint implements MiddlewareInterface
     }
 
     /**
-     * @param SignerInterface $signer
-     * @param JWKSetInterface $signatureKeySet
+     * @param JWSBuilder $jwsBuilder
+     * @param JWKSet $signatureKeySet
      * @param string          $signatureAlgorithm
      */
-    public function enableSignedMetadata(SignerInterface $signer, string $signatureAlgorithm, JWKSetInterface $signatureKeySet)
+    public function enableSignedMetadata(JWSBuilder $jwsBuilder, string $signatureAlgorithm, JWKSet $signatureKeySet)
     {
-        $this->signer = $signer;
+        $this->jwsBuilder = $jwsBuilder;
         $this->signatureKeySet = $signatureKeySet;
         $this->signatureAlgorithm = $signatureAlgorithm;
     }
@@ -94,7 +94,7 @@ final class MetadataEndpoint implements MiddlewareInterface
      */
     private function isSignedMetadataEnabled(): bool
     {
-        return null !== $this->signer;
+        return null !== $this->jwsBuilder;
     }
 
     /**
@@ -109,10 +109,14 @@ final class MetadataEndpoint implements MiddlewareInterface
         ];
         $key = $this->signatureKeySet->selectKey('sig', $this->signatureAlgorithm);
         Assertion::notNull($key, sprintf('Unable to find a signed key for the algorithm \'%s\'.', $this->signatureAlgorithm));
-        $jws = JWSFactory::createJWS($metadata);
-        $jws = $jws->addSignatureInformation($key, $headers);
-        $this->signer->sign($jws);
+        $jws = $this->jwsBuilder
+            ->create()
+            ->withPayload($metadata)
+            ->addSignature($key, $headers)
+            ->build();
+        $serializer = new CompactSerializer();
+        $assertion = $serializer->serialize($jws, 0);
 
-        return $jws->toCompactJSON(0);
+        return $assertion;
     }
 }

@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\Tests\Stub;
 
-use Jose\Object\JWKSetInterface;
+use Jose\Component\Core\JWKSet;
 use OAuth2Framework\Component\Server\Model\TrustedIssuer\TrustedIssuerInterface;
 
 final class TrustedIssuer implements TrustedIssuerInterface
@@ -24,7 +24,7 @@ final class TrustedIssuer implements TrustedIssuerInterface
     private $issuerName;
 
     /**
-     * @var JWKSetInterface
+     * @var JWKSet
      */
     private $publicKeys;
 
@@ -38,9 +38,9 @@ final class TrustedIssuer implements TrustedIssuerInterface
      *
      * @param string          $issuerName
      * @param array           $allowedAlgorithms
-     * @param JWKSetInterface $publicKeys
+     * @param JWKSet $publicKeys
      */
-    public function __construct(string $issuerName, array $allowedAlgorithms, JWKSetInterface $publicKeys)
+    public function __construct(string $issuerName, array $allowedAlgorithms, JWKSet $publicKeys)
     {
         $this->issuerName = $issuerName;
         $this->publicKeys = $publicKeys;
@@ -66,7 +66,7 @@ final class TrustedIssuer implements TrustedIssuerInterface
     /**
      * {@inheritdoc}
      */
-    public function getSignatureKeys(): JWKSetInterface
+    public function getSignatureKeys(): JWKSet
     {
         return $this->publicKeys;
     }

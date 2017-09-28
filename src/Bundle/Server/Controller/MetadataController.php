@@ -16,8 +16,8 @@ namespace OAuth2Framework\Bundle\Server\Controller;
 use Interop\Http\Factory\ResponseFactoryInterface;
 use Interop\Http\Server\RequestHandlerInterface;
 use Interop\Http\Server\MiddlewareInterface;
-use Jose\Object\JWKSetInterface;
-use Jose\SignerInterface;
+use Jose\Component\Core\JWKSet;
+use Jose\Component\Signature\JWSBuilder;
 use OAuth2Framework\Bundle\Server\Service\MetadataBuilder;
 use OAuth2Framework\Component\Server\Endpoint\Metadata\MetadataEndpoint;
 use Psr\Http\Message\ServerRequestInterface;
@@ -42,13 +42,13 @@ class MetadataController implements MiddlewareInterface
     }
 
     /**
-     * @param SignerInterface $signer
-     * @param JWKSetInterface $signatureKeySet
-     * @param string          $signatureAlgorithm
+     * @param JWSBuilder $jwsBuilder
+     * @param JWKSet     $signatureKeySet
+     * @param string     $signatureAlgorithm
      */
-    public function enableSignedMetadata(SignerInterface $signer, string $signatureAlgorithm, JWKSetInterface $signatureKeySet)
+    public function enableSignedMetadata(JWSBuilder $jwsBuilder, string $signatureAlgorithm, JWKSet $signatureKeySet)
     {
-        $this->metadataEndpoint->enableSignedMetadata($signer, $signatureAlgorithm, $signatureKeySet);
+        $this->metadataEndpoint->enableSignedMetadata($jwsBuilder, $signatureAlgorithm, $signatureKeySet);
     }
 
     /**

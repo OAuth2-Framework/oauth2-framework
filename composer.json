@@ -18,8 +18,7 @@
     "require": {
         "php": "^7.1",
         "psr/http-message": "^1.0",
-        "spomky-labs/jose": "^6.1.4",
-        "spomky-labs/jose-bundle": "^2.2",
+        "spomky-labs/jose": "^7.0@dev",
         "beberlei/assert": "^2.7.4",
         "php-http/httplug": "^1.1",
         "http-interop/http-middleware": "^0.5",

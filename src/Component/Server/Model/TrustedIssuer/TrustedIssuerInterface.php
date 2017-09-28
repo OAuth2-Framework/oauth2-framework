@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\Model\TrustedIssuer;
 
-use Jose\Object\JWKSetInterface;
+use Jose\Component\Core\JWKSet;
 
 interface TrustedIssuerInterface
 {
@@ -28,7 +28,7 @@ interface TrustedIssuerInterface
     public function getAllowedSignatureAlgorithms(): array;
 
     /**
-     * @return JWKSetInterface
+     * @return JWKSet
      */
-    public function getSignatureKeys(): JWKSetInterface;
+    public function getSignatureKeys(): JWKSet;
 }

@@ -17,7 +17,7 @@ use OAuth2Framework\Component\Server\Endpoint\Authorization\Authorization;
 use OAuth2Framework\Component\Server\Model\PreConfiguredAuthorization\PreConfiguredAuthorizationRepositoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-class PreConfiguredAuthorizationExtension implements AfterConsentScreenInterface
+final class PreConfiguredAuthorizationExtension implements AfterConsentScreenInterface
 {
     /**
      * @var PreConfiguredAuthorizationRepositoryInterface

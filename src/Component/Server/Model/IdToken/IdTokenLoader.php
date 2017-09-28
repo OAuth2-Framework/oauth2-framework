@@ -14,20 +14,20 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\Server\Model\IdToken;
 
 use Assert\Assertion;
-use Jose\JWTLoaderInterface;
-use Jose\Object\JWKSetInterface;
+use Jose\Component\Core\JWKSet;
+use Jose\Component\Signature\JWSLoader;
 
 final class IdTokenLoader
 {
     /**
-     * @var JWKSetInterface
+     * @var JWKSet
      */
     private $signatureKeySet;
 
     /**
-     * @var JWTLoaderInterface
+     * @var JWSLoader
      */
-    private $jwtLoader;
+    private $jwsLoader;
 
     /**
      * @var string[]
@@ -37,15 +37,15 @@ final class IdTokenLoader
     /**
      * IdTokenLoader constructor.
      *
-     * @param JWTLoaderInterface $jwtLoader
-     * @param JWKSetInterface    $signatureKeySet
-     * @param array              $signatureAlgorithms
+     * @param JWSLoader $jwsLoader
+     * @param JWKSet    $signatureKeySet
+     * @param array     $signatureAlgorithms
      */
-    public function __construct(JWTLoaderInterface $jwtLoader, JWKSetInterface $signatureKeySet, array $signatureAlgorithms)
+    public function __construct(JWSLoader $jwsLoader, JWKSet $signatureKeySet, array $signatureAlgorithms)
     {
         $this->signatureKeySet = $signatureKeySet;
         $this->signatureAlgorithms = $signatureAlgorithms;
-        $this->jwtLoader = $jwtLoader;
+        $this->jwsLoader = $jwsLoader;
     }
 
     /**
@@ -53,23 +53,7 @@ final class IdTokenLoader
      */
     public function getSupportedSignatureAlgorithms(): array
     {
-        return $this->jwtLoader->getSupportedSignatureAlgorithms();
-    }
-
-    /**
-     * @return string[]
-     */
-    public function getSupportedKeyEncryptionAlgorithms(): array
-    {
-        return $this->jwtLoader->getSupportedKeyEncryptionAlgorithms();
-    }
-
-    /**
-     * @return string[]
-     */
-    public function getSupportedContentEncryptionAlgorithms(): array
-    {
-        return $this->jwtLoader->getSupportedContentEncryptionAlgorithms();
+        return $this->jwsLoader->getSupportedSignatureAlgorithms();
     }
 
     /**
@@ -79,12 +63,14 @@ final class IdTokenLoader
      */
     public function load(IdTokenId $idTokenId): ? IdToken
     {
+        $value = $idTokenId->getValue();
         try {
-            $jwt = $this->jwtLoader->load($idTokenId->getValue());
-            Assertion::true($jwt->hasClaims(), 'Invalid ID Token');
-            $validSignature = $this->jwtLoader->verify($jwt, $this->signatureKeySet);
+            $jwt = $this->jwsLoader->load($value);
+            $claims = json_decode($jwt->getPayload(), true);
+            Assertion::isArray($claims, 'Invalid ID Token');
+            $validSignature = $this->jwsLoader->verifyWithKeySet($jwt, $this->signatureKeySet);
             Assertion::inArray($jwt->getSignature($validSignature)->getProtectedHeader('alg'), $this->signatureAlgorithms);
-            $idToken = IdToken::create($idTokenId, $jwt->getClaims());
+            $idToken = IdToken::create($idTokenId, $claims);
 
             return $idToken;
         } catch (\Exception $e) {
