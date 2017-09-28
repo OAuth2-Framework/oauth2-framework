@@ -17,6 +17,7 @@ use OAuth2Framework\Component\Server\Endpoint\UserInfo\ClaimSource\ClaimSourceMa
 use OAuth2Framework\Component\Server\Endpoint\UserInfo\ScopeSupport\UserInfoScopeSupportManager;
 use OAuth2Framework\Component\Server\Endpoint\UserInfo\UserInfo;
 use OAuth2Framework\Component\Server\Model\IdToken\IdTokenBuilderFactory;
+use function Fluent\autowire;
 use function Fluent\create;
 use function Fluent\get;
 
@@ -24,11 +25,7 @@ return [
     UserInfoScopeSupportManager::class => create(),
     ClaimSourceManager::class => create(),
 
-    UserInfo::class => create()
-        ->arguments(
-            get(UserInfoScopeSupportManager::class),
-            get(ClaimSourceManager::class)
-        ),
+    UserInfo::class => autowire(),
 
     OpenIdConnectExtension::class => create()
         ->arguments(
@@ -54,9 +51,6 @@ return [
         )
         ->tag('oauth2_server_client_rule'),
 
-    Rule\SubjectTypeRule::class => create()
-        ->arguments(
-            get(UserInfo::class)
-        )
+    Rule\SubjectTypeRule::class => autowire()
         ->tag('oauth2_server_client_rule'),
 ];

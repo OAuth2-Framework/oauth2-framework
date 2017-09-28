@@ -15,6 +15,7 @@ use OAuth2Framework\Bundle\Server\Model\RefreshTokenRepository;
 use OAuth2Framework\Component\Server\GrantType\RefreshTokenGrantType;
 use OAuth2Framework\Component\Server\Model\RefreshToken\RefreshTokenRepositoryInterface;
 use OAuth2Framework\Component\Server\TokenTypeHint\RefreshTokenTypeHint;
+use function Fluent\autowire;
 use function Fluent\create;
 use function Fluent\get;
 
@@ -29,10 +30,7 @@ return [
             get('cache.app')
         ),
 
-    RefreshTokenGrantType::class => create()
-        ->arguments(
-            get(RefreshTokenRepositoryInterface::class)
-        )
+    RefreshTokenGrantType::class => autowire()
         ->tag('oauth2_server_grant_type'),
 
     RefreshTokenTypeHint::class => create()

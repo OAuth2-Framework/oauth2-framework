@@ -18,6 +18,7 @@ use OAuth2Framework\Component\Server\Middleware;
 use OAuth2Framework\Component\Server\Middleware\ClientAuthenticationMiddleware;
 use OAuth2Framework\Component\Server\TokenEndpointAuthMethod\TokenEndpointAuthMethodManager;
 use OAuth2Framework\Component\Server\TokenTypeHint\TokenTypeHintManager;
+use function Fluent\autowire;
 use function Fluent\create;
 use function Fluent\get;
 
@@ -29,11 +30,7 @@ return [
             '%oauth2_server.endpoint.token_revocation.allow_callback%'
         ),
 
-    TokenRevocationPostEndpoint::class => create()
-        ->arguments(
-            get(TokenTypeHintManager::class),
-            get('oauth2_server.http.response_factory')
-        ),
+    TokenRevocationPostEndpoint::class => autowire(),
 
     'token_revocation_method_handler' => create(Middleware\HttpMethod::class)
         ->method('addMiddleware', 'POST', get(TokenRevocationPostEndpoint::class))

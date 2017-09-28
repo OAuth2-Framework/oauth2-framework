@@ -13,11 +13,9 @@ declare(strict_types=1);
 
 use OAuth2Framework\Bundle\Server\Model\ClientRepository;
 use OAuth2Framework\Component\Server\Command\Client;
-use OAuth2Framework\Component\Server\GrantType\GrantTypeManager;
 use OAuth2Framework\Component\Server\Model\Client\Rule;
 use OAuth2Framework\Component\Server\Model\Client\Rule\RuleManager;
-use OAuth2Framework\Component\Server\ResponseType\ResponseTypeManager;
-use OAuth2Framework\Component\Server\TokenEndpointAuthMethod\TokenEndpointAuthMethodManager;
+use function Fluent\autowire;
 use function Fluent\create;
 use function Fluent\get;
 
@@ -29,7 +27,7 @@ return [
             get('cache.app')
         ),
 
-    RuleManager::class => create(),
+    RuleManager::class => autowire(),
 
     Rule\UserParametersRule::class => create()
         ->tag('oauth2_server_client_rule'),
@@ -43,11 +41,7 @@ return [
     Rule\CommonParametersRule::class => create()
         ->tag('oauth2_server_client_rule'),
 
-    Rule\GrantTypeFlowRule::class => create()
-        ->arguments(
-            get(GrantTypeManager::class),
-            get(ResponseTypeManager::class)
-        )
+    Rule\GrantTypeFlowRule::class => autowire()
         ->tag('oauth2_server_client_rule'),
 
     Rule\RedirectionUriRule::class => create()
@@ -66,29 +60,15 @@ return [
         )
         ->tag('oauth2_server_client_rule'),
 
-    Rule\TokenEndpointAuthMethodEndpointRule::class => create()
-        ->arguments(
-            get(TokenEndpointAuthMethodManager::class)
-        )
+    Rule\TokenEndpointAuthMethodEndpointRule::class => autowire()
         ->tag('oauth2_server_client_rule'),
 
-    Client\CreateClientCommandHandler::class => create()
-        ->arguments(
-            get(ClientRepository::class),
-            get(RuleManager::class)
-        )
+    Client\CreateClientCommandHandler::class => autowire()
         ->tag('command_handler', ['handles' => Client\CreateClientCommand::class]),
 
-    Client\DeleteClientCommandHandler::class => create()
-        ->arguments(
-            get(ClientRepository::class)
-        )
+    Client\DeleteClientCommandHandler::class => autowire()
         ->tag('command_handler', ['handles' => Client\DeleteClientCommand::class]),
 
-    Client\UpdateClientCommandHandler::class => create()
-        ->arguments(
-            get(ClientRepository::class),
-            get(RuleManager::class)
-        )
+    Client\UpdateClientCommandHandler::class => autowire()
         ->tag('command_handler', ['handles' => Client\UpdateClientCommand::class]),
 ];

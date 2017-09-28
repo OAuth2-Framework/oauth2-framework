@@ -12,11 +12,11 @@ declare(strict_types=1);
  */
 
 use OAuth2Framework\Bundle\Server\Controller\ClientConfigurationMiddleware;
-use OAuth2Framework\Bundle\Server\Model\ClientRepository;
 use OAuth2Framework\Component\Server\Endpoint\ClientConfiguration\ClientConfigurationEndpoint;
 use OAuth2Framework\Component\Server\Middleware\OAuth2ResponseMiddleware;
 use OAuth2Framework\Component\Server\Middleware\Pipe;
 use OAuth2Framework\Component\Server\TokenType\BearerToken;
+use function Fluent\autowire;
 use function Fluent\create;
 use function Fluent\get;
 use OAuth2Framework\Component\Server\Middleware\JsonBodyParserMiddleware;
@@ -38,10 +38,7 @@ return [
             '%oauth2_server.endpoint.client_configuration.query_string%'
         ),
 
-    ClientConfigurationMiddleware::class => create()
-        ->arguments(
-            get(ClientRepository::class)
-        ),
+    ClientConfigurationMiddleware::class => autowire(),
 
     ClientConfigurationEndpoint::class => create()
         ->arguments(

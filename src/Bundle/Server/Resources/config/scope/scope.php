@@ -13,22 +13,12 @@ declare(strict_types=1);
 
 use OAuth2Framework\Component\Server\Endpoint\Authorization\ParameterChecker\ScopeParameterChecker;
 use OAuth2Framework\Component\Server\Model\Client\Rule;
-use OAuth2Framework\Component\Server\Model\Scope\ScopeRepositoryInterface;
-use OAuth2Framework\Component\Server\Model\Scope\ScopePolicyManager;
-use function Fluent\create;
-use function Fluent\get;
+use function Fluent\autowire;
 
 return [
-    Rule\ScopeRule::class => create()
-        ->arguments(
-            get(ScopeRepositoryInterface::class)
-        )
+    Rule\ScopeRule::class => autowire()
         ->tag('oauth2_server_client_rule'),
 
-    ScopeParameterChecker::class => create()
-        ->arguments(
-            get(ScopeRepositoryInterface::class),
-            get(ScopePolicyManager::class)->nullIfMissing()
-        )
+    ScopeParameterChecker::class => autowire()
         ->tag('oauth2_server_authorization_parameter_checker'),
 ];

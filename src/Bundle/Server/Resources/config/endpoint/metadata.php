@@ -14,6 +14,7 @@ declare(strict_types=1);
 use OAuth2Framework\Bundle\Server\Service\MetadataBuilder;
 use OAuth2Framework\Bundle\Server\Controller\MetadataController;
 use OAuth2Framework\Component\Server\Middleware\Pipe;
+use function Fluent\autowire;
 use function Fluent\create;
 use function Fluent\get;
 
@@ -23,14 +24,7 @@ return [
             get(MetadataController::class),
         ]),
 
-    MetadataController::class => create()
-        ->arguments(
-            get('oauth2_server.http.response_factory'),
-            get(MetadataBuilder::class)
-        ),
+    MetadataController::class => autowire(),
 
-    MetadataBuilder::class => create()
-        ->arguments(
-            get('router')
-        ),
+    MetadataBuilder::class => autowire(),
 ];

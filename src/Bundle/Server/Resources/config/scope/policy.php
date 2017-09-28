@@ -15,7 +15,7 @@ use OAuth2Framework\Component\Server\Model\Scope\NoScopePolicy;
 use OAuth2Framework\Component\Server\Model\Client\Rule;
 use OAuth2Framework\Component\Server\Model\Scope\ScopePolicyManager;
 use function Fluent\create;
-use function Fluent\get;
+use function Fluent\autowire;
 
 return [
     ScopePolicyManager::class => create(),
@@ -23,9 +23,6 @@ return [
     NoScopePolicy::class => create()
         ->tag('oauth2_server_scope_policy', ['policy_name' => 'none']),
 
-    Rule\ScopePolicyRule::class => create()
-        ->arguments(
-            get(ScopePolicyManager::class)
-        )
+    Rule\ScopePolicyRule::class => autowire()
         ->tag('oauth2_server_client_rule'),
 ];
