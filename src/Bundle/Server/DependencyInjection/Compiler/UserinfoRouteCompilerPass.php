@@ -41,7 +41,7 @@ final class UserinfoRouteCompilerPass implements CompilerPassInterface
             [], // options
             '', // host
             ['https'], // schemes
-            ['GET'], // methods
+            ['GET', 'POST'], // methods
             '', // condition
         ]);
 

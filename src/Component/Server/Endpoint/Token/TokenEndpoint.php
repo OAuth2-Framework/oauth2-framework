@@ -14,17 +14,16 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\Server\Endpoint\Token;
 
 use Interop\Http\Factory\ResponseFactoryInterface;
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface;
-use OAuth2Framework\Component\Server\Command\AccessToken\CreateAccessTokenCommand;
-use OAuth2Framework\Component\Server\Command\AccessToken\CreateAccessTokenWithRefreshTokenCommand;
-use OAuth2Framework\Component\Server\DataTransporter;
+use Interop\Http\Server\RequestHandlerInterface;
+use Interop\Http\Server\MiddlewareInterface;
 use OAuth2Framework\Component\Server\Endpoint\Token\Processor\ProcessorManager;
 use OAuth2Framework\Component\Server\GrantType\GrantTypeInterface;
 use OAuth2Framework\Component\Server\Model\AccessToken\AccessToken;
+use OAuth2Framework\Component\Server\Model\AccessToken\AccessTokenRepositoryInterface;
 use OAuth2Framework\Component\Server\Model\Client\Client;
 use OAuth2Framework\Component\Server\Model\Client\ClientId;
 use OAuth2Framework\Component\Server\Model\Client\ClientRepositoryInterface;
+use OAuth2Framework\Component\Server\Model\RefreshToken\RefreshTokenRepositoryInterface;
 use OAuth2Framework\Component\Server\Model\ResourceOwner\ResourceOwnerId;
 use OAuth2Framework\Component\Server\Model\ResourceOwner\ResourceOwnerInterface;
 use OAuth2Framework\Component\Server\Model\UserAccount\UserAccountId;
@@ -33,7 +32,6 @@ use OAuth2Framework\Component\Server\Response\OAuth2Exception;
 use OAuth2Framework\Component\Server\Response\OAuth2ResponseFactoryManager;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use SimpleBus\Message\Bus\MessageBus;
 
 final class TokenEndpoint implements MiddlewareInterface
 {
@@ -63,34 +61,41 @@ final class TokenEndpoint implements MiddlewareInterface
     private $responseFactory;
 
     /**
-     * @var MessageBus
+     * @var AccessTokenRepositoryInterface
      */
-    private $commandBus;
+    private $accessTokenRepository;
+
+    /**
+     * @var RefreshTokenRepositoryInterface
+     */
+    private $refreshTokenRepository;
 
     /**
      * TokenEndpoint constructor.
      *
-     * @param ProcessorManager               $processorManager
-     * @param ClientRepositoryInterface      $clientRepository
-     * @param UserAccountRepositoryInterface $userAccountRepository
-     * @param TokenEndpointExtensionManager  $tokenEndpointExtensionManager
-     * @param ResponseFactoryInterface       $responseFactory
-     * @param MessageBus                     $commandBus
+     * @param ProcessorManager                $processorManager
+     * @param ClientRepositoryInterface       $clientRepository
+     * @param UserAccountRepositoryInterface  $userAccountRepository
+     * @param TokenEndpointExtensionManager   $tokenEndpointExtensionManager
+     * @param ResponseFactoryInterface        $responseFactory
+     * @param AccessTokenRepositoryInterface  $accessTokenRepository
+     * @param RefreshTokenRepositoryInterface $refreshTokenRepository
      */
-    public function __construct(ProcessorManager $processorManager, ClientRepositoryInterface $clientRepository, UserAccountRepositoryInterface $userAccountRepository, TokenEndpointExtensionManager $tokenEndpointExtensionManager, ResponseFactoryInterface $responseFactory, MessageBus $commandBus)
+    public function __construct(ProcessorManager $processorManager, ClientRepositoryInterface $clientRepository, UserAccountRepositoryInterface $userAccountRepository, TokenEndpointExtensionManager $tokenEndpointExtensionManager, ResponseFactoryInterface $responseFactory, AccessTokenRepositoryInterface $accessTokenRepository, RefreshTokenRepositoryInterface $refreshTokenRepository)
     {
         $this->processorManager = $processorManager;
         $this->clientRepository = $clientRepository;
         $this->userAccountRepository = $userAccountRepository;
         $this->tokenEndpointExtensionManager = $tokenEndpointExtensionManager;
         $this->responseFactory = $responseFactory;
-        $this->commandBus = $commandBus;
+        $this->accessTokenRepository = $accessTokenRepository;
+        $this->refreshTokenRepository = $refreshTokenRepository;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $requestHandler)
     {
         $grantTypeData = GrantTypeData::create($request->getAttribute('client'));
 
@@ -152,27 +157,38 @@ final class TokenEndpoint implements MiddlewareInterface
      */
     private function issueAccessToken(GrantTypeData $grantTypeData): AccessToken
     {
-        $dataTransporter = new DataTransporter();
         if ($grantTypeData->hasRefreshToken()) {
-            $class = CreateAccessTokenWithRefreshTokenCommand::class;
+            $refreshToken = $this->refreshTokenRepository->create(
+                $grantTypeData->getResourceOwnerId(),
+                $grantTypeData->getClient()->getPublicId(),
+                $grantTypeData->getParameters(),
+                $grantTypeData->getMetadatas(),
+                $grantTypeData->getScopes(),
+                null,
+                null
+            );
         } else {
-            $class = CreateAccessTokenCommand::class;
+            $refreshToken = null;
         }
 
-        $command = $class::create(
-            $grantTypeData->getClient()->getPublicId(),
+        $accessToken = $this->accessTokenRepository->create(
             $grantTypeData->getResourceOwnerId(),
+            $grantTypeData->getClient()->getPublicId(),
             $grantTypeData->getParameters(),
             $grantTypeData->getMetadatas(),
             $grantTypeData->getScopes(),
+            null === $refreshToken ? null : $refreshToken->getTokenId(),
             null,
-            null,
-            $dataTransporter
+            null
         );
 
-        $this->commandBus->handle($command);
+        if (null !== $refreshToken) {
+            $refreshToken = $refreshToken->addAccessToken($accessToken->getTokenId());
+            $this->refreshTokenRepository->save($refreshToken);
+        }
+        $this->accessTokenRepository->save($accessToken);
 
-        return $dataTransporter->getData();
+        return $accessToken;
     }
 
     /**

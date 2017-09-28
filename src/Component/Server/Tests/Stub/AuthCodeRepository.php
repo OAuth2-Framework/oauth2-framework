@@ -21,14 +21,14 @@ use OAuth2Framework\Component\Server\Model\DataBag\DataBag;
 use OAuth2Framework\Component\Server\Model\Event\EventStoreInterface;
 use OAuth2Framework\Component\Server\Model\ResourceServer\ResourceServerId;
 use OAuth2Framework\Component\Server\Model\UserAccount\UserAccountId;
-use SimpleBus\Message\Recorder\RecordsMessages;
+use SimpleBus\Message\Bus\MessageBus;
 
 final class AuthCodeRepository implements AuthCodeRepositoryInterface
 {
     /**
-     * @var RecordsMessages
+     * @var MessageBus
      */
-    private $eventRecorder;
+    private $eventBus;
 
     /**
      * @var EventStoreInterface
@@ -44,13 +44,13 @@ final class AuthCodeRepository implements AuthCodeRepositoryInterface
      * AuthCodeRepository constructor.
      *
      * @param EventStoreInterface $eventStore
-     * @param RecordsMessages     $eventRecorder
+     * @param MessageBus          $eventBus
      * @param string              $lifetime
      */
-    public function __construct(EventStoreInterface $eventStore, RecordsMessages $eventRecorder, string $lifetime)
+    public function __construct(EventStoreInterface $eventStore, MessageBus $eventBus, string $lifetime)
     {
         $this->eventStore = $eventStore;
-        $this->eventRecorder = $eventRecorder;
+        $this->eventBus = $eventBus;
         $this->lifetime = $lifetime;
         $this->createAndSaveAuthCode(
             AuthCodeId::create('VALID_AUTH_CODE'),
@@ -172,7 +172,7 @@ final class AuthCodeRepository implements AuthCodeRepositoryInterface
         $events = $authCode->recordedMessages();
         foreach ($events as $event) {
             $this->eventStore->save($event);
-            $this->eventRecorder->record($event);
+            $this->eventBus->handle($event);
         }
         $authCode->eraseMessages();
     }

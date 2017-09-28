@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Server\Controller;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use Interop\Http\Server\RequestHandlerInterface;
+use Interop\Http\Server\MiddlewareInterface;
 use OAuth2Framework\Component\Server\Model\Client\ClientId;
 use OAuth2Framework\Component\Server\Model\Client\ClientRepositoryInterface;
 use OAuth2Framework\Component\Server\Response\OAuth2Exception;
@@ -41,7 +41,7 @@ final class ClientConfigurationMiddleware implements MiddlewareInterface
     /**
      * {@inheritdoc}
      */
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $requestHandler)
     {
         $routeParameters = $request->getAttribute('_route_params');
         if (!is_array($routeParameters) || !array_key_exists('client_id', $routeParameters) || null === $client = $this->clientRepository->find(ClientId::create($routeParameters['client_id']))) {
@@ -49,6 +49,6 @@ final class ClientConfigurationMiddleware implements MiddlewareInterface
         }
         $request = $request->withAttribute('client', $client);
 
-        return $delegate->process($request);
+        return $requestHandler->handle($request);
     }
 }

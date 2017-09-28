@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\Endpoint\Authorization;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use Interop\Http\Server\RequestHandlerInterface;
+use Interop\Http\Server\MiddlewareInterface;
 use OAuth2Framework\Component\Server\Endpoint\Authorization\AfterConsentScreen\AfterConsentScreenManager;
 use OAuth2Framework\Component\Server\Endpoint\Authorization\BeforeConsentScreen\BeforeConsentScreenManager;
 use OAuth2Framework\Component\Server\Endpoint\Authorization\UserAccountDiscovery\UserAccountDiscoveryManager;
@@ -81,7 +81,7 @@ abstract class AuthorizationEndpoint implements MiddlewareInterface
     /**
      * {@inheritdoc}
      */
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $requestHandler)
     {
         try {
             $authorization = $this->authorizationFactory->createAuthorizationFromRequest($request);
@@ -104,9 +104,11 @@ abstract class AuthorizationEndpoint implements MiddlewareInterface
                 if (null !== $redirectUri && null !== $responseMode) {
                     $data['redirect_uri'] = $redirectUri;
                     $data['response_mode'] = $responseMode;
+
                     throw new OAuth2Exception(302, $data, $e);
                 }
             }
+
             throw $e;
         } catch (Exception\ProcessAuthorizationException $e) {
             $authorization = $e->getAuthorization();
@@ -171,7 +173,6 @@ abstract class AuthorizationEndpoint implements MiddlewareInterface
             'error_description' => $error_description,
         ];
         $params += $authorization->getResponseParameters();
-
         if (null === $authorization->getResponseMode() || null === $authorization->getRedirectUri()) {
             throw new OAuth2Exception(400, $params);
         }

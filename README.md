@@ -3,25 +3,24 @@ OAuth2 And OpenID Connect Framework for PHP
 
 Help me out for a couple of :beers:!
 
-[![Beerpay](https://beerpay.io/OAuth2-Framework/OAuth2-Framework.github.io/badge.svg)](https://beerpay.io/OAuth2-Framework/OAuth2-Framework.github.io)
-[![Beerpay](https://beerpay.io/OAuth2-Framework/OAuth2-Framework.github.io/make-wish.svg)](https://beerpay.io/OAuth2-Framework/OAuth2-Framework.github.io)
+[![Beerpay](https://beerpay.io/OAuth2-Framework/oauth2-framework/badge.svg)](https://beerpay.io/OAuth2-Framework/oauth2-framework)
+[![Beerpay](https://beerpay.io/OAuth2-Framework/oauth2-framework/make-wish.svg)](https://beerpay.io/OAuth2-Framework/oauth2-framework)
 
 ----
 
-[![Join the chat at https://gitter.im/OAuth2-Framework](https://badges.gitter.im/OAuth2-Framework.svg)](https://gitter.im/OAuth2-Framework?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/OAuth2-Framework/oauth2-framework/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/OAuth2-Framework/oauth2-framework/?branch=master)
-[![PSR-7 ready](https://img.shields.io/badge/PSR--7-ready-brightgreen.svg)](http://www.php-fig.org/psr/psr-7/)
-
 
 [![Requirements Status](https://requires.io/github/OAuth2-Framework/oauth2-framework/requirements.svg?branch=master)](https://requires.io/github/OAuth2-Framework/oauth2-framework/requirements/?branch=master)
 
 [![Build Status](https://travis-ci.org/OAuth2-Framework/oauth2-framework.svg?branch=master)](https://travis-ci.org/OAuth2-Framework/oauth2-framework)
-[![HHVM Status](http://hhvm.h4cc.de/badge/oauth2-framework/oauth2-framework.svg)](http://hhvm.h4cc.de/package/oauth2-framework/oauth2-framework)
 [![PHP 7 ready](http://php7ready.timesplinter.ch/OAuth2-Framework/oauth2-framework/master/badge.svg)](https://travis-ci.org/OAuth2-Framework/oauth2-framework)
 
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/d4172a6f-b7ac-4123-87d3-86baf36cf9a9/big.png)](https://insight.sensiolabs.com/projects/d4172a6f-b7ac-4123-87d3-86baf36cf9a9)
 
+[![Latest Stable Version](https://poser.pugx.org/oauth2-framework/oauth2-framework/v/stable.png)](https://packagist.org/packages/oauth2-framework/oauth2-framework)
+[![Total Downloads](https://poser.pugx.org/oauth2-framework/oauth2-framework/downloads.png)](https://packagist.org/packages/oauth2-framework/oauth2-framework)
+[![Latest Unstable Version](https://poser.pugx.org/oauth2-framework/oauth2-framework/v/unstable.png)](https://packagist.org/packages/oauth2-framework/oauth2-framework)
+[![License](https://poser.pugx.org/oauth2-framework/oauth2-framework/license.png)](https://packagist.org/packages/oauth2-framework/oauth2-framework)
 
 **OAuth2 Framework for PHP** is a **PHP framework** for web applications and a set of reusable
 **PHP components**. It is used to build an authorization server based on the
@@ -48,7 +47,7 @@ Please make sure to [follow these best practices](.github/CONTRIBUTING.md).
 
 # Security Issues
 
-If you discover a security vulnerability within the project, please don't use the bug tracker and don't publish it publicly.
+If you discover a security vulnerability within the project, please **don't use the bug tracker and don't publish it publicly**.
 Instead, all security issues must be sent to security [at] spomky-labs.com. 
 
 # Licence

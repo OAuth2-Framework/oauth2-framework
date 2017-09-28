@@ -22,8 +22,6 @@ use OAuth2Framework\Component\Server\Endpoint\Authorization\BeforeConsentScreen\
 use OAuth2Framework\Component\Server\Endpoint\Authorization\ParameterChecker;
 use OAuth2Framework\Component\Server\Endpoint\Authorization\ParameterChecker\ParameterCheckerManager;
 use OAuth2Framework\Component\Server\Endpoint\Authorization\UserAccountDiscovery\UserAccountDiscoveryManager;
-use OAuth2Framework\Component\Server\ResponseMode\ResponseModeManager;
-use OAuth2Framework\Component\Server\ResponseType\ResponseTypeManager;
 use OAuth2Framework\Component\Server\TokenType\TokenTypeManager;
 use function Fluent\autowire;
 use function Fluent\create;
@@ -98,14 +96,14 @@ return [
 
     ParameterChecker\StateParameterChecker::class => create()
         ->arguments(
-            true //FIXME
+            'oauth2_server.endpoint.authorization.enforce_state'
         )
         ->tag('oauth2_server_authorization_parameter_checker'),
 
     ParameterChecker\TokenTypeParameterChecker::class => create()
         ->arguments(
             get(TokenTypeManager::class),
-            true //FIXME
+            'oauth2_server.endpoint.authorization.allow_token_type_parameter'
         )
         ->tag('oauth2_server_authorization_parameter_checker'),
 

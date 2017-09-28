@@ -48,6 +48,7 @@ trait Metadata
 
             return call_user_func_array([$this, $method], $arguments);
         }
+
         throw new \BadMethodCallException(sprintf('Method "%s" does not exists.', $name));
     }
 

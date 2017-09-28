@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\Middleware;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use Interop\Http\Server\RequestHandlerInterface;
+use Interop\Http\Server\MiddlewareInterface;
 use OAuth2Framework\Component\Server\Model\Client\ClientRepositoryInterface;
 use OAuth2Framework\Component\Server\Response\OAuth2Exception;
 use OAuth2Framework\Component\Server\Response\OAuth2ResponseFactoryManager;
@@ -55,7 +55,7 @@ final class ClientAuthenticationMiddleware implements MiddlewareInterface
     /**
      * {@inheritdoc}
      */
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $requestHandler)
     {
         $clientId = $this->tokenEndpointAuthMethodManager->findClientInformationInTheRequest($request, $authentication_method, $client_credentials);
         $client = null;
@@ -78,6 +78,6 @@ final class ClientAuthenticationMiddleware implements MiddlewareInterface
             $request = $request->withAttribute('client', $client);
         }
 
-        return $delegate->process($request);
+        return $requestHandler->handle($request);
     }
 }

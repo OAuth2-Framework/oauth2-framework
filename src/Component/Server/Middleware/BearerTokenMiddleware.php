@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\Middleware;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use Interop\Http\Server\RequestHandlerInterface;
+use Interop\Http\Server\MiddlewareInterface;
 use OAuth2Framework\Component\Server\Model\AccessToken\AccessTokenId;
 use OAuth2Framework\Component\Server\Model\AccessToken\AccessTokenRepositoryInterface;
 use OAuth2Framework\Component\Server\Response\OAuth2Exception;
@@ -49,7 +49,7 @@ final class BearerTokenMiddleware implements MiddlewareInterface
     /**
      * {@inheritdoc}
      */
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $requestHandler)
     {
         $additional_credential_values = [];
         $token = $this->bearerToken->findToken($request, $additional_credential_values);
@@ -61,6 +61,6 @@ final class BearerTokenMiddleware implements MiddlewareInterface
             $request = $request->withAttribute('access_token', $accessToken);
         }
 
-        return $delegate->process($request);
+        return $requestHandler->handle($request);
     }
 }

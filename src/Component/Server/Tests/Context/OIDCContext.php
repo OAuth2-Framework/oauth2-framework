@@ -53,7 +53,7 @@ final class OIDCContext implements Context
      */
     public function aClientSendAUserinfoRequestWithoutAccessToken()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('GET');
 
         $this->responseContext->setResponse($this->applicationContext->getApplication()->getUserInfoEndpointPipe()->dispatch($request));
@@ -64,7 +64,7 @@ final class OIDCContext implements Context
      */
     public function aClientSendsAValidUserinfoRequest()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('GET');
         $request = $request->withHeader('Authorization', 'Bearer VALID_ACCESS_TOKEN_FOR_USERINFO');
 
@@ -76,7 +76,7 @@ final class OIDCContext implements Context
      */
     public function aClientSendsAUserinfoRequestButTheAccessTokenHasNoOpenidScope()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('GET');
         $request = $request->withHeader('Authorization', 'Bearer INVALID_ACCESS_TOKEN_FOR_USERINFO');
 
@@ -88,7 +88,7 @@ final class OIDCContext implements Context
      */
     public function aClientSendsAUserinfoRequestButTheAccessTokenHasNotBeenIssuedThroughTheAuthorizationEndpoint()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('GET');
         $request = $request->withHeader('Authorization', 'Bearer ACCESS_TOKEN_ISSUED_THROUGH_TOKEN_ENDPOINT');
 
@@ -100,7 +100,7 @@ final class OIDCContext implements Context
      */
     public function aClientSendsARequestToGetTheKeysUsedByThisAuthorizationServer()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('GET');
 
         $this->responseContext->setResponse($this->applicationContext->getApplication()->getJWKSetEndpointPipe()->dispatch($request));
@@ -111,7 +111,7 @@ final class OIDCContext implements Context
      */
     public function aClientSendsARequestToGetTheSessionManagementIframe()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('GET');
 
         $this->responseContext->setResponse($this->applicationContext->getApplication()->getIFrameEndpointPipe()->dispatch($request));
@@ -122,7 +122,7 @@ final class OIDCContext implements Context
      */
     public function aClientSendARequestToTheMetadataEndpoint()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('GET');
 
         $this->responseContext->setResponse($this->applicationContext->getApplication()->getMetadataEndpointPipe()->dispatch($request));
@@ -133,7 +133,7 @@ final class OIDCContext implements Context
      */
     public function aClientSendsAnAuthorizationRequestWithMaxAgeParameterButTheUserHasToAuthenticateAgain()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([
             'client_id' => 'client1',
@@ -151,7 +151,7 @@ final class OIDCContext implements Context
      */
     public function aClientSendsAnAuthorizationRequestWithMaxAgeParameter()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([
             'client_id' => 'client1',
@@ -169,7 +169,7 @@ final class OIDCContext implements Context
      */
     public function aClientSendsAnAuthorizationRequestWithPromptNoneParameterButTheUserHasToAuthenticateAgain()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([
             'client_id' => 'client1',
@@ -187,7 +187,7 @@ final class OIDCContext implements Context
      */
     public function aClientSendsAnAuthorizationRequestWithPromptNoneConsentParameter()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([
             'client_id' => 'client1',
@@ -205,7 +205,7 @@ final class OIDCContext implements Context
      */
     public function aClientSendsAnAuthorizationRequestWithPromptLoginParameter()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([
             'client_id' => 'client1',
@@ -223,7 +223,7 @@ final class OIDCContext implements Context
      */
     public function aClientSendsAnAuthorizationRequestThatWasAlreadyAcceptedAndSavedByTheResourceOwner()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([
             'client_id' => 'client1',
@@ -241,7 +241,7 @@ final class OIDCContext implements Context
      */
     public function aClientSendsAnAuthorizationRequestThatWasAlreadyAcceptedAndSavedByTheResourceOwnerWithPromptConsent()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([
             'client_id' => 'client1',
@@ -260,7 +260,7 @@ final class OIDCContext implements Context
      */
     public function aClientSendsAnAuthorizationRequestWithUiLocalesParameterAndAtLeastOneLocaleIsSupported()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([
             'client_id' => 'client1',
@@ -289,7 +289,7 @@ final class OIDCContext implements Context
      */
     public function aClientSendsAnAuthorizationRequestWithUiLocalesParameterAndNoneOfThemIsSupported()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([
             'client_id' => 'client1',
@@ -318,7 +318,7 @@ final class OIDCContext implements Context
      */
     public function aClientSendsAValidAuthorizationRequestWithAValidIdTokenHintParameterButNoUserAuthenticated()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([
             'client_id' => 'client1',
@@ -336,7 +336,7 @@ final class OIDCContext implements Context
      */
     public function aClientSendsAValidAuthorizationRequestWithAValidIdTokenHintParameterButTheCurrentUserDoesNotCorrespond()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([
             'client_id' => 'client1',
@@ -354,7 +354,7 @@ final class OIDCContext implements Context
      */
     public function aClientSendsAValidAuthorizationRequestWithAnInvalidIdTokenHintParameter()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([
             'client_id' => 'client1',
@@ -372,7 +372,7 @@ final class OIDCContext implements Context
      */
     public function aClientSendsAValidAuthorizationRequestWithAValidIdTokenHintParameterButSignedWithAnUnsupportedAlgorithm()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([
             'client_id' => 'client1',
@@ -390,7 +390,7 @@ final class OIDCContext implements Context
      */
     public function aClientThatSetUserinfoAlgorithmParametersSendsAValidUserinfoRequest()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('GET');
         $request = $request->withHeader('Authorization', 'Bearer VALID_ACCESS_TOKEN_FOR_SIGNED_USERINFO');
 

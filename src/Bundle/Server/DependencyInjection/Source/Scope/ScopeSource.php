@@ -15,7 +15,6 @@ namespace OAuth2Framework\Bundle\Server\DependencyInjection\Source\Scope;
 
 use Fluent\PhpConfigFileLoader;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\ActionableSource;
-use OAuth2Framework\Bundle\Server\DependencyInjection\Source\SourceInterface;
 use OAuth2Framework\Component\Server\Model\Scope\ScopeRepositoryInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
@@ -24,18 +23,11 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 final class ScopeSource extends ActionableSource
 {
     /**
-     * @var SourceInterface[]
-     */
-    private $subSources = [];
-
-    /**
      * UserinfoSource constructor.
      */
     public function __construct()
     {
-        $this->subSources = [
-            new ScopePolicySource(),
-        ];
+        $this->addSubSource(new ScopePolicySource());
     }
 
     /**
@@ -49,21 +41,8 @@ final class ScopeSource extends ActionableSource
     /**
      * {@inheritdoc}
      */
-    public function prepend(array $bundleConfig, string $path, ContainerBuilder $container)
-    {
-        foreach ($this->subSources as $source) {
-            $source->prepend($bundleConfig, $path.'['.$this->name().']', $container);
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     protected function continueLoading(string $path, ContainerBuilder $container, array $config)
     {
-        foreach ($this->subSources as $source) {
-            $source->load($path, $container, $config);
-        }
         $container->setAlias(ScopeRepositoryInterface::class, $config['repository']);
         $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/scope'));
         $loader->load('scope.php');
@@ -88,8 +67,5 @@ final class ScopeSource extends ActionableSource
                     ->defaultNull()
                 ->end()
             ->end();
-        foreach ($this->subSources as $source) {
-            $source->addConfiguration($node);
-        }
     }
 }

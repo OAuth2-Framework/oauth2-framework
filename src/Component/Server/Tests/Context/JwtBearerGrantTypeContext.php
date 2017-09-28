@@ -48,7 +48,7 @@ final class JwtBearerGrantTypeContext implements Context
      */
     public function aClientSendsAJwtBearerGrantTypeRequestWithoutAssertion()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
             'grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer',
@@ -64,7 +64,7 @@ final class JwtBearerGrantTypeContext implements Context
      */
     public function aClientSendsAValidJwtBearerGrantTypeRequest()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
             'grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer',
@@ -80,7 +80,7 @@ final class JwtBearerGrantTypeContext implements Context
      */
     public function aClientSendsAValidJwtBearerGrantTypeRequestWithAnAssertionIssuedFromATrustedIssuer()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
             'grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer',
@@ -97,7 +97,7 @@ final class JwtBearerGrantTypeContext implements Context
      */
     public function aClientSendsAValidJwtBearerGrantTypeRequestButTheGrantTypeIsNotAllowed()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
             'grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer',
@@ -113,7 +113,7 @@ final class JwtBearerGrantTypeContext implements Context
      */
     public function aClientSendsAValidJwtBearerGrantTypeRequestButTheClientAuthenticationMismatched()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
             'grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer',

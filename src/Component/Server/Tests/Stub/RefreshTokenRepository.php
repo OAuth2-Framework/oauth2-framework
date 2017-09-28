@@ -23,7 +23,7 @@ use OAuth2Framework\Component\Server\Model\RefreshToken\RefreshTokenRepositoryIn
 use OAuth2Framework\Component\Server\Model\ResourceOwner\ResourceOwnerId;
 use OAuth2Framework\Component\Server\Model\ResourceServer\ResourceServerId;
 use OAuth2Framework\Component\Server\Model\UserAccount\UserAccountId;
-use SimpleBus\Message\Recorder\RecordsMessages;
+use SimpleBus\Message\Bus\MessageBus;
 
 final class RefreshTokenRepository implements RefreshTokenRepositoryInterface
 {
@@ -33,9 +33,9 @@ final class RefreshTokenRepository implements RefreshTokenRepositoryInterface
     private $eventStore;
 
     /**
-     * @var RecordsMessages
+     * @var MessageBus
      */
-    private $eventRecorder;
+    private $eventBus;
 
     /**
      * @var string
@@ -46,13 +46,13 @@ final class RefreshTokenRepository implements RefreshTokenRepositoryInterface
      * RefreshTokenRepository constructor.
      *
      * @param EventStoreInterface $eventStore
-     * @param RecordsMessages     $eventRecorder
+     * @param MessageBus          $eventBus
      * @param string              $lifetime
      */
-    public function __construct(EventStoreInterface $eventStore, RecordsMessages $eventRecorder, string $lifetime)
+    public function __construct(EventStoreInterface $eventStore, MessageBus $eventBus, string $lifetime)
     {
         $this->eventStore = $eventStore;
-        $this->eventRecorder = $eventRecorder;
+        $this->eventBus = $eventBus;
         $this->lifetime = $lifetime;
         $this->createAndSaveRefreshToken(
             RefreshTokenId::create('EXPIRED_REFRESH_TOKEN'),
@@ -116,7 +116,7 @@ final class RefreshTokenRepository implements RefreshTokenRepositoryInterface
         $events = $refreshToken->recordedMessages();
         foreach ($events as $event) {
             $this->eventStore->save($event);
-            $this->eventRecorder->record($event);
+            $this->eventBus->handle($event);
         }
         $refreshToken->eraseMessages();
     }

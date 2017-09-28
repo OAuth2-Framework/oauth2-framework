@@ -15,8 +15,8 @@ namespace OAuth2Framework\Component\Server\Endpoint\Metadata;
 
 use Assert\Assertion;
 use Interop\Http\Factory\ResponseFactoryInterface;
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use Interop\Http\Server\RequestHandlerInterface;
+use Interop\Http\Server\MiddlewareInterface;
 use Jose\Factory\JWSFactory;
 use Jose\SignerInterface;
 use Jose\Object\JWKSetInterface;
@@ -76,7 +76,7 @@ final class MetadataEndpoint implements MiddlewareInterface
     /**
      * {@inheritdoc}
      */
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $requestHandler)
     {
         $data = $this->metadata->jsonSerialize();
         if ($this->isSignedMetadataEnabled()) {

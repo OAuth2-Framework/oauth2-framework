@@ -15,7 +15,6 @@ namespace OAuth2Framework\Component\Server\Tests\Context;
 
 use Behat\Behat\Context\Context;
 use Interop\Http\Factory\ServerRequestFactoryInterface;
-use Interop\Http\Factory\StreamFactoryInterface;
 use OAuth2Framework\Component\Server\Tests\Application\Application;
 
 final class ApplicationContext implements Context
@@ -43,14 +42,6 @@ final class ApplicationContext implements Context
     public function getApplication(): Application
     {
         return $this->application;
-    }
-
-    /**
-     * @return StreamFactoryInterface
-     */
-    public function getStreamFactory(): StreamFactoryInterface
-    {
-        return $this->getApplication()->getStreamFactory();
     }
 
     /**

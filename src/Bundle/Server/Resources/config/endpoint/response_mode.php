@@ -11,7 +11,6 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use OAuth2Framework\Bundle\Server\Service\FormPostResponseRenderer;
 use OAuth2Framework\Component\Server\ResponseMode;
 use function Fluent\autowire;
 use function Fluent\create;
@@ -26,7 +25,7 @@ return [
     ResponseMode\FragmentResponseMode::class => autowire()
         ->tag('oauth2_server_response_mode'),
 
-    FormPostResponseRenderer::class => create()
+    ResponseTypeAndResponseModeParameterChecker::class => create()
         ->arguments(
             get('templating'),
             '@OAuth2FrameworkServerBundle/form_post/response.html.twig' //'%oauth2_server.form_post_response_mode.template%' FIXME

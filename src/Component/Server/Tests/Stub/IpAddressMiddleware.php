@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\Tests\Stub;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use Interop\Http\Server\RequestHandlerInterface;
+use Interop\Http\Server\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
@@ -91,12 +91,12 @@ class IpAddressMiddleware implements MiddlewareInterface
      *
      * {@inheritdoc}
      */
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $requestHandler)
     {
         $ipAddress = $this->determineClientIpAddress($request);
         $request = $request->withAttribute($this->attributeName, $ipAddress);
 
-        return $delegate->process($request);
+        return $requestHandler->handle($request);
     }
 
     /**
@@ -128,6 +128,7 @@ class IpAddressMiddleware implements MiddlewareInterface
                     $ip = $this->getFirstIpAddressFromHeader($request, $header);
                     if ($this->isValidIpAddress($ip)) {
                         $ipAddress = $ip;
+
                         break;
                     }
                 }
@@ -172,6 +173,7 @@ class IpAddressMiddleware implements MiddlewareInterface
                 if (strtolower(substr($headerPart, 0, 4)) == 'for=') {
                     $for = explode(']', $headerPart);
                     $headerValue = trim(substr(reset($for), 4), " \t\n\r\0\x0B".'"[]');
+
                     break;
                 }
             }

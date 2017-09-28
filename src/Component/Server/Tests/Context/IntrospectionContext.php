@@ -46,7 +46,7 @@ final class IntrospectionContext implements Context
      */
     public function anUnauthenticatedProtectedResourceTriesToGetInformationAboutAToken()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest(['REMOTE_ADDR' => '127.0.0.1']);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray(['REMOTE_ADDR' => '127.0.0.1']);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([]);
         $request = $request->withHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -59,7 +59,7 @@ final class IntrospectionContext implements Context
      */
     public function aProtectedResourceSendsAnInvalidIntrospectionRequest()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest(['REMOTE_ADDR' => '127.0.0.1']);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray(['REMOTE_ADDR' => '127.0.0.1']);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([]);
         $request = $request->withHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -73,7 +73,7 @@ final class IntrospectionContext implements Context
      */
     public function aProtectedResourceTriesToGetInformationOfATokenThatOwnsAnotherProtectedResource()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest(['REMOTE_ADDR' => '127.0.0.1']);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray(['REMOTE_ADDR' => '127.0.0.1']);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
             'token' => 'ACCESS_TOKEN_#1',
@@ -89,7 +89,7 @@ final class IntrospectionContext implements Context
      */
     public function aProtectedResourceTriesToGetInformationOfAToken()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest(['REMOTE_ADDR' => '127.0.0.1']);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray(['REMOTE_ADDR' => '127.0.0.1']);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
             'token' => 'ACCESS_TOKEN_#1',
@@ -105,7 +105,7 @@ final class IntrospectionContext implements Context
      */
     public function aProtectedResourceTriesToGetInformationOfARevokedToken()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest(['REMOTE_ADDR' => '127.0.0.1']);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray(['REMOTE_ADDR' => '127.0.0.1']);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
             'token' => 'REVOKED_ACCESS_TOKEN',

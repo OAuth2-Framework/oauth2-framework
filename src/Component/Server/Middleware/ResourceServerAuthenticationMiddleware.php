@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\Middleware;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use Interop\Http\Server\RequestHandlerInterface;
+use Interop\Http\Server\MiddlewareInterface;
 use OAuth2Framework\Component\Server\Model\ResourceServer\ResourceServerRepositoryInterface;
 use OAuth2Framework\Component\Server\Response\OAuth2Exception;
 use OAuth2Framework\Component\Server\Response\OAuth2ResponseFactoryManager;
@@ -48,7 +48,7 @@ final class ResourceServerAuthenticationMiddleware implements MiddlewareInterfac
     /**
      * {@inheritdoc}
      */
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $requestHandler)
     {
         $resourceServerId = $this->tokenIntrospectionEndpointAuthMethodManager->findResourceServerInformationInTheRequest($request, $authenticationMethod, $resourceServerCredentials);
         if (null === $resourceServerId) {
@@ -62,6 +62,6 @@ final class ResourceServerAuthenticationMiddleware implements MiddlewareInterfac
 
         $request = $request->withAttribute('resource_server', $resourceServer);
 
-        return $delegate->process($request);
+        return $requestHandler->handle($request);
     }
 }

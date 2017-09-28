@@ -1,15 +1,20 @@
 oauth2_server:
+    http:
+        client: 'Http\Mock\Client'
+        response_factory: 'Http\Factory\Diactoros\ResponseFactory'
+        request_factory: 'Http\Factory\Diactoros\RequestFactory'
+        uri_factory: 'Http\Factory\Diactoros\UriFactory'
     server_uri: 'https://oauth2.test/'
     client:
         event_store: 'EventStore.Client'
     user_account:
-        manager: 'OAuth2Framework\Component\Server\Model\UserAccount\UserAccountManagerInterface'
-        repository: 'OAuth2Framework\Component\Server\Model\UserAccount\UserAccountRepositoryInterface'
+        manager: 'MyUserAccountManager'
+        repository: 'MyUserAccountRepository'
     access_token:
         repository: 'MyAccessTokenRepository'
     resource_server:
         enabled: true
-        repository: 'OAuth2Framework\Component\Server\Model\ResourceServer\ResourceServerRepositoryInterface'
+        repository: 'MyResourceServerRepository'
     scope:
         enabled: true
         repository: 'MyScopeRepository'
@@ -42,7 +47,6 @@ oauth2_server:
             enabled: true
             secret_lifetime: 0
         client_secret_basic:
-            enabled: true
             secret_lifetime: 0
             realm: 'My OAuth2 Server'
         client_assertion_jwt:
@@ -119,41 +123,37 @@ oauth2_server:
         issuer_discovery:
             main:
                 path: '/.well-known/webfinger'
-                resource_repository: 'OAuth2Framework\Bundle\Server\Tests\TestBundle\Entity\ResourceRepository'
+                resource_repository: 'MyResourceRepository'
                 server: 'https://my-service.com:9000/'
         authorization:
             enabled: true
             path: '/authorize'
             #allow_scope_selection: true
             login_route_name: 'app_login'
-#            response_mode:
-#                allow_response_mode_parameter: true
-#                form_post:
-#                    enabled: true
-#                    template: '@OAuth2FrameworkServerBundle/form_post/response.html.twig'
-#            request_object:
-#                enabled: true
-#                signature_algorithms: ['RS512', 'HS512']
-#                claim_checkers: ['exp', 'iat', 'nbf', 'authorization_endpoint_aud']
-#                header_checkers: ['crit']
-#                encryption:
-#                    enabled: true
-#                    required: true
-#                    key_set: 'jose.key_set.encryption'
-#                    key_encryption_algorithms: ['RSA-OAEP-256']
-#                    content_encryption_algorithms: ['A256CBC-HS512']
-#                reference:
-#                    enabled: true
-#                    uris_registration_required: true
+            allow_token_type_parameter: true
+            enforce_state: false
+            enforce_secured_redirect_uri: false
+            enforce_redirect_uri_storage: false
+            response_mode:
+                allow_response_mode_parameter: true
+                form_post:
+                    enabled: true
+                    template: '@OAuth2FrameworkServerBundle/form_post/response.html.twig'
+            request_object:
+                enabled: true
+                signature_algorithms: ['RS512', 'HS512']
+                encryption:
+                    enabled: true
+                    required: true
+                    key_set: 'jose.key_set.encryption'
+                    key_encryption_algorithms: ['RSA-OAEP-256']
+                    content_encryption_algorithms: ['A256CBC-HS512']
+                reference:
+                    enabled: true
+                    uris_registration_required: true
             pre_configured_authorization:
                 enabled: true
                 event_store: 'EventStore.PreConfiguredAuthorization'
-#            enforce_secured_redirect_uri:
-#                enabled: true
-#            enforce_redirect_uri_storage:
-#                enabled: true
-#            enforce_state:
-#                enabled: true
     grant:
         authorization_code:
             enabled: true
@@ -191,7 +191,7 @@ oauth2_server:
         enabled: true
         pairwise_subject:
             enabled: true
-            service: 'pairwise_subject_identifier'
+            service: 'MyPairwiseSubjectIdentifier'
             is_default: true
         id_token:
             response_type:

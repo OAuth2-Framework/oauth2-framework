@@ -63,7 +63,7 @@ final class JwtBearerGrantTypeContext implements Context
             'grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer',
         ],
             [], [
-                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
+                'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );
@@ -79,7 +79,7 @@ final class JwtBearerGrantTypeContext implements Context
             'assertion' => $this->generateValidAssertion(),
         ],
             [], [
-                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
+                'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
             ]
         );
     }
@@ -93,7 +93,7 @@ final class JwtBearerGrantTypeContext implements Context
             'grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer',
         ],
             [], [
-                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
+                'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
             ]
         );
     }
@@ -109,7 +109,7 @@ final class JwtBearerGrantTypeContext implements Context
             'assertion' => $this->generateValidAssertionFromTrustedIssuer(),
         ],
             [], [
-                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
+                'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );
@@ -125,7 +125,7 @@ final class JwtBearerGrantTypeContext implements Context
             'assertion' => $this->generateValidAssertionButClientNotAllowed(),
         ],
             [], [
-                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
+                'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
             ]
         );
     }
@@ -142,7 +142,7 @@ final class JwtBearerGrantTypeContext implements Context
             'client_assertion' => $this->generateValidClientAssertion(),
         ],
             [], [
-                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
+                'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
             ]
         );
     }

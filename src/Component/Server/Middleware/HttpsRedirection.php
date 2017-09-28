@@ -14,8 +14,8 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\Server\Middleware;
 
 use Interop\Http\Factory\ResponseFactoryInterface;
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use Interop\Http\Server\RequestHandlerInterface;
+use Interop\Http\Server\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 final class HttpsRedirection implements MiddlewareInterface
@@ -38,7 +38,7 @@ final class HttpsRedirection implements MiddlewareInterface
     /**
      * {@inheritdoc}
      */
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $requestHandler)
     {
         if (!$this->isRequestSecured($request)) {
             $response = $this->responseFactory->createResponse(302);
@@ -49,7 +49,7 @@ final class HttpsRedirection implements MiddlewareInterface
             return $response;
         }
 
-        return $delegate->process($request);
+        return $requestHandler->handle($request);
     }
 
     /**

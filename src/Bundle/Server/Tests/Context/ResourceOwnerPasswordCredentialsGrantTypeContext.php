@@ -57,7 +57,7 @@ final class ResourceOwnerPasswordCredentialsGrantTypeContext implements Context
             'grant_type' => 'password',
         ],
             [], [
-                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
+                'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );
@@ -73,7 +73,7 @@ final class ResourceOwnerPasswordCredentialsGrantTypeContext implements Context
             'username' => 'john.1',
         ],
             [], [
-                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
+                'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );
@@ -90,7 +90,7 @@ final class ResourceOwnerPasswordCredentialsGrantTypeContext implements Context
             'password' => 'BAD PASSWORD',
         ],
             [], [
-                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
+                'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );
@@ -108,7 +108,7 @@ final class ResourceOwnerPasswordCredentialsGrantTypeContext implements Context
             'scope' => 'email phone address',
         ],
             [], [
-                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
+                'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );
@@ -126,7 +126,7 @@ final class ResourceOwnerPasswordCredentialsGrantTypeContext implements Context
             'client_id' => 'client2',
         ],
             [], [
-                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
+                'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
             ]
         );
     }

@@ -18,6 +18,7 @@ use OAuth2Framework\Bundle\Server\DependencyInjection\Source\AccessTokenReposito
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\ClientSource;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\Endpoint\EndpointSource;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\Grant\GrantSource;
+use OAuth2Framework\Bundle\Server\DependencyInjection\Source\HttpSource;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\OpenIdConnect\OpenIdConnectSource;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\ResourceServerRepositorySource;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\Scope\ScopeSource;
@@ -25,7 +26,7 @@ use OAuth2Framework\Bundle\Server\DependencyInjection\Source\ServerNameSource;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\SourceInterface;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\TokenEndpointAuthMethod\TokenEndpointAuthMethodSource;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\TokenType\TokenTypeSource;
-use OAuth2Framework\Bundle\Server\DependencyInjection\Source\UserAccountRepositorySource;
+use OAuth2Framework\Bundle\Server\DependencyInjection\Source\UserAccountSource;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
@@ -125,13 +126,13 @@ final class OAuth2FrameworkServerExtension extends Extension implements PrependE
     {
         $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $files = [
-            'service',
             'access_token',
             'access_token_handler',
             'route_loader',
             'token_type_hint',
             'oauth2_response',
             'user_account_discovery',
+            'content_parser_middleware',
         ];
         foreach ($files as $basename) {
             $loader->load(sprintf('%s.php', $basename));
@@ -144,7 +145,7 @@ final class OAuth2FrameworkServerExtension extends Extension implements PrependE
             new ClientSource(),
             new ServerNameSource(),
             new AccessTokenRepositorySource(),
-            new UserAccountRepositorySource(),
+            new UserAccountSource(),
             new ResourceServerRepositorySource(),
             new TokenTypeSource(),
             new TokenEndpointAuthMethodSource(),
@@ -152,6 +153,7 @@ final class OAuth2FrameworkServerExtension extends Extension implements PrependE
             new EndpointSource(),
             new ScopeSource(),
             new OpenIdConnectSource(),
+            new HttpSource(),
         ];
     }
 }

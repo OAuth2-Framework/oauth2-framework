@@ -135,6 +135,7 @@ final class UserInfo
                 $claim_value = $this->getUserClaim($userAccount, $claim_locale, $config);
                 if (null !== $claim_value) {
                     $result[$claim_locale] = $claim_value;
+
                     break;
                 }
             }

@@ -285,6 +285,7 @@ final class AuthorizationRequestLoader
                 return;
             }
         }
+
         throw new OAuth2Exception(400, ['error' => OAuth2ResponseFactoryManager::ERROR_INVALID_REQUEST_URI, 'error_description' => 'The request Uri is not allowed.']);
     }
 

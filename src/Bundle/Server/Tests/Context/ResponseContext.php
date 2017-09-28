@@ -198,6 +198,7 @@ final class ResponseContext implements Context
         if (mb_substr($location, 0, mb_strlen($pattern, '8bit'), '8bit') === $pattern) {
             return;
         }
+
         throw new \InvalidArgumentException(sprintf('The location header is "%s".', $location));
     }
 
@@ -214,6 +215,7 @@ final class ResponseContext implements Context
         if (array_key_exists($parameter, $data)) {
             return;
         }
+
         throw new \InvalidArgumentException(sprintf('The location header is "%s".', $location));
     }
 
@@ -232,6 +234,7 @@ final class ResponseContext implements Context
 
             return;
         }
+
         throw new \InvalidArgumentException(sprintf('The location header is "%s".', $location));
     }
 
@@ -248,6 +251,7 @@ final class ResponseContext implements Context
         if (array_key_exists($parameter, $data)) {
             return;
         }
+
         throw new \InvalidArgumentException(sprintf('The location header is "%s".', $location));
     }
 
@@ -266,6 +270,7 @@ final class ResponseContext implements Context
 
             return;
         }
+
         throw new \InvalidArgumentException(sprintf('The location header is "%s".', $location));
     }
 
@@ -278,6 +283,7 @@ final class ResponseContext implements Context
         if (mb_substr($location, -mb_strlen($pattern, '8bit'), null, '8bit') === $pattern) {
             return;
         }
+
         throw new \InvalidArgumentException(sprintf('The location header is "%s".', $location));
     }
 
@@ -296,6 +302,7 @@ final class ResponseContext implements Context
 
             return;
         }
+
         throw new \InvalidArgumentException(sprintf('The location header is "%s".', $location));
     }
 

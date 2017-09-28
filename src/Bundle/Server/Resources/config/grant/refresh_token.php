@@ -12,7 +12,6 @@ declare(strict_types=1);
  */
 
 use OAuth2Framework\Bundle\Server\Model\RefreshTokenRepository;
-use OAuth2Framework\Component\Server\Command\RefreshToken;
 use OAuth2Framework\Component\Server\GrantType\RefreshTokenGrantType;
 use OAuth2Framework\Component\Server\Model\RefreshToken\RefreshTokenRepositoryInterface;
 use OAuth2Framework\Component\Server\TokenTypeHint\RefreshTokenTypeHint;
@@ -27,19 +26,12 @@ return [
             '%oauth2_server.grant.refresh_token.max_length%',
             '%oauth2_server.grant.refresh_token.lifetime%',
             get('oauth2_server.grant.refresh_token.event_store'),
-            get('event_recorder'),
+            get('event_bus'),
             get('cache.app')
         ),
 
     RefreshTokenGrantType::class => autowire()
         ->tag('oauth2_server_grant_type'),
-
-    //Commands
-    RefreshToken\CreateRefreshTokenCommandHandler::class => autowire()
-        ->tag('command_handler', ['handles' => RefreshToken\CreateRefreshTokenCommand::class]),
-
-    RefreshToken\RevokeRefreshTokenCommandHandler::class => autowire()
-        ->tag('command_handler', ['handles' => RefreshToken\RevokeRefreshTokenCommand::class]),
 
     RefreshTokenTypeHint::class => create()
         ->arguments(

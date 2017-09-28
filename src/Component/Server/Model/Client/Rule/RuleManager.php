@@ -24,19 +24,12 @@ final class RuleManager
     private $rules = [];
 
     /**
-     * @var ClientIdRuleInterface
-     */
-    private $clientIdRule;
-
-    /**
      * RuleManager constructor.
      *
-     * @param ClientIdRuleInterface $clientIdRule
-     * @param array                 $rules
+     * @param array $rules
      */
-    public function __construct(ClientIdRuleInterface $clientIdRule, array $rules = [])
+    public function __construct(array $rules = [])
     {
-        $this->clientIdRule = $clientIdRule;
         foreach ($rules as $rule) {
             $this->add($rule);
         }
@@ -84,10 +77,6 @@ final class RuleManager
     {
         if (!isset($this->rules[$index])) {
             return function (DataBag $commandParameters, DataBag $validatedParameters): DataBag {
-                $clientId = $this->clientIdRule->generateUniqueClientId();
-                $validatedParameters = $validatedParameters->with('client_id', $clientId);
-                $validatedParameters = $validatedParameters->with('client_id_issued_at', time());
-
                 return $validatedParameters;
             };
         }

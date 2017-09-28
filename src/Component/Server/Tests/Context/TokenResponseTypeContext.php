@@ -52,7 +52,7 @@ final class TokenResponseTypeContext implements Context
      */
     public function aClientSendsAAuthorizationRequestsWithTheTokenResponseType()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([
             'client_id' => 'client1',

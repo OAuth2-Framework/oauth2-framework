@@ -15,7 +15,6 @@ namespace OAuth2Framework\Bundle\Server\DependencyInjection\Source\Endpoint;
 
 use Fluent\PhpConfigFileLoader;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\ActionableSource;
-use OAuth2Framework\Bundle\Server\DependencyInjection\Source\SourceInterface;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -23,18 +22,11 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 final class MetadataEndpointSource extends ActionableSource
 {
     /**
-     * @var SourceInterface[]
-     */
-    private $subSources;
-
-    /**
-     * AuthorizationEndpointSource constructor.
+     * MetadataEndpointSource constructor.
      */
     public function __construct()
     {
-        $this->subSources = [
-            new SignedMetadataEndpointSource(),
-        ];
+        $this->addSubSource(new SignedMetadataEndpointSource());
     }
 
     /**
@@ -47,17 +39,6 @@ final class MetadataEndpointSource extends ActionableSource
         }
         $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint'));
         $loader->load('metadata.php');
-        foreach ($this->subSources as $source) {
-            $source->load($path, $container, $config);
-        }
-    }
-
-    public function prepend(array $bundleConfig, string $path, ContainerBuilder $container)
-    {
-        parent::prepend($bundleConfig, $path, $container);
-        foreach ($this->subSources as $source) {
-            $source->prepend($bundleConfig, $path.'['.$this->name().']', $container);
-        }
     }
 
     /**
@@ -109,8 +90,5 @@ final class MetadataEndpointSource extends ActionableSource
                     ->treatNullLike([])
                 ->end()
             ->end();
-        foreach ($this->subSources as $source) {
-            $source->addConfiguration($node);
-        }
     }
 }

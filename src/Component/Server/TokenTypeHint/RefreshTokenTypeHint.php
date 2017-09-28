@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\TokenTypeHint;
 
-use OAuth2Framework\Component\Server\Command\RefreshToken\RevokeRefreshTokenCommand;
 use OAuth2Framework\Component\Server\Model\RefreshToken\RefreshToken;
 use OAuth2Framework\Component\Server\Model\RefreshToken\RefreshTokenId;
 use OAuth2Framework\Component\Server\Model\RefreshToken\RefreshTokenRepositoryInterface;
@@ -70,8 +69,9 @@ final class RefreshTokenTypeHint implements TokenTypeHintInterface
         if (!$token instanceof RefreshToken || true === $token->isRevoked()) {
             return;
         }
-        $revokeRefreshTokenCommand = RevokeRefreshTokenCommand::create($token->getRefreshTokenId());
-        $this->commandBus->handle($revokeRefreshTokenCommand);
+
+        $token = $token->markAsRevoked();
+        $this->refreshTokenRepository->save($token);
     }
 
     /**

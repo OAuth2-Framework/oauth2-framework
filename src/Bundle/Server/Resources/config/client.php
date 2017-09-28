@@ -12,7 +12,6 @@ declare(strict_types=1);
  */
 
 use OAuth2Framework\Bundle\Server\Model\ClientRepository;
-use OAuth2Framework\Bundle\Server\Rule\ClientIdRule;
 use OAuth2Framework\Component\Server\Command\Client;
 use OAuth2Framework\Component\Server\Model\Client\Rule;
 use OAuth2Framework\Component\Server\Model\Client\Rule\RuleManager;
@@ -28,9 +27,16 @@ return [
             get('cache.app')
         ),
 
-    ClientIdRule::class => create(),
-
     RuleManager::class => autowire(),
+
+    Rule\UserParametersRule::class => create()
+        ->tag('oauth2_server_client_rule'),
+
+    Rule\ApplicationTypeParametersRule::class => create()
+        ->tag('oauth2_server_client_rule'),
+
+    Rule\ContactsParametersRule::class => create()
+        ->tag('oauth2_server_client_rule'),
 
     Rule\CommonParametersRule::class => create()
         ->tag('oauth2_server_client_rule'),
@@ -41,13 +47,16 @@ return [
     Rule\RedirectionUriRule::class => create()
         ->tag('oauth2_server_client_rule'),
 
+    Rule\ClientIdRule::class => create()
+        ->tag('oauth2_server_client_rule'),
+
     Rule\RequestUriRule::class => create()
         ->tag('oauth2_server_client_rule'),
 
     Rule\SectorIdentifierUriRule::class => create()
         ->arguments(
-            get('oauth2_server.http.request_factory'), //FIXME
-            get('oauth2_server.http.client') //FIXME
+            get('oauth2_server.http.request_factory'),
+            get('oauth2_server.http.client')
         )
         ->tag('oauth2_server_client_rule'),
 

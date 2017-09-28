@@ -13,14 +13,12 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\ResponseType;
 
-use OAuth2Framework\Component\Server\Command\AuthCode\CreateAuthCodeCommand;
-use OAuth2Framework\Component\Server\DataTransporter;
 use OAuth2Framework\Component\Server\Endpoint\Authorization\Authorization;
 use OAuth2Framework\Component\Server\GrantType\PKCEMethod\PKCEMethodManager;
+use OAuth2Framework\Component\Server\Model\AuthCode\AuthCodeRepositoryInterface;
 use OAuth2Framework\Component\Server\Model\DataBag\DataBag;
 use OAuth2Framework\Component\Server\Response\OAuth2Exception;
 use OAuth2Framework\Component\Server\Response\OAuth2ResponseFactoryManager;
-use SimpleBus\Message\Bus\MessageBus;
 
 final class CodeResponseType implements ResponseTypeInterface
 {
@@ -30,26 +28,26 @@ final class CodeResponseType implements ResponseTypeInterface
     private $pkceForPublicClientsEnforced;
 
     /**
-     * @var MessageBus
+     * @var AuthCodeRepositoryInterface
      */
-    private $commandBus;
+    private $authCodeRepository;
 
     /**
      * @var PKCEMethodManager
      */
-    private $PKCEMethodManager;
+    private $pkceMethodManager;
 
     /**
      * CodeResponseType constructor.
      *
-     * @param MessageBus        $commandBus
-     * @param PKCEMethodManager $PKCEMethodManager
-     * @param bool              $pkceForPublicClientsEnforced
+     * @param AuthCodeRepositoryInterface $authCodeRepository
+     * @param PKCEMethodManager           $pkceMethodManager
+     * @param bool                        $pkceForPublicClientsEnforced
      */
-    public function __construct(MessageBus $commandBus, PKCEMethodManager $PKCEMethodManager, bool $pkceForPublicClientsEnforced)
+    public function __construct(AuthCodeRepositoryInterface $authCodeRepository, PKCEMethodManager $pkceMethodManager, bool $pkceForPublicClientsEnforced)
     {
-        $this->commandBus = $commandBus;
-        $this->PKCEMethodManager = $PKCEMethodManager;
+        $this->authCodeRepository = $authCodeRepository;
+        $this->pkceMethodManager = $pkceMethodManager;
         $this->pkceForPublicClientsEnforced = $pkceForPublicClientsEnforced;
     }
 
@@ -91,13 +89,12 @@ final class CodeResponseType implements ResponseTypeInterface
             }
         } else {
             $codeChallengeMethod = array_key_exists('code_challenge_method', $queryParams) ? $queryParams['code_challenge_method'] : 'plain';
-            if (!$this->PKCEMethodManager->has($codeChallengeMethod)) {
+            if (!$this->pkceMethodManager->has($codeChallengeMethod)) {
                 throw new OAuth2Exception(400, ['error' => OAuth2ResponseFactoryManager::ERROR_INVALID_REQUEST, 'error_description' => sprintf('The challenge method \'%s\' is not supported.', $codeChallengeMethod)]);
             }
         }
 
-        $dataTransporter = new DataTransporter();
-        $command = CreateAuthCodeCommand::create(
+        $authCode = $this->authCodeRepository->create(
             $authorization->getClient()->getPublicId(),
             $authorization->getUserAccount()->getPublicId(),
             $queryParams,
@@ -107,12 +104,11 @@ final class CodeResponseType implements ResponseTypeInterface
             $authorization->getScopes(),
             $offlineAccess,
             null,
-            $authorization->getResourceServer() ? $authorization->getResourceServer()->getResourceServerId() : null,
-            $dataTransporter
+            null
         );
-        $this->commandBus->handle($command);
+        $this->authCodeRepository->save($authCode);
 
-        $authorization = $authorization->withResponseParameter('code', $dataTransporter->getData()->getTokenId()->getValue());
+        $authorization = $authorization->withResponseParameter('code', $authCode->getTokenId()->getValue());
 
         return $next($authorization);
     }

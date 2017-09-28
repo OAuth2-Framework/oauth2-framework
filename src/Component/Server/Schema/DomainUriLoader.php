@@ -13,10 +13,10 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\Schema;
 
-use League\JsonGuard\Exceptions\SchemaLoadingException;
-use League\JsonGuard\Loader;
+use League\JsonReference\SchemaLoadingException;
+use League\JsonReference\LoaderInterface;
 
-final class DomainUriLoader implements Loader
+final class DomainUriLoader implements LoaderInterface
 {
     /**
      * @var string[]
@@ -63,6 +63,7 @@ final class DomainUriLoader implements Loader
 
             return json_decode($content);
         }
+
         throw SchemaLoadingException::notFound(sprintf('The schema \'%s\' is not supported.', $path));
     }
 }

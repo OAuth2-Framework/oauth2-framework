@@ -47,7 +47,7 @@ final class RevocationContext implements Context
      */
     public function aClientSendsAPostRevocationRequestButItIsNotAuthenticated()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([]);
         $request = $request->withHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -60,7 +60,7 @@ final class RevocationContext implements Context
      */
     public function aClientSendsAGetRevocationRequestButItIsNotAuthenticated()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([]);
 
@@ -72,7 +72,7 @@ final class RevocationContext implements Context
      */
     public function aClientSendsAPostRevocationRequestWithoutTokenParameter()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
         ]);
@@ -87,7 +87,7 @@ final class RevocationContext implements Context
      */
     public function aClientSendsAGetRevocationRequestWithoutTokenParameter()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([
         ]);
@@ -101,7 +101,7 @@ final class RevocationContext implements Context
      */
     public function aClientSendsAPostRevocationRequestWithoutTokenParameterWithACallbackParameter()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
             'callback' => 'foo',
@@ -117,7 +117,7 @@ final class RevocationContext implements Context
      */
     public function aClientSendsAGetRevocationRequestWithoutTokenParameterWithACallbackParameter()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([
             'callback' => 'foo',
@@ -132,7 +132,7 @@ final class RevocationContext implements Context
      */
     public function aClientSendsAValidPostRevocationRequest()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
             'token' => 'ACCESS_TOKEN_#1',
@@ -148,7 +148,7 @@ final class RevocationContext implements Context
      */
     public function aClientSendsAValidGetRevocationRequest()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([
             'token' => 'ACCESS_TOKEN_#1',
@@ -163,7 +163,7 @@ final class RevocationContext implements Context
      */
     public function aClientSendsAValidPostRevocationRequestButTheTokenOwnsToAnotherClient()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
             'token' => 'ACCESS_TOKEN_#2',
@@ -179,7 +179,7 @@ final class RevocationContext implements Context
      */
     public function aClientSendsAValidGetRevocationRequestButTheTokenOwnsToAnotherClient()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([
             'token' => 'ACCESS_TOKEN_#2',
@@ -194,7 +194,7 @@ final class RevocationContext implements Context
      */
     public function aClientSendsAPostRevocationRequestButTheTokenTypeHintIsNotSupported()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
             'token' => 'ACCESS_TOKEN_#2',
@@ -211,7 +211,7 @@ final class RevocationContext implements Context
      */
     public function aClientSendsAGetRevocationRequestButTheTokenTypeHintIsNotSupported()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([
             'token' => 'ACCESS_TOKEN_#2',
@@ -227,7 +227,7 @@ final class RevocationContext implements Context
      */
     public function aClientSendsAPostRevocationRequestButTheTokenDoesNotExistOrExpired()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('POST');
         $request = $request->withParsedBody([
             'token' => 'UNKNOWN_REFRESH_TOKEN_#2',
@@ -244,7 +244,7 @@ final class RevocationContext implements Context
      */
     public function aClientSendsAGetRevocationRequestButTheTokenDoesNotExistOrExpired()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([
             'token' => 'UNKNOWN_REFRESH_TOKEN_#2',
@@ -260,7 +260,7 @@ final class RevocationContext implements Context
      */
     public function aClientSendsAGetRevocationRequestWithCallbackButTheTokenDoesNotExistOrExpired()
     {
-        $request = $this->applicationContext->getServerRequestFactory()->createServerRequest([]);
+        $request = $this->applicationContext->getServerRequestFactory()->createServerRequestFromArray([]);
         $request = $request->withMethod('GET');
         $request = $request->withQueryParams([
             'token' => 'UNKNOWN_REFRESH_TOKEN_#2',

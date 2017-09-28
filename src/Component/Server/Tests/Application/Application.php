@@ -14,18 +14,16 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\Server\Tests\Application;
 
 use Http\Client\HttpClient;
+use Http\Factory\Diactoros\RequestFactory;
 use Http\Factory\Diactoros\ResponseFactory;
 use Http\Factory\Diactoros\ServerRequestFactory;
 use Http\Factory\Diactoros\UriFactory;
 use Http\Mock\Client;
+use Interop\Http\Factory\RequestFactoryInterface;
 use Interop\Http\Factory\ResponseFactoryInterface;
 use Interop\Http\Factory\ServerRequestFactoryInterface;
 use Interop\Http\Factory\UriFactoryInterface;
 use Jose\Checker\CheckerManager;
-use Jose\Checker\CriticalHeaderChecker;
-use Jose\Checker\ExpirationTimeChecker;
-use Jose\Checker\IssuedAtChecker;
-use Jose\Checker\NotBeforeChecker;
 use Jose\Decrypter;
 use Jose\Encrypter;
 use Jose\Factory\JWKFactory;
@@ -38,28 +36,20 @@ use Jose\Object\JWKSets;
 use Jose\Object\StorableJWKSet;
 use Jose\Signer;
 use Jose\Verifier;
-use OAuth2Framework\Component\Server\Command\AccessToken\CreateAccessTokenCommand;
-use OAuth2Framework\Component\Server\Command\AccessToken\CreateAccessTokenCommandHandler;
-use OAuth2Framework\Component\Server\Command\AccessToken\CreateAccessTokenWithRefreshTokenCommand;
-use OAuth2Framework\Component\Server\Command\AccessToken\CreateAccessTokenWithRefreshTokenCommandHandler;
-use OAuth2Framework\Component\Server\Command\AccessToken\RevokeAccessTokenCommand;
-use OAuth2Framework\Component\Server\Command\AccessToken\RevokeAccessTokenCommandHandler;
-use OAuth2Framework\Component\Server\Command\AuthCode\CreateAuthCodeCommand;
-use OAuth2Framework\Component\Server\Command\AuthCode\CreateAuthCodeCommandHandler;
-use OAuth2Framework\Component\Server\Command\AuthCode\MarkAuthCodeAsUsedCommand;
-use OAuth2Framework\Component\Server\Command\AuthCode\MarkAuthCodeAsUsedCommandHandler;
-use OAuth2Framework\Component\Server\Command\AuthCode\RevokeAuthCodeCommand;
-use OAuth2Framework\Component\Server\Command\AuthCode\RevokeAuthCodeCommandHandler;
 use OAuth2Framework\Component\Server\Command\Client\CreateClientCommand;
 use OAuth2Framework\Component\Server\Command\Client\CreateClientCommandHandler;
 use OAuth2Framework\Component\Server\Command\Client\DeleteClientCommand;
 use OAuth2Framework\Component\Server\Command\Client\DeleteClientCommandHandler;
 use OAuth2Framework\Component\Server\Command\Client\UpdateClientCommand;
 use OAuth2Framework\Component\Server\Command\Client\UpdateClientCommandHandler;
-use OAuth2Framework\Component\Server\Command\RefreshToken\CreateRefreshTokenCommand;
-use OAuth2Framework\Component\Server\Command\RefreshToken\CreateRefreshTokenCommandHandler;
-use OAuth2Framework\Component\Server\Command\RefreshToken\RevokeRefreshTokenCommand;
-use OAuth2Framework\Component\Server\Command\RefreshToken\RevokeRefreshTokenCommandHandler;
+use OAuth2Framework\Component\Server\Command\InitialAccessToken\CreateInitialAccessTokenCommand;
+use OAuth2Framework\Component\Server\Command\InitialAccessToken\CreateInitialAccessTokenCommandHandler;
+use OAuth2Framework\Component\Server\Command\InitialAccessToken\RevokeInitialAccessTokenCommand;
+use OAuth2Framework\Component\Server\Command\InitialAccessToken\RevokeInitialAccessTokenCommandHandler;
+use OAuth2Framework\Component\Server\Command\PreConfiguredAuthorization\CreatePreConfiguredAuthorizationCommand;
+use OAuth2Framework\Component\Server\Command\PreConfiguredAuthorization\CreatePreConfiguredAuthorizationCommandHandler;
+use OAuth2Framework\Component\Server\Command\PreConfiguredAuthorization\RevokePreConfiguredAuthorizationCommand;
+use OAuth2Framework\Component\Server\Command\PreConfiguredAuthorization\RevokePreConfiguredAuthorizationCommandHandler;
 use OAuth2Framework\Component\Server\Command\ResourceServer\CreateResourceServerCommand;
 use OAuth2Framework\Component\Server\Command\ResourceServer\CreateResourceServerCommandHandler;
 use OAuth2Framework\Component\Server\Command\ResourceServer\DeleteResourceServerCommand;
@@ -132,9 +122,11 @@ use OAuth2Framework\Component\Server\GrantType\PKCEMethod\S256;
 use OAuth2Framework\Component\Server\GrantType\RefreshTokenGrantType;
 use OAuth2Framework\Component\Server\GrantType\ResourceOwnerPasswordCredentialsGrantType;
 use OAuth2Framework\Component\Server\Middleware\ClientAuthenticationMiddleware;
+use OAuth2Framework\Component\Server\Middleware\FormPostBodyParserMiddleware;
 use OAuth2Framework\Component\Server\Middleware\GrantTypeMiddleware;
 use OAuth2Framework\Component\Server\Middleware\HttpMethod;
 use OAuth2Framework\Component\Server\Middleware\InitialAccessTokenMiddleware;
+use OAuth2Framework\Component\Server\Middleware\JsonBodyParserMiddleware;
 use OAuth2Framework\Component\Server\Middleware\OAuth2ResponseMiddleware;
 use OAuth2Framework\Component\Server\Middleware\OAuth2SecurityMiddleware;
 use OAuth2Framework\Component\Server\Middleware\Pipe;
@@ -142,20 +134,7 @@ use OAuth2Framework\Component\Server\Middleware\ResourceServerAuthenticationMidd
 use OAuth2Framework\Component\Server\Middleware\TokenTypeMiddleware;
 use OAuth2Framework\Component\Server\Model\AccessToken\AccessTokenRepositoryInterface;
 use OAuth2Framework\Component\Server\Model\AuthCode\AuthCodeRepositoryInterface;
-use OAuth2Framework\Component\Server\Model\Client\Rule\CommonParametersRule;
-use OAuth2Framework\Component\Server\Model\Client\Rule\GrantTypeFlowRule;
-use OAuth2Framework\Component\Server\Model\Client\Rule\IdTokenAlgorithmsRule;
-use OAuth2Framework\Component\Server\Model\Client\Rule\RedirectionUriRule;
-use OAuth2Framework\Component\Server\Model\Client\Rule\RequestUriRule;
-use OAuth2Framework\Component\Server\Model\Client\Rule\RuleManager;
-use OAuth2Framework\Component\Server\Model\Client\Rule\ScopePolicyDefaultRule;
-use OAuth2Framework\Component\Server\Model\Client\Rule\ScopePolicyRule;
-use OAuth2Framework\Component\Server\Model\Client\Rule\ScopeRule;
-use OAuth2Framework\Component\Server\Model\Client\Rule\SectorIdentifierUriRule;
-use OAuth2Framework\Component\Server\Model\Client\Rule\SoftwareRule;
-use OAuth2Framework\Component\Server\Model\Client\Rule\SubjectTypeRule;
-use OAuth2Framework\Component\Server\Model\Client\Rule\TokenEndpointAuthMethodEndpointRule;
-use OAuth2Framework\Component\Server\Model\Client\Rule\UserinfoEndpointAlgorithmsRule;
+use OAuth2Framework\Component\Server\Model\Client\Rule;
 use OAuth2Framework\Component\Server\Model\Event\EventStoreInterface;
 use OAuth2Framework\Component\Server\Model\IdToken\IdTokenBuilderFactory;
 use OAuth2Framework\Component\Server\Model\IdToken\IdTokenLoader;
@@ -193,7 +172,6 @@ use OAuth2Framework\Component\Server\Tests\Stub\AuthenticateResponseFactory;
 use OAuth2Framework\Component\Server\Tests\Stub\AuthenticateResponseFactoryForTokenIntrospection;
 use OAuth2Framework\Component\Server\Tests\Stub\AuthorizationEndpoint;
 use OAuth2Framework\Component\Server\Tests\Stub\ClientAssertionJwt;
-use OAuth2Framework\Component\Server\Tests\Stub\ClientIdRule;
 use OAuth2Framework\Component\Server\Tests\Stub\ClientRegistrationManagementRule;
 use OAuth2Framework\Component\Server\Tests\Stub\ClientRepository;
 use OAuth2Framework\Component\Server\Tests\Stub\ClientSecretBasic;
@@ -224,7 +202,6 @@ use OAuth2Framework\Component\Server\Tests\Stub\ScopeRepository;
 use OAuth2Framework\Component\Server\Tests\Stub\SecurityLayer;
 use OAuth2Framework\Component\Server\Tests\Stub\ServiceLocator;
 use OAuth2Framework\Component\Server\Tests\Stub\SessionStateParameterExtension;
-use OAuth2Framework\Component\Server\Tests\Stub\SubjectChecker;
 use OAuth2Framework\Component\Server\Tests\Stub\TrustedIssuer;
 use OAuth2Framework\Component\Server\Tests\Stub\UriExtension;
 use OAuth2Framework\Component\Server\Tests\Stub\UserAccountManager;
@@ -433,6 +410,7 @@ final class Application
             $this->clientRegistrationPipe = new Pipe();
 
             $this->clientRegistrationPipe->appendMiddleware($this->getOAuth2ResponseMiddleware());
+            $this->clientRegistrationPipe->appendMiddleware(new JsonBodyParserMiddleware());
             $this->clientRegistrationPipe->appendMiddleware($this->getInitialAccessTokenMiddleware());
             $this->clientRegistrationPipe->appendMiddleware($this->getClientRegistrationEndpoint());
         }
@@ -605,9 +583,7 @@ final class Application
     public function getClientCreatedEventHandler(): ClientCreatedEventHandler
     {
         if (null === $this->clientCreatedEventHandler) {
-            $this->clientCreatedEventHandler = new ClientCreatedEventHandler(
-                $this->getClientRepository()
-            );
+            $this->clientCreatedEventHandler = new ClientCreatedEventHandler();
         }
 
         return $this->clientCreatedEventHandler;
@@ -691,16 +667,12 @@ final class Application
                     CreateResourceServerCommand::class => CreateResourceServerCommandHandler::class,
                     DeleteResourceServerCommand::class => DeleteResourceServerCommandHandler::class,
                     UpdateResourceServerCommand::class => UpdateResourceServerCommandHandler::class,
-                    CreateAccessTokenCommand::class => CreateAccessTokenCommandHandler::class,
-                    CreateAccessTokenWithRefreshTokenCommand::class => CreateAccessTokenWithRefreshTokenCommandHandler::class,
-                    RevokeAccessTokenCommand::class => RevokeAccessTokenCommandHandler::class,
 
-                    CreateRefreshTokenCommand::class => CreateRefreshTokenCommandHandler::class,
-                    RevokeRefreshTokenCommand::class => RevokeRefreshTokenCommandHandler::class,
+                    CreateInitialAccessTokenCommand::class => CreateInitialAccessTokenCommandHandler::class,
+                    RevokeInitialAccessTokenCommand::class => RevokeInitialAccessTokenCommandHandler::class,
 
-                    CreateAuthCodeCommand::class => CreateAuthCodeCommandHandler::class,
-                    MarkAuthCodeAsUsedCommand::class => MarkAuthCodeAsUsedCommandHandler::class,
-                    RevokeAuthCodeCommand::class => RevokeAuthCodeCommandHandler::class,
+                    CreatePreConfiguredAuthorizationCommand::class => CreatePreConfiguredAuthorizationCommandHandler::class,
+                    RevokePreConfiguredAuthorizationCommand::class => RevokePreConfiguredAuthorizationCommandHandler::class,
                 ],
                 $this->getServiceLocatorAwareCallableResolver()
             );
@@ -750,16 +722,11 @@ final class Application
             $this->container->add($this->getDeleteResourceServerCommandHandler());
             $this->container->add($this->getUpdateResourceServerCommandHandler());
 
-            $this->container->add($this->getCreateAccessTokenCommandHandler());
-            $this->container->add($this->getCreateAccessTokenWithRefreshTokenCommandHandler());
-            $this->container->add($this->getRevokeAccessTokenCommandHandler());
+            $this->container->add($this->getCreateInitialAccessTokenCommandHandler());
+            $this->container->add($this->getRevokeInitialAccessTokenCommandHandler());
 
-            $this->container->add($this->getCreateRefreshTokenCommandHandler());
-            $this->container->add($this->getRevokeRefreshTokenCommandHandler());
-
-            $this->container->add($this->getCreateAuthCodeCommandHandler());
-            $this->container->add($this->getMarkAuthCodeAsUsedCommandHandler());
-            $this->container->add($this->getRevokeAuthCodeCommandHandler());
+            $this->container->add($this->getCreatePreConfiguredAuthorizationCommandHandler());
+            $this->container->add($this->getRevokePreConfiguredAuthorizationCommandHandler());
 
             $this->container->add($this->getClientCreatedEventHandler());
             $this->container->add($this->getClientDeletedEventHandler());
@@ -896,6 +863,82 @@ final class Application
     }
 
     /**
+     * @var null|CreateInitialAccessTokenCommandHandler
+     */
+    private $createInitialAccessTokenCommandHandler = null;
+
+    /**
+     * @return CreateInitialAccessTokenCommandHandler
+     */
+    public function getCreateInitialAccessTokenCommandHandler(): CreateInitialAccessTokenCommandHandler
+    {
+        if (null === $this->createInitialAccessTokenCommandHandler) {
+            $this->createInitialAccessTokenCommandHandler = new CreateInitialAccessTokenCommandHandler(
+                $this->getInitialAccessTokenRepository()
+            );
+        }
+
+        return $this->createInitialAccessTokenCommandHandler;
+    }
+
+    /**
+     * @var null|RevokeInitialAccessTokenCommandHandler
+     */
+    private $revokeInitialAccessTokenCommandHandler = null;
+
+    /**
+     * @return RevokeInitialAccessTokenCommandHandler
+     */
+    public function getRevokeInitialAccessTokenCommandHandler(): RevokeInitialAccessTokenCommandHandler
+    {
+        if (null === $this->revokeInitialAccessTokenCommandHandler) {
+            $this->revokeInitialAccessTokenCommandHandler = new RevokeInitialAccessTokenCommandHandler(
+                $this->getInitialAccessTokenRepository()
+            );
+        }
+
+        return $this->revokeInitialAccessTokenCommandHandler;
+    }
+
+    /**
+     * @var null|CreatePreConfiguredAuthorizationCommandHandler
+     */
+    private $createPreConfiguredAuthorizationCommandHandler = null;
+
+    /**
+     * @return CreatePreConfiguredAuthorizationCommandHandler
+     */
+    public function getCreatePreConfiguredAuthorizationCommandHandler(): CreatePreConfiguredAuthorizationCommandHandler
+    {
+        if (null === $this->createPreConfiguredAuthorizationCommandHandler) {
+            $this->createPreConfiguredAuthorizationCommandHandler = new CreatePreConfiguredAuthorizationCommandHandler(
+                $this->getPreConfiguredAuthorizationRepository()
+            );
+        }
+
+        return $this->createPreConfiguredAuthorizationCommandHandler;
+    }
+
+    /**
+     * @var null|RevokePreConfiguredAuthorizationCommandHandler
+     */
+    private $revokePreConfiguredAuthorizationCommandHandler = null;
+
+    /**
+     * @return RevokePreConfiguredAuthorizationCommandHandler
+     */
+    public function getRevokePreConfiguredAuthorizationCommandHandler(): RevokePreConfiguredAuthorizationCommandHandler
+    {
+        if (null === $this->revokePreConfiguredAuthorizationCommandHandler) {
+            $this->revokePreConfiguredAuthorizationCommandHandler = new RevokePreConfiguredAuthorizationCommandHandler(
+                $this->getPreConfiguredAuthorizationRepository()
+            );
+        }
+
+        return $this->revokePreConfiguredAuthorizationCommandHandler;
+    }
+
+    /**
      * @var null|MessageBusSupportingMiddleware
      */
     private $eventBus = null;
@@ -1021,51 +1064,53 @@ final class Application
     }
 
     /**
-     * @var null|RuleManager
+     * @var null|Rule\RuleManager
      */
     private $ruleManager = null;
 
     /**
-     * @return RuleManager
+     * @return Rule\RuleManager
      */
-    public function getRuleManager(): RuleManager
+    public function getRuleManager(): Rule\RuleManager
     {
         if (null === $this->ruleManager) {
-            $this->ruleManager = new RuleManager(
-                new ClientIdRule()
-            );
+            $this->ruleManager = new Rule\RuleManager();
             $this->ruleManager
                 ->add(new ClientRegistrationManagementRule())
-                ->add(new CommonParametersRule())
+                ->add(new Rule\ClientIdRule())
+                ->add(new Rule\CommonParametersRule())
                 ->add($this->getGrantTypeFlowRule())
-                ->add(new IdTokenAlgorithmsRule($this->getJwtSigner(), $this->getJwtEncrypter()))
-                ->add(new RedirectionUriRule())
-                ->add(new RequestUriRule())
-                ->add(new ScopePolicyDefaultRule())
-                ->add(new ScopePolicyRule($this->getScopePolicyManager()))
-                ->add(new ScopeRule($this->getScopeRepository()))
-                //->add(new SectorIdentifierUriRule()) //FIXME
+                ->add(new Rule\IdTokenAlgorithmsRule($this->getJwtSigner(), $this->getJwtEncrypter()))
+                ->add(new Rule\RedirectionUriRule())
+                ->add(new Rule\ApplicationTypeParametersRule())
+                ->add(new Rule\ContactsParametersRule())
+                ->add(new Rule\UserParametersRule())
+                ->add(new Rule\RequestUriRule())
+                ->add(new Rule\ScopePolicyDefaultRule())
+                ->add(new Rule\ScopePolicyRule($this->getScopePolicyManager()))
+                ->add(new Rule\ScopeRule($this->getScopeRepository()))
+                ->add(new Rule\SectorIdentifierUriRule($this->getRequestFactory(), $this->getHttpClient()))
                 ->add($this->getSoftwareRule())
-                ->add(new SubjectTypeRule($this->getUserInfo()))
-                ->add(new TokenEndpointAuthMethodEndpointRule($this->getTokenEndpointAuthMethodManager()))
-                ->add(new UserinfoEndpointAlgorithmsRule($this->getJwtSigner(), $this->getJwtEncrypter()));
+                ->add(new Rule\SubjectTypeRule($this->getUserInfo()))
+                ->add(new Rule\TokenEndpointAuthMethodEndpointRule($this->getTokenEndpointAuthMethodManager()))
+                ->add(new Rule\UserinfoEndpointAlgorithmsRule($this->getJwtSigner(), $this->getJwtEncrypter()));
         }
 
         return $this->ruleManager;
     }
 
     /**
-     * @var null|SoftwareRule
+     * @var null|Rule\SoftwareRule
      */
     private $softwareRule = null;
 
     /**
-     * @return SoftwareRule
+     * @return Rule\SoftwareRule
      */
-    private function getSoftwareRule(): SoftwareRule
+    private function getSoftwareRule(): Rule\SoftwareRule
     {
         if (null === $this->softwareRule) {
-            $this->softwareRule = new SoftwareRule(
+            $this->softwareRule = new Rule\SoftwareRule(
                 $this->getJwtLoader(),
                 $this->getPublicKeys(),
                 false,
@@ -1184,6 +1229,23 @@ final class Application
     }
 
     /**
+     * @var null|RequestFactoryInterface
+     */
+    private $requestFactory = null;
+
+    /**
+     * @return RequestFactoryInterface
+     */
+    public function getRequestFactory(): RequestFactoryInterface
+    {
+        if (null === $this->requestFactory) {
+            $this->requestFactory = new RequestFactory();
+        }
+
+        return $this->requestFactory;
+    }
+
+    /**
      * @var null|ServerRequestFactoryInterface
      */
     private $serverRequestFactory = null;
@@ -1239,17 +1301,17 @@ final class Application
     }
 
     /**
-     * @var null|GrantTypeFlowRule
+     * @var null|Rule\GrantTypeFlowRule
      */
     private $grantTypeFlowRule = null;
 
     /**
-     * @return GrantTypeFlowRule
+     * @return Rule\GrantTypeFlowRule
      */
-    public function getGrantTypeFlowRule(): GrantTypeFlowRule
+    public function getGrantTypeFlowRule(): Rule\GrantTypeFlowRule
     {
         if (null === $this->grantTypeFlowRule) {
-            $this->grantTypeFlowRule = new GrantTypeFlowRule(
+            $this->grantTypeFlowRule = new Rule\GrantTypeFlowRule(
                 $this->getGrantTypeManager(),
                 $this->getResponseTypeManager()
             );
@@ -1331,8 +1393,7 @@ final class Application
         if (null === $this->authorizationCodeGrantType) {
             $this->authorizationCodeGrantType = new AuthorizationCodeGrantType(
                 $this->getAuthorizationCodeRepository(),
-                $this->getPKCEMethodManager(),
-                $this->getCommandBus()
+                $this->getPKCEMethodManager()
             );
         }
 
@@ -1845,6 +1906,7 @@ final class Application
             $this->clientConfigurationPipe = new Pipe();
 
             $this->clientConfigurationPipe->appendMiddleware($this->getOAuth2ResponseMiddleware());
+            $this->clientConfigurationPipe->appendMiddleware(new JsonBodyParserMiddleware());
             $this->clientConfigurationPipe->appendMiddleware($this->getClientConfigurationEndpoint());
         }
 
@@ -1863,9 +1925,9 @@ final class Application
     {
         if (null === $this->tokenTypeHintManager) {
             $this->tokenTypeHintManager = new TokenTypeHintManager();
-            $this->tokenTypeHintManager->add($this->getAccessTokenTypeHint()); // Access Token
-            $this->tokenTypeHintManager->add($this->getRefreshTokenTypeHint()); // Refresh Token
             $this->tokenTypeHintManager->add($this->getAuthCodeTypeHint()); // Auth Code
+            $this->tokenTypeHintManager->add($this->getRefreshTokenTypeHint()); // Refresh Token
+            $this->tokenTypeHintManager->add($this->getAccessTokenTypeHint()); // Access Token
         }
 
         return $this->tokenTypeHintManager;
@@ -1926,6 +1988,7 @@ final class Application
             $this->tokenRevocationPipe = new Pipe();
 
             $this->tokenRevocationPipe->appendMiddleware($this->getOAuth2ResponseMiddleware());
+            $this->tokenRevocationPipe->appendMiddleware(new FormPostBodyParserMiddleware());
             $this->tokenRevocationPipe->appendMiddleware($this->getClientAuthenticationMiddlewareWithRequirement());
             $this->tokenRevocationPipe->appendMiddleware($this->getTokenRevocationHttpMethod());
         }
@@ -1987,6 +2050,7 @@ final class Application
 
             $this->tokenIntrospectionPipe->appendMiddleware(new IpAddressMiddleware());
             $this->tokenIntrospectionPipe->appendMiddleware($this->getOAuth2ResponseMiddleware());
+            $this->tokenIntrospectionPipe->appendMiddleware(new FormPostBodyParserMiddleware());
             $this->tokenIntrospectionPipe->appendMiddleware($this->getResourceServerAuthenticationMiddleware());
             $this->tokenIntrospectionPipe->appendMiddleware($this->getTokenIntrospectionHttpMethod());
         }
@@ -2024,8 +2088,7 @@ final class Application
     {
         if (null === $this->accessTokenTypeHint) {
             $this->accessTokenTypeHint = new AccessTokenTypeHint(
-                $this->getAccessTokenRepository(),
-                $this->getCommandBus()
+                $this->getAccessTokenRepository()
             );
         }
 
@@ -2064,8 +2127,7 @@ final class Application
     {
         if (null === $this->authCodeTypeHint) {
             $this->authCodeTypeHint = new AuthCodeTypeHint(
-                $this->getAuthorizationCodeRepository(),
-                $this->getCommandBus()
+                $this->getAuthorizationCodeRepository()
             );
         }
 
@@ -2085,7 +2147,7 @@ final class Application
         if (null === $this->accessTokenRepository) {
             $this->accessTokenRepository = new AccessTokenRepository(
                 $this->getAccessTokenEventStore(),
-                $this->getPublicMessageRecorder(),
+                $this->getEventBus(),
                 'now +10 minutes'
             );
         }
@@ -2106,7 +2168,7 @@ final class Application
         if (null === $this->refreshTokenRepository) {
             $this->refreshTokenRepository = new RefreshTokenRepository(
                 $this->getRefreshTokenEventStore(),
-                $this->getPublicMessageRecorder(),
+                $this->getEventBus(),
                 'now +7 day'
             );
         }
@@ -2260,31 +2322,12 @@ final class Application
         if (null === $this->authCodeRepository) {
             $this->authCodeRepository = new AuthCodeRepository(
                 $this->getAuthCodeEventStore(),
-                $this->getPublicMessageRecorder(),
+                $this->getEventBus(),
                 'now +30 seconds'
             );
         }
 
         return $this->authCodeRepository;
-    }
-
-    /**
-     * @var null|RevokeAccessTokenCommandHandler
-     */
-    private $revokeAccessTokenCommandHandler = null;
-
-    /**
-     * @return RevokeAccessTokenCommandHandler
-     */
-    public function getRevokeAccessTokenCommandHandler(): RevokeAccessTokenCommandHandler
-    {
-        if (null === $this->revokeAccessTokenCommandHandler) {
-            $this->revokeAccessTokenCommandHandler = new RevokeAccessTokenCommandHandler(
-                $this->getAccessTokenRepository()
-            );
-        }
-
-        return $this->revokeAccessTokenCommandHandler;
     }
 
     /**
@@ -2356,101 +2399,6 @@ final class Application
     }
 
     /**
-     * @var null|CreateRefreshTokenCommandHandler
-     */
-    private $createRefreshTokenCommandHandler = null;
-
-    /**
-     * @return CreateRefreshTokenCommandHandler
-     */
-    public function getCreateRefreshTokenCommandHandler(): CreateRefreshTokenCommandHandler
-    {
-        if (null === $this->createRefreshTokenCommandHandler) {
-            $this->createRefreshTokenCommandHandler = new CreateRefreshTokenCommandHandler(
-                $this->getRefreshTokenRepository()
-            );
-        }
-
-        return $this->createRefreshTokenCommandHandler;
-    }
-
-    /**
-     * @var null|RevokeRefreshTokenCommandHandler
-     */
-    private $revokeRefreshTokenCommandHandler = null;
-
-    /**
-     * @return RevokeRefreshTokenCommandHandler
-     */
-    public function getRevokeRefreshTokenCommandHandler(): RevokeRefreshTokenCommandHandler
-    {
-        if (null === $this->revokeRefreshTokenCommandHandler) {
-            $this->revokeRefreshTokenCommandHandler = new RevokeRefreshTokenCommandHandler(
-                $this->getRefreshTokenRepository()
-            );
-        }
-
-        return $this->revokeRefreshTokenCommandHandler;
-    }
-
-    /**
-     * @var null|CreateAuthCodeCommandHandler
-     */
-    private $createAuthCodeCommandHandler = null;
-
-    /**
-     * @return CreateAuthCodeCommandHandler
-     */
-    public function getCreateAuthCodeCommandHandler(): CreateAuthCodeCommandHandler
-    {
-        if (null === $this->createAuthCodeCommandHandler) {
-            $this->createAuthCodeCommandHandler = new CreateAuthCodeCommandHandler(
-                $this->getAuthorizationCodeRepository()
-            );
-        }
-
-        return $this->createAuthCodeCommandHandler;
-    }
-
-    /**
-     * @var null|MarkAuthCodeAsUsedCommandHandler
-     */
-    private $markAuthCodeAsUsedCommandHandler = null;
-
-    /**
-     * @return MarkAuthCodeAsUsedCommandHandler
-     */
-    public function getMarkAuthCodeAsUsedCommandHandler(): MarkAuthCodeAsUsedCommandHandler
-    {
-        if (null === $this->markAuthCodeAsUsedCommandHandler) {
-            $this->markAuthCodeAsUsedCommandHandler = new MarkAuthCodeAsUsedCommandHandler(
-                $this->getAuthorizationCodeRepository()
-            );
-        }
-
-        return $this->markAuthCodeAsUsedCommandHandler;
-    }
-
-    /**
-     * @var null|RevokeAuthCodeCommandHandler
-     */
-    private $revokeAuthCodeCommandHandler = null;
-
-    /**
-     * @return RevokeAuthCodeCommandHandler
-     */
-    public function getRevokeAuthCodeCommandHandler(): RevokeAuthCodeCommandHandler
-    {
-        if (null === $this->revokeAuthCodeCommandHandler) {
-            $this->revokeAuthCodeCommandHandler = new RevokeAuthCodeCommandHandler(
-                $this->getAuthorizationCodeRepository()
-            );
-        }
-
-        return $this->revokeAuthCodeCommandHandler;
-    }
-
-    /**
      * @var null|CodeResponseType
      */
     private $grantCodeResponseType = null;
@@ -2462,7 +2410,7 @@ final class Application
     {
         if (null === $this->grantCodeResponseType) {
             $this->grantCodeResponseType = new CodeResponseType(
-                $this->getCommandBus(),
+                $this->getAuthorizationCodeRepository(),
                 $this->getPKCEMethodManager(),
                 true
             );
@@ -2483,7 +2431,7 @@ final class Application
     {
         if (null === $this->tokenResponseType) {
             $this->tokenResponseType = new TokenResponseType(
-                $this->getCommandBus()
+                $this->getAccessTokenRepository()
             );
         }
 
@@ -2549,7 +2497,8 @@ final class Application
                 $this->getUserAccountRepository(),
                 $this->getTokenEndpointExtensionManager(),
                 $this->getResponseFactory(),
-                $this->getCommandBus()
+                $this->getAccessTokenRepository(),
+                $this->getRefreshTokenRepository()
             );
         }
 
@@ -2626,6 +2575,7 @@ final class Application
     {
         if (null === $this->tokenEndpointPipe) {
             $this->tokenEndpointPipe = new Pipe();
+            $this->tokenEndpointPipe->appendMiddleware(new FormPostBodyParserMiddleware());
             $this->tokenEndpointPipe->appendMiddleware($this->getOAuth2ResponseMiddleware());
             $this->tokenEndpointPipe->appendMiddleware($this->getClientAuthenticationMiddleware());
             $this->tokenEndpointPipe->appendMiddleware($this->getGrantTypeMiddleware());
@@ -2654,45 +2604,6 @@ final class Application
         }
 
         return $this->tokenTypeMiddleware;
-    }
-
-    /**
-     * @var null|CreateAccessTokenCommandHandler
-     */
-    private $createAccessTokenCommandHandler = null;
-
-    /**
-     * @return CreateAccessTokenCommandHandler
-     */
-    public function getCreateAccessTokenCommandHandler(): CreateAccessTokenCommandHandler
-    {
-        if (null === $this->createAccessTokenCommandHandler) {
-            $this->createAccessTokenCommandHandler = new CreateAccessTokenCommandHandler(
-                $this->getAccessTokenRepository()
-            );
-        }
-
-        return $this->createAccessTokenCommandHandler;
-    }
-
-    /**
-     * @var null|CreateAccessTokenWithRefreshTokenCommandHandler
-     */
-    private $createAccessTokenWithRefreshTokenCommandHandler = null;
-
-    /**
-     * @return CreateAccessTokenWithRefreshTokenCommandHandler
-     */
-    public function getCreateAccessTokenWithRefreshTokenCommandHandler(): CreateAccessTokenWithRefreshTokenCommandHandler
-    {
-        if (null === $this->createAccessTokenWithRefreshTokenCommandHandler) {
-            $this->createAccessTokenWithRefreshTokenCommandHandler = new CreateAccessTokenWithRefreshTokenCommandHandler(
-                $this->getAccessTokenRepository(),
-                $this->getRefreshTokenRepository()
-            );
-        }
-
-        return $this->createAccessTokenWithRefreshTokenCommandHandler;
     }
 
     /**
@@ -2818,6 +2729,7 @@ final class Application
         if (null === $this->userInfoEndpointPipe) {
             $this->userInfoEndpointPipe = new Pipe();
             $this->userInfoEndpointPipe->appendMiddleware($this->getOAuth2ResponseMiddleware());
+            $this->userInfoEndpointPipe->appendMiddleware(new FormPostBodyParserMiddleware());
             $this->userInfoEndpointPipe->appendMiddleware($this->getSecurityMiddleware());
             $this->userInfoEndpointPipe->appendMiddleware($this->getUserInfoEndpoint());
         }
@@ -2918,6 +2830,7 @@ final class Application
         if (null === $this->issuerDiscoveryPipe) {
             $this->issuerDiscoveryPipe = new Pipe();
             $this->issuerDiscoveryPipe->appendMiddleware($this->getOAuth2ResponseMiddleware());
+            $this->issuerDiscoveryPipe->appendMiddleware(new FormPostBodyParserMiddleware());
             $this->issuerDiscoveryPipe->appendMiddleware($this->getIssuerDiscoveryEndpoint());
         }
 

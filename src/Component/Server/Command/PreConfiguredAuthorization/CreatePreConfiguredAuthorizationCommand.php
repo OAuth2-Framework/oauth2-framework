@@ -16,6 +16,7 @@ namespace OAuth2Framework\Component\Server\Command\PreConfiguredAuthorization;
 use OAuth2Framework\Component\Server\Command\CommandWithDataTransporter;
 use OAuth2Framework\Component\Server\DataTransporter;
 use OAuth2Framework\Component\Server\Model\Client\ClientId;
+use OAuth2Framework\Component\Server\Model\ResourceServer\ResourceServerId;
 use OAuth2Framework\Component\Server\Model\UserAccount\UserAccountId;
 
 final class CreatePreConfiguredAuthorizationCommand extends CommandWithDataTransporter
@@ -36,31 +37,40 @@ final class CreatePreConfiguredAuthorizationCommand extends CommandWithDataTrans
     private $scopes;
 
     /**
+     * @var null|ResourceServerId
+     */
+    private $resourceServerId;
+
+    /**
      * CreatePreConfiguredAuthorizationCommand constructor.
      *
-     * @param ClientId             $clientId
-     * @param UserAccountId        $userAccountId
-     * @param array                $scopes
-     * @param DataTransporter|null $dataTransporter
+     * @param ClientId              $clientId
+     * @param UserAccountId         $userAccountId
+     * @param array                 $scopes
+     * @param null|ResourceServerId $resourceServerId
+     * @param DataTransporter|null  $dataTransporter
      */
-    protected function __construct(ClientId $clientId, UserAccountId $userAccountId, array $scopes, ? DataTransporter $dataTransporter)
+    protected function __construct(ClientId $clientId, UserAccountId $userAccountId, array $scopes, ?ResourceServerId $resourceServerId, ? DataTransporter $dataTransporter)
     {
         parent::__construct($dataTransporter);
         $this->clientId = $clientId;
         $this->userAccountId = $userAccountId;
+        $this->resourceServerId = $resourceServerId;
         $this->scopes = $scopes;
     }
 
     /**
-     * @param ClientId      $clientId
-     * @param UserAccountId $userAccountId
-     * @param array         $scopes
+     * @param ClientId              $clientId
+     * @param UserAccountId         $userAccountId
+     * @param array                 $scopes
+     * @param null|ResourceServerId $resourceServerId
+     * @param null|DataTransporter  $dataTransporter
      *
      * @return CreatePreConfiguredAuthorizationCommand
      */
-    public static function create(ClientId $clientId, UserAccountId $userAccountId, array $scopes, ? DataTransporter $dataTransporter): CreatePreConfiguredAuthorizationCommand
+    public static function create(ClientId $clientId, UserAccountId $userAccountId, array $scopes, ?ResourceServerId $resourceServerId, ? DataTransporter $dataTransporter): CreatePreConfiguredAuthorizationCommand
     {
-        return new self($clientId, $userAccountId, $scopes, $dataTransporter);
+        return new self($clientId, $userAccountId, $scopes, $resourceServerId, $dataTransporter);
     }
 
     /**
@@ -85,5 +95,13 @@ final class CreatePreConfiguredAuthorizationCommand extends CommandWithDataTrans
     public function getScopes(): array
     {
         return $this->scopes;
+    }
+
+    /**
+     * @return null|ResourceServerId
+     */
+    public function getResourceServerId(): ?ResourceServerId
+    {
+        return $this->resourceServerId;
     }
 }

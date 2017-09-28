@@ -15,8 +15,8 @@ namespace OAuth2Framework\Component\Server\Endpoint\UserInfo;
 
 use Assert\Assertion;
 use Interop\Http\Factory\ResponseFactoryInterface;
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use Interop\Http\Server\RequestHandlerInterface;
+use Interop\Http\Server\MiddlewareInterface;
 use Jose\EncrypterInterface;
 use Jose\Object\JWKSetInterface;
 use Jose\SignerInterface;
@@ -94,7 +94,7 @@ final class UserInfoEndpoint implements MiddlewareInterface
     /**
      * {@inheritdoc}
      */
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $requestHandler)
     {
         /**
          * @var AccessToken

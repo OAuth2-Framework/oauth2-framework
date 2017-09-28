@@ -15,39 +15,20 @@ namespace OAuth2Framework\Bundle\Server\DependencyInjection\Source\TokenEndpoint
 
 use Fluent\PhpConfigFileLoader;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\ArraySource;
-use OAuth2Framework\Bundle\Server\DependencyInjection\Source\SourceInterface;
-use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 final class TokenEndpointAuthMethodSource extends ArraySource
 {
     /**
-     * @var SourceInterface[]
-     */
-    private $tokenEndpointAuthMethods = [];
-
-    /**
      * TokenEndpointAuthMethodSource constructor.
      */
     public function __construct()
     {
-        $this->tokenEndpointAuthMethods = [
-            new ClientAssertionJwtTokenEndpointAuthMethodSource(),
-            new ClientSecretBasicTokenEndpointAuthMethodSource(),
-            new ClientSecretPostTokenEndpointAuthMethodSource(),
-            new NoneTokenEndpointAuthMethodSource(),
-        ];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function prepend(array $bundleConfig, string $path, ContainerBuilder $container)
-    {
-        foreach ($this->tokenEndpointAuthMethods as $source) {
-            $source->prepend($bundleConfig, $path.'['.$this->name().']', $container);
-        }
+        $this->addSubSource(new ClientAssertionJwtTokenEndpointAuthMethodSource());
+        $this->addSubSource(new ClientSecretBasicTokenEndpointAuthMethodSource());
+        $this->addSubSource(new ClientSecretPostTokenEndpointAuthMethodSource());
+        $this->addSubSource(new NoneTokenEndpointAuthMethodSource());
     }
 
     /**
@@ -55,10 +36,6 @@ final class TokenEndpointAuthMethodSource extends ArraySource
      */
     protected function continueLoading(string $path, ContainerBuilder $container, array $config)
     {
-        foreach ($this->tokenEndpointAuthMethods as $source) {
-            $source->load($path, $container, $config);
-        }
-
         $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/token_endpoint_auth_method'));
         $loader->load('token_endpoint_auth_method.php');
     }
@@ -69,16 +46,5 @@ final class TokenEndpointAuthMethodSource extends ArraySource
     protected function name(): string
     {
         return 'token_endpoint_auth_method';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function continueConfiguration(NodeDefinition $node)
-    {
-        parent::continueConfiguration($node);
-        foreach ($this->tokenEndpointAuthMethods as $source) {
-            $source->addConfiguration($node);
-        }
     }
 }

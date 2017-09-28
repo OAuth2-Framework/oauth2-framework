@@ -60,7 +60,7 @@ final class AuthorizationCodeGrantTypeContext implements Context
             'scope' => 'openid email phone address',
         ],
             [], [
-                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
+                'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );
@@ -77,7 +77,7 @@ final class AuthorizationCodeGrantTypeContext implements Context
             'scope' => 'openid email phone address',
         ],
             [], [
-                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
+                'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );
@@ -95,7 +95,7 @@ final class AuthorizationCodeGrantTypeContext implements Context
             'scope' => 'openid email phone address',
         ],
             [], [
-                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
+                'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );
@@ -113,7 +113,7 @@ final class AuthorizationCodeGrantTypeContext implements Context
             'scope' => 'openid email phone address',
         ],
             [], [
-                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
+                'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );
@@ -140,7 +140,7 @@ final class AuthorizationCodeGrantTypeContext implements Context
             'scope' => 'openid',
         ],
             [], [
-                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
+                'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );
@@ -158,7 +158,7 @@ final class AuthorizationCodeGrantTypeContext implements Context
             'scope' => 'openid write',
         ],
             [], [
-                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
+                'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );
@@ -177,7 +177,7 @@ final class AuthorizationCodeGrantTypeContext implements Context
             'client_id' => 'client2',
         ],
             [], [
-                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
+                'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
             ]
         );
     }
@@ -194,7 +194,7 @@ final class AuthorizationCodeGrantTypeContext implements Context
             'scope' => 'openid',
         ],
             [], [
-                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
+                'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );
@@ -212,7 +212,7 @@ final class AuthorizationCodeGrantTypeContext implements Context
             'scope' => 'openid',
         ],
             [], [
-                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
+                'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );
@@ -231,7 +231,7 @@ final class AuthorizationCodeGrantTypeContext implements Context
             'code_verifier' => 'BAD CODE VERIFIER',
         ],
             [], [
-                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
+                'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );
@@ -250,7 +250,7 @@ final class AuthorizationCodeGrantTypeContext implements Context
             'code_verifier' => 'E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM',
         ],
             [], [
-                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
+                'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );
@@ -269,7 +269,7 @@ final class AuthorizationCodeGrantTypeContext implements Context
             'code_verifier' => 'E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM',
         ],
             [], [
-                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
+                'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );
@@ -287,7 +287,7 @@ final class AuthorizationCodeGrantTypeContext implements Context
             'code_verifier' => 'E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM',
         ],
             [], [
-                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
+                'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );
@@ -305,7 +305,7 @@ final class AuthorizationCodeGrantTypeContext implements Context
             'code_verifier' => 'E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM',
         ],
             [], [
-                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
+                'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );
@@ -324,7 +324,7 @@ final class AuthorizationCodeGrantTypeContext implements Context
             'code_verifier' => 'E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM',
         ],
             [], [
-                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
+                'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );
@@ -343,7 +343,7 @@ final class AuthorizationCodeGrantTypeContext implements Context
             'code_verifier' => 'E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM',
         ],
             [], [
-                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
+                'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );
@@ -362,7 +362,7 @@ final class AuthorizationCodeGrantTypeContext implements Context
             'client_id' => 'client2',
         ],
             [], [
-                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
+                'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
             ]
         );
     }
@@ -380,7 +380,7 @@ final class AuthorizationCodeGrantTypeContext implements Context
             'code_verifier' => 'E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM',
         ],
             [], [
-                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
+                'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );
@@ -399,7 +399,7 @@ final class AuthorizationCodeGrantTypeContext implements Context
             'code_verifier' => 'E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM',
         ],
             [], [
-                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
+                'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );
@@ -418,7 +418,7 @@ final class AuthorizationCodeGrantTypeContext implements Context
             'code_verifier' => 'E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM',
         ],
             [], [
-                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
+                'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );
@@ -436,7 +436,7 @@ final class AuthorizationCodeGrantTypeContext implements Context
             'scope' => 'openid',
         ],
             [], [
-                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
+                'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );
@@ -455,7 +455,7 @@ final class AuthorizationCodeGrantTypeContext implements Context
             'code_verifier' => 'INVALID CODE VERIFIER',
         ],
             [], [
-                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
+                'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );

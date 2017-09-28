@@ -14,12 +14,12 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\Server\DependencyInjection\Source\TokenEndpointAuthMethod;
 
 use Fluent\PhpConfigFileLoader;
-use OAuth2Framework\Bundle\Server\DependencyInjection\Source\ActionableSource;
+use OAuth2Framework\Bundle\Server\DependencyInjection\Source\ArraySource;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-final class ClientSecretBasicTokenEndpointAuthMethodSource extends ActionableSource
+final class ClientSecretBasicTokenEndpointAuthMethodSource extends ArraySource
 {
     /**
      * {@inheritdoc}
@@ -48,14 +48,8 @@ final class ClientSecretBasicTokenEndpointAuthMethodSource extends ActionableSou
     {
         parent::continueConfiguration($node);
         $node
-            ->validate()
-                ->ifTrue(function ($config) {
-                    return true === $config['enabled'] && empty($config['realm']);
-                })
-                ->thenInvalid('The option "realm" must be set.')
-            ->end()
             ->children()
-                ->scalarNode('realm')->end()
+                ->scalarNode('realm')->isRequired()->end()
                 ->integerNode('secret_lifetime')->defaultValue(60 * 60 * 24 * 14)->min(0)->end()
             ->end();
     }

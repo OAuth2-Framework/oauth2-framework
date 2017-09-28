@@ -57,7 +57,7 @@ final class RefreshTokenGrantTypeContext implements Context
             'grant_type' => 'refresh_token',
         ],
             [], [
-                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
+                'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );
@@ -73,7 +73,7 @@ final class RefreshTokenGrantTypeContext implements Context
             'refresh_token' => 'EXPIRED_REFRESH_TOKEN',
         ],
             [], [
-                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
+                'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );
@@ -89,7 +89,7 @@ final class RefreshTokenGrantTypeContext implements Context
             'refresh_token' => 'VALID_REFRESH_TOKEN',
         ],
             [], [
-                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
+                'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );
@@ -106,7 +106,7 @@ final class RefreshTokenGrantTypeContext implements Context
             'client_id' => 'client2',
         ],
             [], [
-                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
+                'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
             ]
         );
     }
@@ -121,7 +121,7 @@ final class RefreshTokenGrantTypeContext implements Context
             'refresh_token' => 'REVOKED_REFRESH_TOKEN',
         ],
             [], [
-                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
+                'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );

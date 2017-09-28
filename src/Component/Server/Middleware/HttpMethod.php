@@ -14,8 +14,8 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\Server\Middleware;
 
 use Assert\Assertion;
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use Interop\Http\Server\RequestHandlerInterface;
+use Interop\Http\Server\MiddlewareInterface;
 use OAuth2Framework\Component\Server\Response\OAuth2Exception;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -39,7 +39,7 @@ final class HttpMethod implements MiddlewareInterface
     /**
      * {@inheritdoc}
      */
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $requestHandler)
     {
         $method = $request->getMethod();
 
@@ -55,6 +55,6 @@ final class HttpMethod implements MiddlewareInterface
 
         $middleware = $this->methodMap[$method];
 
-        return $middleware->process($request, $delegate);
+        return $middleware->process($request, $requestHandler);
     }
 }

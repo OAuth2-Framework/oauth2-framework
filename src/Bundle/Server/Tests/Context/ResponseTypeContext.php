@@ -27,7 +27,6 @@ use Behat\Behat\Context\Context;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use Behat\MinkExtension\Context\MinkContext;
 use Behat\Symfony2Extension\Context\KernelDictionary;
-use OAuth2Framework\Component\Server\Model\UserAccount\UserAccountRepositoryInterface;
 use Symfony\Component\BrowserKit\Cookie;
 use Symfony\Component\Security\Core\Authentication\Token\RememberMeToken;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
@@ -59,7 +58,7 @@ final class ResponseTypeContext implements Context
     public function theUserIsLoggedInAndFullyAuthenticated($user)
     {
         $session = $this->getContainer()->get('session');
-        $user = $this->getContainer()->get(UserAccountRepositoryInterface::class)->findOneByUsername($user);
+        $user = $this->getContainer()->get('oauth2_server.user_account.repository')->findOneByUsername($user);
         Assertion::notNull($user, 'Unknown user');
         $token = new UsernamePasswordToken($user, 'secret', 'main', $user->getRoles());
         $session->set('_security_main', serialize($token));
@@ -74,7 +73,7 @@ final class ResponseTypeContext implements Context
     public function theUserIsLoggedInAndButNotFullyAuthenticated($user)
     {
         $session = $this->getContainer()->get('session');
-        $user = $this->getContainer()->get(UserAccountRepositoryInterface::class)->findOneByUsername($user);
+        $user = $this->getContainer()->get('oauth2_server.user_account.repository')->findOneByUsername($user);
         Assertion::notNull($user, 'Unknown user');
         $token = new RememberMeToken($user, 'main', 'secret');
         $session->set('_security_main', serialize($token));

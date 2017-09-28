@@ -18,11 +18,13 @@ use OAuth2Framework\Component\Server\Middleware\Pipe;
 use function Fluent\autowire;
 use function Fluent\create;
 use function Fluent\get;
+use OAuth2Framework\Component\Server\Middleware\JsonBodyParserMiddleware;
 
 return [
     'client_registration_endpoint_pipe' => create(Pipe::class)
         ->arguments([
             get(OAuth2ResponseMiddleware::class),
+            get(JsonBodyParserMiddleware::class),
             get(ClientRegistrationEndpoint::class),
         ]),
 

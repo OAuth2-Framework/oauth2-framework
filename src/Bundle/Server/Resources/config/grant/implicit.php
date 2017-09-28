@@ -18,7 +18,7 @@ use function Fluent\get;
 return [
     TokenResponseType::class => create()
         ->arguments(
-            get('command_bus')
+            get('oauth2_server.access_token.repository')
         )
         ->tag('oauth2_server_response_type'),
 ];

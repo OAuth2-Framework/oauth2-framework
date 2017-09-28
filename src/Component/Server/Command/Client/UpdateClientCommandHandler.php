@@ -48,11 +48,8 @@ final class UpdateClientCommandHandler
         $parameters = $command->getParameters();
         $client = $command->getClient();
         $userAccountId = $client->getOwnerId();
+        $parameters = $parameters->with('client_id', $client->getPublicId()->getValue());
         $validatedParameters = $this->ruleManager->handle($parameters, $userAccountId);
-        $validatedParameters = $validatedParameters->with('client_id', $client->getPublicId());
-        if (true === $client->has('client_id_issued_at')) {
-            $validatedParameters = $validatedParameters->with('client_id_issued_at', $client->get('client_id_issued_at'));
-        }
         $client = $client->withParameters($validatedParameters);
         $this->clientRepository->save($client);
         if (null !== $command->getDataTransporter()) {

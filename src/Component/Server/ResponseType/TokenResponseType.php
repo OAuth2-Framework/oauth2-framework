@@ -13,27 +13,25 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\ResponseType;
 
-use OAuth2Framework\Component\Server\Command\AccessToken\CreateAccessTokenCommand;
-use OAuth2Framework\Component\Server\DataTransporter;
 use OAuth2Framework\Component\Server\Endpoint\Authorization\Authorization;
+use OAuth2Framework\Component\Server\Model\AccessToken\AccessTokenRepositoryInterface;
 use OAuth2Framework\Component\Server\Model\DataBag\DataBag;
-use SimpleBus\Message\Bus\MessageBus;
 
 final class TokenResponseType implements ResponseTypeInterface
 {
     /**
-     * @var MessageBus
+     * @var AccessTokenRepositoryInterface
      */
-    private $commandBus;
+    private $accessTokenRepository;
 
     /**
-     * ImplicitGrantType constructor.
+     * TokenResponseType constructor.
      *
-     * @param MessageBus $commandBus
+     * @param AccessTokenRepositoryInterface $accessTokenRepository
      */
-    public function __construct(MessageBus $commandBus)
+    public function __construct(AccessTokenRepositoryInterface $accessTokenRepository)
     {
-        $this->commandBus = $commandBus;
+        $this->accessTokenRepository = $accessTokenRepository;
     }
 
     /**
@@ -65,21 +63,19 @@ final class TokenResponseType implements ResponseTypeInterface
      */
     public function process(Authorization $authorization, callable $next): Authorization
     {
-        $dataTransporter = new DataTransporter();
-        $command = CreateAccessTokenCommand::create(
-            $authorization->getClient()->getPublicId(),
+        $accessToken = $this->accessTokenRepository->create(
             $authorization->getUserAccount()->getPublicId(),
+            $authorization->getClient()->getPublicId(),
             DataBag::createFromArray($authorization->getTokenType()->getInformation()),
             DataBag::createFromArray(['redirect_uri' => $authorization->getRedirectUri()]),
             $authorization->getScopes(),
-            null, // Refresh token
-            null, // Resource Server
-            $dataTransporter
+            null,
+            null,
+            null
         );
+        $this->accessTokenRepository->save($accessToken);
 
-        $this->commandBus->handle($command);
-        $parameters = $dataTransporter->getData()->getResponseData();
-        foreach ($parameters as $k => $v) {
+        foreach ($accessToken->getResponseData() as $k => $v) {
             $authorization = $authorization->withResponseParameter($k, $v);
         }
 

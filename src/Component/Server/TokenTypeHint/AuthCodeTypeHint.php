@@ -13,12 +13,10 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\TokenTypeHint;
 
-use OAuth2Framework\Component\Server\Command\AuthCode\RevokeAuthCodeCommand;
 use OAuth2Framework\Component\Server\Model\AuthCode\AuthCode;
 use OAuth2Framework\Component\Server\Model\AuthCode\AuthCodeId;
 use OAuth2Framework\Component\Server\Model\AuthCode\AuthCodeRepositoryInterface;
 use OAuth2Framework\Component\Server\Model\Token\Token;
-use SimpleBus\Message\Bus\MessageBus;
 
 final class AuthCodeTypeHint implements TokenTypeHintInterface
 {
@@ -28,20 +26,13 @@ final class AuthCodeTypeHint implements TokenTypeHintInterface
     private $authorizationCodeRepository;
 
     /**
-     * @var MessageBus
-     */
-    private $commandBus;
-
-    /**
      * AuthCode constructor.
      *
      * @param AuthCodeRepositoryInterface $authorizationCodeRepository
-     * @param MessageBus                  $commandBus
      */
-    public function __construct(AuthCodeRepositoryInterface $authorizationCodeRepository, MessageBus $commandBus)
+    public function __construct(AuthCodeRepositoryInterface $authorizationCodeRepository)
     {
         $this->authorizationCodeRepository = $authorizationCodeRepository;
-        $this->commandBus = $commandBus;
     }
 
     /**
@@ -70,8 +61,9 @@ final class AuthCodeTypeHint implements TokenTypeHintInterface
         if (!$token instanceof AuthCode || true === $token->isRevoked()) {
             return;
         }
-        $revokeAuthCodeCommand = RevokeAuthCodeCommand::create($token->getAuthCodeId());
-        $this->commandBus->handle($revokeAuthCodeCommand);
+
+        $token = $token->markAsRevoked();
+        $this->authorizationCodeRepository->save($token);
     }
 
     /**

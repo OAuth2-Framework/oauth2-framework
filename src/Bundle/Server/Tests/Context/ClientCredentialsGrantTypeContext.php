@@ -61,7 +61,7 @@ final class ClientCredentialsGrantTypeContext implements Context
             'grant_type' => 'client_credentials',
         ],
             [], [
-                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
+                'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
             ]
         );
     }
@@ -76,7 +76,7 @@ final class ClientCredentialsGrantTypeContext implements Context
             'client_id' => 'client2',
         ],
             [], [
-                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
+                'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
             ]
         );
     }
@@ -91,7 +91,7 @@ final class ClientCredentialsGrantTypeContext implements Context
             'scope' => 'email phone address',
         ],
             [], [
-                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
+                'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
                 'HTTP_Authorization' => 'Basic '.base64_encode('client1:secret'),
             ]
         );
@@ -109,7 +109,7 @@ final class ClientCredentialsGrantTypeContext implements Context
             'scope' => 'email phone address',
         ],
             [], [
-                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
+                'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
             ]
         );
     }
@@ -125,7 +125,7 @@ final class ClientCredentialsGrantTypeContext implements Context
             'client_secret' => 'secret',
         ],
             [], [
-                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
+                'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
             ]
         );
     }
@@ -142,7 +142,7 @@ final class ClientCredentialsGrantTypeContext implements Context
             'client_secret' => 'secret',
         ],
             [], [
-                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
+                'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
             ]
         );
     }
@@ -159,7 +159,7 @@ final class ClientCredentialsGrantTypeContext implements Context
             'client_secret' => 'secret',
         ],
             [], [
-                'HTTP_Content-Type' => 'application/x-www-form-urlencoded',
+                'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
             ]
         );
     }

@@ -40,7 +40,9 @@ final class TokenEndpointAuthMethodEndpointRule implements RuleInterface
      */
     public function handle(DataBag $commandParameters, DataBag $validatedParameters, ? UserAccountId $userAccountId, callable $next): DataBag
     {
-        Assertion::true($commandParameters->has('token_endpoint_auth_method'), 'The parameter \'token_endpoint_auth_method\' is missing.');
+        if (!$commandParameters->has('token_endpoint_auth_method')) {
+            $commandParameters = $commandParameters->with('token_endpoint_auth_method', 'client_secret_basic');
+        }
         Assertion::string($commandParameters->get('token_endpoint_auth_method'), 'The parameter \'token_endpoint_auth_method\' must be a string.');
         Assertion::true($this->tokenEndpointAuthMethodManager->has($commandParameters->get('token_endpoint_auth_method')), sprintf('The token endpoint authentication method \'%s\' is not supported. Please use one of the following values: %s', $commandParameters->get('token_endpoint_auth_method'), implode(', ', $this->tokenEndpointAuthMethodManager->all())));
 
