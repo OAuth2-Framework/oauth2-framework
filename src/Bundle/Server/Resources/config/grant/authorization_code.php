@@ -16,7 +16,6 @@ use OAuth2Framework\Component\Server\GrantType\AuthorizationCodeGrantType;
 use OAuth2Framework\Component\Server\GrantType\PKCEMethod;
 use OAuth2Framework\Component\Server\ResponseType\CodeResponseType;
 use OAuth2Framework\Component\Server\TokenTypeHint\AuthCodeTypeHint;
-use function Fluent\autowire;
 use function Fluent\create;
 use function Fluent\get;
 
