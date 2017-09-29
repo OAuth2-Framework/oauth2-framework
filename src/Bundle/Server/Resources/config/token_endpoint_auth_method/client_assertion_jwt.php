@@ -18,7 +18,8 @@ use function Fluent\get;
 return [
     ClientAssertionJwt::class => create()
         ->arguments(
-            get('jose.jwt_loader.client_assertion_jwt'),
+            get('jose.jws_loader.client_assertion_jwt'),
+            get('jose.claim_checker.client_assertion_jwt'),
             '%oauth2_server.token_endpoint_auth_method.client_assertion_jwt.secret_lifetime%'
         )
         ->tag('oauth2_server_token_endpoint_auth_method'),

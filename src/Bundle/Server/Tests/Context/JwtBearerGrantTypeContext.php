@@ -28,8 +28,13 @@ use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use Behat\Behat\Tester\Exception\PendingException;
 use Behat\MinkExtension\Context\MinkContext;
 use Behat\Symfony2Extension\Context\KernelDictionary;
-use Jose\Factory\JWSFactory;
-use Jose\Object\JWK;
+use Jose\Component\Core\AlgorithmManager;
+use Jose\Component\Core\Converter\StandardJsonConverter;
+use Jose\Component\Core\JWK;
+use Jose\Component\Signature\Algorithm\HS256;
+use Jose\Component\Signature\Algorithm\RS256;
+use Jose\Component\Signature\JWSBuilder;
+use Jose\Component\Signature\Serializer\CompactSerializer;
 use OAuth2Framework\Bundle\Server\Model\ClientRepository;
 use OAuth2Framework\Component\Server\Model\Client\ClientId;
 
@@ -161,7 +166,19 @@ final class JwtBearerGrantTypeContext implements Context
         ];
         $client = $this->getContainer()->get(ClientRepository::class)->find(ClientId::create('client1'));
 
-        return JWSFactory::createJWSToCompactJSON($claims, $client->getPublicKeySet()->getKey(0), $headers);
+
+        $jwsBuilder = new JWSBuilder(
+            new StandardJsonConverter(),
+            AlgorithmManager::create([new HS256()])
+        );
+        $serializer = new CompactSerializer();
+        $jws = $jwsBuilder
+            ->create()
+            ->withPayload($claims)
+            ->addSignature($client->getPublicKeySet()->get(0),  $headers)
+            ->build();
+
+        return $serializer->serialize($jws, 0);
     }
 
     private function generateValidAssertionButClientNotAllowed()
@@ -178,7 +195,18 @@ final class JwtBearerGrantTypeContext implements Context
         ];
         $client = $this->getContainer()->get(ClientRepository::class)->find(ClientId::create('client3'));
 
-        return JWSFactory::createJWSToCompactJSON($claims, $client->getPublicKeySet()->getKey(0), $headers);
+        $jwsBuilder = new JWSBuilder(
+            new StandardJsonConverter(),
+            AlgorithmManager::create([new HS256()])
+        );
+        $serializer = new CompactSerializer();
+        $jws = $jwsBuilder
+            ->create()
+            ->withPayload($claims)
+            ->addSignature($client->getPublicKeySet()->get(0), $headers)
+            ->build();
+
+        return $serializer->serialize($jws, 0);
     }
 
     private function generateValidClientAssertion()
@@ -195,7 +223,19 @@ final class JwtBearerGrantTypeContext implements Context
         ];
         $client = $this->getContainer()->get(ClientRepository::class)->find(ClientId::create('client3'));
 
-        return JWSFactory::createJWSToCompactJSON($claims, $client->getPublicKeySet()->getKey(0), $headers);
+
+        $jwsBuilder = new JWSBuilder(
+            new StandardJsonConverter(),
+            AlgorithmManager::create([new HS256()])
+        );
+        $serializer = new CompactSerializer();
+        $jws = $jwsBuilder
+            ->create()
+            ->withPayload($claims)
+            ->addSignature($client->getPublicKeySet()->get(0), $headers)
+            ->build();
+
+        return $serializer->serialize($jws, 0);
     }
 
     private function generateValidAssertionFromTrustedIssuer()
@@ -210,7 +250,7 @@ final class JwtBearerGrantTypeContext implements Context
         $headers = [
             'alg' => 'RS256',
         ];
-        $key = new JWK([
+        $key = JWK::create([
             'kty' => 'RSA',
             'kid' => 'bilbo.baggins@hobbiton.example',
             'use' => 'sig',
@@ -224,6 +264,18 @@ final class JwtBearerGrantTypeContext implements Context
             'qi' => '3PiqvXQN0zwMeE-sBvZgi289XP9XCQF3VWqPzMKnIgQp7_Tugo6-NZBKCQsMf3HaEGBjTVJs_jcK8-TRXvaKe-7ZMaQj8VfBdYkssbu0NKDDhjJ-GtiseaDVWt7dcH0cfwxgFUHpQh7FoCrjFJ6h6ZEpMF6xmujs4qMpPz8aaI4',
         ]);
 
-        return JWSFactory::createJWSToCompactJSON($claims, $key, $headers);
+
+        $jwsBuilder = new JWSBuilder(
+            new StandardJsonConverter(),
+            AlgorithmManager::create([new RS256()])
+        );
+        $serializer = new CompactSerializer();
+        $jws = $jwsBuilder
+            ->create()
+            ->withPayload($claims)
+            ->addSignature($key, $headers)
+            ->build();
+
+        return $serializer->serialize($jws, 0);
     }
 }

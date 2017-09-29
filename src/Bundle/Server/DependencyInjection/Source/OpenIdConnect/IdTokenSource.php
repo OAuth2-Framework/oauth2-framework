@@ -13,9 +13,10 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Server\DependencyInjection\Source\OpenIdConnect;
 
+use Assert\Assertion;
 use Fluent\PhpConfigFileLoader;
+use Jose\Bundle\JoseFramework\Helper\ConfigurationHelper;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\ArraySource;
-use SpomkyLabs\JoseBundle\Helper\ConfigurationHelper;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -43,8 +44,10 @@ final class IdTokenSource extends ArraySource
         $sourceConfig = $accessor->getValue($bundleConfig, $currentPath);
         $this->updateJoseBundleConfigurationForSigner($container, $sourceConfig);
         $this->updateJoseBundleConfigurationForVerifier($container, $sourceConfig);
-        $this->updateJoseBundleConfigurationForChecker($container, $sourceConfig);
-        $this->updateJoseBundleConfigurationForJWTLoader($container, $sourceConfig);
+
+        //$jwkset = json_decode($sourceConfig['key_set'], true);
+        //Assertion::isArray($jwkset, 'Invalid key set.');
+        ConfigurationHelper::addKeyset($container, 'id_token.key_set.signature', 'jwkset', ['value' => $sourceConfig['key_set']]);
     }
 
     /**
@@ -55,7 +58,7 @@ final class IdTokenSource extends ArraySource
         foreach (['lifetime', 'default_signature_algorithm', 'signature_algorithms', 'claim_checkers', 'header_checkers'] as $k) {
             $container->setParameter($path.'.'.$k, $config[$k]);
         }
-        $container->setAlias($path.'.key_set', $config['key_set']);
+        $container->setAlias($path.'.key_set', 'jose.key_set.id_token.key_set.signature');
 
         $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/openid_connect'));
         $loader->load('userinfo_scope_support.php');
@@ -136,7 +139,7 @@ final class IdTokenSource extends ArraySource
      */
     private function updateJoseBundleConfigurationForSigner(ContainerBuilder $container, array $sourceConfig)
     {
-        ConfigurationHelper::addSigner($container, $this->name(), $sourceConfig['signature_algorithms'], false, false);
+        ConfigurationHelper::addJWSBuilder($container, $this->name(), $sourceConfig['signature_algorithms'], false);
     }
 
     /**
@@ -145,28 +148,6 @@ final class IdTokenSource extends ArraySource
      */
     private function updateJoseBundleConfigurationForVerifier(ContainerBuilder $container, array $sourceConfig)
     {
-        ConfigurationHelper::addVerifier($container, $this->name(), $sourceConfig['signature_algorithms'], false);
-    }
-
-    /**
-     * @param ContainerBuilder $container
-     * @param array            $sourceConfig
-     */
-    private function updateJoseBundleConfigurationForChecker(ContainerBuilder $container, array $sourceConfig)
-    {
-        ConfigurationHelper::addChecker($container, $this->name(), $sourceConfig['header_checkers'], $sourceConfig['claim_checkers'], false);
-    }
-
-    /**
-     * @param ContainerBuilder $container
-     * @param array            $sourceConfig
-     */
-    private function updateJoseBundleConfigurationForJWTLoader(ContainerBuilder $container, array $sourceConfig)
-    {
-        $decrypter = null;
-        if (true === $sourceConfig['encryption']['enabled']) {
-            $decrypter = sprintf('jose.decrypter.%s', $this->name());
-        }
-        ConfigurationHelper::addJWTLoader($container, $this->name(), sprintf('jose.verifier.%s', $this->name()), sprintf('jose.checker.%s', $this->name()), $decrypter, false);
+        ConfigurationHelper::addJWSLoader($container, $this->name(), $sourceConfig['signature_algorithms'], [], ['jws_compact'], false);
     }
 }

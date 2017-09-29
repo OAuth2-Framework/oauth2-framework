@@ -19,7 +19,8 @@ use function Fluent\get;
 return [
     JWTBearerGrantType::class => create()
         ->arguments(
-            get('jose.jwt_loader.jwt_bearer'),
+            get('jose.jws_loader.jwt_bearer'),
+            get('jose.claim_checker.jwt_bearer'),
             get(ClientRepository::class),
             get('oauth2_server.user_account.repository')
         )

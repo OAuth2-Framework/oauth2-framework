@@ -14,8 +14,8 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\Server\DependencyInjection\Source\TokenEndpointAuthMethod;
 
 use Fluent\PhpConfigFileLoader;
+use Jose\Bundle\JoseFramework\Helper\ConfigurationHelper;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\ActionableSource;
-use SpomkyLabs\JoseBundle\Helper\ConfigurationHelper;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -101,8 +101,6 @@ final class ClientAssertionJwtTokenEndpointAuthMethodSource extends ActionableSo
         if (true === $sourceConfig['enabled']) {
             $this->updateJoseBundleConfigurationForVerifier($container, $sourceConfig);
             $this->updateJoseBundleConfigurationForDecrypter($container, $sourceConfig);
-            $this->updateJoseBundleConfigurationForChecker($container, $sourceConfig);
-            $this->updateJoseBundleConfigurationForJWTLoader($container, $sourceConfig);
         }
     }
 
@@ -112,7 +110,8 @@ final class ClientAssertionJwtTokenEndpointAuthMethodSource extends ActionableSo
      */
     private function updateJoseBundleConfigurationForVerifier(ContainerBuilder $container, array $sourceConfig)
     {
-        ConfigurationHelper::addVerifier($container, $this->name(), $sourceConfig['signature_algorithms'], false);
+        ConfigurationHelper::addJWSLoader($container, $this->name(), $sourceConfig['signature_algorithms'], [], ['jws_compact'], false);
+        ConfigurationHelper::addClaimChecker($container, $this->name(), [], false);
     }
 
     /**
@@ -122,29 +121,7 @@ final class ClientAssertionJwtTokenEndpointAuthMethodSource extends ActionableSo
     private function updateJoseBundleConfigurationForDecrypter(ContainerBuilder $container, array $sourceConfig)
     {
         if (true === $sourceConfig['encryption']['enabled']) {
-            ConfigurationHelper::addDecrypter($container, $this->name(), $sourceConfig['encryption']['key_encryption_algorithms'], $sourceConfig['encryption']['content_encryption_algorithms'], ['DEF'], false);
+            ConfigurationHelper::addJWELoader($container, $this->name(), $sourceConfig['encryption']['key_encryption_algorithms'], $sourceConfig['encryption']['content_encryption_algorithms'], ['DEF'], [], ['jwe_compact'], false);
         }
-    }
-
-    /**
-     * @param ContainerBuilder $container
-     * @param array            $sourceConfig
-     */
-    private function updateJoseBundleConfigurationForChecker(ContainerBuilder $container, array $sourceConfig)
-    {
-        ConfigurationHelper::addChecker($container, $this->name(), $sourceConfig['header_checkers'], $sourceConfig['claim_checkers'], false);
-    }
-
-    /**
-     * @param ContainerBuilder $container
-     * @param array            $sourceConfig
-     */
-    private function updateJoseBundleConfigurationForJWTLoader(ContainerBuilder $container, array $sourceConfig)
-    {
-        $decrypter = null;
-        if (true === $sourceConfig['encryption']['enabled']) {
-            $decrypter = sprintf('jose.decrypter.%s', $this->name());
-        }
-        ConfigurationHelper::addJWTLoader($container, $this->name(), sprintf('jose.verifier.%s', $this->name()), sprintf('jose.checker.%s', $this->name()), $decrypter, false);
     }
 }

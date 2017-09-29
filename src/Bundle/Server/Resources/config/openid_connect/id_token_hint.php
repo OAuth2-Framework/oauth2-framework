@@ -19,7 +19,7 @@ use function Fluent\get;
 return [
     IdTokenLoader::class => create()
         ->arguments(
-            get('jose.jwt_loader.id_token'),
+            get('jose.jws_loader.id_token'),
             get('oauth2_server.openid_connect.id_token.key_set'),
             '%oauth2_server.openid_connect.id_token.signature_algorithms%'
         ),

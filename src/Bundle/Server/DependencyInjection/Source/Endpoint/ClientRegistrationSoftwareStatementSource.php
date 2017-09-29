@@ -13,9 +13,10 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Server\DependencyInjection\Source\Endpoint;
 
+use Assert\Assertion;
 use Fluent\PhpConfigFileLoader;
+use Jose\Bundle\JoseFramework\Helper\ConfigurationHelper;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\ActionableSource;
-use SpomkyLabs\JoseBundle\Helper\ConfigurationHelper;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -31,7 +32,7 @@ final class ClientRegistrationSoftwareStatementSource extends ActionableSource
         foreach (['required', 'allowed_signature_algorithms'] as $k) {
             $container->setParameter($path.'.'.$k, $config[$k]);
         }
-        $container->setAlias($path.'.key_set', $config['key_set']);
+        $container->setAlias($path.'.key_set', 'jose.key_set.client_registration_software_statement.key_set.signature');
 
         $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint'));
         $loader->load('client_registration_software_statement.php');
@@ -88,8 +89,10 @@ final class ClientRegistrationSoftwareStatementSource extends ActionableSource
 
         if (true === $sourceConfig['enabled']) {
             $this->updateJoseBundleConfigurationForVerifier($container, ['signature_algorithms' => $sourceConfig['allowed_signature_algorithms']]);
-            $this->updateJoseBundleConfigurationForChecker($container, ['header_checkers' => [], 'claim_checkers' => []]);
-            $this->updateJoseBundleConfigurationForJWTLoader($container);
+
+            //$jwkset = json_decode($sourceConfig['key_set'], true);
+            //Assertion::isArray($jwkset, 'Invalid key set.');
+            ConfigurationHelper::addKeyset($container, 'client_registration_software_statement.key_set.signature', 'jwkset', ['value' => $sourceConfig['key_set']]);
         }
     }
 
@@ -99,23 +102,7 @@ final class ClientRegistrationSoftwareStatementSource extends ActionableSource
      */
     private function updateJoseBundleConfigurationForVerifier(ContainerBuilder $container, array $sourceConfig)
     {
-        ConfigurationHelper::addVerifier($container, $this->name(), $sourceConfig['signature_algorithms'], false);
-    }
-
-    /**
-     * @param ContainerBuilder $container
-     * @param array            $sourceConfig
-     */
-    private function updateJoseBundleConfigurationForChecker(ContainerBuilder $container, array $sourceConfig)
-    {
-        ConfigurationHelper::addChecker($container, $this->name(), $sourceConfig['header_checkers'], $sourceConfig['claim_checkers'], false);
-    }
-
-    /**
-     * @param ContainerBuilder $container
-     */
-    private function updateJoseBundleConfigurationForJWTLoader(ContainerBuilder $container)
-    {
-        ConfigurationHelper::addJWTLoader($container, $this->name(), sprintf('jose.verifier.%s', $this->name()), sprintf('jose.checker.%s', $this->name()), null, false);
+        // FIXME
+        ConfigurationHelper::addJWSLoader($container, $this->name(), $sourceConfig['signature_algorithms'], [], ['jws_compact'], false);
     }
 }

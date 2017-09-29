@@ -50,7 +50,7 @@ final class OIDCContext implements Context
     }
 
     /**
-     * @When a client send a Userinfo request without access token
+     * @When A client sends a Userinfo request without access token
      */
     public function aClientSendAUserinfoRequestWithoutAccessToken()
     {
@@ -119,7 +119,7 @@ final class OIDCContext implements Context
     }
 
     /**
-     * @Given a client send a request to the metadata endpoint
+     * @Given A client sends a request to the metadata endpoint
      */
     public function aClientSendARequestToTheMetadataEndpoint()
     {

@@ -13,12 +13,23 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Server\Checker;
 
-use Jose\Checker\AudienceChecker as BaseAudienceChecker;
+use Jose\Component\Checker\ClaimCheckerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 
-final class AudienceChecker extends BaseAudienceChecker
+final class AudienceChecker implements ClaimCheckerInterface
 {
+    private const CLAIM_NAME = 'aud';
+
+    /**
+     * @var bool
+     */
+    private $protectedHeader = false;
+    /**
+     * @var string
+     */
+    private $audience;
+
     /**
      * AudienceChecker constructor.
      *
@@ -28,7 +39,60 @@ final class AudienceChecker extends BaseAudienceChecker
      */
     public function __construct(RouterInterface $router, string $routeName, array $routeParameters)
     {
-        $audience = $router->generate($routeName, $routeParameters, UrlGeneratorInterface::ABSOLUTE_URL);
-        parent::__construct($audience);
+        $this->audience = $router->generate($routeName, $routeParameters, UrlGeneratorInterface::ABSOLUTE_URL);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function checkClaim($value)
+    {
+        return $this->checkValue($value);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function checkHeader($value)
+    {
+        return $this->checkValue($value);
+    }
+
+    /**
+     * @param $value
+     *
+     * @throws \InvalidArgumentException
+     */
+    private function checkValue($value)
+    {
+        if (is_string($value) && $value !== $this->audience) {
+            throw new \InvalidArgumentException('Bad audience.');
+        } elseif (!is_array($value) || !in_array($this->audience, $value)) {
+            throw new \InvalidArgumentException('Bad audience.');
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function supportedClaim(): string
+    {
+        return self::CLAIM_NAME;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function supportedHeader(): string
+    {
+        return self::CLAIM_NAME;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function protectedHeaderOnly(): bool
+    {
+        return $this->protectedHeader;
     }
 }

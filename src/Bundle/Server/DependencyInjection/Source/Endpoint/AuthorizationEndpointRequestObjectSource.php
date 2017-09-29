@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Server\DependencyInjection\Source\Endpoint;
 
+use Jose\Bundle\JoseFramework\Helper\ConfigurationHelper;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\ActionableSource;
-use SpomkyLabs\JoseBundle\Helper\ConfigurationHelper;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\PropertyAccess\PropertyAccess;
@@ -76,11 +76,9 @@ final class AuthorizationEndpointRequestObjectSource extends ActionableSource
         $sourceConfig = $accessor->getValue($bundleConfig, $currentPath);
         if (true === $sourceConfig['enabled']) {
             $claim_checkers = ['exp', 'iat', 'nbf'/*'authorization_endpoint_aud'*/]; // FIXME
-            $header_checkers = ['crit'];
+            $header_checkers = ['crit']; // FIXME
             $this->updateJoseBundleConfigurationForVerifier($container, ['signature_algorithms' => $sourceConfig['signature_algorithms']]);
-            $this->updateJoseBundleConfigurationForChecker($container, ['header_checkers' => $header_checkers, 'claim_checkers' => $claim_checkers]);
             $this->updateJoseBundleConfigurationForDecrypter($container, $sourceConfig);
-            $this->updateJoseBundleConfigurationForJWTLoader($container, $sourceConfig);
         }
     }
 
@@ -91,7 +89,7 @@ final class AuthorizationEndpointRequestObjectSource extends ActionableSource
     private function updateJoseBundleConfigurationForDecrypter(ContainerBuilder $container, array $sourceConfig)
     {
         if (true === $sourceConfig['encryption']['enabled']) {
-            ConfigurationHelper::addDecrypter($container, $this->name(), $sourceConfig['encryption']['key_encryption_algorithms'], $sourceConfig['encryption']['content_encryption_algorithms'], ['DEF'], false);
+            ConfigurationHelper::addJWELoader($container, $this->name(), $sourceConfig['encryption']['key_encryption_algorithms'], $sourceConfig['encryption']['content_encryption_algorithms'], ['DEF'], [], ['jwe_compact'], false);
         }
     }
 
@@ -101,28 +99,6 @@ final class AuthorizationEndpointRequestObjectSource extends ActionableSource
      */
     private function updateJoseBundleConfigurationForVerifier(ContainerBuilder $container, array $sourceConfig)
     {
-        ConfigurationHelper::addVerifier($container, $this->name(), $sourceConfig['signature_algorithms'], false);
-    }
-
-    /**
-     * @param ContainerBuilder $container
-     * @param array            $sourceConfig
-     */
-    private function updateJoseBundleConfigurationForChecker(ContainerBuilder $container, array $sourceConfig)
-    {
-        ConfigurationHelper::addChecker($container, $this->name(), $sourceConfig['header_checkers'], $sourceConfig['claim_checkers'], false);
-    }
-
-    /**
-     * @param ContainerBuilder $container
-     * @param array            $sourceConfig
-     */
-    private function updateJoseBundleConfigurationForJWTLoader(ContainerBuilder $container, array $sourceConfig)
-    {
-        $decrypter = null;
-        if (true === $sourceConfig['encryption']['enabled']) {
-            $decrypter = sprintf('jose.decrypter.%s', $this->name());
-        }
-        ConfigurationHelper::addJWTLoader($container, $this->name(), sprintf('jose.verifier.%s', $this->name()), sprintf('jose.checker.%s', $this->name()), $decrypter, false);
+        ConfigurationHelper::addJWSLoader($container, $this->name(), $sourceConfig['signature_algorithms'], [], ['jws_compact'], false);
     }
 }

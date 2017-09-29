@@ -60,8 +60,9 @@ abstract class ClientAssertionJwt implements TokenEndpointAuthMethodInterface
     /**
      * ClientAssertionJwt constructor.
      *
-     * @param JWSLoader $jwsLoader
-     * @param int       $secretLifetime
+     * @param JWSLoader           $jwsLoader
+     * @param ClaimCheckerManager $claimCheckerManager
+     * @param int                 $secretLifetime
      */
     public function __construct(JWSLoader $jwsLoader, ClaimCheckerManager $claimCheckerManager, int $secretLifetime = 0)
     {

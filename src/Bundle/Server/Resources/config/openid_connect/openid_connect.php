@@ -34,9 +34,9 @@ return [
         ->arguments(
             get(IdTokenBuilderFactory::class),
             '%oauth2_server.openid_connect.id_token.default_signature_algorithm%',
-            get('jose.signer.id_token'),
+            get('jose.jws_builder.id_token'),
             get('oauth2_server.openid_connect.id_token.key_set'),
-            get('jose.encrypter.id_token')->nullIfMissing()
+            get('jose.jwe_builder.id_token')->nullIfMissing()
         )
         ->tag('oauth2_server_token_endpoint_extension'),
 
@@ -49,8 +49,8 @@ return [
 
     Rule\IdTokenAlgorithmsRule::class => create()
         ->arguments(
-            get('jose.signer.id_token'),
-            get('jose.encrypter.id_token')->nullIfMissing()
+            get('jose.jws_builder.id_token'),
+            get('jose.jwe_builder.id_token')->nullIfMissing()
         )
         ->tag('oauth2_server_client_rule'),
 

@@ -1,7 +1,6 @@
 imports:
     - { resource: security.yml }
     - { resource: oauth2_server.yml }
-    - { resource: jose.yml }
 
 framework:
     test: ~

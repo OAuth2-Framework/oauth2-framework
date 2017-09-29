@@ -18,7 +18,7 @@ use function Fluent\get;
 return [
     Rule\SoftwareRule::class => create()
         ->arguments(
-            get('jose.jwt_loader.software_statement'),
+            get('jose.jws_loader.software_statement'),
             get('oauth2_server.endpoint.client_registration.software_statement.key_set'),
             '%oauth2_server.endpoint.client_registration.software_statement.required%',
             '%oauth2_server.endpoint.client_registration.software_statement.allowed_signature_algorithms%'

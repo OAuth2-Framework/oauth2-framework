@@ -13,8 +13,9 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Server\DependencyInjection\Source\Endpoint;
 
+use Assert\Assertion;
+use Jose\Bundle\JoseFramework\Helper\ConfigurationHelper;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\ActionableSource;
-use SpomkyLabs\JoseBundle\Helper\ConfigurationHelper;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\PropertyAccess\PropertyAccess;
@@ -27,7 +28,7 @@ final class SignedMetadataEndpointSource extends ActionableSource
     protected function continueLoading(string $path, ContainerBuilder $container, array $config)
     {
         $container->setParameter($path.'.algorithm', $config['algorithm']);
-        $container->setAlias($path.'.key_set', $config['key_set']);
+        $container->setAlias($path.'.key_set', 'jose.key_set.signed_metadata_endpoint.key_set.signature');
     }
 
     /**
@@ -74,6 +75,10 @@ final class SignedMetadataEndpointSource extends ActionableSource
         $accessor = PropertyAccess::createPropertyAccessor();
         $sourceConfig = $accessor->getValue($bundleConfig, $currentPath);
         $this->updateJoseBundleConfigurationForSigner($container, $sourceConfig);
+
+        //$jwkset = json_decode($sourceConfig['key_set'], true);
+        //Assertion::isArray($jwkset, 'Invalid key set.');
+        ConfigurationHelper::addKeyset($container, 'signed_metadata_endpoint.key_set.signature', 'jwkset', ['value' => $sourceConfig['key_set']]);
     }
 
     /**
@@ -82,6 +87,6 @@ final class SignedMetadataEndpointSource extends ActionableSource
      */
     private function updateJoseBundleConfigurationForSigner(ContainerBuilder $container, array $sourceConfig)
     {
-        ConfigurationHelper::addSigner($container, 'metadata_signature', [$sourceConfig['algorithm']], false, false);
+        ConfigurationHelper::addJWSBuilder($container, 'metadata_signature', [$sourceConfig['algorithm']], false);
     }
 }

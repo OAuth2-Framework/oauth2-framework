@@ -42,7 +42,7 @@ final class IssuerDiscoveryContext implements Context
     }
 
     /**
-     * @When a client send an Issuer Discovery request without rel parameter
+     * @When A client sends an Issuer Discovery request without rel parameter
      */
     public function aClientSendAnIssuerDiscoveryRequestWithoutRelParameter()
     {
@@ -55,7 +55,7 @@ final class IssuerDiscoveryContext implements Context
     }
 
     /**
-     * @When a client send an Issuer Discovery request with an invalid rel parameter
+     * @When A client sends an Issuer Discovery request with an invalid rel parameter
      */
     public function aClientSendAnIssuerDiscoveryRequestWithAnInvalidRelParameter()
     {
@@ -70,7 +70,7 @@ final class IssuerDiscoveryContext implements Context
     }
 
     /**
-     * @When a client send an Issuer Discovery request without resource parameter
+     * @When A client sends an Issuer Discovery request without resource parameter
      */
     public function aClientSendAnIssuerDiscoveryRequestWithoutResourceParameter()
     {
@@ -85,7 +85,7 @@ final class IssuerDiscoveryContext implements Context
     }
 
     /**
-     * @When a client send an Issuer Discovery request with an invalid resource parameter based on an XRI
+     * @When A client sends an Issuer Discovery request with an invalid resource parameter based on an XRI
      */
     public function aClientSendAnIssuerDiscoveryRequestWithAnInvalidResourceParameterBasedOnAnXRI()
     {
@@ -101,7 +101,7 @@ final class IssuerDiscoveryContext implements Context
     }
 
     /**
-     * @When a client send an Issuer Discovery request with an invalid resource parameter based on an email
+     * @When A client sends an Issuer Discovery request with an invalid resource parameter based on an email
      */
     public function aClientSendAnIssuerDiscoveryRequestWithAnInvalidResourceParameterBasedOnAnEmail()
     {
@@ -117,7 +117,7 @@ final class IssuerDiscoveryContext implements Context
     }
 
     /**
-     * @When a client send an Issuer Discovery request with an invalid resource parameter based on an Url
+     * @When A client sends an Issuer Discovery request with an invalid resource parameter based on an Url
      */
     public function aClientSendAnIssuerDiscoveryRequestWithAnInvalidResourceParameterBasedOnAnUrl()
     {
@@ -133,7 +133,7 @@ final class IssuerDiscoveryContext implements Context
     }
 
     /**
-     * @When a client send an Issuer Discovery request with a valid resource parameter based on an email
+     * @When A client sends an Issuer Discovery request with a valid resource parameter based on an email
      */
     public function aClientSendAnIssuerDiscoveryRequestWithAValidResourceParameterBasedOnAnEmail()
     {
@@ -149,7 +149,7 @@ final class IssuerDiscoveryContext implements Context
     }
 
     /**
-     * @When a client send an Issuer Discovery request with a valid resource parameter based on an Url
+     * @When A client sends an Issuer Discovery request with a valid resource parameter based on an Url
      */
     public function aClientSendAnIssuerDiscoveryRequestWithAValidResourceParameterBasedOnAnUrl()
     {

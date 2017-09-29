@@ -27,7 +27,11 @@ use Behat\Behat\Context\Context;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use Behat\MinkExtension\Context\MinkContext;
 use Behat\Symfony2Extension\Context\KernelDictionary;
-use Jose\Factory\JWSFactory;
+use Jose\Component\Core\AlgorithmManager;
+use Jose\Component\Core\Converter\StandardJsonConverter;
+use Jose\Component\Signature\Algorithm\HS256;
+use Jose\Component\Signature\JWSBuilder;
+use Jose\Component\Signature\Serializer\CompactSerializer;
 use OAuth2Framework\Bundle\Server\Model\ClientRepository;
 use OAuth2Framework\Component\Server\Model\Client\ClientId;
 
@@ -178,6 +182,18 @@ final class ClientCredentialsGrantTypeContext implements Context
         ];
         $client = $this->getContainer()->get(ClientRepository::class)->find(ClientId::create('client3'));
 
-        return JWSFactory::createJWSToCompactJSON($claims, $client->getPublicKeySet()->getKey(0), $headers);
+
+        $jwsBuilder = new JWSBuilder(
+            new StandardJsonConverter(),
+            AlgorithmManager::create([new HS256()])
+        );
+        $serializer = new CompactSerializer();
+        $jws = $jwsBuilder
+            ->create()
+            ->withPayload($claims)
+            ->addSignature($client->getPublicKeySet()->get(0), $headers)
+            ->build();
+
+        return $serializer->serialize($jws, 0);
     }
 }

@@ -26,7 +26,10 @@ final class AppKernel extends Kernel
 
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
 
-            new SpomkyLabs\JoseBundle\SpomkyLabsJoseBundle(),
+            new Jose\Bundle\JoseFramework\JoseFrameworkBundle(),
+            new Jose\Bundle\Checker\CheckerBundle(),
+            new Jose\Bundle\Signature\SignatureBundle(),
+            new Jose\Bundle\Encryption\EncryptionBundle(),
             new OAuth2FrameworkServerBundle(),
             new OAuth2Framework\Bundle\Server\Tests\TestBundle\SpomkyLabsTestBundle(),
 

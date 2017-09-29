@@ -27,8 +27,13 @@ use Behat\Behat\Context\Context;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use Behat\MinkExtension\Context\MinkContext;
 use Behat\Symfony2Extension\Context\KernelDictionary;
-use Jose\Factory\JWKFactory;
-use Jose\Factory\JWSFactory;
+use Jose\Component\Core\AlgorithmManager;
+use Jose\Component\Core\Converter\StandardJsonConverter;
+use Jose\Component\KeyManagement\JWKFactory;
+use Jose\Component\Signature\Algorithm\None;
+use Jose\Component\Signature\Algorithm\RS256;
+use Jose\Component\Signature\JWSBuilder;
+use Jose\Component\Signature\Serializer\CompactSerializer;
 use OAuth2Framework\Bundle\Server\Tests\TestBundle\Listener;
 
 /**
@@ -467,9 +472,18 @@ final class ClientContext implements Context
             'software_name#fr' => 'Mon application',
         ];
 
-        $jws = JWSFactory::createJWSToCompactJSON($claims, $key, $headers);
+        $jwsBuilder = new JWSBuilder(
+            new StandardJsonConverter(),
+            AlgorithmManager::create([new RS256()])
+        );
+        $serializer = new CompactSerializer();
+        $jws = $jwsBuilder
+            ->create()
+            ->withPayload($claims)
+            ->addSignature($key, $headers)
+            ->build();
 
-        return $jws;
+        return $serializer->serialize($jws, 0);
     }
 
     /**
@@ -490,8 +504,17 @@ final class ClientContext implements Context
             'software_name#fr' => 'Mon application',
         ];
 
-        $jws = JWSFactory::createJWSToCompactJSON($claims, $key, $headers);
+        $jwsBuilder = new JWSBuilder(
+            new StandardJsonConverter(),
+            AlgorithmManager::create([new None()])
+        );
+        $serializer = new CompactSerializer();
+        $jws = $jwsBuilder
+            ->create()
+            ->withPayload($claims)
+            ->addSignature($key, $headers)
+            ->build();
 
-        return $jws;
+        return $serializer->serialize($jws, 0);
     }
 }

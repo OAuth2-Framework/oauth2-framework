@@ -1,6 +1,6 @@
-# JoseBundle Routes
+# Jose Routes
 jwkset_endpoint:
-    resource: '@SpomkyLabsJoseBundle/Resources/config/routing/jwkset_controller.yml'
+    resource: "@JoseFrameworkBundle/Resources/config/routing/jwkset_controller.yml"
     prefix: '/keys'
 
 # OAuth2FrameworkServerBundle Routes

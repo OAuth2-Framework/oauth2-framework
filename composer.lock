@@ -900,16 +900,16 @@
         },
         {
             "name": "paragonie/sodium_compat",
-            "version": "v1.2.0",
+            "version": "v1.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/paragonie/sodium_compat.git",
-                "reference": "110b1707f45e3b59311bb488b3af7251673de9b7"
+                "reference": "c2f615edf47ee819039b0d88d77c51e7283c3e47"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/paragonie/sodium_compat/zipball/110b1707f45e3b59311bb488b3af7251673de9b7",
-                "reference": "110b1707f45e3b59311bb488b3af7251673de9b7",
+                "url": "https://api.github.com/repos/paragonie/sodium_compat/zipball/c2f615edf47ee819039b0d88d77c51e7283c3e47",
+                "reference": "c2f615edf47ee819039b0d88d77c51e7283c3e47",
                 "shasum": ""
             },
             "require": {
@@ -977,7 +977,7 @@
                 "secret-key cryptography",
                 "side-channel resistant"
             ],
-            "time": "2017-09-01T01:19:04+00:00"
+            "time": "2017-09-28T20:46:00+00:00"
         },
         {
             "name": "php-http/httplug",
@@ -1864,12 +1864,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Spomky-Labs/jose.git",
-                "reference": "e082db19e0df9fb2fae881596dc53c993e17eb65"
+                "reference": "d4ecd3a3b14873303b6859a5b43cd59a6e864ef0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Spomky-Labs/jose/zipball/e082db19e0df9fb2fae881596dc53c993e17eb65",
-                "reference": "e082db19e0df9fb2fae881596dc53c993e17eb65",
+                "url": "https://api.github.com/repos/Spomky-Labs/jose/zipball/d4ecd3a3b14873303b6859a5b43cd59a6e864ef0",
+                "reference": "d4ecd3a3b14873303b6859a5b43cd59a6e864ef0",
                 "shasum": ""
             },
             "require": {
@@ -1952,7 +1952,7 @@
                 "jwt",
                 "symfony"
             ],
-            "time": "2017-09-26T13:03:51+00:00"
+            "time": "2017-09-28T19:04:48+00:00"
         },
         {
             "name": "symfony/polyfill-apcu",

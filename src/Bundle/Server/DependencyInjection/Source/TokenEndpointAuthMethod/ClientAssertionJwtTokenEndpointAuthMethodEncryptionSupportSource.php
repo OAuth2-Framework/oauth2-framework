@@ -13,9 +13,12 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Server\DependencyInjection\Source\TokenEndpointAuthMethod;
 
+use Assert\Assertion;
+use Jose\Bundle\JoseFramework\Helper\ConfigurationHelper;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\ActionableSource;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 
 final class ClientAssertionJwtTokenEndpointAuthMethodEncryptionSupportSource extends ActionableSource
 {
@@ -27,7 +30,7 @@ final class ClientAssertionJwtTokenEndpointAuthMethodEncryptionSupportSource ext
         foreach (['required', 'key_encryption_algorithms', 'content_encryption_algorithms'] as $k) {
             $container->setParameter($path.'.'.$k, $config[$k]);
         }
-        $container->setAlias($path.'.key_set', $config['key_set']);
+        $container->setAlias($path.'.key_set', 'jose.key_set.oauth2_server.token_endpoint_auth_method.client_assertion_jwt.encryption.key_set');
     }
 
     /**
@@ -79,5 +82,19 @@ final class ClientAssertionJwtTokenEndpointAuthMethodEncryptionSupportSource ext
                     ->treatNullLike([])
                 ->end()
             ->end();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function prepend(array $bundleConfig, string $path, ContainerBuilder $container)
+    {
+        parent::prepend($bundleConfig, $path, $container);
+        $currentPath = $path.'['.$this->name().']';
+        $accessor = PropertyAccess::createPropertyAccessor();
+        $sourceConfig = $accessor->getValue($bundleConfig, $currentPath);
+        //$jwkset = json_decode($sourceConfig['key_set'], true);
+        //Assertion::isArray($jwkset, 'Invalid key set.');
+        ConfigurationHelper::addKeyset($container, 'oauth2_server.token_endpoint_auth_method.client_assertion_jwt.encryption.key_set', 'jwkset', ['value' => $sourceConfig['key_set']]);
     }
 }

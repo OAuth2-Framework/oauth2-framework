@@ -45,7 +45,7 @@ final class OAuth2FrameworkServerBundle extends Bundle
      */
     protected function getRequiredBundles()
     {
-        return ['SpomkyLabsJoseBundle', 'SensioFrameworkExtraBundle', 'SimpleBusCommandBusBundle', 'SimpleBusEventBusBundle'];
+        return ['JoseFrameworkBundle', 'SignatureBundle', 'EncryptionBundle', 'SensioFrameworkExtraBundle', 'SimpleBusCommandBusBundle', 'SimpleBusEventBusBundle'];
     }
 
     /**
