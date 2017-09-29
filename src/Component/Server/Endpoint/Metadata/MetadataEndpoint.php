@@ -104,10 +104,11 @@ final class MetadataEndpoint implements MiddlewareInterface
      */
     private function signMetadata(array $metadata): string
     {
+        $signatureAlgorithm = $this->jwsBuilder->getSignatureAlgorithmManager()->get($this->signatureAlgorithm);
         $headers = [
             'alg' => $this->signatureAlgorithm,
         ];
-        $key = $this->signatureKeySet->selectKey('sig', $this->signatureAlgorithm);
+        $key = $this->signatureKeySet->selectKey('sig', $signatureAlgorithm);
         Assertion::notNull($key, sprintf('Unable to find a signed key for the algorithm \'%s\'.', $this->signatureAlgorithm));
         $jws = $this->jwsBuilder
             ->create()

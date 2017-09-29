@@ -39,7 +39,7 @@
         "oauth2-framework/client-library": "self.version"
     },
     "require-dev": {
-        "symfony/var-dumper": "^3.2",
+        "symfony/var-dumper": "^3.3",
         "psr/container": "^1.0",
         "behat/behat": "^3.2",
         "http-interop/http-factory-diactoros": "^0.3",

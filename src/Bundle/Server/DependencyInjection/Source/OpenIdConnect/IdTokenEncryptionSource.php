@@ -30,7 +30,7 @@ final class IdTokenEncryptionSource extends ActionableSource
         foreach (['key_encryption_algorithms', 'content_encryption_algorithms'] as $k) {
             $container->setParameter($path.'.'.$k, $config[$k]);
         }
-        $container->setAlias($path.'.key_set', 'jose.key_set.id_token.key_set.encryption');
+        //$container->setAlias($path.'.key_set', 'jose.key_set.id_token.key_set.encryption');
     }
 
     /**
@@ -44,11 +44,11 @@ final class IdTokenEncryptionSource extends ActionableSource
         $sourceConfig = $accessor->getValue($bundleConfig, $currentPath);
 
         if (true === $sourceConfig['enabled']) {
-            $this->updateJoseBundleConfigurationForEncrypter($container, $sourceConfig);
-            $this->updateJoseBundleConfigurationForDecrypter($container, $sourceConfig);
-            //$jwkset = json_decode($sourceConfig['key_set'], true);
-            //Assertion::isArray($jwkset, 'Invalid key set.');
-            ConfigurationHelper::addKeyset($container, 'id_token.key_set.encryption', 'jwkset', ['value' => $sourceConfig['key_set']]);
+            ConfigurationHelper::addJWEBuilder($container, 'id_token', $sourceConfig['key_encryption_algorithms'], $sourceConfig['content_encryption_algorithms'], ['DEF'], false);
+            ConfigurationHelper::addJWELoader($container, 'id_token', $sourceConfig['key_encryption_algorithms'], $sourceConfig['content_encryption_algorithms'], ['DEF'], [], ['jwe_compact'], false);
+
+            Assertion::keyExists($bundleConfig['key_set'], 'encryption', 'The encryption key set must be enabled.');
+            //ConfigurationHelper::addKeyset($container, 'id_token.key_set.encryption', 'jwkset', ['value' => $bundleConfig['key_set']['encryption']]);
         }
     }
 
@@ -65,10 +65,6 @@ final class IdTokenEncryptionSource extends ActionableSource
         parent::continueConfiguration($node);
         $node
             ->children()
-                ->scalarNode('key_set')
-                    ->info('Key set that contains a suitable encryption key for the selected encryption algorithms.')
-                    ->defaultNull()
-                ->end()
                 ->arrayNode('key_encryption_algorithms')
                     ->info('Supported key encryption algorithms.')
                     ->useAttributeAsKey('name')
@@ -82,23 +78,5 @@ final class IdTokenEncryptionSource extends ActionableSource
                     ->treatNullLike([])
                 ->end()
             ->end();
-    }
-
-    /**
-     * @param ContainerBuilder $container
-     * @param array            $sourceConfig
-     */
-    private function updateJoseBundleConfigurationForEncrypter(ContainerBuilder $container, array $sourceConfig)
-    {
-        ConfigurationHelper::addJWEBuilder($container, 'id_token', $sourceConfig['key_encryption_algorithms'], $sourceConfig['content_encryption_algorithms'], ['DEF'], false);
-    }
-
-    /**
-     * @param ContainerBuilder $container
-     * @param array            $sourceConfig
-     */
-    private function updateJoseBundleConfigurationForDecrypter(ContainerBuilder $container, array $sourceConfig)
-    {
-        ConfigurationHelper::addJWELoader($container, 'id_token', $sourceConfig['key_encryption_algorithms'], $sourceConfig['content_encryption_algorithms'], ['DEF'], [], ['jwe_compact'], false);
     }
 }

@@ -315,7 +315,7 @@ final class IdTokenBuilder
      */
     public function withSignature(JWSBuilder $jwsBuilder, JWKSet $signatureKeys, string $signatureAlgorithm): IdTokenBuilder
     {
-        Assertion::inArray($signatureAlgorithm, $jwsBuilder->getSupportedSignatureAlgorithms(), sprintf('Unsupported signature algorithm \'%s\'. Please use one of the following one: %s', $signatureAlgorithm, implode(', ', $jwsBuilder->getSupportedSignatureAlgorithms())));
+        Assertion::inArray($signatureAlgorithm, $jwsBuilder->getSignatureAlgorithmManager()->list(), sprintf('Unsupported signature algorithm \'%s\'. Please use one of the following one: %s', $signatureAlgorithm, implode(', ', $jwsBuilder->getSignatureAlgorithmManager()->list())));
         Assertion::true(0 !== $signatureKeys->count(), 'The signature key set must contain at least one key.');
         $clone = clone $this;
         $clone->jwsBuilder = $jwsBuilder;
@@ -334,8 +334,8 @@ final class IdTokenBuilder
      */
     public function withEncryption(JWEBuilder $jweBuilder, string $keyEncryptionAlgorithm, string $contentEncryptionAlgorithm): IdTokenBuilder
     {
-        Assertion::inArray($keyEncryptionAlgorithm, $jweBuilder->getSupportedKeyEncryptionAlgorithms(), sprintf('Unsupported key encryption algorithm \'%s\'. Please use one of the following one: %s', $keyEncryptionAlgorithm, implode(', ', $jweBuilder->getSupportedKeyEncryptionAlgorithms())));
-        Assertion::inArray($contentEncryptionAlgorithm, $jweBuilder->getSupportedContentEncryptionAlgorithms(), sprintf('Unsupported key encryption algorithm \'%s\'. Please use one of the following one: %s', $contentEncryptionAlgorithm, implode(', ', $jweBuilder->getSupportedContentEncryptionAlgorithms())));
+        Assertion::inArray($keyEncryptionAlgorithm, $jweBuilder->getKeyEncryptionAlgorithmManager()->list(), sprintf('Unsupported key encryption algorithm \'%s\'. Please use one of the following one: %s', $keyEncryptionAlgorithm, implode(', ', $jweBuilder->getKeyEncryptionAlgorithmManager()->list())));
+        Assertion::inArray($contentEncryptionAlgorithm, $jweBuilder->getContentEncryptionAlgorithmManager()->list(), sprintf('Unsupported content encryption algorithm \'%s\'. Please use one of the following one: %s', $contentEncryptionAlgorithm, implode(', ', $jweBuilder->getContentEncryptionAlgorithmManager()->list())));
         $clone = clone $this;
         $clone->jweBuilder = $jweBuilder;
         $clone->keyEncryptionAlgorithm = $keyEncryptionAlgorithm;
@@ -464,7 +464,8 @@ final class IdTokenBuilder
     private function tryToEncrypt(Client $client, string $jwt): string
     {
         $clientKeySet = $client->getPublicKeySet();
-        $encryptionKey = $clientKeySet->selectKey('enc', $this->keyEncryptionAlgorithm);
+        $keyEncryptionAlgorithm = $this->jweBuilder->getKeyEncryptionAlgorithmManager()->get($this->keyEncryptionAlgorithm);
+        $encryptionKey = $clientKeySet->selectKey('enc', $keyEncryptionAlgorithm);
         Assertion::notNull($encryptionKey, 'No encryption key available for the client.');
         $headers = [
             'typ' => 'JWT',
@@ -490,6 +491,7 @@ final class IdTokenBuilder
      */
     private function getSignatureKey(string $signatureAlgorithm): JWK
     {
+        $signatureAlgorithm = $this->jwsBuilder->getSignatureAlgorithmManager()->get($signatureAlgorithm);
         $signatureKey = $this->signatureKeys->selectKey('sig', $signatureAlgorithm);
         Assertion::notNull($signatureKey, 'Unable to find a key to sign the ID Token. Please verify the selected key set contains suitable keys.');
 

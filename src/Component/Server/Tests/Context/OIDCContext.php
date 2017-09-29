@@ -16,6 +16,7 @@ namespace OAuth2Framework\Component\Server\Tests\Context;
 use Assert\Assertion;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
+use Jose\Component\Signature\Algorithm\RS256;
 use Jose\Component\Signature\Serializer\CompactSerializer;
 
 final class OIDCContext implements Context
@@ -436,7 +437,7 @@ final class OIDCContext implements Context
             'iss' => 'https://www.my-service.com',
         ];
 
-        $key = $this->applicationContext->getApplication()->getPrivateKeys()->selectKey('sig', 'RS256');
+        $key = $this->applicationContext->getApplication()->getPrivateKeys()->selectKey('sig', new RS256());
         Assertion::notNull($key);
 
         $jws = $this->applicationContext->getApplication()->getJwsBuilder()

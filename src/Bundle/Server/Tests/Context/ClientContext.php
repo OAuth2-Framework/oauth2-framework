@@ -29,6 +29,7 @@ use Behat\MinkExtension\Context\MinkContext;
 use Behat\Symfony2Extension\Context\KernelDictionary;
 use Jose\Component\Core\AlgorithmManager;
 use Jose\Component\Core\Converter\StandardJsonConverter;
+use Jose\Component\Core\JWKSet;
 use Jose\Component\KeyManagement\JWKFactory;
 use Jose\Component\Signature\Algorithm\None;
 use Jose\Component\Signature\Algorithm\RS256;
@@ -458,12 +459,13 @@ final class ClientContext implements Context
      */
     private function createSoftwareStatement(): string
     {
-        $algorithm = 'RS256';
+        $algorithm = new RS256();
+        /** @var JWKSet $keySet */
         $keySet = $this->getContainer()->get('oauth2_server.endpoint.client_registration.software_statement.key_set');
         $key = $keySet->selectKey('sig', $algorithm);
 
         $headers = [
-            'alg' => $algorithm,
+            'alg' => $algorithm->name(),
         ];
         $claims = [
             'software_version' => '1.0',

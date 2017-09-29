@@ -234,7 +234,7 @@ final class JWTBearerGrantType implements GrantTypeInterface
             }
             Assertion::eq($sub, $iss, 'When the client is the assertion issuer then the subject must be the client.');
             $grantTypeResponse = $grantTypeResponse->withResourceOwnerId($client->getPublicId());
-            $allowedSignatureAlgorithms = $this->jwsLoader->getSupportedSignatureAlgorithms();
+            $allowedSignatureAlgorithms = $this->jwsLoader->getSignatureAlgorithmManager()->list();
             $signatureKeys = $client->getPublicKeySet();
         }
 

@@ -109,7 +109,7 @@ final class JwtBearerSource extends ActionableSource
      */
     private function updateJoseBundleConfigurationForVerifier(ContainerBuilder $container, array $sourceConfig)
     {
-        ConfigurationHelper::addJWSLoader($container, $this->name(), $sourceConfig['signature_algorithms'], [], ['jws_loader'], false);
+        ConfigurationHelper::addJWSLoader($container, $this->name(), $sourceConfig['signature_algorithms'], [], ['jws_compact'], false);
         ConfigurationHelper::addClaimChecker($container, $this->name(), [], false);
     }
 

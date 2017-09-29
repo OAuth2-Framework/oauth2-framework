@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "9f1b594c49479c0bccb0980ab4ced53d",
+    "content-hash": "670b66849395252754648405474321e7",
     "packages": [
         {
             "name": "beberlei/assert",
@@ -1864,12 +1864,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Spomky-Labs/jose.git",
-                "reference": "d4ecd3a3b14873303b6859a5b43cd59a6e864ef0"
+                "reference": "ebb162421bfaa8a4a04e2d0a2ec015cd7019c860"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Spomky-Labs/jose/zipball/d4ecd3a3b14873303b6859a5b43cd59a6e864ef0",
-                "reference": "d4ecd3a3b14873303b6859a5b43cd59a6e864ef0",
+                "url": "https://api.github.com/repos/Spomky-Labs/jose/zipball/ebb162421bfaa8a4a04e2d0a2ec015cd7019c860",
+                "reference": "ebb162421bfaa8a4a04e2d0a2ec015cd7019c860",
                 "shasum": ""
             },
             "require": {
@@ -1952,7 +1952,7 @@
                 "jwt",
                 "symfony"
             ],
-            "time": "2017-09-28T19:04:48+00:00"
+            "time": "2017-09-29T15:10:06+00:00"
         },
         {
             "name": "symfony/polyfill-apcu",

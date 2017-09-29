@@ -28,7 +28,7 @@ final class SignedMetadataEndpointSource extends ActionableSource
     protected function continueLoading(string $path, ContainerBuilder $container, array $config)
     {
         $container->setParameter($path.'.algorithm', $config['algorithm']);
-        $container->setAlias($path.'.key_set', 'jose.key_set.signed_metadata_endpoint.key_set.signature');
+        //$container->setAlias($path.'.key_set', 'jose.key_set.signed_metadata_endpoint.key_set.signature');
     }
 
     /**
@@ -52,18 +52,9 @@ final class SignedMetadataEndpointSource extends ActionableSource
                 })
                 ->thenInvalid('The parameter "algorithm" must be set.')
             ->end()
-            ->validate()
-                ->ifTrue(function ($config) {
-                    return true === $config['enabled'] && empty($config['key_set']);
-                })
-                ->thenInvalid('The parameter "key_set" must be set.')
-            ->end()
             ->children()
                 ->scalarNode('algorithm')
                     ->info('Signature algorithm used to sign the metadata.')
-                ->end()
-                ->scalarNode('key_set')
-                    ->info('Signature key set.')
                 ->end()
             ->end();
     }
@@ -74,19 +65,10 @@ final class SignedMetadataEndpointSource extends ActionableSource
         $currentPath = $path.'['.$this->name().']';
         $accessor = PropertyAccess::createPropertyAccessor();
         $sourceConfig = $accessor->getValue($bundleConfig, $currentPath);
-        $this->updateJoseBundleConfigurationForSigner($container, $sourceConfig);
 
-        //$jwkset = json_decode($sourceConfig['key_set'], true);
-        //Assertion::isArray($jwkset, 'Invalid key set.');
-        ConfigurationHelper::addKeyset($container, 'signed_metadata_endpoint.key_set.signature', 'jwkset', ['value' => $sourceConfig['key_set']]);
-    }
-
-    /**
-     * @param ContainerBuilder $container
-     * @param array            $sourceConfig
-     */
-    private function updateJoseBundleConfigurationForSigner(ContainerBuilder $container, array $sourceConfig)
-    {
         ConfigurationHelper::addJWSBuilder($container, 'metadata_signature', [$sourceConfig['algorithm']], false);
+
+        Assertion::keyExists($bundleConfig['key_set'], 'signature', 'The signature key set must be enabled.');
+        //ConfigurationHelper::addKeyset($container, 'signed_metadata_endpoint.key_set.signature', 'jwkset', ['value' => $bundleConfig['key_set']['signature']]);
     }
 }

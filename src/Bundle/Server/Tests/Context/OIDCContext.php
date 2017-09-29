@@ -28,11 +28,14 @@ use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\MinkExtension\Context\MinkContext;
 use Behat\Symfony2Extension\Context\KernelDictionary;
+use Jose\Component\Checker\HeaderCheckerManager;
 use Jose\Component\Core\AlgorithmManager;
 use Jose\Component\Core\Converter\StandardJsonConverter;
 use Jose\Component\Signature\Algorithm\RS256;
 use Jose\Component\Signature\JWSBuilder;
+use Jose\Component\Signature\JWSLoader;
 use Jose\Component\Signature\Serializer\CompactSerializer;
+use Jose\Component\Signature\Serializer\JWSSerializerManager;
 use OAuth2Framework\Bundle\Server\Model\ClientRepository;
 use OAuth2Framework\Component\Server\Model\Client\Client;
 use OAuth2Framework\Component\Server\Model\Client\ClientId;
@@ -103,10 +106,14 @@ final class OIDCContext implements Context
         Assertion::isInstanceOf($client, Client::class);
         $claims = json_decode($expectedClaims->getRaw(), true);
         $response = $this->minkContext->getSession()->getPage()->getContent();
-        $loader = new Loader();
-        $jwt = $loader->load($response);
-        Assertion::isInstanceOf($jwt, JWSInterface::class);
-        Assertion::true(empty(array_diff($claims, $jwt->getClaims())));
+        $jwsLoader = new JWSLoader(
+            AlgorithmManager::create([]),
+            HeaderCheckerManager::create([]),
+            JWSSerializerManager::create([new CompactSerializer()])
+        );
+        $jwt = $jwsLoader->load($response);
+        $loadedClaims = json_decode($jwt->getPayload(), true);
+        Assertion::true(empty(array_diff($claims, $loadedClaims)));
     }
 
     /**
@@ -502,9 +509,10 @@ final class OIDCContext implements Context
      */
     private function generateValidIdToken(): string
     {
+        $algorithm = new RS256();
         $headers = [
             'typ' => 'JWT',
-            'alg' => 'RS256',
+            'alg' => $algorithm->name(),
             'kid' => 'KRSWwKpCE81koHSkFplXA91g91d3nwa451WFZwtzyFHlC0yxr9niMwbgu6aAcmr2AdgMFqMRwjaZQW-wX1DSLA',
         ];
 
@@ -535,7 +543,7 @@ final class OIDCContext implements Context
             'iss' => 'https://www.my-service.com',
         ];
 
-        $key = $this->getContainer()->get('oauth2_server.openid_connect.id_token.key_set')->selectKey('sig', 'RS256');
+        $key = $this->getContainer()->get('oauth2_server.openid_connect.id_token.key_set')->selectKey('sig', $algorithm);
         Assertion::notNull($key);
 
 

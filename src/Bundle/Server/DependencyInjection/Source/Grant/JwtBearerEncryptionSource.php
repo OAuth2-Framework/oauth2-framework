@@ -18,7 +18,6 @@ use Jose\Bundle\JoseFramework\Helper\ConfigurationHelper;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\ActionableSource;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\PropertyAccess\PropertyAccess;
 
 final class JwtBearerEncryptionSource extends ActionableSource
 {
@@ -30,7 +29,7 @@ final class JwtBearerEncryptionSource extends ActionableSource
         foreach (['key_encryption_algorithms', 'content_encryption_algorithms', 'required'] as $k) {
             $container->setParameter($path.'.'.$k, $config[$k]);
         }
-        $container->setAlias($path.'.key_set', 'jose.key_set.jwt_bearer.key_set.encryption');
+        //$container->setAlias($path.'.key_set', 'jose.key_set.jwt_bearer.key_set.encryption');
     }
 
     /**
@@ -49,10 +48,6 @@ final class JwtBearerEncryptionSource extends ActionableSource
                 ->booleanNode('required')
                     ->info('If set to true, all ID Token sent to the server must be encrypted.')
                     ->defaultFalse()
-                ->end()
-                ->scalarNode('key_set')
-                    ->info('Key set that contains a suitable encryption key for the selected encryption algorithms.')
-                    ->defaultNull()
                 ->end()
                 ->arrayNode('key_encryption_algorithms')
                     ->info('Supported key encryption algorithms.')
@@ -75,11 +70,8 @@ final class JwtBearerEncryptionSource extends ActionableSource
     public function prepend(array $bundleConfig, string $path, ContainerBuilder $container)
     {
         parent::prepend($bundleConfig, $path, $container);
-        $currentPath = $path.'['.$this->name().']';
-        $accessor = PropertyAccess::createPropertyAccessor();
-        $sourceConfig = $accessor->getValue($bundleConfig, $currentPath);
-        //$jwkset = json_decode($sourceConfig['key_set'], true);
-        //Assertion::isArray($jwkset, 'Invalid key set.');
-        ConfigurationHelper::addKeyset($container, 'jwt_bearer.key_set.encryption', 'jwkset', ['value' => $sourceConfig['key_set']]);
+
+        Assertion::keyExists($bundleConfig['key_set'], 'encryption', 'The encryption key set must be enabled.');
+        //ConfigurationHelper::addKeyset($container, 'jwt_bearer.key_set.encryption', 'jwkset', ['value' => $bundleConfig['key_set']['encryption']]);
     }
 }

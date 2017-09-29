@@ -19,6 +19,7 @@ use OAuth2Framework\Bundle\Server\DependencyInjection\Source\ClientSource;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\Endpoint\EndpointSource;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\Grant\GrantSource;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\HttpSource;
+use OAuth2Framework\Bundle\Server\DependencyInjection\Source\KeySet;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\OpenIdConnect\OpenIdConnectSource;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\ResourceServerRepositorySource;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\Scope\ScopeSource;
@@ -154,6 +155,7 @@ final class OAuth2FrameworkServerExtension extends Extension implements PrependE
             new ScopeSource(),
             new OpenIdConnectSource(),
             new HttpSource(),
+            new KeySet(),
         ];
     }
 }

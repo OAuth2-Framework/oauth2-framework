@@ -42,12 +42,11 @@ final class IdTokenSource extends ArraySource
         $currentPath = $path.'['.$this->name().']';
         $accessor = PropertyAccess::createPropertyAccessor();
         $sourceConfig = $accessor->getValue($bundleConfig, $currentPath);
-        $this->updateJoseBundleConfigurationForSigner($container, $sourceConfig);
-        $this->updateJoseBundleConfigurationForVerifier($container, $sourceConfig);
+        ConfigurationHelper::addJWSBuilder($container, $this->name(), $sourceConfig['signature_algorithms'], false);
+        ConfigurationHelper::addJWSLoader($container, $this->name(), $sourceConfig['signature_algorithms'], [], ['jws_compact'], false);
 
-        //$jwkset = json_decode($sourceConfig['key_set'], true);
-        //Assertion::isArray($jwkset, 'Invalid key set.');
-        ConfigurationHelper::addKeyset($container, 'id_token.key_set.signature', 'jwkset', ['value' => $sourceConfig['key_set']]);
+        Assertion::keyExists($bundleConfig['key_set'], 'signature', 'The signature key set must be enabled.');
+        //ConfigurationHelper::addKeyset($container, 'id_token.key_set.signature', 'jwkset', ['value' => $bundleConfig['key_set']['signature']]);
     }
 
     /**
@@ -58,7 +57,7 @@ final class IdTokenSource extends ArraySource
         foreach (['lifetime', 'default_signature_algorithm', 'signature_algorithms', 'claim_checkers', 'header_checkers'] as $k) {
             $container->setParameter($path.'.'.$k, $config[$k]);
         }
-        $container->setAlias($path.'.key_set', 'jose.key_set.id_token.key_set.signature');
+        //$container->setAlias($path.'.key_set', 'jose.key_set.id_token.key_set.signature');
 
         $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/openid_connect'));
         $loader->load('userinfo_scope_support.php');
@@ -94,18 +93,9 @@ final class IdTokenSource extends ArraySource
                 })
                 ->thenInvalid('The default signature algorithm must be in the supported signature algorithms.')
             ->end()
-            ->validate()
-                ->ifTrue(function ($config) {
-                    return empty($config['key_set']);
-                })
-                ->thenInvalid('The option "key_set" must be set.')
-            ->end()
             ->children()
                 ->scalarNode('default_signature_algorithm')
                     ->info('Signature algorithm used if the client has not defined a preferred one. Recommended value is "RS256".')
-                ->end()
-                ->scalarNode('key_set')
-                    ->info('Key set that contains a suitable signature key for the selected signature algorithms.')
                 ->end()
                 ->arrayNode('signature_algorithms')
                     ->info('Signature algorithm used to sign the ID Tokens.')
@@ -131,23 +121,5 @@ final class IdTokenSource extends ArraySource
                     ->min(1)
                 ->end()
             ->end();
-    }
-
-    /**
-     * @param ContainerBuilder $container
-     * @param array            $sourceConfig
-     */
-    private function updateJoseBundleConfigurationForSigner(ContainerBuilder $container, array $sourceConfig)
-    {
-        ConfigurationHelper::addJWSBuilder($container, $this->name(), $sourceConfig['signature_algorithms'], false);
-    }
-
-    /**
-     * @param ContainerBuilder $container
-     * @param array            $sourceConfig
-     */
-    private function updateJoseBundleConfigurationForVerifier(ContainerBuilder $container, array $sourceConfig)
-    {
-        ConfigurationHelper::addJWSLoader($container, $this->name(), $sourceConfig['signature_algorithms'], [], ['jws_compact'], false);
     }
 }

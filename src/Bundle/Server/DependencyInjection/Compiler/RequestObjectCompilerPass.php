@@ -33,7 +33,7 @@ final class RequestObjectCompilerPass implements CompilerPassInterface
         $metadata->addMethodCall('enableRequestObjectSupport', [new Reference('jose.jwt_loader.request_object'), []]); //FIXME
         if (true === $container->getParameter('oauth2_server.endpoint.authorization.request_object.encryption.enabled')) {
             $required = $container->getParameter('oauth2_server.endpoint.authorization.request_object.encryption.required');
-            $metadata->addMethodCall('enableEncryptedRequestObjectSupport', [new Reference('oauth2_server.endpoint.authorization.request_object.encryption.key_set'), $required]);
+            $metadata->addMethodCall('enableEncryptedRequestObjectSupport', [new Reference('jose.key_set.oauth2_server.key_set.encryption'), $required]);
         }
 
         if (true === $container->getParameter('oauth2_server.endpoint.authorization.request_object.reference.enabled')) {

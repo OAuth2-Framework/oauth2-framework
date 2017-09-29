@@ -18,7 +18,6 @@ use Jose\Bundle\JoseFramework\Helper\ConfigurationHelper;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\ActionableSource;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\PropertyAccess\PropertyAccess;
 
 final class AuthorizationEndpointRequestObjectEncryptionSource extends ActionableSource
 {
@@ -30,7 +29,7 @@ final class AuthorizationEndpointRequestObjectEncryptionSource extends Actionabl
         foreach (['required', 'key_encryption_algorithms', 'content_encryption_algorithms'] as $k) {
             $container->setParameter($path.'.'.$k, $config[$k]);
         }
-        $container->setAlias($path.'.key_set', 'jose.key_set.authorization_request_object.key_set.encryption');
+        //$container->setAlias($path.'.key_set', 'jose.key_set.authorization_request_object.key_set.encryption');
     }
 
     /**
@@ -49,9 +48,6 @@ final class AuthorizationEndpointRequestObjectEncryptionSource extends Actionabl
         parent::continueConfiguration($node);
         $node
             ->children()
-                ->scalarNode('key_set')
-                    ->info('Key set for the encryption support.')
-                ->end()
                 ->booleanNode('required')
                     ->info('If true, incoming request objects must be encrypted.')
                     ->defaultFalse()
@@ -77,12 +73,8 @@ final class AuthorizationEndpointRequestObjectEncryptionSource extends Actionabl
     public function prepend(array $bundleConfig, string $path, ContainerBuilder $container)
     {
         parent::prepend($bundleConfig, $path, $container);
-        $currentPath = $path.'['.$this->name().']';
-        $accessor = PropertyAccess::createPropertyAccessor();
-        $sourceConfig = $accessor->getValue($bundleConfig, $currentPath);
 
-        //$jwkset = json_decode($sourceConfig['key_set'], true);
-        //Assertion::isArray($jwkset, 'Invalid key set.');
-        ConfigurationHelper::addKeyset($container, 'authorization_request_object.key_set.encryption', 'jwkset', ['value' => $sourceConfig['key_set']]);
+        Assertion::keyExists($bundleConfig['key_set'], 'encryption', 'The encryption key set must be enabled.');
+        //ConfigurationHelper::addKeyset($container, 'authorization_request_object.key_set.encryption', 'jwkset', ['value' => $bundleConfig['key_set']['encryption']]);
     }
 }

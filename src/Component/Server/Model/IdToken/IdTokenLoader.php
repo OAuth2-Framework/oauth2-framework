@@ -53,7 +53,7 @@ final class IdTokenLoader
      */
     public function getSupportedSignatureAlgorithms(): array
     {
-        return $this->jwsLoader->getSupportedSignatureAlgorithms();
+        return $this->jwsLoader->getSignatureAlgorithmManager()->list();
     }
 
     /**

@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Server\DependencyInjection\Source\Endpoint;
 
-use Assert\Assertion;
 use Fluent\PhpConfigFileLoader;
 use Jose\Bundle\JoseFramework\Helper\ConfigurationHelper;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\ActionableSource;
@@ -88,21 +87,9 @@ final class ClientRegistrationSoftwareStatementSource extends ActionableSource
         $sourceConfig = $accessor->getValue($bundleConfig, $currentPath);
 
         if (true === $sourceConfig['enabled']) {
-            $this->updateJoseBundleConfigurationForVerifier($container, ['signature_algorithms' => $sourceConfig['allowed_signature_algorithms']]);
-
-            //$jwkset = json_decode($sourceConfig['key_set'], true);
-            //Assertion::isArray($jwkset, 'Invalid key set.');
+            // FIXME
+            ConfigurationHelper::addJWSLoader($container, $this->name(), $sourceConfig['allowed_signature_algorithms'], [], ['jws_compact'], false);
             ConfigurationHelper::addKeyset($container, 'client_registration_software_statement.key_set.signature', 'jwkset', ['value' => $sourceConfig['key_set']]);
         }
-    }
-
-    /**
-     * @param ContainerBuilder $container
-     * @param array            $sourceConfig
-     */
-    private function updateJoseBundleConfigurationForVerifier(ContainerBuilder $container, array $sourceConfig)
-    {
-        // FIXME
-        ConfigurationHelper::addJWSLoader($container, $this->name(), $sourceConfig['signature_algorithms'], [], ['jws_compact'], false);
     }
 }

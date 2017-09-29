@@ -20,7 +20,7 @@ return [
     IdTokenLoader::class => create()
         ->arguments(
             get('jose.jws_loader.id_token'),
-            get('oauth2_server.openid_connect.id_token.key_set'),
+            get('jose.key_set.oauth2_server.key_set.signature'),
             '%oauth2_server.openid_connect.id_token.signature_algorithms%'
         ),
 

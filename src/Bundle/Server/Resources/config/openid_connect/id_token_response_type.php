@@ -22,7 +22,7 @@ return [
             get(IdTokenBuilderFactory::class),
             '%oauth2_server.openid_connect.id_token.default_signature_algorithm%',
             get('jose.jws_builder.id_token'),
-            get('oauth2_server.openid_connect.id_token.key_set'),
+            get('jose.key_set.oauth2_server.key_set.signature'),
             get('jose.encrypter.id_token')->nullIfMissing()
         )
         ->tag('oauth2_server_response_type'),

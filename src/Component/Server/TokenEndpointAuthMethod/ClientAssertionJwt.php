@@ -87,7 +87,7 @@ abstract class ClientAssertionJwt implements TokenEndpointAuthMethodInterface
      */
     public function getSupportedSignatureAlgorithms(): array
     {
-        return $this->jwsLoader->getSupportedSignatureAlgorithms();
+        return $this->jwsLoader->getSignatureAlgorithmManager()->list();
     }
 
     /**
@@ -95,7 +95,7 @@ abstract class ClientAssertionJwt implements TokenEndpointAuthMethodInterface
      */
     public function getSupportedContentEncryptionAlgorithms(): array
     {
-        return $this->jweLoader->getSupportedContentEncryptionAlgorithms();
+        return null === $this->jweLoader ? [] : $this->jweLoader->getContentEncryptionAlgorithmManager()->list();
     }
 
     /**
@@ -103,7 +103,7 @@ abstract class ClientAssertionJwt implements TokenEndpointAuthMethodInterface
      */
     public function getSupportedKeyEncryptionAlgorithms(): array
     {
-        return $this->jweLoader->getSupportedKeyEncryptionAlgorithms();
+        return null === $this->jweLoader ? [] : $this->jweLoader->getKeyEncryptionAlgorithmManager()->list();
     }
 
     /**

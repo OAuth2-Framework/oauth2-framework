@@ -30,8 +30,8 @@ final class SignedMetadataCompilerPass implements CompilerPassInterface
         }
 
         $signatureAlgorithm = $container->getParameter('oauth2_server.endpoint.metadata.signature.algorithm');
-        $keySey = $container->getAlias('oauth2_server.endpoint.metadata.signature.key_set');
+        //$keySey = $container->getAlias('oauth2_server.endpoint.metadata.signature.key_set');
         $metadata = $container->getDefinition(MetadataController::class);
-        $metadata->addMethodCall('enableSignedMetadata', [new Reference('jose.jws_builder.metadata_signature'), $signatureAlgorithm, new Reference($keySey)]);
+        $metadata->addMethodCall('enableSignedMetadata', [new Reference('jose.jws_builder.metadata_signature'), $signatureAlgorithm, new Reference('jose.key_set.oauth2_server.key_set.signature')]);
     }
 }

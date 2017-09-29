@@ -32,7 +32,7 @@ return [
             get('oauth2_server.user_account.repository'),
             get('oauth2_server.http.response_factory'),
             get('jose.jws_builder.id_token')->nullIfMissing(),
-            get('oauth2_server.openid_connect.id_token.key_set')->nullIfMissing(),
+            get('jose.key_set.oauth2_server.key_set.signature')->nullIfMissing(),
             get('jose.jwe_builder.id_token')->nullIfMissing()
         ),
 
@@ -55,7 +55,6 @@ return [
     UserinfoEndpointAlgorithmsRule::class => create()
         ->arguments(
             get('jose.jws_builder.id_token')->nullIfMissing(),
-            get('oauth2_server.endpoint.id_token.signature.key_set')->nullIfMissing(),
             get('jose.jwe_builder.id_token')->nullIfMissing()
         )
         ->tag('oauth2_server_client_rule'),
