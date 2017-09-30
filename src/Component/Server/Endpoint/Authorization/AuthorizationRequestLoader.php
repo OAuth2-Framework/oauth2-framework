@@ -347,6 +347,7 @@ final class AuthorizationRequestLoader
     private function loadRequest(array $params, string $request, Client &$client = null): JWS
     {
         $request = $this->tryToLoadEncryptedRequest($request);
+
         try {
             $jwt = $this->jwsLoader->load($request);
             $this->claimCheckerManager->check($jwt);

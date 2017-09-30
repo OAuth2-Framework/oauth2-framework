@@ -63,8 +63,8 @@ final class MetadataEndpoint implements MiddlewareInterface
 
     /**
      * @param JWSBuilder $jwsBuilder
-     * @param JWKSet $signatureKeySet
-     * @param string          $signatureAlgorithm
+     * @param JWKSet     $signatureKeySet
+     * @param string     $signatureAlgorithm
      */
     public function enableSignedMetadata(JWSBuilder $jwsBuilder, string $signatureAlgorithm, JWKSet $signatureKeySet)
     {

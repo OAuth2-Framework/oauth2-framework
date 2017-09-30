@@ -52,8 +52,8 @@ final class SoftwareRule implements RuleInterface
     /**
      * @param JWSLoader $jwsLoader
      * @param JWKSet    $signatureKeySet
-     * @param bool               $isSoftwareStatementRequired
-     * @param array              $allowedSignatureAlgorithms
+     * @param bool      $isSoftwareStatementRequired
+     * @param array     $allowedSignatureAlgorithms
      */
     public function __construct(JWSLoader $jwsLoader, JWKSet $signatureKeySet, bool $isSoftwareStatementRequired, array $allowedSignatureAlgorithms)
     {

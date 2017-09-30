@@ -73,7 +73,7 @@ abstract class ClientAssertionJwt implements TokenEndpointAuthMethodInterface
     }
 
     /**
-     * @param bool                         $encryptionRequired
+     * @param bool   $encryptionRequired
      * @param JWKSet $keyEncryptionKeySet
      */
     public function enableEncryptedAssertions(bool $encryptionRequired, JWKSet $keyEncryptionKeySet)

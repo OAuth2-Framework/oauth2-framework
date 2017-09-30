@@ -166,7 +166,6 @@ final class JwtBearerGrantTypeContext implements Context
         ];
         $client = $this->getContainer()->get(ClientRepository::class)->find(ClientId::create('client1'));
 
-
         $jwsBuilder = new JWSBuilder(
             new StandardJsonConverter(),
             AlgorithmManager::create([new HS256()])
@@ -175,7 +174,7 @@ final class JwtBearerGrantTypeContext implements Context
         $jws = $jwsBuilder
             ->create()
             ->withPayload($claims)
-            ->addSignature($client->getPublicKeySet()->get(0),  $headers)
+            ->addSignature($client->getPublicKeySet()->get(0), $headers)
             ->build();
 
         return $serializer->serialize($jws, 0);
@@ -223,7 +222,6 @@ final class JwtBearerGrantTypeContext implements Context
         ];
         $client = $this->getContainer()->get(ClientRepository::class)->find(ClientId::create('client3'));
 
-
         $jwsBuilder = new JWSBuilder(
             new StandardJsonConverter(),
             AlgorithmManager::create([new HS256()])
@@ -263,7 +261,6 @@ final class JwtBearerGrantTypeContext implements Context
             'dq' => 'CLDmDGduhylc9o7r84rEUVn7pzQ6PF83Y-iBZx5NT-TpnOZKF1pErAMVeKzFEl41DlHHqqBLSM0W1sOFbwTxYWZDm6sI6og5iTbwQGIC3gnJKbi_7k_vJgGHwHxgPaX2PnvP-zyEkDERuf-ry4c_Z11Cq9AqC2yeL6kdKT1cYF8',
             'qi' => '3PiqvXQN0zwMeE-sBvZgi289XP9XCQF3VWqPzMKnIgQp7_Tugo6-NZBKCQsMf3HaEGBjTVJs_jcK8-TRXvaKe-7ZMaQj8VfBdYkssbu0NKDDhjJ-GtiseaDVWt7dcH0cfwxgFUHpQh7FoCrjFJ6h6ZEpMF6xmujs4qMpPz8aaI4',
         ]);
-
 
         $jwsBuilder = new JWSBuilder(
             new StandardJsonConverter(),

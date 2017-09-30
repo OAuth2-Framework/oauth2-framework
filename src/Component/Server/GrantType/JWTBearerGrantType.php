@@ -180,6 +180,7 @@ final class JWTBearerGrantType implements GrantTypeInterface
         if (null === $this->jweLoader) {
             return $assertion;
         }
+
         try {
             $jwe = $this->jweLoader->load($assertion);
             $jwe = $this->jweLoader->decryptUsingKeySet($jwe, $this->keyEncryptionKeySet);
@@ -205,7 +206,7 @@ final class JWTBearerGrantType implements GrantTypeInterface
 
     /**
      * @param GrantTypeData $grantTypeResponse
-     * @param JWS  $jws
+     * @param JWS           $jws
      *
      * @throws OAuth2Exception
      *

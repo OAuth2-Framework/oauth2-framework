@@ -34,7 +34,7 @@ final class UserinfoEndpointAlgorithmsRule implements RuleInterface
     /**
      * UserinfoEndpointAlgorithmsRule constructor.
      *
-     * @param JWSBuilder|null    $jwsBuilder
+     * @param JWSBuilder|null $jwsBuilder
      * @param JWEBuilder|null $jweBuilder
      */
     public function __construct(?JWSBuilder $jwsBuilder, ?JWEBuilder $jweBuilder)

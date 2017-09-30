@@ -308,8 +308,8 @@ final class IdTokenBuilder
 
     /**
      * @param JWSBuilder $jwsBuilder
-     * @param JWKSet $signatureKeys
-     * @param string          $signatureAlgorithm
+     * @param JWKSet     $signatureKeys
+     * @param string     $signatureAlgorithm
      *
      * @return IdTokenBuilder
      */
@@ -327,8 +327,8 @@ final class IdTokenBuilder
 
     /**
      * @param JWEBuilder $jweBuilder
-     * @param string             $keyEncryptionAlgorithm
-     * @param string             $contentEncryptionAlgorithm
+     * @param string     $keyEncryptionAlgorithm
+     * @param string     $contentEncryptionAlgorithm
      *
      * @return IdTokenBuilder
      */
@@ -502,8 +502,8 @@ final class IdTokenBuilder
     }
 
     /**
-     * @param JWK $signatureKey
-     * @param string       $signatureAlgorithm
+     * @param JWK    $signatureKey
+     * @param string $signatureAlgorithm
      *
      * @return array
      */

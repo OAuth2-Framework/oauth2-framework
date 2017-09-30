@@ -36,8 +36,8 @@ final class TrustedIssuer implements TrustedIssuerInterface
     /**
      * TrustedIssuer constructor.
      *
-     * @param string          $issuerName
-     * @param array           $allowedAlgorithms
+     * @param string $issuerName
+     * @param array  $allowedAlgorithms
      * @param JWKSet $publicKeys
      */
     public function __construct(string $issuerName, array $allowedAlgorithms, JWKSet $publicKeys)
