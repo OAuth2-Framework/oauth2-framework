@@ -34,7 +34,7 @@ final class IdTokenAlgorithmsRule implements RuleInterface
     /**
      * IdTokenAlgorithmsRule constructor.
      *
-     * @param JWSBuilder         $jwsBuilder
+     * @param JWSBuilder      $jwsBuilder
      * @param JWEBuilder|null $jweBuilder
      */
     public function __construct(JWSBuilder $jwsBuilder, ?JWEBuilder $jweBuilder)

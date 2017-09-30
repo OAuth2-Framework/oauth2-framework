@@ -64,6 +64,7 @@ final class IdTokenLoader
     public function load(IdTokenId $idTokenId): ? IdToken
     {
         $value = $idTokenId->getValue();
+
         try {
             $jwt = $this->jwsLoader->load($value);
             $claims = json_decode($jwt->getPayload(), true);

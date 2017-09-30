@@ -182,7 +182,6 @@ final class ClientCredentialsGrantTypeContext implements Context
         ];
         $client = $this->getContainer()->get(ClientRepository::class)->find(ClientId::create('client3'));
 
-
         $jwsBuilder = new JWSBuilder(
             new StandardJsonConverter(),
             AlgorithmManager::create([new HS256()])

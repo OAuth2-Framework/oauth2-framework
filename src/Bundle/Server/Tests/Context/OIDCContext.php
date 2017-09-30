@@ -546,7 +546,6 @@ final class OIDCContext implements Context
         $key = $this->getContainer()->get('jose.key_set.oauth2_server.key_set.signature')->selectKey('sig', $algorithm);
         Assertion::notNull($key);
 
-
         $jwsBuilder = new JWSBuilder(
             new StandardJsonConverter(),
             AlgorithmManager::create([new RS256()])

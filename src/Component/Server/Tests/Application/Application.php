@@ -1144,7 +1144,7 @@ final class Application
     {
         if (null === $this->publicKeyset) {
             $this->publicKeyset = JWKSet::createFromKeys([]);
-            foreach($this->getPrivateKeys() as $privateKey) {
+            foreach ($this->getPrivateKeys() as $privateKey) {
                 $this->publicKeyset = $this->publicKeyset->with($privateKey->toPublic());
             }
         }
@@ -1164,13 +1164,13 @@ final class Application
     {
         if (null === $this->privateKeys) {
             $this->privateKeys = JWKSet::createFromKeys([]);
-            foreach($this->getPrivateECKeys() as $privateKey) {
+            foreach ($this->getPrivateECKeys() as $privateKey) {
                 $this->privateKeys = $this->privateKeys->with($privateKey);
             }
-            foreach($this->getPrivateRSAKeys() as $privateKey) {
+            foreach ($this->getPrivateRSAKeys() as $privateKey) {
                 $this->privateKeys = $this->privateKeys->with($privateKey);
             }
-            foreach($this->getPrivateNoneKeys() as $privateKey) {
+            foreach ($this->getPrivateNoneKeys() as $privateKey) {
                 $this->privateKeys = $this->privateKeys->with($privateKey);
             }
         }
@@ -1487,7 +1487,7 @@ final class Application
                 'qi' => '3PiqvXQN0zwMeE-sBvZgi289XP9XCQF3VWqPzMKnIgQp7_Tugo6-NZBKCQsMf3HaEGBjTVJs_jcK8-TRXvaKe-7ZMaQj8VfBdYkssbu0NKDDhjJ-GtiseaDVWt7dcH0cfwxgFUHpQh7FoCrjFJ6h6ZEpMF6xmujs4qMpPz8aaI4',
             ]);
             $publicKeys = JWKSet::createFromKeys([
-                $key->toPublic()
+                $key->toPublic(),
             ]);
             $this->jwtBearerGrantType->addTrustedIssuer(new TrustedIssuer(
                 'https://my.trusted.issuer',
@@ -1828,10 +1828,10 @@ final class Application
                 HeaderCheckerManager::create([
                     new IssuedAtChecker(),
                     new NotBeforeChecker(),
-                    new ExpirationTimeChecker()
+                    new ExpirationTimeChecker(),
                 ]),
                 JWSSerializerManager::create([
-                    new JwsCompactSerializer()
+                    new JwsCompactSerializer(),
                 ])
             );
         }
@@ -1853,10 +1853,10 @@ final class Application
                 ]),
                 AlgorithmManager::create([
                     new A256GCM(),
-                    new A256CBCHS512()
+                    new A256CBCHS512(),
                 ]),
                 CompressionMethodManager::create([
-                    new Deflate()
+                    new Deflate(),
                 ])
             );
         }
@@ -1874,18 +1874,18 @@ final class Application
                 ]),
                 AlgorithmManager::create([
                     new A256GCM(),
-                    new A256CBCHS512()
+                    new A256CBCHS512(),
                 ]),
                 CompressionMethodManager::create([
-                    new Deflate()
+                    new Deflate(),
                 ]),
                 HeaderCheckerManager::create([
                     new IssuedAtChecker(),
                     new NotBeforeChecker(),
-                    new ExpirationTimeChecker()
+                    new ExpirationTimeChecker(),
                 ]),
                 JWESerializerManager::create([
-                    new JweCompactSerializer()
+                    new JweCompactSerializer(),
                 ])
             );
         }
