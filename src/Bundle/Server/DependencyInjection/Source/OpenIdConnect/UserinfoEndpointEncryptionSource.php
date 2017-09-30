@@ -45,6 +45,18 @@ final class UserinfoEndpointEncryptionSource extends ActionableSource
     {
         parent::continueConfiguration($node);
         $node
+            ->validate()
+                ->ifTrue(function ($config) {
+                    return true === $config['enabled'] && empty($config['key_encryption_algorithms']);
+                })
+                ->thenInvalid('You must set at least one key encryption algorithm.')
+            ->end()
+            ->validate()
+                ->ifTrue(function ($config) {
+                    return true === $config['enabled'] && empty($config['content_encryption_algorithms']);
+                })
+                ->thenInvalid('You must set at least one content encryption algorithm.')
+            ->end()
             ->children()
                 ->arrayNode('key_encryption_algorithms')
                     ->info('Supported key encryption algorithms.')

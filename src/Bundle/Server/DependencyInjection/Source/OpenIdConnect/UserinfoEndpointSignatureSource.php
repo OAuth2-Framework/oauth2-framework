@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Server\DependencyInjection\Source\OpenIdConnect;
 
+use Assert\Assertion;
 use Jose\Bundle\JoseFramework\Helper\ConfigurationHelper;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\ActionableSource;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
@@ -44,6 +45,12 @@ final class UserinfoEndpointSignatureSource extends ActionableSource
     {
         parent::continueConfiguration($node);
         $node
+            ->validate()
+                ->ifTrue(function ($config) {
+                    return true === $config['enabled'] && empty($config['signature_algorithms']);
+                })
+                ->thenInvalid('You must set at least one signature algorithm.')
+            ->end()
             ->children()
                 ->arrayNode('signature_algorithms')
                     ->info('Signature algorithm used to sign the user information.')
@@ -60,6 +67,7 @@ final class UserinfoEndpointSignatureSource extends ActionableSource
     public function prepend(array $bundleConfig, string $path, ContainerBuilder $container)
     {
         parent::prepend($bundleConfig, $path, $container);
+        Assertion::keyExists($bundleConfig['key_set'], 'signature', 'The signature key set must be enabled.');
         $currentPath = $path.'['.$this->name().']';
         $accessor = PropertyAccess::createPropertyAccessor();
         $sourceConfig = $accessor->getValue($bundleConfig, $currentPath);
