@@ -105,6 +105,8 @@ final class OAuth2FrameworkServerBundle extends Bundle
             new Compiler\AuthorizationEndpointRouteCompilerPass(),
             new Compiler\UserInfoScopeSupportCompilerPass(),
             new Compiler\UserinfoRouteCompilerPass(),
+            new Compiler\UserinfoEndpointSignatureCompilerPass(),
+            new Compiler\UserinfoEndpointEncryptionCompilerPass(),
             new Compiler\UserInfoPairwiseSubjectCompilerPass(),
             new Compiler\ClaimSourceCompilerPass(),
             new Compiler\UserAccountDiscoveryCompilerPass(),

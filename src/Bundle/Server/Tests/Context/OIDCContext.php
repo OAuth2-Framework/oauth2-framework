@@ -543,7 +543,7 @@ final class OIDCContext implements Context
             'iss' => 'https://www.my-service.com',
         ];
 
-        $key = $this->getContainer()->get('oauth2_server.openid_connect.id_token.key_set')->selectKey('sig', $algorithm);
+        $key = $this->getContainer()->get('jose.key_set.oauth2_server.key_set.signature')->selectKey('sig', $algorithm);
         Assertion::notNull($key);
 
 

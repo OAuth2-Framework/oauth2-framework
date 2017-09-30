@@ -2643,9 +2643,13 @@ final class Application
                 $this->getIdTokenBuilderFactory(),
                 $this->getClientRepository(),
                 $this->getUserAccountRepository(),
-                $this->getResponseFactory(),
+                $this->getResponseFactory()
+            );
+            $this->userInfoEndpoint->enableSignature(
                 $this->getJwsBuilder(),
-                $this->getPrivateKeys(),
+                $this->getPrivateKeys()
+            );
+            $this->userInfoEndpoint->enableEncryption(
                 $this->getJweBuilder()
             );
         }

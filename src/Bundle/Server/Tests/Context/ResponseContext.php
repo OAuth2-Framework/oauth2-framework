@@ -30,6 +30,7 @@ use Behat\MinkExtension\Context\MinkContext;
 use Behat\Symfony2Extension\Context\KernelDictionary;
 use Http\Factory\Diactoros\UriFactory;
 use OAuth2Framework\Bundle\Server\Tests\TestBundle\Listener;
+use Symfony\Component\VarDumper\VarDumper;
 
 final class ResponseContext implements Context
 {
@@ -62,6 +63,9 @@ final class ResponseContext implements Context
      */
     public function theResponseCodeIs($code)
     {
+        if (500 === $this->minkContext->getSession()->getStatusCode()) {
+            VarDumper::dump(substr($this->minkContext->getSession()->getPage()->getContent(), 0, 5000));
+        }
         Assertion::eq((int) $code, $this->minkContext->getSession()->getStatusCode());
     }
 

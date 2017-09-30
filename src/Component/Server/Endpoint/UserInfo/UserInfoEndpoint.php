@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\Endpoint\UserInfo;
 
-use Assert\Assertion;
 use Interop\Http\Factory\ResponseFactoryInterface;
 use Interop\Http\Server\RequestHandlerInterface;
 use Interop\Http\Server\MiddlewareInterface;
@@ -46,7 +45,7 @@ final class UserInfoEndpoint implements MiddlewareInterface
     /**
      * @var JWSBuilder|null
      */
-    private $jweBuilder;
+    private $jweBuilder = null;
 
     /**
      * @var ClientRepositoryInterface
@@ -75,19 +74,30 @@ final class UserInfoEndpoint implements MiddlewareInterface
      * @param ClientRepositoryInterface      $clientRepository
      * @param UserAccountRepositoryInterface $userAccountRepository
      * @param ResponseFactoryInterface       $responseFactory
-     * @param JWSBuilder|null           $jwsBuilder
-     * @param JWKSet|null           $signatureKeys
-     * @param JWEBuilder|null        $jweBuilder
      */
-    public function __construct(IdTokenBuilderFactory $idTokenBuilderFactory, ClientRepositoryInterface $clientRepository, UserAccountRepositoryInterface $userAccountRepository, ResponseFactoryInterface $responseFactory, ?JWSBuilder $jwsBuilder, ?JWKSet $signatureKeys, ?JWEBuilder $jweBuilder)
+    public function __construct(IdTokenBuilderFactory $idTokenBuilderFactory, ClientRepositoryInterface $clientRepository, UserAccountRepositoryInterface $userAccountRepository, ResponseFactoryInterface $responseFactory)
     {
-        Assertion::false($jwsBuilder xor $signatureKeys, 'Signature support requires both signer an key set.');
         $this->idTokenBuilderFactory = $idTokenBuilderFactory;
         $this->clientRepository = $clientRepository;
         $this->userAccountRepository = $userAccountRepository;
         $this->responseFactory = $responseFactory;
+    }
+
+    /**
+     * @param JWSBuilder $jwsBuilder
+     * @param JWKSet     $signatureKeys
+     */
+    public function enableSignature(JWSBuilder $jwsBuilder, JWKSet $signatureKeys)
+    {
         $this->jwsBuilder = $jwsBuilder;
         $this->signatureKeys = $signatureKeys;
+    }
+
+    /**
+     * @param JWEBuilder $jweBuilder
+     */
+    public function enableEncryption(JWEBuilder $jweBuilder)
+    {
         $this->jweBuilder = $jweBuilder;
     }
 

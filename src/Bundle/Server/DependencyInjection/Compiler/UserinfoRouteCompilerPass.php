@@ -51,10 +51,5 @@ final class UserinfoRouteCompilerPass implements CompilerPassInterface
 
         $definition = $container->getDefinition(MetadataBuilder::class);
         $definition->addMethodCall('setRoute', ['userinfo_endpoint', 'oauth2_server_openid_connect_userinfo_endpoint']);
-        $definition->addMethodCall('addKeyValuePair', ['userinfo_signing_alg_values_supported', $container->getParameter('oauth2_server.openid_connect.id_token.signature_algorithms')]);
-        if (true === $container->getParameter('oauth2_server.openid_connect.id_token.encryption.enabled')) {
-            $definition->addMethodCall('addKeyValuePair', ['userinfo_encryption_alg_values_supported', $container->getParameter('oauth2_server.openid_connect.id_token.encryption.key_encryption_algorithms')]);
-            $definition->addMethodCall('addKeyValuePair', ['userinfo_encryption_enc_values_supported', $container->getParameter('oauth2_server.openid_connect.id_token.encryption.content_encryption_algorithms')]);
-        }
     }
 }

@@ -22,6 +22,15 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 final class UserinfoEndpointSource extends ActionableSource
 {
     /**
+     * UserinfoSource constructor.
+     */
+    public function __construct()
+    {
+        $this->addSubSource(new UserinfoEndpointSignatureSource());
+        $this->addSubSource(new UserinfoEndpointEncryptionSource());
+    }
+
+    /**
      * {@inheritdoc}
      */
     protected function continueLoading(string $path, ContainerBuilder $container, array $config)

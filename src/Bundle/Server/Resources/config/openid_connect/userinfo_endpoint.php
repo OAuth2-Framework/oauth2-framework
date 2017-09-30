@@ -30,10 +30,7 @@ return [
             get(IdTokenBuilderFactory::class),
             get(ClientRepository::class),
             get('oauth2_server.user_account.repository'),
-            get('oauth2_server.http.response_factory'),
-            get('jose.jws_builder.id_token')->nullIfMissing(),
-            get('jose.key_set.oauth2_server.key_set.signature')->nullIfMissing(),
-            get('jose.jwe_builder.id_token')->nullIfMissing()
+            get('oauth2_server.http.response_factory')
         ),
 
     'userinfo_security_middleware' => create(OAuth2SecurityMiddleware::class)

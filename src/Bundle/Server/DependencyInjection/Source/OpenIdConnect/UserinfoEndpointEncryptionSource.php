@@ -11,26 +11,16 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Bundle\Server\DependencyInjection\Source\Endpoint;
+namespace OAuth2Framework\Bundle\Server\DependencyInjection\Source\OpenIdConnect;
 
-use Assert\Assertion;
+use Jose\Bundle\JoseFramework\Helper\ConfigurationHelper;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\ActionableSource;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 
-final class AuthorizationEndpointRequestObjectEncryptionSource extends ActionableSource
+final class UserinfoEndpointEncryptionSource extends ActionableSource
 {
-    /**
-     * {@inheritdoc}
-     */
-    protected function continueLoading(string $path, ContainerBuilder $container, array $config)
-    {
-        foreach (['required', 'key_encryption_algorithms', 'content_encryption_algorithms'] as $k) {
-            $container->setParameter($path.'.'.$k, $config[$k]);
-        }
-        //$container->setAlias($path.'.key_set', 'jose.key_set.authorization_request_object.key_set.encryption');
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -42,26 +32,31 @@ final class AuthorizationEndpointRequestObjectEncryptionSource extends Actionabl
     /**
      * {@inheritdoc}
      */
+    protected function continueLoading(string $path, ContainerBuilder $container, array $config)
+    {
+        $container->setParameter($path.'.key_encryption_algorithms', $config['key_encryption_algorithms']);
+        $container->setParameter($path.'.content_encryption_algorithms', $config['content_encryption_algorithms']);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     protected function continueConfiguration(NodeDefinition $node)
     {
         parent::continueConfiguration($node);
         $node
             ->children()
-                ->booleanNode('required')
-                    ->info('If true, incoming request objects must be encrypted.')
-                    ->defaultFalse()
-                ->end()
                 ->arrayNode('key_encryption_algorithms')
                     ->info('Supported key encryption algorithms.')
                     ->useAttributeAsKey('name')
                     ->prototype('scalar')->end()
                     ->treatNullLike([])
                 ->end()
-                ->arrayNode('content_encryption_algorithms')
+                    ->arrayNode('content_encryption_algorithms')
                     ->info('Supported content encryption algorithms.')
                     ->useAttributeAsKey('name')
                     ->prototype('scalar')->end()
-                    ->treatNullLike([])
+                ->treatNullLike([])
                 ->end()
             ->end();
     }
@@ -72,8 +67,10 @@ final class AuthorizationEndpointRequestObjectEncryptionSource extends Actionabl
     public function prepend(array $bundleConfig, string $path, ContainerBuilder $container)
     {
         parent::prepend($bundleConfig, $path, $container);
+        $currentPath = $path.'['.$this->name().']';
+        $accessor = PropertyAccess::createPropertyAccessor();
+        $sourceConfig = $accessor->getValue($bundleConfig, $currentPath);
 
-        Assertion::keyExists($bundleConfig['key_set'], 'encryption', 'The encryption key set must be enabled.');
-        //ConfigurationHelper::addKeyset($container, 'authorization_request_object.key_set.encryption', 'jwkset', ['value' => $bundleConfig['key_set']['encryption']]);
+        ConfigurationHelper::addJWEBuilder($container, 'oauth2_server.userinfo', $sourceConfig['key_encryption_algorithms'], $sourceConfig['content_encryption_algorithms'], ['DEF'], false);
     }
 }

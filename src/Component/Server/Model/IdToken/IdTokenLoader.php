@@ -43,8 +43,8 @@ final class IdTokenLoader
      */
     public function __construct(JWSLoader $jwsLoader, JWKSet $signatureKeySet, array $signatureAlgorithms)
     {
-        $this->signatureKeySet = $signatureKeySet;
         $this->signatureAlgorithms = $signatureAlgorithms;
+        $this->signatureKeySet = $signatureKeySet;
         $this->jwsLoader = $jwsLoader;
     }
 
