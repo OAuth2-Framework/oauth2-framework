@@ -92,7 +92,6 @@ final class AuthorizationCodeGrantType implements GrantTypeInterface
         }
         $grantTypeResponse = $grantTypeResponse->withAvailableScopes($authCode->getScopes());
 
-        //Nothing to do
         return $grantTypeResponse;
     }
 

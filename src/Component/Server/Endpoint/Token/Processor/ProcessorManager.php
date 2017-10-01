@@ -49,7 +49,9 @@ final class ProcessorManager
      */
     public function handle(ServerRequestInterface $request, GrantTypeData $grantTypeData, GrantTypeInterface $grantType): GrantTypeData
     {
-        return call_user_func($this->callableForNextRule(0), $request, $grantTypeData, $grantType);
+        $grantTypeData = call_user_func($this->callableForNextRule(0), $request, $grantTypeData, $grantType);
+
+        return $grantType->grant($request, $grantTypeData);
     }
 
     /**
@@ -61,7 +63,7 @@ final class ProcessorManager
     {
         if (!isset($this->processors[$index])) {
             return function (ServerRequestInterface $request, GrantTypeData $grantTypeData, GrantTypeInterface $grantType): GrantTypeData {
-                return $grantType->grant($request, $grantTypeData);
+                return $grantTypeData;
             };
         }
         $processor = $this->processors[$index];

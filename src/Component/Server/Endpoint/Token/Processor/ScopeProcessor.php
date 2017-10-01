@@ -57,12 +57,15 @@ final class ScopeProcessor
      */
     public function __invoke(ServerRequestInterface $request, GrantTypeData $grantTypeData, GrantTypeInterface $grantType, callable $next): GrantTypeData
     {
+        /** @var GrantTypeData $grantTypeData */
+        $grantTypeData = $next($request, $grantTypeData, $grantType);
         $params = $request->getParsedBody() ?? [];
         if (!array_key_exists('scope', $params)) {
-            return $next($request, $grantTypeData, $grantType);
+            $scope = $grantTypeData->getAvailableScopes() ?? [];
+        } else {
+            $scopeParameter = $params['scope'];
+            $scope = $this->scopeRepository->convertToArray($scopeParameter);
         }
-        $scopeParameter = $params['scope'];
-        $scope = $this->scopeRepository->convertToArray($scopeParameter);
 
         //Modify the scope according to the scope policy
         try {
@@ -93,6 +96,8 @@ final class ScopeProcessor
 
         $grantTypeData = $grantTypeData->withScopes($scope);
 
-        return $next($request, $grantTypeData, $grantType);
+        return $grantTypeData;
+
+        //return $next($request, $grantTypeData, $grantType);
     }
 }

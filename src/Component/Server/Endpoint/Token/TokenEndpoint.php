@@ -99,9 +99,7 @@ final class TokenEndpoint implements MiddlewareInterface
     {
         $grantTypeData = GrantTypeData::create($request->getAttribute('client'));
 
-        /**
-         * @var GrantTypeInterface From the dedicated middleware
-         */
+        /** @var $grantType GrantTypeInterface From the dedicated middleware */
         $grantType = $request->getAttribute('grant_type');
         $grantType->checkTokenRequest($request);
         $grantTypeData = $grantType->prepareTokenResponse($request, $grantTypeData);
