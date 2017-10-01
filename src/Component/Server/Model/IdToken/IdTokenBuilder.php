@@ -358,7 +358,7 @@ final class IdTokenBuilder
             $data = $this->updateClaimsWithTokenHash($data);
             $result = $this->computeIdToken($data);
         } else {
-            $result = json_encode($data, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);
+            $result = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         }
 
         if (null !== $this->keyEncryptionAlgorithm && null !== $this->contentEncryptionAlgorithm) {

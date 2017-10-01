@@ -67,7 +67,7 @@ final class ClientContext implements Context
         $request = $request->withBody((new StreamFactory())->createStream(json_encode([
             'redirect_uris' => ['https://www.foo.com'],
             'token_endpoint_auth_method' => 'client_secret_basic',
-        ], JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)));
+        ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)));
         $request = $request->withHeader('Content-Type', 'application/json');
         $request = $request->withHeader('Authorization', 'Bearer INITIAL_ACCESS_TOKEN_VALID');
 
@@ -83,7 +83,7 @@ final class ClientContext implements Context
         $request = $request->withMethod('POST');
         $request = $request->withBody((new StreamFactory())->createStream(json_encode([
             'token_endpoint_auth_method' => 'client_secret_basic',
-        ], JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)));
+        ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)));
         $request = $request->withHeader('Content-Type', 'application/json');
         $request = $request->withHeader('Authorization', 'Bearer INITIAL_ACCESS_TOKEN_VALID');
 
@@ -101,7 +101,7 @@ final class ClientContext implements Context
             'contacts' => false,
             'redirect_uris' => ['https://www.foo.com'],
             'token_endpoint_auth_method' => 'client_secret_basic',
-        ], JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)));
+        ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)));
         $request = $request->withHeader('Content-Type', 'application/json');
         $request = $request->withHeader('Authorization', 'Bearer INITIAL_ACCESS_TOKEN_VALID');
 
@@ -121,7 +121,7 @@ final class ClientContext implements Context
             ],
             'redirect_uris' => ['https://www.foo.com'],
             'token_endpoint_auth_method' => 'client_secret_basic',
-        ], JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)));
+        ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)));
         $request = $request->withHeader('Content-Type', 'application/json');
         $request = $request->withHeader('Authorization', 'Bearer INITIAL_ACCESS_TOKEN_VALID');
 
@@ -138,7 +138,7 @@ final class ClientContext implements Context
         $request = $request->withBody((new StreamFactory())->createStream(json_encode([
             'redirect_uris' => ['https://www.foo.com#fragment'],
             'token_endpoint_auth_method' => 'client_secret_basic',
-        ], JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)));
+        ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)));
         $request = $request->withHeader('Content-Type', 'application/json');
         $request = $request->withHeader('Authorization', 'Bearer INITIAL_ACCESS_TOKEN_VALID');
 
@@ -156,7 +156,7 @@ final class ClientContext implements Context
             'redirect_uris' => ['https://localhost/foo/bar'],
             'response_types' => ['id_token token'],
             'token_endpoint_auth_method' => 'client_secret_basic',
-        ], JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)));
+        ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)));
         $request = $request->withHeader('Content-Type', 'application/json');
         $request = $request->withHeader('Authorization', 'Bearer INITIAL_ACCESS_TOKEN_VALID');
 
@@ -174,7 +174,7 @@ final class ClientContext implements Context
             'redirect_uris' => ['http://www.foo.com/'],
             'response_types' => ['id_token token'],
             'token_endpoint_auth_method' => 'client_secret_basic',
-        ], JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)));
+        ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)));
         $request = $request->withHeader('Content-Type', 'application/json');
         $request = $request->withHeader('Authorization', 'Bearer INITIAL_ACCESS_TOKEN_VALID');
 
@@ -190,7 +190,7 @@ final class ClientContext implements Context
         $request = $request->withMethod('POST');
         $request = $request->withBody((new StreamFactory())->createStream(json_encode([
             'redirect_uris' => ['https://www.foo.com'],
-        ], JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)));
+        ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)));
         $request = $request->withHeader('Content-Type', 'application/json');
         $request = $request->withHeader('Authorization', 'Bearer INITIAL_ACCESS_TOKEN_EXPIRED');
 
@@ -206,7 +206,7 @@ final class ClientContext implements Context
         $request = $request->withMethod('POST');
         $request = $request->withBody((new StreamFactory())->createStream(json_encode([
             'redirect_uris' => ['https://www.foo.com'],
-        ], JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)));
+        ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)));
         $request = $request->withHeader('Content-Type', 'application/json');
         $request = $request->withHeader('Authorization', 'Bearer INITIAL_ACCESS_TOKEN_REVOKED');
 
@@ -222,7 +222,7 @@ final class ClientContext implements Context
         $request = $request->withMethod('POST');
         $request = $request->withBody((new StreamFactory())->createStream(json_encode([
             'redirect_uris' => ['https://www.foo.com'],
-        ], JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)));
+        ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)));
         $request = $request->withHeader('Content-Type', 'application/json');
 
         $this->responseContext->setResponse($this->applicationContext->getApplication()->getClientRegistrationPipe()->dispatch($request));
@@ -237,7 +237,7 @@ final class ClientContext implements Context
         $request = $request->withMethod('POST');
         $request = $request->withBody((new StreamFactory())->createStream(json_encode([
             'redirect_uris' => ['https://www.foo.com'],
-        ], JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)));
+        ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)));
         $request = $request->withHeader('Content-Type', 'application/json');
         $request = $request->withHeader('Authorization', 'Bearer ***INVALID_INITIAL_ACCESS_TOKEN***');
 
@@ -255,7 +255,7 @@ final class ClientContext implements Context
             'redirect_uris' => ['https://www.foo.com'],
             'token_endpoint_auth_method' => 'client_secret_basic',
             'software_statement' => $this->createSoftwareStatement(),
-        ], JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)));
+        ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)));
         $request = $request->withHeader('Content-Type', 'application/json');
         $request = $request->withHeader('Authorization', 'Bearer INITIAL_ACCESS_TOKEN_VALID');
 
@@ -390,7 +390,7 @@ final class ClientContext implements Context
         $request = $request->withMethod('PUT');
         $request = $request->withBody((new StreamFactory())->createStream(json_encode([
             'redirect_uris' => ['https://www.foo.com'],
-        ], JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)));
+        ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)));
         $request = $request->withHeader('Content-Type', 'application/json');
         $client = $this->applicationContext->getApplication()->getClientRepository()->find(ClientId::create('79b407fb-acc0-4880-ab98-254062c214ce'));
         $request = $request->withAttribute('client', $client);
@@ -409,7 +409,7 @@ final class ClientContext implements Context
         $request = $request->withBody((new StreamFactory())->createStream(json_encode([
             'redirect_uris' => ['https://www.bar.com'],
             'token_endpoint_auth_method' => 'client_secret_basic',
-        ], JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)));
+        ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)));
         $request = $request->withHeader('Authorization', 'Bearer JNWuIxHkTKtUmmtEpipDtPlTc3ordUNpSVVPLbQXKrFKyYVDR7N3k1ZzrHmPWXoibr2J2HrTSSozN6zIhHuypA');
         $client = $this->applicationContext->getApplication()->getClientRepository()->find(ClientId::create('79b407fb-acc0-4880-ab98-254062c214ce'));
         $request = $request->withAttribute('client', $client);
@@ -441,7 +441,7 @@ final class ClientContext implements Context
             'redirect_uris' => ['https://www.bar.com'],
             'token_endpoint_auth_method' => 'client_secret_basic',
             'software_statement' => $this->createSoftwareStatement(),
-        ], JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)));
+        ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)));
         $request = $request->withHeader('Authorization', 'Bearer JNWuIxHkTKtUmmtEpipDtPlTc3ordUNpSVVPLbQXKrFKyYVDR7N3k1ZzrHmPWXoibr2J2HrTSSozN6zIhHuypA');
         $client = Client::createEmpty();
         $client = $client->create(
@@ -474,7 +474,7 @@ final class ClientContext implements Context
             'redirect_uris' => ['https://www.bar.com'],
             'token_endpoint_auth_method' => 'client_secret_basic',
             'software_statement' => $this->createInvalidSoftwareStatement(),
-        ], JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)));
+        ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)));
         $request = $request->withHeader('Authorization', 'Bearer JNWuIxHkTKtUmmtEpipDtPlTc3ordUNpSVVPLbQXKrFKyYVDR7N3k1ZzrHmPWXoibr2J2HrTSSozN6zIhHuypA');
         $client = Client::createEmpty();
         $client = $client->create(

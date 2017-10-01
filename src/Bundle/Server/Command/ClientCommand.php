@@ -60,7 +60,7 @@ EOT
         $service->saveClient($client);
 
         $output->writeln('A client has been created');
-        $output->writeln(sprintf('Its configuration is "%s"', json_encode($client, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)));
+        $output->writeln(sprintf('Its configuration is "%s"', json_encode($client, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)));
     }
 
     /**

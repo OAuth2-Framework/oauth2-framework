@@ -32,7 +32,7 @@ final class DisplayParameterChecker implements ParameterCheckerInterface
     {
         try {
             if ($authorization->hasQueryParam('display')) {
-                Assertion::true(in_array($authorization->getQueryParam('display'), $this->getAllowedDisplayValues()), sprintf('Invalid parameter \'display\'. Allowed values are %s', json_encode($this->getAllowedDisplayValues(), JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)));
+                Assertion::true(in_array($authorization->getQueryParam('display'), $this->getAllowedDisplayValues()), sprintf('Invalid parameter \'display\'. Allowed values are %s', json_encode($this->getAllowedDisplayValues(), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)));
             }
 
             return $next($authorization);

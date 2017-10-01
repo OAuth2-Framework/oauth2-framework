@@ -111,7 +111,7 @@ final class ClientRegistrationEndpoint implements MiddlewareInterface
         foreach (['Content-Type' => 'application/json', 'Cache-Control' => 'no-store', 'Pragma' => 'no-cache'] as $k => $v) {
             $response = $response->withHeader($k, $v);
         }
-        $response->getBody()->write(json_encode($client->all(), JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES));
+        $response->getBody()->write(json_encode($client->all(), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
 
         return $response;
     }
