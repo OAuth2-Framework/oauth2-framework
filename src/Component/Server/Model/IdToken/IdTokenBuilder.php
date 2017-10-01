@@ -431,6 +431,7 @@ final class IdTokenBuilder
             $this->client->getPublicId()->getValue(),
             $this->issuer,
         ];
+        $claims['azp'] = $this->client->getPublicId()->getValue();
 
         return $claims;
     }
