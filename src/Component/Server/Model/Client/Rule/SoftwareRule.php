@@ -80,7 +80,7 @@ final class SoftwareRule implements RuleInterface
 
         foreach (['software_id', 'software_version'] as $key) {
             if ($commandParameters->has($key)) {
-                $validatedParameters = $validatedParameters->with($key, $commandParameters[$key]);
+                $validatedParameters = $validatedParameters->with($key, $commandParameters->get($key));
             }
         }
 
