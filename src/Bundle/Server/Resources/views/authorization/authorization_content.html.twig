@@ -25,3 +25,12 @@
     {{ form_row(form.accept) }}
     {{ form_row(form.reject) }}
 {{ form_end(form) }}
+{% if authorization.getClient().has('logo_uri') %}
+    <img src="{{ authorization.getClient().get('logo_uri') }}" alt="Logo">
+{% endif %}
+{% if authorization.getClient().has('policy_uri') %}
+    <p><a href="{{ authorization.getClient().get('policy_uri') }}">Read the client' Policy</a></p>
+{% endif %}
+{% if authorization.getClient().has('tos_uri') %}
+    <p><a href="{{ authorization.getClient().get('tos_uri') }}">Read the client' Terms of Service</a></p>
+{% endif %}
