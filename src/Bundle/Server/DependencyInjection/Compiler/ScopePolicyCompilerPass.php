@@ -48,6 +48,6 @@ final class ScopePolicyCompilerPass implements CompilerPassInterface
             }
         }
 
-        Assertion::true($default_found, sprintf('Unable to find the scope policy "%s". Available policies are: %s.', $default, json_encode($policy_names, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)));
+        Assertion::true($default_found, sprintf('Unable to find the scope policy "%s". Available policies are: %s.', $default, json_encode($policy_names, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)));
     }
 }
