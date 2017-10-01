@@ -104,10 +104,12 @@ final class TokenEndpointAuthMethodManager
             $temp = $method->findClientId($request, $clientCredentials);
             if (null !== $temp) {
                 if (null !== $clientId) {
-                    $authenticationMethod = null;
+                    if (!$method instanceof None) {
+                        $authenticationMethod = null;
 
-                    throw new OAuth2Exception(
-                        400, ['error' => OAuth2ResponseFactoryManager::ERROR_INVALID_REQUEST, 'error_description' => 'Only one authentication method may be used to authenticate the client.']);
+                        throw new OAuth2Exception(
+                            400, ['error' => OAuth2ResponseFactoryManager::ERROR_INVALID_REQUEST, 'error_description' => 'Only one authentication method may be used to authenticate the client.']);
+                    }
                 } else {
                     $clientId = $temp;
                     $authenticationMethod = $method;

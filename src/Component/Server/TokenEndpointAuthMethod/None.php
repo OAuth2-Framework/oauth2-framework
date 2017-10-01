@@ -34,7 +34,7 @@ final class None implements TokenEndpointAuthMethodInterface
     public function findClientId(ServerRequestInterface $request, &$clientCredentials = null): ? ClientId
     {
         $parameters = $request->getParsedBody() ?? [];
-        if (array_key_exists('client_id', $parameters) && !array_key_exists('client_secret', $parameters)) {
+        if (array_key_exists('client_id', $parameters)) {
             return ClientId::create($parameters['client_id']);
         }
 
