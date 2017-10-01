@@ -44,7 +44,7 @@ final class TokenResponseType implements ResponseTypeInterface, GrantTypeInterfa
      */
     public function getAssociatedGrantTypes(): array
     {
-        return [];
+        return ['implicit'];
     }
 
     /**
