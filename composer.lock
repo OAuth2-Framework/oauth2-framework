@@ -1864,12 +1864,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Spomky-Labs/jose.git",
-                "reference": "2f79b4577024f33e8cf3457f4db37aae0df962e3"
+                "reference": "32cb06caaf9c10dee144a91ba5e268f072d2f5ca"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Spomky-Labs/jose/zipball/2f79b4577024f33e8cf3457f4db37aae0df962e3",
-                "reference": "2f79b4577024f33e8cf3457f4db37aae0df962e3",
+                "url": "https://api.github.com/repos/Spomky-Labs/jose/zipball/32cb06caaf9c10dee144a91ba5e268f072d2f5ca",
+                "reference": "32cb06caaf9c10dee144a91ba5e268f072d2f5ca",
                 "shasum": ""
             },
             "require": {
@@ -1952,7 +1952,7 @@
                 "jwt",
                 "symfony"
             ],
-            "time": "2017-10-01T13:16:14+00:00"
+            "time": "2017-10-01T18:40:26+00:00"
         },
         {
             "name": "symfony/polyfill-apcu",

@@ -77,28 +77,11 @@ final class AuthorizationEndpointRequestObjectSource extends ActionableSource
         if (true === $sourceConfig['enabled']) {
             $claim_checkers = ['exp', 'iat', 'nbf'/*'authorization_endpoint_aud'*/]; // FIXME
             $header_checkers = ['crit']; // FIXME
-            $this->updateJoseBundleConfigurationForVerifier($container, ['signature_algorithms' => $sourceConfig['signature_algorithms']]);
-            $this->updateJoseBundleConfigurationForDecrypter($container, $sourceConfig);
+            ConfigurationHelper::addJWSLoader($container, $this->name(), $sourceConfig['signature_algorithms'], [], ['jws_compact'], false);
+            ConfigurationHelper::addClaimChecker($container, $this->name(), $claim_checkers, false);
+            if (true === $sourceConfig['encryption']['enabled']) {
+                ConfigurationHelper::addJWELoader($container, $this->name(), $sourceConfig['encryption']['key_encryption_algorithms'], $sourceConfig['encryption']['content_encryption_algorithms'], ['DEF'], [], ['jwe_compact'], false);
+            }
         }
-    }
-
-    /**
-     * @param ContainerBuilder $container
-     * @param array            $sourceConfig
-     */
-    private function updateJoseBundleConfigurationForDecrypter(ContainerBuilder $container, array $sourceConfig)
-    {
-        if (true === $sourceConfig['encryption']['enabled']) {
-            ConfigurationHelper::addJWELoader($container, $this->name(), $sourceConfig['encryption']['key_encryption_algorithms'], $sourceConfig['encryption']['content_encryption_algorithms'], ['DEF'], [], ['jwe_compact'], false);
-        }
-    }
-
-    /**
-     * @param ContainerBuilder $container
-     * @param array            $sourceConfig
-     */
-    private function updateJoseBundleConfigurationForVerifier(ContainerBuilder $container, array $sourceConfig)
-    {
-        ConfigurationHelper::addJWSLoader($container, $this->name(), $sourceConfig['signature_algorithms'], [], ['jws_compact'], false);
     }
 }
