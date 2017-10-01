@@ -30,7 +30,6 @@ use Behat\MinkExtension\Context\MinkContext;
 use Behat\Symfony2Extension\Context\KernelDictionary;
 use Http\Factory\Diactoros\UriFactory;
 use OAuth2Framework\Bundle\Server\Tests\TestBundle\Listener;
-use Symfony\Component\VarDumper\VarDumper;
 
 final class ResponseContext implements Context
 {
