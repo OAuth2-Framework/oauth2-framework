@@ -83,7 +83,7 @@ class OAuth2Response implements OAuth2ResponseInterface
     {
         $data = $this->getData();
 
-        return json_encode($data, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);
+        return json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     }
 
     /**

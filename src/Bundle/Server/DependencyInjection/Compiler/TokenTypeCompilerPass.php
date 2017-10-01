@@ -46,6 +46,6 @@ final class TokenTypeCompilerPass implements CompilerPassInterface
                 $definition->addMethodCall('add', [new Reference($id), $is_default]);
             }
         }
-        Assertion::true($default_found, sprintf('Unable to find the token type "%s". Available token types are: %s.', $default, json_encode($token_type_names, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)));
+        Assertion::true($default_found, sprintf('Unable to find the token type "%s". Available token types are: %s.', $default, json_encode($token_type_names, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)));
     }
 }
