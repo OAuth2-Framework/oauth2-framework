@@ -49,18 +49,18 @@ final class IdTokenAlgorithmsRule implements RuleInterface
     public function handle(DataBag $commandParameters, DataBag $validatedParameters, ? UserAccountId $userAccountId, callable $next): DataBag
     {
         if ($commandParameters->has('id_token_signed_response_alg')) {
-            Assertion::string($commandParameters['id_token_signed_response_alg'], 'Invalid parameter \'id_token_signed_response_alg\'. The value must be a string.');
-            Assertion::inArray($commandParameters['id_token_signed_response_alg'], $this->jwsBuilder->getSignatureAlgorithmManager()->list(), sprintf('The ID Token signature response algorithm \'%s\' is not supported. Please choose one of the following algorithm: %s', $commandParameters->get('id_token_signed_response_alg'), implode(', ', $this->jwsBuilder->getSignatureAlgorithmManager()->list())));
-            $validatedParameters = $validatedParameters->with('id_token_signed_response_alg', $commandParameters['id_token_signed_response_alg']);
+            Assertion::string($commandParameters->get('id_token_signed_response_alg'), 'Invalid parameter \'id_token_signed_response_alg\'. The value must be a string.');
+            Assertion::inArray($commandParameters->get('id_token_signed_response_alg'), $this->jwsBuilder->getSignatureAlgorithmManager()->list(), sprintf('The ID Token signature response algorithm \'%s\' is not supported. Please choose one of the following algorithm: %s', $commandParameters->get('id_token_signed_response_alg'), implode(', ', $this->jwsBuilder->getSignatureAlgorithmManager()->list())));
+            $validatedParameters = $validatedParameters->with('id_token_signed_response_alg', $commandParameters->get('id_token_signed_response_alg'));
         }
 
         if ($commandParameters->has('id_token_encrypted_response_alg') && $commandParameters->has('id_token_encrypted_response_enc') && null !== $this->jweBuilder) {
-            Assertion::string($commandParameters['id_token_encrypted_response_alg'], 'Invalid parameter \'id_token_encrypted_response_alg\'. The value must be a string.');
-            Assertion::string($commandParameters['id_token_encrypted_response_enc'], 'Invalid parameter \'id_token_encrypted_response_enc\'. The value must be a string.');
-            Assertion::inArray($commandParameters['id_token_encrypted_response_alg'], $this->jweBuilder->getKeyEncryptionAlgorithmManager()->list(), sprintf('The ID Token key encryption algorithm \'%s\' is not supported. Please choose one of the following algorithm: %s', $commandParameters->get('id_token_encrypted_response_alg'), implode(', ', $this->jweBuilder->getKeyEncryptionAlgorithmManager()->list())));
-            Assertion::inArray($commandParameters['id_token_encrypted_response_enc'], $this->jweBuilder->getContentEncryptionAlgorithmManager()->list(), sprintf('The ID Token content encryption algorithm \'%s\' is not supported. Please choose one of the following algorithm: %s', $commandParameters->get('id_token_encrypted_response_enc'), implode(', ', $this->jweBuilder->getContentEncryptionAlgorithmManager()->list())));
-            $validatedParameters = $validatedParameters->with('id_token_encrypted_response_alg', $commandParameters['id_token_encrypted_response_alg']);
-            $validatedParameters = $validatedParameters->with('id_token_encrypted_response_enc', $commandParameters['id_token_encrypted_response_enc']);
+            Assertion::string($commandParameters->get('id_token_encrypted_response_alg'), 'Invalid parameter \'id_token_encrypted_response_alg\'. The value must be a string.');
+            Assertion::string($commandParameters->get('id_token_encrypted_response_enc'), 'Invalid parameter \'id_token_encrypted_response_enc\'. The value must be a string.');
+            Assertion::inArray($commandParameters->get('id_token_encrypted_response_alg'), $this->jweBuilder->getKeyEncryptionAlgorithmManager()->list(), sprintf('The ID Token key encryption algorithm \'%s\' is not supported. Please choose one of the following algorithm: %s', $commandParameters->get('id_token_encrypted_response_alg'), implode(', ', $this->jweBuilder->getKeyEncryptionAlgorithmManager()->list())));
+            Assertion::inArray($commandParameters->get('id_token_encrypted_response_enc'), $this->jweBuilder->getContentEncryptionAlgorithmManager()->list(), sprintf('The ID Token content encryption algorithm \'%s\' is not supported. Please choose one of the following algorithm: %s', $commandParameters->get('id_token_encrypted_response_enc'), implode(', ', $this->jweBuilder->getContentEncryptionAlgorithmManager()->list())));
+            $validatedParameters = $validatedParameters->with('id_token_encrypted_response_alg', $commandParameters->get('id_token_encrypted_response_alg'));
+            $validatedParameters = $validatedParameters->with('id_token_encrypted_response_enc', $commandParameters->get('id_token_encrypted_response_enc'));
         }
 
         return $next($commandParameters, $validatedParameters, $userAccountId);
