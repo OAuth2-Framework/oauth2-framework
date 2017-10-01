@@ -20,5 +20,6 @@ return [
         ->arguments(
             get('oauth2_server.access_token.repository')
         )
-        ->tag('oauth2_server_response_type'),
+        ->tag('oauth2_server_response_type')
+        ->tag('oauth2_server_grant_type'),
 ];
