@@ -49,7 +49,7 @@ final class JWKSetEndpoint implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $requestHandler)
     {
         $response = $this->responseFactory->createResponse();
-        $response->getBody()->write(json_encode($this->jwkSet));
+        $response->getBody()->write(json_encode($this->jwkSet, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES));
         $response = $response->withHeader('Content-Type', 'application/jwk-set+json; charset=UTF-8');
 
         return $response;

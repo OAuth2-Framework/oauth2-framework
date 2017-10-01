@@ -78,7 +78,7 @@ final class ClientContext implements Context
         ], json_encode([
             'redirect_uris' => ['https://www.foo.com'],
             'token_endpoint_auth_method' => 'none',
-        ]));
+        ], JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES));
     }
 
     /**
@@ -93,7 +93,7 @@ final class ClientContext implements Context
         ], json_encode([
             'redirect_uris' => ['https://www.foo.com'],
             'token_endpoint_auth_method' => 'none',
-        ]));
+        ], JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES));
     }
 
     /**
@@ -108,7 +108,7 @@ final class ClientContext implements Context
         ], json_encode([
             'redirect_uris' => ['https://www.foo.com'],
             'token_endpoint_auth_method' => 'none',
-        ]));
+        ], JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES));
     }
 
     /**
@@ -122,7 +122,7 @@ final class ClientContext implements Context
         ], json_encode([
             'redirect_uris' => ['https://www.foo.com'],
             'token_endpoint_auth_method' => 'none',
-        ]));
+        ], JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES));
     }
 
     /**
@@ -137,7 +137,7 @@ final class ClientContext implements Context
         ], json_encode([
             'redirect_uris' => ['https://www.foo.com'],
             'token_endpoint_auth_method' => 'none',
-        ]));
+        ], JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES));
     }
 
     /**
@@ -153,7 +153,7 @@ final class ClientContext implements Context
             'redirect_uris' => ['https://www.foo.com'],
             'token_endpoint_auth_method' => 'none',
             'software_statement' => $this->createSoftwareStatement(),
-        ]));
+        ], JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES));
     }
 
     /**
@@ -177,7 +177,7 @@ final class ClientContext implements Context
                 'CONTENT_TYPE' => 'application/json',
             ], json_encode([
                 'token_endpoint_auth_method' => 'none',
-            ]));
+            ], JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES));
     }
 
     /**
@@ -195,7 +195,7 @@ final class ClientContext implements Context
                 ],
                 'contacts' => true,
                 'token_endpoint_auth_method' => 'none',
-            ]));
+            ], JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES));
     }
 
     /**
@@ -213,7 +213,7 @@ final class ClientContext implements Context
                 ],
                 'contacts' => 'BAD!!!',
                 'token_endpoint_auth_method' => 'none',
-            ]));
+            ], JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES));
     }
 
     /**
@@ -231,7 +231,7 @@ final class ClientContext implements Context
                 ],
                 'response_types' => ['id_token token'],
                 'token_endpoint_auth_method' => 'none',
-            ]));
+            ], JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES));
     }
 
     /**
@@ -249,7 +249,7 @@ final class ClientContext implements Context
                 ],
                 'response_types' => ['id_token token'],
                 'token_endpoint_auth_method' => 'none',
-            ]));
+            ], JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES));
     }
 
     /**
@@ -267,7 +267,7 @@ final class ClientContext implements Context
                 ],
                 'response_types' => ['id_token token'],
                 'token_endpoint_auth_method' => 'none',
-            ]));
+            ], JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES));
     }
 
     /**
@@ -325,7 +325,7 @@ final class ClientContext implements Context
         ], json_encode([
             'redirect_uris' => ['https://www.bar.com'],
             'token_endpoint_auth_method' => 'client_secret_basic',
-        ]));
+        ], JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES));
     }
 
     /**
@@ -352,7 +352,7 @@ final class ClientContext implements Context
             'redirect_uris' => ['https://www.bar.com'],
             'token_endpoint_auth_method' => 'client_secret_basic',
             'software_statement' => $this->createSoftwareStatement(),
-        ]));
+        ], JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES));
     }
 
     /**
@@ -367,7 +367,7 @@ final class ClientContext implements Context
             'redirect_uris' => ['https://www.bar.com'],
             'token_endpoint_auth_method' => 'client_secret_basic',
             'software_statement' => $this->createInvalidSoftwareStatement(),
-        ]));
+        ], JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES));
     }
 
     /**
@@ -435,7 +435,7 @@ final class ClientContext implements Context
     public function noClientShouldBeCreated()
     {
         $events = $this->getContainer()->get(Listener\ClientCreatedListener::class)->getEvents();
-        Assertion::eq(0, count($events), sprintf('Received the following event(s): %s', json_encode($events)));
+        Assertion::eq(0, count($events), sprintf('Received the following event(s): %s', json_encode($events, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)));
     }
 
     /**

@@ -115,7 +115,7 @@ abstract class TokenRevocationEndpoint implements MiddlewareInterface
 
             return $this->getResponse(200, '', $callback);
         } catch (OAuth2Exception $e) {
-            return $this->getResponse($e->getCode(), json_encode($e->getData()), $callback);
+            return $this->getResponse($e->getCode(), json_encode($e->getData(), JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES), $callback);
         }
     }
 
