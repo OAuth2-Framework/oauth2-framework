@@ -353,6 +353,7 @@ final class IdTokenBuilder
         $data = $this->updateClaimsWithAmrAndAcrInfo($data, $this->userAccount);
         $data = $this->updateClaimsWithAuthenticationTime($data, $this->userAccount);
         $data = $this->updateClaimsWithNonce($data);
+        $data = $this->updateClaimsAudience($data);
         if (null !== $this->signatureAlgorithm) {
             $data = $this->updateClaimsWithJwtClaims($data);
             $data = $this->updateClaimsWithTokenHash($data);
@@ -415,6 +416,21 @@ final class IdTokenBuilder
         if (null !== $this->nonce) {
             $claims['nonce'] = $this->nonce;
         }
+
+        return $claims;
+    }
+
+    /**
+     * @param array $claims
+     *
+     * @return array
+     */
+    private function updateClaimsAudience(array $claims): array
+    {
+        $claims['aud'] = [
+            $this->client->getPublicId()->getValue(),
+            $this->issuer,
+        ];
 
         return $claims;
     }
