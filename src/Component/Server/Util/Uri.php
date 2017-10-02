@@ -33,13 +33,7 @@ final class Uri
             return false;
         }
 
-        foreach ($storedUris as $storedUri) {
-            if (strcasecmp(mb_substr($uri, 0, mb_strlen($storedUri, '8bit'), '8bit'), $storedUri) === 0) {
-                return true;
-            }
-        }
-
-        return false;
+        return in_array($uri, $storedUris);
     }
 
     /**
