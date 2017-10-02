@@ -25,20 +25,14 @@ namespace OAuth2Framework\Bundle\Server\Tests\Context;
 use Assert\Assertion;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
-use Behat\Gherkin\Node\PyStringNode;
 use Behat\MinkExtension\Context\MinkContext;
 use Behat\Symfony2Extension\Context\KernelDictionary;
-use Jose\Component\Checker\HeaderCheckerManager;
 use Jose\Component\Core\AlgorithmManager;
 use Jose\Component\Core\Converter\StandardJsonConverter;
 use Jose\Component\Signature\Algorithm\RS256;
 use Jose\Component\Signature\JWSBuilder;
-use Jose\Component\Signature\JWSLoader;
 use Jose\Component\Signature\Serializer\CompactSerializer;
-use Jose\Component\Signature\Serializer\JWSSerializerManager;
-use OAuth2Framework\Bundle\Server\Model\ClientRepository;
 use OAuth2Framework\Component\Server\Model\Client\Client;
-use OAuth2Framework\Component\Server\Model\Client\ClientId;
 
 final class OIDCContext implements Context
 {

@@ -38,8 +38,8 @@ final class TokenIntrospectionEndpoint implements MiddlewareInterface
     /**
      * TokenIntrospectionEndpoint constructor.
      *
-     * @param TokenTypeHintManager     $tokenTypeHintManager
-     * @param MessageFactory $messageFactory
+     * @param TokenTypeHintManager $tokenTypeHintManager
+     * @param MessageFactory       $messageFactory
      */
     public function __construct(TokenTypeHintManager $tokenTypeHintManager, MessageFactory $messageFactory)
     {

@@ -17,11 +17,8 @@ use Assert\Assertion;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use Behat\Gherkin\Node\PyStringNode;
-use Jose\Component\Signature\JWS;
 use OAuth2Framework\Component\Server\Model\Client\Client;
-use OAuth2Framework\Component\Server\Model\Client\ClientId;
 use Psr\Http\Message\ResponseInterface;
-use Symfony\Component\VarDumper\VarDumper;
 
 final class ResponseContext implements Context
 {

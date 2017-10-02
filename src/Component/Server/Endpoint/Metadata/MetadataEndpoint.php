@@ -53,7 +53,7 @@ final class MetadataEndpoint implements MiddlewareInterface
      * MetadataEndpoint constructor.
      *
      * @param MessageFactory $messageFactory
-     * @param Metadata                 $metadata
+     * @param Metadata       $metadata
      */
     public function __construct(MessageFactory $messageFactory, Metadata $metadata)
     {
