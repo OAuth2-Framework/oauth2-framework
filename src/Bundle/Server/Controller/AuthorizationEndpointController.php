@@ -117,25 +117,8 @@ final class AuthorizationEndpointController extends AuthorizationEndpoint
         $this->formHandler = $formHandler;
         $this->template = $template;
         $this->templateEngine = $templateEngine;
-
         //$this->allowScopeSelection = $allowScopeSelection;
     }
-
-    /**
-     * @param ServerRequestInterface $request
-     *
-     * @return ResponseInterface $response
-     */
-    /*public function authorizationAction(ServerRequestInterface $request)
-    {
-        if ($this->session->has('oauth2_authorization_request_data')) {
-            $this->session->remove('oauth2_authorization_request_data');
-        }
-        $response = new Response();
-        $this->authorize($request, $response);
-
-        return $response;
-    }*/
 
     /**
      * {@inheritdoc}
@@ -167,25 +150,27 @@ final class AuthorizationEndpointController extends AuthorizationEndpoint
      */
     protected function processConsentScreen(ServerRequestInterface $request, Authorization $authorization): ResponseInterface
     {
-        //$options = $this->processConsentScreenOptions($authorization);
+        //FIXME: $options = $this->processConsentScreenOptions($authorization);
         $ui_locale = $this->getUiLocale($authorization);
         $options = array_merge(
-            //$options,
+            //FIXME: $options,
             [
                 'locale' => $ui_locale,
                 'scopes' => $authorization->getScopes(),
-                //'allowScopeSelection' => $this->allowScopeSelection,
+                //FIXME: 'allowScopeSelection' => $this->allowScopeSelection,
             ]
         );
         $authorization_model = new AuthorizationModel();
         $authorization_model->setScopes($authorization->getScopes());
         $form = $this->formFactory->createForm($options, $authorization_model);
+        $this->session->remove('oauth2_authorization_request_data');
 
         if ('POST' === $request->getMethod()) {
             $authorization = $this->formHandler->handle($form, $request, $authorization, $authorization_model);
 
             if (is_bool($authorization->isAuthorized())) {
                 throw new ProcessAuthorizationException($authorization);
+                //FIXME
                 /*return [
                     'save_authorization' => $authorization_model->isSaveConfiguration(),
                 ];*/
@@ -210,7 +195,7 @@ final class AuthorizationEndpointController extends AuthorizationEndpoint
                 'form' => $form->createView(),
                 'authorization' => $authorization,
                 'ui_locale' => $ui_locale,
-                //'is_pre_configured_authorization_enabled' => true,
+                //FIXME: 'is_pre_configured_authorization_enabled' => true,
             ]
         );
 
