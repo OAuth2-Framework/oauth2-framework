@@ -120,8 +120,7 @@ final class RedirectUriParameterChecker implements ParameterCheckerInterface
     {
         $client_redirect_uris = $this->getClientRedirectUris($client, $queryParameters);
 
-        //Assertion::false(!empty($client_redirect_uris) && false === Uri::isRedirectUriAllowed($redirectUri, $client_redirect_uris), 'The specified redirect URI is not valid.');
-        Assertion::false(!empty($client_redirect_uris) && !in_array($redirectUri, $client_redirect_uris), 'The specified redirect URI is not valid.');
+        Assertion::false(!empty($client_redirect_uris) && false === Uri::isRedirectUriAllowed($redirectUri, $client_redirect_uris), 'The specified redirect URI is not valid.');
     }
 
     /**
