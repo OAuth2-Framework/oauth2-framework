@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Server\Controller;
 
-use Interop\Http\Factory\ResponseFactoryInterface;
+use Http\Message\MessageFactory;
 use OAuth2Framework\Bundle\Server\Form\FormFactory;
 use OAuth2Framework\Bundle\Server\Form\Handler\AuthorizationFormHandler;
 use OAuth2Framework\Bundle\Server\Form\Model\AuthorizationModel;
@@ -41,9 +41,9 @@ final class AuthorizationEndpointController extends AuthorizationEndpoint
     private $session;
 
     /**
-     * @var ResponseFactoryInterface
+     * @var MessageFactory
      */
-    private $responseFactory;
+    private $messageFactory;
 
     /**
      * @var RouterInterface
@@ -96,19 +96,19 @@ final class AuthorizationEndpointController extends AuthorizationEndpoint
      * @param RouterInterface             $router
      * @param string                      $loginRoute
      * @param array                       $loginRouteParams
-     * @param ResponseFactoryInterface    $responseFactory
+     * @param MessageFactory              $messageFactory
      * @param SessionInterface            $session
      * @param AuthorizationFactory        $authorizationFactory
      * @param UserAccountDiscoveryManager $userAccountDiscoveryManager
      * @param BeforeConsentScreenManager  $beforeConsentScreenManager
      * @param AfterConsentScreenManager   $afterConsentScreenManager
      */
-    public function __construct(EngineInterface $templateEngine, string $template, FormFactory $formFactory, AuthorizationFormHandler $formHandler, TranslatorInterface $translator, RouterInterface $router, string $loginRoute, array $loginRouteParams, ResponseFactoryInterface $responseFactory, SessionInterface $session, AuthorizationFactory $authorizationFactory, UserAccountDiscoveryManager $userAccountDiscoveryManager, BeforeConsentScreenManager $beforeConsentScreenManager, AfterConsentScreenManager $afterConsentScreenManager)
+    public function __construct(EngineInterface $templateEngine, string $template, FormFactory $formFactory, AuthorizationFormHandler $formHandler, TranslatorInterface $translator, RouterInterface $router, string $loginRoute, array $loginRouteParams, MessageFactory $messageFactory, SessionInterface $session, AuthorizationFactory $authorizationFactory, UserAccountDiscoveryManager $userAccountDiscoveryManager, BeforeConsentScreenManager $beforeConsentScreenManager, AfterConsentScreenManager $afterConsentScreenManager)
     {
         parent::__construct($authorizationFactory, $userAccountDiscoveryManager, $beforeConsentScreenManager, $afterConsentScreenManager);
 
         $this->session = $session;
-        $this->responseFactory = $responseFactory;
+        $this->messageFactory = $messageFactory;
         $this->router = $router;
         $this->loginRoute = $loginRoute;
         $this->loginRouteParams = $loginRouteParams;
@@ -134,7 +134,7 @@ final class AuthorizationEndpointController extends AuthorizationEndpoint
         }
 
         $this->session->set('oauth2_authorization_request_data', $session_data);
-        $response = $this->responseFactory->createResponse(302);
+        $response = $this->messageFactory->createResponse(302);
         $response = $response->withHeader('Location', $this->router->generate($this->loginRoute, $this->loginRouteParams, UrlGeneratorInterface::ABSOLUTE_URL));
 
         return $response;
@@ -199,7 +199,7 @@ final class AuthorizationEndpointController extends AuthorizationEndpoint
             ]
         );
 
-        $response = $this->responseFactory->createResponse(200);
+        $response = $this->messageFactory->createResponse(200);
         $response->getBody()->write($content);
 
         return $response;

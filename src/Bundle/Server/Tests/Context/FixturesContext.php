@@ -107,7 +107,7 @@ final class FixturesContext implements Context
                     'client_secret' => 'secret',
                     'grant_types' => ['client_credentials', 'password', 'refresh_token', 'authorization_code', 'urn:ietf:params:oauth:grant-type:jwt-bearer'],
                     'response_types' => ['code', 'token', 'id_token', 'code token', 'code id_token', 'id_token token', 'code id_token token', 'none'],
-                    'redirect_uris' => ['https://example.com/'],
+                    'redirect_uris' => ['https://example.com/', 'https://example.com/redirection/callback'],
                 ]),
                 'is_deleted' => false,
             ],

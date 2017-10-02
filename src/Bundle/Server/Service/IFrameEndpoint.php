@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Server\Service;
 
-use Interop\Http\Factory\ResponseFactoryInterface;
+use Http\Message\MessageFactory;
 use Interop\Http\Server\RequestHandlerInterface;
 use Interop\Http\Server\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -27,9 +27,9 @@ final class IFrameEndpoint implements MiddlewareInterface
     private $templateEngine;
 
     /**
-     * @var ResponseFactoryInterface
+     * @var MessageFactory
      */
-    private $responseFactory;
+    private $messageFactory;
 
     /**
      * @var string
@@ -44,15 +44,15 @@ final class IFrameEndpoint implements MiddlewareInterface
     /**
      * IFrameEndpoint constructor.
      *
-     * @param EngineInterface          $templateEngine
-     * @param ResponseFactoryInterface $responseFactory
-     * @param string                   $template
-     * @param string                   $storageName
+     * @param EngineInterface $templateEngine
+     * @param MessageFactory  $messageFactory
+     * @param string          $template
+     * @param string          $storageName
      */
-    public function __construct(EngineInterface $templateEngine, ResponseFactoryInterface $responseFactory, string $template, string $storageName)
+    public function __construct(EngineInterface $templateEngine, MessageFactory $messageFactory, string $template, string $storageName)
     {
         $this->templateEngine = $templateEngine;
-        $this->responseFactory = $responseFactory;
+        $this->messageFactory = $messageFactory;
         $this->template = $template;
         $this->storageName = $storageName;
     }
@@ -63,7 +63,7 @@ final class IFrameEndpoint implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $requestHandler)
     {
         $content = $this->templateEngine->render($this->template, ['storage_name' => $this->storageName]);
-        $response = $this->responseFactory->createResponse();
+        $response = $this->messageFactory->createResponse();
         $headers = ['Content-Type' => 'text/html; charset=UTF-8', 'Cache-Control' => 'no-cache, no-store, max-age=0, must-revalidate, private', 'Pragma' => 'no-cache'];
         foreach ($headers as $k => $v) {
             $response = $response->withHeader($k, $v);

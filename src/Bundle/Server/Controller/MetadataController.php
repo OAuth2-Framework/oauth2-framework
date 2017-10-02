@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Server\Controller;
 
-use Interop\Http\Factory\ResponseFactoryInterface;
+use Http\Message\MessageFactory;
 use Interop\Http\Server\RequestHandlerInterface;
 use Interop\Http\Server\MiddlewareInterface;
 use Jose\Component\Core\JWKSet;
@@ -32,13 +32,13 @@ class MetadataController implements MiddlewareInterface
     /**
      * MetadataController constructor.
      *
-     * @param ResponseFactoryInterface $responseFactory
-     * @param MetadataBuilder          $metadataBuilder
+     * @param MessageFactory  $messageFactory
+     * @param MetadataBuilder $metadataBuilder
      */
-    public function __construct(ResponseFactoryInterface $responseFactory, MetadataBuilder $metadataBuilder)
+    public function __construct(MessageFactory $messageFactory, MetadataBuilder $metadataBuilder)
     {
         $metadata = $metadataBuilder->getMetadata();
-        $this->metadataEndpoint = new MetadataEndpoint($responseFactory, $metadata);
+        $this->metadataEndpoint = new MetadataEndpoint($messageFactory, $metadata);
     }
 
     /**

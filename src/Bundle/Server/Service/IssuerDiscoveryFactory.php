@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Server\Service;
 
-use Interop\Http\Factory\ResponseFactoryInterface;
+use Http\Message\MessageFactory;
 use Interop\Http\Factory\UriFactoryInterface;
 use OAuth2Framework\Component\Server\Endpoint\IssuerDiscovery\IssuerDiscoveryEndpoint;
 use OAuth2Framework\Component\Server\Model\Resource\ResourceRepositoryInterface;
@@ -21,9 +21,9 @@ use OAuth2Framework\Component\Server\Model\Resource\ResourceRepositoryInterface;
 final class IssuerDiscoveryFactory
 {
     /**
-     * @var ResponseFactoryInterface
+     * @var MessageFactory
      */
-    private $responseFactory;
+    private $messageFactory;
 
     /**
      * @var UriFactoryInterface
@@ -33,12 +33,12 @@ final class IssuerDiscoveryFactory
     /**
      * IssuerDiscoveryFactory constructor.
      *
-     * @param ResponseFactoryInterface $responseFactory
-     * @param UriFactoryInterface      $uriFactory
+     * @param MessageFactory      $messageFactory
+     * @param UriFactoryInterface $uriFactory
      */
-    public function __construct(ResponseFactoryInterface $responseFactory, UriFactoryInterface $uriFactory)
+    public function __construct(MessageFactory $messageFactory, UriFactoryInterface $uriFactory)
     {
-        $this->responseFactory = $responseFactory;
+        $this->messageFactory = $messageFactory;
         $this->uriFactory = $uriFactory;
     }
 
@@ -50,6 +50,6 @@ final class IssuerDiscoveryFactory
      */
     public function create(ResourceRepositoryInterface $resourceManager, string $server): IssuerDiscoveryEndpoint
     {
-        return new IssuerDiscoveryEndpoint($resourceManager, $this->responseFactory, $this->uriFactory, $server);
+        return new IssuerDiscoveryEndpoint($resourceManager, $this->messageFactory, $this->uriFactory, $server);
     }
 }
