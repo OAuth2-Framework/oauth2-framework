@@ -91,20 +91,6 @@ final class ResponseContext implements Context
     }
 
     /**
-     * @Then the response contains an Id Token with the following claims for the client :client_id
-     */
-    public function theResponseContainsAnIdTokenWithTheFollowingClaims($client_id, PyStringNode $response)
-    {
-        $client = $this->applicationContext->getApplication()->getClientRepository()->find(ClientId::create($client_id));
-        Assertion::isInstanceOf($client, Client::class);
-        $claims = json_decode($response->getRaw(), true);
-        $response = (string) $this->getResponse()->getBody()->getContents();
-        $jwt = $this->applicationContext->getApplication()->getJwsLoader()->load($response);
-        Assertion::isInstanceOf($jwt, JWS::class);
-        Assertion::true(empty(array_diff($claims, $claims)));
-    }
-
-    /**
      * @Then the response contains an error with code :code
      */
     public function theResponseContainsAnError($code)

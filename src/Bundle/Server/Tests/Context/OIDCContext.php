@@ -98,25 +98,6 @@ final class OIDCContext implements Context
     }
 
     /**
-     * @Then the response contains an Id Token with the following claims for the client :clientId
-     */
-    public function theResponseContainsAnIdTokenWithTheFollowingClaimsForTheClient($clientId, PyStringNode $expectedClaims)
-    {
-        $client = $this->getContainer()->get(ClientRepository::class)->find(ClientId::create($clientId));
-        Assertion::isInstanceOf($client, Client::class);
-        $claims = json_decode($expectedClaims->getRaw(), true);
-        $response = $this->minkContext->getSession()->getPage()->getContent();
-        $jwsLoader = new JWSLoader(
-            AlgorithmManager::create([]),
-            HeaderCheckerManager::create([]),
-            JWSSerializerManager::create([new CompactSerializer()])
-        );
-        $jwt = $jwsLoader->load($response);
-        $loadedClaims = json_decode($jwt->getPayload(), true);
-        Assertion::true(empty(array_diff($claims, $loadedClaims)));
-    }
-
-    /**
      * @When a client sends a Userinfo request but the access token has no openid scope
      */
     public function aClientSendsAUserinfoRequestButTheAccessTokenHasNoOpenidScope()
