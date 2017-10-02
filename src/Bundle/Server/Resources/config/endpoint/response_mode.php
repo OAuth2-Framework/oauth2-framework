@@ -23,14 +23,14 @@ return [
     ResponseMode\QueryResponseMode::class => create()
         ->arguments(
             get('oauth2_server.http.uri_factory'),
-            get('oauth2_server.http.response_factory')
+            get('httplug.message_factory')
         )
         ->tag('oauth2_server_response_mode'),
 
     ResponseMode\FragmentResponseMode::class => create()
         ->arguments(
             get('oauth2_server.http.uri_factory'),
-            get('oauth2_server.http.response_factory')
+            get('httplug.message_factory')
         )
         ->tag('oauth2_server_response_mode'),
 

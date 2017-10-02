@@ -26,7 +26,7 @@ return [
     ResponseMode\FormPostResponseMode::class => create()
         ->arguments(
             get(FormPostResponseRenderer::class),
-            get('oauth2_server.http.response_factory')
+            get('httplug.message_factory')
         )
         ->tag('oauth2_server_response_mode'),
 ];

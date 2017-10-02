@@ -53,7 +53,7 @@ return [
             get(ClientRepository::class),
             get('oauth2_server.user_account.repository'),
             get(TokenEndpointExtensionManager::class),
-            get('oauth2_server.http.response_factory'),
+            get('httplug.message_factory'),
             get('oauth2_server.access_token.repository'),
             get(RefreshTokenRepositoryInterface::class)
         ),

@@ -25,14 +25,14 @@ return [
     TokenRevocationGetEndpoint::class => create()
         ->arguments(
             get(TokenTypeHintManager::class),
-            get('oauth2_server.http.response_factory'),
+            get('httplug.message_factory'),
             '%oauth2_server.endpoint.token_revocation.allow_callback%'
         ),
 
     TokenRevocationPostEndpoint::class => create()
         ->arguments(
             get(TokenTypeHintManager::class),
-            get('oauth2_server.http.response_factory')
+            get('httplug.message_factory')
         ),
 
     'token_revocation_method_handler' => create(Middleware\HttpMethod::class)

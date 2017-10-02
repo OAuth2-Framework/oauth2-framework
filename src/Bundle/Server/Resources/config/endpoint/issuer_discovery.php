@@ -18,7 +18,7 @@ use function Fluent\get;
 return [
     IssuerDiscoveryFactory::class => create()
         ->arguments(
-            get('oauth2_server.http.response_factory'),
+            get('httplug.message_factory'),
             get('oauth2_server.http.uri_factory')
         ),
 ];

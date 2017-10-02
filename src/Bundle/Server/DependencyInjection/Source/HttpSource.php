@@ -46,8 +46,6 @@ final class HttpSource extends ArraySource
         $node
             ->children()
                 ->scalarNode('client')->isRequired()->cannotBeEmpty()->end()
-                ->scalarNode('response_factory')->isRequired()->cannotBeEmpty()->end()
-                ->scalarNode('request_factory')->isRequired()->cannotBeEmpty()->end()
                 ->scalarNode('uri_factory')->isRequired()->cannotBeEmpty()->end()
             ->end();
     }

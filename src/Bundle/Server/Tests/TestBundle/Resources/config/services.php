@@ -11,8 +11,6 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use Http\Factory\Diactoros\RequestFactory;
-use Http\Factory\Diactoros\ResponseFactory;
 use Http\Factory\Diactoros\UriFactory;
 use OAuth2Framework\Bundle\Server\Model\AccessTokenByReferenceRepository;
 use OAuth2Framework\Component\Server\Model\Scope\ScopeRepository;
@@ -35,9 +33,6 @@ use function Fluent\create;
 use function Fluent\get;
 
 return [
-    Http\Mock\Client::class => autowire(),
-    RequestFactory::class => autowire(),
-    ResponseFactory::class => autowire(),
     UriFactory::class => autowire(),
 
     'MyScopeRepository' => create(ScopeRepository::class)

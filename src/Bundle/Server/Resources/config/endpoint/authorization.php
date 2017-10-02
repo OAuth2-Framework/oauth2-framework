@@ -49,7 +49,7 @@ return [
             get('router'),
             '%oauth2_server.endpoint.authorization.login_route_name%',
             '%oauth2_server.endpoint.authorization.login_route_parameters%',
-            get('oauth2_server.http.response_factory'),
+            get('httplug.message_factory'),
             get('session'),
             get(AuthorizationFactory::class),
             get(UserAccountDiscoveryManager::class),

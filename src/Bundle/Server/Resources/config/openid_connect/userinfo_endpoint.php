@@ -30,7 +30,7 @@ return [
             get(IdTokenBuilderFactory::class),
             get(ClientRepository::class),
             get('oauth2_server.user_account.repository'),
-            get('oauth2_server.http.response_factory')
+            get('httplug.message_factory')
         ),
 
     'userinfo_security_middleware' => create(OAuth2SecurityMiddleware::class)

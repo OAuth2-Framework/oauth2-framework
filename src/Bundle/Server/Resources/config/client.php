@@ -61,7 +61,7 @@ return [
 
     Rule\SectorIdentifierUriRule::class => create()
         ->arguments(
-            get('oauth2_server.http.request_factory'),
+            get('httplug.message_factory'),
             get('oauth2_server.http.client')
         )
         ->tag('oauth2_server_client_rule'),

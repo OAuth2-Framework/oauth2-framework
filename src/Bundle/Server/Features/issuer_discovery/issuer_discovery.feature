@@ -42,7 +42,7 @@ Feature: An Isuer Discovery Endpoint is available
     And the content type of the response is "application/jrd+json; charset=UTF-8"
     And the response contains
     """
-    {"subject":"acct:john@my-service.com:9000","links":[{"rel":"http:\/\/openid.net\/specs\/connect\/1.0\/issuer","href":"https:\/\/server.example.com"}]}
+    {"subject":"acct:john@my-service.com:9000","links":[{"rel":"http://openid.net/specs/connect/1.0/issuer","href":"https://server.example.com"}]}
     """
 
   Scenario: A client sends an Issuer Discovery request with a valid resource parameter based on an Url
@@ -51,5 +51,5 @@ Feature: An Isuer Discovery Endpoint is available
     And the content type of the response is "application/jrd+json; charset=UTF-8"
     And the response contains
     """
-    {"subject":"https:\/\/my-service.com:9000\/+john","links":[{"rel":"http:\/\/openid.net\/specs\/connect\/1.0\/issuer","href":"https:\/\/server.example.com"}]}
+    {"subject":"https://my-service.com:9000/+john","links":[{"rel":"http://openid.net/specs/connect/1.0/issuer","href":"https://server.example.com"}]}
     """

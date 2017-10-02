@@ -26,7 +26,7 @@ return [
     IFrameEndpoint::class => create()
         ->arguments(
             get('templating'),
-            get('oauth2_server.http.response_factory'),
+            get('httplug.message_factory'),
             '%oauth2_server.endpoint.session_management.template%',
             '%oauth2_server.endpoint.session_management.storage_name%'
         ),
