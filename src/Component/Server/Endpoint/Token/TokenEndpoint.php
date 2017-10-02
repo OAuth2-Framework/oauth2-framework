@@ -77,7 +77,7 @@ final class TokenEndpoint implements MiddlewareInterface
      * @param ClientRepositoryInterface       $clientRepository
      * @param UserAccountRepositoryInterface  $userAccountRepository
      * @param TokenEndpointExtensionManager   $tokenEndpointExtensionManager
-     * @param MessageFactory        $messageFactory
+     * @param MessageFactory                  $messageFactory
      * @param AccessTokenRepositoryInterface  $accessTokenRepository
      * @param RefreshTokenRepositoryInterface $refreshTokenRepository
      */

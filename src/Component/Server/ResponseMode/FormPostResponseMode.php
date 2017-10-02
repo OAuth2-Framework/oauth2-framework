@@ -33,7 +33,7 @@ final class FormPostResponseMode implements ResponseModeInterface
      * FormPostResponseMode constructor.
      *
      * @param FormPostResponseRendererInterface $renderer
-     * @param MessageFactory          $messageFactory
+     * @param MessageFactory                    $messageFactory
      */
     public function __construct(FormPostResponseRendererInterface $renderer, MessageFactory $messageFactory)
     {

@@ -40,7 +40,7 @@ final class AuthorizationEndpoint extends Base
     /**
      * AuthorizationEndpoint constructor.
      *
-     * @param MessageFactory    $messageFactory
+     * @param MessageFactory              $messageFactory
      * @param AuthorizationFactory        $authorizationFactory
      * @param UserAccountDiscoveryManager $userAccountDiscoveryManager
      * @param BeforeConsentScreenManager  $beforeConsentScreenManager

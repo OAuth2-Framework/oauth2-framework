@@ -73,7 +73,7 @@ final class UserInfoEndpoint implements MiddlewareInterface
      * @param IdTokenBuilderFactory          $idTokenBuilderFactory
      * @param ClientRepositoryInterface      $clientRepository
      * @param UserAccountRepositoryInterface $userAccountRepository
-     * @param MessageFactory       $messageFactory
+     * @param MessageFactory                 $messageFactory
      */
     public function __construct(IdTokenBuilderFactory $idTokenBuilderFactory, ClientRepositoryInterface $clientRepository, UserAccountRepositoryInterface $userAccountRepository, MessageFactory $messageFactory)
     {

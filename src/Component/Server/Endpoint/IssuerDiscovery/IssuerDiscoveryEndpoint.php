@@ -84,7 +84,7 @@ final class IssuerDiscoveryEndpoint implements MiddlewareInterface
                 [
                     'Content-Type' => 'application/jrd+json; charset=UTF-8',
                     'Cache-Control' => 'no-cache, no-store, max-age=0, must-revalidate, private',
-                    'Pragma' => 'no-cache'
+                    'Pragma' => 'no-cache',
                 ],
                 json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
             );
