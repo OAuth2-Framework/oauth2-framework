@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\Server\Endpoint\ClientConfiguration;
 
 use Assert\Assertion;
-use Interop\Http\Factory\ResponseFactoryInterface;
+use Http\Message\MessageFactory;
 use Interop\Http\Server\RequestHandlerInterface;
 use Interop\Http\Server\MiddlewareInterface;
 use OAuth2Framework\Component\Server\Model\Client\Client;
@@ -37,22 +37,22 @@ final class ClientConfigurationEndpoint implements MiddlewareInterface
     private $messageBus;
 
     /**
-     * @var ResponseFactoryInterface
+     * @var MessageFactory
      */
-    private $responseFactory;
+    private $messageFactory;
 
     /**
      * ClientConfigurationEndpoint constructor.
      *
-     * @param BearerToken              $bearerToken
-     * @param MessageBus               $messageBus
-     * @param ResponseFactoryInterface $responseFactory
+     * @param BearerToken    $bearerToken
+     * @param MessageBus     $messageBus
+     * @param MessageFactory $messageFactory
      */
-    public function __construct(BearerToken $bearerToken, MessageBus $messageBus, ResponseFactoryInterface $responseFactory)
+    public function __construct(BearerToken $bearerToken, MessageBus $messageBus, MessageFactory $messageFactory)
     {
         $this->bearerToken = $bearerToken;
         $this->messageBus = $messageBus;
-        $this->responseFactory = $responseFactory;
+        $this->messageFactory = $messageFactory;
     }
 
     /**
@@ -63,15 +63,15 @@ final class ClientConfigurationEndpoint implements MiddlewareInterface
         $this->checkClient($request);
         switch ($request->getMethod()) {
             case 'GET':
-                $get = new ClientConfigurationGetEndpoint($this->responseFactory);
+                $get = new ClientConfigurationGetEndpoint($this->messageFactory);
 
                 return $get->process($request, $next);
             case 'PUT':
-                $get = new ClientConfigurationPutEndpoint($this->messageBus, $this->responseFactory);
+                $get = new ClientConfigurationPutEndpoint($this->messageBus, $this->messageFactory);
 
                 return $get->process($request, $next);
             case 'DELETE':
-                $get = new ClientConfigurationDeleteEndpoint($this->messageBus, $this->responseFactory);
+                $get = new ClientConfigurationDeleteEndpoint($this->messageBus, $this->messageFactory);
 
                 return $get->process($request, $next);
             default:

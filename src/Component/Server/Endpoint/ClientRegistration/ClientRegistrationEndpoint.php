@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\Server\Endpoint\ClientRegistration;
 
 use Assert\Assertion;
-use Interop\Http\Factory\ResponseFactoryInterface;
+use Http\Message\MessageFactory;
 use Interop\Http\Server\RequestHandlerInterface;
 use Interop\Http\Server\MiddlewareInterface;
 use OAuth2Framework\Component\Server\Command\Client\CreateClientCommand;
@@ -38,19 +38,19 @@ final class ClientRegistrationEndpoint implements MiddlewareInterface
     private $messageBus;
 
     /**
-     * @var ResponseFactoryInterface
+     * @var MessageFactory
      */
-    private $responseFactory;
+    private $messageFactory;
 
     /**
      * ClientRegistrationEndpoint constructor.
      *
-     * @param ResponseFactoryInterface $responseFactory
-     * @param MessageBus               $messageBus
+     * @param MessageFactory $messageFactory
+     * @param MessageBus     $messageBus
      */
-    public function __construct(ResponseFactoryInterface $responseFactory, MessageBus $messageBus)
+    public function __construct(MessageFactory $messageFactory, MessageBus $messageBus)
     {
-        $this->responseFactory = $responseFactory;
+        $this->messageFactory = $messageFactory;
         $this->messageBus = $messageBus;
     }
 
@@ -107,7 +107,7 @@ final class ClientRegistrationEndpoint implements MiddlewareInterface
      */
     private function createResponse(Client $client): ResponseInterface
     {
-        $response = $this->responseFactory->createResponse(201);
+        $response = $this->messageFactory->createResponse(201);
         foreach (['Content-Type' => 'application/json', 'Cache-Control' => 'no-store', 'Pragma' => 'no-cache'] as $k => $v) {
             $response = $response->withHeader($k, $v);
         }

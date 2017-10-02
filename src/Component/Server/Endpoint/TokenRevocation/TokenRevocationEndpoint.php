@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\Endpoint\TokenRevocation;
 
-use Interop\Http\Factory\ResponseFactoryInterface;
+use Http\Message\MessageFactory;
 use Interop\Http\Server\RequestHandlerInterface;
 use Interop\Http\Server\MiddlewareInterface;
 use OAuth2Framework\Component\Server\Model\Client\Client;
@@ -31,20 +31,20 @@ abstract class TokenRevocationEndpoint implements MiddlewareInterface
     private $tokenTypeHintManager;
 
     /**
-     * @var ResponseFactoryInterface
+     * @var MessageFactory
      */
-    private $responseFactory;
+    private $messageFactory;
 
     /**
      * TokenRevocationEndpoint constructor.
      *
      * @param TokenTypeHintManager     $tokenTypeHintManager
-     * @param ResponseFactoryInterface $responseFactory
+     * @param MessageFactory $messageFactory
      */
-    public function __construct(TokenTypeHintManager $tokenTypeHintManager, ResponseFactoryInterface $responseFactory)
+    public function __construct(TokenTypeHintManager $tokenTypeHintManager, MessageFactory $messageFactory)
     {
         $this->tokenTypeHintManager = $tokenTypeHintManager;
-        $this->responseFactory = $responseFactory;
+        $this->messageFactory = $messageFactory;
     }
 
     /**
@@ -132,7 +132,7 @@ abstract class TokenRevocationEndpoint implements MiddlewareInterface
             $data = sprintf('%s(%s)', $callback, $data);
         }
 
-        $response = $this->responseFactory->createResponse($code);
+        $response = $this->messageFactory->createResponse($code);
         $response->getBody()->write($data);
         $headers = ['Content-Type' => 'application/json; charset=UTF-8', 'Cache-Control' => 'no-cache, no-store, max-age=0, must-revalidate, private', 'Pragma' => 'no-cache'];
         foreach ($headers as $k => $v) {

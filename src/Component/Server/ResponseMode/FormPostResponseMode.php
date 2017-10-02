@@ -13,16 +13,16 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\ResponseMode;
 
-use Interop\Http\Factory\ResponseFactoryInterface;
+use Http\Message\MessageFactory;
 use OAuth2Framework\Component\Server\ResponseType\ResponseTypeInterface;
 use Psr\Http\Message\ResponseInterface;
 
 final class FormPostResponseMode implements ResponseModeInterface
 {
     /**
-     * @var ResponseFactoryInterface
+     * @var MessageFactory
      */
-    private $responseFactory;
+    private $messageFactory;
 
     /**
      * @var FormPostResponseRendererInterface
@@ -33,11 +33,11 @@ final class FormPostResponseMode implements ResponseModeInterface
      * FormPostResponseMode constructor.
      *
      * @param FormPostResponseRendererInterface $renderer
-     * @param ResponseFactoryInterface          $responseFactory
+     * @param MessageFactory          $messageFactory
      */
-    public function __construct(FormPostResponseRendererInterface $renderer, ResponseFactoryInterface $responseFactory)
+    public function __construct(FormPostResponseRendererInterface $renderer, MessageFactory $messageFactory)
     {
-        $this->responseFactory = $responseFactory;
+        $this->messageFactory = $messageFactory;
         $this->renderer = $renderer;
     }
 
@@ -55,7 +55,7 @@ final class FormPostResponseMode implements ResponseModeInterface
     public function buildResponse(string $redirectUri, array $data): ResponseInterface
     {
         $template = $this->renderer->render($redirectUri, $data);
-        $response = $this->responseFactory->createResponse();
+        $response = $this->messageFactory->createResponse();
         $response = $response->withHeader('Content-Type', 'text/html');
         $response->getBody()->write($template);
 

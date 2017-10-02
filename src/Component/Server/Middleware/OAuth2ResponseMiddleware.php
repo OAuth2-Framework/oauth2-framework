@@ -24,16 +24,16 @@ final class OAuth2ResponseMiddleware implements MiddlewareInterface
     /**
      * @var OAuth2ResponseFactoryManager
      */
-    private $auth2ResponseFactoryManager;
+    private $auth2messageFactoryManager;
 
     /**
      * OAuth2ResponseMiddleware constructor.
      *
-     * @param OAuth2ResponseFactoryManager $auth2ResponseFactoryManager
+     * @param OAuth2ResponseFactoryManager $auth2messageFactoryManager
      */
-    public function __construct(OAuth2ResponseFactoryManager $auth2ResponseFactoryManager)
+    public function __construct(OAuth2ResponseFactoryManager $auth2messageFactoryManager)
     {
-        $this->auth2ResponseFactoryManager = $auth2ResponseFactoryManager;
+        $this->auth2messageFactoryManager = $auth2messageFactoryManager;
     }
 
     /**
@@ -44,7 +44,7 @@ final class OAuth2ResponseMiddleware implements MiddlewareInterface
         try {
             return $requestHandler->handle($request);
         } catch (OAuth2Exception $e) {
-            $oauth2Response = $this->auth2ResponseFactoryManager->getResponse($e->getCode(), $e->getData());
+            $oauth2Response = $this->auth2messageFactoryManager->getResponse($e->getCode(), $e->getData());
 
             return $oauth2Response->getResponse();
         }

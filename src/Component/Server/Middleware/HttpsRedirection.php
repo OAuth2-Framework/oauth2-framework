@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\Middleware;
 
-use Interop\Http\Factory\ResponseFactoryInterface;
+use Http\Message\MessageFactory;
 use Interop\Http\Server\RequestHandlerInterface;
 use Interop\Http\Server\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -21,18 +21,18 @@ use Psr\Http\Message\ServerRequestInterface;
 final class HttpsRedirection implements MiddlewareInterface
 {
     /**
-     * @var ResponseFactoryInterface
+     * @var MessageFactory
      */
-    private $responseFactory;
+    private $messageFactory;
 
     /**
      * HttpsRedirection constructor.
      *
-     * @param ResponseFactoryInterface $responseFactory
+     * @param MessageFactory $messageFactory
      */
-    public function __construct(ResponseFactoryInterface $responseFactory)
+    public function __construct(MessageFactory $messageFactory)
     {
-        $this->responseFactory = $responseFactory;
+        $this->messageFactory = $messageFactory;
     }
 
     /**
@@ -41,7 +41,7 @@ final class HttpsRedirection implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $requestHandler)
     {
         if (!$this->isRequestSecured($request)) {
-            $response = $this->responseFactory->createResponse(302);
+            $response = $this->messageFactory->createResponse(302);
             $uri = $request->getUri();
             $uri = $uri->withScheme('https');
             $response->withHeader('Location', $uri->__toString());

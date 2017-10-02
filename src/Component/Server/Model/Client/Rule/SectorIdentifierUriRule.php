@@ -15,7 +15,7 @@ namespace OAuth2Framework\Component\Server\Model\Client\Rule;
 
 use Assert\Assertion;
 use Http\Client\HttpClient;
-use Interop\Http\Factory\RequestFactoryInterface;
+use Http\Message\MessageFactory;
 use OAuth2Framework\Component\Server\Model\DataBag\DataBag;
 use OAuth2Framework\Component\Server\Model\UserAccount\UserAccountId;
 
@@ -27,19 +27,19 @@ final class SectorIdentifierUriRule implements RuleInterface
     private $client;
 
     /**
-     * @var RequestFactoryInterface
+     * @var MessageFactory
      */
-    private $requestFactory;
+    private $messageFactory;
 
     /**
      * SectorIdentifierUriRule constructor.
      *
-     * @param RequestFactoryInterface $requestFactory
-     * @param HttpClient              $client
+     * @param MessageFactory $messageFactory
+     * @param HttpClient     $client
      */
-    public function __construct(RequestFactoryInterface $requestFactory, HttpClient $client)
+    public function __construct(MessageFactory $messageFactory, HttpClient $client)
     {
-        $this->requestFactory = $requestFactory;
+        $this->messageFactory = $messageFactory;
         $this->client = $client;
     }
 
@@ -66,7 +66,7 @@ final class SectorIdentifierUriRule implements RuleInterface
     {
         $allowedProtocols = ['https'];
         Assertion::inArray(mb_substr($url, 0, mb_strpos($url, '://', 0, '8bit'), '8bit'), $allowedProtocols, sprintf('The provided sector identifier URI is not valid: scheme must be one of the following: %s.', implode(', ', $allowedProtocols)));
-        $request = $this->requestFactory->createRequest('GET', $url);
+        $request = $this->messageFactory->createRequest('GET', $url);
         $response = $this->client->sendRequest($request);
         Assertion::eq(200, $response->getStatusCode(), sprintf('Unable to get Uris from the Sector Identifier Uri \'%s\'.', $url));
 

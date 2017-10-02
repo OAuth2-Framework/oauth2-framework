@@ -77,7 +77,7 @@ final class ResponseTypeAndResponseModeParameterChecker implements ParameterChec
 
             return $next($authorization);
         } catch (\InvalidArgumentException $e) {
-            throw new OAuth2Exception(400, ['error' => OAuth2ResponseFactoryManager::ERROR_INVALID_REQUEST, 'error_description' => $e->getMessage(), 'authorization' => $authorization]);
+            throw new OAuth2Exception(400, ['error' => OAuth2ResponseFactoryManager::ERROR_INVALID_REQUEST, 'error_description' => $e->getMessage()], $authorization);
         }
     }
 

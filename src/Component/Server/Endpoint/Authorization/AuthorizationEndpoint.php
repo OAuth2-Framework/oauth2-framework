@@ -96,16 +96,14 @@ abstract class AuthorizationEndpoint implements MiddlewareInterface
             return $this->processConsentScreen($request, $authorization);
         } catch (OAuth2Exception $e) {
             $data = $e->getData();
-            if (array_key_exists('authorization', $data)) {
-                $authorization = $data['authorization'];
-                unset($data['authorization']);
-                $redirectUri = $authorization->getRedirectUri();
-                $responseMode = $authorization->getResponseMode();
+            if (null !== $e->getAuthorization()) {
+                $redirectUri = $e->getAuthorization()->getRedirectUri();
+                $responseMode = $e->getAuthorization()->getResponseMode();
                 if (null !== $redirectUri && null !== $responseMode) {
                     $data['redirect_uri'] = $redirectUri;
                     $data['response_mode'] = $responseMode;
 
-                    throw new OAuth2Exception(302, $data, $e);
+                    throw new OAuth2Exception(302, $data, $e->getAuthorization(), $e);
                 }
             }
 

@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\Endpoint\UserInfo;
 
-use Interop\Http\Factory\ResponseFactoryInterface;
+use Http\Message\MessageFactory;
 use Interop\Http\Server\RequestHandlerInterface;
 use Interop\Http\Server\MiddlewareInterface;
 use Jose\Component\Core\JWKSet;
@@ -58,9 +58,9 @@ final class UserInfoEndpoint implements MiddlewareInterface
     private $userAccountRepository;
 
     /**
-     * @var ResponseFactoryInterface
+     * @var MessageFactory
      */
-    private $responseFactory;
+    private $messageFactory;
 
     /**
      * @var IdTokenBuilderFactory
@@ -73,14 +73,14 @@ final class UserInfoEndpoint implements MiddlewareInterface
      * @param IdTokenBuilderFactory          $idTokenBuilderFactory
      * @param ClientRepositoryInterface      $clientRepository
      * @param UserAccountRepositoryInterface $userAccountRepository
-     * @param ResponseFactoryInterface       $responseFactory
+     * @param MessageFactory       $messageFactory
      */
-    public function __construct(IdTokenBuilderFactory $idTokenBuilderFactory, ClientRepositoryInterface $clientRepository, UserAccountRepositoryInterface $userAccountRepository, ResponseFactoryInterface $responseFactory)
+    public function __construct(IdTokenBuilderFactory $idTokenBuilderFactory, ClientRepositoryInterface $clientRepository, UserAccountRepositoryInterface $userAccountRepository, MessageFactory $messageFactory)
     {
         $this->idTokenBuilderFactory = $idTokenBuilderFactory;
         $this->clientRepository = $clientRepository;
         $this->userAccountRepository = $userAccountRepository;
-        $this->responseFactory = $responseFactory;
+        $this->messageFactory = $messageFactory;
     }
 
     /**
@@ -119,7 +119,7 @@ final class UserInfoEndpoint implements MiddlewareInterface
 
         $idToken = $this->buildUserinfoContent($client, $user, $accessToken, $isJwt);
 
-        $response = $this->responseFactory->createResponse();
+        $response = $this->messageFactory->createResponse();
         $response->getBody()->write($idToken);
         $headers = ['Content-Type' => sprintf('application/%s; charset=UTF-8', $isJwt ? 'jwt' : 'json'), 'Cache-Control' => 'no-cache, no-store, max-age=0, must-revalidate, private', 'Pragma' => 'no-cache'];
         foreach ($headers as $k => $v) {

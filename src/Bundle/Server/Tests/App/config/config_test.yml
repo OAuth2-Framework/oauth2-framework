@@ -1,5 +1,6 @@
 imports:
     - { resource: security.yml }
+    - { resource: http.yml }
     - { resource: oauth2_server.yml }
 
 framework:

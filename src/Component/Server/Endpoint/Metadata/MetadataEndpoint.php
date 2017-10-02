@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\Server\Endpoint\Metadata;
 
 use Assert\Assertion;
-use Interop\Http\Factory\ResponseFactoryInterface;
+use Http\Message\MessageFactory;
 use Interop\Http\Server\RequestHandlerInterface;
 use Interop\Http\Server\MiddlewareInterface;
 use Jose\Component\Core\JWKSet;
@@ -25,9 +25,9 @@ use Psr\Http\Message\ServerRequestInterface;
 final class MetadataEndpoint implements MiddlewareInterface
 {
     /**
-     * @var ResponseFactoryInterface
+     * @var MessageFactory
      */
-    private $responseFactory;
+    private $messageFactory;
 
     /**
      * @var Metadata
@@ -52,12 +52,12 @@ final class MetadataEndpoint implements MiddlewareInterface
     /**
      * MetadataEndpoint constructor.
      *
-     * @param ResponseFactoryInterface $responseFactory
+     * @param MessageFactory $messageFactory
      * @param Metadata                 $metadata
      */
-    public function __construct(ResponseFactoryInterface $responseFactory, Metadata $metadata)
+    public function __construct(MessageFactory $messageFactory, Metadata $metadata)
     {
-        $this->responseFactory = $responseFactory;
+        $this->messageFactory = $messageFactory;
         $this->metadata = $metadata;
     }
 
@@ -82,7 +82,7 @@ final class MetadataEndpoint implements MiddlewareInterface
         if ($this->isSignedMetadataEnabled()) {
             $data['signed_metadata'] = $this->signMetadata($data);
         }
-        $response = $this->responseFactory->createResponse();
+        $response = $this->messageFactory->createResponse();
         $response->getBody()->write(json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
         $response = $response->withHeader('Content-Type', 'application/json; charset=UTF-8');
 

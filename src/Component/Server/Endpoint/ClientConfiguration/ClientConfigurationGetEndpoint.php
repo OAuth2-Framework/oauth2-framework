@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\Endpoint\ClientConfiguration;
 
-use Interop\Http\Factory\ResponseFactoryInterface;
+use Http\Message\MessageFactory;
 use Interop\Http\Server\RequestHandlerInterface;
 use Interop\Http\Server\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -21,18 +21,18 @@ use Psr\Http\Message\ServerRequestInterface;
 final class ClientConfigurationGetEndpoint implements MiddlewareInterface
 {
     /**
-     * @var ResponseFactoryInterface
+     * @var MessageFactory
      */
-    private $responseFactory;
+    private $messageFactory;
 
     /**
      * ClientConfigurationGetEndpoint constructor.
      *
-     * @param ResponseFactoryInterface $responseFactory
+     * @param MessageFactory $messageFactory
      */
-    public function __construct(ResponseFactoryInterface $responseFactory)
+    public function __construct(MessageFactory $messageFactory)
     {
-        $this->responseFactory = $responseFactory;
+        $this->messageFactory = $messageFactory;
     }
 
     /**
@@ -41,7 +41,7 @@ final class ClientConfigurationGetEndpoint implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $next)
     {
         $client = $request->getAttribute('client');
-        $response = $this->responseFactory->createResponse();
+        $response = $this->messageFactory->createResponse();
         $response->getBody()->write(json_encode($client->all(), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
         $headers = ['Content-Type' => 'application/json; charset=UTF-8', 'Cache-Control' => 'no-cache, no-store, max-age=0, must-revalidate, private', 'Pragma' => 'no-cache'];
         foreach ($headers as $k => $v) {

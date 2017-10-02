@@ -30,7 +30,8 @@
         "sensio/framework-extra-bundle": "^3.0.8",
         "simple-bus/message-bus": "^3.0",
         "simple-bus/symfony-bridge": "^5.0",
-        "mnapoli/fluent-symfony": "^0.1.5"
+        "mnapoli/fluent-symfony": "^0.1.5",
+        "php-http/httplug-bundle": "^1.7"
     },
     "replace": {
         "oauth2-framework/server-bundle": "self.version",
@@ -64,6 +65,9 @@
             "OAuth2Framework\\Component\\Server\\": "src/Component/Server",
             "OAuth2Framework\\Component\\Client\\": "src/Component/Client"
         }
+    },
+    "autoload-dev": {
+        "files": [ "vendor/symfony/symfony/src/Symfony/Component/VarDumper/Resources/functions/dump.php" ]
     },
     "extra": {
         "branch-alias": {

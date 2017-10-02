@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\Response;
 
+use OAuth2Framework\Component\Server\Endpoint\Authorization\Authorization;
+
 final class OAuth2Exception extends \Exception implements \Throwable
 {
     /**
@@ -21,15 +23,22 @@ final class OAuth2Exception extends \Exception implements \Throwable
     private $data;
 
     /**
+     * @var null|Authorization
+     */
+    private $authorization;
+
+    /**
      * OAuth2Exception constructor.
      *
-     * @param int             $code
-     * @param array           $data
-     * @param \Exception|null $previous
+     * @param int                $code
+     * @param array              $data
+     * @param \Exception|null    $previous
+     * @param Authorization|null $authorization
      */
-    public function __construct(int $code, array $data, ? \Exception $previous = null)
+    public function __construct(int $code, array $data, ?Authorization $authorization = null, ? \Exception $previous = null)
     {
         $this->data = $data;
+        $this->authorization = $authorization;
         parent::__construct('', $code, $previous);
     }
 
@@ -39,5 +48,13 @@ final class OAuth2Exception extends \Exception implements \Throwable
     public function getData(): array
     {
         return $this->data;
+    }
+
+    /**
+     * @return null|Authorization
+     */
+    public function getAuthorization(): ?Authorization
+    {
+        return $this->authorization;
     }
 }

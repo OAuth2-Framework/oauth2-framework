@@ -26,6 +26,7 @@ final class AppKernel extends Kernel
 
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
 
+            new Http\HttplugBundle\HttplugBundle(),
             new Jose\Bundle\JoseFramework\JoseFrameworkBundle(),
             new Jose\Bundle\Checker\CheckerBundle(),
             new Jose\Bundle\Signature\SignatureBundle(),

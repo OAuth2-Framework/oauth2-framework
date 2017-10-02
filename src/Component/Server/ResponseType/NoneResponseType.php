@@ -74,7 +74,7 @@ final class NoneResponseType implements ResponseTypeInterface
     public function process(Authorization $authorization, callable $next): Authorization
     {
         if (1 !== count($authorization->getResponseTypes())) {
-            throw new OAuth2Exception(400, ['error' => OAuth2ResponseFactoryManager::ERROR_INVALID_REQUEST, 'error_description' => 'The response type \'none\' cannot be used with another response type.', 'authorization' => $authorization]);
+            throw new OAuth2Exception(400, ['error' => OAuth2ResponseFactoryManager::ERROR_INVALID_REQUEST, 'error_description' => 'The response type \'none\' cannot be used with another response type.'], $authorization);
         }
 
         /*

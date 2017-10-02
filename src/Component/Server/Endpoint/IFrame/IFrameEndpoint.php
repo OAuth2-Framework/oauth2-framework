@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\Endpoint\IFrame;
 
-use Interop\Http\Factory\ResponseFactoryInterface;
+use Http\Message\MessageFactory;
 use Interop\Http\Server\RequestHandlerInterface;
 use Interop\Http\Server\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -21,18 +21,18 @@ use Psr\Http\Message\ServerRequestInterface;
 final class IFrameEndpoint implements MiddlewareInterface
 {
     /**
-     * @var ResponseFactoryInterface
+     * @var MessageFactory
      */
-    private $responseFactory;
+    private $messageFactory;
 
     /**
      * IFrameEndpoint constructor.
      *
-     * @param ResponseFactoryInterface $responseFactory
+     * @param MessageFactory $messageFactory
      */
-    public function __construct(ResponseFactoryInterface $responseFactory)
+    public function __construct(MessageFactory $messageFactory)
     {
-        $this->responseFactory = $responseFactory;
+        $this->messageFactory = $messageFactory;
     }
 
     /**
@@ -42,7 +42,7 @@ final class IFrameEndpoint implements MiddlewareInterface
     {
         $content = $this->renderTemplate();
 
-        $response = $this->responseFactory->createResponse();
+        $response = $this->messageFactory->createResponse();
         $headers = ['Content-Type' => 'text/html; charset=UTF-8', 'Cache-Control' => 'no-cache, no-store, max-age=0, must-revalidate, private', 'Pragma' => 'no-cache'];
         foreach ($headers as $k => $v) {
             $response = $response->withHeader($k, $v);

@@ -353,10 +353,10 @@ final class IdTokenBuilder
         $data = $this->updateClaimsWithAmrAndAcrInfo($data, $this->userAccount);
         $data = $this->updateClaimsWithAuthenticationTime($data, $this->userAccount);
         $data = $this->updateClaimsWithNonce($data);
-        $data = $this->updateClaimsAudience($data);
         if (null !== $this->signatureAlgorithm) {
             $data = $this->updateClaimsWithJwtClaims($data);
             $data = $this->updateClaimsWithTokenHash($data);
+            $data = $this->updateClaimsAudience($data);
             $result = $this->computeIdToken($data);
         } else {
             $result = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);

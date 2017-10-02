@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\Endpoint\ClientConfiguration;
 
-use Interop\Http\Factory\ResponseFactoryInterface;
+use Http\Message\MessageFactory;
 use Interop\Http\Server\RequestHandlerInterface;
 use Interop\Http\Server\MiddlewareInterface;
 use OAuth2Framework\Component\Server\Command\Client\DeleteClientCommand;
@@ -29,20 +29,20 @@ final class ClientConfigurationDeleteEndpoint implements MiddlewareInterface
     private $messageBus;
 
     /**
-     * @var ResponseFactoryInterface
+     * @var MessageFactory
      */
-    private $responseFactory;
+    private $messageFactory;
 
     /**
      * ClientConfigurationDeleteEndpoint constructor.
      *
-     * @param MessageBus               $messageBus
-     * @param ResponseFactoryInterface $responseFactory
+     * @param MessageBus     $messageBus
+     * @param MessageFactory $messageFactory
      */
-    public function __construct(MessageBus $messageBus, ResponseFactoryInterface $responseFactory)
+    public function __construct(MessageBus $messageBus, MessageFactory $messageFactory)
     {
         $this->messageBus = $messageBus;
-        $this->responseFactory = $responseFactory;
+        $this->messageFactory = $messageFactory;
     }
 
     /**
@@ -58,7 +58,7 @@ final class ClientConfigurationDeleteEndpoint implements MiddlewareInterface
         $command = DeleteClientCommand::create($id);
         $this->messageBus->handle($command);
 
-        $response = $this->responseFactory->createResponse(204);
+        $response = $this->messageFactory->createResponse(204);
         $headers = ['Cache-Control' => 'no-cache, no-store, max-age=0, must-revalidate, private', 'Pragma' => 'no-cache'];
         foreach ($headers as $k => $v) {
             $response = $response->withHeader($k, $v);

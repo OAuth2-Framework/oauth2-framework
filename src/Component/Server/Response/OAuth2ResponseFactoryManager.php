@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\Server\Response;
 
 use Assert\Assertion;
-use Interop\Http\Factory\ResponseFactoryInterface as Psr7ResponseFactory;
 use OAuth2Framework\Component\Server\Response\Extension\ExtensionInterface;
 use OAuth2Framework\Component\Server\Response\Factory\ResponseFactoryInterface;
 
@@ -52,29 +51,30 @@ final class OAuth2ResponseFactoryManager
 
     //Custom message for this library
     const ERROR_INVALID_RESOURCE_SERVER = 'invalid_resource_server';
+
     /**
-     * @var \OAuth2Framework\Component\Server\Response\Extension\ExtensionInterface[]
+     * @var ExtensionInterface[]
      */
     private $extensions = [];
 
     /**
-     * @var \OAuth2Framework\Component\Server\Response\Factory\ResponseFactoryInterface[]
+     * @var ResponseFactoryInterface[]
      */
     private $responseFactories = [];
 
     /**
-     * @var Psr7ResponseFactory
+     * @var \Http\Message\MessageFactory
      */
-    private $psr7ResponseFactory;
+    private $psr7messageFactory;
 
     /**
      * OAuth2ResponseFactoryManager constructor.
      *
-     * @param Psr7ResponseFactory $psr7ResponseFactory
+     * @param \Http\Message\MessageFactory $psr7messageFactory
      */
-    public function __construct(Psr7ResponseFactory $psr7ResponseFactory)
+    public function __construct(\Http\Message\MessageFactory $psr7messageFactory)
     {
-        $this->psr7ResponseFactory = $psr7ResponseFactory;
+        $this->psr7messageFactory = $psr7messageFactory;
     }
 
     /**
@@ -112,7 +112,7 @@ final class OAuth2ResponseFactoryManager
         }
 
         $factory = $this->getResponseFactory($code);
-        $response = $this->psr7ResponseFactory->createResponse($code);
+        $response = $this->psr7messageFactory->createResponse($code);
 
         return $factory->createResponse($data, $response);
     }

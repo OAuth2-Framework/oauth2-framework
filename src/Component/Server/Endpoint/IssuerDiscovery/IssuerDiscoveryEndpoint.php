@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\Server\Endpoint\IssuerDiscovery;
 
 use Assert\Assertion;
-use Interop\Http\Factory\ResponseFactoryInterface;
+use Http\Message\MessageFactory;
 use Interop\Http\Factory\UriFactoryInterface;
 use Interop\Http\Server\RequestHandlerInterface;
 use Interop\Http\Server\MiddlewareInterface;
@@ -36,9 +36,9 @@ final class IssuerDiscoveryEndpoint implements MiddlewareInterface
     private $resourceManager;
 
     /**
-     * @var ResponseFactoryInterface
+     * @var MessageFactory
      */
-    private $responseFactory;
+    private $messageFactory;
 
     /**
      * @var UriFactoryInterface
@@ -54,14 +54,14 @@ final class IssuerDiscoveryEndpoint implements MiddlewareInterface
      * IssuerDiscoveryEndpoint constructor.
      *
      * @param ResourceRepositoryInterface $resourceManager The Resource Manager
-     * @param ResponseFactoryInterface    $responseFactory The Response Factory
+     * @param MessageFactory              $messageFactory  The Response Factory
      * @param UriFactoryInterface         $uriFactory      The Uri Factory
      * @param string                      $server          The server URI of this discovery service
      */
-    public function __construct(ResourceRepositoryInterface $resourceManager, ResponseFactoryInterface $responseFactory, UriFactoryInterface $uriFactory, string $server)
+    public function __construct(ResourceRepositoryInterface $resourceManager, MessageFactory $messageFactory, UriFactoryInterface $uriFactory, string $server)
     {
         $this->resourceManager = $resourceManager;
-        $this->responseFactory = $responseFactory;
+        $this->messageFactory = $messageFactory;
         $this->uriFactory = $uriFactory;
         $server = $uriFactory->createUri($server);
         $this->host = $this->getDomain($server);
@@ -78,12 +78,16 @@ final class IssuerDiscoveryEndpoint implements MiddlewareInterface
             $resource = $this->resourceManager->findResource($resourceName);
             Assertion::notNull($resource, 'The resource is not supported by this server.');
             $data = $this->getResourceData($resourceName, $resource);
-            $response = $this->responseFactory->createResponse();
-            $response->getBody()->write(json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
-            $headers = ['Content-Type' => 'application/jrd+json; charset=UTF-8', 'Cache-Control' => 'no-cache, no-store, max-age=0, must-revalidate, private', 'Pragma' => 'no-cache'];
-            foreach ($headers as $k => $v) {
-                $response = $response->withHeader($k, $v);
-            }
+            $response = $this->messageFactory->createResponse(
+                200,
+                null,
+                [
+                    'Content-Type' => 'application/jrd+json; charset=UTF-8',
+                    'Cache-Control' => 'no-cache, no-store, max-age=0, must-revalidate, private',
+                    'Pragma' => 'no-cache'
+                ],
+                json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
+            );
 
             return $response;
         } catch (\InvalidArgumentException $e) {

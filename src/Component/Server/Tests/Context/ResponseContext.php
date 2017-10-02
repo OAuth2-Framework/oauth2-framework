@@ -21,6 +21,7 @@ use Jose\Component\Signature\JWS;
 use OAuth2Framework\Component\Server\Model\Client\Client;
 use OAuth2Framework\Component\Server\Model\Client\ClientId;
 use Psr\Http\Message\ResponseInterface;
+use Symfony\Component\VarDumper\VarDumper;
 
 final class ResponseContext implements Context
 {
@@ -75,6 +76,7 @@ final class ResponseContext implements Context
      */
     public function theResponseCodeIs($code)
     {
+        $this->rewind();
         Assertion::eq((int) $code, $this->getResponse()->getStatusCode());
     }
 
@@ -83,8 +85,9 @@ final class ResponseContext implements Context
      */
     public function theResponseContains(PyStringNode $response)
     {
-        $this->rewind();
-        Assertion::eq($response->getRaw(), (string) $this->getResponse()->getBody()->getContents());
+        $this->getResponse()->getBody()->rewind();
+        $content = (string) $this->getResponse()->getBody()->getContents();
+        Assertion::eq($response->getRaw(), $content);
     }
 
     /**

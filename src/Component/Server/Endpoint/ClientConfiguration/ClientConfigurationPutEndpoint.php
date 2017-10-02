@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\Endpoint\ClientConfiguration;
 
-use Interop\Http\Factory\ResponseFactoryInterface;
+use Http\Message\MessageFactory;
 use Interop\Http\Server\RequestHandlerInterface;
 use Interop\Http\Server\MiddlewareInterface;
 use OAuth2Framework\Component\Server\Command\Client\UpdateClientCommand;
@@ -32,20 +32,20 @@ final class ClientConfigurationPutEndpoint implements MiddlewareInterface
     private $messageBus;
 
     /**
-     * @var ResponseFactoryInterface
+     * @var MessageFactory
      */
-    private $responseFactory;
+    private $messageFactory;
 
     /**
      * ClientConfigurationPutEndpoint constructor.
      *
-     * @param MessageBus               $messageBus
-     * @param ResponseFactoryInterface $responseFactory
+     * @param MessageBus     $messageBus
+     * @param MessageFactory $messageFactory
      */
-    public function __construct(MessageBus $messageBus, ResponseFactoryInterface $responseFactory)
+    public function __construct(MessageBus $messageBus, MessageFactory $messageFactory)
     {
         $this->messageBus = $messageBus;
-        $this->responseFactory = $responseFactory;
+        $this->messageFactory = $messageFactory;
     }
 
     /**
@@ -65,7 +65,7 @@ final class ClientConfigurationPutEndpoint implements MiddlewareInterface
             throw new OAuth2Exception(400, ['error' => OAuth2ResponseFactoryManager::ERROR_INVALID_REQUEST, 'error_description' => $e->getMessage()]);
         }
 
-        $response = $this->responseFactory->createResponse();
+        $response = $this->messageFactory->createResponse();
         $response->getBody()->write(json_encode($data->getData()->all(), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
         $headers = ['Content-Type' => 'application/json; charset=UTF-8', 'Cache-Control' => 'no-cache, no-store, max-age=0, must-revalidate, private', 'Pragma' => 'no-cache'];
         foreach ($headers as $k => $v) {

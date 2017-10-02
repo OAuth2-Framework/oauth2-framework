@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\Server\Tests\Stub;
 
 use Assert\Assertion;
-use Interop\Http\Factory\ResponseFactoryInterface;
+use Http\Message\MessageFactory;
 use OAuth2Framework\Component\Server\Endpoint\Authorization\AfterConsentScreen\AfterConsentScreenManager;
 use OAuth2Framework\Component\Server\Endpoint\Authorization\Authorization;
 use OAuth2Framework\Component\Server\Endpoint\Authorization\AuthorizationEndpoint as Base;
@@ -33,22 +33,22 @@ final class AuthorizationEndpoint extends Base
     private $isAuthorized = null;
 
     /**
-     * @var ResponseFactoryInterface
+     * @var MessageFactory
      */
-    private $responseFactory;
+    private $messageFactory;
 
     /**
      * AuthorizationEndpoint constructor.
      *
-     * @param ResponseFactoryInterface    $responseFactory
+     * @param MessageFactory    $messageFactory
      * @param AuthorizationFactory        $authorizationFactory
      * @param UserAccountDiscoveryManager $userAccountDiscoveryManager
      * @param BeforeConsentScreenManager  $beforeConsentScreenManager
      * @param AfterConsentScreenManager   $afterConsentScreenManager
      */
-    public function __construct(ResponseFactoryInterface $responseFactory, AuthorizationFactory $authorizationFactory, UserAccountDiscoveryManager $userAccountDiscoveryManager, BeforeConsentScreenManager $beforeConsentScreenManager, AfterConsentScreenManager $afterConsentScreenManager)
+    public function __construct(MessageFactory $messageFactory, AuthorizationFactory $authorizationFactory, UserAccountDiscoveryManager $userAccountDiscoveryManager, BeforeConsentScreenManager $beforeConsentScreenManager, AfterConsentScreenManager $afterConsentScreenManager)
     {
-        $this->responseFactory = $responseFactory;
+        $this->messageFactory = $messageFactory;
         parent::__construct($authorizationFactory, $userAccountDiscoveryManager, $beforeConsentScreenManager, $afterConsentScreenManager);
     }
 
@@ -66,7 +66,7 @@ final class AuthorizationEndpoint extends Base
      */
     protected function redirectToLoginPage(Authorization $authorization, ServerRequestInterface $request): ResponseInterface
     {
-        $response = $this->responseFactory->createResponse(302);
+        $response = $this->messageFactory->createResponse(302);
         $response->getBody()->write('You are redirected to the login page');
 
         return $response;
@@ -87,7 +87,7 @@ final class AuthorizationEndpoint extends Base
             throw new ProcessAuthorizationException($authorization);
         }
 
-        $response = $this->responseFactory->createResponse();
+        $response = $this->messageFactory->createResponse();
 
         $message = in_array('fr', $authorization->getUiLocales()) ? 'Vous êtes sur la page de consentement' : 'You are on the consent screen';
         $response->getBody()->write($message);

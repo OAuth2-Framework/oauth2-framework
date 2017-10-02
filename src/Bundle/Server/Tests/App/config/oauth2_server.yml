@@ -1,8 +1,6 @@
 oauth2_server:
     http:
-        client: 'Http\Mock\Client'
-        response_factory: 'Http\Factory\Diactoros\ResponseFactory'
-        request_factory: 'Http\Factory\Diactoros\RequestFactory'
+        client: 'httplug.client.oauth2'
         uri_factory: 'Http\Factory\Diactoros\UriFactory'
     server_uri: 'https://oauth2.test/'
     key_set:

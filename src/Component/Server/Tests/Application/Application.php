@@ -14,13 +14,10 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\Server\Tests\Application;
 
 use Http\Client\HttpClient;
-use Http\Factory\Diactoros\RequestFactory;
-use Http\Factory\Diactoros\ResponseFactory;
 use Http\Factory\Diactoros\ServerRequestFactory;
 use Http\Factory\Diactoros\UriFactory;
+use Http\Message\MessageFactory;
 use Http\Mock\Client;
-use Interop\Http\Factory\RequestFactoryInterface;
-use Interop\Http\Factory\ResponseFactoryInterface;
 use Interop\Http\Factory\ServerRequestFactoryInterface;
 use Interop\Http\Factory\UriFactoryInterface;
 use Jose\Component\Checker\ClaimCheckerManager;
@@ -287,7 +284,7 @@ final class Application
     /**
      * @var null|OAuth2ResponseFactoryManager
      */
-    private $oauth2ResponseFactory = null;
+    private $oauth2messageFactory = null;
 
     /**
      * @var null|OAuth2ResponseMiddleware
@@ -297,39 +294,39 @@ final class Application
     /**
      * @return OAuth2ResponseFactoryManager
      */
-    public function getOAuth2ResponseFactory(): OAuth2ResponseFactoryManager
+    public function getOAuth2messageFactory(): OAuth2ResponseFactoryManager
     {
-        if (null === $this->oauth2ResponseFactory) {
-            $this->oauth2ResponseFactory = new OAuth2ResponseFactoryManager($this->getResponseFactory());
-            $this->oauth2ResponseFactory->addExtension(new UriExtension());
+        if (null === $this->oauth2messageFactory) {
+            $this->oauth2messageFactory = new OAuth2ResponseFactoryManager($this->getMessageFactory());
+            $this->oauth2messageFactory->addExtension(new UriExtension());
 
-            $this->oauth2ResponseFactory->addResponseFactory(new AuthenticateResponseFactory(
+            $this->oauth2messageFactory->addResponseFactory(new AuthenticateResponseFactory(
                 $this->getTokenEndpointAuthMethodManager()
             ));
-            $this->oauth2ResponseFactory->addResponseFactory(new AccessDeniedResponseFactory());
-            $this->oauth2ResponseFactory->addResponseFactory(new BadRequestResponseFactory());
-            $this->oauth2ResponseFactory->addResponseFactory(new MethodNotAllowedResponseFactory());
-            $this->oauth2ResponseFactory->addResponseFactory(new NotImplementedResponseFactory());
-            $this->oauth2ResponseFactory->addResponseFactory(new RedirectResponseFactory());
+            $this->oauth2messageFactory->addResponseFactory(new AccessDeniedResponseFactory());
+            $this->oauth2messageFactory->addResponseFactory(new BadRequestResponseFactory());
+            $this->oauth2messageFactory->addResponseFactory(new MethodNotAllowedResponseFactory());
+            $this->oauth2messageFactory->addResponseFactory(new NotImplementedResponseFactory());
+            $this->oauth2messageFactory->addResponseFactory(new RedirectResponseFactory());
         }
 
-        return $this->oauth2ResponseFactory;
+        return $this->oauth2messageFactory;
     }
 
     /**
      * @return OAuth2ResponseFactoryManager
      */
-    public function getOAuth2ResponseFactoryForTokenIntrospection(): OAuth2ResponseFactoryManager
+    public function getOAuth2messageFactoryForTokenIntrospection(): OAuth2ResponseFactoryManager
     {
-        if (null === $this->oauth2ResponseFactory) {
-            $this->oauth2ResponseFactory = new OAuth2ResponseFactoryManager($this->getResponseFactory());
-            $this->oauth2ResponseFactory->addResponseFactory(new AuthenticateResponseFactoryForTokenIntrospection(
+        if (null === $this->oauth2messageFactory) {
+            $this->oauth2messageFactory = new OAuth2ResponseFactoryManager($this->getMessageFactory());
+            $this->oauth2messageFactory->addResponseFactory(new AuthenticateResponseFactoryForTokenIntrospection(
                 $this->getTokenIntrospectionEndpointAuthMethodManager()
             ));
-            $this->oauth2ResponseFactory->addResponseFactory(new BadRequestResponseFactory());
+            $this->oauth2messageFactory->addResponseFactory(new BadRequestResponseFactory());
         }
 
-        return $this->oauth2ResponseFactory;
+        return $this->oauth2messageFactory;
     }
 
     /**
@@ -339,7 +336,7 @@ final class Application
     {
         if (null === $this->oauth2ResponseMiddleware) {
             $this->oauth2ResponseMiddleware = new OAuth2ResponseMiddleware(
-                $this->getOAuth2ResponseFactory()
+                $this->getOAuth2messageFactory()
             );
         }
 
@@ -398,7 +395,7 @@ final class Application
     {
         if (null === $this->clientRegistrationEndpoint) {
             $this->clientRegistrationEndpoint = new ClientRegistrationEndpoint(
-                $this->getResponseFactory(),
+                $this->getMessageFactory(),
                 $this->getCommandBus()
             );
         }
@@ -1041,23 +1038,6 @@ final class Application
     }
 
     /**
-     * @var null|ResponseFactoryInterface
-     */
-    private $responseFactory = null;
-
-    /**
-     * @return ResponseFactoryInterface
-     */
-    public function getResponseFactory(): ResponseFactoryInterface
-    {
-        if (null === $this->responseFactory) {
-            $this->responseFactory = new ResponseFactory();
-        }
-
-        return $this->responseFactory;
-    }
-
-    /**
      * @var null|UriFactoryInterface
      */
     private $uriFactory = null;
@@ -1100,7 +1080,7 @@ final class Application
                 ->add(new Rule\ScopePolicyDefaultRule())
                 ->add(new Rule\ScopePolicyRule($this->getScopePolicyManager()))
                 ->add(new Rule\ScopeRule($this->getScopeRepository()))
-                ->add(new Rule\SectorIdentifierUriRule($this->getRequestFactory(), $this->getHttpClient()))
+                ->add(new Rule\SectorIdentifierUriRule($this->getMessageFactory(), $this->getHttpClient()))
                 ->add($this->getSoftwareRule())
                 ->add(new Rule\SubjectTypeRule($this->getUserInfo()))
                 ->add(new Rule\TokenEndpointAuthMethodEndpointRule($this->getTokenEndpointAuthMethodManager()))
@@ -1238,20 +1218,20 @@ final class Application
     }
 
     /**
-     * @var null|RequestFactoryInterface
+     * @var null|MessageFactory
      */
-    private $requestFactory = null;
+    private $messageFactory = null;
 
     /**
-     * @return RequestFactoryInterface
+     * @return MessageFactory
      */
-    public function getRequestFactory(): RequestFactoryInterface
+    public function getMessageFactory(): MessageFactory
     {
-        if (null === $this->requestFactory) {
-            $this->requestFactory = new RequestFactory();
+        if (null === $this->messageFactory) {
+            $this->messageFactory = new MessageFactory\DiactorosMessageFactory();
         }
 
-        return $this->requestFactory;
+        return $this->messageFactory;
     }
 
     /**
@@ -1907,7 +1887,7 @@ final class Application
             $this->clientConfigurationEndpoint = new ClientConfigurationEndpoint(
                 $this->getBearerTokenType(),
                 $this->getCommandBus(),
-                $this->getResponseFactory()
+                $this->getMessageFactory()
             );
         }
 
@@ -1968,7 +1948,7 @@ final class Application
         if (null === $this->tokenRevocationGetEndpoint) {
             $this->tokenRevocationGetEndpoint = new TokenRevocationGetEndpoint(
                 $this->getTokenTypeHintManager(),
-                $this->getResponseFactory(),
+                $this->getMessageFactory(),
                 true
             );
         }
@@ -1989,7 +1969,7 @@ final class Application
         if (null === $this->tokenRevocationPostEndpoint) {
             $this->tokenRevocationPostEndpoint = new TokenRevocationPostEndpoint(
                 $this->getTokenTypeHintManager(),
-                $this->getResponseFactory()
+                $this->getMessageFactory()
             );
         }
 
@@ -2050,7 +2030,7 @@ final class Application
         if (null === $this->tokenIntrospectionEndpoint) {
             $this->tokenIntrospectionEndpoint = new TokenIntrospectionEndpoint(
                 $this->getTokenTypeHintManager(),
-                $this->getResponseFactory()
+                $this->getMessageFactory()
             );
         }
 
@@ -2518,7 +2498,7 @@ final class Application
                 $this->getClientRepository(),
                 $this->getUserAccountRepository(),
                 $this->getTokenEndpointExtensionManager(),
-                $this->getResponseFactory(),
+                $this->getMessageFactory(),
                 $this->getAccessTokenRepository(),
                 $this->getRefreshTokenRepository()
             );
@@ -2643,7 +2623,7 @@ final class Application
                 $this->getIdTokenBuilderFactory(),
                 $this->getClientRepository(),
                 $this->getUserAccountRepository(),
-                $this->getResponseFactory()
+                $this->getMessageFactory()
             );
             $this->userInfoEndpoint->enableSignature(
                 $this->getJwsBuilder(),
@@ -2817,7 +2797,7 @@ final class Application
         if (null === $this->issuerDiscoveryEndpoint) {
             $this->issuerDiscoveryEndpoint = new IssuerDiscoveryEndpoint(
                 $this->getResourceRepository(),
-                $this->getResponseFactory(),
+                $this->getMessageFactory(),
                 $this->getUriFactory(),
                 'https://my-service.com:9000/'
             );
@@ -2893,7 +2873,7 @@ final class Application
     {
         if (null === $this->JWKSetEndpoint) {
             $this->JWKSetEndpoint = new JWKSetEndpoint(
-                $this->getResponseFactory(),
+                $this->getMessageFactory(),
                 $this->getPublicKeys()
             );
         }
@@ -2931,7 +2911,7 @@ final class Application
     {
         if (null === $this->iFrameEndpoint) {
             $this->iFrameEndpoint = new IFrameEndpoint(
-                $this->getResponseFactory());
+                $this->getMessageFactory());
         }
 
         return $this->iFrameEndpoint;
@@ -2967,7 +2947,7 @@ final class Application
     {
         if (null === $this->metadataEndpoint) {
             $this->metadataEndpoint = new MetadataEndpoint(
-                $this->getResponseFactory(),
+                $this->getMessageFactory(),
                 $this->getMetadata()
             );
             $this->metadataEndpoint->enableSignedMetadata(
@@ -3181,15 +3161,15 @@ final class Application
             $this->responseModeManager = new ResponseModeManager();
             $this->responseModeManager->add(new FragmentResponseMode(
                 $this->getUriFactory(),
-                $this->getResponseFactory())
+                $this->getMessageFactory())
             );
             $this->responseModeManager->add(new QueryResponseMode(
                 $this->getUriFactory(),
-                $this->getResponseFactory())
+                $this->getMessageFactory())
             );
             $this->responseModeManager->add(new FormPostResponseMode(
                 new FormPostResponseRenderer(),
-                $this->getResponseFactory())
+                $this->getMessageFactory())
             );
         }
 
@@ -3269,7 +3249,7 @@ final class Application
     {
         if (null === $this->authorizationEndpoint) {
             $this->authorizationEndpoint = new AuthorizationEndpoint(
-                $this->getResponseFactory(),
+                $this->getMessageFactory(),
                 $this->getAuthorizationFactory(),
                 $this->getUserAccountDiscoveryManager(),
                 $this->getBeforeConsentScreenManager(),

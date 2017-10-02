@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\Endpoint\Token;
 
-use Interop\Http\Factory\ResponseFactoryInterface;
+use Http\Message\MessageFactory;
 use Interop\Http\Server\RequestHandlerInterface;
 use Interop\Http\Server\MiddlewareInterface;
 use OAuth2Framework\Component\Server\Endpoint\Token\Processor\ProcessorManager;
@@ -56,9 +56,9 @@ final class TokenEndpoint implements MiddlewareInterface
     private $userAccountRepository;
 
     /**
-     * @var ResponseFactoryInterface
+     * @var MessageFactory
      */
-    private $responseFactory;
+    private $messageFactory;
 
     /**
      * @var AccessTokenRepositoryInterface
@@ -77,17 +77,17 @@ final class TokenEndpoint implements MiddlewareInterface
      * @param ClientRepositoryInterface       $clientRepository
      * @param UserAccountRepositoryInterface  $userAccountRepository
      * @param TokenEndpointExtensionManager   $tokenEndpointExtensionManager
-     * @param ResponseFactoryInterface        $responseFactory
+     * @param MessageFactory        $messageFactory
      * @param AccessTokenRepositoryInterface  $accessTokenRepository
      * @param RefreshTokenRepositoryInterface $refreshTokenRepository
      */
-    public function __construct(ProcessorManager $processorManager, ClientRepositoryInterface $clientRepository, UserAccountRepositoryInterface $userAccountRepository, TokenEndpointExtensionManager $tokenEndpointExtensionManager, ResponseFactoryInterface $responseFactory, AccessTokenRepositoryInterface $accessTokenRepository, RefreshTokenRepositoryInterface $refreshTokenRepository)
+    public function __construct(ProcessorManager $processorManager, ClientRepositoryInterface $clientRepository, UserAccountRepositoryInterface $userAccountRepository, TokenEndpointExtensionManager $tokenEndpointExtensionManager, MessageFactory $messageFactory, AccessTokenRepositoryInterface $accessTokenRepository, RefreshTokenRepositoryInterface $refreshTokenRepository)
     {
         $this->processorManager = $processorManager;
         $this->clientRepository = $clientRepository;
         $this->userAccountRepository = $userAccountRepository;
         $this->tokenEndpointExtensionManager = $tokenEndpointExtensionManager;
-        $this->responseFactory = $responseFactory;
+        $this->messageFactory = $messageFactory;
         $this->accessTokenRepository = $accessTokenRepository;
         $this->refreshTokenRepository = $refreshTokenRepository;
     }
@@ -125,7 +125,7 @@ final class TokenEndpoint implements MiddlewareInterface
      */
     private function createResponse(array $data): ResponseInterface
     {
-        $response = $this->responseFactory->createResponse();
+        $response = $this->messageFactory->createResponse();
         $response->getBody()->write(json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
         $headers = ['Content-Type' => 'application/json; charset=UTF-8', 'Cache-Control' => 'no-cache, no-store, max-age=0, must-revalidate, private', 'Pragma' => 'no-cache'];
         foreach ($headers as $k => $v) {

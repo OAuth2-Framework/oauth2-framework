@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\ResponseMode;
 
-use Interop\Http\Factory\ResponseFactoryInterface;
+use Http\Message\MessageFactory;
 use Interop\Http\Factory\UriFactoryInterface;
 use OAuth2Framework\Component\Server\ResponseType\ResponseTypeInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -26,20 +26,20 @@ final class QueryResponseMode implements ResponseModeInterface
     private $uriFactory;
 
     /**
-     * @var ResponseFactoryInterface
+     * @var MessageFactory
      */
-    private $responseFactory;
+    private $messageFactory;
 
     /**
      * QueryResponseMode constructor.
      *
      * @param UriFactoryInterface      $uriFactory
-     * @param ResponseFactoryInterface $responseFactory
+     * @param MessageFactory $messageFactory
      */
-    public function __construct(UriFactoryInterface $uriFactory, ResponseFactoryInterface $responseFactory)
+    public function __construct(UriFactoryInterface $uriFactory, MessageFactory $messageFactory)
     {
         $this->uriFactory = $uriFactory;
-        $this->responseFactory = $responseFactory;
+        $this->messageFactory = $messageFactory;
     }
 
     /**
@@ -61,7 +61,7 @@ final class QueryResponseMode implements ResponseModeInterface
         $queryParams += $data;
         $uri = $uri->withQuery(http_build_query($queryParams));
 
-        $response = $this->responseFactory->createResponse(302);
+        $response = $this->messageFactory->createResponse(302);
         $response = $response->withHeader('Location', $uri->__toString());
 
         return $response;

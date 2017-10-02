@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\Endpoint\JWKSet;
 
-use Interop\Http\Factory\ResponseFactoryInterface;
+use Http\Message\MessageFactory;
 use Interop\Http\Server\RequestHandlerInterface;
 use Interop\Http\Server\MiddlewareInterface;
 use Jose\Component\Core\JWKSet;
@@ -22,9 +22,9 @@ use Psr\Http\Message\ServerRequestInterface;
 final class JWKSetEndpoint implements MiddlewareInterface
 {
     /**
-     * @var ResponseFactoryInterface
+     * @var MessageFactory
      */
-    private $responseFactory;
+    private $messageFactory;
 
     /**
      * @var JWKSet
@@ -34,12 +34,12 @@ final class JWKSetEndpoint implements MiddlewareInterface
     /**
      * JWKSetEndpoint constructor.
      *
-     * @param ResponseFactoryInterface $responseFactory
-     * @param JWKSet                   $jwkSet
+     * @param MessageFactory $messageFactory
+     * @param JWKSet         $jwkSet
      */
-    public function __construct(ResponseFactoryInterface $responseFactory, JWKSet $jwkSet)
+    public function __construct(MessageFactory $messageFactory, JWKSet $jwkSet)
     {
-        $this->responseFactory = $responseFactory;
+        $this->messageFactory = $messageFactory;
         $this->jwkSet = $jwkSet;
     }
 
@@ -48,7 +48,7 @@ final class JWKSetEndpoint implements MiddlewareInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $requestHandler)
     {
-        $response = $this->responseFactory->createResponse();
+        $response = $this->messageFactory->createResponse();
         $response->getBody()->write(json_encode($this->jwkSet, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
         $response = $response->withHeader('Content-Type', 'application/jwk-set+json; charset=UTF-8');
 
