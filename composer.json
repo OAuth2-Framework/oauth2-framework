@@ -47,7 +47,7 @@
         "behat/mink-goutte-driver": "^1.2",
         "behat/symfony2-extension": "^2.1",
         "http-interop/http-factory-diactoros": "^0.3.0",
-        "php-http/guzzle6-adapter": "^1.1",
+        "php-http/guzzle6-adapter": "^1.1.1",
         "php-http/message": "^1.5",
         "php-http/mock-client": "^1.0",
         "symfony/dom-crawler": "^3.2",
