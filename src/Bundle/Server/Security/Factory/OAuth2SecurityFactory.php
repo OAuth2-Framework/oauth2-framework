@@ -38,7 +38,7 @@ final class OAuth2SecurityFactory implements SecurityFactoryInterface
             ->setDefinition($listenerId, new ChildDefinition(OAuth2Listener::class))
             ->setArguments([
                 new Reference(TokenStorageInterface::class),
-                new Reference('security.authentication.manager')
+                new Reference('security.authentication.manager'),
             ])
         ;
 
