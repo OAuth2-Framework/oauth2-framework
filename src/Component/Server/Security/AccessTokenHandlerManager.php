@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\Server\Security;
 
 use OAuth2Framework\Component\Server\Model\AccessToken\AccessToken;
+use OAuth2Framework\Component\Server\Model\AccessToken\AccessTokenId;
 
 final class AccessTokenHandlerManager
 {
@@ -35,11 +36,11 @@ final class AccessTokenHandlerManager
     }
 
     /**
-     * @param string $token
+     * @param AccessTokenId $token
      *
      * @return null|AccessToken
      */
-    public function find(string $token)
+    public function find(AccessTokenId $token)
     {
         foreach ($this->accessTokenHandlers as $accessTokenHandler) {
             $accessToken = $accessTokenHandler->find($token);

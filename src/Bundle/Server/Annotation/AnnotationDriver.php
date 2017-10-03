@@ -16,13 +16,12 @@ namespace OAuth2Framework\Bundle\Server\Annotation;
 use Doctrine\Common\Annotations\Reader;
 use OAuth2Framework\Bundle\Server\Annotation\Checker\CheckerInterface;
 use OAuth2Framework\Bundle\Server\Security\Authentication\Token\OAuth2Token;
-use OAuth2Framework\Component\Server\Response\OAuth2Exception;
 use OAuth2Framework\Component\Server\Response\OAuth2ResponseFactoryManager;
+use OAuth2Framework\Component\Server\Response\OAuth2ResponseInterface;
 use OAuth2Framework\Component\Server\TokenType\TokenTypeManager;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Zend\Diactoros\Response;
 
 final class AnnotationDriver
 {
@@ -47,17 +46,24 @@ final class AnnotationDriver
     private $tokenTypeManager;
 
     /**
+     * @var OAuth2ResponseFactoryManager
+     */
+    private $oauth2ResponseFactoryManager;
+
+    /**
      * AnnotationDriver constructor.
      *
-     * @param Reader                $reader
-     * @param TokenStorageInterface $tokenStorage
-     * @param TokenTypeManager      $tokenTypeManager
+     * @param Reader                       $reader
+     * @param TokenStorageInterface        $tokenStorage
+     * @param TokenTypeManager             $tokenTypeManager
+     * @param OAuth2ResponseFactoryManager $oauth2ResponseFactoryManager
      */
-    public function __construct(Reader $reader, TokenStorageInterface $tokenStorage, TokenTypeManager $tokenTypeManager)
+    public function __construct(Reader $reader, TokenStorageInterface $tokenStorage, TokenTypeManager $tokenTypeManager, OAuth2ResponseFactoryManager $oauth2ResponseFactoryManager)
     {
         $this->reader = $reader;
         $this->tokenStorage = $tokenStorage;
         $this->tokenTypeManager = $tokenTypeManager;
+        $this->oauth2ResponseFactoryManager = $oauth2ResponseFactoryManager;
     }
 
     /**
@@ -95,7 +101,6 @@ final class AnnotationDriver
             if ($configuration instanceof OAuth2) {
                 $token = $this->tokenStorage->getToken();
 
-                // If no access token is found by the firewall, then returns an authentication error
                 if (!$token instanceof OAuth2Token) {
                     $this->createAuthenticationException($event, 'OAuth2 authentication required');
 
@@ -103,9 +108,9 @@ final class AnnotationDriver
                 }
 
                 foreach ($this->getCheckers() as $checker) {
-                    $result = $checker->check($token, $configuration);
-                    if (null !== $result) {
-                        $this->createAccessDeniedException($event, $result);
+                    $message = $checker->check($token, $configuration);
+                    if (null !== $message) {
+                        $this->createAccessDeniedException($event, $message);
 
                         return;
                     }
@@ -121,7 +126,7 @@ final class AnnotationDriver
     private function createAuthenticationException(FilterControllerEvent &$event, $message)
     {
         $schemes = $this->tokenTypeManager->getSchemes();
-        $exception = new OAuth2Exception(
+        $response = $this->oauth2ResponseFactoryManager->getResponse(
             401,
             [
                 'error' => OAuth2ResponseFactoryManager::ERROR_ACCESS_DENIED,
@@ -130,7 +135,7 @@ final class AnnotationDriver
             ]
         );
 
-        $this->updateFilterControllerEvent($event, $exception);
+        $this->updateFilterControllerEvent($event, $response);
     }
 
     /**
@@ -139,29 +144,25 @@ final class AnnotationDriver
      */
     private function createAccessDeniedException(FilterControllerEvent &$event, $message)
     {
-        $exception = new OAuth2Exception(
+        $response = $this->oauth2ResponseFactoryManager->getResponse(
             403,
             [
                 'error' => OAuth2ResponseFactoryManager::ERROR_ACCESS_DENIED,
                 'error_description' => $message,
             ]
         );
-
-        $this->updateFilterControllerEvent($event, $exception);
+        $this->updateFilterControllerEvent($event, $response);
     }
 
     /**
-     * @param FilterControllerEvent $event
-     * @param OAuth2Exception       $exception
+     * @param FilterControllerEvent   $event
+     * @param OAuth2ResponseInterface $response
      */
-    private function updateFilterControllerEvent(FilterControllerEvent &$event, OAuth2Exception $exception)
+    private function updateFilterControllerEvent(FilterControllerEvent &$event, OAuth2ResponseInterface $response)
     {
-        $event->setController(function () use ($exception) {
-            $response = new Response();
-            //$exception->getHttpResponse($response);
-            $response->getBody()->rewind();
+        $event->setController(function () use ($response) {
             $factory = new HttpFoundationFactory();
-            $response = $factory->createResponse($response);
+            $response = $factory->createResponse($response->getResponse());
 
             return $response;
         });

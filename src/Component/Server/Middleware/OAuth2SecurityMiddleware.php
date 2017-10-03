@@ -17,6 +17,7 @@ use Assert\Assertion;
 use Interop\Http\Server\RequestHandlerInterface;
 use Interop\Http\Server\MiddlewareInterface;
 use OAuth2Framework\Component\Server\Model\AccessToken\AccessToken;
+use OAuth2Framework\Component\Server\Model\AccessToken\AccessTokenId;
 use OAuth2Framework\Component\Server\Response\OAuth2Exception;
 use OAuth2Framework\Component\Server\Response\OAuth2ResponseFactoryManager;
 use OAuth2Framework\Component\Server\Security\AccessTokenHandlerManager;
@@ -73,7 +74,7 @@ final class OAuth2SecurityMiddleware implements MiddlewareInterface
         if (null === $token) {
             throw $this->getOAuth2Exception(401, OAuth2ResponseFactoryManager::ERROR_INVALID_TOKEN, 'Access token required.');
         }
-        $accessToken = $this->accessTokenHandlerManager->find($token);
+        $accessToken = $this->accessTokenHandlerManager->find(AccessTokenId::create($token));
         if (null === $accessToken) {
             throw $this->getOAuth2Exception(401, OAuth2ResponseFactoryManager::ERROR_INVALID_TOKEN, 'Access token does not exist or is not valid.');
         }

@@ -16,19 +16,19 @@ namespace OAuth2Framework\Bundle\Server\Annotation\Checker;
 use OAuth2Framework\Bundle\Server\Annotation\OAuth2;
 use OAuth2Framework\Bundle\Server\Security\Authentication\Token\OAuth2Token;
 
-final class ResourceOwnerPublicIdChecker implements CheckerInterface
+final class ClientIdChecker implements CheckerInterface
 {
     /**
      * {@inheritdoc}
      */
     public function check(OAuth2Token $token, OAuth2 $configuration): ?string
     {
-        if (null === $configuration->getResourceOwnerPublicId()) {
+        if (null === $configuration->getClientId()) {
             return null;
         }
 
-        if ($configuration->getResourceOwnerPublicId() !== $token->getResourceOwner()->getPublicId()) {
-            return 'Resource owner not authorized.';
+        if ($configuration->getClientId() !== $token->getClientId()) {
+            return 'Client not authorized.';
         }
 
         return null;

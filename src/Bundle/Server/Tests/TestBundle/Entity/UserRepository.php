@@ -93,7 +93,7 @@ final class UserRepository implements UserAccountRepositoryInterface
                     'zoneinfo' => 'Europe/Paris',
                     'locale' => 'en',
                     'picture' => 'https://www.google.com',
-                    'amr', ['password' => 'otp'],
+                    'amr' => ['password' => 'otp'],
                     'birthdate' => '1950-01-01',
                     'email' => 'root@localhost.com',
                     'email_verified' => false,

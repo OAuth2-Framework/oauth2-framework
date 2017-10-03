@@ -14,38 +14,19 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\Server\Security\Authentication\Token;
 
 use OAuth2Framework\Component\Server\Model\AccessToken\AccessToken;
-use OAuth2Framework\Component\Server\Model\Client\Client;
-use OAuth2Framework\Component\Server\Model\ResourceOwner\ResourceOwnerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 
 final class OAuth2Token extends AbstractToken
 {
     /**
-     * @var string
-     */
-    private $token;
-
-    /**
      * @var AccessToken
      */
     private $accessToken;
 
-    /**
-     * @var Client
-     */
-    private $client;
-
-    /**
-     * @var ResourceOwnerInterface
-     */
-    private $resource_owner;
-
-    /**
-     * @param string $token
-     */
-    public function setToken(string $token)
+    public function __construct(AccessToken $accessToken)
     {
-        $this->token = $token;
+        parent::__construct();
+        $this->accessToken = $accessToken;
     }
 
     /**
@@ -53,55 +34,31 @@ final class OAuth2Token extends AbstractToken
      */
     public function getToken(): string
     {
-        return $this->token;
-    }
-
-    /**
-     * @param AccessToken $accessToken
-     */
-    public function setAccessToken(AccessToken $accessToken)
-    {
-        $this->accessToken = $accessToken;
+        return $this->accessToken->getTokenId()->getValue();
     }
 
     /**
      * @return AccessToken
      */
-    public function getAccessToken()
+    public function getAccessToken(): AccessToken
     {
         return $this->accessToken;
     }
 
     /**
-     * @param Client $client
+     * @return string
      */
-    public function setClient(Client $client)
+    public function getClientId(): string
     {
-        $this->client = $client;
+        return $this->accessToken->getClientId()->getValue();
     }
 
     /**
-     * @return Client
+     * @return string
      */
-    public function getClient()
+    public function getResourceOwnerId(): string
     {
-        return $this->client;
-    }
-
-    /**
-     * @param ResourceOwnerInterface $resource_owner
-     */
-    public function setResourceOwner(ResourceOwnerInterface $resource_owner)
-    {
-        $this->resource_owner = $resource_owner;
-    }
-
-    /**
-     * @return ResourceOwnerInterface
-     */
-    public function getResourceOwner()
-    {
-        return $this->resource_owner;
+        return $this->accessToken->getResourceOwnerId()->getValue();
     }
 
     /**
@@ -109,6 +66,6 @@ final class OAuth2Token extends AbstractToken
      */
     public function getCredentials()
     {
-        return $this->token;
+        return $this->getToken();
     }
 }

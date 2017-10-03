@@ -15,6 +15,8 @@ namespace OAuth2Framework\Bundle\Server;
 
 use OAuth2Framework\Bundle\Server\DependencyInjection\Compiler;
 use OAuth2Framework\Bundle\Server\DependencyInjection\OAuth2FrameworkServerExtension;
+use OAuth2Framework\Bundle\Server\Security\Factory\OAuth2SecurityFactory;
+use Symfony\Bundle\SecurityBundle\DependencyInjection\SecurityExtension;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
@@ -57,6 +59,10 @@ final class OAuth2FrameworkServerBundle extends Bundle
         foreach ($this->getCompilerPasses() as $pass) {
             $container->addCompilerPass($pass);
         }
+
+        /** @var SecurityExtension $extension */
+        $extension = $container->getExtension('security');
+        $extension->addSecurityListenerFactory(new OAuth2SecurityFactory());
     }
 
     /**
@@ -129,6 +135,7 @@ final class OAuth2FrameworkServerBundle extends Bundle
             new Compiler\ScopeMetadataCompilerPass(),
             new Compiler\AuthorizationRequestMetadataCompilerPass(),
             new Compiler\RequestObjectCompilerPass(),
+            new Compiler\SecurityAnnotationCheckerCompilerPass(),
         ];
     }
 }

@@ -14,17 +14,19 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\Server\Security\Firewall;
 
 use OAuth2Framework\Bundle\Server\Security\Authentication\Token\OAuth2Token;
-use OAuth2Framework\Component\Server\Security\AccessTokenHandlerInterface;
+use OAuth2Framework\Component\Server\Model\AccessToken\AccessTokenId;
+use OAuth2Framework\Component\Server\Response\OAuth2ResponseFactoryManager;
+use OAuth2Framework\Component\Server\Security\AccessTokenHandlerManager;
 use OAuth2Framework\Component\Server\TokenType\TokenTypeManager;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\Security\Core\Authentication\AuthenticationManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Http\Firewall\ListenerInterface;
 
-class OAuth2Listener implements ListenerInterface
+final class OAuth2Listener implements ListenerInterface
 {
     /**
      * @var TokenStorageInterface
@@ -37,29 +39,40 @@ class OAuth2Listener implements ListenerInterface
     private $authenticationManager;
 
     /**
-     * @var ListenerInterface
+     * @var TokenTypeManager
      */
-    private $listener;
+    private $tokenTypeManager;
+
+    /**
+     * @var AccessTokenHandlerManager
+     */
+    private $accessTokenHandlerManager;
+
+    /**
+     * @var OAuth2ResponseFactoryManager
+     */
+    private $oauth2ResponseFactoryManager;
 
     /**
      * OAuth2Listener constructor.
      *
      * @param TokenStorageInterface          $tokenStorage
      * @param AuthenticationManagerInterface $authenticationManager
-     * @param TokenTypeManager               $token_type_manager
-     * @param AccessTokenHandlerInterface    $accessToken_handler
+     * @param TokenTypeManager               $tokenTypeManager
+     * @param AccessTokenHandlerManager      $accessTokenHandlerManager
+     * @param OAuth2ResponseFactoryManager   $oauth2ResponseFactoryManager
      */
     public function __construct(TokenStorageInterface $tokenStorage,
                                 AuthenticationManagerInterface $authenticationManager,
-                                TokenTypeManager $token_type_manager,
-                                AccessTokenHandlerInterface $accessToken_handler
+                                TokenTypeManager $tokenTypeManager,
+                                AccessTokenHandlerManager $accessTokenHandlerManager,
+                                OAuth2ResponseFactoryManager $oauth2ResponseFactoryManager
     ) {
         $this->tokenStorage = $tokenStorage;
         $this->authenticationManager = $authenticationManager;
-        $this->listener = new Listener(
-            $token_type_manager,
-            $accessToken_handler
-        );
+        $this->tokenTypeManager = $tokenTypeManager;
+        $this->accessTokenHandlerManager = $accessTokenHandlerManager;
+        $this->oauth2ResponseFactoryManager = $oauth2ResponseFactoryManager;
     }
 
     /**
@@ -71,16 +84,22 @@ class OAuth2Listener implements ListenerInterface
         $request = $factory->createRequest($event->getRequest());
 
         try {
-            $accessToken = $this->listener->handle($request);
-        } catch (BaseExceptionInterface $e) {
+            $additionalCredentialValues = [];
+            $accessTokenId = $this->tokenTypeManager->findToken($request, $additionalCredentialValues);
+            if (null === $accessTokenId) {
+                return;
+            }
+        } catch (\Exception $e) {
             return;
         }
 
         try {
-            $token = new OAuth2Token();
-            $token->setToken($accessToken->getToken());
-            $token->setAccessToken($accessToken);
+            $accessToken = $this->accessTokenHandlerManager->find(AccessTokenId::create($accessTokenId));
+            if (null === $accessToken || true === $accessToken->isRevoked()) {
+                throw new AuthenticationException('Invalid access token.');
+            }
 
+            $token = new OAuth2Token($accessToken);
             $result = $this->authenticationManager->authenticate($token);
 
             $this->tokenStorage->setToken($result);
@@ -88,8 +107,10 @@ class OAuth2Listener implements ListenerInterface
             if (null !== $e->getPrevious()) {
                 $e = $e->getPrevious();
             }
-            $response = new Response($e->getMessage(), 401);
-            $event->setResponse($response);
+            $oauth2Response = $this->oauth2ResponseFactoryManager->getResponse(401, ['error' => 'invalid_grant', 'error_description' => $e->getMessage()]);
+            $response = $oauth2Response->getResponse();
+            $factory = new HttpFoundationFactory();
+            $event->setResponse($factory->createResponse($response));
         }
     }
 }

@@ -17,6 +17,7 @@ use Fluent\PhpConfigFileLoader;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\AccessTokenRepositorySource;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\ClientSource;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\Endpoint\EndpointSource;
+use OAuth2Framework\Bundle\Server\DependencyInjection\Source\FirewallSource;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\Grant\GrantSource;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\HttpSource;
 use OAuth2Framework\Bundle\Server\DependencyInjection\Source\KeySet;
@@ -144,6 +145,7 @@ final class OAuth2FrameworkServerExtension extends Extension implements PrependE
     {
         $this->sourceMap = [
             new ClientSource(),
+            new FirewallSource(),
             new ServerNameSource(),
             new AccessTokenRepositorySource(),
             new UserAccountSource(),

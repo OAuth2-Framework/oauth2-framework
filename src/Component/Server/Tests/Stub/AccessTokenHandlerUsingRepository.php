@@ -37,10 +37,8 @@ final class AccessTokenHandlerUsingRepository implements AccessTokenHandlerInter
     /**
      * {@inheritdoc}
      */
-    public function find(string $token)
+    public function find(AccessTokenId $token)
     {
-        $tokenId = AccessTokenId::create($token);
-
-        return $this->accessTokenRepository->find($tokenId);
+        return $this->accessTokenRepository->find($token);
     }
 }

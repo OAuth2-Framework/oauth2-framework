@@ -16,7 +16,7 @@ namespace OAuth2Framework\Bundle\Server\Tests\TestBundle;
 use OAuth2Framework\Bundle\Server\Tests\TestBundle\DependencyInjection\TestExtension;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class SpomkyLabsTestBundle extends Bundle
+final class SpomkyLabsTestBundle extends Bundle
 {
     public function getContainerExtension()
     {

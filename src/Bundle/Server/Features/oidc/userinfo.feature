@@ -12,7 +12,7 @@ Feature: The authorization server has an Userinfo Endpoint
     And the content type of the response is "application/json; charset=UTF-8"
     And the response contains
     """
-    {"name":"John Doe","given_name":"John","middle_name":"Jack","family_name":"Doe","nickname":"Little John","preferred_username":"j-d","profile":"https://profile.doe.fr/john/","picture":"https://www.google.com","website":"https://john.doe.com","gender":"M","birthdate":"1950-01-01","zoneinfo":"Europe/Paris","locale":"en","updated_at":1485431232,"email":"root@localhost.com","email_verified":false,"phone_number":"+0123456789","phone_number_verified":true,"sub":"UgqO4SLcNupYBXzGJ5unB4tIf5Q9Zo5Gau5p2vB2FlfrA6v1MXKOHobo9-vI55Ci"}
+    {"name":"John Doe","given_name":"John","middle_name":"Jack","family_name":"Doe","nickname":"Little John","preferred_username":"j-d","profile":"https://profile.doe.fr/john/","picture":"https://www.google.com","website":"https://john.doe.com","gender":"M","birthdate":"1950-01-01","zoneinfo":"Europe/Paris","locale":"en","updated_at":1485431232,"email":"root@localhost.com","email_verified":false,"phone_number":"+0123456789","phone_number_verified":true,"sub":"UgqO4SLcNupYBXzGJ5unB4tIf5Q9Zo5Gau5p2vB2FlfrA6v1MXKOHobo9-vI55Ci","amr":{"password":"otp"}}
     """
 
   Scenario: A client sends an access token without openid scope in the request header

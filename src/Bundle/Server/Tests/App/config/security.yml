@@ -10,17 +10,11 @@ security:
             id: 'MyUserProvider'
 
     firewalls:
-#        api:
-#            pattern: '^/api'
-#            oauth2: ~
-#            anonymous: true
-#        userinfo:
-#            pattern: '^/userinfo'
-#            oauth2: ~
-#        token:
-#            pattern: '^/token/(get|revocation|introspection)'
-#            security: false
-#
+        api:
+            pattern: '^/api'
+            oauth2:
+                access_token_handler_manager: OAuth2Framework\Component\Server\Security\AccessTokenHandlerManager
+
         main:
             pattern: '^/'
             anonymous: ~

@@ -15,25 +15,9 @@ namespace OAuth2Framework\Bundle\Server\Annotation\Checker;
 
 use OAuth2Framework\Bundle\Server\Annotation\OAuth2;
 use OAuth2Framework\Bundle\Server\Security\Authentication\Token\OAuth2Token;
-use OAuth2Framework\Component\Server\Model\Scope\ScopeRepositoryInterface;
 
 final class ScopeChecker implements CheckerInterface
 {
-    /**
-     * @var ScopeRepositoryInterface
-     */
-    private $scopeRepository;
-
-    /**
-     * ScopeChecker constructor.
-     *
-     * @param ScopeRepositoryInterface $scopeRepository
-     */
-    public function __construct(ScopeRepositoryInterface $scopeRepository)
-    {
-        $this->scopeRepository = $scopeRepository;
-    }
-
     /**
      * {@inheritdoc}
      */

@@ -81,6 +81,15 @@ default:
                 - 'OAuth2Framework\Bundle\Server\Tests\Context\ResponseContext'
                 - 'OAuth2Framework\Bundle\Server\Tests\Context\IntrospectionContext'
             bundle: 'OAuth2FrameworkServerBundle'
+        api:
+            paths:
+                - '%paths.base%/Features/api'
+            contexts:
+                - 'Behat\MinkExtension\Context\MinkContext'
+                - 'OAuth2Framework\Bundle\Server\Tests\Context\FixturesContext'
+                - 'OAuth2Framework\Bundle\Server\Tests\Context\ResponseContext'
+                - 'OAuth2Framework\Bundle\Server\Tests\Context\ApiContext'
+            bundle: 'OAuth2FrameworkServerBundle'
         revocation:
             paths:
                 - '%paths.base%/Features/revocation'

@@ -242,6 +242,9 @@ final class FixturesContext implements Context
                 $accessTokenInformation['refresh_token'],
                 $accessTokenInformation['resource_server_id']
             );
+            if ($accessTokenInformation['marked_as_revoked']) {
+                $accessToken = $accessToken->markAsRevoked();
+            }
             $manager->save($accessToken);
         }
     }
@@ -262,6 +265,7 @@ final class FixturesContext implements Context
                 'expires_at' => new \DateTimeImmutable('now +3600 seconds'),
                 'refresh_token' => null,
                 'resource_server_id' => ResourceServerId::create('ResourceServer1'),
+                'marked_as_revoked' => false,
             ],
             [
                 'id' => AccessTokenId::create('ACCESS_TOKEN_#2'),
@@ -273,6 +277,7 @@ final class FixturesContext implements Context
                 'expires_at' => new \DateTimeImmutable('now +3600 seconds'),
                 'refresh_token' => null,
                 'resource_server_id' => null,
+                'marked_as_revoked' => false,
             ],
             [
                 'id' => AccessTokenId::create('VALID_ACCESS_TOKEN_FOR_USERINFO'),
@@ -284,6 +289,7 @@ final class FixturesContext implements Context
                 'expires_at' => new \DateTimeImmutable('now +3600 seconds'),
                 'refresh_token' => null,
                 'resource_server_id' => null,
+                'marked_as_revoked' => false,
             ],
             [
                 'id' => AccessTokenId::create('VALID_ACCESS_TOKEN_FOR_SIGNED_USERINFO'),
@@ -295,6 +301,7 @@ final class FixturesContext implements Context
                 'expires_at' => new \DateTimeImmutable('now +3600 seconds'),
                 'refresh_token' => null,
                 'resource_server_id' => null,
+                'marked_as_revoked' => false,
             ],
             [
                 'id' => AccessTokenId::create('INVALID_ACCESS_TOKEN_FOR_USERINFO'),
@@ -306,6 +313,7 @@ final class FixturesContext implements Context
                 'expires_at' => new \DateTimeImmutable('now +3600 seconds'),
                 'refresh_token' => null,
                 'resource_server_id' => null,
+                'marked_as_revoked' => false,
             ],
             [
                 'id' => AccessTokenId::create('ACCESS_TOKEN_ISSUED_THROUGH_TOKEN_ENDPOINT'),
@@ -317,6 +325,55 @@ final class FixturesContext implements Context
                 'expires_at' => new \DateTimeImmutable('now +3600 seconds'),
                 'refresh_token' => null,
                 'resource_server_id' => null,
+                'marked_as_revoked' => false,
+            ],
+            [
+                'id' => AccessTokenId::create('ACCESS_TOKEN_FOR_API'),
+                'resource_owner_id' => UserAccountId::create('john.1'),
+                'client_id' => ClientId::create('client1'),
+                'parameters' => DataBag::createFromArray(['token_type' => 'Bearer']),
+                'metadatas' => DataBag::createFromArray([]),
+                'scope' => [],
+                'expires_at' => new \DateTimeImmutable('now +3600 seconds'),
+                'refresh_token' => null,
+                'resource_server_id' => ResourceServerId::create('ResourceServer1'),
+                'marked_as_revoked' => false,
+            ],
+            [
+                'id' => AccessTokenId::create('ACCESS_TOKEN_FOR_API_WITH_SUFFICIENT_SCOPE'),
+                'resource_owner_id' => UserAccountId::create('john.1'),
+                'client_id' => ClientId::create('client1'),
+                'parameters' => DataBag::createFromArray(['token_type' => 'Bearer']),
+                'metadatas' => DataBag::createFromArray([]),
+                'scope' => ['openid', 'profile', 'phone'],
+                'expires_at' => new \DateTimeImmutable('now +3600 seconds'),
+                'refresh_token' => null,
+                'resource_server_id' => ResourceServerId::create('ResourceServer1'),
+                'marked_as_revoked' => false,
+            ],
+            [
+                'id' => AccessTokenId::create('ACCESS_TOKEN_FOR_API_EXPIRED'),
+                'resource_owner_id' => UserAccountId::create('john.1'),
+                'client_id' => ClientId::create('client1'),
+                'parameters' => DataBag::createFromArray(['token_type' => 'Bearer']),
+                'metadatas' => DataBag::createFromArray([]),
+                'scope' => [],
+                'expires_at' => new \DateTimeImmutable('now -3600 seconds'),
+                'refresh_token' => null,
+                'resource_server_id' => ResourceServerId::create('ResourceServer1'),
+                'marked_as_revoked' => false,
+            ],
+            [
+                'id' => AccessTokenId::create('ACCESS_TOKEN_FOR_API_MARKED_AS_REVOKED'),
+                'resource_owner_id' => UserAccountId::create('john.1'),
+                'client_id' => ClientId::create('client1'),
+                'parameters' => DataBag::createFromArray(['token_type' => 'Bearer']),
+                'metadatas' => DataBag::createFromArray([]),
+                'scope' => [],
+                'expires_at' => new \DateTimeImmutable('now +3600 seconds'),
+                'refresh_token' => null,
+                'resource_server_id' => ResourceServerId::create('ResourceServer1'),
+                'marked_as_revoked' => true,
             ],
         ];
     }

@@ -62,9 +62,6 @@ final class ResponseContext implements Context
      */
     public function theResponseCodeIs($code)
     {
-        if (500 === $this->minkContext->getSession()->getStatusCode()) {
-            dump(substr($this->minkContext->getSession()->getPage()->getContent(), 0, 5000));
-        }
         Assertion::eq((int) $code, $this->minkContext->getSession()->getStatusCode());
     }
 

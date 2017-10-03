@@ -31,12 +31,12 @@ final class OAuth2
     /**
      * @var null|string
      */
-    private $clientPublicId = null;
+    private $clientId = null;
 
     /**
      * @var null|string
      */
-    private $resourceOwnerPublicId = null;
+    private $resourceOwnerId = null;
 
     /**
      * @param array $data an array of key/value parameters
@@ -51,7 +51,7 @@ final class OAuth2
         }
 
         foreach ($data as $key => $value) {
-            $method = 'set'.str_replace('_', '', $key);
+            $method = 'set'.str_replace('_', '', ucwords($key, '_'));
             if (!method_exists($this, $method)) {
                 throw new \BadMethodCallException(sprintf("Unknown property '%s' on annotation '%s'.", $key, get_class($this)));
             }
@@ -60,37 +60,37 @@ final class OAuth2
     }
 
     /**
-     * @param string $clientPublicId
+     * @param string $clientId
      */
-    protected function setClientPublicId(string $clientPublicId)
+    protected function setClientId(string $clientId)
     {
-        Assertion::string($clientPublicId, 'The client public ID should be a string.');
-        $this->clientPublicId = $clientPublicId;
+        Assertion::string($clientId, 'The client public ID should be a string.');
+        $this->clientId = $clientId;
     }
 
     /**
      * @return null|string
      */
-    public function getClientPublicId(): ?string
+    public function getClientId(): ?string
     {
-        return $this->clientPublicId;
+        return $this->clientId;
     }
 
     /**
-     * @param string $resourceOwnerPublicId
+     * @param string $resourceOwnerId
      */
-    protected function setResourceOwnerPublicId(string $resourceOwnerPublicId)
+    protected function setResourceOwnerId(string $resourceOwnerId)
     {
-        Assertion::string($resourceOwnerPublicId, 'The resource owner public ID should be a string.');
-        $this->resourceOwnerPublicId = $resourceOwnerPublicId;
+        Assertion::string($resourceOwnerId, 'The resource owner public ID should be a string.');
+        $this->resourceOwnerId = $resourceOwnerId;
     }
 
     /**
      * @return null|string
      */
-    public function getResourceOwnerPublicId(): ?string
+    public function getResourceOwnerId(): ?string
     {
-        return $this->resourceOwnerPublicId;
+        return $this->resourceOwnerId;
     }
 
     /**

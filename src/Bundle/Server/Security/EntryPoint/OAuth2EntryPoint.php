@@ -13,29 +13,35 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Server\Security\EntryPoint;
 
-use OAuth2Framework\Component\Server\TokenType\TokenTypeManager;
-use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
+use Http\Message\MessageFactory;
+use OAuth2Framework\Bundle\Server\Response\AuthenticateResponseFactory;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface;
-use Zend\Diactoros\Response;
 
-class OAuth2EntryPoint implements AuthenticationEntryPointInterface
+final class OAuth2EntryPoint implements AuthenticationEntryPointInterface
 {
     /**
-     * @var AuthenticationEntryPointInterface
+     * @var MessageFactory
      */
-    private $entry_point;
+    private $messageFactory;
+
+    /**
+     * @var AuthenticateResponseFactory
+     */
+    private $authenticateResponseFactory;
 
     /**
      * OAuth2EntryPoint constructor.
      *
-     * @param TokenTypeManager $token_type_manager
+     * @param MessageFactory              $messageFactory
+     * @param AuthenticateResponseFactory $authenticateResponseFactory
      */
-    public function __construct(TokenTypeManager $token_type_manager)
+    public function __construct(MessageFactory $messageFactory, AuthenticateResponseFactory $authenticateResponseFactory)
     {
-        $this->entry_point = new EntryPoint($token_type_manager);
+        $this->messageFactory = $messageFactory;
+        $this->authenticateResponseFactory = $authenticateResponseFactory;
     }
 
     /**
@@ -43,15 +49,14 @@ class OAuth2EntryPoint implements AuthenticationEntryPointInterface
      */
     public function start(Request $request, AuthenticationException $authException = null)
     {
-        $factory = new DiactorosFactory();
-        $request = $factory->createRequest($request);
-        $response = new Response();
-
-        $this->entry_point->start($request, $response);
-
+        $response = $this->messageFactory->createResponse();
         $factory = new HttpFoundationFactory();
-        $response = $factory->createResponse($response);
 
-        return $response;
+        $oauth2Response = $this->authenticateResponseFactory->createResponse(
+            ['error' => 'invalid_grant', 'error_description' => 'Access token is missing.'],
+            $response
+        );
+
+        return $factory->createResponse($oauth2Response->getResponse());
     }
 }
