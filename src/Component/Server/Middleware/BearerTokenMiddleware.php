@@ -49,7 +49,7 @@ final class BearerTokenMiddleware implements MiddlewareInterface
     /**
      * {@inheritdoc}
      */
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $requestHandler)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $additional_credential_values = [];
         $token = $this->bearerToken->findToken($request, $additional_credential_values);
@@ -61,6 +61,6 @@ final class BearerTokenMiddleware implements MiddlewareInterface
             $request = $request->withAttribute('access_token', $accessToken);
         }
 
-        return $requestHandler->handle($request);
+        return $handler->handle($request);
     }
 }

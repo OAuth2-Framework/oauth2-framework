@@ -41,7 +41,7 @@ final class ClientConfigurationMiddleware implements MiddlewareInterface
     /**
      * {@inheritdoc}
      */
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $requestHandler)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $routeParameters = $request->getAttribute('_route_params');
         if (!is_array($routeParameters) || !array_key_exists('client_id', $routeParameters) || null === $client = $this->clientRepository->find(ClientId::create($routeParameters['client_id']))) {
@@ -49,6 +49,6 @@ final class ClientConfigurationMiddleware implements MiddlewareInterface
         }
         $request = $request->withAttribute('client', $client);
 
-        return $requestHandler->handle($request);
+        return $handler->handle($request);
     }
 }

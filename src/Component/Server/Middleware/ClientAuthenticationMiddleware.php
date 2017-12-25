@@ -55,7 +55,7 @@ final class ClientAuthenticationMiddleware implements MiddlewareInterface
     /**
      * {@inheritdoc}
      */
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $requestHandler)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $clientId = $this->tokenEndpointAuthMethodManager->findClientInformationInTheRequest($request, $authentication_method, $client_credentials);
         $client = null;
@@ -78,6 +78,6 @@ final class ClientAuthenticationMiddleware implements MiddlewareInterface
             $request = $request->withAttribute('client', $client);
         }
 
-        return $requestHandler->handle($request);
+        return $handler->handle($request);
     }
 }

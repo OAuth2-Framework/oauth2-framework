@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\Middleware;
 
-use Assert\Assertion;
+
 use Interop\Http\Server\RequestHandlerInterface;
 use Interop\Http\Server\MiddlewareInterface;
 use OAuth2Framework\Component\Server\Model\InitialAccessToken\InitialAccessTokenId;
@@ -51,7 +51,7 @@ final class InitialAccessTokenMiddleware implements MiddlewareInterface
     /**
      * {@inheritdoc}
      */
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $requestHandler): ResponseInterface
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface: ResponseInterface
     {
         try {
             $values = [];
@@ -68,6 +68,6 @@ final class InitialAccessTokenMiddleware implements MiddlewareInterface
             throw new OAuth2Exception(400, ['error' => OAuth2ResponseFactoryManager::ERROR_INVALID_REQUEST, 'error_description' => $e->getMessage()]);
         }
 
-        return $requestHandler->handle($request);
+        return $handler->handle($request);
     }
 }

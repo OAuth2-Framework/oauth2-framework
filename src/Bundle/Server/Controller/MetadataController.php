@@ -54,8 +54,8 @@ class MetadataController implements MiddlewareInterface
     /**
      * {@inheritdoc}
      */
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $requestHandler)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        return $this->metadataEndpoint->process($request, $requestHandler);
+        return $this->metadataEndpoint->process($request, $handler);
     }
 }

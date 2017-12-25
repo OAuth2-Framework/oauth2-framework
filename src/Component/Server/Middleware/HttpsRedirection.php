@@ -38,7 +38,7 @@ final class HttpsRedirection implements MiddlewareInterface
     /**
      * {@inheritdoc}
      */
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $requestHandler)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         if (!$this->isRequestSecured($request)) {
             $response = $this->messageFactory->createResponse(302);
@@ -49,7 +49,7 @@ final class HttpsRedirection implements MiddlewareInterface
             return $response;
         }
 
-        return $requestHandler->handle($request);
+        return $handler->handle($request);
     }
 
     /**

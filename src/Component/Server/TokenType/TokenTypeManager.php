@@ -13,13 +13,12 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\TokenType;
 
-use Assert\Assertion;
 use Psr\Http\Message\ServerRequestInterface;
 
 final class TokenTypeManager
 {
     /**
-     * @var TokenTypeInterface[]
+     * @var TokenType[]
      */
     private $tokenTypes = [];
 
@@ -29,12 +28,12 @@ final class TokenTypeManager
     private $defaultTokenType = null;
 
     /**
-     * @param TokenTypeInterface $tokenType
+     * @param TokenType $tokenType
      * @param bool               $default
      *
      * @return TokenTypeManager
      */
-    public function add(TokenTypeInterface $tokenType, bool $default = false): TokenTypeManager
+    public function add(TokenType $tokenType, bool $default = false): TokenTypeManager
     {
         $this->tokenTypes[$tokenType->name()] = $tokenType;
         if (null === $this->defaultTokenType || true === $default) {
@@ -57,17 +56,19 @@ final class TokenTypeManager
     /**
      * @param string $tokenTypeName
      *
-     * @return TokenTypeInterface
+     * @return TokenType
      */
-    public function get(string $tokenTypeName): TokenTypeInterface
+    public function get(string $tokenTypeName): TokenType
     {
-        Assertion::true($this->has($tokenTypeName), sprintf('Unsupported token type \'%s\'.', $tokenTypeName));
+        if (!$this->has($tokenTypeName)) {
+            throw new \InvalidArgumentException(sprintf('Unsupported token type "%s".', $tokenTypeName));
+        }
 
         return $this->tokenTypes[$tokenTypeName];
     }
 
     /**
-     * @return TokenTypeInterface[]
+     * @return TokenType[]
      */
     public function all(): array
     {
@@ -75,9 +76,9 @@ final class TokenTypeManager
     }
 
     /**
-     * @return TokenTypeInterface
+     * @return TokenType
      */
-    public function getDefault(): TokenTypeInterface
+    public function getDefault(): TokenType
     {
         return $this->get($this->defaultTokenType);
     }
@@ -85,11 +86,11 @@ final class TokenTypeManager
     /**
      * @param ServerRequestInterface  $request
      * @param array                   $additionalCredentialValues
-     * @param TokenTypeInterface|null $type
+     * @param TokenType|null $type
      *
      * @return string|null
      */
-    public function findToken(ServerRequestInterface $request, array &$additionalCredentialValues, TokenTypeInterface &$type = null)
+    public function findToken(ServerRequestInterface $request, array &$additionalCredentialValues, ?TokenType &$type = null): ?string
     {
         foreach ($this->all() as $tmp_type) {
             $tmpAdditionalCredentialValues = [];
@@ -102,6 +103,8 @@ final class TokenTypeManager
                 return $token;
             }
         }
+
+        return null;
     }
 
     /**
@@ -120,12 +123,12 @@ final class TokenTypeManager
     }
 
     /**
-     * @param \OAuth2Framework\Component\Server\TokenType\TokenTypeInterface $type
-     * @param array                                                          $additionalAuthenticationParameters
+     * @param TokenType $type
+     * @param array     $additionalAuthenticationParameters
      *
      * @return string
      */
-    private function computeScheme(TokenTypeInterface $type, array $additionalAuthenticationParameters): string
+    private function computeScheme(TokenType $type, array $additionalAuthenticationParameters): string
     {
         $scheme = trim($type->getScheme());
         if (0 === count($additionalAuthenticationParameters)) {
@@ -153,6 +156,7 @@ final class TokenTypeManager
         $add_comma = false === $position ? false : true;
 
         foreach ($parameters as $key => $value) {
+            $value = is_string($value) ? sprintf('"%s"', $value) : $value;
             if (false === $add_comma) {
                 $add_comma = true;
                 $scheme = sprintf('%s %s=%s', $scheme, $key, $value);

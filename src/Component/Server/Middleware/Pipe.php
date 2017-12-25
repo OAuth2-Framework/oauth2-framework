@@ -82,10 +82,10 @@ final class Pipe implements MiddlewareInterface
     /**
      * {@inheritdoc}
      */
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $requestHandler)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $this->middlewares[] = new RequestHandler(function (ServerRequestInterface $request) use ($requestHandler) {
-            return $requestHandler->handle($request);
+        $this->middlewares[] = new RequestHandler(function (ServerRequestInterface $request) use ($handler) {
+            return $handler->handle($request);
         });
 
         $response = $this->dispatch($request);

@@ -15,10 +15,10 @@ namespace OAuth2Framework\Component\Server\Middleware;
 
 use Interop\Http\Server\RequestHandlerInterface;
 use Interop\Http\Server\MiddlewareInterface;
-use OAuth2Framework\Component\Server\Model\AccessToken\AccessTokenId;
-use OAuth2Framework\Component\Server\Model\AccessToken\AccessTokenRepositoryInterface;
-use OAuth2Framework\Component\Server\Response\OAuth2Exception;
-use OAuth2Framework\Component\Server\Response\OAuth2ResponseFactoryManager;
+use OAuth2Framework\Component\Server\Core\AccessToken\AccessTokenId;
+use OAuth2Framework\Component\Server\Core\AccessToken\AccessTokenRepository;
+use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
+use OAuth2Framework\Component\Server\Core\Response\OAuth2ResponseFactoryManager;
 use OAuth2Framework\Component\Server\TokenType\TokenTypeManager;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -30,7 +30,7 @@ final class AccessTokenMiddleware implements MiddlewareInterface
     private $tokenTypeManager;
 
     /**
-     * @var AccessTokenRepositoryInterface
+     * @var AccessTokenRepository
      */
     private $accessTokenRepository;
 
@@ -38,9 +38,9 @@ final class AccessTokenMiddleware implements MiddlewareInterface
      * AccessTokenMiddleware constructor.
      *
      * @param TokenTypeManager               $tokenTypeManager
-     * @param AccessTokenRepositoryInterface $accessTokenRepository
+     * @param AccessTokenRepository $accessTokenRepository
      */
-    public function __construct(TokenTypeManager $tokenTypeManager, AccessTokenRepositoryInterface $accessTokenRepository)
+    public function __construct(TokenTypeManager $tokenTypeManager, AccessTokenRepository $accessTokenRepository)
     {
         $this->tokenTypeManager = $tokenTypeManager;
         $this->accessTokenRepository = $accessTokenRepository;
@@ -49,7 +49,7 @@ final class AccessTokenMiddleware implements MiddlewareInterface
     /**
      * {@inheritdoc}
      */
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $requestHandler)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $additional_credential_values = [];
         $token = $this->tokenTypeManager->findToken($request, $additional_credential_values, $type);
@@ -62,6 +62,6 @@ final class AccessTokenMiddleware implements MiddlewareInterface
             $request = $request->withAttribute('access_token', $accessToken);
         }
 
-        return $requestHandler->handle($request);
+        return $handler->handle($request);
     }
 }

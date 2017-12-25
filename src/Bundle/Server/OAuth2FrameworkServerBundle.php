@@ -41,21 +41,10 @@ final class OAuth2FrameworkServerBundle extends Bundle
     }
 
     /**
-     * Lists the required bundles.
-     *
-     * @return string[]
-     */
-    protected function getRequiredBundles()
-    {
-        return ['JoseFrameworkBundle', 'SignatureBundle', 'EncryptionBundle', 'SensioFrameworkExtraBundle', 'SimpleBusCommandBusBundle', 'SimpleBusEventBusBundle'];
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function build(ContainerBuilder $container)
     {
-        $this->checkRequiredBundles($container);
         foreach ($this->getCompilerPasses() as $pass) {
             $container->addCompilerPass($pass);
         }
@@ -63,27 +52,6 @@ final class OAuth2FrameworkServerBundle extends Bundle
         /** @var SecurityExtension $extension */
         $extension = $container->getExtension('security');
         $extension->addSecurityListenerFactory(new OAuth2SecurityFactory());
-    }
-
-    /**
-     * Checks if the required bundles are enabled.
-     *
-     * @param ContainerBuilder $container
-     *
-     * @throws \LogicException
-     */
-    private function checkRequiredBundles(ContainerBuilder $container)
-    {
-        $requiredBundles = $this->getRequiredBundles();
-        if (empty($requiredBundles)) {
-            return;
-        }
-        $enabledBundles = $container->getParameter('kernel.bundles');
-        $disabledBundles = array_diff($requiredBundles, array_keys($enabledBundles));
-
-        if (!empty($disabledBundles)) {
-            throw new \LogicException(sprintf('%s requires the following bundle(s): %s', $this->getName(), implode(', ', $disabledBundles)));
-        }
     }
 
     /**

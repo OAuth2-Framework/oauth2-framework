@@ -39,10 +39,10 @@ final class OAuth2ResponseMiddleware implements MiddlewareInterface
     /**
      * {@inheritdoc}
      */
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $requestHandler)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         try {
-            return $requestHandler->handle($request);
+            return $handler->handle($request);
         } catch (OAuth2Exception $e) {
             $oauth2Response = $this->auth2messageFactoryManager->getResponse($e->getCode(), $e->getData());
 

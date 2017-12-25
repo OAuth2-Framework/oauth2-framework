@@ -18,14 +18,14 @@ use OAuth2Framework\Component\Server\Model\Event\Event;
 use OAuth2Framework\Component\Server\Model\Event\EventStoreInterface;
 use OAuth2Framework\Component\Server\Model\PreConfiguredAuthorization\PreConfiguredAuthorization;
 use OAuth2Framework\Component\Server\Model\PreConfiguredAuthorization\PreConfiguredAuthorizationId;
-use OAuth2Framework\Component\Server\Model\PreConfiguredAuthorization\PreConfiguredAuthorizationRepositoryInterface;
+use OAuth2Framework\Component\Server\Model\PreConfiguredAuthorization\PreConfiguredAuthorizationRepository;
 use OAuth2Framework\Component\Server\Model\ResourceOwner\ResourceOwnerId;
 use OAuth2Framework\Component\Server\Model\ResourceServer\ResourceServerId;
 use OAuth2Framework\Component\Server\Model\UserAccount\UserAccountId;
 use SimpleBus\Message\Recorder\RecordsMessages;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 
-final class PreConfiguredAuthorizationRepository implements PreConfiguredAuthorizationRepositoryInterface
+final class PreConfiguredAuthorizationRepository implements PreConfiguredAuthorizationRepository
 {
     /**
      * @var AdapterInterface

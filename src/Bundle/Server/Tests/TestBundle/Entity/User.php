@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Server\Tests\TestBundle\Entity;
 
-use Assert\Assertion;
+
 use OAuth2Framework\Component\Server\Model\ResourceOwner\ResourceOwnerId;
 use OAuth2Framework\Component\Server\Model\UserAccount\UserAccountId;
 use OAuth2Framework\Component\Server\Model\UserAccount\UserAccountInterface;

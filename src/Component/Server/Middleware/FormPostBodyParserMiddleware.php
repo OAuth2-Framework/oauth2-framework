@@ -22,7 +22,7 @@ final class FormPostBodyParserMiddleware implements MiddlewareInterface
     /**
      * {@inheritdoc}
      */
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $requestHandler)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $headers = $request->getHeader('content-type');
         foreach ($headers as $header) {
@@ -35,6 +35,6 @@ final class FormPostBodyParserMiddleware implements MiddlewareInterface
             }
         }
 
-        return $requestHandler->handle($request);
+        return $handler->handle($request);
     }
 }

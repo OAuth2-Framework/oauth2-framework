@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Server\Annotation;
 
-use Assert\Assertion;
+
 
 /**
  * Annotation class for @OAuth2().

@@ -45,12 +45,12 @@ final class TokenTypeMiddleware implements MiddlewareInterface
     /**
      * {@inheritdoc}
      */
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $requestHandler)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $tokenType = $this->findTokenType($request);
         $request = $request->withAttribute('token_type', $tokenType);
 
-        return $requestHandler->handle($request);
+        return $handler->handle($request);
     }
 
     /**

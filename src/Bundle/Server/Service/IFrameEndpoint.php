@@ -60,7 +60,7 @@ final class IFrameEndpoint implements MiddlewareInterface
     /**
      * {@inheritdoc}
      */
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $requestHandler)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $content = $this->templateEngine->render($this->template, ['storage_name' => $this->storageName]);
         $response = $this->messageFactory->createResponse();

@@ -48,7 +48,7 @@ final class ResourceServerAuthenticationMiddleware implements MiddlewareInterfac
     /**
      * {@inheritdoc}
      */
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $requestHandler)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $resourceServerId = $this->tokenIntrospectionEndpointAuthMethodManager->findResourceServerInformationInTheRequest($request, $authenticationMethod, $resourceServerCredentials);
         if (null === $resourceServerId) {
@@ -62,6 +62,6 @@ final class ResourceServerAuthenticationMiddleware implements MiddlewareInterfac
 
         $request = $request->withAttribute('resource_server', $resourceServer);
 
-        return $requestHandler->handle($request);
+        return $handler->handle($request);
     }
 }

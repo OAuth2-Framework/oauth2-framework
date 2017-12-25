@@ -24,7 +24,7 @@ final class HttpsError implements MiddlewareInterface
     /**
      * {@inheritdoc}
      */
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $requestHandler)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         if (!$this->isRequestSecured($request)) {
             throw new OAuth2Exception(
@@ -36,7 +36,7 @@ final class HttpsError implements MiddlewareInterface
             );
         }
 
-        return $requestHandler->handle($request);
+        return $handler->handle($request);
     }
 
     /**
