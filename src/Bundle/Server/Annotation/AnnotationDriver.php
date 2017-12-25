@@ -71,7 +71,7 @@ final class AnnotationDriver
      *
      * @return AnnotationDriver
      */
-    public function addChecker(CheckerInterface $checker): AnnotationDriver
+    public function addChecker(CheckerInterface $checker): self
     {
         $this->checkers[] = $checker;
 

@@ -49,9 +49,9 @@ final class IdTokenBuilderFactory
     }
 
     /**
-     * @param Client               $client
+     * @param Client      $client
      * @param UserAccount $userAccount
-     * @param string               $redirectUri
+     * @param string      $redirectUri
      *
      * @return IdTokenBuilder
      */

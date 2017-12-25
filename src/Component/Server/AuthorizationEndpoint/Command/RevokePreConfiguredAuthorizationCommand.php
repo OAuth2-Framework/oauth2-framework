@@ -66,7 +66,7 @@ final class RevokePreConfiguredAuthorizationCommand
      *
      * @return RevokePreConfiguredAuthorizationCommand
      */
-    public static function create(ClientId $clientId, UserAccountId $userAccountId, array $scopes, ?ResourceServerId $resourceServerId, ? DataTransporter $dataTransporter): RevokePreConfiguredAuthorizationCommand
+    public static function create(ClientId $clientId, UserAccountId $userAccountId, array $scopes, ?ResourceServerId $resourceServerId, ? DataTransporter $dataTransporter): self
     {
         return new self($clientId, $userAccountId, $scopes, $resourceServerId, $dataTransporter);
     }

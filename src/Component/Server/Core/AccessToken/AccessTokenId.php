@@ -22,7 +22,7 @@ final class AccessTokenId extends TokenId
      *
      * @return AccessTokenId
      */
-    public static function create(string $value): AccessTokenId
+    public static function create(string $value): self
     {
         return new self($value);
     }

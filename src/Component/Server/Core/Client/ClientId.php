@@ -25,7 +25,7 @@ final class ClientId extends ResourceOwnerId
      *
      * @return ClientId
      */
-    public static function create(string $value): ClientId
+    public static function create(string $value): self
     {
         return new self($value);
     }

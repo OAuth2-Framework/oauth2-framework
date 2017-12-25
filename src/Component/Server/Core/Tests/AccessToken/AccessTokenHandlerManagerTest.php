@@ -22,7 +22,6 @@ use OAuth2Framework\Component\Server\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Server\Core\ResourceServer\ResourceServerId;
 use OAuth2Framework\Component\Server\Core\UserAccount\UserAccountId;
 use PHPUnit\Framework\TestCase;
-use Prophecy\Argument;
 
 /**
  * @group AccessTokenHandlerManager

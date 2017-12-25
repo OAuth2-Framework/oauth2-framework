@@ -51,8 +51,8 @@ final class ClientConfigurationEndpointTest extends TestCase
 
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getMethod()->willReturn('GET');
-        $request-> getAttribute('client')->willReturn($client);
-        $request-> getHeader('AUTHORIZATION')->willReturn(['Bearer REGISTRATION_TOKEN']);
+        $request->getAttribute('client')->willReturn($client);
+        $request->getHeader('AUTHORIZATION')->willReturn(['Bearer REGISTRATION_TOKEN']);
 
         $handler = $this->prophesize(RequestHandlerInterface::class);
         $messageBus = $this->prophesize(MessageBus::class);
@@ -78,16 +78,16 @@ final class ClientConfigurationEndpointTest extends TestCase
         );
         $updatedClient = $client->withParameters(DataBag::create([
             'registration_access_token' => 'NEW_REGISTRATION_TOKEN',
-            'foo'                       => 'bar',
+            'foo' => 'bar',
         ]));
         $clientRepository = $this->prophesize(ClientRepository::class);
         $clientRepository->find(Argument::type(ClientId::class))->willReturn($updatedClient);
 
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getMethod()->willReturn('PUT');
-        $request-> getAttribute('client')->willReturn($client);
-        $request-> getParsedBody()->willReturn([]);
-        $request-> getHeader('AUTHORIZATION')->willReturn(['Bearer REGISTRATION_TOKEN']);
+        $request->getAttribute('client')->willReturn($client);
+        $request->getParsedBody()->willReturn([]);
+        $request->getHeader('AUTHORIZATION')->willReturn(['Bearer REGISTRATION_TOKEN']);
 
         $handler = $this->prophesize(RequestHandlerInterface::class);
         $messageBus = $this->prophesize(MessageBus::class);
@@ -116,8 +116,8 @@ final class ClientConfigurationEndpointTest extends TestCase
 
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getMethod()->willReturn('DELETE');
-        $request-> getAttribute('client')->willReturn($client);
-        $request-> getHeader('AUTHORIZATION')->willReturn(['Bearer REGISTRATION_TOKEN']);
+        $request->getAttribute('client')->willReturn($client);
+        $request->getHeader('AUTHORIZATION')->willReturn(['Bearer REGISTRATION_TOKEN']);
 
         $handler = $this->prophesize(RequestHandlerInterface::class);
         $messageBus = $this->prophesize(MessageBus::class);

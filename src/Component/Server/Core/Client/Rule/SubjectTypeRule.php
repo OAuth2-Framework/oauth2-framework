@@ -15,7 +15,6 @@ namespace OAuth2Framework\Component\Server\Core\Client\Rule;
 
 use OAuth2Framework\Component\Server\Core\Client\ClientId;
 use OAuth2Framework\Component\Server\Core\DataBag\DataBag;
-
 use OAuth2Framework\Component\Server\OpenIdConnect\UserInfo\UserInfo;
 
 final class SubjectTypeRule implements Rule

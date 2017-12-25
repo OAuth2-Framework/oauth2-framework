@@ -29,11 +29,11 @@ final class TokenTypeManager
 
     /**
      * @param TokenType $tokenType
-     * @param bool               $default
+     * @param bool      $default
      *
      * @return TokenTypeManager
      */
-    public function add(TokenType $tokenType, bool $default = false): TokenTypeManager
+    public function add(TokenType $tokenType, bool $default = false): self
     {
         $this->tokenTypes[$tokenType->name()] = $tokenType;
         if (null === $this->defaultTokenType || true === $default) {
@@ -84,9 +84,9 @@ final class TokenTypeManager
     }
 
     /**
-     * @param ServerRequestInterface  $request
-     * @param array                   $additionalCredentialValues
-     * @param TokenType|null $type
+     * @param ServerRequestInterface $request
+     * @param array                  $additionalCredentialValues
+     * @param TokenType|null         $type
      *
      * @return string|null
      */

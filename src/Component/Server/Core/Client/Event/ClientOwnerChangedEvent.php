@@ -61,7 +61,7 @@ final class ClientOwnerChangedEvent extends Event
      *
      * @return ClientOwnerChangedEvent
      */
-    public static function create(ClientId $clientId, UserAccountId $newOwnerId): ClientOwnerChangedEvent
+    public static function create(ClientId $clientId, UserAccountId $newOwnerId): self
     {
         return new self($clientId, $newOwnerId, null, null);
     }

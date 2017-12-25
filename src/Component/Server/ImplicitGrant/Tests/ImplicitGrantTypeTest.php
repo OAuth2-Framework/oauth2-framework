@@ -73,7 +73,6 @@ final class ImplicitGrantTypeTest extends TestCase
         $request->getParsedBody()->willReturn(['implicit' => 'REFRESH_TOKEN_ID']);
         $grantTypeData = GrantTypeData::create($client);
 
-
         try {
             $this->getGrantType()->prepareTokenResponse($request->reveal(), $grantTypeData);
         } catch (OAuth2Exception $e) {
@@ -99,7 +98,7 @@ final class ImplicitGrantTypeTest extends TestCase
         $client->eraseMessages();
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getParsedBody()->willReturn(['implicit' => 'REFRESH_TOKEN_ID']);
-        $request->getAttribute("client")->willReturn($client);
+        $request->getAttribute('client')->willReturn($client);
         $grantTypeData = GrantTypeData::create($client);
 
         try {

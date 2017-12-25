@@ -19,7 +19,6 @@ use OAuth2Framework\Component\Server\Core\DomainConverter;
 use OAuth2Framework\Component\Server\Core\DomainUriLoader;
 use OAuth2Framework\Component\Server\Core\UserAccount\UserAccountId;
 use PHPUnit\Framework\TestCase;
-use Prophecy\Argument;
 
 /**
  * @group InitialAccessToken

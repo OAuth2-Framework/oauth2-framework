@@ -112,7 +112,7 @@ final class AuthorizationCodeGrantTypeTest extends TestCase
         $client->eraseMessages();
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getParsedBody()->willReturn(['code' => 'AUTHORIZATION_CODE_ID', 'redirect_uri' => 'http://localhost:8000/']);
-        $request->getAttribute("client")->willReturn($client);
+        $request->getAttribute('client')->willReturn($client);
         $grantTypeData = GrantTypeData::create($client);
 
         try {
@@ -140,7 +140,7 @@ final class AuthorizationCodeGrantTypeTest extends TestCase
         $client->eraseMessages();
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getParsedBody()->willReturn(['code' => 'AUTHORIZATION_CODE_ID', 'redirect_uri' => 'http://localhost:8000/', 'code_verifier' => 'ABCDEFGH']);
-        $request->getAttribute("client")->willReturn($client);
+        $request->getAttribute('client')->willReturn($client);
         $grantTypeData = GrantTypeData::create($client);
 
         $receivedGrantTypeData = $this->getGrantType()->grant($request->reveal(), $grantTypeData);

@@ -34,7 +34,7 @@ final class QueryResponseMode implements ResponseMode
      * QueryResponseMode constructor.
      *
      * @param UriFactoryInterface $uriFactory
-     * @param ResponseFactory      $responseFactory
+     * @param ResponseFactory     $responseFactory
      */
     public function __construct(UriFactoryInterface $uriFactory, ResponseFactory $responseFactory)
     {

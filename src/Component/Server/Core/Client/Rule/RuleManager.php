@@ -30,7 +30,7 @@ final class RuleManager
      *
      * @return RuleManager
      */
-    public function add(Rule $rule): RuleManager
+    public function add(Rule $rule): self
     {
         $this->rules[] = $rule;
 

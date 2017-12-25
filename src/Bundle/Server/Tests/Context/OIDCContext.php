@@ -22,7 +22,6 @@ namespace OAuth2Framework\Bundle\Server\Tests\Context;
  * of the MIT license.  See the LICENSE file for details.
  */
 
-
 use Behat\Behat\Context\Context;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use Behat\MinkExtension\Context\MinkContext;

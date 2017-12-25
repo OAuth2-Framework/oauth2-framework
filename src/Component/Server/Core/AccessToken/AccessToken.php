@@ -33,7 +33,7 @@ final class AccessToken extends Token
     /**
      * @return AccessToken
      */
-    public static function createEmpty(): AccessToken
+    public static function createEmpty(): self
     {
         return new self();
     }
@@ -91,7 +91,7 @@ final class AccessToken extends Token
     /**
      * @return AccessToken
      */
-    public function markAsRevoked(): AccessToken
+    public function markAsRevoked(): self
     {
         $clone = clone $this;
         $clone->revoked = true;
@@ -159,6 +159,7 @@ final class AccessToken extends Token
         if (!empty($this->getScopes())) {
             $data['scope'] = implode(' ', $this->getScopes());
         }
+
         return $data;
     }
 
@@ -167,7 +168,7 @@ final class AccessToken extends Token
      *
      * @return AccessToken
      */
-    public function apply(Event $event): AccessToken
+    public function apply(Event $event): self
     {
         $map = $this->getEventMap();
         if (!array_key_exists($event->getType(), $map)) {
@@ -197,7 +198,7 @@ final class AccessToken extends Token
      *
      * @return AccessToken
      */
-    protected function applyAccessTokenCreatedEvent(AccessTokenEvent\AccessTokenCreatedEvent $event): AccessToken
+    protected function applyAccessTokenCreatedEvent(AccessTokenEvent\AccessTokenCreatedEvent $event): self
     {
         $clone = clone $this;
         $clone->accessTokenId = $event->getAccessTokenId();
@@ -215,7 +216,7 @@ final class AccessToken extends Token
     /**
      * @return AccessToken
      */
-    protected function applyAccessTokenRevokedEvent(): AccessToken
+    protected function applyAccessTokenRevokedEvent(): self
     {
         $clone = clone $this;
         $clone->revoked = true;

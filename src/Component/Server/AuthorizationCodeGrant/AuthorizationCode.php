@@ -48,7 +48,7 @@ final class AuthorizationCode extends Token
     /**
      * @return AuthorizationCode
      */
-    public static function createEmpty(): AuthorizationCode
+    public static function createEmpty(): self
     {
         return new self();
     }
@@ -62,16 +62,16 @@ final class AuthorizationCode extends Token
     }
 
     /**
-     * @param AuthorizationCodeId         $authorizationCodeId
-     * @param ClientId           $clientId
-     * @param UserAccountId      $userAccountId
-     * @param array              $queryParameters
-     * @param string             $redirectUri
-     * @param \DateTimeImmutable $expiresAt
-     * @param DataBag            $parameters
-     * @param DataBag            $metadatas
-     * @param string[]           $scopes
-     * @param ResourceServerId   $resourceServerId
+     * @param AuthorizationCodeId $authorizationCodeId
+     * @param ClientId            $clientId
+     * @param UserAccountId       $userAccountId
+     * @param array               $queryParameters
+     * @param string              $redirectUri
+     * @param \DateTimeImmutable  $expiresAt
+     * @param DataBag             $parameters
+     * @param DataBag             $metadatas
+     * @param string[]            $scopes
+     * @param ResourceServerId    $resourceServerId
      *
      * @return AuthorizationCode
      */
@@ -128,7 +128,7 @@ final class AuthorizationCode extends Token
     /**
      * @return AuthorizationCode
      */
-    public function markAsUsed(): AuthorizationCode
+    public function markAsUsed(): self
     {
         if (true === $this->used) {
             return $this;
@@ -144,7 +144,7 @@ final class AuthorizationCode extends Token
     /**
      * @return AuthorizationCode
      */
-    public function markAsRevoked(): AuthorizationCode
+    public function markAsRevoked(): self
     {
         $clone = clone $this;
         $clone->revoked = true;
@@ -266,14 +266,14 @@ final class AuthorizationCode extends Token
      *
      * @return AuthorizationCode
      */
-    public function apply(Event $event): AuthorizationCode
+    public function apply(Event $event): self
     {
         $map = $this->getEventMap();
         if (!array_key_exists($event->getType(), $map)) {
             throw new \RuntimeException('Unsupported event.');
         }
         if (null !== $this->authorizationCodeId && $this->authorizationCodeId->getValue() !== $event->getDomainId()->getValue()) {
-            throw new \RuntimeException( 'Event not applicable for this authorization code.');
+            throw new \RuntimeException('Event not applicable for this authorization code.');
         }
         $method = $map[$event->getType()];
 
@@ -297,7 +297,7 @@ final class AuthorizationCode extends Token
      *
      * @return AuthorizationCode
      */
-    protected function applyAuthorizationCodeCreatedEvent(AuthorizationCodeEvent\AuthorizationCodeCreatedEvent $event): AuthorizationCode
+    protected function applyAuthorizationCodeCreatedEvent(AuthorizationCodeEvent\AuthorizationCodeCreatedEvent $event): self
     {
         $clone = clone $this;
         $clone->authorizationCodeId = $event->getAuthorizationCodeId();
@@ -320,7 +320,7 @@ final class AuthorizationCode extends Token
      *
      * @return AuthorizationCode
      */
-    protected function applyAuthorizationCodeMarkedAsUsedEvent(AuthorizationCodeEvent\AuthorizationCodeMarkedAsUsedEvent $event): AuthorizationCode
+    protected function applyAuthorizationCodeMarkedAsUsedEvent(AuthorizationCodeEvent\AuthorizationCodeMarkedAsUsedEvent $event): self
     {
         $clone = clone $this;
         $clone->used = true;
@@ -333,7 +333,7 @@ final class AuthorizationCode extends Token
      *
      * @return AuthorizationCode
      */
-    protected function applyAuthorizationCodeRevokedEvent(AuthorizationCodeEvent\AuthorizationCodeRevokedEvent $event): AuthorizationCode
+    protected function applyAuthorizationCodeRevokedEvent(AuthorizationCodeEvent\AuthorizationCodeRevokedEvent $event): self
     {
         $clone = clone $this;
         $clone->revoked = true;

@@ -46,7 +46,7 @@ final class UpdateClientCommand
      *
      * @return UpdateClientCommand
      */
-    public static function create(ClientId $clientId, DataBag $parameters): UpdateClientCommand
+    public static function create(ClientId $clientId, DataBag $parameters): self
     {
         return new self($clientId, $parameters);
     }

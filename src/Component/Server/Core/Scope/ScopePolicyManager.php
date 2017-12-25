@@ -33,7 +33,7 @@ final class ScopePolicyManager
      *
      * @return ScopePolicyManager
      */
-    public function add(ScopePolicy $scopePolicy, bool $isDefault = false): ScopePolicyManager
+    public function add(ScopePolicy $scopePolicy, bool $isDefault = false): self
     {
         $name = $scopePolicy->name();
         $this->scopePolicies[$name] = $scopePolicy;

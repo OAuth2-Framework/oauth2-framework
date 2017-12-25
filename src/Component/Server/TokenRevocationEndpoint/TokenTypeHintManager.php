@@ -33,7 +33,7 @@ final class TokenTypeHintManager
      *
      * @return TokenTypeHintManager
      */
-    public function add(TokenTypeHint $tokenTypeHint): TokenTypeHintManager
+    public function add(TokenTypeHint $tokenTypeHint): self
     {
         $this->tokenTypeHints[$tokenTypeHint->hint()] = $tokenTypeHint;
 

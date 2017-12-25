@@ -37,7 +37,7 @@ final class AccessTokenMiddleware implements MiddlewareInterface
     /**
      * AccessTokenMiddleware constructor.
      *
-     * @param TokenTypeManager               $tokenTypeManager
+     * @param TokenTypeManager      $tokenTypeManager
      * @param AccessTokenRepository $accessTokenRepository
      */
     public function __construct(TokenTypeManager $tokenTypeManager, AccessTokenRepository $accessTokenRepository)

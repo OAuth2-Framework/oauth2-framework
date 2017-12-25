@@ -45,7 +45,7 @@ final class IdTokenHintDiscovery implements UserAccountDiscovery
     /**
      * IdTokenHintExtension constructor.
      *
-     * @param IdTokenLoader                  $idTokenLoader
+     * @param IdTokenLoader         $idTokenLoader
      * @param UserAccountRepository $userAccountRepository
      */
     public function __construct(IdTokenLoader $idTokenLoader, UserAccountRepository $userAccountRepository)

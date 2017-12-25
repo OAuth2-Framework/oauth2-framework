@@ -13,8 +13,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\Core\DataBag;
 
-
-
 final class DataBag implements \JsonSerializable
 {
     /**
@@ -32,7 +30,7 @@ final class DataBag implements \JsonSerializable
      *
      * @return DataBag
      */
-    public static function create(array $parameters): DataBag
+    public static function create(array $parameters): self
     {
         return new self($parameters);
     }
@@ -68,7 +66,7 @@ final class DataBag implements \JsonSerializable
      *
      * @return DataBag
      */
-    public function with(string $key, $value): DataBag
+    public function with(string $key, $value): self
     {
         $clone = clone $this;
         $clone->parameters[$key] = $value;
@@ -81,7 +79,7 @@ final class DataBag implements \JsonSerializable
      *
      * @return DataBag
      */
-    public function without(string $key): DataBag
+    public function without(string $key): self
     {
         if (!$this->has($key)) {
             return $this;

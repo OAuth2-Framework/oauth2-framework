@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\MetadataEndpoint;
 
-
 use Http\Message\ResponseFactory;
 use Interop\Http\Server\RequestHandlerInterface;
 use Interop\Http\Server\MiddlewareInterface;
@@ -65,7 +64,7 @@ final class MetadataEndpoint implements MiddlewareInterface
 
     /**
      * @param JWSBuilder $jwsBuilder
-     * @param JWK     $signatureKey
+     * @param JWK        $signatureKey
      * @param string     $signatureAlgorithm
      */
     public function enableSignedMetadata(JWSBuilder $jwsBuilder, string $signatureAlgorithm, JWK $signatureKey)

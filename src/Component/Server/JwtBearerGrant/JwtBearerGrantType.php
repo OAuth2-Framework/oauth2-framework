@@ -84,6 +84,7 @@ final class JwtBearerGrantType implements GrantType
 
     /**
      * JWTBearerGrantType constructor.
+     *
      * @param TrustedIssuerManager  $trustedIssuerManager
      * @param JWSSerializerManager  $jwsSerializerManager
      * @param JWSVerifier           $jwsVerifier
@@ -197,6 +198,7 @@ final class JwtBearerGrantType implements GrantType
             if (true === $this->jweDecrypter->decryptUsingKeySet($jwe, $this->keyEncryptionKeySet, 0)) {
                 return $jwe->getPayload();
             }
+
             throw new \InvalidArgumentException('Unable to decrypt the assertion.');
         } catch (\Exception $e) {
             if (true === $this->encryptionRequired) {

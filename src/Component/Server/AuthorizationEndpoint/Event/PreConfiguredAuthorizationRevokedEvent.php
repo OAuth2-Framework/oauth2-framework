@@ -52,7 +52,7 @@ final class PreConfiguredAuthorizationRevokedEvent extends Event
      *
      * @return PreConfiguredAuthorizationRevokedEvent
      */
-    public static function create(PreConfiguredAuthorizationId $preConfiguredAuthorizationId): PreConfiguredAuthorizationRevokedEvent
+    public static function create(PreConfiguredAuthorizationId $preConfiguredAuthorizationId): self
     {
         return new self($preConfiguredAuthorizationId, null, null);
     }

@@ -22,7 +22,7 @@ final class EventId extends Id
      *
      * @return EventId
      */
-    public static function create(string $value): EventId
+    public static function create(string $value): self
     {
         return new self($value);
     }

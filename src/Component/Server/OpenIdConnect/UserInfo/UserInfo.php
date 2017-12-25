@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\OpenIdConnect\UserInfo;
 
-
 use OAuth2Framework\Component\Server\OpenIdConnect\UserInfo\ClaimSource\ClaimSourceManager;
 use OAuth2Framework\Component\Server\OpenIdConnect\UserInfo\Pairwise\PairwiseSubjectIdentifierAlgorithm;
 use OAuth2Framework\Component\Server\OpenIdConnect\UserInfo\ScopeSupport\UserInfoScopeSupportManager;
@@ -68,12 +67,12 @@ final class UserInfo
     }
 
     /**
-     * @param Client               $client
+     * @param Client      $client
      * @param UserAccount $userAccount
-     * @param string               $redirectUri
-     * @param array                $requestClaims
-     * @param string[]             $scopes
-     * @param string|null          $claimsLocales
+     * @param string      $redirectUri
+     * @param array       $requestClaims
+     * @param string[]    $scopes
+     * @param string|null $claimsLocales
      *
      * @return array
      */
@@ -115,8 +114,8 @@ final class UserInfo
 
     /**
      * @param UserAccount $userAccount
-     * @param string|null          $claimsLocales
-     * @param array                $claims
+     * @param string|null $claimsLocales
+     * @param array       $claims
      *
      * @return array
      */
@@ -161,8 +160,8 @@ final class UserInfo
 
     /**
      * @param UserAccount $userAccount
-     * @param string               $claim
-     * @param null|array           $config
+     * @param string      $claim
+     * @param null|array  $config
      *
      * @return null|mixed
      */

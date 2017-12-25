@@ -78,7 +78,7 @@ final class PreConfiguredAuthorizationCreatedEvent extends Event
      *
      * @return PreConfiguredAuthorizationCreatedEvent
      */
-    public static function create(PreConfiguredAuthorizationId $preConfiguredAuthorizationId, ClientId $clientId, UserAccountId $userAccountId, array $scopes): PreConfiguredAuthorizationCreatedEvent
+    public static function create(PreConfiguredAuthorizationId $preConfiguredAuthorizationId, ClientId $clientId, UserAccountId $userAccountId, array $scopes): self
     {
         return new self($preConfiguredAuthorizationId, $clientId, $userAccountId, $scopes, null, null);
     }

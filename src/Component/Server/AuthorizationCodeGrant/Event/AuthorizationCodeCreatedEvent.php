@@ -78,7 +78,7 @@ final class AuthorizationCodeCreatedEvent extends Event
     /**
      * AuthorizationCodeCreatedEvent constructor.
      *
-     * @param AuthorizationCodeId              $authorizationCodeId
+     * @param AuthorizationCodeId     $authorizationCodeId
      * @param ClientId                $clientId
      * @param UserAccountId           $userAccountId
      * @param array                   $queryParameters
@@ -115,7 +115,7 @@ final class AuthorizationCodeCreatedEvent extends Event
     }
 
     /**
-     * @param AuthorizationCodeId            $authorizationCodeId
+     * @param AuthorizationCodeId   $authorizationCodeId
      * @param ClientId              $clientId
      * @param UserAccountId         $userAccountId
      * @param array                 $queryParameters
@@ -128,7 +128,7 @@ final class AuthorizationCodeCreatedEvent extends Event
      *
      * @return AuthorizationCodeCreatedEvent
      */
-    public static function create(AuthorizationCodeId $authorizationCodeId, ClientId $clientId, UserAccountId $userAccountId, array $queryParameters, string $redirectUri, \DateTimeImmutable $expiresAt, DataBag $parameters, DataBag $metadatas, array $scopes, ? ResourceServerId $resourceServerId): AuthorizationCodeCreatedEvent
+    public static function create(AuthorizationCodeId $authorizationCodeId, ClientId $clientId, UserAccountId $userAccountId, array $queryParameters, string $redirectUri, \DateTimeImmutable $expiresAt, DataBag $parameters, DataBag $metadatas, array $scopes, ? ResourceServerId $resourceServerId): self
     {
         return new self($authorizationCodeId, $clientId, $userAccountId, $queryParameters, $redirectUri, $expiresAt, $parameters, $metadatas, $scopes, $resourceServerId, null, null);
     }

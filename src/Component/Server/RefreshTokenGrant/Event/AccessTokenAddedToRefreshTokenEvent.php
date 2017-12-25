@@ -61,7 +61,7 @@ final class AccessTokenAddedToRefreshTokenEvent extends Event
      *
      * @return AccessTokenAddedToRefreshTokenEvent
      */
-    public static function create(RefreshTokenId $refreshTokenId, AccessTokenId $accessTokenId): AccessTokenAddedToRefreshTokenEvent
+    public static function create(RefreshTokenId $refreshTokenId, AccessTokenId $accessTokenId): self
     {
         return new self($refreshTokenId, $accessTokenId, null, null);
     }

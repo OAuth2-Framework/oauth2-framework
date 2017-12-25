@@ -27,7 +27,7 @@ final class DataBagTest extends TestCase
     public function iCanCreateADataBag()
     {
         $data = DataBag::create([
-            'foo' => 'bar'
+            'foo' => 'bar',
         ]);
         $dataModified = $data->with('foo', 'BAR');
         $dataModified = $dataModified->without('bar');

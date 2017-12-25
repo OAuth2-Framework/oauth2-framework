@@ -19,8 +19,11 @@ use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
 final class PromptParameterChecker implements ParameterChecker
 {
     const PROMPT_NONE = 'none';
+
     const PROMPT_LOGIN = 'login';
+
     const PROMPT_CONSENT = 'consent';
+
     const PROMPT_SELECT_ACCOUNT = 'select_account';
 
     /**
@@ -37,7 +40,7 @@ final class PromptParameterChecker implements ParameterChecker
 
             return $next($authorization);
         } catch (\InvalidArgumentException $e) {
-            throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_REQUEST,  $e->getMessage(), $authorization, $e);
+            throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_REQUEST, $e->getMessage(), $authorization, $e);
         }
     }
 

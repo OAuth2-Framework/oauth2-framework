@@ -233,6 +233,8 @@ final class RedirectionUriRuleTest extends TestCase
      */
     private function getCallable(): callable
     {
-        return function (ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters): DataBag {return $validatedParameters;};
+        return function (ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters): DataBag {
+            return $validatedParameters;
+        };
     }
 }

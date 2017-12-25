@@ -27,7 +27,7 @@ final class ParameterCheckerManager
      *
      * @return ParameterCheckerManager
      */
-    public function add(ParameterChecker $parameterChecker): ParameterCheckerManager
+    public function add(ParameterChecker $parameterChecker): self
     {
         $this->parameterCheckers[] = $parameterChecker;
 

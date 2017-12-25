@@ -55,7 +55,7 @@ final class CreateClientCommand
      *
      * @return CreateClientCommand
      */
-    public static function create(ClientId $clientId, ?UserAccountId $userAccountId, DataBag $parameters): CreateClientCommand
+    public static function create(ClientId $clientId, ?UserAccountId $userAccountId, DataBag $parameters): self
     {
         return new self($clientId, $userAccountId, $parameters);
     }

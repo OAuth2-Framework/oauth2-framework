@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\AuthorizationEndpoint\ResponseMode;
 
-
 final class ResponseModeManager
 {
     /**

@@ -18,7 +18,6 @@ use OAuth2Framework\Component\Server\TokenEndpoint\GrantType;
 use OAuth2Framework\Component\Server\Core\Scope\ScopePolicyManager;
 use OAuth2Framework\Component\Server\Core\Scope\ScopeRepository;
 use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
-use OAuth2Framework\Component\Server\Core\Response\OAuth2ResponseFactoryManager;
 use Psr\Http\Message\ServerRequestInterface;
 
 final class ScopeProcessor
@@ -36,8 +35,8 @@ final class ScopeProcessor
     /**
      * ScopeProcessor constructor.
      *
-     * @param ScopeRepository $scopeRepository
-     * @param ScopePolicyManager|null  $scopePolicyManager
+     * @param ScopeRepository         $scopeRepository
+     * @param ScopePolicyManager|null $scopePolicyManager
      */
     public function __construct(ScopeRepository $scopeRepository, ? ScopePolicyManager $scopePolicyManager)
     {
@@ -48,7 +47,7 @@ final class ScopeProcessor
     /**
      * @param ServerRequestInterface $request
      * @param GrantTypeData          $grantTypeData
-     * @param GrantType     $grantType
+     * @param GrantType              $grantType
      * @param callable               $next
      *
      * @throws OAuth2Exception

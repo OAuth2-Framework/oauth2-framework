@@ -133,12 +133,12 @@ final class IdTokenBuilder
     /**
      * IdTokenBuilder constructor.
      *
-     * @param string               $issuer
-     * @param UserInfo             $userinfo
-     * @param int                  $lifetime
-     * @param Client               $client
+     * @param string      $issuer
+     * @param UserInfo    $userinfo
+     * @param int         $lifetime
+     * @param Client      $client
      * @param UserAccount $userAccount
-     * @param string               $redirectUri
+     * @param string      $redirectUri
      */
     private function __construct(string $issuer, UserInfo $userinfo, int $lifetime, Client $client, UserAccount $userAccount, string $redirectUri)
     {
@@ -151,12 +151,12 @@ final class IdTokenBuilder
     }
 
     /**
-     * @param string               $issuer
-     * @param UserInfo             $userinfo
-     * @param int                  $lifetime
-     * @param Client               $client
+     * @param string      $issuer
+     * @param UserInfo    $userinfo
+     * @param int         $lifetime
+     * @param Client      $client
      * @param UserAccount $userAccount
-     * @param string               $redirectUri
+     * @param string      $redirectUri
      *
      * @return IdTokenBuilder
      */
@@ -170,7 +170,7 @@ final class IdTokenBuilder
      *
      * @return IdTokenBuilder
      */
-    public function withAccessToken(AccessToken $accessToken): IdTokenBuilder
+    public function withAccessToken(AccessToken $accessToken): self
     {
         $clone = clone $this;
         $clone->accessTokenId = $accessToken->getTokenId();
@@ -197,7 +197,7 @@ final class IdTokenBuilder
      *
      * @return IdTokenBuilder
      */
-    public function withAccessTokenId(AccessTokenId $accessTokenId): IdTokenBuilder
+    public function withAccessTokenId(AccessTokenId $accessTokenId): self
     {
         $clone = clone $this;
         $clone->accessTokenId = $accessTokenId;
@@ -210,7 +210,7 @@ final class IdTokenBuilder
      *
      * @return IdTokenBuilder
      */
-    public function withAuthorizationCodeId(AuthorizationCodeId $authorizationCodeId): IdTokenBuilder
+    public function withAuthorizationCodeId(AuthorizationCodeId $authorizationCodeId): self
     {
         $clone = clone $this;
         $clone->authorizationCodeId = $authorizationCodeId;
@@ -223,7 +223,7 @@ final class IdTokenBuilder
      *
      * @return IdTokenBuilder
      */
-    public function withClaimsLocales(string $claimsLocales): IdTokenBuilder
+    public function withClaimsLocales(string $claimsLocales): self
     {
         $clone = clone $this;
         $clone->claimsLocales = $claimsLocales;
@@ -234,7 +234,7 @@ final class IdTokenBuilder
     /**
      * @return IdTokenBuilder
      */
-    public function withAuthenticationTime(): IdTokenBuilder
+    public function withAuthenticationTime(): self
     {
         $clone = clone $this;
         $clone->withAuthenticationTime = true;
@@ -247,7 +247,7 @@ final class IdTokenBuilder
      *
      * @return IdTokenBuilder
      */
-    public function withScope(array $scopes): IdTokenBuilder
+    public function withScope(array $scopes): self
     {
         $clone = clone $this;
         $clone->scopes = $scopes;
@@ -260,7 +260,7 @@ final class IdTokenBuilder
      *
      * @return IdTokenBuilder
      */
-    public function withRequestedClaims(array $requestedClaims): IdTokenBuilder
+    public function withRequestedClaims(array $requestedClaims): self
     {
         $clone = clone $this;
         $clone->requestedClaims = $requestedClaims;
@@ -273,7 +273,7 @@ final class IdTokenBuilder
      *
      * @return IdTokenBuilder
      */
-    public function withNonce(string $nonce): IdTokenBuilder
+    public function withNonce(string $nonce): self
     {
         $clone = clone $this;
         $clone->nonce = $nonce;
@@ -286,7 +286,7 @@ final class IdTokenBuilder
      *
      * @return IdTokenBuilder
      */
-    public function withExpirationAt(\DateTimeImmutable $expiresAt): IdTokenBuilder
+    public function withExpirationAt(\DateTimeImmutable $expiresAt): self
     {
         $clone = clone $this;
         $clone->expiresAt = $expiresAt;
@@ -297,7 +297,7 @@ final class IdTokenBuilder
     /**
      * @return IdTokenBuilder
      */
-    public function withoutAuthenticationTime(): IdTokenBuilder
+    public function withoutAuthenticationTime(): self
     {
         $clone = clone $this;
         $clone->withAuthenticationTime = false;
@@ -312,7 +312,7 @@ final class IdTokenBuilder
      *
      * @return IdTokenBuilder
      */
-    public function withSignature(JWSBuilder $jwsBuilder, JWKSet $signatureKeys, string $signatureAlgorithm): IdTokenBuilder
+    public function withSignature(JWSBuilder $jwsBuilder, JWKSet $signatureKeys, string $signatureAlgorithm): self
     {
         Assertion::inArray($signatureAlgorithm, $jwsBuilder->getSignatureAlgorithmManager()->list(), sprintf('Unsupported signature algorithm "%s". Please use one of the following one: %s', $signatureAlgorithm, implode(', ', $jwsBuilder->getSignatureAlgorithmManager()->list())));
         Assertion::true(0 !== $signatureKeys->count(), 'The signature key set must contain at least one key.');
@@ -331,7 +331,7 @@ final class IdTokenBuilder
      *
      * @return IdTokenBuilder
      */
-    public function withEncryption(JWEBuilder $jweBuilder, string $keyEncryptionAlgorithm, string $contentEncryptionAlgorithm): IdTokenBuilder
+    public function withEncryption(JWEBuilder $jweBuilder, string $keyEncryptionAlgorithm, string $contentEncryptionAlgorithm): self
     {
         Assertion::inArray($keyEncryptionAlgorithm, $jweBuilder->getKeyEncryptionAlgorithmManager()->list(), sprintf('Unsupported key encryption algorithm "%s". Please use one of the following one: %s', $keyEncryptionAlgorithm, implode(', ', $jweBuilder->getKeyEncryptionAlgorithmManager()->list())));
         Assertion::inArray($contentEncryptionAlgorithm, $jweBuilder->getContentEncryptionAlgorithmManager()->list(), sprintf('Unsupported content encryption algorithm "%s". Please use one of the following one: %s', $contentEncryptionAlgorithm, implode(', ', $jweBuilder->getContentEncryptionAlgorithmManager()->list())));
@@ -376,7 +376,7 @@ final class IdTokenBuilder
     private function updateClaimsWithJwtClaims(array $claims): array
     {
         if (null === $this->expiresAt) {
-            $this->expiresAt = (new \DateTimeImmutable())->setTimestamp(time()+ $this->lifetime);
+            $this->expiresAt = (new \DateTimeImmutable())->setTimestamp(time() + $this->lifetime);
         }
         $claims += [
             'iat' => time(),
@@ -390,7 +390,7 @@ final class IdTokenBuilder
     }
 
     /**
-     * @param array                $claims
+     * @param array       $claims
      * @param UserAccount $userAccount
      *
      * @return array
@@ -435,7 +435,7 @@ final class IdTokenBuilder
     }
 
     /**
-     * @param array                $claims
+     * @param array       $claims
      * @param UserAccount $userAccount
      *
      * @return array

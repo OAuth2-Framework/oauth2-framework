@@ -37,7 +37,7 @@ final class MarkAuthorizationCodeAsUsedCommand
      *
      * @return MarkAuthorizationCodeAsUsedCommand
      */
-    public static function create(AuthorizationCodeId $authorizationCodeId): MarkAuthorizationCodeAsUsedCommand
+    public static function create(AuthorizationCodeId $authorizationCodeId): self
     {
         return new self($authorizationCodeId);
     }

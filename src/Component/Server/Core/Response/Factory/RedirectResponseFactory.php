@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\Core\Response\Factory;
 
-
 use OOAuth2Framework\Component\Server\Core\Response\OAuth2RedirectError;
 use OOAuth2Framework\Component\Server\Core\Response\OAuth2ResponseInterface;
 use OOAuth2Framework\Component\Server\Core\ResponseMode\ResponseModeInterface;

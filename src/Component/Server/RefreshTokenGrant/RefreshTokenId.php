@@ -22,7 +22,7 @@ final class RefreshTokenId extends TokenId
      *
      * @return RefreshTokenId
      */
-    public static function create(string $value): RefreshTokenId
+    public static function create(string $value): self
     {
         return new self($value);
     }

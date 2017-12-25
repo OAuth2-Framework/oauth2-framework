@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\ClientRegistrationEndpoint;
 
-
 use OAuth2Framework\Component\Server\Core\DomainObject;
 use OAuth2Framework\Component\Server\ClientRegistrationEndpoint\Event as InitialAccessTokenEvent;
 use OAuth2Framework\Component\Server\Core\Event\Event;
@@ -48,7 +47,7 @@ final class InitialAccessToken implements ContainsRecordedMessages, DomainObject
     /**
      * @return InitialAccessToken
      */
-    public static function createEmpty(): InitialAccessToken
+    public static function createEmpty(): self
     {
         return new self();
     }
@@ -60,7 +59,7 @@ final class InitialAccessToken implements ContainsRecordedMessages, DomainObject
      *
      * @return InitialAccessToken
      */
-    public function create(InitialAccessTokenId $initialAccessTokenId, UserAccountId $userAccountId, ? \DateTimeImmutable $expiresAt): InitialAccessToken
+    public function create(InitialAccessTokenId $initialAccessTokenId, UserAccountId $userAccountId, ? \DateTimeImmutable $expiresAt): self
     {
         $clone = clone $this;
         $clone->initialAccessTokenId = $initialAccessTokenId;
@@ -124,7 +123,7 @@ final class InitialAccessToken implements ContainsRecordedMessages, DomainObject
     /**
      * @return InitialAccessToken
      */
-    public function markAsRevoked(): InitialAccessToken
+    public function markAsRevoked(): self
     {
         $clone = clone $this;
         $clone->revoked = true;
@@ -183,7 +182,7 @@ final class InitialAccessToken implements ContainsRecordedMessages, DomainObject
      *
      * @return InitialAccessToken
      */
-    public function apply(Event $event): InitialAccessToken
+    public function apply(Event $event): self
     {
         $map = $this->getEventMap();
         if (!array_key_exists($event->getType(), $map)) {
@@ -213,7 +212,7 @@ final class InitialAccessToken implements ContainsRecordedMessages, DomainObject
      *
      * @return InitialAccessToken
      */
-    protected function applyInitialAccessTokenCreatedEvent(InitialAccessTokenEvent\InitialAccessTokenCreatedEvent $event): InitialAccessToken
+    protected function applyInitialAccessTokenCreatedEvent(InitialAccessTokenEvent\InitialAccessTokenCreatedEvent $event): self
     {
         $clone = clone $this;
         $clone->initialAccessTokenId = $event->getInitialAccessTokenId();
@@ -228,7 +227,7 @@ final class InitialAccessToken implements ContainsRecordedMessages, DomainObject
      *
      * @return InitialAccessToken
      */
-    protected function applyInitialAccessTokenRevokedEvent(InitialAccessTokenEvent\InitialAccessTokenRevokedEvent $event): InitialAccessToken
+    protected function applyInitialAccessTokenRevokedEvent(InitialAccessTokenEvent\InitialAccessTokenRevokedEvent $event): self
     {
         $clone = clone $this;
         $clone->revoked = true;

@@ -27,7 +27,7 @@ final class ClaimSourceManager
      *
      * @return ClaimSourceManager
      */
-    public function add(ClaimSource $claimSource): ClaimSourceManager
+    public function add(ClaimSource $claimSource): self
     {
         $this->claimSources[] = $claimSource;
 
@@ -44,8 +44,8 @@ final class ClaimSourceManager
 
     /**
      * @param UserAccount $userAccount
-     * @param string[]             $scope
-     * @param array                $previousClaims
+     * @param string[]    $scope
+     * @param array       $previousClaims
      *
      * @return array
      */

@@ -80,7 +80,7 @@ final class ScopePolicyManagerTest extends TestCase
         $client = $client->create(
             ClientId::create('CLIENT_ID'),
             DataBag::create([
-                'scope_policy' => 'none'
+                'scope_policy' => 'none',
             ]),
             UserAccountId::create('USER_ACCOUNT_ID')
         );
@@ -117,7 +117,7 @@ final class ScopePolicyManagerTest extends TestCase
         $client = $client->create(
             ClientId::create('CLIENT_ID'),
             DataBag::create([
-                'scope_policy' => 'default'
+                'scope_policy' => 'default',
             ]),
             UserAccountId::create('USER_ACCOUNT_ID')
         );
@@ -137,7 +137,7 @@ final class ScopePolicyManagerTest extends TestCase
         $client = $client->create(
             ClientId::create('CLIENT_ID'),
             DataBag::create([
-                'scope_policy' => 'error'
+                'scope_policy' => 'error',
             ]),
             UserAccountId::create('USER_ACCOUNT_ID')
         );

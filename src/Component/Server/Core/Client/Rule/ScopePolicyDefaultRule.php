@@ -13,10 +13,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\Core\Client\Rule;
 
-
 use OAuth2Framework\Component\Server\Core\Client\ClientId;
 use OAuth2Framework\Component\Server\Core\DataBag\DataBag;
-
 
 final class ScopePolicyDefaultRule implements Rule
 {
@@ -30,7 +28,7 @@ final class ScopePolicyDefaultRule implements Rule
             if (!is_string($defaultScope)) {
                 throw new \InvalidArgumentException('The "default_scope" parameter must be a string.');
             }
-            if (1 !== preg_match( '/^[\x20\x23-\x5B\x5D-\x7E]+$/', $defaultScope)) {
+            if (1 !== preg_match('/^[\x20\x23-\x5B\x5D-\x7E]+$/', $defaultScope)) {
                 throw new \InvalidArgumentException('Invalid characters found in the "default_scope" parameter.');
             }
             $validatedParameters = $validatedParameters->with('default_scope', $commandParameters->get('default_scope'));

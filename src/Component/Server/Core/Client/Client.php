@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\Core\Client;
 
-
 use Jose\Component\Core\JWK;
 use Jose\Component\Core\JWKSet;
 use OAuth2Framework\Component\Server\Core\Client\Event as ClientEvent;
@@ -76,7 +75,7 @@ final class Client implements ResourceOwner, ContainsRecordedMessages, DomainObj
     /**
      * @return Client
      */
-    public static function createEmpty(): Client
+    public static function createEmpty(): self
     {
         return new self();
     }
@@ -88,7 +87,7 @@ final class Client implements ResourceOwner, ContainsRecordedMessages, DomainObj
      *
      * @return Client
      */
-    public function create(ClientId $clientId, DataBag $parameters, ? UserAccountId $ownerId): Client
+    public function create(ClientId $clientId, DataBag $parameters, ? UserAccountId $ownerId): self
     {
         $clone = clone $this;
         $clone->clientId = $clientId;
@@ -114,7 +113,7 @@ final class Client implements ResourceOwner, ContainsRecordedMessages, DomainObj
      *
      * @return Client
      */
-    public function withOwnerId(UserAccountId $ownerId): Client
+    public function withOwnerId(UserAccountId $ownerId): self
     {
         if ($this->getOwnerId()->getValue() === $ownerId->getValue()) {
             return $this;
@@ -133,7 +132,7 @@ final class Client implements ResourceOwner, ContainsRecordedMessages, DomainObj
      *
      * @return Client
      */
-    public function withParameters(DataBag $parameters): Client
+    public function withParameters(DataBag $parameters): self
     {
         $clone = clone $this;
         $clone->parameters = $parameters;
@@ -146,7 +145,7 @@ final class Client implements ResourceOwner, ContainsRecordedMessages, DomainObj
     /**
      * @return Client
      */
-    public function markAsDeleted(): Client
+    public function markAsDeleted(): self
     {
         $clone = clone $this;
         $clone->deleted = true;
@@ -384,7 +383,7 @@ final class Client implements ResourceOwner, ContainsRecordedMessages, DomainObj
      *
      * @return Client
      */
-    public function apply(Event $event): Client
+    public function apply(Event $event): self
     {
         $map = $this->getEventMap();
         if (!array_key_exists($event->getType(), $map)) {
@@ -416,7 +415,7 @@ final class Client implements ResourceOwner, ContainsRecordedMessages, DomainObj
      *
      * @return Client
      */
-    protected function applyClientCreatedEvent(ClientEvent\ClientCreatedEvent $event): Client
+    protected function applyClientCreatedEvent(ClientEvent\ClientCreatedEvent $event): self
     {
         $clone = clone $this;
         $clone->clientId = $event->getClientId();
@@ -431,7 +430,7 @@ final class Client implements ResourceOwner, ContainsRecordedMessages, DomainObj
      *
      * @return Client
      */
-    protected function applyClientOwnerChangedEvent(ClientEvent\ClientOwnerChangedEvent $event): Client
+    protected function applyClientOwnerChangedEvent(ClientEvent\ClientOwnerChangedEvent $event): self
     {
         $clone = clone $this;
         $clone->ownerId = $event->getNewOwnerId();
@@ -444,7 +443,7 @@ final class Client implements ResourceOwner, ContainsRecordedMessages, DomainObj
      *
      * @return Client
      */
-    protected function applyClientDeletedEvent(ClientEvent\ClientDeletedEvent $event): Client
+    protected function applyClientDeletedEvent(ClientEvent\ClientDeletedEvent $event): self
     {
         $clone = clone $this;
         $clone->deleted = true;
@@ -457,7 +456,7 @@ final class Client implements ResourceOwner, ContainsRecordedMessages, DomainObj
      *
      * @return Client
      */
-    protected function applyClientParametersUpdatedEvent(ClientEvent\ClientParametersUpdatedEvent $event): Client
+    protected function applyClientParametersUpdatedEvent(ClientEvent\ClientParametersUpdatedEvent $event): self
     {
         $clone = clone $this;
         $clone->parameters = $event->getParameters();

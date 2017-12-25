@@ -13,8 +13,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\AuthorizationEndpoint;
 
-
-
 final class ResponseTypeManager
 {
     /**
@@ -27,7 +25,7 @@ final class ResponseTypeManager
      *
      * @return ResponseTypeManager
      */
-    public function add(ResponseType $responseType): ResponseTypeManager
+    public function add(ResponseType $responseType): self
     {
         $this->responseTypes[$responseType->getResponseType()] = $responseType;
 

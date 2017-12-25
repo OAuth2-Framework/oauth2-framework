@@ -70,10 +70,10 @@ final class UserInfoEndpoint implements MiddlewareInterface
     /**
      * UserInfoEndpoint constructor.
      *
-     * @param IdTokenBuilderFactory          $idTokenBuilderFactory
+     * @param IdTokenBuilderFactory $idTokenBuilderFactory
      * @param ClientRepository      $clientRepository
      * @param UserAccountRepository $userAccountRepository
-     * @param ResponseFactory                 $responseFactory
+     * @param ResponseFactory       $responseFactory
      */
     public function __construct(IdTokenBuilderFactory $idTokenBuilderFactory, ClientRepository $clientRepository, UserAccountRepository $userAccountRepository, ResponseFactory $responseFactory)
     {
@@ -130,10 +130,10 @@ final class UserInfoEndpoint implements MiddlewareInterface
     }
 
     /**
-     * @param Client               $client
+     * @param Client      $client
      * @param UserAccount $userAccount
-     * @param AccessToken          $accessToken
-     * @param bool|null            $isJwt
+     * @param AccessToken $accessToken
+     * @param bool|null   $isJwt
      *
      * @return string
      */

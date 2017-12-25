@@ -37,7 +37,7 @@ final class RevokeInitialAccessTokenCommand
      *
      * @return RevokeInitialAccessTokenCommand
      */
-    public static function create(InitialAccessTokenId $initialAccessTokenId): RevokeInitialAccessTokenCommand
+    public static function create(InitialAccessTokenId $initialAccessTokenId): self
     {
         return new self($initialAccessTokenId);
     }

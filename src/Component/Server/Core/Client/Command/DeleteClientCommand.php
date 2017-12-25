@@ -37,7 +37,7 @@ final class DeleteClientCommand
      *
      * @return DeleteClientCommand
      */
-    public static function create(ClientId $clientId): DeleteClientCommand
+    public static function create(ClientId $clientId): self
     {
         return new self($clientId);
     }

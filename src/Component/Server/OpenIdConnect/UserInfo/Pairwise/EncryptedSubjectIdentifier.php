@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\OpenIdConnect\UserInfo\Pairwise;
 
-
 use Base64Url\Base64Url;
 use OAuth2Framework\Component\Server\Core\UserAccount\UserAccount;
 

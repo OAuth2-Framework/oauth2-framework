@@ -23,8 +23,11 @@ use Symfony\Component\Finder\Finder;
 final class EventStore implements EventStoreInterface
 {
     private const STORAGE_PATH = '%s/fixtures/%s/';
+
     private const EVENT_PATH = '%s/%s/events/';
+
     private const EVENT_FILENAME = '%s/%s/events/%s.json';
+
     /**
      * @var DomainConverter
      */

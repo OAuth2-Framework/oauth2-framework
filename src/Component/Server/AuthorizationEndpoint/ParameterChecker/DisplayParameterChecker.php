@@ -19,8 +19,11 @@ use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
 final class DisplayParameterChecker implements ParameterChecker
 {
     const DISPLAY_PAGE = 'page';
+
     const DISPLAY_POPUP = 'popup';
+
     const DISPLAY_TOUCH = 'touch';
+
     const DISPLAY_WAP = 'wap';
 
     /**

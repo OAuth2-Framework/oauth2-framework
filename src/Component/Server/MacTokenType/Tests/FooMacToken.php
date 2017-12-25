@@ -14,13 +14,6 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\Server\MacTokenType\Tests;
 
 use OAuth2Framework\Component\Server\MacTokenType\MacToken;
-use OAuth2Framework\Component\Server\Core\AccessToken\AccessToken;
-use OAuth2Framework\Component\Server\Core\AccessToken\AccessTokenId;
-use OAuth2Framework\Component\Server\Core\Client\ClientId;
-use OAuth2Framework\Component\Server\Core\DataBag\DataBag;
-use OAuth2Framework\Component\Server\Core\ResourceServer\ResourceServerId;
-use PHPUnit\Framework\TestCase;
-use Psr\Http\Message\ServerRequestInterface;
 
 final class FooMacToken extends MacToken
 {

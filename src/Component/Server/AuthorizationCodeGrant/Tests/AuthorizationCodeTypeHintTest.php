@@ -88,9 +88,10 @@ final class AuthorizationCodeTypeHintTest extends TestCase
                 ResourceServerId::create('RESOURCE_SERVER_ID')
             );
             $authorizationCodeRepository = $this->prophesize(AuthorizationCodeRepository::class);
-            $authorizationCodeRepository->save(Argument::type(AuthorizationCode::class))->will(function(){});
+            $authorizationCodeRepository->save(Argument::type(AuthorizationCode::class))->will(function () {
+            });
             $authorizationCodeRepository->find(Argument::type(AuthorizationCodeId::class))->will(function ($args) use ($authorizationCode) {
-                if ($args[0]->getValue() === 'AUTHORIZATION_CODE_ID') {
+                if ('AUTHORIZATION_CODE_ID' === $args[0]->getValue()) {
                     return $authorizationCode;
                 }
 

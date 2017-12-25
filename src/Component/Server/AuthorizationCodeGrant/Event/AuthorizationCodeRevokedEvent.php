@@ -29,7 +29,7 @@ final class AuthorizationCodeRevokedEvent extends Event
     /**
      * AuthorizationCodeRevokedEvent constructor.
      *
-     * @param AuthorizationCodeId              $authorizationCodeId
+     * @param AuthorizationCodeId     $authorizationCodeId
      * @param \DateTimeImmutable|null $recordedOn
      * @param EventId|null            $eventId
      */
@@ -52,7 +52,7 @@ final class AuthorizationCodeRevokedEvent extends Event
      *
      * @return AuthorizationCodeRevokedEvent
      */
-    public static function create(AuthorizationCodeId $authorizationCodeId): AuthorizationCodeRevokedEvent
+    public static function create(AuthorizationCodeId $authorizationCodeId): self
     {
         return new self($authorizationCodeId, null, null);
     }

@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\RefreshTokenGrant;
 
-
 use OAuth2Framework\Component\Server\RefreshTokenGrant\Event as RefreshTokenEvent;
 use OAuth2Framework\Component\Server\Core\AccessToken\AccessTokenId;
 use OAuth2Framework\Component\Server\Core\Client\ClientId;
@@ -40,7 +39,7 @@ final class RefreshToken extends Token
     /**
      * @return RefreshToken
      */
-    public static function createEmpty(): RefreshToken
+    public static function createEmpty(): self
     {
         return new self();
     }
@@ -65,7 +64,7 @@ final class RefreshToken extends Token
      *
      * @return RefreshToken
      */
-    public function create(RefreshTokenId $refreshTokenId, ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, array $scopes, \DateTimeImmutable $expiresAt, ? ResourceServerId $resourceServerId): RefreshToken
+    public function create(RefreshTokenId $refreshTokenId, ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, array $scopes, \DateTimeImmutable $expiresAt, ? ResourceServerId $resourceServerId): self
     {
         $clone = clone $this;
         $clone->refreshTokenId = $refreshTokenId;
@@ -100,7 +99,7 @@ final class RefreshToken extends Token
      *
      * @return RefreshToken
      */
-    public function addAccessToken(AccessTokenId $accessTokenId): RefreshToken
+    public function addAccessToken(AccessTokenId $accessTokenId): self
     {
         $id = $accessTokenId->getValue();
         if (array_key_exists($id, $this->accessTokenIds)) {
@@ -203,7 +202,7 @@ final class RefreshToken extends Token
     /**
      * @return RefreshToken
      */
-    public function markAsRevoked(): RefreshToken
+    public function markAsRevoked(): self
     {
         $clone = clone $this;
         $clone->revoked = true;
@@ -218,7 +217,7 @@ final class RefreshToken extends Token
      *
      * @return RefreshToken
      */
-    public function apply(Event $event): RefreshToken
+    public function apply(Event $event): self
     {
         $map = $this->getEventMap();
         if (!array_key_exists($event->getType(), $map)) {
@@ -249,7 +248,7 @@ final class RefreshToken extends Token
      *
      * @return RefreshToken
      */
-    protected function applyRefreshTokenCreatedEvent(RefreshTokenEvent\RefreshTokenCreatedEvent $event): RefreshToken
+    protected function applyRefreshTokenCreatedEvent(RefreshTokenEvent\RefreshTokenCreatedEvent $event): self
     {
         $clone = clone $this;
         $clone->refreshTokenId = $event->getRefreshTokenId();
@@ -269,7 +268,7 @@ final class RefreshToken extends Token
      *
      * @return RefreshToken
      */
-    protected function applyAccessTokenAddedToRefreshTokenEvent(RefreshTokenEvent\AccessTokenAddedToRefreshTokenEvent $event): RefreshToken
+    protected function applyAccessTokenAddedToRefreshTokenEvent(RefreshTokenEvent\AccessTokenAddedToRefreshTokenEvent $event): self
     {
         $clone = clone $this;
         $clone->accessTokenIds[$event->getAccessTokenId()->getValue()] = $event->getAccessTokenId();
@@ -282,7 +281,7 @@ final class RefreshToken extends Token
      *
      * @return RefreshToken
      */
-    protected function applyRefreshTokenRevokedEvent(RefreshTokenEvent\RefreshTokenRevokedEvent $event): RefreshToken
+    protected function applyRefreshTokenRevokedEvent(RefreshTokenEvent\RefreshTokenRevokedEvent $event): self
     {
         $clone = clone $this;
         $clone->revoked = true;

@@ -16,7 +16,6 @@ namespace OAuth2Framework\Component\Server\Core\Client\Rule;
 use OAuth2Framework\Component\Server\Core\Client\ClientId;
 use OAuth2Framework\Component\Server\Core\DataBag\DataBag;
 
-
 final class RequestUriRule implements Rule
 {
     /**
@@ -37,7 +36,7 @@ final class RequestUriRule implements Rule
     }
 
     /**
-     * @param mixed  $value
+     * @param mixed $value
      */
     private function checkAllUris($value)
     {

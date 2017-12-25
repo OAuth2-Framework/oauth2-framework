@@ -61,7 +61,7 @@ final class PreConfiguredAuthorization implements ContainsRecordedMessages, Doma
      *
      * @return PreConfiguredAuthorization
      */
-    public function create(PreConfiguredAuthorizationId $preConfiguredAuthorizationId, UserAccountId $userAccountId, ClientId $clientId, array $scopes): PreConfiguredAuthorization
+    public function create(PreConfiguredAuthorizationId $preConfiguredAuthorizationId, UserAccountId $userAccountId, ClientId $clientId, array $scopes): self
     {
         $clone = clone $this;
         $clone->preConfiguredAuthorizationId = $preConfiguredAuthorizationId;
@@ -78,7 +78,7 @@ final class PreConfiguredAuthorization implements ContainsRecordedMessages, Doma
     /**
      * @return PreConfiguredAuthorization
      */
-    public static function createEmpty(): PreConfiguredAuthorization
+    public static function createEmpty(): self
     {
         return new self();
     }
@@ -126,7 +126,7 @@ final class PreConfiguredAuthorization implements ContainsRecordedMessages, Doma
     /**
      * @return PreConfiguredAuthorization
      */
-    public function markAsRevoked(): PreConfiguredAuthorization
+    public function markAsRevoked(): self
     {
         $clone = clone $this;
         $clone->revoked = true;
@@ -141,7 +141,7 @@ final class PreConfiguredAuthorization implements ContainsRecordedMessages, Doma
      *
      * @return PreConfiguredAuthorization
      */
-    public function apply(Event $event): PreConfiguredAuthorization
+    public function apply(Event $event): self
     {
         $map = $this->getEventMap();
         Assertion::keyExists($map, $event->getType(), 'Unsupported event.');
@@ -216,7 +216,7 @@ final class PreConfiguredAuthorization implements ContainsRecordedMessages, Doma
      *
      * @return PreConfiguredAuthorization
      */
-    protected function applyPreConfiguredAuthorizationCreatedEvent(PreConfiguredAuthorizationCreatedEvent $event): PreConfiguredAuthorization
+    protected function applyPreConfiguredAuthorizationCreatedEvent(PreConfiguredAuthorizationCreatedEvent $event): self
     {
         $clone = clone $this;
         $clone->preConfiguredAuthorizationId = $event->getPreConfiguredAuthorizationId();
@@ -232,7 +232,7 @@ final class PreConfiguredAuthorization implements ContainsRecordedMessages, Doma
      *
      * @return PreConfiguredAuthorization
      */
-    protected function applyPreConfiguredAuthorizationRevokedEvent(PreConfiguredAuthorizationRevokedEvent $event): PreConfiguredAuthorization
+    protected function applyPreConfiguredAuthorizationRevokedEvent(PreConfiguredAuthorizationRevokedEvent $event): self
     {
         $clone = clone $this;
         $clone->revoked = true;

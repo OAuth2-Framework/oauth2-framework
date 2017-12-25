@@ -19,7 +19,7 @@ interface UserAccountManager
      * Check if the user account password is valid.
      *
      * @param UserAccount $user     The user account
-     * @param string               $password Password
+     * @param string      $password Password
      *
      * @return bool
      */

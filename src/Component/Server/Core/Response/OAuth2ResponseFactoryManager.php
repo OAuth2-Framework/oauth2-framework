@@ -49,7 +49,7 @@ final class OAuth2ResponseFactoryManager
      *
      * @return OAuth2ResponseFactoryManager
      */
-    public function addResponseFactory(ResponseFactory $responseFactory): OAuth2ResponseFactoryManager
+    public function addResponseFactory(ResponseFactory $responseFactory): self
     {
         $this->responseFactories[$responseFactory->getSupportedCode()] = $responseFactory;
 

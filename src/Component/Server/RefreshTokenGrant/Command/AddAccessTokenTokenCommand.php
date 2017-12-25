@@ -32,7 +32,7 @@ final class AddAccessTokenTokenCommand
      * AddAccessTokenTokenCommand constructor.
      *
      * @param RefreshTokenId $refreshTokenId
-     * @param AccessTokenId $accessTokenId
+     * @param AccessTokenId  $accessTokenId
      */
     protected function __construct(RefreshTokenId $refreshTokenId, AccessTokenId $accessTokenId)
     {
@@ -45,7 +45,7 @@ final class AddAccessTokenTokenCommand
      *
      * @return AddAccessTokenTokenCommand
      */
-    public static function create(RefreshTokenId $refreshTokenId, AccessTokenId $accessTokenId): AddAccessTokenTokenCommand
+    public static function create(RefreshTokenId $refreshTokenId, AccessTokenId $accessTokenId): self
     {
         return new self($refreshTokenId, $accessTokenId);
     }

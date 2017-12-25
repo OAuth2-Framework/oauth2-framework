@@ -297,7 +297,7 @@ final class AuthorizationRequestLoader
         $stored_request_uris = $this->getClientRequestUris($client);
 
         foreach ($stored_request_uris as $stored_request_uri) {
-            if (strcasecmp(mb_substr($requestUri, 0, mb_strlen($stored_request_uri, '8bit'), '8bit'), $stored_request_uri) === 0) {
+            if (0 === strcasecmp(mb_substr($requestUri, 0, mb_strlen($stored_request_uri, '8bit'), '8bit'), $stored_request_uri)) {
                 return;
             }
         }

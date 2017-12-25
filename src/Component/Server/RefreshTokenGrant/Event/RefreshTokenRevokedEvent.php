@@ -52,7 +52,7 @@ final class RefreshTokenRevokedEvent extends Event
      *
      * @return RefreshTokenRevokedEvent
      */
-    public static function create(RefreshTokenId $refreshTokenId): RefreshTokenRevokedEvent
+    public static function create(RefreshTokenId $refreshTokenId): self
     {
         return new self($refreshTokenId, null, null);
     }

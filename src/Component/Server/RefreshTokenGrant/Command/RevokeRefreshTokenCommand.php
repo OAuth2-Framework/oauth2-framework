@@ -37,7 +37,7 @@ final class RevokeRefreshTokenCommand
      *
      * @return RevokeRefreshTokenCommand
      */
-    public static function create(RefreshTokenId $refreshTokenId): RevokeRefreshTokenCommand
+    public static function create(RefreshTokenId $refreshTokenId): self
     {
         return new self($refreshTokenId);
     }

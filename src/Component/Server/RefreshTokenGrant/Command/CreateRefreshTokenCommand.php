@@ -64,7 +64,7 @@ final class CreateRefreshTokenCommand
     /**
      * CreateRefreshTokenCommand constructor.
      *
-     * @param RefreshTokenId   $refreshTokenId
+     * @param RefreshTokenId        $refreshTokenId
      * @param ClientId              $clientId
      * @param UserAccountId         $userAccountId
      * @param \DateTimeImmutable    $expiresAt
@@ -86,7 +86,7 @@ final class CreateRefreshTokenCommand
     }
 
     /**
-     * @param RefreshTokenId   $refreshTokenId
+     * @param RefreshTokenId        $refreshTokenId
      * @param ClientId              $clientId
      * @param UserAccountId         $userAccountId
      * @param \DateTimeImmutable    $expiresAt
@@ -97,7 +97,7 @@ final class CreateRefreshTokenCommand
      *
      * @return CreateRefreshTokenCommand
      */
-    public static function create(RefreshTokenId $refreshTokenId, ClientId $clientId, UserAccountId $userAccountId, \DateTimeImmutable $expiresAt, DataBag $parameters, DataBag $metadatas, array $scopes, ?ResourceServerId $resourceServerId): CreateRefreshTokenCommand
+    public static function create(RefreshTokenId $refreshTokenId, ClientId $clientId, UserAccountId $userAccountId, \DateTimeImmutable $expiresAt, DataBag $parameters, DataBag $metadatas, array $scopes, ?ResourceServerId $resourceServerId): self
     {
         return new self($refreshTokenId, $clientId, $userAccountId, $expiresAt, $parameters, $metadatas, $scopes, $resourceServerId);
     }

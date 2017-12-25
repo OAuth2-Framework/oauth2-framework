@@ -22,7 +22,7 @@ final class UserAccountId extends ResourceOwnerId
      *
      * @return UserAccountId
      */
-    public static function create(string $value): UserAccountId
+    public static function create(string $value): self
     {
         return new self($value);
     }
