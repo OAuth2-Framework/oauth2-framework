@@ -94,15 +94,16 @@ final class MacTokenTest extends TestCase
     }
 
     /**
-     * @param string $algorithm
-     * @param string $key
-     * @param int $timestamp
-     * @param string $nonce
-     * @param string $method
-     * @param string $requestUri
-     * @param string $host
-     * @param int $port
+     * @param string      $algorithm
+     * @param string      $key
+     * @param int         $timestamp
+     * @param string      $nonce
+     * @param string      $method
+     * @param string      $requestUri
+     * @param string      $host
+     * @param int         $port
      * @param null|string $ext
+     *
      * @return string
      */
     private function generateMac(string $algorithm, string $key, int $timestamp, string $nonce, string $method, string $requestUri, string $host, int $port, ?string $ext): string

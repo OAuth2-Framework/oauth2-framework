@@ -31,11 +31,11 @@ final class OAuth2RedirectError extends OAuth2Error
     /**
      * OAuth2RedirectError constructor.
      *
-     * @param int                   $code
-     * @param array                 $data
-     * @param string                $redirectUri
-     * @param ResponseMode $responseMode
-     * @param ResponseInterface     $response
+     * @param int               $code
+     * @param array             $data
+     * @param string            $redirectUri
+     * @param ResponseMode      $responseMode
+     * @param ResponseInterface $response
      */
     public function __construct(int $code, array $data, string $redirectUri, ResponseMode $responseMode, ResponseInterface $response)
     {

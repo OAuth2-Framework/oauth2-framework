@@ -19,6 +19,7 @@ use OAuth2Framework\Component\Server\Model\UserAccount\UserAccountRepositoryInte
 final class UserRepository implements UserAccountRepositoryInterface
 {
     private $usersByUsername = [];
+
     private $usersByPublicId = [];
 
     public function __construct()

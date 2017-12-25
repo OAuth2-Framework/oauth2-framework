@@ -13,8 +13,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\OpenIdConnect\UserInfo\ScopeSupport;
 
-
-
 final class UserInfoScopeSupportManager
 {
     /**
@@ -35,7 +33,7 @@ final class UserInfoScopeSupportManager
      *
      * @return UserInfoScopeSupportManager
      */
-    public function add(UserInfoScopeSupport $userinfoScopeSupport): UserInfoScopeSupportManager
+    public function add(UserInfoScopeSupport $userinfoScopeSupport): self
     {
         $this->userinfoScopeSupports[$userinfoScopeSupport->getScope()] = $userinfoScopeSupport;
 

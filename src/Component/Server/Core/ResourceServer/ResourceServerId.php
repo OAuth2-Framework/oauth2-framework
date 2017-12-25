@@ -22,7 +22,7 @@ final class ResourceServerId extends Id
      *
      * @return ResourceServerId
      */
-    public static function create(string $value): ResourceServerId
+    public static function create(string $value): self
     {
         return new self($value);
     }

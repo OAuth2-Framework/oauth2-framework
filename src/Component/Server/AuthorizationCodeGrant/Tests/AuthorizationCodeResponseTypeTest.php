@@ -20,7 +20,6 @@ use OAuth2Framework\Component\Server\AuthorizationEndpoint\Authorization;
 use OAuth2Framework\Component\Server\Core\Client\Client;
 use OAuth2Framework\Component\Server\Core\Client\ClientId;
 use OAuth2Framework\Component\Server\Core\DataBag\DataBag;
-use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
 use OAuth2Framework\Component\Server\AuthorizationCodeGrant\AuthorizationCode;
 use OAuth2Framework\Component\Server\AuthorizationCodeGrant\AuthorizationCodeResponseType;
 use OAuth2Framework\Component\Server\AuthorizationCodeGrant\AuthorizationCodeRepository;
@@ -61,13 +60,15 @@ final class AuthorizationCodeResponseTypeTest extends TestCase
         $authorization = Authorization::create(
             $client,
             [
-                'code_challenge'        => 'ABCDEFGH',
+                'code_challenge' => 'ABCDEFGH',
                 'code_challenge_method' => 'S256',
             ]
         );
         $authorization = $authorization->withUserAccount($userAccount->reveal(), true);
         $authorization = $authorization->withRedirectUri('http://localhost:8000/');
-        $authorization = $this->getResponseType()->process($authorization, function (Authorization $authorization) { return $authorization;});
+        $authorization = $this->getResponseType()->process($authorization, function (Authorization $authorization) {
+            return $authorization;
+        });
         self::assertTrue($authorization->hasResponseParameter('code'));
     }
 

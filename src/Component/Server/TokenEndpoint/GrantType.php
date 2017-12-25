@@ -44,7 +44,7 @@ interface GrantType
     /**
      * This function checks the request and returns information to issue an access token.
      *
-     * @param ServerRequestInterface $request           The request
+     * @param ServerRequestInterface $request       The request
      * @param GrantTypeData          $grantTypeData
      *
      * @throws OAuth2Exception

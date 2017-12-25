@@ -133,6 +133,7 @@ final class BearerToken implements TokenType
         if (!$accessToken->hasParameter('token_type')) {
             return false;
         }
+
         return $accessToken->getParameter('token_type') === $this->name();
     }
 

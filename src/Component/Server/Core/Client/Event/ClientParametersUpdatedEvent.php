@@ -61,7 +61,7 @@ final class ClientParametersUpdatedEvent extends Event
      *
      * @return ClientParametersUpdatedEvent
      */
-    public static function create(ClientId $clientId, DataBag $parameters): ClientParametersUpdatedEvent
+    public static function create(ClientId $clientId, DataBag $parameters): self
     {
         return new self($clientId, $parameters, null, null);
     }

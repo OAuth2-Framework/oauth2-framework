@@ -47,7 +47,6 @@ final class ClientTest extends TestCase
         $client = $client->create(
             ClientId::create('CLIENT_ID'),
             DataBag::create([
-
             ]),
             UserAccountId::create('USER_ACCOUNT_ID')
         );

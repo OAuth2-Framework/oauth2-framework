@@ -46,7 +46,7 @@ final class IdToken
      *
      * @return IdToken
      */
-    public static function create(IdTokenId $idTokenId, array $claims): IdToken
+    public static function create(IdTokenId $idTokenId, array $claims): self
     {
         return new self($idTokenId, $claims);
     }

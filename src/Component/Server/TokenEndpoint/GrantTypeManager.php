@@ -25,7 +25,7 @@ final class GrantTypeManager
      *
      * @return GrantTypeManager
      */
-    public function add(GrantType $grantType): GrantTypeManager
+    public function add(GrantType $grantType): self
     {
         $this->grantTypes[$grantType->getGrantType()] = $grantType;
 

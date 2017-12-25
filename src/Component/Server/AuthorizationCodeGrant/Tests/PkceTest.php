@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\AuthorizationCodeGrant\Tests;
 
-use Base64Url\Base64Url;
 use OAuth2Framework\Component\Server\AuthorizationCodeGrant\PKCEMethod\PKCEMethodManager;
 use OAuth2Framework\Component\Server\AuthorizationCodeGrant\PKCEMethod\Plain;
 use OAuth2Framework\Component\Server\AuthorizationCodeGrant\PKCEMethod\S256;
@@ -56,14 +55,14 @@ final class PkceTest extends TestCase
     {
         return [
             [
-                'method'    => 'S256',
+                'method' => 'S256',
                 'challenge' => 'E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM',
-                'verifier'  => 'dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk',
+                'verifier' => 'dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk',
             ],
             [
-                'method'    => 'plain',
+                'method' => 'plain',
                 'challenge' => 'dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk',
-                'verifier'  => 'dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk',
+                'verifier' => 'dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk',
             ],
         ];
     }

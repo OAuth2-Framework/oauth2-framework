@@ -22,7 +22,7 @@ final class AuthorizationCodeId extends TokenId
      *
      * @return AuthorizationCodeId
      */
-    public static function create(string $value): AuthorizationCodeId
+    public static function create(string $value): self
     {
         return new self($value);
     }

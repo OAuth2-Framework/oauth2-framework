@@ -138,7 +138,7 @@ final class RedirectUriParameterChecker implements ParameterChecker
         if (!$client->has('redirect_uris') || empty($redirectUris = $client->get('redirect_uris'))) {
             Assertion::false($this->isRedirectUriStorageEnforced(), 'Clients must register at least one redirect URI.');
             Assertion::false($client->isPublic(), 'Non-confidential clients must register at least one redirect URI.');
-            Assertion::false(!$client->isPublic() && array_key_exists('response_type', $queryParameters) && $queryParameters['response_type'] === 'token', 'Confidential clients must register at least one redirect URI when using "token" response type.');
+            Assertion::false(!$client->isPublic() && array_key_exists('response_type', $queryParameters) && 'token' === $queryParameters['response_type'], 'Confidential clients must register at least one redirect URI when using "token" response type.');
 
             return [];
         }

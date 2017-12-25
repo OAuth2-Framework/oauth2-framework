@@ -86,9 +86,10 @@ final class RefreshTokenTypeHintTest extends TestCase
                 ResourceServerId::create('RESOURCE_SERVER_ID')
             );
             $refreshTokenRepository = $this->prophesize(RefreshTokenRepository::class);
-            $refreshTokenRepository->save(Argument::type(RefreshToken::class))->will(function(){});
+            $refreshTokenRepository->save(Argument::type(RefreshToken::class))->will(function () {
+            });
             $refreshTokenRepository->find(Argument::type(RefreshTokenId::class))->will(function ($args) use ($refreshToken) {
-                if ($args[0]->getValue() === 'REFRESH_TOKEN_ID') {
+                if ('REFRESH_TOKEN_ID' === $args[0]->getValue()) {
                     return $refreshToken;
                 }
 

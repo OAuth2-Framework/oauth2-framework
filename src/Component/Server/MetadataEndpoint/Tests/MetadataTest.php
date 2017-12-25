@@ -32,6 +32,7 @@ final class MetadataTest extends TestCase
         self::assertTrue($metadata->has('foo'));
         self::assertEquals('bar', $metadata->get('foo'));
         self::assertEquals('{"foo":"bar"}', json_encode($metadata));
+
         try {
             $metadata->get('bar');
         } catch (\InvalidArgumentException $e) {

@@ -13,11 +13,9 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\TokenEndpoint\AuthMethod;
 
-
 use OAuth2Framework\Component\Server\Core\Client\Client;
 use OAuth2Framework\Component\Server\Core\Client\ClientId;
 use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
-use OAuth2Framework\Component\Server\Core\Response\OAuth2ResponseFactoryManager;
 use Psr\Http\Message\ServerRequestInterface;
 
 final class TokenEndpointAuthMethodManager
@@ -37,7 +35,7 @@ final class TokenEndpointAuthMethodManager
      *
      * @return TokenEndpointAuthMethodManager
      */
-    public function add(TokenEndpointAuthMethod $tokenEndpointAuthMethod): TokenEndpointAuthMethodManager
+    public function add(TokenEndpointAuthMethod $tokenEndpointAuthMethod): self
     {
         $this->tokenEndpointAuthMethods[] = $tokenEndpointAuthMethod;
         foreach ($tokenEndpointAuthMethod->getSupportedAuthenticationMethods() as $method_name) {
@@ -88,9 +86,9 @@ final class TokenEndpointAuthMethodManager
     }
 
     /**
-     * @param ServerRequestInterface           $request
+     * @param ServerRequestInterface  $request
      * @param TokenEndpointAuthMethod $authenticationMethod
-     * @param mixed                            $clientCredentials    The client credentials found in the request
+     * @param mixed                   $clientCredentials    The client credentials found in the request
      *
      * @throws OAuth2Exception
      *
@@ -125,10 +123,10 @@ final class TokenEndpointAuthMethodManager
     }
 
     /**
-     * @param ServerRequestInterface           $request
-     * @param Client                           $client
+     * @param ServerRequestInterface  $request
+     * @param Client                  $client
      * @param TokenEndpointAuthMethod $authenticationMethod
-     * @param mixed                            $clientCredentials
+     * @param mixed                   $clientCredentials
      *
      * @return bool
      */

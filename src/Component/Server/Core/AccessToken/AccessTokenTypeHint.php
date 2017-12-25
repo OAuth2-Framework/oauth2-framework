@@ -13,9 +13,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\Core\AccessToken;
 
-use OAuth2Framework\Component\Server\Core\AccessToken\AccessToken;
-use OAuth2Framework\Component\Server\Core\AccessToken\AccessTokenId;
-use OAuth2Framework\Component\Server\Core\AccessToken\AccessTokenRepository;
 use OAuth2Framework\Component\Server\Core\Token\Token;
 use OAuth2Framework\Component\Server\TokenIntrospectionEndpoint\TokenTypeHint as IntrospectionTokenTypeHint;
 use OAuth2Framework\Component\Server\TokenRevocationEndpoint\TokenTypeHint as RevocationTokenTypeHint;

@@ -52,7 +52,7 @@ final class InitialAccessTokenRevokedEvent extends Event
      *
      * @return InitialAccessTokenRevokedEvent
      */
-    public static function create(InitialAccessTokenId $initialAccessTokenId): InitialAccessTokenRevokedEvent
+    public static function create(InitialAccessTokenId $initialAccessTokenId): self
     {
         return new self($initialAccessTokenId, null, null);
     }

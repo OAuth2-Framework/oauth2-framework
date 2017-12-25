@@ -112,7 +112,7 @@ final class AccessTokenCreatedEvent extends Event
      *
      * @return AccessTokenCreatedEvent
      */
-    public static function create(AccessTokenId $accessTokenId, ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, array $scopes, \DateTimeImmutable $expiresAt, ? ResourceServerId $resourceServerId): AccessTokenCreatedEvent
+    public static function create(AccessTokenId $accessTokenId, ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, array $scopes, \DateTimeImmutable $expiresAt, ? ResourceServerId $resourceServerId): self
     {
         return new self($accessTokenId, $resourceOwnerId, $clientId, $parameters, $metadatas, $scopes, $expiresAt, $resourceServerId, null, null);
     }

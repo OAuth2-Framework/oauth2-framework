@@ -109,7 +109,7 @@ abstract class AuthorizationEndpoint implements MiddlewareInterface
         } catch (Exception\ProcessAuthorizationException $e) {
             $authorization = $e->getAuthorization();
             $authorization = $this->afterConsentScreenManager->process($request, $authorization);
-            if ($authorization->isAuthorized() === false) {
+            if (false === $authorization->isAuthorized()) {
                 $this->throwRedirectionException($authorization, OAuth2Exception::ERROR_ACCESS_DENIED, 'The resource owner denied access to your client.');
             }
 

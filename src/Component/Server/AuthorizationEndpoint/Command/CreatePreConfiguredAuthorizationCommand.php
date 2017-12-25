@@ -72,7 +72,7 @@ final class CreatePreConfiguredAuthorizationCommand
      *
      * @return CreatePreConfiguredAuthorizationCommand
      */
-    public static function create(PreConfiguredAuthorizationId $preConfiguredAuthorizationId, ClientId $clientId, UserAccountId $userAccountId, array $scopes, ?ResourceServerId $resourceServerId): CreatePreConfiguredAuthorizationCommand
+    public static function create(PreConfiguredAuthorizationId $preConfiguredAuthorizationId, ClientId $clientId, UserAccountId $userAccountId, array $scopes, ?ResourceServerId $resourceServerId): self
     {
         return new self($preConfiguredAuthorizationId, $clientId, $userAccountId, $scopes, $resourceServerId);
     }

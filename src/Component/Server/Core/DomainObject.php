@@ -25,5 +25,5 @@ interface DomainObject extends \JsonSerializable
      *
      * @return DomainObject
      */
-    public static function createFromJson(\stdClass $json): DomainObject;
+    public static function createFromJson(\stdClass $json): self;
 }

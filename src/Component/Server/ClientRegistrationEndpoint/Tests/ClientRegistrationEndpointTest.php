@@ -37,8 +37,8 @@ final class ClientRegistrationEndpointTest extends TestCase
     {
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getMethod()->willReturn('POST');
-        $request-> getAttribute('initial_access_token')->willReturn(null);
-        $request-> getParsedBody()->willReturn([]);
+        $request->getAttribute('initial_access_token')->willReturn(null);
+        $request->getParsedBody()->willReturn([]);
 
         $response = $this->getClientRegistrationEndpoint()->process($request->reveal());
 

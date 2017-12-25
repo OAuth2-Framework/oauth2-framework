@@ -27,7 +27,7 @@ final class TokenEndpointExtensionManager
      *
      * @return TokenEndpointExtensionManager
      */
-    public function add(TokenEndpointExtension $accessTokenParameterExtension): TokenEndpointExtensionManager
+    public function add(TokenEndpointExtension $accessTokenParameterExtension): self
     {
         $this->extensions[] = $accessTokenParameterExtension;
 
@@ -35,9 +35,9 @@ final class TokenEndpointExtensionManager
     }
 
     /**
-     * @param Client                 $client
+     * @param Client        $client
      * @param ResourceOwner $resourceOwner
-     * @param AccessToken            $accessToken
+     * @param AccessToken   $accessToken
      *
      * @return array
      */

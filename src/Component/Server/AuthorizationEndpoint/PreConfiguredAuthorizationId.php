@@ -22,7 +22,7 @@ final class PreConfiguredAuthorizationId extends TokenId
      *
      * @return PreConfiguredAuthorizationId
      */
-    public static function create(string $value): PreConfiguredAuthorizationId
+    public static function create(string $value): self
     {
         return new self($value);
     }

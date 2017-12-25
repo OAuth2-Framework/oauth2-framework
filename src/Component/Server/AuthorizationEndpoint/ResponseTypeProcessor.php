@@ -41,7 +41,7 @@ final class ResponseTypeProcessor
      *
      * @return ResponseTypeProcessor
      */
-    public static function create(Authorization $authorization): ResponseTypeProcessor
+    public static function create(Authorization $authorization): self
     {
         return new self($authorization);
     }

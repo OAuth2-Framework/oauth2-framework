@@ -37,7 +37,7 @@ final class RevokeAuthorizationCodeCommand
      *
      * @return RevokeAuthorizationCodeCommand
      */
-    public static function create(AuthorizationCodeId $authorizationCodeId): RevokeAuthorizationCodeCommand
+    public static function create(AuthorizationCodeId $authorizationCodeId): self
     {
         return new self($authorizationCodeId);
     }

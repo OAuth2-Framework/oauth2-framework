@@ -52,7 +52,7 @@ final class ClientDeletedEvent extends Event
      *
      * @return ClientDeletedEvent
      */
-    public static function create(ClientId $clientId): ClientDeletedEvent
+    public static function create(ClientId $clientId): self
     {
         return new self($clientId, null, null);
     }

@@ -111,7 +111,7 @@ final class IssuerDiscoveryEndpointTest extends TestCase
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getQueryParams()->willReturn([
             'rel' => 'http://openid.net/specs/connect/1.0/issuer',
-            'resource' => '@foo'
+            'resource' => '@foo',
         ]);
         $repository = $this->prophesize(ResourceRepository::class);
         $handler = $this->prophesize(RequestHandlerInterface::class);
@@ -137,7 +137,7 @@ final class IssuerDiscoveryEndpointTest extends TestCase
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getQueryParams()->willReturn([
             'rel' => 'http://openid.net/specs/connect/1.0/issuer',
-            'resource' => 'hello@me.com'
+            'resource' => 'hello@me.com',
         ]);
         $repository = $this->prophesize(ResourceRepository::class);
         $handler = $this->prophesize(RequestHandlerInterface::class);
@@ -163,7 +163,7 @@ final class IssuerDiscoveryEndpointTest extends TestCase
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getQueryParams()->willReturn([
             'rel' => 'http://openid.net/specs/connect/1.0/issuer',
-            'resource' => 'bad@www.foo.bar:8000'
+            'resource' => 'bad@www.foo.bar:8000',
         ]);
         $repository = $this->prophesize(ResourceRepository::class);
         $handler = $this->prophesize(RequestHandlerInterface::class);
@@ -189,7 +189,7 @@ final class IssuerDiscoveryEndpointTest extends TestCase
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getQueryParams()->willReturn([
             'rel' => 'http://openid.net/specs/connect/1.0/issuer',
-            'resource' => 'hello@www.foo.bar:8000'
+            'resource' => 'hello@www.foo.bar:8000',
         ]);
         $resource = $this->prophesize(Resource::class);
         $resource->getIssuer()->willReturn('https://my.server.com/hello');
@@ -218,7 +218,7 @@ final class IssuerDiscoveryEndpointTest extends TestCase
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getQueryParams()->willReturn([
             'rel' => 'http://openid.net/specs/connect/1.0/issuer',
-            'resource' => 'acct:hello%40you@www.foo.bar:8000'
+            'resource' => 'acct:hello%40you@www.foo.bar:8000',
         ]);
         $resource = $this->prophesize(Resource::class);
         $resource->getIssuer()->willReturn('https://my.server.com/hello');
@@ -247,7 +247,7 @@ final class IssuerDiscoveryEndpointTest extends TestCase
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getQueryParams()->willReturn([
             'rel' => 'http://openid.net/specs/connect/1.0/issuer',
-            'resource' => 'https://www.foo.bar:8000/+hello'
+            'resource' => 'https://www.foo.bar:8000/+hello',
         ]);
         $resource = $this->prophesize(Resource::class);
         $resource->getIssuer()->willReturn('https://my.server.com/hello');

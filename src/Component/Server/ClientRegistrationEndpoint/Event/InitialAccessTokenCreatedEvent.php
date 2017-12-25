@@ -69,7 +69,7 @@ final class InitialAccessTokenCreatedEvent extends Event
      *
      * @return InitialAccessTokenCreatedEvent
      */
-    public static function create(InitialAccessTokenId $initialAccessTokenId, UserAccountId $userAccountId, ? \DateTimeImmutable $expiresAt): InitialAccessTokenCreatedEvent
+    public static function create(InitialAccessTokenId $initialAccessTokenId, UserAccountId $userAccountId, ? \DateTimeImmutable $expiresAt): self
     {
         return new self($initialAccessTokenId, $userAccountId, $expiresAt, null, null);
     }

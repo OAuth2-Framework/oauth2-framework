@@ -16,7 +16,6 @@ namespace OAuth2Framework\Component\Server\Core\Client\Rule;
 use OAuth2Framework\Component\Server\Core\Client\ClientId;
 use OAuth2Framework\Component\Server\Core\DataBag\DataBag;
 
-
 final class ClientIdIssuedAtRule implements Rule
 {
     /**

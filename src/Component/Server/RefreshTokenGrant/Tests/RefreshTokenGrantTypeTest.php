@@ -108,7 +108,7 @@ final class RefreshTokenGrantTypeTest extends TestCase
         $client->eraseMessages();
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getParsedBody()->willReturn(['refresh_token' => 'REFRESH_TOKEN_ID']);
-        $request->getAttribute("client")->willReturn($client);
+        $request->getAttribute('client')->willReturn($client);
         $grantTypeData = GrantTypeData::create($client);
 
         $receivedGrantTypeData = $this->getGrantType()->grant($request->reveal(), $grantTypeData);

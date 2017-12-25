@@ -54,7 +54,7 @@ final class CreateInitialAccessTokenCommand
      *
      * @return CreateInitialAccessTokenCommand
      */
-    public static function create(InitialAccessTokenId $initialAccessTokenId, ?UserAccountId $userAccountId, ? \DateTimeImmutable $expiresAt): CreateInitialAccessTokenCommand
+    public static function create(InitialAccessTokenId $initialAccessTokenId, ?UserAccountId $userAccountId, ? \DateTimeImmutable $expiresAt): self
     {
         return new self($initialAccessTokenId, $userAccountId, $expiresAt);
     }

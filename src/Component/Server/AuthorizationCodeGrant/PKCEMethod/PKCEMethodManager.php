@@ -25,7 +25,7 @@ final class PKCEMethodManager
      *
      * @return PKCEMethodManager
      */
-    public function add(PKCEMethod $method): PKCEMethodManager
+    public function add(PKCEMethod $method): self
     {
         $this->pkceMethods[$method->name()] = $method;
 

@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\TokenEndpoint\AuthMethod;
 
-
 use Jose\Component\Checker\ClaimCheckerManager;
 use Jose\Component\Core\JWKSet;
 use Jose\Component\Encryption\JWELoader;
@@ -22,7 +21,6 @@ use OAuth2Framework\Component\Server\Core\Client\Client;
 use OAuth2Framework\Component\Server\Core\Client\ClientId;
 use OAuth2Framework\Component\Server\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
-use OAuth2Framework\Component\Server\Core\Response\OAuth2ResponseFactoryManager;
 use Psr\Http\Message\ServerRequestInterface;
 
 abstract class ClientAssertionJwt implements TokenEndpointAuthMethod

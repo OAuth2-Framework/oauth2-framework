@@ -19,7 +19,6 @@ use OAuth2Framework\Component\Server\AuthorizationEndpoint\Exception\ShowConsent
 use OAuth2Framework\Component\Server\AuthorizationEndpoint\PreConfiguredAuthorization;
 use OAuth2Framework\Component\Server\AuthorizationEndpoint\PreConfiguredAuthorizationRepository;
 use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
-use OAuth2Framework\Component\Server\Core\Response\OAuth2ResponseFactoryManager;
 use Psr\Http\Message\ServerRequestInterface;
 
 final class PreConfiguredAuthorizationExtension implements BeforeConsentScreen

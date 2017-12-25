@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\OpenIdConnect\IdTokenGrant;
 
-
 use Jose\Component\Core\JWKSet;
 use Jose\Component\Encryption\JWEBuilder;
 use Jose\Component\Signature\JWSBuilder;

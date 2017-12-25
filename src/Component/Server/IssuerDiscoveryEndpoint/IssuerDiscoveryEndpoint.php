@@ -49,10 +49,10 @@ final class IssuerDiscoveryEndpoint implements MiddlewareInterface
     /**
      * IssuerDiscoveryEndpoint constructor.
      *
-     * @param ResourceRepository       $resourceManager  The Resource Manager
-     * @param ResponseFactoryInterface $responseFactory  The Response Factory
-     * @param UriFactoryInterface      $uriFactory       The Uri Factory
-     * @param string                   $server           The host of this discovery service
+     * @param ResourceRepository       $resourceManager The Resource Manager
+     * @param ResponseFactoryInterface $responseFactory The Response Factory
+     * @param UriFactoryInterface      $uriFactory      The Uri Factory
+     * @param string                   $server          The host of this discovery service
      */
     public function __construct(ResourceRepository $resourceManager, ResponseFactoryInterface $responseFactory, UriFactoryInterface $uriFactory, string $server)
     {
@@ -99,7 +99,7 @@ final class IssuerDiscoveryEndpoint implements MiddlewareInterface
 
     /**
      * @param ResourceId $resourceName
-     * @param Resource   $resource
+     * @param resource   $resource
      *
      * @return array
      */
@@ -127,7 +127,7 @@ final class IssuerDiscoveryEndpoint implements MiddlewareInterface
         if (!array_key_exists('rel', $query_params)) {
             throw new \InvalidArgumentException('The parameter "rel" is mandatory.', 400);
         }
-        if ($query_params['rel'] !== self::REL_NAME) {
+        if (self::REL_NAME !== $query_params['rel']) {
             throw new \InvalidArgumentException('Unsupported "rel" parameter value.', 400);
         }
     }

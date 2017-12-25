@@ -13,11 +13,9 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\Core\Client\Rule;
 
-
 use OAuth2Framework\Component\Server\Core\Client\ClientId;
 use OAuth2Framework\Component\Server\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Server\Core\Scope\ScopeRepository;
-
 
 final class ScopeRule implements Rule
 {
@@ -44,7 +42,7 @@ final class ScopeRule implements Rule
             if (!is_string($defaultScope)) {
                 throw new \InvalidArgumentException('The parameter "scope" must be a string.');
             }
-            if (1 !== preg_match( '/^[\x20\x23-\x5B\x5D-\x7E]+$/', $defaultScope)) {
+            if (1 !== preg_match('/^[\x20\x23-\x5B\x5D-\x7E]+$/', $defaultScope)) {
                 throw new \InvalidArgumentException('Invalid characters found in the "scope" parameter.');
             }
             $validatedParameters = $validatedParameters->with('scope', $commandParameters->get('scope'));

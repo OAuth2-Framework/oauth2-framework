@@ -29,8 +29,8 @@ final class ProcessorManager
     /**
      * ProcessorManager constructor.
      *
-     * @param null|ScopeRepository $scopeRepository
-     * @param null|ScopePolicyManager       $scopePolicyManager
+     * @param null|ScopeRepository    $scopeRepository
+     * @param null|ScopePolicyManager $scopePolicyManager
      */
     public function __construct(? ScopeRepository $scopeRepository, ? ScopePolicyManager $scopePolicyManager)
     {
@@ -43,7 +43,7 @@ final class ProcessorManager
     /**
      * @param ServerRequestInterface $request
      * @param GrantTypeData          $grantTypeData
-     * @param GrantType     $grantType
+     * @param GrantType              $grantType
      *
      * @return GrantTypeData
      */

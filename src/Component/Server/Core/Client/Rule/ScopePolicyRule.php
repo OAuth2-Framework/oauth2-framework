@@ -13,11 +13,9 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\Core\Client\Rule;
 
-
 use OAuth2Framework\Component\Server\Core\Client\ClientId;
 use OAuth2Framework\Component\Server\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Server\Core\Scope\ScopePolicyManager;
-
 
 final class ScopePolicyRule implements Rule
 {
@@ -41,10 +39,10 @@ final class ScopePolicyRule implements Rule
     {
         if ($commandParameters->has('scope_policy')) {
             $policy = $commandParameters->get('scope_policy');
-            if (!is_string($policy)){
+            if (!is_string($policy)) {
                 throw new \InvalidArgumentException('The parameter "scope_policy" must be a string.');
             }
-            if (!$this->scopePolicyManager->has($policy)){
+            if (!$this->scopePolicyManager->has($policy)) {
                 throw new \InvalidArgumentException(sprintf('The scope policy "%s" is not supported.', $policy));
             }
             $validatedParameters = $validatedParameters->with('scope_policy', $commandParameters->get('scope_policy'));

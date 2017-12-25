@@ -13,10 +13,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\Core\Client\Rule;
 
-
 use OAuth2Framework\Component\Server\Core\Client\ClientId;
 use OAuth2Framework\Component\Server\Core\DataBag\DataBag;
-
 
 final class CommonParametersRule extends AbstractInternationalizedRule
 {
@@ -41,7 +39,8 @@ final class CommonParametersRule extends AbstractInternationalizedRule
     private function getSupportedParameters(): array
     {
         return [
-            'client_name' => function () {},
+            'client_name' => function () {
+            },
             'client_uri' => $this->getUriVerificationClosure(),
             'logo_uri' => $this->getUriVerificationClosure(),
             'tos_uri' => $this->getUriVerificationClosure(),

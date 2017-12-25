@@ -29,7 +29,7 @@ final class AuthorizationCodeMarkedAsUsedEvent extends Event
     /**
      * AuthorizationCodeMarkedAsUsedEvent constructor.
      *
-     * @param AuthorizationCodeId              $authorizationCodeId
+     * @param AuthorizationCodeId     $authorizationCodeId
      * @param \DateTimeImmutable|null $recordedOn
      * @param EventId|null            $eventId
      */
@@ -52,7 +52,7 @@ final class AuthorizationCodeMarkedAsUsedEvent extends Event
      *
      * @return AuthorizationCodeMarkedAsUsedEvent
      */
-    public static function create(AuthorizationCodeId $authorizationCodeId): AuthorizationCodeMarkedAsUsedEvent
+    public static function create(AuthorizationCodeId $authorizationCodeId): self
     {
         return new self($authorizationCodeId, null, null);
     }

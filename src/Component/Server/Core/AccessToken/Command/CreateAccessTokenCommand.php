@@ -64,7 +64,7 @@ final class CreateAccessTokenCommand
     /**
      * CreateAccessTokenCommand constructor.
      *
-     * @param AccessTokenId   $accessTokenId
+     * @param AccessTokenId         $accessTokenId
      * @param ClientId              $clientId
      * @param UserAccountId         $userAccountId
      * @param \DateTimeImmutable    $expiresAt
@@ -86,7 +86,7 @@ final class CreateAccessTokenCommand
     }
 
     /**
-     * @param AccessTokenId   $accessTokenId
+     * @param AccessTokenId         $accessTokenId
      * @param ClientId              $clientId
      * @param UserAccountId         $userAccountId
      * @param \DateTimeImmutable    $expiresAt
@@ -97,7 +97,7 @@ final class CreateAccessTokenCommand
      *
      * @return CreateAccessTokenCommand
      */
-    public static function create(AccessTokenId $accessTokenId, ClientId $clientId, UserAccountId $userAccountId, \DateTimeImmutable $expiresAt, DataBag $parameters, DataBag $metadatas, array $scopes, ?ResourceServerId $resourceServerId): CreateAccessTokenCommand
+    public static function create(AccessTokenId $accessTokenId, ClientId $clientId, UserAccountId $userAccountId, \DateTimeImmutable $expiresAt, DataBag $parameters, DataBag $metadatas, array $scopes, ?ResourceServerId $resourceServerId): self
     {
         return new self($accessTokenId, $clientId, $userAccountId, $expiresAt, $parameters, $metadatas, $scopes, $resourceServerId);
     }

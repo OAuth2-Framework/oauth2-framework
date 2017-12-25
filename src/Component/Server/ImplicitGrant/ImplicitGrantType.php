@@ -81,7 +81,7 @@ final class ImplicitGrantType implements ResponseType, GrantType
             DataBag::create($authorization->getTokenType()->getInformation()),
             DataBag::create(['redirect_uri' => $authorization->getRedirectUri()]),
             $authorization->getScopes(),
-            (new \DateTimeImmutable())->setTimestamp(time()+ $this->accessTokenLifetime),
+            (new \DateTimeImmutable())->setTimestamp(time() + $this->accessTokenLifetime),
             null
         );
         $this->accessTokenRepository->save($accessToken);

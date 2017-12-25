@@ -52,7 +52,7 @@ final class AccessTokenRevokedEvent extends Event
      *
      * @return AccessTokenRevokedEvent
      */
-    public static function create(AccessTokenId $accessTokenId): AccessTokenRevokedEvent
+    public static function create(AccessTokenId $accessTokenId): self
     {
         return new self($accessTokenId, null, null);
     }

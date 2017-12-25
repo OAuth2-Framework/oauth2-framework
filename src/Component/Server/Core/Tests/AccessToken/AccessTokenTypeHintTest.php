@@ -86,9 +86,10 @@ final class AccessTokenTypeHintTest extends TestCase
                 ResourceServerId::create('RESOURCE_SERVER_ID')
             );
             $accessTokenRepository = $this->prophesize(AccessTokenRepository::class);
-            $accessTokenRepository->save(Argument::type(AccessToken::class))->will(function(){});
+            $accessTokenRepository->save(Argument::type(AccessToken::class))->will(function () {
+            });
             $accessTokenRepository->find(Argument::type(AccessTokenId::class))->will(function ($args) use ($accessToken) {
-                if ($args[0]->getValue() === 'ACCESS_TOKEN_ID') {
+                if ('ACCESS_TOKEN_ID' === $args[0]->getValue()) {
                     return $accessToken;
                 }
 

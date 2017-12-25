@@ -38,6 +38,7 @@ final class RedirectionUriRule implements Rule
             $types = explode(' ', $response_type);
             if (in_array('token', $types)) {
                 $uses_implicit_grant_type = true;
+
                 break;
             }
         }
@@ -68,7 +69,7 @@ final class RedirectionUriRule implements Rule
     /**
      * @param string $uri
      * @param string $application_type
-     * @param bool $uses_implicit_grant_type
+     * @param bool   $uses_implicit_grant_type
      */
     private function checkUri(string $uri, string $application_type, bool $uses_implicit_grant_type)
     {
@@ -82,7 +83,7 @@ final class RedirectionUriRule implements Rule
     /**
      * @param string $url
      * @param string $application_type
-     * @param bool $uses_implicit_grant_type
+     * @param bool   $uses_implicit_grant_type
      */
     public function checkUrl(string $url, string $application_type, bool $uses_implicit_grant_type)
     {
@@ -105,10 +106,10 @@ final class RedirectionUriRule implements Rule
             throw new \InvalidArgumentException('The parameter "redirect_uris" must only contain URIs without fragment.');
         }
         if ('web' === $application_type && true === $uses_implicit_grant_type) {
-            if ($parsed['host'] === 'localhost') {
+            if ('localhost' === $parsed['host']) {
                 throw new \InvalidArgumentException('The host "localhost" is not allowed for web applications that use the Implicit Grant Type.');
             }
-            if ($parsed['scheme'] !== 'https') {
+            if ('https' !== $parsed['scheme']) {
                 throw new \InvalidArgumentException('The parameter "redirect_uris" must only contain URIs with the HTTPS scheme for web applications that use the Implicit Grant Type.');
             }
         }

@@ -155,7 +155,7 @@ final class JwtBearerGrantTypeTest extends TestCase
         $client->eraseMessages();
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getParsedBody()->willReturn(['assertion' => $this->createValidAssertionFromIssuer()]);
-        $request->getAttribute("client")->willReturn($client);
+        $request->getAttribute('client')->willReturn($client);
         $grantTypeData = GrantTypeData::create($client);
         $grantTypeData = $grantTypeData->withResourceOwnerId(UserAccountId::create('USER_ACCOUNT_ID'));
 
@@ -173,7 +173,7 @@ final class JwtBearerGrantTypeTest extends TestCase
     private function getGrantType(): JwtBearerGrantType
     {
         if (null === $this->grantType) {
-            $jwsSerializerManager = JWSSerializerManager::create([new CompactSerializer(new StandardConverter())]);;
+            $jwsSerializerManager = JWSSerializerManager::create([new CompactSerializer(new StandardConverter())]);
 
             $this->grantType = new JwtBearerGrantType(
                 $this->getTrustedIssuerManager(),
@@ -196,7 +196,7 @@ final class JwtBearerGrantTypeTest extends TestCase
         $userAccount = $this->prophesize(UserAccount::class);
         $userAccount->getPublicId()->willReturn(UserAccountId::create('USER_ACCOUNT_ID'));
         $userAccountRepository = $this->prophesize(UserAccountRepository::class);
-        $userAccountRepository->find(Argument::type(UserAccountId::class))->will(function ($args) use ($userAccount){
+        $userAccountRepository->find(Argument::type(UserAccountId::class))->will(function ($args) use ($userAccount) {
             if ('USER_ACCOUNT_ID' === ($args[0])->getValue()) {
                 return $userAccount->reveal();
             }
@@ -214,13 +214,13 @@ final class JwtBearerGrantTypeTest extends TestCase
     {
         $keyset = $this->getPublicEcKeySet();
         $clientRepository = $this->prophesize(ClientRepository::class);
-        $clientRepository->find(Argument::type(ClientId::class))->will(function ($args) use ($keyset){
+        $clientRepository->find(Argument::type(ClientId::class))->will(function ($args) use ($keyset) {
             if ('CLIENT_ID' === ($args[0])->getValue()) {
                 $client = Client::createEmpty();
                 $client = $client->create(
                     ClientId::create('CLIENT_ID'),
                     DataBag::create([
-                        'jwks' => json_encode($keyset)
+                        'jwks' => json_encode($keyset),
                     ]),
                     UserAccountId::create('USER_ACCOUNT_ID')
                 );
@@ -294,7 +294,6 @@ final class JwtBearerGrantTypeTest extends TestCase
      */
     private function createExpiredAssertion(): string
     {
-
     }
 
     /**
@@ -307,7 +306,7 @@ final class JwtBearerGrantTypeTest extends TestCase
             'iss' => 'Unknown Issuer',
             'sub' => 'USER_ACCOUNT_ID',
             'aud' => 'My OAuth2 Server',
-            'exp' => time()+1000,
+            'exp' => time() + 1000,
         ];
         $header = [
             'alg' => 'ES256',
@@ -333,7 +332,7 @@ final class JwtBearerGrantTypeTest extends TestCase
             'iss' => 'Trusted Issuer #1',
             'sub' => 'USER_ACCOUNT_ID',
             'aud' => 'My OAuth2 Server',
-            'exp' => time()+1000,
+            'exp' => time() + 1000,
         ];
         $header = [
             'alg' => 'ES256',
@@ -359,7 +358,7 @@ final class JwtBearerGrantTypeTest extends TestCase
             'iss' => 'CLIENT_ID',
             'sub' => 'CLIENT_ID',
             'aud' => 'My OAuth2 Server',
-            'exp' => time()+1000,
+            'exp' => time() + 1000,
         ];
         $header = [
             'alg' => 'RS256',

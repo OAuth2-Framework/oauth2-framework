@@ -143,14 +143,15 @@ final class AuthorizationCodeGrantType implements GrantType
     private function checkClient(Client $client, array $parameters)
     {
         if (true === $client->isPublic()) {
-            if (!array_key_exists('client_id', $parameters) || $client->getPublicId()->getValue() !== $parameters['client_id']) {throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_REQUEST, 'The "client_id" parameter is required for non-confidential clients.');
+            if (!array_key_exists('client_id', $parameters) || $client->getPublicId()->getValue() !== $parameters['client_id']) {
+                throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_REQUEST, 'The "client_id" parameter is required for non-confidential clients.');
             }
         }
     }
 
     /**
      * @param AuthorizationCode $authorizationCode
-     * @param array    $parameters
+     * @param array             $parameters
      *
      * @throws OAuth2Exception
      */
@@ -181,7 +182,7 @@ final class AuthorizationCodeGrantType implements GrantType
 
     /**
      * @param AuthorizationCode $authorizationCode
-     * @param string                                                    $redirectUri
+     * @param string            $redirectUri
      *
      * @throws OAuth2Exception
      */
@@ -194,7 +195,7 @@ final class AuthorizationCodeGrantType implements GrantType
 
     /**
      * @param AuthorizationCode $authorizationCode
-     * @param Client                                                    $client
+     * @param Client            $client
      *
      * @throws OAuth2Exception
      */

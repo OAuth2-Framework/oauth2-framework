@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\AuthorizationEndpoint\ParameterChecker;
 
-
 use OAuth2Framework\Component\Server\AuthorizationEndpoint\Authorization;
 use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
 

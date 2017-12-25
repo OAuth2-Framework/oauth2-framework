@@ -46,7 +46,7 @@ final class ChangeOwnerCommand
      *
      * @return ChangeOwnerCommand
      */
-    public static function create(ClientId $clientId, UserAccountId $userAccountId): ChangeOwnerCommand
+    public static function create(ClientId $clientId, UserAccountId $userAccountId): self
     {
         return new self($clientId, $userAccountId);
     }

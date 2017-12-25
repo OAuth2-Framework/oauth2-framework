@@ -107,7 +107,7 @@ final class AuthorizationCodeResponseType implements ResponseType
             $authorization->getUserAccount()->getPublicId(),
             $queryParams,
             $authorization->getRedirectUri(),
-            (new \DateTimeImmutable())->setTimestamp(time()+ $this->authorizationCodeLifetime),
+            (new \DateTimeImmutable())->setTimestamp(time() + $this->authorizationCodeLifetime),
             DataBag::create([]),
             DataBag::create([]),
             $authorization->getScopes(),

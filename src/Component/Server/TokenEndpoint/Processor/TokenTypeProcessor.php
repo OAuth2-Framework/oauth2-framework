@@ -16,7 +16,6 @@ namespace OAuth2Framework\Component\Server\TokenEndpoint\Processor;
 use OAuth2Framework\Component\Server\TokenEndpoint\GrantTypeData;
 use OAuth2Framework\Component\Server\TokenEndpoint\GrantType;
 use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
-use OAuth2Framework\Component\Server\Core\Response\OAuth2ResponseFactoryManager;
 use OAuth2Framework\Component\Server\TokenType\TokenType;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -25,7 +24,7 @@ final class TokenTypeProcessor
     /**
      * @param ServerRequestInterface $request
      * @param GrantTypeData          $grantTypeData
-     * @param GrantType     $grantType
+     * @param GrantType              $grantType
      * @param callable               $next
      *
      * @throws OAuth2Exception

@@ -25,7 +25,7 @@ final class AccessTokenHandlerManager
      *
      * @return AccessTokenHandlerManager
      */
-    public function add(AccessTokenHandler $accessTokenHandler): AccessTokenHandlerManager
+    public function add(AccessTokenHandler $accessTokenHandler): self
     {
         $this->accessTokenHandlers[] = $accessTokenHandler;
 

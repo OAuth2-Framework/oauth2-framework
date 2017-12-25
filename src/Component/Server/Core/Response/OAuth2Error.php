@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\Core\Response;
 
-
 use Psr\Http\Message\ResponseInterface;
 
 class OAuth2Error extends OAuth2Response

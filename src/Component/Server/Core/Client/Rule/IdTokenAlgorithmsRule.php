@@ -18,7 +18,6 @@ use Jose\Component\Signature\JWSBuilder;
 use OAuth2Framework\Component\Server\Core\Client\ClientId;
 use OAuth2Framework\Component\Server\Core\DataBag\DataBag;
 
-
 final class IdTokenAlgorithmsRule implements Rule
 {
     /**
@@ -64,9 +63,9 @@ final class IdTokenAlgorithmsRule implements Rule
     }
 
     /**
-     * @param string $parameter
+     * @param string  $parameter
      * @param DataBag $commandParameters
-     * @param array $allowedAlgorithms
+     * @param array   $allowedAlgorithms
      */
     private function checkAlgorithms(string $parameter, DataBag $commandParameters, array $allowedAlgorithms)
     {

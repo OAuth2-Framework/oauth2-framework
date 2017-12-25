@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Server\DependencyInjection\Compiler;
 
-
 use OAuth2Framework\Bundle\Server\Service\MetadataBuilder;
 use OAuth2Framework\Component\Server\GrantType\PKCEMethod\PKCEMethodManager;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
