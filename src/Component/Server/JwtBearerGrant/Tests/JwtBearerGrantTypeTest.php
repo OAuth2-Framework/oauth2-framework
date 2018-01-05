@@ -203,7 +203,6 @@ final class JwtBearerGrantTypeTest extends TestCase
     private function getGrantType(): JwtBearerGrantType
     {
         if (null === $this->grantType) {
-
             $this->grantType = new JwtBearerGrantType(
                 $this->getTrustedIssuerManager(),
                 new JwsCompactSerializer(new StandardConverter()),

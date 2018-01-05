@@ -86,9 +86,9 @@ final class TokenEndpointAuthenticationMethodManager
     }
 
     /**
-     * @param ServerRequestInterface  $request
+     * @param ServerRequestInterface            $request
      * @param TokenEndpointAuthenticationMethod $authenticationMethod
-     * @param mixed                   $clientCredentials    The client credentials found in the request
+     * @param mixed                             $clientCredentials    The client credentials found in the request
      *
      * @throws OAuth2Exception
      *
@@ -123,10 +123,10 @@ final class TokenEndpointAuthenticationMethodManager
     }
 
     /**
-     * @param ServerRequestInterface  $request
-     * @param Client                  $client
+     * @param ServerRequestInterface            $request
+     * @param Client                            $client
      * @param TokenEndpointAuthenticationMethod $authenticationMethod
-     * @param mixed                   $clientCredentials
+     * @param mixed                             $clientCredentials
      *
      * @return bool
      */

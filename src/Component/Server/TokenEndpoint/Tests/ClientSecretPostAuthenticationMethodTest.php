@@ -75,7 +75,7 @@ final class ClientSecretPostAuthenticationMethodTest extends TestCase
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getParsedBody()->willReturn([
             'client_id' => 'CLIENT_ID',
-            'client_secret' => 'CLIENT_SECRET'
+            'client_secret' => 'CLIENT_SECRET',
         ]);
 
         $clientId = $method->findClientId($request->reveal(), $credentials);
@@ -92,13 +92,13 @@ final class ClientSecretPostAuthenticationMethodTest extends TestCase
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getParsedBody()->willReturn([
             'client_id' => 'CLIENT_ID',
-            'client_secret' => 'CLIENT_SECRET'
+            'client_secret' => 'CLIENT_SECRET',
         ]);
         $client = Client::createEmpty();
         $client = $client->create(
             ClientId::create('CLIENT_ID'),
             DataBag::create([
-                'client_secret' => 'CLIENT_SECRET'
+                'client_secret' => 'CLIENT_SECRET',
             ]),
             UserAccountId::create('USER_ACCOUNT_ID')
         );

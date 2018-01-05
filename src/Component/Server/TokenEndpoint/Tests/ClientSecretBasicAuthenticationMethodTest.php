@@ -45,7 +45,7 @@ final class ClientSecretBasicAuthenticationMethodTest extends TestCase
     {
         $method = new ClientSecretBasic('My Service');
         $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getHeader("Authorization")->willReturn(null);
+        $request->getHeader('Authorization')->willReturn(null);
 
         $clientId = $method->findClientId($request->reveal(), $credentials);
         self::assertNull($clientId);
@@ -59,7 +59,7 @@ final class ClientSecretBasicAuthenticationMethodTest extends TestCase
     {
         $method = new ClientSecretBasic('My Service');
         $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getHeader("Authorization")->willReturn(['Basic '.base64_encode('CLIENT_ID:CLIENT_SECRET')]);
+        $request->getHeader('Authorization')->willReturn(['Basic '.base64_encode('CLIENT_ID:CLIENT_SECRET')]);
 
         $clientId = $method->findClientId($request->reveal(), $credentials);
         self::assertInstanceOf(ClientId::class, $clientId);
@@ -77,7 +77,7 @@ final class ClientSecretBasicAuthenticationMethodTest extends TestCase
         $client = $client->create(
             ClientId::create('CLIENT_ID'),
             DataBag::create([
-                'client_secret' => 'CLIENT_SECRET'
+                'client_secret' => 'CLIENT_SECRET',
             ]),
             UserAccountId::create('USER_ACCOUNT_ID')
         );
