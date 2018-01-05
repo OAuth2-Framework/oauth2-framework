@@ -37,7 +37,7 @@ final class BearerTokenMiddleware implements MiddlewareInterface
     /**
      * BearerTokenMiddleware constructor.
      *
-     * @param BearerToken                    $bearerToken
+     * @param BearerToken           $bearerToken
      * @param AccessTokenRepository $accessTokenRepository
      */
     public function __construct(BearerToken $bearerToken, AccessTokenRepository $accessTokenRepository)
