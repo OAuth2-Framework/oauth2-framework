@@ -15,10 +15,10 @@ namespace OAuth2Framework\Component\Server\Middleware;
 
 use Interop\Http\Server\RequestHandlerInterface;
 use Interop\Http\Server\MiddlewareInterface;
-use OAuth2Framework\Component\Server\Model\Client\ClientRepositoryInterface;
-use OAuth2Framework\Component\Server\Response\OAuth2Exception;
-use OAuth2Framework\Component\Server\Response\OAuth2ResponseFactoryManager;
-use OAuth2Framework\Component\Server\TokenEndpointAuthMethod\TokenEndpointAuthMethodManager;
+use OAuth2Framework\Component\Server\Core\Client\ClientRepository;
+use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
+use OAuth2Framework\Component\Server\TokenEndpoint\AuthMethod\TokenEndpointAuthMethodManager;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 final class ClientAuthenticationMiddleware implements MiddlewareInterface
@@ -34,18 +34,18 @@ final class ClientAuthenticationMiddleware implements MiddlewareInterface
     private $authenticationRequired;
 
     /**
-     * @var ClientRepositoryInterface
+     * @var ClientRepository
      */
     private $clientRepository;
 
     /**
      * ClientAuthenticationMiddleware constructor.
      *
-     * @param ClientRepositoryInterface      $clientRepository
+     * @param ClientRepository               $clientRepository
      * @param TokenEndpointAuthMethodManager $tokenEndpointAuthMethodManager
      * @param bool                           $authenticationRequired
      */
-    public function __construct(ClientRepositoryInterface $clientRepository, TokenEndpointAuthMethodManager $tokenEndpointAuthMethodManager, bool $authenticationRequired)
+    public function __construct(ClientRepository $clientRepository, TokenEndpointAuthMethodManager $tokenEndpointAuthMethodManager, bool $authenticationRequired)
     {
         $this->clientRepository = $clientRepository;
         $this->tokenEndpointAuthMethodManager = $tokenEndpointAuthMethodManager;
@@ -68,10 +68,8 @@ final class ClientAuthenticationMiddleware implements MiddlewareInterface
         if (true === $this->authenticationRequired && null === $client) {
             throw new OAuth2Exception(
                 401,
-                [
-                    'error' => OAuth2ResponseFactoryManager::ERROR_INVALID_CLIENT,
-                    'error_description' => 'Client authentication failed.',
-                ]
+                OAuth2Exception::ERROR_INVALID_CLIENT,
+                'Client authentication failed.'
             );
         }
         if (null !== $client) {

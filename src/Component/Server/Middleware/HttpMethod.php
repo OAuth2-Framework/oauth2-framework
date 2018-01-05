@@ -15,7 +15,8 @@ namespace OAuth2Framework\Component\Server\Middleware;
 
 use Interop\Http\Server\RequestHandlerInterface;
 use Interop\Http\Server\MiddlewareInterface;
-use OAuth2Framework\Component\Server\Response\OAuth2Exception;
+use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 final class HttpMethod implements MiddlewareInterface
@@ -45,10 +46,8 @@ final class HttpMethod implements MiddlewareInterface
         if (!array_key_exists($method, $this->methodMap)) {
             throw new OAuth2Exception(
                 405,
-                [
-                    'error' => 'not_implemented',
-                    'error_description' => sprintf('The method \'%s\' is not supported.', $method),
-                ]
+                'not_implemented',
+                sprintf('The method \'%s\' is not supported.', $method)
             );
         }
 

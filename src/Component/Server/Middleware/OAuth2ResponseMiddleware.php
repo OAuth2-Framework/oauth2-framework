@@ -15,8 +15,9 @@ namespace OAuth2Framework\Component\Server\Middleware;
 
 use Interop\Http\Server\RequestHandlerInterface;
 use Interop\Http\Server\MiddlewareInterface;
-use OAuth2Framework\Component\Server\Response\OAuth2Exception;
-use OAuth2Framework\Component\Server\Response\OAuth2ResponseFactoryManager;
+use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
+use OAuth2Framework\Component\Server\Core\Response\OAuth2ResponseFactoryManager;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 final class OAuth2ResponseMiddleware implements MiddlewareInterface

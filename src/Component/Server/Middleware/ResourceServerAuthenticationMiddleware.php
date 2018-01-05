@@ -15,16 +15,15 @@ namespace OAuth2Framework\Component\Server\Middleware;
 
 use Interop\Http\Server\RequestHandlerInterface;
 use Interop\Http\Server\MiddlewareInterface;
-use OAuth2Framework\Component\Server\Model\ResourceServer\ResourceServerRepositoryInterface;
-use OAuth2Framework\Component\Server\Response\OAuth2Exception;
-use OAuth2Framework\Component\Server\Response\OAuth2ResponseFactoryManager;
-use OAuth2Framework\Component\Server\TokenIntrospectionEndpointAuthMethod\TokenIntrospectionEndpointAuthMethodManager;
+use OAuth2Framework\Component\Server\Core\ResourceServer\ResourceServerRepository;
+use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 final class ResourceServerAuthenticationMiddleware implements MiddlewareInterface
 {
     /**
-     * @var ResourceServerRepositoryInterface
+     * @var ResourceServerRepository
      */
     private $resourceServerRepository;
 
@@ -36,10 +35,10 @@ final class ResourceServerAuthenticationMiddleware implements MiddlewareInterfac
     /**
      * ResourceServerAuthenticationMiddleware constructor.
      *
-     * @param ResourceServerRepositoryInterface           $resourceServerRepository
+     * @param ResourceServerRepository                    $resourceServerRepository
      * @param TokenIntrospectionEndpointAuthMethodManager $tokenIntrospectionEndpointAuthMethodManager
      */
-    public function __construct(ResourceServerRepositoryInterface $resourceServerRepository, TokenIntrospectionEndpointAuthMethodManager $tokenIntrospectionEndpointAuthMethodManager)
+    public function __construct(ResourceServerRepository $resourceServerRepository, TokenIntrospectionEndpointAuthMethodManager $tokenIntrospectionEndpointAuthMethodManager)
     {
         $this->resourceServerRepository = $resourceServerRepository;
         $this->tokenIntrospectionEndpointAuthMethodManager = $tokenIntrospectionEndpointAuthMethodManager;
@@ -52,12 +51,12 @@ final class ResourceServerAuthenticationMiddleware implements MiddlewareInterfac
     {
         $resourceServerId = $this->tokenIntrospectionEndpointAuthMethodManager->findResourceServerInformationInTheRequest($request, $authenticationMethod, $resourceServerCredentials);
         if (null === $resourceServerId) {
-            throw new OAuth2Exception(401, ['error' => OAuth2ResponseFactoryManager::ERROR_INVALID_RESOURCE_SERVER, 'error_description' => 'Resource Server authentication failed.']);
+            throw new OAuth2Exception(401, OAuth2Exception::ERROR_INVALID_RESOURCE_SERVER, 'Resource Server authentication failed.');
         }
         $resourceServer = $this->resourceServerRepository->find($resourceServerId);
 
         if (null === $resourceServer || false === $this->tokenIntrospectionEndpointAuthMethodManager->isResourceServerAuthenticated($request, $resourceServer, $authenticationMethod, $resourceServerCredentials)) {
-            throw new OAuth2Exception(401, ['error' => OAuth2ResponseFactoryManager::ERROR_INVALID_RESOURCE_SERVER, 'error_description' => 'Resource Server authentication failed.']);
+            throw new OAuth2Exception(401, OAuth2Exception::ERROR_INVALID_RESOURCE_SERVER, 'Resource Server authentication failed.');
         }
 
         $request = $request->withAttribute('resource_server', $resourceServer);

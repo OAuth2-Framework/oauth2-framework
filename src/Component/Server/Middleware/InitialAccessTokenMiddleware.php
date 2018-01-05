@@ -16,33 +16,30 @@ namespace OAuth2Framework\Component\Server\Middleware;
 
 use Interop\Http\Server\RequestHandlerInterface;
 use Interop\Http\Server\MiddlewareInterface;
-use OAuth2Framework\Component\Server\Model\InitialAccessToken\InitialAccessTokenId;
-use OAuth2Framework\Component\Server\Model\InitialAccessToken\InitialAccessTokenRepositoryInterface;
-use OAuth2Framework\Component\Server\Response\OAuth2Exception;
-use OAuth2Framework\Component\Server\Response\OAuth2ResponseFactoryManager;
-use OAuth2Framework\Component\Server\TokenType\BearerToken;
+use OAuth2Framework\Component\Server\BearerTokenType\BearerToken;
+use OAuth2Framework\Component\Server\ClientRegistrationEndpoint\InitialAccessTokenRepository;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 final class InitialAccessTokenMiddleware implements MiddlewareInterface
 {
     /**
-     * @var \OAuth2Framework\Component\Server\TokenType\BearerToken
+     * @var BearerToken
      */
     private $bearerToken;
 
     /**
-     * @var InitialAccessTokenRepositoryInterface
+     * @var InitialAccessTokenRepository
      */
     private $initialAccessTokenRepository;
 
     /**
      * InitialAccessTokenMiddleware constructor.
      *
-     * @param BearerToken                           $bearerToken
-     * @param InitialAccessTokenRepositoryInterface $initialAccessTokenRepository
+     * @param BearerToken                  $bearerToken
+     * @param InitialAccessTokenRepository $initialAccessTokenRepository
      */
-    public function __construct(BearerToken $bearerToken, InitialAccessTokenRepositoryInterface $initialAccessTokenRepository)
+    public function __construct(BearerToken $bearerToken, InitialAccessTokenRepository $initialAccessTokenRepository)
     {
         $this->bearerToken = $bearerToken;
         $this->initialAccessTokenRepository = $initialAccessTokenRepository;
@@ -51,7 +48,7 @@ final class InitialAccessTokenMiddleware implements MiddlewareInterface
     /**
      * {@inheritdoc}
      */
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface: ResponseInterface
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         try {
             $values = [];
@@ -65,7 +62,7 @@ final class InitialAccessTokenMiddleware implements MiddlewareInterface
 
             $request = $request->withAttribute('initial_access_token', $initialAccessToken);
         } catch (\InvalidArgumentException $e) {
-            throw new OAuth2Exception(400, ['error' => OAuth2ResponseFactoryManager::ERROR_INVALID_REQUEST, 'error_description' => $e->getMessage()]);
+            throw new OAuth2Exception(400, OAuth2ResponseFactoryManager::ERROR_INVALID_REQUEST, $e->getMessage());
         }
 
         return $handler->handle($request);

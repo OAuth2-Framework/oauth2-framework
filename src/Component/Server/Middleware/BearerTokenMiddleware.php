@@ -15,11 +15,11 @@ namespace OAuth2Framework\Component\Server\Middleware;
 
 use Interop\Http\Server\RequestHandlerInterface;
 use Interop\Http\Server\MiddlewareInterface;
-use OAuth2Framework\Component\Server\Model\AccessToken\AccessTokenId;
-use OAuth2Framework\Component\Server\Model\AccessToken\AccessTokenRepositoryInterface;
-use OAuth2Framework\Component\Server\Response\OAuth2Exception;
-use OAuth2Framework\Component\Server\Response\OAuth2ResponseFactoryManager;
-use OAuth2Framework\Component\Server\TokenType\BearerToken;
+use OAuth2Framework\Component\Server\BearerTokenType\BearerToken;
+use OAuth2Framework\Component\Server\Core\AccessToken\AccessTokenId;
+use OAuth2Framework\Component\Server\Core\AccessToken\AccessTokenRepository;
+use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 final class BearerTokenMiddleware implements MiddlewareInterface
@@ -30,7 +30,7 @@ final class BearerTokenMiddleware implements MiddlewareInterface
     private $bearerToken;
 
     /**
-     * @var AccessTokenRepositoryInterface
+     * @var AccessTokenRepository
      */
     private $accessTokenRepository;
 
@@ -38,9 +38,9 @@ final class BearerTokenMiddleware implements MiddlewareInterface
      * BearerTokenMiddleware constructor.
      *
      * @param BearerToken                    $bearerToken
-     * @param AccessTokenRepositoryInterface $accessTokenRepository
+     * @param AccessTokenRepository $accessTokenRepository
      */
-    public function __construct(BearerToken $bearerToken, AccessTokenRepositoryInterface $accessTokenRepository)
+    public function __construct(BearerToken $bearerToken, AccessTokenRepository $accessTokenRepository)
     {
         $this->bearerToken = $bearerToken;
         $this->accessTokenRepository = $accessTokenRepository;
@@ -56,7 +56,7 @@ final class BearerTokenMiddleware implements MiddlewareInterface
         if (null !== $token) {
             $accessToken = $this->accessTokenRepository->find(AccessTokenId::create($token));
             if (null === $accessToken || false === $this->bearerToken->isTokenRequestValid($accessToken, $request, $additional_credential_values)) {
-                throw new OAuth2Exception(400, [OAuth2ResponseFactoryManager::ERROR_INVALID_TOKEN, 'Invalid access token.']);
+                throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_TOKEN, 'Invalid access token.');
             }
             $request = $request->withAttribute('access_token', $accessToken);
         }

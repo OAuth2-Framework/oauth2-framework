@@ -15,9 +15,9 @@ namespace OAuth2Framework\Component\Server\Middleware;
 
 use Interop\Http\Server\RequestHandlerInterface;
 use Interop\Http\Server\MiddlewareInterface;
-use OAuth2Framework\Component\Server\GrantType\GrantTypeManager;
-use OAuth2Framework\Component\Server\Response\OAuth2Exception;
-use OAuth2Framework\Component\Server\Response\OAuth2ResponseFactoryManager;
+use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
+use OAuth2Framework\Component\Server\TokenEndpoint\GrantTypeManager;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 final class GrantTypeMiddleware implements MiddlewareInterface
@@ -53,10 +53,8 @@ final class GrantTypeMiddleware implements MiddlewareInterface
             return $handler->handle($request);
         } catch (\InvalidArgumentException $e) {
             throw new OAuth2Exception(400,
-                [
-                    'error' => OAuth2ResponseFactoryManager::ERROR_INVALID_REQUEST,
-                    'error_description' => $e->getMessage(),
-                ]
+                OAuth2Exception::ERROR_INVALID_REQUEST,
+                $e->getMessage()
             );
         }
     }

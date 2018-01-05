@@ -15,7 +15,9 @@ namespace OAuth2Framework\Component\Server\Middleware;
 
 use Interop\Http\Server\RequestHandlerInterface;
 use Interop\Http\Server\MiddlewareInterface;
+use OAuth2Framework\Component\Server\TokenType\TokenType;
 use OAuth2Framework\Component\Server\TokenType\TokenTypeManager;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 final class TokenTypeMiddleware implements MiddlewareInterface
@@ -56,9 +58,9 @@ final class TokenTypeMiddleware implements MiddlewareInterface
     /**
      * @param ServerRequestInterface $request
      *
-     * @return \OAuth2Framework\Component\Server\TokenType\TokenTypeInterface
+     * @return TokenType
      */
-    private function findTokenType(ServerRequestInterface $request)
+    private function findTokenType(ServerRequestInterface $request): TokenType
     {
         $params = $request->getParsedBody() ?? [];
         if (true === $this->tokenTypeParameterAllowed && array_key_exists('token_type', $params)) {
