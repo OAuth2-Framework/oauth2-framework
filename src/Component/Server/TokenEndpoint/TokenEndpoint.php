@@ -16,6 +16,8 @@ namespace OAuth2Framework\Component\Server\TokenEndpoint;
 use Http\Message\ResponseFactory;
 use Interop\Http\Server\RequestHandlerInterface;
 use Interop\Http\Server\MiddlewareInterface;
+use OAuth2Framework\Component\Server\RefreshTokenGrant\RefreshToken;
+use OAuth2Framework\Component\Server\RefreshTokenGrant\RefreshTokenId;
 use OAuth2Framework\Component\Server\TokenEndpoint\Processor\ProcessorManager;
 use OAuth2Framework\Component\Server\Core\AccessToken\AccessToken;
 use OAuth2Framework\Component\Server\Core\AccessToken\AccessTokenRepository;
@@ -64,7 +66,7 @@ final class TokenEndpoint implements MiddlewareInterface
     private $accessTokenRepository;
 
     /**
-     * @var RefreshTokenRepository
+     * @var null|RefreshTokenRepository
      */
     private $refreshTokenRepository;
 
@@ -77,9 +79,9 @@ final class TokenEndpoint implements MiddlewareInterface
      * @param TokenEndpointExtensionManager $tokenEndpointExtensionManager
      * @param ResponseFactory               $responseFactory
      * @param AccessTokenRepository         $accessTokenRepository
-     * @param RefreshTokenRepository        $refreshTokenRepository
+     * @param RefreshTokenRepository|null   $refreshTokenRepository
      */
-    public function __construct(ProcessorManager $processorManager, ClientRepository $clientRepository, UserAccountRepository $userAccountRepository, TokenEndpointExtensionManager $tokenEndpointExtensionManager, ResponseFactory $responseFactory, AccessTokenRepository $accessTokenRepository, RefreshTokenRepository $refreshTokenRepository)
+    public function __construct(ProcessorManager $processorManager, ClientRepository $clientRepository, UserAccountRepository $userAccountRepository, TokenEndpointExtensionManager $tokenEndpointExtensionManager, ResponseFactory $responseFactory, AccessTokenRepository $accessTokenRepository, ?RefreshTokenRepository $refreshTokenRepository)
     {
         $this->processorManager = $processorManager;
         $this->clientRepository = $clientRepository;
@@ -153,9 +155,9 @@ final class TokenEndpoint implements MiddlewareInterface
      */
     private function issueAccessToken(GrantTypeData $grantTypeData): AccessToken
     {
-        if ($grantTypeData->hasRefreshToken()) {
+        $parameters = $grantTypeData->getParameters();
+        if (in_array('offline_access', $grantTypeData->getScopes()) && null !== $this->refreshTokenRepository) {
             $refreshToken = $this->refreshTokenRepository->create(
-                $grantTypeData->getResourceOwnerId(),
                 $grantTypeData->getClient()->getPublicId(),
                 $grantTypeData->getParameters(),
                 $grantTypeData->getMetadatas(),
@@ -163,6 +165,7 @@ final class TokenEndpoint implements MiddlewareInterface
                 null,
                 null
             );
+            $parameters = $parameters->with('refresh_token', $refreshToken->getTokenId());
         } else {
             $refreshToken = null;
         }
@@ -170,10 +173,9 @@ final class TokenEndpoint implements MiddlewareInterface
         $accessToken = $this->accessTokenRepository->create(
             $grantTypeData->getResourceOwnerId(),
             $grantTypeData->getClient()->getPublicId(),
-            $grantTypeData->getParameters(),
+            $parameters,
             $grantTypeData->getMetadatas(),
             $grantTypeData->getScopes(),
-            null === $refreshToken ? null : $refreshToken->getTokenId(),
             null,
             null
         );

@@ -59,7 +59,7 @@ final class GrantTypeManager
     /**
      * @return string[]
      */
-    public function getSupportedGrantTypes(): array
+    public function list(): array
     {
         return array_keys($this->grantTypes);
     }

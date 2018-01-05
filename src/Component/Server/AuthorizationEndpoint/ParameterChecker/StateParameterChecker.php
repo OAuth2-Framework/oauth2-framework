@@ -44,8 +44,8 @@ final class StateParameterChecker implements ParameterChecker
     public function process(Authorization $authorization, callable $next): Authorization
     {
         try {
-            if (true === $this->stateParameterEnforced) {
-                Assertion::true($authorization->hasQueryParam('state'), 'The parameter "state" is mandatory.');
+            if (true === $this->stateParameterEnforced && !$authorization->hasQueryParam('state')) {
+                throw new \InvalidArgumentException('The parameter "state" is mandatory.');
             }
             if (true === $authorization->hasQueryParam('state')) {
                 $authorization = $authorization->withResponseParameter('state', $authorization->getQueryParam('state'));

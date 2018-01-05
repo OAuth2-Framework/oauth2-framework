@@ -55,7 +55,7 @@ final class PreConfiguredAuthorizationExtension implements BeforeConsentScreen
             throw new ProcessAuthorizationException($authorization);
         } else {
             if ($authorization->hasPrompt('none')) {
-                throw new OAuth2Exception(400, ['error' => OAuth2Exception::ERROR_INTERACTION_REQUIRED, 'error_description' => 'The resource owner interaction is required.'], $authorization);
+                throw new OAuth2Exception(400, OAuth2Exception::ERROR_INTERACTION_REQUIRED, 'The resource owner interaction is required.', $authorization);
             }
         }
 

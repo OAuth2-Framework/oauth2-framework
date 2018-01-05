@@ -22,12 +22,18 @@ use Jose\Component\Core\AlgorithmManager;
 use Jose\Component\Core\Converter\StandardConverter;
 use Jose\Component\Core\JWK;
 use Jose\Component\Core\JWKSet;
+use Jose\Component\Encryption\Algorithm\ContentEncryption\A256GCM;
+use Jose\Component\Encryption\Algorithm\KeyEncryption\A256KW;
+use Jose\Component\Encryption\Compression\CompressionMethodManager;
+use Jose\Component\Encryption\Compression\Deflate;
+use Jose\Component\Encryption\JWEBuilder;
+use Jose\Component\Encryption\JWEDecrypter;
+use Jose\Component\Encryption\Serializer\CompactSerializer as JweCompactSerializer;
 use Jose\Component\Signature\Algorithm\ES256;
 use Jose\Component\Signature\Algorithm\RS256;
 use Jose\Component\Signature\JWSBuilder;
 use Jose\Component\Signature\JWSVerifier;
-use Jose\Component\Signature\Serializer\CompactSerializer;
-use Jose\Component\Signature\Serializer\JWSSerializerManager;
+use Jose\Component\Signature\Serializer\CompactSerializer as JwsCompactSerializer;
 use OAuth2Framework\Component\Server\Core\Client\Client;
 use OAuth2Framework\Component\Server\Core\Client\ClientId;
 use OAuth2Framework\Component\Server\Core\Client\ClientRepository;
@@ -97,7 +103,7 @@ final class JwtBearerGrantTypeTest extends TestCase
     public function theTokenResponseIsCorrectlyPreparedWithAssertionFromClient()
     {
         $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getParsedBody()->willReturn(['assertion' => $this->createValidAssertionFromClient()]);
+        $request->getParsedBody()->willReturn(['assertion' => $this->createValidEncryptedAssertionFromClient()]);
         $grantTypeData = GrantTypeData::create(null);
 
         $receivedGrantTypeData = $this->getGrantType()->prepareTokenResponse($request->reveal(), $grantTypeData);
@@ -144,7 +150,7 @@ final class JwtBearerGrantTypeTest extends TestCase
     /**
      * @test
      */
-    public function theGrantTypeCanGrantTheClient()
+    public function theGrantTypeCanGrantTheClientUsingTheTokenIssuedByATrustedIssuer()
     {
         $client = Client::createEmpty();
         $client = $client->create(
@@ -166,6 +172,30 @@ final class JwtBearerGrantTypeTest extends TestCase
     }
 
     /**
+     * @test
+     */
+    public function theGrantTypeCanGrantTheClientUsingTheTokenIssuedByTheClient()
+    {
+        $client = Client::createEmpty();
+        $client = $client->create(
+            ClientId::create('CLIENT_ID'),
+            DataBag::create([]),
+            UserAccountId::create('USER_ACCOUNT_ID')
+        );
+        $client->eraseMessages();
+        $request = $this->prophesize(ServerRequestInterface::class);
+        $request->getParsedBody()->willReturn(['assertion' => $this->createValidEncryptedAssertionFromClient()]);
+        $request->getAttribute('client')->willReturn($client);
+        $grantTypeData = GrantTypeData::create($client);
+        $grantTypeData = $grantTypeData->withResourceOwnerId(UserAccountId::create('CLIENT_ID'));
+
+        $receivedGrantTypeData = $this->getGrantType()->grant($request->reveal(), $grantTypeData);
+        self::assertSame($receivedGrantTypeData, $grantTypeData);
+        self::assertEquals('CLIENT_ID', $receivedGrantTypeData->getResourceOwnerId()->getValue());
+        self::assertEquals('CLIENT_ID', $receivedGrantTypeData->getClient()->getPublicId()->getValue());
+    }
+
+    /**
      * @var JwtBearerGrantType|null
      */
     private $grantType = null;
@@ -173,15 +203,21 @@ final class JwtBearerGrantTypeTest extends TestCase
     private function getGrantType(): JwtBearerGrantType
     {
         if (null === $this->grantType) {
-            $jwsSerializerManager = JWSSerializerManager::create([new CompactSerializer(new StandardConverter())]);
 
             $this->grantType = new JwtBearerGrantType(
                 $this->getTrustedIssuerManager(),
-                $jwsSerializerManager,
+                new JwsCompactSerializer(new StandardConverter()),
                 $this->getJwsVerifier(),
                 $this->getClaimCheckerManager(),
                 $this->getClientRepository(),
                 $this->getUserAccountRepository()
+            );
+
+            $this->grantType->enableEncryptedAssertions(
+                new JweCompactSerializer(new StandardConverter()),
+                $this->getJweDecrypter(),
+                $this->getEncryptionKeySet(),
+                false
             );
         }
 
@@ -247,6 +283,18 @@ final class JwtBearerGrantTypeTest extends TestCase
     }
 
     /**
+     * @return JWEDecrypter
+     */
+    private function getJweDecrypter(): JWEDecrypter
+    {
+        return new JWEDecrypter(
+            AlgorithmManager::create([new A256KW()]),
+            AlgorithmManager::create([new A256GCM()]),
+            CompressionMethodManager::create([new Deflate()])
+        );
+    }
+
+    /**
      * @return JWSBuilder
      */
     private function getJwsBuilder(): JWSBuilder
@@ -257,6 +305,19 @@ final class JwtBearerGrantTypeTest extends TestCase
                 new RS256(),
                 new ES256(),
             ])
+        );
+    }
+
+    /**
+     * @return JWEBuilder
+     */
+    private function getJweBuilder(): JWEBuilder
+    {
+        return new JWEBuilder(
+            new StandardConverter(),
+            AlgorithmManager::create([new A256KW()]),
+            AlgorithmManager::create([new A256GCM()]),
+            CompressionMethodManager::create([new Deflate()])
         );
     }
 
@@ -317,7 +378,7 @@ final class JwtBearerGrantTypeTest extends TestCase
             ->withPayload($jsonConverter->encode($claims))
             ->addSignature($this->getPrivateEcKey(), $header)
             ->build();
-        $serializer = new CompactSerializer($jsonConverter);
+        $serializer = new JwsCompactSerializer($jsonConverter);
 
         return $serializer->serialize($jws, 0);
     }
@@ -343,7 +404,7 @@ final class JwtBearerGrantTypeTest extends TestCase
             ->withPayload($jsonConverter->encode($claims))
             ->addSignature($this->getPrivateEcKey(), $header)
             ->build();
-        $serializer = new CompactSerializer($jsonConverter);
+        $serializer = new JwsCompactSerializer($jsonConverter);
 
         return $serializer->serialize($jws, 0);
     }
@@ -351,7 +412,7 @@ final class JwtBearerGrantTypeTest extends TestCase
     /**
      * @return string
      */
-    private function createValidAssertionFromClient(): string
+    private function createValidEncryptedAssertionFromClient(): string
     {
         $jsonConverter = new StandardConverter();
         $claims = [
@@ -369,9 +430,19 @@ final class JwtBearerGrantTypeTest extends TestCase
             ->withPayload($jsonConverter->encode($claims))
             ->addSignature($this->getPrivateRsaKey(), $header)
             ->build();
-        $serializer = new CompactSerializer($jsonConverter);
+        $serializer = new JwsCompactSerializer($jsonConverter);
+        $jwt = $serializer->serialize($jws, 0);
 
-        return $serializer->serialize($jws, 0);
+        $jwe = $this->getJweBuilder()
+            ->create()
+            ->withPayload($jwt)
+            ->withSharedProtectedHeader(['alg' => 'A256KW', 'enc' => 'A256GCM'])
+            ->addRecipient($this->getEncryptionKey())
+            ->build();
+        $serializer = new JweCompactSerializer($jsonConverter);
+        $jwt = $serializer->serialize($jwe, 0);
+
+        return $jwt;
     }
 
     /**
@@ -388,6 +459,22 @@ final class JwtBearerGrantTypeTest extends TestCase
     private function getPublicRsaKeySet(): JWKSet
     {
         return JWKSet::createFromJson('{"keys":[{"kty":"RSA","n":"sLjaCStJYRr_y7_3GLlDb4bnGJ8XirSdFboYmvA38NXJ6PhIIjr-sFzfwlcpxZxz6zzjXkDFs3AcUOvC3_KRT5tn4XBOHcR6ABrT65dZTe_qalEpYeQG4oxevc01vmD_dD6Ho2O69amT4gscus2pvszFPdraMYybH24aQFztVtc","e":"AQAB"},{"kty":"RSA","n":"um8f5neOmoGMsQ-BJMOgehsSOzQiYOk4W7AJL97q-V_8VojXJKHUqvTqiDeVfcgxPz1kNseIkm4PivKYQ1_Yh1j5RxL30V8Pc3VR7ReLMvEsQUbedkJKqhXy7gOYyc4IrYTux1I2dI5I8r_lvtDtTgWB5UrWfwj9ddVhk22z6jc","e":"AQAB"}]}');
+    }
+
+    /**
+     * @return JWKSet
+     */
+    private function getEncryptionKey(): JWK
+    {
+        return JWK::createFromJson('{"kty":"oct","k":"bJzb8RaN7TzPz001PeF0lw0ZoUJqbazGxMvBd_xzfms"}');
+    }
+
+    /**
+     * @return JWKSet
+     */
+    private function getEncryptionKeySet(): JWKSet
+    {
+        return JWKSet::createFromJson('{"keys":[{"kty":"oct","k":"bJzb8RaN7TzPz001PeF0lw0ZoUJqbazGxMvBd_xzfms"},{"kty":"oct","k":"dIx5cdLn-dAgNkvfZSiroJuy5oykHO4hDnYpmwlMq6A"}]}');
     }
 
     /**

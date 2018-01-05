@@ -38,13 +38,7 @@ final class TokenTypeProcessor
          */
         $tokenType = $request->getAttribute('token_type');
         if (!$grantTypeData->getClient()->isTokenTypeAllowed($tokenType->name())) {
-            throw new OAuth2Exception(
-                400,
-                [
-                    'error' => OAuth2Exception::ERROR_INVALID_REQUEST,
-                    'error_description' => sprintf('The token type "%s" is not allowed for the client.', $tokenType->name()),
-                ]
-            );
+            throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_REQUEST, sprintf('The token type "%s" is not allowed for the client.', $tokenType->name()));
         }
 
         $info = $tokenType->getInformation();

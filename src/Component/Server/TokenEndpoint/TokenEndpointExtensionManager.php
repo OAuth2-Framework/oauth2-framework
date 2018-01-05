@@ -16,10 +16,12 @@ namespace OAuth2Framework\Component\Server\TokenEndpoint;
 use OAuth2Framework\Component\Server\Core\AccessToken\AccessToken;
 use OAuth2Framework\Component\Server\Core\Client\Client;
 use OAuth2Framework\Component\Server\Core\ResourceOwner\ResourceOwner;
-use OAuth2Framework\Component\Server\TokenEndpoint\Extension\TokenEndpointExtension;
 
 final class TokenEndpointExtensionManager
 {
+    /**
+     * @var TokenEndpointExtension[]
+     */
     private $extensions = [];
 
     /**

@@ -216,13 +216,13 @@ final class Client implements ResourceOwner, ContainsRecordedMessages, DomainObj
      */
     public function isPublic(): bool
     {
-        return 'none' === $this->getTokenEndpointAuthMethod();
+        return 'none' === $this->getTokenEndpointAuthenticationMethod();
     }
 
     /**
      * @return string
      */
-    public function getTokenEndpointAuthMethod(): string
+    public function getTokenEndpointAuthenticationMethod(): string
     {
         if ($this->has('token_endpoint_auth_method')) {
             return $this->get('token_endpoint_auth_method');

@@ -11,29 +11,41 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Component\Server\TokenEndpoint\AuthMethod;
+namespace OAuth2Framework\Component\Server\TokenEndpoint\AuthenticationMethod;
 
 use Jose\Component\Checker\ClaimCheckerManager;
 use Jose\Component\Core\JWKSet;
-use Jose\Component\Encryption\JWELoader;
-use Jose\Component\Signature\JWSLoader;
+use Jose\Component\Encryption\JWEDecrypter;
+use Jose\Component\Encryption\Serializer\CompactSerializer as JweCompactSerializer;
+use Jose\Component\Signature\JWSVerifier;
+use Jose\Component\Signature\Serializer\CompactSerializer as JwsCompactSerializer;
 use OAuth2Framework\Component\Server\Core\Client\Client;
 use OAuth2Framework\Component\Server\Core\Client\ClientId;
 use OAuth2Framework\Component\Server\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
 use Psr\Http\Message\ServerRequestInterface;
 
-abstract class ClientAssertionJwt implements TokenEndpointAuthMethod
+final class ClientAssertionJwt implements TokenEndpointAuthenticationMethod
 {
     /**
-     * @var JWSLoader
+     * @var JwsCompactSerializer
      */
-    private $jwsLoader;
+    private $jwsSerializer;
 
     /**
-     * @var JWELoader
+     * @var JWSVerifier
      */
-    private $jweLoader;
+    private $jwsVerifier;
+
+    /**
+     * @var JweCompactSerializer
+     */
+    private $jweSerializer;
+
+    /**
+     * @var JWEDecrypter
+     */
+    private $jweDecrypter;
 
     /**
      * @var bool
@@ -58,26 +70,32 @@ abstract class ClientAssertionJwt implements TokenEndpointAuthMethod
     /**
      * ClientAssertionJwt constructor.
      *
-     * @param JWSLoader           $jwsLoader
-     * @param ClaimCheckerManager $claimCheckerManager
-     * @param int                 $secretLifetime
+     * @param JwsCompactSerializer $jwsSerializer
+     * @param JWSVerifier          $jwsVerifier
+     * @param ClaimCheckerManager  $claimCheckerManager
+     * @param int                  $secretLifetime
      */
-    public function __construct(JWSLoader $jwsLoader, ClaimCheckerManager $claimCheckerManager, int $secretLifetime = 0)
+    public function __construct(JwsCompactSerializer $jwsSerializer, JWSVerifier $jwsVerifier, ClaimCheckerManager $claimCheckerManager, int $secretLifetime = 0)
     {
-        Assertion::greaterOrEqualThan($secretLifetime, 0);
-        $this->jwsLoader = $jwsLoader;
+        if ($secretLifetime < 0) {
+            throw new \InvalidArgumentException('The secret lifetime must be at least 0 (= unlimited).');
+        }
+        $this->jwsSerializer = $jwsSerializer;
+        $this->jwsVerifier = $jwsVerifier;
         $this->claimCheckerManager = $claimCheckerManager;
         $this->secretLifetime = $secretLifetime;
     }
 
     /**
-     * @param JWELoader $jweLoader
-     * @param bool      $encryptionRequired
-     * @param JWKSet    $keyEncryptionKeySet
+     * @param JweCompactSerializer $jweSerializer
+     * @param JWEDecrypter         $jweDecrypter
+     * @param JWKSet               $keyEncryptionKeySet
+     * @param bool                 $encryptionRequired
      */
-    public function enableEncryptedAssertions(JWELoader $jweLoader, bool $encryptionRequired, JWKSet $keyEncryptionKeySet)
+    public function enableEncryptedAssertions(JweCompactSerializer $jweSerializer, JWEDecrypter $jweDecrypter, JWKSet $keyEncryptionKeySet, bool $encryptionRequired)
     {
-        $this->jweLoader = $jweLoader;
+        $this->jweSerializer = $jweSerializer;
+        $this->jweDecrypter = $jweDecrypter;
         $this->encryptionRequired = $encryptionRequired;
         $this->keyEncryptionKeySet = $keyEncryptionKeySet;
     }
@@ -87,7 +105,7 @@ abstract class ClientAssertionJwt implements TokenEndpointAuthMethod
      */
     public function getSupportedSignatureAlgorithms(): array
     {
-        return $this->jwsLoader->getSignatureAlgorithmManager()->list();
+        return $this->jwsVerifier->getSignatureAlgorithmManager()->list();
     }
 
     /**
@@ -95,7 +113,7 @@ abstract class ClientAssertionJwt implements TokenEndpointAuthMethod
      */
     public function getSupportedContentEncryptionAlgorithms(): array
     {
-        return null === $this->jweLoader ? [] : $this->jweLoader->getContentEncryptionAlgorithmManager()->list();
+        return null === $this->jweDecrypter ? [] : $this->jweDecrypter->getContentEncryptionAlgorithmManager()->list();
     }
 
     /**
@@ -103,7 +121,7 @@ abstract class ClientAssertionJwt implements TokenEndpointAuthMethod
      */
     public function getSupportedKeyEncryptionAlgorithms(): array
     {
-        return null === $this->jweLoader ? [] : $this->jweLoader->getKeyEncryptionAlgorithmManager()->list();
+        return null === $this->jweDecrypter ? [] : $this->jweDecrypter->getKeyEncryptionAlgorithmManager()->list();
     }
 
     /**
@@ -131,45 +149,63 @@ abstract class ClientAssertionJwt implements TokenEndpointAuthMethod
         }
 
         try {
-            Assertion::keyExists($parameters, 'client_assertion', 'Parameter "client_assertion" is missing.');
+            if (!array_key_exists('client_assertion', $parameters)) {
+                throw new \InvalidArgumentException('Parameter "client_assertion" is missing.');
+            }
             $client_assertion = $parameters['client_assertion'];
             $client_assertion = $this->tryToDecryptClientAssertion($client_assertion);
-            $jwt = $this->jwsLoader->load($client_assertion);
-            $this->claimCheckerManager->check($jwt);
-            $claims = json_decode($jwt->getPayload(), true);
+            $jws = $this->jwsSerializer->unserialize($client_assertion);
+            if (1 !== $jws->countSignatures()) {
+                throw new \InvalidArgumentException('The assertion must have only one signature.');
+            }
+            $claims = json_decode($jws->getPayload(), true);
+            $claims = $this->claimCheckerManager->check($claims);
 
             $diff = array_diff(['iss', 'sub', 'aud', 'jti', 'exp'], array_keys($claims));
-            Assertion::eq(0, count($diff), sprintf('The following claim(s) is/are mandatory: "%s".', implode(', ', array_values($diff))));
-            Assertion::eq($claims['sub'], $claims['iss'], 'The claims "sub" and "iss" must contain the client public ID.');
+            if (!empty($diff)) {
+                throw new \InvalidArgumentException(sprintf('The following claim(s) is/are mandatory: "%s".', implode(', ', array_values($diff))));
+            }
+            if ($claims['sub'] !== $claims['iss']) {
+                throw new \InvalidArgumentException('The claims "sub" and "iss" must contain the client public ID.');
+            }
         } catch (\Exception $e) {
-            throw new OAuth2Exception(400, ['error' => OAuth2Exception::ERROR_INVALID_REQUEST, 'error_description' => $e->getMessage()]);
+            throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_REQUEST, $e->getMessage());
         }
 
-        $clientCredentials = $jwt;
+        $clientCredentials = $jws;
 
         return ClientId::create($claims['sub']);
     }
 
     /**
-     * {@inheritdoc}
+     * @param string $assertion
+     *
+     * @return string
+     *
+     * @throws OAuth2Exception
      */
-    private function tryToDecryptClientAssertion(string $clientAssertion): string
+    private function tryToDecryptClientAssertion(string $assertion): string
     {
-        if (null === $this->jweLoader) {
-            return $clientAssertion;
+        if (null === $this->jweDecrypter) {
+            return $assertion;
         }
 
         try {
-            $jwe = $this->jweLoader->load($clientAssertion);
-            $jwe = $this->jweLoader->decryptUsingKeySet($jwe, $this->keyEncryptionKeySet);
-
-            return $jwe->getPayload();
-        } catch (\Exception $e) {
-            if (true === $this->encryptionRequired) {
-                throw new OAuth2Exception(400, ['error' => OAuth2Exception::ERROR_INVALID_REQUEST, 'error_description' => $e->getMessage()]);
+            $jwe = $this->jweSerializer->unserialize($assertion);
+            if (1 !== $jwe->countRecipients()) {
+                throw new \InvalidArgumentException('The client assertion must have only one recipient.');
+            }
+            if (true === $this->jweDecrypter->decryptUsingKeySet($jwe, $this->keyEncryptionKeySet, 0)) {
+                return $jwe->getPayload();
             }
 
-            return $clientAssertion;
+            throw new \InvalidArgumentException('Unable to decrypt the client assertion.');
+        } catch (\Exception $e) {
+            if (true === $this->encryptionRequired) {
+                throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_REQUEST, $e->getMessage(), [], $e);
+            }
+
+            return $assertion;
         }
     }
 
@@ -179,9 +215,10 @@ abstract class ClientAssertionJwt implements TokenEndpointAuthMethod
     public function isClientAuthenticated(Client $client, $clientCredentials, ServerRequestInterface $request): bool
     {
         try {
+            //Get the JWKSet depending on the client configuration and parameters
             $jwkSet = $client->getPublicKeySet();
             Assertion::isInstanceOf($jwkSet, JWKSet::class);
-            $this->jwsLoader->verifyWithKeySet($clientCredentials, $jwkSet);
+            $this->jwsVerifier->verifyWithKeySet($clientCredentials, $jwkSet);
         } catch (\Exception $e) {
             return false;
         }
@@ -206,12 +243,16 @@ abstract class ClientAssertionJwt implements TokenEndpointAuthMethod
             $validatedParameters = $validatedParameters->with('client_secret', $this->createClientSecret());
             $validatedParameters = $validatedParameters->with('client_secret_expires_at', (0 === $this->secretLifetime ? 0 : time() + $this->secretLifetime));
         } elseif ('private_key_jwt' === $commandParameters->get('token_endpoint_auth_method')) {
-            Assertion::true($commandParameters->has('jwks') xor $commandParameters->has('jwks_uri'), 'The parameter "jwks" or "jwks_uri" must be set.');
+            if (!($commandParameters->has('jwks') xor $commandParameters->has('jwks_uri'))) {
+                throw new \InvalidArgumentException('The parameter "jwks" or "jwks_uri" must be set.');
+            }
             if ($commandParameters->has('jwks')) {
                 $jwks = JWKSet::createFromKeyData($commandParameters->get('jwks'));
-                Assertion::isInstanceOf($jwks, JWKSet::class, 'The parameter "jwks" must be a valid JWKSet object.');
+                if (!$jwks instanceof JWKSet) {
+                    throw new \InvalidArgumentException('The parameter "jwks" must be a valid JWKSet object.');
+                }
                 $validatedParameters = $validatedParameters->with('jwks', $commandParameters->get('jwks'));
-            }/* else {
+            }/* else { FIXME
                 $jwks = JWKFactory::createFromJKU($commandParameters->get('jwks_uri'));
                 Assertion::isInstanceOf($jwks, JWKSet::class, 'The parameter "jwks_uri" must be a valid uri that provide a valid JWKSet.');
                 $validatedParameters = $validatedParameters->with('jwks_uri', $commandParameters->get('jwks_uri'));
@@ -226,5 +267,8 @@ abstract class ClientAssertionJwt implements TokenEndpointAuthMethod
     /**
      * @return string
      */
-    abstract protected function createClientSecret(): string;
+    private function createClientSecret(): string
+    {
+        return bin2hex(random_bytes(128));
+    }
 }

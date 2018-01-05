@@ -11,14 +11,14 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Component\Server\TokenEndpoint\AuthMethod;
+namespace OAuth2Framework\Component\Server\TokenEndpoint\AuthenticationMethod;
 
 use OAuth2Framework\Component\Server\Core\Client\Client;
 use OAuth2Framework\Component\Server\Core\Client\ClientId;
 use OAuth2Framework\Component\Server\Core\DataBag\DataBag;
 use Psr\Http\Message\ServerRequestInterface;
 
-final class None implements TokenEndpointAuthMethod
+final class None implements TokenEndpointAuthenticationMethod
 {
     /**
      * {@inheritdoc}

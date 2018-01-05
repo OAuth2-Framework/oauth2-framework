@@ -52,7 +52,9 @@ final class TokenTypeParameterChecker implements ParameterChecker
             } else {
                 $tokenType = $this->tokenTypeManager->getDefault();
             }
-            Assertion::true($authorization->getClient()->isTokenTypeAllowed($tokenType->name()), sprintf('The token type "%s" is not allowed for the client.', $tokenType->name()));
+            if (!$authorization->getClient()->isTokenTypeAllowed($tokenType->name())) {
+                throw new \InvalidArgumentException(sprintf('The token type "%s" is not allowed for the client.', $tokenType->name()));
+            }
             $authorization = $authorization->withTokenType($tokenType);
 
             return $next($authorization);

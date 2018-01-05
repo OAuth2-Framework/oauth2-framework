@@ -16,10 +16,10 @@ namespace OAuth2Framework\Component\Server\JwtBearerGrant;
 use Jose\Component\Checker\ClaimCheckerManager;
 use Jose\Component\Core\JWKSet;
 use Jose\Component\Encryption\JWEDecrypter;
-use Jose\Component\Encryption\Serializer\JWESerializerManager;
+use Jose\Component\Encryption\Serializer\CompactSerializer as JweCompactSerializer;
 use Jose\Component\Signature\JWS;
 use Jose\Component\Signature\JWSVerifier;
-use Jose\Component\Signature\Serializer\JWSSerializerManager;
+use Jose\Component\Signature\Serializer\CompactSerializer as JwsCompactSerializer;
 use OAuth2Framework\Component\Server\TokenEndpoint\GrantTypeData;
 use OAuth2Framework\Component\Server\Core\Client\ClientId;
 use OAuth2Framework\Component\Server\Core\Client\ClientRepository;
@@ -33,9 +33,9 @@ use Psr\Http\Message\ServerRequestInterface;
 final class JwtBearerGrantType implements GrantType
 {
     /**
-     * @var JWSSerializerManager
+     * @var JwsCompactSerializer
      */
-    private $jwsSerializerManager;
+    private $jwsSerializer;
 
     /**
      * @var JWSVerifier
@@ -43,9 +43,9 @@ final class JwtBearerGrantType implements GrantType
     private $jwsVerifier;
 
     /**
-     * @var JWESerializerManager|null
+     * @var JweCompactSerializer|null
      */
-    private $jweSerializerManager;
+    private $jweSerializer;
 
     /**
      * @var JWEDecrypter|null
@@ -86,15 +86,15 @@ final class JwtBearerGrantType implements GrantType
      * JWTBearerGrantType constructor.
      *
      * @param TrustedIssuerManager  $trustedIssuerManager
-     * @param JWSSerializerManager  $jwsSerializerManager
+     * @param JwsCompactSerializer  $jwsSerializer
      * @param JWSVerifier           $jwsVerifier
      * @param ClaimCheckerManager   $claimCheckerManager
      * @param ClientRepository      $clientRepository
      * @param UserAccountRepository $userAccountRepository
      */
-    public function __construct(TrustedIssuerManager $trustedIssuerManager, JWSSerializerManager $jwsSerializerManager, JWSVerifier $jwsVerifier, ClaimCheckerManager $claimCheckerManager, ClientRepository $clientRepository, UserAccountRepository $userAccountRepository)
+    public function __construct(TrustedIssuerManager $trustedIssuerManager, JwsCompactSerializer $jwsSerializer, JWSVerifier $jwsVerifier, ClaimCheckerManager $claimCheckerManager, ClientRepository $clientRepository, UserAccountRepository $userAccountRepository)
     {
-        $this->jwsSerializerManager = $jwsSerializerManager;
+        $this->jwsSerializer = $jwsSerializer;
         $this->trustedIssuerManager = $trustedIssuerManager;
         $this->jwsVerifier = $jwsVerifier;
         $this->claimCheckerManager = $claimCheckerManager;
@@ -111,14 +111,14 @@ final class JwtBearerGrantType implements GrantType
     }
 
     /**
-     * @param JWESerializerManager $jweSerializerManager
+     * @param JweCompactSerializer $jweSerializer
      * @param JWEDecrypter         $jweDecrypter
      * @param JWKSet               $keyEncryptionKeySet
      * @param bool                 $encryptionRequired
      */
-    public function enableEncryptedAssertions(JWESerializerManager $jweSerializerManager, JWEDecrypter $jweDecrypter, JWKSet $keyEncryptionKeySet, bool $encryptionRequired)
+    public function enableEncryptedAssertions(JweCompactSerializer $jweSerializer, JWEDecrypter $jweDecrypter, JWKSet $keyEncryptionKeySet, bool $encryptionRequired)
     {
-        $this->jweSerializerManager = $jweSerializerManager;
+        $this->jweSerializer = $jweSerializer;
         $this->jweDecrypter = $jweDecrypter;
         $this->encryptionRequired = $encryptionRequired;
         $this->keyEncryptionKeySet = $keyEncryptionKeySet;
@@ -156,7 +156,7 @@ final class JwtBearerGrantType implements GrantType
         $assertion = $this->tryToDecryptTheAssertion($assertion);
 
         try {
-            $jws = $this->jwsSerializerManager->unserialize($assertion);
+            $jws = $this->jwsSerializer->unserialize($assertion);
             if (1 !== $jws->countSignatures()) {
                 throw new \InvalidArgumentException('The assertion must have only one signature.');
             }
@@ -191,7 +191,7 @@ final class JwtBearerGrantType implements GrantType
         }
 
         try {
-            $jwe = $this->jweSerializerManager->unserialize($assertion);
+            $jwe = $this->jweSerializer->unserialize($assertion);
             if (1 !== $jwe->countRecipients()) {
                 throw new \InvalidArgumentException('The assertion must have only one recipient.');
             }

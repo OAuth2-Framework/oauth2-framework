@@ -16,7 +16,6 @@ namespace OAuth2Framework\Component\Server\AuthorizationEndpoint\ParameterChecke
 use OAuth2Framework\Component\Server\AuthorizationEndpoint\Authorization;
 use OAuth2Framework\Component\Server\Core\Client\Client;
 use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
-use OAuth2Framework\Component\Server\Core\Util\Uri;
 
 final class RedirectUriParameterChecker implements ParameterChecker
 {

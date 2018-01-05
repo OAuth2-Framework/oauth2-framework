@@ -17,16 +17,16 @@ use Interop\Http\Server\RequestHandlerInterface;
 use Interop\Http\Server\MiddlewareInterface;
 use OAuth2Framework\Component\Server\Core\Client\ClientRepository;
 use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
-use OAuth2Framework\Component\Server\TokenEndpoint\AuthMethod\TokenEndpointAuthMethodManager;
+use OAuth2Framework\Component\Server\TokenEndpoint\AuthenticationMethod\TokenEndpointAuthenticationMethodManager;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 final class ClientAuthenticationMiddleware implements MiddlewareInterface
 {
     /**
-     * @var TokenEndpointAuthMethodManager
+     * @var TokenEndpointAuthenticationMethodManager
      */
-    private $tokenEndpointAuthMethodManager;
+    private $tokenEndpointAuthenticationMethodManager;
 
     /**
      * @var bool
@@ -42,13 +42,13 @@ final class ClientAuthenticationMiddleware implements MiddlewareInterface
      * ClientAuthenticationMiddleware constructor.
      *
      * @param ClientRepository               $clientRepository
-     * @param TokenEndpointAuthMethodManager $tokenEndpointAuthMethodManager
+     * @param TokenEndpointAuthenticationMethodManager $tokenEndpointAuthenticationMethodManager
      * @param bool                           $authenticationRequired
      */
-    public function __construct(ClientRepository $clientRepository, TokenEndpointAuthMethodManager $tokenEndpointAuthMethodManager, bool $authenticationRequired)
+    public function __construct(ClientRepository $clientRepository, TokenEndpointAuthenticationMethodManager $tokenEndpointAuthenticationMethodManager, bool $authenticationRequired)
     {
         $this->clientRepository = $clientRepository;
-        $this->tokenEndpointAuthMethodManager = $tokenEndpointAuthMethodManager;
+        $this->tokenEndpointAuthenticationMethodManager = $tokenEndpointAuthenticationMethodManager;
         $this->authenticationRequired = $authenticationRequired;
     }
 
@@ -57,12 +57,12 @@ final class ClientAuthenticationMiddleware implements MiddlewareInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $clientId = $this->tokenEndpointAuthMethodManager->findClientInformationInTheRequest($request, $authentication_method, $client_credentials);
+        $clientId = $this->tokenEndpointAuthenticationMethodManager->findClientInformationInTheRequest($request, $authentication_method, $client_credentials);
         $client = null;
         if (null !== $clientId) {
             $client = $this->clientRepository->find($clientId);
         }
-        if (null !== $client && false === $this->tokenEndpointAuthMethodManager->isClientAuthenticated($request, $client, $authentication_method, $client_credentials)) {
+        if (null !== $client && false === $this->tokenEndpointAuthenticationMethodManager->isClientAuthenticated($request, $client, $authentication_method, $client_credentials)) {
             $client = null;
         }
         if (true === $this->authenticationRequired && null === $client) {

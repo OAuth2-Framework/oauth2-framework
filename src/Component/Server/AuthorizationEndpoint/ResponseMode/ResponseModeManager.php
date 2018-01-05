@@ -59,7 +59,9 @@ final class ResponseModeManager
      */
     public function get(string $name): ResponseMode
     {
-        Assertion::true($this->has($name), sprintf('The response mode with name "%s" is not supported.', $name));
+        if (!$this->has($name)) {
+            throw new \InvalidArgumentException(sprintf('The response mode with name "%s" is not supported.', $name));
+        }
 
         return $this->responseModes[$name];
     }

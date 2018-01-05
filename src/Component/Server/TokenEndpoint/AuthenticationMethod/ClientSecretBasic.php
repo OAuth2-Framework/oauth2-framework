@@ -11,14 +11,14 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Component\Server\TokenEndpoint\AuthMethod;
+namespace OAuth2Framework\Component\Server\TokenEndpoint\AuthenticationMethod;
 
 use OAuth2Framework\Component\Server\Core\Client\Client;
 use OAuth2Framework\Component\Server\Core\Client\ClientId;
 use OAuth2Framework\Component\Server\Core\DataBag\DataBag;
 use Psr\Http\Message\ServerRequestInterface;
 
-abstract class ClientSecretBasic implements TokenEndpointAuthMethod
+final class ClientSecretBasic implements TokenEndpointAuthenticationMethod
 {
     /**
      * @var string
@@ -38,7 +38,9 @@ abstract class ClientSecretBasic implements TokenEndpointAuthMethod
      */
     public function __construct(string $realm, int $secretLifetime = 0)
     {
-        Assertion::greaterOrEqualThan($secretLifetime, 0);
+        if ($secretLifetime < 0) {
+            throw new \InvalidArgumentException('The secret lifetime must be at least 0 (= unlimited).');
+        }
 
         $this->realm = $realm;
         $this->secretLifetime = $secretLifetime;
@@ -50,7 +52,7 @@ abstract class ClientSecretBasic implements TokenEndpointAuthMethod
     public function getSchemesParameters(): array
     {
         return [
-            sprintf('Basic realm="%s",charset="UTF-8"', $this->getRealm()),
+            sprintf('Basic realm="%s",charset="UTF-8"', $this->realm),
         ];
     }
 
@@ -59,12 +61,6 @@ abstract class ClientSecretBasic implements TokenEndpointAuthMethod
      */
     public function findClientId(ServerRequestInterface $request, &$client_credentials = null): ? ClientId
     {
-        $server_params = $request->getServerParams();
-        if (array_key_exists('PHP_AUTH_USER', $server_params) && array_key_exists('PHP_AUTH_PW', $server_params)) {
-            $client_credentials = $server_params['PHP_AUTH_PW'];
-
-            return ClientId::create($server_params['PHP_AUTH_USER']);
-        }
         $authorization_headers = $request->getHeader('Authorization');
         if (0 < count($authorization_headers)) {
             foreach ($authorization_headers as $authorization_header) {
@@ -94,6 +90,8 @@ abstract class ClientSecretBasic implements TokenEndpointAuthMethod
                 return ClientId::create($client_id);
             }
         }
+
+        return null;
     }
 
     /**
@@ -126,13 +124,8 @@ abstract class ClientSecretBasic implements TokenEndpointAuthMethod
     /**
      * @return string
      */
-    private function getRealm(): string
+    private function createClientSecret(): string
     {
-        return $this->realm;
+        return bin2hex(random_bytes(128));
     }
-
-    /**
-     * @return string
-     */
-    abstract protected function createClientSecret(): string;
 }

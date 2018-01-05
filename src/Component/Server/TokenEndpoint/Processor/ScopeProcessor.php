@@ -69,28 +69,17 @@ final class ScopeProcessor
         //Modify the scope according to the scope policy
         try {
             if (null !== $this->scopePolicyManager) {
-                $scope = $this->scopePolicyManager->check($scope, $grantTypeData->getClient());
+                $scope = $this->scopePolicyManager->apply($scope, $grantTypeData->getClient());
             }
         } catch (\InvalidArgumentException $e) {
-            throw new OAuth2Exception(
-                400,
-                [
-                    'error' => OAuth2Exception::ERROR_INVALID_SCOPE,
-                    'error_description' => $e->getMessage(), ]
-            );
+            throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_SCOPE, $e->getMessage());
         }
 
         $availableScope = is_array($grantTypeData->getAvailableScopes()) ? $grantTypeData->getAvailableScopes() : $this->scopeRepository->getAvailableScopesForClient($grantTypeData->getClient());
 
         //Check if scope requested are within the available scope
         if (!$this->scopeRepository->areRequestedScopesAvailable($scope, $availableScope)) {
-            throw new OAuth2Exception(
-                400,
-                [
-                    'error' => OAuth2Exception::ERROR_INVALID_SCOPE,
-                    'error_description' => sprintf('An unsupported scope was requested. Available scopes are %s.', implode(', ', $availableScope)),
-                ]
-            );
+            throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_SCOPE, sprintf('An unsupported scope was requested. Available scopes are %s.', implode(', ', $availableScope)));
         }
 
         $grantTypeData = $grantTypeData->withScopes($scope);

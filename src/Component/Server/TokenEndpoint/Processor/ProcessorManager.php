@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\TokenEndpoint\Processor;
 
+use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
 use OAuth2Framework\Component\Server\TokenEndpoint\GrantTypeData;
 use OAuth2Framework\Component\Server\TokenEndpoint\GrantType;
 use OAuth2Framework\Component\Server\Core\Scope\ScopePolicyManager;
@@ -46,6 +47,8 @@ final class ProcessorManager
      * @param GrantType              $grantType
      *
      * @return GrantTypeData
+     *
+     * @throws OAuth2Exception
      */
     public function handle(ServerRequestInterface $request, GrantTypeData $grantTypeData, GrantType $grantType): GrantTypeData
     {

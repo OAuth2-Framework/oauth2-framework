@@ -11,35 +11,35 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Component\Server\TokenEndpoint\AuthMethod;
+namespace OAuth2Framework\Component\Server\TokenEndpoint\AuthenticationMethod;
 
 use OAuth2Framework\Component\Server\Core\Client\Client;
 use OAuth2Framework\Component\Server\Core\Client\ClientId;
 use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
 use Psr\Http\Message\ServerRequestInterface;
 
-final class TokenEndpointAuthMethodManager
+final class TokenEndpointAuthenticationMethodManager
 {
     /**
-     * @var TokenEndpointAuthMethod[]
+     * @var TokenEndpointAuthenticationMethod[]
      */
-    private $tokenEndpointAuthMethodNames = [];
+    private $tokenEndpointAuthenticationMethodNames = [];
 
     /**
-     * @var TokenEndpointAuthMethod[]
+     * @var TokenEndpointAuthenticationMethod[]
      */
-    private $tokenEndpointAuthMethods = [];
+    private $tokenEndpointAuthenticationMethods = [];
 
     /**
-     * @param TokenEndpointAuthMethod $tokenEndpointAuthMethod
+     * @param TokenEndpointAuthenticationMethod $tokenEndpointAuthenticationMethod
      *
-     * @return TokenEndpointAuthMethodManager
+     * @return TokenEndpointAuthenticationMethodManager
      */
-    public function add(TokenEndpointAuthMethod $tokenEndpointAuthMethod): self
+    public function add(TokenEndpointAuthenticationMethod $tokenEndpointAuthenticationMethod): self
     {
-        $this->tokenEndpointAuthMethods[] = $tokenEndpointAuthMethod;
-        foreach ($tokenEndpointAuthMethod->getSupportedAuthenticationMethods() as $method_name) {
-            $this->tokenEndpointAuthMethodNames[$method_name] = $tokenEndpointAuthMethod;
+        $this->tokenEndpointAuthenticationMethods[] = $tokenEndpointAuthenticationMethod;
+        foreach ($tokenEndpointAuthenticationMethod->getSupportedAuthenticationMethods() as $method_name) {
+            $this->tokenEndpointAuthenticationMethodNames[$method_name] = $tokenEndpointAuthenticationMethod;
         }
 
         return $this;
@@ -50,55 +50,55 @@ final class TokenEndpointAuthMethodManager
      */
     public function all(): array
     {
-        return array_keys($this->tokenEndpointAuthMethodNames);
+        return array_keys($this->tokenEndpointAuthenticationMethodNames);
     }
 
     /**
-     * @param string $tokenEndpointAuthMethod
+     * @param string $tokenEndpointAuthenticationMethod
      *
      * @return bool
      */
-    public function has(string $tokenEndpointAuthMethod): bool
+    public function has(string $tokenEndpointAuthenticationMethod): bool
     {
-        return array_key_exists($tokenEndpointAuthMethod, $this->tokenEndpointAuthMethodNames);
+        return array_key_exists($tokenEndpointAuthenticationMethod, $this->tokenEndpointAuthenticationMethodNames);
     }
 
     /**
-     * @param string $tokenEndpointAuthMethod
+     * @param string $tokenEndpointAuthenticationMethod
      *
      * @throws \InvalidArgumentException
      *
-     * @return TokenEndpointAuthMethod
+     * @return TokenEndpointAuthenticationMethod
      */
-    public function get(string $tokenEndpointAuthMethod): TokenEndpointAuthMethod
+    public function get(string $tokenEndpointAuthenticationMethod): TokenEndpointAuthenticationMethod
     {
-        Assertion::true($this->has($tokenEndpointAuthMethod), sprintf('The token endpoint authentication method "%s" is not supported. Please use one of the following values: %s', $tokenEndpointAuthMethod, implode(', ', $this->all())));
+        Assertion::true($this->has($tokenEndpointAuthenticationMethod), sprintf('The token endpoint authentication method "%s" is not supported. Please use one of the following values: %s', $tokenEndpointAuthenticationMethod, implode(', ', $this->all())));
 
-        return $this->tokenEndpointAuthMethodNames[$tokenEndpointAuthMethod];
+        return $this->tokenEndpointAuthenticationMethodNames[$tokenEndpointAuthenticationMethod];
     }
 
     /**
-     * @return TokenEndpointAuthMethod[]
+     * @return TokenEndpointAuthenticationMethod[]
      */
-    public function getTokenEndpointAuthMethods(): array
+    public function getTokenEndpointAuthenticationMethods(): array
     {
-        return array_values($this->tokenEndpointAuthMethods);
+        return array_values($this->tokenEndpointAuthenticationMethods);
     }
 
     /**
      * @param ServerRequestInterface  $request
-     * @param TokenEndpointAuthMethod $authenticationMethod
+     * @param TokenEndpointAuthenticationMethod $authenticationMethod
      * @param mixed                   $clientCredentials    The client credentials found in the request
      *
      * @throws OAuth2Exception
      *
      * @return null|ClientId
      */
-    public function findClientInformationInTheRequest(ServerRequestInterface $request, TokenEndpointAuthMethod &$authenticationMethod = null, &$clientCredentials = null)
+    public function findClientInformationInTheRequest(ServerRequestInterface $request, TokenEndpointAuthenticationMethod &$authenticationMethod = null, &$clientCredentials = null)
     {
         $clientId = null;
         $clientCredentials = null;
-        foreach ($this->getTokenEndpointAuthMethods() as $method) {
+        foreach ($this->getTokenEndpointAuthenticationMethods() as $method) {
             $temp = $method->findClientId($request, $clientCredentials);
             if (null !== $temp) {
                 if (null !== $clientId) {
@@ -125,12 +125,12 @@ final class TokenEndpointAuthMethodManager
     /**
      * @param ServerRequestInterface  $request
      * @param Client                  $client
-     * @param TokenEndpointAuthMethod $authenticationMethod
+     * @param TokenEndpointAuthenticationMethod $authenticationMethod
      * @param mixed                   $clientCredentials
      *
      * @return bool
      */
-    public function isClientAuthenticated(ServerRequestInterface $request, Client $client, TokenEndpointAuthMethod $authenticationMethod, $clientCredentials): bool
+    public function isClientAuthenticated(ServerRequestInterface $request, Client $client, TokenEndpointAuthenticationMethod $authenticationMethod, $clientCredentials): bool
     {
         if (true === $client->isDeleted()) {
             return false;

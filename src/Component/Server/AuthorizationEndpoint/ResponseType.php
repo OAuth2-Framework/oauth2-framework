@@ -15,11 +15,9 @@ namespace OAuth2Framework\Component\Server\AuthorizationEndpoint;
 
 interface ResponseType
 {
-    const RESPONSE_TYPE_MODE_FRAGMENT = 'fragment';
-
-    const RESPONSE_TYPE_MODE_QUERY = 'query';
-
-    const RESPONSE_TYPE_MODE_FORM_POST = 'form_post';
+    public const RESPONSE_TYPE_MODE_FRAGMENT = 'fragment';
+    public const RESPONSE_TYPE_MODE_QUERY = 'query';
+    public const RESPONSE_TYPE_MODE_FORM_POST = 'form_post';
 
     /**
      * This function returns the supported response type.

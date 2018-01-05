@@ -144,9 +144,11 @@ final class PreConfiguredAuthorization implements ContainsRecordedMessages, Doma
     public function apply(Event $event): self
     {
         $map = $this->getEventMap();
-        Assertion::keyExists($map, $event->getType(), 'Unsupported event.');
-        if (null !== $this->preConfiguredAuthorizationId) {
-            Assertion::eq($this->preConfiguredAuthorizationId, $event->getDomainId(), 'Event not applicable for this initial access token.');
+        if (!array_key_exists($event->getType(), $map)) {
+            throw new \InvalidArgumentException('Unsupported event.');
+        }
+        if (null !== $this->preConfiguredAuthorizationId && $this->preConfiguredAuthorizationId !== $event->getDomainId()) {
+            throw new \InvalidArgumentException('Event not applicable for this initial access token.');
         }
         $method = $map[$event->getType()];
 

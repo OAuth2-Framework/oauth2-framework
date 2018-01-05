@@ -61,7 +61,9 @@ final class IdTokenResponseType implements ResponseType
      */
     public function __construct(IdTokenBuilderFactory $idTokenBuilderFactory, string $defaultSignatureAlgorithm, JWSBuilder $jwsBuilder, JWKSet $signatureKeys, ?JWEBuilder $jweBuilder)
     {
-        Assertion::notEq($defaultSignatureAlgorithm, 'none', 'The algorithm "none" is not allowed for ID Tokens issued through the authorization endpoint.');
+        if ('none' === $defaultSignatureAlgorithm) {
+            throw new \InvalidArgumentException('The algorithm "none" is not allowed for ID Tokens issued through the authorization endpoint.');
+        }
         $this->idTokenBuilderFactory = $idTokenBuilderFactory;
         $this->defaultSignatureAlgorithm = $defaultSignatureAlgorithm;
         $this->jwsBuilder = $jwsBuilder;

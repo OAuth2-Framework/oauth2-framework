@@ -18,13 +18,10 @@ use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
 
 final class PromptParameterChecker implements ParameterChecker
 {
-    const PROMPT_NONE = 'none';
-
-    const PROMPT_LOGIN = 'login';
-
-    const PROMPT_CONSENT = 'consent';
-
-    const PROMPT_SELECT_ACCOUNT = 'select_account';
+    public const PROMPT_NONE = 'none';
+    public const PROMPT_LOGIN = 'login';
+    public const PROMPT_CONSENT = 'consent';
+    public const PROMPT_SELECT_ACCOUNT = 'select_account';
 
     /**
      * {@inheritdoc}

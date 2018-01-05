@@ -23,7 +23,6 @@ use OAuth2Framework\Component\Server\Core\Client\Client;
 use OAuth2Framework\Component\Server\Core\Client\ClientId;
 use OAuth2Framework\Component\Server\Core\Client\ClientRepository;
 use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
-use OAuth2Framework\Component\Server\Core\Util\Uri;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Request;
 

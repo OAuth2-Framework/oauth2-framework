@@ -11,23 +11,30 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Component\Server\TokenEndpoint\AuthMethod;
+namespace OAuth2Framework\Component\Server\TokenEndpoint\AuthenticationMethod;
 
 use OAuth2Framework\Component\Server\Core\Client\Client;
 use OAuth2Framework\Component\Server\Core\Client\ClientId;
 use OAuth2Framework\Component\Server\Core\DataBag\DataBag;
 use Psr\Http\Message\ServerRequestInterface;
 
-abstract class ClientSecretPost implements TokenEndpointAuthMethod
+final class ClientSecretPost implements TokenEndpointAuthenticationMethod
 {
     /**
      * @var int
      */
     private $secretLifetime;
 
+    /**
+     * ClientSecretPost constructor.
+     *
+     * @param int $secretLifetime
+     */
     public function __construct(int $secretLifetime = 0)
     {
-        Assertion::greaterOrEqualThan($secretLifetime, 0);
+        if ($secretLifetime < 0) {
+            throw new \InvalidArgumentException('The secret lifetime must be at least 0 (= unlimited).');
+        }
 
         $this->secretLifetime = $secretLifetime;
     }
@@ -85,5 +92,8 @@ abstract class ClientSecretPost implements TokenEndpointAuthMethod
     /**
      * @return string
      */
-    abstract protected function createClientSecret(): string;
+    private function createClientSecret(): string
+    {
+        return bin2hex(random_bytes(128));
+    }
 }

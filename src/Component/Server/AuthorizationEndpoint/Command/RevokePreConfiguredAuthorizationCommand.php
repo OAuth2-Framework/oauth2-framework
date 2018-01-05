@@ -46,11 +46,9 @@ final class RevokePreConfiguredAuthorizationCommand
      * @param UserAccountId         $userAccountId
      * @param array                 $scopes
      * @param null|ResourceServerId $resourceServerId
-     * @param DataTransporter|null  $dataTransporter
      */
-    protected function __construct(ClientId $clientId, UserAccountId $userAccountId, array $scopes, ?ResourceServerId $resourceServerId, ? DataTransporter $dataTransporter)
+    protected function __construct(ClientId $clientId, UserAccountId $userAccountId, array $scopes, ?ResourceServerId $resourceServerId)
     {
-        parent::__construct($dataTransporter);
         $this->clientId = $clientId;
         $this->userAccountId = $userAccountId;
         $this->resourceServerId = $resourceServerId;
@@ -62,13 +60,12 @@ final class RevokePreConfiguredAuthorizationCommand
      * @param UserAccountId         $userAccountId
      * @param array                 $scopes
      * @param null|ResourceServerId $resourceServerId
-     * @param null|DataTransporter  $dataTransporter
      *
      * @return RevokePreConfiguredAuthorizationCommand
      */
-    public static function create(ClientId $clientId, UserAccountId $userAccountId, array $scopes, ?ResourceServerId $resourceServerId, ? DataTransporter $dataTransporter): self
+    public static function create(ClientId $clientId, UserAccountId $userAccountId, array $scopes, ?ResourceServerId $resourceServerId): self
     {
-        return new self($clientId, $userAccountId, $scopes, $resourceServerId, $dataTransporter);
+        return new self($clientId, $userAccountId, $scopes, $resourceServerId);
     }
 
     /**

@@ -72,11 +72,15 @@ final class IdTokenHintDiscovery implements UserAccountDiscovery
             try {
                 $idTokenId = IdTokenId::create($authorization->getQueryParam('id_token_hint'));
                 $idToken = $this->idTokenLoader->load($idTokenId);
-                Assertion::isInstanceOf($idToken, IdToken::class, 'The parameter "id_token_hint" does not contain a valid ID Token.');
+                if (!$idToken instanceof IdToken) {
+                    throw new \InvalidArgumentException('The parameter "id_token_hint" does not contain a valid ID Token.');
+                }
                 $userAccountId = $idToken->getUserAccountId();
                 if (null !== $this->pairwiseAlgorithm) {
                     $publicId = $this->pairwiseAlgorithm->getPublicIdFromSubjectIdentifier($userAccountId->getValue());
-                    Assertion::notNull($publicId, 'Unable to retrieve the user account using the "id_token_hint" parameter.');
+                    if (null === $publicId) {
+                        throw new \InvalidArgumentException('Unable to retrieve the user account using the "id_token_hint" parameter.');
+                    }
                 } else {
                     $publicId = $userAccountId->getValue();
                 }

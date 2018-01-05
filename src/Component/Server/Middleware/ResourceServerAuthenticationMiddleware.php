@@ -28,20 +28,20 @@ final class ResourceServerAuthenticationMiddleware implements MiddlewareInterfac
     private $resourceServerRepository;
 
     /**
-     * @var TokenIntrospectionEndpointAuthMethodManager
+     * @var TokenIntrospectionEndpointAuthenticationMethodManager
      */
-    private $tokenIntrospectionEndpointAuthMethodManager;
+    private $tokenIntrospectionEndpointAuthenticationMethodManager;
 
     /**
      * ResourceServerAuthenticationMiddleware constructor.
      *
      * @param ResourceServerRepository                    $resourceServerRepository
-     * @param TokenIntrospectionEndpointAuthMethodManager $tokenIntrospectionEndpointAuthMethodManager
+     * @param TokenIntrospectionEndpointAuthenticationMethodManager $tokenIntrospectionEndpointAuthenticationMethodManager
      */
-    public function __construct(ResourceServerRepository $resourceServerRepository, TokenIntrospectionEndpointAuthMethodManager $tokenIntrospectionEndpointAuthMethodManager)
+    public function __construct(ResourceServerRepository $resourceServerRepository, TokenIntrospectionEndpointAuthenticationMethodManager $tokenIntrospectionEndpointAuthenticationMethodManager)
     {
         $this->resourceServerRepository = $resourceServerRepository;
-        $this->tokenIntrospectionEndpointAuthMethodManager = $tokenIntrospectionEndpointAuthMethodManager;
+        $this->tokenIntrospectionEndpointAuthenticationMethodManager = $tokenIntrospectionEndpointAuthenticationMethodManager;
     }
 
     /**
@@ -49,13 +49,13 @@ final class ResourceServerAuthenticationMiddleware implements MiddlewareInterfac
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $resourceServerId = $this->tokenIntrospectionEndpointAuthMethodManager->findResourceServerInformationInTheRequest($request, $authenticationMethod, $resourceServerCredentials);
+        $resourceServerId = $this->tokenIntrospectionEndpointAuthenticationMethodManager->findResourceServerInformationInTheRequest($request, $authenticationMethod, $resourceServerCredentials);
         if (null === $resourceServerId) {
             throw new OAuth2Exception(401, OAuth2Exception::ERROR_INVALID_RESOURCE_SERVER, 'Resource Server authentication failed.');
         }
         $resourceServer = $this->resourceServerRepository->find($resourceServerId);
 
-        if (null === $resourceServer || false === $this->tokenIntrospectionEndpointAuthMethodManager->isResourceServerAuthenticated($request, $resourceServer, $authenticationMethod, $resourceServerCredentials)) {
+        if (null === $resourceServer || false === $this->tokenIntrospectionEndpointAuthenticationMethodManager->isResourceServerAuthenticated($request, $resourceServer, $authenticationMethod, $resourceServerCredentials)) {
             throw new OAuth2Exception(401, OAuth2Exception::ERROR_INVALID_RESOURCE_SERVER, 'Resource Server authentication failed.');
         }
 

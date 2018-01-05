@@ -248,7 +248,9 @@ final class UserInfo
         }
 
         $data = parse_url($uri);
-        Assertion::true(is_array($data) && array_key_exists('host', $data), sprintf('Invalid Sector Identifier Uri "%s".', $uri));
+        if (!is_array($data) || !array_key_exists('host', $data)) {
+            throw new \InvalidArgumentException(sprintf('Invalid Sector Identifier Uri "%s".', $uri));
+        }
 
         return $data['host'];
     }
