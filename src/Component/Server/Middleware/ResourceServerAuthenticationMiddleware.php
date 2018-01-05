@@ -35,7 +35,7 @@ final class ResourceServerAuthenticationMiddleware implements MiddlewareInterfac
     /**
      * ResourceServerAuthenticationMiddleware constructor.
      *
-     * @param ResourceServerRepository                    $resourceServerRepository
+     * @param ResourceServerRepository                              $resourceServerRepository
      * @param TokenIntrospectionEndpointAuthenticationMethodManager $tokenIntrospectionEndpointAuthenticationMethodManager
      */
     public function __construct(ResourceServerRepository $resourceServerRepository, TokenIntrospectionEndpointAuthenticationMethodManager $tokenIntrospectionEndpointAuthenticationMethodManager)

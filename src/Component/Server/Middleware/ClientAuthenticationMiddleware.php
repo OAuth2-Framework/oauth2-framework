@@ -41,9 +41,9 @@ final class ClientAuthenticationMiddleware implements MiddlewareInterface
     /**
      * ClientAuthenticationMiddleware constructor.
      *
-     * @param ClientRepository               $clientRepository
+     * @param ClientRepository                         $clientRepository
      * @param TokenEndpointAuthenticationMethodManager $tokenEndpointAuthenticationMethodManager
-     * @param bool                           $authenticationRequired
+     * @param bool                                     $authenticationRequired
      */
     public function __construct(ClientRepository $clientRepository, TokenEndpointAuthenticationMethodManager $tokenEndpointAuthenticationMethodManager, bool $authenticationRequired)
     {

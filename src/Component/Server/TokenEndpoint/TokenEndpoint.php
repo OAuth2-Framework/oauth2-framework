@@ -16,8 +16,6 @@ namespace OAuth2Framework\Component\Server\TokenEndpoint;
 use Http\Message\ResponseFactory;
 use Interop\Http\Server\RequestHandlerInterface;
 use Interop\Http\Server\MiddlewareInterface;
-use OAuth2Framework\Component\Server\RefreshTokenGrant\RefreshToken;
-use OAuth2Framework\Component\Server\RefreshTokenGrant\RefreshTokenId;
 use OAuth2Framework\Component\Server\TokenEndpoint\Processor\ProcessorManager;
 use OAuth2Framework\Component\Server\Core\AccessToken\AccessToken;
 use OAuth2Framework\Component\Server\Core\AccessToken\AccessTokenRepository;
