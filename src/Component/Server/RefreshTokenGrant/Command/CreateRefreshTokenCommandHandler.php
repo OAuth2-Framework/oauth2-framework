@@ -45,7 +45,7 @@ final class CreateRefreshTokenCommandHandler
         $refreshToken = RefreshToken::createEmpty();
         $refreshToken = $refreshToken->create(
             $command->getRefreshTokenId(),
-            $command->getUserAccountId(),
+            $command->getResourceOwnerId(),
             $command->getClientId(),
             $command->getParameters(),
             $command->getMetadatas(),

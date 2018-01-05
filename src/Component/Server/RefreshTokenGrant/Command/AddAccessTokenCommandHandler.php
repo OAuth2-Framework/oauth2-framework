@@ -33,9 +33,9 @@ final class AddAccessTokenCommandHandler
     }
 
     /**
-     * @param AddAccessTokenTokenCommand $command
+     * @param AddAccessTokenCommand $command
      */
-    public function handle(AddAccessTokenTokenCommand $command)
+    public function handle(AddAccessTokenCommand $command)
     {
         $refreshTokenId = $command->getRefreshTokenId();
         $refreshToken = $this->refreshTokenRepository->find($refreshTokenId);

@@ -76,7 +76,7 @@ final class RefreshTokenGrantType implements GrantType
         $token = $this->refreshTokenRepository->find(RefreshTokenId::create($refreshToken));
 
         if (null === $token) {
-            throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_GRANT, 'Invalid refresh token.');
+            throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_GRANT, 'The parameter "refresh_token" is invalid.');
         }
         $grantTypeData = $grantTypeData->withAvailableScopes($token->getScopes());
 

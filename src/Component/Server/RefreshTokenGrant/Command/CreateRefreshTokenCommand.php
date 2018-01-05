@@ -17,7 +17,7 @@ use OAuth2Framework\Component\Server\RefreshTokenGrant\RefreshTokenId;
 use OAuth2Framework\Component\Server\Core\Client\ClientId;
 use OAuth2Framework\Component\Server\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Server\Core\ResourceServer\ResourceServerId;
-use OAuth2Framework\Component\Server\Core\UserAccount\UserAccountId;
+use OAuth2Framework\Component\Server\Core\ResourceOwner\ResourceOwnerId;
 
 final class CreateRefreshTokenCommand
 {
@@ -37,9 +37,9 @@ final class CreateRefreshTokenCommand
     private $clientId;
 
     /**
-     * @var UserAccountId
+     * @var ResourceOwnerId
      */
-    private $userAccountId;
+    private $resourceOwnerId;
 
     /**
      * @var DataBag
@@ -66,18 +66,18 @@ final class CreateRefreshTokenCommand
      *
      * @param RefreshTokenId        $refreshTokenId
      * @param ClientId              $clientId
-     * @param UserAccountId         $userAccountId
+     * @param ResourceOwnerId       $resourceOwnerId
      * @param \DateTimeImmutable    $expiresAt
      * @param DataBag               $parameters
      * @param DataBag               $metadatas
      * @param array                 $scopes
      * @param null|ResourceServerId $resourceServerId
      */
-    protected function __construct(RefreshTokenId $refreshTokenId, ClientId $clientId, UserAccountId $userAccountId, \DateTimeImmutable $expiresAt, DataBag $parameters, DataBag $metadatas, array $scopes, ?ResourceServerId $resourceServerId)
+    protected function __construct(RefreshTokenId $refreshTokenId, ClientId $clientId, ResourceOwnerId $resourceOwnerId, \DateTimeImmutable $expiresAt, DataBag $parameters, DataBag $metadatas, array $scopes, ?ResourceServerId $resourceServerId)
     {
         $this->refreshTokenId = $refreshTokenId;
         $this->clientId = $clientId;
-        $this->userAccountId = $userAccountId;
+        $this->resourceOwnerId = $resourceOwnerId;
         $this->expiresAt = $expiresAt;
         $this->parameters = $parameters;
         $this->metadatas = $metadatas;
@@ -88,7 +88,7 @@ final class CreateRefreshTokenCommand
     /**
      * @param RefreshTokenId        $refreshTokenId
      * @param ClientId              $clientId
-     * @param UserAccountId         $userAccountId
+     * @param ResourceOwnerId       $resourceOwnerId
      * @param \DateTimeImmutable    $expiresAt
      * @param DataBag               $parameters
      * @param DataBag               $metadatas
@@ -97,9 +97,9 @@ final class CreateRefreshTokenCommand
      *
      * @return CreateRefreshTokenCommand
      */
-    public static function create(RefreshTokenId $refreshTokenId, ClientId $clientId, UserAccountId $userAccountId, \DateTimeImmutable $expiresAt, DataBag $parameters, DataBag $metadatas, array $scopes, ?ResourceServerId $resourceServerId): self
+    public static function create(RefreshTokenId $refreshTokenId, ClientId $clientId, ResourceOwnerId $resourceOwnerId, \DateTimeImmutable $expiresAt, DataBag $parameters, DataBag $metadatas, array $scopes, ?ResourceServerId $resourceServerId): self
     {
-        return new self($refreshTokenId, $clientId, $userAccountId, $expiresAt, $parameters, $metadatas, $scopes, $resourceServerId);
+        return new self($refreshTokenId, $clientId, $resourceOwnerId, $expiresAt, $parameters, $metadatas, $scopes, $resourceServerId);
     }
 
     /**
@@ -111,11 +111,11 @@ final class CreateRefreshTokenCommand
     }
 
     /**
-     * @return UserAccountId
+     * @return ResourceOwnerId
      */
-    public function getUserAccountId(): UserAccountId
+    public function getResourceOwnerId(): ResourceOwnerId
     {
-        return $this->userAccountId;
+        return $this->resourceOwnerId;
     }
 
     /**

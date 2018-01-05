@@ -16,7 +16,7 @@ namespace OAuth2Framework\Component\Server\RefreshTokenGrant\Command;
 use OAuth2Framework\Component\Server\Core\AccessToken\AccessTokenId;
 use OAuth2Framework\Component\Server\RefreshTokenGrant\RefreshTokenId;
 
-final class AddAccessTokenTokenCommand
+final class AddAccessTokenCommand
 {
     /**
      * @var RefreshTokenId
@@ -42,8 +42,9 @@ final class AddAccessTokenTokenCommand
 
     /**
      * @param RefreshTokenId $refreshTokenId
+     * @param AccessTokenId  $accessTokenId
      *
-     * @return AddAccessTokenTokenCommand
+     * @return AddAccessTokenCommand
      */
     public static function create(RefreshTokenId $refreshTokenId, AccessTokenId $accessTokenId): self
     {

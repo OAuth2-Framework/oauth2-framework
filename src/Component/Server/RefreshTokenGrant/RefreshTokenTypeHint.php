@@ -70,14 +70,14 @@ final class RefreshTokenTypeHint implements IntrospectionTokenTypeHint, Revocati
      */
     public function introspect(Token $token): array
     {
-        if (!$token instanceof RefreshToken || true === $token->isRevoked()) {
+        if (!$token instanceof RefreshToken || $token->isRevoked() || $token->hasExpired()) {
             return [
                 'active' => false,
             ];
         }
 
         $result = [
-            'active' => !$token->hasExpired(),
+            'active' => true,
             'client_id' => $token->getClientId(),
             'exp' => $token->getExpiresAt()->getTimestamp(),
         ];
