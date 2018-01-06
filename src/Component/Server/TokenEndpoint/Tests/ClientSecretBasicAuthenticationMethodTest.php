@@ -79,7 +79,7 @@ final class ClientSecretBasicAuthenticationMethodTest extends TestCase
             UserAccountId::create('USER_ACCOUNT_ID')
         );
 
-        self::assertTrue($manager->isClientAuthenticated($request->reveal(),$client, $method,'CLIENT_SECRET'));
+        self::assertTrue($manager->isClientAuthenticated($request->reveal(), $client, $method, 'CLIENT_SECRET'));
     }
 
     /**
@@ -105,7 +105,7 @@ final class ClientSecretBasicAuthenticationMethodTest extends TestCase
             'client_secret' => 'CLIENT_SECRET',
         ]);
 
-        self::assertFalse($manager->isClientAuthenticated($request->reveal(),$client, $method,'CLIENT_SECRET'));
+        self::assertFalse($manager->isClientAuthenticated($request->reveal(), $client, $method, 'CLIENT_SECRET'));
     }
 
     /**

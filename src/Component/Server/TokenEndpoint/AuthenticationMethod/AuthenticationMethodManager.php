@@ -110,6 +110,7 @@ final class AuthenticationMethodManager
             if (null === $clientId) {
                 $clientId = $tempClientId;
                 $authenticationMethod = $method;
+
                 continue;
             }
             if (!$method instanceof None && !$authenticationMethod instanceof None) {
