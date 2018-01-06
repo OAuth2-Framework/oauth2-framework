@@ -35,7 +35,7 @@ final class NoneAuthenticationMethodTest extends TestCase
         $method = new None();
 
         self::assertEquals([], $method->getSchemesParameters());
-        self::assertEquals(['none'], $method->getSupportedAuthenticationMethods());
+        self::assertEquals(['none'], $method->getSupportedMethods());
     }
 
     /**
@@ -47,7 +47,7 @@ final class NoneAuthenticationMethodTest extends TestCase
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getParsedBody()->willReturn([]);
 
-        $clientId = $method->findClientId($request->reveal(), $credentials);
+        $clientId = $method->findClientIdAndCredentials($request->reveal(), $credentials);
         self::assertNull($clientId);
         self::assertNull($credentials);
     }
@@ -61,7 +61,7 @@ final class NoneAuthenticationMethodTest extends TestCase
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getParsedBody()->willReturn(['client_id' => 'CLIENT_ID']);
 
-        $clientId = $method->findClientId($request->reveal(), $credentials);
+        $clientId = $method->findClientIdAndCredentials($request->reveal(), $credentials);
         self::assertInstanceOf(ClientId::class, $clientId);
         self::assertNull($credentials);
     }

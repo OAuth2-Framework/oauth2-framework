@@ -18,7 +18,7 @@ use OAuth2Framework\Component\Server\Core\Client\ClientId;
 use OAuth2Framework\Component\Server\Core\DataBag\DataBag;
 use Psr\Http\Message\ServerRequestInterface;
 
-final class ClientSecretPost implements TokenEndpointAuthenticationMethod
+final class ClientSecretPost implements AuthenticationMethod
 {
     /**
      * @var int
@@ -50,7 +50,7 @@ final class ClientSecretPost implements TokenEndpointAuthenticationMethod
     /**
      * {@inheritdoc}
      */
-    public function findClientId(ServerRequestInterface $request, &$clientCredentials = null): ? ClientId
+    public function findClientIdAndCredentials(ServerRequestInterface $request, &$clientCredentials = null): ? ClientId
     {
         $parameters = $request->getParsedBody() ?? [];
         if (array_key_exists('client_id', $parameters) && array_key_exists('client_secret', $parameters)) {
@@ -84,7 +84,7 @@ final class ClientSecretPost implements TokenEndpointAuthenticationMethod
     /**
      * {@inheritdoc}
      */
-    public function getSupportedAuthenticationMethods(): array
+    public function getSupportedMethods(): array
     {
         return ['client_secret_post'];
     }

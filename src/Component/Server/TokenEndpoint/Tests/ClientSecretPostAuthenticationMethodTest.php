@@ -35,7 +35,7 @@ final class ClientSecretPostAuthenticationMethodTest extends TestCase
         $method = new ClientSecretPost();
 
         self::assertEquals([], $method->getSchemesParameters());
-        self::assertEquals(['client_secret_post'], $method->getSupportedAuthenticationMethods());
+        self::assertEquals(['client_secret_post'], $method->getSupportedMethods());
     }
 
     /**
@@ -47,7 +47,7 @@ final class ClientSecretPostAuthenticationMethodTest extends TestCase
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getParsedBody()->willReturn([]);
 
-        $clientId = $method->findClientId($request->reveal(), $credentials);
+        $clientId = $method->findClientIdAndCredentials($request->reveal(), $credentials);
         self::assertNull($clientId);
         self::assertNull($credentials);
     }
@@ -61,7 +61,7 @@ final class ClientSecretPostAuthenticationMethodTest extends TestCase
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getParsedBody()->willReturn(['client_id' => 'CLIENT_ID']);
 
-        $clientId = $method->findClientId($request->reveal(), $credentials);
+        $clientId = $method->findClientIdAndCredentials($request->reveal(), $credentials);
         self::assertNull($clientId);
         self::assertNull($credentials);
     }
@@ -78,7 +78,7 @@ final class ClientSecretPostAuthenticationMethodTest extends TestCase
             'client_secret' => 'CLIENT_SECRET',
         ]);
 
-        $clientId = $method->findClientId($request->reveal(), $credentials);
+        $clientId = $method->findClientIdAndCredentials($request->reveal(), $credentials);
         self::assertInstanceOf(ClientId::class, $clientId);
         self::assertEquals('CLIENT_SECRET', $credentials);
     }

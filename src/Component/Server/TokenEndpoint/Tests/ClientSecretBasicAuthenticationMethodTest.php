@@ -17,6 +17,7 @@ use OAuth2Framework\Component\Server\Core\Client\Client;
 use OAuth2Framework\Component\Server\Core\Client\ClientId;
 use OAuth2Framework\Component\Server\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Server\Core\UserAccount\UserAccountId;
+use OAuth2Framework\Component\Server\TokenEndpoint\AuthenticationMethod\AuthenticationMethodManager;
 use OAuth2Framework\Component\Server\TokenEndpoint\AuthenticationMethod\ClientSecretBasic;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
@@ -35,7 +36,7 @@ final class ClientSecretBasicAuthenticationMethodTest extends TestCase
         $method = new ClientSecretBasic('My Service');
 
         self::assertEquals(['Basic realm="My Service",charset="UTF-8"'], $method->getSchemesParameters());
-        self::assertEquals(['client_secret_basic'], $method->getSupportedAuthenticationMethods());
+        self::assertEquals(['client_secret_basic'], $method->getSupportedMethods());
     }
 
     /**
@@ -43,11 +44,12 @@ final class ClientSecretBasicAuthenticationMethodTest extends TestCase
      */
     public function theClientIdCannotBeFoundInTheRequest()
     {
-        $method = new ClientSecretBasic('My Service');
+        $manager = new AuthenticationMethodManager();
+        $manager->add(new ClientSecretBasic('My Service'));
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getHeader('Authorization')->willReturn(null);
 
-        $clientId = $method->findClientId($request->reveal(), $credentials);
+        $clientId = $manager->findClientIdAndCredentials($request->reveal(), $credentials);
         self::assertNull($clientId);
         self::assertNull($credentials);
     }
@@ -57,32 +59,53 @@ final class ClientSecretBasicAuthenticationMethodTest extends TestCase
      */
     public function theClientIdAndClientSecretHaveBeenFoundInTheRequest()
     {
-        $method = new ClientSecretBasic('My Service');
+        $manager = new AuthenticationMethodManager();
+        $manager->add(new ClientSecretBasic('My Service'));
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getHeader('Authorization')->willReturn(['Basic '.base64_encode('CLIENT_ID:CLIENT_SECRET')]);
 
-        $clientId = $method->findClientId($request->reveal(), $credentials);
+        $clientId = $manager->findClientIdAndCredentials($request->reveal(), $method, $credentials);
+        self::assertInstanceOf(ClientSecretBasic::class, $method);
         self::assertInstanceOf(ClientId::class, $clientId);
         self::assertEquals('CLIENT_SECRET', $credentials);
-    }
 
-    /**
-     * @test
-     */
-    public function theClientIsAuthenticated()
-    {
-        $method = new ClientSecretBasic('My Service');
-        $request = $this->prophesize(ServerRequestInterface::class);
         $client = Client::createEmpty();
         $client = $client->create(
             ClientId::create('CLIENT_ID'),
             DataBag::create([
                 'client_secret' => 'CLIENT_SECRET',
+                'token_endpoint_auth_method' => 'client_secret_basic',
             ]),
             UserAccountId::create('USER_ACCOUNT_ID')
         );
 
-        self::assertTrue($method->isClientAuthenticated($client, 'CLIENT_SECRET', $request->reveal()));
+        self::assertTrue($manager->isClientAuthenticated($request->reveal(),$client, $method,'CLIENT_SECRET'));
+    }
+
+    /**
+     * @test
+     */
+    public function theClientUsesAnotherAuthenticationMethod()
+    {
+        $method = new ClientSecretBasic('My Service');
+        $manager = new AuthenticationMethodManager();
+        $manager->add($method);
+        $client = Client::createEmpty();
+        $client = $client->create(
+            ClientId::create('CLIENT_ID'),
+            DataBag::create([
+                'client_secret' => 'CLIENT_SECRET',
+                'token_endpoint_auth_method' => 'client_secret_post',
+            ]),
+            UserAccountId::create('USER_ACCOUNT_ID')
+        );
+        $request = $this->prophesize(ServerRequestInterface::class);
+        $request->getParsedBody()->willReturn([
+            'client_id' => 'CLIENT_ID',
+            'client_secret' => 'CLIENT_SECRET',
+        ]);
+
+        self::assertFalse($manager->isClientAuthenticated($request->reveal(),$client, $method,'CLIENT_SECRET'));
     }
 
     /**

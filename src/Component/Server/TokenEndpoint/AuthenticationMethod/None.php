@@ -18,7 +18,7 @@ use OAuth2Framework\Component\Server\Core\Client\ClientId;
 use OAuth2Framework\Component\Server\Core\DataBag\DataBag;
 use Psr\Http\Message\ServerRequestInterface;
 
-final class None implements TokenEndpointAuthenticationMethod
+final class None implements AuthenticationMethod
 {
     /**
      * {@inheritdoc}
@@ -31,7 +31,7 @@ final class None implements TokenEndpointAuthenticationMethod
     /**
      * {@inheritdoc}
      */
-    public function findClientId(ServerRequestInterface $request, &$clientCredentials = null): ? ClientId
+    public function findClientIdAndCredentials(ServerRequestInterface $request, &$clientCredentials = null): ? ClientId
     {
         $parameters = $request->getParsedBody() ?? [];
         if (array_key_exists('client_id', $parameters)) {
@@ -60,7 +60,7 @@ final class None implements TokenEndpointAuthenticationMethod
     /**
      * {@inheritdoc}
      */
-    public function getSupportedAuthenticationMethods(): array
+    public function getSupportedMethods(): array
     {
         return ['none'];
     }

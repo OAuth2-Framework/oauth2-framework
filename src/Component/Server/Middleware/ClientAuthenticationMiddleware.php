@@ -17,14 +17,14 @@ use Interop\Http\Server\RequestHandlerInterface;
 use Interop\Http\Server\MiddlewareInterface;
 use OAuth2Framework\Component\Server\Core\Client\ClientRepository;
 use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
-use OAuth2Framework\Component\Server\TokenEndpoint\AuthenticationMethod\TokenEndpointAuthenticationMethodManager;
+use OAuth2Framework\Component\Server\TokenEndpoint\AuthenticationMethod\AuthenticationMethodManager;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 final class ClientAuthenticationMiddleware implements MiddlewareInterface
 {
     /**
-     * @var TokenEndpointAuthenticationMethodManager
+     * @var AuthenticationMethodManager
      */
     private $tokenEndpointAuthenticationMethodManager;
 
@@ -42,10 +42,10 @@ final class ClientAuthenticationMiddleware implements MiddlewareInterface
      * ClientAuthenticationMiddleware constructor.
      *
      * @param ClientRepository                         $clientRepository
-     * @param TokenEndpointAuthenticationMethodManager $tokenEndpointAuthenticationMethodManager
+     * @param AuthenticationMethodManager $tokenEndpointAuthenticationMethodManager
      * @param bool                                     $authenticationRequired
      */
-    public function __construct(ClientRepository $clientRepository, TokenEndpointAuthenticationMethodManager $tokenEndpointAuthenticationMethodManager, bool $authenticationRequired)
+    public function __construct(ClientRepository $clientRepository, AuthenticationMethodManager $tokenEndpointAuthenticationMethodManager, bool $authenticationRequired)
     {
         $this->clientRepository = $clientRepository;
         $this->tokenEndpointAuthenticationMethodManager = $tokenEndpointAuthenticationMethodManager;
@@ -57,7 +57,7 @@ final class ClientAuthenticationMiddleware implements MiddlewareInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $clientId = $this->tokenEndpointAuthenticationMethodManager->findClientInformationInTheRequest($request, $authentication_method, $client_credentials);
+        $clientId = $this->tokenEndpointAuthenticationMethodManager->findClientIdAndCredentials($request, $authentication_method, $client_credentials);
         $client = null;
         if (null !== $clientId) {
             $client = $this->clientRepository->find($clientId);

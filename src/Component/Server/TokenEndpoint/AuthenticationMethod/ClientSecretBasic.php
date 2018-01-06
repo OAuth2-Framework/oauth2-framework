@@ -18,7 +18,7 @@ use OAuth2Framework\Component\Server\Core\Client\ClientId;
 use OAuth2Framework\Component\Server\Core\DataBag\DataBag;
 use Psr\Http\Message\ServerRequestInterface;
 
-final class ClientSecretBasic implements TokenEndpointAuthenticationMethod
+final class ClientSecretBasic implements AuthenticationMethod
 {
     /**
      * @var string
@@ -59,7 +59,7 @@ final class ClientSecretBasic implements TokenEndpointAuthenticationMethod
     /**
      * {@inheritdoc}
      */
-    public function findClientId(ServerRequestInterface $request, &$client_credentials = null): ? ClientId
+    public function findClientIdAndCredentials(ServerRequestInterface $request, &$client_credentials = null): ? ClientId
     {
         $authorization_headers = $request->getHeader('Authorization');
         if (0 < count($authorization_headers)) {
@@ -116,7 +116,7 @@ final class ClientSecretBasic implements TokenEndpointAuthenticationMethod
     /**
      * {@inheritdoc}
      */
-    public function getSupportedAuthenticationMethods(): array
+    public function getSupportedMethods(): array
     {
         return ['client_secret_basic'];
     }

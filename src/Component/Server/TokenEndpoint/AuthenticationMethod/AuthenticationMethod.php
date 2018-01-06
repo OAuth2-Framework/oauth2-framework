@@ -18,12 +18,12 @@ use OAuth2Framework\Component\Server\Core\Client\ClientId;
 use OAuth2Framework\Component\Server\Core\DataBag\DataBag;
 use Psr\Http\Message\ServerRequestInterface;
 
-interface TokenEndpointAuthenticationMethod
+interface AuthenticationMethod
 {
     /**
      * @return string[]
      */
-    public function getSupportedAuthenticationMethods(): array;
+    public function getSupportedMethods(): array;
 
     /**
      * Find a client using the request.
@@ -34,7 +34,7 @@ interface TokenEndpointAuthenticationMethod
      *
      * @return null|ClientId Return the client public ID if found else null. If credentials have are needed to authenticate the client, they are set to the variable $clientCredentials
      */
-    public function findClientId(ServerRequestInterface $request, &$clientCredentials = null): ? ClientId;
+    public function findClientIdAndCredentials(ServerRequestInterface $request, &$clientCredentials = null): ? ClientId;
 
     /**
      * @param DataBag $command_parameters
@@ -58,7 +58,7 @@ interface TokenEndpointAuthenticationMethod
     public function isClientAuthenticated(Client $client, $clientCredentials, ServerRequestInterface $request): bool;
 
     /**
-     * @return array
+     * @return string[]
      */
     public function getSchemesParameters(): array;
 }
