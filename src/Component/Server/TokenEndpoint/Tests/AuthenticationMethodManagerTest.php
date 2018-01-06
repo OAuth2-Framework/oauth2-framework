@@ -95,6 +95,5 @@ final class AuthenticationMethodManagerTest extends TestCase
         self::assertInstanceOf(ClientSecretPost::class, $method);
         self::assertInstanceOf(ClientId::class, $clientId);
         self::assertEquals('CLIENT_SECRET', $credentials);
-
     }
 }
