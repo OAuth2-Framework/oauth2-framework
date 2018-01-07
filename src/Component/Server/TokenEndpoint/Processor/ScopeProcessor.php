@@ -45,14 +45,7 @@ final class ScopeProcessor
     }
 
     /**
-     * @param ServerRequestInterface $request
-     * @param GrantTypeData          $grantTypeData
-     * @param GrantType              $grantType
-     * @param callable               $next
-     *
-     * @throws OAuth2Exception
-     *
-     * @return GrantTypeData
+     * {@inheritdoc}
      */
     public function __invoke(ServerRequestInterface $request, GrantTypeData $grantTypeData, GrantType $grantType, callable $next): GrantTypeData
     {
@@ -63,7 +56,7 @@ final class ScopeProcessor
             $scope = $grantTypeData->getAvailableScopes() ?? [];
         } else {
             $scopeParameter = $params['scope'];
-            $scope = $this->scopeRepository->convertToArray($scopeParameter);
+            $scope = explode(' ', $scopeParameter);
         }
 
         //Modify the scope according to the scope policy
@@ -72,12 +65,12 @@ final class ScopeProcessor
                 $scope = $this->scopePolicyManager->apply($scope, $grantTypeData->getClient());
             }
         } catch (\InvalidArgumentException $e) {
-            throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_SCOPE, $e->getMessage());
+            throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_SCOPE, $e->getMessage(), [], $e);
         }
 
-        $availableScope = is_array($grantTypeData->getAvailableScopes()) ? $grantTypeData->getAvailableScopes() : $this->scopeRepository->getAvailableScopesForClient($grantTypeData->getClient());
+        $availableScope = $grantTypeData->getAvailableScopes() ? $grantTypeData->getAvailableScopes() : $this->scopeRepository->getAvailableScopesForClient($grantTypeData->getClient());
 
-        //Check if scope requested are within the available scope
+        //Check if requested scope are within the available scope
         if (!$this->scopeRepository->areRequestedScopesAvailable($scope, $availableScope)) {
             throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_SCOPE, sprintf('An unsupported scope was requested. Available scopes are %s.', implode(', ', $availableScope)));
         }
@@ -85,7 +78,5 @@ final class ScopeProcessor
         $grantTypeData = $grantTypeData->withScopes($scope);
 
         return $grantTypeData;
-
-        //return $next($request, $grantTypeData, $grantType);
     }
 }

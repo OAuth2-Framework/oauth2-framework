@@ -15,10 +15,8 @@ namespace OAuth2Framework\Component\Server\TokenEndpoint\AuthenticationMethod;
 
 use Jose\Component\Checker\ClaimCheckerManager;
 use Jose\Component\Core\JWKSet;
-use Jose\Component\Encryption\JWEDecrypter;
-use Jose\Component\Encryption\Serializer\CompactSerializer as JweCompactSerializer;
-use Jose\Component\Signature\JWSVerifier;
-use Jose\Component\Signature\Serializer\CompactSerializer as JwsCompactSerializer;
+use Jose\Component\Encryption\JWELoader;
+use Jose\Component\Signature\JWSLoader;
 use OAuth2Framework\Component\Server\Core\Client\Client;
 use OAuth2Framework\Component\Server\Core\Client\ClientId;
 use OAuth2Framework\Component\Server\Core\DataBag\DataBag;
@@ -28,34 +26,24 @@ use Psr\Http\Message\ServerRequestInterface;
 final class ClientAssertionJwt implements AuthenticationMethod
 {
     /**
-     * @var JwsCompactSerializer
+     * @var JWSLoader
      */
-    private $jwsSerializer;
+    private $jwsLoader;
 
     /**
-     * @var JWSVerifier
+     * @var null|JWELoader
      */
-    private $jwsVerifier;
+    private $jweLoader = null;
 
     /**
-     * @var JweCompactSerializer
+     * @var null|JWKSet
      */
-    private $jweSerializer;
-
-    /**
-     * @var JWEDecrypter
-     */
-    private $jweDecrypter;
+    private $keyEncryptionKeySet = null;
 
     /**
      * @var bool
      */
     private $encryptionRequired = false;
-
-    /**
-     * @var JWKSet|null
-     */
-    private $keyEncryptionKeySet = null;
 
     /**
      * @var int
@@ -70,32 +58,28 @@ final class ClientAssertionJwt implements AuthenticationMethod
     /**
      * ClientAssertionJwt constructor.
      *
-     * @param JwsCompactSerializer $jwsSerializer
-     * @param JWSVerifier          $jwsVerifier
+     * @param JWSLoader $jwsLoader
      * @param ClaimCheckerManager  $claimCheckerManager
      * @param int                  $secretLifetime
      */
-    public function __construct(JwsCompactSerializer $jwsSerializer, JWSVerifier $jwsVerifier, ClaimCheckerManager $claimCheckerManager, int $secretLifetime = 0)
+    public function __construct(JWSLoader $jwsLoader, ClaimCheckerManager $claimCheckerManager, int $secretLifetime = 0)
     {
         if ($secretLifetime < 0) {
             throw new \InvalidArgumentException('The secret lifetime must be at least 0 (= unlimited).');
         }
-        $this->jwsSerializer = $jwsSerializer;
-        $this->jwsVerifier = $jwsVerifier;
+        $this->jwsLoader = $jwsLoader;
         $this->claimCheckerManager = $claimCheckerManager;
         $this->secretLifetime = $secretLifetime;
     }
 
     /**
-     * @param JweCompactSerializer $jweSerializer
-     * @param JWEDecrypter         $jweDecrypter
-     * @param JWKSet               $keyEncryptionKeySet
-     * @param bool                 $encryptionRequired
+     * @param JWELoader $jweLoader
+     * @param JWKSet    $keyEncryptionKeySet
+     * @param bool      $encryptionRequired
      */
-    public function enableEncryptedAssertions(JweCompactSerializer $jweSerializer, JWEDecrypter $jweDecrypter, JWKSet $keyEncryptionKeySet, bool $encryptionRequired)
+    public function enableEncryptedAssertions(JWELoader $jweLoader, JWKSet $keyEncryptionKeySet, bool $encryptionRequired)
     {
-        $this->jweSerializer = $jweSerializer;
-        $this->jweDecrypter = $jweDecrypter;
+        $this->jweLoader = $jweLoader;
         $this->encryptionRequired = $encryptionRequired;
         $this->keyEncryptionKeySet = $keyEncryptionKeySet;
     }
@@ -105,7 +89,7 @@ final class ClientAssertionJwt implements AuthenticationMethod
      */
     public function getSupportedSignatureAlgorithms(): array
     {
-        return $this->jwsVerifier->getSignatureAlgorithmManager()->list();
+        return $this->jwsLoader->getSignatureAlgorithmManager()->list();
     }
 
     /**
@@ -113,7 +97,7 @@ final class ClientAssertionJwt implements AuthenticationMethod
      */
     public function getSupportedContentEncryptionAlgorithms(): array
     {
-        return null === $this->jweDecrypter ? [] : $this->jweDecrypter->getContentEncryptionAlgorithmManager()->list();
+        return null === $this->jweLoader ? [] : $this->jweLoader->getContentEncryptionAlgorithmManager()->list();
     }
 
     /**
@@ -121,7 +105,7 @@ final class ClientAssertionJwt implements AuthenticationMethod
      */
     public function getSupportedKeyEncryptionAlgorithms(): array
     {
-        return null === $this->jweDecrypter ? [] : $this->jweDecrypter->getKeyEncryptionAlgorithmManager()->list();
+        return null === $this->jweLoader ? [] : $this->jweLoader->getKeyEncryptionAlgorithmManager()->list();
     }
 
     /**
@@ -169,7 +153,7 @@ final class ClientAssertionJwt implements AuthenticationMethod
                 throw new \InvalidArgumentException('The claims "sub" and "iss" must contain the client public ID.');
             }
         } catch (\Exception $e) {
-            throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_REQUEST, $e->getMessage());
+            throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_REQUEST, $e->getMessage(), [], $e);
         }
 
         $clientCredentials = $jws;
@@ -186,20 +170,17 @@ final class ClientAssertionJwt implements AuthenticationMethod
      */
     private function tryToDecryptClientAssertion(string $assertion): string
     {
-        if (null === $this->jweDecrypter) {
+        if (null === $this->jweLoader) {
             return $assertion;
         }
 
         try {
-            $jwe = $this->jweSerializer->unserialize($assertion);
+            $jwe = $this->jweLoader->loadAndDecryptWithKeySet($assertion, $this->keyEncryptionKeySet, $recipient);
             if (1 !== $jwe->countRecipients()) {
                 throw new \InvalidArgumentException('The client assertion must have only one recipient.');
             }
-            if (true === $this->jweDecrypter->decryptUsingKeySet($jwe, $this->keyEncryptionKeySet, 0)) {
-                return $jwe->getPayload();
-            }
 
-            throw new \InvalidArgumentException('Unable to decrypt the client assertion.');
+            return $jwe->getPayload();
         } catch (\Exception $e) {
             if (true === $this->encryptionRequired) {
                 throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_REQUEST, $e->getMessage(), [], $e);

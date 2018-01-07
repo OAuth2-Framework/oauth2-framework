@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\Server\OpenIdConnect;
 
 use Base64Url\Base64Url;
+use Jose\Component\Core\Converter\StandardConverter;
 use Jose\Component\Core\JWK;
 use Jose\Component\Core\JWKSet;
 use Jose\Component\Encryption\JWEBuilder;
@@ -314,8 +315,12 @@ final class IdTokenBuilder
      */
     public function withSignature(JWSBuilder $jwsBuilder, JWKSet $signatureKeys, string $signatureAlgorithm): self
     {
-        Assertion::inArray($signatureAlgorithm, $jwsBuilder->getSignatureAlgorithmManager()->list(), sprintf('Unsupported signature algorithm "%s". Please use one of the following one: %s', $signatureAlgorithm, implode(', ', $jwsBuilder->getSignatureAlgorithmManager()->list())));
-        Assertion::true(0 !== $signatureKeys->count(), 'The signature key set must contain at least one key.');
+        if (!in_array($signatureAlgorithm, $jwsBuilder->getSignatureAlgorithmManager()->list())) {
+            throw new \InvalidArgumentException(sprintf('Unsupported signature algorithm "%s". Please use one of the following one: %s', $signatureAlgorithm, implode(', ', $jwsBuilder->getSignatureAlgorithmManager()->list())));
+        }
+        if (0 === $signatureKeys->count()) {
+            throw new \InvalidArgumentException('The signature key set must contain at least one key.');
+        }
         $clone = clone $this;
         $clone->jwsBuilder = $jwsBuilder;
         $clone->signatureKeys = $signatureKeys;
@@ -333,8 +338,12 @@ final class IdTokenBuilder
      */
     public function withEncryption(JWEBuilder $jweBuilder, string $keyEncryptionAlgorithm, string $contentEncryptionAlgorithm): self
     {
-        Assertion::inArray($keyEncryptionAlgorithm, $jweBuilder->getKeyEncryptionAlgorithmManager()->list(), sprintf('Unsupported key encryption algorithm "%s". Please use one of the following one: %s', $keyEncryptionAlgorithm, implode(', ', $jweBuilder->getKeyEncryptionAlgorithmManager()->list())));
-        Assertion::inArray($contentEncryptionAlgorithm, $jweBuilder->getContentEncryptionAlgorithmManager()->list(), sprintf('Unsupported content encryption algorithm "%s". Please use one of the following one: %s', $contentEncryptionAlgorithm, implode(', ', $jweBuilder->getContentEncryptionAlgorithmManager()->list())));
+        if (!in_array($keyEncryptionAlgorithm, $jweBuilder->getKeyEncryptionAlgorithmManager()->list())) {
+            throw new \InvalidArgumentException(sprintf('Unsupported key encryption algorithm "%s". Please use one of the following one: %s', $keyEncryptionAlgorithm, implode(', ', $jweBuilder->getKeyEncryptionAlgorithmManager()->list())));
+        }
+        if (!in_array($contentEncryptionAlgorithm, $jweBuilder->getContentEncryptionAlgorithmManager()->list())) {
+            throw new \InvalidArgumentException(sprintf('Unsupported content encryption algorithm "%s". Please use one of the following one: %s', $contentEncryptionAlgorithm, implode(', ', $jweBuilder->getContentEncryptionAlgorithmManager()->list())));
+        }
         $clone = clone $this;
         $clone->jweBuilder = $jweBuilder;
         $clone->keyEncryptionAlgorithm = $keyEncryptionAlgorithm;
@@ -459,13 +468,15 @@ final class IdTokenBuilder
     private function computeIdToken(array $claims): string
     {
         $signatureKey = $this->getSignatureKey($this->signatureAlgorithm);
-        $headers = $this->getHeaders($signatureKey, $this->signatureAlgorithm);
+        $header = $this->getHeaders($signatureKey, $this->signatureAlgorithm);
+        $jsonConverter = new StandardConverter();
+        $claims = $jsonConverter->encode($claims);
         $jws = $this->jwsBuilder
             ->create()
             ->withPayload($claims)
-            ->addSignature($signatureKey, $headers)
+            ->addSignature($signatureKey, $header)
             ->build();
-        $serializer = new JwsCompactSerializer();
+        $serializer = new JwsCompactSerializer($jsonConverter);
 
         return $serializer->serialize($jws, 0);
     }
@@ -481,8 +492,10 @@ final class IdTokenBuilder
         $clientKeySet = $client->getPublicKeySet();
         $keyEncryptionAlgorithm = $this->jweBuilder->getKeyEncryptionAlgorithmManager()->get($this->keyEncryptionAlgorithm);
         $encryptionKey = $clientKeySet->selectKey('enc', $keyEncryptionAlgorithm);
-        Assertion::notNull($encryptionKey, 'No encryption key available for the client.');
-        $headers = [
+        if (null === $encryptionKey) {
+            throw new \InvalidArgumentException('No encryption key available for the client.');
+        }
+        $header = [
             'typ' => 'JWT',
             'jti' => Base64Url::encode(random_bytes(25)),
             'alg' => $this->keyEncryptionAlgorithm,
@@ -491,10 +504,11 @@ final class IdTokenBuilder
         $jwe = $this->jweBuilder
             ->create()
             ->withPayload($jwt)
-            ->withSharedProtectedHeaders($headers)
+            ->withSharedProtectedHeader($header)
             ->addRecipient($encryptionKey)
             ->build();
-        $serializer = new JweCompactSerializer();
+        $jsonConverter = new StandardConverter();
+        $serializer = new JweCompactSerializer($jsonConverter);
 
         return $serializer->serialize($jwe, 0);
     }
@@ -511,7 +525,9 @@ final class IdTokenBuilder
             return JWK::create(['kty' => 'none', 'alg' => 'none', 'use' => 'sig']);
         }
         $signatureKey = $this->signatureKeys->selectKey('sig', $signatureAlgorithm);
-        Assertion::notNull($signatureKey, 'Unable to find a key to sign the ID Token. Please verify the selected key set contains suitable keys.');
+        if (null === $signatureKey) {
+            throw new \InvalidArgumentException('Unable to find a key to sign the ID Token. Please verify the selected key set contains suitable keys.');
+        }
 
         return $signatureKey;
     }
@@ -524,15 +540,15 @@ final class IdTokenBuilder
      */
     private function getHeaders(JWK $signatureKey, string $signatureAlgorithm): array
     {
-        $headers = [
+        $header = [
             'typ' => 'JWT',
             'alg' => $signatureAlgorithm,
         ];
         if ($signatureKey->has('kid')) {
-            $headers['kid'] = $signatureKey->get('kid');
+            $header['kid'] = $signatureKey->get('kid');
         }
 
-        return $headers;
+        return $header;
     }
 
     /**
@@ -587,7 +603,9 @@ final class IdTokenBuilder
             'PS512' => 'sha512',
         ];
 
-        Assertion::keyExists($map, $this->signatureAlgorithm, sprintf('Algorithm "%s" is not supported', $this->signatureAlgorithm));
+        if (!array_key_exists($this->signatureAlgorithm, $map)) {
+            throw new \InvalidArgumentException(sprintf('Algorithm "%s" is not supported', $this->signatureAlgorithm));
+        }
 
         return $map[$this->signatureAlgorithm];
     }
@@ -614,7 +632,9 @@ final class IdTokenBuilder
             'PS512' => 32,
         ];
 
-        Assertion::keyExists($map, $this->signatureAlgorithm, sprintf('Algorithm "%s" is not supported', $this->signatureAlgorithm));
+        if (!array_key_exists($this->signatureAlgorithm, $map)) {
+            throw new \InvalidArgumentException(sprintf('Algorithm "%s" is not supported', $this->signatureAlgorithm));
+        }
 
         return $map[$this->signatureAlgorithm];
     }

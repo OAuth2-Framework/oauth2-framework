@@ -16,29 +16,25 @@ namespace OAuth2Framework\Component\Server\TokenEndpoint\Processor;
 use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
 use OAuth2Framework\Component\Server\TokenEndpoint\GrantTypeData;
 use OAuth2Framework\Component\Server\TokenEndpoint\GrantType;
-use OAuth2Framework\Component\Server\Core\Scope\ScopePolicyManager;
-use OAuth2Framework\Component\Server\Core\Scope\ScopeRepository;
 use Psr\Http\Message\ServerRequestInterface;
 
 final class ProcessorManager
 {
     /**
-     * @var array
+     * @var callable
      */
     private $processors = [];
 
     /**
-     * ProcessorManager constructor.
+     * @param callable $processor
      *
-     * @param null|ScopeRepository    $scopeRepository
-     * @param null|ScopePolicyManager $scopePolicyManager
+     * @return ProcessorManager
      */
-    public function __construct(? ScopeRepository $scopeRepository, ? ScopePolicyManager $scopePolicyManager)
+    public function add(callable $processor): self
     {
-        if (null !== $scopeRepository) {
-            $this->processors[] = new ScopeProcessor($scopeRepository, $scopePolicyManager);
-        }
-        $this->processors[] = new TokenTypeProcessor();
+        $this->processors[] = $processor;
+
+        return $this;
     }
 
     /**
@@ -52,7 +48,7 @@ final class ProcessorManager
      */
     public function handle(ServerRequestInterface $request, GrantTypeData $grantTypeData, GrantType $grantType): GrantTypeData
     {
-        $grantTypeData = call_user_func($this->callableForNextRule(0), $request, $grantTypeData, $grantType);
+        $grantTypeData = call_user_func($this->resolve(0), $request, $grantTypeData, $grantType);
 
         return $grantType->grant($request, $grantTypeData);
     }
@@ -60,9 +56,9 @@ final class ProcessorManager
     /**
      * @param int $index
      *
-     * @return \Closure
+     * @return callable
      */
-    private function callableForNextRule(int $index): \Closure
+    private function resolve(int $index): callable
     {
         if (!isset($this->processors[$index])) {
             return function (ServerRequestInterface $request, GrantTypeData $grantTypeData, GrantType $grantType): GrantTypeData {
@@ -72,7 +68,7 @@ final class ProcessorManager
         $processor = $this->processors[$index];
 
         return function (ServerRequestInterface $request, GrantTypeData $grantTypeData, GrantType $grantType) use ($processor, $index): GrantTypeData {
-            return $processor($request, $grantTypeData, $grantType, $this->callableForNextRule($index + 1));
+            return $processor($request, $grantTypeData, $grantType, $this->resolve($index + 1));
         };
     }
 }

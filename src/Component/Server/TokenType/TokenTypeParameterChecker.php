@@ -11,12 +11,17 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Component\Server\AuthorizationEndpoint\ParameterChecker;
+namespace OAuth2Framework\Component\Server\TokenType;
 
 use OAuth2Framework\Component\Server\AuthorizationEndpoint\Authorization;
+use OAuth2Framework\Component\Server\AuthorizationEndpoint\ParameterChecker\ParameterChecker;
 use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
-use OAuth2Framework\Component\Server\TokenType\TokenTypeManager;
 
+/**
+ * Class TokenTypeParameterChecker.
+ *
+ * This parameter checker should be used with the Authorization Endpoint
+ */
 final class TokenTypeParameterChecker implements ParameterChecker
 {
     /**

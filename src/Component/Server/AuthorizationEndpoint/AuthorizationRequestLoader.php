@@ -358,7 +358,7 @@ final class AuthorizationRequestLoader
             $missing_claims = array_keys(array_diff_key(array_flip($this->mandatoryClaims), $claims));
             Assertion::true(0 === count($missing_claims), 'The following mandatory claims are missing: %s.', implode(', ', $missing_claims));
         } catch (\Exception $e) {
-            throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_REQUEST_OBJECT, $e->getMessage());
+            throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_REQUEST_OBJECT, $e->getMessage(), [], $e);
         }
 
         return $jwt;
@@ -384,7 +384,7 @@ final class AuthorizationRequestLoader
             return $jwe->getPayload();
         } catch (\Exception $e) {
             if (true === $this->requireEncryption) {
-                throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_REQUEST_OBJECT, $e->getMessage());
+                throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_REQUEST_OBJECT, $e->getMessage(), [], $e);
             }
 
             return $request;

@@ -100,6 +100,7 @@ final class IdTokenResponseType implements ResponseType
      */
     public function process(Authorization $authorization, callable $next): Authorization
     {
+        /** @var Authorization $authorization */
         $authorization = $next($authorization);
 
         if (in_array('openid', $authorization->getScopes())) {

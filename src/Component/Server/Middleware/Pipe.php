@@ -96,7 +96,7 @@ final class Pipe implements MiddlewareInterface
     }
 
     /**
-     * Dispatches the middleware middlewares and returns the resulting `ResponseInterface`.
+     * Dispatches the middleware and returns the resulting `ResponseInterface`.
      *
      * @param ServerRequestInterface $request
      *

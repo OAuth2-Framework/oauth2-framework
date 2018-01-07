@@ -65,13 +65,14 @@ final class OAuth2ResponseFactoryManager
     }
 
     /**
-     * @param int   $code The code of the response
-     * @param array $data Data sent to the response
+     * @param OAuth2Exception $e
      *
      * @return OAuth2ResponseInterface
      */
-    public function getResponse(int $code, array $data): OAuth2ResponseInterface
+    public function getResponse(OAuth2Exception $e): OAuth2ResponseInterface
     {
+        $code = $e->getCode();
+        $data = $e->getData();
         foreach ($this->extensions as $extension) {
             $data = $extension->process($code, $data);
         }

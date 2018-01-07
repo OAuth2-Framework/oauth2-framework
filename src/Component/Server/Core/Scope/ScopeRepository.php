@@ -18,13 +18,17 @@ use OAuth2Framework\Component\Server\Core\Client\Client;
 interface ScopeRepository
 {
     /**
+     * @param string $scope
+     * @return bool
+     */
+    public function has(string $scope): bool;
+
+    /**
      * @return string[]
      */
     public function getSupportedScopes(): array;
 
     /**
-     * This function returns the available scopes. If a valid Client object is set as parameter, the function will return available scopes for the client.
-     *
      * @param Client $client A client
      *
      * @return string[] Return an array scope
@@ -38,13 +42,4 @@ interface ScopeRepository
      * @return bool Return true if the requested scope is within the available scope
      */
     public function areRequestedScopesAvailable(array $requestedScopes, array $availableScopes): bool;
-
-    /**
-     * Convert a string that contains at least one scope to an array of scopes.
-     *
-     * @param string $scopes The string to convert
-     *
-     * @return string[] An array of scopes
-     */
-    public function convertToArray(string $scopes): array;
 }

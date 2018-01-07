@@ -19,7 +19,6 @@ use Interop\Http\Server\MiddlewareInterface;
 use OAuth2Framework\Component\Server\TokenEndpoint\Processor\ProcessorManager;
 use OAuth2Framework\Component\Server\Core\AccessToken\AccessToken;
 use OAuth2Framework\Component\Server\Core\AccessToken\AccessTokenRepository;
-use OAuth2Framework\Component\Server\Core\Client\Client;
 use OAuth2Framework\Component\Server\Core\Client\ClientId;
 use OAuth2Framework\Component\Server\Core\Client\ClientRepository;
 use OAuth2Framework\Component\Server\RefreshTokenGrant\RefreshTokenRepository;
@@ -95,23 +94,42 @@ final class TokenEndpoint implements MiddlewareInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
+        // We prepare the Grant Type Data.
+        // The client may be null (authenticated by other means).
         $grantTypeData = GrantTypeData::create($request->getAttribute('client'));
 
-        /** @var $grantType GrantType From the dedicated middleware */
+        // We retrieve the Grant Type.
+        // This middleware must be behind the GrantTypeMiddleware
         $grantType = $request->getAttribute('grant_type');
+        if (!$grantType instanceof GrantType) {
+            throw new OAuth2Exception(500, OAuth2Exception::ERROR_INTERNAL, null);
+        }
+
+        // We check that the request has all parameters needed for the selected grant type
         $grantType->checkTokenRequest($request);
+
+        // The grant type prepare the token response
+        // The grant type data should be updated accordingly
         $grantTypeData = $grantType->prepareTokenResponse($request, $grantTypeData);
+
+        // At this stage, the client should be authenticated
+        // If not, we stop the authorization grant
         if (null === $grantTypeData->getClient() || $grantTypeData->getClient()->isDeleted()) {
             throw new OAuth2Exception(401, OAuth2Exception::ERROR_INVALID_CLIENT, 'Client authentication failed.');
         }
 
         // This occurs now because the client may be found during the preparation process
-        $this->checkGrantType($grantTypeData->getClient(), $grantType->getGrantType());
+        if (!$grantTypeData->getClient()->isGrantTypeAllowed($grantType->getGrantType())) {
+            throw new OAuth2Exception(400, OAuth2Exception::ERROR_UNAUTHORIZED_CLIENT, sprintf('The grant type "%s" is unauthorized for this client.', $grantType));
+        }
 
+        // Should be token extension pre-processing
         $grantTypeData = $this->processorManager->handle($request, $grantTypeData, $grantType);
 
+        // Everything is fine so we can issue the access token
         $accessToken = $this->issueAccessToken($grantTypeData);
-        $data = $this->tokenEndpointExtensionManager->process($grantTypeData->getClient(), $this->getResourceOwner($grantTypeData->getResourceOwnerId()), $accessToken);
+        $resourceOwner = $this->getResourceOwner($grantTypeData->getResourceOwnerId());
+        $data = $this->tokenEndpointExtensionManager->process($grantTypeData->getClient(), $resourceOwner, $accessToken);
 
         return $this->createResponse($data);
     }
@@ -123,27 +141,11 @@ final class TokenEndpoint implements MiddlewareInterface
      */
     private function createResponse(array $data): ResponseInterface
     {
-        $response = $this->responseFactory->createResponse();
-        $response->getBody()->write(json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
         $headers = ['Content-Type' => 'application/json; charset=UTF-8', 'Cache-Control' => 'no-cache, no-store, max-age=0, must-revalidate, private', 'Pragma' => 'no-cache'];
-        foreach ($headers as $k => $v) {
-            $response = $response->withHeader($k, $v);
-        }
+        $response = $this->responseFactory->createResponse(200, null, $headers);
+        $response->getBody()->write(json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
 
         return $response;
-    }
-
-    /**
-     * @param Client $client
-     * @param string $grantType
-     *
-     * @throws OAuth2Exception
-     */
-    private function checkGrantType(Client $client, string $grantType)
-    {
-        if (!$client->isGrantTypeAllowed($grantType)) {
-            throw new OAuth2Exception(400, OAuth2Exception::ERROR_UNAUTHORIZED_CLIENT, sprintf('The grant type "%s" is unauthorized for this client.', $grantType));
-        }
     }
 
     /**

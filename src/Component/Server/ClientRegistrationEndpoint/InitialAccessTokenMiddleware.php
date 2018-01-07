@@ -11,12 +11,12 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Component\Server\Middleware;
+namespace OAuth2Framework\Component\Server\ClientRegistrationEndpoint;
 
 use Interop\Http\Server\RequestHandlerInterface;
 use Interop\Http\Server\MiddlewareInterface;
 use OAuth2Framework\Component\Server\BearerTokenType\BearerToken;
-use OAuth2Framework\Component\Server\ClientRegistrationEndpoint\InitialAccessTokenRepository;
+use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -52,16 +52,21 @@ final class InitialAccessTokenMiddleware implements MiddlewareInterface
         try {
             $values = [];
             $token = $this->bearerToken->findToken($request, $values);
-            Assertion::notNull($token, 'Initial Access Token is missing or invalid.');
+            if (null === $token) {
+                throw new \InvalidArgumentException('Initial Access Token is missing or invalid.');
+            }
 
             $initialAccessToken = $this->initialAccessTokenRepository->find(InitialAccessTokenId::create($token));
-            Assertion::notNull($initialAccessToken, 'Initial Access Token is missing or invalid.');
-            Assertion::false($initialAccessToken->hasExpired(), 'Initial Access Token expired.');
-            Assertion::false($initialAccessToken->isRevoked(), 'Initial Access Token is missing or invalid.');
+            if (null === $initialAccessToken || $initialAccessToken->isRevoked()) {
+                throw new \InvalidArgumentException('Initial Access Token is missing or invalid.');
+            }
+            if ($initialAccessToken->hasExpired()) {
+                throw new \InvalidArgumentException('Initial Access Token expired.');
+            }
 
             $request = $request->withAttribute('initial_access_token', $initialAccessToken);
         } catch (\InvalidArgumentException $e) {
-            throw new OAuth2Exception(400, OAuth2ResponseFactoryManager::ERROR_INVALID_REQUEST, $e->getMessage());
+            throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_REQUEST, $e->getMessage(), [], $e);
         }
 
         return $handler->handle($request);

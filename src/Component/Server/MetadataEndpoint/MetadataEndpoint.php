@@ -67,7 +67,7 @@ final class MetadataEndpoint implements MiddlewareInterface
      * @param JWK        $signatureKey
      * @param string     $signatureAlgorithm
      */
-    public function enableSignedMetadata(JWSBuilder $jwsBuilder, string $signatureAlgorithm, JWK $signatureKey)
+    public function enableSignature(JWSBuilder $jwsBuilder, string $signatureAlgorithm, JWK $signatureKey)
     {
         $this->jwsBuilder = $jwsBuilder;
         $this->signatureKey = $signatureKey;
@@ -80,8 +80,8 @@ final class MetadataEndpoint implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $data = $this->metadata->jsonSerialize();
-        if ($this->isSignedMetadataEnabled()) {
-            $data['signed_metadata'] = $this->signMetadata($data);
+        if (null !== $this->jwsBuilder) {
+            $data['signed_metadata'] = $this->sign($data);
         }
         $response = $this->responseFactory->createResponse();
         $response->getBody()->write(json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
@@ -91,19 +91,11 @@ final class MetadataEndpoint implements MiddlewareInterface
     }
 
     /**
-     * @return bool
-     */
-    private function isSignedMetadataEnabled(): bool
-    {
-        return null !== $this->jwsBuilder;
-    }
-
-    /**
      * @param array $metadata
      *
      * @return string
      */
-    private function signMetadata(array $metadata): string
+    private function sign(array $metadata): string
     {
         $jsonConverter = new StandardConverter();
         $header = [

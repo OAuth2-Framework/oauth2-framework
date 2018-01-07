@@ -22,20 +22,11 @@ use Psr\Http\Message\ServerRequestInterface;
 final class TokenTypeProcessor
 {
     /**
-     * @param ServerRequestInterface $request
-     * @param GrantTypeData          $grantTypeData
-     * @param GrantType              $grantType
-     * @param callable               $next
-     *
-     * @throws OAuth2Exception
-     *
-     * @return GrantTypeData
+     * @inheritdoc
      */
     public function __invoke(ServerRequestInterface $request, GrantTypeData $grantTypeData, GrantType $grantType, callable $next): GrantTypeData
     {
-        /**
-         * @var TokenType
-         */
+        /** @var TokenType $tokenType */
         $tokenType = $request->getAttribute('token_type');
         if (!$grantTypeData->getClient()->isTokenTypeAllowed($tokenType->name())) {
             throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_REQUEST, sprintf('The token type "%s" is not allowed for the client.', $tokenType->name()));

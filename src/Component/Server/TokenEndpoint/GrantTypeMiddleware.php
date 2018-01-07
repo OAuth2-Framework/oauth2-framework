@@ -11,12 +11,11 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Component\Server\Middleware;
+namespace OAuth2Framework\Component\Server\TokenEndpoint;
 
 use Interop\Http\Server\RequestHandlerInterface;
 use Interop\Http\Server\MiddlewareInterface;
 use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
-use OAuth2Framework\Component\Server\TokenEndpoint\GrantTypeManager;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -28,7 +27,7 @@ final class GrantTypeMiddleware implements MiddlewareInterface
     private $grantTypeManager;
 
     /**
-     * ClientAuthenticationMiddleware constructor.
+     * GrantTypeMiddleware constructor.
      *
      * @param GrantTypeManager $grantTypeManager
      */
@@ -44,18 +43,19 @@ final class GrantTypeMiddleware implements MiddlewareInterface
     {
         try {
             $requestParameters = $request->getParsedBody() ?? [];
-            Assertion::keyExists($requestParameters, 'grant_type', 'The \'grant_type\' parameter is missing.');
+            if (!array_key_exists('grant_type', $requestParameters)) {
+                throw new \InvalidArgumentException('The "grant_type" parameter is missing.');
+            }
             $grant_type = $requestParameters['grant_type'];
-            Assertion::true($this->grantTypeManager->has($grant_type), sprintf('The grant type \'%s\' is not supported by this server.', $grant_type));
+            if (!$this->grantTypeManager->has($grant_type)) {
+                throw new \InvalidArgumentException(sprintf('The grant type "%s" is not supported by this server.', $grant_type));
+            }
             $type = $this->grantTypeManager->get($grant_type);
             $request = $request->withAttribute('grant_type', $type);
 
             return $handler->handle($request);
         } catch (\InvalidArgumentException $e) {
-            throw new OAuth2Exception(400,
-                OAuth2Exception::ERROR_INVALID_REQUEST,
-                $e->getMessage()
-            );
+            throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_REQUEST, $e->getMessage(), [], $e);
         }
     }
 }

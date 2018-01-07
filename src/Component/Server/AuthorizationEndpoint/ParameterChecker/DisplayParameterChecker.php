@@ -32,8 +32,8 @@ final class DisplayParameterChecker implements ParameterChecker
     public function process(Authorization $authorization, callable $next): Authorization
     {
         try {
-            if ($authorization->hasQueryParam('display')) {
-                Assertion::true(in_array($authorization->getQueryParam('display'), $this->getAllowedDisplayValues()), sprintf('Invalid parameter "display". Allowed values are %s', json_encode($this->getAllowedDisplayValues(), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)));
+            if ($authorization->hasQueryParam('display') && !in_array($authorization->getQueryParam('display'), $this->getAllowedDisplayValues())) {
+                throw new \InvalidArgumentException(sprintf('Invalid parameter "display". Allowed values are %s', json_encode($this->getAllowedDisplayValues(), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)));
             }
 
             return $next($authorization);

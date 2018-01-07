@@ -15,9 +15,16 @@ namespace OAuth2Framework\Component\Server\MetadataEndpoint\Tests;
 
 use Http\Message\MessageFactory\DiactorosMessageFactory;
 use Http\Message\ResponseFactory;
+use Interop\Http\Server\RequestHandlerInterface;
+use Jose\Component\Core\AlgorithmManager;
+use Jose\Component\Core\Converter\StandardConverter;
+use Jose\Component\Core\JWK;
+use Jose\Component\Signature\Algorithm\None;
+use Jose\Component\Signature\JWSBuilder;
 use OAuth2Framework\Component\Server\MetadataEndpoint\Metadata;
 use OAuth2Framework\Component\Server\MetadataEndpoint\MetadataEndpoint;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * @group MetadataEndpoint
@@ -29,6 +36,16 @@ final class MetadataEndpointTest extends TestCase
      */
     public function theMetadataEndpointCanReceiveRegistrationRequests()
     {
+        $request = $this->prophesize(ServerRequestInterface::class);
+        $handler = $this->prophesize(RequestHandlerInterface::class);
+
+        $response = $this->getMetadataEndpoint()->process($request->reveal(), $handler->reveal());
+        $response->getBody()->rewind();
+        $body = $response->getBody()->getContents();
+
+        self::assertEquals('{"foo":"bar","signed_metadata":"eyJhbGciOiJub25lIn0.eyJmb28iOiJiYXIifQ."}', $body);
+        self::assertEquals(200, $response->getStatusCode());
+        self::assertEquals(['application/json; charset=UTF-8'], $response->getHeader('content-type'));
     }
 
     /**
@@ -42,6 +59,10 @@ final class MetadataEndpointTest extends TestCase
     private function getMetadataEndpoint(): MetadataEndpoint
     {
         if (null === $this->metadataEndpoint) {
+            $jwsBuilder = new JWSBuilder(new StandardConverter(), AlgorithmManager::create([new None()]));
+            $key = JWK::create([
+                'kty' => 'none',
+            ]);
             $metadata = new Metadata();
             $metadata->set('foo', 'bar');
 
@@ -49,6 +70,7 @@ final class MetadataEndpointTest extends TestCase
                 $this->getResponseFactory(),
                 $metadata
             );
+            $this->metadataEndpoint->enableSignature($jwsBuilder, 'none', $key);
         }
 
         return $this->metadataEndpoint;

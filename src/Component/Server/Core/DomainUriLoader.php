@@ -21,18 +21,7 @@ final class DomainUriLoader implements LoaderInterface
     /**
      * @var string[]
      */
-    private $mappings;
-
-    /**
-     * DomainUriLoader constructor.
-     */
-    public function __construct()
-    {
-        /*
-        $this->add('oauth2-framework.spomky-labs.com/schemas/model/pre-configured-authorization/1.0/schema', sprintf('file://%s%s', __DIR__, '/Model/PreConfiguredAuthorization/PreConfiguredAuthorization-1.0.json'));
-        $this->add('oauth2-framework.spomky-labs.com/schemas/events/pre-configured-authorization/created/1.0/schema', sprintf('file://%s%s', __DIR__, '/Event/PreConfiguredAuthorization/PreConfiguredAuthorizationCreatedEvent-1.0.json'));
-        $this->add('oauth2-framework.spomky-labs.com/schemas/events/pre-configured-authorization/revoked/1.0/schema', sprintf('file://%s%s', __DIR__, '/Event/PreConfiguredAuthorization/PreConfiguredAuthorizationRevokedEvent-1.0.json'));*/
-    }
+    private $mappings = [];
 
     /**
      * @param string $schema

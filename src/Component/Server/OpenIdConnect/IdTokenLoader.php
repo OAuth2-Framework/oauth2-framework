@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\Server\OpenIdConnect;
 
 use Jose\Component\Core\JWKSet;
-use Jose\Component\Signature\JWSVerifier;
+use Jose\Component\Signature\JWSLoader;
 
 final class IdTokenLoader
 {
@@ -24,9 +24,9 @@ final class IdTokenLoader
     private $signatureKeySet;
 
     /**
-     * @var JWSVerifier
+     * @var JWSLoader
      */
-    private $jwsVerifier;
+    private $jwsLoader;
 
     /**
      * @var string[]
@@ -36,15 +36,15 @@ final class IdTokenLoader
     /**
      * IdTokenLoader constructor.
      *
-     * @param JWSVerifier $jwsVerifier
-     * @param JWKSet      $signatureKeySet
-     * @param array       $signatureAlgorithms
+     * @param JWSLoader $jwsLoader
+     * @param JWKSet    $signatureKeySet
+     * @param array     $signatureAlgorithms
      */
-    public function __construct(JWSVerifier $jwsVerifier, JWKSet $signatureKeySet, array $signatureAlgorithms)
+    public function __construct(JWSLoader $jwsLoader, JWKSet $signatureKeySet, array $signatureAlgorithms)
     {
         $this->signatureAlgorithms = $signatureAlgorithms;
         $this->signatureKeySet = $signatureKeySet;
-        $this->jwsVerifier = $jwsVerifier;
+        $this->jwsLoader = $jwsLoader;
     }
 
     /**
@@ -52,7 +52,7 @@ final class IdTokenLoader
      */
     public function getSupportedSignatureAlgorithms(): array
     {
-        return $this->jwsVerifier->getSignatureAlgorithmManager()->list();
+        return $this->jwsLoader->getSignatureAlgorithmManager()->list();
     }
 
     /**
@@ -65,11 +65,14 @@ final class IdTokenLoader
         $value = $idTokenId->getValue();
 
         try {
-            $jwt = $this->jwsVerifier->load($value);
+            $jwt = $this->jwsLoader->loadAndVerifyWithKeySet($value, $this->signatureKeySet, $signature);
+            if (0 !== $signature) {
+                throw new \InvalidArgumentException('Invalid ID Token.');
+            }
             $claims = json_decode($jwt->getPayload(), true);
-            Assertion::isArray($claims, 'Invalid ID Token');
-            $validSignature = $this->jwsVerifier->verifyWithKeySet($jwt, $this->signatureKeySet, 0);
-            Assertion::inArray($jwt->getSignature($validSignature)->getProtectedHeader('alg'), $this->signatureAlgorithms);
+            if (!is_array($claims)) {
+                throw new \InvalidArgumentException('Invalid ID Token.');
+            }
             $idToken = IdToken::create($idTokenId, $claims);
 
             return $idToken;

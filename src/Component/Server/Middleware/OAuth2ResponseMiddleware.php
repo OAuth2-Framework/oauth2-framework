@@ -45,7 +45,7 @@ final class OAuth2ResponseMiddleware implements MiddlewareInterface
         try {
             return $handler->handle($request);
         } catch (OAuth2Exception $e) {
-            $oauth2Response = $this->auth2messageFactoryManager->getResponse($e->getCode(), $e->getData());
+            $oauth2Response = $this->auth2messageFactoryManager->getResponse($e);
 
             return $oauth2Response->getResponse();
         }

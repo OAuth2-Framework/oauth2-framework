@@ -11,15 +11,18 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Component\Server\Middleware;
+namespace OAuth2Framework\Component\Server\TokenType;
 
 use Interop\Http\Server\RequestHandlerInterface;
 use Interop\Http\Server\MiddlewareInterface;
-use OAuth2Framework\Component\Server\TokenType\TokenType;
-use OAuth2Framework\Component\Server\TokenType\TokenTypeManager;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
+/**
+ * Class TokenTypeMiddleware.
+ *
+ * This middleware should be used with the Token Endpoint.
+ */
 final class TokenTypeMiddleware implements MiddlewareInterface
 {
     /**

@@ -11,15 +11,14 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Component\Server\AuthorizationEndpoint\ParameterChecker;
+namespace OAuth2Framework\Component\Server\OpenIdConnect;
 
 use OAuth2Framework\Component\Server\AuthorizationEndpoint\Authorization;
+use OAuth2Framework\Component\Server\AuthorizationEndpoint\ParameterChecker\ParameterChecker;
 use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
 
 /**
- * Class StateParameterChecker.
- *
- * @see http://tools.ietf.org/html/rfc6749#section-3.1.2
+ * Class NonceParameterChecker.
  */
 final class NonceParameterChecker implements ParameterChecker
 {
@@ -30,8 +29,8 @@ final class NonceParameterChecker implements ParameterChecker
     {
         try {
             $authorization = $next($authorization);
-            if (false !== strpos($authorization->getQueryParam('response_type'), 'id_token')) {
-                Assertion::true($authorization->hasQueryParam('nonce'), 'The parameter "nonce" is mandatory.');
+            if (false !== strpos($authorization->getQueryParam('response_type'), 'id_token') && !$authorization->hasQueryParam('nonce')) {
+                throw new \InvalidArgumentException('The parameter "nonce" is mandatory when the response type "id_token" is used.');
             }
 
             return $authorization;
