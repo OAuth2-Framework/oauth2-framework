@@ -19,6 +19,7 @@ interface ScopeRepository
 {
     /**
      * @param string $scope
+     *
      * @return bool
      */
     public function has(string $scope): bool;
