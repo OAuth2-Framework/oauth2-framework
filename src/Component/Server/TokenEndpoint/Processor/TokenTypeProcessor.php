@@ -21,9 +21,6 @@ use Psr\Http\Message\ServerRequestInterface;
 
 final class TokenTypeProcessor
 {
-    /**
-     * @inheritdoc
-     */
     public function __invoke(ServerRequestInterface $request, GrantTypeData $grantTypeData, GrantType $grantType, callable $next): GrantTypeData
     {
         /** @var TokenType $tokenType */

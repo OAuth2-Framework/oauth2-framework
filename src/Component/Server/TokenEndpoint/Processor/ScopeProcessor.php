@@ -44,9 +44,6 @@ final class ScopeProcessor
         $this->scopePolicyManager = $scopePolicyManager;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function __invoke(ServerRequestInterface $request, GrantTypeData $grantTypeData, GrantType $grantType, callable $next): GrantTypeData
     {
         /** @var GrantTypeData $grantTypeData */
