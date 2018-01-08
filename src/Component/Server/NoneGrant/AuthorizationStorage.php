@@ -14,8 +14,6 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\Server\NoneGrant;
 
 use OAuth2Framework\Component\Server\AuthorizationEndpoint\Authorization;
-use OAuth2Framework\Component\Server\AuthorizationEndpoint\ResponseType;
-use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
 
 /**
  * Interface AuthorizationRepository.
@@ -24,6 +22,7 @@ interface AuthorizationStorage
 {
     /**
      * @param Authorization $authorization
+     *
      * @return mixed
      */
     public function save(Authorization $authorization);
