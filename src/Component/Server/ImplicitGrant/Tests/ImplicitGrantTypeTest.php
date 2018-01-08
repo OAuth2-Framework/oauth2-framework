@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\ImplicitGrant\Tests;
 
-use OAuth2Framework\Component\Server\Core\AccessToken\AccessTokenRepository;
 use OAuth2Framework\Component\Server\Core\Client\Client;
 use OAuth2Framework\Component\Server\Core\Client\ClientId;
 use OAuth2Framework\Component\Server\Core\DataBag\DataBag;
@@ -120,12 +119,7 @@ final class ImplicitGrantTypeTest extends TestCase
     private function getGrantType(): ImplicitGrantType
     {
         if (null === $this->grantType) {
-            $accessTokenRepository = $this->prophesize(AccessTokenRepository::class);
-
-            $this->grantType = new ImplicitGrantType(
-                $accessTokenRepository->reveal(),
-                3600
-            );
+            $this->grantType = new ImplicitGrantType();
         }
 
         return $this->grantType;

@@ -19,8 +19,8 @@ use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
 
 /**
  * This response type has been introduced by OpenID Connect
- * It stores the authorization to allow the access token later on.
- * It does not returns anything.
+ * It stores the authorization to allow the access token issuance later on.
+ * It returns nothing and only stores the authorization.
  *
  * At this time, this response type is not complete, because it always redirect the client.
  * But if no redirect URI is specified, no redirection should occurred as per OpenID Connect specification.
@@ -29,6 +29,21 @@ use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
  */
 final class NoneResponseType implements ResponseType
 {
+    /**
+     * @var AuthorizationStorage
+     */
+    private $authorizationStorage;
+
+    /**
+     * NoneResponseType constructor.
+     *
+     * @param AuthorizationStorage $authorizationStorage
+     */
+    public function __construct(AuthorizationStorage $authorizationStorage)
+    {
+        $this->authorizationStorage = $authorizationStorage;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -59,8 +74,9 @@ final class NoneResponseType implements ResponseType
     public function process(Authorization $authorization, callable $next): Authorization
     {
         if (1 !== count($authorization->getResponseTypes())) {
-            throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_REQUEST, 'The response type "none" cannot be used with another response type.', $authorization);
+            throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_REQUEST, 'The response type "none" cannot be used with another response type.');
         }
+        $this->authorizationStorage->save($authorization);
 
         return $next($authorization);
     }

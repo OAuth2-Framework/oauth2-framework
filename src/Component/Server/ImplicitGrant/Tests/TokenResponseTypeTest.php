@@ -23,7 +23,7 @@ use OAuth2Framework\Component\Server\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Server\Core\ResourceServer\ResourceServerId;
 use OAuth2Framework\Component\Server\Core\UserAccount\UserAccount;
 use OAuth2Framework\Component\Server\Core\UserAccount\UserAccountId;
-use OAuth2Framework\Component\Server\ImplicitGrant\ImplicitGrantType;
+use OAuth2Framework\Component\Server\ImplicitGrant\TokenResponseType;
 use OAuth2Framework\Component\Server\TokenType\TokenType;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
@@ -39,9 +39,9 @@ final class TokenResponseTypeTest extends TestCase
      */
     public function genericInformation()
     {
-        self::assertEquals(['implicit'], $this->getGrantType()->getAssociatedGrantTypes());
-        self::assertEquals('token', $this->getGrantType()->getResponseType());
-        self::assertEquals('fragment', $this->getGrantType()->getResponseMode());
+        self::assertEquals(['implicit'], $this->getResponseType()->getAssociatedGrantTypes());
+        self::assertEquals('token', $this->getResponseType()->getResponseType());
+        self::assertEquals('fragment', $this->getResponseType()->getResponseMode());
     }
 
     /**
@@ -68,7 +68,7 @@ final class TokenResponseTypeTest extends TestCase
         $authorization = $authorization->withUserAccount($userAccount->reveal(), true);
         $authorization = $authorization->withTokenType($tokenType->reveal());
 
-        $authorization = $this->getGrantType()->process($authorization, function (Authorization $authorization) {
+        $authorization = $this->getResponseType()->process($authorization, function (Authorization $authorization) {
             return $authorization;
         });
 
@@ -78,11 +78,11 @@ final class TokenResponseTypeTest extends TestCase
     }
 
     /**
-     * @var ImplicitGrantType|null
+     * @var TokenResponseType|null
      */
     private $grantType = null;
 
-    private function getGrantType(): ImplicitGrantType
+    private function getResponseType(): TokenResponseType
     {
         if (null === $this->grantType) {
             $accessToken = AccessToken::createEmpty();
@@ -101,7 +101,7 @@ final class TokenResponseTypeTest extends TestCase
             $accessTokenRepository->create(Argument::any(), Argument::any(), Argument::any(), Argument::any(), Argument::any(), Argument::any(), Argument::any())->willReturn($accessToken);
             $accessTokenRepository->save(Argument::type(AccessToken::class))->willReturn(null);
 
-            $this->grantType = new ImplicitGrantType(
+            $this->grantType = new TokenResponseType(
                 $accessTokenRepository->reveal(),
                 3600
             );
