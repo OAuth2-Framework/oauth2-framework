@@ -167,7 +167,7 @@ final class TokenEndpoint implements MiddlewareInterface
             );
             $parameters = $parameters->with('refresh_token', $refreshToken->getTokenId());
         } else {*/
-            $refreshToken = null;
+        $refreshToken = null;
         //}
 
         $accessToken = $this->accessTokenRepository->create(
