@@ -14,16 +14,6 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\Server\Model;
 
 use OAuth2Framework\Bundle\Server\Service\RandomIdGenerator;
-use OAuth2Framework\Component\Server\Model\AccessToken\AccessToken;
-use OAuth2Framework\Component\Server\Model\AccessToken\AccessTokenId;
-use OAuth2Framework\Component\Server\Model\AccessToken\AccessTokenRepositoryInterface;
-use OAuth2Framework\Component\Server\Model\Client\ClientId;
-use OAuth2Framework\Component\Server\Model\DataBag\DataBag;
-use OAuth2Framework\Component\Server\Model\Event\Event;
-use OAuth2Framework\Component\Server\Model\Event\EventStoreInterface;
-use OAuth2Framework\Component\Server\Model\RefreshToken\RefreshTokenId;
-use OAuth2Framework\Component\Server\Model\ResourceOwner\ResourceOwnerId;
-use OAuth2Framework\Component\Server\Model\ResourceServer\ResourceServerId;
 use SimpleBus\Message\Bus\MessageBus;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 

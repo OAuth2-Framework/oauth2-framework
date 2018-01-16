@@ -78,7 +78,6 @@ final class MacTokenTest extends TestCase
             ClientId::create('CLIENT_ID'),
             DataBag::create(['token_type' => 'MAC', 'mac_key' => 'adijq39jdlaska9asud', 'mac_algorithm' => 'hmac-sha-256']),
             DataBag::create([]),
-            [],
             new \DateTimeImmutable('now'),
             ResourceServerId::create('RESOURCE_SERVER_ID')
         );

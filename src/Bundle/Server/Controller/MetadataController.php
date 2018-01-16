@@ -19,7 +19,6 @@ use Interop\Http\Server\MiddlewareInterface;
 use Jose\Component\Core\JWKSet;
 use Jose\Component\Signature\JWSBuilder;
 use OAuth2Framework\Bundle\Server\Service\MetadataBuilder;
-use OAuth2Framework\Component\Server\Endpoint\Metadata\MetadataEndpoint;
 use Psr\Http\Message\ServerRequestInterface;
 
 class MetadataController implements MiddlewareInterface

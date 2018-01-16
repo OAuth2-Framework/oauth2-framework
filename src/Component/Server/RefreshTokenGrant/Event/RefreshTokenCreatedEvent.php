@@ -51,11 +51,6 @@ final class RefreshTokenCreatedEvent extends Event
     private $expiresAt;
 
     /**
-     * @var array
-     */
-    private $scopes;
-
-    /**
      * @var DataBag
      */
     private $metadatas;
@@ -74,12 +69,11 @@ final class RefreshTokenCreatedEvent extends Event
      * @param DataBag                 $parameters
      * @param DataBag                 $metadatas
      * @param \DateTimeImmutable      $expiresAt
-     * @param array                   $scopes
      * @param ResourceServerId|null   $resourceServerId
      * @param \DateTimeImmutable|null $recordedOn
      * @param null|EventId            $eventId
      */
-    protected function __construct(RefreshTokenId $refreshTokenId, ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, \DateTimeImmutable $expiresAt, array $scopes, ? ResourceServerId $resourceServerId, ? \DateTimeImmutable $recordedOn, ? EventId $eventId)
+    protected function __construct(RefreshTokenId $refreshTokenId, ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, \DateTimeImmutable $expiresAt, ? ResourceServerId $resourceServerId, ? \DateTimeImmutable $recordedOn, ? EventId $eventId)
     {
         parent::__construct($recordedOn, $eventId);
         $this->refreshTokenId = $refreshTokenId;
@@ -87,7 +81,6 @@ final class RefreshTokenCreatedEvent extends Event
         $this->clientId = $clientId;
         $this->parameters = $parameters;
         $this->expiresAt = $expiresAt;
-        $this->scopes = $scopes;
         $this->metadatas = $metadatas;
         $this->resourceServerId = $resourceServerId;
     }
@@ -107,14 +100,13 @@ final class RefreshTokenCreatedEvent extends Event
      * @param DataBag               $parameters
      * @param DataBag               $metadatas
      * @param \DateTimeImmutable    $expiresAt
-     * @param array                 $scopes
      * @param ResourceServerId|null $resourceServerId
      *
      * @return RefreshTokenCreatedEvent
      */
-    public static function create(RefreshTokenId $refreshTokenId, ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, \DateTimeImmutable $expiresAt, array $scopes, ? ResourceServerId $resourceServerId): self
+    public static function create(RefreshTokenId $refreshTokenId, ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, \DateTimeImmutable $expiresAt, ? ResourceServerId $resourceServerId): self
     {
-        return new self($refreshTokenId, $resourceOwnerId, $clientId, $parameters, $metadatas, $expiresAt, $scopes, $resourceServerId, null, null);
+        return new self($refreshTokenId, $resourceOwnerId, $clientId, $parameters, $metadatas, $expiresAt, $resourceServerId, null, null);
     }
 
     /**
@@ -158,14 +150,6 @@ final class RefreshTokenCreatedEvent extends Event
     }
 
     /**
-     * @return array
-     */
-    public function getScopes(): array
-    {
-        return $this->scopes;
-    }
-
-    /**
      * @return DataBag
      */
     public function getMetadatas(): DataBag
@@ -200,7 +184,6 @@ final class RefreshTokenCreatedEvent extends Event
             'client_id' => $this->clientId->jsonSerialize(),
             'parameters' => (object) $this->parameters->all(),
             'expires_at' => $this->expiresAt->getTimestamp(),
-            'scopes' => $this->scopes,
             'metadatas' => (object) $this->metadatas->all(),
             'resource_server_id' => $this->resourceServerId ? $this->resourceServerId->getValue() : null,
         ];
@@ -219,10 +202,9 @@ final class RefreshTokenCreatedEvent extends Event
         $clientId = ClientId::create($json->payload->client_id);
         $parameters = DataBag::create((array) $json->payload->parameters);
         $metadatas = DataBag::create((array) $json->payload->metadatas);
-        $scopes = (array) $json->payload->scopes;
         $expiresAt = \DateTimeImmutable::createFromFormat('U', (string) $json->payload->expires_at);
         $resourceServerId = null !== $json->payload->resource_server_id ? ResourceServerId::create($json->payload->resource_server_id) : null;
 
-        return new self($refreshTokenId, $resourceOwnerId, $clientId, $parameters, $metadatas, $expiresAt, $scopes, $resourceServerId, $recordedOn, $eventId);
+        return new self($refreshTokenId, $resourceOwnerId, $clientId, $parameters, $metadatas, $expiresAt, $resourceServerId, $recordedOn, $eventId);
     }
 }

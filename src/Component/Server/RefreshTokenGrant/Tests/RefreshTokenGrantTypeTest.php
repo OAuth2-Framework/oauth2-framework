@@ -118,7 +118,7 @@ final class RefreshTokenGrantTypeTest extends TestCase
 
         $receivedGrantTypeData = $this->getGrantType()->prepareTokenResponse($request->reveal(), $grantTypeData);
         self::assertNotSame($receivedGrantTypeData, $grantTypeData);
-        self::assertEquals(['scope1', 'scope2'], $receivedGrantTypeData->getAvailableScopes());
+        self::assertEquals('scope1 scope2', $receivedGrantTypeData->getParameter('scope'));
     }
 
     /**
@@ -246,10 +246,10 @@ final class RefreshTokenGrantTypeTest extends TestCase
                 ClientId::create('CLIENT_ID'),
                 DataBag::create([
                     'metadata' => 'foo',
+                    'scope' => 'scope1 scope2',
                 ]),
                 DataBag::create([
                     'parameter1' => 'bar', ]),
-                ['scope1', 'scope2'],
                 new \DateTimeImmutable('now +1 day'),
                 ResourceServerId::create('RESOURCE_SERVER_ID')
             );
@@ -262,10 +262,10 @@ final class RefreshTokenGrantTypeTest extends TestCase
                 ClientId::create('CLIENT_ID'),
                 DataBag::create([
                     'metadata' => 'foo',
+                    'scope' => 'scope1 scope2',
                 ]),
                 DataBag::create([
                     'parameter1' => 'bar', ]),
-                ['scope1', 'scope2'],
                 new \DateTimeImmutable('now +1 day'),
                 ResourceServerId::create('RESOURCE_SERVER_ID')
             );
@@ -279,10 +279,10 @@ final class RefreshTokenGrantTypeTest extends TestCase
                 ClientId::create('CLIENT_ID'),
                 DataBag::create([
                     'metadata' => 'foo',
+                    'scope' => 'scope1 scope2',
                 ]),
                 DataBag::create([
                     'parameter1' => 'bar', ]),
-                ['scope1', 'scope2'],
                 new \DateTimeImmutable('now -1 day'),
                 ResourceServerId::create('RESOURCE_SERVER_ID')
             );

@@ -13,13 +13,18 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\Core\DataBag;
 
-final class DataBag implements \JsonSerializable
+final class DataBag implements \JsonSerializable, \IteratorAggregate, \Countable
 {
     /**
      * @var array
      */
     private $parameters = [];
 
+    /**
+     * DataBag constructor.
+     *
+     * @param array $parameters
+     */
     private function __construct(array $parameters)
     {
         $this->parameters = $parameters;
@@ -104,5 +109,21 @@ final class DataBag implements \JsonSerializable
     public function jsonSerialize()
     {
         return $this->all();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function count()
+    {
+        return count($this->parameters);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getIterator()
+    {
+        return new \ArrayIterator($this->parameters);
     }
 }

@@ -50,7 +50,6 @@ final class AuthorizationCodeCommandsTest extends TestCase
             new \DateTimeImmutable('now +1year'),
             DataBag::create([]),
             DataBag::create([]),
-            [],
             ResourceServerId::create('RESOURCE_SERVER_ID')
         );
 
@@ -81,7 +80,6 @@ final class AuthorizationCodeCommandsTest extends TestCase
             new \DateTimeImmutable('now +1year'),
             DataBag::create([]),
             DataBag::create([]),
-            [],
             ResourceServerId::create('RESOURCE_SERVER_ID')
         );
         $command = MarkAuthorizationCodeAsUsedCommand::create(AuthorizationCodeId::create('AUTHORIZATION_CODE_ID'));
@@ -113,7 +111,6 @@ final class AuthorizationCodeCommandsTest extends TestCase
             new \DateTimeImmutable('now +1year'),
             DataBag::create([]),
             DataBag::create([]),
-            [],
             ResourceServerId::create('RESOURCE_SERVER_ID')
         );
         $command = RevokeAuthorizationCodeCommand::create(AuthorizationCodeId::create('AUTHORIZATION_CODE_ID'));

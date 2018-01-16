@@ -52,7 +52,6 @@ final class CreateAuthorizationCodeCommandHandler
             $command->getExpiresAt(),
             $command->getParameters(),
             $command->getMetadatas(),
-            $command->getScopes(),
             $command->getResourceServerId()
         );
         $this->authorizationCodeRepository->save($authorizationCode);

@@ -53,7 +53,6 @@ final class AccessTokenTest extends TestCase
                 'refresh_token_id' => 'REFRESH_TOKEN_ID',
             ]),
             DataBag::create([]),
-            [],
             new \DateTimeImmutable('2010-01-28T15:00:00+02:00'),
             ResourceServerId::create('RESOURCE_SERVER_ID')
         );
@@ -61,7 +60,7 @@ final class AccessTokenTest extends TestCase
         $events = $accessToken->recordedMessages();
 
         self::assertInstanceOf(AccessToken::class, $accessToken);
-        self::assertEquals('{"$schema":"https://oauth2-framework.spomky-labs.com/schemas/model/access-token/1.0/schema","type":"OAuth2Framework\\\\Component\\\\Server\\\\Core\\\\AccessToken\\\\AccessToken","expires_at":1264683600,"client_id":"CLIENT_ID","parameters":{"refresh_token_id":"REFRESH_TOKEN_ID"},"metadatas":{},"scopes":[],"is_revoked":true,"resource_owner_id":"CLIENT_ID","resource_owner_class":"OAuth2Framework\\\\Component\\\\Server\\\\Core\\\\Client\\\\ClientId","resource_server_id":"RESOURCE_SERVER_ID","access_token_id":"ACCESS_TOKEN_ID"}', $this->getDomainConverter()->toJson($accessToken));
+        self::assertEquals('{"$schema":"https://oauth2-framework.spomky-labs.com/schemas/model/access-token/1.0/schema","type":"OAuth2Framework\\\\Component\\\\Server\\\\Core\\\\AccessToken\\\\AccessToken","expires_at":1264683600,"client_id":"CLIENT_ID","parameters":{"refresh_token_id":"REFRESH_TOKEN_ID"},"metadatas":{},"is_revoked":true,"resource_owner_id":"CLIENT_ID","resource_owner_class":"OAuth2Framework\\\\Component\\\\Server\\\\Core\\\\Client\\\\ClientId","resource_server_id":"RESOURCE_SERVER_ID","access_token_id":"ACCESS_TOKEN_ID"}', $this->getDomainConverter()->toJson($accessToken));
         self::assertEquals('ACCESS_TOKEN_ID', $accessToken->getTokenId()->getValue());
         self::assertCount(2, $events);
     }
@@ -71,7 +70,7 @@ final class AccessTokenTest extends TestCase
      */
     public function iCanCreateAnAccessTokenFromDomainObject()
     {
-        $json = '{"$schema":"https://oauth2-framework.spomky-labs.com/schemas/model/access-token/1.0/schema","type":"OAuth2Framework\\\\Component\\\\Server\\\\Core\\\\AccessToken\\\\AccessToken","expires_at":1264683600,"client_id":"CLIENT_ID","parameters":{"refresh_token_id":"REFRESH_TOKEN_ID"},"metadatas":{},"scopes":[],"is_revoked":true,"resource_owner_id":"CLIENT_ID","resource_owner_class":"OAuth2Framework\\\\Component\\\\Server\\\\Core\\\\Client\\\\ClientId","resource_server_id":"RESOURCE_SERVER_ID","access_token_id":"ACCESS_TOKEN_ID"}';
+        $json = '{"$schema":"https://oauth2-framework.spomky-labs.com/schemas/model/access-token/1.0/schema","type":"OAuth2Framework\\\\Component\\\\Server\\\\Core\\\\AccessToken\\\\AccessToken","expires_at":1264683600,"client_id":"CLIENT_ID","parameters":{"refresh_token_id":"REFRESH_TOKEN_ID"},"metadatas":{},"is_revoked":true,"resource_owner_id":"CLIENT_ID","resource_owner_class":"OAuth2Framework\\\\Component\\\\Server\\\\Core\\\\Client\\\\ClientId","resource_server_id":"RESOURCE_SERVER_ID","access_token_id":"ACCESS_TOKEN_ID"}';
         $accessToken = $this->getDomainConverter()->fromJson($json);
         self::assertInstanceOf(AccessToken::class, $accessToken);
     }
@@ -82,7 +81,7 @@ final class AccessTokenTest extends TestCase
     public function iCanAnAccessTokenUsingEvents()
     {
         $events = [
-            '{"$schema":"https://oauth2-framework.spomky-labs.com/schemas/events/access-token/created/1.0/schema","event_id":"9b45c05f-2b9c-4662-8794-e1e76f8ed1a4","type":"OAuth2Framework\\\\Component\\\\Server\\\\Core\\\\AccessToken\\\\Event\\\\AccessTokenCreatedEvent","domain_id":"ACCESS_TOKEN_ID","recorded_on":1512594281,"payload":{"resource_owner_id":"CLIENT_ID","resource_owner_class":"OAuth2Framework\\\\Component\\\\Server\\\\Core\\\\Client\\\\ClientId","client_id":"CLIENT_ID","parameters":{"refresh_token_id":"REFRESH_TOKEN_ID"},"metadatas":{},"scopes":[],"expires_at":1264683600,"resource_server_id":"RESOURCE_SERVER_ID"}}',
+            '{"$schema":"https://oauth2-framework.spomky-labs.com/schemas/events/access-token/created/1.0/schema","event_id":"9b45c05f-2b9c-4662-8794-e1e76f8ed1a4","type":"OAuth2Framework\\\\Component\\\\Server\\\\Core\\\\AccessToken\\\\Event\\\\AccessTokenCreatedEvent","domain_id":"ACCESS_TOKEN_ID","recorded_on":1512594281,"payload":{"resource_owner_id":"CLIENT_ID","resource_owner_class":"OAuth2Framework\\\\Component\\\\Server\\\\Core\\\\Client\\\\ClientId","client_id":"CLIENT_ID","parameters":{"refresh_token_id":"REFRESH_TOKEN_ID"},"metadatas":{},"expires_at":1264683600,"resource_server_id":"RESOURCE_SERVER_ID"}}',
             '{"$schema":"https://oauth2-framework.spomky-labs.com/schemas/events/access-token/revoked/1.0/schema","event_id":"b4505944-cddf-4a96-b850-0e9222c8980a","type":"OAuth2Framework\\\\Component\\\\Server\\\\Core\\\\AccessToken\\\\Event\\\\AccessTokenRevokedEvent","domain_id":"ACCESS_TOKEN_ID","recorded_on":1512594281}',
         ];
         $accessToken = AccessToken::createEmpty();

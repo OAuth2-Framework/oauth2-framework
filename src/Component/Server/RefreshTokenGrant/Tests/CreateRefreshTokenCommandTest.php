@@ -45,10 +45,11 @@ final class CreateRefreshTokenCommandTest extends TestCase
             ClientId::create('CLIENT_ID'),
             DataBag::create([
                 'metadata' => 'foo',
+                'scope' => 'scope1 scope2',
             ]),
             DataBag::create([
-                'parameter1' => 'bar', ]),
-            ['scope1', 'scope2'],
+                'parameter1' => 'bar',
+            ]),
             new \DateTimeImmutable('now +1 day'),
             ResourceServerId::create('RESOURCE_SERVER_ID')
         );
@@ -62,9 +63,10 @@ final class CreateRefreshTokenCommandTest extends TestCase
             ClientId::create('CLIENT_ID'),
             UserAccountId::create('USER_ACCOUNT_ID'),
             new \DateTimeImmutable('now +1day'),
+            DataBag::create([
+                'scope' => ['scope'],
+            ]),
             DataBag::create([]),
-            DataBag::create([]),
-            ['scope'],
             ResourceServerId::create('RESOURCE_SERVER_ID')
         );
 
@@ -87,9 +89,10 @@ final class CreateRefreshTokenCommandTest extends TestCase
             ClientId::create('CLIENT_ID'),
             UserAccountId::create('USER_ACCOUNT_ID'),
             new \DateTimeImmutable('now +1day'),
+            DataBag::create([
+                'scope' => ['scope'],
+            ]),
             DataBag::create([]),
-            DataBag::create([]),
-            ['scope'],
             ResourceServerId::create('RESOURCE_SERVER_ID')
         );
 

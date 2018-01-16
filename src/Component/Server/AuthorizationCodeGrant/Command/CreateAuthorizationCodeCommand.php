@@ -62,11 +62,6 @@ final class CreateAuthorizationCodeCommand
     private $metadatas;
 
     /**
-     * @var array
-     */
-    private $scopes;
-
-    /**
      * @var null|ResourceServerId
      */
     private $resourceServerId;
@@ -82,10 +77,9 @@ final class CreateAuthorizationCodeCommand
      * @param \DateTimeImmutable    $expiresAt
      * @param DataBag               $parameters
      * @param DataBag               $metadatas
-     * @param array                 $scopes
      * @param null|ResourceServerId $resourceServerId
      */
-    protected function __construct(AuthorizationCodeId $authorizationCodeId, ClientId $clientId, UserAccountId $userAccountId, array $queryParameters, string $redirectUri, \DateTimeImmutable $expiresAt, DataBag $parameters, DataBag $metadatas, array $scopes, ?ResourceServerId $resourceServerId)
+    protected function __construct(AuthorizationCodeId $authorizationCodeId, ClientId $clientId, UserAccountId $userAccountId, array $queryParameters, string $redirectUri, \DateTimeImmutable $expiresAt, DataBag $parameters, DataBag $metadatas, ?ResourceServerId $resourceServerId)
     {
         $this->authorizationCodeId = $authorizationCodeId;
         $this->clientId = $clientId;
@@ -95,7 +89,6 @@ final class CreateAuthorizationCodeCommand
         $this->expiresAt = $expiresAt;
         $this->parameters = $parameters;
         $this->metadatas = $metadatas;
-        $this->scopes = $scopes;
         $this->resourceServerId = $resourceServerId;
     }
 
@@ -108,14 +101,13 @@ final class CreateAuthorizationCodeCommand
      * @param \DateTimeImmutable    $expiresAt
      * @param DataBag               $parameters
      * @param DataBag               $metadatas
-     * @param array                 $scopes
      * @param null|ResourceServerId $resourceServerId
      *
      * @return CreateAuthorizationCodeCommand
      */
-    public static function create(AuthorizationCodeId $authorizationCodeId, ClientId $clientId, UserAccountId $userAccountId, array $queryParameters, string $redirectUri, \DateTimeImmutable $expiresAt, DataBag $parameters, DataBag $metadatas, array $scopes, ?ResourceServerId $resourceServerId): self
+    public static function create(AuthorizationCodeId $authorizationCodeId, ClientId $clientId, UserAccountId $userAccountId, array $queryParameters, string $redirectUri, \DateTimeImmutable $expiresAt, DataBag $parameters, DataBag $metadatas, ?ResourceServerId $resourceServerId): self
     {
-        return new self($authorizationCodeId, $clientId, $userAccountId, $queryParameters, $redirectUri, $expiresAt, $parameters, $metadatas, $scopes, $resourceServerId);
+        return new self($authorizationCodeId, $clientId, $userAccountId, $queryParameters, $redirectUri, $expiresAt, $parameters, $metadatas, $resourceServerId);
     }
 
     /**
@@ -164,14 +156,6 @@ final class CreateAuthorizationCodeCommand
     public function getMetadatas(): DataBag
     {
         return $this->metadatas;
-    }
-
-    /**
-     * @return array
-     */
-    public function getScopes(): array
-    {
-        return $this->scopes;
     }
 
     /**

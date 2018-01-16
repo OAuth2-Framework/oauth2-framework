@@ -78,7 +78,10 @@ final class RefreshTokenGrantType implements GrantType
         if (null === $token) {
             throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_GRANT, 'The parameter "refresh_token" is invalid.');
         }
-        $grantTypeData = $grantTypeData->withAvailableScopes($token->getScopes());
+
+        foreach ($token->getParameters() as $key => $parameter) {
+            $grantTypeData = $grantTypeData->withParameter($key, $parameter);
+        }
 
         return $grantTypeData;
     }

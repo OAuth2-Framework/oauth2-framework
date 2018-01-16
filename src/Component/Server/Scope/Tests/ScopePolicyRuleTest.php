@@ -11,45 +11,47 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Component\Server\Core\Tests\Client\Rule;
+namespace OAuth2Framework\Component\Server\Scope\Tests;
 
 use OAuth2Framework\Component\Server\Core\Client\ClientId;
-use OAuth2Framework\Component\Server\Core\Client\Rule;
 use OAuth2Framework\Component\Server\Core\DataBag\DataBag;
+use OAuth2Framework\Component\Server\Scope\Policy\NoScopePolicy;
+use OAuth2Framework\Component\Server\Scope\Rule\ScopePolicyRule;
+use OAuth2Framework\Component\Server\Scope\Policy\ScopePolicyManager;
 use PHPUnit\Framework\TestCase;
 
 /**
  * @group Rule
  */
-final class ScopePolicyDefaultRuleTest extends TestCase
+final class ScopePolicyRuleTest extends TestCase
 {
     /**
      * @test
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The "default_scope" parameter must be a string.
+     * @expectedExceptionMessage The parameter "scope_policy" must be a string.
      */
     public function theParameterMustBeAString()
     {
         $clientId = ClientId::create('CLIENT_ID');
         $commandParameters = DataBag::create([
-            'default_scope' => ['foo'],
+            'scope_policy' => ['foo'],
         ]);
-        $rule = new Rule\ScopePolicyDefaultRule();
+        $rule = $this->getScopePolicyRule();
         $rule->handle($clientId, $commandParameters, DataBag::create([]), $this->getCallable());
     }
 
     /**
      * @test
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Invalid characters found in the "default_scope" parameter.
+     * @expectedExceptionMessage The scope policy "foo" is not supported.
      */
-    public function theParameterContainsForbiddenCharacters()
+    public function theScopePolicyIsNotSupported()
     {
         $clientId = ClientId::create('CLIENT_ID');
         $commandParameters = DataBag::create([
-            'default_scope' => 'coffee, café',
+            'scope_policy' => 'foo',
         ]);
-        $rule = new Rule\ScopePolicyDefaultRule();
+        $rule = $this->getScopePolicyRule();
         $rule->handle($clientId, $commandParameters, DataBag::create([]), $this->getCallable());
     }
 
@@ -60,12 +62,12 @@ final class ScopePolicyDefaultRuleTest extends TestCase
     {
         $clientId = ClientId::create('CLIENT_ID');
         $commandParameters = DataBag::create([
-            'default_scope' => 'coffee cream',
+            'scope_policy' => 'none',
         ]);
-        $rule = new Rule\ScopePolicyDefaultRule();
+        $rule = $this->getScopePolicyRule();
         $validatedParameters = $rule->handle($clientId, $commandParameters, DataBag::create([]), $this->getCallable());
-        self::assertTrue($validatedParameters->has('default_scope'));
-        self::assertEquals('coffee cream', $validatedParameters->get('default_scope'));
+        self::assertTrue($validatedParameters->has('scope_policy'));
+        self::assertEquals('none', $validatedParameters->get('scope_policy'));
     }
 
     /**
@@ -76,5 +78,16 @@ final class ScopePolicyDefaultRuleTest extends TestCase
         return function (ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters): DataBag {
             return $validatedParameters;
         };
+    }
+
+    /**
+     * @return ScopePolicyRule
+     */
+    private function getScopePolicyRule(): ScopePolicyRule
+    {
+        $scopePolicyManager = new ScopePolicyManager();
+        $scopePolicyManager->add(new NoScopePolicy());
+
+        return new ScopePolicyRule($scopePolicyManager);
     }
 }

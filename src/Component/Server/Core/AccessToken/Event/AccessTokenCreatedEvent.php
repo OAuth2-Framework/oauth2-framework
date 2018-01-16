@@ -56,11 +56,6 @@ final class AccessTokenCreatedEvent extends Event
     private $metadatas;
 
     /**
-     * @var string[]
-     */
-    private $scopes;
-
-    /**
      * @var null|ResourceServerId
      */
     private $resourceServerId;
@@ -73,13 +68,12 @@ final class AccessTokenCreatedEvent extends Event
      * @param ClientId                $clientId
      * @param DataBag                 $parameters
      * @param DataBag                 $metadatas
-     * @param array                   $scopes
      * @param \DateTimeImmutable      $expiresAt
      * @param ResourceServerId|null   $resourceServerId
      * @param \DateTimeImmutable|null $recordedOn
      * @param EventId|null            $eventId
      */
-    protected function __construct(AccessTokenId $accessTokenId, ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, array $scopes, \DateTimeImmutable $expiresAt, ? ResourceServerId $resourceServerId, ? \DateTimeImmutable $recordedOn, ? EventId $eventId)
+    protected function __construct(AccessTokenId $accessTokenId, ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, \DateTimeImmutable $expiresAt, ? ResourceServerId $resourceServerId, ? \DateTimeImmutable $recordedOn, ? EventId $eventId)
     {
         parent::__construct($recordedOn, $eventId);
         $this->accessTokenId = $accessTokenId;
@@ -87,7 +81,6 @@ final class AccessTokenCreatedEvent extends Event
         $this->clientId = $clientId;
         $this->parameters = $parameters;
         $this->metadatas = $metadatas;
-        $this->scopes = $scopes;
         $this->expiresAt = $expiresAt;
         $this->resourceServerId = $resourceServerId;
     }
@@ -106,15 +99,14 @@ final class AccessTokenCreatedEvent extends Event
      * @param ClientId              $clientId
      * @param DataBag               $parameters
      * @param DataBag               $metadatas
-     * @param array                 $scopes
      * @param \DateTimeImmutable    $expiresAt
      * @param ResourceServerId|null $resourceServerId
      *
      * @return AccessTokenCreatedEvent
      */
-    public static function create(AccessTokenId $accessTokenId, ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, array $scopes, \DateTimeImmutable $expiresAt, ? ResourceServerId $resourceServerId): self
+    public static function create(AccessTokenId $accessTokenId, ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, \DateTimeImmutable $expiresAt, ? ResourceServerId $resourceServerId): self
     {
-        return new self($accessTokenId, $resourceOwnerId, $clientId, $parameters, $metadatas, $scopes, $expiresAt, $resourceServerId, null, null);
+        return new self($accessTokenId, $resourceOwnerId, $clientId, $parameters, $metadatas, $expiresAt, $resourceServerId, null, null);
     }
 
     /**
@@ -130,11 +122,10 @@ final class AccessTokenCreatedEvent extends Event
         $clientId = ClientId::create($json->payload->client_id);
         $parameters = DataBag::create((array) $json->payload->parameters);
         $metadatas = DataBag::create((array) $json->payload->metadatas);
-        $scopes = (array) $json->payload->scopes;
         $expiresAt = \DateTimeImmutable::createFromFormat('U', (string) $json->payload->expires_at);
         $resourceServerId = null !== $json->payload->resource_server_id ? ResourceServerId::create($json->payload->resource_server_id) : null;
 
-        return new self($accessTokenId, $resourceOwnerId, $clientId, $parameters, $metadatas, $scopes, $expiresAt, $resourceServerId, $recordedOn, $eventId);
+        return new self($accessTokenId, $resourceOwnerId, $clientId, $parameters, $metadatas, $expiresAt, $resourceServerId, $recordedOn, $eventId);
     }
 
     /**
@@ -186,14 +177,6 @@ final class AccessTokenCreatedEvent extends Event
     }
 
     /**
-     * @return \string[]
-     */
-    public function getScopes(): array
-    {
-        return $this->scopes;
-    }
-
-    /**
      * @return null|ResourceServerId
      */
     public function getResourceServerId(): ? ResourceServerId
@@ -220,7 +203,6 @@ final class AccessTokenCreatedEvent extends Event
             'client_id' => $this->clientId->getValue(),
             'parameters' => (object) $this->parameters->all(),
             'metadatas' => (object) $this->metadatas->all(),
-            'scopes' => $this->scopes,
             'expires_at' => $this->expiresAt->getTimestamp(),
             'resource_server_id' => $this->resourceServerId ? $this->resourceServerId->getValue() : null,
         ];

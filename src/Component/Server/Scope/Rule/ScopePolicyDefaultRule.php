@@ -11,9 +11,10 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Component\Server\Core\Client\Rule;
+namespace OAuth2Framework\Component\Server\Scope\Rule;
 
 use OAuth2Framework\Component\Server\Core\Client\ClientId;
+use OAuth2Framework\Component\Server\Core\Client\Rule\Rule;
 use OAuth2Framework\Component\Server\Core\DataBag\DataBag;
 
 final class ScopePolicyDefaultRule implements Rule

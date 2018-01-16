@@ -81,8 +81,8 @@ final class AccessTokenTypeHint implements IntrospectionTokenTypeHint, Revocatio
             'resource_owner' => $token->getResourceOwnerId(),
             'expires_in' => $token->getExpiresIn(),
         ];
-        if (!empty($token->getScopes())) {
-            $values['scope'] = implode(' ', $token->getScopes());
+        if (!$token->hasParameter('scope')) {
+            $values['scope'] = $token->getParameter('scope');
         }
 
         return $values + $token->getParameters()->all();

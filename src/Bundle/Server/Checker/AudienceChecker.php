@@ -13,11 +13,11 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Server\Checker;
 
-use Jose\Component\Checker\ClaimCheckerInterface;
+use Jose\Component\Checker\ClaimChecker;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 
-final class AudienceChecker implements ClaimCheckerInterface
+final class AudienceChecker implements ClaimChecker
 {
     private const CLAIM_NAME = 'aud';
 

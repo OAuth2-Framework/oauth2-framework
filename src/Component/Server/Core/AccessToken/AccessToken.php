@@ -52,13 +52,12 @@ final class AccessToken extends Token
      * @param ClientId              $clientId
      * @param DataBag               $parameters
      * @param DataBag               $metadatas
-     * @param string[]              $scopes
      * @param \DateTimeImmutable    $expiresAt
      * @param ResourceServerId|null $resourceServerId
      *
      * @return AccessToken
      */
-    public function create(AccessTokenId $accessTokenId, ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, array $scopes, \DateTimeImmutable $expiresAt, ? ResourceServerId $resourceServerId)
+    public function create(AccessTokenId $accessTokenId, ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, \DateTimeImmutable $expiresAt, ? ResourceServerId $resourceServerId)
     {
         $clone = clone $this;
         $clone->accessTokenId = $accessTokenId;
@@ -66,11 +65,10 @@ final class AccessToken extends Token
         $clone->clientId = $clientId;
         $clone->parameters = $parameters;
         $clone->metadatas = $metadatas;
-        $clone->scopes = $scopes;
         $clone->expiresAt = $expiresAt;
         $clone->resourceServerId = $resourceServerId;
 
-        $event = AccessTokenEvent\AccessTokenCreatedEvent::create($accessTokenId, $resourceOwnerId, $clientId, $parameters, $metadatas, $scopes, $expiresAt, $resourceServerId);
+        $event = AccessTokenEvent\AccessTokenCreatedEvent::create($accessTokenId, $resourceOwnerId, $clientId, $parameters, $metadatas, $expiresAt, $resourceServerId);
         $clone->record($event);
 
         return $clone;
@@ -125,7 +123,6 @@ final class AccessToken extends Token
         $clientId = ClientId::create($json->client_id);
         $parameters = DataBag::create((array) $json->parameters);
         $metadatas = DataBag::create((array) $json->metadatas);
-        $scopes = (array) $json->scopes;
         $revoked = $json->is_revoked;
         $resourceOwnerClass = $json->resource_owner_class;
         if (!method_exists($resourceOwnerClass, 'create')) {
@@ -141,7 +138,6 @@ final class AccessToken extends Token
         $accessToken->clientId = $clientId;
         $accessToken->parameters = $parameters;
         $accessToken->metadatas = $metadatas;
-        $accessToken->scopes = $scopes;
         $accessToken->revoked = $revoked;
         $accessToken->resourceOwnerId = $resourceOwnerId;
 
@@ -156,9 +152,6 @@ final class AccessToken extends Token
         $data = $this->getParameters()->all();
         $data['access_token'] = $this->getTokenId()->getValue();
         $data['expires_in'] = $this->getExpiresIn();
-        if (!empty($this->getScopes())) {
-            $data['scope'] = implode(' ', $this->getScopes());
-        }
 
         return $data;
     }
@@ -206,7 +199,6 @@ final class AccessToken extends Token
         $clone->clientId = $event->getClientId();
         $clone->parameters = $event->getParameters();
         $clone->metadatas = $event->getMetadatas();
-        $clone->scopes = $event->getScopes();
         $clone->expiresAt = $event->getExpiresAt();
         $clone->resourceServerId = $event->getResourceServerId();
 

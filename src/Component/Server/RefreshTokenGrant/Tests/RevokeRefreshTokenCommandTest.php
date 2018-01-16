@@ -62,10 +62,11 @@ final class RevokeRefreshTokenCommandTest extends TestCase
             ClientId::create('CLIENT_ID'),
             DataBag::create([
                 'metadata' => 'foo',
+                'scope' => 'scope1 scope2',
             ]),
             DataBag::create([
-                'parameter1' => 'bar', ]),
-            ['scope1', 'scope2'],
+                'parameter1' => 'bar',
+                ]),
             new \DateTimeImmutable('now +1 day'),
             ResourceServerId::create('RESOURCE_SERVER_ID')
         );

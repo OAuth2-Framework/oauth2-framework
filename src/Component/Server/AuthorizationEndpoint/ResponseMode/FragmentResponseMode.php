@@ -15,6 +15,7 @@ namespace OAuth2Framework\Component\Server\AuthorizationEndpoint\ResponseMode;
 
 use Http\Message\ResponseFactory;
 use Interop\Http\Factory\UriFactoryInterface;
+use League\Uri;
 use OAuth2Framework\Component\Server\AuthorizationEndpoint\ResponseType;
 use Psr\Http\Message\ResponseInterface;
 
@@ -55,13 +56,18 @@ final class FragmentResponseMode implements ResponseMode
      */
     public function buildResponse(string $redirectUri, array $data): ResponseInterface
     {
-        $uri = $this->uriFactory->createUri($redirectUri);
-        parse_str($uri->getFragment(), $fragmentParams);
-        $fragmentParams += $data;
-        $uri = $uri->withFragment(http_build_query($fragmentParams));
+        $uri = Uri\parse($redirectUri);
+        if (!array_key_exists('fragment', $uri)) {
+            $fragment = $data;
+        } else {
+            parse_str($uri['fragment'], $fragment);
+            $fragment = array_merge($fragment, $data);
+        }
+        $uri['fragment'] = http_build_query($fragment);
+        $rebuiltRedirectUri = Uri\build($uri);
 
         $response = $this->responseFactory->createResponse(302);
-        $response = $response->withHeader('Location', $uri->__toString());
+        $response = $response->withHeader('Location', $rebuiltRedirectUri);
 
         return $response;
     }

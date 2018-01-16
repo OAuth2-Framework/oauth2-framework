@@ -40,14 +40,35 @@ final class RedirectionUriRuleTest extends TestCase
     /**
      * @test
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The parameter "redirect_uris" is mandatory when response types are used.
+     * @expectedExceptionMessage Non-confidential clients must register at least one redirect URI.
      */
-    public function noRedirectUrisParameterFound()
+    public function aLeastOneRedirectUriMustBeSetForNonConfidentialClients()
     {
         $clientId = ClientId::create('CLIENT_ID');
         $commandParameters = DataBag::create([
         ]);
-        $validatedParameters = DataBag::create(['response_types' => ['token', 'code']]);
+        $validatedParameters = DataBag::create([
+            'response_types' => ['token', 'code'],
+            'token_endpoint_auth_method' => 'none',
+        ]);
+        $rule = new Rule\RedirectionUriRule();
+        $rule->handle($clientId, $commandParameters, $validatedParameters, $this->getCallable());
+    }
+
+    /**
+     * @test
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Confidential clients must register at least one redirect URI when using the "token" response type.
+     */
+    public function confidentialClientsUsingTokenResponseTypeMustRegisterAtLeastOneRedirectUri()
+    {
+        $clientId = ClientId::create('CLIENT_ID');
+        $commandParameters = DataBag::create([
+        ]);
+        $validatedParameters = DataBag::create([
+            'response_types' => ['token', 'code'],
+            'token_endpoint_auth_method' => 'private_key_jwt',
+        ]);
         $rule = new Rule\RedirectionUriRule();
         $rule->handle($clientId, $commandParameters, $validatedParameters, $this->getCallable());
     }
@@ -63,7 +84,10 @@ final class RedirectionUriRuleTest extends TestCase
         $commandParameters = DataBag::create([
             'redirect_uris' => 'hello',
         ]);
-        $validatedParameters = DataBag::create(['response_types' => ['token', 'code']]);
+        $validatedParameters = DataBag::create([
+            'response_types' => ['token', 'code'],
+            'token_endpoint_auth_method' => 'none',
+        ]);
         $rule = new Rule\RedirectionUriRule();
         $rule->handle($clientId, $commandParameters, $validatedParameters, $this->getCallable());
     }
@@ -79,7 +103,10 @@ final class RedirectionUriRuleTest extends TestCase
         $commandParameters = DataBag::create([
             'redirect_uris' => [123],
         ]);
-        $validatedParameters = DataBag::create(['response_types' => ['token', 'code']]);
+        $validatedParameters = DataBag::create([
+            'response_types' => ['token', 'code'],
+            'token_endpoint_auth_method' => 'none',
+        ]);
         $rule = new Rule\RedirectionUriRule();
         $rule->handle($clientId, $commandParameters, $validatedParameters, $this->getCallable());
     }
@@ -95,7 +122,10 @@ final class RedirectionUriRuleTest extends TestCase
         $commandParameters = DataBag::create([
             'redirect_uris' => ['hello'],
         ]);
-        $validatedParameters = DataBag::create(['response_types' => ['token', 'code']]);
+        $validatedParameters = DataBag::create([
+            'response_types' => ['token', 'code'],
+            'token_endpoint_auth_method' => 'none',
+        ]);
         $rule = new Rule\RedirectionUriRule();
         $rule->handle($clientId, $commandParameters, $validatedParameters, $this->getCallable());
     }
@@ -111,7 +141,10 @@ final class RedirectionUriRuleTest extends TestCase
         $commandParameters = DataBag::create([
             'redirect_uris' => ['http://foo.com/#test=bad'],
         ]);
-        $validatedParameters = DataBag::create(['response_types' => ['token', 'code']]);
+        $validatedParameters = DataBag::create([
+            'response_types' => ['token', 'code'],
+            'token_endpoint_auth_method' => 'none',
+        ]);
         $rule = new Rule\RedirectionUriRule();
         $rule->handle($clientId, $commandParameters, $validatedParameters, $this->getCallable());
     }
@@ -127,7 +160,10 @@ final class RedirectionUriRuleTest extends TestCase
         $commandParameters = DataBag::create([
             'redirect_uris' => ['http://localhost/'],
         ]);
-        $validatedParameters = DataBag::create(['response_types' => ['token', 'code']]);
+        $validatedParameters = DataBag::create([
+            'response_types' => ['token', 'code'],
+            'token_endpoint_auth_method' => 'none',
+        ]);
         $rule = new Rule\RedirectionUriRule();
         $rule->handle($clientId, $commandParameters, $validatedParameters, $this->getCallable());
     }
@@ -143,7 +179,10 @@ final class RedirectionUriRuleTest extends TestCase
         $commandParameters = DataBag::create([
             'redirect_uris' => ['http://foo.com/'],
         ]);
-        $validatedParameters = DataBag::create(['response_types' => ['token', 'code']]);
+        $validatedParameters = DataBag::create([
+            'response_types' => ['token', 'code'],
+            'token_endpoint_auth_method' => 'none',
+        ]);
         $rule = new Rule\RedirectionUriRule();
         $rule->handle($clientId, $commandParameters, $validatedParameters, $this->getCallable());
     }
@@ -159,7 +198,10 @@ final class RedirectionUriRuleTest extends TestCase
         $commandParameters = DataBag::create([
             'redirect_uris' => ['https://foo.com/bar/../bad'],
         ]);
-        $validatedParameters = DataBag::create(['response_types' => ['token', 'code']]);
+        $validatedParameters = DataBag::create([
+            'response_types' => ['token', 'code'],
+            'token_endpoint_auth_method' => 'none',
+        ]);
         $rule = new Rule\RedirectionUriRule();
         $rule->handle($clientId, $commandParameters, $validatedParameters, $this->getCallable());
     }
@@ -173,7 +215,10 @@ final class RedirectionUriRuleTest extends TestCase
         $commandParameters = DataBag::create([
             'redirect_uris' => ['https://foo.com/'],
         ]);
-        $validatedParameters = DataBag::create(['response_types' => ['token', 'code']]);
+        $validatedParameters = DataBag::create([
+            'response_types' => ['token', 'code'],
+            'token_endpoint_auth_method' => 'none',
+        ]);
         $rule = new Rule\RedirectionUriRule();
         $validatedParameters = $rule->handle($clientId, $commandParameters, $validatedParameters, $this->getCallable());
         self::assertTrue($validatedParameters->has('redirect_uris'));
@@ -189,7 +234,10 @@ final class RedirectionUriRuleTest extends TestCase
         $commandParameters = DataBag::create([
             'redirect_uris' => ['http://localhost/'],
         ]);
-        $validatedParameters = DataBag::create(['response_types' => ['id_token', 'code']]);
+        $validatedParameters = DataBag::create([
+            'response_types' => ['id_token', 'code'],
+            'token_endpoint_auth_method' => 'none',
+        ]);
         $rule = new Rule\RedirectionUriRule();
         $validatedParameters = $rule->handle($clientId, $commandParameters, $validatedParameters, $this->getCallable());
         self::assertTrue($validatedParameters->has('redirect_uris'));
@@ -205,7 +253,10 @@ final class RedirectionUriRuleTest extends TestCase
         $commandParameters = DataBag::create([
             'redirect_uris' => ['urn:ietf:wg:oauth:2.0:oob', 'urn:ietf:wg:oauth:2.0:oob:auto'],
         ]);
-        $validatedParameters = DataBag::create(['response_types' => ['id_token', 'code']]);
+        $validatedParameters = DataBag::create([
+            'response_types' => ['id_token', 'code'],
+            'token_endpoint_auth_method' => 'none',
+        ]);
         $rule = new Rule\RedirectionUriRule();
         $validatedParameters = $rule->handle($clientId, $commandParameters, $validatedParameters, $this->getCallable());
         self::assertTrue($validatedParameters->has('redirect_uris'));
@@ -223,7 +274,10 @@ final class RedirectionUriRuleTest extends TestCase
         $commandParameters = DataBag::create([
             'redirect_uris' => ['urn:---------------'],
         ]);
-        $validatedParameters = DataBag::create(['response_types' => ['id_token', 'code']]);
+        $validatedParameters = DataBag::create([
+            'response_types' => ['id_token', 'code'],
+            'token_endpoint_auth_method' => 'none',
+        ]);
         $rule = new Rule\RedirectionUriRule();
         $rule->handle($clientId, $commandParameters, $validatedParameters, $this->getCallable());
     }

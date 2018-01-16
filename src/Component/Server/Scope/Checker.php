@@ -9,18 +9,19 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Component\Server\Core\Scope;
+namespace OAuth2Framework\Component\Server\Scope;
 
 final class Checker
 {
     /**
      * @param string $scope
-     * @param array  $scopes
+     * @param string $scopes
      *
      * @throws \InvalidArgumentException
      */
-    public static function checkUsedOnce(string $scope, array $scopes)
+    public static function checkUsedOnce(string $scope, string $scopes)
     {
+        $scopes = explode(' ', $scopes);
         if (1 < count(array_keys($scopes, $scope))) {
             throw new \InvalidArgumentException(sprintf('Scope "%s" appears more than once.', $scope));
         }
@@ -29,7 +30,7 @@ final class Checker
     /**
      * @param string $scope
      *
-     * @throws \InvalidArgumentException(
+     * @throws \InvalidArgumentException
      */
     public static function checkCharset(string $scope)
     {

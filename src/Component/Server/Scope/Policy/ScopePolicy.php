@@ -11,7 +11,7 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Component\Server\Core\Scope;
+namespace OAuth2Framework\Component\Server\Scope\Policy;
 
 use OAuth2Framework\Component\Server\Core\Client\Client;
 
@@ -25,12 +25,12 @@ interface ScopePolicy
     /**
      * This function check if the scopes respect the scope policy for the client.
      *
-     * @param string[] $scope  The scopes. This variable may be modified according to the scope policy
-     * @param Client   $client The client
+     * @param string $scope  The scopes. This variable may be modified according to the scope policy
+     * @param Client $client The client
      *
      * @throws \InvalidArgumentException
      *
-     * @return array
+     * @return string
      */
-    public function applyScopePolicy(array $scope, Client $client): array;
+    public function applyScopePolicy(string $scope, Client $client): string;
 }

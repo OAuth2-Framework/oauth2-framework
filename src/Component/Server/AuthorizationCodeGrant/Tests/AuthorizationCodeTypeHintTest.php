@@ -82,9 +82,10 @@ final class AuthorizationCodeTypeHintTest extends TestCase
                 [],
                 'http://localhost:8000',
                 new \DateTimeImmutable('now +1hour'),
+                DataBag::create([
+                    'scope' => 'scope1 scope2',
+                ]),
                 DataBag::create([]),
-                DataBag::create([]),
-                ['scope1', 'scope2'],
                 ResourceServerId::create('RESOURCE_SERVER_ID')
             );
             $authorizationCodeRepository = $this->prophesize(AuthorizationCodeRepository::class);

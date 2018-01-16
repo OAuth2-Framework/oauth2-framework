@@ -49,7 +49,6 @@ final class CreateRefreshTokenCommandHandler
             $command->getClientId(),
             $command->getParameters(),
             $command->getMetadatas(),
-            $command->getScopes(),
             $command->getExpiresAt(),
             $command->getResourceServerId()
         );

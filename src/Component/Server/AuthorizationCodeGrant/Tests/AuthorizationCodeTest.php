@@ -55,7 +55,6 @@ final class AuthorizationCodeTest extends TestCase
             new \DateTimeImmutable('2010-01-28T15:00:00+02:00'),
             DataBag::create([]),
             DataBag::create([]),
-            [],
             ResourceServerId::create('RESOURCE_SERVER_ID')
         );
         $authorizationCode = $authorizationCode->markAsUsed();
@@ -63,7 +62,7 @@ final class AuthorizationCodeTest extends TestCase
         $events = $authorizationCode->recordedMessages();
 
         self::assertInstanceOf(AuthorizationCode::class, $authorizationCode);
-        self::assertEquals('{"$schema":"https://oauth2-framework.spomky-labs.com/schemas/model/authorization-code/1.0/schema","type":"OAuth2Framework\\\\Component\\\\Server\\\\AuthorizationCodeGrant\\\\AuthorizationCode","expires_at":1264683600,"client_id":"CLIENT_ID","parameters":{},"metadatas":{},"scopes":[],"is_revoked":true,"resource_owner_id":"USER_ACCOUNT_ID","resource_owner_class":"OAuth2Framework\\\\Component\\\\Server\\\\Core\\\\UserAccount\\\\UserAccountId","resource_server_id":"RESOURCE_SERVER_ID","auth_code_id":"AUTHORIZATION_CODE_ID","query_parameters":{},"redirect_uri":"http://localhost","is_used":true}', $this->getDomainConverter()->toJson($authorizationCode));
+        self::assertEquals('{"$schema":"https://oauth2-framework.spomky-labs.com/schemas/model/authorization-code/1.0/schema","type":"OAuth2Framework\\\\Component\\\\Server\\\\AuthorizationCodeGrant\\\\AuthorizationCode","expires_at":1264683600,"client_id":"CLIENT_ID","parameters":{},"metadatas":{},"is_revoked":true,"resource_owner_id":"USER_ACCOUNT_ID","resource_owner_class":"OAuth2Framework\\\\Component\\\\Server\\\\Core\\\\UserAccount\\\\UserAccountId","resource_server_id":"RESOURCE_SERVER_ID","auth_code_id":"AUTHORIZATION_CODE_ID","query_parameters":{},"redirect_uri":"http://localhost","is_used":true}', $this->getDomainConverter()->toJson($authorizationCode));
         self::assertEquals('AUTHORIZATION_CODE_ID', $authorizationCode->getTokenId()->getValue());
         self::assertCount(3, $events);
     }
@@ -73,7 +72,7 @@ final class AuthorizationCodeTest extends TestCase
      */
     public function iCanCreateAnAuthorizationCodeFromDomainObject()
     {
-        $json = '{"$schema":"https://oauth2-framework.spomky-labs.com/schemas/model/authorization-code/1.0/schema","type":"OAuth2Framework\\\\Component\\\\Server\\\\AuthorizationCodeGrant\\\\AuthorizationCode","expires_at":1264683600,"client_id":"CLIENT_ID","parameters":{},"metadatas":{},"scopes":[],"is_revoked":true,"resource_owner_id":"USER_ACCOUNT_ID","resource_owner_class":"OAuth2Framework\\\\Component\\\\Server\\\\Core\\\\UserAccount\\\\UserAccountId","resource_server_id":"RESOURCE_SERVER_ID","auth_code_id":"AUTHORIZATION_CODE_ID","query_parameters":{},"redirect_uri":"http://localhost","is_used":true}';
+        $json = '{"$schema":"https://oauth2-framework.spomky-labs.com/schemas/model/authorization-code/1.0/schema","type":"OAuth2Framework\\\\Component\\\\Server\\\\AuthorizationCodeGrant\\\\AuthorizationCode","expires_at":1264683600,"client_id":"CLIENT_ID","parameters":{},"metadatas":{},"is_revoked":true,"resource_owner_id":"USER_ACCOUNT_ID","resource_owner_class":"OAuth2Framework\\\\Component\\\\Server\\\\Core\\\\UserAccount\\\\UserAccountId","resource_server_id":"RESOURCE_SERVER_ID","auth_code_id":"AUTHORIZATION_CODE_ID","query_parameters":{},"redirect_uri":"http://localhost","is_used":true}';
         $authorizationCode = $this->getDomainConverter()->fromJson($json);
         self::assertInstanceOf(AuthorizationCode::class, $authorizationCode);
     }
@@ -84,7 +83,7 @@ final class AuthorizationCodeTest extends TestCase
     public function iCanAnAuthorizationCodeUsingEvents()
     {
         $events = [
-            '{"$schema":"https://oauth2-framework.spomky-labs.com/schemas/events/authorization-code/created/1.0/schema","event_id":"ef373cbd-ec1e-45c0-bf8b-2383d42bd680","type":"OAuth2Framework\\\\Component\\\\Server\\\\AuthorizationCodeGrant\\\\Event\\\\AuthorizationCodeCreatedEvent","domain_id":"AUTHORIZATION_CODE_ID","recorded_on":1512992282,"payload":{"user_account_id":"USER_ACCOUNT_ID","client_id":"CLIENT_ID","expires_at":1264683600,"parameters":{},"metadatas":{},"scopes":[],"redirect_uri":"http://localhost","query_parameters":{},"resource_server_id":"RESOURCE_SERVER_ID"}}',
+            '{"$schema":"https://oauth2-framework.spomky-labs.com/schemas/events/authorization-code/created/1.0/schema","event_id":"ef373cbd-ec1e-45c0-bf8b-2383d42bd680","type":"OAuth2Framework\\\\Component\\\\Server\\\\AuthorizationCodeGrant\\\\Event\\\\AuthorizationCodeCreatedEvent","domain_id":"AUTHORIZATION_CODE_ID","recorded_on":1512992282,"payload":{"user_account_id":"USER_ACCOUNT_ID","client_id":"CLIENT_ID","expires_at":1264683600,"parameters":{},"metadatas":{},"redirect_uri":"http://localhost","query_parameters":{},"resource_server_id":"RESOURCE_SERVER_ID"}}',
             '{"$schema":"https://oauth2-framework.spomky-labs.com/schemas/events/authorization-code/marked-as-used/1.0/schema","event_id":"01ae5abf-1aab-4b6b-bcdf-98322d311c62","type":"OAuth2Framework\\\\Component\\\\Server\\\\AuthorizationCodeGrant\\\\Event\\\\AuthorizationCodeMarkedAsUsedEvent","domain_id":"AUTHORIZATION_CODE_ID","recorded_on":1512992283}',
             '{"$schema":"https://oauth2-framework.spomky-labs.com/schemas/events/authorization-code/revoked/1.0/schema","event_id":"b9681db3-6a01-421d-ae18-f14190396273","type":"OAuth2Framework\\\\Component\\\\Server\\\\AuthorizationCodeGrant\\\\Event\\\\AuthorizationCodeRevokedEvent","domain_id":"AUTHORIZATION_CODE_ID","recorded_on":1512992283}',
         ];

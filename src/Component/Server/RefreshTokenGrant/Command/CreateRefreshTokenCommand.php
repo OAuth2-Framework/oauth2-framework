@@ -52,11 +52,6 @@ final class CreateRefreshTokenCommand
     private $metadatas;
 
     /**
-     * @var array
-     */
-    private $scopes;
-
-    /**
      * @var null|ResourceServerId
      */
     private $resourceServerId;
@@ -70,10 +65,9 @@ final class CreateRefreshTokenCommand
      * @param \DateTimeImmutable    $expiresAt
      * @param DataBag               $parameters
      * @param DataBag               $metadatas
-     * @param array                 $scopes
      * @param null|ResourceServerId $resourceServerId
      */
-    protected function __construct(RefreshTokenId $refreshTokenId, ClientId $clientId, ResourceOwnerId $resourceOwnerId, \DateTimeImmutable $expiresAt, DataBag $parameters, DataBag $metadatas, array $scopes, ?ResourceServerId $resourceServerId)
+    protected function __construct(RefreshTokenId $refreshTokenId, ClientId $clientId, ResourceOwnerId $resourceOwnerId, \DateTimeImmutable $expiresAt, DataBag $parameters, DataBag $metadatas, ?ResourceServerId $resourceServerId)
     {
         $this->refreshTokenId = $refreshTokenId;
         $this->clientId = $clientId;
@@ -81,7 +75,6 @@ final class CreateRefreshTokenCommand
         $this->expiresAt = $expiresAt;
         $this->parameters = $parameters;
         $this->metadatas = $metadatas;
-        $this->scopes = $scopes;
         $this->resourceServerId = $resourceServerId;
     }
 
@@ -92,14 +85,13 @@ final class CreateRefreshTokenCommand
      * @param \DateTimeImmutable    $expiresAt
      * @param DataBag               $parameters
      * @param DataBag               $metadatas
-     * @param array                 $scopes
      * @param null|ResourceServerId $resourceServerId
      *
      * @return CreateRefreshTokenCommand
      */
-    public static function create(RefreshTokenId $refreshTokenId, ClientId $clientId, ResourceOwnerId $resourceOwnerId, \DateTimeImmutable $expiresAt, DataBag $parameters, DataBag $metadatas, array $scopes, ?ResourceServerId $resourceServerId): self
+    public static function create(RefreshTokenId $refreshTokenId, ClientId $clientId, ResourceOwnerId $resourceOwnerId, \DateTimeImmutable $expiresAt, DataBag $parameters, DataBag $metadatas, ?ResourceServerId $resourceServerId): self
     {
-        return new self($refreshTokenId, $clientId, $resourceOwnerId, $expiresAt, $parameters, $metadatas, $scopes, $resourceServerId);
+        return new self($refreshTokenId, $clientId, $resourceOwnerId, $expiresAt, $parameters, $metadatas, $resourceServerId);
     }
 
     /**
@@ -132,14 +124,6 @@ final class CreateRefreshTokenCommand
     public function getMetadatas(): DataBag
     {
         return $this->metadatas;
-    }
-
-    /**
-     * @return array
-     */
-    public function getScopes(): array
-    {
-        return $this->scopes;
     }
 
     /**

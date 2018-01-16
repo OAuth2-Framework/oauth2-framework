@@ -81,9 +81,8 @@ final class RefreshTokenTypeHint implements IntrospectionTokenTypeHint, Revocati
             'client_id' => $token->getClientId(),
             'exp' => $token->getExpiresAt()->getTimestamp(),
         ];
-
-        if (!empty($token->getScopes())) {
-            $result['scp'] = $token->getScopes();
+        if ($token->hasParameter('scope')) {
+            $result['scp'] = $token->getParameter('scope');
         }
 
         return $result;

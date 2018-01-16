@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\Server\Command;
 
 use OAuth2Framework\Bundle\Server\Model\ClientRepository;
-use OAuth2Framework\Component\Server\Model\Client\Client;
+use OAuth2Framework\Component\Server\Core\Client\Client;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -48,9 +48,6 @@ EOT
          * @var ClientRepository
          */
         $service = $this->getContainer()->get(ClientRepository::class);
-        $client = Client::createEmpty();
-        $client = $client->create(
-        );
 
         $this->selectResponseTypes($input, $output, $client);
         $this->selectGrantTypes($input, $output, $client);

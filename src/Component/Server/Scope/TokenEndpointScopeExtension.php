@@ -11,16 +11,19 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Component\Server\TokenEndpoint\Processor;
+namespace OAuth2Framework\Component\Server\Scope;
 
+use OAuth2Framework\Component\Server\Core\AccessToken\AccessToken;
+use OAuth2Framework\Component\Server\Core\Client\Client;
+use OAuth2Framework\Component\Server\Core\ResourceOwner\ResourceOwner;
+use OAuth2Framework\Component\Server\TokenEndpoint\Extension\TokenEndpointExtension;
 use OAuth2Framework\Component\Server\TokenEndpoint\GrantTypeData;
 use OAuth2Framework\Component\Server\TokenEndpoint\GrantType;
-use OAuth2Framework\Component\Server\Core\Scope\ScopePolicyManager;
-use OAuth2Framework\Component\Server\Core\Scope\ScopeRepository;
+use OAuth2Framework\Component\Server\Scope\Policy\ScopePolicyManager;
 use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
 use Psr\Http\Message\ServerRequestInterface;
 
-final class ScopeProcessor
+final class TokenEndpointScopeExtension implements TokenEndpointExtension
 {
     /**
      * @var ScopeRepository
@@ -44,7 +47,10 @@ final class ScopeProcessor
         $this->scopePolicyManager = $scopePolicyManager;
     }
 
-    public function __invoke(ServerRequestInterface $request, GrantTypeData $grantTypeData, GrantType $grantType, callable $next): GrantTypeData
+    /**
+     * {@inheritdoc}
+     */
+    public function beforeAccessTokenIssuance(ServerRequestInterface $request, GrantTypeData $grantTypeData, GrantType $grantType, callable $next): GrantTypeData
     {
         /** @var GrantTypeData $grantTypeData */
         $grantTypeData = $next($request, $grantTypeData, $grantType);
@@ -52,8 +58,7 @@ final class ScopeProcessor
         if (!array_key_exists('scope', $params)) {
             $scope = $grantTypeData->getAvailableScopes() ?? [];
         } else {
-            $scopeParameter = $params['scope'];
-            $scope = explode(' ', $scopeParameter);
+            $scope = explode(' ', $params['scope']);
         }
 
         //Modify the scope according to the scope policy
@@ -75,5 +80,13 @@ final class ScopeProcessor
         $grantTypeData = $grantTypeData->withScopes($scope);
 
         return $grantTypeData;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function afterAccessTokenIssuance(Client $client, ResourceOwner $resourceOwner, AccessToken $accessToken, callable $next): array
+    {
+        return $next($client, $resourceOwner, $accessToken);
     }
 }

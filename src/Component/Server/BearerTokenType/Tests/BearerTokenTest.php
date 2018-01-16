@@ -108,7 +108,6 @@ final class BearerTokenTest extends TestCase
             ClientId::create('CLIENT_ID'),
             DataBag::create(['token_type' => 'Bearer']),
             DataBag::create([]),
-            [],
             new \DateTimeImmutable('now'),
             ResourceServerId::create('RESOURCE_SERVER_ID')
         );
@@ -131,7 +130,6 @@ final class BearerTokenTest extends TestCase
             ClientId::create('CLIENT_ID'),
             DataBag::create(['token_type' => 'MAC']),
             DataBag::create([]),
-            [],
             new \DateTimeImmutable('now'),
             ResourceServerId::create('RESOURCE_SERVER_ID')
         );

@@ -11,7 +11,7 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Component\Server\Core\Scope;
+namespace OAuth2Framework\Component\Server\Scope;
 
 use OAuth2Framework\Component\Server\Core\Client\Client;
 
@@ -25,9 +25,16 @@ interface ScopeRepository
     public function has(string $scope): bool;
 
     /**
-     * @return string[]
+     * @param string $scope
+     *
+     * @return Scope
      */
-    public function getSupportedScopes(): array;
+    public function get(string $scope): Scope;
+
+    /**
+     * @return Scope[]
+     */
+    public function all(): array;
 
     /**
      * @param Client $client A client

@@ -107,9 +107,10 @@ final class RefreshTokenTypeHintTest extends TestCase
                 RefreshTokenId::create('REFRESH_TOKEN_ID'),
                 UserAccountId::create('USER_ACCOUNT_ID'),
                 ClientId::create('CLIENT_ID'),
+                DataBag::create([
+                    'scope' => 'scope1 scope2',
+                ]),
                 DataBag::create([]),
-                DataBag::create([]),
-                ['scope1', 'scope2'],
                 new \DateTimeImmutable('now +1hour'),
                 ResourceServerId::create('RESOURCE_SERVER_ID')
             );
@@ -118,9 +119,10 @@ final class RefreshTokenTypeHintTest extends TestCase
                 RefreshTokenId::create('REVOKED_REFRESH_TOKEN_ID'),
                 UserAccountId::create('USER_ACCOUNT_ID'),
                 ClientId::create('CLIENT_ID'),
+                DataBag::create([
+                    'scope' => 'scope1 scope2',
+                ]),
                 DataBag::create([]),
-                DataBag::create([]),
-                ['scope1', 'scope2'],
                 new \DateTimeImmutable('now +1hour'),
                 ResourceServerId::create('RESOURCE_SERVER_ID')
             );
@@ -130,9 +132,10 @@ final class RefreshTokenTypeHintTest extends TestCase
                 RefreshTokenId::create('EXPIRED_REFRESH_TOKEN_ID'),
                 UserAccountId::create('USER_ACCOUNT_ID'),
                 ClientId::create('CLIENT_ID'),
+                DataBag::create([
+                    'scope' => 'scope1 scope2',
+                ]),
                 DataBag::create([]),
-                DataBag::create([]),
-                ['scope1', 'scope2'],
                 new \DateTimeImmutable('now -1hour'),
                 ResourceServerId::create('RESOURCE_SERVER_ID')
             );

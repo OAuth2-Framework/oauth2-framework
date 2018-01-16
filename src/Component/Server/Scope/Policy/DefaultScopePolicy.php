@@ -11,23 +11,23 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Component\Server\Core\Scope;
+namespace OAuth2Framework\Component\Server\Scope\Policy;
 
 use OAuth2Framework\Component\Server\Core\Client\Client;
 
 final class DefaultScopePolicy implements ScopePolicy
 {
     /**
-     * @var string[]
+     * @var string
      */
     private $defaultScopes;
 
     /**
      * DefaultScopePolicy constructor.
      *
-     * @param string[] $defaultScopes
+     * @param string $defaultScopes
      */
-    public function __construct(array $defaultScopes)
+    public function __construct(string $defaultScopes)
     {
         $this->defaultScopes = $defaultScopes;
     }
@@ -43,15 +43,15 @@ final class DefaultScopePolicy implements ScopePolicy
     /**
      * {@inheritdoc}
      */
-    public function applyScopePolicy(array $scope, Client $client): array
+    public function applyScopePolicy(string $scope, Client $client): string
     {
-        return $client->has('default_scope') ? explode(' ', $client->get('default_scope')) : $this->getDefaultScopes();
+        return $client->has('default_scope') ? $client->get('default_scope') : $this->getDefaultScopes();
     }
 
     /**
-     * @return string[]
+     * @return string
      */
-    private function getDefaultScopes(): array
+    private function getDefaultScopes(): string
     {
         return $this->defaultScopes;
     }

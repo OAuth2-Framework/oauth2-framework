@@ -11,7 +11,7 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Component\Server\Core\Scope;
+namespace OAuth2Framework\Component\Server\Scope\Policy;
 
 use OAuth2Framework\Component\Server\Core\Client\Client;
 
@@ -46,12 +46,12 @@ final class ScopePolicyManager
     }
 
     /**
-     * @param array  $scope
+     * @param string $scope
      * @param Client $client
      *
-     * @return array
+     * @return string
      */
-    public function apply(array $scope, Client $client): array
+    public function apply(string $scope, Client $client): string
     {
         if (empty($scope)) {
             $policy = $this->getForClient($client);

@@ -11,25 +11,25 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Component\Server\Core\Scope;
+namespace OAuth2Framework\Component\Server\Scope\Policy;
 
 use OAuth2Framework\Component\Server\Core\Client\Client;
 
-final class ErrorScopePolicy implements ScopePolicy
+final class NoScopePolicy implements ScopePolicy
 {
     /**
      * {@inheritdoc}
      */
     public function name(): string
     {
-        return 'error';
+        return 'none';
     }
 
     /**
      * {@inheritdoc}
      */
-    public function applyScopePolicy(array $scope, Client $client): array
+    public function applyScopePolicy(string $scope, Client $client): string
     {
-        throw new \RuntimeException('No scope was requested.');
+        return $scope;
     }
 }

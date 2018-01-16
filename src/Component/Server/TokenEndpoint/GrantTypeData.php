@@ -40,16 +40,6 @@ final class GrantTypeData
     private $client;
 
     /**
-     * @var string[]
-     */
-    private $scopes = [];
-
-    /**
-     * @var string[]|null
-     */
-    private $availableScopes = null;
-
-    /**
      * GrantTypeData constructor.
      *
      * @param Client|null $client
@@ -203,90 +193,5 @@ final class GrantTypeData
     public function getResourceOwnerId(): ResourceOwnerId
     {
         return $this->resourceOwnerId;
-    }
-
-    /**
-     * @param string[] $scopes
-     *
-     * @return GrantTypeData
-     */
-    public function withScopes(array $scopes): self
-    {
-        $clone = clone $this;
-        $clone->scopes = $scopes;
-
-        return $clone;
-    }
-
-    /**
-     * @param string $scope
-     *
-     * @return GrantTypeData
-     */
-    public function withScope(string $scope): self
-    {
-        if ($this->hasScope($scope)) {
-            return $this;
-        }
-        $clone = clone $this;
-        $clone->scopes[] = $scope;
-
-        return $clone;
-    }
-
-    /**
-     * @param string $scope
-     *
-     * @return GrantTypeData
-     */
-    public function withoutScope(string $scope): self
-    {
-        if (!$this->hasScope($scope)) {
-            return $this;
-        }
-        $clone = clone $this;
-        $key = array_search($scope, $clone->scopes);
-        unset($clone->scopes[$key]);
-
-        return $clone;
-    }
-
-    /**
-     * @param string $scope
-     *
-     * @return bool
-     */
-    public function hasScope(string $scope): bool
-    {
-        return in_array($scope, $this->scopes);
-    }
-
-    /**
-     * @return string[]
-     */
-    public function getScopes(): array
-    {
-        return $this->scopes;
-    }
-
-    /**
-     * @return string[]|null
-     */
-    public function getAvailableScopes(): ? array
-    {
-        return $this->availableScopes;
-    }
-
-    /**
-     * @param string[] $scopes
-     *
-     * @return GrantTypeData
-     */
-    public function withAvailableScopes(array $scopes): self
-    {
-        $clone = clone $this;
-        $clone->availableScopes = $scopes;
-
-        return $clone;
     }
 }

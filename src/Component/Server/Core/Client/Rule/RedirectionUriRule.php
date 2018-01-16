@@ -16,6 +16,10 @@ namespace OAuth2Framework\Component\Server\Core\Client\Rule;
 use OAuth2Framework\Component\Server\Core\Client\ClientId;
 use OAuth2Framework\Component\Server\Core\DataBag\DataBag;
 
+/**
+If there are multiple hostnames in the registered redirect_uris and pairwise ID is set, the Client MUST register a sector_identifier_uri.
+ */
+
 final class RedirectionUriRule implements Rule
 {
     /**
@@ -24,13 +28,17 @@ final class RedirectionUriRule implements Rule
     public function handle(ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters, callable $next): DataBag
     {
         $validatedParameters = $next($clientId, $commandParameters, $validatedParameters);
+
+        // No need for redirect URIs as no response type to is used.
         if (!$validatedParameters->has('response_types') || empty($validatedParameters->get('response_types'))) {
             return $validatedParameters;
         }
-        if (!$commandParameters->has('redirect_uris')) {
-            throw new \InvalidArgumentException('The parameter "redirect_uris" is mandatory when response types are used.');
+
+        if (!$validatedParameters->has('token_endpoint_auth_method')) {
+            throw new \InvalidArgumentException('Unable to determine the token endpoint authentication method.');
         }
-        $redirectUris = $commandParameters->get('redirect_uris');
+        $is_client_public = 'none' === $validatedParameters->get('token_endpoint_auth_method');
+
         $application_type = $validatedParameters->has('application_type') ? $validatedParameters->get('application_type') : 'web';
         $response_types = $validatedParameters->has('response_types') ? $validatedParameters->get('response_types') : [];
         $uses_implicit_grant_type = false;
@@ -38,26 +46,39 @@ final class RedirectionUriRule implements Rule
             $types = explode(' ', $response_type);
             if (in_array('token', $types)) {
                 $uses_implicit_grant_type = true;
-
                 break;
             }
         }
-        $this->checkAllUris($redirectUris, $application_type, $uses_implicit_grant_type);
+
+        if (!$commandParameters->has('redirect_uris')) {
+            if ($is_client_public) {
+                throw new \InvalidArgumentException('Non-confidential clients must register at least one redirect URI.');
+            }
+            if ($uses_implicit_grant_type) {
+                throw new \InvalidArgumentException('Confidential clients must register at least one redirect URI when using the "token" response type.');
+            }
+            $redirectUris = [];
+        } else {
+            $redirectUris = $commandParameters->get('redirect_uris');
+            if (!is_array($redirectUris)) {
+                throw new \InvalidArgumentException('The parameter "redirect_uris" must be a list of URI or URN.');
+            }
+        }
+
+        $this->checkAllUris($redirectUris, $application_type, $uses_implicit_grant_type, $is_client_public);
         $validatedParameters = $validatedParameters->with('redirect_uris', $redirectUris);
 
         return $validatedParameters;
     }
 
     /**
-     * @param mixed  $value
+     * @param array  $value
      * @param string $application_type
      * @param bool   $uses_implicit_grant_type
+     * @param bool   $is_client_public
      */
-    private function checkAllUris($value, string $application_type, bool $uses_implicit_grant_type)
+    private function checkAllUris(array $value, string $application_type, bool $uses_implicit_grant_type, bool $is_client_public)
     {
-        if (!is_array($value)) {
-            throw new \InvalidArgumentException('The parameter "redirect_uris" must be a list of URI or URN.');
-        }
         foreach ($value as $redirectUri) {
             if (!is_string($redirectUri)) {
                 throw new \InvalidArgumentException('The parameter "redirect_uris" must be a list of URI or URN.');

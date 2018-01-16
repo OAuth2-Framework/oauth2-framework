@@ -95,7 +95,7 @@ final class AuthorizationCodeGrantTypeTest extends TestCase
 
         $receivedGrantTypeData = $this->getGrantType()->prepareTokenResponse($request->reveal(), $grantTypeData);
         self::assertNotSame($receivedGrantTypeData, $grantTypeData);
-        self::assertEquals(['scope1', 'scope2'], $receivedGrantTypeData->getAvailableScopes());
+        self::assertEquals('scope1 scope2', $receivedGrantTypeData->getParameter('scope'));
     }
 
     /**
@@ -168,9 +168,10 @@ final class AuthorizationCodeGrantTypeTest extends TestCase
                 ],
                 'http://localhost:8000/',
                 new \DateTimeImmutable('now +1 day'),
+                DataBag::create([
+                    'scope' => 'scope1 scope2',
+                ]),
                 DataBag::create([]),
-                DataBag::create([]),
-                ['scope1', 'scope2'],
                 ResourceServerId::create('RESOURCE_SERVER_ID')
             );
             $authorizationCode->eraseMessages();

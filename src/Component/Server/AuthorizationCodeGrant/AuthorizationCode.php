@@ -70,12 +70,11 @@ final class AuthorizationCode extends Token
      * @param \DateTimeImmutable  $expiresAt
      * @param DataBag             $parameters
      * @param DataBag             $metadatas
-     * @param string[]            $scopes
      * @param ResourceServerId    $resourceServerId
      *
      * @return AuthorizationCode
      */
-    public function create(AuthorizationCodeId $authorizationCodeId, ClientId $clientId, UserAccountId $userAccountId, array $queryParameters, string $redirectUri, \DateTimeImmutable $expiresAt, DataBag $parameters, DataBag $metadatas, array $scopes, ? ResourceServerId $resourceServerId)
+    public function create(AuthorizationCodeId $authorizationCodeId, ClientId $clientId, UserAccountId $userAccountId, array $queryParameters, string $redirectUri, \DateTimeImmutable $expiresAt, DataBag $parameters, DataBag $metadatas, ? ResourceServerId $resourceServerId)
     {
         $clone = clone $this;
         $clone->authorizationCodeId = $authorizationCodeId;
@@ -87,11 +86,10 @@ final class AuthorizationCode extends Token
         $clone->expiresAt = $expiresAt;
         $clone->parameters = $parameters;
         $clone->metadatas = $metadatas;
-        $clone->scopes = $scopes;
         $clone->expiresAt = $expiresAt;
         $clone->resourceServerId = $resourceServerId;
 
-        $event = AuthorizationCodeEvent\AuthorizationCodeCreatedEvent::create($authorizationCodeId, $clientId, $userAccountId, $queryParameters, $redirectUri, $expiresAt, $parameters, $metadatas, $scopes, $resourceServerId);
+        $event = AuthorizationCodeEvent\AuthorizationCodeCreatedEvent::create($authorizationCodeId, $clientId, $userAccountId, $queryParameters, $redirectUri, $expiresAt, $parameters, $metadatas, $resourceServerId);
         $clone->record($event);
 
         return $clone;
@@ -223,7 +221,6 @@ final class AuthorizationCode extends Token
         $clientId = ClientId::create($json->client_id);
         $parameters = DataBag::create((array) $json->parameters);
         $metadatas = DataBag::create((array) $json->metadatas);
-        $scopes = (array) $json->scopes;
         $revoked = $json->is_revoked;
         $resourceOwnerClass = $json->resource_owner_class;
         $resourceOwnerId = $resourceOwnerClass::create($json->resource_owner_id);
@@ -239,7 +236,6 @@ final class AuthorizationCode extends Token
         $authorizationCode->clientId = $clientId;
         $authorizationCode->parameters = $parameters;
         $authorizationCode->metadatas = $metadatas;
-        $authorizationCode->scopes = $scopes;
         $authorizationCode->revoked = $revoked;
         $authorizationCode->resourceOwnerId = $resourceOwnerId;
 
@@ -308,7 +304,6 @@ final class AuthorizationCode extends Token
         $clone->expiresAt = $event->getExpiresAt();
         $clone->parameters = $event->getParameters();
         $clone->metadatas = $event->getMetadatas();
-        $clone->scopes = $event->getScopes();
         $clone->expiresAt = $event->getExpiresAt();
         $clone->resourceServerId = $event->getResourceServerId();
 

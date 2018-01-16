@@ -92,7 +92,6 @@ final class TokenResponseTypeTest extends TestCase
                 ClientId::create('CLIENT_ID'),
                 DataBag::create([]),
                 DataBag::create([]),
-                [],
                 new \DateTimeImmutable('now +1 hour'),
                 ResourceServerId::create('RESOURCE_SERVER_ID')
             );

@@ -23,11 +23,12 @@ abstract class SessionStateParameterExtension implements AfterConsentScreen
      */
     public function process(ServerRequestInterface $request, Authorization $authorization): Authorization
     {
-        if ($authorization->hasScope('openid')) {
+        //FIXME
+        /*if ($authorization->hasScope('openid')) {
             $browserState = $this->getBrowserState($request, $authorization);
             $sessionState = $this->calculateSessionState($request, $authorization, $browserState);
             $authorization = $authorization->withResponseParameter('session_state', $sessionState);
-        }
+        }*/
 
         return $authorization;
     }

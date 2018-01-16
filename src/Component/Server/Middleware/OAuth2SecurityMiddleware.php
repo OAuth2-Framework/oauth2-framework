@@ -103,7 +103,7 @@ final class OAuth2SecurityMiddleware implements MiddlewareInterface
         if (!empty($this->scope)) {
             $diff = array_diff(
                 $this->scope,
-                $accessToken->getScopes()
+                $accessToken->hasParameter('scope') ? $accessToken->getParameter('scope') : []
             );
 
             if (!empty($diff)) {

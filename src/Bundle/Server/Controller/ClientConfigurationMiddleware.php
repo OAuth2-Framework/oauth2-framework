@@ -15,10 +15,6 @@ namespace OAuth2Framework\Bundle\Server\Controller;
 
 use Interop\Http\Server\RequestHandlerInterface;
 use Interop\Http\Server\MiddlewareInterface;
-use OAuth2Framework\Component\Server\Model\Client\ClientId;
-use OAuth2Framework\Component\Server\Model\Client\ClientRepositoryInterface;
-use OAuth2Framework\Component\Server\Response\OAuth2Exception;
-use OAuth2Framework\Component\Server\Response\OAuth2ResponseFactoryManager;
 use Psr\Http\Message\ServerRequestInterface;
 
 final class ClientConfigurationMiddleware implements MiddlewareInterface

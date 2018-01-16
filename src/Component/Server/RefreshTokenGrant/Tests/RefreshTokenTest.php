@@ -54,7 +54,6 @@ final class RefreshTokenTest extends TestCase
                 'refresh_token_id' => 'REFRESH_TOKEN_ID',
             ]),
             DataBag::create([]),
-            [],
             new \DateTimeImmutable('2010-01-28T15:00:00+02:00'),
             ResourceServerId::create('RESOURCE_SERVER_ID')
         );
@@ -63,7 +62,7 @@ final class RefreshTokenTest extends TestCase
         $events = $refreshToken->recordedMessages();
 
         self::assertInstanceOf(RefreshToken::class, $refreshToken);
-        self::assertEquals('{"$schema":"https://oauth2-framework.spomky-labs.com/schemas/model/refresh-token/1.0/schema","type":"OAuth2Framework\\\\Component\\\\Server\\\\RefreshTokenGrant\\\\RefreshToken","expires_at":1264683600,"client_id":"CLIENT_ID","parameters":{"refresh_token_id":"REFRESH_TOKEN_ID"},"metadatas":{},"scopes":[],"is_revoked":true,"resource_owner_id":"CLIENT_ID","resource_owner_class":"OAuth2Framework\\\\Component\\\\Server\\\\Core\\\\Client\\\\ClientId","resource_server_id":"RESOURCE_SERVER_ID","refresh_token_id":"REFRESH_TOKEN_ID","access_token_ids":["ACCESS_TOKEN_ID"]}', $this->getDomainConverter()->toJson($refreshToken));
+        self::assertEquals('{"$schema":"https://oauth2-framework.spomky-labs.com/schemas/model/refresh-token/1.0/schema","type":"OAuth2Framework\\\\Component\\\\Server\\\\RefreshTokenGrant\\\\RefreshToken","expires_at":1264683600,"client_id":"CLIENT_ID","parameters":{"refresh_token_id":"REFRESH_TOKEN_ID"},"metadatas":{},"is_revoked":true,"resource_owner_id":"CLIENT_ID","resource_owner_class":"OAuth2Framework\\\\Component\\\\Server\\\\Core\\\\Client\\\\ClientId","resource_server_id":"RESOURCE_SERVER_ID","refresh_token_id":"REFRESH_TOKEN_ID","access_token_ids":["ACCESS_TOKEN_ID"]}', $this->getDomainConverter()->toJson($refreshToken));
         self::assertEquals('REFRESH_TOKEN_ID', $refreshToken->getTokenId()->getValue());
         self::assertCount(3, $events);
     }
@@ -73,7 +72,7 @@ final class RefreshTokenTest extends TestCase
      */
     public function iCanCreateAnRefreshTokenFromDomainObject()
     {
-        $json = '{"$schema":"https://oauth2-framework.spomky-labs.com/schemas/model/refresh-token/1.0/schema","type":"OAuth2Framework\\\\Component\\\\Server\\\\RefreshTokenGrant\\\\RefreshToken","expires_at":1264683600,"client_id":"CLIENT_ID","parameters":{"refresh_token_id":"REFRESH_TOKEN_ID"},"metadatas":{},"scopes":[],"is_revoked":true,"resource_owner_id":"CLIENT_ID","resource_owner_class":"OAuth2Framework\\\\Component\\\\Server\\\\Core\\\\Client\\\\ClientId","resource_server_id":"RESOURCE_SERVER_ID","refresh_token_id":"REFRESH_TOKEN_ID","access_token_ids":["ACCESS_TOKEN_ID"]}';
+        $json = '{"$schema":"https://oauth2-framework.spomky-labs.com/schemas/model/refresh-token/1.0/schema","type":"OAuth2Framework\\\\Component\\\\Server\\\\RefreshTokenGrant\\\\RefreshToken","expires_at":1264683600,"client_id":"CLIENT_ID","parameters":{"refresh_token_id":"REFRESH_TOKEN_ID"},"metadatas":{},"is_revoked":true,"resource_owner_id":"CLIENT_ID","resource_owner_class":"OAuth2Framework\\\\Component\\\\Server\\\\Core\\\\Client\\\\ClientId","resource_server_id":"RESOURCE_SERVER_ID","refresh_token_id":"REFRESH_TOKEN_ID","access_token_ids":["ACCESS_TOKEN_ID"]}';
         $refreshToken = $this->getDomainConverter()->fromJson($json);
         self::assertInstanceOf(RefreshToken::class, $refreshToken);
     }
@@ -84,7 +83,7 @@ final class RefreshTokenTest extends TestCase
     public function iCanAnRefreshTokenUsingEvents()
     {
         $events = [
-            '{"$schema":"https://oauth2-framework.spomky-labs.com/schemas/events/refresh-token/created/1.0/schema","event_id":"f29c3cf9-7630-4d0c-861e-9005d0e33c61","type":"OAuth2Framework\\\\Component\\\\Server\\\\RefreshTokenGrant\\\\Event\\\\RefreshTokenCreatedEvent","domain_id":"REFRESH_TOKEN_ID","recorded_on":1512893793,"payload":{"resource_owner_id":"CLIENT_ID","resource_owner_class":"OAuth2Framework\\\\Component\\\\Server\\\\Core\\\\Client\\\\ClientId","client_id":"CLIENT_ID","parameters":{"refresh_token_id":"REFRESH_TOKEN_ID"},"expires_at":1264683600,"scopes":[],"metadatas":{},"resource_server_id":"RESOURCE_SERVER_ID"}}',
+            '{"$schema":"https://oauth2-framework.spomky-labs.com/schemas/events/refresh-token/created/1.0/schema","event_id":"f29c3cf9-7630-4d0c-861e-9005d0e33c61","type":"OAuth2Framework\\\\Component\\\\Server\\\\RefreshTokenGrant\\\\Event\\\\RefreshTokenCreatedEvent","domain_id":"REFRESH_TOKEN_ID","recorded_on":1512893793,"payload":{"resource_owner_id":"CLIENT_ID","resource_owner_class":"OAuth2Framework\\\\Component\\\\Server\\\\Core\\\\Client\\\\ClientId","client_id":"CLIENT_ID","parameters":{"refresh_token_id":"REFRESH_TOKEN_ID"},"expires_at":1264683600,"metadatas":{},"resource_server_id":"RESOURCE_SERVER_ID"}}',
             '{"$schema":"https://oauth2-framework.spomky-labs.com/schemas/events/refresh-token/access-token-added/1.0/schema","event_id":"b0316425-4d7f-4b4d-8882-78a80daf4bde","type":"OAuth2Framework\\\\Component\\\\Server\\\\RefreshTokenGrant\\\\Event\\\\AccessTokenAddedToRefreshTokenEvent","domain_id":"REFRESH_TOKEN_ID","recorded_on":1512893793,"payload":{"access_token_id":"ACCESS_TOKEN_ID"}}',
             '{"$schema":"https://oauth2-framework.spomky-labs.com/schemas/events/refresh-token/revoked/1.0/schema","event_id":"625a79ec-cfd7-4a9c-9b19-b90f7a0ccafa","type":"OAuth2Framework\\\\Component\\\\Server\\\\RefreshTokenGrant\\\\Event\\\\RefreshTokenRevokedEvent","domain_id":"REFRESH_TOKEN_ID","recorded_on":1512893793}',
         ];

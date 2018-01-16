@@ -11,16 +11,16 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Component\Server\Core\Tests\Scope;
+namespace OAuth2Framework\Component\Server\Scope\Tests;
 
 use OAuth2Framework\Component\Server\Core\Client\Client;
 use OAuth2Framework\Component\Server\Core\Client\ClientId;
 use OAuth2Framework\Component\Server\Core\DataBag\DataBag;
-use OAuth2Framework\Component\Server\Core\Scope\Checker;
-use OAuth2Framework\Component\Server\Core\Scope\DefaultScopePolicy;
-use OAuth2Framework\Component\Server\Core\Scope\ErrorScopePolicy;
-use OAuth2Framework\Component\Server\Core\Scope\NoScopePolicy;
-use OAuth2Framework\Component\Server\Core\Scope\ScopePolicyManager;
+use OAuth2Framework\Component\Server\Scope\Checker;
+use OAuth2Framework\Component\Server\Scope\Policy\DefaultScopePolicy;
+use OAuth2Framework\Component\Server\Scope\Policy\ErrorScopePolicy;
+use OAuth2Framework\Component\Server\Scope\Policy\NoScopePolicy;
+use OAuth2Framework\Component\Server\Scope\Policy\ScopePolicyManager;
 use OAuth2Framework\Component\Server\Core\UserAccount\UserAccountId;
 use PHPUnit\Framework\TestCase;
 
@@ -51,8 +51,8 @@ final class ScopePolicyManagerTest extends TestCase
             UserAccountId::create('USER_ACCOUNT_ID')
         );
 
-        $result = $this->getScopePolicyManager()->apply(['foo'], $client);
-        self::assertEquals(['foo'], $result);
+        $result = $this->getScopePolicyManager()->apply('foo', $client);
+        self::assertEquals('foo', $result);
     }
 
     /**
@@ -67,8 +67,8 @@ final class ScopePolicyManagerTest extends TestCase
             UserAccountId::create('USER_ACCOUNT_ID')
         );
 
-        $result = $this->getScopePolicyManager()->apply([], $client);
-        self::assertEquals([], $result);
+        $result = $this->getScopePolicyManager()->apply('', $client);
+        self::assertEquals('', $result);
     }
 
     /**
@@ -85,8 +85,8 @@ final class ScopePolicyManagerTest extends TestCase
             UserAccountId::create('USER_ACCOUNT_ID')
         );
 
-        $result = $this->getScopePolicyManager()->apply([], $client);
-        self::assertEquals([], $result);
+        $result = $this->getScopePolicyManager()->apply('', $client);
+        self::assertEquals('', $result);
     }
 
     /**
@@ -104,8 +104,8 @@ final class ScopePolicyManagerTest extends TestCase
             UserAccountId::create('USER_ACCOUNT_ID')
         );
 
-        $result = $this->getScopePolicyManager()->apply([], $client);
-        self::assertEquals(['openid', 'profile'], $result);
+        $result = $this->getScopePolicyManager()->apply('', $client);
+        self::assertEquals('openid profile', $result);
     }
 
     /**
@@ -122,8 +122,8 @@ final class ScopePolicyManagerTest extends TestCase
             UserAccountId::create('USER_ACCOUNT_ID')
         );
 
-        $result = $this->getScopePolicyManager()->apply([], $client);
-        self::assertEquals(['scope1', 'scope2'], $result);
+        $result = $this->getScopePolicyManager()->apply('', $client);
+        self::assertEquals('scope1 scope2', $result);
     }
 
     /**
@@ -142,7 +142,7 @@ final class ScopePolicyManagerTest extends TestCase
             UserAccountId::create('USER_ACCOUNT_ID')
         );
 
-        $this->getScopePolicyManager()->apply([], $client);
+        $this->getScopePolicyManager()->apply('', $client);
     }
 
     /**
@@ -152,8 +152,8 @@ final class ScopePolicyManagerTest extends TestCase
      */
     public function testScopeIsUsedOnlyOnce()
     {
-        Checker::checkUsedOnce('foo', ['foo', 'bar']);
-        Checker::checkUsedOnce('foo', ['foo', 'foo']);
+        Checker::checkUsedOnce('foo', 'foo bar');
+        Checker::checkUsedOnce('foo', 'foo foo');
     }
 
     /**
@@ -181,7 +181,7 @@ final class ScopePolicyManagerTest extends TestCase
             $this->scopePolicyManager = new ScopePolicyManager();
             $this->scopePolicyManager
                 ->add(new NoScopePolicy())
-                ->add(new DefaultScopePolicy(['scope1', 'scope2']))
+                ->add(new DefaultScopePolicy('scope1 scope2'))
                 ->add(new ErrorScopePolicy());
         }
 

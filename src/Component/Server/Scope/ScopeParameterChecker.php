@@ -11,11 +11,11 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Component\Server\AuthorizationEndpoint\ParameterChecker;
+namespace OAuth2Framework\Component\Server\Scope;
 
 use OAuth2Framework\Component\Server\AuthorizationEndpoint\Authorization;
-use OAuth2Framework\Component\Server\Core\Scope\ScopePolicyManager;
-use OAuth2Framework\Component\Server\Core\Scope\ScopeRepository;
+use OAuth2Framework\Component\Server\AuthorizationEndpoint\ParameterChecker\ParameterChecker;
+use OAuth2Framework\Component\Server\Scope\Policy\ScopePolicyManager;
 use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
 
 final class ScopeParameterChecker implements ParameterChecker
@@ -55,7 +55,7 @@ final class ScopeParameterChecker implements ParameterChecker
                 $scope = [];
             }
             if (null !== $this->scopePolicyManager) {
-                $scope = $this->scopePolicyManager->check($scope, $authorization->getClient());
+                $scope = $this->scopePolicyManager->apply($scope, $authorization->getClient());
             }
             $availableScope = $this->scopeRepository->getAvailableScopesForClient($authorization->getClient());
             Assertion::true($this->scopeRepository->areRequestedScopesAvailable($scope, $availableScope), sprintf('An unsupported scope was requested. Available scopes for the client are %s.', implode(', ', $availableScope)));

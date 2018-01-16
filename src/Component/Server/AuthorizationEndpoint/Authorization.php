@@ -42,11 +42,6 @@ final class Authorization
     private $userAccountFullyAuthenticated = null;
 
     /**
-     * @var string[]
-     */
-    private $scopes = [];
-
-    /**
      * @var array
      */
     private $data = [];
@@ -381,69 +376,6 @@ final class Authorization
     }
 
     /**
-     * @param array $scope
-     *
-     * @return Authorization
-     */
-    public function withScopes(array $scope): self
-    {
-        $clone = clone $this;
-        $clone->scopes = $scope;
-
-        return $clone;
-    }
-
-    /**
-     * @return array
-     */
-    public function getScopes(): array
-    {
-        return $this->scopes;
-    }
-
-    /**
-     * @param string $scope
-     *
-     * @return bool
-     */
-    public function hasScope(string $scope): bool
-    {
-        return null !== $this->scopes && in_array($scope, $this->scopes);
-    }
-
-    /**
-     * @param string $scope
-     *
-     * @return Authorization
-     */
-    public function withoutScope(string $scope): self
-    {
-        if (!$this->hasScope($scope)) {
-            return $this;
-        }
-        $clone = clone $this;
-        unset($clone->scopes[array_search($scope, $clone->scopes)]);
-
-        return $clone;
-    }
-
-    /**
-     * @param string $scope
-     *
-     * @return Authorization
-     */
-    public function addScope(string $scope): self
-    {
-        if ($this->hasScope($scope)) {
-            return $this;
-        }
-        $clone = clone $this;
-        $clone->scopes[] = $scope;
-
-        return $clone;
-    }
-
-    /**
      * @return bool|null
      */
     public function isAuthorized(): ? bool
@@ -535,7 +467,7 @@ final class Authorization
     /**
      * @return bool
      */
-    public function hasOfflineAccess(): bool
+    /*public function hasOfflineAccess(): bool
     {
         // The scope offline_access is not requested
         if (!in_array('offline_access', $this->getScopes())) {
@@ -549,7 +481,7 @@ final class Authorization
         }
 
         return true;
-    }
+    }*/
 
     /**
      * @param string $option

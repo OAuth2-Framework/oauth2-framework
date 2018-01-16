@@ -58,13 +58,12 @@ final class RefreshToken extends Token
      * @param ClientId              $clientId
      * @param DataBag               $parameters
      * @param DataBag               $metadatas
-     * @param array                 $scopes
      * @param \DateTimeImmutable    $expiresAt
      * @param ResourceServerId|null $resourceServerId
      *
      * @return RefreshToken
      */
-    public function create(RefreshTokenId $refreshTokenId, ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, array $scopes, \DateTimeImmutable $expiresAt, ? ResourceServerId $resourceServerId): self
+    public function create(RefreshTokenId $refreshTokenId, ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, \DateTimeImmutable $expiresAt, ? ResourceServerId $resourceServerId): self
     {
         $clone = clone $this;
         $clone->refreshTokenId = $refreshTokenId;
@@ -73,10 +72,9 @@ final class RefreshToken extends Token
         $clone->parameters = $parameters;
         $clone->metadatas = $metadatas;
         $clone->expiresAt = $expiresAt;
-        $clone->scopes = $scopes;
         $clone->resourceServerId = $resourceServerId;
 
-        $event = RefreshTokenEvent\RefreshTokenCreatedEvent::create($refreshTokenId, $resourceOwnerId, $clientId, $parameters, $metadatas, $expiresAt, $scopes, $resourceServerId);
+        $event = RefreshTokenEvent\RefreshTokenCreatedEvent::create($refreshTokenId, $resourceOwnerId, $clientId, $parameters, $metadatas, $expiresAt, $resourceServerId);
         $clone->record($event);
 
         return $clone;
@@ -130,9 +128,6 @@ final class RefreshToken extends Token
         $data = $this->getParameters();
         $data = $data->with('access_token', $this->getTokenId()->getValue());
         $data = $data->with('expires_in', $this->getExpiresIn());
-        if (!empty($this->getScopes())) {
-            $data = $data->with('scope', implode(' ', $this->getScopes()));
-        }
         if (!empty($this->getTokenId())) {
             $data = $data->with('refresh_token', $this->getTokenId());
         }
@@ -156,7 +151,6 @@ final class RefreshToken extends Token
         $clientId = ClientId::create($json->client_id);
         $parameters = DataBag::create((array) $json->parameters);
         $metadatas = DataBag::create((array) $json->metadatas);
-        $scopes = (array) $json->scopes;
         $revoked = $json->is_revoked;
         $resourceOwnerClass = $json->resource_owner_class;
         $resourceOwnerId = $resourceOwnerClass::create($json->resource_owner_id);
@@ -170,7 +164,6 @@ final class RefreshToken extends Token
         $refreshToken->clientId = $clientId;
         $refreshToken->parameters = $parameters;
         $refreshToken->metadatas = $metadatas;
-        $refreshToken->scopes = $scopes;
         $refreshToken->revoked = $revoked;
         $refreshToken->resourceOwnerId = $resourceOwnerId;
 
@@ -257,7 +250,6 @@ final class RefreshToken extends Token
         $clone->parameters = $event->getParameters();
         $clone->metadatas = $event->getMetadatas();
         $clone->expiresAt = $event->getExpiresAt();
-        $clone->scopes = $event->getScopes();
         $clone->resourceServerId = $event->getResourceServerId();
 
         return $clone;

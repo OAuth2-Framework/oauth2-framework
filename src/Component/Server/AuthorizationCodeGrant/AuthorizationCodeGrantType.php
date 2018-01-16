@@ -85,7 +85,10 @@ final class AuthorizationCodeGrantType implements GrantType
         if (true === $authorizationCode->isUsed() || true === $authorizationCode->isRevoked()) {
             throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_GRANT, 'The parameter "code" is invalid.');
         }
-        $grantTypeData = $grantTypeData->withAvailableScopes($authorizationCode->getScopes());
+
+        foreach ($authorizationCode->getParameters() as $key => $parameter) {
+            $grantTypeData = $grantTypeData->withParameter($key, $parameter);
+        }
 
         return $grantTypeData;
     }

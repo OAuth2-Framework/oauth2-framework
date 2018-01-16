@@ -76,7 +76,6 @@ final class TokenResponseType implements ResponseType
             $authorization->getClient()->getPublicId(),
             DataBag::create($authorization->getTokenType()->getInformation()),
             DataBag::create(['redirect_uri' => $authorization->getRedirectUri()]),
-            $authorization->getScopes(),
             (new \DateTimeImmutable())->setTimestamp(time() + $this->accessTokenLifetime),
             null
         );

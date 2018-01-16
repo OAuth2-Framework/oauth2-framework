@@ -7,7 +7,7 @@
     {"$ref": "https://oauth2-framework.spomky-labs.com/schemas/event/1.0/schema"},
     {"payload": {
       "type": "object",
-      "required": ["resource_owner_id", "resource_owner_class", "client_id", "parameters", "expires_at", "scopes", "metadatas", "resource_server_id"],
+      "required": ["resource_owner_id", "resource_owner_class", "client_id", "parameters", "expires_at", "metadatas", "resource_server_id"],
       "properties": {
         "resource_owner_id":{"type":"string"},
         "resource_owner_class":{"type":"string"},
@@ -15,7 +15,6 @@
         "expires_at":{"type":"integer"},
         "parameters":{"type":"object"},
         "metadatas":{"type":"object"},
-        "scopes":{"type":"array"},
         "resource_server_id":{"type":["string", "null"]}
       }
     }

@@ -41,7 +41,6 @@ final class AccessTokenHandlerManagerTest extends TestCase
             ClientId::create('CLIENT_ID'),
             DataBag::create([]),
             DataBag::create([]),
-            [],
             new \DateTimeImmutable('now +1year'),
             ResourceServerId::create('RESOURCE_SERVER_ID')
         );

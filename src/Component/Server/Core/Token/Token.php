@@ -51,11 +51,6 @@ abstract class Token implements \JsonSerializable, ContainsRecordedMessages, Dom
     protected $metadatas;
 
     /**
-     * @var string[]
-     */
-    protected $scopes = null;
-
-    /**
      * @var bool
      */
     protected $revoked = false;
@@ -122,24 +117,6 @@ abstract class Token implements \JsonSerializable, ContainsRecordedMessages, Dom
     public function getClientId(): ClientId
     {
         return $this->clientId;
-    }
-
-    /**
-     * @param string $scope
-     *
-     * @return bool
-     */
-    public function hasScope(string $scope): bool
-    {
-        return in_array($scope, $this->getScopes());
-    }
-
-    /**
-     * @return string[]
-     */
-    public function getScopes(): array
-    {
-        return $this->scopes;
     }
 
     /**
@@ -238,7 +215,6 @@ abstract class Token implements \JsonSerializable, ContainsRecordedMessages, Dom
             'client_id' => $this->getClientId()->getValue(),
             'parameters' => (object) $this->getParameters()->all(),
             'metadatas' => (object) $this->getMetadatas()->all(),
-            'scopes' => $this->getScopes(),
             'is_revoked' => $this->isRevoked(),
             'resource_owner_id' => $this->getResourceOwnerId()->getValue(),
             'resource_owner_class' => get_class($this->getResourceOwnerId()),

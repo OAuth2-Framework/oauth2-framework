@@ -88,8 +88,8 @@ final class AuthorizationCodeTypeHint implements IntrospectionTokenTypeHint, Rev
             'exp' => $token->getExpiresAt()->getTimestamp(),
         ];
 
-        if (!empty($token->getScopes())) {
-            $result['scp'] = $token->getScopes();
+        if (!empty($token->hasParameter('scope'))) {
+            $result['scp'] = $token->getParameter('scope');
         }
 
         return $result;
