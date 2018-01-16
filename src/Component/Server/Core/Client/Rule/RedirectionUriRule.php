@@ -19,7 +19,6 @@ use OAuth2Framework\Component\Server\Core\DataBag\DataBag;
 /**
 If there are multiple hostnames in the registered redirect_uris and pairwise ID is set, the Client MUST register a sector_identifier_uri.
  */
-
 final class RedirectionUriRule implements Rule
 {
     /**
@@ -46,6 +45,7 @@ final class RedirectionUriRule implements Rule
             $types = explode(' ', $response_type);
             if (in_array('token', $types)) {
                 $uses_implicit_grant_type = true;
+
                 break;
             }
         }
