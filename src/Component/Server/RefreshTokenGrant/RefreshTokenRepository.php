@@ -12,6 +12,7 @@ declare(strict_types=1);
  */
 
 namespace OAuth2Framework\Component\Server\RefreshTokenGrant;
+
 use OAuth2Framework\Component\Server\Core\Client\ClientId;
 use OAuth2Framework\Component\Server\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Server\Core\ResourceOwner\ResourceOwnerId;

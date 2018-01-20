@@ -23,17 +23,14 @@ use OAuth2Framework\Component\Server\Core\Client\ClientId;
 use OAuth2Framework\Component\Server\Core\Client\ClientRepository;
 use OAuth2Framework\Component\Server\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Server\Core\ResourceOwner\ResourceOwnerId;
-use OAuth2Framework\Component\Server\Core\ResourceServer\ResourceServerId;
 use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
 use OAuth2Framework\Component\Server\Core\UserAccount\UserAccountId;
 use OAuth2Framework\Component\Server\Core\UserAccount\UserAccountRepository;
 use OAuth2Framework\Component\Server\TokenEndpoint\Extension\TokenEndpointExtensionManager;
-use OAuth2Framework\Component\Server\TokenEndpoint\GrantType;
 use OAuth2Framework\Component\Server\TokenEndpoint\TokenEndpoint;
 use OAuth2Framework\Component\Server\TokenType\TokenType;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
@@ -114,7 +111,7 @@ final class TokenEndpointTest extends TestCase
         $client = $client->create(
             ClientId::create('CLIENT_ID'),
             DataBag::create([
-                'grant_types' => ['foo']
+                'grant_types' => ['foo'],
             ]),
             UserAccountId::create('OWNER_ID')
         );
@@ -188,7 +185,7 @@ final class TokenEndpointTest extends TestCase
             $client = $client->create(
                 ClientId::create('CLIENT_ID'),
                 DataBag::create([
-                    'grant_types' => ['foo']
+                    'grant_types' => ['foo'],
                 ]),
                 UserAccountId::create('OWNER_ID')
             );
@@ -240,7 +237,7 @@ final class TokenEndpointTest extends TestCase
                 Argument::type(DataBag::class),
                 Argument::type(DataBag::class),
                 null
-            )->will(function($args) {
+            )->will(function ($args) {
                 $accesstoken = AccessToken::createEmpty();
                 $accesstoken = $accesstoken->create(
                     AccessTokenId::create('ACCESS_TOKEN_ID'),
