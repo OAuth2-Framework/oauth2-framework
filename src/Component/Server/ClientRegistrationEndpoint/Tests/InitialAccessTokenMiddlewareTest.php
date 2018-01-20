@@ -58,7 +58,7 @@ final class InitialAccessTokenMiddlewareTest extends TestCase
     {
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getHeader('AUTHORIZATION')->willReturn([
-            'Bearer BAD_INITIAL_ACCESS_TOKEN_ID'
+            'Bearer BAD_INITIAL_ACCESS_TOKEN_ID',
         ])->shouldBeCalled();
         $handler = $this->prophesize(RequestHandlerInterface::class);
 
@@ -80,7 +80,7 @@ final class InitialAccessTokenMiddlewareTest extends TestCase
     {
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getHeader('AUTHORIZATION')->willReturn([
-            'Bearer REVOKED_INITIAL_ACCESS_TOKEN_ID'
+            'Bearer REVOKED_INITIAL_ACCESS_TOKEN_ID',
         ])->shouldBeCalled();
         $handler = $this->prophesize(RequestHandlerInterface::class);
 
@@ -102,7 +102,7 @@ final class InitialAccessTokenMiddlewareTest extends TestCase
     {
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getHeader('AUTHORIZATION')->willReturn([
-            'Bearer EXPIRED_INITIAL_ACCESS_TOKEN_ID'
+            'Bearer EXPIRED_INITIAL_ACCESS_TOKEN_ID',
         ])->shouldBeCalled();
         $handler = $this->prophesize(RequestHandlerInterface::class);
 
@@ -125,7 +125,7 @@ final class InitialAccessTokenMiddlewareTest extends TestCase
         $request = $this->prophesize(ServerRequestInterface::class);
         $response = $this->prophesize(ResponseInterface::class);
         $request->getHeader('AUTHORIZATION')->willReturn([
-            'Bearer INITIAL_ACCESS_TOKEN_ID'
+            'Bearer INITIAL_ACCESS_TOKEN_ID',
         ])->shouldBeCalled();
         $request->withAttribute('initial_access_token', Argument::type(InitialAccessToken::class))->willReturn($request)->shouldBeCalled();
         $handler = $this->prophesize(RequestHandlerInterface::class);
@@ -153,6 +153,7 @@ final class InitialAccessTokenMiddlewareTest extends TestCase
 
         return $this->middleware;
     }
+
     /**
      * @var null|InitialAccessTokenRepository
      */
@@ -161,12 +162,12 @@ final class InitialAccessTokenMiddlewareTest extends TestCase
     /**
      * @return InitialAccessTokenRepository
      */
-    private  function getRepository(): InitialAccessTokenRepository
+    private function getRepository(): InitialAccessTokenRepository
     {
         if (null === $this->repository) {
             $repository = $this->prophesize(InitialAccessTokenRepository::class);
-            $repository->find(Argument::type(InitialAccessTokenId::class))->will(function ($args){
-                switch($args[0]->getValue()) {
+            $repository->find(Argument::type(InitialAccessTokenId::class))->will(function ($args) {
+                switch ($args[0]->getValue()) {
                     case 'INITIAL_ACCESS_TOKEN_ID':
                         $initialAccessToken = InitialAccessToken::createEmpty();
                         $initialAccessToken = $initialAccessToken->create(

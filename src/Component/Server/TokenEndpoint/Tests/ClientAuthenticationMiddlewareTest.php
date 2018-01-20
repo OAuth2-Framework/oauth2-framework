@@ -15,7 +15,6 @@ namespace OAuth2Framework\Component\Server\TokenEndpoint\Tests;
 
 use Interop\Http\Server\RequestHandlerInterface;
 use OAuth2Framework\Component\Server\Core\Client\ClientRepository;
-use OAuth2Framework\Component\Server\TokenEndpoint\AuthenticationMethod\AuthenticationMethod;
 use OAuth2Framework\Component\Server\TokenEndpoint\AuthenticationMethod\AuthenticationMethodManager;
 use OAuth2Framework\Component\Server\TokenEndpoint\ClientAuthenticationMiddleware;
 use PHPUnit\Framework\TestCase;

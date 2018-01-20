@@ -174,7 +174,6 @@ final class ClientAssertionJwt implements AuthenticationMethod
         } catch (\Exception $e) {
             throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_REQUEST, $e->getMessage(), [], $e);
         }
-
     }
 
     /**
