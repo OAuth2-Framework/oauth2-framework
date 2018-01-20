@@ -34,8 +34,8 @@ final class ImplicitGrantTypeTest extends TestCase
      */
     public function genericInformation()
     {
-        self::assertEquals(['token'], $this->getGrantType()->getAssociatedResponseTypes());
-        self::assertEquals('implicit', $this->getGrantType()->getGrantType());
+        self::assertEquals(['token'], $this->getGrantType()->associatedResponseTypes());
+        self::assertEquals('implicit', $this->getGrantType()->name());
     }
 
     /**
@@ -46,7 +46,7 @@ final class ImplicitGrantTypeTest extends TestCase
         $request = $this->prophesize(ServerRequestInterface::class);
 
         try {
-            $this->getGrantType()->checkTokenRequest($request->reveal());
+            $this->getGrantType()->checkRequest($request->reveal());
             $this->fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2Exception $e) {
             self::assertEquals(400, $e->getCode());
@@ -73,7 +73,7 @@ final class ImplicitGrantTypeTest extends TestCase
         $grantTypeData = GrantTypeData::create($client);
 
         try {
-            $this->getGrantType()->prepareTokenResponse($request->reveal(), $grantTypeData);
+            $this->getGrantType()->prepareResponse($request->reveal(), $grantTypeData);
         } catch (OAuth2Exception $e) {
             self::assertEquals(400, $e->getCode());
             self::assertEquals([

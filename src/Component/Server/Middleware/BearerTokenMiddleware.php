@@ -52,10 +52,10 @@ final class BearerTokenMiddleware implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $additional_credential_values = [];
-        $token = $this->bearerToken->findToken($request, $additional_credential_values);
+        $token = $this->bearerToken->find($request, $additional_credential_values);
         if (null !== $token) {
             $accessToken = $this->accessTokenRepository->find(AccessTokenId::create($token));
-            if (null === $accessToken || false === $this->bearerToken->isTokenRequestValid($accessToken, $request, $additional_credential_values)) {
+            if (null === $accessToken || false === $this->bearerToken->isRequestValid($accessToken, $request, $additional_credential_values)) {
                 throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_TOKEN, 'Invalid access token.');
             }
             $request = $request->withAttribute('access_token', $accessToken);

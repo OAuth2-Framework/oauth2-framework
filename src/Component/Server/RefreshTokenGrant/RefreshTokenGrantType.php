@@ -39,7 +39,7 @@ final class RefreshTokenGrantType implements GrantType
     /**
      * {@inheritdoc}
      */
-    public function getAssociatedResponseTypes(): array
+    public function associatedResponseTypes(): array
     {
         return [];
     }
@@ -47,7 +47,7 @@ final class RefreshTokenGrantType implements GrantType
     /**
      * {@inheritdoc}
      */
-    public function getGrantType(): string
+    public function name(): string
     {
         return 'refresh_token';
     }
@@ -55,7 +55,7 @@ final class RefreshTokenGrantType implements GrantType
     /**
      * {@inheritdoc}
      */
-    public function checkTokenRequest(ServerRequestInterface $request)
+    public function checkRequest(ServerRequestInterface $request)
     {
         $parameters = $request->getParsedBody() ?? [];
         $requiredParameters = ['refresh_token'];
@@ -69,7 +69,7 @@ final class RefreshTokenGrantType implements GrantType
     /**
      * {@inheritdoc}
      */
-    public function prepareTokenResponse(ServerRequestInterface $request, GrantTypeData $grantTypeData): GrantTypeData
+    public function prepareResponse(ServerRequestInterface $request, GrantTypeData $grantTypeData): GrantTypeData
     {
         $parameters = $request->getParsedBody() ?? [];
         $refreshToken = $parameters['refresh_token'];

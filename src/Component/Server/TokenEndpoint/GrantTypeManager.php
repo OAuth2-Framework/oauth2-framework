@@ -27,7 +27,7 @@ final class GrantTypeManager
      */
     public function add(GrantType $grantType): self
     {
-        $this->grantTypes[$grantType->getGrantType()] = $grantType;
+        $this->grantTypes[$grantType->name()] = $grantType;
 
         return $this;
     }
@@ -43,17 +43,17 @@ final class GrantTypeManager
     }
 
     /**
-     * @param string $names
+     * @param string $name
      *
      * @return GrantType
      */
-    public function get(string $names): GrantType
+    public function get(string $name): GrantType
     {
-        if (!$this->has($names)) {
-            throw new \InvalidArgumentException(sprintf('The grant type "%s" is not supported.', $names));
+        if (!$this->has($name)) {
+            throw new \InvalidArgumentException(sprintf('The grant type "%s" is not supported.', $name));
         }
 
-        return $this->grantTypes[$names];
+        return $this->grantTypes[$name];
     }
 
     /**

@@ -23,14 +23,14 @@ interface GrantType
      *
      * @return string[]
      */
-    public function getAssociatedResponseTypes(): array;
+    public function associatedResponseTypes(): array;
 
     /**
      * This function returns the supported grant type.
      *
      * @return string The grant type
      */
-    public function getGrantType(): string;
+    public function name(): string;
 
     /**
      * This function checks the request.
@@ -39,7 +39,7 @@ interface GrantType
      *
      * @throws OAuth2Exception
      */
-    public function checkTokenRequest(ServerRequestInterface $request);
+    public function checkRequest(ServerRequestInterface $request);
 
     /**
      * This function checks the request and returns information to issue an access token.
@@ -51,7 +51,7 @@ interface GrantType
      *
      * @return GrantTypeData
      */
-    public function prepareTokenResponse(ServerRequestInterface $request, GrantTypeData $grantTypeData): GrantTypeData;
+    public function prepareResponse(ServerRequestInterface $request, GrantTypeData $grantTypeData): GrantTypeData;
 
     /**
      * @param ServerRequestInterface $request

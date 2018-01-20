@@ -11,21 +11,20 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Component\Server\ImplicitGrant;
+namespace OAuth2Framework\Component\Server\TokenEndpoint\Tests;
 
 use OAuth2Framework\Component\Server\TokenEndpoint\GrantType;
 use OAuth2Framework\Component\Server\TokenEndpoint\GrantTypeData;
-use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
 use Psr\Http\Message\ServerRequestInterface;
 
-final class ImplicitGrantType implements GrantType
+final class FooGrantType implements GrantType
 {
     /**
      * {@inheritdoc}
      */
     public function associatedResponseTypes(): array
     {
-        return ['token'];
+        return [];
     }
 
     /**
@@ -33,7 +32,7 @@ final class ImplicitGrantType implements GrantType
      */
     public function name(): string
     {
-        return 'implicit';
+        return 'foo';
     }
 
     /**
@@ -41,7 +40,7 @@ final class ImplicitGrantType implements GrantType
      */
     public function checkRequest(ServerRequestInterface $request)
     {
-        throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_GRANT, 'The implicit grant type cannot be called from the token endpoint.');
+        //Nothing to do
     }
 
     /**
@@ -49,7 +48,7 @@ final class ImplicitGrantType implements GrantType
      */
     public function prepareResponse(ServerRequestInterface $request, GrantTypeData $grantTypeData): GrantTypeData
     {
-        throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_GRANT, 'The implicit grant type cannot be called from the token endpoint.');
+        return $grantTypeData;
     }
 
     /**
@@ -57,6 +56,6 @@ final class ImplicitGrantType implements GrantType
      */
     public function grant(ServerRequestInterface $request, GrantTypeData $grantTypeData): GrantTypeData
     {
-        throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_GRANT, 'The implicit grant type cannot be called from the token endpoint.');
+        return $grantTypeData->withResourceOwnerId($grantTypeData->getClient()->getPublicId());
     }
 }

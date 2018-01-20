@@ -94,7 +94,7 @@ final class OAuth2SecurityMiddleware implements MiddlewareInterface
      */
     private function checkAccessToken(TokenType $type, AccessToken $accessToken, ServerRequestInterface $request, array $additionalCredentialValues)
     {
-        if (false === $type->isTokenRequestValid($accessToken, $request, $additionalCredentialValues)) {
+        if (false === $type->isRequestValid($accessToken, $request, $additionalCredentialValues)) {
             throw $this->getOAuth2Exception(401, OAuth2Exception::ERROR_INVALID_TOKEN, 'Access token does not exist or is not valid.');
         }
         if (true === $accessToken->hasExpired()) {

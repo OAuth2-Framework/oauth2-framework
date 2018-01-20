@@ -47,7 +47,7 @@ final class ResourceOwnerPasswordCredentialsGrantType implements GrantType
     /**
      * {@inheritdoc}
      */
-    public function getAssociatedResponseTypes(): array
+    public function associatedResponseTypes(): array
     {
         return [];
     }
@@ -55,7 +55,7 @@ final class ResourceOwnerPasswordCredentialsGrantType implements GrantType
     /**
      * {@inheritdoc}
      */
-    public function getGrantType(): string
+    public function name(): string
     {
         return 'password';
     }
@@ -63,7 +63,7 @@ final class ResourceOwnerPasswordCredentialsGrantType implements GrantType
     /**
      * {@inheritdoc}
      */
-    public function checkTokenRequest(ServerRequestInterface $request)
+    public function checkRequest(ServerRequestInterface $request)
     {
         $parameters = $request->getParsedBody() ?? [];
         $requiredParameters = ['username', 'password'];
@@ -77,7 +77,7 @@ final class ResourceOwnerPasswordCredentialsGrantType implements GrantType
     /**
      * {@inheritdoc}
      */
-    public function prepareTokenResponse(ServerRequestInterface $request, GrantTypeData $grantTypeData): GrantTypeData
+    public function prepareResponse(ServerRequestInterface $request, GrantTypeData $grantTypeData): GrantTypeData
     {
         // Nothing to do
         return $grantTypeData;

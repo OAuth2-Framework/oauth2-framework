@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\Server\BearerTokenType;
 
 use OAuth2Framework\Component\Server\Core\AccessToken\AccessToken;
+use OAuth2Framework\Component\Server\Core\Token\Token;
 use OAuth2Framework\Component\Server\TokenType\TokenType;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -100,15 +101,13 @@ final class BearerToken implements TokenType
      */
     public function getInformation(): array
     {
-        return [
-            'token_type' => $this->name(),
-        ];
+        return [];
     }
 
     /**
      * {@inheritdoc}
      */
-    public function findToken(ServerRequestInterface $request, array &$additionalCredentialValues): ?string
+    public function find(ServerRequestInterface $request, array &$additionalCredentialValues): ?string
     {
         $methods = [
             'isTokenFromAuthorizationHeaderAllowed' => 'getTokenFromAuthorizationHeaders',
@@ -128,13 +127,13 @@ final class BearerToken implements TokenType
     /**
      * {@inheritdoc}
      */
-    public function isTokenRequestValid(AccessToken $accessToken, ServerRequestInterface $request, array $additionalCredentialValues): bool
+    public function isRequestValid(Token $token, ServerRequestInterface $request, array $additionalCredentialValues): bool
     {
-        if (!$accessToken->hasParameter('token_type')) {
+        if (!$token instanceof AccessToken || !$token->hasParameter('token_type')) {
             return false;
         }
 
-        return $accessToken->getParameter('token_type') === $this->name();
+        return $token->getParameter('token_type') === $this->name();
     }
 
     /**

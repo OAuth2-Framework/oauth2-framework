@@ -25,12 +25,11 @@ interface AccessTokenRepository
      * @param ClientId              $clientId
      * @param DataBag               $parameters
      * @param DataBag               $metadatas
-     * @param \DateTimeImmutable    $expiresAt
      * @param null|ResourceServerId $resourceServerId
      *
      * @return AccessToken
      */
-    public function create(ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, \DateTimeImmutable $expiresAt, ? ResourceServerId $resourceServerId): AccessToken;
+    public function create(ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, ? ResourceServerId $resourceServerId): AccessToken;
 
     /**
      * @param AccessToken $token

@@ -34,8 +34,8 @@ final class ClientCredentialsGrantTypeTest extends TestCase
     public function genericInformation()
     {
         self::assertTrue($this->getGrantType()->isRefreshTokenIssuedWithAccessToken());
-        self::assertEquals([], $this->getGrantType()->getAssociatedResponseTypes());
-        self::assertEquals('client_credentials', $this->getGrantType()->getGrantType());
+        self::assertEquals([], $this->getGrantType()->associatedResponseTypes());
+        self::assertEquals('client_credentials', $this->getGrantType()->name());
     }
 
     /**
@@ -44,7 +44,7 @@ final class ClientCredentialsGrantTypeTest extends TestCase
     public function theRequestHaveAllRequiredParameters()
     {
         $request = $this->prophesize(ServerRequestInterface::class);
-        $this->getGrantType()->checkTokenRequest($request->reveal());
+        $this->getGrantType()->checkRequest($request->reveal());
         self::assertTrue(true);
     }
 
@@ -62,7 +62,7 @@ final class ClientCredentialsGrantTypeTest extends TestCase
         $request = $this->prophesize(ServerRequestInterface::class);
         $grantTypeData = GrantTypeData::create($client);
 
-        $receivedGrantTypeData = $this->getGrantType()->prepareTokenResponse($request->reveal(), $grantTypeData);
+        $receivedGrantTypeData = $this->getGrantType()->prepareResponse($request->reveal(), $grantTypeData);
         self::assertSame($receivedGrantTypeData, $grantTypeData);
     }
 

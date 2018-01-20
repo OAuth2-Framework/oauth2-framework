@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\Server\MacTokenType;
 
 use OAuth2Framework\Component\Server\Core\AccessToken\AccessToken;
+use OAuth2Framework\Component\Server\Core\Token\Token;
 use OAuth2Framework\Component\Server\TokenType\TokenType;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -63,7 +64,6 @@ abstract class MacToken implements TokenType
     public function getInformation(): array
     {
         return [
-            'token_type' => $this->name(),
             'mac_key' => $this->generateMacKey(),
             'mac_algorithm' => $this->getMacAlgorithm(),
         ];
@@ -88,7 +88,7 @@ abstract class MacToken implements TokenType
     /**
      * {@inheritdoc}
      */
-    public function findToken(ServerRequestInterface $request, array &$additionalCredentialValues): ?string
+    public function find(ServerRequestInterface $request, array &$additionalCredentialValues): ?string
     {
         $authorization_headers = $request->getHeader('AUTHORIZATION');
 
@@ -107,19 +107,19 @@ abstract class MacToken implements TokenType
     /**
      * {@inheritdoc}
      */
-    public function isTokenRequestValid(AccessToken $accessToken, ServerRequestInterface $request, array $additionalCredentialValues): bool
+    public function isRequestValid(Token $token, ServerRequestInterface $request, array $additionalCredentialValues): bool
     {
-        if ($accessToken->getParameter('token_type') !== $this->name()) {
+        if (!$token instanceof AccessToken || $token->getParameter('token_type') !== $this->name()) {
             return false;
         }
 
         foreach ($this->getParametersToCheck() as $key => $closure) {
-            if (!array_key_exists($key, $additionalCredentialValues) || false === $closure($additionalCredentialValues[$key], $accessToken)) {
+            if (!array_key_exists($key, $additionalCredentialValues) || false === $closure($additionalCredentialValues[$key], $token)) {
                 return false;
             }
         }
 
-        $mac = $this->generateMac($request, $accessToken, $additionalCredentialValues);
+        $mac = $this->generateMac($request, $token, $additionalCredentialValues);
 
         return hash_equals($mac, $additionalCredentialValues['mac']);
     }
@@ -127,8 +127,8 @@ abstract class MacToken implements TokenType
     private function getParametersToCheck(): array
     {
         return [
-            'id' => function ($value, AccessToken $accessToken) {
-                return hash_equals($accessToken->getTokenId()->getValue(), $value);
+            'id' => function ($value, AccessToken $token) {
+                return hash_equals($token->getTokenId()->getValue(), $value);
             },
             'ts' => function ($value) {
                 return time() < $this->getTimestampLifetime() + (int) $value;

@@ -61,8 +61,8 @@ final class JwtBearerGrantTypeTest extends TestCase
      */
     public function genericInformation()
     {
-        self::assertEquals([], $this->getGrantType()->getAssociatedResponseTypes());
-        self::assertEquals('urn:ietf:params:oauth:grant-type:jwt-bearer', $this->getGrantType()->getGrantType());
+        self::assertEquals([], $this->getGrantType()->associatedResponseTypes());
+        self::assertEquals('urn:ietf:params:oauth:grant-type:jwt-bearer', $this->getGrantType()->name());
     }
 
     /**
@@ -74,7 +74,7 @@ final class JwtBearerGrantTypeTest extends TestCase
         $request->getParsedBody()->willReturn([]);
 
         try {
-            $this->getGrantType()->checkTokenRequest($request->reveal());
+            $this->getGrantType()->checkRequest($request->reveal());
             $this->fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2Exception $e) {
             self::assertEquals(400, $e->getCode());
@@ -93,7 +93,7 @@ final class JwtBearerGrantTypeTest extends TestCase
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getParsedBody()->willReturn(['assertion' => 'FOO']);
 
-        $this->getGrantType()->checkTokenRequest($request->reveal());
+        $this->getGrantType()->checkRequest($request->reveal());
         self::assertTrue(true);
     }
 
@@ -106,7 +106,7 @@ final class JwtBearerGrantTypeTest extends TestCase
         $request->getParsedBody()->willReturn(['assertion' => $this->createValidEncryptedAssertionFromClient()]);
         $grantTypeData = GrantTypeData::create(null);
 
-        $receivedGrantTypeData = $this->getGrantType()->prepareTokenResponse($request->reveal(), $grantTypeData);
+        $receivedGrantTypeData = $this->getGrantType()->prepareResponse($request->reveal(), $grantTypeData);
         self::assertNotSame($receivedGrantTypeData, $grantTypeData);
         self::assertTrue($receivedGrantTypeData->hasMetadata('jwt'));
         self::assertTrue($receivedGrantTypeData->hasMetadata('claims'));
@@ -121,7 +121,7 @@ final class JwtBearerGrantTypeTest extends TestCase
         $request->getParsedBody()->willReturn(['assertion' => $this->createValidAssertionFromIssuer()]);
         $grantTypeData = GrantTypeData::create(null);
 
-        $receivedGrantTypeData = $this->getGrantType()->prepareTokenResponse($request->reveal(), $grantTypeData);
+        $receivedGrantTypeData = $this->getGrantType()->prepareResponse($request->reveal(), $grantTypeData);
         self::assertNotSame($receivedGrantTypeData, $grantTypeData);
         self::assertTrue($receivedGrantTypeData->hasMetadata('jwt'));
         self::assertTrue($receivedGrantTypeData->hasMetadata('claims'));
@@ -137,7 +137,7 @@ final class JwtBearerGrantTypeTest extends TestCase
         $grantTypeData = GrantTypeData::create(null);
 
         try {
-            $this->getGrantType()->prepareTokenResponse($request->reveal(), $grantTypeData);
+            $this->getGrantType()->prepareResponse($request->reveal(), $grantTypeData);
         } catch (OAuth2Exception $e) {
             self::assertEquals(400, $e->getCode());
             self::assertEquals([

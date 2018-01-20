@@ -18,9 +18,9 @@ use Interop\Http\Server\RequestHandlerInterface;
 use Interop\Http\Server\MiddlewareInterface;
 use OAuth2Framework\Component\Server\Core\AccessToken\AccessToken;
 use OAuth2Framework\Component\Server\Core\AccessToken\AccessTokenRepository;
+use OAuth2Framework\Component\Server\Core\Client\Client;
 use OAuth2Framework\Component\Server\Core\Client\ClientId;
 use OAuth2Framework\Component\Server\Core\Client\ClientRepository;
-use OAuth2Framework\Component\Server\RefreshTokenGrant\RefreshTokenRepository;
 use OAuth2Framework\Component\Server\Core\ResourceOwner\ResourceOwnerId;
 use OAuth2Framework\Component\Server\Core\ResourceOwner\ResourceOwner;
 use OAuth2Framework\Component\Server\Core\UserAccount\UserAccountId;
@@ -59,11 +59,6 @@ final class TokenEndpoint implements MiddlewareInterface
     private $accessTokenRepository;
 
     /**
-     * @var null|RefreshTokenRepository
-     */
-    private $refreshTokenRepository;
-
-    /**
      * TokenEndpoint constructor.
      *
      * @param ClientRepository              $clientRepository
@@ -71,16 +66,14 @@ final class TokenEndpoint implements MiddlewareInterface
      * @param TokenEndpointExtensionManager $tokenEndpointExtensionManager
      * @param ResponseFactory               $responseFactory
      * @param AccessTokenRepository         $accessTokenRepository
-     * @param RefreshTokenRepository|null   $refreshTokenRepository
      */
-    public function __construct(ClientRepository $clientRepository, UserAccountRepository $userAccountRepository, TokenEndpointExtensionManager $tokenEndpointExtensionManager, ResponseFactory $responseFactory, AccessTokenRepository $accessTokenRepository, ?RefreshTokenRepository $refreshTokenRepository)
+    public function __construct(ClientRepository $clientRepository, UserAccountRepository $userAccountRepository, TokenEndpointExtensionManager $tokenEndpointExtensionManager, ResponseFactory $responseFactory, AccessTokenRepository $accessTokenRepository)
     {
         $this->clientRepository = $clientRepository;
         $this->userAccountRepository = $userAccountRepository;
         $this->tokenEndpointExtensionManager = $tokenEndpointExtensionManager;
         $this->responseFactory = $responseFactory;
         $this->accessTokenRepository = $accessTokenRepository;
-        $this->refreshTokenRepository = $refreshTokenRepository;
     }
 
     /**
@@ -100,11 +93,11 @@ final class TokenEndpoint implements MiddlewareInterface
         }
 
         // We check that the request has all parameters needed for the selected grant type
-        $grantType->checkTokenRequest($request);
+        $grantType->checkRequest($request);
 
         // The grant type prepare the token response
         // The grant type data should be updated accordingly
-        $grantTypeData = $grantType->prepareTokenResponse($request, $grantTypeData);
+        $grantTypeData = $grantType->prepareResponse($request, $grantTypeData);
 
         // At this stage, the client should be authenticated
         // If not, we stop the authorization grant
@@ -112,15 +105,15 @@ final class TokenEndpoint implements MiddlewareInterface
             throw new OAuth2Exception(401, OAuth2Exception::ERROR_INVALID_CLIENT, 'Client authentication failed.');
         }
 
-        // This occurs now because the client may be found during the preparation process
-        if (!$grantTypeData->getClient()->isGrantTypeAllowed($grantType->getGrantType())) {
-            throw new OAuth2Exception(400, OAuth2Exception::ERROR_UNAUTHORIZED_CLIENT, sprintf('The grant type "%s" is unauthorized for this client.', $grantType));
+        // We check the client is allowed to use the selected grant type
+        if (!$this->isGrantTypeAllowedForTheClient($grantTypeData->getClient(), $grantType->name())) {
+            throw new OAuth2Exception(400, OAuth2Exception::ERROR_UNAUTHORIZED_CLIENT, sprintf('The grant type "%s" is unauthorized for this client.', $grantType->name()));
         }
 
         // We populate the token type parameters
         $grantTypeData = $this->updateWithTokenTypeParameters($request, $grantTypeData);
 
-        // Should be token extension pre-processing
+        // We call for extensions prior to the Access Token issuance
         $grantTypeData = $this->tokenEndpointExtensionManager->handleBeforeAccessTokenIssuance($request, $grantTypeData, $grantType);
 
         // We grant the client
@@ -129,6 +122,8 @@ final class TokenEndpoint implements MiddlewareInterface
         // Everything is fine so we can issue the access token
         $accessToken = $this->issueAccessToken($grantTypeData);
         $resourceOwner = $this->getResourceOwner($grantTypeData->getResourceOwnerId());
+
+        // We call for extensions after to the Access Token issuance
         $data = $this->tokenEndpointExtensionManager->handleAfterAccessTokenIssuance($grantTypeData->getClient(), $resourceOwner, $accessToken);
 
         return $this->createResponse($data);
@@ -155,34 +150,13 @@ final class TokenEndpoint implements MiddlewareInterface
      */
     private function issueAccessToken(GrantTypeData $grantTypeData): AccessToken
     {
-        $parameters = $grantTypeData->getParameters();
-        //FIXME
-        /*if (in_array('offline_access', $grantTypeData->getScopes()) && null !== $this->refreshTokenRepository) {
-            $refreshToken = $this->refreshTokenRepository->create(
-                $grantTypeData->getClient()->getPublicId(),
-                $grantTypeData->getParameters(),
-                $grantTypeData->getMetadatas(),
-                null,
-                null
-            );
-            $parameters = $parameters->with('refresh_token', $refreshToken->getTokenId());
-        } else {*/
-        $refreshToken = null;
-        //}
-
         $accessToken = $this->accessTokenRepository->create(
             $grantTypeData->getResourceOwnerId(),
             $grantTypeData->getClient()->getPublicId(),
-            $parameters,
+            $grantTypeData->getParameters(),
             $grantTypeData->getMetadatas(),
-            null,
             null
         );
-
-        if (null !== $refreshToken) {
-            $refreshToken = $refreshToken->addAccessToken($accessToken->getTokenId());
-            $this->refreshTokenRepository->save($refreshToken);
-        }
         $this->accessTokenRepository->save($accessToken);
 
         return $accessToken;
@@ -226,10 +200,27 @@ final class TokenEndpoint implements MiddlewareInterface
         }
 
         $info = $tokenType->getInformation();
+        $info['token_type'] = $tokenType->name();
         foreach ($info as $k => $v) {
             $grantTypeData = $grantTypeData->withParameter($k, $v);
         }
 
         return $grantTypeData;
+    }
+
+    /**
+     * @param Client $client
+     * @param string $grant_type
+     *
+     * @return bool
+     */
+    private function isGrantTypeAllowedForTheClient(Client $client, string $grant_type): bool
+    {
+        $grant_types = $client->has('grant_types') ? $client->get('grant_types') : [];
+        if (!is_array($grant_types)) {
+            throw new \InvalidArgumentException('The metadata "grant_types" must be an array.');
+        }
+
+        return in_array($grant_type, $grant_types);
     }
 }

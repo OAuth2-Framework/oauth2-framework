@@ -74,7 +74,7 @@ final class IdTokenResponseType implements ResponseType
     /**
      * {@inheritdoc}
      */
-    public function getAssociatedGrantTypes(): array
+    public function associatedGrantTypes(): array
     {
         return [];
     }
@@ -82,7 +82,7 @@ final class IdTokenResponseType implements ResponseType
     /**
      * {@inheritdoc}
      */
-    public function getResponseType(): string
+    public function name(): string
     {
         return 'id_token';
     }

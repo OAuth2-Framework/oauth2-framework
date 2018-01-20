@@ -47,7 +47,7 @@ final class NoneResponseType implements ResponseType
     /**
      * {@inheritdoc}
      */
-    public function getAssociatedGrantTypes(): array
+    public function associatedGrantTypes(): array
     {
         return [];
     }
@@ -55,7 +55,7 @@ final class NoneResponseType implements ResponseType
     /**
      * {@inheritdoc}
      */
-    public function getResponseType(): string
+    public function name(): string
     {
         return 'none';
     }

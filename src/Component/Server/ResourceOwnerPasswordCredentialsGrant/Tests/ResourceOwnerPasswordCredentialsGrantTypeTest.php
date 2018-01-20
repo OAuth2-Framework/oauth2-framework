@@ -37,8 +37,8 @@ final class ResourceOwnerPasswordCredentialsGrantTypeTest extends TestCase
      */
     public function genericInformation()
     {
-        self::assertEquals([], $this->getGrantType()->getAssociatedResponseTypes());
-        self::assertEquals('password', $this->getGrantType()->getGrantType());
+        self::assertEquals([], $this->getGrantType()->associatedResponseTypes());
+        self::assertEquals('password', $this->getGrantType()->name());
     }
 
     /**
@@ -50,7 +50,7 @@ final class ResourceOwnerPasswordCredentialsGrantTypeTest extends TestCase
         $request->getParsedBody()->willReturn(['password' => 'PASSWORD']);
 
         try {
-            $this->getGrantType()->checkTokenRequest($request->reveal());
+            $this->getGrantType()->checkRequest($request->reveal());
             $this->fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2Exception $e) {
             self::assertEquals(400, $e->getCode());
@@ -69,7 +69,7 @@ final class ResourceOwnerPasswordCredentialsGrantTypeTest extends TestCase
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getParsedBody()->willReturn(['password' => 'PASSWORD', 'username' => 'USERNAME']);
 
-        $this->getGrantType()->checkTokenRequest($request->reveal());
+        $this->getGrantType()->checkRequest($request->reveal());
         self::assertTrue(true);
     }
 
@@ -88,7 +88,7 @@ final class ResourceOwnerPasswordCredentialsGrantTypeTest extends TestCase
         $request->getParsedBody()->willReturn(['password' => 'PASSWORD', 'username' => 'USERNAME']);
         $grantTypeData = GrantTypeData::create($client);
 
-        $receivedGrantTypeData = $this->getGrantType()->prepareTokenResponse($request->reveal(), $grantTypeData);
+        $receivedGrantTypeData = $this->getGrantType()->prepareResponse($request->reveal(), $grantTypeData);
         self::assertSame($receivedGrantTypeData, $grantTypeData);
     }
 

@@ -36,7 +36,7 @@ final class MacTokenTest extends TestCase
 
         self::assertEquals('MAC', $macToken->name());
         self::assertEquals('MAC', $macToken->getScheme());
-        self::assertEquals(['token_type' => 'MAC', 'mac_key' => 'MAC_KEY_FOO_BAR', 'mac_algorithm' => 'hmac-sha-256'], $macToken->getInformation());
+        self::assertEquals(['mac_key' => 'MAC_KEY_FOO_BAR', 'mac_algorithm' => 'hmac-sha-256'], $macToken->getInformation());
     }
 
     /**
@@ -49,7 +49,7 @@ final class MacTokenTest extends TestCase
         $request->getHeader('AUTHORIZATION')->willReturn(['MAC id="h480djs93hd8",ts="1336363200",nonce="dj83hs9s",mac="bhCQXTVyfj5cmA9uKkPFx1zeOXM="']);
 
         $additionalCredentialValues = [];
-        self::assertEquals('h480djs93hd8', $macToken->findToken($request->reveal(), $additionalCredentialValues));
+        self::assertEquals('h480djs93hd8', $macToken->find($request->reveal(), $additionalCredentialValues));
         self::assertEquals(['id' => 'h480djs93hd8', 'ts' => '1336363200', 'nonce' => 'dj83hs9s', 'mac' => 'bhCQXTVyfj5cmA9uKkPFx1zeOXM='], $additionalCredentialValues);
     }
 
@@ -89,7 +89,7 @@ final class MacTokenTest extends TestCase
         $request->getMethod()->willReturn('POST');
         $request->getRequestTarget()->willReturn('/request?b5=%3D%253D&a3=a&c%40=&a2=r%20b&c2&a3=2+q');
 
-        self::assertTrue($macToken->isTokenRequestValid($accessToken, $request->reveal(), $additionalCredentialValues));
+        self::assertTrue($macToken->isRequestValid($accessToken, $request->reveal(), $additionalCredentialValues));
     }
 
     /**

@@ -94,7 +94,7 @@ final class TokenTypeManager
     {
         foreach ($this->all() as $tmp_type) {
             $tmpAdditionalCredentialValues = [];
-            $token = $tmp_type->findToken($request, $tmpAdditionalCredentialValues);
+            $token = $tmp_type->find($request, $tmpAdditionalCredentialValues);
 
             if (null !== $token) {
                 $additionalCredentialValues = $tmpAdditionalCredentialValues;

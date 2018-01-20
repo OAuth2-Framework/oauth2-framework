@@ -14,9 +14,13 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\Server\TokenEndpoint\AuthenticationMethod;
 
 use Jose\Component\Checker\ClaimCheckerManager;
+use Jose\Component\Core\Converter\StandardConverter;
 use Jose\Component\Core\JWKSet;
 use Jose\Component\Encryption\JWELoader;
-use Jose\Component\Signature\JWSLoader;
+use Jose\Component\KeyManagement\JKUFactory;
+use Jose\Component\Signature\JWS;
+use Jose\Component\Signature\JWSVerifier;
+use Jose\Component\Signature\Serializer\CompactSerializer;
 use OAuth2Framework\Component\Server\Core\Client\Client;
 use OAuth2Framework\Component\Server\Core\Client\ClientId;
 use OAuth2Framework\Component\Server\Core\DataBag\DataBag;
@@ -26,9 +30,19 @@ use Psr\Http\Message\ServerRequestInterface;
 final class ClientAssertionJwt implements AuthenticationMethod
 {
     /**
-     * @var JWSLoader
+     * @var TrustedIssuerManager
      */
-    private $jwsLoader;
+    private $trustedIssuerManager;
+
+    /**
+     * @var JWSVerifier
+     */
+    private $jwsVerifier;
+
+    /**
+     * @var JKUFactory
+     */
+    private $jkuFactory;
 
     /**
      * @var null|JWELoader
@@ -58,16 +72,20 @@ final class ClientAssertionJwt implements AuthenticationMethod
     /**
      * ClientAssertionJwt constructor.
      *
-     * @param JWSLoader           $jwsLoader
-     * @param ClaimCheckerManager $claimCheckerManager
-     * @param int                 $secretLifetime
+     * @param TrustedIssuerManager $trustedIssuerManager
+     * @param JKUFactory           $jkuFactory
+     * @param JWSVerifier          $jwsVerifier
+     * @param ClaimCheckerManager  $claimCheckerManager
+     * @param int                  $secretLifetime
      */
-    public function __construct(JWSLoader $jwsLoader, ClaimCheckerManager $claimCheckerManager, int $secretLifetime = 0)
+    public function __construct(TrustedIssuerManager $trustedIssuerManager, JKUFactory $jkuFactory, JWSVerifier $jwsVerifier, ClaimCheckerManager $claimCheckerManager, int $secretLifetime = 0)
     {
         if ($secretLifetime < 0) {
             throw new \InvalidArgumentException('The secret lifetime must be at least 0 (= unlimited).');
         }
-        $this->jwsLoader = $jwsLoader;
+        $this->trustedIssuerManager = $trustedIssuerManager;
+        $this->jkuFactory = $jkuFactory;
+        $this->jwsVerifier = $jwsVerifier;
         $this->claimCheckerManager = $claimCheckerManager;
         $this->secretLifetime = $secretLifetime;
     }
@@ -89,7 +107,7 @@ final class ClientAssertionJwt implements AuthenticationMethod
      */
     public function getSupportedSignatureAlgorithms(): array
     {
-        return $this->jwsLoader->getSignatureAlgorithmManager()->list();
+        return $this->jwsVerifier->getSignatureAlgorithmManager()->list();
     }
 
     /**
@@ -127,7 +145,6 @@ final class ClientAssertionJwt implements AuthenticationMethod
         }
         $clientAssertionType = $parameters['client_assertion_type'];
 
-        //We verify the client assertion type in the request
         if ('urn:ietf:params:oauth:client-assertion-type:jwt-bearer' !== $clientAssertionType) {
             return null;
         }
@@ -138,27 +155,26 @@ final class ClientAssertionJwt implements AuthenticationMethod
             }
             $client_assertion = $parameters['client_assertion'];
             $client_assertion = $this->tryToDecryptClientAssertion($client_assertion);
-            $jws = $this->jwsSerializer->unserialize($client_assertion);
+            $serializer = new CompactSerializer(new StandardConverter());
+            $jws = $serializer->unserialize($client_assertion);
             if (1 !== $jws->countSignatures()) {
                 throw new \InvalidArgumentException('The assertion must have only one signature.');
             }
             $claims = json_decode($jws->getPayload(), true);
-            $claims = $this->claimCheckerManager->check($claims);
 
-            $diff = array_diff(['iss', 'sub', 'aud', 'jti', 'exp'], array_keys($claims));
+            // Other claims can be considered as mandatory
+            $diff = array_diff(['iss', 'sub', 'aud', 'exp'], array_keys($claims));
             if (!empty($diff)) {
                 throw new \InvalidArgumentException(sprintf('The following claim(s) is/are mandatory: "%s".', implode(', ', array_values($diff))));
             }
-            if ($claims['sub'] !== $claims['iss']) {
-                throw new \InvalidArgumentException('The claims "sub" and "iss" must contain the client public ID.');
-            }
+
+            $clientCredentials = $jws;
+
+            return ClientId::create($claims['sub']);
         } catch (\Exception $e) {
             throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_REQUEST, $e->getMessage(), [], $e);
         }
 
-        $clientCredentials = $jws;
-
-        return ClientId::create($claims['sub']);
     }
 
     /**
@@ -196,6 +212,18 @@ final class ClientAssertionJwt implements AuthenticationMethod
     public function isClientAuthenticated(Client $client, $clientCredentials, ServerRequestInterface $request): bool
     {
         try {
+            /** @var JWS $jws */
+            $jws = $clientCredentials;
+
+            //Retrieve the JWKSet from the client configuration or the trusted issuer (see iss claim)
+            $this->jwsVerifier->verifyWithKeySet($jws);
+            // The claim checker manager should return only checked claims
+            $claims = $this->claimCheckerManager->check($claims);
+
+            //Trusted issuers should be supported
+            if ($claims['sub'] !== $claims['iss']) {
+                throw new \InvalidArgumentException('The claims "sub" and "iss" must contain the client public ID.');
+            }
             //Get the JWKSet depending on the client configuration and parameters
             $jwkSet = $client->getPublicKeySet();
             Assertion::isInstanceOf($jwkSet, JWKSet::class);
@@ -233,11 +261,13 @@ final class ClientAssertionJwt implements AuthenticationMethod
                     throw new \InvalidArgumentException('The parameter "jwks" must be a valid JWKSet object.');
                 }
                 $validatedParameters = $validatedParameters->with('jwks', $commandParameters->get('jwks'));
-            }/* else { FIXME
-                $jwks = JWKFactory::createFromJKU($commandParameters->get('jwks_uri'));
-                Assertion::isInstanceOf($jwks, JWKSet::class, 'The parameter "jwks_uri" must be a valid uri that provide a valid JWKSet.');
+            } else {
+                $jwks = $this->jkuFactory->loadFromUrl($commandParameters->get('jwks_uri'));
+                if (empty($jwks)) {
+                    throw new \InvalidArgumentException('The parameter "jwks_uri" must be a valid uri to a JWK Set and at least one key.');
+                }
                 $validatedParameters = $validatedParameters->with('jwks_uri', $commandParameters->get('jwks_uri'));
-            }*/
+            }
         } else {
             throw new \InvalidArgumentException('Unsupported token endpoint authentication method.');
         }

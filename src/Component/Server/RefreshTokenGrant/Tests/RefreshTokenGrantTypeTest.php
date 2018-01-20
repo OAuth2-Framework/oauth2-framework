@@ -38,8 +38,8 @@ final class RefreshTokenGrantTypeTest extends TestCase
      */
     public function genericInformation()
     {
-        self::assertEquals([], $this->getGrantType()->getAssociatedResponseTypes());
-        self::assertEquals('refresh_token', $this->getGrantType()->getGrantType());
+        self::assertEquals([], $this->getGrantType()->associatedResponseTypes());
+        self::assertEquals('refresh_token', $this->getGrantType()->name());
     }
 
     /**
@@ -51,7 +51,7 @@ final class RefreshTokenGrantTypeTest extends TestCase
         $request->getParsedBody()->willReturn(['password' => 'PASSWORD']);
 
         try {
-            $this->getGrantType()->checkTokenRequest($request->reveal());
+            $this->getGrantType()->checkRequest($request->reveal());
             $this->fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2Exception $e) {
             self::assertEquals(400, $e->getCode());
@@ -70,7 +70,7 @@ final class RefreshTokenGrantTypeTest extends TestCase
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getParsedBody()->willReturn(['refresh_token' => 'REFRESH_TOKEN_ID']);
 
-        $this->getGrantType()->checkTokenRequest($request->reveal());
+        $this->getGrantType()->checkRequest($request->reveal());
         self::assertTrue(true);
     }
 
@@ -90,7 +90,7 @@ final class RefreshTokenGrantTypeTest extends TestCase
         $request->getParsedBody()->willReturn(['refresh_token' => 'UNKNOWN_REFRESH_TOKEN_ID']);
 
         try {
-            $this->getGrantType()->prepareTokenResponse($request->reveal(), $grantTypeData);
+            $this->getGrantType()->prepareResponse($request->reveal(), $grantTypeData);
             $this->fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2Exception $e) {
             self::assertEquals(400, $e->getCode());
@@ -116,7 +116,7 @@ final class RefreshTokenGrantTypeTest extends TestCase
         $request->getParsedBody()->willReturn(['refresh_token' => 'REFRESH_TOKEN_ID']);
         $grantTypeData = GrantTypeData::create($client);
 
-        $receivedGrantTypeData = $this->getGrantType()->prepareTokenResponse($request->reveal(), $grantTypeData);
+        $receivedGrantTypeData = $this->getGrantType()->prepareResponse($request->reveal(), $grantTypeData);
         self::assertNotSame($receivedGrantTypeData, $grantTypeData);
         self::assertEquals('scope1 scope2', $receivedGrantTypeData->getParameter('scope'));
     }

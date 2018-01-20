@@ -123,8 +123,8 @@ final class GrantTypesRuleTest extends TestCase
     {
         if (null == $this->grantTypesRule) {
             $authorizationCodeGrantType = $this->prophesize(GrantType::class);
-            $authorizationCodeGrantType->getGrantType()->willReturn('authorization_code');
-            $authorizationCodeGrantType->getAssociatedResponseTypes()->willReturn(['code']);
+            $authorizationCodeGrantType->name()->willReturn('authorization_code');
+            $authorizationCodeGrantType->associatedResponseTypes()->willReturn(['code']);
 
             $grantTypeManager = new GrantTypeManager();
             $grantTypeManager->add($authorizationCodeGrantType->reveal());

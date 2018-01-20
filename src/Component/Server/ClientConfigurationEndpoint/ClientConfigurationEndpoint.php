@@ -102,7 +102,7 @@ final class ClientConfigurationEndpoint implements MiddlewareInterface
                 throw new \RuntimeException('Invalid client or invalid registration access token.');
             }
             $values = [];
-            $token = $this->bearerToken->findToken($request, $values);
+            $token = $this->bearerToken->find($request, $values);
             if (null === $token) {
                 throw new \RuntimeException('Invalid client or invalid registration access token.');
             }

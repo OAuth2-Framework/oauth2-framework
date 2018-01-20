@@ -36,7 +36,7 @@ final class BearerTokenTest extends TestCase
 
         self::assertEquals('Bearer', $bearerToken->name());
         self::assertEquals('Bearer realm="TEST"', $bearerToken->getScheme());
-        self::assertEquals(['token_type' => 'Bearer'], $bearerToken->getInformation());
+        self::assertEquals([], $bearerToken->getInformation());
         self::assertTrue($bearerToken->isTokenFromAuthorizationHeaderAllowed());
         self::assertFalse($bearerToken->isTokenFromQueryStringAllowed());
         self::assertFalse($bearerToken->isTokenFromRequestBodyAllowed());
@@ -52,7 +52,7 @@ final class BearerTokenTest extends TestCase
         $request->getHeader('AUTHORIZATION')->willReturn(['Bearer ACCESS_TOKEN_ID']);
 
         $additionalCredentialValues = [];
-        self::assertEquals('ACCESS_TOKEN_ID', $bearerToken->findToken($request->reveal(), $additionalCredentialValues));
+        self::assertEquals('ACCESS_TOKEN_ID', $bearerToken->find($request->reveal(), $additionalCredentialValues));
     }
 
     /**
@@ -65,7 +65,7 @@ final class BearerTokenTest extends TestCase
         $request->getHeader('AUTHORIZATION')->willReturn(['MAC FOO_MAC_TOKEN']);
 
         $additionalCredentialValues = [];
-        self::assertNull($bearerToken->findToken($request->reveal(), $additionalCredentialValues));
+        self::assertNull($bearerToken->find($request->reveal(), $additionalCredentialValues));
     }
 
     /**
@@ -78,7 +78,7 @@ final class BearerTokenTest extends TestCase
         $request->getQueryParams()->willReturn(['access_token' => 'ACCESS_TOKEN_ID']);
 
         $additionalCredentialValues = [];
-        self::assertEquals('ACCESS_TOKEN_ID', $bearerToken->findToken($request->reveal(), $additionalCredentialValues));
+        self::assertEquals('ACCESS_TOKEN_ID', $bearerToken->find($request->reveal(), $additionalCredentialValues));
     }
 
     /**
@@ -91,7 +91,7 @@ final class BearerTokenTest extends TestCase
         $request->getParsedBody()->willReturn(['access_token' => 'ACCESS_TOKEN_ID']);
 
         $additionalCredentialValues = [];
-        self::assertEquals('ACCESS_TOKEN_ID', $bearerToken->findToken($request->reveal(), $additionalCredentialValues));
+        self::assertEquals('ACCESS_TOKEN_ID', $bearerToken->find($request->reveal(), $additionalCredentialValues));
     }
 
     /**
@@ -113,7 +113,7 @@ final class BearerTokenTest extends TestCase
         );
         $request = $this->prophesize(ServerRequestInterface::class);
 
-        self::assertTrue($bearerToken->isTokenRequestValid($accessToken, $request->reveal(), $additionalCredentialValues));
+        self::assertTrue($bearerToken->isRequestValid($accessToken, $request->reveal(), $additionalCredentialValues));
     }
 
     /**
@@ -135,6 +135,6 @@ final class BearerTokenTest extends TestCase
         );
         $request = $this->prophesize(ServerRequestInterface::class);
 
-        self::assertFalse($bearerToken->isTokenRequestValid($accessToken, $request->reveal(), $additionalCredentialValues));
+        self::assertFalse($bearerToken->isRequestValid($accessToken, $request->reveal(), $additionalCredentialValues));
     }
 }

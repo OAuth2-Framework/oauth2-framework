@@ -26,14 +26,14 @@ interface ResponseType
      *
      * @return string
      */
-    public function getResponseType(): string;
+    public function name(): string;
 
     /**
      * This function returns the list of associated grant types.
      *
      * @return string[]
      */
-    public function getAssociatedGrantTypes(): array;
+    public function associatedGrantTypes(): array;
 
     /**
      * Returns the response mode of the response type or the error returned.

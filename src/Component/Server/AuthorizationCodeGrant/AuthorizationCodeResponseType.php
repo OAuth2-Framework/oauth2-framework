@@ -61,7 +61,7 @@ final class AuthorizationCodeResponseType implements ResponseType
     /**
      * {@inheritdoc}
      */
-    public function getAssociatedGrantTypes(): array
+    public function associatedGrantTypes(): array
     {
         return ['authorization_code'];
     }
@@ -69,7 +69,7 @@ final class AuthorizationCodeResponseType implements ResponseType
     /**
      * {@inheritdoc}
      */
-    public function getResponseType(): string
+    public function name(): string
     {
         return 'code';
     }

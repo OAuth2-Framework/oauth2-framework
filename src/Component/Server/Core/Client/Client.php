@@ -164,21 +164,6 @@ final class Client implements ResourceOwner, ContainsRecordedMessages, DomainObj
     }
 
     /**
-     * @param string $grant_type
-     *
-     * @return bool
-     */
-    public function isGrantTypeAllowed(string $grant_type): bool
-    {
-        $grant_types = $this->has('grant_types') ? $this->get('grant_types') : [];
-        if (!is_array($grant_types)) {
-            throw new \InvalidArgumentException('The metadata "grant_types" must be an array.');
-        }
-
-        return in_array($grant_type, $grant_types);
-    }
-
-    /**
      * @param string $response_type
      *
      * @return bool

@@ -40,8 +40,8 @@ final class TokenResponseTypeTest extends TestCase
         $authorizationStorage = $this->prophesize(AuthorizationStorage::class);
         $responseType = new NoneResponseType($authorizationStorage->reveal());
 
-        self::assertEquals([], $responseType->getAssociatedGrantTypes());
-        self::assertEquals('none', $responseType->getResponseType());
+        self::assertEquals([], $responseType->associatedGrantTypes());
+        self::assertEquals('none', $responseType->name());
         self::assertEquals('query', $responseType->getResponseMode());
     }
 

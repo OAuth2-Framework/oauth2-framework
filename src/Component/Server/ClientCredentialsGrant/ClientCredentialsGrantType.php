@@ -38,7 +38,7 @@ final class ClientCredentialsGrantType implements GrantType
     /**
      * {@inheritdoc}
      */
-    public function getAssociatedResponseTypes(): array
+    public function associatedResponseTypes(): array
     {
         return [];
     }
@@ -46,7 +46,7 @@ final class ClientCredentialsGrantType implements GrantType
     /**
      * {@inheritdoc}
      */
-    public function getGrantType(): string
+    public function name(): string
     {
         return 'client_credentials';
     }
@@ -54,7 +54,7 @@ final class ClientCredentialsGrantType implements GrantType
     /**
      * {@inheritdoc}
      */
-    public function checkTokenRequest(ServerRequestInterface $request)
+    public function checkRequest(ServerRequestInterface $request)
     {
         // Nothing to do
     }
@@ -62,7 +62,7 @@ final class ClientCredentialsGrantType implements GrantType
     /**
      * {@inheritdoc}
      */
-    public function prepareTokenResponse(ServerRequestInterface $request, GrantTypeData $grantTypeData): GrantTypeData
+    public function prepareResponse(ServerRequestInterface $request, GrantTypeData $grantTypeData): GrantTypeData
     {
         // Nothing to do
         return $grantTypeData;

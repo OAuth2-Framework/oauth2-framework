@@ -79,7 +79,7 @@ final class ResponseTypesRule implements Rule
         foreach ($parameters->get('response_types') as $responseType) {
             $types = $this->responseTypeManager->find($responseType);
             foreach ($types as $type) {
-                $diff = array_diff($type->getAssociatedGrantTypes(), $grantTypes);
+                $diff = array_diff($type->associatedGrantTypes(), $grantTypes);
                 if (!empty($diff)) {
                     throw new \InvalidArgumentException(sprintf('The response type "%s" requires the following grant type(s): %s.', $responseType, implode(', ', $diff)));
                 }

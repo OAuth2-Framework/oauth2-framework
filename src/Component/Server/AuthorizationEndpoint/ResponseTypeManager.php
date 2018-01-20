@@ -27,7 +27,7 @@ final class ResponseTypeManager
      */
     public function add(ResponseType $responseType): self
     {
-        $this->responseTypes[$responseType->getResponseType()] = $responseType;
+        $this->responseTypes[$responseType->name()] = $responseType;
 
         return $this;
     }

@@ -42,8 +42,8 @@ final class AuthorizationCodeGrantTypeTest extends TestCase
      */
     public function genericInformation()
     {
-        self::assertEquals(['code'], $this->getGrantType()->getAssociatedResponseTypes());
-        self::assertEquals('authorization_code', $this->getGrantType()->getGrantType());
+        self::assertEquals(['code'], $this->getGrantType()->associatedResponseTypes());
+        self::assertEquals('authorization_code', $this->getGrantType()->name());
     }
 
     /**
@@ -55,7 +55,7 @@ final class AuthorizationCodeGrantTypeTest extends TestCase
         $request->getParsedBody()->willReturn([]);
 
         try {
-            $this->getGrantType()->checkTokenRequest($request->reveal());
+            $this->getGrantType()->checkRequest($request->reveal());
             $this->fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2Exception $e) {
             self::assertEquals(400, $e->getCode());
@@ -74,7 +74,7 @@ final class AuthorizationCodeGrantTypeTest extends TestCase
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getParsedBody()->willReturn(['code' => 'AUTHORIZATION_CODE_ID', 'redirect_uri' => 'http://localhost:8000/']);
 
-        $this->getGrantType()->checkTokenRequest($request->reveal());
+        $this->getGrantType()->checkRequest($request->reveal());
         self::assertTrue(true);
     }
 
@@ -93,7 +93,7 @@ final class AuthorizationCodeGrantTypeTest extends TestCase
         $request->getParsedBody()->willReturn(['code' => 'AUTHORIZATION_CODE_ID', 'redirect_uri' => 'http://localhost:8000/']);
         $grantTypeData = GrantTypeData::create($client);
 
-        $receivedGrantTypeData = $this->getGrantType()->prepareTokenResponse($request->reveal(), $grantTypeData);
+        $receivedGrantTypeData = $this->getGrantType()->prepareResponse($request->reveal(), $grantTypeData);
         self::assertNotSame($receivedGrantTypeData, $grantTypeData);
         self::assertEquals('scope1 scope2', $receivedGrantTypeData->getParameter('scope'));
     }

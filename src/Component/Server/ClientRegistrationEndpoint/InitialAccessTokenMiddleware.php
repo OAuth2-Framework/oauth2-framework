@@ -51,12 +51,13 @@ final class InitialAccessTokenMiddleware implements MiddlewareInterface
     {
         try {
             $values = [];
-            $token = $this->bearerToken->findToken($request, $values);
+            $token = $this->bearerToken->find($request, $values);
             if (null === $token) {
                 throw new \InvalidArgumentException('Initial Access Token is missing or invalid.');
             }
 
             $initialAccessToken = $this->initialAccessTokenRepository->find(InitialAccessTokenId::create($token));
+
             if (null === $initialAccessToken || $initialAccessToken->isRevoked()) {
                 throw new \InvalidArgumentException('Initial Access Token is missing or invalid.');
             }

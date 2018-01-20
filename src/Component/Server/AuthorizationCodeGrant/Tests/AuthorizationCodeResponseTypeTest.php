@@ -39,8 +39,8 @@ final class AuthorizationCodeResponseTypeTest extends TestCase
      */
     public function genericInformation()
     {
-        self::assertEquals(['authorization_code'], $this->getResponseType()->getAssociatedGrantTypes());
-        self::assertEquals('code', $this->getResponseType()->getResponseType());
+        self::assertEquals(['authorization_code'], $this->getResponseType()->associatedGrantTypes());
+        self::assertEquals('code', $this->getResponseType()->name());
         self::assertEquals('query', $this->getResponseType()->getResponseMode());
     }
 

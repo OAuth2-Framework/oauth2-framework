@@ -105,7 +105,7 @@ final class JwtBearerGrantType implements GrantType
     /**
      * {@inheritdoc}
      */
-    public function getAssociatedResponseTypes(): array
+    public function associatedResponseTypes(): array
     {
         return [];
     }
@@ -127,7 +127,7 @@ final class JwtBearerGrantType implements GrantType
     /**
      * {@inheritdoc}
      */
-    public function getGrantType(): string
+    public function name(): string
     {
         return 'urn:ietf:params:oauth:grant-type:jwt-bearer';
     }
@@ -135,7 +135,7 @@ final class JwtBearerGrantType implements GrantType
     /**
      * {@inheritdoc}
      */
-    public function checkTokenRequest(ServerRequestInterface $request)
+    public function checkRequest(ServerRequestInterface $request)
     {
         $parameters = $request->getParsedBody() ?? [];
         $requiredParameters = ['assertion'];
@@ -149,7 +149,7 @@ final class JwtBearerGrantType implements GrantType
     /**
      * {@inheritdoc}
      */
-    public function prepareTokenResponse(ServerRequestInterface $request, GrantTypeData $grantTypeData): GrantTypeData
+    public function prepareResponse(ServerRequestInterface $request, GrantTypeData $grantTypeData): GrantTypeData
     {
         $parameters = $request->getParsedBody() ?? [];
         $assertion = $parameters['assertion'];

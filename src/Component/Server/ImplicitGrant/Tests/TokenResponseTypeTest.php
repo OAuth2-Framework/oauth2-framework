@@ -39,8 +39,8 @@ final class TokenResponseTypeTest extends TestCase
      */
     public function genericInformation()
     {
-        self::assertEquals(['implicit'], $this->getResponseType()->getAssociatedGrantTypes());
-        self::assertEquals('token', $this->getResponseType()->getResponseType());
+        self::assertEquals(['implicit'], $this->getResponseType()->associatedGrantTypes());
+        self::assertEquals('token', $this->getResponseType()->name());
         self::assertEquals('fragment', $this->getResponseType()->getResponseMode());
     }
 
@@ -101,8 +101,7 @@ final class TokenResponseTypeTest extends TestCase
             $accessTokenRepository->save(Argument::type(AccessToken::class))->willReturn(null);
 
             $this->grantType = new TokenResponseType(
-                $accessTokenRepository->reveal(),
-                3600
+                $accessTokenRepository->reveal()
             );
         }
 

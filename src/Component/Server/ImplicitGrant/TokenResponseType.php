@@ -26,26 +26,19 @@ final class TokenResponseType implements ResponseType
     private $accessTokenRepository;
 
     /**
-     * @var int
-     */
-    private $accessTokenLifetime;
-
-    /**
      * TokenResponseType constructor.
      *
      * @param AccessTokenRepository $accessTokenRepository
-     * @param int                   $accessTokenLifetime
      */
-    public function __construct(AccessTokenRepository $accessTokenRepository, int $accessTokenLifetime)
+    public function __construct(AccessTokenRepository $accessTokenRepository)
     {
-        $this->accessTokenLifetime = $accessTokenLifetime;
         $this->accessTokenRepository = $accessTokenRepository;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getAssociatedGrantTypes(): array
+    public function associatedGrantTypes(): array
     {
         return ['implicit'];
     }
@@ -53,7 +46,7 @@ final class TokenResponseType implements ResponseType
     /**
      * {@inheritdoc}
      */
-    public function getResponseType(): string
+    public function name(): string
     {
         return 'token';
     }
@@ -76,7 +69,6 @@ final class TokenResponseType implements ResponseType
             $authorization->getClient()->getPublicId(),
             DataBag::create($authorization->getTokenType()->getInformation()),
             DataBag::create(['redirect_uri' => $authorization->getRedirectUri()]),
-            (new \DateTimeImmutable())->setTimestamp(time() + $this->accessTokenLifetime),
             null
         );
         $this->accessTokenRepository->save($accessToken);

@@ -30,7 +30,7 @@ final class GrantTypeData
     private $parameters;
 
     /**
-     * @var ResourceOwnerId
+     * @var ResourceOwnerId|null
      */
     private $resourceOwnerId;
 
@@ -188,9 +188,9 @@ final class GrantTypeData
     }
 
     /**
-     * @return ResourceOwnerId
+     * @return null|ResourceOwnerId
      */
-    public function getResourceOwnerId(): ResourceOwnerId
+    public function getResourceOwnerId(): ?ResourceOwnerId
     {
         return $this->resourceOwnerId;
     }

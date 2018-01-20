@@ -123,12 +123,12 @@ final class ResponseTypesRuleTest extends TestCase
     {
         if (null == $this->responseTypesRule) {
             $codeResponseType = $this->prophesize(ResponseType::class);
-            $codeResponseType->getResponseType()->willReturn('code');
-            $codeResponseType->getAssociatedGrantTypes()->willReturn(['authorization_code']);
+            $codeResponseType->name()->willReturn('code');
+            $codeResponseType->associatedGrantTypes()->willReturn(['authorization_code']);
 
             $idTokenResponseType = $this->prophesize(ResponseType::class);
-            $idTokenResponseType->getResponseType()->willReturn('id_token');
-            $idTokenResponseType->getAssociatedGrantTypes()->willReturn([]);
+            $idTokenResponseType->name()->willReturn('id_token');
+            $idTokenResponseType->associatedGrantTypes()->willReturn([]);
 
             $responseTypeManager = new ResponseTypeManager();
             $responseTypeManager

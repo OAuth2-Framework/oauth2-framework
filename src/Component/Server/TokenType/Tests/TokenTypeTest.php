@@ -73,7 +73,7 @@ final class TokenTypeTest extends TestCase
             $tokenType = $this->prophesize(TokenType::class);
             $tokenType->name()->willReturn('foo');
             $tokenType->getScheme()->willReturn('FOO');
-            $tokenType->findToken(Argument::any(), Argument::any(), Argument::any())->willReturn('__--TOKEN--__');
+            $tokenType->find(Argument::any(), Argument::any(), Argument::any())->willReturn('__--TOKEN--__');
 
             $this->tokenTypeManager = new TokenTypeManager();
             $this->tokenTypeManager->add($tokenType->reveal());

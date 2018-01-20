@@ -12,6 +12,10 @@ declare(strict_types=1);
  */
 
 namespace OAuth2Framework\Component\Server\RefreshTokenGrant;
+use OAuth2Framework\Component\Server\Core\Client\ClientId;
+use OAuth2Framework\Component\Server\Core\DataBag\DataBag;
+use OAuth2Framework\Component\Server\Core\ResourceOwner\ResourceOwnerId;
+use OAuth2Framework\Component\Server\Core\ResourceServer\ResourceServerId;
 
 /**
  * @see    http://tools.ietf.org/html/rfc6749#section-6
@@ -19,6 +23,17 @@ namespace OAuth2Framework\Component\Server\RefreshTokenGrant;
  */
 interface RefreshTokenRepository
 {
+    /**
+     * @param ResourceOwnerId       $resourceOwnerId
+     * @param ClientId              $clientId
+     * @param DataBag               $parameters
+     * @param DataBag               $metadatas
+     * @param ResourceServerId|null $resourceServerId
+     *
+     * @return RefreshToken
+     */
+    public function create(ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, ? ResourceServerId $resourceServerId): RefreshToken;
+
     /**
      * @param RefreshToken $refreshToken
      */
