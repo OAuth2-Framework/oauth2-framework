@@ -35,6 +35,7 @@ abstract class SessionStateParameterExtension implements AfterConsentScreen
 
     /**
      * @param Authorization $authorization
+     *
      * @return bool
      */
     private function hasOpenIdScope(Authorization $authorization): bool

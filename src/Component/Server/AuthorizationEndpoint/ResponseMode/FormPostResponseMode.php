@@ -34,7 +34,7 @@ final class FormPostResponseMode implements ResponseMode
      * FormPostResponseMode constructor.
      *
      * @param FormPostResponseRenderer $renderer
-     * @param ResponseFactoryInterface          $responseFactory
+     * @param ResponseFactoryInterface $responseFactory
      */
     public function __construct(FormPostResponseRenderer $renderer, ResponseFactoryInterface $responseFactory)
     {
