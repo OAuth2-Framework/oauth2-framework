@@ -16,6 +16,7 @@ namespace OAuth2Framework\Component\Server\ClientRegistrationEndpoint\Tests;
 use Http\Message\MessageFactory\DiactorosMessageFactory;
 use Http\Message\ResponseFactory;
 use OAuth2Framework\Component\Server\ClientRegistrationEndpoint\ClientRegistrationEndpoint;
+use OAuth2Framework\Component\Server\ClientRegistrationEndpoint\Rule\RuleManager;
 use OAuth2Framework\Component\Server\Core\Client\Client;
 use OAuth2Framework\Component\Server\Core\Client\ClientId;
 use OAuth2Framework\Component\Server\Core\Client\ClientRepository;
@@ -71,7 +72,8 @@ final class ClientRegistrationEndpointTest extends TestCase
             $this->clientRegistrationEndpoint = new ClientRegistrationEndpoint(
                 $clientRepository->reveal(),
                 $this->getResponseFactory(),
-                $messageBus->reveal()
+                $messageBus->reveal(),
+                new RuleManager()
             );
         }
 

@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\Scope\Rule;
 
+use OAuth2Framework\Component\Server\ClientRegistrationEndpoint\Rule\Rule;
 use OAuth2Framework\Component\Server\Core\Client\ClientId;
-use OAuth2Framework\Component\Server\Core\Client\Rule\Rule;
 use OAuth2Framework\Component\Server\Core\DataBag\DataBag;
 
 final class ScopePolicyDefaultRule implements Rule

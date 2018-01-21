@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\Server\Core\Client\Command;
 
 use OAuth2Framework\Component\Server\Core\Client\ClientRepository;
-use OAuth2Framework\Component\Server\Core\Client\Rule\RuleManager;
 
 final class UpdateClientCommandHandler
 {
@@ -24,20 +23,13 @@ final class UpdateClientCommandHandler
     private $clientRepository;
 
     /**
-     * @var RuleManager
-     */
-    private $ruleManager;
-
-    /**
      * UpdateClientCommandHandler constructor.
      *
      * @param ClientRepository $clientRepository
-     * @param RuleManager      $ruleManager
      */
-    public function __construct(ClientRepository $clientRepository, RuleManager $ruleManager)
+    public function __construct(ClientRepository $clientRepository)
     {
         $this->clientRepository = $clientRepository;
-        $this->ruleManager = $ruleManager;
     }
 
     /**
@@ -50,9 +42,7 @@ final class UpdateClientCommandHandler
             throw new \InvalidArgumentException(sprintf('The client with ID "%s" does not exists.', $command->getClientId()->getValue()));
         }
         $parameters = $command->getParameters();
-        $userAccountId = $client->getOwnerId();
-        $validatedParameters = $this->ruleManager->handle($client->getPublicId(), $parameters, $userAccountId);
-        $client = $client->withParameters($validatedParameters);
+        $client = $client->withParameters($parameters);
         $this->clientRepository->save($client);
     }
 }

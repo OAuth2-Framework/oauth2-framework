@@ -16,6 +16,7 @@ namespace OAuth2Framework\Component\Server\ClientConfigurationEndpoint;
 use Http\Message\ResponseFactory;
 use Interop\Http\Server\RequestHandlerInterface;
 use Interop\Http\Server\MiddlewareInterface;
+use OAuth2Framework\Component\Server\ClientRegistrationEndpoint\Rule\RuleManager;
 use OAuth2Framework\Component\Server\Core\Client\Client;
 use OAuth2Framework\Component\Server\Core\Client\ClientRepository;
 use OAuth2Framework\Component\Server\Core\Client\Command\UpdateClientCommand;
@@ -43,17 +44,24 @@ final class ClientConfigurationPutEndpoint implements MiddlewareInterface
     private $responseFactory;
 
     /**
+     * @var RuleManager
+     */
+    private $ruleManager;
+
+    /**
      * ClientConfigurationPutEndpoint constructor.
      *
      * @param ClientRepository $clientRepository
      * @param MessageBus       $messageBus
      * @param ResponseFactory  $responseFactory
+     * @param RuleManager      $ruleManager
      */
-    public function __construct(ClientRepository $clientRepository, MessageBus $messageBus, ResponseFactory $responseFactory)
+    public function __construct(ClientRepository $clientRepository, MessageBus $messageBus, ResponseFactory $responseFactory, RuleManager $ruleManager)
     {
         $this->messageBus = $messageBus;
         $this->clientRepository = $clientRepository;
         $this->responseFactory = $responseFactory;
+        $this->ruleManager = $ruleManager;
     }
 
     /**
@@ -65,7 +73,8 @@ final class ClientConfigurationPutEndpoint implements MiddlewareInterface
         $client = $request->getAttribute('client');
 
         $command_parameters = DataBag::create($request->getParsedBody() ?? []);
-        $command = UpdateClientCommand::create($client->getPublicId(), $command_parameters);
+        $validated_parameters = $this->ruleManager->handle($client->getPublicId(), $command_parameters);
+        $command = UpdateClientCommand::create($client->getPublicId(), $validated_parameters);
 
         try {
             $this->messageBus->handle($command);

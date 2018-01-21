@@ -24,7 +24,6 @@ use OAuth2Framework\Component\Server\Core\Client\Command\DeleteClientCommand;
 use OAuth2Framework\Component\Server\Core\Client\Command\DeleteClientCommandHandler;
 use OAuth2Framework\Component\Server\Core\Client\Command\UpdateClientCommand;
 use OAuth2Framework\Component\Server\Core\Client\Command\UpdateClientCommandHandler;
-use OAuth2Framework\Component\Server\Core\Client\Rule\RuleManager;
 use OAuth2Framework\Component\Server\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Server\Core\UserAccount\UserAccountId;
 use PHPUnit\Framework\TestCase;
@@ -46,15 +45,13 @@ final class ClientCommandTest extends TestCase
             UserAccountId::create('USER_ACCOUNT_ID'),
             DataBag::create([])
         );
-        $ruleManager = new RuleManager();
 
         $repository = $this->prophesize(ClientRepository::class);
         $repository->find($clientId)->willReturn(null)->shouldBeCalled();
         $repository->save(Argument::type(Client::class))->shouldBeCalled();
 
         $handler = new CreateClientCommandHandler(
-            $repository->reveal(),
-            $ruleManager
+            $repository->reveal()
         );
         $handler->handle($command);
     }
@@ -75,15 +72,13 @@ final class ClientCommandTest extends TestCase
             $clientId,
             DataBag::create([])
         );
-        $ruleManager = new RuleManager();
 
         $repository = $this->prophesize(ClientRepository::class);
         $repository->find($clientId)->willReturn($client)->shouldBeCalled();
         $repository->save(Argument::type(Client::class))->shouldBeCalled();
 
         $handler = new UpdateClientCommandHandler(
-            $repository->reveal(),
-            $ruleManager
+            $repository->reveal()
         );
         $handler->handle($command);
     }

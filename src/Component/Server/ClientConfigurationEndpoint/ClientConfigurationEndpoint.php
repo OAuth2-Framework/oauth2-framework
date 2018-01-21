@@ -17,6 +17,7 @@ use Http\Message\ResponseFactory;
 use Interop\Http\Server\RequestHandlerInterface;
 use Interop\Http\Server\MiddlewareInterface;
 use OAuth2Framework\Component\Server\BearerTokenType\BearerToken;
+use OAuth2Framework\Component\Server\ClientRegistrationEndpoint\Rule\RuleManager;
 use OAuth2Framework\Component\Server\Core\Client\Client;
 use OAuth2Framework\Component\Server\Core\Client\ClientRepository;
 use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
@@ -47,19 +48,26 @@ final class ClientConfigurationEndpoint implements MiddlewareInterface
     private $responseFactory;
 
     /**
+     * @var RuleManager
+     */
+    private $ruleManager;
+
+    /**
      * ClientConfigurationEndpoint constructor.
      *
      * @param ClientRepository $clientRepository
      * @param BearerToken      $bearerToken
      * @param MessageBus       $messageBus
      * @param ResponseFactory  $responseFactory
+     * @param RuleManager      $ruleManager
      */
-    public function __construct(ClientRepository $clientRepository, BearerToken $bearerToken, MessageBus $messageBus, ResponseFactory $responseFactory)
+    public function __construct(ClientRepository $clientRepository, BearerToken $bearerToken, MessageBus $messageBus, ResponseFactory $responseFactory, RuleManager $ruleManager)
     {
         $this->clientRepository = $clientRepository;
         $this->bearerToken = $bearerToken;
         $this->messageBus = $messageBus;
         $this->responseFactory = $responseFactory;
+        $this->ruleManager = $ruleManager;
     }
 
     /**
@@ -74,7 +82,7 @@ final class ClientConfigurationEndpoint implements MiddlewareInterface
 
                 return $get->process($request, $next);
             case 'PUT':
-                $put = new ClientConfigurationPutEndpoint($this->clientRepository, $this->messageBus, $this->responseFactory);
+                $put = new ClientConfigurationPutEndpoint($this->clientRepository, $this->messageBus, $this->responseFactory, $this->ruleManager);
 
                 return $put->process($request, $next);
             case 'DELETE':

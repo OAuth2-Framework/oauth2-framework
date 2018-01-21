@@ -18,6 +18,7 @@ use Http\Message\ResponseFactory;
 use Interop\Http\Server\RequestHandlerInterface;
 use OAuth2Framework\Component\Server\BearerTokenType\BearerToken;
 use OAuth2Framework\Component\Server\ClientConfigurationEndpoint\ClientConfigurationEndpoint;
+use OAuth2Framework\Component\Server\ClientRegistrationEndpoint\Rule\RuleManager;
 use OAuth2Framework\Component\Server\Core\Client\Client;
 use OAuth2Framework\Component\Server\Core\Client\ClientId;
 use OAuth2Framework\Component\Server\Core\Client\ClientRepository;
@@ -143,7 +144,8 @@ final class ClientConfigurationEndpointTest extends TestCase
                 $clientRepository,
                 new BearerToken('Client Manager', true, false, false),
                 $messageBus,
-                $this->getResponseFactory()
+                $this->getResponseFactory(),
+                new RuleManager()
             );
         }
 

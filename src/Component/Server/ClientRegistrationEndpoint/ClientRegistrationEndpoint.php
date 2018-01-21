@@ -16,6 +16,7 @@ namespace OAuth2Framework\Component\Server\ClientRegistrationEndpoint;
 use Http\Message\ResponseFactory;
 use Interop\Http\Server\RequestHandlerInterface;
 use Interop\Http\Server\MiddlewareInterface;
+use OAuth2Framework\Component\Server\ClientRegistrationEndpoint\Rule\RuleManager;
 use OAuth2Framework\Component\Server\Core\Client\Client;
 use OAuth2Framework\Component\Server\Core\Client\ClientId;
 use OAuth2Framework\Component\Server\Core\Client\ClientRepository;
@@ -45,16 +46,23 @@ final class ClientRegistrationEndpoint implements MiddlewareInterface
     private $clientRepository;
 
     /**
+     * @var RuleManager
+     */
+    private $ruleManager;
+
+    /**
      * ClientRegistrationEndpoint constructor.
      *
      * @param ClientRepository $clientRepository
      * @param ResponseFactory  $responseFactory
      * @param MessageBus       $messageBus
+     * @param RuleManager      $ruleManager
      */
-    public function __construct(ClientRepository $clientRepository, ResponseFactory $responseFactory, MessageBus $messageBus)
+    public function __construct(ClientRepository $clientRepository, ResponseFactory $responseFactory, MessageBus $messageBus, RuleManager $ruleManager)
     {
         $this->clientRepository = $clientRepository;
         $this->responseFactory = $responseFactory;
+        $this->ruleManager = $ruleManager;
         $this->messageBus = $messageBus;
     }
 
@@ -74,7 +82,8 @@ final class ClientRegistrationEndpoint implements MiddlewareInterface
             }
             $commandParameters = DataBag::create($request->getParsedBody() ?? []);
             $clientId = ClientId::create(Uuid::uuid4()->toString());
-            $command = CreateClientCommand::create($clientId, $userAccountId, $commandParameters);
+            $validatedParameters = $this->ruleManager->handle($clientId, $commandParameters);
+            $command = CreateClientCommand::create($clientId, $userAccountId, $validatedParameters);
             $this->messageBus->handle($command);
             $client = $this->clientRepository->find($clientId);
             if (null === $client) {

@@ -15,7 +15,6 @@ namespace OAuth2Framework\Component\Server\Core\Client\Command;
 
 use OAuth2Framework\Component\Server\Core\Client\Client;
 use OAuth2Framework\Component\Server\Core\Client\ClientRepository;
-use OAuth2Framework\Component\Server\Core\Client\Rule\RuleManager;
 
 final class CreateClientCommandHandler
 {
@@ -25,20 +24,13 @@ final class CreateClientCommandHandler
     private $clientRepository;
 
     /**
-     * @var RuleManager
-     */
-    private $ruleManager;
-
-    /**
      * CreateClientCommandHandler constructor.
      *
      * @param ClientRepository $clientRepository
-     * @param RuleManager      $ruleManager
      */
-    public function __construct(ClientRepository $clientRepository, RuleManager $ruleManager)
+    public function __construct(ClientRepository $clientRepository)
     {
         $this->clientRepository = $clientRepository;
-        $this->ruleManager = $ruleManager;
     }
 
     /**
@@ -53,9 +45,8 @@ final class CreateClientCommandHandler
         }
         $parameters = $command->getParameters();
         $userAccountId = $command->getUserAccountId();
-        $validatedParameters = $this->ruleManager->handle($clientId, $parameters, $userAccountId);
         $client = Client::createEmpty();
-        $client = $client->create($clientId, $validatedParameters, $userAccountId);
+        $client = $client->create($clientId, $parameters, $userAccountId);
         $this->clientRepository->save($client);
     }
 }
