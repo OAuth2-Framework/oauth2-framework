@@ -38,7 +38,7 @@ final class TokenEndpointScopeExtension implements TokenEndpointExtension
     /**
      * ScopeProcessor constructor.
      *
-     * @param ScopeRepository         $scopeRepository
+     * @param ScopeRepository    $scopeRepository
      * @param ScopePolicyManager $scopePolicyManager
      */
     public function __construct(ScopeRepository $scopeRepository, ScopePolicyManager $scopePolicyManager)
