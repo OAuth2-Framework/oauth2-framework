@@ -68,7 +68,6 @@ final class ScopeRuleTest extends TestCase
         self::assertEquals('coffee cream', $validatedParameters->get('scope'));
     }
 
-
     /**
      * @return callable
      */
