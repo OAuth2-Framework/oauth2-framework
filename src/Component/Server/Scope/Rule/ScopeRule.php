@@ -16,37 +16,23 @@ namespace OAuth2Framework\Component\Server\Scope\Rule;
 use OAuth2Framework\Component\Server\Core\Client\ClientId;
 use OAuth2Framework\Component\Server\Core\Client\Rule\Rule;
 use OAuth2Framework\Component\Server\Core\DataBag\DataBag;
-use OAuth2Framework\Component\Server\Scope\ScopeRepository;
 
 final class ScopeRule implements Rule
 {
-    /**
-     * @var ScopeRepository
-     */
-    private $scopeManager;
-
-    /**
-     * @param ScopeRepository $scopeManager
-     */
-    public function __construct(ScopeRepository $scopeManager)
-    {
-        $this->scopeManager = $scopeManager;
-    }
-
     /**
      * {@inheritdoc}
      */
     public function handle(ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters, callable $next): DataBag
     {
         if ($commandParameters->has('scope')) {
-            $defaultScope = $commandParameters->get('scope');
-            if (!is_string($defaultScope)) {
-                throw new \InvalidArgumentException('The parameter "scope" must be a string.');
+            $scope = $commandParameters->get('scope');
+            if (!is_string($scope)) {
+                throw new \InvalidArgumentException('The "scope" parameter must be a string.');
             }
-            if (1 !== preg_match('/^[\x20\x23-\x5B\x5D-\x7E]+$/', $defaultScope)) {
+            if (1 !== preg_match('/^[\x20\x23-\x5B\x5D-\x7E]+$/', $scope)) {
                 throw new \InvalidArgumentException('Invalid characters found in the "scope" parameter.');
             }
-            $validatedParameters = $validatedParameters->with('scope', $commandParameters->get('scope'));
+            $validatedParameters = $validatedParameters->with('scope', $scope);
         }
 
         return $next($clientId, $commandParameters, $validatedParameters);

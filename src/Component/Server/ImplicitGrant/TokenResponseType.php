@@ -67,7 +67,7 @@ final class TokenResponseType implements ResponseType
         $accessToken = $this->accessTokenRepository->create(
             $authorization->getUserAccount()->getPublicId(),
             $authorization->getClient()->getPublicId(),
-            DataBag::create($authorization->getTokenType()->getInformation()),
+            DataBag::create($authorization->getTokenType()->getAdditionalInformation()),
             DataBag::create(['redirect_uri' => $authorization->getRedirectUri()]),
             null
         );

@@ -17,4 +17,9 @@ interface Scope
      * @return string
      */
     public function name(): string;
+
+    /**
+     * @return string
+     */
+    public function __toString(): string;
 }

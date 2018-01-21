@@ -29,7 +29,7 @@ interface TokenType
      *
      * @return array
      */
-    public function getInformation(): array;
+    public function getAdditionalInformation(): array;
 
     /**
      * The name of the token type (e.g. Bearer, MAC, POP...).
@@ -58,7 +58,7 @@ interface TokenType
     public function find(ServerRequestInterface $request, array &$additionalCredentialValues): ?string;
 
     /**
-     * This methods verifies the request is valid with the specified access token.
+     * This methods verifies the request is valid with the specified token.
      *
      * @param Token                  $token
      * @param ServerRequestInterface $request

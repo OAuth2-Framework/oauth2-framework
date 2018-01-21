@@ -36,7 +36,7 @@ final class MacTokenTest extends TestCase
 
         self::assertEquals('MAC', $macToken->name());
         self::assertEquals('MAC', $macToken->getScheme());
-        self::assertEquals(['mac_key' => 'MAC_KEY_FOO_BAR', 'mac_algorithm' => 'hmac-sha-256'], $macToken->getInformation());
+        self::assertEquals(['mac_key' => 'MAC_KEY_FOO_BAR', 'mac_algorithm' => 'hmac-sha-256'], $macToken->getAdditionalInformation());
     }
 
     /**

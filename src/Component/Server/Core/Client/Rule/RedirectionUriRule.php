@@ -119,7 +119,7 @@ final class RedirectionUriRule implements Rule
         if (isset($parsed['path'])) {
             $path = urldecode($parsed['path']);
             // check for 'path traversal'
-            if (preg_match('#/\.\.?(/|$)#', $path)) {
+            if (1 === preg_match('#/\.\.?(/|$)#', $path)) {
                 throw new \InvalidArgumentException('The URI listed in the "redirect_uris" parameter must not contain any path traversal.');
             }
         }

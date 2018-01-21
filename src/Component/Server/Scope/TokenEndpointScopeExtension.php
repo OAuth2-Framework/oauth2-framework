@@ -31,7 +31,7 @@ final class TokenEndpointScopeExtension implements TokenEndpointExtension
     private $scopeRepository;
 
     /**
-     * @var ScopePolicyManager|null
+     * @var ScopePolicyManager
      */
     private $scopePolicyManager;
 
@@ -39,9 +39,9 @@ final class TokenEndpointScopeExtension implements TokenEndpointExtension
      * ScopeProcessor constructor.
      *
      * @param ScopeRepository         $scopeRepository
-     * @param ScopePolicyManager|null $scopePolicyManager
+     * @param ScopePolicyManager $scopePolicyManager
      */
-    public function __construct(ScopeRepository $scopeRepository, ? ScopePolicyManager $scopePolicyManager)
+    public function __construct(ScopeRepository $scopeRepository, ScopePolicyManager $scopePolicyManager)
     {
         $this->scopeRepository = $scopeRepository;
         $this->scopePolicyManager = $scopePolicyManager;
@@ -54,30 +54,13 @@ final class TokenEndpointScopeExtension implements TokenEndpointExtension
     {
         /** @var GrantTypeData $grantTypeData */
         $grantTypeData = $next($request, $grantTypeData, $grantType);
-        $params = $request->getParsedBody() ?? [];
-        if (!array_key_exists('scope', $params)) {
-            $scope = $grantTypeData->getAvailableScopes() ?? [];
-        } else {
-            $scope = explode(' ', $params['scope']);
+        $scope = $this->getScope($request, $grantTypeData);
+        $scope = $this->applyScopePolicy($scope, $grantTypeData->getClient());
+        $this->checkRequestedScopeIsAvailable($scope, $grantTypeData);
+
+        if (!empty($scope)) {
+            $grantTypeData = $grantTypeData->withParameter('scope', $scope);
         }
-
-        //Modify the scope according to the scope policy
-        try {
-            if (null !== $this->scopePolicyManager) {
-                $scope = $this->scopePolicyManager->apply($scope, $grantTypeData->getClient());
-            }
-        } catch (\InvalidArgumentException $e) {
-            throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_SCOPE, $e->getMessage(), [], $e);
-        }
-
-        $availableScope = $grantTypeData->getAvailableScopes() ? $grantTypeData->getAvailableScopes() : $this->scopeRepository->getAvailableScopesForClient($grantTypeData->getClient());
-
-        //Check if requested scope are within the available scope
-        if (!$this->scopeRepository->areRequestedScopesAvailable($scope, $availableScope)) {
-            throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_SCOPE, sprintf('An unsupported scope was requested. Available scopes are %s.', implode(', ', $availableScope)));
-        }
-
-        $grantTypeData = $grantTypeData->withScopes($scope);
 
         return $grantTypeData;
     }
@@ -88,5 +71,69 @@ final class TokenEndpointScopeExtension implements TokenEndpointExtension
     public function afterAccessTokenIssuance(Client $client, ResourceOwner $resourceOwner, AccessToken $accessToken, callable $next): array
     {
         return $next($client, $resourceOwner, $accessToken);
+    }
+
+    /**
+     * @param ServerRequestInterface $request
+     * @param GrantTypeData          $grantTypeData
+     *
+     * @return string
+     */
+    private function getScope(ServerRequestInterface $request, GrantTypeData $grantTypeData): string
+    {
+        $params = $request->getParsedBody() ?? [];
+        if (!array_key_exists('scope', $params)) {
+            return $grantTypeData->hasParameter('scope') ? $grantTypeData->getParameter('scope') : '';
+        }
+
+        return $params['scope'];
+    }
+
+    /**
+     * @param string $scope
+     * @param Client $client
+     *
+     * @return string
+     *
+     * @throws OAuth2Exception
+     */
+    private function applyScopePolicy(string $scope, Client $client): string
+    {
+        try {
+            return $this->scopePolicyManager->apply($scope, $client);
+        } catch (\InvalidArgumentException $e) {
+            throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_SCOPE, $e->getMessage(), [], $e);
+        }
+    }
+
+    /**
+     * @param string        $scope
+     * @param GrantTypeData $grantTypeData
+     *
+     * @throws OAuth2Exception
+     */
+    private function checkRequestedScopeIsAvailable(string $scope, GrantTypeData $grantTypeData)
+    {
+        // The available scope can be limited by (in this order):
+        // * the grant type (e.g. refresh token, authorization code parameter)
+        // * the client configuration
+        // * the scope repository
+        $availableScope = $grantTypeData->hasParameter('scope') ? $grantTypeData->getParameter('scope') : $this->getAvailableScopesForClient($grantTypeData->getClient());
+        $availableScopes = explode(' ', $availableScope);
+        $requestedScopes = empty($scope) ? [] : explode(' ', $scope);
+        $diff = array_diff($requestedScopes, $availableScopes);
+        if (0 !== count($diff)) {
+            throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_SCOPE, sprintf('An unsupported scope was requested. Available scope is/are: %s.', implode(' ,', $availableScopes)));
+        }
+    }
+
+    /**
+     * @param Client $client
+     *
+     * @return string
+     */
+    private function getAvailableScopesForClient(Client $client): string
+    {
+        return ($client->has('scope')) ? $client->get('scope') : implode(' ', $this->scopeRepository->all());
     }
 }

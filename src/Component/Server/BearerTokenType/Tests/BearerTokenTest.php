@@ -36,7 +36,7 @@ final class BearerTokenTest extends TestCase
 
         self::assertEquals('Bearer', $bearerToken->name());
         self::assertEquals('Bearer realm="TEST"', $bearerToken->getScheme());
-        self::assertEquals([], $bearerToken->getInformation());
+        self::assertEquals([], $bearerToken->getAdditionalInformation());
         self::assertTrue($bearerToken->isTokenFromAuthorizationHeaderAllowed());
         self::assertFalse($bearerToken->isTokenFromQueryStringAllowed());
         self::assertFalse($bearerToken->isTokenFromRequestBodyAllowed());

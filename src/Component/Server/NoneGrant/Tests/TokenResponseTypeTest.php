@@ -62,7 +62,7 @@ final class TokenResponseTypeTest extends TestCase
         );
         $client->eraseMessages();
         $tokenType = $this->prophesize(TokenType::class);
-        $tokenType->getInformation()->willReturn(['token_type' => 'FOO']);
+        $tokenType->getAdditionalInformation()->willReturn(['token_type' => 'FOO']);
 
         $authorization = Authorization::create($client, []);
         $authorization = $authorization->withResponseTypes([$responseType]);
@@ -93,7 +93,7 @@ final class TokenResponseTypeTest extends TestCase
         );
         $client->eraseMessages();
         $tokenType = $this->prophesize(TokenType::class);
-        $tokenType->getInformation()->willReturn(['token_type' => 'FOO']);
+        $tokenType->getAdditionalInformation()->willReturn(['token_type' => 'FOO']);
 
         $authorization = Authorization::create($client, []);
         $authorization = $authorization->withResponseTypes([$responseType, $anotherResponseType->reveal()]);

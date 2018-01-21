@@ -26,17 +26,17 @@ final class ScopeParameterChecker implements ParameterChecker
     private $scopeRepository;
 
     /**
-     * @var null|ScopePolicyManager
+     * @var ScopePolicyManager
      */
     private $scopePolicyManager;
 
     /**
      * ScopeParameterChecker constructor.
      *
-     * @param ScopeRepository         $scopeRepository
-     * @param null|ScopePolicyManager $scopePolicyManager
+     * @param ScopeRepository    $scopeRepository
+     * @param ScopePolicyManager $scopePolicyManager
      */
-    public function __construct(ScopeRepository $scopeRepository, ? ScopePolicyManager $scopePolicyManager)
+    public function __construct(ScopeRepository $scopeRepository, ScopePolicyManager $scopePolicyManager)
     {
         $this->scopeRepository = $scopeRepository;
         $this->scopePolicyManager = $scopePolicyManager;
@@ -49,16 +49,20 @@ final class ScopeParameterChecker implements ParameterChecker
     {
         try {
             if ($authorization->hasQueryParam('scope')) {
-                Assertion::regex($authorization->getQueryParam('scope'), '/^[\x20\x23-\x5B\x5D-\x7E]+$/', 'Invalid characters found in the \'scope\' parameter.');
-                $scope = explode(' ', $authorization->getQueryParam('scope'));
+                $requestedScope = $authorization->getQueryParam('scope');
+                if (1 !== preg_match('/^[\x20\x23-\x5B\x5D-\x7E]+$/', $requestedScope)) {
+                    throw new \InvalidArgumentException('Invalid characters found in the "scope" parameter.');
+                }
             } else {
-                $scope = [];
+                $requestedScope = '';
             }
-            if (null !== $this->scopePolicyManager) {
-                $scope = $this->scopePolicyManager->apply($scope, $authorization->getClient());
-            }
+            $requestedScope = $this->scopePolicyManager->apply($requestedScope, $authorization->getClient());
+            $scopes = explode(' ', $requestedScope);
+
             $availableScope = $this->scopeRepository->getAvailableScopesForClient($authorization->getClient());
-            Assertion::true($this->scopeRepository->areRequestedScopesAvailable($scope, $availableScope), sprintf('An unsupported scope was requested. Available scopes for the client are %s.', implode(', ', $availableScope)));
+            if (!$this->scopeRepository->areRequestedScopesAvailable($scopes, $availableScope)) {
+                throw new \InvalidArgumentException(sprintf('An unsupported scope was requested. Available scopes for the client are %s.', implode(', ', $availableScope)));
+            }
             $authorization = $authorization->withScopes($scope);
 
             return $next($authorization);

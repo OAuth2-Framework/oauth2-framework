@@ -129,7 +129,7 @@ final class TokenEndpointTest extends TestCase
 
         $tokenType = $this->prophesize(TokenType::class);
         $tokenType->name()->willReturn('TOKEN_TYPE')->shouldBeCalled();
-        $tokenType->getInformation()->willReturn(['token_type_foo' => 'token_type_bar'])->shouldBeCalled();
+        $tokenType->getAdditionalInformation()->willReturn(['token_type_foo' => 'token_type_bar'])->shouldBeCalled();
         $request->getAttribute('token_type')
             ->willReturn($tokenType->reveal())
             ->shouldBeCalled()

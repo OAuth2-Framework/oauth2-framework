@@ -199,7 +199,7 @@ final class TokenEndpoint implements MiddlewareInterface
             throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_REQUEST, sprintf('The token type "%s" is not allowed for the client.', $tokenType->name()));
         }
 
-        $info = $tokenType->getInformation();
+        $info = $tokenType->getAdditionalInformation();
         $info['token_type'] = $tokenType->name();
         foreach ($info as $k => $v) {
             $grantTypeData = $grantTypeData->withParameter($k, $v);

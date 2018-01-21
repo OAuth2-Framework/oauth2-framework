@@ -13,8 +13,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\Scope;
 
-use OAuth2Framework\Component\Server\Core\Client\Client;
-
 interface ScopeRepository
 {
     /**
@@ -35,19 +33,4 @@ interface ScopeRepository
      * @return Scope[]
      */
     public function all(): array;
-
-    /**
-     * @param Client $client A client
-     *
-     * @return string[] Return an array scope
-     */
-    public function getAvailableScopesForClient(Client $client): array;
-
-    /**
-     * @param string[] $requestedScopes An array of scopes that represents requested scopes
-     * @param string[] $availableScopes An array of scopes that represents available scopes
-     *
-     * @return bool Return true if the requested scope is within the available scope
-     */
-    public function areRequestedScopesAvailable(array $requestedScopes, array $availableScopes): bool;
 }

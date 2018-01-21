@@ -61,7 +61,7 @@ abstract class MacToken implements TokenType
     /**
      * {@inheritdoc}
      */
-    public function getInformation(): array
+    public function getAdditionalInformation(): array
     {
         return [
             'mac_key' => $this->generateMacKey(),

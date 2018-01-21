@@ -59,7 +59,7 @@ final class TokenResponseTypeTest extends TestCase
         $userAccount = $this->prophesize(UserAccount::class);
         $userAccount->getPublicId()->willReturn(UserAccountId::create('USER_ACCOUNT_ID'));
         $tokenType = $this->prophesize(TokenType::class);
-        $tokenType->getInformation()->willReturn(['token_type' => 'FOO']);
+        $tokenType->getAdditionalInformation()->willReturn(['token_type' => 'FOO']);
 
         $authorization = Authorization::create(
             $client,

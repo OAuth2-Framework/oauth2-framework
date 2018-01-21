@@ -99,7 +99,7 @@ final class BearerToken implements TokenType
     /**
      * {@inheritdoc}
      */
-    public function getInformation(): array
+    public function getAdditionalInformation(): array
     {
         return [];
     }
