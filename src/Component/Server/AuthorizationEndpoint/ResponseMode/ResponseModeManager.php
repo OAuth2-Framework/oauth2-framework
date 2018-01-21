@@ -65,12 +65,4 @@ final class ResponseModeManager
 
         return $this->responseModes[$name];
     }
-
-    /**
-     * @return string[]
-     */
-    public function list(): array
-    {
-        return array_keys($this->responseModes);
-    }
 }

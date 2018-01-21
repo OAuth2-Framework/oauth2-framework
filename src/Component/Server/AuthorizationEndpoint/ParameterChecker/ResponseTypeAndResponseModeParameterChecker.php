@@ -59,7 +59,9 @@ final class ResponseTypeAndResponseModeParameterChecker implements ParameterChec
             /*
              * @see http://tools.ietf.org/html/rfc6749#section-3.1.1
              */
-            Assertion::true($authorization->hasQueryParam('response_type'), 'The parameter "response_type" is mandatory.');
+            if (!$authorization->hasQueryParam('response_type')) {
+                throw new \InvalidArgumentException('The parameter "response_type" is mandatory.');
+            }
             $responseType = $authorization->getQueryParam('response_type');
             $responseTypes = $this->getResponseTypes($authorization->getQueryParam('response_type'));
             $authorization = $authorization->withResponseTypes($responseTypes);
@@ -69,9 +71,13 @@ final class ResponseTypeAndResponseModeParameterChecker implements ParameterChec
             } else {
                 $responseMode = $this->findResponseMode($responseTypes, $responseType);
             }
-            Assertion::true($this->responseModeManager->has($responseMode), sprintf('The response mode "%s" is supported. Please use one of the following values: %s.', $responseMode, implode(', ', $this->responseModeManager->list())));
+            if (!$this->responseModeManager->has($responseMode)) {
+                throw new \InvalidArgumentException(sprintf('The response mode "%s" is supported. Please use one of the following values: %s.', $responseMode, implode(', ', $this->responseModeManager->list())));
+            }
             $authorization = $authorization->withResponseMode($this->responseModeManager->get($responseMode));
-            Assertion::true($authorization->getClient()->isResponseTypeAllowed($responseType), sprintf('The response type "%s" is unauthorized for this client.', $responseType)); // Should try to find the response mode before exception
+            if (!$authorization->getClient()->isResponseTypeAllowed($responseType)) {
+                throw new \InvalidArgumentException(sprintf('The response type "%s" is unauthorized for this client.', $responseType)); // Should try to find the response mode before exception
+            }
 
             return $next($authorization);
         } catch (\InvalidArgumentException $e) {
@@ -88,7 +94,9 @@ final class ResponseTypeAndResponseModeParameterChecker implements ParameterChec
      */
     private function getResponseTypes(string $responseType): array
     {
-        Assertion::true($this->responseTypeManager->isSupported($responseType), sprintf('Response type "%s" is not supported by this server', $responseType));
+        if (!$this->responseTypeManager->isSupported($responseType)) {
+            throw new \InvalidArgumentException(sprintf('Response type "%s" is not supported by this server', $responseType));
+        }
         $types = $this->responseTypeManager->find($responseType);
 
         return $types;

@@ -465,25 +465,6 @@ final class Authorization
     }
 
     /**
-     * @return bool
-     */
-    /*public function hasOfflineAccess(): bool
-    {
-        // The scope offline_access is not requested
-        if (!in_array('offline_access', $this->getScopes())) {
-            return false;
-        }
-
-        // The scope offline_access is requested but prompt is not consent
-        // The scope offline_access is ignored
-        if (!$this->hasQueryParam('prompt') || false === mb_strpos('consent', $this->getQueryParam('prompt'), 0, '8bit')) {
-            return false;
-        }
-
-        return true;
-    }*/
-
-    /**
      * @param string $option
      * @param mixed  $value
      *

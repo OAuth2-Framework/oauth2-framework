@@ -13,32 +13,25 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\AuthorizationEndpoint\ResponseMode;
 
-use Http\Message\ResponseFactory;
-use Interop\Http\Factory\UriFactoryInterface;
+use Interop\Http\Factory\ResponseFactoryInterface;
+use League\Uri;
 use OAuth2Framework\Component\Server\AuthorizationEndpoint\ResponseType;
 use Psr\Http\Message\ResponseInterface;
 
 final class QueryResponseMode implements ResponseMode
 {
     /**
-     * @var UriFactoryInterface
-     */
-    private $uriFactory;
-
-    /**
-     * @var ResponseFactory
+     * @var ResponseFactoryInterface
      */
     private $responseFactory;
 
     /**
      * QueryResponseMode constructor.
      *
-     * @param UriFactoryInterface $uriFactory
-     * @param ResponseFactory     $responseFactory
+     * @param ResponseFactoryInterface $responseFactory
      */
-    public function __construct(UriFactoryInterface $uriFactory, ResponseFactory $responseFactory)
+    public function __construct(ResponseFactoryInterface $responseFactory)
     {
-        $this->uriFactory = $uriFactory;
         $this->responseFactory = $responseFactory;
     }
 
@@ -55,14 +48,17 @@ final class QueryResponseMode implements ResponseMode
      */
     public function buildResponse(string $redirectUri, array $data): ResponseInterface
     {
-        $uri = $this->uriFactory->createUri($redirectUri);
-        $uri = $uri->withFragment('_=_');
-        parse_str($uri->getQuery(), $queryParams);
-        $queryParams += $data;
-        $uri = $uri->withQuery(http_build_query($queryParams));
+        $uri = Uri\parse($redirectUri);
+        if (array_key_exists('query', $uri) && null !== $uri['query']) {
+            $query = Uri\parse_query($uri['query']);
+            $data = array_merge($query, $data);
+        }
+        $uri['query'] = Uri\build_query($data);
+        $uri['fragment'] = '_=_'; //A redirect Uri is not supposed to have fragment so we override it.
+        $uri = Uri\build($uri);
 
         $response = $this->responseFactory->createResponse(302);
-        $response = $response->withHeader('Location', $uri->__toString());
+        $response = $response->withHeader('Location', $uri);
 
         return $response;
     }

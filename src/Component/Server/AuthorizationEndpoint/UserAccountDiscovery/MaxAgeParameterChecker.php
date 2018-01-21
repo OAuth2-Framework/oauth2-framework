@@ -24,6 +24,7 @@ final class MaxAgeParameterChecker implements UserAccountDiscovery
      */
     public function find(ServerRequestInterface $request, Authorization $authorization, callable $next): Authorization
     {
+        /** @var Authorization $authorization */
         $authorization = $next($request, $authorization);
         $userAccount = $authorization->getUserAccount();
         if (null !== $userAccount) {

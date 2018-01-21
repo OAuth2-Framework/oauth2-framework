@@ -24,6 +24,7 @@ final class LoginParameterChecker implements UserAccountDiscovery
      */
     public function find(ServerRequestInterface $request, Authorization $authorization, callable $next): Authorization
     {
+        /** @var Authorization $authorization */
         $authorization = $next($request, $authorization);
         if ($authorization->hasPrompt('login') && !$authorization->isUserAccountFullyAuthenticated()) {
             throw new RedirectToLoginPageException($authorization);
