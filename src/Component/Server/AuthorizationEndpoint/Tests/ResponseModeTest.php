@@ -49,7 +49,7 @@ final class ResponseModeTest extends TestCase
     {
         $mode = $this->getResponseModeManager()->get('query');
         $response = $mode->buildResponse('https://localhost/foo?bar=bar#foo=foo', [
-            'access_token' => 'ACCESS_TOKEN'
+            'access_token' => 'ACCESS_TOKEN',
         ]);
 
         self::assertTrue($response->hasHeader('Location'));
@@ -63,7 +63,7 @@ final class ResponseModeTest extends TestCase
     {
         $mode = $this->getResponseModeManager()->get('query');
         $response = $mode->buildResponse('com.example.app:/oauth2redirect/example-provider', [
-            'access_token' => 'ACCESS_TOKEN'
+            'access_token' => 'ACCESS_TOKEN',
         ]);
 
         self::assertTrue($response->hasHeader('Location'));
@@ -77,7 +77,7 @@ final class ResponseModeTest extends TestCase
     {
         $mode = $this->getResponseModeManager()->get('query');
         $response = $mode->buildResponse('urn:ietf:wg:oauth:2.0:oob', [
-            'access_token' => 'ACCESS_TOKEN'
+            'access_token' => 'ACCESS_TOKEN',
         ]);
 
         self::assertTrue($response->hasHeader('Location'));
@@ -91,7 +91,7 @@ final class ResponseModeTest extends TestCase
     {
         $mode = $this->getResponseModeManager()->get('fragment');
         $response = $mode->buildResponse('https://localhost/foo?bar=bar#foo=foo', [
-            'access_token' => 'ACCESS_TOKEN'
+            'access_token' => 'ACCESS_TOKEN',
         ]);
 
         self::assertTrue($response->hasHeader('Location'));
@@ -105,7 +105,7 @@ final class ResponseModeTest extends TestCase
     {
         $mode = $this->getResponseModeManager()->get('fragment');
         $response = $mode->buildResponse('com.example.app:/oauth2redirect/example-provider', [
-            'access_token' => 'ACCESS_TOKEN'
+            'access_token' => 'ACCESS_TOKEN',
         ]);
 
         self::assertTrue($response->hasHeader('Location'));
@@ -119,7 +119,7 @@ final class ResponseModeTest extends TestCase
     {
         $mode = $this->getResponseModeManager()->get('fragment');
         $response = $mode->buildResponse('urn:ietf:wg:oauth:2.0:oob', [
-            'access_token' => 'ACCESS_TOKEN'
+            'access_token' => 'ACCESS_TOKEN',
         ]);
 
         self::assertTrue($response->hasHeader('Location'));
@@ -133,7 +133,7 @@ final class ResponseModeTest extends TestCase
     {
         $mode = $this->getResponseModeManager()->get('form_post');
         $response = $mode->buildResponse('https://localhost/foo?bar=bar#foo=foo', [
-            'access_token' => 'ACCESS_TOKEN'
+            'access_token' => 'ACCESS_TOKEN',
         ]);
 
         $response->getBody()->rewind();
@@ -148,7 +148,7 @@ final class ResponseModeTest extends TestCase
     {
         $mode = $this->getResponseModeManager()->get('form_post');
         $response = $mode->buildResponse('com.example.app:/oauth2redirect/example-provider', [
-            'access_token' => 'ACCESS_TOKEN'
+            'access_token' => 'ACCESS_TOKEN',
         ]);
 
         $response->getBody()->rewind();
@@ -163,7 +163,7 @@ final class ResponseModeTest extends TestCase
     {
         $mode = $this->getResponseModeManager()->get('form_post');
         $response = $mode->buildResponse('urn:ietf:wg:oauth:2.0:oob', [
-            'access_token' => 'ACCESS_TOKEN'
+            'access_token' => 'ACCESS_TOKEN',
         ]);
 
         $response->getBody()->rewind();
@@ -187,7 +187,9 @@ final class ResponseModeTest extends TestCase
                 new ResponseFactory()
             ));
             $formPostResponseRenderer = $this->prophesize(FormPostResponseRenderer::class);
-            $formPostResponseRenderer->render(Argument::type('string'), ['access_token' => 'ACCESS_TOKEN'])->will(function ($args) { return json_encode($args);});
+            $formPostResponseRenderer->render(Argument::type('string'), ['access_token' => 'ACCESS_TOKEN'])->will(function ($args) {
+                return json_encode($args);
+            });
             $this->responseModeManager->add(new FormPostResponseMode(
                 $formPostResponseRenderer->reveal(),
                 new ResponseFactory()
