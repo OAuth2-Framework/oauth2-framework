@@ -15,7 +15,10 @@ namespace OAuth2Framework\Component\Server\TokenEndpoint;
 
 use Interop\Http\Server\RequestHandlerInterface;
 use Interop\Http\Server\MiddlewareInterface;
+use OAuth2Framework\Component\Server\Core\Client\Client;
 use OAuth2Framework\Component\Server\Core\Client\ClientRepository;
+use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
+use OAuth2Framework\Component\Server\TokenEndpoint\AuthenticationMethod\AuthenticationMethod;
 use OAuth2Framework\Component\Server\TokenEndpoint\AuthenticationMethod\AuthenticationMethodManager;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -49,14 +52,49 @@ final class ClientAuthenticationMiddleware implements MiddlewareInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $clientId = $this->authenticationMethodManager->findClientIdAndCredentials($request, $authentication_method, $client_credentials);
-        if (null !== $clientId) {
-            $client = $this->clientRepository->find($clientId);
-            if ($this->authenticationMethodManager->isClientAuthenticated($request, $client, $authentication_method, $client_credentials)) {
+        try {
+            $clientId = $this->authenticationMethodManager->findClientIdAndCredentials($request, $authentication_method, $client_credentials);
+            if (null !== $clientId) {
+                $client = $this->clientRepository->find($clientId);
+                $this->checkClient($client);
+                $this->checkAuthenticationMethod($request, $client, $authentication_method, $client_credentials);
                 $request = $request->withAttribute('client', $client);
+                $request = $request->withAttribute('client_authentication_method', $authentication_method);
+                $request = $request->withAttribute('client_credentials', $client_credentials);
             }
+        } catch (\Exception $e) {
+            throw new OAuth2Exception(401, OAuth2Exception::ERROR_INVALID_CLIENT, $e->getMessage(), [], $e);
         }
 
         return $handler->handle($request);
+    }
+
+    /**
+     * @param null|Client $client
+     */
+    private function checkClient(?Client $client)
+    {
+        if (null === $client || $client->isDeleted()) {
+            throw new \InvalidArgumentException('Unknown client or client not authenticated.');
+        }
+        if ($client->areClientCredentialsExpired()) {
+            throw new \InvalidArgumentException('Client credentials expired.');
+        }
+    }
+
+    /**
+     * @param ServerRequestInterface $request
+     * @param Client                 $client
+     * @param AuthenticationMethod   $authenticationMethod
+     * @param mixed                  $client_credentials
+     */
+    private function checkAuthenticationMethod(ServerRequestInterface $request, Client $client, AuthenticationMethod $authenticationMethod, $client_credentials)
+    {
+        if (!$client->has('token_endpoint_auth_method') || !in_array($client->get('token_endpoint_auth_method'), $authenticationMethod->getSupportedMethods())) {
+            throw new \InvalidArgumentException('Unknown client or client not authenticated.');
+        }
+        if (!$authenticationMethod->isClientAuthenticated($client, $client_credentials, $request)) {
+            throw new \InvalidArgumentException('Unknown client or client not authenticated.');
+        }
     }
 }

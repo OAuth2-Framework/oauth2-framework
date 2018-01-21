@@ -32,6 +32,15 @@ final class GrantTypeMiddlewareTest extends TestCase
     /**
      * @test
      */
+    public function genericCalls()
+    {
+        self::assertEquals(['foo'], $this->getGrantTypeManager()->list());
+        self::assertInstanceOf(GrantType::class, $this->getGrantTypeManager()->get('foo'));
+    }
+
+    /**
+     * @test
+     */
     public function theGrantTypeParameterIsMissing()
     {
         $request = $this->prophesize(ServerRequestInterface::class);

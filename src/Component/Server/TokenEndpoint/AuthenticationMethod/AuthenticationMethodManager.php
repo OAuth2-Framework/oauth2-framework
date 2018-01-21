@@ -134,9 +134,6 @@ final class AuthenticationMethodManager
      */
     public function isClientAuthenticated(ServerRequestInterface $request, Client $client, AuthenticationMethod $authenticationMethod, $clientCredentials): bool
     {
-        if (true === $client->isDeleted()) {
-            return false;
-        }
         if (in_array($client->get('token_endpoint_auth_method'), $authenticationMethod->getSupportedMethods())) {
             if (false === $client->areClientCredentialsExpired()) {
                 return $authenticationMethod->isClientAuthenticated($client, $clientCredentials, $request);
