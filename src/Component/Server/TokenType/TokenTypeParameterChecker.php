@@ -65,6 +65,7 @@ final class TokenTypeParameterChecker implements ParameterChecker
 
     /**
      * @param Authorization $authorization
+     *
      * @return TokenType
      */
     private function getTokenType(Authorization $authorization): TokenType
