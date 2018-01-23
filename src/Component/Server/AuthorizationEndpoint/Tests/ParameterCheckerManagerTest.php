@@ -31,7 +31,6 @@ use OAuth2Framework\Component\Server\Core\Client\Client;
 use OAuth2Framework\Component\Server\Core\Client\ClientId;
 use OAuth2Framework\Component\Server\Core\DataBag\DataBag;
 use PHPUnit\Framework\TestCase;
-use Prophecy\Argument;
 
 /**
  * @group ParameterCheckerManager
@@ -210,7 +209,7 @@ final class ParameterCheckerManagerTest extends TestCase
         $client->eraseMessages();
         $authorization = Authorization::create($client, [
             'redirect_uri' => 'https://www.foo.bar/callback',
-            'response_type' => 'bar'
+            'response_type' => 'bar',
         ]);
 
         try {
@@ -237,7 +236,7 @@ final class ParameterCheckerManagerTest extends TestCase
         $client->eraseMessages();
         $authorization = Authorization::create($client, [
             'redirect_uri' => 'https://www.foo.bar/callback',
-            'response_type' => 'foo'
+            'response_type' => 'foo',
         ]);
 
         try {
