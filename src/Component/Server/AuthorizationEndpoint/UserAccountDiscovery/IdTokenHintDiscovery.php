@@ -16,7 +16,7 @@ namespace OAuth2Framework\Component\Server\AuthorizationEndpoint\UserAccountDisc
 use OAuth2Framework\Component\Server\AuthorizationEndpoint\Authorization;
 use OAuth2Framework\Component\Server\AuthorizationEndpoint\Exception\CreateRedirectionException;
 use OAuth2Framework\Component\Server\AuthorizationEndpoint\Exception\RedirectToLoginPageException;
-use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
+use OAuth2Framework\Component\Server\Core\Exception\OAuth2Exception;
 use OAuth2Framework\Component\Server\Core\UserAccount\UserAccountId;
 use OAuth2Framework\Component\Server\Core\UserAccount\UserAccountRepository;
 use OAuth2Framework\Component\Server\OpenIdConnect\IdToken;
@@ -65,10 +65,8 @@ final class IdTokenHintDiscovery implements UserAccountDiscovery
     /**
      * {@inheritdoc}
      */
-    public function find(ServerRequestInterface $request, Authorization $authorization, callable $next): Authorization
+    public function find(ServerRequestInterface $request, Authorization $authorization): Authorization
     {
-        /** @var Authorization $authorization */
-        $authorization = $next($request, $authorization);
         if ($authorization->hasQueryParam('id_token_hint')) {
             try {
                 $idTokenId = IdTokenId::create($authorization->getQueryParam('id_token_hint'));

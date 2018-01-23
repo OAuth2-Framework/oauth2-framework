@@ -33,36 +33,29 @@ final class ResponseTypeManager
     }
 
     /**
-     * @param string $name
+     * @param string $responseType
      *
      * @return bool
      */
-    public function has(string $name): bool
+    public function has(string $responseType): bool
     {
-        return array_key_exists($name, $this->responseTypes);
+        return array_key_exists($responseType, $this->responseTypes);
     }
 
     /**
-     * @param string $names
+     * @param string $responseType
      *
      * @throws \InvalidArgumentException
      *
-     * @return ResponseType[]
+     * @return ResponseType
      */
-    public function find(string $names): array
+    public function get(string $responseType): ResponseType
     {
-        if (!$this->isSupported($names)) {
-            throw new \InvalidArgumentException(sprintf('The response type "%s" is not supported.', $names));
-        }
-        $responseTypes = explode(' ', $names);
-
-        $types = [];
-        foreach ($responseTypes as $responseType) {
-            $type = $this->responseTypes[$responseType];
-            $types[] = $type;
+        if (!$this->has($responseType)) {
+            throw new \InvalidArgumentException(sprintf('The response type "%s" is not supported.', $responseType));
         }
 
-        return $types;
+        return $this->responseTypes[$responseType];
     }
 
     /**
@@ -70,32 +63,6 @@ final class ResponseTypeManager
      */
     public function all(): array
     {
-        $types = array_keys($this->responseTypes);
-        if (in_array('id_token', $types)) {
-            if (in_array('code', $types)) {
-                $types[] = 'code id_token';
-            }
-            if (in_array('token', $types)) {
-                $types[] = 'id_token token';
-            }
-            if (in_array('code', $types) && in_array('token', $types)) {
-                $types[] = 'code id_token token';
-            }
-        }
-        if (in_array('code', $types) && in_array('token', $types)) {
-            $types[] = 'code token';
-        }
-
-        return $types;
-    }
-
-    /**
-     * @param string $responseType
-     *
-     * @return bool
-     */
-    public function isSupported(string $responseType): bool
-    {
-        return in_array($responseType, $this->all());
+        return array_keys($this->responseTypes);
     }
 }

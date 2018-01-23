@@ -17,7 +17,7 @@ use OAuth2Framework\Component\Server\TokenEndpoint\GrantType;
 use OAuth2Framework\Component\Server\TokenEndpoint\GrantTypeData;
 use OAuth2Framework\Component\Server\Core\UserAccount\UserAccountManager;
 use OAuth2Framework\Component\Server\Core\UserAccount\UserAccountRepository;
-use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
+use OAuth2Framework\Component\Server\Core\Exception\OAuth2Exception;
 use Psr\Http\Message\ServerRequestInterface;
 
 final class ResourceOwnerPasswordCredentialsGrantType implements GrantType

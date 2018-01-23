@@ -52,9 +52,9 @@ final class Authorization
     private $tokenType = null;
 
     /**
-     * @var ResponseType[]
+     * @var ResponseType]
      */
-    private $responseTypes = [];
+    private $responseType = null;
 
     /**
      * @var ResponseMode|null
@@ -176,24 +176,24 @@ final class Authorization
     }
 
     /**
-     * @param ResponseType[] $responseTypes
+     * @param ResponseType $responseType
      *
      * @return Authorization
      */
-    public function withResponseTypes(array $responseTypes): self
+    public function withResponseType(ResponseType $responseType): self
     {
         $clone = clone $this;
-        $clone->responseTypes = $responseTypes;
+        $clone->responseType = $responseType;
 
         return $clone;
     }
 
     /**
-     * @return ResponseType[]
+     * @return ResponseType
      */
-    public function getResponseTypes(): array
+    public function getResponseType(): ResponseType
     {
-        return $this->responseTypes;
+        return $this->responseType;
     }
 
     /**

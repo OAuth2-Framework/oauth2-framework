@@ -15,7 +15,7 @@ namespace OAuth2Framework\Component\Server\TokenIntrospectionEndpoint\Tests;
 
 use Http\Message\MessageFactory\DiactorosMessageFactory;
 use Http\Message\ResponseFactory;
-use Interop\Http\Server\RequestHandlerInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use OAuth2Framework\Component\Server\Core\ResourceServer\ResourceServer;
 use OAuth2Framework\Component\Server\Core\ResourceServer\ResourceServerId;
 use OAuth2Framework\Component\Server\Core\Token\Token;

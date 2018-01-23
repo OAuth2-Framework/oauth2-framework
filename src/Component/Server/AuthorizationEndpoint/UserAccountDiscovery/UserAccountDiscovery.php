@@ -21,9 +21,8 @@ interface UserAccountDiscovery
     /**
      * @param ServerRequestInterface $request
      * @param Authorization          $authorization
-     * @param callable               $next
      *
      * @return Authorization
      */
-    public function find(ServerRequestInterface $request, Authorization $authorization, callable $next): Authorization;
+    public function find(ServerRequestInterface $request, Authorization $authorization): Authorization;
 }

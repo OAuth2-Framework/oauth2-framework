@@ -13,12 +13,12 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\Middleware;
 
-use Interop\Http\Server\RequestHandlerInterface;
-use Interop\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Http\Server\MiddlewareInterface;
 use OAuth2Framework\Component\Server\Core\AccessToken\AccessToken;
 use OAuth2Framework\Component\Server\Core\AccessToken\AccessTokenHandlerManager;
 use OAuth2Framework\Component\Server\Core\AccessToken\AccessTokenId;
-use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
+use OAuth2Framework\Component\Server\Core\Exception\OAuth2Exception;
 use OAuth2Framework\Component\Server\TokenType\TokenType;
 use OAuth2Framework\Component\Server\TokenType\TokenTypeManager;
 use Psr\Http\Message\ResponseInterface;

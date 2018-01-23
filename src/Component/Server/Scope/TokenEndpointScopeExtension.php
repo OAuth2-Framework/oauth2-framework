@@ -20,7 +20,7 @@ use OAuth2Framework\Component\Server\TokenEndpoint\Extension\TokenEndpointExtens
 use OAuth2Framework\Component\Server\TokenEndpoint\GrantTypeData;
 use OAuth2Framework\Component\Server\TokenEndpoint\GrantType;
 use OAuth2Framework\Component\Server\Scope\Policy\ScopePolicyManager;
-use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
+use OAuth2Framework\Component\Server\Core\Exception\OAuth2Exception;
 use Psr\Http\Message\ServerRequestInterface;
 
 final class TokenEndpointScopeExtension implements TokenEndpointExtension
@@ -102,7 +102,7 @@ final class TokenEndpointScopeExtension implements TokenEndpointExtension
         try {
             return $this->scopePolicyManager->apply($scope, $client);
         } catch (\InvalidArgumentException $e) {
-            throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_SCOPE, $e->getMessage(), [], $e);
+            throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_SCOPE, $e->getMessage(), $e);
         }
     }
 

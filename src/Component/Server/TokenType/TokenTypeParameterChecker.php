@@ -14,9 +14,10 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\Server\TokenType;
 
 use OAuth2Framework\Component\Server\AuthorizationEndpoint\Authorization;
+use OAuth2Framework\Component\Server\AuthorizationEndpoint\Exception\OAuth2AuthorizationException;
 use OAuth2Framework\Component\Server\AuthorizationEndpoint\ParameterChecker\ParameterChecker;
 use OAuth2Framework\Component\Server\Core\Client\Client;
-use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
+use OAuth2Framework\Component\Server\Core\Exception\OAuth2Exception;
 
 /**
  * Class TokenTypeParameterChecker.
@@ -50,16 +51,16 @@ final class TokenTypeParameterChecker implements ParameterChecker
     /**
      * {@inheritdoc}
      */
-    public function process(Authorization $authorization, callable $next): Authorization
+    public function check(Authorization $authorization): Authorization
     {
         try {
             $tokenType = $this->getTokenType($authorization);
             $this->checkTokenTypeForClient($tokenType, $authorization->getClient());
             $authorization = $authorization->withTokenType($tokenType);
 
-            return $next($authorization);
+            return $authorization;
         } catch (\InvalidArgumentException $e) {
-            throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_REQUEST, $e->getMessage(), $authorization, $e);
+            throw new OAuth2AuthorizationException(400, OAuth2Exception::ERROR_INVALID_REQUEST, $e->getMessage(), $authorization, $e);
         }
     }
 

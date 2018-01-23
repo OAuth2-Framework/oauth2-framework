@@ -19,7 +19,7 @@ use OAuth2Framework\Component\Server\Core\Client\Client;
 use OAuth2Framework\Component\Server\Core\Client\ClientId;
 use OAuth2Framework\Component\Server\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Server\Core\ResourceOwner\ResourceOwner;
-use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
+use OAuth2Framework\Component\Server\Core\Exception\OAuth2Exception;
 use OAuth2Framework\Component\Server\Core\UserAccount\UserAccountId;
 use OAuth2Framework\Component\Server\Scope\Policy\NoScopePolicy;
 use OAuth2Framework\Component\Server\Scope\Policy\ScopePolicyManager;

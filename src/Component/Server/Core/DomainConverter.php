@@ -15,7 +15,7 @@ namespace OAuth2Framework\Component\Server\Core;
 
 use League\JsonGuard\Validator;
 use League\JsonReference\Dereferencer;
-use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
+use OAuth2Framework\Component\Server\Core\Exception\OAuth2Exception;
 use League\JsonReference\LoaderManager;
 
 final class DomainConverter
@@ -74,7 +74,7 @@ final class DomainConverter
             }
             $domainObject = $class::createFromJson($decoded);
         } catch (\Exception $e) {
-            throw new OAuth2Exception(500, OAuth2Exception::ERROR_INTERNAL, 'The server encountered and internal error.', [], $e);
+            throw new OAuth2Exception(500, OAuth2Exception::ERROR_INTERNAL, 'The server encountered and internal error.', $e);
         }
 
         return $domainObject;
@@ -99,7 +99,7 @@ final class DomainConverter
                 throw new \InvalidArgumentException('The domain object cannot be verified with the selected schema.');
             }
         } catch (\Exception $e) {
-            throw new OAuth2Exception(500, OAuth2Exception::ERROR_INTERNAL, 'The server encountered and internal error.', [], $e);
+            throw new OAuth2Exception(500, OAuth2Exception::ERROR_INTERNAL, 'The server encountered and internal error.', $e);
         }
 
         return json_encode($jsonData, $this->options);

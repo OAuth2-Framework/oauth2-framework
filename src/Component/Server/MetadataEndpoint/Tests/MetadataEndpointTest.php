@@ -15,7 +15,7 @@ namespace OAuth2Framework\Component\Server\MetadataEndpoint\Tests;
 
 use Http\Message\MessageFactory\DiactorosMessageFactory;
 use Http\Message\ResponseFactory;
-use Interop\Http\Server\RequestHandlerInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Jose\Component\Core\AlgorithmManager;
 use Jose\Component\Core\Converter\StandardConverter;
 use Jose\Component\Core\JWK;

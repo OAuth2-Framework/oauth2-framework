@@ -13,13 +13,13 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\ClientRegistrationEndpoint\Tests;
 
-use Interop\Http\Server\RequestHandlerInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use OAuth2Framework\Component\Server\BearerTokenType\BearerToken;
 use OAuth2Framework\Component\Server\ClientRegistrationEndpoint\InitialAccessToken;
 use OAuth2Framework\Component\Server\ClientRegistrationEndpoint\InitialAccessTokenId;
 use OAuth2Framework\Component\Server\ClientRegistrationEndpoint\InitialAccessTokenMiddleware;
 use OAuth2Framework\Component\Server\ClientRegistrationEndpoint\InitialAccessTokenRepository;
-use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
+use OAuth2Framework\Component\Server\Core\Exception\OAuth2Exception;
 use OAuth2Framework\Component\Server\Core\UserAccount\UserAccountId;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;

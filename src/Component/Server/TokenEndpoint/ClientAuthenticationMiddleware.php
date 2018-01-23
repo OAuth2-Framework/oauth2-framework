@@ -13,11 +13,11 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\TokenEndpoint;
 
-use Interop\Http\Server\RequestHandlerInterface;
-use Interop\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Http\Server\MiddlewareInterface;
 use OAuth2Framework\Component\Server\Core\Client\Client;
 use OAuth2Framework\Component\Server\Core\Client\ClientRepository;
-use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
+use OAuth2Framework\Component\Server\Core\Exception\OAuth2Exception;
 use OAuth2Framework\Component\Server\TokenEndpoint\AuthenticationMethod\AuthenticationMethod;
 use OAuth2Framework\Component\Server\TokenEndpoint\AuthenticationMethod\AuthenticationMethodManager;
 use Psr\Http\Message\ResponseInterface;
@@ -63,7 +63,7 @@ final class ClientAuthenticationMiddleware implements MiddlewareInterface
                 $request = $request->withAttribute('client_credentials', $client_credentials);
             }
         } catch (\Exception $e) {
-            throw new OAuth2Exception(401, OAuth2Exception::ERROR_INVALID_CLIENT, $e->getMessage(), [], $e);
+            throw new OAuth2Exception(401, OAuth2Exception::ERROR_INVALID_CLIENT, $e->getMessage(), $e);
         }
 
         return $handler->handle($request);

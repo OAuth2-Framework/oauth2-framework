@@ -15,7 +15,6 @@ namespace OAuth2Framework\Component\Server\NoneGrant;
 
 use OAuth2Framework\Component\Server\AuthorizationEndpoint\Authorization;
 use OAuth2Framework\Component\Server\AuthorizationEndpoint\ResponseType;
-use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
 
 /**
  * This response type has been introduced by OpenID Connect
@@ -71,13 +70,10 @@ final class NoneResponseType implements ResponseType
     /**
      * {@inheritdoc}
      */
-    public function process(Authorization $authorization, callable $next): Authorization
+    public function process(Authorization $authorization): Authorization
     {
-        if (1 !== count($authorization->getResponseTypes())) {
-            throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_REQUEST, 'The response type "none" cannot be used with another response type.');
-        }
         $this->authorizationStorage->save($authorization);
 
-        return $next($authorization);
+        return $authorization;
     }
 }

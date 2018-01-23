@@ -41,25 +41,10 @@ final class ParameterCheckerManager
      */
     public function process(Authorization $authorization): Authorization
     {
-        return call_user_func($this->callableForNextExtension(0), $authorization, []);
-    }
-
-    /**
-     * @param int $index
-     *
-     * @return \Closure
-     */
-    private function callableForNextExtension($index)
-    {
-        if (!array_key_exists($index, $this->parameterCheckers)) {
-            return function (Authorization $authorization): Authorization {
-                return $authorization;
-            };
+        foreach ($this->parameterCheckers as $parameterChecker) {
+            $authorization = $parameterChecker->check($authorization);
         }
-        $parameterChecker = $this->parameterCheckers[$index];
 
-        return function (Authorization $authorization) use ($parameterChecker, $index): Authorization {
-            return $parameterChecker->process($authorization, $this->callableForNextExtension($index + 1));
-        };
+        return $authorization;
     }
 }

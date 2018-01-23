@@ -13,12 +13,12 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\TokenEndpoint\Tests;
 
-use Interop\Http\Server\RequestHandlerInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use OAuth2Framework\Component\Server\Core\Client\Client;
 use OAuth2Framework\Component\Server\Core\Client\ClientId;
 use OAuth2Framework\Component\Server\Core\Client\ClientRepository;
 use OAuth2Framework\Component\Server\Core\DataBag\DataBag;
-use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
+use OAuth2Framework\Component\Server\Core\Exception\OAuth2Exception;
 use OAuth2Framework\Component\Server\TokenEndpoint\AuthenticationMethod\AuthenticationMethod;
 use OAuth2Framework\Component\Server\TokenEndpoint\AuthenticationMethod\AuthenticationMethodManager;
 use OAuth2Framework\Component\Server\TokenEndpoint\AuthenticationMethod\ClientSecretBasic;

@@ -11,7 +11,7 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Component\Server\Core\Response;
+namespace OAuth2Framework\Component\Server\Core\Exception;
 
 final class OAuth2Exception extends \Exception
 {
@@ -67,9 +67,9 @@ final class OAuth2Exception extends \Exception
     public const ERROR_INVALID_RESOURCE_SERVER = 'invalid_resource_server';
 
     /**
-     * @var array
+     * @var null|string
      */
-    private $data;
+    private $errorDescription;
 
     /**
      * OAuth2Exception constructor.
@@ -77,17 +77,12 @@ final class OAuth2Exception extends \Exception
      * @param int             $code
      * @param string          $error
      * @param null|string     $errorDescription
-     * @param array           $data
      * @param \Exception|null $previous
      */
-    public function __construct(int $code, string $error, ?string $errorDescription, array $data = [], ? \Exception $previous = null)
+    public function __construct(int $code, string $error, ?string $errorDescription, ? \Exception $previous = null)
     {
-        $this->data = $data;
-        $this->data['error'] = $error;
-        if (null !== $errorDescription) {
-            $this->data['error_description'] = $errorDescription;
-        }
-        parent::__construct('', $code, $previous);
+        $this->errorDescription = $errorDescription;
+        parent::__construct($error, $code, $previous);
     }
 
     /**
@@ -95,6 +90,19 @@ final class OAuth2Exception extends \Exception
      */
     public function getData(): array
     {
-        return $this->data;
+        $data = ['error' => $this->getMessage()];
+        if (null !== $this->errorDescription) {
+            $data['error_description'] = $this->errorDescription;
+        }
+
+        return $data;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getErrorDescription(): ?string
+    {
+        return $this->errorDescription;
     }
 }

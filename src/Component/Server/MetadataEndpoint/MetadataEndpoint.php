@@ -14,8 +14,8 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\Server\MetadataEndpoint;
 
 use Http\Message\ResponseFactory;
-use Interop\Http\Server\RequestHandlerInterface;
-use Interop\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Http\Server\MiddlewareInterface;
 use Jose\Component\Core\Converter\StandardConverter;
 use Jose\Component\Core\JWK;
 use Jose\Component\Signature\JWSBuilder;

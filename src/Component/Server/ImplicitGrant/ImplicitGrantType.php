@@ -15,7 +15,7 @@ namespace OAuth2Framework\Component\Server\ImplicitGrant;
 
 use OAuth2Framework\Component\Server\TokenEndpoint\GrantType;
 use OAuth2Framework\Component\Server\TokenEndpoint\GrantTypeData;
-use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
+use OAuth2Framework\Component\Server\Core\Exception\OAuth2Exception;
 use Psr\Http\Message\ServerRequestInterface;
 
 final class ImplicitGrantType implements GrantType

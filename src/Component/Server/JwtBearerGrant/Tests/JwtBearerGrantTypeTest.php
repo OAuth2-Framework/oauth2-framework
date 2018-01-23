@@ -38,7 +38,7 @@ use OAuth2Framework\Component\Server\Core\Client\Client;
 use OAuth2Framework\Component\Server\Core\Client\ClientId;
 use OAuth2Framework\Component\Server\Core\Client\ClientRepository;
 use OAuth2Framework\Component\Server\Core\DataBag\DataBag;
-use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
+use OAuth2Framework\Component\Server\Core\Exception\OAuth2Exception;
 use OAuth2Framework\Component\Server\Core\UserAccount\UserAccount;
 use OAuth2Framework\Component\Server\Core\UserAccount\UserAccountId;
 use OAuth2Framework\Component\Server\Core\UserAccount\UserAccountRepository;

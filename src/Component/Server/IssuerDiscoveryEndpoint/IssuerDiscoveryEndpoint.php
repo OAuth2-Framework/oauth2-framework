@@ -15,9 +15,9 @@ namespace OAuth2Framework\Component\Server\IssuerDiscoveryEndpoint;
 
 use Interop\Http\Factory\ResponseFactoryInterface;
 use Interop\Http\Factory\UriFactoryInterface;
-use Interop\Http\Server\RequestHandlerInterface;
-use Interop\Http\Server\MiddlewareInterface;
-use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
+use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use OAuth2Framework\Component\Server\Core\Exception\OAuth2Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;

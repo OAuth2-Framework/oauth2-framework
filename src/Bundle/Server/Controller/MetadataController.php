@@ -15,7 +15,7 @@ namespace OAuth2Framework\Bundle\Server\Controller;
 
 use Http\Message\MessageFactory;
 use Interop\Http\Server\RequestHandlerInterface;
-use Interop\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\MiddlewareInterface;
 use Jose\Component\Core\JWKSet;
 use Jose\Component\Signature\JWSBuilder;
 use OAuth2Framework\Bundle\Server\Service\MetadataBuilder;

@@ -16,7 +16,7 @@ namespace OAuth2Framework\Component\Server\TokenEndpoint\Extension;
 use OAuth2Framework\Component\Server\Core\AccessToken\AccessToken;
 use OAuth2Framework\Component\Server\Core\Client\Client;
 use OAuth2Framework\Component\Server\Core\ResourceOwner\ResourceOwner;
-use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
+use OAuth2Framework\Component\Server\Core\Exception\OAuth2Exception;
 use OAuth2Framework\Component\Server\TokenEndpoint\GrantType;
 use OAuth2Framework\Component\Server\TokenEndpoint\GrantTypeData;
 use Psr\Http\Message\ServerRequestInterface;

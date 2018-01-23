@@ -26,7 +26,7 @@ use OAuth2Framework\Component\Server\Core\Client\ClientRepository;
 use OAuth2Framework\Component\Server\Core\ResourceOwner\ResourceOwnerId;
 use OAuth2Framework\Component\Server\Core\UserAccount\UserAccountId;
 use OAuth2Framework\Component\Server\Core\UserAccount\UserAccountRepository;
-use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
+use OAuth2Framework\Component\Server\Core\Exception\OAuth2Exception;
 use OAuth2Framework\Component\Server\TokenEndpoint\GrantType;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -171,7 +171,7 @@ final class JwtBearerGrantType implements GrantType
         } catch (OAuth2Exception $e) {
             throw $e;
         } catch (\Exception $e) {
-            throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_REQUEST, $e->getMessage(), [], $e);
+            throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_REQUEST, $e->getMessage(), $e);
         }
 
         return $grantTypeData;
@@ -202,7 +202,7 @@ final class JwtBearerGrantType implements GrantType
             throw new \InvalidArgumentException('Unable to decrypt the assertion.');
         } catch (\Exception $e) {
             if (true === $this->encryptionRequired) {
-                throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_REQUEST, $e->getMessage(), [], $e);
+                throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_REQUEST, $e->getMessage(), $e);
             }
 
             return $assertion;

@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\Server\TokenEndpoint\Tests;
 
 use Http\Message\MessageFactory\GuzzleMessageFactory;
-use Interop\Http\Server\RequestHandlerInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use OAuth2Framework\Component\Server\Core\AccessToken\AccessToken;
 use OAuth2Framework\Component\Server\Core\AccessToken\AccessTokenId;
 use OAuth2Framework\Component\Server\Core\AccessToken\AccessTokenRepository;
@@ -23,7 +23,7 @@ use OAuth2Framework\Component\Server\Core\Client\ClientId;
 use OAuth2Framework\Component\Server\Core\Client\ClientRepository;
 use OAuth2Framework\Component\Server\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Server\Core\ResourceOwner\ResourceOwnerId;
-use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
+use OAuth2Framework\Component\Server\Core\Exception\OAuth2Exception;
 use OAuth2Framework\Component\Server\Core\UserAccount\UserAccountId;
 use OAuth2Framework\Component\Server\Core\UserAccount\UserAccountRepository;
 use OAuth2Framework\Component\Server\TokenEndpoint\Extension\TokenEndpointExtensionManager;

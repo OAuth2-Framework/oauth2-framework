@@ -17,7 +17,7 @@ use Http\Factory\Diactoros\ResponseFactory;
 use Http\Factory\Diactoros\UriFactory;
 use Interop\Http\Factory\ResponseFactoryInterface;
 use Interop\Http\Factory\UriFactoryInterface;
-use Interop\Http\Server\RequestHandlerInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use OAuth2Framework\Component\Server\IssuerDiscoveryEndpoint\IssuerDiscoveryEndpoint;
 use OAuth2Framework\Component\Server\IssuerDiscoveryEndpoint\Resource;
 use OAuth2Framework\Component\Server\IssuerDiscoveryEndpoint\ResourceId;

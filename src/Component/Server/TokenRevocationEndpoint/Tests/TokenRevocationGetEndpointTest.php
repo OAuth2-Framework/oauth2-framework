@@ -15,7 +15,7 @@ namespace OAuth2Framework\Component\Server\TokenRevocationEndpoint\Tests;
 
 use Http\Message\MessageFactory\DiactorosMessageFactory;
 use Http\Message\ResponseFactory;
-use Interop\Http\Server\RequestHandlerInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use OAuth2Framework\Component\Server\Core\Client\Client;
 use OAuth2Framework\Component\Server\Core\Client\ClientId;
 use OAuth2Framework\Component\Server\Core\DataBag\DataBag;

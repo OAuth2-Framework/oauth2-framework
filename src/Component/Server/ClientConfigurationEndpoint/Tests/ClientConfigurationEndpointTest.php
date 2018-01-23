@@ -15,7 +15,7 @@ namespace OAuth2Framework\Component\Server\ClientConfigurationEndpoint\Tests;
 
 use Http\Message\MessageFactory\DiactorosMessageFactory;
 use Http\Message\ResponseFactory;
-use Interop\Http\Server\RequestHandlerInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use OAuth2Framework\Component\Server\BearerTokenType\BearerToken;
 use OAuth2Framework\Component\Server\ClientConfigurationEndpoint\ClientConfigurationEndpoint;
 use OAuth2Framework\Component\Server\ClientRegistrationEndpoint\Rule\RuleManager;

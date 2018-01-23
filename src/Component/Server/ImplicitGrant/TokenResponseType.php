@@ -62,7 +62,7 @@ final class TokenResponseType implements ResponseType
     /**
      * {@inheritdoc}
      */
-    public function process(Authorization $authorization, callable $next): Authorization
+    public function process(Authorization $authorization): Authorization
     {
         $accessToken = $this->accessTokenRepository->create(
             $authorization->getUserAccount()->getPublicId(),
@@ -77,6 +77,6 @@ final class TokenResponseType implements ResponseType
             $authorization = $authorization->withResponseParameter($k, $v);
         }
 
-        return $next($authorization);
+        return $authorization;
     }
 }

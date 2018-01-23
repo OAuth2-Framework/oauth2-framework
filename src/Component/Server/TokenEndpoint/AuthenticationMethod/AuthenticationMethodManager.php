@@ -15,7 +15,7 @@ namespace OAuth2Framework\Component\Server\TokenEndpoint\AuthenticationMethod;
 
 use OAuth2Framework\Component\Server\Core\Client\Client;
 use OAuth2Framework\Component\Server\Core\Client\ClientId;
-use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
+use OAuth2Framework\Component\Server\Core\Exception\OAuth2Exception;
 use Psr\Http\Message\ServerRequestInterface;
 
 final class AuthenticationMethodManager

@@ -14,17 +14,16 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\Server\AuthorizationEndpoint\ParameterChecker;
 
 use OAuth2Framework\Component\Server\AuthorizationEndpoint\Authorization;
-use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
+use OAuth2Framework\Component\Server\Core\Exception\OAuth2Exception;
 
 interface ParameterChecker
 {
     /**
      * @param Authorization $authorization
-     * @param callable      $next
      *
      * @throws OAuth2Exception
      *
      * @return Authorization
      */
-    public function process(Authorization $authorization, callable $next): Authorization;
+    public function check(Authorization $authorization): Authorization;
 }

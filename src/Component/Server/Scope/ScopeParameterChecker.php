@@ -16,7 +16,7 @@ namespace OAuth2Framework\Component\Server\Scope;
 use OAuth2Framework\Component\Server\AuthorizationEndpoint\Authorization;
 use OAuth2Framework\Component\Server\AuthorizationEndpoint\ParameterChecker\ParameterChecker;
 use OAuth2Framework\Component\Server\Scope\Policy\ScopePolicyManager;
-use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
+use OAuth2Framework\Component\Server\Core\Exception\OAuth2Exception;
 
 final class ScopeParameterChecker implements ParameterChecker
 {
@@ -45,7 +45,7 @@ final class ScopeParameterChecker implements ParameterChecker
     /**
      * {@inheritdoc}
      */
-    public function process(Authorization $authorization, callable $next): Authorization
+    public function check(Authorization $authorization): Authorization
     {
         try {
             if ($authorization->hasQueryParam('scope')) {
@@ -65,7 +65,7 @@ final class ScopeParameterChecker implements ParameterChecker
             }
             $authorization = $authorization->withScopes($scope);
 
-            return $next($authorization);
+            return $authorization;
         } catch (\InvalidArgumentException $e) {
             throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_SCOPE, $e->getMessage(), $authorization, $e);
         }

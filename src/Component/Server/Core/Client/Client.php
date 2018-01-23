@@ -171,7 +171,7 @@ final class Client implements ResourceOwner, ContainsRecordedMessages, DomainObj
     public function isResponseTypeAllowed(string $response_type): bool
     {
         $response_types = $this->has('response_types') ? $this->get('response_types') : [];
-        if (!is_array($response_type)) {
+        if (!is_array($response_types)) {
             throw new \InvalidArgumentException('The metadata "response_types" must be an array.');
         }
 

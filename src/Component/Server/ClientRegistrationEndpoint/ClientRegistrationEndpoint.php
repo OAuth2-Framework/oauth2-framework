@@ -14,15 +14,15 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\Server\ClientRegistrationEndpoint;
 
 use Http\Message\ResponseFactory;
-use Interop\Http\Server\RequestHandlerInterface;
-use Interop\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Http\Server\MiddlewareInterface;
 use OAuth2Framework\Component\Server\ClientRegistrationEndpoint\Rule\RuleManager;
 use OAuth2Framework\Component\Server\Core\Client\Client;
 use OAuth2Framework\Component\Server\Core\Client\ClientId;
 use OAuth2Framework\Component\Server\Core\Client\ClientRepository;
 use OAuth2Framework\Component\Server\Core\Client\Command\CreateClientCommand;
 use OAuth2Framework\Component\Server\Core\DataBag\DataBag;
-use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
+use OAuth2Framework\Component\Server\Core\Exception\OAuth2Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Ramsey\Uuid\Uuid;
@@ -92,7 +92,7 @@ final class ClientRegistrationEndpoint implements MiddlewareInterface
 
             return $this->createResponse($client);
         } catch (\Exception $e) {
-            throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_REQUEST, $e->getMessage(), [], $e);
+            throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_REQUEST, $e->getMessage(), $e);
         }
     }
 

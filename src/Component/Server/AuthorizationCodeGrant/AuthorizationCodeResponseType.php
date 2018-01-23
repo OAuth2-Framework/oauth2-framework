@@ -18,7 +18,7 @@ use OAuth2Framework\Component\Server\AuthorizationCodeGrant\PKCEMethod\PKCEMetho
 use OAuth2Framework\Component\Server\AuthorizationEndpoint\ResponseType;
 use OAuth2Framework\Component\Server\AuthorizationEndpoint\Authorization;
 use OAuth2Framework\Component\Server\Core\DataBag\DataBag;
-use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
+use OAuth2Framework\Component\Server\Core\Exception\OAuth2Exception;
 
 final class AuthorizationCodeResponseType implements ResponseType
 {
@@ -85,7 +85,7 @@ final class AuthorizationCodeResponseType implements ResponseType
     /**
      * {@inheritdoc}
      */
-    public function process(Authorization $authorization, callable $next): Authorization
+    public function process(Authorization $authorization): Authorization
     {
         $queryParams = $authorization->getQueryParams();
 
@@ -115,6 +115,6 @@ final class AuthorizationCodeResponseType implements ResponseType
         $this->authorizationCodeRepository->save($authorizationCode);
         $authorization = $authorization->withResponseParameter('code', $authorizationCode->getTokenId()->getValue());
 
-        return $next($authorization);
+        return $authorization;
     }
 }

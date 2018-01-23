@@ -14,13 +14,13 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\Server\ClientConfigurationEndpoint;
 
 use Http\Message\ResponseFactory;
-use Interop\Http\Server\RequestHandlerInterface;
-use Interop\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Http\Server\MiddlewareInterface;
 use OAuth2Framework\Component\Server\BearerTokenType\BearerToken;
 use OAuth2Framework\Component\Server\ClientRegistrationEndpoint\Rule\RuleManager;
 use OAuth2Framework\Component\Server\Core\Client\Client;
 use OAuth2Framework\Component\Server\Core\Client\ClientRepository;
-use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
+use OAuth2Framework\Component\Server\Core\Exception\OAuth2Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use SimpleBus\Message\Bus\MessageBus;
@@ -118,7 +118,7 @@ final class ClientConfigurationEndpoint implements MiddlewareInterface
                 throw new \InvalidArgumentException('Invalid client or invalid registration access token.');
             }
         } catch (\InvalidArgumentException $e) {
-            throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_REQUEST, $e->getMessage(), [], $e);
+            throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_REQUEST, $e->getMessage(), $e);
         }
     }
 }

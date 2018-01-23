@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\Server\AuthorizationEndpoint\ParameterChecker;
 
 use OAuth2Framework\Component\Server\AuthorizationEndpoint\Authorization;
-use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
 
 /**
  * Class StateParameterChecker.
@@ -24,36 +23,14 @@ use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
 final class StateParameterChecker implements ParameterChecker
 {
     /**
-     * @var bool
-     */
-    private $stateParameterEnforced = false;
-
-    /**
-     * StateParameterChecker constructor.
-     *
-     * @param bool $stateParameterEnforced
-     */
-    public function __construct(bool $stateParameterEnforced)
-    {
-        $this->stateParameterEnforced = $stateParameterEnforced;
-    }
-
-    /**
      * {@inheritdoc}
      */
-    public function process(Authorization $authorization, callable $next): Authorization
+    public function check(Authorization $authorization): Authorization
     {
-        try {
-            if (true === $this->stateParameterEnforced && !$authorization->hasQueryParam('state')) {
-                throw new \InvalidArgumentException('The parameter "state" is mandatory.');
-            }
-            if (true === $authorization->hasQueryParam('state')) {
-                $authorization = $authorization->withResponseParameter('state', $authorization->getQueryParam('state'));
-            }
-
-            return $next($authorization);
-        } catch (\InvalidArgumentException $e) {
-            throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_REQUEST, $e->getMessage(), $authorization, $e);
+        if (true === $authorization->hasQueryParam('state')) {
+            $authorization = $authorization->withResponseParameter('state', $authorization->getQueryParam('state'));
         }
+
+        return $authorization;
     }
 }

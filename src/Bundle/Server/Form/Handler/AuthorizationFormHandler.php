@@ -15,7 +15,7 @@ namespace OAuth2Framework\Bundle\Server\Form\Handler;
 
 use OAuth2Framework\Bundle\Server\Form\Model\AuthorizationModel;
 use OAuth2Framework\Component\Server\AuthorizationEndpoint\Authorization;
-use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
+use OAuth2Framework\Component\Server\Core\Exception\OAuth2Exception;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Component\Form\ClickableInterface;

@@ -46,14 +46,14 @@ final class ResponseTypesRuleTest extends TestCase
     {
         $clientId = ClientId::create('CLIENT_ID');
         $commandParameters = DataBag::create([
-            'response_types' => ['code', 'code id_token'],
+            'response_types' => ['code', 'id_token'],
         ]);
         $validatedParameters = DataBag::create(['grant_types' => ['authorization_code']]);
         $rule = $this->getResponseTypesRule();
         $validatedParameters = $rule->handle($clientId, $commandParameters, $validatedParameters, $this->getCallable());
 
         self::assertTrue($validatedParameters->has('response_types'));
-        self::assertEquals(['code', 'code id_token'], $validatedParameters->get('response_types'));
+        self::assertEquals(['code', 'id_token'], $validatedParameters->get('response_types'));
     }
 
     /**
@@ -95,7 +95,7 @@ final class ResponseTypesRuleTest extends TestCase
     {
         $clientId = ClientId::create('CLIENT_ID');
         $commandParameters = DataBag::create([
-            'response_types' => ['code', 'code id_token'],
+            'response_types' => ['code', 'id_token'],
         ]);
         $rule = $this->getResponseTypesRule();
         $rule->handle($clientId, $commandParameters, DataBag::create([]), $this->getCallable());

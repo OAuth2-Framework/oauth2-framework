@@ -22,10 +22,8 @@ final class MaxAgeParameterChecker implements UserAccountDiscovery
     /**
      * {@inheritdoc}
      */
-    public function find(ServerRequestInterface $request, Authorization $authorization, callable $next): Authorization
+    public function find(ServerRequestInterface $request, Authorization $authorization): Authorization
     {
-        /** @var Authorization $authorization */
-        $authorization = $next($request, $authorization);
         $userAccount = $authorization->getUserAccount();
         if (null !== $userAccount) {
             // Whatever the prompt is, if the max_age constraint is not satisfied, the user is redirected to the login page

@@ -13,12 +13,12 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\AuthorizationEndpoint;
 
-use Interop\Http\Server\RequestHandlerInterface;
-use Interop\Http\Server\MiddlewareInterface;
-use OAuth2Framework\Component\Server\AuthorizationEndpoint\AfterConsentScreen\AfterConsentScreenManager;
-use OAuth2Framework\Component\Server\AuthorizationEndpoint\BeforeConsentScreen\BeforeConsentScreenManager;
+use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use OAuth2Framework\Component\Server\AuthorizationEndpoint\ConsentScreen\ExtensionManager;
+use OAuth2Framework\Component\Server\AuthorizationEndpoint\Exception\OAuth2AuthorizationException;
 use OAuth2Framework\Component\Server\AuthorizationEndpoint\UserAccountDiscovery\UserAccountDiscoveryManager;
-use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
+use OAuth2Framework\Component\Server\Core\Exception\OAuth2Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -30,14 +30,9 @@ abstract class AuthorizationEndpoint implements MiddlewareInterface
     private $userAccountDiscoveryManager;
 
     /**
-     * @var BeforeConsentScreenManager
+     * @var ExtensionManager
      */
-    private $beforeConsentScreenManager;
-
-    /**
-     * @var AfterConsentScreenManager
-     */
-    private $afterConsentScreenManager;
+    private $consentScreenExtensionManager;
 
     /**
      * @var AuthorizationFactory
@@ -49,15 +44,13 @@ abstract class AuthorizationEndpoint implements MiddlewareInterface
      *
      * @param AuthorizationFactory        $authorizationFactory
      * @param UserAccountDiscoveryManager $userAccountDiscoveryManager
-     * @param BeforeConsentScreenManager  $beforeConsentScreenManager
-     * @param AfterConsentScreenManager   $afterConsentScreenManager
+     * @param ExtensionManager            $consentScreenExtensionManager
      */
-    public function __construct(AuthorizationFactory $authorizationFactory, UserAccountDiscoveryManager $userAccountDiscoveryManager, BeforeConsentScreenManager $beforeConsentScreenManager, AfterConsentScreenManager $afterConsentScreenManager)
+    public function __construct(AuthorizationFactory $authorizationFactory, UserAccountDiscoveryManager $userAccountDiscoveryManager, ExtensionManager $consentScreenExtensionManager)
     {
         $this->authorizationFactory = $authorizationFactory;
         $this->userAccountDiscoveryManager = $userAccountDiscoveryManager;
-        $this->beforeConsentScreenManager = $beforeConsentScreenManager;
-        $this->afterConsentScreenManager = $afterConsentScreenManager;
+        $this->consentScreenExtensionManager = $consentScreenExtensionManager;
     }
 
     /**
@@ -89,10 +82,10 @@ abstract class AuthorizationEndpoint implements MiddlewareInterface
                 return $this->redirectToLoginPage($authorization, $request);
             }
 
-            $authorization = $this->beforeConsentScreenManager->process($request, $authorization);
+            $authorization = $this->consentScreenExtensionManager->processBefore($request, $authorization);
 
             return $this->processConsentScreen($request, $authorization);
-        } catch (OAuth2Exception $e) {
+        } catch (OAuth2AuthorizationException $e) {
             $data = $e->getData();
             if (null !== $e->getAuthorization()) {
                 $redirectUri = $e->getAuthorization()->getRedirectUri();
@@ -101,22 +94,21 @@ abstract class AuthorizationEndpoint implements MiddlewareInterface
                     $data['redirect_uri'] = $redirectUri;
                     $data['response_mode'] = $responseMode;
 
-                    throw new OAuth2Exception(302, $data, $e->getAuthorization(), $e);
+                    throw new OAuth2AuthorizationException(302, $data, $e->getAuthorization(), $e);
                 }
             }
 
             throw $e;
         } catch (Exception\ProcessAuthorizationException $e) {
             $authorization = $e->getAuthorization();
-            $authorization = $this->afterConsentScreenManager->process($request, $authorization);
+            $authorization = $this->consentScreenExtensionManager->processAfter($request, $authorization);
             if (false === $authorization->isAuthorized()) {
                 $this->throwRedirectionException($authorization, OAuth2Exception::ERROR_ACCESS_DENIED, 'The resource owner denied access to your client.');
             }
 
-            $responseTypeProcessor = ResponseTypeProcessor::create($authorization);
-
             try {
-                $authorization = $responseTypeProcessor->process();
+                $responseType = $authorization->getResponseType();
+                $authorization = $responseType->process($authorization);
             } catch (OAuth2Exception $e) {
                 $this->throwRedirectionException($authorization, $e->getData()['error'], $e->getData()['error_description']);
             }

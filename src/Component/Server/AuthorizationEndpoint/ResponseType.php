@@ -45,9 +45,8 @@ interface ResponseType
 
     /**
      * @param Authorization $authorization
-     * @param callable      $next
      *
      * @return Authorization
      */
-    public function process(Authorization $authorization, callable $next): Authorization;
+    public function process(Authorization $authorization): Authorization;
 }

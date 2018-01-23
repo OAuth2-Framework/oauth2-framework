@@ -20,7 +20,7 @@ use OAuth2Framework\Component\Server\AuthorizationCodeGrant\AuthorizationCodeId;
 use OAuth2Framework\Component\Server\AuthorizationEndpoint\Authorization;
 use OAuth2Framework\Component\Server\AuthorizationEndpoint\ResponseType;
 use OAuth2Framework\Component\Server\Core\AccessToken\AccessTokenId;
-use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
+use OAuth2Framework\Component\Server\Core\Exception\OAuth2Exception;
 use OAuth2Framework\Component\Server\OpenIdConnect\IdTokenBuilderFactory;
 
 final class IdTokenResponseType implements ResponseType
@@ -98,11 +98,8 @@ final class IdTokenResponseType implements ResponseType
     /**
      * {@inheritdoc}
      */
-    public function process(Authorization $authorization, callable $next): Authorization
+    public function process(Authorization $authorization): Authorization
     {
-        /** @var Authorization $authorization */
-        $authorization = $next($authorization);
-
         if (in_array('openid', $authorization->getScopes())) {
             if (!array_key_exists('nonce', $authorization->getQueryParams())) {
                 throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_REQUEST, 'The parameter "nonce" is mandatory using "id_token" response type.');

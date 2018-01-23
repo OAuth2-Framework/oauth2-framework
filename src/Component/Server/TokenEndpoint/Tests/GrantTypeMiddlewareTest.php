@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\TokenEndpoint\Tests;
 
-use Interop\Http\Server\RequestHandlerInterface;
-use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
+use Psr\Http\Server\RequestHandlerInterface;
+use OAuth2Framework\Component\Server\Core\Exception\OAuth2Exception;
 use OAuth2Framework\Component\Server\TokenEndpoint\GrantType;
 use OAuth2Framework\Component\Server\TokenEndpoint\GrantTypeManager;
 use OAuth2Framework\Component\Server\TokenEndpoint\GrantTypeMiddleware;

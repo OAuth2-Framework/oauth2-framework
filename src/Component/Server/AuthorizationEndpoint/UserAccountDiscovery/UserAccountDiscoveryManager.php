@@ -39,25 +39,10 @@ final class UserAccountDiscoveryManager
      */
     public function find(ServerRequestInterface $request, Authorization $authorization): Authorization
     {
-        return call_user_func($this->callableForNextRule(0), $request, $authorization);
-    }
-
-    /**
-     * @param int $index
-     *
-     * @return \Closure
-     */
-    private function callableForNextRule(int $index): \Closure
-    {
-        if (!isset($this->extensions[$index])) {
-            return function (ServerRequestInterface $request, Authorization $authorization): Authorization {
-                return $authorization;
-            };
+        foreach ($this->extensions as $extension) {
+            $authorization = $extension->find($request, $authorization);
         }
-        $extension = $this->extensions[$index];
 
-        return function (ServerRequestInterface $request, Authorization $authorization) use ($extension, $index): Authorization {
-            return $extension->find($request, $authorization, $this->callableForNextRule($index + 1));
-        };
+        return $authorization;
     }
 }

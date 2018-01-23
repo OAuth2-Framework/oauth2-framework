@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\TokenType\Tests\AccessToken;
 
-use Interop\Http\Server\RequestHandlerInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use OAuth2Framework\Component\Server\TokenType\TokenTypeMiddleware;
 use Prophecy\Argument;
 use Psr\Http\Message\ResponseInterface;

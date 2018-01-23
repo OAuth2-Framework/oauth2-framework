@@ -13,16 +13,16 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Server\OpenIdConnect\AfterConsentScreen;
 
-use OAuth2Framework\Component\Server\AuthorizationEndpoint\AfterConsentScreen\AfterConsentScreen;
+use OAuth2Framework\Component\Server\AuthorizationEndpoint\AfterConsentScreen\Extension;
 use OAuth2Framework\Component\Server\AuthorizationEndpoint\Authorization;
 use Psr\Http\Message\ServerRequestInterface;
 
-abstract class SessionStateParameterExtension implements AfterConsentScreen
+abstract class SessionStateParameterExtension implements Extension
 {
     /**
      * {@inheritdoc}
      */
-    public function process(ServerRequestInterface $request, Authorization $authorization): Authorization
+    public function processAfter(ServerRequestInterface $request, Authorization $authorization): Authorization
     {
         if ($this->hasOpenIdScope($authorization)) {
             $browserState = $this->getBrowserState($request, $authorization);

@@ -11,12 +11,12 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Component\Server\AuthorizationEndpoint\AfterConsentScreen;
+namespace OAuth2Framework\Component\Server\AuthorizationEndpoint\ConsentScreen;
 
 use OAuth2Framework\Component\Server\AuthorizationEndpoint\Authorization;
 use Psr\Http\Message\ServerRequestInterface;
 
-interface AfterConsentScreen
+interface Extension
 {
     /**
      * @param ServerRequestInterface $request
@@ -24,5 +24,13 @@ interface AfterConsentScreen
      *
      * @return Authorization
      */
-    public function process(ServerRequestInterface $request, Authorization $authorization): Authorization;
+    public function processAfter(ServerRequestInterface $request, Authorization $authorization): Authorization;
+
+    /**
+     * @param ServerRequestInterface $request
+     * @param Authorization          $authorization
+     *
+     * @return Authorization
+     */
+    public function processBefore(ServerRequestInterface $request, Authorization $authorization): Authorization;
 }

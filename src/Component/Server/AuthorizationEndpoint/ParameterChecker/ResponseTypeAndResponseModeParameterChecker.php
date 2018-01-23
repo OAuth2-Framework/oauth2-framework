@@ -14,10 +14,11 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\Server\AuthorizationEndpoint\ParameterChecker;
 
 use OAuth2Framework\Component\Server\AuthorizationEndpoint\Authorization;
+use OAuth2Framework\Component\Server\AuthorizationEndpoint\Exception\OAuth2AuthorizationException;
 use OAuth2Framework\Component\Server\AuthorizationEndpoint\ResponseMode\ResponseModeManager;
 use OAuth2Framework\Component\Server\AuthorizationEndpoint\ResponseType;
 use OAuth2Framework\Component\Server\AuthorizationEndpoint\ResponseTypeManager;
-use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
+use OAuth2Framework\Component\Server\Core\Exception\OAuth2Exception;
 
 final class ResponseTypeAndResponseModeParameterChecker implements ParameterChecker
 {
@@ -53,7 +54,7 @@ final class ResponseTypeAndResponseModeParameterChecker implements ParameterChec
     /**
      * {@inheritdoc}
      */
-    public function process(Authorization $authorization, callable $next): Authorization
+    public function check(Authorization $authorization): Authorization
     {
         try {
             /*
@@ -62,26 +63,26 @@ final class ResponseTypeAndResponseModeParameterChecker implements ParameterChec
             if (!$authorization->hasQueryParam('response_type')) {
                 throw new \InvalidArgumentException('The parameter "response_type" is mandatory.');
             }
-            $responseType = $authorization->getQueryParam('response_type');
-            $responseTypes = $this->getResponseTypes($authorization->getQueryParam('response_type'));
-            $authorization = $authorization->withResponseTypes($responseTypes);
+            $responseTypeName = $authorization->getQueryParam('response_type');
+            $responseType = $this->getResponseType($responseTypeName);
+            if (!$authorization->getClient()->isResponseTypeAllowed($responseTypeName)) {
+                throw new \InvalidArgumentException(sprintf('The response type "%s" is not allowed for this client.', $responseTypeName)); // Should try to find the response mode before exception
+            }
+            $authorization = $authorization->withResponseType($responseType);
 
             if (true === $authorization->hasQueryParam('response_mode') && $this->isResponseModeParameterInAuthorizationRequestAllowed()) {
                 $responseMode = $authorization->getQueryParam('response_mode');
             } else {
-                $responseMode = $this->findResponseMode($responseTypes, $responseType);
+                $responseMode = $responseType->getResponseMode();
             }
             if (!$this->responseModeManager->has($responseMode)) {
-                throw new \InvalidArgumentException(sprintf('The response mode "%s" is supported. Please use one of the following values: %s.', $responseMode, implode(', ', $this->responseModeManager->list())));
+                throw new \InvalidArgumentException(sprintf('The response mode "%s" is not supported. Please use one of the following values: %s.', $responseMode, implode(', ', $this->responseModeManager->all())));
             }
             $authorization = $authorization->withResponseMode($this->responseModeManager->get($responseMode));
-            if (!$authorization->getClient()->isResponseTypeAllowed($responseType)) {
-                throw new \InvalidArgumentException(sprintf('The response type "%s" is unauthorized for this client.', $responseType)); // Should try to find the response mode before exception
-            }
 
-            return $next($authorization);
+            return $authorization;
         } catch (\InvalidArgumentException $e) {
-            throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_REQUEST, $e->getMessage(), $authorization, $e);
+            throw new OAuth2AuthorizationException(400, OAuth2Exception::ERROR_INVALID_REQUEST, $e->getMessage(), $authorization, $e);
         }
     }
 
@@ -90,16 +91,15 @@ final class ResponseTypeAndResponseModeParameterChecker implements ParameterChec
      *
      * @throws \InvalidArgumentException
      *
-     * @return ResponseType[]
+     * @return ResponseType
      */
-    private function getResponseTypes(string $responseType): array
+    private function getResponseType(string $responseType): ResponseType
     {
-        if (!$this->responseTypeManager->isSupported($responseType)) {
-            throw new \InvalidArgumentException(sprintf('Response type "%s" is not supported by this server', $responseType));
+        if (!$this->responseTypeManager->has($responseType)) {
+            throw new \InvalidArgumentException(sprintf('The response type "%s" is not supported by this server', $responseType));
         }
-        $types = $this->responseTypeManager->find($responseType);
 
-        return $types;
+        return $this->responseTypeManager->get($responseType);
     }
 
     /**
@@ -108,30 +108,5 @@ final class ResponseTypeAndResponseModeParameterChecker implements ParameterChec
     public function isResponseModeParameterInAuthorizationRequestAllowed(): bool
     {
         return $this->responseModeParameterInAuthorizationRequestAllowed;
-    }
-
-    /**
-     * @param array  $types
-     * @param string $responseType
-     *
-     * @return string
-     */
-    public function findResponseMode(array $types, string $responseType): string
-    {
-        if (1 === count($types)) {
-            // There is only one type (OAuth2 request)
-            return $types[0]->getResponseMode();
-        }
-
-        //There are multiple response types
-        switch ($responseType) {
-            case 'code token':
-            case 'code id_token':
-            case 'id_token token':
-            case 'code id_token token':
-                return 'fragment';
-            default:
-                throw new \InvalidArgumentException(sprintf('Unsupported response type combination "%s".', $responseType));
-        }
     }
 }

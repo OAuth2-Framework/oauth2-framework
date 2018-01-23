@@ -15,7 +15,7 @@ namespace OAuth2Framework\Component\Server\RefreshTokenGrant;
 
 use OAuth2Framework\Component\Server\TokenEndpoint\GrantTypeData;
 use OAuth2Framework\Component\Server\Core\Client\Client;
-use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
+use OAuth2Framework\Component\Server\Core\Exception\OAuth2Exception;
 use OAuth2Framework\Component\Server\TokenEndpoint\GrantType;
 use Psr\Http\Message\ServerRequestInterface;
 

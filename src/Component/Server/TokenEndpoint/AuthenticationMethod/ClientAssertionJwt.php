@@ -24,7 +24,7 @@ use Jose\Component\Signature\Serializer\CompactSerializer;
 use OAuth2Framework\Component\Server\Core\Client\Client;
 use OAuth2Framework\Component\Server\Core\Client\ClientId;
 use OAuth2Framework\Component\Server\Core\DataBag\DataBag;
-use OAuth2Framework\Component\Server\Core\Response\OAuth2Exception;
+use OAuth2Framework\Component\Server\Core\Exception\OAuth2Exception;
 use Psr\Http\Message\ServerRequestInterface;
 
 final class ClientAssertionJwt implements AuthenticationMethod
@@ -172,7 +172,7 @@ final class ClientAssertionJwt implements AuthenticationMethod
 
             return ClientId::create($claims['sub']);
         } catch (\Exception $e) {
-            throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_REQUEST, $e->getMessage(), [], $e);
+            throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_REQUEST, $e->getMessage(), $e);
         }
     }
 
@@ -198,7 +198,7 @@ final class ClientAssertionJwt implements AuthenticationMethod
             return $jwe->getPayload();
         } catch (\Exception $e) {
             if (true === $this->encryptionRequired) {
-                throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_REQUEST, $e->getMessage(), [], $e);
+                throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_REQUEST, $e->getMessage(), $e);
             }
 
             return $assertion;

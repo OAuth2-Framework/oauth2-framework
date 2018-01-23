@@ -15,7 +15,7 @@ namespace OAuth2Framework\Bundle\Server\Service;
 
 use Http\Message\MessageFactory;
 use Interop\Http\Server\RequestHandlerInterface;
-use Interop\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 
