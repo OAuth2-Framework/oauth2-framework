@@ -39,8 +39,8 @@ final class CodeIdTokenTokenResponseType implements ResponseType
      * CodeIdTokenTokenResponseType constructor.
      *
      * @param AuthorizationCodeResponseType $codeResponseType
-     * @param IdTokenResponseType $idTokenResponseType
-     * @param TokenResponseType $tokenResponseType
+     * @param IdTokenResponseType           $idTokenResponseType
+     * @param TokenResponseType             $tokenResponseType
      */
     public function __construct(AuthorizationCodeResponseType $codeResponseType, IdTokenResponseType $idTokenResponseType, TokenResponseType $tokenResponseType)
     {

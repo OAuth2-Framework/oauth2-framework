@@ -33,7 +33,7 @@ final class IdTokenTokenResponseType implements ResponseType
      * IdTokenTokenResponseType constructor.
      *
      * @param IdTokenResponseType $idTokenResponseType
-     * @param TokenResponseType $tokenResponseType
+     * @param TokenResponseType   $tokenResponseType
      */
     public function __construct(IdTokenResponseType $idTokenResponseType, TokenResponseType $tokenResponseType)
     {
