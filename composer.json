@@ -86,9 +86,6 @@
             "OAuth2Framework\\": "src/"
         }
     },
-    "autoload-dev": {
-        "files": [ "vendor/symfony/symfony/src/Symfony/Component/VarDumper/Resources/functions/dump.php" ]
-    },
     "scripts": {
         "test": "./vendor/bin/phpunit"
     },
