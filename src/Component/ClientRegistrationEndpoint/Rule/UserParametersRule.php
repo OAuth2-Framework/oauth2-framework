@@ -42,7 +42,7 @@ final class UserParametersRule implements Rule
             if (!is_array($default_acr_values)) {
                 throw new \InvalidArgumentException('The parameter "default_acr_values" must be an array of strings.');
             }
-            array_map(function($default_acr_value) {
+            array_map(function ($default_acr_value) {
                 if (!is_string($default_acr_value)) {
                     throw new \InvalidArgumentException('The parameter "default_acr_values" must be an array of strings.');
                 }
