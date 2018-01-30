@@ -52,11 +52,11 @@ final class InitialAccessTokenRepository implements \OAuth2Framework\Component\C
     /**
      * InitialAccessTokenRepository constructor.
      *
-     * @param int                 $minLength
-     * @param int                 $maxLength
-     * @param EventStore $eventStore
-     * @param RecordsMessages     $eventRecorder
-     * @param AdapterInterface    $cache
+     * @param int              $minLength
+     * @param int              $maxLength
+     * @param EventStore       $eventStore
+     * @param RecordsMessages  $eventRecorder
+     * @param AdapterInterface $cache
      */
     public function __construct(int $minLength, int $maxLength, EventStore $eventStore, RecordsMessages $eventRecorder, AdapterInterface $cache)
     {

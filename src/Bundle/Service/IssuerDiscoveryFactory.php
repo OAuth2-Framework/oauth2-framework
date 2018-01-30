@@ -44,7 +44,7 @@ final class IssuerDiscoveryFactory
 
     /**
      * @param ResourceRepository $resourceManager
-     * @param string                      $server
+     * @param string             $server
      *
      * @return IssuerDiscoveryEndpoint
      */

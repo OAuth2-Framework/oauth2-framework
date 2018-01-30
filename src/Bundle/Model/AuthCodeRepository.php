@@ -61,12 +61,12 @@ final class AuthCodeRepository implements AuthorizationCodeRepository
     /**
      * AuthCodeRepository constructor.
      *
-     * @param int                 $minLength
-     * @param int                 $maxLength
-     * @param int                 $lifetime
-     * @param EventStore $eventStore
-     * @param MessageBus          $eventBus
-     * @param AdapterInterface    $cache
+     * @param int              $minLength
+     * @param int              $maxLength
+     * @param int              $lifetime
+     * @param EventStore       $eventStore
+     * @param MessageBus       $eventBus
+     * @param AdapterInterface $cache
      */
     public function __construct(int $minLength, int $maxLength, int $lifetime, EventStore $eventStore, MessageBus $eventBus, AdapterInterface $cache)
     {

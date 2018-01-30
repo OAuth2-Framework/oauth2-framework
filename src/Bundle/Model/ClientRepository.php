@@ -40,9 +40,9 @@ final class ClientRepository implements \OAuth2Framework\Component\Core\Client\C
     /**
      * ClientRepository constructor.
      *
-     * @param EventStore $eventStore
-     * @param RecordsMessages     $eventRecorder
-     * @param AdapterInterface    $cache
+     * @param EventStore       $eventStore
+     * @param RecordsMessages  $eventRecorder
+     * @param AdapterInterface $cache
      */
     public function __construct(EventStore $eventStore, RecordsMessages $eventRecorder, AdapterInterface $cache)
     {
