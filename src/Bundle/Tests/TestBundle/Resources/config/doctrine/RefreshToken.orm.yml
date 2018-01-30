@@ -1,0 +1,9 @@
+OAuth2Framework\Bundle\Tests\TestBundle\Entity\RefreshToken:
+    type: 'entity'
+    table: 'refresh_tokens'
+    id:
+        id:
+            column: 'id'
+            type: 'string'
+            nullable: false
+            generator: { strategy: 'AUTO' }

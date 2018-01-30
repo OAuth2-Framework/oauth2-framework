@@ -1,0 +1,9 @@
+OAuth2Framework\Bundle\Tests\TestBundle\Entity\InitialAccessToken:
+    type: 'entity'
+    table: 'initial_access_tokens'
+    id:
+        id:
+            column: 'id'
+            type: 'string'
+            nullable: false
+            generator: { strategy: 'AUTO' }
