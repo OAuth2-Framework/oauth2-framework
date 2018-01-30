@@ -80,6 +80,10 @@ final class TokenTypeManager
      */
     public function getDefault(): TokenType
     {
+        if (null === $this->defaultTokenType) {
+            throw new \LogicException('No default token type set.');
+        }
+
         return $this->get($this->defaultTokenType);
     }
 

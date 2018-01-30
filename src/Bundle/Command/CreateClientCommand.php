@@ -21,7 +21,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\Question;
 
-final class ClientCommand extends ContainerAwareCommand
+final class CreateClientCommand extends ContainerAwareCommand
 {
     /**
      * {@inheritdoc}
@@ -29,7 +29,7 @@ final class ClientCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('spomky-labs:oauth2-server:client:create')
+            ->setName('oauth2-server:client:create')
             ->setDescription('Create a new client')
             ->setHelp(<<<'EOT'
 The <info>%command.name%</info> command will create a new client.

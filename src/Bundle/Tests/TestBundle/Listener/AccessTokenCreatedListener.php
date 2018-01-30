@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Tests\TestBundle\Listener;
 
-use OAuth2Framework\Component\Event\AccessToken\AccessTokenCreatedEvent;
+use OAuth2Framework\Component\Core\AccessToken\Event\AccessTokenCreatedEvent;
 
 final class AccessTokenCreatedListener
 {

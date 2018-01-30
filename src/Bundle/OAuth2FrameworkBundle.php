@@ -11,7 +11,7 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Bundle\Server;
+namespace OAuth2Framework\Bundle;
 
 use OAuth2Framework\Bundle\DependencyInjection\Compiler;
 use OAuth2Framework\Bundle\DependencyInjection\OAuth2FrameworkServerExtension;
@@ -21,7 +21,7 @@ use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-final class OAuth2FrameworkServerBundle extends Bundle
+final class OAuth2FrameworkBundle extends Bundle
 {
     /**
      * {@inheritdoc}
@@ -29,7 +29,7 @@ final class OAuth2FrameworkServerBundle extends Bundle
     public function boot()
     {
         parent::boot();
-        //$this->container->get('twig.loader')->addPath(__DIR__.DIRECTORY_SEPARATOR.'Resources'.DIRECTORY_SEPARATOR.'views', 'OAuth2FrameworkServerBundle');
+        //$this->container->get('twig.loader')->addPath(__DIR__.DIRECTORY_SEPARATOR.'Resources'.DIRECTORY_SEPARATOR.'views', 'OAuth2FrameworkBundle');
     }
 
     /**

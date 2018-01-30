@@ -14,15 +14,15 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\Service;
 
 use OAuth2Framework\Bundle\TokenEndpointAuthMethod\ClientAssertionJwt;
-use OAuth2Framework\Component\Endpoint\Authorization\AuthorizationRequestLoader;
-use OAuth2Framework\Component\Endpoint\UserInfo\UserInfo;
-use OAuth2Framework\Component\GrantType\GrantTypeManager;
-use OAuth2Framework\Component\GrantType\PKCEMethod\PKCEMethodManager;
-use OAuth2Framework\Component\Model\Scope\ScopeRepositoryInterface;
-use OAuth2Framework\Component\ResponseMode\ResponseModeManager;
-use OAuth2Framework\Component\ResponseType\ResponseTypeManager;
-use OAuth2Framework\Component\TokenEndpointAuthMethod\TokenEndpointAuthMethodManager;
-use OAuth2Framework\Component\Endpoint\Metadata\Metadata;
+use OAuth2Framework\Component\AuthorizationCodeGrant\PKCEMethod\PKCEMethodManager;
+use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequestLoader;
+use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\ResponseModeManager;
+use OAuth2Framework\Component\AuthorizationEndpoint\ResponseTypeManager;
+use OAuth2Framework\Component\MetadataEndpoint\Metadata;
+use OAuth2Framework\Component\OpenIdConnect\UserInfo\UserInfo;
+use OAuth2Framework\Component\Scope\ScopeRepository;
+use OAuth2Framework\Component\TokenEndpoint\AuthenticationMethod\AuthenticationMethodManager;
+use OAuth2Framework\Component\TokenEndpoint\GrantTypeManager;
 use Symfony\Component\Routing\RouterInterface;
 
 final class MetadataBuilder
@@ -90,7 +90,7 @@ final class MetadataBuilder
      */
     public function setGrantTypeManager(GrantTypeManager $grantTypeManager)
     {
-        $this->metadata->set('grant_types_supported', $grantTypeManager->getSupportedGrantTypes());
+        $this->metadata->set('grant_types_supported', $grantTypeManager->list());
     }
 
     /**
@@ -110,19 +110,19 @@ final class MetadataBuilder
     }
 
     /**
-     * @param TokenEndpointAuthMethodManager $tokenEndpointAuthMethodManager
+     * @param AuthenticationMethodManager $tokenEndpointAuthMethodManager
      */
-    public function setTokenEndpointAuthMethodManager(TokenEndpointAuthMethodManager $tokenEndpointAuthMethodManager)
+    public function setTokenEndpointAuthMethodManager(AuthenticationMethodManager $tokenEndpointAuthMethodManager)
     {
         $this->metadata->set('token_endpoint_auth_methods_supported', $tokenEndpointAuthMethodManager->all());
     }
 
     /**
-     * @param ScopeRepositoryInterface $scopeRepository
+     * @param ScopeRepository $scopeRepository
      */
-    public function setScopeRepository(ScopeRepositoryInterface $scopeRepository)
+    public function setScopeRepository(ScopeRepository $scopeRepository)
     {
-        $this->metadata->set('scopes_supported', $scopeRepository->getSupportedScopes());
+        $this->metadata->set('scopes_supported', $scopeRepository->all());
     }
 
     /**
@@ -131,7 +131,7 @@ final class MetadataBuilder
     public function setUserinfo(UserInfo $userInfo)
     {
         $this->metadata->set('subject_types_supported', $userInfo->isPairwiseSubjectIdentifierSupported() ? ['public', 'pairwise'] : ['public']);
-        $this->metadata->set('claims_supported', $userInfo->getClaimsSupported());
+        $this->metadata->set('claims_supported', $userInfo->getSupportedClaims());
     }
 
     /**

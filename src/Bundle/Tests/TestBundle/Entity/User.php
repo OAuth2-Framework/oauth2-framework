@@ -13,12 +13,13 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Tests\TestBundle\Entity;
 
-use OAuth2Framework\Component\Model\ResourceOwner\ResourceOwnerId;
-use OAuth2Framework\Component\Model\UserAccount\UserAccountId;
-use OAuth2Framework\Component\Model\UserAccount\UserAccountInterface;
+use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwnerId;
+use OAuth2Framework\Component\Core\UserAccount\UserAccount;
+use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
+use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-final class User implements UserInterface, UserAccountInterface
+final class User implements UserInterface, UserAccount, EquatableInterface
 {
     /**
      * @var string
@@ -136,13 +137,15 @@ final class User implements UserInterface, UserAccountInterface
      */
     public function get(string $key)
     {
-        Assertion::true($this->has($key), sprintf('Configuration value with key \'%s\' does not exist.', $key));
+        if (!$this->has($key)) {
+            throw new \InvalidArgumentException(sprintf('Configuration value with key "%s" does not exist.', $key));
+        };
 
         return $this->parameters[$key];
     }
 
     /**
-     * @return string[]
+     * {@inheritdoc}
      */
     public function getRoles(): array
     {
@@ -150,7 +153,7 @@ final class User implements UserInterface, UserAccountInterface
     }
 
     /**
-     * @return null|string
+     * {@inheritdoc}
      */
     public function getSalt()
     {
@@ -158,7 +161,7 @@ final class User implements UserInterface, UserAccountInterface
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getUsername(): string
     {
@@ -166,23 +169,24 @@ final class User implements UserInterface, UserAccountInterface
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getPassword(): string
     {
         return $this->password;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function eraseCredentials()
     {
     }
 
     /**
-     * @param UserInterface $user
-     *
-     * @return bool
+     * {@inheritdoc}
      */
-    public function equals(UserInterface $user)
+    public function isEqualTo(UserInterface $user)
     {
         if (!$user instanceof self) {
             return false;

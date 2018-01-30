@@ -17,6 +17,7 @@ use Http\Message\MessageFactory;
 use OAuth2Framework\Bundle\Form\FormFactory;
 use OAuth2Framework\Bundle\Form\Handler\AuthorizationFormHandler;
 use OAuth2Framework\Bundle\Form\Model\AuthorizationModel;
+use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationEndpoint;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;

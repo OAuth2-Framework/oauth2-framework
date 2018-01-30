@@ -15,7 +15,7 @@ namespace OAuth2Framework\Bundle\DependencyInjection\Compiler;
 
 use OAuth2Framework\Bundle\Routing\RouteLoader;
 use OAuth2Framework\Bundle\Service\MetadataBuilder;
-use OAuth2Framework\Component\Endpoint\ClientRegistration\ClientRegistrationEndpoint;
+use OAuth2Framework\Component\ClientRegistrationEndpoint\ClientRegistrationEndpoint;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 

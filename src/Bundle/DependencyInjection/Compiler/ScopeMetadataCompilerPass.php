@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\DependencyInjection\Compiler;
 
 use OAuth2Framework\Bundle\Service\MetadataBuilder;
-use OAuth2Framework\Component\Model\Scope\ScopeRepositoryInterface;
+use OAuth2Framework\Component\Scope\ScopeRepository;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
@@ -26,10 +26,10 @@ final class ScopeMetadataCompilerPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        if (!$container->hasDefinition(MetadataBuilder::class) || !$container->hasAlias(ScopeRepositoryInterface::class)) {
+        if (!$container->hasDefinition(MetadataBuilder::class) || !$container->hasAlias(ScopeRepository::class)) {
             return;
         }
         $metadata = $container->getDefinition(MetadataBuilder::class);
-        $metadata->addMethodCall('setScopeRepository', [new Reference(ScopeRepositoryInterface::class)]);
+        $metadata->addMethodCall('setScopeRepository', [new Reference(ScopeRepository::class)]);
     }
 }

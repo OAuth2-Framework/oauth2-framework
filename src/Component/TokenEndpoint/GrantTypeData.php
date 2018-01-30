@@ -109,7 +109,7 @@ final class GrantTypeData
 
     /**
      * @param string $key
-     * @param $parameter
+     * @param mixed  $parameter
      *
      * @return GrantTypeData
      */

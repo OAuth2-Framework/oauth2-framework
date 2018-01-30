@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 use Http\Factory\Diactoros\UriFactory;
 use OAuth2Framework\Bundle\Model\AccessTokenByReferenceRepository;
-use OAuth2Framework\Component\Model\Scope\ScopeRepository;
 use OAuth2Framework\Bundle\Tests\TestBundle\Entity\ResourceRepository;
 use OAuth2Framework\Bundle\Tests\TestBundle\Entity\UserManager;
 use OAuth2Framework\Bundle\Tests\TestBundle\Entity\UserRepository;
@@ -21,24 +20,12 @@ use OAuth2Framework\Bundle\Tests\TestBundle\Listener;
 use OAuth2Framework\Bundle\Tests\TestBundle\Service\AccessTokenHandler;
 use OAuth2Framework\Bundle\Tests\TestBundle\Service\UserProvider;
 use OAuth2Framework\Bundle\Tests\TestBundle\Service\EventStore;
-use OAuth2Framework\Component\Endpoint\UserInfo\Pairwise\EncryptedSubjectIdentifier;
-use OAuth2Framework\Component\Event\AccessToken;
-use OAuth2Framework\Component\Event\AuthCode;
-use OAuth2Framework\Component\Event\Client;
-use OAuth2Framework\Component\Event\RefreshToken;
-use OAuth2Framework\Component\Tests\Stub\ResourceServerAuthMethodByIpAddress;
-use OAuth2Framework\Component\Tests\Stub\ResourceServerRepository;
 use function Fluent\autowire;
 use function Fluent\create;
 use function Fluent\get;
 
 return [
     UriFactory::class => autowire(),
-
-    'MyScopeRepository' => create(ScopeRepository::class)
-        ->arguments(
-            ['openid', 'email', 'profile', 'address', 'phone', 'offline_access']
-        ),
 
     'EventStore.RefreshToken' => create(EventStore::class)
         ->arguments(

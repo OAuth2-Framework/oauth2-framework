@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\DependencyInjection\Compiler;
 
 use OAuth2Framework\Bundle\Service\MetadataBuilder;
-use OAuth2Framework\Component\GrantType\GrantTypeManager;
+use OAuth2Framework\Component\TokenEndpoint\GrantTypeManager;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;

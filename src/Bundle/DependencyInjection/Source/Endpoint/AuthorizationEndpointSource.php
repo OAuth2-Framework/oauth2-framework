@@ -75,7 +75,7 @@ final class AuthorizationEndpointSource extends ActionableSource
                 ->end()
                 ->scalarNode('template')
                     ->info('The consent page template.')
-                    ->defaultValue('@OAuth2FrameworkServerBundle/authorization/authorization.html.twig')
+                    ->defaultValue('@OAuth2FrameworkBundle/authorization/authorization.html.twig')
                 ->end()
                 ->scalarNode('allow_token_type_parameter')
                     ->info('If true the "token_type" parameter is allowed, else it will be ignored.')

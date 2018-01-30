@@ -13,13 +13,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Tests\TestBundle;
 
-use OAuth2Framework\Bundle\Tests\TestBundle\DependencyInjection\TestExtension;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-final class SpomkyLabsTestBundle extends Bundle
+final class TestBundle extends Bundle
 {
-    public function getContainerExtension()
-    {
-        return new TestExtension('oauth2_test');
-    }
 }

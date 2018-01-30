@@ -75,12 +75,12 @@ final class ClientSecretBasic implements AuthenticationMethod
     }
 
     /**
-     * @param $authorization_header
-     * @param null $client_credentials
+     * @param string      $authorization_header
+     * @param string|null $client_credentials
      *
      * @return ClientId|null
      */
-    private function findClientIdAndCredentialsInAuthorizationHeader($authorization_header, &$client_credentials = null)
+    private function findClientIdAndCredentialsInAuthorizationHeader(string $authorization_header, ?string &$client_credentials = null)
     {
         if ('basic ' === mb_strtolower(mb_substr($authorization_header, 0, 6, '8bit'), '8bit')) {
             list($client_id, $client_secret) = explode(':', base64_decode(mb_substr($authorization_header, 6, mb_strlen($authorization_header, '8bit') - 6, '8bit')));

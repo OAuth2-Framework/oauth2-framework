@@ -3,11 +3,11 @@ jwkset_endpoint:
     resource: "@JoseFrameworkBundle/Resources/config/routing/jwkset_controller.yml"
     prefix: '/keys'
 
-# OAuth2FrameworkServerBundle Routes
+# OAuth2FrameworkBundle Routes
 oauth2:
-    resource: '@OAuth2FrameworkServerBundle/Resources/config/routing/routing.yml'
+    resource: '@OAuth2FrameworkBundle/Resources/config/routing/routing.yml'
 
 # API & Login Routes
 api:
-    resource: '@SpomkyLabsTestBundle/Controller'
+    resource: '@TestBundle/Controller'
     type:     'annotation'

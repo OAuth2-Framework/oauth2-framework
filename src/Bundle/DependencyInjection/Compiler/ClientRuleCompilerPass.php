@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\DependencyInjection\Compiler;
 
-use OAuth2Framework\Component\Model\Client\Rule\RuleManager;
+use OAuth2Framework\Component\ClientRegistrationEndpoint\Rule\RuleManager;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;

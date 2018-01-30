@@ -13,7 +13,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Tests\TestBundle\Listener;
 
-use OAuth2Framework\Component\Event\Client\ClientParametersUpdatedEvent;
+
+use OAuth2Framework\Component\Core\Client\Event\ClientParametersUpdatedEvent;
 
 final class ClientParametersUpdatedListener
 {

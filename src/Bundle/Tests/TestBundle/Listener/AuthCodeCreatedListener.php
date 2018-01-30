@@ -13,25 +13,25 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Tests\TestBundle\Listener;
 
-use OAuth2Framework\Component\Event\AuthCode\AuthCodeCreatedEvent;
+use OAuth2Framework\Component\AuthorizationCodeGrant\Event\AuthorizationCodeCreatedEvent;
 
 final class AuthCodeCreatedListener
 {
     /**
-     * @var AuthCodeCreatedEvent[]
+     * @var AuthorizationCodeCreatedEvent[]
      */
     private $events = [];
 
     /**
-     * @param AuthCodeCreatedEvent $event
+     * @param AuthorizationCodeCreatedEvent $event
      */
-    public function handle(AuthCodeCreatedEvent $event)
+    public function handle(AuthorizationCodeCreatedEvent $event)
     {
         $this->events[] = $event;
     }
 
     /**
-     * @return AuthCodeCreatedEvent[]
+     * @return AuthorizationCodeCreatedEvent[]
      */
     public function getEvents()
     {

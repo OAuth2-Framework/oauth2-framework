@@ -13,25 +13,26 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Tests\TestBundle\Listener;
 
-use OAuth2Framework\Component\Event\AuthCode\AuthCodeRevokedEvent;
+
+use OAuth2Framework\Component\AuthorizationCodeGrant\Event\AuthorizationCodeRevokedEvent;
 
 final class AuthCodeRevokedListener
 {
     /**
-     * @var AuthCodeRevokedEvent[]
+     * @var AuthorizationCodeRevokedEvent[]
      */
     private $events = [];
 
     /**
-     * @param AuthCodeRevokedEvent $event
+     * @param AuthorizationCodeRevokedEvent $event
      */
-    public function handle(AuthCodeRevokedEvent $event)
+    public function handle(AuthorizationCodeRevokedEvent $event)
     {
         $this->events[] = $event;
     }
 
     /**
-     * @return AuthCodeRevokedEvent[]
+     * @return AuthorizationCodeRevokedEvent[]
      */
     public function getEvents()
     {

@@ -14,22 +14,23 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\Controller;
 
 use Interop\Http\Server\RequestHandlerInterface;
+use OAuth2Framework\Bundle\Model\ClientRepository;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 final class ClientConfigurationMiddleware implements MiddlewareInterface
 {
     /**
-     * @var ClientRepositoryInterface
+     * @var ClientRepository
      */
     private $clientRepository;
 
     /**
      * ClientConfigurationMiddleware constructor.
      *
-     * @param ClientRepositoryInterface $clientRepository
+     * @param ClientRepository $clientRepository
      */
-    public function __construct(ClientRepositoryInterface $clientRepository)
+    public function __construct(ClientRepository $clientRepository)
     {
         $this->clientRepository = $clientRepository;
     }

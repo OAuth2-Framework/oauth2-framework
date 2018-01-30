@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\DependencyInjection\Compiler;
 
 use OAuth2Framework\Bundle\Routing\RouteLoader;
-use OAuth2Framework\Component\Endpoint\ClientConfiguration\ClientConfigurationEndpoint;
+use OAuth2Framework\Component\ClientConfigurationEndpoint\ClientConfigurationEndpoint;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 

@@ -14,19 +14,11 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\Model;
 
 use OAuth2Framework\Bundle\Service\RandomIdGenerator;
-use OAuth2Framework\Component\Model\AuthCode\AuthCode;
-use OAuth2Framework\Component\Model\AuthCode\AuthCodeId;
-use OAuth2Framework\Component\Model\AuthCode\AuthCodeRepositoryInterface;
-use OAuth2Framework\Component\Model\Client\ClientId;
-use OAuth2Framework\Component\Model\DataBag\DataBag;
-use OAuth2Framework\Component\Model\Event\Event;
-use OAuth2Framework\Component\Model\Event\EventStoreInterface;
-use OAuth2Framework\Component\Model\ResourceServer\ResourceServerId;
-use OAuth2Framework\Component\Model\UserAccount\UserAccountId;
+use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeRepository;
 use SimpleBus\Message\Bus\MessageBus;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 
-final class AuthCodeRepository implements AuthCodeRepositoryInterface
+final class AuthCodeRepository implements AuthorizationCodeRepository
 {
     /**
      * @var int

@@ -13,25 +13,25 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\DependencyInjection\Compiler;
 
-use OAuth2Framework\Component\Endpoint\Authorization\AfterConsentScreen\AfterConsentScreenManager;
+use OAuth2Framework\Component\AuthorizationEndpoint\ConsentScreen\ExtensionManager;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
-final class AfterConsentScreenCompilerPass implements CompilerPassInterface
+final class ConsentScreenExtensionCompilerPass implements CompilerPassInterface
 {
     /**
      * {@inheritdoc}
      */
     public function process(ContainerBuilder $container)
     {
-        if (!$container->hasDefinition(AfterConsentScreenManager::class)) {
+        if (!$container->hasDefinition(ExtensionManager::class)) {
             return;
         }
 
-        $definition = $container->getDefinition(AfterConsentScreenManager::class);
+        $definition = $container->getDefinition(ExtensionManager::class);
 
-        $taggedServices = $container->findTaggedServiceIds('oauth2_server_after_consent_screen');
+        $taggedServices = $container->findTaggedServiceIds('oauth2_server_consent_screen_extension');
         foreach ($taggedServices as $id => $attributes) {
             $definition->addMethodCall('add', [new Reference($id)]);
         }

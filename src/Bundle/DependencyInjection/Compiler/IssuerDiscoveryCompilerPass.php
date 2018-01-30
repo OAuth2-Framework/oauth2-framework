@@ -15,7 +15,7 @@ namespace OAuth2Framework\Bundle\DependencyInjection\Compiler;
 
 use OAuth2Framework\Bundle\Routing\RouteLoader;
 use OAuth2Framework\Bundle\Service\IssuerDiscoveryFactory;
-use OAuth2Framework\Component\Endpoint\IssuerDiscovery\IssuerDiscoveryEndpoint;
+use OAuth2Framework\Component\IssuerDiscoveryEndpoint\IssuerDiscoveryEndpoint;
 use OAuth2Framework\Component\Middleware\OAuth2ResponseMiddleware;
 use OAuth2Framework\Component\Middleware\Pipe;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;

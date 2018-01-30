@@ -72,7 +72,7 @@ final class SessionManagementEndpointSource extends ActionableSource
                 ->end()
                 ->scalarNode('template')
                     ->info('The template of the OP iframe.')
-                    ->defaultValue('@OAuth2FrameworkServerBundle/iframe/iframe.html.twig')
+                    ->defaultValue('@OAuth2FrameworkBundle/iframe/iframe.html.twig')
                 ->end()
             ->end();
     }

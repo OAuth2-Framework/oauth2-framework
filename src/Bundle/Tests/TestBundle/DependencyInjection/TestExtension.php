@@ -21,19 +21,6 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 final class TestExtension extends Extension
 {
     /**
-     * @var string
-     */
-    private $alias;
-
-    /**
-     * @param string $alias
-     */
-    public function __construct(string $alias)
-    {
-        $this->alias = $alias;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function load(array $configs, ContainerBuilder $container)
@@ -45,13 +32,5 @@ final class TestExtension extends Extension
         foreach ($files as $basename) {
             $loader->load(sprintf('%s.php', $basename));
         }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getAlias(): string
-    {
-        return $this->alias;
     }
 }

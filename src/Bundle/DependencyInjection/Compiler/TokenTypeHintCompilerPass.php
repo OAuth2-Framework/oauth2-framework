@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\DependencyInjection\Compiler;
 
-use OAuth2Framework\Component\TokenTypeHint\TokenTypeHintManager;
+use OAuth2Framework\Component\TokenRevocationEndpoint\TokenTypeHintManager;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;

@@ -25,7 +25,7 @@ default:
                 - 'OAuth2Framework\Bundle\Tests\Context\FixturesContext'
                 - 'OAuth2Framework\Bundle\Tests\Context\ResponseContext'
                 - 'OAuth2Framework\Bundle\Tests\Context\ClientContext'
-            bundle: 'OAuth2FrameworkServerBundle'
+            bundle: 'OAuth2FrameworkBundle'
         issuer_discovery:
             paths:
                 - '%paths.base%/Features/issuer_discovery'
@@ -34,7 +34,7 @@ default:
                 - 'OAuth2Framework\Bundle\Tests\Context\FixturesContext'
                 - 'OAuth2Framework\Bundle\Tests\Context\ResponseContext'
                 - 'OAuth2Framework\Bundle\Tests\Context\IssuerDiscoveryContext'
-            bundle: 'OAuth2FrameworkServerBundle'
+            bundle: 'OAuth2FrameworkBundle'
         grant_type:
             paths:
                 - '%paths.base%/Features/grant_type'
@@ -47,7 +47,7 @@ default:
                 - 'OAuth2Framework\Bundle\Tests\Context\JwtBearerGrantTypeContext'
                 - 'OAuth2Framework\Bundle\Tests\Context\ResourceOwnerPasswordCredentialsGrantTypeContext'
                 - 'OAuth2Framework\Bundle\Tests\Context\AuthorizationCodeGrantTypeContext'
-            bundle: 'OAuth2FrameworkServerBundle'
+            bundle: 'OAuth2FrameworkBundle'
         response_type:
             paths:
                 - '%paths.base%/Features/response_type'
@@ -61,7 +61,7 @@ default:
                 - 'OAuth2Framework\Bundle\Tests\Context\IdTokenResponseTypeContext'
                 - 'OAuth2Framework\Bundle\Tests\Context\NoneResponseTypeContext'
                 - 'OAuth2Framework\Bundle\Tests\Context\HybridFlowContext'
-            bundle: 'OAuth2FrameworkServerBundle'
+            bundle: 'OAuth2FrameworkBundle'
         oidc:
             paths:
                 - '%paths.base%/Features/oidc'
@@ -71,7 +71,7 @@ default:
                 - 'OAuth2Framework\Bundle\Tests\Context\ResponseContext'
                 - 'OAuth2Framework\Bundle\Tests\Context\ResponseTypeContext'
                 - 'OAuth2Framework\Bundle\Tests\Context\OIDCContext'
-            bundle: 'OAuth2FrameworkServerBundle'
+            bundle: 'OAuth2FrameworkBundle'
         introspection:
             paths:
                 - '%paths.base%/Features/introspection'
@@ -80,7 +80,7 @@ default:
                 - 'OAuth2Framework\Bundle\Tests\Context\FixturesContext'
                 - 'OAuth2Framework\Bundle\Tests\Context\ResponseContext'
                 - 'OAuth2Framework\Bundle\Tests\Context\IntrospectionContext'
-            bundle: 'OAuth2FrameworkServerBundle'
+            bundle: 'OAuth2FrameworkBundle'
         api:
             paths:
                 - '%paths.base%/Features/api'
@@ -89,7 +89,7 @@ default:
                 - 'OAuth2Framework\Bundle\Tests\Context\FixturesContext'
                 - 'OAuth2Framework\Bundle\Tests\Context\ResponseContext'
                 - 'OAuth2Framework\Bundle\Tests\Context\ApiContext'
-            bundle: 'OAuth2FrameworkServerBundle'
+            bundle: 'OAuth2FrameworkBundle'
         revocation:
             paths:
                 - '%paths.base%/Features/revocation'
@@ -98,4 +98,4 @@ default:
                 - 'OAuth2Framework\Bundle\Tests\Context\FixturesContext'
                 - 'OAuth2Framework\Bundle\Tests\Context\ResponseContext'
                 - 'OAuth2Framework\Bundle\Tests\Context\RevocationContext'
-            bundle: 'OAuth2FrameworkServerBundle'
+            bundle: 'OAuth2FrameworkBundle'

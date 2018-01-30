@@ -13,14 +13,14 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Tests\TestBundle\Service;
 
-use OAuth2Framework\Component\Model\Event\Event;
-use OAuth2Framework\Component\Model\Event\EventStoreInterface;
-use OAuth2Framework\Component\Model\Id\Id;
-use OAuth2Framework\Component\Schema\DomainConverter;
+use OAuth2Framework\Component\Core\Domain\DomainConverter;
+use OAuth2Framework\Component\Core\Domain\DomainUriLoader;
+use OAuth2Framework\Component\Core\Event\Event;
+use OAuth2Framework\Component\Core\Id\Id;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 
-final class EventStore implements EventStoreInterface
+final class EventStore implements \OAuth2Framework\Component\Core\Event\EventStore
 {
     private const STORAGE_PATH = '%s/fixtures/%s/';
 
@@ -47,7 +47,9 @@ final class EventStore implements EventStoreInterface
     public function __construct(string $storagePath, string $folder)
     {
         $this->storagePath = sprintf(self::STORAGE_PATH, $storagePath, $folder);
-        $this->domainConverter = new DomainConverter();
+        $this->domainConverter = new DomainConverter(
+            new DomainUriLoader()
+        );
     }
 
     /**

@@ -13,15 +13,15 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Tests\TestBundle\Entity;
 
-use OAuth2Framework\Component\Model\UserAccount\UserAccountInterface;
-use OAuth2Framework\Component\Model\UserAccount\UserAccountManagerInterface;
+use OAuth2Framework\Component\Core\UserAccount\UserAccount;
+use OAuth2Framework\Component\Core\UserAccount\UserAccountManager;
 
-final class UserManager implements UserAccountManagerInterface
+final class UserManager implements UserAccountManager
 {
     /**
      * {@inheritdoc}
      */
-    public function isPasswordCredentialValid(UserAccountInterface $user, string $password): bool
+    public function isPasswordCredentialValid(UserAccount $user, string $password): bool
     {
         if (!$user instanceof User) {
             return false;

@@ -20,5 +20,5 @@ interface AccessTokenHandler
      *
      * @return null|AccessToken
      */
-    public function find(AccessTokenId $token);
+    public function find(AccessTokenId $token): ?AccessToken;
 }

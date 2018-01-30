@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\DependencyInjection\Compiler;
 
-use OAuth2Framework\Component\Endpoint\Authorization\UserAccountDiscovery\IdTokenHintDiscovery;
-use OAuth2Framework\Component\Endpoint\UserInfo\UserInfo;
+use OAuth2Framework\Component\AuthorizationEndpoint\UserAccountDiscovery\IdTokenHintDiscovery;
+use OAuth2Framework\Component\OpenIdConnect\UserInfo\UserInfo;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;

@@ -141,7 +141,7 @@ oauth2_server:
                 allow_response_mode_parameter: true
                 form_post:
                     enabled: true
-                    template: '@OAuth2FrameworkServerBundle/form_post/response.html.twig'
+                    template: '@OAuth2FrameworkBundle/form_post/response.html.twig'
             request_object:
                 enabled: true
                 signature_algorithms: ['RS512', 'HS512']

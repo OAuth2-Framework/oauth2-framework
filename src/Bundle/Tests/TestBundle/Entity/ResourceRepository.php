@@ -13,14 +13,14 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Tests\TestBundle\Entity;
 
-use OAuth2Framework\Component\Model\Resource\ResourceId;
-use OAuth2Framework\Component\Model\Resource\ResourceInterface;
-use OAuth2Framework\Component\Model\Resource\ResourceRepositoryInterface;
+use OAuth2Framework\Component\IssuerDiscoveryEndpoint\Resource;
+use OAuth2Framework\Component\IssuerDiscoveryEndpoint\ResourceId;
+use OAuth2Framework\Component\IssuerDiscoveryEndpoint\ResourceRepository as ResourceRepositoryInterface;
 
 final class ResourceRepository implements ResourceRepositoryInterface
 {
     /**
-     * @var ResourceInterface[]
+     * @var Resource[]
      */
     private $resources = [];
 
@@ -32,7 +32,7 @@ final class ResourceRepository implements ResourceRepositoryInterface
     /**
      * {@inheritdoc}
      */
-    public function findResource(ResourceId $resourceId)
+    public function find(ResourceId $resourceId): ?Resource
     {
         $server = 'my-service.com:9000';
         $length = mb_strlen($server, 'utf-8');
@@ -41,7 +41,7 @@ final class ResourceRepository implements ResourceRepositoryInterface
         } elseif ('acct:' === mb_substr($resourceId->getValue(), 0, 5, 'utf-8') && '@'.$server === mb_substr($resourceId->getValue(), -($length + 1), null, 'utf-8')) {
             $resourceName = mb_substr($resourceId->getValue(), 5, -($length + 1), 'utf-8');
         } else {
-            return;
+            return null;
         }
 
         return array_key_exists($resourceName, $this->resources) ? $this->resources[$resourceName] : null;

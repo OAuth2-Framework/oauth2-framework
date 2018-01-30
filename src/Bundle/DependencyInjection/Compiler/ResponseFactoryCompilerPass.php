@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\DependencyInjection\Compiler;
 
-use OAuth2Framework\Component\Response\OAuth2ResponseFactoryManager;
+use OAuth2Framework\Component\Core\Response\OAuth2ResponseFactoryManager;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;

@@ -13,7 +13,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Tests\TestBundle\Listener;
 
-use OAuth2Framework\Component\Event\RefreshToken\RefreshTokenCreatedEvent;
+
+use OAuth2Framework\Component\RefreshTokenGrant\Event\RefreshTokenCreatedEvent;
 
 final class RefreshTokenCreatedListener
 {

@@ -15,7 +15,7 @@ namespace OAuth2Framework\Bundle\Tests\TestBundle\Service;
 
 use OAuth2Framework\Bundle\Tests\TestBundle\Entity\User;
 use OAuth2Framework\Bundle\Tests\TestBundle\Entity\UserRepository;
-use OAuth2Framework\Component\Model\UserAccount\UserAccountRepositoryInterface;
+use OAuth2Framework\Component\Core\UserAccount\UserAccountRepository;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -31,9 +31,9 @@ final class UserProvider implements UserProviderInterface
     /**
      * UserProvider constructor.
      *
-     * @param UserAccountRepositoryInterface $userRepository
+     * @param UserAccountRepository $userRepository
      */
-    public function __construct(UserAccountRepositoryInterface $userRepository)
+    public function __construct(UserAccountRepository $userRepository)
     {
         $this->userRepository = $userRepository;
     }

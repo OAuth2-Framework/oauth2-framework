@@ -13,10 +13,11 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Tests\TestBundle\Entity;
 
-use OAuth2Framework\Component\Model\UserAccount\UserAccountId;
-use OAuth2Framework\Component\Model\UserAccount\UserAccountRepositoryInterface;
+use OAuth2Framework\Component\Core\UserAccount\UserAccount;
+use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
+use OAuth2Framework\Component\Core\UserAccount\UserAccountRepository;
 
-final class UserRepository implements UserAccountRepositoryInterface
+final class UserRepository implements UserAccountRepository
 {
     private $usersByUsername = [];
 
@@ -43,7 +44,7 @@ final class UserRepository implements UserAccountRepositoryInterface
     /**
      * {@inheritdoc}
      */
-    public function findOneByUsername(string $username)
+    public function findOneByUsername(string $username): ?UserAccount
     {
         return array_key_exists($username, $this->usersByUsername) ? $this->usersByUsername[$username] : null;
     }
@@ -51,7 +52,7 @@ final class UserRepository implements UserAccountRepositoryInterface
     /**
      * {@inheritdoc}
      */
-    public function findUserAccount(UserAccountId $publicId)
+    public function find(UserAccountId $publicId): ?UserAccount
     {
         return array_key_exists($publicId->getValue(), $this->usersByPublicId) ? $this->usersByPublicId[$publicId->getValue()] : null;
     }

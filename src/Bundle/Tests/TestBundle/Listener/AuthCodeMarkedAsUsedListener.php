@@ -13,25 +13,26 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Tests\TestBundle\Listener;
 
-use OAuth2Framework\Component\Event\AuthCode\AuthCodeMarkedAsUsedEvent;
+
+use OAuth2Framework\Component\AuthorizationCodeGrant\Event\AuthorizationCodeMarkedAsUsedEvent;
 
 final class AuthCodeMarkedAsUsedListener
 {
     /**
-     * @var AuthCodeMarkedAsUsedEvent[]
+     * @var AuthorizationCodeMarkedAsUsedEvent[]
      */
     private $events = [];
 
     /**
-     * @param AuthCodeMarkedAsUsedEvent $event
+     * @param AuthorizationCodeMarkedAsUsedEvent $event
      */
-    public function handle(AuthCodeMarkedAsUsedEvent $event)
+    public function handle(AuthorizationCodeMarkedAsUsedEvent $event)
     {
         $this->events[] = $event;
     }
 
     /**
-     * @return AuthCodeMarkedAsUsedEvent[]
+     * @return AuthorizationCodeMarkedAsUsedEvent[]
      */
     public function getEvents()
     {

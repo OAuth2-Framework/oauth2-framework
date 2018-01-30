@@ -52,7 +52,7 @@ final class AuthorizationEndpointFormPostResponseModeSource extends ActionableSo
             ->children()
                 ->scalarNode('template')
                     ->info('The template used to render the form.')
-                    ->defaultValue('@OAuth2FrameworkServerBundle/form_post/response.html.twig')
+                    ->defaultValue('@OAuth2FrameworkBundle/form_post/response.html.twig')
                 ->end()
             ->end();
     }

@@ -13,24 +13,23 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Tests\TestBundle\Service;
 
-use OAuth2Framework\Component\Model\AccessToken\AccessToken;
-use OAuth2Framework\Component\Model\AccessToken\AccessTokenId;
-use OAuth2Framework\Component\Model\AccessToken\AccessTokenRepositoryInterface;
-use OAuth2Framework\Component\Security\AccessTokenHandlerInterface;
+use OAuth2Framework\Component\Core\AccessToken\AccessToken;
+use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
+use OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository;
 
-final class AccessTokenHandler implements AccessTokenHandlerInterface
+final class AccessTokenHandler implements \OAuth2Framework\Component\Core\AccessToken\AccessTokenHandler
 {
     /**
-     * @var AccessTokenRepositoryInterface
+     * @var AccessTokenRepository
      */
     private $accessTokenRepository;
 
     /**
      * AccessTokenHandler constructor.
      *
-     * @param AccessTokenRepositoryInterface $accessTokenRepository
+     * @param AccessTokenRepository $accessTokenRepository
      */
-    public function __construct(AccessTokenRepositoryInterface $accessTokenRepository)
+    public function __construct(AccessTokenRepository $accessTokenRepository)
     {
         $this->accessTokenRepository = $accessTokenRepository;
     }
@@ -40,7 +39,7 @@ final class AccessTokenHandler implements AccessTokenHandlerInterface
      *
      * @return null|AccessToken
      */
-    public function find(AccessTokenId $token)
+    public function find(AccessTokenId $token): ?AccessToken
     {
         return $this->accessTokenRepository->find($token);
     }

@@ -14,12 +14,14 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\Controller;
 
 use Http\Message\MessageFactory;
-use Interop\Http\Server\RequestHandlerInterface;
+use Jose\Component\Core\JWK;
+use OAuth2Framework\Component\MetadataEndpoint\MetadataEndpoint;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
-use Jose\Component\Core\JWKSet;
 use Jose\Component\Signature\JWSBuilder;
 use OAuth2Framework\Bundle\Service\MetadataBuilder;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 class MetadataController implements MiddlewareInterface
 {
@@ -42,12 +44,12 @@ class MetadataController implements MiddlewareInterface
 
     /**
      * @param JWSBuilder $jwsBuilder
-     * @param JWKSet     $signatureKeySet
+     * @param JWK        $signatureKey
      * @param string     $signatureAlgorithm
      */
-    public function enableSignedMetadata(JWSBuilder $jwsBuilder, string $signatureAlgorithm, JWKSet $signatureKeySet)
+    public function enableSignedMetadata(JWSBuilder $jwsBuilder, string $signatureAlgorithm, JWK $signatureKey)
     {
-        $this->metadataEndpoint->enableSignedMetadata($jwsBuilder, $signatureAlgorithm, $signatureKeySet);
+        $this->metadataEndpoint->enableSignature($jwsBuilder, $signatureAlgorithm, $signatureKey);
     }
 
     /**
