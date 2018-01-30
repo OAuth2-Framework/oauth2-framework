@@ -78,7 +78,8 @@
     },
     "suggest": {
         "web-token/jwt-encryption": "For encrypted tokens (JWE) support.",
-        "php-http/client-implementation": "For Authorization Request and Sector Identifier Uri support."
+        "php-http/client-implementation": "For Authorization Request and Sector Identifier Uri support.",
+        "php-http/httplug-bundle": "For Request Object Uri or Sector Identifier Uri support."
     },
     "autoload": {
         "psr-4": {
