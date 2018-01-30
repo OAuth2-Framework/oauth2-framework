@@ -20,7 +20,7 @@ use OAuth2Framework\Component\IssuerDiscoveryEndpoint\ResourceRepository as Reso
 final class ResourceRepository implements ResourceRepositoryInterface
 {
     /**
-     * @var Resource[]
+     * @var resource[]
      */
     private $resources = [];
 

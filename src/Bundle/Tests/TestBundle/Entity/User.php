@@ -139,7 +139,7 @@ final class User implements UserInterface, UserAccount, EquatableInterface
     {
         if (!$this->has($key)) {
             throw new \InvalidArgumentException(sprintf('Configuration value with key "%s" does not exist.', $key));
-        };
+        }
 
         return $this->parameters[$key];
     }
