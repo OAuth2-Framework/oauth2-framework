@@ -49,7 +49,7 @@ final class OAuth2FrameworkServerBundle extends Bundle
             $container->addCompilerPass($pass);
         }
 
-        /** @var SecurityExtension $extension */
+        /* @var SecurityExtension $extension */
         //$extension = $container->getExtension('security');
         //$extension->addSecurityListenerFactory(new OAuth2SecurityFactory());
     }

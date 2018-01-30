@@ -16,7 +16,6 @@ namespace OAuth2Framework\Component\Core\Response\Factory;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\ResponseMode;
 use OAuth2Framework\Component\Core\Response\OAuth2RedirectError;
 use OAuth2Framework\Component\Core\Response\OAuth2ResponseInterface;
-use OAuth2Framework\Component\Core\ResponseMode\ResponseModeInterface;
 use Psr\Http\Message\ResponseInterface;
 
 final class RedirectResponseFactory implements ResponseFactory
