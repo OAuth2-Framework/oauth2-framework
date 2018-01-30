@@ -17,7 +17,12 @@ use Http\Message\MessageFactory;
 use OAuth2Framework\Bundle\Form\FormFactory;
 use OAuth2Framework\Bundle\Form\Handler\AuthorizationFormHandler;
 use OAuth2Framework\Bundle\Form\Model\AuthorizationModel;
+use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationEndpoint;
+use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationFactory;
+use OAuth2Framework\Component\AuthorizationEndpoint\ConsentScreen\ExtensionManager;
+use OAuth2Framework\Component\AuthorizationEndpoint\Exception\ProcessAuthorizationException;
+use OAuth2Framework\Component\AuthorizationEndpoint\UserAccountDiscovery\UserAccountDiscoveryManager;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
@@ -94,12 +99,11 @@ final class AuthorizationEndpointController extends AuthorizationEndpoint
      * @param SessionInterface            $session
      * @param AuthorizationFactory        $authorizationFactory
      * @param UserAccountDiscoveryManager $userAccountDiscoveryManager
-     * @param BeforeConsentScreenManager  $beforeConsentScreenManager
-     * @param AfterConsentScreenManager   $afterConsentScreenManager
+     * @param ExtensionManager            $consentScreenExtensionManager
      */
-    public function __construct(EngineInterface $templateEngine, string $template, FormFactory $formFactory, AuthorizationFormHandler $formHandler, TranslatorInterface $translator, RouterInterface $router, string $loginRoute, array $loginRouteParams, MessageFactory $messageFactory, SessionInterface $session, AuthorizationFactory $authorizationFactory, UserAccountDiscoveryManager $userAccountDiscoveryManager, BeforeConsentScreenManager $beforeConsentScreenManager, AfterConsentScreenManager $afterConsentScreenManager)
+    public function __construct(EngineInterface $templateEngine, string $template, FormFactory $formFactory, AuthorizationFormHandler $formHandler, TranslatorInterface $translator, RouterInterface $router, string $loginRoute, array $loginRouteParams, MessageFactory $messageFactory, SessionInterface $session, AuthorizationFactory $authorizationFactory, UserAccountDiscoveryManager $userAccountDiscoveryManager, ExtensionManager $consentScreenExtensionManager)
     {
-        parent::__construct($authorizationFactory, $userAccountDiscoveryManager, $beforeConsentScreenManager, $afterConsentScreenManager);
+        parent::__construct($authorizationFactory, $userAccountDiscoveryManager, $consentScreenExtensionManager);
 
         $this->session = $session;
         $this->messageFactory = $messageFactory;
@@ -150,12 +154,12 @@ final class AuthorizationEndpointController extends AuthorizationEndpoint
             //FIXME: $options,
             [
                 'locale' => $ui_locale,
-                'scopes' => $authorization->getScopes(),
+                //'scopes' => $authorization->getScopes(),
                 //FIXME: 'allowScopeSelection' => $this->allowScopeSelection,
             ]
         );
         $authorization_model = new AuthorizationModel();
-        $authorization_model->setScopes($authorization->getScopes());
+        //$authorization_model->setScopes($authorization->getScopes());
         $form = $this->formFactory->createForm($options, $authorization_model);
         $this->session->remove('oauth2_authorization_request_data');
 

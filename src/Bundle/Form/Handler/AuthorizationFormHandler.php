@@ -61,13 +61,13 @@ class AuthorizationFormHandler
         } else {
             $authorization = $authorization->deny();
         }
-        $refused_scopes = array_diff(
+        /*$refused_scopes = array_diff(
             $authorization->getScopes(),
             $authorization_model->getScopes()
         );
         foreach ($refused_scopes as $refused_scope) {
             $authorization = $authorization->withoutScope($refused_scope);
-        }
+        }*/
 
         return $authorization;
     }

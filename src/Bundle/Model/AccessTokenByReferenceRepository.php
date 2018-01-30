@@ -14,10 +14,19 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\Model;
 
 use OAuth2Framework\Bundle\Service\RandomIdGenerator;
+use OAuth2Framework\Component\Core\AccessToken\AccessToken;
+use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
+use OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository;
+use OAuth2Framework\Component\Core\Client\ClientId;
+use OAuth2Framework\Component\Core\DataBag\DataBag;
+use OAuth2Framework\Component\Core\Event\Event;
+use OAuth2Framework\Component\Core\Event\EventStore;
+use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwnerId;
+use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
 use SimpleBus\Message\Bus\MessageBus;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 
-final class AccessTokenByReferenceRepository implements AccessTokenRepositoryInterface
+final class AccessTokenByReferenceRepository implements AccessTokenRepository
 {
     /**
      * @var int
@@ -35,7 +44,7 @@ final class AccessTokenByReferenceRepository implements AccessTokenRepositoryInt
     private $maxLength;
 
     /**
-     * @var EventStoreInterface
+     * @var EventStore
      */
     private $eventStore;
 
@@ -55,11 +64,11 @@ final class AccessTokenByReferenceRepository implements AccessTokenRepositoryInt
      * @param int                 $minLength
      * @param int                 $maxLength
      * @param int                 $lifetime
-     * @param EventStoreInterface $eventStore
+     * @param EventStore $eventStore
      * @param MessageBus          $eventBus
      * @param AdapterInterface    $cache
      */
-    public function __construct(int $minLength, int $maxLength, int $lifetime, EventStoreInterface $eventStore, MessageBus $eventBus, AdapterInterface $cache)
+    public function __construct(int $minLength, int $maxLength, int $lifetime, EventStore $eventStore, MessageBus $eventBus, AdapterInterface $cache)
     {
         $this->minLength = $minLength;
         $this->maxLength = $maxLength;
@@ -76,7 +85,7 @@ final class AccessTokenByReferenceRepository implements AccessTokenRepositoryInt
     {
         $accessToken = $this->getFromCache($accessTokenId);
         if (null === $accessToken) {
-            $events = $this->eventStore->getEvents($accessTokenId);
+            $events = $this->eventStore->findAllForDomainId($accessTokenId);
             if (!empty($events)) {
                 $accessToken = $this->getFromEvents($events);
                 $this->cacheObject($accessToken);
@@ -103,15 +112,12 @@ final class AccessTokenByReferenceRepository implements AccessTokenRepositoryInt
     /**
      * {@inheritdoc}
      */
-    public function create(ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, array $scopes, ? RefreshTokenId $refreshTokenId, ? ResourceServerId $resourceServerId, ? \DateTimeImmutable $expiresAt): AccessToken
+    public function create(ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, ? ResourceServerId $resourceServerId): AccessToken
     {
-        if (null === $expiresAt) {
-            $expiresAt = new \DateTimeImmutable(sprintf('now +%u seconds', $this->lifetime));
-        }
-
+        $expiresAt = new \DateTimeImmutable(sprintf('now +%u seconds', $this->lifetime));
         $accessTokenId = AccessTokenId::create(RandomIdGenerator::generate($this->minLength, $this->maxLength));
         $accessToken = AccessToken::createEmpty();
-        $accessToken = $accessToken->create($accessTokenId, $resourceOwnerId, $clientId, $parameters, $metadatas, $scopes, $expiresAt, $refreshTokenId, $resourceServerId);
+        $accessToken = $accessToken->create($accessTokenId, $resourceOwnerId, $clientId, $parameters, $metadatas, $expiresAt, $resourceServerId);
 
         return $accessToken;
     }

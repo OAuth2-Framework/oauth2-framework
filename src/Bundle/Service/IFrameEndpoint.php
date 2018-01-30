@@ -14,9 +14,10 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\Service;
 
 use Http\Message\MessageFactory;
-use Interop\Http\Server\RequestHandlerInterface;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 
 final class IFrameEndpoint implements MiddlewareInterface

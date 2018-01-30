@@ -13,15 +13,14 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Service;
 
-use OAuth2Framework\Component\Endpoint\Authorization\Authorization;
-use OAuth2Framework\Component\Endpoint\Authorization\Exception\RedirectToLoginPageException;
-use OAuth2Framework\Component\Endpoint\Authorization\UserAccountDiscovery\UserAccountDiscoveryInterface;
-use OAuth2Framework\Component\Model\UserAccount\UserAccountInterface;
-use Psr\Http\Message\ServerRequestInterface;
+use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
+use OAuth2Framework\Component\AuthorizationEndpoint\Exception\RedirectToLoginPageException;
+use OAuth2Framework\Component\AuthorizationEndpoint\UserAccountDiscovery\UserAccountDiscovery;
+use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
-final class SymfonyUserDiscovery implements UserAccountDiscoveryInterface
+final class SymfonyUserDiscovery implements UserAccountDiscovery
 {
     /**
      * @var TokenStorageInterface
@@ -46,39 +45,26 @@ final class SymfonyUserDiscovery implements UserAccountDiscoveryInterface
     }
 
     /**
-     * @param ServerRequestInterface $request
-     * @param Authorization          $authorization
-     * @param callable               $next
-     *
-     * @return Authorization
+     * {@inheritdoc}
      */
-    public function find(ServerRequestInterface $request, Authorization $authorization, callable $next): Authorization
+    public function find(Authorization $authorization, ?bool &$isFullyAuthenticated = null): ?UserAccount
     {
         if (null !== $token = $this->tokenStorage->getToken()) {
             $userAccount = $token->getUser();
-            if ($userAccount instanceof UserAccountInterface) {
-                $this->checkUserAccount($userAccount, $authorization);
+            if ($userAccount instanceof UserAccount) {
                 $isFullyAuthenticated = $this->authorizationChecker->isGranted('IS_AUTHENTICATED_FULLY');
-                if (true === $authorization->isUserAccountFullyAuthenticated()) {
-                    $isFullyAuthenticated = true;
-                }
-                $authorization = $authorization->withUserAccount($userAccount, $isFullyAuthenticated);
+
+                return $userAccount;
             }
         }
 
-        return $next($request, $authorization);
+        return null;
     }
 
     /**
-     * @param UserAccountInterface $userAccount
-     * @param Authorization        $authorization
-     *
-     * @throws RedirectToLoginPageException
+     * {@inheritdoc}
      */
-    private function checkUserAccount(UserAccountInterface $userAccount, Authorization $authorization)
+    public function check(Authorization $authorization)
     {
-        if (null !== $authorization->getUserAccount() && $userAccount->getPublicId()->getValue() !== $authorization->getUserAccount()->getPublicId()->getValue()) {
-            throw new RedirectToLoginPageException($authorization);
-        }
     }
 }

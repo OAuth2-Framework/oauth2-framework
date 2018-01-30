@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\TokenType;
 
 use Base64Url\Base64Url;
-use OAuth2Framework\Component\TokenType\MacToken as Base;
+use OAuth2Framework\Component\MacTokenType\MacToken as Base;
 
 final class MacToken extends Base
 {
@@ -56,6 +56,6 @@ final class MacToken extends Base
      */
     private function getMacKeyLength(): int
     {
-        return mt_rand($this->minLength, $this->maxLength);
+        return random_int($this->minLength, $this->maxLength);
     }
 }

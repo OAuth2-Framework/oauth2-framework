@@ -13,10 +13,10 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Service;
 
-use OAuth2Framework\Component\ResponseMode\FormPostResponseRendererInterface;
+use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\FormPostResponseRenderer;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 
-final class FormPostResponseRenderer implements FormPostResponseRendererInterface
+final class TwigFormPostResponseRenderer implements FormPostResponseRenderer
 {
     /**
      * @var EngineInterface

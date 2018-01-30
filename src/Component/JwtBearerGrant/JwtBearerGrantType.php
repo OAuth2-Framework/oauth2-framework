@@ -161,7 +161,7 @@ final class JwtBearerGrantType implements GrantType
                 throw new \InvalidArgumentException('The assertion must have only one signature.');
             }
             $claims = json_decode($jws->getPayload(), true);
-            $claims = $this->claimCheckerManager->check($claims);
+            $this->claimCheckerManager->check($claims);
             foreach (['iss', 'sub'] as $claim) {
                 if (!array_key_exists($claim, $claims)) {
                     throw new \InvalidArgumentException(sprintf('The assertion must contain the claim member "%s".', $claim));

@@ -13,18 +13,17 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Model;
 
-use OAuth2Framework\Component\Model\Client\Client;
-use OAuth2Framework\Component\Model\Client\ClientId;
-use OAuth2Framework\Component\Model\Client\ClientRepositoryInterface;
-use OAuth2Framework\Component\Model\Event\Event;
-use OAuth2Framework\Component\Model\Event\EventStoreInterface;
+use OAuth2Framework\Component\Core\Client\Client;
+use OAuth2Framework\Component\Core\Client\ClientId;
+use OAuth2Framework\Component\Core\Event\Event;
+use OAuth2Framework\Component\Core\Event\EventStore;
 use SimpleBus\Message\Recorder\RecordsMessages;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 
-final class ClientRepository implements ClientRepositoryInterface
+final class ClientRepository implements \OAuth2Framework\Component\Core\Client\ClientRepository
 {
     /**
-     * @var EventStoreInterface
+     * @var EventStore
      */
     private $eventStore;
 
@@ -41,11 +40,11 @@ final class ClientRepository implements ClientRepositoryInterface
     /**
      * ClientRepository constructor.
      *
-     * @param EventStoreInterface $eventStore
+     * @param EventStore $eventStore
      * @param RecordsMessages     $eventRecorder
      * @param AdapterInterface    $cache
      */
-    public function __construct(EventStoreInterface $eventStore, RecordsMessages $eventRecorder, AdapterInterface $cache)
+    public function __construct(EventStore $eventStore, RecordsMessages $eventRecorder, AdapterInterface $cache)
     {
         $this->eventStore = $eventStore;
         $this->eventRecorder = $eventRecorder;
@@ -59,7 +58,7 @@ final class ClientRepository implements ClientRepositoryInterface
     {
         $client = $this->getFromCache($clientId);
         if (null === $client) {
-            $events = $this->eventStore->getEvents($clientId);
+            $events = $this->eventStore->findAllForDomainId($clientId);
             if (!empty($events)) {
                 $client = $this->getFromEvents($events);
                 $this->cacheObject($client);

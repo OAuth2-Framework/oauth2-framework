@@ -13,17 +13,17 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Service;
 
-use Http\Message\MessageFactory;
+use Interop\Http\Factory\ResponseFactoryInterface;
 use Interop\Http\Factory\UriFactoryInterface;
-use OAuth2Framework\Component\Endpoint\IssuerDiscovery\IssuerDiscoveryEndpoint;
-use OAuth2Framework\Component\Model\Resource\ResourceRepositoryInterface;
+use OAuth2Framework\Bundle\Tests\TestBundle\Entity\ResourceRepository;
+use OAuth2Framework\Component\IssuerDiscoveryEndpoint\IssuerDiscoveryEndpoint;
 
 final class IssuerDiscoveryFactory
 {
     /**
-     * @var MessageFactory
+     * @var ResponseFactoryInterface
      */
-    private $messageFactory;
+    private $responseFactory;
 
     /**
      * @var UriFactoryInterface
@@ -33,23 +33,23 @@ final class IssuerDiscoveryFactory
     /**
      * IssuerDiscoveryFactory constructor.
      *
-     * @param MessageFactory      $messageFactory
-     * @param UriFactoryInterface $uriFactory
+     * @param ResponseFactoryInterface $responseFactory
+     * @param UriFactoryInterface      $uriFactory
      */
-    public function __construct(MessageFactory $messageFactory, UriFactoryInterface $uriFactory)
+    public function __construct(ResponseFactoryInterface $responseFactory, UriFactoryInterface $uriFactory)
     {
-        $this->messageFactory = $messageFactory;
+        $this->responseFactory = $responseFactory;
         $this->uriFactory = $uriFactory;
     }
 
     /**
-     * @param ResourceRepositoryInterface $resourceManager
+     * @param ResourceRepository $resourceManager
      * @param string                      $server
      *
      * @return IssuerDiscoveryEndpoint
      */
-    public function create(ResourceRepositoryInterface $resourceManager, string $server): IssuerDiscoveryEndpoint
+    public function create(ResourceRepository $resourceManager, string $server): IssuerDiscoveryEndpoint
     {
-        return new IssuerDiscoveryEndpoint($resourceManager, $this->messageFactory, $this->uriFactory, $server);
+        return new IssuerDiscoveryEndpoint($resourceManager, $this->responseFactory, $this->uriFactory, $server);
     }
 }

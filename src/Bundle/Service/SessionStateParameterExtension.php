@@ -14,13 +14,12 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\Service;
 
 use Base64Url\Base64Url;
-use OAuth2Framework\Component\Endpoint\Authorization\AfterConsentScreen\SessionStateParameterExtension as Base;
-use OAuth2Framework\Component\Endpoint\Authorization\Authorization;
+use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
-final class SessionStateParameterExtension extends Base
+final class SessionStateParameterExtension extends \OAuth2Framework\Component\OpenIdConnect\AfterConsentScreen\SessionStateParameterExtension
 {
     /**
      * @var string

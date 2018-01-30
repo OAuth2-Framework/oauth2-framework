@@ -14,9 +14,9 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\Security\Firewall;
 
 use OAuth2Framework\Bundle\Security\Authentication\Token\OAuth2Token;
-use OAuth2Framework\Component\Model\AccessToken\AccessTokenId;
-use OAuth2Framework\Component\Response\OAuth2ResponseFactoryManager;
-use OAuth2Framework\Component\Security\AccessTokenHandlerManager;
+use OAuth2Framework\Component\Core\AccessToken\AccessTokenHandlerManager;
+use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
+use OAuth2Framework\Component\Core\Response\OAuth2ResponseFactoryManager;
 use OAuth2Framework\Component\TokenType\TokenTypeManager;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;

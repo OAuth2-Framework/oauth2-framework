@@ -14,7 +14,15 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\Model;
 
 use OAuth2Framework\Bundle\Service\RandomIdGenerator;
+use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCode;
+use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeId;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeRepository;
+use OAuth2Framework\Component\Core\Client\ClientId;
+use OAuth2Framework\Component\Core\DataBag\DataBag;
+use OAuth2Framework\Component\Core\Event\Event;
+use OAuth2Framework\Component\Core\Event\EventStore;
+use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
+use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use SimpleBus\Message\Bus\MessageBus;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 
@@ -41,7 +49,7 @@ final class AuthCodeRepository implements AuthorizationCodeRepository
     private $eventBus;
 
     /**
-     * @var EventStoreInterface
+     * @var EventStore
      */
     private $eventStore;
 
@@ -56,11 +64,11 @@ final class AuthCodeRepository implements AuthorizationCodeRepository
      * @param int                 $minLength
      * @param int                 $maxLength
      * @param int                 $lifetime
-     * @param EventStoreInterface $eventStore
+     * @param EventStore $eventStore
      * @param MessageBus          $eventBus
      * @param AdapterInterface    $cache
      */
-    public function __construct(int $minLength, int $maxLength, int $lifetime, EventStoreInterface $eventStore, MessageBus $eventBus, AdapterInterface $cache)
+    public function __construct(int $minLength, int $maxLength, int $lifetime, EventStore $eventStore, MessageBus $eventBus, AdapterInterface $cache)
     {
         $this->minLength = $minLength;
         $this->maxLength = $maxLength;
@@ -73,15 +81,12 @@ final class AuthCodeRepository implements AuthorizationCodeRepository
     /**
      * {@inheritdoc}
      */
-    public function create(ClientId $clientId, UserAccountId $userAccountId, array $queryParameters, string $redirectUri, DataBag $parameters, DataBag $metadatas, array $scopes, bool $withRefreshToken, ? ResourceServerId $resourceServerId, ? \DateTimeImmutable $expiresAt): AuthCode
+    public function create(ClientId $clientId, UserAccountId $userAccountId, array $queryParameters, string $redirectUri, DataBag $parameters, DataBag $metadatas, ? ResourceServerId $resourceServerId): AuthorizationCode
     {
-        if (null === $expiresAt) {
-            $expiresAt = new \DateTimeImmutable(sprintf('now +%u seconds', $this->lifetime));
-        }
-
-        $authCodeId = AuthCodeId::create(RandomIdGenerator::generate($this->minLength, $this->maxLength));
-        $authCode = AuthCode::createEmpty();
-        $authCode = $authCode->create($authCodeId, $clientId, $userAccountId, $queryParameters, $redirectUri, $expiresAt, $parameters, $metadatas, $scopes, $withRefreshToken, $resourceServerId);
+        $expiresAt = new \DateTimeImmutable(sprintf('now +%u seconds', $this->lifetime));
+        $authCodeId = AuthorizationCodeId::create(RandomIdGenerator::generate($this->minLength, $this->maxLength));
+        $authCode = AuthorizationCode::createEmpty();
+        $authCode = $authCode->create($authCodeId, $clientId, $userAccountId, $queryParameters, $redirectUri, $expiresAt, $parameters, $metadatas, $resourceServerId);
 
         return $authCode;
     }
@@ -89,11 +94,11 @@ final class AuthCodeRepository implements AuthorizationCodeRepository
     /**
      * {@inheritdoc}
      */
-    public function find(AuthCodeId $authCodeId): ? AuthCode
+    public function find(AuthorizationCodeId $authCodeId): ? AuthorizationCode
     {
         $authCode = $this->getFromCache($authCodeId);
         if (null === $authCode) {
-            $events = $this->eventStore->getEvents($authCodeId);
+            $events = $this->eventStore->findAllForDomainId($authCodeId);
             if (!empty($events)) {
                 $authCode = $this->getFromEvents($events);
                 $this->cacheObject($authCode);
@@ -104,9 +109,9 @@ final class AuthCodeRepository implements AuthorizationCodeRepository
     }
 
     /**
-     * @param AuthCode $authCode
+     * @param AuthorizationCode $authCode
      */
-    public function save(AuthCode $authCode)
+    public function save(AuthorizationCode $authCode)
     {
         $events = $authCode->recordedMessages();
         foreach ($events as $event) {
@@ -120,11 +125,11 @@ final class AuthCodeRepository implements AuthorizationCodeRepository
     /**
      * @param Event[] $events
      *
-     * @return AuthCode
+     * @return AuthorizationCode
      */
-    private function getFromEvents(array $events): AuthCode
+    private function getFromEvents(array $events): AuthorizationCode
     {
-        $authCode = AuthCode::createEmpty();
+        $authCode = AuthorizationCode::createEmpty();
         foreach ($events as $event) {
             $authCode = $authCode->apply($event);
         }
@@ -133,11 +138,11 @@ final class AuthCodeRepository implements AuthorizationCodeRepository
     }
 
     /**
-     * @param AuthCodeId $authCodeId
+     * @param AuthorizationCodeId $authCodeId
      *
-     * @return AuthCode|null
+     * @return AuthorizationCode|null
      */
-    private function getFromCache(AuthCodeId $authCodeId): ? AuthCode
+    private function getFromCache(AuthorizationCodeId $authCodeId): ? AuthorizationCode
     {
         $itemKey = sprintf('oauth2-auth_code-%s', $authCodeId->getValue());
         $item = $this->cache->getItem($itemKey);
@@ -149,9 +154,9 @@ final class AuthCodeRepository implements AuthorizationCodeRepository
     }
 
     /**
-     * @param AuthCode $authCode
+     * @param AuthorizationCode $authCode
      */
-    private function cacheObject(AuthCode $authCode)
+    private function cacheObject(AuthorizationCode $authCode)
     {
         $itemKey = sprintf('oauth2-auth_code-%s', $authCode->getTokenId()->getValue());
         $item = $this->cache->getItem($itemKey);

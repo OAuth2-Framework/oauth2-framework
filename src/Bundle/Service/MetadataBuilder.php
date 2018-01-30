@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Service;
 
-use OAuth2Framework\Bundle\TokenEndpointAuthMethod\ClientAssertionJwt;
 use OAuth2Framework\Component\AuthorizationCodeGrant\PKCEMethod\PKCEMethodManager;
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequestLoader;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\ResponseModeManager;
@@ -22,6 +21,7 @@ use OAuth2Framework\Component\MetadataEndpoint\Metadata;
 use OAuth2Framework\Component\OpenIdConnect\UserInfo\UserInfo;
 use OAuth2Framework\Component\Scope\ScopeRepository;
 use OAuth2Framework\Component\TokenEndpoint\AuthenticationMethod\AuthenticationMethodManager;
+use OAuth2Framework\Component\TokenEndpoint\AuthenticationMethod\ClientAssertionJwt;
 use OAuth2Framework\Component\TokenEndpoint\GrantTypeManager;
 use Symfony\Component\Routing\RouterInterface;
 

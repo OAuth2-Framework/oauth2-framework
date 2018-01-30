@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Security\Authentication\Token;
 
-use OAuth2Framework\Component\Model\AccessToken\AccessToken;
+use OAuth2Framework\Component\Core\AccessToken\AccessToken;
 use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 
 final class OAuth2Token extends AbstractToken

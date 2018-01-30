@@ -14,16 +14,15 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\Model;
 
 use OAuth2Framework\Bundle\Service\RandomIdGenerator;
-use OAuth2Framework\Component\Model\Event\Event;
-use OAuth2Framework\Component\Model\Event\EventStoreInterface;
-use OAuth2Framework\Component\Model\InitialAccessToken\InitialAccessToken;
-use OAuth2Framework\Component\Model\InitialAccessToken\InitialAccessTokenId;
-use OAuth2Framework\Component\Model\InitialAccessToken\InitialAccessTokenRepositoryInterface;
-use OAuth2Framework\Component\Model\UserAccount\UserAccountId;
+use OAuth2Framework\Component\ClientRegistrationEndpoint\InitialAccessToken;
+use OAuth2Framework\Component\ClientRegistrationEndpoint\InitialAccessTokenId;
+use OAuth2Framework\Component\Core\Event\Event;
+use OAuth2Framework\Component\Core\Event\EventStore;
+use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use SimpleBus\Message\Recorder\RecordsMessages;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 
-final class InitialAccessTokenRepository implements InitialAccessTokenRepositoryInterface
+final class InitialAccessTokenRepository implements \OAuth2Framework\Component\ClientRegistrationEndpoint\InitialAccessTokenRepository
 {
     /**
      * @var int
@@ -36,7 +35,7 @@ final class InitialAccessTokenRepository implements InitialAccessTokenRepository
     private $maxLength;
 
     /**
-     * @var EventStoreInterface
+     * @var EventStore
      */
     private $eventStore;
 
@@ -55,11 +54,11 @@ final class InitialAccessTokenRepository implements InitialAccessTokenRepository
      *
      * @param int                 $minLength
      * @param int                 $maxLength
-     * @param EventStoreInterface $eventStore
+     * @param EventStore $eventStore
      * @param RecordsMessages     $eventRecorder
      * @param AdapterInterface    $cache
      */
-    public function __construct(int $minLength, int $maxLength, EventStoreInterface $eventStore, RecordsMessages $eventRecorder, AdapterInterface $cache)
+    public function __construct(int $minLength, int $maxLength, EventStore $eventStore, RecordsMessages $eventRecorder, AdapterInterface $cache)
     {
         $this->minLength = $minLength;
         $this->maxLength = $maxLength;
@@ -87,7 +86,7 @@ final class InitialAccessTokenRepository implements InitialAccessTokenRepository
     {
         $initialAccessToken = $this->getFromCache($initialAccessTokenId);
         if (null === $initialAccessToken) {
-            $events = $this->eventStore->getEvents($initialAccessTokenId);
+            $events = $this->eventStore->findAllForDomainId($initialAccessTokenId);
             if (!empty($events)) {
                 $initialAccessToken = $this->getFromEvents($events);
                 $this->cacheObject($initialAccessToken);
