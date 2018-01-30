@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\Service;
 
 use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
-use OAuth2Framework\Component\AuthorizationEndpoint\Exception\RedirectToLoginPageException;
 use OAuth2Framework\Component\AuthorizationEndpoint\UserAccountDiscovery\UserAccountDiscovery;
 use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
