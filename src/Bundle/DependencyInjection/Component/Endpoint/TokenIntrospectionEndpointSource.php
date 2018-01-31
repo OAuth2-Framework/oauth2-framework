@@ -44,7 +44,6 @@ final class TokenIntrospectionEndpointSource implements Component
      */
     public function getNodeDefinition(NodeDefinition $node)
     {
-
         $node
             ->children()
                 ->scalarNode('path')->defaultValue('/token/introspection')->end()

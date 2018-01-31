@@ -44,7 +44,6 @@ final class TokenEndpointSource implements Component
      */
     public function getNodeDefinition(NodeDefinition $node)
     {
-
         $node
             ->children()
                 ->scalarNode('path')->defaultValue('/token/get')->end()

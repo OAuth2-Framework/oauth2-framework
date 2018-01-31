@@ -43,7 +43,6 @@ final class AuthorizationEndpointRequestObjectEncryptionSource implements Compon
      */
     public function getNodeDefinition(NodeDefinition $node)
     {
-
         $node
             ->children()
                 ->booleanNode('required')

@@ -46,7 +46,6 @@ final class TokenRevocationEndpointSource implements Component
      */
     public function getNodeDefinition(NodeDefinition $node)
     {
-
         $node
             ->children()
                 ->scalarNode('path')->defaultValue('/token/revocation')->end()

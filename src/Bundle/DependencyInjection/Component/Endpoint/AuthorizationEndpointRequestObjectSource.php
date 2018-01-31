@@ -53,7 +53,6 @@ final class AuthorizationEndpointRequestObjectSource implements Component
      */
     public function getNodeDefinition(NodeDefinition $node)
     {
-
         $node
             ->children()
                 ->arrayNode('signature_algorithms')

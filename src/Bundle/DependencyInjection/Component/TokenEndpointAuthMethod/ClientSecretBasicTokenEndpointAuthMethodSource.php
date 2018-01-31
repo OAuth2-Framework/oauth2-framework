@@ -46,7 +46,6 @@ final class ClientSecretBasicTokenEndpointAuthMethodSource implements Component
      */
     public function getNodeDefinition(NodeDefinition $node)
     {
-
         $node
             ->children()
                 ->scalarNode('realm')->isRequired()->end()

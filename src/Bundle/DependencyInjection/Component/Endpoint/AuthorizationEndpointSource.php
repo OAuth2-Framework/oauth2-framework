@@ -57,7 +57,6 @@ final class AuthorizationEndpointSource implements Component
      */
     public function getNodeDefinition(NodeDefinition $node)
     {
-
         $node
             ->children()
                 ->scalarNode('path')

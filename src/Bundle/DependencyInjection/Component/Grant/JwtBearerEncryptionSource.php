@@ -41,7 +41,6 @@ final class JwtBearerEncryptionSource implements Component
 
     public function getNodeDefinition(NodeDefinition $node)
     {
-
         $node
             ->children()
                 ->booleanNode('required')

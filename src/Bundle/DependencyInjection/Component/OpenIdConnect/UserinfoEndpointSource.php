@@ -53,7 +53,6 @@ final class UserinfoEndpointSource implements Component
      */
     public function getNodeDefinition(NodeDefinition $node)
     {
-
         $node
             ->children()
                 ->scalarNode('path')->defaultValue('/userinfo')->end()

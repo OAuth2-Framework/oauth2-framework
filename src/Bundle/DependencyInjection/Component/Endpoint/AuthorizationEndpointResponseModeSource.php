@@ -55,7 +55,6 @@ final class AuthorizationEndpointResponseModeSource implements Component
      */
     public function getNodeDefinition(NodeDefinition $node)
     {
-
         $node
             ->children()
                 ->booleanNode('allow_response_mode_parameter')

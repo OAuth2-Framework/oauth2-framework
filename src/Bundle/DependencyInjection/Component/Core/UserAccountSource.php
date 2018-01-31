@@ -37,7 +37,7 @@ final class UserAccountSource implements Component
         $container->setAlias('oauth2_server.user_account.repository', $configs['user_account_repository']);
         $container->setAlias('oauth2_server.user_account.manager', $configs['user_account_manager']);
 
-        $loader = new PhpFileLoader($container, new FileLocator(__DIR__ . '/../../../Resources/config/core'));
+        $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/core'));
         $loader->load('user_account.php');
     }
 

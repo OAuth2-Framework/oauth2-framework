@@ -47,7 +47,6 @@ final class ResourceOwnerPasswordCredentialSource implements Component
      */
     public function getNodeDefinition(NodeDefinition $node)
     {
-
         $node
             ->children()
                 ->booleanNode('issue_refresh_token')
