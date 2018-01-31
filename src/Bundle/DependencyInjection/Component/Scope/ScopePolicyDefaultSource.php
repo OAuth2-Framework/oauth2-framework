@@ -46,7 +46,6 @@ final class ScopePolicyDefaultSource implements Component
      */
     public function getNodeDefinition(NodeDefinition $node)
     {
-
         $node
             ->children()
                 ->arrayNode('scope')

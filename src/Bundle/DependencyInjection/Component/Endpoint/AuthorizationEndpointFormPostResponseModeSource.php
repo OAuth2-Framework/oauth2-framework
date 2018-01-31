@@ -47,7 +47,6 @@ final class AuthorizationEndpointFormPostResponseModeSource implements Component
      */
     public function getNodeDefinition(NodeDefinition $node)
     {
-
         $node
             ->children()
                 ->scalarNode('template')

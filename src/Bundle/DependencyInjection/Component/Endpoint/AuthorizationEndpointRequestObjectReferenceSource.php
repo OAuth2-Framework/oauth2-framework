@@ -42,7 +42,6 @@ final class AuthorizationEndpointRequestObjectReferenceSource implements Compone
      */
     public function getNodeDefinition(NodeDefinition $node)
     {
-
         $node
             ->children()
                 ->booleanNode('uris_registration_required')

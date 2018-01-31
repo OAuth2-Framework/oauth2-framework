@@ -33,7 +33,6 @@ final class KeySet implements Component
      */
     public function getNodeDefinition(NodeDefinition $node)
     {
-
         $node
             ->addDefaultsIfNotSet()
             ->children()
@@ -41,7 +40,6 @@ final class KeySet implements Component
                 ->scalarNode('encryption')->defaultNull()->end()
             ->end();
     }
-
 
     /**
      * {@inheritdoc}
@@ -54,6 +52,7 @@ final class KeySet implements Component
         if (null !== $config['key_set']['encryption']) {
             ConfigurationHelper::addKeyset($container, 'oauth2_server.key_set.encryption', 'jwkset', ['value' => $config['key_set']['encryption']]);
         }
+
         return [];
     }
 }

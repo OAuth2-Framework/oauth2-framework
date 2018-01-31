@@ -36,7 +36,7 @@ final class AccessTokenSource implements Component
     {
         $container->setAlias('oauth2_server.access_token.repository', $configs['access_token_repository']);
 
-        $loader = new PhpFileLoader($container, new FileLocator(__DIR__ . '/../../../Resources/config/core'));
+        $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/core'));
         $loader->load('access_token.php');
     }
 

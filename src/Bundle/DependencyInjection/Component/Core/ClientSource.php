@@ -36,7 +36,7 @@ final class ClientSource implements Component
     {
         $container->setAlias('oauth2_server.client.repository', $configs['client_repository']);
 
-        $loader = new PhpFileLoader($container, new FileLocator(__DIR__ . '/../../../Resources/config/core'));
+        $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/core'));
         $loader->load('client.php');
     }
 

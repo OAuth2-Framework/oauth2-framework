@@ -56,7 +56,6 @@ final class ClientRegistrationSource implements Component
      */
     public function getNodeDefinition(NodeDefinition $node)
     {
-
         $node
             ->children()
                 ->scalarNode('path')->defaultValue('/client/management')->end()

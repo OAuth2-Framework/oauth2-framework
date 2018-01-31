@@ -36,7 +36,7 @@ final class ResourceServerRepositorySource implements Component
     {
         $container->setAlias('oauth2_server.resource_server.repository', $configs['resource_server_repository']);
 
-        $loader = new PhpFileLoader($container, new FileLocator(__DIR__ . '/../../../Resources/config/core'));
+        $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/core'));
         $loader->load('resource_server.php');
     }
 

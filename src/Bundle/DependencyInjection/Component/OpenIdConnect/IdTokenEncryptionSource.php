@@ -61,7 +61,6 @@ final class IdTokenEncryptionSource implements Component
 
     public function getNodeDefinition(NodeDefinition $node)
     {
-
         $node
             ->children()
                 ->arrayNode('key_encryption_algorithms')

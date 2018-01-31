@@ -58,7 +58,6 @@ final class ClientAssertionJwtTokenEndpointAuthMethodSource implements Component
      */
     public function getNodeDefinition(NodeDefinition $node)
     {
-
         $node
             ->validate()
                 ->ifTrue(function ($config) {

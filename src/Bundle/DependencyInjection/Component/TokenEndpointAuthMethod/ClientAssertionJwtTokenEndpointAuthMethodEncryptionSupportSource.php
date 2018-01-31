@@ -43,7 +43,6 @@ final class ClientAssertionJwtTokenEndpointAuthMethodEncryptionSupportSource imp
      */
     public function getNodeDefinition(NodeDefinition $node)
     {
-
         $node
             ->validate()
                 ->ifTrue(function ($config) {
