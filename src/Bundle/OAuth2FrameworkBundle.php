@@ -13,16 +13,29 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle;
 
-use OAuth2Framework\Bundle\DependencyInjection\Compiler;
-use OAuth2Framework\Bundle\DependencyInjection\OAuth2FrameworkServerExtension;
-use OAuth2Framework\Bundle\Security\Factory\OAuth2SecurityFactory;
+use OAuth2Framework\Bundle\DependencyInjection\Component;
+use OAuth2Framework\Bundle\DependencyInjection\OAuth2FrameworkExtension;
 use Symfony\Bundle\SecurityBundle\DependencyInjection\SecurityExtension;
-use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 final class OAuth2FrameworkBundle extends Bundle
 {
+    /**
+     * @var Component\ComponentWithCompilerPasses[]
+     */
+    private $components = [];
+
+    /**
+     * JoseFrameworkBundle constructor.
+     */
+    public function __construct()
+    {
+        foreach ($this->getComponents() as $component) {
+            $this->components[$component->name()] = $component;
+        }
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -35,9 +48,9 @@ final class OAuth2FrameworkBundle extends Bundle
     /**
      * {@inheritdoc}
      */
-    public function getContainerExtension($alias = 'oauth2_server')
+    public function getContainerExtension()
     {
-        return new OAuth2FrameworkServerExtension($alias);
+        return new OAuth2FrameworkExtension('oauth2_server', $this->components);
     }
 
     /**
@@ -45,8 +58,14 @@ final class OAuth2FrameworkBundle extends Bundle
      */
     public function build(ContainerBuilder $container)
     {
-        foreach ($this->getCompilerPasses() as $pass) {
-            $container->addCompilerPass($pass);
+        parent::build($container);
+        foreach ($this->components as $component) {
+            if ($component instanceof Component\ComponentWithCompilerPasses) {
+                $compilerPasses = $component->getCompilerPasses();
+                foreach ($compilerPasses as $compilerPass) {
+                    $container->addCompilerPass($compilerPass);
+                }
+            }
         }
 
         /* @var SecurityExtension $extension */
@@ -55,11 +74,28 @@ final class OAuth2FrameworkBundle extends Bundle
     }
 
     /**
-     * @return CompilerPassInterface[]
+     * @return Component\ComponentWithCompilerPasses[]
      */
-    private function getCompilerPasses(): array
+    private function getComponents(): array
     {
-        return [/*
+        return [
+            new Component\Core\ClientSource(),
+            new Component\Core\AccessTokenSource(),
+            new Component\Core\UserAccountSource(),
+            new Component\Core\RouteLoaderSource(),
+            new Component\Core\ResourceServerRepositorySource(),
+            new Component\Core\ServerNameSource(),
+
+            /*new Component\FirewallSource(),
+            new Component\TokenTypeSource(),
+            new Component\TokenEndpointAuthMethodSource(),
+            new Component\GrantSource(),
+            new Component\EndpointSource(),
+            new Component\ScopeSource(),
+            new Component\OpenIdConnectSource(),
+            new Component\HttpSource(),
+            new Component\KeySet(),*/
+            /*
             new Compiler\ClientRuleCompilerPass(),
             new Compiler\ScopePolicyCompilerPass(),
             new Compiler\ResponseFactoryCompilerPass(),

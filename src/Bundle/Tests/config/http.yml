@@ -2,6 +2,3 @@ httplug:
     clients:
         oauth2:
             factory: 'httplug.factory.guzzle6'
-            config:
-                verify: false
-                timeout: 2

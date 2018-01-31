@@ -70,7 +70,7 @@ final class EventStore implements \OAuth2Framework\Component\Core\Event\EventSto
     /**
      * {@inheritdoc}
      */
-    public function getEvents(Id $id): array
+    public function findAllForDomainId(Id $id): array
     {
         $dirname = sprintf(self::EVENT_PATH, $this->storagePath, $id->getValue());
         $fs = new Filesystem();

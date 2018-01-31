@@ -13,8 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\DependencyInjection;
 
-use OAuth2Framework\Bundle\DependencyInjection\Source\Component;
-use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
+use OAuth2Framework\Bundle\DependencyInjection\Component\Component;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -23,7 +22,7 @@ final class Configuration implements ConfigurationInterface
     /**
      * @var Component[]
      */
-    private $sourceMap;
+    private $sources;
 
     /**
      * @var string
@@ -33,13 +32,13 @@ final class Configuration implements ConfigurationInterface
     /**
      * Configuration constructor.
      *
-     * @param string $alias
-     * @param array  $sourceMap
+     * @param string   $alias
+     * @param Component[] $sources
      */
-    public function __construct(string $alias, array $sourceMap)
+    public function __construct(string $alias, array $sources)
     {
         $this->alias = $alias;
-        $this->sourceMap = $sourceMap;
+        $this->sources = $sources;
     }
 
     /**
@@ -49,26 +48,11 @@ final class Configuration implements ConfigurationInterface
     {
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root($this->alias);
-        $rootNode->addDefaultsIfNotSet();
 
-        $this->buildFromSources($this->sourceMap, $rootNode);
+        foreach ($this->sources as $source) {
+            $source->getNodeDefinition($rootNode);
+        }
 
         return $treeBuilder;
-    }
-
-    /**
-     * @param array               $sources
-     * @param ArrayNodeDefinition $node
-     */
-    private function buildFromSources(array $sources, ArrayNodeDefinition $node)
-    {
-        foreach ($sources as $k => $source) {
-            if ($source instanceof Component) {
-                $source->addConfiguration($node);
-            } elseif (is_string($k) && is_array($source)) {
-                $childNode = $node->children()->arrayNode($k);
-                $this->buildFromSources($source, $childNode);
-            }
-        }
     }
 }

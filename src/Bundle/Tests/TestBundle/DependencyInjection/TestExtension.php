@@ -13,9 +13,9 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Tests\TestBundle\DependencyInjection;
 
-use Fluent\PhpConfigFileLoader;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 final class TestExtension extends Extension
@@ -25,7 +25,7 @@ final class TestExtension extends Extension
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $files = [
             'services',
         ];

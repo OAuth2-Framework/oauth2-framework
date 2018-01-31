@@ -1,4 +1,4 @@
 parameters:
     excludes_analyse:
         - %currentWorkingDirectory%/src/Bundle/Tests/*
-        - %currentWorkingDirectory%/src/Component/*/Tests/*Test.php
+        - %currentWorkingDirectory%/src/Component/*/Tests/*

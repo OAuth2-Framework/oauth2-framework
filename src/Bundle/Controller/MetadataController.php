@@ -23,7 +23,7 @@ use OAuth2Framework\Bundle\Service\MetadataBuilder;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-class MetadataController implements MiddlewareInterface
+final class MetadataController implements MiddlewareInterface
 {
     /**
      * @var MetadataEndpoint

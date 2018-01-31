@@ -12,7 +12,6 @@ declare(strict_types=1);
  */
 
 use Http\Factory\Diactoros\UriFactory;
-use OAuth2Framework\Bundle\Model\AccessTokenByReferenceRepository;
 use OAuth2Framework\Bundle\Tests\TestBundle\Entity\ResourceRepository;
 use OAuth2Framework\Bundle\Tests\TestBundle\Entity\UserManager;
 use OAuth2Framework\Bundle\Tests\TestBundle\Entity\UserRepository;
@@ -20,103 +19,133 @@ use OAuth2Framework\Bundle\Tests\TestBundle\Listener;
 use OAuth2Framework\Bundle\Tests\TestBundle\Service\AccessTokenHandler;
 use OAuth2Framework\Bundle\Tests\TestBundle\Service\UserProvider;
 use OAuth2Framework\Bundle\Tests\TestBundle\Service\EventStore;
-use function Fluent\autowire;
-use function Fluent\create;
-use function Fluent\get;
+use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
-return [
-    UriFactory::class => autowire(),
+return function (ContainerConfigurator $container) {
+    $container = $container->services()->defaults()
+        ->private()
+        ->autoconfigure();
 
-    'EventStore.RefreshToken' => create(EventStore::class)
-        ->arguments(
-            '%kernel.cache_dir%',
-            'refresh_token'
-        ),
+    $container->set('MyClientRepository')
+        ->class(\OAuth2Framework\Bundle\Tests\TestBundle\Entity\ClientRepository::class)
+        ->args([
+            ref('EventStore.Client'),
+            ref('event_recorder'),
+            ref('cache.app'),
+        ]);
 
-    'EventStore.AccessToken' => create(EventStore::class)
-        ->arguments(
-            '%kernel.cache_dir%',
-            'access_token'
-        ),
+    $container->set('MyUserAccountManager')
+        ->class(UserManager::class);
 
-    'EventStore.Client' => create(EventStore::class)
-        ->arguments(
-            '%kernel.cache_dir%',
-            'client'
-        ),
+    $container->set('MyUserAccountRepository')
+        ->class(UserRepository::class);
 
-    'EventStore.InitialAccessToken' => create(EventStore::class)
-        ->arguments(
-            '%kernel.cache_dir%',
-            'initial_access_token'
-        ),
+    $container->set(UserProvider::class)
+        ->args([
+            ref('MyUserAccountRepository'),
+        ]);
 
-    'EventStore.PreConfiguredAuthorization' => create(EventStore::class)
-        ->arguments(
-            '%kernel.cache_dir%',
-            'pre_configured_authorization'
-        ),
-
-    'EventStore.AuthCode' => create(EventStore::class)
-        ->arguments(
-            '%kernel.cache_dir%',
-            'auth_code'
-        ),
-
-    'MyAccessTokenRepository' => create(AccessTokenByReferenceRepository::class)
-        ->arguments(
+    $container->set('MyAccessTokenRepository')
+        ->class(\OAuth2Framework\Bundle\Tests\TestBundle\Entity\AccessTokenByReferenceRepository::class)
+        ->args([
             100,
             150,
             1800,
-            get('EventStore.AccessToken'),
-            get('event_bus'),
-            get('cache.app')
-        ),
+            ref('EventStore.AccessToken'),
+            ref('event_bus'),
+            ref('cache.app'),
+        ]);
 
-    'MyUserAccountManager' => create(UserManager::class),
-    'MyUserAccountRepository' => create(UserRepository::class),
-    'MyResourceServerRepository' => create(ResourceServerRepository::class),
-    'MyUserProvider' => autowire(UserProvider::class),
+    $container->set('MyResourceServerRepository')
+        ->class(\OAuth2Framework\Component\Core\ResourceServer\ResourceServerRepository::class);
 
-    Listener\ClientCreatedListener::class => create()
-        ->tag('event_subscriber', ['subscribes_to' => Client\ClientCreatedEvent::class]),
-    Listener\ClientDeletedListener::class => create()
-        ->tag('event_subscriber', ['subscribes_to' => Client\ClientDeletedEvent::class]),
-    Listener\ClientOwnerChangedListener::class => create()
-        ->tag('event_subscriber', ['subscribes_to' => Client\ClientOwnerChangedEvent::class]),
-    Listener\ClientParametersUpdatedListener::class => create()
-        ->tag('event_subscriber', ['subscribes_to' => Client\ClientParametersUpdatedEvent::class]),
+    $container->set(UriFactory::class);
 
-    Listener\AccessTokenCreatedListener::class => create()
-        ->tag('event_subscriber', ['subscribes_to' => AccessToken\AccessTokenCreatedEvent::class]),
-    Listener\AccessTokenRevokedListener::class => create()
-        ->tag('event_subscriber', ['subscribes_to' => AccessToken\AccessTokenRevokedEvent::class]),
+    $container->set('EventStore.RefreshToken')
+        ->class(EventStore::class)
+        ->args([
+            '%kernel.cache_dir%',
+            'refresh_token',
+        ]);
 
-    Listener\RefreshTokenCreatedListener::class => create()
-        ->tag('event_subscriber', ['subscribes_to' => RefreshToken\RefreshTokenCreatedEvent::class]),
-    Listener\RefreshTokenRevokedListener::class => create()
-        ->tag('event_subscriber', ['subscribes_to' => RefreshToken\RefreshTokenRevokedEvent::class]),
+    $container->set('EventStore.AccessToken')
+        ->class(EventStore::class)
+        ->args([
+            '%kernel.cache_dir%',
+            'access_token',
+        ]);
 
-    Listener\AuthCodeCreatedListener::class => create()
-        ->tag('event_subscriber', ['subscribes_to' => AuthCode\AuthCodeCreatedEvent::class]),
-    Listener\AuthCodeRevokedListener::class => create()
-        ->tag('event_subscriber', ['subscribes_to' => AuthCode\AuthCodeRevokedEvent::class]),
-    Listener\AuthCodeMarkedAsUsedListener::class => create()
-        ->tag('event_subscriber', ['subscribes_to' => AuthCode\AuthCodeMarkedAsUsedEvent::class]),
+    $container->set('EventStore.Client')
+        ->class(EventStore::class)
+        ->args([
+            '%kernel.cache_dir%',
+            'client',
+        ]);
 
-    AccessTokenHandler::class => autowire()
-        ->tag('oauth2_server_access_token_handler'),
+    $container->set('EventStore.InitialAccessToken')
+        ->class(EventStore::class)
+        ->args([
+            '%kernel.cache_dir%',
+            'initial_access_token',
+        ]);
 
-    'MyPairwiseSubjectIdentifier' => create(EncryptedSubjectIdentifier::class)
-        ->arguments(
+    $container->set('EventStore.PreConfiguredAuthorization')
+        ->class(EventStore::class)
+        ->args([
+            '%kernel.cache_dir%',
+            'pre_configured_authorization',
+        ]);
+
+    $container->set('EventStore.AuthCode')
+        ->class(EventStore::class)
+        ->args([
+            '%kernel.cache_dir%',
+            'auth_code',
+        ]);
+
+    $container->set(Listener\ClientCreatedListener::class)
+        ->tag('event_subscriber', ['subscribes_to' => \OAuth2Framework\Component\Core\Client\Event\ClientCreatedEvent::class]);
+    $container->set(Listener\ClientDeletedListener::class)
+        ->tag('event_subscriber', ['subscribes_to' => \OAuth2Framework\Component\Core\Client\Event\ClientDeletedEvent::class]);
+    $container->set(Listener\ClientOwnerChangedListener::class)
+        ->tag('event_subscriber', ['subscribes_to' => \OAuth2Framework\Component\Core\Client\Event\ClientOwnerChangedEvent::class]);
+    $container->set(Listener\ClientParametersUpdatedListener::class)
+        ->tag('event_subscriber', ['subscribes_to' => \OAuth2Framework\Component\Core\Client\Event\ClientParametersUpdatedEvent::class]);
+
+    $container->set(Listener\AccessTokenCreatedListener::class)
+        ->tag('event_subscriber', ['subscribes_to' => \OAuth2Framework\Component\Core\AccessToken\Event\AccessTokenCreatedEvent::class]);
+    $container->set(Listener\AccessTokenRevokedListener::class)
+        ->tag('event_subscriber', ['subscribes_to' => \OAuth2Framework\Component\Core\AccessToken\Event\AccessTokenRevokedEvent::class]);
+
+    $container->set(Listener\RefreshTokenCreatedListener::class)
+        ->tag('event_subscriber', ['subscribes_to' => \OAuth2Framework\Component\RefreshTokenGrant\Event\RefreshTokenCreatedEvent::class]);
+    $container->set(Listener\RefreshTokenRevokedListener::class)
+        ->tag('event_subscriber', ['subscribes_to' => \OAuth2Framework\Component\RefreshTokenGrant\Event\RefreshTokenRevokedEvent::class]);
+
+    $container->set(Listener\AuthCodeCreatedListener::class)
+        ->tag('event_subscriber', ['subscribes_to' => \OAuth2Framework\Component\AuthorizationCodeGrant\Event\AuthorizationCodeCreatedEvent::class]);
+
+    $container->set(Listener\AuthCodeRevokedListener::class)
+        ->tag('event_subscriber', ['subscribes_to' => \OAuth2Framework\Component\AuthorizationCodeGrant\Event\AuthorizationCodeRevokedEvent::class]);
+    $container->set(Listener\AuthCodeMarkedAsUsedListener::class)
+        ->tag('event_subscriber', ['subscribes_to' => \OAuth2Framework\Component\AuthorizationCodeGrant\Event\AuthorizationCodeMarkedAsUsedEvent::class]);
+
+    $container->set(AccessTokenHandler::class)
+        ->tag('oauth2_server_access_token_handler');
+
+    $container->set('MyPairwiseSubjectIdentifier')
+        ->class(\OAuth2Framework\Component\OpenIdConnect\UserInfo\Pairwise\EncryptedSubjectIdentifier::class)
+        ->args([
             'This is my secret Key !!!',
             'aes-128-cbc',
             mb_substr('This is my salt or my IV !!!', 0, 16, '8bit'),
-            mb_substr('This is my salt or my IV !!!', 0, 16, '8bit')
-        ),
+            mb_substr('This is my salt or my IV !!!', 0, 16, '8bit'),
+        ]);
 
-    'MyResourceRepository' => create(ResourceRepository::class),
+    $container->set('MyResourceRepository')
+        ->class(ResourceRepository::class);
 
-    ResourceServerAuthMethodByIpAddress::class => create()
-        ->tag('token_introspection_endpoint_auth_method'),
-];
+    /*$container->set(ResourceServerAuthMethodByIpAddress::class)
+        ->tag('token_introspection_endpoint_auth_method');*/
+};

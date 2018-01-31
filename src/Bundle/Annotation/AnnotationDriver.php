@@ -16,6 +16,7 @@ namespace OAuth2Framework\Bundle\Annotation;
 use Doctrine\Common\Annotations\Reader;
 use OAuth2Framework\Bundle\Annotation\Checker\CheckerInterface;
 use OAuth2Framework\Bundle\Security\Authentication\Token\OAuth2Token;
+use OAuth2Framework\Component\Core\Exception\OAuth2Exception;
 use OAuth2Framework\Component\Response\OAuth2ResponseFactoryManager;
 use OAuth2Framework\Component\Response\OAuth2ResponseInterface;
 use OAuth2Framework\Component\TokenType\TokenTypeManager;
@@ -129,7 +130,7 @@ final class AnnotationDriver
         $response = $this->oauth2ResponseFactoryManager->getResponse(
             401,
             [
-                'error' => OAuth2ResponseFactoryManager::ERROR_ACCESS_DENIED,
+                'error' => OAuth2Exception::ERROR_ACCESS_DENIED,
                 'error_description' => $message,
                 'schemes' => $schemes,
             ]
@@ -147,7 +148,7 @@ final class AnnotationDriver
         $response = $this->oauth2ResponseFactoryManager->getResponse(
             403,
             [
-                'error' => OAuth2ResponseFactoryManager::ERROR_ACCESS_DENIED,
+                'error' => OAuth2Exception::ERROR_ACCESS_DENIED,
                 'error_description' => $message,
             ]
         );
