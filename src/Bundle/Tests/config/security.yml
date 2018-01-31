@@ -20,3 +20,4 @@ security:
             anonymous: ~
             http_basic:
                 realm: "My security system"
+            logout_on_user_change: true
