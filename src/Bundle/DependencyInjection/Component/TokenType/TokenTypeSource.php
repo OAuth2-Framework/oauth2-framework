@@ -45,7 +45,7 @@ final class TokenTypeSource implements Component
             $container->setParameter('oauth2_server.token_type.bearer_token.authorization_header', $configs['token_type']['bearer_token']['authorization_header']);
             $container->setParameter('oauth2_server.token_type.bearer_token.query_string', $configs['token_type']['bearer_token']['query_string']);
             $container->setParameter('oauth2_server.token_type.bearer_token.request_body', $configs['token_type']['bearer_token']['request_body']);
-            $loader->load('mac_token.php');
+            $loader->load('bearer_token.php');
         }
         if ($configs['token_type']['mac_token']['enabled']) {
             $container->setParameter('oauth2_server.token_type.mac_token.min_length', $configs['token_type']['mac_token']['min_length']);
