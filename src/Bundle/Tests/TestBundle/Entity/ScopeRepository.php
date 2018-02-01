@@ -58,5 +58,4 @@ final class ScopeRepository implements ScopeRepositoryInterface
     {
         return array_values($this->scopes);
     }
-
 }

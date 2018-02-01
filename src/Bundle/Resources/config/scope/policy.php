@@ -26,5 +26,4 @@ return function (ContainerConfigurator $container) {
 
     $container->set(ScopePolicyRule::class)
         ->tag('oauth2_server_client_rule');
-
 };
