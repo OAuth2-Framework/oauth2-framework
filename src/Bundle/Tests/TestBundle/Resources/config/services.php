@@ -57,6 +57,14 @@ return function (ContainerConfigurator $container) {
             ref('cache.app'),
         ]);
 
+    $container->set('MyAuthorizationCodeRepository')
+        ->class(\OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeRepository::class)
+        ->args([
+            ref('EventStore.AuthCode'),
+            ref('event_bus'),
+            ref('cache.app'),
+        ]);
+
 //    $container->set('MyResourceServerRepository')
 //        ->class(\OAuth2Framework\Bundle\Tests\TestBundle\Entity\ResourceServerRepository::class);
 

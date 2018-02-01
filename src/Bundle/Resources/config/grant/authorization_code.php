@@ -11,53 +11,43 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use OAuth2Framework\Bundle\Model\AuthCodeRepository;
-use OAuth2Framework\Component\GrantType\AuthorizationCodeGrantType;
-use OAuth2Framework\Component\GrantType\PKCEMethod;
-use OAuth2Framework\Component\ResponseType\CodeResponseType;
-use OAuth2Framework\Component\TokenTypeHint\AuthCodeTypeHint;
-use function Fluent\create;
-use function Fluent\get;
+use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeGrantType;
+use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeRepository;
+use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeResponseType;
+use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeTypeHint;
+use OAuth2Framework\Component\AuthorizationCodeGrant\PKCEMethod;
+use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
-return [
-    AuthCodeRepository::class => create()
-        ->arguments(
+return function (ContainerConfigurator $container) {
+    $container = $container->services()->defaults()
+        ->private()
+        ->autoconfigure();
+
+    $container->set(AuthorizationCodeGrantType::class)
+        ->args([
+            ref('oauth2_server.grant_authorization_code.repository'),
+            ref(PKCEMethod\PKCEMethodManager::class),
+        ])
+        ->tag('oauth2_server_grant_type');
+
+    $container->set(AuthorizationCodeResponseType::class)
+        ->args([
+            ref(AuthorizationCodeRepository::class),
+            ref(PKCEMethod\PKCEMethodManager::class),
             '%oauth2_server.grant.authorization_code.min_length%',
             '%oauth2_server.grant.authorization_code.max_length%',
-            '%oauth2_server.grant.authorization_code.lifetime%',
-            get('oauth2_server.grant.authorization_code.event_store'),
-            get('event_bus'),
-            get('cache.app')
-        ),
+            '%oauth2_server.grant.authorization_code.enforce_pkce%',
+        ])
+        ->tag('oauth2_server_response_type');
 
-    AuthorizationCodeGrantType::class => create()
-        ->arguments(
-            get(AuthCodeRepository::class),
-            get(PKCEMethod\PKCEMethodManager::class)
-        )
-        ->tag('oauth2_server_grant_type'),
+    $container->set(PKCEMethod\PKCEMethodManager::class);
+    $container->set(PKCEMethod\Plain::class)
+        ->tag('oauth2_server_pkce_method', ['alias' => 'plain']);
+    $container->set(PKCEMethod\S256::class)
+        ->tag('oauth2_server_pkce_method', ['alias' => 'S256']);
 
-    CodeResponseType::class => create()
-        ->arguments(
-            get(AuthCodeRepository::class),
-            get(PKCEMethod\PKCEMethodManager::class),
-            '%oauth2_server.grant.authorization_code.enforce_pkce%'
-        )
-        ->tag('oauth2_server_response_type'),
-
-    PKCEMethod\PKCEMethodManager::class => create(),
-
-    PKCEMethod\Plain::class => create()
-        ->tag('oauth2_server_pkce_method', ['alias' => 'plain']),
-
-    PKCEMethod\S256::class => create()
-        ->tag('oauth2_server_pkce_method', ['alias' => 'S256']),
-
-    // For token introspection and revocation
-    AuthCodeTypeHint::class => create()
-        ->arguments(
-            get(AuthCodeRepository::class),
-            get('command_bus')
-        )
-        ->tag('oauth2_server_token_type_hint'),
-];
+    $container->set(AuthorizationCodeTypeHint::class)
+        ->tag('oauth2_server_introspection_type_hint')
+        ->tag('oauth2_server_revocation_type_hint');
+};

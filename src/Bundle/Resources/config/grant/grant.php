@@ -11,11 +11,16 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use OAuth2Framework\Component\GrantType\GrantTypeManager;
-use OAuth2Framework\Component\ResponseType\ResponseTypeManager;
-use function Fluent\create;
+use OAuth2Framework\Component\AuthorizationEndpoint\ResponseTypeManager;
+use OAuth2Framework\Component\TokenEndpoint\GrantTypeManager;
+use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
-return [
-    GrantTypeManager::class => create(),
-    ResponseTypeManager::class => create(),
-];
+return function (ContainerConfigurator $container) {
+    $container = $container->services()->defaults()
+        ->private()
+        ->autoconfigure()
+        ->autowire();
+
+    $container->set(GrantTypeManager::class);
+    $container->set(ResponseTypeManager::class);
+};

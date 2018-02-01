@@ -28,6 +28,16 @@ final class AuthorizationCodeResponseType implements ResponseType
     private $authorizationCodeLifetime;
 
     /**
+     * @var int
+     */
+    private $minLength;
+
+    /**
+     * @var int
+     */
+    private $maxLength;
+
+    /**
      * @var bool
      */
     private $pkceForPublicClientsEnforced;
@@ -43,16 +53,20 @@ final class AuthorizationCodeResponseType implements ResponseType
     private $pkceMethodManager;
 
     /**
-     * CodeResponseType constructor.
-     *
+     * AuthorizationCodeResponseType constructor.
      * @param AuthorizationCodeRepository $authorizationCodeRepository
+     * @param int                         $minLength
+     * @param int                         $maxLength
      * @param int                         $authorizationCodeLifetime
      * @param PKCEMethodManager           $pkceMethodManager
      * @param bool                        $pkceForPublicClientsEnforced
      */
-    public function __construct(AuthorizationCodeRepository $authorizationCodeRepository, int $authorizationCodeLifetime, PKCEMethodManager $pkceMethodManager, bool $pkceForPublicClientsEnforced)
+    public function __construct(AuthorizationCodeRepository $authorizationCodeRepository, int $minLength, int $maxLength, int $authorizationCodeLifetime, PKCEMethodManager $pkceMethodManager, bool $pkceForPublicClientsEnforced)
     {
         $this->authorizationCodeRepository = $authorizationCodeRepository;
+        $this->authorizationCodeLifetime = $authorizationCodeLifetime;
+        $this->minLength = $minLength;
+        $this->maxLength = $maxLength;
         $this->authorizationCodeLifetime = $authorizationCodeLifetime;
         $this->pkceMethodManager = $pkceMethodManager;
         $this->pkceForPublicClientsEnforced = $pkceForPublicClientsEnforced;
@@ -100,9 +114,10 @@ final class AuthorizationCodeResponseType implements ResponseType
             }
         }
 
+        $length = random_int($this->minLength, $this->maxLength);
         $authorizationCode = AuthorizationCode::createEmpty();
         $authorizationCode = $authorizationCode->create(
-            AuthorizationCodeId::create(Base64Url::encode(random_bytes(64))),
+            AuthorizationCodeId::create(Base64Url::encode(random_bytes($length*8))),
             $authorization->getClient()->getPublicId(),
             $authorization->getUserAccount()->getPublicId(),
             $queryParams,

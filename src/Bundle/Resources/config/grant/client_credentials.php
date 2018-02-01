@@ -11,13 +11,18 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use OAuth2Framework\Component\GrantType\ClientCredentialsGrantType;
-use function Fluent\create;
+use OAuth2Framework\Component\ClientCredentialsGrant\ClientCredentialsGrantType;
+use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
-return [
-    ClientCredentialsGrantType::class => create()
-        ->arguments(
-            '%oauth2_server.grant.client_credentials.issue_refresh_token%'
-        )
-        ->tag('oauth2_server_grant_type'),
-];
+return function (ContainerConfigurator $container) {
+    $container = $container->services()->defaults()
+        ->private()
+        ->autoconfigure();
+
+    $container->set(ClientCredentialsGrantType::class)
+        ->args([
+            '%oauth2_server.grant.client_credentials.issue_refresh_token%',
+        ])
+        ->tag('oauth2_server_grant_type');
+
+};

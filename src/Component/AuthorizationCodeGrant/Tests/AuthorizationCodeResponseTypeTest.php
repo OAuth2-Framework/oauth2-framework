@@ -83,6 +83,8 @@ final class AuthorizationCodeResponseTypeTest extends TestCase
 
             $this->grantType = new AuthorizationCodeResponseType(
                 $authorizationCodeRepository->reveal(),
+                10,
+                15,
                 30,
                 $this->getPkceMethodManager(),
                 false

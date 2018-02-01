@@ -53,11 +53,11 @@ oauth2_server:
             signature_algorithms: ['RS256', 'RS512', 'HS256', 'HS512', 'ES256', 'ES512']
             claim_checkers: ['exp', 'iat', 'nbf']
             header_checkers: ['crit']
-#            encryption:
-#                enabled: true
-#                required: false
-#                key_encryption_algorithms: ['RSA-OAEP-256']
-#                content_encryption_algorithms: ['A128CBC-HS256']
+            encryption:
+                enabled: true
+                required: false
+                key_encryption_algorithms: ['RSA-OAEP-256']
+                content_encryption_algorithms: ['A128CBC-HS256']
 #    endpoint:
 #    # Client Registration Component
 #        client_registration:
@@ -161,14 +161,14 @@ oauth2_server:
 #            pre_configured_authorization:
 #                enabled: true
 #                repository: 'MyxxxRepository'
-#    grant:
+    grant:
 #    # Authorization Code Grant Component
-#        authorization_code:
-#            enabled: true
-#            min_length: 50
-#            max_length: 100
-#            enforce_pkce: false
-#            repository: 'MyxxxRepository'
+        authorization_code:
+            enabled: true
+            min_length: 50
+            max_length: 100
+            enforce_pkce: false
+            repository: 'MyAuthorizationCodeRepository'
 #    # Refresh Token Grant Component
 #        refresh_token:
 #            enabled: true
@@ -183,8 +183,9 @@ oauth2_server:
 #        implicit:
 #            enabled: true
 #    # Client Credentials Grant Component
-#        client_credentials:
-#            enabled: true
+        client_credentials:
+            enabled: true
+            issue_refresh_token: true
 #    # Resource Owner Password Credentials Grant Component
 #        resource_owner_password_credential:
 #            enabled: true

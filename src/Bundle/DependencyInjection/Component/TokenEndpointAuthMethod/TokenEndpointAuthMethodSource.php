@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\DependencyInjection\Component\TokenEndpointAuthMethod;
 
 use OAuth2Framework\Bundle\DependencyInjection\Component\Component;
+use OAuth2Framework\Component\TokenEndpoint\AuthenticationMethod\AuthenticationMethod;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -34,6 +35,8 @@ final class TokenEndpointAuthMethodSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
+        $container->registerForAutoconfiguration(AuthenticationMethod::class)->addTag('oauth2_server_token_endpoint_auth_method');
+
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/token_endpoint_auth_method'));
         $loader->load('token_endpoint_auth_method.php');
 
@@ -98,6 +101,12 @@ final class TokenEndpointAuthMethodSource implements Component
                     ->arrayNode('client_assertion_jwt')
                         ->canBeEnabled()
                         ->info('This method comprises the "client_secret_jwt" and the "private_key_jwt" authentication methods')
+                        ->validate()
+                            ->ifTrue(function ($config) {
+                                return true === $config['enabled'] && empty($config['signature_algorithms']);
+                            })
+                            ->thenInvalid('At least one signature algorithm must be set.')
+                        ->end()
                         ->children()
                             ->integerNode('secret_lifetime')
                                 ->info('Secret lifetime (in seconds; 0 = unlimited) applicable to the "client_secret_jwt" authentication method')
@@ -121,6 +130,39 @@ final class TokenEndpointAuthMethodSource implements Component
                                 ->useAttributeAsKey('name')
                                 ->prototype('scalar')->end()
                                 ->treatNullLike([])
+                            ->end()
+                            ->arrayNode('encryption')
+                                ->canBeEnabled()
+                                ->validate()
+                                    ->ifTrue(function ($config) {
+                                        return true === $config['enabled'] && empty($config['key_encryption_algorithms']);
+                                    })
+                                    ->thenInvalid('At least one key encryption algorithm must be set.')
+                                ->end()
+                                ->validate()
+                                    ->ifTrue(function ($config) {
+                                        return true === $config['enabled'] && empty($config['content_encryption_algorithms']);
+                                    })
+                                    ->thenInvalid('At least one content encryption algorithm must be set.')
+                                ->end()
+                                ->children()
+                                    ->booleanNode('required')
+                                        ->info('When true, all incoming assertions must be encrypted.')
+                                        ->defaultFalse()
+                                    ->end()
+                                    ->arrayNode('key_encryption_algorithms')
+                                        ->info('Supported key encryption algorithms.')
+                                        ->useAttributeAsKey('name')
+                                        ->prototype('scalar')->end()
+                                        ->treatNullLike([])
+                                    ->end()
+                                    ->arrayNode('content_encryption_algorithms')
+                                        ->info('Supported content encryption algorithms.')
+                                        ->useAttributeAsKey('name')
+                                        ->prototype('scalar')->end()
+                                        ->treatNullLike([])
+                                    ->end()
+                                ->end()
                             ->end()
                         ->end()
                     ->end()

@@ -13,36 +13,16 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Tests\TestBundle\Entity;
 
-use OAuth2Framework\Bundle\Service\RandomIdGenerator;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCode;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeId;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeRepository;
-use OAuth2Framework\Component\Core\Client\ClientId;
-use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\Event\Event;
 use OAuth2Framework\Component\Core\Event\EventStore;
-use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
-use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use SimpleBus\Message\Bus\MessageBus;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 
 final class AuthCodeRepository implements AuthorizationCodeRepository
 {
-    /**
-     * @var int
-     */
-    private $minLength;
-
-    /**
-     * @var int
-     */
-    private $maxLength;
-
-    /**
-     * @var int
-     */
-    private $lifetime;
-
     /**
      * @var MessageBus
      */
@@ -61,34 +41,15 @@ final class AuthCodeRepository implements AuthorizationCodeRepository
     /**
      * AuthCodeRepository constructor.
      *
-     * @param int              $minLength
-     * @param int              $maxLength
-     * @param int              $lifetime
      * @param EventStore       $eventStore
      * @param MessageBus       $eventBus
      * @param AdapterInterface $cache
      */
-    public function __construct(int $minLength, int $maxLength, int $lifetime, EventStore $eventStore, MessageBus $eventBus, AdapterInterface $cache)
+    public function __construct(EventStore $eventStore, MessageBus $eventBus, AdapterInterface $cache)
     {
-        $this->minLength = $minLength;
-        $this->maxLength = $maxLength;
-        $this->lifetime = $lifetime;
         $this->eventStore = $eventStore;
         $this->eventBus = $eventBus;
         $this->cache = $cache;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function create(ClientId $clientId, UserAccountId $userAccountId, array $queryParameters, string $redirectUri, DataBag $parameters, DataBag $metadatas, ? ResourceServerId $resourceServerId): AuthorizationCode
-    {
-        $expiresAt = new \DateTimeImmutable(sprintf('now +%u seconds', $this->lifetime));
-        $authCodeId = AuthorizationCodeId::create(RandomIdGenerator::generate($this->minLength, $this->maxLength));
-        $authCode = AuthorizationCode::createEmpty();
-        $authCode = $authCode->create($authCodeId, $clientId, $userAccountId, $queryParameters, $redirectUri, $expiresAt, $parameters, $metadatas, $resourceServerId);
-
-        return $authCode;
     }
 
     /**
