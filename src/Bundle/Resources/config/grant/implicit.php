@@ -11,15 +11,22 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use OAuth2Framework\Component\ResponseType\TokenResponseType;
-use function Fluent\create;
-use function Fluent\get;
+use OAuth2Framework\Component\ImplicitGrant\ImplicitGrantType;
+use OAuth2Framework\Component\ImplicitGrant\TokenResponseType;
+use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
-return [
-    TokenResponseType::class => create()
-        ->arguments(
-            get('oauth2_server.access_token.repository')
-        )
-        ->tag('oauth2_server_response_type')
-        ->tag('oauth2_server_grant_type'),
-];
+return function (ContainerConfigurator $container) {
+    $container = $container->services()->defaults()
+        ->private()
+        ->autoconfigure();
+
+    $container->set(ImplicitGrantType::class)
+        ->tag('oauth2_server_grant_type');
+
+    $container->set(TokenResponseType::class)
+        ->args([
+            ref('oauth2_server.access_token_repository')
+        ])
+        ->tag('oauth2_server_response_type');
+};

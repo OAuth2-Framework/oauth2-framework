@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\RefreshTokenGrant;
 
+use Base64Url\Base64Url;
 use OAuth2Framework\Component\Core\AccessToken\AccessToken;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwner;
@@ -24,6 +25,21 @@ use Psr\Http\Message\ServerRequestInterface;
 final class RefreshTokenEndpointExtension implements TokenEndpointExtension
 {
     /**
+     * @var int
+     */
+    private $lifetime;
+
+    /**
+     * @var int
+     */
+    private $minLength;
+
+    /**
+     * @var int
+     */
+    private $maxLength;
+
+    /**
      * @var RefreshTokenRepository
      */
     private $refreshTokenRepository;
@@ -31,10 +47,16 @@ final class RefreshTokenEndpointExtension implements TokenEndpointExtension
     /**
      * RefreshTokenEndpointExtension constructor.
      *
+     * @param int                    $minLength
+     * @param int                    $maxLength
+     * @param int                    $lifetime
      * @param RefreshTokenRepository $refreshTokenRepository
      */
-    public function __construct(RefreshTokenRepository $refreshTokenRepository)
+    public function __construct(int $minLength, int $maxLength, int $lifetime, RefreshTokenRepository $refreshTokenRepository)
     {
+        $this->minLength = $minLength;
+        $this->maxLength = $maxLength;
+        $this->lifetime = $lifetime;
         $this->refreshTokenRepository = $refreshTokenRepository;
     }
 
@@ -46,13 +68,17 @@ final class RefreshTokenEndpointExtension implements TokenEndpointExtension
         $grantTypeData = $next($request, $grantTypeData, $grantType);
         $scope = explode(' ', $grantTypeData->hasParameter('scope') ? $grantTypeData->getParameter('scope') : '');
         if (in_array('offline_access', $scope) && null !== $this->refreshTokenRepository) {
-            $refreshToken = $this->refreshTokenRepository->create(
+            $expiresAt = new \DateTimeImmutable(sprintf('now +%u seconds', $this->lifetime));
+            $length = random_int($this->minLength, $this->maxLength);
+            $refreshTokenId = RefreshTokenId::create(Base64Url::encode(random_bytes($length * 8)));
+            $refreshToken = RefreshToken::createEmpty();
+            $refreshToken = $refreshToken->create(
+                $refreshTokenId,
                 $grantTypeData->getResourceOwnerId(),
                 $grantTypeData->getClient()->getPublicId(),
                 $grantTypeData->getParameters(),
-                $grantTypeData->getMetadatas(),
-                null
-            );
+                $grantTypeData->getMetadatas(), $expiresAt,
+                null);
             $grantTypeData = $grantTypeData->withParameter('refresh_token', $refreshToken->getTokenId()->getValue());
         }
 

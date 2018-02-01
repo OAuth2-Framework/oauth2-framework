@@ -13,35 +13,16 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Tests\TestBundle\Entity;
 
-use OAuth2Framework\Bundle\Service\RandomIdGenerator;
-use OAuth2Framework\Component\Core\Client\ClientId;
-use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\Event\Event;
 use OAuth2Framework\Component\Core\Event\EventStore;
-use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwnerId;
-use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
 use OAuth2Framework\Component\RefreshTokenGrant\RefreshToken;
 use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenId;
+use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenRepository as RefreshTokenRepositoryInterface;
 use SimpleBus\Message\Bus\MessageBus;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 
-final class RefreshTokenRepository implements \OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenRepository
+final class RefreshTokenRepository implements RefreshTokenRepositoryInterface
 {
-    /**
-     * @var int
-     */
-    private $lifetime;
-
-    /**
-     * @var int
-     */
-    private $minLength;
-
-    /**
-     * @var int
-     */
-    private $maxLength;
-
     /**
      * @var EventStore
      */
@@ -60,34 +41,15 @@ final class RefreshTokenRepository implements \OAuth2Framework\Component\Refresh
     /**
      * RefreshTokenRepository constructor.
      *
-     * @param int              $minLength
-     * @param int              $maxLength
-     * @param int              $lifetime
      * @param EventStore       $eventStore
      * @param MessageBus       $eventBus
      * @param AdapterInterface $cache
      */
-    public function __construct(int $minLength, int $maxLength, int $lifetime, EventStore $eventStore, MessageBus $eventBus, AdapterInterface $cache)
+    public function __construct(EventStore $eventStore, MessageBus $eventBus, AdapterInterface $cache)
     {
-        $this->minLength = $minLength;
-        $this->maxLength = $maxLength;
-        $this->lifetime = $lifetime;
         $this->eventStore = $eventStore;
         $this->eventBus = $eventBus;
         $this->cache = $cache;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function create(ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, ? ResourceServerId $resourceServerId): RefreshToken
-    {
-        $expiresAt = new \DateTimeImmutable(sprintf('now +%u seconds', $this->lifetime));
-        $refreshTokenId = RefreshTokenId::create(RandomIdGenerator::generate($this->minLength, $this->maxLength));
-        $refreshToken = RefreshToken::createEmpty();
-        $refreshToken = $refreshToken->create($refreshTokenId, $resourceOwnerId, $clientId, $parameters, $metadatas, $expiresAt, $resourceServerId);
-
-        return $refreshToken;
     }
 
     /**

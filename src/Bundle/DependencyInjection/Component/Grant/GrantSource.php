@@ -55,6 +55,22 @@ final class GrantSource implements Component
             $container->setParameter('oauth2_server.grant.client_credentials.issue_refresh_token', $configs['grant']['client_credentials']['issue_refresh_token']);
             $loader->load('client_credentials.php');
         }
+
+        if ($configs['grant']['implicit']['enabled']) {
+            $loader->load('implicit.php');
+        }
+
+        if ($configs['grant']['refresh_token']['enabled']) {
+            $container->setParameter('oauth2_server.grant.refresh_token.min_length', $configs['grant']['refresh_token']['min_length']);
+            $container->setParameter('oauth2_server.grant.refresh_token.max_length', $configs['grant']['refresh_token']['max_length']);
+            $container->setParameter('oauth2_server.grant.refresh_token.lifetime', $configs['grant']['refresh_token']['lifetime']);
+            $container->setAlias('oauth2_server.grant.refresh_token.repository', $configs['grant']['refresh_token']['repository']);
+            $loader->load('refresh_token.php');
+        }
+
+        if ($configs['grant']['resource_owner_password_credential']['enabled']) {
+            $loader->load('resource_owner_password_credential.php');
+        }
     }
 
     /**
@@ -106,6 +122,48 @@ final class GrantSource implements Component
                             ->booleanNode('issue_refresh_token')
                                 ->info('If enabled, a refresh token will be issued with an access token (not recommended)')
                                 ->defaultFalse()
+                            ->end()
+                        ->end()
+                    ->end()
+                    ->arrayNode('resource_owner_password_credential')
+                        ->canBeEnabled()
+                    ->end()
+                    ->arrayNode('implicit')
+                        ->canBeEnabled()
+                    ->end()
+                    ->arrayNode('refresh_token')
+                        ->canBeEnabled()
+                        ->validate()
+                            ->ifTrue(function ($config) {
+                                return true === $config['enabled'] && empty($config['repository']);
+                            })
+                            ->thenInvalid('The option "repository" must be set.')
+                        ->end()
+                        ->validate()
+                            ->ifTrue(function ($config) {
+                                return true === $config['enabled'] && $config['max_length'] < $config['min_length'];
+                            })
+                            ->thenInvalid('The option "max_length" must be greater than "min_length".')
+                        ->end()
+                        ->children()
+                            ->integerNode('min_length')
+                                ->defaultValue(50)
+                                ->min(0)
+                                ->info('Minimum length of the randomly generated refresh tokens')
+                            ->end()
+                            ->integerNode('max_length')
+                                ->defaultValue(100)
+                                ->min(1)
+                                ->info('Maximum length of the randomly generated refresh tokens')
+                            ->end()
+                            ->integerNode('lifetime')
+                                ->defaultValue(60 * 60 * 24 * 7)
+                                ->min(1)
+                                ->info('The refresh token lifetime (in seconds)')
+                            ->end()
+                            ->scalarNode('repository')
+                                ->defaultNull()
+                                ->info('The refresh token repository')
                             ->end()
                         ->end()
                     ->end()

@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Tests\TestBundle\Entity;
 
-use OAuth2Framework\Bundle\Service\RandomIdGenerator;
+use Base64Url\Base64Url;
 use OAuth2Framework\Component\Core\AccessToken\AccessToken;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository;
@@ -115,7 +115,8 @@ final class AccessTokenByReferenceRepository implements AccessTokenRepository
     public function create(ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, ? ResourceServerId $resourceServerId): AccessToken
     {
         $expiresAt = new \DateTimeImmutable(sprintf('now +%u seconds', $this->lifetime));
-        $accessTokenId = AccessTokenId::create(RandomIdGenerator::generate($this->minLength, $this->maxLength));
+        $length = random_int($this->minLength, $this->maxLength);
+        $accessTokenId = AccessTokenId::create(Base64Url::encode(random_bytes($length)));
         $accessToken = AccessToken::createEmpty();
         $accessToken = $accessToken->create($accessTokenId, $resourceOwnerId, $clientId, $parameters, $metadatas, $expiresAt, $resourceServerId);
 

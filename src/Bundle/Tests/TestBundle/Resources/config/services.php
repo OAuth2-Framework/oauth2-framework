@@ -35,6 +35,14 @@ return function (ContainerConfigurator $container) {
             ref('cache.app'),
         ]);
 
+    $container->set('MyRefreshTokenRepository')
+        ->class(\OAuth2Framework\Bundle\Tests\TestBundle\Entity\RefreshTokenRepository::class)
+        ->args([
+            ref('EventStore.RefreshToken'),
+            ref('event_recorder'),
+            ref('cache.app'),
+        ]);
+
     $container->set('MyUserAccountManager')
         ->class(UserManager::class);
 

@@ -11,17 +11,19 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use OAuth2Framework\Component\GrantType\ResourceOwnerPasswordCredentialsGrantType;
-use function Fluent\create;
-use function Fluent\get;
+use OAuth2Framework\Component\ResourceOwnerPasswordCredentialsGrant\ResourceOwnerPasswordCredentialsGrantType;
+use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
-return [
-    ResourceOwnerPasswordCredentialsGrantType::class => create()
-        ->arguments(
-            get('oauth2_server.user_account.manager'),
-            get('oauth2_server.user_account.repository'),
-            '%oauth2_server.grant.resource_owner_password_credential.issue_refresh_token%',
-            '%oauth2_server.grant.resource_owner_password_credential.issue_refresh_token_for_public_clients%'
-        )
-        ->tag('oauth2_server_grant_type'),
-];
+return function (ContainerConfigurator $container) {
+    $container = $container->services()->defaults()
+        ->private()
+        ->autoconfigure();
+
+    $container->set(ResourceOwnerPasswordCredentialsGrantType::class)
+        ->args([
+            ref('oauth2_server.user_account_manager'),
+            ref('oauth2_server.user_account_repository'),
+        ])
+        ->tag('oauth2_server_grant_type');
+};

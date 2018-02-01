@@ -13,27 +13,15 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Tests\TestBundle\Entity;
 
-use OAuth2Framework\Bundle\Service\RandomIdGenerator;
 use OAuth2Framework\Component\ClientRegistrationEndpoint\InitialAccessToken;
 use OAuth2Framework\Component\ClientRegistrationEndpoint\InitialAccessTokenId;
 use OAuth2Framework\Component\Core\Event\Event;
 use OAuth2Framework\Component\Core\Event\EventStore;
-use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use SimpleBus\Message\Recorder\RecordsMessages;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 
 final class InitialAccessTokenRepository implements \OAuth2Framework\Component\ClientRegistrationEndpoint\InitialAccessTokenRepository
 {
-    /**
-     * @var int
-     */
-    private $minLength;
-
-    /**
-     * @var int
-     */
-    private $maxLength;
-
     /**
      * @var EventStore
      */
@@ -52,31 +40,15 @@ final class InitialAccessTokenRepository implements \OAuth2Framework\Component\C
     /**
      * InitialAccessTokenRepository constructor.
      *
-     * @param int              $minLength
-     * @param int              $maxLength
      * @param EventStore       $eventStore
      * @param RecordsMessages  $eventRecorder
      * @param AdapterInterface $cache
      */
-    public function __construct(int $minLength, int $maxLength, EventStore $eventStore, RecordsMessages $eventRecorder, AdapterInterface $cache)
+    public function __construct(EventStore $eventStore, RecordsMessages $eventRecorder, AdapterInterface $cache)
     {
-        $this->minLength = $minLength;
-        $this->maxLength = $maxLength;
         $this->eventStore = $eventStore;
         $this->eventRecorder = $eventRecorder;
         $this->cache = $cache;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function create(? UserAccountId $userAccountId, ? \DateTimeImmutable $expiresAt): InitialAccessToken
-    {
-        $initialAccessTokeId = InitialAccessTokenId::create(RandomIdGenerator::generate($this->minLength, $this->maxLength));
-        $initialAccessToken = InitialAccessToken::createEmpty();
-        $initialAccessToken = $initialAccessToken->create($initialAccessTokeId, $userAccountId, $expiresAt);
-
-        return $initialAccessToken;
     }
 
     /**
