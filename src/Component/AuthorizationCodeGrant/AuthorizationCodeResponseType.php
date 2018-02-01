@@ -54,6 +54,7 @@ final class AuthorizationCodeResponseType implements ResponseType
 
     /**
      * AuthorizationCodeResponseType constructor.
+     *
      * @param AuthorizationCodeRepository $authorizationCodeRepository
      * @param int                         $minLength
      * @param int                         $maxLength
@@ -117,7 +118,7 @@ final class AuthorizationCodeResponseType implements ResponseType
         $length = random_int($this->minLength, $this->maxLength);
         $authorizationCode = AuthorizationCode::createEmpty();
         $authorizationCode = $authorizationCode->create(
-            AuthorizationCodeId::create(Base64Url::encode(random_bytes($length*8))),
+            AuthorizationCodeId::create(Base64Url::encode(random_bytes($length * 8))),
             $authorization->getClient()->getPublicId(),
             $authorization->getUserAccount()->getPublicId(),
             $queryParams,
