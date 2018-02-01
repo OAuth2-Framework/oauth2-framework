@@ -13,23 +13,14 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\DependencyInjection\Component\Scope;
 
-use Fluent\PhpConfigFileLoader;
 use OAuth2Framework\Bundle\DependencyInjection\Component\Component;
-use OAuth2Framework\Component\Model\Scope\ScopeRepositoryInterface;
-use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
+use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
 final class ScopeSource implements Component
 {
-    /**
-     * UserinfoSource constructor.
-     */
-    public function __construct()
-    {
-        $this->addSubSource(new ScopePolicySource());
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -41,11 +32,28 @@ final class ScopeSource implements Component
     /**
      * {@inheritdoc}
      */
-    protected function continueLoading(string $path, ContainerBuilder $container, array $config)
+    public function load(array $configs, ContainerBuilder $container)
     {
-        $container->setAlias(ScopeRepositoryInterface::class, $config['repository']);
-        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/scope'));
+        if (!$configs['scope']['enabled']) {
+            return;
+        }
+        $container->setAlias('oauth2_server.scope.repository', $configs['scope']['repository']);
+        $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/scope'));
         $loader->load('scope.php');
+
+        if (!$configs['scope']['policy']['enabled']) {
+            return;
+        }
+        $container->setParameter('oauth2_server.scope.policy.by_default', $configs['scope']['policy']['by_default']);
+        $loader->load('policy.php');
+
+        if ($configs['scope']['policy']['default']['enabled']) {
+            $container->setParameter('oauth2_server.scope.policy.default.scope', $configs['scope']['policy']['default']['scope']);
+            $loader->load('policy_default.php');
+        }
+        if ($configs['scope']['policy']['error']['enabled']) {
+            $loader->load('policy_error.php');
+        }
     }
 
     /**
@@ -53,19 +61,39 @@ final class ScopeSource implements Component
      */
     public function getNodeDefinition(NodeDefinition $node)
     {
-        $node
-            ->validate()
-                ->ifTrue(function ($config) {
-                    return true === $config['enabled'] && empty($config['repository']);
-                })
-                ->thenInvalid('The option "repository" must be set.')
-            ->end()
-            ->children()
-                ->scalarNode('repository')
-                    ->info('Scope repository.')
-                    ->defaultNull()
+        $node->children()
+            ->arrayNode($this->name())
+                ->canBeEnabled()
+                ->children()
+                    ->scalarNode('repository')
+                        ->info('Scope repository.')
+                        ->defaultNull()
+                    ->end()
+                    ->arrayNode('policy')
+                        ->canBeEnabled()
+                        ->children()
+                            ->scalarNode('by_default')
+                                ->info('Default scope policy.')
+                                ->defaultValue('none')
+                            ->end()
+                            ->arrayNode('error')
+                                ->canBeEnabled()
+                                ->info('When the error policy is used, requests without a scope are not allowed')
+                            ->end()
+                            ->arrayNode('default')
+                                ->canBeEnabled()
+                                ->children()
+                                    ->scalarNode('scope')
+                                        ->info('Scope added by default.')
+                                        ->isRequired()
+                                    ->end()
+                                ->end()
+                            ->end()
+                        ->end()
+                    ->end()
                 ->end()
-            ->end();
+            ->end()
+        ->end();
     }
 
     /**

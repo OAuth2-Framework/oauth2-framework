@@ -15,9 +15,7 @@ namespace OAuth2Framework\Bundle\DependencyInjection\Component\Core;
 
 use OAuth2Framework\Bundle\DependencyInjection\Component\Component;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
-use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
 final class UserAccountSource implements Component
 {
@@ -36,9 +34,6 @@ final class UserAccountSource implements Component
     {
         $container->setAlias('oauth2_server.user_account.repository', $configs['user_account_repository']);
         $container->setAlias('oauth2_server.user_account.manager', $configs['user_account_manager']);
-
-        $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/core'));
-        $loader->load('user_account.php');
     }
 
     /**

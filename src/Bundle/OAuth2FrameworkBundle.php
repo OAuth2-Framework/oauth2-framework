@@ -82,13 +82,14 @@ final class OAuth2FrameworkBundle extends Bundle
             new Component\Core\ClientSource(),
             new Component\Core\AccessTokenSource(),
             new Component\Core\UserAccountSource(),
-            new Component\Core\RouteLoaderSource(),
+            new Component\Core\ServicesSource(),
             new Component\Core\ResourceServerRepositorySource(),
-            new Component\Core\ServerNameSource(),
+
+            new Component\Scope\ScopeSource(),
+            new Component\TokenType\TokenTypeSource(),
+            new Component\TokenEndpointAuthMethod\TokenEndpointAuthMethodSource(),
 
             /*new Component\FirewallSource(),
-            new Component\TokenTypeSource(),
-            new Component\TokenEndpointAuthMethodSource(),
             new Component\GrantSource(),
             new Component\EndpointSource(),
             new Component\ScopeSource(),

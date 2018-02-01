@@ -11,16 +11,21 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use OAuth2Framework\Bundle\TokenType\MacToken;
-use function Fluent\create;
+use OAuth2Framework\Component\MacTokenType\MacToken;
+use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
-return [
-    MacToken::class => create()
-        ->arguments(
+return function (ContainerConfigurator $container) {
+    $container = $container->services()->defaults()
+        ->private()
+        ->autoconfigure()
+        ->autowire();
+
+    $container->set(MacToken::class)
+        ->args([
             '%oauth2_server.token_type.mac_token.algorithm%',
             '%oauth2_server.token_type.mac_token.timestamp_lifetime%',
             '%oauth2_server.token_type.mac_token.min_length%',
-            '%oauth2_server.token_type.mac_token.max_length%'
-        )
-        ->tag('oauth2_server_token_type', ['scheme' => 'MAC']),
-];
+            '%oauth2_server.token_type.mac_token.max_length%',
+        ])
+        ->tag('oauth2_server_token_type', ['scheme' => 'MAC']);
+};

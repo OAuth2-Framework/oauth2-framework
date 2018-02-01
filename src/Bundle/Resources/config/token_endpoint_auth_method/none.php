@@ -11,10 +11,15 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use OAuth2Framework\Component\TokenEndpointAuthMethod\None;
-use function Fluent\create;
+use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use OAuth2Framework\Component\TokenEndpoint\AuthenticationMethod\None;
 
-return [
-    None::class => create()
-        ->tag('oauth2_server_token_endpoint_auth_method'),
-];
+return function (ContainerConfigurator $container) {
+    $container = $container->services()->defaults()
+        ->private()
+        ->autoconfigure();
+
+    $container->set(None::class)
+        ->tag('oauth2_server_token_endpoint_auth_method');
+
+};

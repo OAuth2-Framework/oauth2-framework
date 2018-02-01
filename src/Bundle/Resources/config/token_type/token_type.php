@@ -11,17 +11,20 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use OAuth2Framework\Component\Middleware\TokenTypeMiddleware;
 use OAuth2Framework\Component\TokenType\TokenTypeManager;
-use function Fluent\create;
-use function Fluent\get;
+use OAuth2Framework\Component\TokenType\TokenTypeMiddleware;
+use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
-return [
-    TokenTypeMiddleware::class => create()
-        ->arguments(
-            get(TokenTypeManager::class),
-            'oauth2_server.token_type.allow_token_type_parameter'
-        ),
+return function (ContainerConfigurator $container) {
+    $container = $container->services()->defaults()
+        ->private()
+        ->autoconfigure()
+        ->autowire();
 
-    TokenTypeManager::class => create(),
-];
+    $container->set(TokenTypeMiddleware::class)
+        ->args([
+            ref(TokenTypeManager::class),
+            '%oauth2_server.token_type.allow_token_type_parameter%',
+        ]);
+};

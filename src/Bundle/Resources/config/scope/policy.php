@@ -11,21 +11,20 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use OAuth2Framework\Component\Model\Scope\NoScopePolicy;
-use OAuth2Framework\Component\Model\Client\Rule;
-use OAuth2Framework\Component\Model\Scope\ScopePolicyManager;
-use function Fluent\create;
-use function Fluent\get;
+use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use OAuth2Framework\Component\Scope\Policy\NoScopePolicy;
+use OAuth2Framework\Component\Scope\Rule\ScopePolicyRule;
 
-return [
-    ScopePolicyManager::class => create(),
+return function (ContainerConfigurator $container) {
+    $container = $container->services()->defaults()
+        ->private()
+        ->autoconfigure()
+        ->autowire();
 
-    NoScopePolicy::class => create()
-        ->tag('oauth2_server_scope_policy', ['policy_name' => 'none']),
+    $container->set(NoScopePolicy::class)
+        ->tag('oauth2_server_scope_policy', ['policy_name' => 'none']);
 
-    Rule\ScopePolicyRule::class => create()
-        ->arguments(
-            get(ScopePolicyManager::class)
-        )
-        ->tag('oauth2_server_client_rule'),
-];
+    $container->set(ScopePolicyRule::class)
+        ->tag('oauth2_server_client_rule');
+
+};

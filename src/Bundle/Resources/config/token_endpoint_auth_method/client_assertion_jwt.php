@@ -11,16 +11,21 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use OAuth2Framework\Bundle\TokenEndpointAuthMethod\ClientAssertionJwt;
-use function Fluent\create;
-use function Fluent\get;
+use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use OAuth2Framework\Component\TokenEndpoint\AuthenticationMethod\ClientAssertionJwt;
+use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
-return [
-    ClientAssertionJwt::class => create()
-        ->arguments(
-            get('jose.jws_loader.client_assertion_jwt'),
-            get('jose.claim_checker.client_assertion_jwt'),
+return function (ContainerConfigurator $container) {
+    $container = $container->services()->defaults()
+        ->private()
+        ->autoconfigure();
+
+    $container->set(ClientAssertionJwt::class)
+        ->args([
+            ref('jose.jws_loader.client_assertion_jwt'),
+            ref('jose.claim_checker.client_assertion_jwt'),
             '%oauth2_server.token_endpoint_auth_method.client_assertion_jwt.secret_lifetime%'
-        )
-        ->tag('oauth2_server_token_endpoint_auth_method'),
-];
+        ])
+        ->tag('oauth2_server_token_endpoint_auth_method');
+
+};

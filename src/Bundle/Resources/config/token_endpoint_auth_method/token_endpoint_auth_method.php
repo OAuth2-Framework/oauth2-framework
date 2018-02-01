@@ -11,19 +11,21 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use OAuth2Framework\Bundle\Model\ClientRepository;
-use OAuth2Framework\Component\Middleware\ClientAuthenticationMiddleware;
-use OAuth2Framework\Component\TokenEndpointAuthMethod\TokenEndpointAuthMethodManager;
-use function Fluent\create;
-use function Fluent\get;
+use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use OAuth2Framework\Component\TokenEndpoint\AuthenticationMethod\AuthenticationMethodManager;
+use OAuth2Framework\Component\TokenEndpoint\ClientAuthenticationMiddleware;
+use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
-return [
-    TokenEndpointAuthMethodManager::class => create(),
+return function (ContainerConfigurator $container) {
+    $container = $container->services()->defaults()
+        ->private()
+        ->autoconfigure();
 
-    ClientAuthenticationMiddleware::class => create()
-        ->arguments(
-            get(ClientRepository::class),
-            get(TokenEndpointAuthMethodManager::class),
-            false
-        ),
-];
+    $container->set(AuthenticationMethodManager::class);
+
+    $container->set(ClientAuthenticationMiddleware::class)
+        ->args([
+            ref('oauth2_server.client_repository'),
+            ref(AuthenticationMethodManager::class),
+        ]);
+};

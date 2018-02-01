@@ -57,8 +57,11 @@ return function (ContainerConfigurator $container) {
             ref('cache.app'),
         ]);
 
-    $container->set('MyResourceServerRepository')
-        ->class(\OAuth2Framework\Component\Core\ResourceServer\ResourceServerRepository::class);
+//    $container->set('MyResourceServerRepository')
+//        ->class(\OAuth2Framework\Bundle\Tests\TestBundle\Entity\ResourceServerRepository::class);
+
+    $container->set('MyScopeRepository')
+        ->class(\OAuth2Framework\Bundle\Tests\TestBundle\Entity\ScopeRepository::class);
 
     $container->set(UriFactory::class);
 

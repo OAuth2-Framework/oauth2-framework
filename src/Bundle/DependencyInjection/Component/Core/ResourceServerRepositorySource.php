@@ -15,9 +15,7 @@ namespace OAuth2Framework\Bundle\DependencyInjection\Component\Core;
 
 use OAuth2Framework\Bundle\DependencyInjection\Component\Component;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
-use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
 final class ResourceServerRepositorySource implements Component
 {
@@ -34,10 +32,9 @@ final class ResourceServerRepositorySource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        $container->setAlias('oauth2_server.resource_server.repository', $configs['resource_server_repository']);
-
-        $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/core'));
-        $loader->load('resource_server.php');
+        if (null !== $configs['resource_server_repository']) {
+            $container->setAlias('oauth2_server.resource_server.repository', $configs['resource_server_repository']);
+        }
     }
 
     /**

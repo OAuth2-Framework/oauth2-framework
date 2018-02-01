@@ -18,8 +18,7 @@ use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 return function (ContainerConfigurator $container) {
     $container = $container->services()->defaults()
         ->public()
-        ->autoconfigure()
-        ->autowire();
+        ->autoconfigure();
 
     $container->set(Command\ChangeOwnerCommandHandler::class)
         ->args([

@@ -11,14 +11,19 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use OAuth2Framework\Bundle\TokenEndpointAuthMethod\ClientSecretBasic;
-use function Fluent\create;
+use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use OAuth2Framework\Component\TokenEndpoint\AuthenticationMethod\ClientSecretBasic;
 
-return [
-    ClientSecretBasic::class => create()
-        ->arguments(
+return function (ContainerConfigurator $container) {
+    $container = $container->services()->defaults()
+        ->private()
+        ->autoconfigure();
+
+    $container->set(ClientSecretBasic::class)
+        ->args([
             '%oauth2_server.token_endpoint_auth_method.client_secret_basic.realm%',
             '%oauth2_server.token_endpoint_auth_method.client_secret_basic.secret_lifetime%'
-        )
-        ->tag('oauth2_server_token_endpoint_auth_method'),
-];
+        ])
+        ->tag('oauth2_server_token_endpoint_auth_method');
+
+};

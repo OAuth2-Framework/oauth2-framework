@@ -19,7 +19,7 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
-final class RouteLoaderSource implements Component
+final class ServicesSource implements Component
 {
     /**
      * {@inheritdoc}
@@ -34,8 +34,10 @@ final class RouteLoaderSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
+        $container->setParameter('oauth2_server.server_uri', $configs['server_uri']);
+
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/core'));
-        $loader->load('route_loader.php');
+        $loader->load('services.php');
     }
 
     /**
@@ -43,7 +45,12 @@ final class RouteLoaderSource implements Component
      */
     public function getNodeDefinition(NodeDefinition $node)
     {
-        //Nothing to do
+        $node->children()
+                ->scalarNode('server_uri')
+                    ->info('The URI of this server')
+                    ->isRequired()
+                ->end()
+            ->end();
     }
 
     /**

@@ -11,13 +11,18 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use OAuth2Framework\Bundle\TokenEndpointAuthMethod\ClientSecretPost;
-use function Fluent\create;
+use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use OAuth2Framework\Component\TokenEndpoint\AuthenticationMethod\ClientSecretPost;
 
-return [
-    ClientSecretPost::class => create()
-        ->arguments(
+return function (ContainerConfigurator $container) {
+    $container = $container->services()->defaults()
+        ->private()
+        ->autoconfigure();
+
+    $container->set(ClientSecretPost::class)
+        ->args([
             '%oauth2_server.token_endpoint_auth_method.client_secret_post.secret_lifetime%'
-        )
-        ->tag('oauth2_server_token_endpoint_auth_method'),
-];
+        ])
+        ->tag('oauth2_server_token_endpoint_auth_method');
+
+};
