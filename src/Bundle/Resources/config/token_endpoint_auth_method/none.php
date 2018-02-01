@@ -21,5 +21,4 @@ return function (ContainerConfigurator $container) {
 
     $container->set(None::class)
         ->tag('oauth2_server_token_endpoint_auth_method');
-
 };

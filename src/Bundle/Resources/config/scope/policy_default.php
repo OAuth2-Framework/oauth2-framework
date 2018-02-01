@@ -23,11 +23,10 @@ return function (ContainerConfigurator $container) {
 
     $container->set(DefaultScopePolicy::class)
         ->args([
-            '%oauth2_server.scope.policy.default.scope%'
+            '%oauth2_server.scope.policy.default.scope%',
         ])
         ->tag('oauth2_server_scope_policy', ['policy_name' => 'default']);
 
     $container->set(ScopePolicyDefaultRule::class)
         ->tag('oauth2_server_client_rule');
-
 };

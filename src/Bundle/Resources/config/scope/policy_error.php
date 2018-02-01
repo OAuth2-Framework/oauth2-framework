@@ -22,7 +22,7 @@ return function (ContainerConfigurator $container) {
 
     $container->set(ErrorScopePolicy::class)
         ->args([
-            '%oauth2_server.scope.policy.default.scope%'
+            '%oauth2_server.scope.policy.default.scope%',
         ])
         ->tag('oauth2_server_scope_policy', ['policy_name' => 'error']);
 };
