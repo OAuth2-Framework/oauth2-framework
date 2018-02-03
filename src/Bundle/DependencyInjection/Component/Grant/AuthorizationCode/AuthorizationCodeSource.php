@@ -34,7 +34,6 @@ final class AuthorizationCodeSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-
         if ($configs['grant']['authorization_code']['enabled']) {
             $container->setParameter('oauth2_server.grant.authorization_code.min_length', $configs['grant']['authorization_code']['min_length']);
             $container->setParameter('oauth2_server.grant.authorization_code.max_length', $configs['grant']['authorization_code']['max_length']);

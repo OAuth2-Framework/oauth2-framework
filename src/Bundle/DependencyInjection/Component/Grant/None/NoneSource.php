@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\DependencyInjection\Component\Grant;
 
-use Fluent\PhpConfigFileLoader;
 use OAuth2Framework\Bundle\DependencyInjection\Component\Component;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\FileLocator;

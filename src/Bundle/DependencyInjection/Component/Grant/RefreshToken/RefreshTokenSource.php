@@ -34,7 +34,6 @@ final class RefreshTokenSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-
         if ($configs['grant']['refresh_token']['enabled']) {
             $container->setParameter('oauth2_server.grant.refresh_token.min_length', $configs['grant']['refresh_token']['min_length']);
             $container->setParameter('oauth2_server.grant.refresh_token.max_length', $configs['grant']['refresh_token']['max_length']);

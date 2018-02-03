@@ -33,7 +33,7 @@ final class ClientRegistrationSoftwareStatementSource implements Component
         }
         $container->setAlias($path.'.key_set', 'jose.key_set.client_registration_software_statement.key_set.signature');
 
-        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__ . '/../../../Resources/config/endpoint'));
+        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint'));
         $loader->load('client_registration_software_statement.php');
     }
 

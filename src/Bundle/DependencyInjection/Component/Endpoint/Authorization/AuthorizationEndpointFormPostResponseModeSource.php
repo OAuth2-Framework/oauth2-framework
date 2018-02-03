@@ -30,7 +30,7 @@ final class AuthorizationEndpointFormPostResponseModeSource implements Component
             $container->setParameter($path.'.'.$k, $v);
         }
 
-        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__ . '/../../../Resources/config/endpoint'));
+        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint'));
         $loader->load('form_post_response_mode.php');
     }
 

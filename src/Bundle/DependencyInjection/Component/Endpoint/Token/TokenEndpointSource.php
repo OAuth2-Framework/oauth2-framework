@@ -14,11 +14,8 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\DependencyInjection\Component\Endpoint\Token;
 
 use OAuth2Framework\Bundle\DependencyInjection\Component\Component;
-use OAuth2Framework\Component\TokenEndpoint\AuthenticationMethod\AuthenticationMethod;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
-use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
 final class TokenEndpointSource implements Component
 {

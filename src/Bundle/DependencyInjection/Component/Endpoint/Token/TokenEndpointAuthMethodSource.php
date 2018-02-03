@@ -37,7 +37,7 @@ final class TokenEndpointAuthMethodSource implements Component
     {
         $container->registerForAutoconfiguration(AuthenticationMethod::class)->addTag('oauth2_server_token_endpoint_auth_method');
 
-        $loader = new PhpFileLoader($container, new FileLocator(__DIR__ . '/../../../../Resources/config/token_endpoint_auth_method'));
+        $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../../Resources/config/token_endpoint_auth_method'));
         $loader->load('token_endpoint_auth_method.php');
 
         if ($configs['endpoint']['token']['authentication']['none']['enabled']) {
