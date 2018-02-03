@@ -22,7 +22,7 @@ return function (ContainerConfigurator $container) {
 
     $container->set(NoneResponseType::class)
         ->args([
-            ref('oauth2_server.grant.none.authorization_storage')
+            ref('oauth2_server.grant.none.authorization_storage'),
         ])
         ->tag('oauth2_server_response_type');
 };

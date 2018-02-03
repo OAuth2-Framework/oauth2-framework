@@ -27,7 +27,7 @@ final class TokenIntrospectionEndpointSource implements Component
     protected function continueLoading(string $path, ContainerBuilder $container, array $config)
     {
         $container->setParameter($path.'.path', $config['path']);
-        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__ . '/../../../Resources/config/endpoint'));
+        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint'));
         $loader->load('introspection.php');
     }
 

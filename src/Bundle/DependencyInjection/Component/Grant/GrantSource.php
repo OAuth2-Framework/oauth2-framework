@@ -66,7 +66,6 @@ final class GrantSource implements Component
         foreach ($this->subComponents as $subComponent) {
             $subComponent->load($configs, $container);
         }
-
     }
 
     /**
