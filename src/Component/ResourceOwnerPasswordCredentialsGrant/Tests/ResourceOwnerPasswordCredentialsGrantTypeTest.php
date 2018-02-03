@@ -28,7 +28,7 @@ use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * @group GrantType
- * @group ResourceOwnerPasswordCredentials
+ * @group ResourceOwnerPasswordCredential
  */
 final class ResourceOwnerPasswordCredentialsGrantTypeTest extends TestCase
 {

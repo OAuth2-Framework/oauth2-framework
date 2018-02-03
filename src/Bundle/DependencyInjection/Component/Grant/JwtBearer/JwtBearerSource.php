@@ -40,7 +40,7 @@ final class JwtBearerSource implements Component
             $container->setParameter($path.'.'.$k, $config[$k]);
         }
 
-        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/grant'));
+        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__ . '/../../../Resources/config/grant'));
         $loader->load('jwt_bearer.php');
     }
 

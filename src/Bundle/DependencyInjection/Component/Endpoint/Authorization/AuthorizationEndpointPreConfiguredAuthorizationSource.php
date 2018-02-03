@@ -19,16 +19,17 @@ use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-final class TokenIntrospectionEndpointSource implements Component
+final class AuthorizationEndpointPreConfiguredAuthorizationSource implements Component
 {
     /**
      * {@inheritdoc}
      */
     protected function continueLoading(string $path, ContainerBuilder $container, array $config)
     {
-        $container->setParameter($path.'.path', $config['path']);
-        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint'));
-        $loader->load('introspection.php');
+        $container->setAlias($path.'.event_store', $config['event_store']);
+
+        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__ . '/../../../Resources/config/endpoint'));
+        $loader->load('pre_configured_authorization.php');
     }
 
     /**
@@ -36,7 +37,7 @@ final class TokenIntrospectionEndpointSource implements Component
      */
     public function name(): string
     {
-        return 'token_introspection';
+        return 'pre_configured_authorization';
     }
 
     /**
@@ -45,8 +46,14 @@ final class TokenIntrospectionEndpointSource implements Component
     public function getNodeDefinition(NodeDefinition $node)
     {
         $node
+            ->validate()
+                ->ifTrue(function ($config) {
+                    return true === $config['enabled'] && empty($config['event_store']);
+                })
+                ->thenInvalid('The option "event_store" must be set.')
+            ->end()
             ->children()
-                ->scalarNode('path')->defaultValue('/token/introspection')->end()
+                ->scalarNode('event_store')->defaultNull()->end()
             ->end();
     }
 }

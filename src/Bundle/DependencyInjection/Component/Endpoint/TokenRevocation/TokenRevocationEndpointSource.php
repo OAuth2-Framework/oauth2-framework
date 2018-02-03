@@ -19,17 +19,8 @@ use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-final class ClientRegistrationSource implements Component
+final class TokenRevocationEndpointSource implements Component
 {
-    /**
-     * ClientRegistrationSource constructor.
-     */
-    public function __construct()
-    {
-        $this->addSubSource(new ClientRegistrationInitialAccessTokenSource());
-        $this->addSubSource(new ClientRegistrationSoftwareStatementSource());
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -38,9 +29,8 @@ final class ClientRegistrationSource implements Component
         foreach ($config as $k => $v) {
             $container->setParameter($path.'.'.$k, $v);
         }
-
-        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint'));
-        $loader->load('client_registration.php');
+        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__ . '/../../../Resources/config/endpoint'));
+        $loader->load('revocation.php');
     }
 
     /**
@@ -48,7 +38,7 @@ final class ClientRegistrationSource implements Component
      */
     public function name(): string
     {
-        return 'client_registration';
+        return 'token_revocation';
     }
 
     /**
@@ -58,7 +48,11 @@ final class ClientRegistrationSource implements Component
     {
         $node
             ->children()
-                ->scalarNode('path')->defaultValue('/client/management')->end()
+                ->scalarNode('path')->defaultValue('/token/revocation')->end()
+                ->booleanNode('allow_callback')
+                    ->info('If true, GET request with "callback" parameter are allowed.')
+                    ->defaultFalse()
+                ->end()
             ->end();
     }
 }

@@ -11,7 +11,7 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Bundle\DependencyInjection\Component\Grant;
+namespace OAuth2Framework\Bundle\DependencyInjection\Component\Endpoint;
 
 use Fluent\PhpConfigFileLoader;
 use OAuth2Framework\Bundle\DependencyInjection\Component\Component;
@@ -19,15 +19,19 @@ use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-final class NoneSource implements Component
+final class AuthorizationEndpointFormPostResponseModeSource implements Component
 {
     /**
      * {@inheritdoc}
      */
     protected function continueLoading(string $path, ContainerBuilder $container, array $config)
     {
-        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/grant'));
-        $loader->load('none.php');
+        foreach ($config as $k => $v) {
+            $container->setParameter($path.'.'.$k, $v);
+        }
+
+        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__ . '/../../../Resources/config/endpoint'));
+        $loader->load('form_post_response_mode.php');
     }
 
     /**
@@ -35,7 +39,7 @@ final class NoneSource implements Component
      */
     public function name(): string
     {
-        return 'none';
+        return 'form_post';
     }
 
     /**
@@ -44,11 +48,11 @@ final class NoneSource implements Component
     public function getNodeDefinition(NodeDefinition $node)
     {
         $node
-            ->validate()
-                ->ifTrue(function ($config) {
-                    return true === $config['enabled'];
-                })
-                ->thenInvalid('The grant type "none" is not fully implemented. Please disable it.')
+            ->children()
+                ->scalarNode('template')
+                    ->info('The template used to render the form.')
+                    ->defaultValue('@OAuth2FrameworkBundle/form_post/response.html.twig')
+                ->end()
             ->end();
     }
 }

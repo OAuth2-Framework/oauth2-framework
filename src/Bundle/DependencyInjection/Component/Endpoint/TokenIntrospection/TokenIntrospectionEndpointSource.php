@@ -19,27 +19,16 @@ use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-final class AuthorizationEndpointResponseModeSource implements Component
+final class TokenIntrospectionEndpointSource implements Component
 {
-    /**
-     * AuthorizationEndpointSource constructor.
-     */
-    public function __construct()
-    {
-        $this->addSubSource(new AuthorizationEndpointFormPostResponseModeSource());
-    }
-
     /**
      * {@inheritdoc}
      */
     protected function continueLoading(string $path, ContainerBuilder $container, array $config)
     {
-        foreach ($config as $k => $v) {
-            $container->setParameter($path.'.'.$k, $v);
-        }
-
-        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint'));
-        $loader->load('response_mode.php');
+        $container->setParameter($path.'.path', $config['path']);
+        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__ . '/../../../Resources/config/endpoint'));
+        $loader->load('introspection.php');
     }
 
     /**
@@ -47,7 +36,7 @@ final class AuthorizationEndpointResponseModeSource implements Component
      */
     public function name(): string
     {
-        return 'response_mode';
+        return 'token_introspection';
     }
 
     /**
@@ -57,9 +46,7 @@ final class AuthorizationEndpointResponseModeSource implements Component
     {
         $node
             ->children()
-                ->booleanNode('allow_response_mode_parameter')
-                    ->defaultFalse()
-                ->end()
+                ->scalarNode('path')->defaultValue('/token/introspection')->end()
             ->end();
     }
 }

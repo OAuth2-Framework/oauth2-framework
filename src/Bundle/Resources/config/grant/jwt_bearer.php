@@ -11,18 +11,25 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use OAuth2Framework\Bundle\Model\ClientRepository;
-use OAuth2Framework\Component\GrantType\JWTBearerGrantType;
-use function Fluent\create;
-use function Fluent\get;
+use OAuth2Framework\Component\JwtBearerGrant\JwtBearerGrantType;
+use OAuth2Framework\Component\JwtBearerGrant\TrustedIssuerManager;
+use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
-return [
-    JWTBearerGrantType::class => create()
-        ->arguments(
-            get('jose.jws_loader.jwt_bearer'),
-            get('jose.claim_checker.jwt_bearer'),
-            get(ClientRepository::class),
-            get('oauth2_server.user_account.repository')
-        )
-        ->tag('oauth2_server_grant_type'),
-];
+return function (ContainerConfigurator $container) {
+    $container = $container->services()->defaults()
+        ->private()
+        ->autoconfigure();
+
+    $container->set(TrustedIssuerManager::class);
+
+    $container->set(JwtBearerGrantType::class)
+        ->args([
+            ref(TrustedIssuerManager::class),
+            ref('jose.jws_loader.jwt_bearer'),
+            ref('jose.claim_checker.jwt_bearer'),
+            ref('oauth2_server.'),
+            ref('oauth2_server.user_account_repository'),
+        ])
+        ->tag('oauth2_server_grant_type');
+};

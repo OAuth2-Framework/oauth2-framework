@@ -11,14 +11,16 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Bundle\DependencyInjection\Component\Endpoint;
+namespace OAuth2Framework\Bundle\DependencyInjection\Component\Endpoint\Token;
 
 use OAuth2Framework\Bundle\DependencyInjection\Component\Component;
-use OAuth2Framework\Bundle\DependencyInjection\Component\Endpoint\Token\TokenEndpointSource;
+use OAuth2Framework\Component\TokenEndpoint\AuthenticationMethod\AuthenticationMethod;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
+use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
-final class EndpointSource implements Component
+final class TokenEndpointSource implements Component
 {
     /**
      * @var Component[]
@@ -26,12 +28,12 @@ final class EndpointSource implements Component
     private $subComponents = [];
 
     /**
-     * EndpointSource constructor.
+     * TokenEndpointSource constructor.
      */
     public function __construct()
     {
         $this->subComponents = [
-            new TokenEndpointSource(),
+            new TokenEndpointAuthMethodSource(),
         ];
     }
 
@@ -40,7 +42,7 @@ final class EndpointSource implements Component
      */
     public function name(): string
     {
-        return 'endpoint';
+        return 'token';
     }
 
     /**
@@ -60,7 +62,16 @@ final class EndpointSource implements Component
     {
         $childNode = $node->children()
             ->arrayNode($this->name())
-                ->addDefaultsIfNotSet();
+                ->addDefaultsIfNotSet()
+                ->canBeEnabled();
+
+        $childNode
+            ->children()
+                ->scalarNode('path')
+                    ->info('The token endpoint path')
+                    ->defaultValue('/token/get')
+                ->end()
+            ->end();
 
         foreach ($this->subComponents as $subComponent) {
             $subComponent->getNodeDefinition($childNode);

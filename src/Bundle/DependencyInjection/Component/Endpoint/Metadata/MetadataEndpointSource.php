@@ -37,7 +37,7 @@ final class MetadataEndpointSource implements Component
         foreach (['path', 'custom_values', 'custom_routes'] as $key) {
             $container->setParameter($path.'.'.$key, $config[$key]);
         }
-        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint'));
+        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__ . '/../../../Resources/config/endpoint'));
         $loader->load('metadata.php');
     }
 

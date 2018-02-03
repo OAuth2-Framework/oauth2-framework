@@ -19,16 +19,28 @@ use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-final class TokenEndpointSource implements Component
+final class ClientRegistrationSource implements Component
 {
+    /**
+     * ClientRegistrationSource constructor.
+     */
+    public function __construct()
+    {
+        $this->addSubSource(new ClientRegistrationInitialAccessTokenSource());
+        $this->addSubSource(new ClientRegistrationSoftwareStatementSource());
+    }
+
     /**
      * {@inheritdoc}
      */
     protected function continueLoading(string $path, ContainerBuilder $container, array $config)
     {
-        $container->setParameter($path.'.path', $config['path']);
-        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint'));
-        $loader->load('token.php');
+        foreach ($config as $k => $v) {
+            $container->setParameter($path.'.'.$k, $v);
+        }
+
+        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__ . '/../../../Resources/config/endpoint'));
+        $loader->load('client_registration.php');
     }
 
     /**
@@ -36,7 +48,7 @@ final class TokenEndpointSource implements Component
      */
     public function name(): string
     {
-        return 'token';
+        return 'client_registration';
     }
 
     /**
@@ -46,7 +58,7 @@ final class TokenEndpointSource implements Component
     {
         $node
             ->children()
-                ->scalarNode('path')->defaultValue('/token/get')->end()
+                ->scalarNode('path')->defaultValue('/client/management')->end()
             ->end();
     }
 }

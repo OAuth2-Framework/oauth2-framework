@@ -29,7 +29,7 @@ final class SessionManagementEndpointSource implements Component
         foreach (['path', 'storage_name', 'template'] as $key) {
             $container->setParameter($path.'.'.$key, $config[$key]);
         }
-        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint'));
+        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__ . '/../../../Resources/config/endpoint'));
         $loader->load('session_management.php');
     }
 

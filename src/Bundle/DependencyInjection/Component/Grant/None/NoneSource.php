@@ -11,7 +11,7 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Bundle\DependencyInjection\Component\Endpoint;
+namespace OAuth2Framework\Bundle\DependencyInjection\Component\Grant;
 
 use Fluent\PhpConfigFileLoader;
 use OAuth2Framework\Bundle\DependencyInjection\Component\Component;
@@ -19,17 +19,15 @@ use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-final class AuthorizationEndpointPreConfiguredAuthorizationSource implements Component
+final class NoneSource implements Component
 {
     /**
      * {@inheritdoc}
      */
     protected function continueLoading(string $path, ContainerBuilder $container, array $config)
     {
-        $container->setAlias($path.'.event_store', $config['event_store']);
-
-        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint'));
-        $loader->load('pre_configured_authorization.php');
+        $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../../Resources/config/grant'));
+        $loader->load('none.php');
     }
 
     /**
@@ -37,7 +35,7 @@ final class AuthorizationEndpointPreConfiguredAuthorizationSource implements Com
      */
     public function name(): string
     {
-        return 'pre_configured_authorization';
+        return 'none';
     }
 
     /**
@@ -48,12 +46,9 @@ final class AuthorizationEndpointPreConfiguredAuthorizationSource implements Com
         $node
             ->validate()
                 ->ifTrue(function ($config) {
-                    return true === $config['enabled'] && empty($config['event_store']);
+                    return true === $config['enabled'];
                 })
-                ->thenInvalid('The option "event_store" must be set.')
-            ->end()
-            ->children()
-                ->scalarNode('event_store')->defaultNull()->end()
+                ->thenInvalid('The grant type "none" is not fully implemented. Please disable it.')
             ->end();
     }
 }

@@ -27,7 +27,7 @@ final class IssuerDiscoveryEndpointSource implements Component
     public function load(array $configs, ContainerBuilder $container)
     {
         $container->setParameter($path.'.issuer_discovery', $config['issuer_discovery']);
-        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint'));
+        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__ . '/../../../Resources/config/endpoint'));
         $loader->load('issuer_discovery.php');
     }
 

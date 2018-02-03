@@ -49,6 +49,9 @@ return function (ContainerConfigurator $container) {
     $container->set('MyUserAccountRepository')
         ->class(UserRepository::class);
 
+    $container->set('MyResourceServerRepository')
+        ->class(\OAuth2Framework\Component\Core\ResourceServer\ResourceServerRepository::class);
+
     $container->set(UserProvider::class)
         ->args([
             ref('MyUserAccountRepository'),

@@ -19,8 +19,16 @@ use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-final class ClientConfigurationSource implements Component
+final class AuthorizationEndpointResponseModeSource implements Component
 {
+    /**
+     * AuthorizationEndpointSource constructor.
+     */
+    public function __construct()
+    {
+        $this->addSubSource(new AuthorizationEndpointFormPostResponseModeSource());
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -30,8 +38,8 @@ final class ClientConfigurationSource implements Component
             $container->setParameter($path.'.'.$k, $v);
         }
 
-        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint'));
-        $loader->load('client_configuration.php');
+        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__ . '/../../../Resources/config/endpoint'));
+        $loader->load('response_mode.php');
     }
 
     /**
@@ -39,7 +47,7 @@ final class ClientConfigurationSource implements Component
      */
     public function name(): string
     {
-        return 'client_configuration';
+        return 'response_mode';
     }
 
     /**
@@ -48,18 +56,10 @@ final class ClientConfigurationSource implements Component
     public function getNodeDefinition(NodeDefinition $node)
     {
         $node
-            ->validate()
-                ->ifTrue(function ($config) {
-                    return true === $config['enabled'] && empty($config['realm']);
-                })
-                ->thenInvalid('The option "realm" must be set.')
-            ->end()
             ->children()
-                ->scalarNode('realm')->end()
-                ->booleanNode('authorization_header')->defaultTrue()->end()
-                ->booleanNode('query_string')->defaultFalse()->end()
-                ->booleanNode('request_body')->defaultFalse()->end()
-                ->scalarNode('path')->defaultValue('/client/configure/{client_id}')->end()
+                ->booleanNode('allow_response_mode_parameter')
+                    ->defaultFalse()
+                ->end()
             ->end();
     }
 }

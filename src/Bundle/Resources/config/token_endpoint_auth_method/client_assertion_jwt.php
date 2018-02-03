@@ -24,7 +24,7 @@ return function (ContainerConfigurator $container) {
         ->args([
             ref('jose.jws_loader.client_assertion_jwt'),
             ref('jose.claim_checker.client_assertion_jwt'),
-            '%oauth2_server.token_endpoint_auth_method.client_assertion_jwt.secret_lifetime%',
+            '%oauth2_server.endpoint.token.authentication.client_assertion_jwt.secret_lifetime%',
         ])
         ->tag('oauth2_server_token_endpoint_auth_method');
 };

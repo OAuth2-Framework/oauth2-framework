@@ -31,7 +31,7 @@ final class ClientRegistrationInitialAccessTokenSource implements Component
         }
         $container->setAlias($path.'.event_store', $config['event_store']);
 
-        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint'));
+        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__ . '/../../../Resources/config/endpoint'));
         $loader->load('client_registration_initial_access_token.php');
     }
 

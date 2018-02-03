@@ -11,7 +11,7 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Bundle\DependencyInjection\Component\TokenEndpointAuthMethod;
+namespace OAuth2Framework\Bundle\DependencyInjection\Component\Endpoint\Token;
 
 use OAuth2Framework\Bundle\DependencyInjection\Component\Component;
 use OAuth2Framework\Component\TokenEndpoint\AuthenticationMethod\AuthenticationMethod;
@@ -27,7 +27,7 @@ final class TokenEndpointAuthMethodSource implements Component
      */
     public function name(): string
     {
-        return 'token_endpoint_auth_method';
+        return 'authentication';
     }
 
     /**
@@ -37,26 +37,26 @@ final class TokenEndpointAuthMethodSource implements Component
     {
         $container->registerForAutoconfiguration(AuthenticationMethod::class)->addTag('oauth2_server_token_endpoint_auth_method');
 
-        $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/token_endpoint_auth_method'));
+        $loader = new PhpFileLoader($container, new FileLocator(__DIR__ . '/../../../../Resources/config/token_endpoint_auth_method'));
         $loader->load('token_endpoint_auth_method.php');
 
-        if ($configs['token_endpoint_auth_method']['none']['enabled']) {
+        if ($configs['endpoint']['token']['authentication']['none']['enabled']) {
             $loader->load('none.php');
         }
-        if ($configs['token_endpoint_auth_method']['client_secret_basic']['enabled']) {
-            $container->setParameter('oauth2_server.token_endpoint_auth_method.client_secret_basic.realm', $configs['token_endpoint_auth_method']['client_secret_basic']['realm']);
-            $container->setParameter('oauth2_server.token_endpoint_auth_method.client_secret_basic.secret_lifetime', $configs['token_endpoint_auth_method']['client_secret_basic']['secret_lifetime']);
+        if ($configs['endpoint']['token']['authentication']['client_secret_basic']['enabled']) {
+            $container->setParameter('oauth2_server.endpoint.token.authentication.client_secret_basic.realm', $configs['endpoint']['token']['authentication']['client_secret_basic']['realm']);
+            $container->setParameter('oauth2_server.endpoint.token.authentication.client_secret_basic.secret_lifetime', $configs['endpoint']['token']['authentication']['client_secret_basic']['secret_lifetime']);
             $loader->load('client_secret_basic.php');
         }
-        if ($configs['token_endpoint_auth_method']['client_secret_post']['enabled']) {
-            $container->setParameter('oauth2_server.token_endpoint_auth_method.client_secret_post.secret_lifetime', $configs['token_endpoint_auth_method']['client_secret_post']['secret_lifetime']);
+        if ($configs['endpoint']['token']['authentication']['client_secret_post']['enabled']) {
+            $container->setParameter('oauth2_server.endpoint.token.authentication.client_secret_post.secret_lifetime', $configs['endpoint']['token']['authentication']['client_secret_post']['secret_lifetime']);
             $loader->load('client_secret_post.php');
         }
-        if ($configs['token_endpoint_auth_method']['client_assertion_jwt']['enabled']) {
-            $container->setParameter('oauth2_server.token_endpoint_auth_method.client_assertion_jwt.secret_lifetime', $configs['token_endpoint_auth_method']['client_assertion_jwt']['secret_lifetime']);
-            $container->setParameter('oauth2_server.token_endpoint_auth_method.client_assertion_jwt.signature_algorithms', $configs['token_endpoint_auth_method']['client_assertion_jwt']['signature_algorithms']);
-            $container->setParameter('oauth2_server.token_endpoint_auth_method.client_assertion_jwt.claim_checkers', $configs['token_endpoint_auth_method']['client_assertion_jwt']['claim_checkers']);
-            $container->setParameter('oauth2_server.token_endpoint_auth_method.client_assertion_jwt.header_checkers', $configs['token_endpoint_auth_method']['client_assertion_jwt']['header_checkers']);
+        if ($configs['endpoint']['token']['authentication']['client_assertion_jwt']['enabled']) {
+            $container->setParameter('oauth2_server.endpoint.token.authentication.client_assertion_jwt.secret_lifetime', $configs['endpoint']['token']['authentication']['client_assertion_jwt']['secret_lifetime']);
+            $container->setParameter('oauth2_server.endpoint.token.authentication.client_assertion_jwt.signature_algorithms', $configs['endpoint']['token']['authentication']['client_assertion_jwt']['signature_algorithms']);
+            $container->setParameter('oauth2_server.endpoint.token.authentication.client_assertion_jwt.claim_checkers', $configs['endpoint']['token']['authentication']['client_assertion_jwt']['claim_checkers']);
+            $container->setParameter('oauth2_server.endpoint.token.authentication.client_assertion_jwt.header_checkers', $configs['endpoint']['token']['authentication']['client_assertion_jwt']['header_checkers']);
             $loader->load('client_assertion_jwt.php');
         }
     }

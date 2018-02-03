@@ -19,7 +19,7 @@ use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-final class AuthorizationEndpointFormPostResponseModeSource implements Component
+final class ClientConfigurationSource implements Component
 {
     /**
      * {@inheritdoc}
@@ -30,8 +30,8 @@ final class AuthorizationEndpointFormPostResponseModeSource implements Component
             $container->setParameter($path.'.'.$k, $v);
         }
 
-        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint'));
-        $loader->load('form_post_response_mode.php');
+        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__ . '/../../../Resources/config/endpoint'));
+        $loader->load('client_configuration.php');
     }
 
     /**
@@ -39,7 +39,7 @@ final class AuthorizationEndpointFormPostResponseModeSource implements Component
      */
     public function name(): string
     {
-        return 'form_post';
+        return 'client_configuration';
     }
 
     /**
@@ -48,11 +48,18 @@ final class AuthorizationEndpointFormPostResponseModeSource implements Component
     public function getNodeDefinition(NodeDefinition $node)
     {
         $node
+            ->validate()
+                ->ifTrue(function ($config) {
+                    return true === $config['enabled'] && empty($config['realm']);
+                })
+                ->thenInvalid('The option "realm" must be set.')
+            ->end()
             ->children()
-                ->scalarNode('template')
-                    ->info('The template used to render the form.')
-                    ->defaultValue('@OAuth2FrameworkBundle/form_post/response.html.twig')
-                ->end()
+                ->scalarNode('realm')->end()
+                ->booleanNode('authorization_header')->defaultTrue()->end()
+                ->booleanNode('query_string')->defaultFalse()->end()
+                ->booleanNode('request_body')->defaultFalse()->end()
+                ->scalarNode('path')->defaultValue('/client/configure/{client_id}')->end()
             ->end();
     }
 }
