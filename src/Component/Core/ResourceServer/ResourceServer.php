@@ -19,4 +19,9 @@ interface ResourceServer
      * @return ResourceServerId
      */
     public function getResourceServerId(): ResourceServerId;
+
+    /**
+     * @return string
+     */
+    public function getAuthenticationMethod(): string;
 }

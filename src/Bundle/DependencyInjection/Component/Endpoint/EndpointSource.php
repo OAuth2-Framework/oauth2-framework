@@ -14,7 +14,11 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\DependencyInjection\Component\Endpoint;
 
 use OAuth2Framework\Bundle\DependencyInjection\Component\Component;
+use OAuth2Framework\Bundle\DependencyInjection\Component\Endpoint\ClientConfiguration\ClientConfigurationSource;
+use OAuth2Framework\Bundle\DependencyInjection\Component\Endpoint\ClientRegistration\ClientRegistrationSource;
 use OAuth2Framework\Bundle\DependencyInjection\Component\Endpoint\Token\TokenEndpointSource;
+use OAuth2Framework\Bundle\DependencyInjection\Component\Endpoint\TokenIntrospection\TokenIntrospectionEndpointSource;
+use OAuth2Framework\Bundle\DependencyInjection\Component\Endpoint\TokenRevocation\TokenRevocationEndpointSource;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -31,7 +35,11 @@ final class EndpointSource implements Component
     public function __construct()
     {
         $this->subComponents = [
+            new ClientRegistrationSource(),
+            new ClientConfigurationSource(),
             new TokenEndpointSource(),
+            new TokenIntrospectionEndpointSource(),
+            new TokenRevocationEndpointSource(),
         ];
     }
 

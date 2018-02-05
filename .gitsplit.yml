@@ -9,6 +9,8 @@ splits:
       target: "https://${GH_TOKEN}@github.com/oauth2-framework/authorization-endpoint.git"
     - prefix: "src/Component/BearerTokenType"
       target: "https://${GH_TOKEN}@github.com/oauth2-framework/bearer-token.git"
+    - prefix: "src/Component/ClientAuthentication"
+      target: "https://${GH_TOKEN}@github.com/oauth2-framework/client-authentication.git"
     - prefix: "src/Component/ClientConfigurationEndpoint"
       target: "https://${GH_TOKEN}@github.com/oauth2-framework/client-configuration-endpoint.git"
     - prefix: "src/Component/ClientCredentialsGrant"

@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\DependencyInjection\Component\Endpoint\Token;
 
 use OAuth2Framework\Bundle\DependencyInjection\Component\Component;
-use OAuth2Framework\Component\TokenEndpoint\AuthenticationMethod\AuthenticationMethod;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -22,21 +21,6 @@ use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
 final class TokenEndpointSource implements Component
 {
-    /**
-     * @var Component[]
-     */
-    private $subComponents = [];
-
-    /**
-     * TokenEndpointSource constructor.
-     */
-    public function __construct()
-    {
-        $this->subComponents = [
-            new TokenEndpointAuthMethodSource(),
-        ];
-    }
-
     /**
      * @return string
      */
@@ -50,9 +34,13 @@ final class TokenEndpointSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        foreach ($this->subComponents as $subComponent) {
-            $subComponent->load($configs, $container);
+        if (!$configs['endpoint']['token']['enabled']) {
+            return;
         }
+        $container->setParameter('oauth2_server.endpoint.token.path', $configs['endpoint']['token']['path']);
+
+        $loader = new PhpFileLoader($container, new FileLocator(__DIR__ . '/../../../../Resources/config/endpoint/token'));
+        $loader->load('token.php');
     }
 
     /**
@@ -60,22 +48,18 @@ final class TokenEndpointSource implements Component
      */
     public function getNodeDefinition(NodeDefinition $node)
     {
-        $childNode = $node->children()
+        $node->children()
             ->arrayNode($this->name())
                 ->addDefaultsIfNotSet()
-                ->canBeEnabled();
-
-        $childNode
-            ->children()
-                ->scalarNode('path')
-                    ->info('The token endpoint path')
-                    ->defaultValue('/token/get')
+                ->canBeEnabled()
+                ->children()
+                    ->scalarNode('path')
+                        ->info('The token endpoint path')
+                        ->defaultValue('/token/get')
+                    ->end()
                 ->end()
-            ->end();
-
-        foreach ($this->subComponents as $subComponent) {
-            $subComponent->getNodeDefinition($childNode);
-        }
+            ->end()
+        ->end();
     }
 
     /**
@@ -83,14 +67,6 @@ final class TokenEndpointSource implements Component
      */
     public function prepend(ContainerBuilder $container, array $config): array
     {
-        $updatedConfig = [];
-        foreach ($this->subComponents as $subComponent) {
-            $updatedConfig = array_merge(
-                $updatedConfig,
-                $subComponent->prepend($container, $config)
-            );
-        }
-
-        return $updatedConfig;
+        return [];
     }
 }

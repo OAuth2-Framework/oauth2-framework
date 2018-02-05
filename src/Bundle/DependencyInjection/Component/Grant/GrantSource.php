@@ -17,6 +17,8 @@ use OAuth2Framework\Bundle\DependencyInjection\Component\Component;
 use OAuth2Framework\Bundle\DependencyInjection\Component\Grant\AuthorizationCode\AuthorizationCodeSource;
 use OAuth2Framework\Bundle\DependencyInjection\Component\Grant\ClientCredentials\ClientCredentialsSource;
 use OAuth2Framework\Bundle\DependencyInjection\Component\Grant\Implicit\ImplicitSource;
+use OAuth2Framework\Bundle\DependencyInjection\Component\Grant\JwtBearer\JwtBearerSource;
+use OAuth2Framework\Bundle\DependencyInjection\Component\Grant\None\NoneSource;
 use OAuth2Framework\Bundle\DependencyInjection\Component\Grant\RefreshToken\RefreshTokenSource;
 use OAuth2Framework\Bundle\DependencyInjection\Component\Grant\ResourceOwnerPasswordCredential\ResourceOwnerPasswordCredentialSource;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType;
@@ -41,6 +43,8 @@ final class GrantSource implements Component
             new ImplicitSource(),
             new RefreshTokenSource(),
             new ResourceOwnerPasswordCredentialSource(),
+            //new JwtBearerSource(),
+            //new NoneSource(),
         ];
     }
 

@@ -11,22 +11,23 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Bundle\DependencyInjection\Component\Endpoint\TokenRevocation;
+namespace OAuth2Framework\Bundle\DependencyInjection\Component\ClientAuthentication;
 
 use OAuth2Framework\Bundle\DependencyInjection\Component\Component;
+use OAuth2Framework\Component\TokenEndpoint\AuthenticationMethod\AuthenticationMethod;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
-final class TokenRevocationEndpointSource implements Component
+final class ClientSecretBasicSource implements Component
 {
     /**
      * @return string
      */
     public function name(): string
     {
-        return 'token_revocation';
+        return 'client_secret_basic';
     }
 
     /**
@@ -34,14 +35,12 @@ final class TokenRevocationEndpointSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        if (!$configs['endpoint']['token_revocation']['enabled']) {
-            return;
+        if ($configs['client_authentication']['client_secret_basic']['enabled']) {
+            $container->setParameter('oauth2_server.client_authentication.client_secret_basic.realm', $configs['client_authentication']['client_secret_basic']['realm']);
+            $container->setParameter('oauth2_server.client_authentication.client_secret_basic.secret_lifetime', $configs['client_authentication']['client_secret_basic']['secret_lifetime']);
+            $loader = new PhpFileLoader($container, new FileLocator(__DIR__ . '/../../../Resources/config/client_authentication'));
+            $loader->load('client_secret_basic.php');
         }
-        $container->setParameter('oauth2_server.endpoint.token_revocation.path', $configs['endpoint']['token_revocation']['path']);
-        $container->setParameter('oauth2_server.endpoint.token_revocation.allow_callback', $configs['endpoint']['token_revocation']['allow_callback']);
-
-        $loader = new PhpFileLoader($container, new FileLocator(__DIR__ . '/../../../../Resources/config/endpoint/token_revocation'));
-        $loader->load('revocation.php');
     }
 
     /**
@@ -54,13 +53,14 @@ final class TokenRevocationEndpointSource implements Component
                 ->addDefaultsIfNotSet()
                 ->canBeEnabled()
                 ->children()
-                    ->scalarNode('path')
-                        ->info('The token revocation endpoint path')
-                        ->defaultValue('/token/revocation')
+                    ->scalarNode('realm')
+                        ->isRequired()
+                        ->info('The realm displayed in the authentication header')
                     ->end()
-                    ->booleanNode('allow_callback')
-                        ->info('If true, GET request with "callback" parameter are allowed.')
-                        ->defaultFalse()
+                    ->integerNode('secret_lifetime')
+                        ->defaultValue(60 * 60 * 24 * 14)
+                        ->min(0)
+                        ->info('Secret lifetime (in seconds; 0 = unlimited)')
                     ->end()
                 ->end()
             ->end()

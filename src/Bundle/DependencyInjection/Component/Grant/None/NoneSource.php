@@ -11,25 +11,16 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Bundle\DependencyInjection\Component\Grant;
+namespace OAuth2Framework\Bundle\DependencyInjection\Component\Grant\None;
 
-use Fluent\PhpConfigFileLoader;
 use OAuth2Framework\Bundle\DependencyInjection\Component\Component;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
 final class NoneSource implements Component
 {
-    /**
-     * {@inheritdoc}
-     */
-    protected function continueLoading(string $path, ContainerBuilder $container, array $config)
-    {
-        $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../../Resources/config/grant'));
-        $loader->load('none.php');
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -41,14 +32,32 @@ final class NoneSource implements Component
     /**
      * {@inheritdoc}
      */
+    public function load(array $configs, ContainerBuilder $container)
+    {
+        if ($configs['grant']['none']['enabled']) {
+            $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../../Resources/config/grant'));
+            $loader->load('none.php');
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getNodeDefinition(NodeDefinition $node)
     {
-        $node
-            ->validate()
-                ->ifTrue(function ($config) {
-                    return true === $config['enabled'];
-                })
-                ->thenInvalid('The grant type "none" is not fully implemented. Please disable it.')
-            ->end();
+        $node->children()
+            ->arrayNode('none')
+                ->canBeEnabled()
+            ->end()
+        ->end();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function prepend(ContainerBuilder $container, array $config): array
+    {
+        //Nothing to do
+        return [];
     }
 }

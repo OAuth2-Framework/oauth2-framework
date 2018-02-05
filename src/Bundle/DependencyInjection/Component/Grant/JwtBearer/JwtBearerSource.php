@@ -11,39 +11,17 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Bundle\DependencyInjection\Component\Grant;
+namespace OAuth2Framework\Bundle\DependencyInjection\Component\Grant\JwtBearer;
 
-use Fluent\PhpConfigFileLoader;
 use Jose\Bundle\JoseFramework\Helper\ConfigurationHelper;
 use OAuth2Framework\Bundle\DependencyInjection\Component\Component;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\PropertyAccess\PropertyAccess;
+use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
 final class JwtBearerSource implements Component
 {
-    /**
-     * JwtBearerSource constructor.
-     */
-    public function __construct()
-    {
-        $this->addSubSource(new JwtBearerEncryptionSource());
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function continueLoading(string $path, ContainerBuilder $container, array $config)
-    {
-        foreach ($config as $k => $v) {
-            $container->setParameter($path.'.'.$k, $config[$k]);
-        }
-
-        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__ . '/../../../Resources/config/grant'));
-        $loader->load('jwt_bearer.php');
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -52,6 +30,20 @@ final class JwtBearerSource implements Component
         return 'jwt_bearer';
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function load(array $configs, ContainerBuilder $container)
+    {
+        if ($configs['grant']['jwt_bearer']['enabled']) {
+            $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../../Resources/config/grant'));
+            $loader->load('jwt_bearer.php');
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getNodeDefinition(NodeDefinition $node)
     {
         $node
@@ -83,23 +75,36 @@ final class JwtBearerSource implements Component
                     ->prototype('scalar')->end()
                     ->treatNullLike(['crit'])
                 ->end()
+                ->arrayNode('encryption')
+                    ->children()
+                        ->booleanNode('required')
+                            ->info('If set to true, all ID Token sent to the server must be encrypted.')
+                            ->defaultFalse()
+                        ->end()
+                        ->arrayNode('key_encryption_algorithms')
+                            ->info('Supported key encryption algorithms.')
+                            ->useAttributeAsKey('name')
+                            ->prototype('scalar')->end()
+                            ->treatNullLike([])
+                        ->end()
+                        ->arrayNode('content_encryption_algorithms')
+                            ->info('Supported content encryption algorithms.')
+                            ->useAttributeAsKey('name')
+                            ->prototype('scalar')->end()
+                            ->treatNullLike([])
+                        ->end()
+                    ->end()
+                ->end()
             ->end();
     }
 
     /**
      * {@inheritdoc}
      */
-    public function prepend(array $bundleConfig, string $path, ContainerBuilder $container)
+    public function prepend(ContainerBuilder $container, array $config): array
     {
-        parent::prepend($bundleConfig, $path, $container);
-        $currentPath = $path.'['.$this->name().']';
-        $accessor = PropertyAccess::createPropertyAccessor();
-        $sourceConfig = $accessor->getValue($bundleConfig, $currentPath);
-
-        if (true === $sourceConfig['enabled']) {
-            $this->updateJoseBundleConfigurationForVerifier($container, $sourceConfig);
-            $this->updateJoseBundleConfigurationForDecrypter($container, $sourceConfig);
-        }
+        //Nothing to do
+        return [];
     }
 
     /**
@@ -119,6 +124,7 @@ final class JwtBearerSource implements Component
     private function updateJoseBundleConfigurationForDecrypter(ContainerBuilder $container, array $sourceConfig)
     {
         if (true === $sourceConfig['encryption']['enabled']) {
+            //ConfigurationHelper::addKeyset($container, 'jwt_bearer.key_set.encryption', 'jwkset', ['value' => $bundleConfig['key_set']['encryption']]);
             ConfigurationHelper::addJWELoader($container, $this->name(), $sourceConfig['encryption']['key_encryption_algorithms'], $sourceConfig['encryption']['content_encryption_algorithms'], ['DEF'], [], ['jwe_compact'], false);
         }
     }

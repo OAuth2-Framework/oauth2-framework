@@ -67,7 +67,7 @@ EOT
      */
     private function selectTokenEndpointAuthenticationMethod(InputInterface $input, OutputInterface $output, Client $client)
     {
-        $token_endpoint_auth_method_manager = $this->getContainer()->get('oauth2_server.token_endpoint_auth_method.manager');
+        $token_endpoint_auth_method_manager = $this->getContainer()->get('oauth2_server.client_authentication.manager');
         $helper = $this->getHelper('question');
         $question = new ChoiceQuestion(
             'Please select the token endpoint authentication method.',

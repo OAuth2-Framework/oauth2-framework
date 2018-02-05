@@ -11,15 +11,16 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Bundle\DependencyInjection\Component\Endpoint\ClientRegistration;
+namespace OAuth2Framework\Bundle\DependencyInjection\Component\ClientAuthentication;
 
 use OAuth2Framework\Bundle\DependencyInjection\Component\Component;
+use OAuth2Framework\Component\TokenEndpoint\AuthenticationMethod\AuthenticationMethod;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
-final class ClientRegistrationSource implements Component
+final class ClientAuthenticationSource implements Component
 {
     /**
      * @var Component[]
@@ -32,8 +33,10 @@ final class ClientRegistrationSource implements Component
     public function __construct()
     {
         $this->subComponents = [
-            new InitialAccessTokenSource(),
-            new SoftwareStatementSource(),
+            new NoneSource(),
+            new ClientSecretBasicSource(),
+            new ClientSecretPostSource(),
+            new ClientAssertionJwtSource(),
         ];
     }
 
@@ -42,7 +45,7 @@ final class ClientRegistrationSource implements Component
      */
     public function name(): string
     {
-        return 'client_registration';
+        return 'client_authentication';
     }
 
     /**
@@ -50,13 +53,10 @@ final class ClientRegistrationSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        if (!$configs['endpoint']['client_registration']['enabled']) {
-            return;
-        }
-        $container->setParameter('oauth2_server.endpoint.client_registration.path', $configs['endpoint']['client_registration']['path']);
+        $container->registerForAutoconfiguration(AuthenticationMethod::class)->addTag('oauth2_server_client_authentication');
 
-        $loader = new PhpFileLoader($container, new FileLocator(__DIR__ . '/../../../../Resources/config/endpoint/client_registration'));
-        $loader->load('client_registration.php');
+        $loader = new PhpFileLoader($container, new FileLocator(__DIR__ . '/../../../Resources/config/client_authentication'));
+        $loader->load('client_authentication.php');
 
         foreach ($this->subComponents as $subComponent) {
             $subComponent->load($configs, $container);
@@ -70,14 +70,7 @@ final class ClientRegistrationSource implements Component
     {
         $childNode = $node->children()
             ->arrayNode($this->name())
-                ->addDefaultsIfNotSet()
-                ->canBeEnabled();
-
-        $childNode->children()
-            ->scalarNode('path')
-                ->defaultValue('/client/management')
-            ->end()
-        ->end();
+            ->addDefaultsIfNotSet();
 
         foreach ($this->subComponents as $subComponent) {
             $subComponent->getNodeDefinition($childNode);

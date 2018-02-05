@@ -82,6 +82,14 @@ return function (ContainerConfigurator $container) {
     $container->set('MyScopeRepository')
         ->class(\OAuth2Framework\Bundle\Tests\TestBundle\Entity\ScopeRepository::class);
 
+    $container->set('MyInitialAccessTokenRepository')
+        ->class(\OAuth2Framework\Bundle\Tests\TestBundle\Entity\InitialAccessTokenRepository::class)
+        ->args([
+            ref('EventStore.InitialAccessToken'),
+            ref('event_bus'),
+            ref('cache.app'),
+        ]);
+
     $container->set(UriFactory::class);
 
     $container->set('EventStore.RefreshToken')

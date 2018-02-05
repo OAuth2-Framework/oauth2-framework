@@ -11,22 +11,23 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Bundle\DependencyInjection\Component\Endpoint\TokenIntrospection;
+namespace OAuth2Framework\Bundle\DependencyInjection\Component\ClientAuthentication;
 
 use OAuth2Framework\Bundle\DependencyInjection\Component\Component;
+use OAuth2Framework\Component\TokenEndpoint\AuthenticationMethod\AuthenticationMethod;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
-final class TokenIntrospectionEndpointSource implements Component
+final class NoneSource implements Component
 {
     /**
      * @return string
      */
     public function name(): string
     {
-        return 'token_introspection';
+        return 'none';
     }
 
     /**
@@ -34,13 +35,11 @@ final class TokenIntrospectionEndpointSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        if (!$configs['endpoint']['token_introspection']['enabled']) {
-            return;
-        }
-        $container->setParameter('oauth2_server.endpoint.token_introspection.path', $configs['endpoint']['token_introspection']['path']);
 
-        $loader = new PhpFileLoader($container, new FileLocator(__DIR__ . '/../../../../Resources/config/endpoint/token_introspection'));
-        $loader->load('introspection.php');
+        if ($configs['client_authentication']['none']['enabled']) {
+            $loader = new PhpFileLoader($container, new FileLocator(__DIR__ . '/../../../Resources/config/client_authentication'));
+            $loader->load('none.php');
+        }
     }
 
     /**
@@ -50,14 +49,8 @@ final class TokenIntrospectionEndpointSource implements Component
     {
         $node->children()
             ->arrayNode($this->name())
-                ->addDefaultsIfNotSet()
+                ->info('The "none" authentication method is designed for public clients')
                 ->canBeEnabled()
-                ->children()
-                    ->scalarNode('path')
-                        ->info('The token introspection endpoint path')
-                        ->defaultValue('/token/introspection')
-                    ->end()
-                ->end()
             ->end()
         ->end();
     }
