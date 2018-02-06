@@ -43,5 +43,4 @@ return function (ContainerConfigurator $container) {
             ref('httplug.message_factory'),
             ref('oauth2_server.access_token_repository'),
         ]);
-
 };

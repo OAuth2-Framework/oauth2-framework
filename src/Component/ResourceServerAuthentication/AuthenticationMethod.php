@@ -15,7 +15,6 @@ namespace OAuth2Framework\Component\ResourceServerAuthentication;
 
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServer;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
-use OAuth2Framework\Component\Core\DataBag\DataBag;
 use Psr\Http\Message\ServerRequestInterface;
 
 interface AuthenticationMethod

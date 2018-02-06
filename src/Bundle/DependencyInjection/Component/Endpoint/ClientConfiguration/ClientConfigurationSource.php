@@ -43,7 +43,7 @@ class ClientConfigurationSource implements Component
         $container->setParameter('oauth2_server.endpoint.client_configuration.query_string', $configs['endpoint']['client_configuration']['query_string']);
         $container->setParameter('oauth2_server.endpoint.client_configuration.request_body', $configs['endpoint']['client_configuration']['request_body']);
 
-        $loader = new PhpFileLoader($container, new FileLocator(__DIR__ . '/../../../../Resources/config/endpoint/client_configuration'));
+        $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../../Resources/config/endpoint/client_configuration'));
         $loader->load('client_configuration.php');
     }
 

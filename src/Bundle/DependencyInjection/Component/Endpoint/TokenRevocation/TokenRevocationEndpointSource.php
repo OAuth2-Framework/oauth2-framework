@@ -40,7 +40,7 @@ class TokenRevocationEndpointSource implements Component
         $container->setParameter('oauth2_server.endpoint.token_revocation.path', $configs['endpoint']['token_revocation']['path']);
         $container->setParameter('oauth2_server.endpoint.token_revocation.allow_callback', $configs['endpoint']['token_revocation']['allow_callback']);
 
-        $loader = new PhpFileLoader($container, new FileLocator(__DIR__ . '/../../../../Resources/config/endpoint/token_revocation'));
+        $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../../Resources/config/endpoint/token_revocation'));
         $loader->load('revocation.php');
     }
 
