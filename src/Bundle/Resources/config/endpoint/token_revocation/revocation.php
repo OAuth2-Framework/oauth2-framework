@@ -46,5 +46,4 @@ return function (ContainerConfigurator $container) {
             ref('httplug.message_factory'),
             '%oauth2_server.endpoint.token_revocation.allow_callback%',
         ]);
-
 };

@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\DependencyInjection\Component\ClientAuthentication;
 
 use OAuth2Framework\Bundle\DependencyInjection\Component\Component;
-use OAuth2Framework\Component\TokenEndpoint\AuthenticationMethod\AuthenticationMethod;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -35,9 +34,8 @@ class NoneSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-
         if ($configs['client_authentication']['none']['enabled']) {
-            $loader = new PhpFileLoader($container, new FileLocator(__DIR__ . '/../../../Resources/config/client_authentication'));
+            $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/client_authentication'));
             $loader->load('none.php');
         }
     }

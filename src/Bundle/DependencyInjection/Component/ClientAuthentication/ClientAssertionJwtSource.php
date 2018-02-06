@@ -39,7 +39,7 @@ class ClientAssertionJwtSource implements Component
             $container->setParameter('oauth2_server.client_authentication.client_assertion_jwt.signature_algorithms', $configs['client_authentication']['client_assertion_jwt']['signature_algorithms']);
             $container->setParameter('oauth2_server.client_authentication.client_assertion_jwt.claim_checkers', $configs['client_authentication']['client_assertion_jwt']['claim_checkers']);
             $container->setParameter('oauth2_server.client_authentication.client_assertion_jwt.header_checkers', $configs['client_authentication']['client_assertion_jwt']['header_checkers']);
-            $loader = new PhpFileLoader($container, new FileLocator(__DIR__ . '/../../../Resources/config/client_authentication'));
+            $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/client_authentication'));
             $loader->load('client_assertion_jwt.php');
         }
     }

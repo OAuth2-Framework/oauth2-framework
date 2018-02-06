@@ -46,7 +46,7 @@ class InitialAccessTokenSource implements Component
         $container->setParameter('oauth2_server.endpoint.client_registration.initial_access_token.max_length', $configs['endpoint']['client_registration']['initial_access_token']['max_length']);
         $container->setAlias('oauth2_server.endpoint.client_registration.initial_access_token.repository', $configs['endpoint']['client_registration']['initial_access_token']['repository']);
 
-        $loader = new PhpFileLoader($container, new FileLocator(__DIR__ . '/../../../../Resources/config/endpoint/client_registration'));
+        $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../../Resources/config/endpoint/client_registration'));
         $loader->load('initial_access_token.php');
     }
 

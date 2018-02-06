@@ -42,7 +42,7 @@ class SoftwareStatementSource implements Component
         $container->setParameter('oauth2_server.endpoint.client_registration.software_statement.allowed_signature_algorithms', $configs['endpoint']['client_registration']['software_statement']['allowed_signature_algorithms']);
         $container->setParameter('oauth2_server.endpoint.client_registration.software_statement.key_set', $configs['endpoint']['client_registration']['software_statement']['key_set']);
 
-        $loader = new PhpFileLoader($container, new FileLocator(__DIR__ . '/../../../../Resources/config/endpoint/client_registration'));
+        $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../../Resources/config/endpoint/client_registration'));
         $loader->load('software_statement.php');
     }
 

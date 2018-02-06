@@ -39,7 +39,7 @@ class TokenIntrospectionEndpointSource implements Component
         }
         $container->setParameter('oauth2_server.endpoint.token_introspection.path', $configs['endpoint']['token_introspection']['path']);
 
-        $loader = new PhpFileLoader($container, new FileLocator(__DIR__ . '/../../../../Resources/config/endpoint/token_introspection'));
+        $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../../Resources/config/endpoint/token_introspection'));
         $loader->load('introspection.php');
     }
 

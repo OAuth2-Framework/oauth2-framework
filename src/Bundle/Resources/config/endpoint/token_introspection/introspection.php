@@ -41,5 +41,4 @@ return function (ContainerConfigurator $container) {
             ref(\OAuth2Framework\Component\TokenIntrospectionEndpoint\TokenTypeHintManager::class),
             ref('httplug.message_factory'),
         ]);
-
 };
