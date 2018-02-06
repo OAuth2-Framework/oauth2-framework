@@ -31,7 +31,7 @@ use OAuth2Framework\Component\TokenType\TokenType;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-final class TokenEndpoint implements MiddlewareInterface
+class TokenEndpoint implements MiddlewareInterface
 {
     /**
      * @var TokenEndpointExtensionManager

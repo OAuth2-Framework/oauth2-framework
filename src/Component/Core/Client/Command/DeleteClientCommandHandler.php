@@ -15,7 +15,7 @@ namespace OAuth2Framework\Component\Core\Client\Command;
 
 use OAuth2Framework\Component\Core\Client\ClientRepository;
 
-final class DeleteClientCommandHandler
+class DeleteClientCommandHandler
 {
     /**
      * @var ClientRepository

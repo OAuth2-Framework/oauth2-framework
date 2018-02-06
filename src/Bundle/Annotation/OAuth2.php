@@ -19,7 +19,7 @@ namespace OAuth2Framework\Bundle\Annotation;
  * @Annotation
  * @Target({"CLASS", "METHOD"})
  */
-final class OAuth2
+class OAuth2
 {
     /**
      * @var null|string

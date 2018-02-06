@@ -18,7 +18,7 @@ use League\Uri;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType;
 use Psr\Http\Message\ResponseInterface;
 
-final class FormPostResponseMode implements ResponseMode
+class FormPostResponseMode implements ResponseMode
 {
     /**
      * @var ResponseFactoryInterface

@@ -21,7 +21,7 @@ use PHPUnit\Framework\TestCase;
  * @group TokenEndpoint
  * @group ResourceServerAuthentication
  */
-final class AuthenticationMethodManagerTest extends TestCase
+class AuthenticationMethodManagerTest extends TestCase
 {
     /**
      * @test

@@ -16,7 +16,7 @@ namespace OAuth2Framework\Component\Core\Domain;
 use League\JsonReference\SchemaLoadingException;
 use League\JsonReference\LoaderInterface;
 
-final class DomainUriLoader implements LoaderInterface
+class DomainUriLoader implements LoaderInterface
 {
     /**
      * @var string[]

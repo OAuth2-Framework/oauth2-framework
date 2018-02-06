@@ -16,7 +16,7 @@ namespace OAuth2Framework\Component\OpenIdConnect;
 use Jose\Component\Core\JWKSet;
 use Jose\Component\Signature\JWSLoader;
 
-final class IdTokenLoader
+class IdTokenLoader
 {
     /**
      * @var JWKSet

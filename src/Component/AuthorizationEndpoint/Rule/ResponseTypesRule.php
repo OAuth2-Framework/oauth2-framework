@@ -18,7 +18,7 @@ use OAuth2Framework\Component\ClientRegistrationEndpoint\Rule\Rule;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 
-final class ResponseTypesRule implements Rule
+class ResponseTypesRule implements Rule
 {
     /**
      * @var ResponseTypeManager

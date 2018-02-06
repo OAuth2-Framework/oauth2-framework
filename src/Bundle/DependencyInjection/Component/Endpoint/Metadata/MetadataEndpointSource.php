@@ -19,7 +19,7 @@ use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-final class MetadataEndpointSource implements Component
+class MetadataEndpointSource implements Component
 {
     /**
      * MetadataEndpointSource constructor.
@@ -37,7 +37,7 @@ final class MetadataEndpointSource implements Component
         foreach (['path', 'custom_values', 'custom_routes'] as $key) {
             $container->setParameter($path.'.'.$key, $config[$key]);
         }
-        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__ . '/../../../Resources/config/endpoint'));
+        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint'));
         $loader->load('metadata.php');
     }
 

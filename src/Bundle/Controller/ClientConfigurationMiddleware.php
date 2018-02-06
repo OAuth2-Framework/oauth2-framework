@@ -21,7 +21,7 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-final class ClientConfigurationMiddleware implements MiddlewareInterface
+class ClientConfigurationMiddleware implements MiddlewareInterface
 {
     /**
      * @var ClientRepository

@@ -19,7 +19,7 @@ use OAuth2Framework\Component\Core\Event\Event;
 use OAuth2Framework\Component\Core\Event\EventId;
 use OAuth2Framework\Component\Core\Id\Id;
 
-final class InitialAccessTokenRevokedEvent extends Event
+class InitialAccessTokenRevokedEvent extends Event
 {
     /**
      * @var InitialAccessTokenId

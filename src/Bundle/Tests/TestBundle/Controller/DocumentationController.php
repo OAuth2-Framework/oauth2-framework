@@ -20,7 +20,7 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * @Route("/doc")
  */
-final class DocumentationController extends Controller
+class DocumentationController extends Controller
 {
     /**
      * @Route("/service/{hello}", name="service_documentation")

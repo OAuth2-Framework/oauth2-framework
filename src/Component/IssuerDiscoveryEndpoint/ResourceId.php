@@ -15,7 +15,7 @@ namespace OAuth2Framework\Component\IssuerDiscoveryEndpoint;
 
 use OAuth2Framework\Component\Core\Id\Id;
 
-final class ResourceId extends Id
+class ResourceId extends Id
 {
     /**
      * @param string $value

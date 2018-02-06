@@ -17,7 +17,7 @@ use OAuth2Framework\Component\Core\Response\OAuth2Error;
 use OAuth2Framework\Component\Core\Response\OAuth2ResponseInterface;
 use Psr\Http\Message\ResponseInterface;
 
-final class BadRequestResponseFactory implements ResponseFactory
+class BadRequestResponseFactory implements ResponseFactory
 {
     /**
      * {@inheritdoc}

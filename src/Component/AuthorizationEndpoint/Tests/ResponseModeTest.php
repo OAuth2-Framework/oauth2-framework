@@ -26,7 +26,7 @@ use Prophecy\Argument;
 /**
  * @group ResponseMode
  */
-final class ResponseModeTest extends TestCase
+class ResponseModeTest extends TestCase
 {
     /**
      * @test

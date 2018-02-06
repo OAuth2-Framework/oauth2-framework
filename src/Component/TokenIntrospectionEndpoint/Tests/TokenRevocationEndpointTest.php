@@ -28,7 +28,7 @@ use Psr\Http\Message\ServerRequestInterface;
 /**
  * @group TokenIntrospectionEndpoint
  */
-final class TokenIntrospectionEndpointTest extends TestCase
+class TokenIntrospectionEndpointTest extends TestCase
 {
     /**
      * @test

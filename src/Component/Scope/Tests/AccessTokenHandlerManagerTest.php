@@ -27,7 +27,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @group ScopePolicyManager
  */
-final class ScopePolicyManagerTest extends TestCase
+class ScopePolicyManagerTest extends TestCase
 {
     /**
      * @test

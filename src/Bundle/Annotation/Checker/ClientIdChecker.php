@@ -16,7 +16,7 @@ namespace OAuth2Framework\Bundle\Annotation\Checker;
 use OAuth2Framework\Bundle\Annotation\OAuth2;
 use OAuth2Framework\Bundle\Security\Authentication\Token\OAuth2Token;
 
-final class ClientIdChecker implements CheckerInterface
+class ClientIdChecker implements CheckerInterface
 {
     /**
      * {@inheritdoc}

@@ -19,7 +19,7 @@ use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
 use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwnerId;
 
-final class CreateRefreshTokenCommand
+class CreateRefreshTokenCommand
 {
     /**
      * @var RefreshTokenId

@@ -26,7 +26,7 @@ use Psr\Http\Message\ServerRequestInterface;
  * @group GrantType
  * @group ClientCredentials
  */
-final class ClientCredentialsGrantTypeTest extends TestCase
+class ClientCredentialsGrantTypeTest extends TestCase
 {
     /**
      * @test

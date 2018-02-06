@@ -23,7 +23,7 @@ use OAuth2Framework\Component\Core\Token\Token;
 use OAuth2Framework\Component\Core\Token\TokenId;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 
-final class AuthorizationCode extends Token
+class AuthorizationCode extends Token
 {
     /**
      * @var AuthorizationCodeId

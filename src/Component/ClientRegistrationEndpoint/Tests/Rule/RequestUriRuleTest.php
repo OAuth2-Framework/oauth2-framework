@@ -21,7 +21,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @group Rule
  */
-final class RequestUriRuleTest extends TestCase
+class RequestUriRuleTest extends TestCase
 {
     /**
      * @test

@@ -16,7 +16,7 @@ namespace OAuth2Framework\Component\ClientRegistrationEndpoint\Rule;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 
-final class ApplicationTypeParametersRule implements Rule
+class ApplicationTypeParametersRule implements Rule
 {
     /**
      * {@inheritdoc}

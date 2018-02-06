@@ -16,7 +16,7 @@ namespace OAuth2Framework\Component\ClientRegistrationEndpoint\Rule;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 
-final class UserParametersRule implements Rule
+class UserParametersRule implements Rule
 {
     /**
      * {@inheritdoc}

@@ -15,7 +15,7 @@ namespace OAuth2Framework\Component\ClientRegistrationEndpoint\Command;
 
 use OAuth2Framework\Component\ClientRegistrationEndpoint\InitialAccessTokenId;
 
-final class RevokeInitialAccessTokenCommand
+class RevokeInitialAccessTokenCommand
 {
     /**
      * @var InitialAccessTokenId

@@ -31,7 +31,7 @@ use Psr\Http\Message\ServerRequestInterface;
  * @group GrantType
  * @group RefreshToken
  */
-final class RefreshTokenGrantTypeTest extends TestCase
+class RefreshTokenGrantTypeTest extends TestCase
 {
     /**
      * @test

@@ -15,7 +15,7 @@ namespace OAuth2Framework\Bundle\Tests\TestBundle\Listener;
 
 use OAuth2Framework\Component\AuthorizationCodeGrant\Event\AuthorizationCodeCreatedEvent;
 
-final class AuthCodeCreatedListener
+class AuthCodeCreatedListener
 {
     /**
      * @var AuthorizationCodeCreatedEvent[]

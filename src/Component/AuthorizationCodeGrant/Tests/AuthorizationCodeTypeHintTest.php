@@ -28,7 +28,7 @@ use Prophecy\Argument;
  * @group TypeHint
  * @group AuthorizationCodeTypeHint
  */
-final class AuthorizationCodeTypeHintTest extends TestCase
+class AuthorizationCodeTypeHintTest extends TestCase
 {
     /**
      * @test

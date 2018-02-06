@@ -21,7 +21,7 @@ use OAuth2Framework\Component\TokenEndpoint\GrantType;
 use OAuth2Framework\Component\TokenEndpoint\GrantTypeData;
 use Psr\Http\Message\ServerRequestInterface;
 
-final class TokenEndpointExtensionManager
+class TokenEndpointExtensionManager
 {
     /**
      * @var TokenEndpointExtension[]

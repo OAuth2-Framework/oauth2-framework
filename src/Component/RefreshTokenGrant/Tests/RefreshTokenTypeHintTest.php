@@ -28,7 +28,7 @@ use Prophecy\Argument;
  * @group TypeHint
  * @group RefreshTokenTypeHint
  */
-final class RefreshTokenTypeHintTest extends TestCase
+class RefreshTokenTypeHintTest extends TestCase
 {
     /**
      * @test

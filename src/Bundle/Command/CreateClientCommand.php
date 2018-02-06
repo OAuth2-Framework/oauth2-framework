@@ -21,7 +21,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\Question;
 
-final class CreateClientCommand extends ContainerAwareCommand
+class CreateClientCommand extends ContainerAwareCommand
 {
     /**
      * {@inheritdoc}

@@ -17,7 +17,7 @@ use OAuth2Framework\Component\ClientRegistrationEndpoint\Rule\Rule;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 
-final class ScopeRule implements Rule
+class ScopeRule implements Rule
 {
     /**
      * {@inheritdoc}

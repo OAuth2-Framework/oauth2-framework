@@ -22,7 +22,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
  * @group Functional
  * @group Core
  */
-final class CommandTest extends WebTestCase
+class CommandTest extends WebTestCase
 {
     /**
      * {@inheritdoc}

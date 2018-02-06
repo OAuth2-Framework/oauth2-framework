@@ -18,7 +18,7 @@ use OAuth2Framework\Bundle\DependencyInjection\Component\Component;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-final class AuthorizationEndpointIdTokenHintSource implements Component
+class AuthorizationEndpointIdTokenHintSource implements Component
 {
     /**
      * {@inheritdoc}

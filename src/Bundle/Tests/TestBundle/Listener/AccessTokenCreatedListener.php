@@ -15,7 +15,7 @@ namespace OAuth2Framework\Bundle\Tests\TestBundle\Listener;
 
 use OAuth2Framework\Component\Core\AccessToken\Event\AccessTokenCreatedEvent;
 
-final class AccessTokenCreatedListener
+class AccessTokenCreatedListener
 {
     /**
      * @var AccessTokenCreatedEvent[]

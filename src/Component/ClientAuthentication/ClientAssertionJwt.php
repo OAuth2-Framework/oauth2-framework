@@ -27,7 +27,7 @@ use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\Exception\OAuth2Exception;
 use Psr\Http\Message\ServerRequestInterface;
 
-final class ClientAssertionJwt implements AuthenticationMethod
+class ClientAssertionJwt implements AuthenticationMethod
 {
     /**
      * @var TrustedIssuerManager

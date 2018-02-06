@@ -18,7 +18,7 @@ use Interop\Http\Factory\UriFactoryInterface;
 use OAuth2Framework\Bundle\Tests\TestBundle\Entity\ResourceRepository;
 use OAuth2Framework\Component\IssuerDiscoveryEndpoint\IssuerDiscoveryEndpoint;
 
-final class IssuerDiscoveryFactory
+class IssuerDiscoveryFactory
 {
     /**
      * @var ResponseFactoryInterface

@@ -32,7 +32,7 @@ use SimpleBus\Message\Recorder\PrivateMessageRecorderCapabilities;
  * A client is a resource owner with a set of allowed grant types and can perform requests against
  * available endpoints.
  */
-final class Client implements ResourceOwner, ContainsRecordedMessages, DomainObject
+class Client implements ResourceOwner, ContainsRecordedMessages, DomainObject
 {
     use PrivateMessageRecorderCapabilities;
 

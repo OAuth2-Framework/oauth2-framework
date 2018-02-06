@@ -32,7 +32,7 @@ use Psr\Http\Message\ServerRequestInterface;
  * @group TokenEndpoint
  * @group ClientAuthenticationMiddleware
  */
-final class ClientAuthenticationMiddlewareTest extends TestCase
+class ClientAuthenticationMiddlewareTest extends TestCase
 {
     /**
      * @test

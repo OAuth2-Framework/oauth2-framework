@@ -29,7 +29,7 @@ use Psr\Http\Message\ServerRequestInterface;
 /**
  * @group InitialAccessTokenMiddleware
  */
-final class InitialAccessTokenMiddlewareTest extends TestCase
+class InitialAccessTokenMiddlewareTest extends TestCase
 {
     /**
      * @test

@@ -18,7 +18,7 @@ use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
-final class ClientRuleCompilerPass implements CompilerPassInterface
+class ClientRuleCompilerPass implements CompilerPassInterface
 {
     /**
      * {@inheritdoc}

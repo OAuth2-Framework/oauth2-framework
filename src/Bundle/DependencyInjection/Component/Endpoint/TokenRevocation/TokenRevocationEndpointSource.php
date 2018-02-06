@@ -19,7 +19,7 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
-final class TokenRevocationEndpointSource implements Component
+class TokenRevocationEndpointSource implements Component
 {
     /**
      * @return string

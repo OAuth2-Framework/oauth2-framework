@@ -19,7 +19,7 @@ use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-final class UserinfoEndpointSource implements Component
+class UserinfoEndpointSource implements Component
 {
     /**
      * UserinfoSource constructor.

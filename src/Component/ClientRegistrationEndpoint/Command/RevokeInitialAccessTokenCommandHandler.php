@@ -15,7 +15,7 @@ namespace OAuth2Framework\Component\ClientRegistrationEndpoint\Command;
 
 use OAuth2Framework\Component\ClientRegistrationEndpoint\InitialAccessTokenRepository;
 
-final class RevokeInitialAccessTokenCommandHandler
+class RevokeInitialAccessTokenCommandHandler
 {
     /**
      * @var InitialAccessTokenRepository

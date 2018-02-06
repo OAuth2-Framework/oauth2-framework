@@ -17,7 +17,7 @@ use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\TokenEndpoint\AuthenticationMethod\AuthenticationMethodManager;
 
-final class TokenEndpointAuthenticationMethodEndpointRule implements Rule
+class TokenEndpointAuthenticationMethodEndpointRule implements Rule
 {
     /**
      * @var AuthenticationMethodManager

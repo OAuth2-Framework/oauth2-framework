@@ -17,7 +17,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 
-final class LoginController extends Controller
+class LoginController extends Controller
 {
     /**
      * @Route("/login", name="app_login")

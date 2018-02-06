@@ -31,7 +31,7 @@ use Psr\Http\Message\ServerRequestInterface;
  * @group TokenEndpoint
  * @group ResourceServerAuthenticationMiddleware
  */
-final class AuthenticationMiddlewareTest extends TestCase
+class AuthenticationMiddlewareTest extends TestCase
 {
     /**
      * @test

@@ -18,7 +18,7 @@ use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwnerId;
 /**
  * Class ClientId.
  */
-final class ClientId extends ResourceOwnerId
+class ClientId extends ResourceOwnerId
 {
     /**
      * @param string $value

@@ -21,7 +21,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @group Rule
  */
-final class ClientIdIssuedAtRuleTest extends TestCase
+class ClientIdIssuedAtRuleTest extends TestCase
 {
     /**
      * @test

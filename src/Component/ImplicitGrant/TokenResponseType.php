@@ -18,7 +18,7 @@ use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 
-final class TokenResponseType implements ResponseType
+class TokenResponseType implements ResponseType
 {
     /**
      * @var AccessTokenRepository

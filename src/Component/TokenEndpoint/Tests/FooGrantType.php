@@ -17,7 +17,7 @@ use OAuth2Framework\Component\TokenEndpoint\GrantType;
 use OAuth2Framework\Component\TokenEndpoint\GrantTypeData;
 use Psr\Http\Message\ServerRequestInterface;
 
-final class FooGrantType implements GrantType
+class FooGrantType implements GrantType
 {
     /**
      * {@inheritdoc}

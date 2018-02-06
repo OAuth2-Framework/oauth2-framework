@@ -15,7 +15,7 @@ namespace OAuth2Framework\Bundle\Tests\TestBundle\Listener;
 
 use OAuth2Framework\Component\AuthorizationCodeGrant\Event\AuthorizationCodeRevokedEvent;
 
-final class AuthCodeRevokedListener
+class AuthCodeRevokedListener
 {
     /**
      * @var AuthorizationCodeRevokedEvent[]

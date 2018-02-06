@@ -29,7 +29,7 @@ use OAuth2Framework\Component\Core\Token\TokenId;
 use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 use OAuth2Framework\Component\OpenIdConnect\UserInfo\UserInfo;
 
-final class IdTokenBuilder
+class IdTokenBuilder
 {
     /**
      * @var string

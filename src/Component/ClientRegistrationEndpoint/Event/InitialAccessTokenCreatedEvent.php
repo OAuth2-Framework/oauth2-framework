@@ -20,7 +20,7 @@ use OAuth2Framework\Component\Core\Event\EventId;
 use OAuth2Framework\Component\Core\Id\Id;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 
-final class InitialAccessTokenCreatedEvent extends Event
+class InitialAccessTokenCreatedEvent extends Event
 {
     /**
      * @var InitialAccessTokenId

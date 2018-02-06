@@ -17,7 +17,7 @@ use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 use OAuth2Framework\Component\OpenIdConnect\UserInfo\UserInfo;
 
-final class IdTokenBuilderFactory
+class IdTokenBuilderFactory
 {
     /**
      * @var string

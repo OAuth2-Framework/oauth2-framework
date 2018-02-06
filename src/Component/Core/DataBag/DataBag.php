@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Core\DataBag;
 
-final class DataBag implements \JsonSerializable, \IteratorAggregate, \Countable
+class DataBag implements \JsonSerializable, \IteratorAggregate, \Countable
 {
     /**
      * @var array

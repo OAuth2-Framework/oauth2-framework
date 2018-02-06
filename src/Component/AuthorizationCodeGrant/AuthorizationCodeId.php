@@ -15,7 +15,7 @@ namespace OAuth2Framework\Component\AuthorizationCodeGrant;
 
 use OAuth2Framework\Component\Core\Token\TokenId;
 
-final class AuthorizationCodeId extends TokenId
+class AuthorizationCodeId extends TokenId
 {
     /**
      * @param string $value

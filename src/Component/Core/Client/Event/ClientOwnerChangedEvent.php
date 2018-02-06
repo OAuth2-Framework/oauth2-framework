@@ -20,7 +20,7 @@ use OAuth2Framework\Component\Core\Id\Id;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use OAuth2Framework\Component\Core\Domain\DomainObject;
 
-final class ClientOwnerChangedEvent extends Event
+class ClientOwnerChangedEvent extends Event
 {
     /**
      * @var ClientId

@@ -15,7 +15,7 @@ namespace OAuth2Framework\Bundle\Tests\TestBundle\Listener;
 
 use OAuth2Framework\Component\RefreshTokenGrant\Event\RefreshTokenCreatedEvent;
 
-final class RefreshTokenCreatedListener
+class RefreshTokenCreatedListener
 {
     /**
      * @var RefreshTokenCreatedEvent[]

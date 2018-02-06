@@ -24,7 +24,7 @@ use OAuth2Framework\Component\TokenType\TokenTypeManager;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-final class OAuth2SecurityMiddleware implements MiddlewareInterface
+class OAuth2SecurityMiddleware implements MiddlewareInterface
 {
     /**
      * @var TokenTypeManager

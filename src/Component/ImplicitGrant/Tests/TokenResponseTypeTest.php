@@ -32,7 +32,7 @@ use Prophecy\Argument;
  * @group ResponseType
  * @group Token
  */
-final class TokenResponseTypeTest extends TestCase
+class TokenResponseTypeTest extends TestCase
 {
     /**
      * @test

@@ -18,7 +18,7 @@ use League\JsonReference\Dereferencer;
 use OAuth2Framework\Component\Core\Exception\OAuth2Exception;
 use League\JsonReference\LoaderManager;
 
-final class DomainConverter
+class DomainConverter
 {
     /**
      * @var Dereferencer

@@ -15,7 +15,7 @@ namespace OAuth2Framework\Bundle\Response;
 
 use OAuth2Framework\Component\TokenEndpoint\AuthenticationMethod\AuthenticationMethodManager;
 
-final class AuthenticateResponseFactory extends \OAuth2Framework\Component\Core\Response\Factory\AuthenticateResponseFactory
+class AuthenticateResponseFactory extends \OAuth2Framework\Component\Core\Response\Factory\AuthenticateResponseFactory
 {
     /**
      * @var AuthenticationMethodManager

@@ -29,7 +29,7 @@ use Psr\Http\Message\ServerRequestInterface;
 /**
  * @group MetadataEndpoint
  */
-final class MetadataEndpointTest extends TestCase
+class MetadataEndpointTest extends TestCase
 {
     /**
      * @test

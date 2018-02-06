@@ -24,7 +24,7 @@ use OAuth2Framework\Component\OpenIdConnect\IdTokenId;
 use OAuth2Framework\Component\OpenIdConnect\IdTokenLoader;
 use OAuth2Framework\Component\OpenIdConnect\UserInfo\Pairwise\PairwiseSubjectIdentifierAlgorithm;
 
-final class IdTokenHintDiscovery implements UserAccountDiscovery
+class IdTokenHintDiscovery implements UserAccountDiscovery
 {
     /**
      * @var IdTokenLoader

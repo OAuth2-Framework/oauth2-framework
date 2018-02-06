@@ -16,7 +16,7 @@ namespace OAuth2Framework\Component\Core\Response\Factory;
 use OAuth2Framework\Component\Core\Response\OAuth2Error;
 use Psr\Http\Message\ResponseInterface;
 
-final class AuthenticateResponse extends OAuth2Error
+class AuthenticateResponse extends OAuth2Error
 {
     /**
      * @var array

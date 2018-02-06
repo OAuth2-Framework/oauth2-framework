@@ -19,7 +19,7 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-final class ClientConfigurationGetEndpoint implements MiddlewareInterface
+class ClientConfigurationGetEndpoint implements MiddlewareInterface
 {
     /**
      * @var ResponseFactory

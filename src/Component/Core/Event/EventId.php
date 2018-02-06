@@ -15,7 +15,7 @@ namespace OAuth2Framework\Component\Core\Event;
 
 use OAuth2Framework\Component\Core\Id\Id;
 
-final class EventId extends Id
+class EventId extends Id
 {
     /**
      * @param string $value

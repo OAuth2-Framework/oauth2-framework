@@ -26,7 +26,7 @@ use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType;
  *
  * @see http://openid.net/specs/oauth-v2-multiple-response-types-1_0.html#none
  */
-final class NoneResponseType implements ResponseType
+class NoneResponseType implements ResponseType
 {
     /**
      * @var AuthorizationStorage

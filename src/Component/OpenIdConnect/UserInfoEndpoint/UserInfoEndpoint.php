@@ -30,7 +30,7 @@ use OAuth2Framework\Component\OpenIdConnect\IdTokenBuilderFactory;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-final class UserInfoEndpoint implements MiddlewareInterface
+class UserInfoEndpoint implements MiddlewareInterface
 {
     /**
      * @var JWKSet|null

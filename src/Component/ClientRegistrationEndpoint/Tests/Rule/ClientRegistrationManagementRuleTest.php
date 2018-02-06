@@ -20,7 +20,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @group Rule
  */
-final class ClientRegistrationManagementRuleTest extends TestCase
+class ClientRegistrationManagementRuleTest extends TestCase
 {
     /**
      * @test

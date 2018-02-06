@@ -17,7 +17,7 @@ use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
-final class TokenIntrospectionEndpointAuthMethodCompilerPass implements CompilerPassInterface
+class TokenIntrospectionEndpointAuthMethodCompilerPass implements CompilerPassInterface
 {
     /**
      * {@inheritdoc}

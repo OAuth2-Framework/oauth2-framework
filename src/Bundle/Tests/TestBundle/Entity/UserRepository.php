@@ -17,7 +17,7 @@ use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountRepository;
 
-final class UserRepository implements UserAccountRepository
+class UserRepository implements UserAccountRepository
 {
     private $usersByUsername = [];
 

@@ -20,7 +20,7 @@ use OAuth2Framework\Component\Core\Id\Id;
 use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenId;
 use OAuth2Framework\Component\Core\Domain\DomainObject;
 
-final class AccessTokenAddedToRefreshTokenEvent extends Event
+class AccessTokenAddedToRefreshTokenEvent extends Event
 {
     /**
      * @var RefreshTokenId

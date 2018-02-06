@@ -16,7 +16,7 @@ namespace OAuth2Framework\Component\ClientRegistrationEndpoint\Command;
 use OAuth2Framework\Component\ClientRegistrationEndpoint\InitialAccessToken;
 use OAuth2Framework\Component\ClientRegistrationEndpoint\InitialAccessTokenRepository;
 
-final class CreateInitialAccessTokenCommandHandler
+class CreateInitialAccessTokenCommandHandler
 {
     /**
      * @var InitialAccessTokenRepository

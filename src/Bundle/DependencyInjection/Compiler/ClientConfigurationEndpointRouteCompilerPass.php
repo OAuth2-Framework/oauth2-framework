@@ -18,7 +18,7 @@ use OAuth2Framework\Component\ClientConfigurationEndpoint\ClientConfigurationEnd
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-final class ClientConfigurationEndpointRouteCompilerPass implements CompilerPassInterface
+class ClientConfigurationEndpointRouteCompilerPass implements CompilerPassInterface
 {
     /**
      * {@inheritdoc}

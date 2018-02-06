@@ -16,7 +16,7 @@ namespace OAuth2Framework\Component\ClientRegistrationEndpoint\Tests\Rule;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\ClientRegistrationEndpoint\Rule\ClientRegistrationManagementRule as Base;
 
-final class ClientRegistrationManagementRule extends Base
+class ClientRegistrationManagementRule extends Base
 {
     /**
      * {@inheritdoc}

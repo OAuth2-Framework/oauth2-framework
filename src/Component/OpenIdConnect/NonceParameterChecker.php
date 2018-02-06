@@ -21,7 +21,7 @@ use OAuth2Framework\Component\Core\Exception\OAuth2Exception;
 /**
  * Class NonceParameterChecker.
  */
-final class NonceParameterChecker implements ParameterChecker
+class NonceParameterChecker implements ParameterChecker
 {
     /**
      * {@inheritdoc}

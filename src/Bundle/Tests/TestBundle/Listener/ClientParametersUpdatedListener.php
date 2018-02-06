@@ -15,7 +15,7 @@ namespace OAuth2Framework\Bundle\Tests\TestBundle\Listener;
 
 use OAuth2Framework\Component\Core\Client\Event\ClientParametersUpdatedEvent;
 
-final class ClientParametersUpdatedListener
+class ClientParametersUpdatedListener
 {
     /**
      * @var ClientParametersUpdatedEvent[]

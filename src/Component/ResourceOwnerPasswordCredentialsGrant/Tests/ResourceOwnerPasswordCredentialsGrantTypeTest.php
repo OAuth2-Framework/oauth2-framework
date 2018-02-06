@@ -30,7 +30,7 @@ use Psr\Http\Message\ServerRequestInterface;
  * @group GrantType
  * @group ResourceOwnerPasswordCredential
  */
-final class ResourceOwnerPasswordCredentialsGrantTypeTest extends TestCase
+class ResourceOwnerPasswordCredentialsGrantTypeTest extends TestCase
 {
     /**
      * @test

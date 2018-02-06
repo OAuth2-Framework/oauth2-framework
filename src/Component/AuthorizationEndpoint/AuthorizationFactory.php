@@ -16,7 +16,7 @@ namespace OAuth2Framework\Component\AuthorizationEndpoint;
 use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\ParameterCheckerManager;
 use Psr\Http\Message\ServerRequestInterface;
 
-final class AuthorizationFactory
+class AuthorizationFactory
 {
     /**
      * @var AuthorizationRequestLoader

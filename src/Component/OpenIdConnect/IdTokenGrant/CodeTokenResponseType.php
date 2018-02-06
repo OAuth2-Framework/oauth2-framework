@@ -18,7 +18,7 @@ use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType;
 use OAuth2Framework\Component\ImplicitGrant\TokenResponseType;
 
-final class CodeTokenResponseType implements ResponseType
+class CodeTokenResponseType implements ResponseType
 {
     /**
      * @var AuthorizationCodeResponseType

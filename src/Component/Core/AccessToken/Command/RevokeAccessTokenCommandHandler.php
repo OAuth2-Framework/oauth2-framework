@@ -15,7 +15,7 @@ namespace OAuth2Framework\Component\Core\AccessToken\Command;
 
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository;
 
-final class RevokeAccessTokenCommandHandler
+class RevokeAccessTokenCommandHandler
 {
     /**
      * @var AccessTokenRepository

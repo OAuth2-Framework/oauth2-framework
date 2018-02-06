@@ -36,7 +36,7 @@ use Psr\Http\Message\ServerRequestInterface;
 /**
  * @group TokenEndpoint
  */
-final class TokenEndpointTest extends TestCase
+class TokenEndpointTest extends TestCase
 {
     /**
      * @test

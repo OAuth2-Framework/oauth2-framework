@@ -15,7 +15,7 @@ namespace OAuth2Framework\Bundle\Tests\TestBundle\Entity;
 
 use OAuth2Framework\Component\Scope\Scope as ScopeInterface;
 
-final class Scope implements ScopeInterface
+class Scope implements ScopeInterface
 {
     /**
      * @var string

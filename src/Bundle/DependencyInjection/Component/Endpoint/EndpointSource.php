@@ -22,7 +22,7 @@ use OAuth2Framework\Bundle\DependencyInjection\Component\Endpoint\TokenRevocatio
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-final class EndpointSource implements Component
+class EndpointSource implements Component
 {
     /**
      * @var Component[]

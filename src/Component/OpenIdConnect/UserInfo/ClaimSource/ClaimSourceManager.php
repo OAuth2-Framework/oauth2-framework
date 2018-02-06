@@ -15,7 +15,7 @@ namespace OAuth2Framework\Component\OpenIdConnect\UserInfo\ClaimSource;
 
 use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 
-final class ClaimSourceManager
+class ClaimSourceManager
 {
     /**
      * @var ClaimSource[]

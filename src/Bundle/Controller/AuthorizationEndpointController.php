@@ -32,7 +32,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
-final class AuthorizationEndpointController extends AuthorizationEndpoint
+class AuthorizationEndpointController extends AuthorizationEndpoint
 {
     /**
      * @var SessionInterface

@@ -27,7 +27,7 @@ use Psr\Http\Message\ServerRequestInterface;
  * @group TokenEndpoint
  * @group GrantTypeMiddleware
  */
-final class GrantTypeMiddlewareTest extends TestCase
+class GrantTypeMiddlewareTest extends TestCase
 {
     /**
      * @test

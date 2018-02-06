@@ -15,7 +15,7 @@ namespace OAuth2Framework\Component\AuthorizationCodeGrant\PKCEMethod;
 
 use Base64Url\Base64Url;
 
-final class S256 implements PKCEMethod
+class S256 implements PKCEMethod
 {
     /**
      * {@inheritdoc}

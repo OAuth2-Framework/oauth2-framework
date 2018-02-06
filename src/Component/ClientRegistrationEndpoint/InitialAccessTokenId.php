@@ -15,7 +15,7 @@ namespace OAuth2Framework\Component\ClientRegistrationEndpoint;
 
 use OAuth2Framework\Component\Core\Token\TokenId;
 
-final class InitialAccessTokenId extends TokenId
+class InitialAccessTokenId extends TokenId
 {
     /**
      * @param string $value

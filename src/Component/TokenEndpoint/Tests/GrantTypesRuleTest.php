@@ -23,7 +23,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @group Rule
  */
-final class GrantTypesRuleTest extends TestCase
+class GrantTypesRuleTest extends TestCase
 {
     /**
      * @test

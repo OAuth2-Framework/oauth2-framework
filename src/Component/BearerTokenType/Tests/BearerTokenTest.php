@@ -25,7 +25,7 @@ use Psr\Http\Message\ServerRequestInterface;
 /**
  * @group BearerToken
  */
-final class BearerTokenTest extends TestCase
+class BearerTokenTest extends TestCase
 {
     /**
      * @test

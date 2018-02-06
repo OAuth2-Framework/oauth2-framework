@@ -15,7 +15,7 @@ namespace OAuth2Framework\Component\MacTokenType\Tests;
 
 use OAuth2Framework\Component\MacTokenType\MacToken;
 
-final class FooMacToken extends MacToken
+class FooMacToken extends MacToken
 {
     /**
      * {@inheritdoc}

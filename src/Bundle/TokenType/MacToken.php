@@ -16,7 +16,7 @@ namespace OAuth2Framework\Bundle\TokenType;
 use Base64Url\Base64Url;
 use OAuth2Framework\Component\MacTokenType\MacToken as Base;
 
-final class MacToken extends Base
+class MacToken extends Base
 {
     /**
      * @var int

@@ -18,7 +18,7 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-final class Pipe implements MiddlewareInterface
+class Pipe implements MiddlewareInterface
 {
     /**
      * @var MiddlewareInterface[]

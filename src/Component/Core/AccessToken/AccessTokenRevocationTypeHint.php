@@ -16,7 +16,7 @@ namespace OAuth2Framework\Component\Core\AccessToken;
 use OAuth2Framework\Component\Core\Token\Token;
 use OAuth2Framework\Component\TokenRevocationEndpoint\TokenTypeHint;
 
-final class AccessTokenRevocationTypeHint implements TokenTypeHint
+class AccessTokenRevocationTypeHint implements TokenTypeHint
 {
     /**
      * @var AccessTokenRepository

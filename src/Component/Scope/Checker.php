@@ -11,7 +11,7 @@
 
 namespace OAuth2Framework\Component\Scope;
 
-final class Checker
+class Checker
 {
     /**
      * @param string $scope

@@ -16,7 +16,7 @@ namespace OAuth2Framework\Component\Core\Client\Command;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientRepository;
 
-final class CreateClientCommandHandler
+class CreateClientCommandHandler
 {
     /**
      * @var ClientRepository

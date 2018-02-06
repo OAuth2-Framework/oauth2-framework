@@ -33,7 +33,7 @@ use Prophecy\Argument;
  * @group Command
  * @group AuthorizationCodeGrantType
  */
-final class AuthorizationCodeCommandsTest extends TestCase
+class AuthorizationCodeCommandsTest extends TestCase
 {
     /**
      * @test

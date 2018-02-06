@@ -19,7 +19,7 @@ use OAuth2Framework\Component\OpenIdConnect\UserInfo\ScopeSupport\UserInfoScopeS
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 
-final class UserInfo
+class UserInfo
 {
     /**
      * @var null|PairwiseSubjectIdentifierAlgorithm

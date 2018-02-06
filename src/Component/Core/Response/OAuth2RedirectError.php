@@ -16,7 +16,7 @@ namespace OAuth2Framework\Component\Core\Response;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\ResponseMode;
 use Psr\Http\Message\ResponseInterface;
 
-final class OAuth2RedirectError extends OAuth2Error
+class OAuth2RedirectError extends OAuth2Error
 {
     /**
      * @var ResponseMode

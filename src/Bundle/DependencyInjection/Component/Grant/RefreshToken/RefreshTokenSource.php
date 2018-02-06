@@ -19,7 +19,7 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
-final class RefreshTokenSource implements Component
+class RefreshTokenSource implements Component
 {
     /**
      * {@inheritdoc}
@@ -34,7 +34,6 @@ final class RefreshTokenSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-
         if ($configs['grant']['refresh_token']['enabled']) {
             $container->setParameter('oauth2_server.grant.refresh_token.min_length', $configs['grant']['refresh_token']['min_length']);
             $container->setParameter('oauth2_server.grant.refresh_token.max_length', $configs['grant']['refresh_token']['max_length']);

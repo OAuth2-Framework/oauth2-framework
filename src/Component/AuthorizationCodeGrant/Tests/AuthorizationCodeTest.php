@@ -26,7 +26,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @group AuthorizationCode
  */
-final class AuthorizationCodeTest extends TestCase
+class AuthorizationCodeTest extends TestCase
 {
     /**
      * @test

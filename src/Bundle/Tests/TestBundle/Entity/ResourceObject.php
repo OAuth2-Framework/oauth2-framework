@@ -15,7 +15,7 @@ namespace OAuth2Framework\Bundle\Tests\TestBundle\Entity;
 
 use OAuth2Framework\Component\IssuerDiscoveryEndpoint\Resource;
 
-final class ResourceObject implements Resource
+class ResourceObject implements Resource
 {
     /**
      * @var string

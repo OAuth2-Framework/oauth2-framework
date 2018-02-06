@@ -18,7 +18,7 @@ use Jose\Component\Signature\JWSLoader;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 
-final class SoftwareRule implements Rule
+class SoftwareRule implements Rule
 {
     /**
      * @var JWSLoader

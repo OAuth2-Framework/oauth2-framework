@@ -17,7 +17,7 @@ use Fluent\PhpConfigFileLoader;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-final class FirewallSource implements Component
+class FirewallSource implements Component
 {
     /**
      * {@inheritdoc}

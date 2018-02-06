@@ -17,7 +17,7 @@ use Jose\Component\Checker\ClaimChecker;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 
-final class AudienceChecker implements ClaimChecker
+class AudienceChecker implements ClaimChecker
 {
     private const CLAIM_NAME = 'aud';
 

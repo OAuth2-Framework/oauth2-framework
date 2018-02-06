@@ -26,7 +26,7 @@ use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
 use SimpleBus\Message\Bus\MessageBus;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 
-final class AccessTokenByReferenceRepository implements AccessTokenRepository
+class AccessTokenByReferenceRepository implements AccessTokenRepository
 {
     /**
      * @var int

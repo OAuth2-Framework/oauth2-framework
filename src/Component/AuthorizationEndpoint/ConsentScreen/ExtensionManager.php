@@ -16,7 +16,7 @@ namespace OAuth2Framework\Component\AuthorizationEndpoint\ConsentScreen;
 use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
 use Psr\Http\Message\ServerRequestInterface;
 
-final class ExtensionManager
+class ExtensionManager
 {
     /**
      * @var Extension[]

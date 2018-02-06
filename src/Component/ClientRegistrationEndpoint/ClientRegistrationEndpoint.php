@@ -28,7 +28,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Ramsey\Uuid\Uuid;
 use SimpleBus\Message\Bus\MessageBus;
 
-final class ClientRegistrationEndpoint implements MiddlewareInterface
+class ClientRegistrationEndpoint implements MiddlewareInterface
 {
     /**
      * @var MessageBus

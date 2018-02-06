@@ -21,7 +21,7 @@ use OAuth2Framework\Component\Core\Event\EventStore;
 use SimpleBus\Message\Bus\MessageBus;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 
-final class AuthCodeRepository implements AuthorizationCodeRepository
+class AuthCodeRepository implements AuthorizationCodeRepository
 {
     /**
      * @var MessageBus

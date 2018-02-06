@@ -20,7 +20,7 @@ use Psr\Http\Message\ServerRequestInterface;
 /**
  * @internal
  */
-final class RequestHandler implements RequestHandlerInterface
+class RequestHandler implements RequestHandlerInterface
 {
     /**
      * @var callable

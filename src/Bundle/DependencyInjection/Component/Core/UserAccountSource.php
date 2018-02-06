@@ -17,7 +17,7 @@ use OAuth2Framework\Bundle\DependencyInjection\Component\Component;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-final class UserAccountSource implements Component
+class UserAccountSource implements Component
 {
     /**
      * {@inheritdoc}

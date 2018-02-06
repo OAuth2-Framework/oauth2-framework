@@ -19,7 +19,7 @@ use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-final class User implements UserInterface, UserAccount, EquatableInterface
+class User implements UserInterface, UserAccount, EquatableInterface
 {
     /**
      * @var string

@@ -15,7 +15,7 @@ namespace OAuth2Framework\Bundle\Tests\TestBundle\Listener;
 
 use OAuth2Framework\Component\RefreshTokenGrant\Event\RefreshTokenRevokedEvent;
 
-final class RefreshTokenRevokedListener
+class RefreshTokenRevokedListener
 {
     /**
      * @var RefreshTokenRevokedEvent[]

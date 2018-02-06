@@ -18,7 +18,7 @@ use OAuth2Framework\Component\AuthorizationEndpoint\Exception\CreateRedirectionE
 use OAuth2Framework\Component\Core\Exception\OAuth2Exception;
 use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 
-final class PromptNoneParameterChecker implements UserAccountDiscovery
+class PromptNoneParameterChecker implements UserAccountDiscovery
 {
     /**
      * {@inheritdoc}

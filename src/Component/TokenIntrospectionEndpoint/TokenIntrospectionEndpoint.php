@@ -21,7 +21,7 @@ use OAuth2Framework\Component\Core\Exception\OAuth2Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-final class TokenIntrospectionEndpoint implements MiddlewareInterface
+class TokenIntrospectionEndpoint implements MiddlewareInterface
 {
     /**
      * @var TokenTypeHintManager

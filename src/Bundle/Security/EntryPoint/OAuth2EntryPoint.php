@@ -20,7 +20,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface;
 
-final class OAuth2EntryPoint implements AuthenticationEntryPointInterface
+class OAuth2EntryPoint implements AuthenticationEntryPointInterface
 {
     /**
      * @var MessageFactory

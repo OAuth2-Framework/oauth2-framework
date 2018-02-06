@@ -15,7 +15,7 @@ namespace OAuth2Framework\Component\Scope\Policy;
 
 use OAuth2Framework\Component\Core\Client\Client;
 
-final class DefaultScopePolicy implements ScopePolicy
+class DefaultScopePolicy implements ScopePolicy
 {
     /**
      * @var string

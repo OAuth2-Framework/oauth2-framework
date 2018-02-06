@@ -15,7 +15,7 @@ namespace OAuth2Framework\Component\Core\ResourceServer;
 
 use OAuth2Framework\Component\Core\Id\Id;
 
-final class ResourceServerId extends Id
+class ResourceServerId extends Id
 {
     /**
      * @param string $value

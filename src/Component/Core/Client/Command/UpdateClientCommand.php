@@ -16,7 +16,7 @@ namespace OAuth2Framework\Component\Core\Client\Command;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 
-final class UpdateClientCommand
+class UpdateClientCommand
 {
     /**
      * @var ClientId

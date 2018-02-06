@@ -19,7 +19,7 @@ use OAuth2Framework\Component\Core\ResourceServer\ResourceServer;
 use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 use OAuth2Framework\Component\TokenType\TokenType;
 
-final class Authorization
+class Authorization
 {
     /**
      * @var bool|null

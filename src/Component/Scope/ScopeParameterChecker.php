@@ -18,7 +18,7 @@ use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\ParameterCh
 use OAuth2Framework\Component\Scope\Policy\ScopePolicyManager;
 use OAuth2Framework\Component\Core\Exception\OAuth2Exception;
 
-final class ScopeParameterChecker implements ParameterChecker
+class ScopeParameterChecker implements ParameterChecker
 {
     /**
      * @var ScopeRepository

@@ -17,7 +17,7 @@ use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
 use OAuth2Framework\Component\AuthorizationEndpoint\Exception\RedirectToLoginPageException;
 use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 
-final class LoginParameterChecker implements UserAccountDiscovery
+class LoginParameterChecker implements UserAccountDiscovery
 {
     /**
      * {@inheritdoc}

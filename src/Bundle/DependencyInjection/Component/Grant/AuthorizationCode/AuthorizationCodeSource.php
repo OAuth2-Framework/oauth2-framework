@@ -19,7 +19,7 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
-final class AuthorizationCodeSource implements Component
+class AuthorizationCodeSource implements Component
 {
     /**
      * {@inheritdoc}
@@ -34,7 +34,6 @@ final class AuthorizationCodeSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-
         if ($configs['grant']['authorization_code']['enabled']) {
             $container->setParameter('oauth2_server.grant.authorization_code.min_length', $configs['grant']['authorization_code']['min_length']);
             $container->setParameter('oauth2_server.grant.authorization_code.max_length', $configs['grant']['authorization_code']['max_length']);

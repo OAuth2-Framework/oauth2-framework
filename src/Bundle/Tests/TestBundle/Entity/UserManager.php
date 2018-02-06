@@ -16,7 +16,7 @@ namespace OAuth2Framework\Bundle\Tests\TestBundle\Entity;
 use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountManager;
 
-final class UserManager implements UserAccountManager
+class UserManager implements UserAccountManager
 {
     /**
      * {@inheritdoc}

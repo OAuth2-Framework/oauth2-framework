@@ -15,7 +15,7 @@ namespace OAuth2Framework\Component\AuthorizationEndpoint\Exception;
 
 use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
 
-final class CreateRedirectionException extends \Exception
+class CreateRedirectionException extends \Exception
 {
     /**
      * @var Authorization

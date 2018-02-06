@@ -17,7 +17,7 @@ use OAuth2Framework\Bundle\Service\MetadataBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-final class JwksUriEndpointRouteCompilerPass implements CompilerPassInterface
+class JwksUriEndpointRouteCompilerPass implements CompilerPassInterface
 {
     /**
      * {@inheritdoc}

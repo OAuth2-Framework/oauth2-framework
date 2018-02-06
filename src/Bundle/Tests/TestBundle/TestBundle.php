@@ -15,6 +15,6 @@ namespace OAuth2Framework\Bundle\Tests\TestBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-final class TestBundle extends Bundle
+class TestBundle extends Bundle
 {
 }

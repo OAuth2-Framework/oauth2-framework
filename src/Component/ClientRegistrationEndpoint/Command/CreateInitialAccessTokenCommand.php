@@ -16,7 +16,7 @@ namespace OAuth2Framework\Component\ClientRegistrationEndpoint\Command;
 use OAuth2Framework\Component\ClientRegistrationEndpoint\InitialAccessTokenId;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 
-final class CreateInitialAccessTokenCommand
+class CreateInitialAccessTokenCommand
 {
     /**
      * @var InitialAccessTokenId

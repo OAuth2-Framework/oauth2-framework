@@ -20,7 +20,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 
-final class IFrameEndpoint implements MiddlewareInterface
+class IFrameEndpoint implements MiddlewareInterface
 {
     /**
      * @var EngineInterface

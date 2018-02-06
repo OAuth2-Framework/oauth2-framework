@@ -17,7 +17,7 @@ use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\OpenIdConnect\UserInfo\UserInfo;
 
-final class SubjectTypeRule implements Rule
+class SubjectTypeRule implements Rule
 {
     /**
      * @var UserInfo

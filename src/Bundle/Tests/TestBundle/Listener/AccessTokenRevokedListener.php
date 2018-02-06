@@ -15,7 +15,7 @@ namespace OAuth2Framework\Bundle\Tests\TestBundle\Listener;
 
 use OAuth2Framework\Component\Core\AccessToken\Event\AccessTokenRevokedEvent;
 
-final class AccessTokenRevokedListener
+class AccessTokenRevokedListener
 {
     /**
      * @var AccessTokenRevokedEvent[]

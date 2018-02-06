@@ -35,7 +35,7 @@ use Psr\Http\Message\ServerRequestInterface;
  * @group GrantType
  * @group AuthorizationCodeGrantType
  */
-final class AuthorizationCodeGrantTypeTest extends TestCase
+class AuthorizationCodeGrantTypeTest extends TestCase
 {
     /**
      * @test

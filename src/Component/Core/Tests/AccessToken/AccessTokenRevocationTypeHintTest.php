@@ -28,7 +28,7 @@ use Prophecy\Argument;
  * @group TypeHint
  * @group AccessTokenRevocationTypeHint
  */
-final class AccessTokenRevocationTypeHintTest extends TestCase
+class AccessTokenRevocationTypeHintTest extends TestCase
 {
     /**
      * @test

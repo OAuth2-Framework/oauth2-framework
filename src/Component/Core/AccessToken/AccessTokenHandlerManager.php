@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Core\AccessToken;
 
-final class AccessTokenHandlerManager
+class AccessTokenHandlerManager
 {
     /**
      * @var AccessTokenHandler[]

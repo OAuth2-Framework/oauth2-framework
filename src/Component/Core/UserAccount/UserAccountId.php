@@ -15,7 +15,7 @@ namespace OAuth2Framework\Component\Core\UserAccount;
 
 use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwnerId;
 
-final class UserAccountId extends ResourceOwnerId
+class UserAccountId extends ResourceOwnerId
 {
     /**
      * @param string $value

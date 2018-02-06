@@ -18,7 +18,7 @@ use Symfony\Component\Config\Loader\LoaderResolverInterface;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 
-final class RouteLoader implements LoaderInterface
+class RouteLoader implements LoaderInterface
 {
     /**
      * @var RouteCollection

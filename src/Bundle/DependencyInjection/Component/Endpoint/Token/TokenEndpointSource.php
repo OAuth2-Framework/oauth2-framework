@@ -15,11 +15,9 @@ namespace OAuth2Framework\Bundle\DependencyInjection\Component\Endpoint\Token;
 
 use OAuth2Framework\Bundle\DependencyInjection\Component\Component;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
-use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
-final class TokenEndpointSource implements Component
+class TokenEndpointSource implements Component
 {
     /**
      * @return string

@@ -28,7 +28,7 @@ use Prophecy\Argument;
  * @group ResponseType
  * @group None
  */
-final class TokenResponseTypeTest extends TestCase
+class TokenResponseTypeTest extends TestCase
 {
     /**
      * @test

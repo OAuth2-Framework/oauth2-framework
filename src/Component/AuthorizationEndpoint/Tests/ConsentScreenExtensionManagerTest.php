@@ -26,7 +26,7 @@ use Psr\Http\Message\ServerRequestInterface;
 /**
  * @group ConsentScreenExtensionManager
  */
-final class ConsentScreenExtensionManagerTest extends TestCase
+class ConsentScreenExtensionManagerTest extends TestCase
 {
     /**
      * @test

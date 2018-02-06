@@ -17,7 +17,7 @@ use OAuth2Framework\Bundle\Routing\RouteLoader;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-final class MetadataRouteCompilerPass implements CompilerPassInterface
+class MetadataRouteCompilerPass implements CompilerPassInterface
 {
     /**
      * {@inheritdoc}

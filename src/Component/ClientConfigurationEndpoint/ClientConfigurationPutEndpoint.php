@@ -26,7 +26,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use SimpleBus\Message\Bus\MessageBus;
 
-final class ClientConfigurationPutEndpoint implements MiddlewareInterface
+class ClientConfigurationPutEndpoint implements MiddlewareInterface
 {
     /**
      * @var MessageBus

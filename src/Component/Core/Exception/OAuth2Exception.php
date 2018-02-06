@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Core\Exception;
 
-final class OAuth2Exception extends \Exception
+class OAuth2Exception extends \Exception
 {
     //Error messages from the RFC5749
     public const ERROR_INVALID_REQUEST = 'invalid_request';

@@ -23,7 +23,7 @@ use OAuth2Framework\Component\Scope\Policy\ScopePolicyManager;
 use OAuth2Framework\Component\Core\Exception\OAuth2Exception;
 use Psr\Http\Message\ServerRequestInterface;
 
-final class TokenEndpointScopeExtension implements TokenEndpointExtension
+class TokenEndpointScopeExtension implements TokenEndpointExtension
 {
     /**
      * @var ScopeRepository

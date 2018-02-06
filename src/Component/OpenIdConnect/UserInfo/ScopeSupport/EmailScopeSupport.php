@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\OpenIdConnect\UserInfo\ScopeSupport;
 
-final class EmailScopeSupport implements UserInfoScopeSupport
+class EmailScopeSupport implements UserInfoScopeSupport
 {
     /**
      * {@inheritdoc}

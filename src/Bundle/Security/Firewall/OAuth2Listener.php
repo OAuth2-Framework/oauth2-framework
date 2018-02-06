@@ -26,7 +26,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Http\Firewall\ListenerInterface;
 
-final class OAuth2Listener implements ListenerInterface
+class OAuth2Listener implements ListenerInterface
 {
     /**
      * @var TokenStorageInterface

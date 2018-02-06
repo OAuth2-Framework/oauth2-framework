@@ -27,7 +27,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @group Rule
  */
-final class IdTokenAlgorithmsRuleTest extends TestCase
+class IdTokenAlgorithmsRuleTest extends TestCase
 {
     /**
      * @test

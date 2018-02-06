@@ -17,7 +17,7 @@ use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
 use OAuth2Framework\Component\AuthorizationEndpoint\Exception\OAuth2AuthorizationException;
 use OAuth2Framework\Component\Core\Exception\OAuth2Exception;
 
-final class RedirectUriParameterChecker implements ParameterChecker
+class RedirectUriParameterChecker implements ParameterChecker
 {
     /**
      * {@inheritdoc}

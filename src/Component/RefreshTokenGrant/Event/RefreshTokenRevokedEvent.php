@@ -19,7 +19,7 @@ use OAuth2Framework\Component\Core\Id\Id;
 use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenId;
 use OAuth2Framework\Component\Core\Domain\DomainObject;
 
-final class RefreshTokenRevokedEvent extends Event
+class RefreshTokenRevokedEvent extends Event
 {
     /**
      * @var RefreshTokenId

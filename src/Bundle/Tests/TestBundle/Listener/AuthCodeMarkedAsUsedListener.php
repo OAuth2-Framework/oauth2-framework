@@ -15,7 +15,7 @@ namespace OAuth2Framework\Bundle\Tests\TestBundle\Listener;
 
 use OAuth2Framework\Component\AuthorizationCodeGrant\Event\AuthorizationCodeMarkedAsUsedEvent;
 
-final class AuthCodeMarkedAsUsedListener
+class AuthCodeMarkedAsUsedListener
 {
     /**
      * @var AuthorizationCodeMarkedAsUsedEvent[]

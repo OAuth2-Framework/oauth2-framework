@@ -16,7 +16,7 @@ namespace OAuth2Framework\Component\Core\AccessToken\Command;
 use OAuth2Framework\Component\Core\AccessToken\AccessToken;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository;
 
-final class CreateAccessTokenCommandHandler
+class CreateAccessTokenCommandHandler
 {
     /**
      * @var AccessTokenRepository

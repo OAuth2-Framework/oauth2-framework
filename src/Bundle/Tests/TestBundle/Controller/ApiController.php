@@ -23,7 +23,7 @@ use Symfony\Component\HttpFoundation\Response;
  * @OAuth2()
  * @Route("/api")
  */
-final class ApiController extends Controller
+class ApiController extends Controller
 {
     /**
      * @param string $name

@@ -28,7 +28,7 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
-final class GrantSource implements Component
+class GrantSource implements Component
 {
     /**
      * @var Component[]
@@ -70,7 +70,6 @@ final class GrantSource implements Component
         foreach ($this->subComponents as $subComponent) {
             $subComponent->load($configs, $container);
         }
-
     }
 
     /**

@@ -21,7 +21,7 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
-final class IdTokenSource implements Component
+class IdTokenSource implements Component
 {
     /**
      * UserinfoSource constructor.

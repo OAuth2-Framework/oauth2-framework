@@ -21,7 +21,7 @@ use PHPUnit\Framework\TestCase;
  * @group GrantType
  * @group JwtBearer
  */
-final class TrustedIssuerTest extends TestCase
+class TrustedIssuerTest extends TestCase
 {
     /**
      * @test

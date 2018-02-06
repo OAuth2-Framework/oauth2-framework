@@ -19,7 +19,7 @@ use OAuth2Framework\Component\Core\Exception\OAuth2Exception;
 use OAuth2Framework\Component\TokenEndpoint\GrantType;
 use Psr\Http\Message\ServerRequestInterface;
 
-final class RefreshTokenGrantType implements GrantType
+class RefreshTokenGrantType implements GrantType
 {
     /**
      * @var RefreshTokenRepository

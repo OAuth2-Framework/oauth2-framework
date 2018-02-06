@@ -19,7 +19,7 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 
-final class OAuth2Provider implements AuthenticationProviderInterface
+class OAuth2Provider implements AuthenticationProviderInterface
 {
     /**
      * {@inheritdoc}

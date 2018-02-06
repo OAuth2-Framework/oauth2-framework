@@ -19,7 +19,7 @@ use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
-final class ResponseModeCompilerPass implements CompilerPassInterface
+class ResponseModeCompilerPass implements CompilerPassInterface
 {
     /**
      * {@inheritdoc}

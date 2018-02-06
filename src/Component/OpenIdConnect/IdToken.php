@@ -16,7 +16,7 @@ namespace OAuth2Framework\Component\OpenIdConnect;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 
-final class IdToken
+class IdToken
 {
     /**
      * @var IdTokenId

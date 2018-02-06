@@ -21,7 +21,7 @@ use OAuth2Framework\Component\Core\Exception\OAuth2Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-final class ClientAuthenticationMiddleware implements MiddlewareInterface
+class ClientAuthenticationMiddleware implements MiddlewareInterface
 {
     /**
      * @var AuthenticationMethodManager

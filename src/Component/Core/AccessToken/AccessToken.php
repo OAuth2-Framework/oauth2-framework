@@ -23,7 +23,7 @@ use OAuth2Framework\Component\Core\Token\Token;
 use OAuth2Framework\Component\Core\Token\TokenId;
 use OAuth2Framework\Component\Core\Domain\DomainObject;
 
-final class AccessToken extends Token
+class AccessToken extends Token
 {
     /**
      * @var AccessTokenId

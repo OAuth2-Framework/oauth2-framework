@@ -16,7 +16,7 @@ namespace OAuth2Framework\Component\RefreshTokenGrant\Command;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
 use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenId;
 
-final class AddAccessTokenCommand
+class AddAccessTokenCommand
 {
     /**
      * @var RefreshTokenId

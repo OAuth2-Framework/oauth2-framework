@@ -28,7 +28,7 @@ use Prophecy\Argument;
  * @group TypeHint
  * @group AccessTokenIntrospectionTypeHint
  */
-final class AccessTokenIntrospectionTypeHintTest extends TestCase
+class AccessTokenIntrospectionTypeHintTest extends TestCase
 {
     /**
      * @test

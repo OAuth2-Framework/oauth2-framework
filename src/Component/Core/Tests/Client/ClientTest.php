@@ -24,7 +24,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @group Client
  */
-final class ClientTest extends TestCase
+class ClientTest extends TestCase
 {
     /**
      * @test

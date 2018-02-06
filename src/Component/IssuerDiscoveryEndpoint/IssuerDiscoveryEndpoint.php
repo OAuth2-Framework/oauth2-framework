@@ -22,7 +22,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
 
-final class IssuerDiscoveryEndpoint implements MiddlewareInterface
+class IssuerDiscoveryEndpoint implements MiddlewareInterface
 {
     private const REL_NAME = 'http://openid.net/specs/connect/1.0/issuer';
 

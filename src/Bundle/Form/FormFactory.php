@@ -17,7 +17,7 @@ use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
-final class FormFactory
+class FormFactory
 {
     /**
      * @var FormFactoryInterface

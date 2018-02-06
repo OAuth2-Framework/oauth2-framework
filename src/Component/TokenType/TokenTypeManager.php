@@ -15,7 +15,7 @@ namespace OAuth2Framework\Component\TokenType;
 
 use Psr\Http\Message\ServerRequestInterface;
 
-final class TokenTypeManager
+class TokenTypeManager
 {
     /**
      * @var TokenType[]

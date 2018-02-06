@@ -26,7 +26,7 @@ use OAuth2Framework\Component\Core\Exception\OAuth2Exception;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Request;
 
-final class AuthorizationRequestLoader
+class AuthorizationRequestLoader
 {
     /**
      * @var ClientRepository

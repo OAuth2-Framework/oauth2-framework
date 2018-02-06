@@ -20,7 +20,7 @@ use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use SimpleBus\Message\Recorder\ContainsRecordedMessages;
 use SimpleBus\Message\Recorder\PrivateMessageRecorderCapabilities;
 
-final class InitialAccessToken implements ContainsRecordedMessages, DomainObject
+class InitialAccessToken implements ContainsRecordedMessages, DomainObject
 {
     use PrivateMessageRecorderCapabilities;
 

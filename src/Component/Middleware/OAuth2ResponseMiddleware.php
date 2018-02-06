@@ -20,7 +20,7 @@ use OAuth2Framework\Component\Core\Response\OAuth2ResponseFactoryManager;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-final class OAuth2ResponseMiddleware implements MiddlewareInterface
+class OAuth2ResponseMiddleware implements MiddlewareInterface
 {
     /**
      * @var OAuth2ResponseFactoryManager

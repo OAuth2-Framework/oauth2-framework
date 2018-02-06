@@ -19,7 +19,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @group Metadata
  */
-final class MetadataTest extends TestCase
+class MetadataTest extends TestCase
 {
     /**
      * @test

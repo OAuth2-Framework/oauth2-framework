@@ -21,7 +21,7 @@ use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenRepository as Refres
 use SimpleBus\Message\Bus\MessageBus;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 
-final class RefreshTokenRepository implements RefreshTokenRepositoryInterface
+class RefreshTokenRepository implements RefreshTokenRepositoryInterface
 {
     /**
      * @var EventStore

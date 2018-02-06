@@ -21,7 +21,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @group Rule
  */
-final class CommonParametersRuleTest extends TestCase
+class CommonParametersRuleTest extends TestCase
 {
     /**
      * @test

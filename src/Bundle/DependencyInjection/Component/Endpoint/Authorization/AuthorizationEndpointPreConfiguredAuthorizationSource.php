@@ -19,7 +19,7 @@ use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-final class AuthorizationEndpointPreConfiguredAuthorizationSource implements Component
+class AuthorizationEndpointPreConfiguredAuthorizationSource implements Component
 {
     /**
      * {@inheritdoc}
@@ -28,7 +28,7 @@ final class AuthorizationEndpointPreConfiguredAuthorizationSource implements Com
     {
         $container->setAlias($path.'.event_store', $config['event_store']);
 
-        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__ . '/../../../Resources/config/endpoint'));
+        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint'));
         $loader->load('pre_configured_authorization.php');
     }
 

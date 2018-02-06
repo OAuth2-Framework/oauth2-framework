@@ -21,7 +21,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @group Rule
  */
-final class ScopePolicyDefaultRuleTest extends TestCase
+class ScopePolicyDefaultRuleTest extends TestCase
 {
     /**
      * @test

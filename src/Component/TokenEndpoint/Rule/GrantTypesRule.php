@@ -18,7 +18,7 @@ use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\TokenEndpoint\GrantTypeManager;
 
-final class GrantTypesRule implements Rule
+class GrantTypesRule implements Rule
 {
     /**
      * @var GrantTypeManager

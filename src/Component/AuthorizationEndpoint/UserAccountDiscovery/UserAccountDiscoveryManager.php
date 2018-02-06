@@ -16,7 +16,7 @@ namespace OAuth2Framework\Component\AuthorizationEndpoint\UserAccountDiscovery;
 use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
 use OAuth2Framework\Component\AuthorizationEndpoint\Exception\RedirectToLoginPageException;
 
-final class UserAccountDiscoveryManager
+class UserAccountDiscoveryManager
 {
     /**
      * @var UserAccountDiscovery[]

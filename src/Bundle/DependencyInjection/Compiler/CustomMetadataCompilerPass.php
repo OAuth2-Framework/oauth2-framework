@@ -18,7 +18,7 @@ use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 
-final class CustomMetadataCompilerPass implements CompilerPassInterface
+class CustomMetadataCompilerPass implements CompilerPassInterface
 {
     /**
      * {@inheritdoc}

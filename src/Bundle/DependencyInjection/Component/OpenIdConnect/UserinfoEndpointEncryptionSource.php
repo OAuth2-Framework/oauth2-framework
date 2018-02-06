@@ -19,7 +19,7 @@ use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
-final class UserinfoEndpointEncryptionSource implements Component
+class UserinfoEndpointEncryptionSource implements Component
 {
     /**
      * {@inheritdoc}

@@ -16,7 +16,7 @@ namespace OAuth2Framework\Component\Core\Client\Command;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 
-final class ChangeOwnerCommand
+class ChangeOwnerCommand
 {
     /**
      * @var ClientId

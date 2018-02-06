@@ -18,7 +18,7 @@ use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
-final class ScopePolicyCompilerPass implements CompilerPassInterface
+class ScopePolicyCompilerPass implements CompilerPassInterface
 {
     /**
      * {@inheritdoc}

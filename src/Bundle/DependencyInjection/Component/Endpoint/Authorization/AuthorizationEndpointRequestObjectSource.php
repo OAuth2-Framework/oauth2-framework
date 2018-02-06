@@ -19,7 +19,7 @@ use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
-final class AuthorizationEndpointRequestObjectSource implements Component
+class AuthorizationEndpointRequestObjectSource implements Component
 {
     /**
      * AuthorizationEndpointRequestObjectSource constructor.

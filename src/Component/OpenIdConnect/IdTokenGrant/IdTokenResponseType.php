@@ -23,7 +23,7 @@ use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
 use OAuth2Framework\Component\Core\Exception\OAuth2Exception;
 use OAuth2Framework\Component\OpenIdConnect\IdTokenBuilderFactory;
 
-final class IdTokenResponseType implements ResponseType
+class IdTokenResponseType implements ResponseType
 {
     /**
      * @var JWKSet

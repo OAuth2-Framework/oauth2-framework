@@ -19,7 +19,7 @@ use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 
-final class CreateAuthorizationCodeCommand
+class CreateAuthorizationCodeCommand
 {
     /**
      * @var AuthorizationCodeId

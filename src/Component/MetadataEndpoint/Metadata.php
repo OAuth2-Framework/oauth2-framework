@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\MetadataEndpoint;
 
-final class Metadata implements \JsonSerializable
+class Metadata implements \JsonSerializable
 {
     /**
      * @var array

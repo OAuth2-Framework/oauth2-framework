@@ -23,7 +23,7 @@ use OAuth2Framework\Component\Core\Id\Id;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 
-final class AuthorizationCodeCreatedEvent extends Event
+class AuthorizationCodeCreatedEvent extends Event
 {
     /**
      * @var AuthorizationCodeId

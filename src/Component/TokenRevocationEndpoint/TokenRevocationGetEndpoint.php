@@ -16,7 +16,7 @@ namespace OAuth2Framework\Component\TokenRevocationEndpoint;
 use Http\Message\ResponseFactory;
 use Psr\Http\Message\ServerRequestInterface;
 
-final class TokenRevocationGetEndpoint extends TokenRevocationEndpoint
+class TokenRevocationGetEndpoint extends TokenRevocationEndpoint
 {
     /**
      * @var bool

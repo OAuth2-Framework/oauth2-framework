@@ -20,7 +20,7 @@ use OAuth2Framework\Component\Core\Event\EventStore;
 use SimpleBus\Message\Recorder\RecordsMessages;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 
-final class ClientRepository implements \OAuth2Framework\Component\Core\Client\ClientRepository
+class ClientRepository implements \OAuth2Framework\Component\Core\Client\ClientRepository
 {
     /**
      * @var EventStore

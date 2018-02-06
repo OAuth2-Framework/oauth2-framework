@@ -15,7 +15,7 @@ namespace OAuth2Framework\Component\OpenIdConnect;
 
 use OAuth2Framework\Component\Core\Token\TokenId;
 
-final class IdTokenId extends TokenId
+class IdTokenId extends TokenId
 {
     /**
      * @param string $value

@@ -24,7 +24,7 @@ use OAuth2Framework\Component\Core\Exception\OAuth2Exception;
  *
  * This parameter checker should be used with the Authorization Endpoint
  */
-final class TokenTypeParameterChecker implements ParameterChecker
+class TokenTypeParameterChecker implements ParameterChecker
 {
     /**
      * @var bool

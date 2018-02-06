@@ -17,7 +17,7 @@ use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType;
 use OAuth2Framework\Component\ImplicitGrant\TokenResponseType;
 
-final class IdTokenTokenResponseType implements ResponseType
+class IdTokenTokenResponseType implements ResponseType
 {
     /**
      * @var IdTokenResponseType

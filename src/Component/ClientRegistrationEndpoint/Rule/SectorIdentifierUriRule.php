@@ -18,7 +18,7 @@ use Http\Message\ResponseFactory;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 
-final class SectorIdentifierUriRule implements Rule
+class SectorIdentifierUriRule implements Rule
 {
     /**
      * @var HttpClient

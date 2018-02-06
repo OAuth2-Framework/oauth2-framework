@@ -18,7 +18,7 @@ use OAuth2Framework\Component\Core\Response\OAuth2RedirectError;
 use OAuth2Framework\Component\Core\Response\OAuth2ResponseInterface;
 use Psr\Http\Message\ResponseInterface;
 
-final class RedirectResponseFactory implements ResponseFactory
+class RedirectResponseFactory implements ResponseFactory
 {
     /**
      * {@inheritdoc}

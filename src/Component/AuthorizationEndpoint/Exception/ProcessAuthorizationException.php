@@ -15,7 +15,7 @@ namespace OAuth2Framework\Component\AuthorizationEndpoint\Exception;
 
 use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
 
-final class ProcessAuthorizationException extends \Exception
+class ProcessAuthorizationException extends \Exception
 {
     /**
      * @var Authorization

@@ -18,7 +18,7 @@ use Jose\Component\Signature\JWSBuilder;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 
-final class UserinfoEndpointAlgorithmsRule implements Rule
+class UserinfoEndpointAlgorithmsRule implements Rule
 {
     /**
      * @var JWSBuilder|null

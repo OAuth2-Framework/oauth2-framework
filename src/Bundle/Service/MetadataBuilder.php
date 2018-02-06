@@ -25,7 +25,7 @@ use OAuth2Framework\Component\TokenEndpoint\AuthenticationMethod\ClientAssertion
 use OAuth2Framework\Component\TokenEndpoint\GrantTypeManager;
 use Symfony\Component\Routing\RouterInterface;
 
-final class MetadataBuilder
+class MetadataBuilder
 {
     /**
      * @var RouterInterface

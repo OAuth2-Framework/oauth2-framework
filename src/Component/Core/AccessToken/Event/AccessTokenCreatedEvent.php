@@ -23,7 +23,7 @@ use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwnerId;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
 use OAuth2Framework\Component\Core\Domain\DomainObject;
 
-final class AccessTokenCreatedEvent extends Event
+class AccessTokenCreatedEvent extends Event
 {
     /**
      * @var AccessTokenId

@@ -15,7 +15,7 @@ namespace OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker;
 
 use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
 
-final class ParameterCheckerManager
+class ParameterCheckerManager
 {
     /**
      * @var ParameterChecker[]

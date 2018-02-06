@@ -26,7 +26,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @group AccessTokenHandlerManager
  */
-final class AccessTokenHandlerManagerTest extends TestCase
+class AccessTokenHandlerManagerTest extends TestCase
 {
     /**
      * @test

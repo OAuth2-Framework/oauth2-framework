@@ -17,7 +17,7 @@ use OAuth2Framework\Component\IssuerDiscoveryEndpoint\Resource;
 use OAuth2Framework\Component\IssuerDiscoveryEndpoint\ResourceId;
 use OAuth2Framework\Component\IssuerDiscoveryEndpoint\ResourceRepository as ResourceRepositoryInterface;
 
-final class ResourceRepository implements ResourceRepositoryInterface
+class ResourceRepository implements ResourceRepositoryInterface
 {
     /**
      * @var resource[]

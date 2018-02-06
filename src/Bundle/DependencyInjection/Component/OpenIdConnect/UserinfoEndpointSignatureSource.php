@@ -19,7 +19,7 @@ use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
-final class UserinfoEndpointSignatureSource implements Component
+class UserinfoEndpointSignatureSource implements Component
 {
     /**
      * {@inheritdoc}

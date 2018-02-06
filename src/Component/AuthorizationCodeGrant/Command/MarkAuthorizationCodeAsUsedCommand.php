@@ -15,7 +15,7 @@ namespace OAuth2Framework\Component\AuthorizationCodeGrant\Command;
 
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeId;
 
-final class MarkAuthorizationCodeAsUsedCommand
+class MarkAuthorizationCodeAsUsedCommand
 {
     /**
      * @var AuthorizationCodeId

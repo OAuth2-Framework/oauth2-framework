@@ -30,7 +30,7 @@ use Prophecy\Argument;
 /**
  * @group AccessTokenCommand
  */
-final class AccessTokenCommandTest extends TestCase
+class AccessTokenCommandTest extends TestCase
 {
     /**
      * @test

@@ -18,14 +18,14 @@ use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerRepository as ResourceServerRepositoryInterface;
 use OAuth2Framework\Component\IssuerDiscoveryEndpoint\ResourceId;
 
-final class ResourceServerRepository implements ResourceServerRepositoryInterface
+class ResourceServerRepository implements ResourceServerRepositoryInterface
 {
     /**
      * {@inheritdoc}
      */
     public function find(ResourceServerId $resourceServerId): ? ResourceServerInterface
     {
-        if ($resourceServerId->getValue() === 'http://foo.com') {
+        if ('http://foo.com' === $resourceServerId->getValue()) {
             return new ResourceServer($resourceServerId);
         }
 
@@ -37,6 +37,6 @@ final class ResourceServerRepository implements ResourceServerRepositoryInterfac
      */
     public function supports(ResourceId $resourceId): bool
     {
-        return mb_substr($resourceId->getValue(), 0, 14) === 'http://foo.com';
+        return 'http://foo.com' === mb_substr($resourceId->getValue(), 0, 14);
     }
 }

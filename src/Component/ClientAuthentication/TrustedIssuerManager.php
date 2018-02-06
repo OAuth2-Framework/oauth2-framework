@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\ClientAuthentication;
 
-final class TrustedIssuerManager
+class TrustedIssuerManager
 {
     /**
      * @var TrustedIssuer[]

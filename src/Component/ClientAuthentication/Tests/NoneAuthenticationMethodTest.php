@@ -25,7 +25,7 @@ use Psr\Http\Message\ServerRequestInterface;
  * @group TokenEndpoint
  * @group ClientAuthentication
  */
-final class NoneAuthenticationMethodTest extends TestCase
+class NoneAuthenticationMethodTest extends TestCase
 {
     /**
      * @test

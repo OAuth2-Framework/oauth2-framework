@@ -17,7 +17,7 @@ use OAuth2Framework\Bundle\DependencyInjection\Component\Component;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
-final class Configuration implements ConfigurationInterface
+class Configuration implements ConfigurationInterface
 {
     /**
      * @var Component[]

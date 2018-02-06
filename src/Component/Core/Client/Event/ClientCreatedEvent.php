@@ -21,7 +21,7 @@ use OAuth2Framework\Component\Core\Id\Id;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use OAuth2Framework\Component\Core\Domain\DomainObject;
 
-final class ClientCreatedEvent extends Event
+class ClientCreatedEvent extends Event
 {
     /**
      * @var ClientId

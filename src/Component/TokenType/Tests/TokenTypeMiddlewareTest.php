@@ -25,7 +25,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @group TokenTypeMiddleware
  */
-final class TokenTypeMiddlewareTest extends TestCase
+class TokenTypeMiddlewareTest extends TestCase
 {
     /**
      * @test

@@ -15,7 +15,7 @@ namespace OAuth2Framework\Bundle\Tests\TestBundle\Listener;
 
 use OAuth2Framework\Component\Core\Client\Event\ClientCreatedEvent;
 
-final class ClientCreatedListener
+class ClientCreatedListener
 {
     /**
      * @var ClientCreatedEvent[]

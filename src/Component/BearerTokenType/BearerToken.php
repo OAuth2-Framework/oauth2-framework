@@ -18,7 +18,7 @@ use OAuth2Framework\Component\Core\Token\Token;
 use OAuth2Framework\Component\TokenType\TokenType;
 use Psr\Http\Message\ServerRequestInterface;
 
-final class BearerToken implements TokenType
+class BearerToken implements TokenType
 {
     /**
      * @var string

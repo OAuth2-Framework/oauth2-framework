@@ -22,7 +22,7 @@ use OAuth2Framework\Component\Core\Exception\OAuth2Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-final class BearerTokenMiddleware implements MiddlewareInterface
+class BearerTokenMiddleware implements MiddlewareInterface
 {
     /**
      * @var BearerToken

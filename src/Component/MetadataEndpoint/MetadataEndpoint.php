@@ -23,7 +23,7 @@ use Jose\Component\Signature\Serializer\CompactSerializer;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-final class MetadataEndpoint implements MiddlewareInterface
+class MetadataEndpoint implements MiddlewareInterface
 {
     /**
      * @var ResponseFactory

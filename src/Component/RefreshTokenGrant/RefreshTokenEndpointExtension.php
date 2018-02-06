@@ -22,7 +22,7 @@ use OAuth2Framework\Component\TokenEndpoint\GrantType;
 use OAuth2Framework\Component\TokenEndpoint\GrantTypeData;
 use Psr\Http\Message\ServerRequestInterface;
 
-final class RefreshTokenEndpointExtension implements TokenEndpointExtension
+class RefreshTokenEndpointExtension implements TokenEndpointExtension
 {
     /**
      * @var int

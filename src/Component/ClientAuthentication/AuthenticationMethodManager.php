@@ -18,7 +18,7 @@ use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\Exception\OAuth2Exception;
 use Psr\Http\Message\ServerRequestInterface;
 
-final class AuthenticationMethodManager
+class AuthenticationMethodManager
 {
     /**
      * @var AuthenticationMethod[]

@@ -17,7 +17,7 @@ use OAuth2Framework\Component\Core\Token\Token;
 use OAuth2Framework\Component\TokenIntrospectionEndpoint\TokenTypeHint as IntrospectionTokenTypeHint;
 use OAuth2Framework\Component\TokenRevocationEndpoint\TokenTypeHint as RevocationTokenTypeHint;
 
-final class AuthorizationCodeTypeHint implements IntrospectionTokenTypeHint, RevocationTokenTypeHint
+class AuthorizationCodeTypeHint implements IntrospectionTokenTypeHint, RevocationTokenTypeHint
 {
     /**
      * @var AuthorizationCodeRepository

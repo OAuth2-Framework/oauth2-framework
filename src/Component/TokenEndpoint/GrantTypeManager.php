@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\TokenEndpoint;
 
-final class GrantTypeManager
+class GrantTypeManager
 {
     /**
      * @var GrantType[]

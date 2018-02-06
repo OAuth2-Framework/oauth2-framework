@@ -15,7 +15,7 @@ namespace OAuth2Framework\Component\Core\Client\Command;
 
 use OAuth2Framework\Component\Core\Client\ClientId;
 
-final class DeleteClientCommand
+class DeleteClientCommand
 {
     /**
      * @var ClientId

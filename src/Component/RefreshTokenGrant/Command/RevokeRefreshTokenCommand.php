@@ -15,7 +15,7 @@ namespace OAuth2Framework\Component\RefreshTokenGrant\Command;
 
 use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenId;
 
-final class RevokeRefreshTokenCommand
+class RevokeRefreshTokenCommand
 {
     /**
      * @var RefreshTokenId

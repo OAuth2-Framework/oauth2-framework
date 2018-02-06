@@ -17,7 +17,7 @@ use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwnerId;
 
-final class GrantTypeData
+class GrantTypeData
 {
     /**
      * @var DataBag

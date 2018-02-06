@@ -15,7 +15,7 @@ namespace OAuth2Framework\Component\Scope\Policy;
 
 use OAuth2Framework\Component\Core\Client\Client;
 
-final class ErrorScopePolicy implements ScopePolicy
+class ErrorScopePolicy implements ScopePolicy
 {
     /**
      * {@inheritdoc}

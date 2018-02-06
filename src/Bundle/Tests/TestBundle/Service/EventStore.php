@@ -20,7 +20,7 @@ use OAuth2Framework\Component\Core\Id\Id;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 
-final class EventStore implements \OAuth2Framework\Component\Core\Event\EventStore
+class EventStore implements \OAuth2Framework\Component\Core\Event\EventStore
 {
     private const STORAGE_PATH = '%s/fixtures/%s/';
 

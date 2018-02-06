@@ -16,7 +16,7 @@ namespace OAuth2Framework\Component\RefreshTokenGrant\Command;
 use OAuth2Framework\Component\RefreshTokenGrant\RefreshToken;
 use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenRepository;
 
-final class CreateRefreshTokenCommandHandler
+class CreateRefreshTokenCommandHandler
 {
     /**
      * @var RefreshTokenRepository
