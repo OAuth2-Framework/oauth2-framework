@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\DependencyInjection\Component\ClientAuthentication;
 
 use OAuth2Framework\Bundle\DependencyInjection\Component\Component;
-use OAuth2Framework\Component\TokenEndpoint\AuthenticationMethod\AuthenticationMethod;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -38,7 +37,7 @@ class ClientSecretBasicSource implements Component
         if ($configs['client_authentication']['client_secret_basic']['enabled']) {
             $container->setParameter('oauth2_server.client_authentication.client_secret_basic.realm', $configs['client_authentication']['client_secret_basic']['realm']);
             $container->setParameter('oauth2_server.client_authentication.client_secret_basic.secret_lifetime', $configs['client_authentication']['client_secret_basic']['secret_lifetime']);
-            $loader = new PhpFileLoader($container, new FileLocator(__DIR__ . '/../../../Resources/config/client_authentication'));
+            $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/client_authentication'));
             $loader->load('client_secret_basic.php');
         }
     }

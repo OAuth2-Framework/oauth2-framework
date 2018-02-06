@@ -55,7 +55,7 @@ class ClientAuthenticationSource implements Component
     {
         $container->registerForAutoconfiguration(AuthenticationMethod::class)->addTag('oauth2_server_client_authentication');
 
-        $loader = new PhpFileLoader($container, new FileLocator(__DIR__ . '/../../../Resources/config/client_authentication'));
+        $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/client_authentication'));
         $loader->load('client_authentication.php');
 
         foreach ($this->subComponents as $subComponent) {

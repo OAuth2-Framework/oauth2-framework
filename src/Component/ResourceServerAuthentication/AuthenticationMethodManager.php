@@ -113,6 +113,7 @@ class AuthenticationMethodManager
 
                 continue;
             }
+
             throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_REQUEST, 'Only one authentication method may be used to authenticate the resource server.');
         }
 

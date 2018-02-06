@@ -39,7 +39,7 @@ class TokenEndpointSource implements Component
         }
         $container->setParameter('oauth2_server.endpoint.token.path', $configs['endpoint']['token']['path']);
 
-        $loader = new PhpFileLoader($container, new FileLocator(__DIR__ . '/../../../../Resources/config/endpoint/token'));
+        $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../../Resources/config/endpoint/token'));
         $loader->load('token.php');
     }
 
