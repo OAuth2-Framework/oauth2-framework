@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\DependencyInjection\Component\Grant\AuthorizationCode;
 
 use OAuth2Framework\Bundle\DependencyInjection\Component\Component;
+use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeGrantType;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -56,6 +57,12 @@ class AuthorizationCodeSource implements Component
                 ->validate()
                     ->ifTrue(function ($config) {
                         return $config['max_length'] < $config['min_length'];
+                    })
+                    ->thenInvalid('The option "max_length" must be greater than "min_length".')
+                ->end()
+                ->validate()
+                    ->ifTrue(function ($config) {
+                        return $config['enabled'] && !class_exists(AuthorizationCodeGrantType::class);
                     })
                     ->thenInvalid('The option "max_length" must be greater than "min_length".')
                 ->end()

@@ -11,38 +11,35 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Bundle\DependencyInjection\Component\Endpoint;
+namespace OAuth2Framework\Bundle\DependencyInjection\Component\Endpoint\Metadata;
 
-use Fluent\PhpConfigFileLoader;
 use OAuth2Framework\Bundle\DependencyInjection\Component\Component;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
 class MetadataEndpointSource implements Component
 {
+    /**
+     * @var Component[]
+     */
+    private $subComponents = [];
+
     /**
      * MetadataEndpointSource constructor.
      */
     public function __construct()
     {
-        $this->addSubSource(new SignedMetadataEndpointSource());
+        $this->subComponents = [
+            new SignatureSource(),
+            new CustomRouteSource(),
+            new CustomValuesSource(),
+        ];
     }
 
     /**
-     * {@inheritdoc}
-     */
-    protected function continueLoading(string $path, ContainerBuilder $container, array $config)
-    {
-        foreach (['path', 'custom_values', 'custom_routes'] as $key) {
-            $container->setParameter($path.'.'.$key, $config[$key]);
-        }
-        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint'));
-        $loader->load('metadata.php');
-    }
-
-    /**
-     * {@inheritdoc}
+     * @return string
      */
     public function name(): string
     {
@@ -52,42 +49,55 @@ class MetadataEndpointSource implements Component
     /**
      * {@inheritdoc}
      */
+    public function load(array $configs, ContainerBuilder $container)
+    {
+        if (!$configs['endpoint']['metadata']['enabled']) {
+            return;
+        }
+        $container->setParameter('oauth2_server.endpoint.metadata.path', $configs['endpoint']['metadata']['path']);
+
+        $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../../Resources/config/endpoint/metadata'));
+        //$loader->load('metadata.php');
+
+        foreach ($this->subComponents as $subComponent) {
+            $subComponent->load($configs, $container);
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getNodeDefinition(NodeDefinition $node)
     {
-        $node
-            ->validate()
-                ->ifTrue(function ($config) {
-                    return true === $config['enabled'] && empty($config['path']);
-                })
-                ->thenInvalid('The route name must be set.')
+        $childNode = $node->children()
+            ->arrayNode($this->name())
+                ->addDefaultsIfNotSet()
+                ->canBeEnabled();
+
+        $childNode->children()
+            ->scalarNode('path')
+                ->defaultValue('/.well-known/openid-configuration')
             ->end()
-            ->children()
-                ->scalarNode('path')->defaultValue('/.well-known/openid-configuration')->end()
-                ->arrayNode('custom_routes')
-                    ->info('Custom routes added to the metadata response.')
-                    ->useAttributeAsKey('name')
-                    ->prototype('array')
-                        ->children()
-                            ->scalarNode('route_name')
-                                ->info('Route name.')
-                                ->isRequired()
-                            ->end()
-                            ->arrayNode('route_parameters')
-                                ->info('Parameters associated to the route (if needed).')
-                                ->useAttributeAsKey('name')
-                                ->prototype('variable')->end()
-                                ->treatNullLike([])
-                            ->end()
-                        ->end()
-                    ->end()
-                    ->treatNullLike([])
-                ->end()
-                ->arrayNode('custom_values')
-                    ->info('Custom values added to the metadata response.')
-                    ->useAttributeAsKey('name')
-                    ->prototype('variable')->end()
-                    ->treatNullLike([])
-                ->end()
-            ->end();
+        ->end();
+
+        foreach ($this->subComponents as $subComponent) {
+            $subComponent->getNodeDefinition($childNode);
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function prepend(ContainerBuilder $container, array $config): array
+    {
+        $updatedConfig = [];
+        foreach ($this->subComponents as $subComponent) {
+            $updatedConfig = array_merge(
+                $updatedConfig,
+                $subComponent->prepend($container, $config)
+            );
+        }
+
+        return $updatedConfig;
     }
 }

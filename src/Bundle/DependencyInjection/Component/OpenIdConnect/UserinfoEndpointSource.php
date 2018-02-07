@@ -13,31 +13,34 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\DependencyInjection\Component\OpenIdConnect;
 
-use Fluent\PhpConfigFileLoader;
 use OAuth2Framework\Bundle\DependencyInjection\Component\Component;
+use OAuth2Framework\Bundle\DependencyInjection\Component\Grant\AuthorizationCode\AuthorizationCodeSource;
+use OAuth2Framework\Bundle\DependencyInjection\Component\Grant\ClientCredentials\ClientCredentialsSource;
+use OAuth2Framework\Bundle\DependencyInjection\Component\Grant\Implicit\ImplicitSource;
+use OAuth2Framework\Bundle\DependencyInjection\Component\Grant\JwtBearer\JwtBearerSource;
+use OAuth2Framework\Bundle\DependencyInjection\Component\Grant\None\NoneSource;
+use OAuth2Framework\Bundle\DependencyInjection\Component\Grant\RefreshToken\RefreshTokenSource;
+use OAuth2Framework\Bundle\DependencyInjection\Component\Grant\ResourceOwnerPasswordCredential\ResourceOwnerPasswordCredentialSource;
+use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType;
+use OAuth2Framework\Component\TokenEndpoint\GrantType;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
 class UserinfoEndpointSource implements Component
 {
     /**
-     * UserinfoSource constructor.
+     * @var Component[]
      */
+    private $subComponents;
+
     public function __construct()
     {
-        $this->addSubSource(new UserinfoEndpointSignatureSource());
-        $this->addSubSource(new UserinfoEndpointEncryptionSource());
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function continueLoading(string $path, ContainerBuilder $container, array $config)
-    {
-        $container->setParameter($path.'.path', $config['path']);
-        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/openid_connect'));
-        $loader->load('userinfo_endpoint.php');
+        $this->subComponents = [
+            new UserinfoEndpointSignatureSource(),
+            new UserinfoEndpointEncryptionSource(),
+        ];
     }
 
     /**
@@ -51,11 +54,54 @@ class UserinfoEndpointSource implements Component
     /**
      * {@inheritdoc}
      */
+    public function load(array $configs, ContainerBuilder $container)
+    {
+        if (!$configs['openid_connect']['userinfo_endpoint']['enabled']) {
+            return;
+        }
+
+        $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/openid_connect'));
+        //$loader->load('userinfo_endpoint.php');
+
+        foreach ($this->subComponents as $subComponent) {
+            $subComponent->load($configs, $container);
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getNodeDefinition(NodeDefinition $node)
     {
-        $node
-            ->children()
-                ->scalarNode('path')->defaultValue('/userinfo')->end()
-            ->end();
+        $childNode = $node->children()
+            ->arrayNode($this->name())
+                ->canBeEnabled()
+                ->addDefaultsIfNotSet();
+
+        $childNode->children()
+            ->scalarNode('path')
+                ->defaultValue('/userinfo')
+            ->end()
+        ->end();
+
+        foreach ($this->subComponents as $subComponent) {
+            $subComponent->getNodeDefinition($childNode);
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function prepend(ContainerBuilder $container, array $config): array
+    {
+        $updatedConfig = [];
+        foreach ($this->subComponents as $subComponent) {
+            $updatedConfig = array_merge(
+                $updatedConfig,
+                $subComponent->prepend($container, $config)
+            );
+        }
+
+        return $updatedConfig;
     }
 }

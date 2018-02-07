@@ -13,11 +13,11 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\DependencyInjection\Component\OpenIdConnect;
 
-use Jose\Bundle\JoseFramework\Helper\ConfigurationHelper;
 use OAuth2Framework\Bundle\DependencyInjection\Component\Component;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
+use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\PropertyAccess\PropertyAccess;
+use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
 class UserinfoEndpointEncryptionSource implements Component
 {
@@ -32,10 +32,14 @@ class UserinfoEndpointEncryptionSource implements Component
     /**
      * {@inheritdoc}
      */
-    protected function continueLoading(string $path, ContainerBuilder $container, array $config)
+    public function load(array $configs, ContainerBuilder $container)
     {
-        $container->setParameter($path.'.key_encryption_algorithms', $config['key_encryption_algorithms']);
-        $container->setParameter($path.'.content_encryption_algorithms', $config['content_encryption_algorithms']);
+        if (!$configs['openid_connect']['userinfo_endpoint']['encryption']['enabled']) {
+            return;
+        }
+
+        $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/openid_connect'));
+        //$loader->load('userinfo_endpoint.php');
     }
 
     /**
@@ -43,45 +47,53 @@ class UserinfoEndpointEncryptionSource implements Component
      */
     public function getNodeDefinition(NodeDefinition $node)
     {
-        $node
-            ->validate()
-                ->ifTrue(function ($config) {
-                    return true === $config['enabled'] && empty($config['key_encryption_algorithms']);
-                })
-                ->thenInvalid('You must set at least one key encryption algorithm.')
-            ->end()
-            ->validate()
-                ->ifTrue(function ($config) {
-                    return true === $config['enabled'] && empty($config['content_encryption_algorithms']);
-                })
-                ->thenInvalid('You must set at least one content encryption algorithm.')
-            ->end()
-            ->children()
-                ->arrayNode('key_encryption_algorithms')
-                    ->info('Supported key encryption algorithms.')
-                    ->useAttributeAsKey('name')
-                    ->prototype('scalar')->end()
-                    ->treatNullLike([])
+        $node->children()
+            ->arrayNode($this->name())
+                ->canBeEnabled()
+                ->addDefaultsIfNotSet()
+                ->validate()
+                    ->ifTrue(function ($config) {
+                        return true === $config['enabled'] && empty($config['key_encryption_algorithms']);
+                    })
+                    ->thenInvalid('You must set at least one key encryption algorithm.')
                 ->end()
+                ->validate()
+                    ->ifTrue(function ($config) {
+                        return true === $config['enabled'] && empty($config['content_encryption_algorithms']);
+                    })
+                    ->thenInvalid('You must set at least one content encryption algorithm.')
+                ->end()
+                ->children()
+                    ->arrayNode('key_encryption_algorithms')
+                        ->info('Supported key encryption algorithms.')
+                        ->useAttributeAsKey('name')
+                        ->prototype('scalar')->end()
+                        ->treatNullLike([])
+                        ->treatFalseLike([])
+                    ->end()
                     ->arrayNode('content_encryption_algorithms')
-                    ->info('Supported content encryption algorithms.')
-                    ->useAttributeAsKey('name')
-                    ->prototype('scalar')->end()
-                ->treatNullLike([])
+                        ->info('Supported content encryption algorithms.')
+                        ->useAttributeAsKey('name')
+                        ->prototype('scalar')->end()
+                        ->treatNullLike([])
+                        ->treatFalseLike([])
+                    ->end()
                 ->end()
-            ->end();
+            ->end()
+        ->end();
     }
 
     /**
      * {@inheritdoc}
      */
-    public function prepend(array $bundleConfig, string $path, ContainerBuilder $container)
+    public function prepend(ContainerBuilder $container, array $config): array
     {
-        parent::prepend($bundleConfig, $path, $container);
+        /*
         $currentPath = $path.'['.$this->name().']';
         $accessor = PropertyAccess::createPropertyAccessor();
         $sourceConfig = $accessor->getValue($bundleConfig, $currentPath);
 
-        ConfigurationHelper::addJWEBuilder($container, 'oauth2_server.userinfo', $sourceConfig['key_encryption_algorithms'], $sourceConfig['content_encryption_algorithms'], ['DEF'], false);
+        ConfigurationHelper::addJWEBuilder($container, 'oauth2_server.userinfo', $sourceConfig['key_encryption_algorithms'], $sourceConfig['content_encryption_algorithms'], ['DEF'], false);*/
+        return [];
     }
 }

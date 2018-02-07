@@ -16,6 +16,10 @@ namespace OAuth2Framework\Bundle\DependencyInjection\Component\Endpoint;
 use OAuth2Framework\Bundle\DependencyInjection\Component\Component;
 use OAuth2Framework\Bundle\DependencyInjection\Component\Endpoint\ClientConfiguration\ClientConfigurationSource;
 use OAuth2Framework\Bundle\DependencyInjection\Component\Endpoint\ClientRegistration\ClientRegistrationSource;
+use OAuth2Framework\Bundle\DependencyInjection\Component\Endpoint\IssuerDiscovery\IssuerDiscoveryEndpointSource;
+use OAuth2Framework\Bundle\DependencyInjection\Component\Endpoint\JwksUri\JwksUriEndpointSource;
+use OAuth2Framework\Bundle\DependencyInjection\Component\Endpoint\Metadata\MetadataEndpointSource;
+use OAuth2Framework\Bundle\DependencyInjection\Component\Endpoint\SessionManagement\SessionManagementEndpointSource;
 use OAuth2Framework\Bundle\DependencyInjection\Component\Endpoint\Token\TokenEndpointSource;
 use OAuth2Framework\Bundle\DependencyInjection\Component\Endpoint\TokenIntrospection\TokenIntrospectionEndpointSource;
 use OAuth2Framework\Bundle\DependencyInjection\Component\Endpoint\TokenRevocation\TokenRevocationEndpointSource;
@@ -40,6 +44,10 @@ class EndpointSource implements Component
             new TokenEndpointSource(),
             new TokenIntrospectionEndpointSource(),
             new TokenRevocationEndpointSource(),
+            new JwksUriEndpointSource(),
+            new MetadataEndpointSource(),
+            new IssuerDiscoveryEndpointSource(),
+            new SessionManagementEndpointSource(),
         ];
     }
 

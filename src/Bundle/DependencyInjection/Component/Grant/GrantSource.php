@@ -43,8 +43,8 @@ class GrantSource implements Component
             new ImplicitSource(),
             new RefreshTokenSource(),
             new ResourceOwnerPasswordCredentialSource(),
-            //new JwtBearerSource(),
-            //new NoneSource(),
+            new JwtBearerSource(),
+            new NoneSource(),
         ];
     }
 

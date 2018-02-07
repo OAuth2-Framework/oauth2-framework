@@ -19,14 +19,14 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
-class UserinfoEndpointSignatureSource implements Component
+class ResponseTypeSource implements Component
 {
     /**
      * {@inheritdoc}
      */
     public function name(): string
     {
-        return 'signature';
+        return 'response_type';
     }
 
     /**
@@ -34,12 +34,6 @@ class UserinfoEndpointSignatureSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        if (!$configs['openid_connect']['userinfo_endpoint']['signature']['enabled']) {
-            return;
-        }
-
-        $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/openid_connect'));
-        //$loader->load('userinfo_endpoint.php');
     }
 
     /**
@@ -49,21 +43,27 @@ class UserinfoEndpointSignatureSource implements Component
     {
         $node->children()
             ->arrayNode($this->name())
-                ->canBeEnabled()
                 ->addDefaultsIfNotSet()
-                ->validate()
-                    ->ifTrue(function ($config) {
-                        return true === $config['enabled'] && empty($config['signature_algorithms']);
-                    })
-                    ->thenInvalid('You must set at least one signature algorithm.')
-                ->end()
                 ->children()
-                    ->arrayNode('signature_algorithms')
-                        ->info('Signature algorithm used to sign the user information.')
-                        ->useAttributeAsKey('name')
-                        ->prototype('scalar')->end()
-                        ->treatNullLike([])
-                        ->treatFalseLike([])
+                    ->arrayNode('id_token')
+                        ->canBeEnabled()
+                        ->info('')
+                    ->end()
+                    ->arrayNode('id_token_token')
+                        ->canBeEnabled()
+                        ->info('')
+                    ->end()
+                    ->arrayNode('code_token')
+                        ->canBeEnabled()
+                        ->info('')
+                    ->end()
+                    ->arrayNode('code_id_token')
+                        ->canBeEnabled()
+                        ->info('')
+                    ->end()
+                    ->arrayNode('code_id_token_token')
+                        ->canBeEnabled()
+                        ->info('')
                     ->end()
                 ->end()
             ->end()
@@ -75,12 +75,16 @@ class UserinfoEndpointSignatureSource implements Component
      */
     public function prepend(ContainerBuilder $container, array $config): array
     {
-        /*Assertion::keyExists($bundleConfig['key_set'], 'signature', 'The signature key set must be enabled.');
+        /*
         $currentPath = $path.'['.$this->name().']';
         $accessor = PropertyAccess::createPropertyAccessor();
         $sourceConfig = $accessor->getValue($bundleConfig, $currentPath);
+        ConfigurationHelper::addJWSBuilder($container, $this->name(), $sourceConfig['signature_algorithms'], false);
+        ConfigurationHelper::addJWSLoader($container, $this->name(), $sourceConfig['signature_algorithms'], [], ['jws_compact'], false);
 
-        ConfigurationHelper::addJWSBuilder($container, 'oauth2_server.userinfo', $sourceConfig['signature_algorithms'], false);*/
+        Assertion::keyExists($bundleConfig['key_set'], 'signature', 'The signature key set must be enabled.');
+        //ConfigurationHelper::addKeyset($container, 'id_token.key_set.signature', 'jwkset', ['value' => $bundleConfig['key_set']['signature']]);
+         */
         return [];
     }
 }

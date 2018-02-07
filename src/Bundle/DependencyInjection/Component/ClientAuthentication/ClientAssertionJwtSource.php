@@ -56,7 +56,7 @@ class ClientAssertionJwtSource implements Component
                 ->info('This method comprises the "client_secret_jwt" and the "private_key_jwt" authentication methods')
                 ->validate()
                     ->ifTrue(function ($config) {
-                        return true === $config['enabled'] && empty($config['signature_algorithms']);
+                        return $config['enabled'] && empty($config['signature_algorithms']);
                     })
                     ->thenInvalid('At least one signature algorithm must be set.')
                 ->end()

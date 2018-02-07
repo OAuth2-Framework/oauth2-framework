@@ -90,12 +90,9 @@ class OAuth2FrameworkBundle extends Bundle
             new Component\TokenType\TokenTypeSource(),
             new Component\Endpoint\EndpointSource(),
             new Component\Grant\GrantSource(),
+            new Component\OpenIdConnect\OpenIdConnectSource(),
 
             /*new Component\FirewallSource(),
-            new Component\GrantSource(),
-            new Component\EndpointSource(),
-            new Component\ScopeSource(),
-            new Component\OpenIdConnectSource(),
             new Component\HttpSource(),
             new Component\KeySet(),*/
             /*

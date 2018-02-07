@@ -35,10 +35,11 @@ class JwtBearerSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        if ($configs['grant']['jwt_bearer']['enabled']) {
-            $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../../Resources/config/grant'));
-            $loader->load('jwt_bearer.php');
+        if (!$configs['grant']['jwt_bearer']['enabled']) {
+            return;
         }
+        $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../../Resources/config/grant'));
+        $loader->load('jwt_bearer.php');
     }
 
     /**
@@ -46,56 +47,61 @@ class JwtBearerSource implements Component
      */
     public function getNodeDefinition(NodeDefinition $node)
     {
-        $node
-            ->validate()
-                ->ifTrue(function ($config) {
-                    return true === $config['enabled'] && empty($config['signature_algorithms']);
-                })
-                ->thenInvalid('The option "signature_algorithms" must contain at least one signature algorithm.')
-            ->end()
-            ->children()
-                ->booleanNode('issue_refresh_token')
-                    ->info('If true, a refresh token will be issued with the access token (the refresh token grant type must be enabled).')
+        $node->children()
+            ->arrayNode($this->name())
+                ->canBeEnabled()
+                ->validate()
+                    ->ifTrue(function ($config) {
+                        return true === $config['enabled'] && empty($config['signature_algorithms']);
+                    })
+                    ->thenInvalid('The option "signature_algorithms" must contain at least one signature algorithm.')
                 ->end()
-                ->arrayNode('signature_algorithms')
-                    ->info('Signature algorithms supported by this grant type.')
-                    ->useAttributeAsKey('name')
-                    ->prototype('scalar')->end()
-                    ->treatNullLike([])
-                ->end()
-                ->arrayNode('claim_checkers')
-                    ->info('Checkers will verify the JWT claims.')
-                    ->useAttributeAsKey('name')
-                    ->prototype('scalar')->end()
-                    ->treatNullLike(['exp', 'iat', 'nbf'])
-                ->end()
-                ->arrayNode('header_checkers')
-                    ->info('Checkers will verify the JWT headers.')
-                    ->useAttributeAsKey('name')
-                    ->prototype('scalar')->end()
-                    ->treatNullLike(['crit'])
-                ->end()
-                ->arrayNode('encryption')
-                    ->children()
-                        ->booleanNode('required')
-                            ->info('If set to true, all ID Token sent to the server must be encrypted.')
-                            ->defaultFalse()
-                        ->end()
-                        ->arrayNode('key_encryption_algorithms')
-                            ->info('Supported key encryption algorithms.')
-                            ->useAttributeAsKey('name')
-                            ->prototype('scalar')->end()
-                            ->treatNullLike([])
-                        ->end()
-                        ->arrayNode('content_encryption_algorithms')
-                            ->info('Supported content encryption algorithms.')
-                            ->useAttributeAsKey('name')
-                            ->prototype('scalar')->end()
-                            ->treatNullLike([])
+                ->children()
+                    ->booleanNode('issue_refresh_token')
+                        ->info('If true, a refresh token will be issued with the access token (the refresh token grant type must be enabled).')
+                    ->end()
+                    ->arrayNode('signature_algorithms')
+                        ->info('Signature algorithms supported by this grant type.')
+                        ->useAttributeAsKey('name')
+                        ->prototype('scalar')->end()
+                        ->treatNullLike([])
+                    ->end()
+                    ->arrayNode('claim_checkers')
+                        ->info('Checkers will verify the JWT claims.')
+                        ->useAttributeAsKey('name')
+                        ->prototype('scalar')->end()
+                        ->treatNullLike(['exp', 'iat', 'nbf'])
+                    ->end()
+                    ->arrayNode('header_checkers')
+                        ->info('Checkers will verify the JWT headers.')
+                        ->useAttributeAsKey('name')
+                        ->prototype('scalar')->end()
+                        ->treatNullLike(['crit'])
+                    ->end()
+                    ->arrayNode('encryption')
+                        ->canBeEnabled()
+                        ->children()
+                            ->booleanNode('required')
+                                ->info('If set to true, all ID Token sent to the server must be encrypted.')
+                                ->defaultFalse()
+                            ->end()
+                            ->arrayNode('key_encryption_algorithms')
+                                ->info('Supported key encryption algorithms.')
+                                ->useAttributeAsKey('name')
+                                ->prototype('scalar')->end()
+                                ->treatNullLike([])
+                            ->end()
+                            ->arrayNode('content_encryption_algorithms')
+                                ->info('Supported content encryption algorithms.')
+                                ->useAttributeAsKey('name')
+                                ->prototype('scalar')->end()
+                                ->treatNullLike([])
+                            ->end()
                         ->end()
                     ->end()
                 ->end()
-            ->end();
+            ->end()
+        ->end();
     }
 
     /**

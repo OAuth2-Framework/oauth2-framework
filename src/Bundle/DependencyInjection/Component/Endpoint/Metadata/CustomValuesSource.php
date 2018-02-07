@@ -11,22 +11,20 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Bundle\DependencyInjection\Component\Grant\None;
+namespace OAuth2Framework\Bundle\DependencyInjection\Component\Endpoint\Metadata;
 
 use OAuth2Framework\Bundle\DependencyInjection\Component\Component;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
-use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
-class NoneSource implements Component
+class CustomValuesSource implements Component
 {
     /**
-     * {@inheritdoc}
+     * @return string
      */
     public function name(): string
     {
-        return 'none';
+        return 'custom_routes';
     }
 
     /**
@@ -34,10 +32,7 @@ class NoneSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        if ($configs['grant']['none']['enabled']) {
-            $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../../Resources/config/grant'));
-            $loader->load('none.php');
-        }
+        $container->setParameter('oauth2_server.endpoint.metadata.custom_values', $configs['endpoint']['metadata']['custom_values']);
     }
 
     /**
@@ -46,8 +41,12 @@ class NoneSource implements Component
     public function getNodeDefinition(NodeDefinition $node)
     {
         $node->children()
-            ->arrayNode($this->name())
-                ->canBeEnabled()
+            ->arrayNode('custom_values')
+                ->info('Custom values added to the metadata response.')
+                ->useAttributeAsKey('name')
+                ->prototype('variable')->end()
+                ->treatNullLike([])
+                ->treatFalseLike([])
             ->end()
         ->end();
     }
@@ -57,7 +56,6 @@ class NoneSource implements Component
      */
     public function prepend(ContainerBuilder $container, array $config): array
     {
-        //Nothing to do
         return [];
     }
 }

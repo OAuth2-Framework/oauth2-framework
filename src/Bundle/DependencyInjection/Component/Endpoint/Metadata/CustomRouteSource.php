@@ -11,22 +11,20 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Bundle\DependencyInjection\Component\Endpoint\IssuerDiscovery;
+namespace OAuth2Framework\Bundle\DependencyInjection\Component\Endpoint\Metadata;
 
 use OAuth2Framework\Bundle\DependencyInjection\Component\Component;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
-use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
-class IssuerDiscoveryEndpointSource implements Component
+class CustomRouteSource implements Component
 {
     /**
      * @return string
      */
     public function name(): string
     {
-        return 'issuer_discovery';
+        return 'custom_routes';
     }
 
     /**
@@ -34,10 +32,7 @@ class IssuerDiscoveryEndpointSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        //$container->setParameter('oauth2_server.endpoint.issuer_discovery.path', $configs['endpoint']['issuer_discovery']['path']);
-
-        //$loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../../Resources/config/endpoint/issuer_discovery'));
-        //$loader->load('issuer_discovery.php');
+        $container->setParameter('oauth2_server.endpoint.metadata.custom_routes', $configs['endpoint']['metadata']['custom_routes']);
     }
 
     /**
@@ -46,19 +41,22 @@ class IssuerDiscoveryEndpointSource implements Component
     public function getNodeDefinition(NodeDefinition $node)
     {
         $node->children()
-            ->arrayNode($this->name())
-                ->defaultValue([])
+            ->arrayNode('custom_routes')
+                ->info('Custom routes added to the metadata response.')
                 ->useAttributeAsKey('name')
+                ->treatNullLike([])
+                ->treatFalseLike([])
                 ->prototype('array')
                     ->children()
-                        ->scalarNode('path')
+                        ->scalarNode('route_name')
+                            ->info('Route name.')
                             ->isRequired()
                         ->end()
-                        ->scalarNode('resource_repository')
-                            ->isRequired()
-                        ->end()
-                        ->scalarNode('server')
-                            ->isRequired()
+                        ->arrayNode('route_parameters')
+                            ->info('Parameters associated to the route (if needed).')
+                            ->useAttributeAsKey('name')
+                            ->prototype('variable')->end()
+                            ->treatNullLike([])
                         ->end()
                     ->end()
                 ->end()

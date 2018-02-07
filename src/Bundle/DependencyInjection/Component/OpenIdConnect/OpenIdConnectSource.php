@@ -13,22 +13,27 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\DependencyInjection\Component\OpenIdConnect;
 
-use Fluent\PhpConfigFileLoader;
 use OAuth2Framework\Bundle\DependencyInjection\Component\Component;
+use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
 class OpenIdConnectSource implements Component
 {
     /**
-     * OpenIdConnectSource constructor.
+     * @var Component[]
      */
+    private $subComponents;
+
     public function __construct()
     {
-        $this->addSubSource(new UserinfoEndpointSource());
-        $this->addSubSource(new IdTokenSource());
-        $this->addSubSource(new AuthorizationEndpointIdTokenHintSource());
-        $this->addSubSource(new PairwiseSubjectSource());
+        $this->subComponents = [
+            new PairwiseSubjectSource(),
+            new IdTokenSource(),
+            new UserinfoEndpointSource(),
+            new ResponseTypeSource(),
+        ];
     }
 
     /**
@@ -42,9 +47,48 @@ class OpenIdConnectSource implements Component
     /**
      * {@inheritdoc}
      */
-    protected function continueLoading(string $path, ContainerBuilder $container, array $config)
+    public function load(array $configs, ContainerBuilder $container)
     {
-        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/openid_connect'));
-        $loader->load('openid_connect.php');
+        if (!$configs['openid_connect']['enabled']) {
+            return;
+        }
+
+        $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/openid_connect'));
+        //$loader->load('openid_connect.php');
+
+        foreach ($this->subComponents as $subComponent) {
+            $subComponent->load($configs, $container);
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getNodeDefinition(NodeDefinition $node)
+    {
+        $childNode = $node->children()
+            ->arrayNode($this->name())
+                ->canBeEnabled()
+                ->addDefaultsIfNotSet();
+
+        foreach ($this->subComponents as $subComponent) {
+            $subComponent->getNodeDefinition($childNode);
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function prepend(ContainerBuilder $container, array $config): array
+    {
+        $updatedConfig = [];
+        foreach ($this->subComponents as $subComponent) {
+            $updatedConfig = array_merge(
+                $updatedConfig,
+                $subComponent->prepend($container, $config)
+            );
+        }
+
+        return $updatedConfig;
     }
 }
