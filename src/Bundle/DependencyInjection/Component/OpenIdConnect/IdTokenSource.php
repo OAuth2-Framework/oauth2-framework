@@ -15,9 +15,7 @@ namespace OAuth2Framework\Bundle\DependencyInjection\Component\OpenIdConnect;
 
 use OAuth2Framework\Bundle\DependencyInjection\Component\Component;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
-use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
 class IdTokenSource implements Component
 {
