@@ -73,6 +73,7 @@ class JwksUriEndpointSource implements Component
             ConfigurationHelper::addKeyset($container, 'oauth2_server.endpoint.jwks_uri', 'jwkset', ['value' => $sourceConfig['key_set']]);
             ConfigurationHelper::addKeyUri($container, 'oauth2_server.endpoint.jwks_uri', ['id' => 'jose.key_set.oauth2_server.endpoint.jwks_uri', 'path' => $sourceConfig['path'], 'max_age' => $sourceConfig['max_age']]);
         }
+
         return [];
     }
 }
