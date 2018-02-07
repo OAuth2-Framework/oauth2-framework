@@ -88,7 +88,7 @@ class SoftwareStatementSource implements Component
     {
         /*$currentPath = $path.'['.$this->name().']';
         $accessor = PropertyAccess::createPropertyAccessor();
-        $sourceConfig = $accessor->getValue($bundleConfig, $currentPath);
+        $sourceConfig = $accessor->getValue($config, $currentPath);
 
         if (true === $sourceConfig['enabled']) {
             // FIXME

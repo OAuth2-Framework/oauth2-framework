@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\DependencyInjection\Component\ClientAuthentication;
 
 use OAuth2Framework\Bundle\DependencyInjection\Component\Component;
-use OAuth2Framework\Component\TokenEndpoint\AuthenticationMethod\AuthenticationMethod;
+use OAuth2Framework\Component\ClientAuthentication\AuthenticationMethod;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
