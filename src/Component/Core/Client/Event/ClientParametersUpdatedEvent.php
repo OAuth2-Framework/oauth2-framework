@@ -16,7 +16,6 @@ namespace OAuth2Framework\Component\Core\Client\Event;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\Event\Event;
-use OAuth2Framework\Component\Core\Event\EventId;
 use OAuth2Framework\Component\Core\Id\Id;
 use OAuth2Framework\Component\Core\Domain\DomainObject;
 
@@ -35,8 +34,8 @@ class ClientParametersUpdatedEvent extends Event
     /**
      * ClientParametersUpdatedEvent constructor.
      *
-     * @param ClientId                $clientId
-     * @param DataBag                 $parameters
+     * @param ClientId $clientId
+     * @param DataBag  $parameters
      */
     protected function __construct(ClientId $clientId, DataBag $parameters)
     {

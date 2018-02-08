@@ -15,7 +15,6 @@ namespace OAuth2Framework\Component\Core\Client\Event;
 
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\Event\Event;
-use OAuth2Framework\Component\Core\Event\EventId;
 use OAuth2Framework\Component\Core\Id\Id;
 use OAuth2Framework\Component\Core\Domain\DomainObject;
 
@@ -29,7 +28,7 @@ class ClientDeletedEvent extends Event
     /**
      * ClientDeletedEvent constructor.
      *
-     * @param ClientId                $clientId
+     * @param ClientId $clientId
      */
     protected function __construct(ClientId $clientId)
     {

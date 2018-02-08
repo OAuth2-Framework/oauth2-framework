@@ -62,13 +62,13 @@ class AccessTokenCreatedEvent extends Event
     /**
      * AccessTokenCreatedEvent constructor.
      *
-     * @param AccessTokenId           $accessTokenId
-     * @param ResourceOwnerId         $resourceOwnerId
-     * @param ClientId                $clientId
-     * @param DataBag                 $parameters
-     * @param DataBag                 $metadatas
-     * @param \DateTimeImmutable      $expiresAt
-     * @param ResourceServerId|null   $resourceServerId
+     * @param AccessTokenId         $accessTokenId
+     * @param ResourceOwnerId       $resourceOwnerId
+     * @param ClientId              $clientId
+     * @param DataBag               $parameters
+     * @param DataBag               $metadatas
+     * @param \DateTimeImmutable    $expiresAt
+     * @param ResourceServerId|null $resourceServerId
      */
     protected function __construct(AccessTokenId $accessTokenId, ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, \DateTimeImmutable $expiresAt, ? ResourceServerId $resourceServerId)
     {

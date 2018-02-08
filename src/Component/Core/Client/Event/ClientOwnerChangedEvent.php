@@ -15,7 +15,6 @@ namespace OAuth2Framework\Component\Core\Client\Event;
 
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\Event\Event;
-use OAuth2Framework\Component\Core\Event\EventId;
 use OAuth2Framework\Component\Core\Id\Id;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use OAuth2Framework\Component\Core\Domain\DomainObject;
@@ -35,8 +34,8 @@ class ClientOwnerChangedEvent extends Event
     /**
      * ClientOwnerChangedEvent constructor.
      *
-     * @param ClientId                $clientId
-     * @param UserAccountId           $newOwnerId
+     * @param ClientId      $clientId
+     * @param UserAccountId $newOwnerId
      */
     protected function __construct(ClientId $clientId, UserAccountId $newOwnerId)
     {

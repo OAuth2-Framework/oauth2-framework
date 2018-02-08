@@ -15,7 +15,6 @@ namespace OAuth2Framework\Component\Core\Event;
 
 use OAuth2Framework\Component\Core\Id\Id;
 use OAuth2Framework\Component\Core\Domain\DomainObject;
-use Ramsey\Uuid\Uuid;
 
 abstract class Event implements DomainObject
 {

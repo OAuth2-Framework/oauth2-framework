@@ -16,7 +16,6 @@ namespace OAuth2Framework\Component\ClientRegistrationEndpoint\Event;
 use OAuth2Framework\Component\ClientRegistrationEndpoint\InitialAccessTokenId;
 use OAuth2Framework\Component\Core\Domain\DomainObject;
 use OAuth2Framework\Component\Core\Event\Event;
-use OAuth2Framework\Component\Core\Event\EventId;
 use OAuth2Framework\Component\Core\Id\Id;
 
 class InitialAccessTokenRevokedEvent extends Event
@@ -29,7 +28,7 @@ class InitialAccessTokenRevokedEvent extends Event
     /**
      * InitialAccessTokenRevokedEvent constructor.
      *
-     * @param InitialAccessTokenId    $initialAccessTokenId
+     * @param InitialAccessTokenId $initialAccessTokenId
      */
     protected function __construct(InitialAccessTokenId $initialAccessTokenId)
     {

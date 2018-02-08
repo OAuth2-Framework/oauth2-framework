@@ -28,7 +28,7 @@ class AccessTokenRevokedEvent extends Event
     /**
      * AccessTokenRevokedEvent constructor.
      *
-     * @param AccessTokenId           $accessTokenId
+     * @param AccessTokenId $accessTokenId
      */
     protected function __construct(AccessTokenId $accessTokenId)
     {

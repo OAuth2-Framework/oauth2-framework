@@ -16,7 +16,6 @@ namespace OAuth2Framework\Component\Core\Client\Event;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\Event\Event;
-use OAuth2Framework\Component\Core\Event\EventId;
 use OAuth2Framework\Component\Core\Id\Id;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use OAuth2Framework\Component\Core\Domain\DomainObject;
@@ -41,9 +40,9 @@ class ClientCreatedEvent extends Event
     /**
      * ClientCreatedEvent constructor.
      *
-     * @param ClientId                $clientId
-     * @param DataBag                 $parameters
-     * @param UserAccountId|null      $userAccountId
+     * @param ClientId           $clientId
+     * @param DataBag            $parameters
+     * @param UserAccountId|null $userAccountId
      */
     protected function __construct(ClientId $clientId, DataBag $parameters, ? UserAccountId $userAccountId)
     {
