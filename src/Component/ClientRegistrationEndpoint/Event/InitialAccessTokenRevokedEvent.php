@@ -30,12 +30,9 @@ class InitialAccessTokenRevokedEvent extends Event
      * InitialAccessTokenRevokedEvent constructor.
      *
      * @param InitialAccessTokenId    $initialAccessTokenId
-     * @param \DateTimeImmutable|null $recordedOn
-     * @param EventId|null            $eventId
      */
-    protected function __construct(InitialAccessTokenId $initialAccessTokenId, ? \DateTimeImmutable $recordedOn, ? EventId $eventId)
+    protected function __construct(InitialAccessTokenId $initialAccessTokenId)
     {
-        parent::__construct($recordedOn, $eventId);
         $this->initialAccessTokenId = $initialAccessTokenId;
     }
 
@@ -54,7 +51,7 @@ class InitialAccessTokenRevokedEvent extends Event
      */
     public static function create(InitialAccessTokenId $initialAccessTokenId): self
     {
-        return new self($initialAccessTokenId, null, null);
+        return new self($initialAccessTokenId);
     }
 
     /**
@@ -86,13 +83,7 @@ class InitialAccessTokenRevokedEvent extends Event
     public static function createFromJson(\stdClass $json): DomainObject
     {
         $initialAccessTokenId = InitialAccessTokenId::create($json->domain_id);
-        $eventId = EventId::create($json->event_id);
-        $recordedOn = \DateTimeImmutable::createFromFormat('U', (string) $json->recorded_on);
 
-        return new self(
-            $initialAccessTokenId,
-            $recordedOn,
-            $eventId
-        );
+        return new self($initialAccessTokenId);
     }
 }

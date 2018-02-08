@@ -30,12 +30,9 @@ class AuthorizationCodeRevokedEvent extends Event
      * AuthorizationCodeRevokedEvent constructor.
      *
      * @param AuthorizationCodeId     $authorizationCodeId
-     * @param \DateTimeImmutable|null $recordedOn
-     * @param EventId|null            $eventId
      */
-    protected function __construct(AuthorizationCodeId $authorizationCodeId, ? \DateTimeImmutable $recordedOn, ? EventId $eventId)
+    protected function __construct(AuthorizationCodeId $authorizationCodeId)
     {
-        parent::__construct($recordedOn, $eventId);
         $this->authorizationCodeId = $authorizationCodeId;
     }
 
@@ -54,7 +51,7 @@ class AuthorizationCodeRevokedEvent extends Event
      */
     public static function create(AuthorizationCodeId $authorizationCodeId): self
     {
-        return new self($authorizationCodeId, null, null);
+        return new self($authorizationCodeId);
     }
 
     /**
@@ -86,9 +83,7 @@ class AuthorizationCodeRevokedEvent extends Event
     public static function createFromJson(\stdClass $json): DomainObject
     {
         $authorizationCodeId = AuthorizationCodeId::create($json->domain_id);
-        $eventId = EventId::create($json->event_id);
-        $recordedOn = \DateTimeImmutable::createFromFormat('U', (string) $json->recorded_on);
 
-        return new self($authorizationCodeId, $recordedOn, $eventId);
+        return new self($authorizationCodeId);
     }
 }

@@ -81,8 +81,8 @@ class AccessTokenTest extends TestCase
     public function iCanAnAccessTokenUsingEvents()
     {
         $events = [
-            '{"$schema":"https://oauth2-framework.spomky-labs.com/schemas/events/access-token/created/1.0/schema","event_id":"9b45c05f-2b9c-4662-8794-e1e76f8ed1a4","type":"OAuth2Framework\\\\Component\\\\Core\\\\AccessToken\\\\Event\\\\AccessTokenCreatedEvent","domain_id":"ACCESS_TOKEN_ID","recorded_on":1512594281,"payload":{"resource_owner_id":"CLIENT_ID","resource_owner_class":"OAuth2Framework\\\\Component\\\\Core\\\\Client\\\\ClientId","client_id":"CLIENT_ID","parameters":{"refresh_token_id":"REFRESH_TOKEN_ID"},"metadatas":{},"expires_at":1264683600,"resource_server_id":"RESOURCE_SERVER_ID"}}',
-            '{"$schema":"https://oauth2-framework.spomky-labs.com/schemas/events/access-token/revoked/1.0/schema","event_id":"b4505944-cddf-4a96-b850-0e9222c8980a","type":"OAuth2Framework\\\\Component\\\\Core\\\\AccessToken\\\\Event\\\\AccessTokenRevokedEvent","domain_id":"ACCESS_TOKEN_ID","recorded_on":1512594281}',
+            '{"$schema":"https://oauth2-framework.spomky-labs.com/schemas/events/access-token/created/1.0/schema","type":"OAuth2Framework\\\\Component\\\\Core\\\\AccessToken\\\\Event\\\\AccessTokenCreatedEvent","domain_id":"ACCESS_TOKEN_ID","payload":{"resource_owner_id":"CLIENT_ID","resource_owner_class":"OAuth2Framework\\\\Component\\\\Core\\\\Client\\\\ClientId","client_id":"CLIENT_ID","parameters":{"refresh_token_id":"REFRESH_TOKEN_ID"},"metadatas":{},"expires_at":1264683600,"resource_server_id":"RESOURCE_SERVER_ID"}}',
+            '{"$schema":"https://oauth2-framework.spomky-labs.com/schemas/events/access-token/revoked/1.0/schema","type":"OAuth2Framework\\\\Component\\\\Core\\\\AccessToken\\\\Event\\\\AccessTokenRevokedEvent","domain_id":"ACCESS_TOKEN_ID"}',
         ];
         $accessToken = AccessToken::createEmpty();
 

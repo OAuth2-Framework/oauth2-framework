@@ -16,7 +16,6 @@ namespace OAuth2Framework\Component\ClientRegistrationEndpoint\Event;
 use OAuth2Framework\Component\ClientRegistrationEndpoint\InitialAccessTokenId;
 use OAuth2Framework\Component\Core\Domain\DomainObject;
 use OAuth2Framework\Component\Core\Event\Event;
-use OAuth2Framework\Component\Core\Event\EventId;
 use OAuth2Framework\Component\Core\Id\Id;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 
@@ -43,12 +42,9 @@ class InitialAccessTokenCreatedEvent extends Event
      * @param InitialAccessTokenId    $initialAccessTokenId
      * @param UserAccountId           $userAccountId
      * @param null|\DateTimeImmutable $expiresAt
-     * @param \DateTimeImmutable|null $recordedOn
-     * @param EventId|null            $eventId
      */
-    protected function __construct(InitialAccessTokenId $initialAccessTokenId, UserAccountId $userAccountId, ? \DateTimeImmutable $expiresAt, ? \DateTimeImmutable $recordedOn, ? EventId $eventId)
+    protected function __construct(InitialAccessTokenId $initialAccessTokenId, UserAccountId $userAccountId, ? \DateTimeImmutable $expiresAt)
     {
-        parent::__construct($recordedOn, $eventId);
         $this->initialAccessTokenId = $initialAccessTokenId;
         $this->expiresAt = $expiresAt;
         $this->userAccountId = $userAccountId;
@@ -71,7 +67,7 @@ class InitialAccessTokenCreatedEvent extends Event
      */
     public static function create(InitialAccessTokenId $initialAccessTokenId, UserAccountId $userAccountId, ? \DateTimeImmutable $expiresAt): self
     {
-        return new self($initialAccessTokenId, $userAccountId, $expiresAt, null, null);
+        return new self($initialAccessTokenId, $userAccountId, $expiresAt);
     }
 
     /**
@@ -123,18 +119,13 @@ class InitialAccessTokenCreatedEvent extends Event
     public static function createFromJson(\stdClass $json): DomainObject
     {
         $initialAccessTokenId = InitialAccessTokenId::create($json->domain_id);
-        $eventId = EventId::create($json->event_id);
-        $recordedOn = \DateTimeImmutable::createFromFormat('U', (string) $json->recorded_on);
-
         $userAccountId = null === $json->payload->user_account_id ? null : UserAccountId::create($json->payload->user_account_id);
         $expiresAt = null === $json->payload->expires_at ? null : \DateTimeImmutable::createFromFormat('U', (string) $json->payload->expires_at);
 
         return new self(
             $initialAccessTokenId,
             $userAccountId,
-            $expiresAt,
-            $recordedOn,
-            $eventId
+            $expiresAt
         );
     }
 }

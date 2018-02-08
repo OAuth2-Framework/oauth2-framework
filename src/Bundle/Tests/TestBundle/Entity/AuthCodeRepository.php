@@ -16,23 +16,10 @@ namespace OAuth2Framework\Bundle\Tests\TestBundle\Entity;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCode;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeId;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeRepository;
-use OAuth2Framework\Component\Core\Event\Event;
-use OAuth2Framework\Component\Core\Event\EventStore;
-use SimpleBus\Message\Bus\MessageBus;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 
 class AuthCodeRepository implements AuthorizationCodeRepository
 {
-    /**
-     * @var MessageBus
-     */
-    private $eventBus;
-
-    /**
-     * @var EventStore
-     */
-    private $eventStore;
-
     /**
      * @var AdapterInterface
      */
@@ -41,14 +28,10 @@ class AuthCodeRepository implements AuthorizationCodeRepository
     /**
      * AuthCodeRepository constructor.
      *
-     * @param EventStore       $eventStore
-     * @param MessageBus       $eventBus
      * @param AdapterInterface $cache
      */
-    public function __construct(EventStore $eventStore, MessageBus $eventBus, AdapterInterface $cache)
+    public function __construct(AdapterInterface $cache)
     {
-        $this->eventStore = $eventStore;
-        $this->eventBus = $eventBus;
         $this->cache = $cache;
     }
 
@@ -58,13 +41,6 @@ class AuthCodeRepository implements AuthorizationCodeRepository
     public function find(AuthorizationCodeId $authCodeId): ? AuthorizationCode
     {
         $authCode = $this->getFromCache($authCodeId);
-        if (null === $authCode) {
-            $events = $this->eventStore->findAllForDomainId($authCodeId);
-            if (!empty($events)) {
-                $authCode = $this->getFromEvents($events);
-                $this->cacheObject($authCode);
-            }
-        }
 
         return $authCode;
     }
@@ -74,28 +50,8 @@ class AuthCodeRepository implements AuthorizationCodeRepository
      */
     public function save(AuthorizationCode $authCode)
     {
-        $events = $authCode->recordedMessages();
-        foreach ($events as $event) {
-            $this->eventStore->save($event);
-            $this->eventBus->handle($event);
-        }
         $authCode->eraseMessages();
         $this->cacheObject($authCode);
-    }
-
-    /**
-     * @param Event[] $events
-     *
-     * @return AuthorizationCode
-     */
-    private function getFromEvents(array $events): AuthorizationCode
-    {
-        $authCode = AuthorizationCode::createEmpty();
-        foreach ($events as $event) {
-            $authCode = $authCode->apply($event);
-        }
-
-        return $authCode;
     }
 
     /**

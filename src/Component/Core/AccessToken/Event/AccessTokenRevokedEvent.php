@@ -15,7 +15,6 @@ namespace OAuth2Framework\Component\Core\AccessToken\Event;
 
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
 use OAuth2Framework\Component\Core\Event\Event;
-use OAuth2Framework\Component\Core\Event\EventId;
 use OAuth2Framework\Component\Core\Id\Id;
 use OAuth2Framework\Component\Core\Domain\DomainObject;
 
@@ -30,12 +29,9 @@ class AccessTokenRevokedEvent extends Event
      * AccessTokenRevokedEvent constructor.
      *
      * @param AccessTokenId           $accessTokenId
-     * @param \DateTimeImmutable|null $recordedOn
-     * @param null|EventId            $eventId
      */
-    protected function __construct(AccessTokenId $accessTokenId, ? \DateTimeImmutable $recordedOn, ? EventId $eventId)
+    protected function __construct(AccessTokenId $accessTokenId)
     {
-        parent::__construct($recordedOn, $eventId);
         $this->accessTokenId = $accessTokenId;
     }
 
@@ -54,7 +50,7 @@ class AccessTokenRevokedEvent extends Event
      */
     public static function create(AccessTokenId $accessTokenId): self
     {
-        return new self($accessTokenId, null, null);
+        return new self($accessTokenId);
     }
 
     /**
@@ -63,10 +59,8 @@ class AccessTokenRevokedEvent extends Event
     public static function createFromJson(\stdClass $json): DomainObject
     {
         $accessTokenId = AccessTokenId::create($json->domain_id);
-        $eventId = EventId::create($json->event_id);
-        $recordedOn = \DateTimeImmutable::createFromFormat('U', (string) $json->recorded_on);
 
-        return new self($accessTokenId, $recordedOn, $eventId);
+        return new self($accessTokenId);
     }
 
     /**

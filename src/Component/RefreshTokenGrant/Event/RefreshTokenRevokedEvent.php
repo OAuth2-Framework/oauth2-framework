@@ -30,12 +30,9 @@ class RefreshTokenRevokedEvent extends Event
      * RefreshTokenRevokedEvent constructor.
      *
      * @param RefreshTokenId          $refreshTokenId
-     * @param \DateTimeImmutable|null $recordedOn
-     * @param null|EventId            $eventId
      */
-    protected function __construct(RefreshTokenId $refreshTokenId, ? \DateTimeImmutable $recordedOn, ? EventId $eventId)
+    protected function __construct(RefreshTokenId $refreshTokenId)
     {
-        parent::__construct($recordedOn, $eventId);
         $this->refreshTokenId = $refreshTokenId;
     }
 
@@ -54,7 +51,7 @@ class RefreshTokenRevokedEvent extends Event
      */
     public static function create(RefreshTokenId $refreshTokenId): self
     {
-        return new self($refreshTokenId, null, null);
+        return new self($refreshTokenId);
     }
 
     /**
@@ -86,9 +83,7 @@ class RefreshTokenRevokedEvent extends Event
     public static function createFromJson(\stdClass $json): DomainObject
     {
         $refreshTokenId = RefreshTokenId::create($json->domain_id);
-        $eventId = EventId::create($json->event_id);
-        $recordedOn = \DateTimeImmutable::createFromFormat('U', (string) $json->recorded_on);
 
-        return new self($refreshTokenId, $recordedOn, $eventId);
+        return new self($refreshTokenId);
     }
 }

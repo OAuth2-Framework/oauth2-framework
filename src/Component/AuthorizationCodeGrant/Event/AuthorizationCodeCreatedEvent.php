@@ -82,12 +82,9 @@ class AuthorizationCodeCreatedEvent extends Event
      * @param DataBag                 $parameters
      * @param DataBag                 $metadatas
      * @param ResourceServerId|null   $resourceServerId
-     * @param \DateTimeImmutable|null $recordedOn
-     * @param EventId|null            $eventId
      */
-    protected function __construct(AuthorizationCodeId $authorizationCodeId, ClientId $clientId, UserAccountId $userAccountId, array $queryParameters, string $redirectUri, \DateTimeImmutable $expiresAt, DataBag $parameters, DataBag $metadatas, ? ResourceServerId $resourceServerId, ? \DateTimeImmutable $recordedOn, ? EventId $eventId)
+    protected function __construct(AuthorizationCodeId $authorizationCodeId, ClientId $clientId, UserAccountId $userAccountId, array $queryParameters, string $redirectUri, \DateTimeImmutable $expiresAt, DataBag $parameters, DataBag $metadatas, ? ResourceServerId $resourceServerId)
     {
-        parent::__construct($recordedOn, $eventId);
         $this->authorizationCodeId = $authorizationCodeId;
         $this->userAccountId = $userAccountId;
         $this->clientId = $clientId;
@@ -122,7 +119,7 @@ class AuthorizationCodeCreatedEvent extends Event
      */
     public static function create(AuthorizationCodeId $authorizationCodeId, ClientId $clientId, UserAccountId $userAccountId, array $queryParameters, string $redirectUri, \DateTimeImmutable $expiresAt, DataBag $parameters, DataBag $metadatas, ? ResourceServerId $resourceServerId): self
     {
-        return new self($authorizationCodeId, $clientId, $userAccountId, $queryParameters, $redirectUri, $expiresAt, $parameters, $metadatas, $resourceServerId, null, null);
+        return new self($authorizationCodeId, $clientId, $userAccountId, $queryParameters, $redirectUri, $expiresAt, $parameters, $metadatas, $resourceServerId);
     }
 
     /**
@@ -228,8 +225,6 @@ class AuthorizationCodeCreatedEvent extends Event
     public static function createFromJson(\stdClass $json): DomainObject
     {
         $authorizationCodeId = AuthorizationCodeId::create($json->domain_id);
-        $eventId = EventId::create($json->event_id);
-        $recordedOn = \DateTimeImmutable::createFromFormat('U', (string) $json->recorded_on);
         $userAccountId = UserAccountId::create($json->payload->user_account_id);
         $clientId = ClientId::create($json->payload->client_id);
         $expiresAt = \DateTimeImmutable::createFromFormat('U', (string) $json->payload->expires_at);
@@ -239,6 +234,6 @@ class AuthorizationCodeCreatedEvent extends Event
         $queryParameters = (array) $json->payload->query_parameters;
         $resourceServerId = null !== $json->payload->resource_server_id ? ResourceServerId::create($json->payload->resource_server_id) : null;
 
-        return new self($authorizationCodeId, $clientId, $userAccountId, $queryParameters, $redirectUri, $expiresAt, $parameters, $metadatas, $resourceServerId, $recordedOn, $eventId);
+        return new self($authorizationCodeId, $clientId, $userAccountId, $queryParameters, $redirectUri, $expiresAt, $parameters, $metadatas, $resourceServerId);
     }
 }

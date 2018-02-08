@@ -15,23 +15,10 @@ namespace OAuth2Framework\Bundle\Tests\TestBundle\Entity;
 
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
-use OAuth2Framework\Component\Core\Event\Event;
-use OAuth2Framework\Component\Core\Event\EventStore;
-use SimpleBus\Message\Recorder\RecordsMessages;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 
 class ClientRepository implements \OAuth2Framework\Component\Core\Client\ClientRepository
 {
-    /**
-     * @var EventStore
-     */
-    private $eventStore;
-
-    /**
-     * @var RecordsMessages
-     */
-    private $eventRecorder;
-
     /**
      * @var AdapterInterface
      */
@@ -40,14 +27,10 @@ class ClientRepository implements \OAuth2Framework\Component\Core\Client\ClientR
     /**
      * ClientRepository constructor.
      *
-     * @param EventStore       $eventStore
-     * @param RecordsMessages  $eventRecorder
      * @param AdapterInterface $cache
      */
-    public function __construct(EventStore $eventStore, RecordsMessages $eventRecorder, AdapterInterface $cache)
+    public function __construct(AdapterInterface $cache)
     {
-        $this->eventStore = $eventStore;
-        $this->eventRecorder = $eventRecorder;
         $this->cache = $cache;
     }
 
@@ -57,13 +40,6 @@ class ClientRepository implements \OAuth2Framework\Component\Core\Client\ClientR
     public function find(ClientId $clientId): ? Client
     {
         $client = $this->getFromCache($clientId);
-        if (null === $client) {
-            $events = $this->eventStore->findAllForDomainId($clientId);
-            if (!empty($events)) {
-                $client = $this->getFromEvents($events);
-                $this->cacheObject($client);
-            }
-        }
 
         return $client;
     }
@@ -73,28 +49,8 @@ class ClientRepository implements \OAuth2Framework\Component\Core\Client\ClientR
      */
     public function save(Client $client)
     {
-        $events = $client->recordedMessages();
-        foreach ($events as $event) {
-            $this->eventStore->save($event);
-            $this->eventRecorder->record($event);
-        }
         $client->eraseMessages();
         $this->cacheObject($client);
-    }
-
-    /**
-     * @param Event[] $events
-     *
-     * @return Client
-     */
-    private function getFromEvents(array $events): Client
-    {
-        $client = Client::createEmpty();
-        foreach ($events as $event) {
-            $client = $client->apply($event);
-        }
-
-        return $client;
     }
 
     /**

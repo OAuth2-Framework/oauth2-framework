@@ -20,41 +20,6 @@ use Ramsey\Uuid\Uuid;
 abstract class Event implements DomainObject
 {
     /**
-     * @var EventId
-     */
-    private $eventId;
-
-    /**
-     * @var \DateTimeImmutable
-     */
-    private $recordedOn;
-
-    /**
-     * Event constructor.
-     *
-     * @param \DateTimeImmutable|null $recordedOn
-     * @param EventId|null            $eventId
-     */
-    protected function __construct(? \DateTimeImmutable $recordedOn, ? EventId $eventId)
-    {
-        if (null === $recordedOn || null === $eventId) {
-            $this->recordedOn = new \DateTimeImmutable();
-            $this->eventId = EventId::create(Uuid::uuid4()->toString());
-        } else {
-            $this->recordedOn = $recordedOn;
-            $this->eventId = $eventId;
-        }
-    }
-
-    /**
-     * @return EventId
-     */
-    public function getEventId(): EventId
-    {
-        return $this->eventId;
-    }
-
-    /**
      * @return mixed
      */
     abstract public function getPayload();
@@ -63,14 +28,6 @@ abstract class Event implements DomainObject
      * @return Id
      */
     abstract public function getDomainId(): Id;
-
-    /**
-     * @return \DateTimeImmutable
-     */
-    public function getRecordedOn(): \DateTimeImmutable
-    {
-        return $this->recordedOn;
-    }
 
     /**
      * @return string
@@ -87,10 +44,8 @@ abstract class Event implements DomainObject
     {
         $data = [
             '$schema' => $this->getSchema(),
-            'event_id' => $this->getEventId()->getValue(),
             'type' => get_class($this),
             'domain_id' => $this->getDomainId()->getValue(),
-            'recorded_on' => $this->getRecordedOn()->getTimestamp(),
         ];
         $payload = $this->getPayload();
         if (null !== $payload) {

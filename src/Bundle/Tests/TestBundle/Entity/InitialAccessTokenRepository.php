@@ -15,23 +15,10 @@ namespace OAuth2Framework\Bundle\Tests\TestBundle\Entity;
 
 use OAuth2Framework\Component\ClientRegistrationEndpoint\InitialAccessToken;
 use OAuth2Framework\Component\ClientRegistrationEndpoint\InitialAccessTokenId;
-use OAuth2Framework\Component\Core\Event\Event;
-use OAuth2Framework\Component\Core\Event\EventStore;
-use SimpleBus\Message\Recorder\RecordsMessages;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 
 class InitialAccessTokenRepository implements \OAuth2Framework\Component\ClientRegistrationEndpoint\InitialAccessTokenRepository
 {
-    /**
-     * @var EventStore
-     */
-    private $eventStore;
-
-    /**
-     * @var RecordsMessages
-     */
-    private $eventRecorder;
-
     /**
      * @var AdapterInterface
      */
@@ -40,14 +27,10 @@ class InitialAccessTokenRepository implements \OAuth2Framework\Component\ClientR
     /**
      * InitialAccessTokenRepository constructor.
      *
-     * @param EventStore       $eventStore
-     * @param RecordsMessages  $eventRecorder
      * @param AdapterInterface $cache
      */
-    public function __construct(EventStore $eventStore, RecordsMessages $eventRecorder, AdapterInterface $cache)
+    public function __construct(AdapterInterface $cache)
     {
-        $this->eventStore = $eventStore;
-        $this->eventRecorder = $eventRecorder;
         $this->cache = $cache;
     }
 
@@ -57,13 +40,6 @@ class InitialAccessTokenRepository implements \OAuth2Framework\Component\ClientR
     public function find(InitialAccessTokenId $initialAccessTokenId): ? InitialAccessToken
     {
         $initialAccessToken = $this->getFromCache($initialAccessTokenId);
-        if (null === $initialAccessToken) {
-            $events = $this->eventStore->findAllForDomainId($initialAccessTokenId);
-            if (!empty($events)) {
-                $initialAccessToken = $this->getFromEvents($events);
-                $this->cacheObject($initialAccessToken);
-            }
-        }
 
         return $initialAccessToken;
     }
@@ -73,28 +49,8 @@ class InitialAccessTokenRepository implements \OAuth2Framework\Component\ClientR
      */
     public function save(InitialAccessToken $initialAccessToken)
     {
-        $events = $initialAccessToken->recordedMessages();
-        foreach ($events as $event) {
-            $this->eventStore->save($event);
-            $this->eventRecorder->record($event);
-        }
         $initialAccessToken->eraseMessages();
         $this->cacheObject($initialAccessToken);
-    }
-
-    /**
-     * @param Event[] $events
-     *
-     * @return InitialAccessToken
-     */
-    private function getFromEvents(array $events): InitialAccessToken
-    {
-        $initialAccessToken = InitialAccessToken::createEmpty();
-        foreach ($events as $event) {
-            $initialAccessToken = $initialAccessToken->apply($event);
-        }
-
-        return $initialAccessToken;
     }
 
     /**

@@ -17,7 +17,6 @@ use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\Event\Event;
-use OAuth2Framework\Component\Core\Event\EventId;
 use OAuth2Framework\Component\Core\Id\Id;
 use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwnerId;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
@@ -70,12 +69,9 @@ class AccessTokenCreatedEvent extends Event
      * @param DataBag                 $metadatas
      * @param \DateTimeImmutable      $expiresAt
      * @param ResourceServerId|null   $resourceServerId
-     * @param \DateTimeImmutable|null $recordedOn
-     * @param EventId|null            $eventId
      */
-    protected function __construct(AccessTokenId $accessTokenId, ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, \DateTimeImmutable $expiresAt, ? ResourceServerId $resourceServerId, ? \DateTimeImmutable $recordedOn, ? EventId $eventId)
+    protected function __construct(AccessTokenId $accessTokenId, ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, \DateTimeImmutable $expiresAt, ? ResourceServerId $resourceServerId)
     {
-        parent::__construct($recordedOn, $eventId);
         $this->accessTokenId = $accessTokenId;
         $this->resourceOwnerId = $resourceOwnerId;
         $this->clientId = $clientId;
@@ -106,7 +102,7 @@ class AccessTokenCreatedEvent extends Event
      */
     public static function create(AccessTokenId $accessTokenId, ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, \DateTimeImmutable $expiresAt, ? ResourceServerId $resourceServerId): self
     {
-        return new self($accessTokenId, $resourceOwnerId, $clientId, $parameters, $metadatas, $expiresAt, $resourceServerId, null, null);
+        return new self($accessTokenId, $resourceOwnerId, $clientId, $parameters, $metadatas, $expiresAt, $resourceServerId);
     }
 
     /**
@@ -115,8 +111,6 @@ class AccessTokenCreatedEvent extends Event
     public static function createFromJson(\stdClass $json): DomainObject
     {
         $accessTokenId = AccessTokenId::create($json->domain_id);
-        $eventId = EventId::create($json->event_id);
-        $recordedOn = \DateTimeImmutable::createFromFormat('U', (string) $json->recorded_on);
         $resourceOwnerClass = $json->payload->resource_owner_class;
         $resourceOwnerId = $resourceOwnerClass::create($json->payload->resource_owner_id);
         $clientId = ClientId::create($json->payload->client_id);
@@ -125,7 +119,7 @@ class AccessTokenCreatedEvent extends Event
         $expiresAt = \DateTimeImmutable::createFromFormat('U', (string) $json->payload->expires_at);
         $resourceServerId = null !== $json->payload->resource_server_id ? ResourceServerId::create($json->payload->resource_server_id) : null;
 
-        return new self($accessTokenId, $resourceOwnerId, $clientId, $parameters, $metadatas, $expiresAt, $resourceServerId, $recordedOn, $eventId);
+        return new self($accessTokenId, $resourceOwnerId, $clientId, $parameters, $metadatas, $expiresAt, $resourceServerId);
     }
 
     /**

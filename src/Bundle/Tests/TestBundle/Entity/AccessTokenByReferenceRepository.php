@@ -19,11 +19,8 @@ use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
-use OAuth2Framework\Component\Core\Event\Event;
-use OAuth2Framework\Component\Core\Event\EventStore;
 use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwnerId;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
-use SimpleBus\Message\Bus\MessageBus;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 
 class AccessTokenByReferenceRepository implements AccessTokenRepository
@@ -44,16 +41,6 @@ class AccessTokenByReferenceRepository implements AccessTokenRepository
     private $maxLength;
 
     /**
-     * @var EventStore
-     */
-    private $eventStore;
-
-    /**
-     * @var MessageBus
-     */
-    private $eventBus;
-
-    /**
      * @var AdapterInterface
      */
     private $cache;
@@ -64,17 +51,13 @@ class AccessTokenByReferenceRepository implements AccessTokenRepository
      * @param int              $minLength
      * @param int              $maxLength
      * @param int              $lifetime
-     * @param EventStore       $eventStore
-     * @param MessageBus       $eventBus
      * @param AdapterInterface $cache
      */
-    public function __construct(int $minLength, int $maxLength, int $lifetime, EventStore $eventStore, MessageBus $eventBus, AdapterInterface $cache)
+    public function __construct(int $minLength, int $maxLength, int $lifetime, AdapterInterface $cache)
     {
         $this->minLength = $minLength;
         $this->maxLength = $maxLength;
         $this->lifetime = $lifetime;
-        $this->eventStore = $eventStore;
-        $this->eventBus = $eventBus;
         $this->cache = $cache;
     }
 
@@ -84,13 +67,6 @@ class AccessTokenByReferenceRepository implements AccessTokenRepository
     public function find(AccessTokenId $accessTokenId)
     {
         $accessToken = $this->getFromCache($accessTokenId);
-        if (null === $accessToken) {
-            $events = $this->eventStore->findAllForDomainId($accessTokenId);
-            if (!empty($events)) {
-                $accessToken = $this->getFromEvents($events);
-                $this->cacheObject($accessToken);
-            }
-        }
 
         return $accessToken;
     }
@@ -100,11 +76,6 @@ class AccessTokenByReferenceRepository implements AccessTokenRepository
      */
     public function save(AccessToken $accessToken)
     {
-        $events = $accessToken->recordedMessages();
-        foreach ($events as $event) {
-            $this->eventStore->save($event);
-            $this->eventBus->handle($event);
-        }
         $accessToken->eraseMessages();
         $this->cacheObject($accessToken);
     }
@@ -119,21 +90,6 @@ class AccessTokenByReferenceRepository implements AccessTokenRepository
         $accessTokenId = AccessTokenId::create(Base64Url::encode(random_bytes($length)));
         $accessToken = AccessToken::createEmpty();
         $accessToken = $accessToken->create($accessTokenId, $resourceOwnerId, $clientId, $parameters, $metadatas, $expiresAt, $resourceServerId);
-
-        return $accessToken;
-    }
-
-    /**
-     * @param Event[] $events
-     *
-     * @return AccessToken
-     */
-    private function getFromEvents(array $events): AccessToken
-    {
-        $accessToken = AccessToken::createEmpty();
-        foreach ($events as $event) {
-            $accessToken = $accessToken->apply($event);
-        }
 
         return $accessToken;
     }

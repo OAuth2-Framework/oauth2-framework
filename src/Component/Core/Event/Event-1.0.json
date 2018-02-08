@@ -5,12 +5,10 @@
   "description": "Event raised by the OAuth2 Server Library.",
   "properties": {
     "$schema": {"type": "string"},
-    "event_id": {"type": "string"},
     "type": {"type": "string"},
     "domain_id": {"type": "string"},
-    "recorded_on": {"type": "integer"},
     "payload": {"type": "object"}
   },
   "additionalProperties":false,
-  "required": ["$schema", "event_id", "type", "domain_id", "recorded_on"]
+  "required": ["$schema", "type", "domain_id"]
 }

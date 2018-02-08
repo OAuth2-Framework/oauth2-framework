@@ -80,10 +80,10 @@ class ClientTest extends TestCase
     public function iCanCreateAClientUsingEvents()
     {
         $events = [
-            '{"$schema":"https://oauth2-framework.spomky-labs.com/schemas/events/client/created/1.0/schema","event_id":"7a35f2f1-09d6-4902-8b47-1dffbf9b8e7c","type":"OAuth2Framework\\\\Component\\\\Core\\\\Client\\\\Event\\\\ClientCreatedEvent","domain_id":"CLIENT_ID","recorded_on":1512681448,"payload":{"user_account_id":"USER_ACCOUNT_ID","parameters":{}}}',
-            '{"$schema":"https://oauth2-framework.spomky-labs.com/schemas/events/client/parameters-updated/1.0/schema","event_id":"955b77d5-595f-4990-85e4-53a8812365cf","type":"OAuth2Framework\\\\Component\\\\Core\\\\Client\\\\Event\\\\ClientParametersUpdatedEvent","domain_id":"CLIENT_ID","recorded_on":1512681448,"payload":{"parameters":{"token_endpoint_auth_method":"none"}}}',
-            '{"$schema":"https://oauth2-framework.spomky-labs.com/schemas/events/client/owner-changed/1.0/schema","event_id":"f9d0757a-3707-4336-877e-1e7c287bcbef","type":"OAuth2Framework\\\\Component\\\\Core\\\\Client\\\\Event\\\\ClientOwnerChangedEvent","domain_id":"CLIENT_ID","recorded_on":1512681448,"payload":{"new_owner_id":"NEW_USER_ACCOUNT_ID"}}',
-            '{"$schema":"https://oauth2-framework.spomky-labs.com/schemas/events/client/deleted/1.0/schema","event_id":"3ffd3c8b-c253-4b21-b27c-7e676df871dd","type":"OAuth2Framework\\\\Component\\\\Core\\\\Client\\\\Event\\\\ClientDeletedEvent","domain_id":"CLIENT_ID","recorded_on":1512681448}',
+            '{"$schema":"https://oauth2-framework.spomky-labs.com/schemas/events/client/created/1.0/schema","type":"OAuth2Framework\\\\Component\\\\Core\\\\Client\\\\Event\\\\ClientCreatedEvent","domain_id":"CLIENT_ID","payload":{"user_account_id":"USER_ACCOUNT_ID","parameters":{}}}',
+            '{"$schema":"https://oauth2-framework.spomky-labs.com/schemas/events/client/parameters-updated/1.0/schema","type":"OAuth2Framework\\\\Component\\\\Core\\\\Client\\\\Event\\\\ClientParametersUpdatedEvent","domain_id":"CLIENT_ID","payload":{"parameters":{"token_endpoint_auth_method":"none"}}}',
+            '{"$schema":"https://oauth2-framework.spomky-labs.com/schemas/events/client/owner-changed/1.0/schema","type":"OAuth2Framework\\\\Component\\\\Core\\\\Client\\\\Event\\\\ClientOwnerChangedEvent","domain_id":"CLIENT_ID","payload":{"new_owner_id":"NEW_USER_ACCOUNT_ID"}}',
+            '{"$schema":"https://oauth2-framework.spomky-labs.com/schemas/events/client/deleted/1.0/schema","type":"OAuth2Framework\\\\Component\\\\Core\\\\Client\\\\Event\\\\ClientDeletedEvent","domain_id":"CLIENT_ID"}',
         ];
         $accessToken = Client::createEmpty();
 

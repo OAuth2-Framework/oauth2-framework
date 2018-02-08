@@ -70,12 +70,9 @@ class RefreshTokenCreatedEvent extends Event
      * @param DataBag                 $metadatas
      * @param \DateTimeImmutable      $expiresAt
      * @param ResourceServerId|null   $resourceServerId
-     * @param \DateTimeImmutable|null $recordedOn
-     * @param null|EventId            $eventId
      */
-    protected function __construct(RefreshTokenId $refreshTokenId, ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, \DateTimeImmutable $expiresAt, ? ResourceServerId $resourceServerId, ? \DateTimeImmutable $recordedOn, ? EventId $eventId)
+    protected function __construct(RefreshTokenId $refreshTokenId, ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, \DateTimeImmutable $expiresAt, ? ResourceServerId $resourceServerId)
     {
-        parent::__construct($recordedOn, $eventId);
         $this->refreshTokenId = $refreshTokenId;
         $this->resourceOwnerId = $resourceOwnerId;
         $this->clientId = $clientId;
@@ -106,7 +103,7 @@ class RefreshTokenCreatedEvent extends Event
      */
     public static function create(RefreshTokenId $refreshTokenId, ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, \DateTimeImmutable $expiresAt, ? ResourceServerId $resourceServerId): self
     {
-        return new self($refreshTokenId, $resourceOwnerId, $clientId, $parameters, $metadatas, $expiresAt, $resourceServerId, null, null);
+        return new self($refreshTokenId, $resourceOwnerId, $clientId, $parameters, $metadatas, $expiresAt, $resourceServerId);
     }
 
     /**
@@ -195,8 +192,6 @@ class RefreshTokenCreatedEvent extends Event
     public static function createFromJson(\stdClass $json): DomainObject
     {
         $refreshTokenId = RefreshTokenId::create($json->domain_id);
-        $eventId = EventId::create($json->event_id);
-        $recordedOn = \DateTimeImmutable::createFromFormat('U', (string) $json->recorded_on);
         $resourceOwnerClass = $json->payload->resource_owner_class;
         $resourceOwnerId = $resourceOwnerClass::create($json->payload->resource_owner_id);
         $clientId = ClientId::create($json->payload->client_id);
@@ -205,6 +200,6 @@ class RefreshTokenCreatedEvent extends Event
         $expiresAt = \DateTimeImmutable::createFromFormat('U', (string) $json->payload->expires_at);
         $resourceServerId = null !== $json->payload->resource_server_id ? ResourceServerId::create($json->payload->resource_server_id) : null;
 
-        return new self($refreshTokenId, $resourceOwnerId, $clientId, $parameters, $metadatas, $expiresAt, $resourceServerId, $recordedOn, $eventId);
+        return new self($refreshTokenId, $resourceOwnerId, $clientId, $parameters, $metadatas, $expiresAt, $resourceServerId);
     }
 }

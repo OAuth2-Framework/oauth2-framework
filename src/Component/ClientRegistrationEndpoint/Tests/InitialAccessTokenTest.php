@@ -73,8 +73,8 @@ class InitialAccessTokenTest extends TestCase
     public function iCanAnInitialAccessTokenUsingEvents()
     {
         $events = [
-            '{"$schema":"https://oauth2-framework.spomky-labs.com/schemas/events/initial-access-token/created/1.0/schema","event_id":"b9ceb617-dd07-4158-a551-544637062d97","type":"OAuth2Framework\\\\Component\\\\ClientRegistrationEndpoint\\\\Event\\\\InitialAccessTokenCreatedEvent","domain_id":"INITIAL_ACCESS_TOKEN_ID","recorded_on":1512924391,"payload":{"user_account_id":"USER_ACCOUNT_ID","expires_at":null}}',
-            '{"$schema":"https://oauth2-framework.spomky-labs.com/schemas/events/initial-access-token/revoked/1.0/schema","event_id":"373b612b-e3de-4e82-a693-4d4212ffa63e","type":"OAuth2Framework\\\\Component\\\\ClientRegistrationEndpoint\\\\Event\\\\InitialAccessTokenRevokedEvent","domain_id":"INITIAL_ACCESS_TOKEN_ID","recorded_on":1512924392}',
+            '{"$schema":"https://oauth2-framework.spomky-labs.com/schemas/events/initial-access-token/created/1.0/schema","type":"OAuth2Framework\\\\Component\\\\ClientRegistrationEndpoint\\\\Event\\\\InitialAccessTokenCreatedEvent","domain_id":"INITIAL_ACCESS_TOKEN_ID","payload":{"user_account_id":"USER_ACCOUNT_ID","expires_at":null}}',
+            '{"$schema":"https://oauth2-framework.spomky-labs.com/schemas/events/initial-access-token/revoked/1.0/schema","type":"OAuth2Framework\\\\Component\\\\ClientRegistrationEndpoint\\\\Event\\\\InitialAccessTokenRevokedEvent","domain_id":"INITIAL_ACCESS_TOKEN_ID"}',
         ];
         $initialAccessToken = InitialAccessToken::createEmpty();
 

@@ -37,12 +37,9 @@ class ClientOwnerChangedEvent extends Event
      *
      * @param ClientId                $clientId
      * @param UserAccountId           $newOwnerId
-     * @param \DateTimeImmutable|null $recordedOn
-     * @param EventId|null            $eventId
      */
-    protected function __construct(ClientId $clientId, UserAccountId $newOwnerId, ? \DateTimeImmutable $recordedOn, ? EventId $eventId)
+    protected function __construct(ClientId $clientId, UserAccountId $newOwnerId)
     {
-        parent::__construct($recordedOn, $eventId);
         $this->clientId = $clientId;
         $this->newOwnerId = $newOwnerId;
     }
@@ -63,7 +60,7 @@ class ClientOwnerChangedEvent extends Event
      */
     public static function create(ClientId $clientId, UserAccountId $newOwnerId): self
     {
-        return new self($clientId, $newOwnerId, null, null);
+        return new self($clientId, $newOwnerId);
     }
 
     /**
@@ -72,15 +69,11 @@ class ClientOwnerChangedEvent extends Event
     public static function createFromJson(\stdClass $json): DomainObject
     {
         $clientId = ClientId::create($json->domain_id);
-        $eventId = EventId::create($json->event_id);
-        $recordedOn = \DateTimeImmutable::createFromFormat('U', (string) $json->recorded_on);
         $userAccountId = null === $json->payload->new_owner_id ? null : UserAccountId::create($json->payload->new_owner_id);
 
         return new self(
             $clientId,
-            $userAccountId,
-            $recordedOn,
-            $eventId
+            $userAccountId
         );
     }
 

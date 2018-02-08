@@ -37,12 +37,9 @@ class ClientParametersUpdatedEvent extends Event
      *
      * @param ClientId                $clientId
      * @param DataBag                 $parameters
-     * @param \DateTimeImmutable|null $recordedOn
-     * @param null|EventId            $eventId
      */
-    protected function __construct(ClientId $clientId, DataBag $parameters, ? \DateTimeImmutable $recordedOn, ? EventId $eventId)
+    protected function __construct(ClientId $clientId, DataBag $parameters)
     {
-        parent::__construct($recordedOn, $eventId);
         $this->clientId = $clientId;
         $this->parameters = $parameters;
     }
@@ -63,7 +60,7 @@ class ClientParametersUpdatedEvent extends Event
      */
     public static function create(ClientId $clientId, DataBag $parameters): self
     {
-        return new self($clientId, $parameters, null, null);
+        return new self($clientId, $parameters);
     }
 
     /**
@@ -106,15 +103,11 @@ class ClientParametersUpdatedEvent extends Event
     public static function createFromJson(\stdClass $json): DomainObject
     {
         $clientId = ClientId::create($json->domain_id);
-        $eventId = EventId::create($json->event_id);
-        $recordedOn = \DateTimeImmutable::createFromFormat('U', (string) $json->recorded_on);
         $parameters = DataBag::create((array) $json->payload->parameters);
 
         return new self(
             $clientId,
-            $parameters,
-            $recordedOn,
-            $eventId
+            $parameters
         );
     }
 }

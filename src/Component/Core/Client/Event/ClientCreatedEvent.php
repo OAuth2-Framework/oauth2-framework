@@ -44,12 +44,9 @@ class ClientCreatedEvent extends Event
      * @param ClientId                $clientId
      * @param DataBag                 $parameters
      * @param UserAccountId|null      $userAccountId
-     * @param \DateTimeImmutable|null $recordedOn
-     * @param EventId|null            $eventId
      */
-    protected function __construct(ClientId $clientId, DataBag $parameters, ? UserAccountId $userAccountId, ? \DateTimeImmutable $recordedOn, ? EventId $eventId)
+    protected function __construct(ClientId $clientId, DataBag $parameters, ? UserAccountId $userAccountId)
     {
-        parent::__construct($recordedOn, $eventId);
         $this->clientId = $clientId;
         $this->parameters = $parameters;
         $this->userAccountId = $userAccountId;
@@ -64,7 +61,7 @@ class ClientCreatedEvent extends Event
      */
     public static function create(ClientId $clientId, DataBag $parameters, ? UserAccountId $userAccountId): self
     {
-        return new self($clientId, $parameters, $userAccountId, null, null);
+        return new self($clientId, $parameters, $userAccountId);
     }
 
     /**
@@ -73,17 +70,13 @@ class ClientCreatedEvent extends Event
     public static function createFromJson(\stdClass $json): DomainObject
     {
         $clientId = ClientId::create($json->domain_id);
-        $eventId = EventId::create($json->event_id);
-        $recordedOn = \DateTimeImmutable::createFromFormat('U', (string) $json->recorded_on);
         $userAccountId = null === $json->payload->user_account_id ? null : UserAccountId::create($json->payload->user_account_id);
         $parameters = DataBag::create((array) $json->payload->parameters);
 
         return new self(
             $clientId,
             $parameters,
-            $userAccountId,
-            $recordedOn,
-            $eventId
+            $userAccountId
         );
     }
 

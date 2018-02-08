@@ -30,12 +30,9 @@ class ClientDeletedEvent extends Event
      * ClientDeletedEvent constructor.
      *
      * @param ClientId                $clientId
-     * @param \DateTimeImmutable|null $recordedOn
-     * @param EventId|null            $eventId
      */
-    protected function __construct(ClientId $clientId, ? \DateTimeImmutable $recordedOn, ? EventId $eventId)
+    protected function __construct(ClientId $clientId)
     {
-        parent::__construct($recordedOn, $eventId);
         $this->clientId = $clientId;
     }
 
@@ -54,7 +51,7 @@ class ClientDeletedEvent extends Event
      */
     public static function create(ClientId $clientId): self
     {
-        return new self($clientId, null, null);
+        return new self($clientId);
     }
 
     /**
@@ -63,14 +60,8 @@ class ClientDeletedEvent extends Event
     public static function createFromJson(\stdClass $json): DomainObject
     {
         $clientId = ClientId::create($json->domain_id);
-        $eventId = EventId::create($json->event_id);
-        $recordedOn = \DateTimeImmutable::createFromFormat('U', (string) $json->recorded_on);
 
-        return new self(
-            $clientId,
-            $recordedOn,
-            $eventId
-        );
+        return new self($clientId);
     }
 
     /**

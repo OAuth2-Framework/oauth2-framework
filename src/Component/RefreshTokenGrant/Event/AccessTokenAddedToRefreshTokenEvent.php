@@ -15,7 +15,6 @@ namespace OAuth2Framework\Component\RefreshTokenGrant\Event;
 
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
 use OAuth2Framework\Component\Core\Event\Event;
-use OAuth2Framework\Component\Core\Event\EventId;
 use OAuth2Framework\Component\Core\Id\Id;
 use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenId;
 use OAuth2Framework\Component\Core\Domain\DomainObject;
@@ -37,12 +36,9 @@ class AccessTokenAddedToRefreshTokenEvent extends Event
      *
      * @param RefreshTokenId          $refreshTokenId
      * @param AccessTokenId           $accessTokenId
-     * @param \DateTimeImmutable|null $recordedOn
-     * @param null|EventId            $eventId
      */
-    protected function __construct(RefreshTokenId $refreshTokenId, AccessTokenId $accessTokenId, ? \DateTimeImmutable $recordedOn, ? EventId $eventId)
+    protected function __construct(RefreshTokenId $refreshTokenId, AccessTokenId $accessTokenId)
     {
-        parent::__construct($recordedOn, $eventId);
         $this->refreshTokenId = $refreshTokenId;
         $this->accessTokenId = $accessTokenId;
     }
@@ -63,7 +59,7 @@ class AccessTokenAddedToRefreshTokenEvent extends Event
      */
     public static function create(RefreshTokenId $refreshTokenId, AccessTokenId $accessTokenId): self
     {
-        return new self($refreshTokenId, $accessTokenId, null, null);
+        return new self($refreshTokenId, $accessTokenId);
     }
 
     /**
@@ -106,10 +102,8 @@ class AccessTokenAddedToRefreshTokenEvent extends Event
     public static function createFromJson(\stdClass $json): DomainObject
     {
         $refreshTokenId = RefreshTokenId::create($json->domain_id);
-        $eventId = EventId::create($json->event_id);
-        $recordedOn = \DateTimeImmutable::createFromFormat('U', (string) $json->recorded_on);
         $accessTokenId = AccessTokenId::create($json->payload->access_token_id);
 
-        return new self($refreshTokenId, $accessTokenId, $recordedOn, $eventId);
+        return new self($refreshTokenId, $accessTokenId);
     }
 }

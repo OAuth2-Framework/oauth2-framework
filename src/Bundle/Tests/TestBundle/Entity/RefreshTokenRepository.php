@@ -13,26 +13,13 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Tests\TestBundle\Entity;
 
-use OAuth2Framework\Component\Core\Event\Event;
-use OAuth2Framework\Component\Core\Event\EventStore;
 use OAuth2Framework\Component\RefreshTokenGrant\RefreshToken;
 use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenId;
 use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenRepository as RefreshTokenRepositoryInterface;
-use SimpleBus\Message\Bus\MessageBus;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 
 class RefreshTokenRepository implements RefreshTokenRepositoryInterface
 {
-    /**
-     * @var EventStore
-     */
-    private $eventStore;
-
-    /**
-     * @var MessageBus
-     */
-    private $eventBus;
-
     /**
      * @var AdapterInterface
      */
@@ -41,14 +28,10 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
     /**
      * RefreshTokenRepository constructor.
      *
-     * @param EventStore       $eventStore
-     * @param MessageBus       $eventBus
      * @param AdapterInterface $cache
      */
-    public function __construct(EventStore $eventStore, MessageBus $eventBus, AdapterInterface $cache)
+    public function __construct(AdapterInterface $cache)
     {
-        $this->eventStore = $eventStore;
-        $this->eventBus = $eventBus;
         $this->cache = $cache;
     }
 
@@ -58,13 +41,6 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
     public function find(RefreshTokenId $refreshTokenId)
     {
         $refreshToken = $this->getFromCache($refreshTokenId);
-        if (null === $refreshToken) {
-            $events = $this->eventStore->findAllForDomainId($refreshTokenId);
-            if (!empty($events)) {
-                $refreshToken = $this->getFromEvents($events);
-                $this->cacheObject($refreshToken);
-            }
-        }
 
         return $refreshToken;
     }
@@ -74,28 +50,8 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
      */
     public function save(RefreshToken $refreshToken)
     {
-        $events = $refreshToken->recordedMessages();
-        foreach ($events as $event) {
-            $this->eventStore->save($event);
-            $this->eventBus->handle($event);
-        }
         $refreshToken->eraseMessages();
         $this->cacheObject($refreshToken);
-    }
-
-    /**
-     * @param Event[] $events
-     *
-     * @return RefreshToken
-     */
-    private function getFromEvents(array $events): RefreshToken
-    {
-        $refreshToken = RefreshToken::createEmpty();
-        foreach ($events as $event) {
-            $refreshToken = $refreshToken->apply($event);
-        }
-
-        return $refreshToken;
     }
 
     /**
