@@ -16,7 +16,6 @@ namespace OAuth2Framework\Component\RefreshTokenGrant\Event;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\Event\Event;
-use OAuth2Framework\Component\Core\Event\EventId;
 use OAuth2Framework\Component\Core\Id\Id;
 use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenId;
 use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwnerId;
@@ -63,13 +62,13 @@ class RefreshTokenCreatedEvent extends Event
     /**
      * RefreshTokenCreatedEvent constructor.
      *
-     * @param RefreshTokenId          $refreshTokenId
-     * @param ResourceOwnerId         $resourceOwnerId
-     * @param ClientId                $clientId
-     * @param DataBag                 $parameters
-     * @param DataBag                 $metadatas
-     * @param \DateTimeImmutable      $expiresAt
-     * @param ResourceServerId|null   $resourceServerId
+     * @param RefreshTokenId        $refreshTokenId
+     * @param ResourceOwnerId       $resourceOwnerId
+     * @param ClientId              $clientId
+     * @param DataBag               $parameters
+     * @param DataBag               $metadatas
+     * @param \DateTimeImmutable    $expiresAt
+     * @param ResourceServerId|null $resourceServerId
      */
     protected function __construct(RefreshTokenId $refreshTokenId, ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, \DateTimeImmutable $expiresAt, ? ResourceServerId $resourceServerId)
     {

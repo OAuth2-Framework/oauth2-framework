@@ -34,8 +34,8 @@ class AccessTokenAddedToRefreshTokenEvent extends Event
     /**
      * AccessTokenAddedToRefreshTokenEvent constructor.
      *
-     * @param RefreshTokenId          $refreshTokenId
-     * @param AccessTokenId           $accessTokenId
+     * @param RefreshTokenId $refreshTokenId
+     * @param AccessTokenId  $accessTokenId
      */
     protected function __construct(RefreshTokenId $refreshTokenId, AccessTokenId $accessTokenId)
     {

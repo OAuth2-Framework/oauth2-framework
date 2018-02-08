@@ -18,7 +18,6 @@ use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\Domain\DomainObject;
 use OAuth2Framework\Component\Core\Event\Event;
-use OAuth2Framework\Component\Core\Event\EventId;
 use OAuth2Framework\Component\Core\Id\Id;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
@@ -73,15 +72,15 @@ class AuthorizationCodeCreatedEvent extends Event
     /**
      * AuthorizationCodeCreatedEvent constructor.
      *
-     * @param AuthorizationCodeId     $authorizationCodeId
-     * @param ClientId                $clientId
-     * @param UserAccountId           $userAccountId
-     * @param array                   $queryParameters
-     * @param string                  $redirectUri
-     * @param \DateTimeImmutable      $expiresAt
-     * @param DataBag                 $parameters
-     * @param DataBag                 $metadatas
-     * @param ResourceServerId|null   $resourceServerId
+     * @param AuthorizationCodeId   $authorizationCodeId
+     * @param ClientId              $clientId
+     * @param UserAccountId         $userAccountId
+     * @param array                 $queryParameters
+     * @param string                $redirectUri
+     * @param \DateTimeImmutable    $expiresAt
+     * @param DataBag               $parameters
+     * @param DataBag               $metadatas
+     * @param ResourceServerId|null $resourceServerId
      */
     protected function __construct(AuthorizationCodeId $authorizationCodeId, ClientId $clientId, UserAccountId $userAccountId, array $queryParameters, string $redirectUri, \DateTimeImmutable $expiresAt, DataBag $parameters, DataBag $metadatas, ? ResourceServerId $resourceServerId)
     {

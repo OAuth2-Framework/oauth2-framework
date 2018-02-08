@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\RefreshTokenGrant\Event;
 
 use OAuth2Framework\Component\Core\Event\Event;
-use OAuth2Framework\Component\Core\Event\EventId;
 use OAuth2Framework\Component\Core\Id\Id;
 use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenId;
 use OAuth2Framework\Component\Core\Domain\DomainObject;
@@ -29,7 +28,7 @@ class RefreshTokenRevokedEvent extends Event
     /**
      * RefreshTokenRevokedEvent constructor.
      *
-     * @param RefreshTokenId          $refreshTokenId
+     * @param RefreshTokenId $refreshTokenId
      */
     protected function __construct(RefreshTokenId $refreshTokenId)
     {

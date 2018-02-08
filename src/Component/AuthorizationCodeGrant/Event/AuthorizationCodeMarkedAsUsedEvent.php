@@ -16,7 +16,6 @@ namespace OAuth2Framework\Component\AuthorizationCodeGrant\Event;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeId;
 use OAuth2Framework\Component\Core\Domain\DomainObject;
 use OAuth2Framework\Component\Core\Event\Event;
-use OAuth2Framework\Component\Core\Event\EventId;
 use OAuth2Framework\Component\Core\Id\Id;
 
 class AuthorizationCodeMarkedAsUsedEvent extends Event
@@ -29,7 +28,7 @@ class AuthorizationCodeMarkedAsUsedEvent extends Event
     /**
      * AuthorizationCodeMarkedAsUsedEvent constructor.
      *
-     * @param AuthorizationCodeId     $authorizationCodeId
+     * @param AuthorizationCodeId $authorizationCodeId
      */
     protected function __construct(AuthorizationCodeId $authorizationCodeId)
     {
