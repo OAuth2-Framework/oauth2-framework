@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\Tests\Functional\Grant\ClientCredentials;
 
 use OAuth2Framework\Component\ClientCredentialsGrant\ClientCredentialsGrantType;
-use OAuth2Framework\Component\Core\Client\Command;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**

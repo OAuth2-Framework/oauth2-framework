@@ -40,6 +40,6 @@ return function (ContainerConfigurator $container) {
     $container->set(Factory\NotImplementedResponseFactory::class);
     $container->set(AuthenticateResponseFactory::class)
         ->args([
-            ref(AuthenticationMethodManager::class)
+            ref(AuthenticationMethodManager::class),
         ]);
 };
