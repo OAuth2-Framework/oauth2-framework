@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\Component\Grant;
 
 use OAuth2Framework\Bundle\Component\Component;
-use OAuth2Framework\Bundle\Component\ComponentWithCompilerPasses;
 use OAuth2Framework\Bundle\Component\Grant\AuthorizationCode\AuthorizationCodeSource;
 use OAuth2Framework\Bundle\Component\Grant\ClientCredentials\ClientCredentialsSource;
 use OAuth2Framework\Bundle\Component\Grant\Implicit\ImplicitSource;
@@ -110,6 +109,6 @@ class GrantSource implements Component
     {
         foreach ($this->subComponents as $component) {
             $component->build($container);
-        };
+        }
     }
 }

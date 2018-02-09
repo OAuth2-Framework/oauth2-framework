@@ -50,7 +50,6 @@ class ResourceServerRepositorySource implements Component
         ;
     }
 
-
     /**
      * {@inheritdoc}
      */
@@ -58,6 +57,7 @@ class ResourceServerRepositorySource implements Component
     {
         //Nothing to do
     }
+
     /**
      * {@inheritdoc}
      */
