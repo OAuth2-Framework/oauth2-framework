@@ -27,4 +27,6 @@ return function (ContainerConfigurator $container) {
             ref(TokenTypeManager::class),
             '%oauth2_server.token_type.allow_token_type_parameter%',
         ]);
+
+    $container->set(TokenTypeManager::class);
 };

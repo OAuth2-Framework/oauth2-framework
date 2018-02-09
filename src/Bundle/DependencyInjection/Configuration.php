@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\DependencyInjection;
 
-use OAuth2Framework\Bundle\DependencyInjection\Component\Component;
+use OAuth2Framework\Bundle\Component\Component;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 

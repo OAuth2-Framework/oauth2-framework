@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle;
 
-use OAuth2Framework\Bundle\DependencyInjection\Component;
+use OAuth2Framework\Bundle\Component;
 use OAuth2Framework\Bundle\DependencyInjection\OAuth2FrameworkExtension;
 use Symfony\Bundle\SecurityBundle\DependencyInjection\SecurityExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -22,7 +22,7 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 class OAuth2FrameworkBundle extends Bundle
 {
     /**
-     * @var Component\ComponentWithCompilerPasses[]
+     * @var Component\Component[]
      */
     private $components = [];
 
@@ -42,7 +42,7 @@ class OAuth2FrameworkBundle extends Bundle
     public function boot()
     {
         parent::boot();
-        //$this->container->get('twig.loader')->addPath(__DIR__.DIRECTORY_SEPARATOR.'Resources'.DIRECTORY_SEPARATOR.'views', 'OAuth2FrameworkBundle');
+        //$this->container->get('twig.loader')->addPath(__DIR__.'/Resources/views', 'OAuth2FrameworkBundle');
     }
 
     /**
@@ -60,12 +60,7 @@ class OAuth2FrameworkBundle extends Bundle
     {
         parent::build($container);
         foreach ($this->components as $component) {
-            if ($component instanceof Component\ComponentWithCompilerPasses) {
-                $compilerPasses = $component->getCompilerPasses();
-                foreach ($compilerPasses as $compilerPass) {
-                    $container->addCompilerPass($compilerPass);
-                }
-            }
+            $component->build($container);
         }
 
         /* @var SecurityExtension $extension */
@@ -74,7 +69,7 @@ class OAuth2FrameworkBundle extends Bundle
     }
 
     /**
-     * @return Component\ComponentWithCompilerPasses[]
+     * @return Component\Component[]
      */
     private function getComponents(): array
     {
@@ -95,51 +90,6 @@ class OAuth2FrameworkBundle extends Bundle
             /*new Component\FirewallSource(),
             new Component\HttpSource(),
             new Component\KeySet(),*/
-            /*
-            new Compiler\ClientRuleCompilerPass(),
-            new Compiler\ScopePolicyCompilerPass(),
-            new Compiler\ResponseFactoryCompilerPass(),
-            new Compiler\TokenEndpointAuthMethodCompilerPass(),
-            new Compiler\TokenIntrospectionEndpointAuthMethodCompilerPass(),
-            new Compiler\GrantTypeCompilerPass(),
-            new Compiler\TokenRouteCompilerPass(),
-            new Compiler\TokenTypeCompilerPass(),
-            new Compiler\PKCEMethodCompilerPass(),
-            new Compiler\TokenIntrospectionRouteCompilerPass(),
-            new Compiler\TokenRevocationRouteCompilerPass(),
-            new Compiler\TokenTypeHintCompilerPass(),
-            new Compiler\IssuerDiscoveryCompilerPass(),
-            new Compiler\ResponseModeCompilerPass(),
-            new Compiler\AccessTokenHandlerCompilerPass(),
-            new Compiler\TokenEndpointExtensionCompilerPass(),
-            new Compiler\AuthorizationEndpointRouteCompilerPass(),
-            new Compiler\UserInfoScopeSupportCompilerPass(),
-            new Compiler\UserinfoRouteCompilerPass(),
-            new Compiler\UserinfoEndpointSignatureCompilerPass(),
-            new Compiler\UserinfoEndpointEncryptionCompilerPass(),
-            new Compiler\UserInfoPairwiseSubjectCompilerPass(),
-            new Compiler\ClaimSourceCompilerPass(),
-            new Compiler\UserAccountDiscoveryCompilerPass(),
-            new Compiler\ParameterCheckerCompilerPass(),
-            new Compiler\ResponseTypeCompilerPass(),
-            new Compiler\BeforeConsentScreenCompilerPass(),
-            new Compiler\AfterConsentScreenCompilerPass(),
-            new Compiler\InitialAccessTokenCompilerPass(),
-            new Compiler\ClientAssertionJWTEncryptionSupportConfigurationCompilerPass(),
-            new Compiler\SessionManagementRouteCompilerPass(),
-            new Compiler\ClientConfigurationEndpointRouteCompilerPass(),
-            new Compiler\ClientRegistrationEndpointRouteCompilerPass(),
-            new Compiler\MetadataRouteCompilerPass(),
-            new Compiler\SignedMetadataCompilerPass(),
-            new Compiler\IdTokenMetadataCompilerPass(),
-            new Compiler\ClientJwtAssertionMetadataCompilerPass(),
-            new Compiler\JwksUriEndpointRouteCompilerPass(),
-            new Compiler\CommonMetadataCompilerPass(),
-            new Compiler\CustomMetadataCompilerPass(),
-            new Compiler\ScopeMetadataCompilerPass(),
-            new Compiler\AuthorizationRequestMetadataCompilerPass(),
-            new Compiler\RequestObjectCompilerPass(),
-            new Compiler\SecurityAnnotationCheckerCompilerPass(),
-        */];
+        ];
     }
 }
