@@ -26,7 +26,7 @@ use SimpleBus\Message\Recorder\ContainsRecordedMessages;
 use SimpleBus\Message\Recorder\PrivateMessageRecorderCapabilities;
 
 /**
- * Class Client.
+ * Class ClientCredentials.
  *
  * This class is used for every client types.
  * A client is a resource owner with a set of allowed grant types and can perform requests against
@@ -57,7 +57,7 @@ class Client implements ResourceOwner, ContainsRecordedMessages, DomainObject
     protected $parameters;
 
     /**
-     * Client constructor.
+     * ClientCredentials constructor.
      */
     private function __construct()
     {
@@ -161,6 +161,21 @@ class Client implements ResourceOwner, ContainsRecordedMessages, DomainObject
     public function isDeleted(): bool
     {
         return $this->deleted;
+    }
+
+    /**
+     * @param string $grant_type
+     *
+     * @return bool
+     */
+    public function isGrantTypeAllowed(string $grant_type): bool
+    {
+        $grant_types = $this->has('grant_types') ? $this->get('grant_types') : [];
+        if (!is_array($grant_types)) {
+            throw new \InvalidArgumentException('The metadata "grant_types" must be an array.');
+        }
+
+        return in_array($grant_type, $grant_types);
     }
 
     /**
@@ -290,7 +305,7 @@ class Client implements ResourceOwner, ContainsRecordedMessages, DomainObject
     public function getPublicId(): ResourceOwnerId
     {
         if (null === $this->clientId) {
-            throw new \RuntimeException('Client not initialized.');
+            throw new \RuntimeException('ClientCredentials not initialized.');
         }
 
         return $this->clientId;

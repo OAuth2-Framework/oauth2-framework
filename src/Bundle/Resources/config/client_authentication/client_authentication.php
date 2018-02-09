@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use OAuth2Framework\Component\ClientAuthentication\AuthenticationMethodManager;
-use OAuth2Framework\Component\TokenEndpoint\ClientAuthenticationMiddleware;
+use OAuth2Framework\Component\ClientAuthentication\ClientAuthenticationMiddleware;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
 return function (ContainerConfigurator $container) {

@@ -26,7 +26,7 @@ return function (ContainerConfigurator $container) {
 
     $container->set(AuthorizationCodeGrantType::class)
         ->args([
-            ref('oauth2_server.grant_authorization_code.repository'),
+            ref('oauth2_server.grant.authorization_code.repository'),
             ref(PKCEMethod\PKCEMethodManager::class),
         ])
         ->tag('oauth2_server_grant_type');

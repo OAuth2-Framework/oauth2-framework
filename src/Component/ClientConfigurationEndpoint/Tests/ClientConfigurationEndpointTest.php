@@ -142,7 +142,7 @@ class ClientConfigurationEndpointTest extends TestCase
         if (null === $this->clientConfigurationEndpoint) {
             $this->clientConfigurationEndpoint = new ClientConfigurationEndpoint(
                 $clientRepository,
-                new BearerToken('Client Manager', true, false, false),
+                new BearerToken('ClientCredentials Manager', true, false, false),
                 $messageBus,
                 $this->getResponseFactory(),
                 new RuleManager()

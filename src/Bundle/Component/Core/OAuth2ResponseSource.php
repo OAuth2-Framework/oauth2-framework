@@ -14,19 +14,20 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\Component\Core;
 
 use OAuth2Framework\Bundle\Component\Component;
+use OAuth2Framework\Component\Core\Response\Factory\ResponseFactory;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
-class AccessTokenSource implements Component
+class OAuth2ResponseSource implements Component
 {
     /**
      * {@inheritdoc}
      */
     public function name(): string
     {
-        return 'access_token';
+        return 'oauth2_response';
     }
 
     /**
@@ -34,10 +35,10 @@ class AccessTokenSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        $container->setAlias('oauth2_server.access_token_repository', $configs['access_token_repository']);
+        $container->registerForAutoconfiguration(ResponseFactory::class)->addTag('oauth2_server_response_factory');
 
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../Resources/config/core'));
-        $loader->load('access_token.php');
+        $loader->load('oauth2_response.php');
     }
 
     /**
@@ -45,12 +46,7 @@ class AccessTokenSource implements Component
      */
     public function getNodeDefinition(NodeDefinition $node)
     {
-        $node->children()
-            ->scalarNode('access_token_repository')
-                ->info('The access token repository service')
-                ->isRequired()
-            ->end()
-        ;
+        //Nothing to do
     }
 
     /**
@@ -58,7 +54,7 @@ class AccessTokenSource implements Component
      */
     public function build(ContainerBuilder $container)
     {
-        //Nothing to do
+        $container->addCompilerPass(new ResponseFactoryCompilerPass());
     }
 
     /**

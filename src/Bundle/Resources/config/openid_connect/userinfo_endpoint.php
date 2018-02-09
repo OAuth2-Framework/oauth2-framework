@@ -29,7 +29,7 @@ return [
         ->arguments(
             get(IdTokenBuilderFactory::class),
             get(ClientRepository::class),
-            get('oauth2_server.user_account.repository'),
+            get('oauth2_server.user_account_repository'),
             get('httplug.message_factory')
         ),
 

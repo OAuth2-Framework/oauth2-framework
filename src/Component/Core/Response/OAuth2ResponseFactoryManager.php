@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\Core\Response;
 
 use Http\Message\ResponseFactory as Psr7ResponseFactory;
+use OAuth2Framework\Component\Core\Exception\OAuth2Exception;
 use OAuth2Framework\Component\Core\Response\Extension\Extension;
 use OAuth2Framework\Component\Core\Response\Factory\ResponseFactory;
 

@@ -11,22 +11,21 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Bundle\Component\Core;
+namespace OAuth2Framework\Bundle\Component;
 
-use OAuth2Framework\Bundle\Component\Component;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
-class AccessTokenSource implements Component
+class FirewallSource implements Component
 {
     /**
      * {@inheritdoc}
      */
     public function name(): string
     {
-        return 'access_token';
+        return 'firewall';
     }
 
     /**
@@ -34,23 +33,8 @@ class AccessTokenSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        $container->setAlias('oauth2_server.access_token_repository', $configs['access_token_repository']);
-
-        $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../Resources/config/core'));
-        $loader->load('access_token.php');
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getNodeDefinition(NodeDefinition $node)
-    {
-        $node->children()
-            ->scalarNode('access_token_repository')
-                ->info('The access token repository service')
-                ->isRequired()
-            ->end()
-        ;
+        $loader = new PhpFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
+        //$loader->load('security.php');
     }
 
     /**
@@ -58,7 +42,13 @@ class AccessTokenSource implements Component
      */
     public function build(ContainerBuilder $container)
     {
-        //Nothing to do
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getNodeDefinition(NodeDefinition $node)
+    {
     }
 
     /**
@@ -66,7 +56,6 @@ class AccessTokenSource implements Component
      */
     public function prepend(ContainerBuilder $container, array $config): array
     {
-        //Nothing to do
         return [];
     }
 }

@@ -73,10 +73,10 @@ class ClientAuthenticationMiddleware implements MiddlewareInterface
     private function checkClient(?Client $client)
     {
         if (null === $client || $client->isDeleted()) {
-            throw new \InvalidArgumentException('Unknown client or client not authenticated.');
+            throw new \InvalidArgumentException('Client authentication failed.');
         }
         if ($client->areClientCredentialsExpired()) {
-            throw new \InvalidArgumentException('Client credentials expired.');
+            throw new \InvalidArgumentException('ClientCredentials credentials expired.');
         }
     }
 
@@ -89,10 +89,10 @@ class ClientAuthenticationMiddleware implements MiddlewareInterface
     private function checkAuthenticationMethod(ServerRequestInterface $request, Client $client, AuthenticationMethod $authenticationMethod, $client_credentials)
     {
         if (!$client->has('token_endpoint_auth_method') || !in_array($client->get('token_endpoint_auth_method'), $authenticationMethod->getSupportedMethods())) {
-            throw new \InvalidArgumentException('Unknown client or client not authenticated.');
+            throw new \InvalidArgumentException('Client authentication failed.');
         }
         if (!$authenticationMethod->isClientAuthenticated($client, $client_credentials, $request)) {
-            throw new \InvalidArgumentException('Unknown client or client not authenticated.');
+            throw new \InvalidArgumentException('Client authentication failed.');
         }
     }
 }

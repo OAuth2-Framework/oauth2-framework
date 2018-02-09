@@ -15,6 +15,7 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
 use OAuth2Framework\Component\Middleware;
 use OAuth2Framework\Component\TokenEndpoint;
 use OAuth2Framework\Component\TokenType\TokenTypeMiddleware;
+use OAuth2Framework\Component\ClientAuthentication\ClientAuthenticationMiddleware;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
 return function (ContainerConfigurator $container) {
@@ -24,16 +25,22 @@ return function (ContainerConfigurator $container) {
 
     $container->set('token_endpoint_pipe')
         ->class(Middleware\Pipe::class)
-        ->args([
+        ->args([[
             ref(Middleware\OAuth2ResponseMiddleware::class),
             //ref(FormPostBodyParserMiddleware::class),
-            ref(TokenEndpoint\ClientAuthenticationMiddleware::class),
+            ref(ClientAuthenticationMiddleware::class),
             ref(TokenEndpoint\GrantTypeMiddleware::class),
             ref(TokenTypeMiddleware::class),
             ref(TokenEndpoint\TokenEndpoint::class),
+        ]])
+        ->tag('controller.service_arguments');
+
+    $container->set(TokenEndpoint\GrantTypeMiddleware::class)
+        ->args([
+            ref(TokenEndpoint\GrantTypeManager::class),
         ]);
 
-    $container->set(TokenEndpoint\GrantTypeMiddleware::class);
+    $container->set(TokenEndpoint\Extension\TokenEndpointExtensionManager::class);
 
     $container->set(TokenEndpoint\TokenEndpoint::class)
         ->args([

@@ -32,7 +32,7 @@ class CommonParametersRuleTest extends TestCase
     {
         $clientId = ClientId::create('CLIENT_ID');
         $commandParameters = DataBag::create([
-            'client_name' => 'Client name',
+            'client_name' => 'ClientCredentials name',
             'client_uri' => 'urn:foo:bar:OK',
         ]);
         $rule = new Rule\CommonParametersRule();
@@ -46,7 +46,7 @@ class CommonParametersRuleTest extends TestCase
     {
         $clientId = ClientId::create('CLIENT_ID');
         $commandParameters = DataBag::create([
-            'client_name' => 'Client name',
+            'client_name' => 'ClientCredentials name',
             'client_name#fr' => 'Nom du client',
             'client_uri' => 'http://localhost/information',
             'logo_uri' => 'http://127.0.0.1:8000/logo.png',
@@ -57,7 +57,7 @@ class CommonParametersRuleTest extends TestCase
         $validatedParameters = $rule->handle($clientId, $commandParameters, DataBag::create([]), $this->getCallable());
 
         self::assertTrue($validatedParameters->has('client_name'));
-        self::assertEquals('Client name', $validatedParameters->get('client_name'));
+        self::assertEquals('ClientCredentials name', $validatedParameters->get('client_name'));
         self::assertTrue($validatedParameters->has('client_uri'));
         self::assertEquals('http://localhost/information', $validatedParameters->get('client_uri'));
         self::assertTrue($validatedParameters->has('logo_uri'));

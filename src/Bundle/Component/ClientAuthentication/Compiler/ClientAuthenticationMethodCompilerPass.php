@@ -11,15 +11,15 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Bundle\DependencyInjection\Compiler;
+namespace OAuth2Framework\Bundle\Component\ClientAuthentication\Compiler;
 
 use OAuth2Framework\Bundle\Service\MetadataBuilder;
-use OAuth2Framework\Component\TokenEndpoint\AuthenticationMethod\AuthenticationMethodManager;
+use OAuth2Framework\Component\ClientAuthentication\AuthenticationMethodManager;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
-class TokenEndpointAuthMethodCompilerPass implements CompilerPassInterface
+class ClientAuthenticationMethodCompilerPass implements CompilerPassInterface
 {
     /**
      * {@inheritdoc}
@@ -32,7 +32,7 @@ class TokenEndpointAuthMethodCompilerPass implements CompilerPassInterface
 
         $definition = $container->getDefinition(AuthenticationMethodManager::class);
 
-        $taggedServices = $container->findTaggedServiceIds('oauth2_server_token_endpoint_auth_method');
+        $taggedServices = $container->findTaggedServiceIds('oauth2_server_client_authentication');
         foreach ($taggedServices as $id => $attributes) {
             $definition->addMethodCall('add', [new Reference($id)]);
         }

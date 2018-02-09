@@ -13,23 +13,24 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Response;
 
-use OAuth2Framework\Component\TokenEndpoint\AuthenticationMethod\AuthenticationMethodManager;
+use OAuth2Framework\Component\ClientAuthentication\AuthenticationMethodManager;
+use OAuth2Framework\Component\Core\Response\Factory\AuthenticateResponseFactory as Base;
 
-class AuthenticateResponseFactory extends \OAuth2Framework\Component\Core\Response\Factory\AuthenticateResponseFactory
+class AuthenticateResponseFactory extends Base
 {
     /**
      * @var AuthenticationMethodManager
      */
-    private $tokenEndpointAuthMethodManager;
+    private $clientAuthenticationMethodManager;
 
     /**
      * ClientAuthenticationMiddleware constructor.
      *
-     * @param AuthenticationMethodManager $tokenEndpointAuthMethodManager
+     * @param AuthenticationMethodManager $clientAuthenticationMethodManager
      */
-    public function __construct(AuthenticationMethodManager $tokenEndpointAuthMethodManager)
+    public function __construct(AuthenticationMethodManager $clientAuthenticationMethodManager)
     {
-        $this->tokenEndpointAuthMethodManager = $tokenEndpointAuthMethodManager;
+        $this->clientAuthenticationMethodManager = $clientAuthenticationMethodManager;
     }
 
     /**
@@ -38,7 +39,7 @@ class AuthenticateResponseFactory extends \OAuth2Framework\Component\Core\Respon
     protected function getSchemes(): array
     {
         $schemes = [];
-        foreach ($this->tokenEndpointAuthMethodManager->all() as $method) {
+        foreach ($this->clientAuthenticationMethodManager->all() as $method) {
             $scheme = $method->getSchemesParameters();
             $schemes = array_merge($schemes, $scheme);
         }

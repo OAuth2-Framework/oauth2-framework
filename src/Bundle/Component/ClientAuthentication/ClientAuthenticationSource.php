@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Component\ClientAuthentication;
 
+use OAuth2Framework\Bundle\Component\ClientAuthentication\Compiler\ClientAuthenticationMethodCompilerPass;
 use OAuth2Framework\Bundle\Component\Component;
 use OAuth2Framework\Component\ClientAuthentication\AuthenticationMethod;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
@@ -98,6 +99,7 @@ class ClientAuthenticationSource implements Component
      */
     public function build(ContainerBuilder $container)
     {
+        $container->addCompilerPass(new ClientAuthenticationMethodCompilerPass());
         foreach ($this->subComponents as $component) {
             $component->build($container);
         }

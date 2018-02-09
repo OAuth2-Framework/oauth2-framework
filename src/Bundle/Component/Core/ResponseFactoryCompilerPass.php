@@ -11,7 +11,7 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Bundle\DependencyInjection\Compiler;
+namespace OAuth2Framework\Bundle\Component\Core;
 
 use OAuth2Framework\Component\Core\Response\OAuth2ResponseFactoryManager;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;

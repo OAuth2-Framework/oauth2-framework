@@ -21,8 +21,6 @@ use OAuth2Framework\Bundle\Component\Grant\JwtBearer\JwtBearerSource;
 use OAuth2Framework\Bundle\Component\Grant\None\NoneSource;
 use OAuth2Framework\Bundle\Component\Grant\RefreshToken\RefreshTokenSource;
 use OAuth2Framework\Bundle\Component\Grant\ResourceOwnerPasswordCredential\ResourceOwnerPasswordCredentialSource;
-use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType;
-use OAuth2Framework\Component\TokenEndpoint\GrantType;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -61,9 +59,6 @@ class GrantSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        $container->registerForAutoconfiguration(GrantType::class)->addTag('oauth2_server_grant_type');
-        $container->registerForAutoconfiguration(ResponseType::class)->addTag('oauth2_server_response_type');
-
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../Resources/config/grant'));
         $loader->load('grant.php');
 

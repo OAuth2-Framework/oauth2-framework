@@ -14,6 +14,11 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\Component\Endpoint\Token;
 
 use OAuth2Framework\Bundle\Component\Component;
+use OAuth2Framework\Bundle\Component\Endpoint\Token\Compiler\GrantTypeCompilerPass;
+use OAuth2Framework\Bundle\Component\Endpoint\Token\Compiler\TokenEndpointExtensionCompilerPass;
+use OAuth2Framework\Bundle\Component\Endpoint\Token\Compiler\TokenRouteCompilerPass;
+use OAuth2Framework\Component\TokenEndpoint\Extension\TokenEndpointExtension;
+use OAuth2Framework\Component\TokenEndpoint\GrantType;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -37,6 +42,9 @@ class TokenEndpointSource implements Component
         if (!$configs['endpoint']['token']['enabled']) {
             return;
         }
+
+        $container->registerForAutoconfiguration(GrantType::class)->addTag('oauth2_server_grant_type');
+        $container->registerForAutoconfiguration(TokenEndpointExtension::class)->addTag('oauth2_server_token_endpoint_extension');
         $container->setParameter('oauth2_server.endpoint.token.path', $configs['endpoint']['token']['path']);
 
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint/token'));
@@ -67,7 +75,9 @@ class TokenEndpointSource implements Component
      */
     public function build(ContainerBuilder $container)
     {
-        //Nothing to do
+        $container->addCompilerPass(new GrantTypeCompilerPass());
+        $container->addCompilerPass(new TokenRouteCompilerPass());
+        $container->addCompilerPass(new TokenEndpointExtensionCompilerPass());
     }
 
     /**

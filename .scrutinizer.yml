@@ -16,9 +16,9 @@ tools:
     php_code_coverage: false
     php_cpd: true
     php_pdepend:
-        excluded_dirs: ["vendor/*", "src/Bundle/Server/Tests/*", "src/Component/Server/Tests/*", "src/Component/Client/Tests/*"]
+        excluded_dirs: ["vendor/*", "src/Bundle/Server/Tests/*", "src/Component/Server/Tests/*", "src/Component/ClientCredentials/Tests/*"]
 filter:
-    excluded_paths: ["vendor/*", "src/Bundle/Server/Tests/*", "src/Component/Server/Tests/*", "src/Component/Client/Tests/*"]
+    excluded_paths: ["vendor/*", "src/Bundle/Server/Tests/*", "src/Component/Server/Tests/*", "src/Component/ClientCredentials/Tests/*"]
 build_failure_conditions:
     - 'elements.rating(<= C).exists'               # No classes/methods with a rating of C or worse
     - 'elements.rating(<= C).new.exists'           # No new classes/methods with a rating of C or worse

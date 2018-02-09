@@ -15,10 +15,10 @@ namespace OAuth2Framework\Bundle\Tests\TestBundle\Entity;
 
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCode;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeId;
-use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeRepository;
+use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeRepository as AuthorizationCodeRepositoryInterface;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 
-class AuthCodeRepository implements AuthorizationCodeRepository
+class AuthorizationCodeRepository implements AuthorizationCodeRepositoryInterface
 {
     /**
      * @var AdapterInterface

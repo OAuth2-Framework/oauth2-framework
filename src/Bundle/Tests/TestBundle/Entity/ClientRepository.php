@@ -15,6 +15,8 @@ namespace OAuth2Framework\Bundle\Tests\TestBundle\Entity;
 
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
+use OAuth2Framework\Component\Core\DataBag\DataBag;
+use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 
 class ClientRepository implements \OAuth2Framework\Component\Core\Client\ClientRepository
@@ -32,6 +34,7 @@ class ClientRepository implements \OAuth2Framework\Component\Core\Client\ClientR
     public function __construct(AdapterInterface $cache)
     {
         $this->cache = $cache;
+        $this->populateClients();
     }
 
     /**
@@ -79,5 +82,45 @@ class ClientRepository implements \OAuth2Framework\Component\Core\Client\ClientR
         $item->set($client);
         $item->tag(['oauth2_server', 'client', $itemKey]);
         $this->cache->save($item);
+    }
+
+    private function populateClients()
+    {
+        $client = Client::createEmpty();
+        $client = $client->create(
+            ClientId::create('CLIENT_ID_1'),
+            DataBag::create([
+                'token_endpoint_auth_method' => 'none',
+                'grant_types' => [],
+            ]),
+            UserAccountId::create('USER_ACCOUNT_1')
+        );
+        $client->eraseMessages();
+        $this->save($client);
+
+        $client = Client::createEmpty();
+        $client = $client->create(
+            ClientId::create('CLIENT_ID_2'),
+            DataBag::create([
+                'token_endpoint_auth_method' => 'none',
+                'grant_types' => ['client_credentials'],
+            ]),
+            UserAccountId::create('USER_ACCOUNT_1')
+        );
+        $client->eraseMessages();
+        $this->save($client);
+
+        $client = Client::createEmpty();
+        $client = $client->create(
+            ClientId::create('CLIENT_ID_3'),
+            DataBag::create([
+                'token_endpoint_auth_method' => 'client_secret_basic',
+                'grant_types' => ['client_credentials'],
+                'client_secret' => 'client_secret',
+            ]),
+            UserAccountId::create('USER_ACCOUNT_1')
+        );
+        $client->eraseMessages();
+        $this->save($client);
     }
 }

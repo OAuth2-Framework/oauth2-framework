@@ -73,6 +73,7 @@ class OAuth2FrameworkBundle extends Bundle
     private function getComponents(): array
     {
         return [
+            new Component\Core\OAuth2ResponseSource(),
             new Component\Core\ClientSource(),
             new Component\Core\AccessTokenSource(),
             new Component\Core\UserAccountSource(),

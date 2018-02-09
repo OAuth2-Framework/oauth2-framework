@@ -22,21 +22,21 @@ return function (ContainerConfigurator $container) {
 
     $container->set(Command\ChangeOwnerCommandHandler::class)
         ->args([
-            ref('oauth2_server.client.repository'),
+            ref('oauth2_server.client_repository'),
         ]);
 
     $container->set(Command\CreateClientCommandHandler::class)
         ->args([
-            ref('oauth2_server.client.repository'),
+            ref('oauth2_server.client_repository'),
         ]);
 
     $container->set(Command\DeleteClientCommandHandler::class)
         ->args([
-            ref('oauth2_server.client.repository'),
+            ref('oauth2_server.client_repository'),
         ]);
 
     $container->set(Command\UpdateClientCommandHandler::class)
         ->args([
-            ref('oauth2_server.client.repository'),
+            ref('oauth2_server.client_repository'),
         ]);
 };

@@ -77,7 +77,7 @@ class ClientAuthenticationMiddlewareTest extends TestCase
             self::assertEquals(401, $e->getCode());
             self::assertEquals([
                 'error' => 'invalid_client',
-                'error_description' => 'Unknown client or client not authenticated.',
+                'error_description' => 'Client authentication failed.',
             ], $e->getData());
         }
     }
@@ -116,7 +116,7 @@ class ClientAuthenticationMiddlewareTest extends TestCase
             self::assertEquals(401, $e->getCode());
             self::assertEquals([
                 'error' => 'invalid_client',
-                'error_description' => 'Unknown client or client not authenticated.',
+                'error_description' => 'Client authentication failed.',
             ], $e->getData());
         }
     }
@@ -158,7 +158,7 @@ class ClientAuthenticationMiddlewareTest extends TestCase
             self::assertEquals(401, $e->getCode());
             self::assertEquals([
                 'error' => 'invalid_client',
-                'error_description' => 'Client credentials expired.',
+                'error_description' => 'ClientCredentials credentials expired.',
             ], $e->getData());
         }
     }
@@ -198,7 +198,7 @@ class ClientAuthenticationMiddlewareTest extends TestCase
             self::assertEquals(401, $e->getCode());
             self::assertEquals([
                 'error' => 'invalid_client',
-                'error_description' => 'Unknown client or client not authenticated.',
+                'error_description' => 'Client authentication failed.',
             ], $e->getData());
         }
     }
@@ -239,7 +239,7 @@ class ClientAuthenticationMiddlewareTest extends TestCase
             self::assertEquals(401, $e->getCode());
             self::assertEquals([
                 'error' => 'invalid_client',
-                'error_description' => 'Unknown client or client not authenticated.',
+                'error_description' => 'Client authentication failed.',
             ], $e->getData());
         }
     }

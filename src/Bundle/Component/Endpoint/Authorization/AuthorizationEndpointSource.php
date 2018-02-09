@@ -36,6 +36,7 @@ class AuthorizationEndpointSource implements Component
      */
     protected function continueLoading(string $path, ContainerBuilder $container, array $config)
     {
+        $container->registerForAutoconfiguration(ResponseType::class)->addTag('oauth2_server_response_type');
         foreach ($config as $k => $v) {
             $container->setParameter($path.'.'.$k, $v);
         }

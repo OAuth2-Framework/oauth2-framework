@@ -11,7 +11,7 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-/*use OAuth2Framework\Component\Model\Client\Rule;
+/*use OAuth2Framework\Component\Model\ClientCredentials\Rule;
 use function Fluent\create;
 use function Fluent\get;
 

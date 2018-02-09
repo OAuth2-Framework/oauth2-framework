@@ -106,7 +106,7 @@ class TokenEndpoint implements MiddlewareInterface
         }
 
         // We check the client is allowed to use the selected grant type
-        if (!$this->isGrantTypeAllowedForTheClient($grantTypeData->getClient(), $grantType->name())) {
+        if (!$grantTypeData->getClient()->isGrantTypeAllowed($grantType->name())) {
             throw new OAuth2Exception(400, OAuth2Exception::ERROR_UNAUTHORIZED_CLIENT, sprintf('The grant type "%s" is unauthorized for this client.', $grantType->name()));
         }
 

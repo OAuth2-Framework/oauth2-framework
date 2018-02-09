@@ -22,7 +22,7 @@ use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @group Client
+ * @group ClientCredentials
  */
 class ClientTest extends TestCase
 {
