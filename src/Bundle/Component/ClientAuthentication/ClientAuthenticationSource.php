@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\Component\ClientAuthentication;
 
 use OAuth2Framework\Bundle\Component\Component;
-use OAuth2Framework\Bundle\Component\ComponentWithCompilerPasses;
 use OAuth2Framework\Component\ClientAuthentication\AuthenticationMethod;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\FileLocator;
@@ -101,6 +100,6 @@ class ClientAuthenticationSource implements Component
     {
         foreach ($this->subComponents as $component) {
             $component->build($container);
-        };
+        }
     }
 }

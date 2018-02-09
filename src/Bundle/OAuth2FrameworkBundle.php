@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle;
 
-use OAuth2Framework\Bundle\Component;
 use OAuth2Framework\Bundle\DependencyInjection\OAuth2FrameworkExtension;
 use Symfony\Bundle\SecurityBundle\DependencyInjection\SecurityExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;

@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\Component\Endpoint;
 
 use OAuth2Framework\Bundle\Component\Component;
-use OAuth2Framework\Bundle\Component\ComponentWithCompilerPasses;
 use OAuth2Framework\Bundle\Component\Endpoint\ClientConfiguration\ClientConfigurationSource;
 use OAuth2Framework\Bundle\Component\Endpoint\ClientRegistration\ClientRegistrationSource;
 use OAuth2Framework\Bundle\Component\Endpoint\IssuerDiscovery\IssuerDiscoveryEndpointSource;
@@ -107,6 +106,6 @@ class EndpointSource implements Component
     {
         foreach ($this->subComponents as $component) {
             $component->build($container);
-        };
+        }
     }
 }

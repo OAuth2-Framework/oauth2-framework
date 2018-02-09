@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\Component\Endpoint\ClientRegistration;
 
 use OAuth2Framework\Bundle\Component\Component;
-use OAuth2Framework\Bundle\Component\ComponentWithCompilerPasses;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -108,6 +107,6 @@ class ClientRegistrationSource implements Component
     {
         foreach ($this->subComponents as $component) {
             $component->build($container);
-        };
+        }
     }
 }
