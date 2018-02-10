@@ -94,8 +94,7 @@ class AuthorizationCodeGrantTypeTest extends TestCase
         $grantTypeData = GrantTypeData::create($client);
 
         $receivedGrantTypeData = $this->getGrantType()->prepareResponse($request->reveal(), $grantTypeData);
-        self::assertNotSame($receivedGrantTypeData, $grantTypeData);
-        self::assertEquals('scope1 scope2', $receivedGrantTypeData->getParameter('scope'));
+        self::assertSame($receivedGrantTypeData, $grantTypeData);
     }
 
     /**

@@ -19,23 +19,19 @@ use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use OAuth2Framework\Component\RefreshTokenGrant\RefreshToken;
 use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenId;
 use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenRepository as RefreshTokenRepositoryInterface;
-use Symfony\Component\Cache\Adapter\AdapterInterface;
 
 class RefreshTokenRepository implements RefreshTokenRepositoryInterface
 {
     /**
-     * @var AdapterInterface
+     * @var RefreshToken[]
      */
-    private $cache;
+    private $refreshTokens = [];
 
     /**
      * RefreshTokenRepository constructor.
-     *
-     * @param AdapterInterface $cache
      */
-    public function __construct(AdapterInterface $cache)
+    public function __construct()
     {
-        $this->cache = $cache;
         $this->initRefreshTokens();
     }
 
@@ -44,9 +40,7 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
      */
     public function find(RefreshTokenId $refreshTokenId)
     {
-        $refreshToken = $this->getFromCache($refreshTokenId);
-
-        return $refreshToken;
+        return array_key_exists($refreshTokenId->getValue(), $this->refreshTokens) ? $this->refreshTokens[$refreshTokenId->getValue()] : null;
     }
 
     /**
@@ -54,36 +48,7 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
      */
     public function save(RefreshToken $refreshToken)
     {
-        $refreshToken->eraseMessages();
-        $this->cacheObject($refreshToken);
-    }
-
-    /**
-     * @param RefreshTokenId $refreshTokenId
-     *
-     * @return RefreshToken|null
-     */
-    private function getFromCache(RefreshTokenId $refreshTokenId): ? RefreshToken
-    {
-        $itemKey = sprintf('oauth2-refresh_token-%s', $refreshTokenId->getValue());
-        $item = $this->cache->getItem($itemKey);
-        if ($item->isHit()) {
-            return $item->get();
-        }
-
-        return null;
-    }
-
-    /**
-     * @param RefreshToken $refreshToken
-     */
-    private function cacheObject(RefreshToken $refreshToken)
-    {
-        $itemKey = sprintf('oauth2-refresh_token-%s', $refreshToken->getTokenId()->getValue());
-        $item = $this->cache->getItem($itemKey);
-        $item->set($refreshToken);
-        $item->tag(['oauth2_server', 'refresh_token', $itemKey]);
-        $this->cache->save($item);
+        $this->refreshTokens[$refreshToken->getTokenId()->getValue()] = $refreshToken;
     }
 
     private function initRefreshTokens()

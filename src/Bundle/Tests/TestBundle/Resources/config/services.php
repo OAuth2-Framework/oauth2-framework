@@ -18,11 +18,13 @@ use OAuth2Framework\Bundle\Tests\TestBundle\Entity\UserManager;
 use OAuth2Framework\Bundle\Tests\TestBundle\Entity\UserRepository;
 use OAuth2Framework\Bundle\Tests\TestBundle\Entity\RefreshTokenRepository;
 use OAuth2Framework\Bundle\Tests\TestBundle\Entity\ResourceServerRepository;
-use OAuth2Framework\Bundle\Tests\TestBundle\Entity\AccessTokenByReferenceRepository;
+use OAuth2Framework\Bundle\Tests\TestBundle\Entity\AccessTokenRepository;
 use OAuth2Framework\Bundle\Tests\TestBundle\Entity\AuthorizationCodeRepository;
 use OAuth2Framework\Bundle\Tests\TestBundle\Entity\ScopeRepository;
+use OAuth2Framework\Bundle\Tests\TestBundle\Entity\InitialAccessTokenRepository;
 use OAuth2Framework\Bundle\Tests\TestBundle\Service\AccessTokenHandler;
 use OAuth2Framework\Bundle\Tests\TestBundle\Service\UserProvider;
+use OAuth2Framework\Component\OpenIdConnect\UserInfo\Pairwise\EncryptedSubjectIdentifier;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
@@ -32,16 +34,10 @@ return function (ContainerConfigurator $container) {
         ->autoconfigure();
 
     $container->set('MyClientRepository')
-        ->class(ClientRepository::class)
-        ->args([
-            ref('cache.app'),
-        ]);
+        ->class(ClientRepository::class);
 
     $container->set('MyRefreshTokenRepository')
-        ->class(RefreshTokenRepository::class)
-        ->args([
-            ref('cache.app'),
-        ]);
+        ->class(RefreshTokenRepository::class);
 
     $container->set('MyUserAccountManager')
         ->class(UserManager::class);
@@ -58,28 +54,16 @@ return function (ContainerConfigurator $container) {
         ]);
 
     $container->set('MyAccessTokenRepository')
-        ->class(AccessTokenByReferenceRepository::class)
-        ->args([
-            100,
-            150,
-            1800,
-            ref('cache.app'),
-        ]);
+        ->class(AccessTokenRepository::class);
 
     $container->set('MyAuthorizationCodeRepository')
-        ->class(AuthorizationCodeRepository::class)
-        ->args([
-            ref('cache.app'),
-        ]);
+        ->class(AuthorizationCodeRepository::class);
 
     $container->set('MyScopeRepository')
         ->class(ScopeRepository::class);
 
     $container->set('MyInitialAccessTokenRepository')
-        ->class(\OAuth2Framework\Bundle\Tests\TestBundle\Entity\InitialAccessTokenRepository::class)
-        ->args([
-            ref('cache.app'),
-        ]);
+        ->class(InitialAccessTokenRepository::class);
 
     $container->set(UriFactory::class);
 
@@ -87,7 +71,7 @@ return function (ContainerConfigurator $container) {
         ->tag('oauth2_server_access_token_handler');
 
     $container->set('MyPairwiseSubjectIdentifier')
-        ->class(\OAuth2Framework\Component\OpenIdConnect\UserInfo\Pairwise\EncryptedSubjectIdentifier::class)
+        ->class(EncryptedSubjectIdentifier::class)
         ->args([
             'This is my secret Key !!!',
             'aes-128-cbc',

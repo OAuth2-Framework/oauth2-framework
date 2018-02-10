@@ -16,23 +16,20 @@ namespace OAuth2Framework\Bundle\Tests\TestBundle\Entity;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCode;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeId;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeRepository as AuthorizationCodeRepositoryInterface;
-use Symfony\Component\Cache\Adapter\AdapterInterface;
+use OAuth2Framework\Component\Core\Client\ClientId;
+use OAuth2Framework\Component\Core\DataBag\DataBag;
+use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 
 class AuthorizationCodeRepository implements AuthorizationCodeRepositoryInterface
 {
     /**
-     * @var AdapterInterface
+     * @var AuthorizationCode[]
      */
-    private $cache;
+    private $authorizationCodes = [];
 
-    /**
-     * AuthCodeRepository constructor.
-     *
-     * @param AdapterInterface $cache
-     */
-    public function __construct(AdapterInterface $cache)
+    public function __construct()
     {
-        $this->cache = $cache;
+        $this->initAuthorizationCodes();
     }
 
     /**
@@ -40,9 +37,7 @@ class AuthorizationCodeRepository implements AuthorizationCodeRepositoryInterfac
      */
     public function find(AuthorizationCodeId $authCodeId): ? AuthorizationCode
     {
-        $authCode = $this->getFromCache($authCodeId);
-
-        return $authCode;
+        return array_key_exists($authCodeId->getValue(), $this->authorizationCodes) ? $this->authorizationCodes[$authCodeId->getValue()] : null;
     }
 
     /**
@@ -50,35 +45,55 @@ class AuthorizationCodeRepository implements AuthorizationCodeRepositoryInterfac
      */
     public function save(AuthorizationCode $authCode)
     {
-        $authCode->eraseMessages();
-        $this->cacheObject($authCode);
+        $this->authorizationCodes[$authCode->getTokenId()->getValue()] = $authCode;
     }
 
-    /**
-     * @param AuthorizationCodeId $authCodeId
-     *
-     * @return AuthorizationCode|null
-     */
-    private function getFromCache(AuthorizationCodeId $authCodeId): ? AuthorizationCode
+    private function initAuthorizationCodes()
     {
-        $itemKey = sprintf('oauth2-auth_code-%s', $authCodeId->getValue());
-        $item = $this->cache->getItem($itemKey);
-        if ($item->isHit()) {
-            return $item->get();
-        }
+        $refreshToken = AuthorizationCode::createEmpty();
+        $refreshToken = $refreshToken->create(
+            AuthorizationCodeId::create('VALID_AUTHORIZATION_CODE'),
+            ClientId::create('CLIENT_ID_3'),
+            UserAccountId::create('john.1'),
+            [],
+            'http://localhost/callback',
+            new \DateTimeImmutable('now +1 day'),
+            DataBag::create([]),
+            DataBag::create([]),
+            null
+        );
+        $refreshToken->eraseMessages();
+        $this->save($refreshToken);
 
-        return null;
-    }
+        $refreshToken = AuthorizationCode::createEmpty();
+        $refreshToken = $refreshToken->create(
+            AuthorizationCodeId::create('REVOKED_AUTHORIZATION_CODE'),
+            ClientId::create('CLIENT_ID_3'),
+            UserAccountId::create('john.1'),
+            [],
+            'http://localhost/callback',
+            new \DateTimeImmutable('now +1 day'),
+            DataBag::create([]),
+            DataBag::create([]),
+            null
+        );
+        $refreshToken = $refreshToken->markAsRevoked();
+        $refreshToken->eraseMessages();
+        $this->save($refreshToken);
 
-    /**
-     * @param AuthorizationCode $authCode
-     */
-    private function cacheObject(AuthorizationCode $authCode)
-    {
-        $itemKey = sprintf('oauth2-auth_code-%s', $authCode->getTokenId()->getValue());
-        $item = $this->cache->getItem($itemKey);
-        $item->set($authCode);
-        $item->tag(['oauth2_server', 'auth_code', $itemKey]);
-        $this->cache->save($item);
+        $refreshToken = AuthorizationCode::createEmpty();
+        $refreshToken = $refreshToken->create(
+            AuthorizationCodeId::create('EXPIRED_AUTHORIZATION_CODE'),
+            ClientId::create('CLIENT_ID_3'),
+            UserAccountId::create('john.1'),
+            [],
+            'http://localhost/callback',
+            new \DateTimeImmutable('now -1 day'),
+            DataBag::create([]),
+            DataBag::create([]),
+            null
+        );
+        $refreshToken->eraseMessages();
+        $this->save($refreshToken);
     }
 }

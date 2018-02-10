@@ -15,33 +15,20 @@ namespace OAuth2Framework\Bundle\Tests\TestBundle\Entity;
 
 use OAuth2Framework\Component\ClientRegistrationEndpoint\InitialAccessToken;
 use OAuth2Framework\Component\ClientRegistrationEndpoint\InitialAccessTokenId;
-use Symfony\Component\Cache\Adapter\AdapterInterface;
 
 class InitialAccessTokenRepository implements \OAuth2Framework\Component\ClientRegistrationEndpoint\InitialAccessTokenRepository
 {
     /**
-     * @var AdapterInterface
+     * @var InitialAccessToken[]
      */
-    private $cache;
-
-    /**
-     * InitialAccessTokenRepository constructor.
-     *
-     * @param AdapterInterface $cache
-     */
-    public function __construct(AdapterInterface $cache)
-    {
-        $this->cache = $cache;
-    }
+    private $initialAccessTokens = [];
 
     /**
      * {@inheritdoc}
      */
     public function find(InitialAccessTokenId $initialAccessTokenId): ? InitialAccessToken
     {
-        $initialAccessToken = $this->getFromCache($initialAccessTokenId);
-
-        return $initialAccessToken;
+        return array_key_exists($initialAccessTokenId->getValue(), $this->initialAccessTokens) ? $this->initialAccessTokens[$initialAccessTokenId->getValue()] : null;
     }
 
     /**
@@ -49,35 +36,6 @@ class InitialAccessTokenRepository implements \OAuth2Framework\Component\ClientR
      */
     public function save(InitialAccessToken $initialAccessToken)
     {
-        $initialAccessToken->eraseMessages();
-        $this->cacheObject($initialAccessToken);
-    }
-
-    /**
-     * @param InitialAccessTokenId $initialAccessTokenId
-     *
-     * @return InitialAccessToken|null
-     */
-    private function getFromCache(InitialAccessTokenId $initialAccessTokenId): ? InitialAccessToken
-    {
-        $itemKey = sprintf('oauth2-initial_access_token-%s', $initialAccessTokenId->getValue());
-        $item = $this->cache->getItem($itemKey);
-        if ($item->isHit()) {
-            return $item->get();
-        }
-
-        return null;
-    }
-
-    /**
-     * @param InitialAccessToken $initialAccessToken
-     */
-    private function cacheObject(InitialAccessToken $initialAccessToken)
-    {
-        $itemKey = sprintf('oauth2-initial_access_token-%s', $initialAccessToken->getUserAccountId()->getValue());
-        $item = $this->cache->getItem($itemKey);
-        $item->set($initialAccessToken);
-        $item->tag(['oauth2_server', 'initial_access_token', $itemKey]);
-        $this->cache->save($item);
+        $this->initialAccessTokens[$initialAccessToken->getTokenId()->getValue()] = $initialAccessToken;
     }
 }

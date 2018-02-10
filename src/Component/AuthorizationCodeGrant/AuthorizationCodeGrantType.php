@@ -79,17 +79,6 @@ class AuthorizationCodeGrantType implements GrantType
      */
     public function prepareResponse(ServerRequestInterface $request, GrantTypeData $grantTypeData): GrantTypeData
     {
-        $parameters = $request->getParsedBody() ?? [];
-        $authorizationCode = $this->getAuthorizationCode($parameters['code']);
-
-        if (true === $authorizationCode->isUsed() || true === $authorizationCode->isRevoked()) {
-            throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_GRANT, 'The parameter "code" is invalid.');
-        }
-
-        foreach ($authorizationCode->getParameters() as $key => $parameter) {
-            $grantTypeData = $grantTypeData->withParameter($key, $parameter);
-        }
-
         return $grantTypeData;
     }
 
@@ -100,6 +89,11 @@ class AuthorizationCodeGrantType implements GrantType
     {
         $parameters = $request->getParsedBody() ?? [];
         $authorizationCode = $this->getAuthorizationCode($parameters['code']);
+
+        if (true === $authorizationCode->isUsed() || true === $authorizationCode->isRevoked()) {
+            throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_GRANT, 'The parameter "code" is invalid.');
+        }
+
         $this->checkClient($grantTypeData->getClient(), $parameters);
 
         $this->checkAuthorizationCode($authorizationCode, $grantTypeData->getClient());
@@ -109,6 +103,11 @@ class AuthorizationCodeGrantType implements GrantType
 
         // Validate the redirect URI.
         $this->checkRedirectUri($authorizationCode, $redirectUri);
+
+        foreach ($authorizationCode->getParameters() as $key => $parameter) {
+            $grantTypeData = $grantTypeData->withParameter($key, $parameter);
+        }
+
         $grantTypeData = $grantTypeData->withMetadata('redirect_uri', $redirectUri);
 
         $grantTypeData = $grantTypeData->withMetadata('code', $authorizationCode);
@@ -131,7 +130,7 @@ class AuthorizationCodeGrantType implements GrantType
         $authorizationCode = $this->authorizationCodeRepository->find(AuthorizationCodeId::create($code));
 
         if (!$authorizationCode instanceof AuthorizationCode) {
-            throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_GRANT, 'Code does not exist or is invalid for the client.');
+            throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_GRANT, 'The parameter "code" is invalid.');
         }
 
         return $authorizationCode;
@@ -205,11 +204,11 @@ class AuthorizationCodeGrantType implements GrantType
     private function checkAuthorizationCode(AuthorizationCode $authorizationCode, Client $client)
     {
         if ($client->getPublicId()->getValue() !== $authorizationCode->getClientId()->getValue()) {
-            throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_GRANT, 'Code does not exist or is invalid for the client.');
+            throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_GRANT, 'The parameter "code" is invalid.');
         }
 
         if ($authorizationCode->hasExpired()) {
-            throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_GRANT, 'The authorization code has expired.');
+            throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_GRANT, 'The authorization code expired.');
         }
     }
 }

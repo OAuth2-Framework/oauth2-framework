@@ -17,23 +17,19 @@ use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
-use Symfony\Component\Cache\Adapter\AdapterInterface;
 
 class ClientRepository implements \OAuth2Framework\Component\Core\Client\ClientRepository
 {
     /**
-     * @var AdapterInterface
+     * @var Client[]
      */
-    private $cache;
+    private $clients = [];
 
     /**
      * ClientRepository constructor.
-     *
-     * @param AdapterInterface $cache
      */
-    public function __construct(AdapterInterface $cache)
+    public function __construct()
     {
-        $this->cache = $cache;
         $this->populateClients();
     }
 
@@ -42,9 +38,7 @@ class ClientRepository implements \OAuth2Framework\Component\Core\Client\ClientR
      */
     public function find(ClientId $clientId): ? Client
     {
-        $client = $this->getFromCache($clientId);
-
-        return $client;
+        return array_key_exists($clientId->getValue(), $this->clients) ? $this->clients[$clientId->getValue()] : null;
     }
 
     /**
@@ -52,36 +46,7 @@ class ClientRepository implements \OAuth2Framework\Component\Core\Client\ClientR
      */
     public function save(Client $client)
     {
-        $client->eraseMessages();
-        $this->cacheObject($client);
-    }
-
-    /**
-     * @param ClientId $clientId
-     *
-     * @return Client|null
-     */
-    private function getFromCache(ClientId $clientId): ? Client
-    {
-        $itemKey = sprintf('oauth2-client-%s', $clientId->getValue());
-        $item = $this->cache->getItem($itemKey);
-        if ($item->isHit()) {
-            return $item->get();
-        }
-
-        return null;
-    }
-
-    /**
-     * @param Client $client
-     */
-    private function cacheObject(Client $client)
-    {
-        $itemKey = sprintf('oauth2-client-%s', $client->getPublicId()->getValue());
-        $item = $this->cache->getItem($itemKey);
-        $item->set($client);
-        $item->tag(['oauth2_server', 'client', $itemKey]);
-        $this->cache->save($item);
+        $this->clients[$client->getPublicId()->getValue()] = $client;
     }
 
     private function populateClients()
@@ -103,7 +68,7 @@ class ClientRepository implements \OAuth2Framework\Component\Core\Client\ClientR
             ClientId::create('CLIENT_ID_2'),
             DataBag::create([
                 'token_endpoint_auth_method' => 'none',
-                'grant_types' => ['client_credentials', 'refresh_token'],
+                'grant_types' => ['client_credentials', 'refresh_token', 'authorization_code'],
             ]),
             UserAccountId::create('USER_ACCOUNT_1')
         );
@@ -115,7 +80,7 @@ class ClientRepository implements \OAuth2Framework\Component\Core\Client\ClientR
             ClientId::create('CLIENT_ID_3'),
             DataBag::create([
                 'token_endpoint_auth_method' => 'client_secret_post',
-                'grant_types' => ['client_credentials', 'refresh_token'],
+                'grant_types' => ['client_credentials', 'refresh_token', 'authorization_code'],
                 'client_secret' => 'secret',
             ]),
             UserAccountId::create('USER_ACCOUNT_1')
