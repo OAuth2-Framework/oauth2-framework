@@ -90,7 +90,7 @@ class RefreshTokenGrantTypeTest extends TestCase
         $request->getParsedBody()->willReturn(['refresh_token' => 'UNKNOWN_REFRESH_TOKEN_ID']);
 
         try {
-            $this->getGrantType()->prepareResponse($request->reveal(), $grantTypeData);
+            $this->getGrantType()->grant($request->reveal(), $grantTypeData);
             $this->fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2Exception $e) {
             self::assertEquals(400, $e->getCode());
@@ -117,8 +117,7 @@ class RefreshTokenGrantTypeTest extends TestCase
         $grantTypeData = GrantTypeData::create($client);
 
         $receivedGrantTypeData = $this->getGrantType()->prepareResponse($request->reveal(), $grantTypeData);
-        self::assertNotSame($receivedGrantTypeData, $grantTypeData);
-        self::assertEquals('scope1 scope2', $receivedGrantTypeData->getParameter('scope'));
+        self::assertSame($receivedGrantTypeData, $grantTypeData);
     }
 
     /**
