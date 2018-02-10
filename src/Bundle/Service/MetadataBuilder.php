@@ -17,11 +17,11 @@ use OAuth2Framework\Component\AuthorizationCodeGrant\PKCEMethod\PKCEMethodManage
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequestLoader;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\ResponseModeManager;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseTypeManager;
+use OAuth2Framework\Component\ClientAuthentication\AuthenticationMethodManager;
+use OAuth2Framework\Component\ClientAuthentication\ClientAssertionJwt;
 use OAuth2Framework\Component\MetadataEndpoint\Metadata;
 use OAuth2Framework\Component\OpenIdConnect\UserInfo\UserInfo;
 use OAuth2Framework\Component\Scope\ScopeRepository;
-use OAuth2Framework\Component\TokenEndpoint\AuthenticationMethod\AuthenticationMethodManager;
-use OAuth2Framework\Component\TokenEndpoint\AuthenticationMethod\ClientAssertionJwt;
 use OAuth2Framework\Component\TokenEndpoint\GrantTypeManager;
 use Symfony\Component\Routing\RouterInterface;
 

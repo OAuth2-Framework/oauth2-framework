@@ -62,7 +62,6 @@ class OAuth2
      */
     protected function setClientId(string $clientId)
     {
-        Assertion::string($clientId, 'The client public ID should be a string.');
         $this->clientId = $clientId;
     }
 
@@ -79,7 +78,6 @@ class OAuth2
      */
     protected function setResourceOwnerId(string $resourceOwnerId)
     {
-        Assertion::string($resourceOwnerId, 'The resource owner public ID should be a string.');
         $this->resourceOwnerId = $resourceOwnerId;
     }
 

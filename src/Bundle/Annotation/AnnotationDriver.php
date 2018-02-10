@@ -14,11 +14,11 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\Annotation;
 
 use Doctrine\Common\Annotations\Reader;
-use OAuth2Framework\Bundle\Annotation\Checker\CheckerInterface;
+use OAuth2Framework\Bundle\Annotation\Checker\Checker;
 use OAuth2Framework\Bundle\Security\Authentication\Token\OAuth2Token;
 use OAuth2Framework\Component\Core\Exception\OAuth2Exception;
-use OAuth2Framework\Component\Response\OAuth2ResponseFactoryManager;
-use OAuth2Framework\Component\Response\OAuth2ResponseInterface;
+use OAuth2Framework\Component\Core\Response\OAuth2Response;
+use OAuth2Framework\Component\Core\Response\OAuth2ResponseFactoryManager;
 use OAuth2Framework\Component\TokenType\TokenTypeManager;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
@@ -37,7 +37,7 @@ class AnnotationDriver
     private $tokenStorage;
 
     /**
-     * @var CheckerInterface[]
+     * @var Checker[]
      */
     private $checkers = [];
 
@@ -68,11 +68,11 @@ class AnnotationDriver
     }
 
     /**
-     * @param CheckerInterface $checker
+     * @param Checker $checker
      *
      * @return AnnotationDriver
      */
-    public function addChecker(CheckerInterface $checker): self
+    public function addChecker(Checker $checker): self
     {
         $this->checkers[] = $checker;
 
@@ -80,7 +80,7 @@ class AnnotationDriver
     }
 
     /**
-     * @return CheckerInterface[]
+     * @return Checker[]
      */
     public function getCheckers(): array
     {
@@ -156,10 +156,10 @@ class AnnotationDriver
     }
 
     /**
-     * @param FilterControllerEvent   $event
-     * @param OAuth2ResponseInterface $response
+     * @param FilterControllerEvent $event
+     * @param OAuth2Response        $response
      */
-    private function updateFilterControllerEvent(FilterControllerEvent &$event, OAuth2ResponseInterface $response)
+    private function updateFilterControllerEvent(FilterControllerEvent &$event, OAuth2Response $response)
     {
         $event->setController(function () use ($response) {
             $factory = new HttpFoundationFactory();

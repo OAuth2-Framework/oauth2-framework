@@ -16,7 +16,7 @@ namespace OAuth2Framework\Bundle\Annotation\Checker;
 use OAuth2Framework\Bundle\Annotation\OAuth2;
 use OAuth2Framework\Bundle\Security\Authentication\Token\OAuth2Token;
 
-class ResourceOwnerIdChecker implements CheckerInterface
+class ResourceOwnerIdChecker implements Checker
 {
     /**
      * {@inheritdoc}

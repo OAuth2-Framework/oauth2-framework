@@ -14,8 +14,8 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\Rule;
 
 use Base64Url\Base64Url;
-use OAuth2Framework\Component\Model\Client\ClientId;
-use OAuth2Framework\Component\Model\Client\Rule\ClientRegistrationManagementRule as Base;
+use OAuth2Framework\Component\ClientRegistrationEndpoint\Rule\ClientRegistrationManagementRule as Base;
+use OAuth2Framework\Component\Core\Client\ClientId;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 

@@ -16,7 +16,7 @@ namespace OAuth2Framework\Bundle\Annotation\Checker;
 use OAuth2Framework\Bundle\Annotation\OAuth2;
 use OAuth2Framework\Bundle\Security\Authentication\Token\OAuth2Token;
 
-class ScopeChecker implements CheckerInterface
+class ScopeChecker implements Checker
 {
     /**
      * {@inheritdoc}
@@ -29,7 +29,8 @@ class ScopeChecker implements CheckerInterface
         }
 
         $scopes = explode(' ', $scope);
-        $diff = array_diff($scopes, $token->getAccessToken()->getScopes());
+        $tokenScope =  $token->getAccessToken()->hasParameter('scope') ? explode(' ', $token->getAccessToken()->getParameter('scope')) : [];
+        $diff = array_diff($scopes, $tokenScope);
 
         if (!empty($diff)) {
             return sprintf('Insufficient scope. The scope rule is: %s', $configuration->getScope());

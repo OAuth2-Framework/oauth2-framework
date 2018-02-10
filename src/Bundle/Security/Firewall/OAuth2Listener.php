@@ -16,6 +16,7 @@ namespace OAuth2Framework\Bundle\Security\Firewall;
 use OAuth2Framework\Bundle\Security\Authentication\Token\OAuth2Token;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenHandlerManager;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
+use OAuth2Framework\Component\Core\Exception\OAuth2Exception;
 use OAuth2Framework\Component\Core\Response\OAuth2ResponseFactoryManager;
 use OAuth2Framework\Component\TokenType\TokenTypeManager;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
@@ -107,7 +108,8 @@ class OAuth2Listener implements ListenerInterface
             if (null !== $e->getPrevious()) {
                 $e = $e->getPrevious();
             }
-            $oauth2Response = $this->oauth2ResponseFactoryManager->getResponse(401, ['error' => 'invalid_grant', 'error_description' => $e->getMessage()]);
+            $oauth2Exception = new OAuth2Exception(401, OAuth2Exception::ERROR_INVALID_GRANT, $e->getMessage(), $e);
+            $oauth2Response = $this->oauth2ResponseFactoryManager->getResponse($oauth2Exception);
             $response = $oauth2Response->getResponse();
             $factory = new HttpFoundationFactory();
             $event->setResponse($factory->createResponse($response));
