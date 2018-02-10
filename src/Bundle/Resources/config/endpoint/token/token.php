@@ -27,7 +27,6 @@ return function (ContainerConfigurator $container) {
         ->class(Middleware\Pipe::class)
         ->args([[
             ref(Middleware\OAuth2ResponseMiddleware::class),
-            //ref(FormPostBodyParserMiddleware::class),
             ref(ClientAuthenticationMiddleware::class),
             ref(TokenEndpoint\GrantTypeMiddleware::class),
             ref(TokenTypeMiddleware::class),

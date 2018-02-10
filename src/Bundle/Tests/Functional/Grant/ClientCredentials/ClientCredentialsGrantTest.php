@@ -30,7 +30,7 @@ class ClientCredentialsGrantTest extends WebTestCase
     protected function setUp()
     {
         if (!class_exists(ClientCredentialsGrantType::class)) {
-            $this->markTestSkipped('The component "client-credentials-grant" is not installed.');
+            $this->markTestSkipped('The component "oauth2-framework/client-credentials-grant" is not installed.');
         }
     }
 
@@ -91,5 +91,17 @@ class ClientCredentialsGrantTest extends WebTestCase
         $response = $client->getResponse();
         self::assertEquals(400, $response->getStatusCode());
         self::assertEquals('{"error":"invalid_client","error_description":"The client is not a confidential client."}', $response->getContent());
+    }
+
+    /**
+     * @test
+     */
+    public function theAccessTokenIsIssued()
+    {
+        $client = static::createClient();
+        $client->request('POST', '/token/get', ['grant_type' => 'client_credentials', 'client_id' => 'CLIENT_ID_3', 'client_secret' => 'secret'], [], ['HTTPS' => 'on'], null);
+        $response = $client->getResponse();
+        self::assertEquals(200, $response->getStatusCode());
+        self::assertRegexp('/\{"token_type"\:"Bearer","access_token"\:"[0-9a-zA-Z-_]+","expires_in":[0-9]{4}\}/', $response->getContent());
     }
 }

@@ -103,7 +103,7 @@ class ClientRepository implements \OAuth2Framework\Component\Core\Client\ClientR
             ClientId::create('CLIENT_ID_2'),
             DataBag::create([
                 'token_endpoint_auth_method' => 'none',
-                'grant_types' => ['client_credentials'],
+                'grant_types' => ['client_credentials', 'refresh_token'],
             ]),
             UserAccountId::create('USER_ACCOUNT_1')
         );
@@ -114,9 +114,9 @@ class ClientRepository implements \OAuth2Framework\Component\Core\Client\ClientR
         $client = $client->create(
             ClientId::create('CLIENT_ID_3'),
             DataBag::create([
-                'token_endpoint_auth_method' => 'client_secret_basic',
-                'grant_types' => ['client_credentials'],
-                'client_secret' => 'client_secret',
+                'token_endpoint_auth_method' => 'client_secret_post',
+                'grant_types' => ['client_credentials', 'refresh_token'],
+                'client_secret' => 'secret',
             ]),
             UserAccountId::create('USER_ACCOUNT_1')
         );

@@ -203,7 +203,7 @@ class RefreshTokenGrantTypeTest extends TestCase
             self::assertEquals(400, $e->getCode());
             self::assertEquals([
                 'error' => 'invalid_grant',
-                'error_description' => 'Refresh token has expired.',
+                'error_description' => 'The refresh token expired.',
             ], $e->getData());
         }
     }

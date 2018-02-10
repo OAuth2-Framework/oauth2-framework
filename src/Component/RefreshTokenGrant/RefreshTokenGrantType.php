@@ -71,18 +71,7 @@ class RefreshTokenGrantType implements GrantType
      */
     public function prepareResponse(ServerRequestInterface $request, GrantTypeData $grantTypeData): GrantTypeData
     {
-        $parameters = $request->getParsedBody() ?? [];
-        $refreshToken = $parameters['refresh_token'];
-        $token = $this->refreshTokenRepository->find(RefreshTokenId::create($refreshToken));
-
-        if (null === $token) {
-            throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_GRANT, 'The parameter "refresh_token" is invalid.');
-        }
-
-        foreach ($token->getParameters() as $key => $parameter) {
-            $grantTypeData = $grantTypeData->withParameter($key, $parameter);
-        }
-
+        // Nothing to do
         return $grantTypeData;
     }
 
@@ -94,6 +83,10 @@ class RefreshTokenGrantType implements GrantType
         $parameters = $request->getParsedBody() ?? [];
         $refreshToken = $parameters['refresh_token'];
         $token = $this->refreshTokenRepository->find(RefreshTokenId::create($refreshToken));
+
+        if (null === $token) {
+            throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_GRANT, 'The parameter "refresh_token" is invalid.');
+        }
 
         $client = $request->getAttribute('client');
         $this->checkRefreshToken($token, $client);
@@ -119,7 +112,7 @@ class RefreshTokenGrantType implements GrantType
         }
 
         if ($token->hasExpired()) {
-            throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_GRANT, 'Refresh token has expired.');
+            throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_GRANT, 'The refresh token expired.');
         }
     }
 }
