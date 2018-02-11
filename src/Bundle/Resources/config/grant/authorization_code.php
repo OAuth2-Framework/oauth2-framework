@@ -28,8 +28,7 @@ return function (ContainerConfigurator $container) {
         ->args([
             ref('oauth2_server.grant.authorization_code.repository'),
             ref(PKCEMethod\PKCEMethodManager::class),
-        ])
-        ->tag('oauth2_server_grant_type');
+        ]);
 
     $container->set(AuthorizationCodeResponseType::class)
         ->args([
@@ -48,6 +47,7 @@ return function (ContainerConfigurator $container) {
         ->tag('oauth2_server_pkce_method', ['alias' => 'S256']);
 
     $container->set(AuthorizationCodeTypeHint::class)
-        ->tag('oauth2_server_introspection_type_hint')
-        ->tag('oauth2_server_revocation_type_hint');
+        ->args([
+            ref('oauth2_server.grant.authorization_code.repository'),
+        ]);
 };

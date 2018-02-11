@@ -14,6 +14,9 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\Component\Endpoint\TokenRevocation;
 
 use OAuth2Framework\Bundle\Component\Component;
+use OAuth2Framework\Bundle\Component\Endpoint\TokenRevocation\Compiler\TokenRevocationRouteCompilerPass;
+use OAuth2Framework\Bundle\Component\Endpoint\TokenRevocation\Compiler\TokenTypeHintCompilerPass;
+use OAuth2Framework\Component\TokenRevocationEndpoint\TokenTypeHint;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -37,6 +40,7 @@ class TokenRevocationEndpointSource implements Component
         if (!$configs['endpoint']['token_revocation']['enabled']) {
             return;
         }
+        $container->registerForAutoconfiguration(TokenTypeHint::class)->addTag('oauth2_server_revocation_type_hint');
         $container->setParameter('oauth2_server.endpoint.token_revocation.path', $configs['endpoint']['token_revocation']['path']);
         $container->setParameter('oauth2_server.endpoint.token_revocation.allow_callback', $configs['endpoint']['token_revocation']['allow_callback']);
 
@@ -72,7 +76,8 @@ class TokenRevocationEndpointSource implements Component
      */
     public function build(ContainerBuilder $container)
     {
-        //Nothing to do
+        $container->addCompilerPass(new TokenTypeHintCompilerPass());
+        $container->addCompilerPass(new TokenRevocationRouteCompilerPass());
     }
 
     /**

@@ -11,8 +11,8 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-/*use OAuth2Framework\Bundle\Rule\ClientRegistrationManagementRule;
-use OAuth2Framework\Component\Endpoint\ClientRegistration\ClientRegistrationEndpoint;
+/*use OAuth2Framework\Bundle\Tests\ClientRegistrationManagementRule;
+use OAuth2Framework\Component\Endpoint\ClientRule\ClientRegistrationEndpoint;
 use OAuth2Framework\Component\Middleware\OAuth2ResponseMiddleware;
 use OAuth2Framework\Component\Middleware\Pipe;
 use function Fluent\create;

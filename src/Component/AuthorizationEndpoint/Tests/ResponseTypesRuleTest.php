@@ -21,7 +21,7 @@ use OAuth2Framework\Component\Core\DataBag\DataBag;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @group Rule
+ * @group Tests
  */
 class ResponseTypesRuleTest extends TestCase
 {

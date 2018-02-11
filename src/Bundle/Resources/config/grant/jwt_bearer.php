@@ -30,6 +30,5 @@ return function (ContainerConfigurator $container) {
             ref('jose.claim_checker.jwt_bearer'),
             ref('oauth2_server.'),
             ref('oauth2_server.user_account_repository'),
-        ])
-        ->tag('oauth2_server_grant_type');
+        ]);
 };

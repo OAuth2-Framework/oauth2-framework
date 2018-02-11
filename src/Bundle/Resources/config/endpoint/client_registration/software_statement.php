@@ -11,12 +11,12 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-/*use OAuth2Framework\Component\Model\ClientCredentials\Rule;
+/*use OAuth2Framework\Component\Model\ClientCredentials\Tests;
 use function Fluent\create;
 use function Fluent\get;
 
 return [
-    Rule\SoftwareRule::class => create()
+    Tests\SoftwareRule::class => create()
         ->arguments(
             get('jose.jws_loader.software_statement'),
             get('oauth2_server.endpoint.client_registration.software_statement.key_set'),

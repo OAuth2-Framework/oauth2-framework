@@ -22,6 +22,5 @@ return function (ContainerConfigurator $container) {
     $container->set(ClientSecretPost::class)
         ->args([
             '%oauth2_server.client_authentication.client_secret_post.secret_lifetime%',
-        ])
-        ->tag('oauth2_server_client_authentication');
+        ]);
 };

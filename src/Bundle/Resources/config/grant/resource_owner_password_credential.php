@@ -24,6 +24,5 @@ return function (ContainerConfigurator $container) {
         ->args([
             ref('oauth2_server.user_account_manager'),
             ref('oauth2_server.user_account_repository'),
-        ])
-        ->tag('oauth2_server_grant_type');
+        ]);
 };

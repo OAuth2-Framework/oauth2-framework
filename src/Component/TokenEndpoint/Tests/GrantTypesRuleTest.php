@@ -21,7 +21,7 @@ use OAuth2Framework\Component\TokenEndpoint\Rule\GrantTypesRule;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @group Rule
+ * @group Tests
  */
 class GrantTypesRuleTest extends TestCase
 {

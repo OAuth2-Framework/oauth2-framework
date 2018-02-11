@@ -21,7 +21,7 @@ use OAuth2Framework\Component\Scope\Policy\ScopePolicyManager;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @group Rule
+ * @group Tests
  */
 class ScopePolicyRuleTest extends TestCase
 {

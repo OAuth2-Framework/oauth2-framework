@@ -21,8 +21,7 @@ return function (ContainerConfigurator $container) {
         ->private()
         ->autoconfigure();
 
-    $container->set(ImplicitGrantType::class)
-        ->tag('oauth2_server_grant_type');
+    $container->set(ImplicitGrantType::class);
 
     $container->set(TokenResponseType::class)
         ->args([

@@ -25,7 +25,7 @@ use OAuth2Framework\Component\OpenIdConnect\Rule\IdTokenAlgorithmsRule;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @group Rule
+ * @group Tests
  */
 class IdTokenAlgorithmsRuleTest extends TestCase
 {

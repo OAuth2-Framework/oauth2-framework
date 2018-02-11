@@ -30,7 +30,7 @@ class AuthorizationCodeGrantTest extends WebTestCase
     protected function setUp()
     {
         if (!class_exists(AuthorizationCodeGrantType::class)) {
-            $this->markTestSkipped('The component "oauth2-framework/authrization-code-grant" is not installed.');
+            $this->markTestSkipped('The component "oauth2-framework/authorization-code-grant" is not installed.');
         }
     }
 

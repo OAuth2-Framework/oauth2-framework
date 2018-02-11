@@ -16,7 +16,7 @@ namespace OAuth2Framework\Component\Core\Tests\AccessToken;
 use OAuth2Framework\Component\Core\AccessToken\AccessToken;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository;
-use OAuth2Framework\Component\Core\AccessToken\AccessTokenIntrospectionTypeHint;
+use OAuth2Framework\Component\Core\AccessToken\AccessTokenTypeHint;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
@@ -52,14 +52,14 @@ class AccessTokenIntrospectionTypeHintTest extends TestCase
     }
 
     /**
-     * @var null|AccessTokenIntrospectionTypeHint
+     * @var null|AccessTokenTypeHint
      */
     private $accessTokenTypeHint = null;
 
     /**
-     * @return AccessTokenIntrospectionTypeHint
+     * @return AccessTokenTypeHint
      */
-    public function getAccessTokenIntrospectionTypeHint(): AccessTokenIntrospectionTypeHint
+    public function getAccessTokenIntrospectionTypeHint(): AccessTokenTypeHint
     {
         if (null === $this->accessTokenTypeHint) {
             $accessToken = AccessToken::createEmpty();
@@ -84,7 +84,7 @@ class AccessTokenIntrospectionTypeHintTest extends TestCase
 
                 return null;
             });
-            $this->accessTokenTypeHint = new AccessTokenIntrospectionTypeHint(
+            $this->accessTokenTypeHint = new AccessTokenTypeHint(
                 $accessTokenRepository->reveal()
             );
         }

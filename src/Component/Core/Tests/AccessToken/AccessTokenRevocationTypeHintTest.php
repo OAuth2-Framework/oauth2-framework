@@ -16,7 +16,7 @@ namespace OAuth2Framework\Component\Core\Tests\AccessToken;
 use OAuth2Framework\Component\Core\AccessToken\AccessToken;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository;
-use OAuth2Framework\Component\Core\AccessToken\AccessTokenRevocationTypeHint;
+use OAuth2Framework\Component\Core\AccessToken\AccessTokenTypeHint;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
@@ -51,14 +51,14 @@ class AccessTokenRevocationTypeHintTest extends TestCase
     }
 
     /**
-     * @var null|AccessTokenRevocationTypeHint
+     * @var null|AccessTokenTypeHint
      */
     private $accessTokenTypeHint = null;
 
     /**
-     * @return AccessTokenRevocationTypeHint
+     * @return AccessTokenTypeHint
      */
-    public function getAccessTokenRevocationTypeHint(): AccessTokenRevocationTypeHint
+    public function getAccessTokenRevocationTypeHint(): AccessTokenTypeHint
     {
         if (null === $this->accessTokenTypeHint) {
             $accessToken = AccessToken::createEmpty();
@@ -83,7 +83,7 @@ class AccessTokenRevocationTypeHintTest extends TestCase
 
                 return null;
             });
-            $this->accessTokenTypeHint = new AccessTokenRevocationTypeHint(
+            $this->accessTokenTypeHint = new AccessTokenTypeHint(
                 $accessTokenRepository->reveal()
             );
         }

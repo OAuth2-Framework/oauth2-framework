@@ -15,7 +15,7 @@ namespace OAuth2Framework\Component\OpenIdConnect\Rule;
 
 use Jose\Component\Encryption\JWEBuilder;
 use Jose\Component\Signature\JWSBuilder;
-use OAuth2Framework\Component\ClientRegistrationEndpoint\Rule\Rule;
+use OAuth2Framework\Component\ClientRule\Rule;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 

@@ -19,6 +19,5 @@ return function (ContainerConfigurator $container) {
         ->private()
         ->autoconfigure();
 
-    $container->set(None::class)
-        ->tag('oauth2_server_client_authentication');
+    $container->set(None::class);
 };

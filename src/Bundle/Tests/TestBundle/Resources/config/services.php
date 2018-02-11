@@ -30,7 +30,7 @@ use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
 return function (ContainerConfigurator $container) {
     $container = $container->services()->defaults()
-        ->private()
+        ->public()
         ->autoconfigure();
 
     $container->set('MyClientRepository')

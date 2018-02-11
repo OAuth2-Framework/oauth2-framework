@@ -22,27 +22,28 @@ return function (ContainerConfigurator $container) {
 
     $container->set('token_revocation_pipe')
         ->class(Middleware\Pipe::class)
-        ->args([
+        ->args([[
             ref(Middleware\OAuth2ResponseMiddleware::class),
-            ref(Middleware\FormPostBodyParserMiddleware::class),
             ref(\OAuth2Framework\Component\ClientAuthentication\ClientAuthenticationMiddleware::class),
             ref('token_revocation_method_handler'),
-        ]);
+        ]])
+        ->tag('controller.service_arguments');
 
     $container->set('token_revocation_method_handler')
-        ->class(Middleware\HttpMethod::class)
-        ->call('addMiddleware', ['POST', ref(\OAuth2Framework\Component\TokenRevocationEndpoint\TokenRevocationPostEndpoint::class)])
-        ->call('addMiddleware', ['GET', ref(\OAuth2Framework\Component\TokenRevocationEndpoint\TokenRevocationGetEndpoint::class)]);
+        ->class(\OAuth2Framework\Component\Middleware\HttpMethodMiddleware::class)
+        ->call('add', ['POST', ref(\OAuth2Framework\Component\TokenRevocationEndpoint\TokenRevocationPostEndpoint::class)])
+        ->call('add', ['GET', ref(\OAuth2Framework\Component\TokenRevocationEndpoint\TokenRevocationGetEndpoint::class)]);
 
     $container->set(\OAuth2Framework\Component\TokenRevocationEndpoint\TokenRevocationPostEndpoint::class)
         ->args([
-            ref(\OAuth2Framework\Component\TokenIntrospectionEndpoint\TokenTypeHintManager::class),
+            ref(\OAuth2Framework\Component\TokenRevocationEndpoint\TokenTypeHintManager::class),
             ref('httplug.message_factory'),
         ]);
+    $container->set(\OAuth2Framework\Component\TokenRevocationEndpoint\TokenTypeHintManager::class);
 
     $container->set(\OAuth2Framework\Component\TokenRevocationEndpoint\TokenRevocationGetEndpoint::class)
         ->args([
-            ref(\OAuth2Framework\Component\TokenIntrospectionEndpoint\TokenTypeHintManager::class),
+            ref(\OAuth2Framework\Component\TokenRevocationEndpoint\TokenTypeHintManager::class),
             ref('httplug.message_factory'),
             '%oauth2_server.endpoint.token_revocation.allow_callback%',
         ]);

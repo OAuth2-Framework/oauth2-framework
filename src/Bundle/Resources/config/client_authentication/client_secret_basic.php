@@ -23,6 +23,5 @@ return function (ContainerConfigurator $container) {
         ->args([
             '%oauth2_server.client_authentication.client_secret_basic.realm%',
             '%oauth2_server.client_authentication.client_secret_basic.secret_lifetime%',
-        ])
-        ->tag('oauth2_server_client_authentication');
+        ]);
 };

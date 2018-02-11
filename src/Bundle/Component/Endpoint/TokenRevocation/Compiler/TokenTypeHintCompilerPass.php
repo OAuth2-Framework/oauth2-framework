@@ -11,7 +11,7 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Bundle\Component\TokenType\Compiler;
+namespace OAuth2Framework\Bundle\Component\Endpoint\TokenRevocation\Compiler;
 
 use OAuth2Framework\Component\TokenRevocationEndpoint\TokenTypeHintManager;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
@@ -31,7 +31,7 @@ class TokenTypeHintCompilerPass implements CompilerPassInterface
 
         $definition = $container->getDefinition(TokenTypeHintManager::class);
 
-        $taggedServices = $container->findTaggedServiceIds('oauth2_server_token_type_hint');
+        $taggedServices = $container->findTaggedServiceIds('oauth2_server_revocation_type_hint');
         foreach ($taggedServices as $id => $attributes) {
             $definition->addMethodCall('add', [new Reference($id)]);
         }

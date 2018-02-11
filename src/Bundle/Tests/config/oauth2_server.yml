@@ -78,11 +78,11 @@ oauth2_server:
             path: '/client/configure/{client_id}'
         token_revocation:
             enabled: true
-            path: '/token/revocation'
+            path: '/token/revoke'
             allow_callback: true
         token_introspection:
             enabled: true
-            path: '/token/introspection'
+            path: '/token/introspect'
         token:
             enabled: true
             path: '/token/get'

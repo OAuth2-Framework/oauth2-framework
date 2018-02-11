@@ -24,10 +24,10 @@ return function (ContainerConfigurator $container) {
         ->class(Middleware\Pipe::class)
         ->args([
             ref(Middleware\OAuth2ResponseMiddleware::class),
-            //ref(FormPostBodyParserMiddleware::class),
             ref(\OAuth2Framework\Component\TokenIntrospectionEndpoint\AuthenticationMiddleware::class),
             ref(\OAuth2Framework\Component\TokenIntrospectionEndpoint\TokenIntrospectionEndpoint::class),
-        ]);
+        ])
+        ->tag('controller.service_arguments');
 
     $container->set(\OAuth2Framework\Component\TokenIntrospectionEndpoint\AuthenticationMiddleware::class)
         ->args([
@@ -35,6 +35,7 @@ return function (ContainerConfigurator $container) {
             ref(TokenIntrospectionEndpointAuthenticationMethodManager::class),
         ]);
     $container->set(\OAuth2Framework\Component\TokenIntrospectionEndpoint\AuthenticationMiddleware::class);
+    $container->set(\OAuth2Framework\Component\TokenIntrospectionEndpoint\TokenTypeHintManager::class);
 
     $container->set(\OAuth2Framework\Component\TokenIntrospectionEndpoint\TokenIntrospectionEndpoint::class)
         ->args([

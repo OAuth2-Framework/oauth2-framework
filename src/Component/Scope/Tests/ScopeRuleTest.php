@@ -19,7 +19,7 @@ use OAuth2Framework\Component\Scope\Rule\ScopeRule;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @group Rule
+ * @group Tests
  */
 class ScopeRuleTest extends TestCase
 {

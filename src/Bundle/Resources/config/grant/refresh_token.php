@@ -24,10 +24,10 @@ return function (ContainerConfigurator $container) {
     $container->set(RefreshTokenGrantType::class)
         ->args([
             ref('oauth2_server.grant.refresh_token.repository'),
-        ])
-        ->tag('oauth2_server_grant_type');
+        ]);
 
     $container->set(RefreshTokenTypeHint::class)
-        ->tag('oauth2_server_introspection_type_hint')
-        ->tag('oauth2_server_revocation_type_hint');
+        ->args([
+            ref('oauth2_server.grant.refresh_token.repository'),
+        ]);
 };

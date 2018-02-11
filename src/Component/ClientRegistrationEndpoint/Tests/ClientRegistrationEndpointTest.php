@@ -16,7 +16,7 @@ namespace OAuth2Framework\Component\ClientRegistrationEndpoint\Tests;
 use Http\Message\MessageFactory\DiactorosMessageFactory;
 use Http\Message\ResponseFactory;
 use OAuth2Framework\Component\ClientRegistrationEndpoint\ClientRegistrationEndpoint;
-use OAuth2Framework\Component\ClientRegistrationEndpoint\Rule\RuleManager;
+use OAuth2Framework\Component\ClientRule\RuleManager;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\Client\ClientRepository;

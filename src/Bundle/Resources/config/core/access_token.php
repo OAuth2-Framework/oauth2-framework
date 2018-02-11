@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenHandlerManager;
-use OAuth2Framework\Component\Core\AccessToken\AccessTokenIntrospectionTypeHint;
+use OAuth2Framework\Component\Core\AccessToken\AccessTokenTypeHint;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenRevocationTypeHint;
 use OAuth2Framework\Component\Core\AccessToken\Command;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
@@ -35,9 +35,8 @@ return function (ContainerConfigurator $container) {
 
     $container->set(AccessTokenHandlerManager::class);
 
-    $container->set(AccessTokenIntrospectionTypeHint::class)
-        ->tag('oauth2_server_introspection_token_type');
-
-    $container->set(AccessTokenRevocationTypeHint::class)
-        ->tag('oauth2_server_revocation_token_type');
+    $container->set(AccessTokenTypeHint::class)
+        ->args([
+            ref('oauth2_server.access_token_repository'),
+        ]);
 };

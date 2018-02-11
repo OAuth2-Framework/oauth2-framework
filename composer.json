@@ -67,6 +67,7 @@
         "oauth2-framework/client-configuration-endpoint": "self.version",
         "oauth2-framework/client-credentials-grant": "self.version",
         "oauth2-framework/client-registration-endpoint": "self.version",
+        "oauth2-framework/client-rule": "self.version",
         "oauth2-framework/core": "self.version",
         "oauth2-framework/implicit-grant": "self.version",
         "oauth2-framework/issuer-discovery-endpoint": "self.version",

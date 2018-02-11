@@ -22,6 +22,5 @@ return function (ContainerConfigurator $container) {
     $container->set(ClientCredentialsGrantType::class)
         ->args([
             '%oauth2_server.grant.client_credentials.issue_refresh_token%',
-        ])
-        ->tag('oauth2_server_grant_type');
+        ]);
 };

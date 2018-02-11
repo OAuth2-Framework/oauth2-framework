@@ -22,33 +22,33 @@ return function (ContainerConfigurator $container) {
 
     $container->set('client_configuration_endpoint_pipe')
         ->class(Middleware\Pipe::class)
-        ->args([
+        ->args([[
             ref(Middleware\OAuth2ResponseMiddleware::class),
-            ref(Middleware\JsonBodyParserMiddleware::class),
             ref(\OAuth2Framework\Bundle\Controller\ClientConfigurationMiddleware::class),
             ref(\OAuth2Framework\Component\ClientConfigurationEndpoint\ClientConfigurationEndpoint::class),
+        ]])
+        ->tag('controller.service_arguments');
+
+    $container->set('client_configuration_bearer_token')
+        ->class(\OAuth2Framework\Component\BearerTokenType\BearerToken::class)
+        ->args([
+            '%oauth2_server.endpoint.client_configuration.realm%',
+            true,
+            false,
+            false,
+        ]);
+
+    $container->set(\OAuth2Framework\Component\ClientConfigurationEndpoint\ClientConfigurationEndpoint::class)
+        ->args([
+            ref('oauth2_server.client_repository'),
+            ref('client_configuration_bearer_token'),
+            ref('command_bus'),
+            ref('httplug.message_factory'),
+            ref(\OAuth2Framework\Component\ClientRule\RuleManager::class),
+        ]);
+
+    $container->set(\OAuth2Framework\Bundle\Controller\ClientConfigurationMiddleware::class)
+        ->args([
+            ref('oauth2_server.client_repository'),
         ]);
 };
-
-/*return [
-    'client_configuration_bearer_token' => create(BearerToken::class)
-        ->arguments(
-            '%oauth2_server.endpoint.client_configuration.realm%',
-            '%oauth2_server.endpoint.client_configuration.authorization_header%',
-            '%oauth2_server.endpoint.client_configuration.request_body%',
-            '%oauth2_server.endpoint.client_configuration.query_string%'
-        ),
-
-    ClientConfigurationMiddleware::class => create()
-        ->arguments(
-            get(ClientRepository::class)
-        ),
-
-    ClientConfigurationEndpoint::class => create()
-        ->arguments(
-            get('client_configuration_bearer_token'),
-            get('command_bus'),
-            get('httplug.message_factory')
-        ),
-];
-*/

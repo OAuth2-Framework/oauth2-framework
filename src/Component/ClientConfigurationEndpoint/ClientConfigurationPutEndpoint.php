@@ -16,7 +16,7 @@ namespace OAuth2Framework\Component\ClientConfigurationEndpoint;
 use Http\Message\ResponseFactory;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Server\MiddlewareInterface;
-use OAuth2Framework\Component\ClientRegistrationEndpoint\Rule\RuleManager;
+use OAuth2Framework\Component\ClientRule\RuleManager;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientRepository;
 use OAuth2Framework\Component\Core\Client\Command\UpdateClientCommand;
