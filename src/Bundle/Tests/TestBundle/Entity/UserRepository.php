@@ -105,7 +105,7 @@ class UserRepository implements UserAccountRepository
                     'website#fr' => 'https://john.doe.fr',
                     'picture#de' => 'https://john.doe.de/picture',
                 ],
-                'oauth2Passwords' => ['doe'],
+                'oauth2Passwords' => ['password.1'],
             ],
             [
                 'id' => 'john.2',
