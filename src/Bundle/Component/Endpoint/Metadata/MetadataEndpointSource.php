@@ -14,6 +14,8 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\Component\Endpoint\Metadata;
 
 use OAuth2Framework\Bundle\Component\Component;
+use OAuth2Framework\Bundle\Component\Endpoint\Metadata\Compiler\CommonMetadataCompilerPass;
+use OAuth2Framework\Bundle\Component\Endpoint\Metadata\Compiler\MetadataRouteCompilerPass;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -57,7 +59,7 @@ class MetadataEndpointSource implements Component
         $container->setParameter('oauth2_server.endpoint.metadata.path', $configs['endpoint']['metadata']['path']);
 
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint/metadata'));
-        //$loader->load('metadata.php');
+        $loader->load('metadata.php');
 
         foreach ($this->subComponents as $subComponent) {
             $subComponent->load($configs, $container);
@@ -106,7 +108,8 @@ class MetadataEndpointSource implements Component
      */
     public function build(ContainerBuilder $container)
     {
-        //Nothing to do
+        $container->addCompilerPass(new CommonMetadataCompilerPass());
+        $container->addCompilerPass(new MetadataRouteCompilerPass());
         foreach ($this->subComponents as $component) {
             $component->build($container);
         }

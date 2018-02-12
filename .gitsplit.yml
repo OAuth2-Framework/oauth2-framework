@@ -17,6 +17,8 @@ splits:
       target: "https://${GH_TOKEN}@github.com/oauth2-framework/client-credentials-grant.git"
     - prefix: "src/Component/ClientRegistrationEndpoint"
       target: "https://${GH_TOKEN}@github.com/oauth2-framework/client-registration-endpoint.git"
+    - prefix: "src/Component/ClientRule"
+      target: "https://${GH_TOKEN}@github.com/oauth2-framework/client-rule.git"
     - prefix: "src/Component/Core"
       target: "https://${GH_TOKEN}@github.com/oauth2-framework/core.git"
     - prefix: "src/Component/ImplicitGrant"

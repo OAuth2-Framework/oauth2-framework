@@ -11,26 +11,32 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use OAuth2Framework\Bundle\Service\MetadataBuilder;
+use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use OAuth2Framework\Component\Middleware;
 use OAuth2Framework\Bundle\Controller\MetadataController;
-use OAuth2Framework\Component\Middleware\Pipe;
-use function Fluent\create;
-use function Fluent\get;
+use OAuth2Framework\Bundle\Service\MetadataBuilder;
+use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
-return [
-    'metadata_endpoint_pipe' => create(Pipe::class)
-        ->arguments([
-            get(MetadataController::class),
-        ]),
+return function (ContainerConfigurator $container) {
+    $container = $container->services()->defaults()
+        ->private()
+        ->autoconfigure();
 
-    MetadataController::class => create()
-        ->arguments(
-            get('httplug.message_factory'),
-            get(MetadataBuilder::class)
-        ),
+    $container->set('metadata_endpoint_pipe')
+        ->class(Middleware\Pipe::class)
+        ->args([[
+            ref(MetadataController::class),
+        ]])
+        ->tag('controller.service_arguments');
 
-    MetadataBuilder::class => create()
-        ->arguments(
-            get('router')
-        ),
-];
+    $container->set(MetadataController::class)
+        ->args([
+            ref('httplug.message_factory'),
+            ref(MetadataBuilder::class),
+        ]);
+
+    $container->set(MetadataBuilder::class)
+        ->args([
+            ref('router'),
+        ]);
+};

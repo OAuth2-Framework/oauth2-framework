@@ -61,7 +61,7 @@ class MetadataBuilder
      * @param string $routeName
      * @param array  $routeParameters
      */
-    public function setRoute(string $name, string $routeName, array $routeParameters = [])
+    public function addRoute(string $name, string $routeName, array $routeParameters = [])
     {
         $path = $this->router->generate($routeName, $routeParameters, RouterInterface::ABSOLUTE_URL);
         $this->metadata->set($name, $path);
@@ -98,7 +98,7 @@ class MetadataBuilder
      */
     public function setResponseTypeManager(ResponseTypeManager $responseTypeManager)
     {
-        $this->metadata->set('response_types_supported', $responseTypeManager->all());
+        $this->metadata->set('response_types_supported', $responseTypeManager->list());
     }
 
     /**
@@ -106,7 +106,7 @@ class MetadataBuilder
      */
     public function setResponseModeManager(ResponseModeManager $responseModeManager)
     {
-        $this->metadata->set('response_modes_supported', $responseModeManager->all());
+        $this->metadata->set('response_modes_supported', $responseModeManager->list());
     }
 
     /**
@@ -114,7 +114,7 @@ class MetadataBuilder
      */
     public function setTokenEndpointAuthMethodManager(AuthenticationMethodManager $tokenEndpointAuthMethodManager)
     {
-        $this->metadata->set('token_endpoint_auth_methods_supported', $tokenEndpointAuthMethodManager->all());
+        $this->metadata->set('token_endpoint_auth_methods_supported', $tokenEndpointAuthMethodManager->list());
     }
 
     /**

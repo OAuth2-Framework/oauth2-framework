@@ -11,25 +11,25 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Bundle\DependencyInjection\Compiler;
+namespace OAuth2Framework\Bundle\Component\Endpoint\Metadata\Compiler;
 
 use OAuth2Framework\Bundle\Service\MetadataBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-class JwksUriEndpointRouteCompilerPass implements CompilerPassInterface
+class CommonMetadataCompilerPass implements CompilerPassInterface
 {
     /**
      * {@inheritdoc}
      */
     public function process(ContainerBuilder $container)
     {
-        if (!$container->hasDefinition(MetadataBuilder::class) || !$container->has('jose.key_set.oauth2_server.endpoint.jwks_uri')) {
+        if (!$container->hasDefinition(MetadataBuilder::class)) {
             return;
         }
 
-        $routeName = 'jwkset_oauth2_server.endpoint.jwks_uri'; //$container->getParameter('oauth2_server.endpoint.jwks_uri.route_name');
-        $definition = $container->getDefinition(MetadataBuilder::class);
-        $definition->addMethodCall('addRoute', ['jwks_uri', $routeName]);
+        $metadata = $container->getDefinition(MetadataBuilder::class);
+        $issuer = $container->getParameter('oauth2_server.server_uri');
+        $metadata->addMethodCall('addKeyValuePair', ['issuer', $issuer]);
     }
 }

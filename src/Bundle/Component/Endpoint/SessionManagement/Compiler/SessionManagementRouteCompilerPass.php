@@ -49,6 +49,6 @@ class SessionManagementRouteCompilerPass implements CompilerPassInterface
             return;
         }
         $medata = $container->getDefinition(MetadataBuilder::class);
-        $medata->addMethodCall('setRoute', ['check_session_iframe', 'oauth2_server_openid_connect_iframe_endpoint']);
+        $medata->addMethodCall('addRoute', ['check_session_iframe', 'oauth2_server_openid_connect_iframe_endpoint']);
     }
 }

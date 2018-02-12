@@ -50,6 +50,6 @@ class ClientRegistrationEndpointRouteCompilerPass implements CompilerPassInterfa
             return;
         }
         $definition = $container->getDefinition(MetadataBuilder::class);
-        $definition->addMethodCall('setRoute', ['registration_endpoint', 'oauth2_server_client_registration']);
+        $definition->addMethodCall('addRoute', ['registration_endpoint', 'oauth2_server_client_registration']);
     }
 }

@@ -50,6 +50,6 @@ class TokenRevocationRouteCompilerPass implements CompilerPassInterface
         }
 
         $definition = $container->getDefinition(MetadataBuilder::class);
-        $definition->addMethodCall('setRoute', ['token_revocation_endpoint', 'oauth2_server_token_revocation_endpoint']);
+        $definition->addMethodCall('addRoute', ['token_revocation_endpoint', 'oauth2_server_token_revocation_endpoint']);
     }
 }

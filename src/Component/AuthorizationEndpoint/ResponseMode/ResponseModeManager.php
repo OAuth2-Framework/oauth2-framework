@@ -23,9 +23,17 @@ class ResponseModeManager
     /**
      * @return string[]
      */
-    public function all(): array
+    public function list(): array
     {
         return array_keys($this->responseModes);
+    }
+
+    /**
+     * @return string[]
+     */
+    public function all(): array
+    {
+        return array_values($this->responseModes);
     }
 
     /**

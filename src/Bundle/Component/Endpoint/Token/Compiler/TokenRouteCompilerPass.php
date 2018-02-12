@@ -50,6 +50,6 @@ class TokenRouteCompilerPass implements CompilerPassInterface
         }
 
         $definition = $container->getDefinition(MetadataBuilder::class);
-        $definition->addMethodCall('setRoute', ['token_endpoint', 'oauth2_server_token_endpoint']);
+        $definition->addMethodCall('addRoute', ['token_endpoint', 'oauth2_server_token_endpoint']);
     }
 }

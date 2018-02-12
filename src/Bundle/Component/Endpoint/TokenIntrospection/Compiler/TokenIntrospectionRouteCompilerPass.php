@@ -50,6 +50,6 @@ class TokenIntrospectionRouteCompilerPass implements CompilerPassInterface
         }
 
         $definition = $container->getDefinition(MetadataBuilder::class);
-        $definition->addMethodCall('setRoute', ['token_introspection_endpoint', 'oauth2_server_token_introspection_endpoint']);
+        $definition->addMethodCall('addRoute', ['token_introspection_endpoint', 'oauth2_server_token_introspection_endpoint']);
     }
 }

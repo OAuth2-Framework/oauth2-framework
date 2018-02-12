@@ -35,7 +35,7 @@ class ResponseModeTest extends TestCase
      */
     public function genericCalls()
     {
-        self::assertEquals(['query', 'fragment', 'form_post'], $this->getResponseModeManager()->all());
+        self::assertEquals(['query', 'fragment', 'form_post'], $this->getResponseModeManager()->list());
         self::assertTrue($this->getResponseModeManager()->has('query'));
         self::assertFalse($this->getResponseModeManager()->has('foo'));
         self::assertInstanceOf(ResponseMode::class, $this->getResponseModeManager()->get('fragment'));

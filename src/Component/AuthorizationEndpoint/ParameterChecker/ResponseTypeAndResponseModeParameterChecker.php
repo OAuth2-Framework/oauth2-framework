@@ -76,7 +76,7 @@ class ResponseTypeAndResponseModeParameterChecker implements ParameterChecker
                 $responseMode = $responseType->getResponseMode();
             }
             if (!$this->responseModeManager->has($responseMode)) {
-                throw new \InvalidArgumentException(sprintf('The response mode "%s" is not supported. Please use one of the following values: %s.', $responseMode, implode(', ', $this->responseModeManager->all())));
+                throw new \InvalidArgumentException(sprintf('The response mode "%s" is not supported. Please use one of the following values: %s.', $responseMode, implode(', ', $this->responseModeManager->list())));
             }
             $authorization = $authorization->withResponseMode($this->responseModeManager->get($responseMode));
 

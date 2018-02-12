@@ -11,7 +11,7 @@
 
 namespace OAuth2Framework\Component\Scope;
 
-interface Scope
+interface Scope extends \JsonSerializable
 {
     /**
      * @return string

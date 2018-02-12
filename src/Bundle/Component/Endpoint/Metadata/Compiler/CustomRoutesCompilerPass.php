@@ -11,14 +11,14 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Bundle\DependencyInjection\Compiler;
+namespace OAuth2Framework\Bundle\Component\Endpoint\Metadata\Compiler;
 
 use OAuth2Framework\Bundle\Service\MetadataBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 
-class CustomMetadataCompilerPass implements CompilerPassInterface
+class CustomRoutesCompilerPass implements CompilerPassInterface
 {
     /**
      * {@inheritdoc}
@@ -32,22 +32,7 @@ class CustomMetadataCompilerPass implements CompilerPassInterface
         $definition = $container->getDefinition(MetadataBuilder::class);
         $customRoutes = $container->getParameter('oauth2_server.endpoint.metadata.custom_routes');
         foreach ($customRoutes as $key => $parameters) {
-            $this->addMethodCall($definition, 'setRoute', [$key, $parameters['route_name'], $parameters['route_parameters']]);
+            $definition->addMethodCall('addRoute', [$key, $parameters['route_name'], $parameters['route_parameters']]);
         }
-
-        $customValues = $container->getParameter('oauth2_server.endpoint.metadata.custom_values');
-        foreach ($customValues as $key => $parameters) {
-            $this->addMethodCall($definition, 'addKeyValuePair', [$key, $parameters]);
-        }
-    }
-
-    /**
-     * @param Definition $definition
-     * @param string     $method
-     * @param array      $parameters
-     */
-    private function addMethodCall(Definition $definition, string $method, array $parameters)
-    {
-        $definition->addMethodCall($method, $parameters);
     }
 }

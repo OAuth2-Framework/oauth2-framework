@@ -50,6 +50,6 @@ class UserinfoRouteCompilerPass implements CompilerPassInterface
         }
 
         $definition = $container->getDefinition(MetadataBuilder::class);
-        $definition->addMethodCall('setRoute', ['userinfo_endpoint', 'oauth2_server_openid_connect_userinfo_endpoint']);
+        $definition->addMethodCall('addRoute', ['userinfo_endpoint', 'oauth2_server_openid_connect_userinfo_endpoint']);
     }
 }

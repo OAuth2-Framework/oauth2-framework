@@ -11,13 +11,14 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Bundle\DependencyInjection\Compiler;
+namespace OAuth2Framework\Bundle\Component\Endpoint\Metadata\Compiler;
 
 use OAuth2Framework\Bundle\Service\MetadataBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Definition;
 
-class CommonMetadataCompilerPass implements CompilerPassInterface
+class CustomValuesCompilerPass implements CompilerPassInterface
 {
     /**
      * {@inheritdoc}
@@ -28,8 +29,10 @@ class CommonMetadataCompilerPass implements CompilerPassInterface
             return;
         }
 
-        $metadata = $container->getDefinition(MetadataBuilder::class);
-        $issuer = $container->getParameter('oauth2_server.server_uri');
-        $metadata->addMethodCall('addKeyValuePair', ['issuer', $issuer]);
+        $definition = $container->getDefinition(MetadataBuilder::class);
+        $customValues = $container->getParameter('oauth2_server.endpoint.metadata.custom_values');
+        foreach ($customValues as $key => $parameters) {
+            $definition->addMethodCall('addKeyValuePair', [$key, $parameters]);
+        }
     }
 }

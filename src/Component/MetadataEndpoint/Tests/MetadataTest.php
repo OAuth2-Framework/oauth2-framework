@@ -17,7 +17,7 @@ use OAuth2Framework\Component\MetadataEndpoint\Metadata;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @group Metadata
+ * @group Compiler
  */
 class MetadataTest extends TestCase
 {
