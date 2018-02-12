@@ -11,12 +11,12 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Component\ClientRule\Tests;
+namespace OAuth2Framework\Component\ClientConfigurationEndpoint\Tests;
 
 use OAuth2Framework\Component\Core\Client\ClientId;
-use OAuth2Framework\Component\ClientRule\ClientRegistrationManagementRule as Base;
+use OAuth2Framework\Component\ClientConfigurationEndpoint\Rule\ClientConfigurationRouteRule as Base;
 
-class ClientRegistrationManagementRule extends Base
+class ClientConfigurationRouteRule extends Base
 {
     /**
      * {@inheritdoc}

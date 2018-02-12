@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseTypeManager;
 use OAuth2Framework\Component\TokenEndpoint\GrantTypeManager;
+use OAuth2Framework\Component\TokenEndpoint\Rule\GrantTypesRule;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 return function (ContainerConfigurator $container) {
@@ -23,4 +24,5 @@ return function (ContainerConfigurator $container) {
 
     $container->set(GrantTypeManager::class);
     $container->set(ResponseTypeManager::class);
+    $container->set(GrantTypesRule::class);
 };

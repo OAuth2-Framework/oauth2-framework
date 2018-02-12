@@ -42,13 +42,13 @@ oauth2_server:
             enabled: true
         client_secret_post:
             enabled: true
-            secret_lifetime: 0
+            secret_lifetime: 3600
         client_secret_basic:
-            secret_lifetime: 0
+            secret_lifetime: 3600
             realm: 'My OAuth2 Server'
         client_assertion_jwt:
             enabled: false
-            secret_lifetime: 0
+            secret_lifetime: 3600
             signature_algorithms: ['RS256', 'RS512', 'HS256', 'HS512', 'ES256', 'ES512']
             claim_checkers: ['exp', 'iat', 'nbf']
             header_checkers: ['crit']
@@ -64,7 +64,7 @@ oauth2_server:
             initial_access_token:
                 enabled: true
                 required: true
-                realm: 'ClientCredentials Registration'
+                realm: 'Client Registration'
                 repository: 'MyInitialAccessTokenRepository'
             software_statement:
                 enabled: true
@@ -74,7 +74,7 @@ oauth2_server:
                 allowed_signature_algorithms: ['RS256']
         client_configuration:
             enabled: true
-            realm: 'ClientCredentials Configuration'
+            realm: 'Client Configuration'
             path: '/client/configure/{client_id}'
         token_revocation:
             enabled: true

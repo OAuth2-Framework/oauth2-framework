@@ -11,10 +11,10 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Component\ClientRule\Tests;
+namespace OAuth2Framework\Component\AuthorizationEndpoint\Tests;
 
 use OAuth2Framework\Component\Core\Client\ClientId;
-use OAuth2Framework\Component\ClientRule;
+use OAuth2Framework\Component\AuthorizationEndpoint\Rule\RequestUriRule;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use PHPUnit\Framework\TestCase;
 
@@ -30,7 +30,7 @@ class RequestUriRuleTest extends TestCase
     {
         $clientId = ClientId::create('CLIENT_ID');
         $commandParameters = DataBag::create([]);
-        $rule = new ClientRule\RequestUriRule();
+        $rule = new RequestUriRule();
         $validatedParameters = $rule->handle($clientId, $commandParameters, DataBag::create([]), $this->getCallable());
         self::assertFalse($validatedParameters->has('request_uris'));
     }
@@ -46,7 +46,7 @@ class RequestUriRuleTest extends TestCase
         $commandParameters = DataBag::create([
             'request_uris' => 'hello',
         ]);
-        $rule = new ClientRule\RequestUriRule();
+        $rule = new RequestUriRule();
         $validatedParameters = DataBag::create([
             'response_types' => ['code'],
         ]);
@@ -64,7 +64,7 @@ class RequestUriRuleTest extends TestCase
         $commandParameters = DataBag::create([
             'request_uris' => [123],
         ]);
-        $rule = new ClientRule\RequestUriRule();
+        $rule = new RequestUriRule();
         $validatedParameters = DataBag::create([
             'response_types' => ['code'],
         ]);
@@ -82,7 +82,7 @@ class RequestUriRuleTest extends TestCase
         $commandParameters = DataBag::create([
             'request_uris' => ['hello'],
         ]);
-        $rule = new ClientRule\RequestUriRule();
+        $rule = new RequestUriRule();
         $validatedParameters = DataBag::create([
             'response_types' => ['code'],
         ]);
@@ -98,7 +98,7 @@ class RequestUriRuleTest extends TestCase
         $commandParameters = DataBag::create([
             'request_uris' => ['https://foo.com/bar'],
         ]);
-        $rule = new ClientRule\RequestUriRule();
+        $rule = new RequestUriRule();
         $validatedParameters = DataBag::create([
             'response_types' => ['code'],
         ]);

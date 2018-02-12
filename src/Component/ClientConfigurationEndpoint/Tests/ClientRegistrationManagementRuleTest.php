@@ -11,7 +11,7 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Component\ClientRule\Tests;
+namespace OAuth2Framework\Component\ClientConfigurationEndpoint\Tests;
 
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
@@ -29,7 +29,7 @@ class ClientRegistrationManagementRuleTest extends TestCase
     {
         $clientId = ClientId::create('CLIENT_ID');
         $commandParameters = DataBag::create([]);
-        $rule = new ClientRegistrationManagementRule();
+        $rule = new ClientConfigurationRouteRule();
         $validatedParameters = $rule->handle($clientId, $commandParameters, DataBag::create([]), $this->getCallable());
 
         self::assertTrue($validatedParameters->has('registration_access_token'));

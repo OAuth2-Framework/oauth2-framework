@@ -15,6 +15,7 @@ namespace OAuth2Framework\Bundle\Tests\TestBundle\Entity;
 
 use OAuth2Framework\Component\ClientRegistrationEndpoint\InitialAccessToken;
 use OAuth2Framework\Component\ClientRegistrationEndpoint\InitialAccessTokenId;
+use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 
 class InitialAccessTokenRepository implements \OAuth2Framework\Component\ClientRegistrationEndpoint\InitialAccessTokenRepository
 {
@@ -22,6 +23,11 @@ class InitialAccessTokenRepository implements \OAuth2Framework\Component\ClientR
      * @var InitialAccessToken[]
      */
     private $initialAccessTokens = [];
+
+    public function __construct()
+    {
+        $this->createInitialAccessTokens();
+    }
 
     /**
      * {@inheritdoc}
@@ -37,5 +43,26 @@ class InitialAccessTokenRepository implements \OAuth2Framework\Component\ClientR
     public function save(InitialAccessToken $initialAccessToken)
     {
         $this->initialAccessTokens[$initialAccessToken->getTokenId()->getValue()] = $initialAccessToken;
+    }
+
+    private function createInitialAccessTokens()
+    {
+        $iat = InitialAccessToken::createEmpty();
+        $iat = $iat->create(
+            InitialAccessTokenId::create('VALID_INITIAL_ACCESS_TOKEN_ID'),
+            UserAccountId::create('john.1'),
+            new \DateTimeImmutable('now +1 day')
+        );
+        $iat->eraseMessages();
+        $this->save($iat);
+
+        $iat = InitialAccessToken::createEmpty();
+        $iat = $iat->create(
+            InitialAccessTokenId::create('EXPIRED_INITIAL_ACCESS_TOKEN_ID'),
+            UserAccountId::create('john.1'),
+            new \DateTimeImmutable('now -1 day')
+        );
+        $iat->eraseMessages();
+        $this->save($iat);
     }
 }

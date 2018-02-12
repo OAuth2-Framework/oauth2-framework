@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\ClientAuthentication;
 
+use Base64Url\Base64Url;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
@@ -94,6 +95,8 @@ class ClientSecretPost implements AuthenticationMethod
      */
     private function createClientSecret(): string
     {
-        return bin2hex(random_bytes(128));
+        $length = random_int(64, 128);
+
+        return Base64Url::encode(random_bytes($length));
     }
 }

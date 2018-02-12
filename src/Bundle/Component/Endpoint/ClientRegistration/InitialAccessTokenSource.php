@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\Component\Endpoint\ClientRegistration;
 
 use OAuth2Framework\Bundle\Component\Component;
+use OAuth2Framework\Bundle\Component\Endpoint\ClientRegistration\Compiler\InitialAccessTokenCompilerPass;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -112,7 +113,7 @@ class InitialAccessTokenSource implements Component
      */
     public function build(ContainerBuilder $container)
     {
-        //Nothing to do
+        $container->addCompilerPass(new InitialAccessTokenCompilerPass());
     }
 
     /**

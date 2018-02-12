@@ -73,7 +73,7 @@ class OAuth2Response implements OAuth2ResponseInterface
      */
     protected function getHeaders(): array
     {
-        return ['Content-Type' => 'application/json', 'Cache-Control' => 'no-store, private', 'Pragma' => 'no-cache'];
+        return ['Content-Type' => 'application/json; charset=UTF-8', 'Cache-Control' => 'no-store, private', 'Pragma' => 'no-cache'];
     }
 
     /**

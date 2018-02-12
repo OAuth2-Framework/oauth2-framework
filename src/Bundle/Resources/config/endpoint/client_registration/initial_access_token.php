@@ -11,46 +11,41 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-/*use OAuth2Framework\Bundle\Model\InitialAccessTokenRepository;
-use OAuth2Framework\Component\Command\InitialAccessToken;
-use OAuth2Framework\Component\Middleware\InitialAccessTokenMiddleware;
-use OAuth2Framework\Component\TokenType\BearerToken;
-use function Fluent\create;
-use function Fluent\get;
+use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use OAuth2Framework\Component\BearerTokenType\BearerToken;
+use OAuth2Framework\Component\ClientRegistrationEndpoint\InitialAccessTokenMiddleware;
+use OAuth2Framework\Component\ClientRegistrationEndpoint\Command;
+use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
-return [
-    InitialAccessTokenRepository::class => create()
-        ->arguments(
-            '%oauth2_server.endpoint.client_registration.initial_access_token.min_length%',
-            '%oauth2_server.endpoint.client_registration.initial_access_token.max_length%',
-            get('oauth2_server.endpoint.client_registration.initial_access_token.event_store'),
-            get('event_recorder'),
-            get('cache.app')
-        ),
+return function (ContainerConfigurator $container) {
+    $container = $container->services()->defaults()
+        ->private()
+        ->autoconfigure();
 
-    'client_registration_bearer_token' => create(BearerToken::class)
-        ->arguments(
+    $container->set(InitialAccessTokenMiddleware::class)
+        ->args([
+            ref('client_registration_bearer_token'),
+            ref('oauth2_server.endpoint.client_registration.initial_access_token.repository'),
+        ]);
+
+    $container->set('client_registration_bearer_token')
+        ->class(BearerToken::class)
+        ->args([
             '%oauth2_server.endpoint.client_registration.initial_access_token.realm%',
-            '%oauth2_server.endpoint.client_registration.initial_access_token.authorization_header%',
-            '%oauth2_server.endpoint.client_registration.initial_access_token.request_body%',
-            '%oauth2_server.endpoint.client_registration.initial_access_token.query_string%'
-        ),
+            true,
+            false,
+            false,
+        ]);
 
-    InitialAccessTokenMiddleware::class => create()
-        ->arguments(
-            get('client_registration_bearer_token'),
-            get(InitialAccessTokenRepository::class)
-        ),
+    $container->set(Command\CreateInitialAccessTokenCommandHandler::class)
+        ->args([
+            ref('oauth2_server.endpoint.client_registration.initial_access_token.repository'),
+        ])
+        ->tag('command_handler', ['handles' => Command\CreateInitialAccessTokenCommand::class]);
 
-    InitialAccessToken\CreateInitialAccessTokenCommandHandler::class => create()
-        ->arguments(
-            get(InitialAccessTokenRepository::class)
-        )
-        ->tag('command_handler', ['handles' => InitialAccessToken\CreateInitialAccessTokenCommand::class]),
-
-    InitialAccessToken\RevokeInitialAccessTokenCommandHandler::class => create()
-        ->arguments(
-            get(InitialAccessTokenRepository::class)
-        )
-        ->tag('command_handler', ['handles' => InitialAccessToken\RevokeInitialAccessTokenCommand::class]),
-];*/
+    $container->set(Command\RevokeInitialAccessTokenCommandHandler::class)
+        ->args([
+            ref('oauth2_server.endpoint.client_registration.initial_access_token.repository'),
+        ])
+        ->tag('command_handler', ['handles' => Command\RevokeInitialAccessTokenCommand::class]);
+};

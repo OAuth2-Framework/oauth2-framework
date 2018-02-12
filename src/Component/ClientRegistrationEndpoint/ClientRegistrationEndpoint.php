@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\ClientRegistrationEndpoint;
 
+use Base64Url\Base64Url;
 use Http\Message\ResponseFactory;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -81,7 +82,8 @@ class ClientRegistrationEndpoint implements MiddlewareInterface
                 $userAccountId = null;
             }
             $commandParameters = DataBag::create($request->getParsedBody() ?? []);
-            $clientId = ClientId::create(Uuid::uuid4()->toString());
+            $clientIdLength = random_int(50, 100);
+            $clientId = ClientId::create(Base64Url::encode(random_bytes($clientIdLength)));
             $validatedParameters = $this->ruleManager->handle($clientId, $commandParameters);
             $command = CreateClientCommand::create($clientId, $userAccountId, $validatedParameters);
             $this->messageBus->handle($command);
@@ -116,7 +118,7 @@ class ClientRegistrationEndpoint implements MiddlewareInterface
     private function createResponse(Client $client): ResponseInterface
     {
         $response = $this->responseFactory->createResponse(201);
-        foreach (['Content-Type' => 'application/json', 'Cache-Control' => 'no-store', 'Pragma' => 'no-cache'] as $k => $v) {
+        foreach (['Content-Type' => 'application/json; charset=UTF-8', 'Cache-Control' => 'no-store', 'Pragma' => 'no-cache'] as $k => $v) {
             $response = $response->withHeader($k, $v);
         }
         $response->getBody()->write(json_encode($client->all(), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));

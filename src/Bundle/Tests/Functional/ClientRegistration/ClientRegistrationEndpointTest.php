@@ -13,8 +13,11 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Tests\Functional\ClientRegistration;
 
+use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
+use OAuth2Framework\Component\Core\Client\ClientRepository;
 use OAuth2Framework\Component\TokenRevocationEndpoint\TokenRevocationEndpoint;
+use Psr\Container\ContainerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
@@ -38,17 +41,45 @@ class ClientRegistrationEndpointTest extends WebTestCase
     /**
      * @test
      */
-    public function theClientIsNotAuthenticated()
+    public function theInitialAccessTokenExpired()
+    {
+        $client = static::createClient();
+        $client->request('POST', '/client/management', [], [], ['HTTPS' => 'on', 'HTTP_AUTHORIZATION' => 'Bearer EXPIRED_INITIAL_ACCESS_TOKEN_ID'], null);
+        $response = $client->getResponse();
+        self::assertEquals(400, $response->getStatusCode());
+        self::assertEquals('{"error":"invalid_request","error_description":"Initial Access Token expired."}', $response->getContent());
+    }
+
+    /**
+     * @test
+     */
+    public function theInitialAccessTokenIsMissing()
     {
         $client = static::createClient();
         $client->request('POST', '/client/management', [], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
-        self::assertEquals(201, $response->getStatusCode());
-        dump($response->headers->all());
-        $content = json_decode($response->getContent(), true);
+        self::assertEquals(400, $response->getStatusCode());
+        self::assertEquals('{"error":"invalid_request","error_description":"Initial Access Token is missing or invalid."}', $response->getContent());
+    }
 
+    /**
+     * @test
+     */
+    public function theInitialAccessTokenIsValidAndTheClientIsCreated()
+    {
+        $client = static::createClient();
+        $client->request('POST', '/client/management', [], [], ['HTTPS' => 'on', 'HTTP_AUTHORIZATION' => 'Bearer VALID_INITIAL_ACCESS_TOKEN_ID'], null);
+        $response = $client->getResponse();
+        self::assertEquals(201, $response->getStatusCode());
+        self::assertEquals('application/json; charset=UTF-8', $response->headers->get('content-type'));
+        $content = json_decode($response->getContent(), true);
+        self::assertInternalType('array', $content);
+        self::assertArrayHasKey('client_id', $content);
+        /** @var ContainerInterface $container */
         $container = $client->getContainer();
-        dump($container->get('MyClientRepository')->find(ClientId::create($content['client_id'])));
-        self::assertEquals('', $response->getContent());
+        /** @var ClientRepository $clientRepository */
+        $clientRepository = $container->get('MyClientRepository');
+        $client = $clientRepository->find(ClientId::create($content['client_id']));
+        self::assertInstanceOf(Client::class, $client);
     }
 }

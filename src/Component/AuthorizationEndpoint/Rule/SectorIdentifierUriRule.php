@@ -11,10 +11,11 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Component\ClientRule;
+namespace OAuth2Framework\Component\AuthorizationEndpoint\Rule;
 
 use Http\Client\HttpClient;
 use Http\Message\ResponseFactory;
+use OAuth2Framework\Component\ClientRule\Rule;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 

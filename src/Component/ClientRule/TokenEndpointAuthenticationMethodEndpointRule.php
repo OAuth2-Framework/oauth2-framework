@@ -13,9 +13,9 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\ClientRule;
 
+use OAuth2Framework\Component\ClientAuthentication\AuthenticationMethodManager;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
-use OAuth2Framework\Component\TokenEndpoint\AuthenticationMethod\AuthenticationMethodManager;
 
 class TokenEndpointAuthenticationMethodEndpointRule implements Rule
 {
