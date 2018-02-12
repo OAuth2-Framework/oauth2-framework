@@ -12,6 +12,7 @@ declare(strict_types=1);
  */
 
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use OAuth2Framework\Bundle\Rule\ClientConfigurationRouteRule;
 use OAuth2Framework\Component\Middleware;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
@@ -50,5 +51,10 @@ return function (ContainerConfigurator $container) {
     $container->set(\OAuth2Framework\Bundle\Controller\ClientConfigurationMiddleware::class)
         ->args([
             ref('oauth2_server.client_repository'),
+        ]);
+
+    $container->set(ClientConfigurationRouteRule::class)
+        ->args([
+            ref('router'),
         ]);
 };

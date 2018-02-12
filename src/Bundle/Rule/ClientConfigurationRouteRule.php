@@ -19,7 +19,7 @@ use OAuth2Framework\Component\Core\Client\ClientId;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 
-class ClientRegistrationManagementRule extends Base
+class ClientConfigurationRouteRule extends Base
 {
     /**
      * @var RouterInterface
@@ -49,6 +49,8 @@ class ClientRegistrationManagementRule extends Base
      */
     protected function generateRegistrationAccessToken(): string
     {
-        return Base64Url::encode(random_bytes(512));
+        $length = random_int(50, 100);
+
+        return Base64Url::encode(random_bytes($length));
     }
 }

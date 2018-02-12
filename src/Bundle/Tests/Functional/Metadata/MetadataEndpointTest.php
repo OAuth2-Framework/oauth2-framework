@@ -37,7 +37,7 @@ class MetadataEndpointTest extends WebTestCase
     /**
      * @test
      */
-    public function theClientIsNotAuthenticated()
+    public function theMetadataEndpointIsAvailable()
     {
         $client = static::createClient();
         $client->request('GET', '/.well-known/openid-configuration', [], [], ['HTTPS' => 'on']);
@@ -45,13 +45,6 @@ class MetadataEndpointTest extends WebTestCase
         self::assertEquals(200, $response->getStatusCode());
         self::assertEquals('application/json; charset=UTF-8', $response->headers->get('content-type'));
         $content = json_decode($response->getContent(), true);
-        self::assertArrayHasKey('token_endpoint_auth_methods_supported', $content);
-        self::assertArrayHasKey('token_endpoint', $content);
-        self::assertArrayHasKey('token_introspection_endpoint', $content);
-        self::assertArrayHasKey('token_revocation_endpoint', $content);
-        self::assertArrayHasKey('issuer', $content);
-        self::assertArrayHasKey('service_documentation', $content);
-        self::assertArrayHasKey('op_policy_uri', $content);
-        self::assertArrayHasKey('op_tos_uri', $content);
+        self::assertInternalType('array', $content);
     }
 }

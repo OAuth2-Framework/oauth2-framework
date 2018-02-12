@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\Component\Endpoint\ClientRegistration;
 
 use OAuth2Framework\Bundle\Component\Component;
+use OAuth2Framework\Bundle\Component\Endpoint\ClientRegistration\Compiler\ClientRegistrationEndpointRouteCompilerPass;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -105,6 +106,7 @@ class ClientRegistrationSource implements Component
      */
     public function build(ContainerBuilder $container)
     {
+        $container->addCompilerPass(new ClientRegistrationEndpointRouteCompilerPass());
         foreach ($this->subComponents as $component) {
             $component->build($container);
         }

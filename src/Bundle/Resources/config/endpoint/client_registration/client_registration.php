@@ -11,31 +11,30 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-/*use OAuth2Framework\Bundle\Tests\ClientRegistrationManagementRule;
-use OAuth2Framework\Component\Endpoint\ClientRule\ClientRegistrationEndpoint;
-use OAuth2Framework\Component\Middleware\OAuth2ResponseMiddleware;
-use OAuth2Framework\Component\Middleware\Pipe;
-use function Fluent\create;
-use function Fluent\get;
-use OAuth2Framework\Component\Middleware\JsonBodyParserMiddleware;
+use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use OAuth2Framework\Component\Middleware;
+use OAuth2Framework\Component\ClientRegistrationEndpoint\ClientRegistrationEndpoint;
+use OAuth2Framework\Component\ClientRule\RuleManager;
+use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
-return [
-    'client_registration_endpoint_pipe' => create(Pipe::class)
-        ->arguments([
-            get(OAuth2ResponseMiddleware::class),
-            get(JsonBodyParserMiddleware::class),
-            get(ClientRegistrationEndpoint::class),
-        ]),
+return function (ContainerConfigurator $container) {
+    $container = $container->services()->defaults()
+        ->private()
+        ->autoconfigure();
 
-    ClientRegistrationEndpoint::class => create()
-        ->arguments(
-            get('httplug.message_factory'),
-            get('command_bus')
-        ),
+    $container->set('client_registration_endpoint_pipe')
+        ->class(Middleware\Pipe::class)
+        ->args([[
+            ref(Middleware\OAuth2ResponseMiddleware::class),
+            ref(ClientRegistrationEndpoint::class),
+        ]])
+        ->tag('controller.service_arguments');
 
-    ClientRegistrationManagementRule::class => create()
-        ->arguments(
-            get('router')
-        )
-        ->tag('oauth2_server_client_rule'),
-];*/
+    $container->set(ClientRegistrationEndpoint::class)
+        ->args([
+            ref('oauth2_server.client_repository'),
+            ref('httplug.message_factory'),
+            ref('command_bus'),
+            ref(RuleManager::class),
+        ]);
+};

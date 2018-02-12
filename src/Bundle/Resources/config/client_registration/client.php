@@ -16,15 +16,6 @@ use function Fluent\create;
 use function Fluent\get;
 
 return [
-    ClientRepository::class => create()
-        ->arguments(
-            get('oauth2_server.client.event_store'),
-            get('event_recorder'),
-            get('cache.app')
-        ),
-
-    RuleManager::class => create(),
-
     Rule\UserParametersRule::class => create()
         ->tag('oauth2_server_client_rule'),
 
@@ -65,24 +56,4 @@ return [
             get(TokenEndpointAuthMethodManager::class)
         )
         ->tag('oauth2_server_client_rule'),
-
-    Client\CreateClientCommandHandler::class => create()
-        ->arguments(
-            get(ClientRepository::class),
-            get(RuleManager::class)
-        )
-        ->tag('command_handler', ['handles' => Client\CreateClientCommand::class]),
-
-    Client\DeleteClientCommandHandler::class => create()
-        ->arguments(
-            get(ClientRepository::class)
-        )
-        ->tag('command_handler', ['handles' => Client\DeleteClientCommand::class]),
-
-    Client\UpdateClientCommandHandler::class => create()
-        ->arguments(
-            get(ClientRepository::class),
-            get(RuleManager::class)
-        )
-        ->tag('command_handler', ['handles' => Client\UpdateClientCommand::class]),
 ];
