@@ -11,7 +11,6 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use OAuth2Framework\Bundle\Model\ClientRepository;
 use function Fluent\create;
 use function Fluent\get;
 

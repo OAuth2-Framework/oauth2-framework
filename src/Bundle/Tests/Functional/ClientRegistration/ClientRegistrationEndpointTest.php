@@ -13,11 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Tests\Functional\ClientRegistration;
 
-use OAuth2Framework\Component\Core\AccessToken\AccessToken;
-use OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository;
 use OAuth2Framework\Component\Core\Client\ClientId;
-use OAuth2Framework\Component\Core\DataBag\DataBag;
-use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use OAuth2Framework\Component\TokenRevocationEndpoint\TokenRevocationEndpoint;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
