@@ -14,7 +14,7 @@ declare(strict_types=1);
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use OAuth2Framework\Component\OpenIdConnect\UserInfo\ClaimSource\ClaimSourceManager;
 use OAuth2Framework\Component\OpenIdConnect\UserInfo\UserInfo;
-use \OAuth2Framework\Component\OpenIdConnect\Rule;
+use OAuth2Framework\Component\OpenIdConnect\Rule;
 use OAuth2Framework\Component\OpenIdConnect\UserInfo\ScopeSupport\UserInfoScopeSupportManager;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
@@ -53,7 +53,7 @@ return function (ContainerConfigurator $container) {
     $container->set(Rule\IdTokenAlgorithmsRule::class)
         ->args([
             ref('jose.jws_builder.id_token'),
-            ref('jose.jwe_builder.id_token')->nullOnInvalid()
+            ref('jose.jwe_builder.id_token')->nullOnInvalid(),
         ]);
 
     $container->set(Rule\SubjectTypeRule::class)
