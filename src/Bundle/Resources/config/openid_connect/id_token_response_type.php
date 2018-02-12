@@ -11,19 +11,22 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use OAuth2Framework\Component\Model\IdToken\IdTokenBuilderFactory;
-use OAuth2Framework\Component\ResponseType\IdTokenResponseType;
-use function Fluent\create;
-use function Fluent\get;
+use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use OAuth2Framework\Component\OpenIdConnect\IdTokenGrant\IdTokenResponseType;
+use OAuth2Framework\Component\OpenIdConnect\IdTokenBuilderFactory;
+use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
-return [
-    IdTokenResponseType::class => create()
-        ->arguments(
-            get(IdTokenBuilderFactory::class),
+return function (ContainerConfigurator $container) {
+    $container = $container->services()->defaults()
+        ->private()
+        ->autoconfigure();
+
+    $container->set(IdTokenResponseType::class)
+        ->args([
+            ref(IdTokenBuilderFactory::class),
             '%oauth2_server.openid_connect.id_token.default_signature_algorithm%',
-            get('jose.jws_builder.id_token'),
-            get('jose.key_set.oauth2_server.key_set.signature'),
-            get('jose.encrypter.id_token')->nullIfMissing()
-        )
-        ->tag('oauth2_server_response_type'),
-];
+            ref('jose.jws_builder.id_token'),
+            ref('jose.key_set.oauth2_server.key_set.signature'),
+            ref('jose.encrypter.id_token')->nullOnInvalid(),
+        ]);
+};

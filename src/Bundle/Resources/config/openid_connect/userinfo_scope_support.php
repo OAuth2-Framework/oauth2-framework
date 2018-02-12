@@ -11,19 +11,18 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use OAuth2Framework\Component\Endpoint\UserInfo\ScopeSupport;
-use function Fluent\create;
+use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use OAuth2Framework\Component\OpenIdConnect\UserInfo\ScopeSupport;
 
-return [
-    ScopeSupport\AddressScopeSupport::class => create()
-        ->tag('oauth2_server_userinfo_scope_support'),
+return function (ContainerConfigurator $container) {
+    $container = $container->services()->defaults()
+        ->private()
+        ->autoconfigure();
 
-    ScopeSupport\EmailScopeSupport::class => create()
-        ->tag('oauth2_server_userinfo_scope_support'),
+    $container->set(ScopeSupport\AddressScopeSupport::class)
+        ->tag('oauth2_server_userinfo_scope_support');
 
-    ScopeSupport\PhoneScopeSupport::class => create()
-        ->tag('oauth2_server_userinfo_scope_support'),
-
-    ScopeSupport\ProfilScopeSupport::class => create()
-        ->tag('oauth2_server_userinfo_scope_support'),
-];
+    $container->set(ScopeSupport\EmailScopeSupport::class);
+    $container->set(ScopeSupport\PhoneScopeSupport::class);
+    $container->set(ScopeSupport\ProfilScopeSupport::class);
+};

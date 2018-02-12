@@ -11,52 +11,53 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use OAuth2Framework\Component\Model\Client\Rule;
-use OAuth2Framework\Component\Endpoint\Token\Extension\OpenIdConnectExtension;
-use OAuth2Framework\Component\Endpoint\UserInfo\ClaimSource\ClaimSourceManager;
-use OAuth2Framework\Component\Endpoint\UserInfo\ScopeSupport\UserInfoScopeSupportManager;
-use OAuth2Framework\Component\Endpoint\UserInfo\UserInfo;
-use OAuth2Framework\Component\Model\IdToken\IdTokenBuilderFactory;
-use function Fluent\create;
-use function Fluent\get;
+use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use OAuth2Framework\Component\OpenIdConnect\UserInfo\ClaimSource\ClaimSourceManager;
+use OAuth2Framework\Component\OpenIdConnect\UserInfo\UserInfo;
+use \OAuth2Framework\Component\OpenIdConnect\Rule;
+use OAuth2Framework\Component\OpenIdConnect\UserInfo\ScopeSupport\UserInfoScopeSupportManager;
+use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
-return [
-    UserInfoScopeSupportManager::class => create(),
-    ClaimSourceManager::class => create(),
+return function (ContainerConfigurator $container) {
+    $container = $container->services()->defaults()
+        ->private()
+        ->autoconfigure();
 
-    UserInfo::class => create()
-        ->arguments(
-            get(UserInfoScopeSupportManager::class),
-            get(ClaimSourceManager::class)
-        ),
+    $container->set(UserInfoScopeSupportManager::class);
 
-    OpenIdConnectExtension::class => create()
-        ->arguments(
-            get(IdTokenBuilderFactory::class),
+    $container->set(ClaimSourceManager::class);
+
+    $container->set(UserInfo::class)
+        ->args([
+            ref(UserInfoScopeSupportManager::class),
+            ref(ClaimSourceManager::class),
+        ]);
+
+    $container->set(OpenIdConnectExtension::class)
+        ->args([
+            ref(IdTokenBuilderFactory::class),
             '%oauth2_server.openid_connect.id_token.default_signature_algorithm%',
-            get('jose.jws_builder.id_token'),
-            get('jose.key_set.oauth2_server.key_set.signature'),
-            get('jose.jwe_builder.id_token')->nullIfMissing()
-        )
-        ->tag('oauth2_server_token_endpoint_extension'),
+            ref('jose.jws_builder.id_token'),
+            ref('jose.key_set.oauth2_server.key_set.signature'),
+            ref('jose.jwe_builder.id_token')->nullOnInvalid(),
+        ])
+        ->tag('oauth2_server_token_endpoint_extension');
 
-    IdTokenBuilderFactory::class => create()
-        ->arguments(
+    $container->set(IdTokenBuilderFactory::class)
+        ->args([
             '%oauth2_server.server_uri%',
-            get(UserInfo::class),
-            '%oauth2_server.openid_connect.id_token.lifetime%'
-        ),
+            ref(UserInfo::class),
+            '%oauth2_server.openid_connect.id_token.lifetime%',
+        ]);
 
-    Rule\IdTokenAlgorithmsRule::class => create()
-        ->arguments(
-            get('jose.jws_builder.id_token'),
-            get('jose.jwe_builder.id_token')->nullIfMissing()
-        )
-        ->tag('oauth2_server_client_rule'),
+    $container->set(Rule\IdTokenAlgorithmsRule::class)
+        ->args([
+            ref('jose.jws_builder.id_token'),
+            ref('jose.jwe_builder.id_token')->nullOnInvalid()
+        ]);
 
-    Rule\SubjectTypeRule::class => create()
-        ->arguments(
-            get(UserInfo::class)
-        )
-        ->tag('oauth2_server_client_rule'),
-];
+    $container->set(Rule\SubjectTypeRule::class)
+        ->args([
+            ref(UserInfo::class),
+        ]);
+};
