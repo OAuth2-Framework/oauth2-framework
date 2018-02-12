@@ -26,7 +26,6 @@ use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\Exception\OAuth2Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Ramsey\Uuid\Uuid;
 use SimpleBus\Message\Bus\MessageBus;
 
 class ClientRegistrationEndpoint implements MiddlewareInterface
