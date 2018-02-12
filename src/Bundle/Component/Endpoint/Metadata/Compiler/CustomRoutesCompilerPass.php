@@ -16,7 +16,6 @@ namespace OAuth2Framework\Bundle\Component\Endpoint\Metadata\Compiler;
 use OAuth2Framework\Bundle\Service\MetadataBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Definition;
 
 class CustomRoutesCompilerPass implements CompilerPassInterface
 {
