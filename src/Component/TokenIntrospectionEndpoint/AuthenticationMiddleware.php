@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\TokenIntrospectionEndpoint;
 
+use OAuth2Framework\Component\ResourceServerAuthentication\AuthenticationMethodManager;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerRepository;
@@ -28,17 +29,17 @@ class AuthenticationMiddleware implements MiddlewareInterface
     private $resourceServerRepository;
 
     /**
-     * @var ResourceServerAuthenticationMethodManager
+     * @var AuthenticationMethodManager
      */
     private $resourceServerAuthenticationMethodManager;
 
     /**
      * ResourceServerAuthenticationMiddleware constructor.
      *
-     * @param ResourceServerRepository                  $resourceServerRepository
-     * @param ResourceServerAuthenticationMethodManager $resourceServerAuthenticationMethodManager
+     * @param ResourceServerRepository     $resourceServerRepository
+     * @param AuthenticationMethodManager $resourceServerAuthenticationMethodManager
      */
-    public function __construct(ResourceServerRepository $resourceServerRepository, ResourceServerAuthenticationMethodManager $resourceServerAuthenticationMethodManager)
+    public function __construct(ResourceServerRepository $resourceServerRepository, AuthenticationMethodManager $resourceServerAuthenticationMethodManager)
     {
         $this->resourceServerRepository = $resourceServerRepository;
         $this->resourceServerAuthenticationMethodManager = $resourceServerAuthenticationMethodManager;
@@ -49,7 +50,7 @@ class AuthenticationMiddleware implements MiddlewareInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $resourceServerId = $this->resourceServerAuthenticationMethodManager->findResourceServerInformationInTheRequest($request, $authenticationMethod, $resourceServerCredentials);
+        $resourceServerId = $this->resourceServerAuthenticationMethodManager->findResourceServerIdAndCredentials($request, $authenticationMethod, $resourceServerCredentials);
         if (null === $resourceServerId) {
             throw new OAuth2Exception(401, OAuth2Exception::ERROR_INVALID_RESOURCE_SERVER, 'Resource Server authentication failed.');
         }
