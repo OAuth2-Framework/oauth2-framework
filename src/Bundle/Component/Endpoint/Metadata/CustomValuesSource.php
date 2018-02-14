@@ -45,7 +45,7 @@ class CustomValuesSource implements Component
             ->arrayNode('custom_values')
                 ->info('Custom values added to the metadata response.')
                 ->useAttributeAsKey('name')
-                ->prototype('variable')->end()
+                ->variablePrototype()->end()
                 ->treatNullLike([])
                 ->treatFalseLike([])
             ->end()

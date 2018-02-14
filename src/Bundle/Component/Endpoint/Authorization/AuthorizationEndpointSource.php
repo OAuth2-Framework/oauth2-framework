@@ -70,7 +70,7 @@ class AuthorizationEndpointSource implements Component
                 ->arrayNode('login_route_parameters')
                     ->info('Parameters associated to the login route (if needed).')
                     ->useAttributeAsKey('name')
-                    ->prototype('scalar')->end()
+                    ->scalarPrototype()->end()
                     ->treatNullLike([])
                 ->end()
                 ->scalarNode('template')

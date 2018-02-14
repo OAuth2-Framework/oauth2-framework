@@ -78,7 +78,7 @@ class SoftwareStatementSource implements Component
                     ->arrayNode('allowed_signature_algorithms')
                         ->info('Signature algorithms allowed for the software statements. The algorithm "none" should not be used.')
                         ->useAttributeAsKey('name')
-                        ->prototype('scalar')->end()
+                        ->scalarPrototype()->end()
                         ->treatNullLike([])
                     ->end()
                 ->end()

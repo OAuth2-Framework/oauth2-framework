@@ -61,7 +61,7 @@ class UserinfoEndpointSignatureSource implements Component
                     ->arrayNode('signature_algorithms')
                         ->info('Signature algorithm used to sign the user information.')
                         ->useAttributeAsKey('name')
-                        ->prototype('scalar')->end()
+                        ->scalarPrototype()->end()
                         ->treatNullLike([])
                         ->treatFalseLike([])
                     ->end()

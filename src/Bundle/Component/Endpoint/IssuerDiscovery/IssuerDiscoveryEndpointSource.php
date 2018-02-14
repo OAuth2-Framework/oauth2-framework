@@ -49,7 +49,7 @@ class IssuerDiscoveryEndpointSource implements Component
             ->arrayNode($this->name())
                 ->defaultValue([])
                 ->useAttributeAsKey('name')
-                ->prototype('array')
+                ->arrayPrototype()
                     ->children()
                         ->scalarNode('path')
                             ->isRequired()

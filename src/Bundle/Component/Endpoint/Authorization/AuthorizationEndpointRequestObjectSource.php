@@ -58,7 +58,7 @@ class AuthorizationEndpointRequestObjectSource implements Component
                 ->arrayNode('signature_algorithms')
                     ->info('Supported signature algorithms.')
                     ->useAttributeAsKey('name')
-                    ->prototype('scalar')->end()
+                    ->scalarPrototype()->end()
                     ->treatNullLike([])
                 ->end()
             ->end();
