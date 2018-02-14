@@ -13,14 +13,9 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Tests\TestBundle\Entity;
 
-use Base64Url\Base64Url;
 use OAuth2Framework\Component\Core\AccessToken\AccessToken;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository as AccessTokenRepositoryInterface;
-use OAuth2Framework\Component\Core\Client\ClientId;
-use OAuth2Framework\Component\Core\DataBag\DataBag;
-use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwnerId;
-use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
 
 class AccessTokenRepository implements AccessTokenRepositoryInterface
 {
