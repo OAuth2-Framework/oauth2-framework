@@ -34,7 +34,7 @@ class SignedMetadataCompilerPass implements CompilerPassInterface
         $metadata->addMethodCall('enableSignedMetadata', [
             new Reference('jose.jws_builder.oauth2_server.endpoint.metadata.signature'),
             $algorithm,
-            new Reference('jose.key.oauth2_server.endpoint.metadata.signature')
+            new Reference('jose.key.oauth2_server.endpoint.metadata.signature'),
         ]);
     }
 }

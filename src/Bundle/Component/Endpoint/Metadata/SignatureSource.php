@@ -92,7 +92,7 @@ class SignatureSource implements Component
         $config = $configs['endpoint']['metadata']['signature'];
         if ($config['enabled']) {
             ConfigurationHelper::addJWSBuilder($container, 'oauth2_server.endpoint.metadata.signature', [$config['algorithm']], false);
-            ConfigurationHelper::addKey($container,'oauth2_server.endpoint.metadata.signature', 'jwk', ['value' => $config['key']]);
+            ConfigurationHelper::addKey($container, 'oauth2_server.endpoint.metadata.signature', 'jwk', ['value' => $config['key']]);
         }
 
         return [];

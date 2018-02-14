@@ -71,6 +71,7 @@ class TokenEndpoint implements MiddlewareInterface
 
     /**
      * TokenEndpoint constructor.
+     *
      * @param ClientRepository              $clientRepository
      * @param UserAccountRepository         $userAccountRepository
      * @param TokenEndpointExtensionManager $tokenEndpointExtensionManager
