@@ -36,7 +36,7 @@ class AuthenticationMiddleware implements MiddlewareInterface
     /**
      * ResourceServerAuthenticationMiddleware constructor.
      *
-     * @param ResourceServerRepository     $resourceServerRepository
+     * @param ResourceServerRepository    $resourceServerRepository
      * @param AuthenticationMethodManager $resourceServerAuthenticationMethodManager
      */
     public function __construct(ResourceServerRepository $resourceServerRepository, AuthenticationMethodManager $resourceServerAuthenticationMethodManager)
