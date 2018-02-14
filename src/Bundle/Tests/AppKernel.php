@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\Tests;
 
 use Http\HttplugBundle\HttplugBundle;
+use Jose\Bundle\JoseFramework\JoseFrameworkBundle;
 use OAuth2Framework\Bundle\OAuth2FrameworkBundle;
 use OAuth2Framework\Bundle\Tests\TestBundle\TestBundle;
 use Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle;
@@ -53,6 +54,7 @@ class AppKernel extends Kernel
             new OAuth2FrameworkBundle(),
             new TestBundle(),
 
+            new JoseFrameworkBundle(),
             new SimpleBusEventBusBundle(),
             new SimpleBusCommandBusBundle(),
         ];

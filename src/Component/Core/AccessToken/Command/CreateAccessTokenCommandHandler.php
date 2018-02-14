@@ -45,7 +45,7 @@ class CreateAccessTokenCommandHandler
         $accessToken = AccessToken::createEmpty();
         $accessToken = $accessToken->create(
             $command->getAccessTokenId(),
-            $command->getUserAccountId(),
+            $command->getResourceOwnerId(),
             $command->getClientId(),
             $command->getParameters(),
             $command->getMetadatas(),

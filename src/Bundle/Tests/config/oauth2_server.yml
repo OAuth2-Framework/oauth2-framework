@@ -10,6 +10,7 @@ oauth2_server:
     client_repository: 'MyClientRepository'
     user_account_manager: 'MyUserAccountManager'
     user_account_repository: 'MyUserAccountRepository'
+    access_token_id_generator: 'MyAccessTokenIdGenerator'
     access_token_repository: 'MyAccessTokenRepository'
     resource_server_repository: 'MyResourceServerRepository'
     scope:
@@ -96,7 +97,7 @@ oauth2_server:
             signature:
                 enabled: true
                 algorithm: 'RS256'
-                key: 'foo'
+                key: '{"kid":"3JvyzQENw2uBs-lI_3tn_mfNtn7ESxo5DY3rPZvTvLI","kty":"RSA","n":"0gVVThD9kqE45PJeyZGB8yZPv7Cv33zye-3_DspM-a9b_tv1edqdlRfub0DXs40qZ4GaWnCJjnNbLW_p7s3WyMKlMU53AGRADhXxtVkZhoPjD_2Ap4_SXB5Ak6s-IybDOR3Fg0PV9bvco7MMspEg8XXd_ZVa7_3VMOHj_anONZs","e":"AQAB","d":"upuggz_XfwyfV9X-4MzYESruWx1r94C2l-UM5qBbqtLkQ9w_DelwcQQViGauAcyha9ydQFST9K2Myx-QVO4yMw0Cd78WjoWh5IK1U6pwHUVhXsfD_4VXO0swxn2OgOJqRU2QGyR8CEDkdIBt_frl16Plf35psj1nJDkF7v6cP3k","p":"9U4gLOwnhUYS_uulKVl1FHL1dKMxVqz8ZBCX-Hi_y_89OTFtfu7F0t-I33czXY3PeGOzxsGvk1JhOjabuijfjQ","q":"2y1lRyEXhGgli-4tM_nfKWA7e_MknQ-5TdqZmALJ_9UHkxUu5m2pbZl3NwRWrVAhjBnwCQmgZlHUU9gGxJrrxw","dp":"LPMg8Dphz4kUqAO0IwySaKncEoBo5RITuZ5UyqINuyrNJDLLdqv4MfjmEtS749O9hbj3U19gdeVtjYY-KPGebQ","dq":"R0EY3ej6NkeNfVJvS6h-TntEm2VOj-keuxrIOE0f0pY1IjIOz0bzf_gWc8JrU2jrnxqHmMiSZvFPb_qZKK2c3Q","qi":"4dG5rwyzXclvFqWxnv6TW4-p_Nbyl0q5ryVZN3L5NLodur6DgSD7CxiYzmGg57T1QD0q96deM6GnT2rdkoI6kQ"}'
             custom_routes:
                 service_documentation:
                     route_name: 'service_documentation'

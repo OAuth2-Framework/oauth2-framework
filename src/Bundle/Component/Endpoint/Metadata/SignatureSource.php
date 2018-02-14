@@ -13,7 +13,9 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Component\Endpoint\Metadata;
 
+use Jose\Bundle\JoseFramework\Helper\ConfigurationHelper;
 use OAuth2Framework\Bundle\Component\Component;
+use OAuth2Framework\Bundle\Component\Endpoint\Metadata\Compiler\SignedMetadataCompilerPass;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -32,7 +34,14 @@ class SignatureSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        $container->setParameter('oauth2_server.endpoint.metadata.custom_routes', $configs['endpoint']['metadata']['custom_routes']);
+        $config = $configs['endpoint']['metadata']['signature'];
+        $container->setParameter('oauth2_server.endpoint.metadata.signature.enabled', $config['enabled']);
+        if (!$config['enabled']) {
+            return;
+        }
+
+        $container->setParameter('oauth2_server.endpoint.metadata.signature.algorithm', $config['algorithm']);
+        $container->setParameter('oauth2_server.endpoint.metadata.signature.key', $config['key']);
     }
 
     /**
@@ -72,23 +81,20 @@ class SignatureSource implements Component
      */
     public function build(ContainerBuilder $container)
     {
-        //Nothing to do
+        $container->addCompilerPass(new SignedMetadataCompilerPass());
     }
 
     /**
      * {@inheritdoc}
      */
-    public function prepend(ContainerBuilder $container, array $config): array
+    public function prepend(ContainerBuilder $container, array $configs): array
     {
-        /*parent::prepend($bundleConfig, $path, $container);
-        $currentPath = $path.'['.$this->name().']';
-        $accessor = PropertyAccess::createPropertyAccessor();
-        $sourceConfig = $accessor->getValue($bundleConfig, $currentPath);
+        $config = $configs['endpoint']['metadata']['signature'];
+        if ($config['enabled']) {
+            ConfigurationHelper::addJWSBuilder($container, 'oauth2_server.endpoint.metadata.signature', [$config['algorithm']], false);
+            ConfigurationHelper::addKey($container,'oauth2_server.endpoint.metadata.signature', 'jwk', ['value' => $config['key']]);
+        }
 
-        ConfigurationHelper::addJWSBuilder($container, 'metadata_signature', [$sourceConfig['algorithm']], false);
-
-        Assertion::keyExists($bundleConfig['key_set'], 'signature', 'The signature key set must be enabled.');*/
-        //ConfigurationHelper::addKeyset($container, 'signed_metadata_endpoint.key_set.signature', 'jwkset', ['value' => $bundleConfig['key_set']['signature']]);
         return [];
     }
 }

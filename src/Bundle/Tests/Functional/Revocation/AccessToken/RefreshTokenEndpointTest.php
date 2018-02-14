@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\Tests\Functional\Revocation\AccessToken;
 
 use OAuth2Framework\Component\Core\AccessToken\AccessToken;
+use OAuth2Framework\Component\Core\AccessToken\AccessTokenIdGenerator;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
@@ -82,15 +83,29 @@ class RevocationEndpointTest extends WebTestCase
     {
         $client = static::createClient();
         $container = $client->getContainer();
-        /** @var AccessTokenRepository $accessTokenRepository */
-        $accessTokenRepository = $container->get('MyAccessTokenRepository');
-        $accessToken = $accessTokenRepository->create(
+        /** @var AccessTokenIdGenerator $accessTokenIdGenerator */
+        $accessTokenIdGenerator = $container->get('MyAccessTokenIdGenerator');
+        $accessTokenId = $accessTokenIdGenerator->create(
             UserAccountId::create('john.1'),
             ClientId::create('CLIENT_ID_3'),
             DataBag::create([]),
             DataBag::create([]),
             null
         );
+
+        $accessToken = AccessToken::createEmpty();
+        $accessToken = $accessToken->create(
+            $accessTokenId,
+            UserAccountId::create('john.1'),
+            ClientId::create('CLIENT_ID_3'),
+            DataBag::create([]),
+            DataBag::create([]),
+            new \DateTimeImmutable('now +1 hour'),
+            null
+        );
+
+        /** @var AccessTokenRepository $accessTokenRepository */
+        $accessTokenRepository = $container->get('MyAccessTokenRepository');
         $accessTokenRepository->save($accessToken);
 
         $client->request('POST', '/token/revoke', ['client_id' => 'CLIENT_ID_3', 'client_secret' => 'secret', 'token' => $accessToken->getTokenId()->getValue()], [], ['HTTPS' => 'on'], null);
@@ -110,15 +125,31 @@ class RevocationEndpointTest extends WebTestCase
     {
         $client = static::createClient();
         $container = $client->getContainer();
-        /** @var AccessTokenRepository $accessTokenRepository */
-        $accessTokenRepository = $container->get('MyAccessTokenRepository');
-        $accessToken = $accessTokenRepository->create(
+        /** @var AccessTokenIdGenerator $accessTokenIdGenerator */
+        $accessTokenIdGenerator = $container->get('MyAccessTokenIdGenerator');
+        $accessTokenId = $accessTokenIdGenerator->create(
             UserAccountId::create('john.1'),
             ClientId::create('CLIENT_ID_2'),
             DataBag::create([]),
             DataBag::create([]),
             null
         );
+
+        $accessToken = AccessToken::createEmpty();
+        $accessToken = $accessToken->create(
+            $accessTokenId,
+            UserAccountId::create('john.1'),
+            ClientId::create('CLIENT_ID_2'),
+            DataBag::create([]),
+            DataBag::create([]),
+            new \DateTimeImmutable('now +1 hour'),
+            null
+        );
+
+        $client = static::createClient();
+        $container = $client->getContainer();
+        /** @var AccessTokenRepository $accessTokenRepository */
+        $accessTokenRepository = $container->get('MyAccessTokenRepository');
         $accessTokenRepository->save($accessToken);
 
         $client->request('POST', '/token/revoke', ['client_id' => 'CLIENT_ID_3', 'client_secret' => 'secret', 'token' => $accessToken->getTokenId()->getValue()], [], ['HTTPS' => 'on'], null);

@@ -26,6 +26,8 @@ return function (ContainerConfigurator $container) {
     $container->set(TokenResponseType::class)
         ->args([
             ref('oauth2_server.access_token_repository'),
+            ref('oauth2_server.access_token_id_generator'),
+            '%oauth2_server.access_token_lifetime%',
         ])
         ->tag('oauth2_server_response_type');
 };

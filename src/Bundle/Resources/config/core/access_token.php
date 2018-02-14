@@ -25,6 +25,7 @@ return function (ContainerConfigurator $container) {
     $container->set(Command\CreateAccessTokenCommandHandler::class)
         ->args([
             ref('oauth2_server.access_token_repository'),
+            ref('oauth2_server.access_token_id_generator'),
         ]);
 
     $container->set(Command\RevokeAccessTokenCommandHandler::class)

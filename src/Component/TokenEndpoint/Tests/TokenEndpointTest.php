@@ -13,10 +13,12 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\TokenEndpoint\Tests;
 
+use Base64Url\Base64Url;
 use Http\Message\MessageFactory\GuzzleMessageFactory;
+use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
+use OAuth2Framework\Component\Core\AccessToken\AccessTokenIdGenerator;
 use Psr\Http\Server\RequestHandlerInterface;
 use OAuth2Framework\Component\Core\AccessToken\AccessToken;
-use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
@@ -144,7 +146,7 @@ class TokenEndpointTest extends TestCase
         $body = $response->getBody()->getContents();
 
         self::assertEquals(200, $response->getStatusCode());
-        self::assertRegexp('/^\{"token_type_foo"\:"token_type_bar","token_type"\:"TOKEN_TYPE","access_token"\:"ACCESS_TOKEN_ID","expires_in"\:\d{4}\}$/', $body);
+        self::assertRegexp('/^\{"token_type_foo"\:"token_type_bar","token_type"\:"TOKEN_TYPE","access_token"\:"\w{10,}","expires_in"\:\d{4}\}$/', $body);
     }
 
     /**
@@ -163,7 +165,9 @@ class TokenEndpointTest extends TestCase
                 $this->getUserAccountRepository(),
                 new TokenEndpointExtensionManager(),
                 new GuzzleMessageFactory(),
-                $this->getAccessTokenRepository()
+                $this->getAccessTokenRepository(),
+                $this->getAccessTokenIdGenerator(),
+                1800
             );
         }
 
@@ -231,31 +235,36 @@ class TokenEndpointTest extends TestCase
     {
         if (null === $this->accessTokenRepository) {
             $accessTokenRepository = $this->prophesize(AccessTokenRepository::class);
-            $accessTokenRepository->create(
-                Argument::type(ResourceOwnerId::class),
-                Argument::type(ClientId::class),
-                Argument::type(DataBag::class),
-                Argument::type(DataBag::class),
-                null
-            )->will(function ($args) {
-                $accesstoken = AccessToken::createEmpty();
-                $accesstoken = $accesstoken->create(
-                    AccessTokenId::create('ACCESS_TOKEN_ID'),
-                    $args[0],
-                    $args[1],
-                    $args[2],
-                    $args[3],
-                    new \DateTimeImmutable('now + 1 hour'),
-                    $args[4]
-                );
-
-                return $accesstoken;
-            });
             $accessTokenRepository->save(Argument::type(AccessToken::class))->willReturn(null);
 
             $this->accessTokenRepository = $accessTokenRepository->reveal();
         }
 
         return $this->accessTokenRepository;
+    }
+
+    /**
+     * @var null|AccessTokenIdGenerator
+     */
+    private $accessTokenIdGenerator = null;
+
+    /**
+     * @return AccessTokenIdGenerator
+     */
+    private function getAccessTokenIdGenerator(): AccessTokenIdGenerator
+    {
+        if (null === $this->accessTokenIdGenerator) {
+            $accessTokenIdGenerator = $this->prophesize(AccessTokenIdGenerator::class);
+            $accessTokenIdGenerator
+                ->create(Argument::type(ResourceOwnerId::class), Argument::type(ClientId::class), Argument::type(DataBag::class), Argument::type(DataBag::class), null)
+                ->will(function () {
+                    $length = random_int(10, 15);
+
+                    return AccessTokenId::create(Base64Url::encode(random_bytes($length)));
+                });
+            $this->accessTokenIdGenerator = $accessTokenIdGenerator->reveal();
+        }
+
+        return $this->accessTokenIdGenerator;
     }
 }

@@ -16,11 +16,11 @@ namespace OAuth2Framework\Component\ImplicitGrant\Tests;
 use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
 use OAuth2Framework\Component\Core\AccessToken\AccessToken;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
+use OAuth2Framework\Component\Core\AccessToken\AccessTokenIdGenerator;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
-use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
 use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use OAuth2Framework\Component\ImplicitGrant\TokenResponseType;
@@ -85,23 +85,16 @@ class TokenResponseTypeTest extends TestCase
     private function getResponseType(): TokenResponseType
     {
         if (null === $this->grantType) {
-            $accessToken = AccessToken::createEmpty();
-            $accessToken = $accessToken->create(
-                AccessTokenId::create('ACCESS_TOKEN_ID'),
-                ClientId::create('CLIENT_ID'),
-                ClientId::create('CLIENT_ID'),
-                DataBag::create([]),
-                DataBag::create([]),
-                new \DateTimeImmutable('now +1 hour'),
-                ResourceServerId::create('RESOURCE_SERVER_ID')
-            );
-            $accessToken->eraseMessages();
+            $accessTokenIdGenerator = $this->prophesize(AccessTokenIdGenerator::class);
+            $accessTokenIdGenerator->create(Argument::any(), Argument::any(), Argument::any(), Argument::any(), Argument::any(), Argument::any(), Argument::any())->willReturn(AccessTokenId::create('ACCESS_TOKEN_ID'));
+
             $accessTokenRepository = $this->prophesize(AccessTokenRepository::class);
-            $accessTokenRepository->create(Argument::any(), Argument::any(), Argument::any(), Argument::any(), Argument::any(), Argument::any(), Argument::any())->willReturn($accessToken);
             $accessTokenRepository->save(Argument::type(AccessToken::class))->willReturn(null);
 
             $this->grantType = new TokenResponseType(
-                $accessTokenRepository->reveal()
+                $accessTokenRepository->reveal(),
+                $accessTokenIdGenerator->reveal(),
+                3600
             );
         }
 

@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\TokenEndpoint;
 
 use Http\Message\ResponseFactory;
+use OAuth2Framework\Component\Core\AccessToken\AccessTokenIdGenerator;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use OAuth2Framework\Component\Core\AccessToken\AccessToken;
@@ -54,26 +55,39 @@ class TokenEndpoint implements MiddlewareInterface
     private $responseFactory;
 
     /**
+     * @var AccessTokenIdGenerator
+     */
+    private $accessTokenIdGenerator;
+
+    /**
      * @var AccessTokenRepository
      */
     private $accessTokenRepository;
 
     /**
+     * @var int
+     */
+    private $accessTokenLifetime;
+
+    /**
      * TokenEndpoint constructor.
-     *
      * @param ClientRepository              $clientRepository
      * @param UserAccountRepository         $userAccountRepository
      * @param TokenEndpointExtensionManager $tokenEndpointExtensionManager
      * @param ResponseFactory               $responseFactory
      * @param AccessTokenRepository         $accessTokenRepository
+     * @param AccessTokenIdGenerator        $accessTokenIdGenerator
+     * @param int                           $accessLifetime
      */
-    public function __construct(ClientRepository $clientRepository, UserAccountRepository $userAccountRepository, TokenEndpointExtensionManager $tokenEndpointExtensionManager, ResponseFactory $responseFactory, AccessTokenRepository $accessTokenRepository)
+    public function __construct(ClientRepository $clientRepository, UserAccountRepository $userAccountRepository, TokenEndpointExtensionManager $tokenEndpointExtensionManager, ResponseFactory $responseFactory, AccessTokenRepository $accessTokenRepository, AccessTokenIdGenerator $accessTokenIdGenerator, int $accessLifetime)
     {
         $this->clientRepository = $clientRepository;
         $this->userAccountRepository = $userAccountRepository;
         $this->tokenEndpointExtensionManager = $tokenEndpointExtensionManager;
         $this->responseFactory = $responseFactory;
+        $this->accessTokenIdGenerator = $accessTokenIdGenerator;
         $this->accessTokenRepository = $accessTokenRepository;
+        $this->accessTokenLifetime = $accessLifetime;
     }
 
     /**
@@ -150,11 +164,21 @@ class TokenEndpoint implements MiddlewareInterface
      */
     private function issueAccessToken(GrantTypeData $grantTypeData): AccessToken
     {
-        $accessToken = $this->accessTokenRepository->create(
+        $accessTokenId = $this->accessTokenIdGenerator->create(
             $grantTypeData->getResourceOwnerId(),
             $grantTypeData->getClient()->getPublicId(),
             $grantTypeData->getParameters(),
             $grantTypeData->getMetadatas(),
+            null
+        );
+        $accessToken = AccessToken::createEmpty();
+        $accessToken = $accessToken->create(
+            $accessTokenId,
+            $grantTypeData->getResourceOwnerId(),
+            $grantTypeData->getClient()->getPublicId(),
+            $grantTypeData->getParameters(),
+            $grantTypeData->getMetadatas(),
+            new \DateTimeImmutable(sprintf('now +%d seconds', $this->accessTokenLifetime)),
             null
         );
         $this->accessTokenRepository->save($accessToken);

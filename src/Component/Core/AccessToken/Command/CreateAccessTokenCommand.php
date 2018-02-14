@@ -16,6 +16,7 @@ namespace OAuth2Framework\Component\Core\AccessToken\Command;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
+use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwnerId;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 
@@ -39,7 +40,7 @@ class CreateAccessTokenCommand
     /**
      * @var UserAccountId
      */
-    private $userAccountId;
+    private $resourceOwnerId;
 
     /**
      * @var DataBag
@@ -61,17 +62,17 @@ class CreateAccessTokenCommand
      *
      * @param AccessTokenId         $accessTokenId
      * @param ClientId              $clientId
-     * @param UserAccountId         $userAccountId
+     * @param ResourceOwnerId       $resourceOwnerId
      * @param \DateTimeImmutable    $expiresAt
      * @param DataBag               $parameters
      * @param DataBag               $metadatas
      * @param null|ResourceServerId $resourceServerId
      */
-    protected function __construct(AccessTokenId $accessTokenId, ClientId $clientId, UserAccountId $userAccountId, \DateTimeImmutable $expiresAt, DataBag $parameters, DataBag $metadatas, ?ResourceServerId $resourceServerId)
+    protected function __construct(AccessTokenId $accessTokenId, ClientId $clientId, ResourceOwnerId $resourceOwnerId, \DateTimeImmutable $expiresAt, DataBag $parameters, DataBag $metadatas, ?ResourceServerId $resourceServerId)
     {
         $this->accessTokenId = $accessTokenId;
         $this->clientId = $clientId;
-        $this->userAccountId = $userAccountId;
+        $this->resourceOwnerId = $resourceOwnerId;
         $this->expiresAt = $expiresAt;
         $this->parameters = $parameters;
         $this->metadatas = $metadatas;
@@ -81,7 +82,7 @@ class CreateAccessTokenCommand
     /**
      * @param AccessTokenId         $accessTokenId
      * @param ClientId              $clientId
-     * @param UserAccountId         $userAccountId
+     * @param ResourceOwnerId       $resourceOwnerId
      * @param \DateTimeImmutable    $expiresAt
      * @param DataBag               $parameters
      * @param DataBag               $metadatas
@@ -89,9 +90,9 @@ class CreateAccessTokenCommand
      *
      * @return CreateAccessTokenCommand
      */
-    public static function create(AccessTokenId $accessTokenId, ClientId $clientId, UserAccountId $userAccountId, \DateTimeImmutable $expiresAt, DataBag $parameters, DataBag $metadatas, ?ResourceServerId $resourceServerId): self
+    public static function create(AccessTokenId $accessTokenId, ClientId $clientId, ResourceOwnerId $resourceOwnerId, \DateTimeImmutable $expiresAt, DataBag $parameters, DataBag $metadatas, ?ResourceServerId $resourceServerId): self
     {
-        return new self($accessTokenId, $clientId, $userAccountId, $expiresAt, $parameters, $metadatas, $resourceServerId);
+        return new self($accessTokenId, $clientId, $resourceOwnerId, $expiresAt, $parameters, $metadatas, $resourceServerId);
     }
 
     /**
@@ -103,11 +104,11 @@ class CreateAccessTokenCommand
     }
 
     /**
-     * @return UserAccountId
+     * @return ResourceOwnerId
      */
-    public function getUserAccountId(): UserAccountId
+    public function getResourceOwnerId(): ResourceOwnerId
     {
-        return $this->userAccountId;
+        return $this->resourceOwnerId;
     }
 
     /**

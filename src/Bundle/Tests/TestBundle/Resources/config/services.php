@@ -18,6 +18,7 @@ use OAuth2Framework\Bundle\Tests\TestBundle\Entity\UserManager;
 use OAuth2Framework\Bundle\Tests\TestBundle\Entity\UserRepository;
 use OAuth2Framework\Bundle\Tests\TestBundle\Entity\RefreshTokenRepository;
 use OAuth2Framework\Bundle\Tests\TestBundle\Entity\ResourceServerRepository;
+use OAuth2Framework\Bundle\Tests\TestBundle\Entity\AccessTokenIdGenerator;
 use OAuth2Framework\Bundle\Tests\TestBundle\Entity\AccessTokenRepository;
 use OAuth2Framework\Bundle\Tests\TestBundle\Entity\AuthorizationCodeRepository;
 use OAuth2Framework\Bundle\Tests\TestBundle\Entity\ScopeRepository;
@@ -52,6 +53,9 @@ return function (ContainerConfigurator $container) {
         ->args([
             ref('MyUserAccountRepository'),
         ]);
+
+    $container->set('MyAccessTokenIdGenerator')
+        ->class(AccessTokenIdGenerator::class);
 
     $container->set('MyAccessTokenRepository')
         ->class(AccessTokenRepository::class);

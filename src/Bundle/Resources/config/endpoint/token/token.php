@@ -48,5 +48,7 @@ return function (ContainerConfigurator $container) {
             ref(TokenEndpoint\Extension\TokenEndpointExtensionManager::class),
             ref('httplug.message_factory'),
             ref('oauth2_server.access_token_repository'),
+            ref('oauth2_server.access_token_id_generator'),
+            '%oauth2_server.access_token_lifetime%',
         ]);
 };

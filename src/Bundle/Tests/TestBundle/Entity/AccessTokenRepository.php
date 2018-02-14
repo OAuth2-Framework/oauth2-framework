@@ -44,18 +44,4 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
     {
         $this->accessTokens[$accessToken->getTokenId()->getValue()] = $accessToken;
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function create(ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, ? ResourceServerId $resourceServerId): AccessToken
-    {
-        $expiresAt = new \DateTimeImmutable(sprintf('now +1800 seconds'));
-        $length = random_int(50, 100);
-        $accessTokenId = AccessTokenId::create(Base64Url::encode(random_bytes($length)));
-        $accessToken = AccessToken::createEmpty();
-        $accessToken = $accessToken->create($accessTokenId, $resourceOwnerId, $clientId, $parameters, $metadatas, $expiresAt, $resourceServerId);
-
-        return $accessToken;
-    }
 }
