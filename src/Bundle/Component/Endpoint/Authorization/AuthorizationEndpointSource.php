@@ -15,7 +15,7 @@ namespace OAuth2Framework\Bundle\Component\Endpoint;
 
 use Fluent\PhpConfigFileLoader;
 use OAuth2Framework\Bundle\Component\Component;
-use Symfony\Component\Config\Definition\Builder\NodeDefinition;
+use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -56,7 +56,7 @@ class AuthorizationEndpointSource implements Component
     /**
      * {@inheritdoc}
      */
-    public function getNodeDefinition(NodeDefinition $node)
+    public function getNodeDefinition(ArrayNodeDefinition $node)
     {
         $node
             ->children()

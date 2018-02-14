@@ -15,7 +15,7 @@ namespace OAuth2Framework\Bundle\Component\Grant\AuthorizationCode;
 
 use OAuth2Framework\Bundle\Component\Component;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeGrantType;
-use Symfony\Component\Config\Definition\Builder\NodeDefinition;
+use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
@@ -50,7 +50,7 @@ class AuthorizationCodeSource implements Component
     /**
      * {@inheritdoc}
      */
-    public function getNodeDefinition(NodeDefinition $node)
+    public function getNodeDefinition(ArrayNodeDefinition $node)
     {
         $node->children()
             ->arrayNode('authorization_code')

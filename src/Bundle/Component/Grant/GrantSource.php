@@ -21,7 +21,7 @@ use OAuth2Framework\Bundle\Component\Grant\JwtBearer\JwtBearerSource;
 use OAuth2Framework\Bundle\Component\Grant\None\NoneSource;
 use OAuth2Framework\Bundle\Component\Grant\RefreshToken\RefreshTokenSource;
 use OAuth2Framework\Bundle\Component\Grant\ResourceOwnerPasswordCredential\ResourceOwnerPasswordCredentialSource;
-use Symfony\Component\Config\Definition\Builder\NodeDefinition;
+use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
@@ -70,7 +70,7 @@ class GrantSource implements Component
     /**
      * {@inheritdoc}
      */
-    public function getNodeDefinition(NodeDefinition $node)
+    public function getNodeDefinition(ArrayNodeDefinition $node)
     {
         $childNode = $node->children()
             ->arrayNode($this->name())

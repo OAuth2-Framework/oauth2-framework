@@ -15,7 +15,7 @@ namespace OAuth2Framework\Bundle\Component\Core;
 
 use OAuth2Framework\Bundle\Component\Component;
 use OAuth2Framework\Component\ClientAuthentication\AuthenticationMethod;
-use Symfony\Component\Config\Definition\Builder\NodeDefinition;
+use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
@@ -36,7 +36,7 @@ class ClientSource implements Component
     public function load(array $configs, ContainerBuilder $container)
     {
         $container->registerForAutoconfiguration(AuthenticationMethod::class)->addTag('oauth2_server_client_authentication');
-        $container->setAlias('oauth2_server.client_repository', $configs['client_repository']);
+        $container->setAlias('oauth2_server.client_repository', $configs['client']['repository']);
 
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../Resources/config/core'));
         $loader->load('client.php');
@@ -45,14 +45,19 @@ class ClientSource implements Component
     /**
      * {@inheritdoc}
      */
-    public function getNodeDefinition(NodeDefinition $node)
+    public function getNodeDefinition(ArrayNodeDefinition $node)
     {
         $node->children()
-            ->scalarNode('client_repository')
-                ->info('The client repository service')
-                ->isRequired()
+            ->arrayNode($this->name())
+                ->addDefaultsIfNotSet()
+                ->children()
+                    ->scalarNode('repository')
+                        ->info('The client repository service')
+                        ->isRequired()
+                    ->end()
+                ->end()
             ->end()
-        ;
+        ->end();
     }
 
     /**

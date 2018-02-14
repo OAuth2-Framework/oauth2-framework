@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\TokenEndpoint\Tests;
 
-use Base64Url\Base64Url;
 use Http\Message\MessageFactory\GuzzleMessageFactory;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenIdGenerator;
@@ -146,7 +145,7 @@ class TokenEndpointTest extends TestCase
         $body = $response->getBody()->getContents();
 
         self::assertEquals(200, $response->getStatusCode());
-        self::assertRegexp('/^\{"token_type_foo"\:"token_type_bar","token_type"\:"TOKEN_TYPE","access_token"\:"\w{10,}","expires_in"\:\d{4}\}$/', $body);
+        self::assertRegexp('/^\{"token_type_foo"\:"token_type_bar","token_type"\:"TOKEN_TYPE","access_token"\:"ACCESS_TOKEN_ID","expires_in"\:\d{4}\}$/', $body);
     }
 
     /**
@@ -258,9 +257,7 @@ class TokenEndpointTest extends TestCase
             $accessTokenIdGenerator
                 ->create(Argument::type(ResourceOwnerId::class), Argument::type(ClientId::class), Argument::type(DataBag::class), Argument::type(DataBag::class), null)
                 ->will(function () {
-                    $length = random_int(10, 15);
-
-                    return AccessTokenId::create(Base64Url::encode(random_bytes($length)));
+                    return AccessTokenId::create('ACCESS_TOKEN_ID');
                 });
             $this->accessTokenIdGenerator = $accessTokenIdGenerator->reveal();
         }

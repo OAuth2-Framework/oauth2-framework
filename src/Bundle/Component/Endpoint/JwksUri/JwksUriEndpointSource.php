@@ -15,7 +15,7 @@ namespace OAuth2Framework\Bundle\Component\Endpoint\JwksUri;
 
 use Jose\Bundle\JoseFramework\Helper\ConfigurationHelper;
 use OAuth2Framework\Bundle\Component\Component;
-use Symfony\Component\Config\Definition\Builder\NodeDefinition;
+use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
@@ -40,7 +40,7 @@ class JwksUriEndpointSource implements Component
     /**
      * {@inheritdoc}
      */
-    public function getNodeDefinition(NodeDefinition $node)
+    public function getNodeDefinition(ArrayNodeDefinition $node)
     {
         $node->children()
             ->arrayNode($this->name())

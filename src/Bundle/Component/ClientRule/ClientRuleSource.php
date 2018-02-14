@@ -15,7 +15,7 @@ namespace OAuth2Framework\Bundle\Component\ClientRule;
 
 use OAuth2Framework\Bundle\Component\Component;
 use OAuth2Framework\Component\ClientRule\Rule;
-use Symfony\Component\Config\Definition\Builder\NodeDefinition;
+use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
@@ -43,7 +43,7 @@ class ClientRuleSource implements Component
     /**
      * {@inheritdoc}
      */
-    public function getNodeDefinition(NodeDefinition $node)
+    public function getNodeDefinition(ArrayNodeDefinition $node)
     {
     }
 

@@ -19,7 +19,7 @@ use OAuth2Framework\Bundle\Component\Endpoint\TokenIntrospection\Compiler\TokenI
 use OAuth2Framework\Bundle\Component\Endpoint\TokenIntrospection\Compiler\TokenTypeHintCompilerPass;
 use OAuth2Framework\Component\ResourceServerAuthentication\AuthenticationMethodManager;
 use OAuth2Framework\Component\TokenIntrospectionEndpoint\TokenTypeHint;
-use Symfony\Component\Config\Definition\Builder\NodeDefinition;
+use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
@@ -53,7 +53,7 @@ class TokenIntrospectionEndpointSource implements Component
     /**
      * {@inheritdoc}
      */
-    public function getNodeDefinition(NodeDefinition $node)
+    public function getNodeDefinition(ArrayNodeDefinition $node)
     {
         $node->children()
             ->arrayNode($this->name())

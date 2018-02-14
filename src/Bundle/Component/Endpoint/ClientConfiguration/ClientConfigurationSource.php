@@ -15,7 +15,7 @@ namespace OAuth2Framework\Bundle\Component\Endpoint\ClientConfiguration;
 
 use OAuth2Framework\Bundle\Component\Component;
 use OAuth2Framework\Bundle\Component\Endpoint\ClientConfiguration\Compiler\ClientConfigurationEndpointRouteCompilerPass;
-use Symfony\Component\Config\Definition\Builder\NodeDefinition;
+use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
@@ -51,7 +51,7 @@ class ClientConfigurationSource implements Component
     /**
      * {@inheritdoc}
      */
-    public function getNodeDefinition(NodeDefinition $node)
+    public function getNodeDefinition(ArrayNodeDefinition $node)
     {
         $node->children()
             ->arrayNode($this->name())

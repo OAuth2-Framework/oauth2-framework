@@ -78,7 +78,7 @@ class OAuth2FrameworkBundle extends Bundle
             new Component\Core\AccessTokenSource(),
             new Component\Core\UserAccountSource(),
             new Component\Core\ServicesSource(),
-            new Component\Core\ResourceServerRepositorySource(),
+            new Component\Core\ResourceServerSource(),
             new Component\ClientRule\ClientRuleSource(),
             new Component\ClientAuthentication\ClientAuthenticationSource(),
 

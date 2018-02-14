@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\Component\Core;
 
 use OAuth2Framework\Bundle\Component\Component;
-use Symfony\Component\Config\Definition\Builder\NodeDefinition;
+use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class UserAccountSource implements Component
@@ -32,25 +32,30 @@ class UserAccountSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        $container->setAlias('oauth2_server.user_account_repository', $configs['user_account_repository']);
-        $container->setAlias('oauth2_server.user_account_manager', $configs['user_account_manager']);
+        $container->setAlias('oauth2_server.user_account_repository', $configs['user_account']['repository']);
+        $container->setAlias('oauth2_server.user_account_manager', $configs['user_account']['manager']);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getNodeDefinition(NodeDefinition $node)
+    public function getNodeDefinition(ArrayNodeDefinition $node)
     {
         $node->children()
-            ->scalarNode('user_account_repository')
-                ->info('The user account repository service')
-                ->isRequired()
+            ->arrayNode($this->name())
+                ->addDefaultsIfNotSet()
+                ->children()
+                    ->scalarNode('repository')
+                        ->info('The user account repository service')
+                        ->isRequired()
+                    ->end()
+                    ->scalarNode('manager')
+                        ->info('The user account manager service')
+                        ->isRequired()
+                    ->end()
+                ->end()
             ->end()
-            ->scalarNode('user_account_manager')
-                ->info('The user_account manager service')
-                ->isRequired()
-            ->end()
-        ;
+        ->end();
     }
 
     /**

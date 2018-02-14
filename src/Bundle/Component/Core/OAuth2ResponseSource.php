@@ -15,7 +15,7 @@ namespace OAuth2Framework\Bundle\Component\Core;
 
 use OAuth2Framework\Bundle\Component\Component;
 use OAuth2Framework\Component\Core\Response\Factory\ResponseFactory;
-use Symfony\Component\Config\Definition\Builder\NodeDefinition;
+use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
@@ -44,7 +44,7 @@ class OAuth2ResponseSource implements Component
     /**
      * {@inheritdoc}
      */
-    public function getNodeDefinition(NodeDefinition $node)
+    public function getNodeDefinition(ArrayNodeDefinition $node)
     {
         //Nothing to do
     }

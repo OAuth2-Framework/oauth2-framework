@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Component;
 
-use Symfony\Component\Config\Definition\Builder\NodeDefinition;
+use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 interface Component
@@ -37,7 +37,7 @@ interface Component
     /**
      * @param NodeDefinition $node
      */
-    public function getNodeDefinition(NodeDefinition $node);
+    public function getNodeDefinition(ArrayNodeDefinition $node);
 
     /**
      * @param ContainerBuilder $container

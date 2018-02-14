@@ -14,10 +14,10 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\Component\Core;
 
 use OAuth2Framework\Bundle\Component\Component;
-use Symfony\Component\Config\Definition\Builder\NodeDefinition;
+use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-class ResourceServerRepositorySource implements Component
+class ResourceServerSource implements Component
 {
     /**
      * {@inheritdoc}
@@ -32,22 +32,27 @@ class ResourceServerRepositorySource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        if (null !== $configs['resource_server_repository']) {
-            $container->setAlias('oauth2_server.resource_server.repository', $configs['resource_server_repository']);
+        if (null !== $configs['resource_server']['repository']) {
+            $container->setAlias('oauth2_server.resource_server.repository', $configs['resource_server']['repository']);
         }
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getNodeDefinition(NodeDefinition $node)
+    public function getNodeDefinition(ArrayNodeDefinition $node)
     {
         $node->children()
-            ->scalarNode('resource_server_repository')
-                ->info('The resource server repository service')
-                ->defaultNull()
+            ->arrayNode($this->name())
+                ->addDefaultsIfNotSet()
+                ->children()
+                    ->scalarNode('repository')
+                        ->info('The resource server repository service')
+                        ->defaultNull()
+                    ->end()
+                ->end()
             ->end()
-        ;
+        ->end();
     }
 
     /**

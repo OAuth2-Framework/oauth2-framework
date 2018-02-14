@@ -16,7 +16,7 @@ namespace OAuth2Framework\Bundle\Component\Endpoint\Metadata;
 use Jose\Bundle\JoseFramework\Helper\ConfigurationHelper;
 use OAuth2Framework\Bundle\Component\Component;
 use OAuth2Framework\Bundle\Component\Endpoint\Metadata\Compiler\SignedMetadataCompilerPass;
-use Symfony\Component\Config\Definition\Builder\NodeDefinition;
+use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class SignatureSource implements Component
@@ -47,7 +47,7 @@ class SignatureSource implements Component
     /**
      * {@inheritdoc}
      */
-    public function getNodeDefinition(NodeDefinition $node)
+    public function getNodeDefinition(ArrayNodeDefinition $node)
     {
         $node->children()
             ->arrayNode('signature')

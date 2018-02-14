@@ -23,7 +23,7 @@ use OAuth2Framework\Bundle\Component\Endpoint\SessionManagement\SessionManagemen
 use OAuth2Framework\Bundle\Component\Endpoint\Token\TokenEndpointSource;
 use OAuth2Framework\Bundle\Component\Endpoint\TokenIntrospection\TokenIntrospectionEndpointSource;
 use OAuth2Framework\Bundle\Component\Endpoint\TokenRevocation\TokenRevocationEndpointSource;
-use Symfony\Component\Config\Definition\Builder\NodeDefinition;
+use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class EndpointSource implements Component
@@ -72,7 +72,7 @@ class EndpointSource implements Component
     /**
      * {@inheritdoc}
      */
-    public function getNodeDefinition(NodeDefinition $node)
+    public function getNodeDefinition(ArrayNodeDefinition $node)
     {
         $childNode = $node->children()
             ->arrayNode($this->name())

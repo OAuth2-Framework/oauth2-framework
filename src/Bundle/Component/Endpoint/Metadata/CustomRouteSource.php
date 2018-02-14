@@ -15,7 +15,7 @@ namespace OAuth2Framework\Bundle\Component\Endpoint\Metadata;
 
 use OAuth2Framework\Bundle\Component\Component;
 use OAuth2Framework\Bundle\Component\Endpoint\Metadata\Compiler\CustomRoutesCompilerPass;
-use Symfony\Component\Config\Definition\Builder\NodeDefinition;
+use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class CustomRouteSource implements Component
@@ -39,7 +39,7 @@ class CustomRouteSource implements Component
     /**
      * {@inheritdoc}
      */
-    public function getNodeDefinition(NodeDefinition $node)
+    public function getNodeDefinition(ArrayNodeDefinition $node)
     {
         $node->children()
             ->arrayNode('custom_routes')
