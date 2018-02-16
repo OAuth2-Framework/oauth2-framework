@@ -32,9 +32,10 @@ use OAuth2Framework\Component\Core\Exception\OAuth2Exception;
 use Psr\Http\Message\ServerRequestInterface;
 
 class ClientAssertionJwt implements AuthenticationMethod
-{/**
- * @var JWSVerifier
- */
+{
+    /**
+     * @var JWSVerifier
+     */
     private $jwsVerifier;
 
     /**
@@ -324,6 +325,7 @@ class ClientAssertionJwt implements AuthenticationMethod
 
     /**
      * @param Client $client
+     *
      * @return JWKSet
      */
     private function getClientKeySet(Client $client): JWKSet
@@ -335,7 +337,7 @@ class ClientAssertionJwt implements AuthenticationMethod
                 $jwk = JWK::create([
                     'kty' => 'oct',
                     'use' => 'sig',
-                    'k'   => Base64Url::encode($client->get('client_secret'))
+                    'k' => Base64Url::encode($client->get('client_secret')),
                 ]);
 
                 return JWKSet::createFromKeys([$jwk]);

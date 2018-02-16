@@ -13,8 +13,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Component\ClientAuthentication\Compiler;
 
-use OAuth2Framework\Bundle\Service\MetadataBuilder;
-use OAuth2Framework\Component\ClientAuthentication\AuthenticationMethodManager;
 use OAuth2Framework\Component\ClientAuthentication\ClientAssertionJwt;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -35,7 +33,7 @@ class ClientAssertionEncryptedJwtCompilerPass implements CompilerPassInterface
         $definition->addMethodCall('enableEncryptedAssertions', [
             new Reference('jose.jwe_loader.client_authentication.client_assertion_jwt.encryption'),
             new Reference('jose.key_set.client_authentication.client_assertion_jwt.encryption'),
-            '%oauth2_server.client_authentication.client_assertion_jwt.encryption.required%'
+            '%oauth2_server.client_authentication.client_assertion_jwt.encryption.required%',
         ]);
     }
 }

@@ -53,12 +53,12 @@ class TokenIntrospectionEndpointSource implements Component
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
         $rootNode->validate()
-            ->ifTrue(function($config) {
+            ->ifTrue(function ($config) {
                 return null === $config['resource_server']['repository'];
             })
             ->thenInvalid('The resource server repository must be set when the introspection endpoint is enabled')
         ->end();
-        
+
         $node->children()
             ->arrayNode($this->name())
                 ->addDefaultsIfNotSet()
