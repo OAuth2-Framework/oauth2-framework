@@ -257,7 +257,6 @@ class JwtBearerGrantType implements GrantType
      */
     private function checkJWTSignature(GrantTypeData $grantTypeData, JWS $jws, array $claims): GrantTypeData
     {
-
         $iss = $claims['iss'];
         $sub = $claims['sub'];
 
@@ -323,6 +322,7 @@ class JwtBearerGrantType implements GrantType
 
     /**
      * @param Client $client
+     *
      * @return JWKSet
      */
     private function getClientKeySet(Client $client): JWKSet
@@ -334,7 +334,7 @@ class JwtBearerGrantType implements GrantType
                 $jwk = JWK::create([
                     'kty' => 'oct',
                     'use' => 'sig',
-                    'k'   => Base64Url::encode($client->get('client_secret'))
+                    'k' => Base64Url::encode($client->get('client_secret')),
                 ]);
 
                 return JWKSet::createFromKeys([$jwk]);

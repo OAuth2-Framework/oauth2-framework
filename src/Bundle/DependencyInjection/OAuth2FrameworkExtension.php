@@ -34,7 +34,7 @@ class OAuth2FrameworkExtension extends Extension implements PrependExtensionInte
     /**
      * OAuth2FrameworkExtension constructor.
      *
-     * @param string                $alias
+     * @param string      $alias
      * @param Component[] $components
      */
     public function __construct(string $alias, array $components)

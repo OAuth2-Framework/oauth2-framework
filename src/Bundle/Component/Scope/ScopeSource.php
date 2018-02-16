@@ -46,6 +46,7 @@ class ScopeSource implements Component
 
         if (!$configs['scope']['policy']['enabled']) {
             $container->setParameter('oauth2_server.scope.policy.by_default', 'none');
+
             return;
         }
 
