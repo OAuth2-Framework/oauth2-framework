@@ -76,7 +76,7 @@ class ClientAuthenticationMiddleware implements MiddlewareInterface
             throw new \InvalidArgumentException('Client authentication failed.');
         }
         if ($client->areClientCredentialsExpired()) {
-            throw new \InvalidArgumentException('ClientCredentials credentials expired.');
+            throw new \InvalidArgumentException('Client credentials expired.');
         }
     }
 

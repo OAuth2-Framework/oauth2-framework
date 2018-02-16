@@ -14,6 +14,7 @@ declare(strict_types=1);
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use OAuth2Framework\Component\ClientAuthentication\AuthenticationMethodManager;
 use OAuth2Framework\Component\ClientAuthentication\ClientAuthenticationMiddleware;
+use OAuth2Framework\Component\ClientAuthentication\Rule\ClientAuthenticationMethodEndpointRule;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
 return function (ContainerConfigurator $container) {
@@ -22,6 +23,10 @@ return function (ContainerConfigurator $container) {
         ->autoconfigure();
 
     $container->set(AuthenticationMethodManager::class);
+    $container->set(ClientAuthenticationMethodEndpointRule::class)
+        ->args([
+            ref(AuthenticationMethodManager::class),
+        ]);
 
     $container->set(ClientAuthenticationMiddleware::class)
         ->args([

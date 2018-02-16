@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\ClientRule;
 
+use function League\Uri\parse;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 
@@ -26,6 +27,7 @@ class RedirectionUriRule implements Rule
      */
     public function handle(ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters, callable $next): DataBag
     {
+        /** @var DataBag $validatedParameters */
         $validatedParameters = $next($clientId, $commandParameters, $validatedParameters);
 
         // No need for redirect URIs as no response type to is used.
@@ -97,41 +99,23 @@ class RedirectionUriRule implements Rule
         if ('urn:' === mb_substr($uri, 0, 4, '8bit')) {
             $this->checkUrn($uri);
         } else {
-            $this->checkUrl($uri, $application_type, $uses_implicit_grant_type);
-        }
-    }
-
-    /**
-     * @param string $url
-     * @param string $application_type
-     * @param bool   $uses_implicit_grant_type
-     */
-    public function checkUrl(string $url, string $application_type, bool $uses_implicit_grant_type)
-    {
-        // If URI is not a valid URI, return false
-        if (!filter_var($url, FILTER_VALIDATE_URL)) {
-            throw new \InvalidArgumentException('The parameter "redirect_uris" must be a list of URI or URN.');
-        }
-
-        $parsed = parse_url($url);
-
-        // Checks for path traversal (e.g. http://foo.bar/redirect/../bad/url)
-        if (isset($parsed['path'])) {
-            $path = urldecode($parsed['path']);
-            // check for 'path traversal'
-            if (1 === preg_match('#/\.\.?(/|$)#', $path)) {
+            $parsed = parse($uri);
+            if (null === $parsed['scheme'] || null === $parsed['path']) {
+                throw new \InvalidArgumentException('The parameter "redirect_uris" must be a list of URI or URN.');
+            }
+            if (1 === preg_match('#/\.\.?(/|$)#', $parsed['path'])) {
                 throw new \InvalidArgumentException('The URI listed in the "redirect_uris" parameter must not contain any path traversal.');
             }
-        }
-        if (array_key_exists('fragment', $parsed)) {
-            throw new \InvalidArgumentException('The parameter "redirect_uris" must only contain URIs without fragment.');
-        }
-        if ('web' === $application_type && true === $uses_implicit_grant_type) {
-            if ('localhost' === $parsed['host']) {
-                throw new \InvalidArgumentException('The host "localhost" is not allowed for web applications that use the Implicit Grant Type.');
+            if (null !== $parsed['fragment']) {
+                throw new \InvalidArgumentException('The parameter "redirect_uris" must only contain URIs without fragment.');
             }
-            if ('https' !== $parsed['scheme']) {
-                throw new \InvalidArgumentException('The parameter "redirect_uris" must only contain URIs with the HTTPS scheme for web applications that use the Implicit Grant Type.');
+            if ('web' === $application_type && true === $uses_implicit_grant_type) {
+                if ('localhost' === $parsed['host']) {
+                    throw new \InvalidArgumentException('The host "localhost" is not allowed for web applications that use the Implicit Grant Type.');
+                }
+                if ('https' !== $parsed['scheme']) {
+                    throw new \InvalidArgumentException('The parameter "redirect_uris" must only contain URIs with the HTTPS scheme for web applications that use the Implicit Grant Type.');
+                }
             }
         }
     }

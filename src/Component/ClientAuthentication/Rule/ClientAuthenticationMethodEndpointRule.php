@@ -11,27 +11,28 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Component\ClientRule;
+namespace OAuth2Framework\Component\ClientAuthentication\Rule;
 
 use OAuth2Framework\Component\ClientAuthentication\AuthenticationMethodManager;
+use OAuth2Framework\Component\ClientRule\Rule;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 
-class TokenEndpointAuthenticationMethodEndpointRule implements Rule
+class ClientAuthenticationMethodEndpointRule implements Rule
 {
     /**
      * @var AuthenticationMethodManager
      */
-    private $tokenEndpointAuthenticationMethodManager;
+    private $clientAuthenticationMethodManager;
 
     /**
-     * TokenEndpointAuthenticationMethodEndpointRule constructor.
+     * ClientAuthenticationMethodEndpointRule constructor.
      *
-     * @param AuthenticationMethodManager $tokenEndpointAuthenticationMethodManager
+     * @param AuthenticationMethodManager $clientAuthenticationMethodManager
      */
-    public function __construct(AuthenticationMethodManager $tokenEndpointAuthenticationMethodManager)
+    public function __construct(AuthenticationMethodManager $clientAuthenticationMethodManager)
     {
-        $this->tokenEndpointAuthenticationMethodManager = $tokenEndpointAuthenticationMethodManager;
+        $this->clientAuthenticationMethodManager = $clientAuthenticationMethodManager;
     }
 
     /**
@@ -46,12 +47,12 @@ class TokenEndpointAuthenticationMethodEndpointRule implements Rule
         if (!is_string($commandParameters->get('token_endpoint_auth_method'))) {
             throw new \InvalidArgumentException('The parameter "token_endpoint_auth_method" must be a string.');
         }
-        if (!$this->tokenEndpointAuthenticationMethodManager->has($commandParameters->get('token_endpoint_auth_method'))) {
-            throw new \InvalidArgumentException(sprintf('The token endpoint authentication method "%s" is not supported. Please use one of the following values: %s', $commandParameters->get('token_endpoint_auth_method'), implode(', ', $this->tokenEndpointAuthenticationMethodManager->list())));
+        if (!$this->clientAuthenticationMethodManager->has($commandParameters->get('token_endpoint_auth_method'))) {
+            throw new \InvalidArgumentException(sprintf('The token endpoint authentication method "%s" is not supported. Please use one of the following values: %s', $commandParameters->get('token_endpoint_auth_method'), implode(', ', $this->clientAuthenticationMethodManager->list())));
         }
 
-        $tokenEndpointAuthenticationMethod = $this->tokenEndpointAuthenticationMethodManager->get($commandParameters->get('token_endpoint_auth_method'));
-        $validatedParameters = $tokenEndpointAuthenticationMethod->checkClientConfiguration($commandParameters, $validatedParameters);
+        $clientAuthenticationMethod = $this->clientAuthenticationMethodManager->get($commandParameters->get('token_endpoint_auth_method'));
+        $validatedParameters = $clientAuthenticationMethod->checkClientConfiguration($commandParameters, $validatedParameters);
 
         $validatedParameters = $validatedParameters->with('token_endpoint_auth_method', $commandParameters->get('token_endpoint_auth_method'));
 

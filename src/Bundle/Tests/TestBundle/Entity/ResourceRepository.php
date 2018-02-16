@@ -40,6 +40,8 @@ class ResourceRepository implements ResourceRepositoryInterface
             $resourceName = mb_substr($resourceId->getValue(), $length + 10, null, 'utf-8');
         } elseif ('acct:' === mb_substr($resourceId->getValue(), 0, 5, 'utf-8') && '@'.$server === mb_substr($resourceId->getValue(), -($length + 1), null, 'utf-8')) {
             $resourceName = mb_substr($resourceId->getValue(), 5, -($length + 1), 'utf-8');
+        } elseif ('@'.$server === mb_substr($resourceId->getValue(), -($length + 1), null, 'utf-8')) {
+            $resourceName = mb_substr($resourceId->getValue(), 0, -($length + 1), 'utf-8');
         } else {
             return null;
         }

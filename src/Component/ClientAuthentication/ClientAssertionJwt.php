@@ -33,6 +33,8 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class ClientAssertionJwt implements AuthenticationMethod
 {
+    private const CLIENT_ASSERTION_TYPE = 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer';
+
     /**
      * @var JWSVerifier
      */
@@ -175,7 +177,7 @@ class ClientAssertionJwt implements AuthenticationMethod
         }
         $clientAssertionType = $parameters['client_assertion_type'];
 
-        if ('urn:ietf:params:oauth:client-assertion-type:jwt-bearer' !== $clientAssertionType) {
+        if (self::CLIENT_ASSERTION_TYPE !== $clientAssertionType) {
             return null;
         }
 
@@ -248,7 +250,7 @@ class ClientAssertionJwt implements AuthenticationMethod
             }
 
             $claims = $this->jsonConverter->decode($clientCredentials->getPayload());
-            $jwkset = $this->retrieveIssuerKeySet($client, $claims);
+            $jwkset = $this->retrieveIssuerKeySet($client, $clientCredentials, $claims);
 
             return $this->jwsVerifier->verifyWithKeySet($clientCredentials, $jwkset, 0);
         } catch (\Exception $e) {
@@ -310,7 +312,7 @@ class ClientAssertionJwt implements AuthenticationMethod
      *
      * @return JWKSet
      */
-    private function retrieveIssuerKeySet(Client $client, array $claims): JWKSet
+    private function retrieveIssuerKeySet(Client $client, JWS $jws, array $claims): JWKSet
     {
         if ($claims['sub'] === $claims['iss']) { // The client is the issuer
             return $this->getClientKeySet($client);
@@ -318,6 +320,15 @@ class ClientAssertionJwt implements AuthenticationMethod
 
         if (null === $this->trustedIssuerRepository || null === $trustedIssuer = $this->trustedIssuerRepository->find($claims['iss'])) {
             throw new \InvalidArgumentException('Unable to retrieve the key set of the issuer.');
+        }
+
+        if (!in_array(self::CLIENT_ASSERTION_TYPE, $trustedIssuer->getAllowedAssertionTypes())) {
+            throw new \InvalidArgumentException(sprintf('The assertion type "%s" is not allowed for that issuer.', self::CLIENT_ASSERTION_TYPE));
+        }
+
+        $signatureAlgorithm = $jws->getSignature(0)->getProtectedHeaderParameter('alg');
+        if (!in_array($signatureAlgorithm, $trustedIssuer->getAllowedSignatureAlgorithms())) {
+            throw new \InvalidArgumentException(sprintf('The signature algorithm "%s" is not allowed for that issuer.', $signatureAlgorithm));
         }
 
         return $trustedIssuer->getJWKSet();

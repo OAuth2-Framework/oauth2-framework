@@ -259,7 +259,7 @@ class Client implements ResourceOwner, ContainsRecordedMessages, DomainObject
     public function getPublicId(): ResourceOwnerId
     {
         if (null === $this->clientId) {
-            throw new \RuntimeException('ClientCredentials not initialized.');
+            throw new \RuntimeException('Client not initialized.');
         }
 
         return $this->clientId;

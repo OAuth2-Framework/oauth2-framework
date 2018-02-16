@@ -11,7 +11,7 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Bundle\DependencyInjection\Compiler;
+namespace OAuth2Framework\Bundle\Component\Endpoint\IssuerDiscovery;
 
 use OAuth2Framework\Bundle\Routing\RouteLoader;
 use OAuth2Framework\Bundle\Service\IssuerDiscoveryFactory;
@@ -20,6 +20,7 @@ use OAuth2Framework\Component\Middleware\OAuth2ResponseMiddleware;
 use OAuth2Framework\Component\Middleware\Pipe;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 
 class IssuerDiscoveryCompilerPass implements CompilerPassInterface
@@ -36,22 +37,28 @@ class IssuerDiscoveryCompilerPass implements CompilerPassInterface
         $issuerDiscoveries = $container->getParameter('oauth2_server.endpoint.issuer_discovery');
 
         foreach ($issuerDiscoveries as $id => $issuerDiscovery) {
-            $issuerDiscovery_id = sprintf('oauth2_server_issuer_discovery_%s', $id);
-            $issuerDiscoveryDefinition = $container->register($issuerDiscovery_id);
-            $issuerDiscoveryDefinition->setFactory([new Reference(IssuerDiscoveryFactory::class), 'create']);
-            $issuerDiscoveryDefinition->setClass(IssuerDiscoveryEndpoint::class);
-            $issuerDiscoveryDefinition->setArguments([
-                new Reference($issuerDiscovery['resource_repository']),
-                $issuerDiscovery['server'],
-            ]);
+            $issuerDiscoveryId = sprintf('oauth2_server_issuer_discovery_%s', $id);
+            $issuerDiscoveryDefinition = (new Definition())
+                ->setFactory([new Reference(IssuerDiscoveryFactory::class), 'create'])
+                ->setClass(IssuerDiscoveryEndpoint::class)
+                ->setArguments([
+                    new Reference($issuerDiscovery['resource_repository']),
+                    $issuerDiscovery['server'],
+                ]);
+            $container->setDefinition($issuerDiscoveryId, $issuerDiscoveryDefinition);
+            $container->setDefinition($issuerDiscoveryId, $issuerDiscoveryDefinition);
 
             $issuerDiscoveryPipeId = sprintf('oauth2_server_issuer_discovery_pipe_%s', $id);
-            $issuerDiscoveryPipeDefinition = $container->register($issuerDiscoveryPipeId);
-            $issuerDiscoveryPipeDefinition->setClass(Pipe::class);
-            $issuerDiscoveryPipeDefinition->setArguments([[
-                new Reference(OAuth2ResponseMiddleware::class),
-                new Reference($issuerDiscovery_id),
-            ]]);
+            $issuerDiscoveryPipeDefinition = (new Definition())
+                ->setClass(Pipe::class)
+                ->setArguments([[
+                    new Reference(OAuth2ResponseMiddleware::class),
+                    new Reference($issuerDiscoveryId),
+                ]])
+                ->setPublic(true) //FIXME
+                ->addTag('controller.service_arguments');
+            $container->setDefinition($issuerDiscoveryPipeId, $issuerDiscoveryPipeDefinition);
+
             $route_loader = $container->getDefinition(RouteLoader::class);
             $route_loader->addMethodCall('addRoute', [
                 $id,
@@ -61,7 +68,7 @@ class IssuerDiscoveryCompilerPass implements CompilerPassInterface
                 [], // defaults
                 [], // requirements
                 [], // options
-                '', // host
+                $issuerDiscovery['host'], // host
                 ['https'], // schemes
                 ['GET'], // methods
                 '', // condition

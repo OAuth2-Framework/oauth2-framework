@@ -11,14 +11,17 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
+use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use OAuth2Framework\Bundle\Service\IssuerDiscoveryFactory;
-use function Fluent\create;
-use function Fluent\get;
+use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
-return [
-    IssuerDiscoveryFactory::class => create()
-        ->arguments(
-            get('httplug.message_factory'),
-            get('oauth2_server.http.uri_factory')
-        ),
-];
+return function (ContainerConfigurator $container) {
+    $container = $container->services()->defaults()
+        ->private()
+        ->autoconfigure();
+
+    $container->set(IssuerDiscoveryFactory::class)
+        ->args([
+            ref('httplug.message_factory'),
+        ]);
+};

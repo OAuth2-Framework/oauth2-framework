@@ -158,7 +158,7 @@ class ClientAuthenticationMiddlewareTest extends TestCase
             self::assertEquals(401, $e->getCode());
             self::assertEquals([
                 'error' => 'invalid_client',
-                'error_description' => 'ClientCredentials credentials expired.',
+                'error_description' => 'Client credentials expired.',
             ], $e->getData());
         }
     }

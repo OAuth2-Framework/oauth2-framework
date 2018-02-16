@@ -28,7 +28,7 @@ class ClientIdChecker implements Checker
         }
 
         if ($configuration->getClientId() !== $token->getClientId()) {
-            return 'ClientCredentials not authorized.';
+            return 'Client not authorized.';
         }
 
         return null;

@@ -13,14 +13,13 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\IssuerDiscoveryEndpoint;
 
-use Interop\Http\Factory\ResponseFactoryInterface;
-use Interop\Http\Factory\UriFactoryInterface;
+use Http\Message\ResponseFactory;
+use function League\Uri\parse;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use OAuth2Framework\Component\Core\Exception\OAuth2Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\UriInterface;
 
 class IssuerDiscoveryEndpoint implements MiddlewareInterface
 {
@@ -32,14 +31,9 @@ class IssuerDiscoveryEndpoint implements MiddlewareInterface
     private $resourceManager;
 
     /**
-     * @var ResponseFactoryInterface
+     * @var ResponseFactory
      */
     private $responseFactory;
-
-    /**
-     * @var UriFactoryInterface
-     */
-    private $uriFactory;
 
     /**
      * @var string
@@ -49,17 +43,14 @@ class IssuerDiscoveryEndpoint implements MiddlewareInterface
     /**
      * IssuerDiscoveryEndpoint constructor.
      *
-     * @param ResourceRepository       $resourceManager The Resource Manager
-     * @param ResponseFactoryInterface $responseFactory The Response Factory
-     * @param UriFactoryInterface      $uriFactory      The Uri Factory
-     * @param string                   $server          The host of this discovery service
+     * @param ResourceRepository $resourceManager The Resource Manager
+     * @param ResponseFactory    $responseFactory The Response Factory
+     * @param string             $server          The host of this discovery service
      */
-    public function __construct(ResourceRepository $resourceManager, ResponseFactoryInterface $responseFactory, UriFactoryInterface $uriFactory, string $server)
+    public function __construct(ResourceRepository $resourceManager, ResponseFactory $responseFactory, string $server)
     {
         $this->resourceManager = $resourceManager;
         $this->responseFactory = $responseFactory;
-        $this->uriFactory = $uriFactory;
-        $server = $uriFactory->createUri($server);
         $this->host = $this->getDomain($server);
     }
 
@@ -99,7 +90,7 @@ class IssuerDiscoveryEndpoint implements MiddlewareInterface
 
     /**
      * @param ResourceId $resourceName
-     * @param resource   $resource
+     * @param Resource   $resource
      *
      * @return array
      */
@@ -170,9 +161,7 @@ class IssuerDiscoveryEndpoint implements MiddlewareInterface
         $at = mb_strpos($resourceName, '@', 0, 'utf-8');
 
         if (false === $at) {
-            $uri = $this->uriFactory->createUri($resourceName);
-
-            return $this->getDomain($uri);
+            return $this->getDomain($resourceName);
         }
 
         return $this->getDomainFromEmailResource($resourceName, $at);
@@ -195,19 +184,22 @@ class IssuerDiscoveryEndpoint implements MiddlewareInterface
     }
 
     /**
-     * @param UriInterface $uri
+     * @param string $uri
      *
      * @throws \InvalidArgumentException
      *
      * @return string
      */
-    private function getDomain(UriInterface $uri): string
+    private function getDomain(string $uri): string
     {
-        $host = $uri->getHost();
-        if (null !== $uri->getPort()) {
-            $host = sprintf('%s:%d', $host, $uri->getPort());
+        $parsed = parse($uri);
+        if (null === $parsed['host']) {
+            throw new \InvalidArgumentException('Invalid server address.');
+        }
+        if (null !== $parsed['port']) {
+            return sprintf('%s:%d', $parsed['host'], $parsed['port']);
         }
 
-        return $host;
+        return $parsed['host'];
     }
 }

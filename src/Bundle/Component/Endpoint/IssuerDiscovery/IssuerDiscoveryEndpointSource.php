@@ -34,10 +34,10 @@ class IssuerDiscoveryEndpointSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        //$container->setParameter('oauth2_server.endpoint.issuer_discovery.path', $configs['endpoint']['issuer_discovery']['path']);
+        $container->setParameter('oauth2_server.endpoint.issuer_discovery', $configs['endpoint']['issuer_discovery']);
 
-        //$loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint/issuer_discovery'));
-        //$loader->load('issuer_discovery.php');
+        $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint/issuer_discovery'));
+        $loader->load('issuer_discovery.php');
     }
 
     /**
@@ -47,10 +47,14 @@ class IssuerDiscoveryEndpointSource implements Component
     {
         $node->children()
             ->arrayNode($this->name())
-                ->defaultValue([])
+                ->treatNullLike([])
+                ->treatFalseLike([])
                 ->useAttributeAsKey('name')
                 ->arrayPrototype()
                     ->children()
+                        ->scalarNode('host')
+                            ->defaultValue('')
+                        ->end()
                         ->scalarNode('path')
                             ->isRequired()
                         ->end()
@@ -71,7 +75,7 @@ class IssuerDiscoveryEndpointSource implements Component
      */
     public function build(ContainerBuilder $container)
     {
-        //Nothing to do
+        $container->addCompilerPass(new IssuerDiscoveryCompilerPass());
     }
 
     /**

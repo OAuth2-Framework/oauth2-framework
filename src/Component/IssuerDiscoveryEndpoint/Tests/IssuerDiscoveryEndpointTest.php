@@ -13,10 +13,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\IssuerDiscoveryEndpoint\Tests;
 
-use Http\Factory\Diactoros\ResponseFactory;
-use Http\Factory\Diactoros\UriFactory;
-use Interop\Http\Factory\ResponseFactoryInterface;
-use Interop\Http\Factory\UriFactoryInterface;
+use Http\Message\MessageFactory\DiactorosMessageFactory;
+use Http\Message\ResponseFactory;
 use Psr\Http\Server\RequestHandlerInterface;
 use OAuth2Framework\Component\IssuerDiscoveryEndpoint\IssuerDiscoveryEndpoint;
 use OAuth2Framework\Component\IssuerDiscoveryEndpoint\Resource;
@@ -42,8 +40,7 @@ class IssuerDiscoveryEndpointTest extends TestCase
         $endpoint = new IssuerDiscoveryEndpoint(
             $repository->reveal(),
             $this->getResponseFactory(),
-            $this->getUriFactory(),
-            'www.foo.bar:8000'
+            'https://www.foo.bar:8000'
         );
 
         $response = $endpoint->process($request->reveal(), $handler->reveal());
@@ -67,8 +64,7 @@ class IssuerDiscoveryEndpointTest extends TestCase
         $endpoint = new IssuerDiscoveryEndpoint(
             $repository->reveal(),
             $this->getResponseFactory(),
-            $this->getUriFactory(),
-            'www.foo.bar:8000'
+            'https://www.foo.bar:8000'
         );
 
         $response = $endpoint->process($request->reveal(), $handler->reveal());
@@ -92,8 +88,7 @@ class IssuerDiscoveryEndpointTest extends TestCase
         $endpoint = new IssuerDiscoveryEndpoint(
             $repository->reveal(),
             $this->getResponseFactory(),
-            $this->getUriFactory(),
-            'www.foo.bar:8000'
+            'https://www.foo.bar:8000'
         );
 
         $response = $endpoint->process($request->reveal(), $handler->reveal());
@@ -118,8 +113,7 @@ class IssuerDiscoveryEndpointTest extends TestCase
         $endpoint = new IssuerDiscoveryEndpoint(
             $repository->reveal(),
             $this->getResponseFactory(),
-            $this->getUriFactory(),
-            'www.foo.bar:8000'
+            'https://www.foo.bar:8000'
         );
 
         $response = $endpoint->process($request->reveal(), $handler->reveal());
@@ -144,8 +138,7 @@ class IssuerDiscoveryEndpointTest extends TestCase
         $endpoint = new IssuerDiscoveryEndpoint(
             $repository->reveal(),
             $this->getResponseFactory(),
-            $this->getUriFactory(),
-            'www.foo.bar:8000'
+            'https://www.foo.bar:8000'
         );
 
         $response = $endpoint->process($request->reveal(), $handler->reveal());
@@ -170,8 +163,7 @@ class IssuerDiscoveryEndpointTest extends TestCase
         $endpoint = new IssuerDiscoveryEndpoint(
             $repository->reveal(),
             $this->getResponseFactory(),
-            $this->getUriFactory(),
-            'www.foo.bar:8000'
+            'https://www.foo.bar:8000'
         );
 
         $response = $endpoint->process($request->reveal(), $handler->reveal());
@@ -199,8 +191,7 @@ class IssuerDiscoveryEndpointTest extends TestCase
         $endpoint = new IssuerDiscoveryEndpoint(
             $repository->reveal(),
             $this->getResponseFactory(),
-            $this->getUriFactory(),
-            'www.foo.bar:8000'
+            'https://www.foo.bar:8000'
         );
 
         $response = $endpoint->process($request->reveal(), $handler->reveal());
@@ -228,8 +219,7 @@ class IssuerDiscoveryEndpointTest extends TestCase
         $endpoint = new IssuerDiscoveryEndpoint(
             $repository->reveal(),
             $this->getResponseFactory(),
-            $this->getUriFactory(),
-            'www.foo.bar:8000'
+            'https://www.foo.bar:8000'
         );
 
         $response = $endpoint->process($request->reveal(), $handler->reveal());
@@ -257,8 +247,7 @@ class IssuerDiscoveryEndpointTest extends TestCase
         $endpoint = new IssuerDiscoveryEndpoint(
             $repository->reveal(),
             $this->getResponseFactory(),
-            $this->getUriFactory(),
-            'www.foo.bar:8000'
+            'https://www.foo.bar:8000'
         );
 
         $response = $endpoint->process($request->reveal(), $handler->reveal());
@@ -269,15 +258,10 @@ class IssuerDiscoveryEndpointTest extends TestCase
     }
 
     /**
-     * @return ResponseFactoryInterface
+     * @return ResponseFactory
      */
-    private function getResponseFactory(): ResponseFactoryInterface
+    private function getResponseFactory(): ResponseFactory
     {
-        return new ResponseFactory();
-    }
-
-    private function getUriFactory(): UriFactoryInterface
-    {
-        return new UriFactory();
+        return new DiactorosMessageFactory();
     }
 }
