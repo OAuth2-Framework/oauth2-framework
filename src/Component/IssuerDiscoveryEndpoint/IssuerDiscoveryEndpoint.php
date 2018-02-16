@@ -90,7 +90,7 @@ class IssuerDiscoveryEndpoint implements MiddlewareInterface
 
     /**
      * @param ResourceId $resourceName
-     * @param Resource   $resource
+     * @param resource   $resource
      *
      * @return array
      */
