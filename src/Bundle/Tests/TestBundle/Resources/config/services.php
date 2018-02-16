@@ -23,6 +23,7 @@ use OAuth2Framework\Bundle\Tests\TestBundle\Entity\AccessTokenRepository;
 use OAuth2Framework\Bundle\Tests\TestBundle\Entity\AuthorizationCodeRepository;
 use OAuth2Framework\Bundle\Tests\TestBundle\Entity\ScopeRepository;
 use OAuth2Framework\Bundle\Tests\TestBundle\Entity\InitialAccessTokenRepository;
+use OAuth2Framework\Bundle\Tests\TestBundle\Entity\TrustedIssuerRepository;
 use OAuth2Framework\Bundle\Tests\TestBundle\Service\AccessTokenHandler;
 use OAuth2Framework\Bundle\Tests\TestBundle\Service\UserProvider;
 use OAuth2Framework\Component\OpenIdConnect\UserInfo\Pairwise\EncryptedSubjectIdentifier;
@@ -48,6 +49,9 @@ return function (ContainerConfigurator $container) {
 
     $container->set('MyResourceServerRepository')
         ->class(ResourceServerRepository::class);
+
+    $container->set('MyTrustedIssuerRepository')
+        ->class(TrustedIssuerRepository::class);
 
     $container->set(UserProvider::class)
         ->args([

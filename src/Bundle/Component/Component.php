@@ -37,7 +37,7 @@ interface Component
     /**
      * @param NodeDefinition $node
      */
-    public function getNodeDefinition(ArrayNodeDefinition $node);
+    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode);
 
     /**
      * @param ContainerBuilder $container

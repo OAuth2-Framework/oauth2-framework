@@ -34,23 +34,20 @@ class ClientSecretBasicSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        if ($configs['client_authentication']['client_secret_basic']['enabled']) {
-            $container->setParameter('oauth2_server.client_authentication.client_secret_basic.realm', $configs['client_authentication']['client_secret_basic']['realm']);
-            $container->setParameter('oauth2_server.client_authentication.client_secret_basic.secret_lifetime', $configs['client_authentication']['client_secret_basic']['secret_lifetime']);
-            $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../Resources/config/client_authentication'));
-            $loader->load('client_secret_basic.php');
-        }
+        $container->setParameter('oauth2_server.client_authentication.client_secret_basic.realm', $configs['client_authentication']['client_secret_basic']['realm']);
+        $container->setParameter('oauth2_server.client_authentication.client_secret_basic.secret_lifetime', $configs['client_authentication']['client_secret_basic']['secret_lifetime']);
+        $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../Resources/config/client_authentication'));
+        $loader->load('client_secret_basic.php');
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getNodeDefinition(ArrayNodeDefinition $node)
+    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
         $node->children()
             ->arrayNode($this->name())
                 ->addDefaultsIfNotSet()
-                ->canBeEnabled()
                 ->children()
                     ->scalarNode('realm')
                         ->isRequired()

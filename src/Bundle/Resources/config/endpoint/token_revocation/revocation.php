@@ -13,6 +13,9 @@ declare(strict_types=1);
 
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use OAuth2Framework\Component\Middleware;
+use OAuth2Framework\Component\TokenRevocationEndpoint\TokenTypeHintManager;
+use OAuth2Framework\Component\TokenRevocationEndpoint\TokenRevocationGetEndpoint;
+use OAuth2Framework\Component\TokenRevocationEndpoint\TokenRevocationPostEndpoint;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
 return function (ContainerConfigurator $container) {
@@ -31,19 +34,20 @@ return function (ContainerConfigurator $container) {
 
     $container->set('token_revocation_method_handler')
         ->class(\OAuth2Framework\Component\Middleware\HttpMethodMiddleware::class)
-        ->call('add', ['POST', ref(\OAuth2Framework\Component\TokenRevocationEndpoint\TokenRevocationPostEndpoint::class)])
-        ->call('add', ['GET', ref(\OAuth2Framework\Component\TokenRevocationEndpoint\TokenRevocationGetEndpoint::class)]);
+        ->call('add', ['POST', ref(TokenRevocationPostEndpoint::class)])
+        ->call('add', ['GET', ref(TokenRevocationGetEndpoint::class)]);
 
-    $container->set(\OAuth2Framework\Component\TokenRevocationEndpoint\TokenRevocationPostEndpoint::class)
+    $container->set(TokenTypeHintManager::class);
+
+    $container->set(TokenRevocationPostEndpoint::class)
         ->args([
-            ref(\OAuth2Framework\Component\TokenRevocationEndpoint\TokenTypeHintManager::class),
+            ref(TokenTypeHintManager::class),
             ref('httplug.message_factory'),
         ]);
-    $container->set(\OAuth2Framework\Component\TokenRevocationEndpoint\TokenTypeHintManager::class);
 
-    $container->set(\OAuth2Framework\Component\TokenRevocationEndpoint\TokenRevocationGetEndpoint::class)
+    $container->set(TokenRevocationGetEndpoint::class)
         ->args([
-            ref(\OAuth2Framework\Component\TokenRevocationEndpoint\TokenTypeHintManager::class),
+            ref(TokenTypeHintManager::class),
             ref('httplug.message_factory'),
             '%oauth2_server.endpoint.token_revocation.allow_callback%',
         ]);

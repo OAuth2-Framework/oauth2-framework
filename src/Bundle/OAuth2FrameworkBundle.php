@@ -74,6 +74,7 @@ class OAuth2FrameworkBundle extends Bundle
     {
         return [
             new Component\Core\OAuth2ResponseSource(),
+            new Component\Core\TrustedIssuerSource(),
             new Component\Core\ClientSource(),
             new Component\Core\AccessTokenSource(),
             new Component\Core\UserAccountSource(),

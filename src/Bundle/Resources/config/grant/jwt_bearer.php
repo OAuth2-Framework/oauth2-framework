@@ -12,7 +12,7 @@ declare(strict_types=1);
  */
 
 use OAuth2Framework\Component\JwtBearerGrant\JwtBearerGrantType;
-use OAuth2Framework\Component\JwtBearerGrant\TrustedIssuerManager;
+use OAuth2Framework\Component\JwtBearerGrant\TrustedIssuerRepository;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
@@ -21,11 +21,11 @@ return function (ContainerConfigurator $container) {
         ->private()
         ->autoconfigure();
 
-    $container->set(TrustedIssuerManager::class);
+    $container->set(TrustedIssuerRepository::class);
 
     $container->set(JwtBearerGrantType::class)
         ->args([
-            ref(TrustedIssuerManager::class),
+            ref(TrustedIssuerRepository::class),
             ref('jose.jws_loader.jwt_bearer'),
             ref('jose.claim_checker.jwt_bearer'),
             ref('oauth2_server.'),

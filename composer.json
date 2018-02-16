@@ -32,8 +32,9 @@
         "simple-bus/symfony-bridge": "^5.0",
         "symfony/form": "^3.4|^4.0",
         "symfony/translation": "^3.4|^4.0",
-        "web-token/jwt-checker": "^1.0",
-        "web-token/jwt-signature": "^1.0"
+        "web-token/jwt-core": "^1.1@dev",
+        "web-token/jwt-checker": "^1.1@dev",
+        "web-token/jwt-signature": "^1.1@dev"
     },
     "require-dev": {
         "guzzlehttp/psr7": "^1.4",
@@ -54,9 +55,9 @@
         "symfony/twig-bundle": "^3.4|^4.0",
         "symfony/validator": "^3.4|^4.0",
         "symfony/var-dumper": "^3.4|^4.0",
-        "web-token/jwt-bundle": "^1.0",
-        "web-token/jwt-encryption": "^1.0",
-        "web-token/jwt-key-mgmt": "^1.0"
+        "web-token/jwt-bundle": "^1.1@dev",
+        "web-token/jwt-encryption": "^1.1@dev",
+        "web-token/jwt-key-mgmt": "^1.1@dev"
     },
     "replace": {
         "oauth2-framework/bundle": "self.version",

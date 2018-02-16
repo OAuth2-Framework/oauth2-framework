@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\DependencyInjection;
 
+use OAuth2Framework\Bundle\Component\Component;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
@@ -21,7 +22,7 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 class OAuth2FrameworkExtension extends Extension implements PrependExtensionInterface
 {
     /**
-     * @var Component\Component[]
+     * @var Component[]
      */
     private $components;
 
@@ -34,7 +35,7 @@ class OAuth2FrameworkExtension extends Extension implements PrependExtensionInte
      * OAuth2FrameworkExtension constructor.
      *
      * @param string                $alias
-     * @param Component\Component[] $components
+     * @param Component[] $components
      */
     public function __construct(string $alias, array $components)
     {

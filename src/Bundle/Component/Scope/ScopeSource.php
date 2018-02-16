@@ -14,6 +14,8 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\Component\Scope;
 
 use OAuth2Framework\Bundle\Component\Component;
+use OAuth2Framework\Bundle\Component\Scope\Compiler\ScopeMetadataCompilerPass;
+use OAuth2Framework\Bundle\Component\Scope\Compiler\ScopePolicyCompilerPass;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -37,13 +39,16 @@ class ScopeSource implements Component
         if (!$configs['scope']['enabled']) {
             return;
         }
+
         $container->setAlias('oauth2_server.scope.repository', $configs['scope']['repository']);
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../Resources/config/scope'));
         $loader->load('scope.php');
 
         if (!$configs['scope']['policy']['enabled']) {
+            $container->setParameter('oauth2_server.scope.policy.by_default', 'none');
             return;
         }
+
         $container->setParameter('oauth2_server.scope.policy.by_default', $configs['scope']['policy']['by_default']);
         $loader->load('policy.php');
 
@@ -59,7 +64,7 @@ class ScopeSource implements Component
     /**
      * {@inheritdoc}
      */
-    public function getNodeDefinition(ArrayNodeDefinition $node)
+    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
         $node->children()
             ->arrayNode($this->name())
@@ -101,7 +106,8 @@ class ScopeSource implements Component
      */
     public function build(ContainerBuilder $container)
     {
-        //Nothing to do
+        $container->addCompilerPass(new ScopePolicyCompilerPass());
+        $container->addCompilerPass(new ScopeMetadataCompilerPass());
     }
 
     /**

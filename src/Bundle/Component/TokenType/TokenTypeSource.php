@@ -59,7 +59,7 @@ class TokenTypeSource implements Component
     /**
      * {@inheritdoc}
      */
-    public function getNodeDefinition(ArrayNodeDefinition $node)
+    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
         $node->children()
             ->arrayNode($this->name())

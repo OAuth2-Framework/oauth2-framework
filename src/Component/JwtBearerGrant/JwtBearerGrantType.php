@@ -13,13 +13,19 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\JwtBearerGrant;
 
+use Base64Url\Base64Url;
 use Jose\Component\Checker\ClaimCheckerManager;
+use Jose\Component\Checker\HeaderCheckerManager;
+use Jose\Component\Core\Converter\JsonConverter;
+use Jose\Component\Core\JWK;
 use Jose\Component\Core\JWKSet;
 use Jose\Component\Encryption\JWEDecrypter;
 use Jose\Component\Encryption\Serializer\CompactSerializer as JweCompactSerializer;
+use Jose\Component\KeyManagement\JKUFactory;
 use Jose\Component\Signature\JWS;
 use Jose\Component\Signature\JWSVerifier;
 use Jose\Component\Signature\Serializer\CompactSerializer as JwsCompactSerializer;
+use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\TokenEndpoint\GrantTypeData;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\Client\ClientRepository;
@@ -28,14 +34,15 @@ use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountRepository;
 use OAuth2Framework\Component\Core\Exception\OAuth2Exception;
 use OAuth2Framework\Component\TokenEndpoint\GrantType;
+use OAuth2Framework\Component\TrustedIssuer\TrustedIssuerRepository;
 use Psr\Http\Message\ServerRequestInterface;
 
 class JwtBearerGrantType implements GrantType
 {
     /**
-     * @var JwsCompactSerializer
+     * @var JsonConverter
      */
-    private $jwsSerializer;
+    private $jsonConverter;
 
     /**
      * @var JWSVerifier
@@ -43,14 +50,14 @@ class JwtBearerGrantType implements GrantType
     private $jwsVerifier;
 
     /**
-     * @var JweCompactSerializer|null
-     */
-    private $jweSerializer;
-
-    /**
      * @var JWEDecrypter|null
      */
-    private $jweDecrypter;
+    private $jweDecrypter = null;
+
+    /**
+     * @var HeaderCheckerManager
+     */
+    private $headerCheckerManager;
 
     /**
      * @var ClaimCheckerManager
@@ -78,25 +85,30 @@ class JwtBearerGrantType implements GrantType
     private $keyEncryptionKeySet = null;
 
     /**
-     * @var TrustedIssuerManager
+     * @var null|TrustedIssuerRepository
      */
-    private $trustedIssuerManager;
+    private $trustedIssuerRepository = null;
+
+    /**
+     * @var null|JKUFactory
+     */
+    private $jkuFactory = null;
 
     /**
      * JWTBearerGrantType constructor.
      *
-     * @param TrustedIssuerManager  $trustedIssuerManager
-     * @param JwsCompactSerializer  $jwsSerializer
+     * @param JsonConverter         $jsonConverter
      * @param JWSVerifier           $jwsVerifier
+     * @param HeaderCheckerManager  $headerCheckerManager
      * @param ClaimCheckerManager   $claimCheckerManager
      * @param ClientRepository      $clientRepository
      * @param UserAccountRepository $userAccountRepository
      */
-    public function __construct(TrustedIssuerManager $trustedIssuerManager, JwsCompactSerializer $jwsSerializer, JWSVerifier $jwsVerifier, ClaimCheckerManager $claimCheckerManager, ClientRepository $clientRepository, UserAccountRepository $userAccountRepository)
+    public function __construct(JsonConverter $jsonConverter, JWSVerifier $jwsVerifier, $headerCheckerManager, ClaimCheckerManager $claimCheckerManager, ClientRepository $clientRepository, UserAccountRepository $userAccountRepository)
     {
-        $this->jwsSerializer = $jwsSerializer;
-        $this->trustedIssuerManager = $trustedIssuerManager;
+        $this->jsonConverter = $jsonConverter;
         $this->jwsVerifier = $jwsVerifier;
+        $this->headerCheckerManager = $headerCheckerManager;
         $this->claimCheckerManager = $claimCheckerManager;
         $this->clientRepository = $clientRepository;
         $this->userAccountRepository = $userAccountRepository;
@@ -111,17 +123,31 @@ class JwtBearerGrantType implements GrantType
     }
 
     /**
-     * @param JweCompactSerializer $jweSerializer
-     * @param JWEDecrypter         $jweDecrypter
-     * @param JWKSet               $keyEncryptionKeySet
-     * @param bool                 $encryptionRequired
+     * @param JWEDecrypter $jweDecrypter
+     * @param JWKSet       $keyEncryptionKeySet
+     * @param bool         $encryptionRequired
      */
-    public function enableEncryptedAssertions(JweCompactSerializer $jweSerializer, JWEDecrypter $jweDecrypter, JWKSet $keyEncryptionKeySet, bool $encryptionRequired)
+    public function enableEncryptedAssertions(JWEDecrypter $jweDecrypter, JWKSet $keyEncryptionKeySet, bool $encryptionRequired)
     {
-        $this->jweSerializer = $jweSerializer;
         $this->jweDecrypter = $jweDecrypter;
         $this->encryptionRequired = $encryptionRequired;
         $this->keyEncryptionKeySet = $keyEncryptionKeySet;
+    }
+
+    /**
+     * @param TrustedIssuerRepository $trustedIssuerRepository
+     */
+    public function enableTrustedIssuerSupport(TrustedIssuerRepository $trustedIssuerRepository)
+    {
+        $this->trustedIssuerRepository = $trustedIssuerRepository;
+    }
+
+    /**
+     * @param JKUFactory $jkuFactory
+     */
+    public function enableJkuSupport(JKUFactory $jkuFactory)
+    {
+        $this->jkuFactory = $jkuFactory;
     }
 
     /**
@@ -156,7 +182,8 @@ class JwtBearerGrantType implements GrantType
         $assertion = $this->tryToDecryptTheAssertion($assertion);
 
         try {
-            $jws = $this->jwsSerializer->unserialize($assertion);
+            $jwsSerializer = new JwsCompactSerializer($this->jsonConverter);
+            $jws = $jwsSerializer->unserialize($assertion);
             if (1 !== $jws->countSignatures()) {
                 throw new \InvalidArgumentException('The assertion must have only one signature.');
             }
@@ -191,7 +218,8 @@ class JwtBearerGrantType implements GrantType
         }
 
         try {
-            $jwe = $this->jweSerializer->unserialize($assertion);
+            $jweSerializer = new JweCompactSerializer($this->jsonConverter);
+            $jwe = $jweSerializer->unserialize($assertion);
             if (1 !== $jwe->countRecipients()) {
                 throw new \InvalidArgumentException('The assertion must have only one recipient.');
             }
@@ -229,11 +257,13 @@ class JwtBearerGrantType implements GrantType
      */
     private function checkJWTSignature(GrantTypeData $grantTypeData, JWS $jws, array $claims): GrantTypeData
     {
+
         $iss = $claims['iss'];
         $sub = $claims['sub'];
 
         if ($iss === $sub) { // The issuer is the resource owner
             $client = $this->clientRepository->find(ClientId::create($iss));
+
             if (null === $client || true === $client->isDeleted()) {
                 throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_GRANT, 'Unable to find the issuer of the assertion.');
             }
@@ -244,11 +274,14 @@ class JwtBearerGrantType implements GrantType
             }
             $grantTypeData = $grantTypeData->withResourceOwnerId($client->getPublicId());
             $allowedSignatureAlgorithms = $this->jwsVerifier->getSignatureAlgorithmManager()->list();
-            $signatureKeys = $client->getPublicKeySet();
-        } elseif ($this->trustedIssuerManager->has($iss)) { // Trusted issuer
-            $issuer = $this->trustedIssuerManager->get($iss);
+            $signatureKeys = $this->getClientKeySet($client);
+        } elseif (null !== $this->trustedIssuerRepository) { // Trusted issuer support
+            $issuer = $this->trustedIssuerRepository->find($iss);
+            if (null === $issuer) {
+                throw new \InvalidArgumentException('Unable to find the issuer of the assertion.');
+            }
             $allowedSignatureAlgorithms = $issuer->getAllowedSignatureAlgorithms();
-            $signatureKeys = $issuer->getSignatureKeys();
+            $signatureKeys = $issuer->getJWKSet();
             $resourceOwnerId = $this->findResourceOwner($sub);
             if (null === $resourceOwnerId) {
                 throw new \InvalidArgumentException(sprintf('Unknown resource owner with ID "%s"', $sub));
@@ -286,5 +319,29 @@ class JwtBearerGrantType implements GrantType
         }
 
         return null;
+    }
+
+    /**
+     * @param Client $client
+     * @return JWKSet
+     */
+    private function getClientKeySet(Client $client): JWKSet
+    {
+        switch (true) {
+            case $client->has('jwks'):
+                return JWKSet::createFromJson($client->get('jwks'));
+            case $client->has('client_secret') && in_array($client->getTokenEndpointAuthenticationMethod(), $this->getSupportedMethods()):
+                $jwk = JWK::create([
+                    'kty' => 'oct',
+                    'use' => 'sig',
+                    'k'   => Base64Url::encode($client->get('client_secret'))
+                ]);
+
+                return JWKSet::createFromKeys([$jwk]);
+            case $client->has('jwks_uri') && null !== $this->jkuFactory:
+                return $this->jkuFactory->loadFromUrl($client->get('jwks_uri'));
+            default:
+                throw new \InvalidArgumentException('The client has no key or key set.');
+        }
     }
 }

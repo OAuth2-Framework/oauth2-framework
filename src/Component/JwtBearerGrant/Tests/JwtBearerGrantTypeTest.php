@@ -16,6 +16,7 @@ namespace OAuth2Framework\Component\JwtBearerGrant\Tests;
 use Jose\Component\Checker\AudienceChecker;
 use Jose\Component\Checker\ClaimCheckerManager;
 use Jose\Component\Checker\ExpirationTimeChecker;
+use Jose\Component\Checker\HeaderCheckerManager;
 use Jose\Component\Checker\IssuedAtChecker;
 use Jose\Component\Checker\NotBeforeChecker;
 use Jose\Component\Core\AlgorithmManager;
@@ -32,6 +33,7 @@ use Jose\Component\Encryption\Serializer\CompactSerializer as JweCompactSerializ
 use Jose\Component\Signature\Algorithm\ES256;
 use Jose\Component\Signature\Algorithm\RS256;
 use Jose\Component\Signature\JWSBuilder;
+use Jose\Component\Signature\JWSTokenSupport;
 use Jose\Component\Signature\JWSVerifier;
 use Jose\Component\Signature\Serializer\CompactSerializer as JwsCompactSerializer;
 use OAuth2Framework\Component\Core\Client\Client;
@@ -43,8 +45,8 @@ use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountRepository;
 use OAuth2Framework\Component\JwtBearerGrant\JwtBearerGrantType;
-use OAuth2Framework\Component\JwtBearerGrant\TrustedIssuer;
-use OAuth2Framework\Component\JwtBearerGrant\TrustedIssuerManager;
+use OAuth2Framework\Component\TrustedIssuer\TrustedIssuer;
+use OAuth2Framework\Component\TrustedIssuer\TrustedIssuerRepository;
 use OAuth2Framework\Component\TokenEndpoint\GrantTypeData;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
@@ -204,16 +206,19 @@ class JwtBearerGrantTypeTest extends TestCase
     {
         if (null === $this->grantType) {
             $this->grantType = new JwtBearerGrantType(
-                $this->getTrustedIssuerManager(),
-                new JwsCompactSerializer(new StandardConverter()),
+                new StandardConverter(),
                 $this->getJwsVerifier(),
+                $this->getHeaderCheckerManager(),
                 $this->getClaimCheckerManager(),
                 $this->getClientRepository(),
                 $this->getUserAccountRepository()
             );
 
+            $this->grantType->enableTrustedIssuerSupport(
+                $this->getTrustedIssuerManager()
+            );
+
             $this->grantType->enableEncryptedAssertions(
-                new JweCompactSerializer(new StandardConverter()),
                 $this->getJweDecrypter(),
                 $this->getEncryptionKeySet(),
                 false
@@ -321,6 +326,14 @@ class JwtBearerGrantTypeTest extends TestCase
     }
 
     /**
+     * @return HeaderCheckerManager
+     */
+    private function getHeaderCheckerManager(): HeaderCheckerManager
+    {
+        return HeaderCheckerManager::create([], [new JWSTokenSupport()]);
+    }
+
+    /**
      * @return ClaimCheckerManager
      */
     private function getClaimCheckerManager(): ClaimCheckerManager
@@ -334,19 +347,21 @@ class JwtBearerGrantTypeTest extends TestCase
     }
 
     /**
-     * @return TrustedIssuerManager
+     * @return TrustedIssuerRepository
      */
-    private function getTrustedIssuerManager(): TrustedIssuerManager
+    private function getTrustedIssuerManager(): TrustedIssuerRepository
     {
-        $manager = new TrustedIssuerManager();
         $issuer = $this->prophesize(TrustedIssuer::class);
         $issuer->name()->willreturn('Trusted Issuer #1');
+        $issuer->getAllowedAssertiontypes()->willReturn([]);
         $issuer->getAllowedSignatureAlgorithms()->willReturn(['ES256']);
-        $issuer->getSignatureKeys()->willReturn($this->getPublicEcKeySet());
+        $issuer->getJWKSet()->willReturn($this->getPublicEcKeySet());
 
-        $manager->add($issuer->reveal());
+        $manager = $this->prophesize(TrustedIssuerRepository::class);
+        $manager->find('Unknown Issuer')->willReturn(null);
+        $manager->find('Trusted Issuer #1')->willReturn($issuer->reveal());
 
-        return $manager;
+        return $manager->reveal();
     }
 
     /**
@@ -461,7 +476,7 @@ class JwtBearerGrantTypeTest extends TestCase
     }
 
     /**
-     * @return JWKSet
+     * @return JWK
      */
     private function getEncryptionKey(): JWK
     {

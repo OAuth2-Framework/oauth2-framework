@@ -13,6 +13,9 @@ declare(strict_types=1);
 
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use OAuth2Framework\Component\Middleware;
+use OAuth2Framework\Component\ResourceServerAuthentication\AuthenticationMiddleware;
+use OAuth2Framework\Component\TokenIntrospectionEndpoint\TokenIntrospectionEndpoint;
+use OAuth2Framework\Component\TokenIntrospectionEndpoint\TokenTypeHintManager;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
 return function (ContainerConfigurator $container) {
@@ -24,22 +27,16 @@ return function (ContainerConfigurator $container) {
         ->class(Middleware\Pipe::class)
         ->args([
             ref(Middleware\OAuth2ResponseMiddleware::class),
-            ref(\OAuth2Framework\Component\TokenIntrospectionEndpoint\AuthenticationMiddleware::class),
-            ref(\OAuth2Framework\Component\TokenIntrospectionEndpoint\TokenIntrospectionEndpoint::class),
+            ref(AuthenticationMiddleware::class),
+            ref(TokenIntrospectionEndpoint::class),
         ])
         ->tag('controller.service_arguments');
 
-    $container->set(\OAuth2Framework\Component\TokenIntrospectionEndpoint\AuthenticationMiddleware::class)
-        ->args([
-            ref('oauth2_server.resource_server_repository'),
-            ref(TokenIntrospectionEndpointAuthenticationMethodManager::class),
-        ]);
-    $container->set(\OAuth2Framework\Component\TokenIntrospectionEndpoint\AuthenticationMiddleware::class);
-    $container->set(\OAuth2Framework\Component\TokenIntrospectionEndpoint\TokenTypeHintManager::class);
+    $container->set(TokenTypeHintManager::class);
 
-    $container->set(\OAuth2Framework\Component\TokenIntrospectionEndpoint\TokenIntrospectionEndpoint::class)
+    $container->set(TokenIntrospectionEndpoint::class)
         ->args([
-            ref(\OAuth2Framework\Component\TokenIntrospectionEndpoint\TokenTypeHintManager::class),
+            ref(TokenTypeHintManager::class),
             ref('httplug.message_factory'),
         ]);
 };

@@ -29,6 +29,7 @@ class ScopeRepository implements ScopeRepositoryInterface
     public function __construct()
     {
         $this->scopes['openid'] = new Scope('openid');
+        $this->scopes['scope1'] = new Scope('scope1');
     }
 
     /**

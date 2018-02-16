@@ -64,7 +64,7 @@ class OpenIdConnectSource implements Component
     /**
      * {@inheritdoc}
      */
-    public function getNodeDefinition(ArrayNodeDefinition $node)
+    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
         $childNode = $node->children()
             ->arrayNode($this->name())
@@ -72,7 +72,7 @@ class OpenIdConnectSource implements Component
                 ->addDefaultsIfNotSet();
 
         foreach ($this->subComponents as $subComponent) {
-            $subComponent->getNodeDefinition($childNode);
+            $subComponent->getNodeDefinition($childNode, $node);
         }
     }
 

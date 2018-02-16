@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 use OAuth2Framework\Component\TokenType\TokenTypeManager;
 use OAuth2Framework\Component\TokenType\TokenTypeMiddleware;
+use OAuth2Framework\Component\TokenType\TokenTypeParameterChecker;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
@@ -23,6 +24,12 @@ return function (ContainerConfigurator $container) {
         ->autowire();
 
     $container->set(TokenTypeMiddleware::class)
+        ->args([
+            ref(TokenTypeManager::class),
+            '%oauth2_server.token_type.allow_token_type_parameter%',
+        ]);
+
+    $container->set(TokenTypeParameterChecker::class)
         ->args([
             ref(TokenTypeManager::class),
             '%oauth2_server.token_type.allow_token_type_parameter%',

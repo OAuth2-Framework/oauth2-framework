@@ -13,14 +13,18 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\ClientAuthentication;
 
+use Base64Url\Base64Url;
 use Jose\Component\Checker\ClaimCheckerManager;
-use Jose\Component\Core\Converter\StandardConverter;
+use Jose\Component\Checker\HeaderCheckerManager;
+use Jose\Component\Core\Converter\JsonConverter;
+use Jose\Component\Core\JWK;
 use Jose\Component\Core\JWKSet;
 use Jose\Component\Encryption\JWELoader;
 use Jose\Component\KeyManagement\JKUFactory;
 use Jose\Component\Signature\JWS;
 use Jose\Component\Signature\JWSVerifier;
 use Jose\Component\Signature\Serializer\CompactSerializer;
+use OAuth2Framework\Bundle\Tests\TestBundle\Entity\TrustedIssuerRepository;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
@@ -28,21 +32,20 @@ use OAuth2Framework\Component\Core\Exception\OAuth2Exception;
 use Psr\Http\Message\ServerRequestInterface;
 
 class ClientAssertionJwt implements AuthenticationMethod
-{
-    /**
-     * @var TrustedIssuerManager
-     */
-    private $trustedIssuerManager;
-
-    /**
-     * @var JWSVerifier
-     */
+{/**
+ * @var JWSVerifier
+ */
     private $jwsVerifier;
 
     /**
-     * @var JKUFactory
+     * @var null|TrustedIssuerRepository
      */
-    private $jkuFactory;
+    private $trustedIssuerRepository = null;
+
+    /**
+     * @var null|JKUFactory
+     */
+    private $jkuFactory = null;
 
     /**
      * @var null|JWELoader
@@ -65,29 +68,55 @@ class ClientAssertionJwt implements AuthenticationMethod
     private $secretLifetime;
 
     /**
+     * @var HeaderCheckerManager
+     */
+    private $headerCheckerManager;
+
+    /**
      * @var ClaimCheckerManager
      */
     private $claimCheckerManager;
 
     /**
+     * @var JsonConverter
+     */
+    private $jsonConverter;
+
+    /**
      * ClientAssertionJwt constructor.
      *
-     * @param TrustedIssuerManager $trustedIssuerManager
-     * @param JKUFactory           $jkuFactory
+     * @param JsonConverter        $jsonConverter
      * @param JWSVerifier          $jwsVerifier
+     * @param HeaderCheckerManager $headerCheckerManager
      * @param ClaimCheckerManager  $claimCheckerManager
      * @param int                  $secretLifetime
      */
-    public function __construct(TrustedIssuerManager $trustedIssuerManager, JKUFactory $jkuFactory, JWSVerifier $jwsVerifier, ClaimCheckerManager $claimCheckerManager, int $secretLifetime = 0)
+    public function __construct(JsonConverter $jsonConverter, JWSVerifier $jwsVerifier, HeaderCheckerManager $headerCheckerManager, ClaimCheckerManager $claimCheckerManager, int $secretLifetime = 0)
     {
         if ($secretLifetime < 0) {
             throw new \InvalidArgumentException('The secret lifetime must be at least 0 (= unlimited).');
         }
-        $this->trustedIssuerManager = $trustedIssuerManager;
-        $this->jkuFactory = $jkuFactory;
+        $this->jsonConverter = $jsonConverter;
         $this->jwsVerifier = $jwsVerifier;
+        $this->headerCheckerManager = $headerCheckerManager;
         $this->claimCheckerManager = $claimCheckerManager;
         $this->secretLifetime = $secretLifetime;
+    }
+
+    /**
+     * @param TrustedIssuerRepository $trustedIssuerRepository
+     */
+    public function enableTrustedIssuerSupport(TrustedIssuerRepository $trustedIssuerRepository)
+    {
+        $this->trustedIssuerRepository = $trustedIssuerRepository;
+    }
+
+    /**
+     * @param JKUFactory $jkuFactory
+     */
+    public function enableJkuSupport(JKUFactory $jkuFactory)
+    {
+        $this->jkuFactory = $jkuFactory;
     }
 
     /**
@@ -115,7 +144,7 @@ class ClientAssertionJwt implements AuthenticationMethod
      */
     public function getSupportedContentEncryptionAlgorithms(): array
     {
-        return null === $this->jweLoader ? [] : $this->jweLoader->getContentEncryptionAlgorithmManager()->list();
+        return null === $this->jweLoader ? [] : $this->jweLoader->getJweDecrypter()->getContentEncryptionAlgorithmManager()->list();
     }
 
     /**
@@ -123,7 +152,7 @@ class ClientAssertionJwt implements AuthenticationMethod
      */
     public function getSupportedKeyEncryptionAlgorithms(): array
     {
-        return null === $this->jweLoader ? [] : $this->jweLoader->getKeyEncryptionAlgorithmManager()->list();
+        return null === $this->jweLoader ? [] : $this->jweLoader->getJweDecrypter()->getKeyEncryptionAlgorithmManager()->list();
     }
 
     /**
@@ -155,14 +184,16 @@ class ClientAssertionJwt implements AuthenticationMethod
             }
             $client_assertion = $parameters['client_assertion'];
             $client_assertion = $this->tryToDecryptClientAssertion($client_assertion);
-            $serializer = new CompactSerializer(new StandardConverter());
+            $serializer = new CompactSerializer($this->jsonConverter);
             $jws = $serializer->unserialize($client_assertion);
             if (1 !== $jws->countSignatures()) {
                 throw new \InvalidArgumentException('The assertion must have only one signature.');
             }
-            $claims = json_decode($jws->getPayload(), true);
+            $this->headerCheckerManager->check($jws, 0);
+            $claims = $this->jsonConverter->decode($jws->getPayload());
+            $this->claimCheckerManager->check($claims);
 
-            // Other claims can be considered as mandatory
+            // FIXME: Other claims can be considered as mandatory
             $diff = array_diff(['iss', 'sub', 'aud', 'exp'], array_keys($claims));
             if (!empty($diff)) {
                 throw new \InvalidArgumentException(sprintf('The following claim(s) is/are mandatory: "%s".', implode(', ', array_values($diff))));
@@ -211,27 +242,17 @@ class ClientAssertionJwt implements AuthenticationMethod
     public function isClientAuthenticated(Client $client, $clientCredentials, ServerRequestInterface $request): bool
     {
         try {
-            /** @var JWS $jws */
-            $jws = $clientCredentials;
-
-            //Retrieve the JWKSet from the client configuration or the trusted issuer (see iss claim)
-            $this->jwsVerifier->verifyWithKeySet($jws);
-            // The claim checker manager should return only checked claims
-            $claims = $this->claimCheckerManager->check($claims);
-
-            //Trusted issuers should be supported
-            if ($claims['sub'] !== $claims['iss']) {
-                throw new \InvalidArgumentException('The claims "sub" and "iss" must contain the client public ID.');
+            if (!$clientCredentials instanceof JWS) {
+                return false;
             }
-            //Get the JWKSet depending on the client configuration and parameters
-            $jwkSet = $client->getPublicKeySet();
-            //Assertion::isInstanceOf($jwkSet, JWKSet::class);
-            $this->jwsVerifier->verifyWithKeySet($clientCredentials, $jwkSet, $signature);
+
+            $claims = $this->jsonConverter->decode($clientCredentials->getPayload());
+            $jwkset = $this->retrieveIssuerKeySet($client, $claims);
+
+            return $this->jwsVerifier->verifyWithKeySet($clientCredentials, $jwkset, 0);
         } catch (\Exception $e) {
             return false;
         }
-
-        return true;
     }
 
     /**
@@ -280,5 +301,48 @@ class ClientAssertionJwt implements AuthenticationMethod
     private function createClientSecret(): string
     {
         return bin2hex(random_bytes(128));
+    }
+
+    /**
+     * @param Client $client
+     * @param array  $claims
+     *
+     * @return JWKSet
+     */
+    private function retrieveIssuerKeySet(Client $client, array $claims): JWKSet
+    {
+        if ($claims['sub'] === $claims['iss']) { // The client is the issuer
+            return $this->getClientKeySet($client);
+        }
+
+        if (null === $this->trustedIssuerRepository || null === $trustedIssuer = $this->trustedIssuerRepository->find($claims['iss'])) {
+            throw new \InvalidArgumentException('Unable to retrieve the key set of the issuer.');
+        }
+
+        return $trustedIssuer->getJWKSet();
+    }
+
+    /**
+     * @param Client $client
+     * @return JWKSet
+     */
+    private function getClientKeySet(Client $client): JWKSet
+    {
+        switch (true) {
+            case $client->has('jwks'):
+                return JWKSet::createFromJson($client->get('jwks'));
+            case $client->has('client_secret') && in_array($client->getTokenEndpointAuthenticationMethod(), $this->getSupportedMethods()):
+                $jwk = JWK::create([
+                    'kty' => 'oct',
+                    'use' => 'sig',
+                    'k'   => Base64Url::encode($client->get('client_secret'))
+                ]);
+
+                return JWKSet::createFromKeys([$jwk]);
+            case $client->has('jwks_uri') && null !== $this->jkuFactory:
+                return $this->jkuFactory->loadFromUrl($client->get('jwks_uri'));
+            default:
+                throw new \InvalidArgumentException('The client has no key or key set.');
+        }
     }
 }

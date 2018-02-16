@@ -13,8 +13,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Core\Client;
 
-use Jose\Component\Core\JWK;
-use Jose\Component\Core\JWKSet;
 use OAuth2Framework\Component\Core\Client\Event as ClientEvent;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\Event\Event;
@@ -253,50 +251,6 @@ class Client implements ResourceOwner, ContainsRecordedMessages, DomainObject
         }
 
         return time() > $this->getClientCredentialsExpiresAt();
-    }
-
-    /**
-     * @return bool
-     */
-    public function hasPublicKeySet(): bool
-    {
-        return $this->has('jwks') || $this->has('jwks_uri') || $this->has('client_secret');
-    }
-
-    /**
-     * @return JWKSet
-     */
-    public function getPublicKeySet(): JWKSet
-    {
-        if (!$this->hasPublicKeySet()) {
-            throw new \LogicException('The client has no public key set');
-        }
-
-        $jwkset = null;
-        if ($this->has('jwks')) {
-            $jwkset = JWKSet::createFromJson($this->get('jwks'));
-        }
-        //FIXME: find a way to allow jku
-        /*if ($this->has('jwks_uri')) {
-            $jwkset = JKUFactory::createFromJKU($this->get('jwks_uri'));
-        }*/
-        if ($this->has('client_secret')) {
-            $key = JWK::create([
-                'kty' => 'oct',
-                'use' => 'sig',
-                'k' => $this->get('client_secret'),
-            ]);
-            if (null === $jwkset) {
-                $jwkset = JWKSet::createFromKeys([]);
-                $jwkset = $jwkset->with($key);
-
-                return $jwkset;
-            } else {
-                $jwkset = $jwkset->with($key);
-            }
-        }
-
-        return $jwkset;
     }
 
     /**

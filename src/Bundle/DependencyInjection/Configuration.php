@@ -50,7 +50,7 @@ class Configuration implements ConfigurationInterface
         $rootNode = $treeBuilder->root($this->alias);
 
         foreach ($this->sources as $source) {
-            $source->getNodeDefinition($rootNode);
+            $source->getNodeDefinition($rootNode, $rootNode);
         }
 
         return $treeBuilder;

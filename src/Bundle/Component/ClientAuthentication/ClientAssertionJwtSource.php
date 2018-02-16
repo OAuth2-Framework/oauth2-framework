@@ -13,6 +13,10 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Component\ClientAuthentication;
 
+use Jose\Bundle\JoseFramework\Helper\ConfigurationHelper;
+use OAuth2Framework\Bundle\Component\ClientAuthentication\Compiler\ClientAssertionEncryptedJwtCompilerPass;
+use OAuth2Framework\Bundle\Component\ClientAuthentication\Compiler\ClientAssertionJkuSupportCompilerPass;
+use OAuth2Framework\Bundle\Component\ClientAuthentication\Compiler\ClientAssertionTrustedIssuerSupportCompilerPass;
 use OAuth2Framework\Bundle\Component\Component;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\FileLocator;
@@ -34,20 +38,33 @@ class ClientAssertionJwtSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        if ($configs['client_authentication']['client_assertion_jwt']['enabled']) {
-            $container->setParameter('oauth2_server.client_authentication.client_assertion_jwt.secret_lifetime', $configs['client_authentication']['client_assertion_jwt']['secret_lifetime']);
-            $container->setParameter('oauth2_server.client_authentication.client_assertion_jwt.signature_algorithms', $configs['client_authentication']['client_assertion_jwt']['signature_algorithms']);
-            $container->setParameter('oauth2_server.client_authentication.client_assertion_jwt.claim_checkers', $configs['client_authentication']['client_assertion_jwt']['claim_checkers']);
-            $container->setParameter('oauth2_server.client_authentication.client_assertion_jwt.header_checkers', $configs['client_authentication']['client_assertion_jwt']['header_checkers']);
-            $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../Resources/config/client_authentication'));
-            $loader->load('client_assertion_jwt.php');
+        $container->setParameter('oauth2_server.client_authentication.client_assertion_jwt.enabled', $configs['client_authentication']['client_assertion_jwt']['enabled']);
+        if (!$configs['client_authentication']['client_assertion_jwt']['enabled']) {
+            return;
         }
+        $container->setParameter('oauth2_server.client_authentication.client_assertion_jwt.secret_lifetime', $configs['client_authentication']['client_assertion_jwt']['secret_lifetime']);
+        $container->setParameter('oauth2_server.client_authentication.client_assertion_jwt.signature_algorithms', $configs['client_authentication']['client_assertion_jwt']['signature_algorithms']);
+        $container->setParameter('oauth2_server.client_authentication.client_assertion_jwt.claim_checkers', $configs['client_authentication']['client_assertion_jwt']['claim_checkers']);
+        $container->setParameter('oauth2_server.client_authentication.client_assertion_jwt.header_checkers', $configs['client_authentication']['client_assertion_jwt']['header_checkers']);
+        $container->setParameter('oauth2_server.client_authentication.client_assertion_jwt.jku_support.enabled', $configs['client_authentication']['client_assertion_jwt']['jku_support']['enabled']);
+        $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../Resources/config/client_authentication'));
+        $loader->load('client_assertion_jwt.php');
+
+        $container->setParameter('oauth2_server.client_authentication.client_assertion_jwt.encryption.enabled', $configs['client_authentication']['client_assertion_jwt']['encryption']['enabled']);
+        if (!$configs['client_authentication']['client_assertion_jwt']['encryption']['enabled']) {
+            return;
+        }
+
+        $container->setParameter('oauth2_server.client_authentication.client_assertion_jwt.encryption.required', $configs['client_authentication']['client_assertion_jwt']['encryption']['required']);
+        $container->setParameter('oauth2_server.client_authentication.client_assertion_jwt.encryption.key_set', $configs['client_authentication']['client_assertion_jwt']['encryption']['key_set']);
+        $container->setParameter('oauth2_server.client_authentication.client_assertion_jwt.encryption.key_encryption_algorithms', $configs['client_authentication']['client_assertion_jwt']['encryption']['key_encryption_algorithms']);
+        $container->setParameter('oauth2_server.client_authentication.client_assertion_jwt.encryption.content_encryption_algorithms', $configs['client_authentication']['client_assertion_jwt']['encryption']['content_encryption_algorithms']);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getNodeDefinition(ArrayNodeDefinition $node)
+    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
         $node->children()
             ->arrayNode($this->name())
@@ -84,6 +101,10 @@ class ClientAssertionJwtSource implements Component
                         ->scalarPrototype()->end()
                         ->treatNullLike([])
                     ->end()
+                    ->arrayNode('jku_support')
+                        ->info('If enabled, the client configuration parameter "jwks_uri" will be allowed.')
+                        ->canBeEnabled()
+                    ->end()
                     ->arrayNode('encryption')
                         ->canBeEnabled()
                         ->validate()
@@ -102,6 +123,10 @@ class ClientAssertionJwtSource implements Component
                             ->booleanNode('required')
                                 ->info('When true, all incoming assertions must be encrypted.')
                                 ->defaultFalse()
+                            ->end()
+                            ->scalarNode('key_set')
+                                ->info('Private or shared keys used for assertion decryption.')
+                                ->isRequired()
                             ->end()
                             ->arrayNode('key_encryption_algorithms')
                                 ->info('Supported key encryption algorithms.')
@@ -125,8 +150,17 @@ class ClientAssertionJwtSource implements Component
     /**
      * {@inheritdoc}
      */
-    public function prepend(ContainerBuilder $container, array $config): array
+    public function prepend(ContainerBuilder $container, array $configs): array
     {
+        $config = $configs['client_authentication']['client_assertion_jwt'];
+        ConfigurationHelper::addJWSVerifier($container, 'client_authentication.client_assertion_jwt', $config['signature_algorithms'], false, []);
+        ConfigurationHelper::addHeaderChecker($container, 'client_authentication.client_assertion_jwt', $config['header_checkers'], false, []);
+        ConfigurationHelper::addClaimChecker($container, 'client_authentication.client_assertion_jwt', $config['claim_checkers'], false, []);
+        if ($config['encryption']['enabled']) {
+            ConfigurationHelper::addJWELoader($container, 'client_authentication.client_assertion_jwt.encryption', ['jwe_compact'], $config['encryption']['key_encryption_algorithms'], $config['encryption']['content_encryption_algorithms'], ['DEF'], [] /*FIXME*/, false, []);
+            ConfigurationHelper::addKeyset($container, 'client_authentication.client_assertion_jwt.encryption', 'jwkset', ['value' => $config['encryption']['key_set']], false, []);
+        }
+
         return [];
     }
 
@@ -135,6 +169,8 @@ class ClientAssertionJwtSource implements Component
      */
     public function build(ContainerBuilder $container)
     {
-        //Nothing to do
+        $container->addCompilerPass(new ClientAssertionTrustedIssuerSupportCompilerPass());
+        $container->addCompilerPass(new ClientAssertionJkuSupportCompilerPass());
+        $container->addCompilerPass(new ClientAssertionEncryptedJwtCompilerPass());
     }
 }

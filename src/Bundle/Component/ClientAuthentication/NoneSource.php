@@ -34,6 +34,7 @@ class NoneSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
+        $container->setParameter('oauth2_server.client_authentication.none.enabled', $configs['client_authentication']['none']['enabled']);
         if ($configs['client_authentication']['none']['enabled']) {
             $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../Resources/config/client_authentication'));
             $loader->load('none.php');
@@ -43,7 +44,7 @@ class NoneSource implements Component
     /**
      * {@inheritdoc}
      */
-    public function getNodeDefinition(ArrayNodeDefinition $node)
+    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
         $node->children()
             ->arrayNode($this->name())

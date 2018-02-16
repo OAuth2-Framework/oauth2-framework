@@ -11,7 +11,7 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Component\JwtBearerGrant;
+namespace OAuth2Framework\Component\TrustedIssuer;
 
 use Jose\Component\Core\JWKSet;
 
@@ -25,10 +25,15 @@ interface TrustedIssuer
     /**
      * @return string[]
      */
+    public function getAllowedAssertionTypes(): array;
+
+    /**
+     * @return string[]
+     */
     public function getAllowedSignatureAlgorithms(): array;
 
     /**
      * @return JWKSet
      */
-    public function getSignatureKeys(): JWKSet;
+    public function getJWKSet(): JWKSet;
 }

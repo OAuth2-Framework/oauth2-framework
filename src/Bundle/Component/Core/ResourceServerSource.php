@@ -14,8 +14,12 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\Component\Core;
 
 use OAuth2Framework\Bundle\Component\Component;
+use OAuth2Framework\Bundle\Component\Core\Compiler\ResourceServerAuthenticationMethodCompilerPass;
+use OAuth2Framework\Component\ResourceServerAuthentication\AuthenticationMethodManager;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
+use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
 class ResourceServerSource implements Component
 {
@@ -32,15 +36,20 @@ class ResourceServerSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
+        $container->registerForAutoconfiguration(AuthenticationMethodManager::class)->addTag('resource_server_authentication_method');
+
+        $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../Resources/config/resource_server'));
+        $loader->load('resource_server.php');
         if (null !== $configs['resource_server']['repository']) {
-            $container->setAlias('oauth2_server.resource_server.repository', $configs['resource_server']['repository']);
+            $container->setAlias('oauth2_server.resource_server_repository', $configs['resource_server']['repository']);
+            $loader->load('authentication_middleware.php');
         }
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getNodeDefinition(ArrayNodeDefinition $node)
+    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
         $node->children()
             ->arrayNode($this->name())
@@ -60,7 +69,7 @@ class ResourceServerSource implements Component
      */
     public function build(ContainerBuilder $container)
     {
-        //Nothing to do
+        $container->addCompilerPass(new ResourceServerAuthenticationMethodCompilerPass());
     }
 
     /**

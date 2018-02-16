@@ -34,6 +34,7 @@ class ClientSecretPostSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
+        $container->setParameter('oauth2_server.client_authentication.client_secret_post.enabled', $configs['client_authentication']['client_secret_post']['enabled']);
         if ($configs['client_authentication']['client_secret_post']['enabled']) {
             $container->setParameter('oauth2_server.client_authentication.client_secret_post.secret_lifetime', $configs['client_authentication']['client_secret_post']['secret_lifetime']);
             $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../Resources/config/client_authentication'));
@@ -44,7 +45,7 @@ class ClientSecretPostSource implements Component
     /**
      * {@inheritdoc}
      */
-    public function getNodeDefinition(ArrayNodeDefinition $node)
+    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
         $node->children()
             ->arrayNode($this->name())

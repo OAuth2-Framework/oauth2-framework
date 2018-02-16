@@ -12,7 +12,6 @@ declare(strict_types=1);
  */
 
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use OAuth2Framework\Component\Scope\Policy\NoScopePolicy;
 use OAuth2Framework\Component\Scope\Rule\ScopePolicyRule;
 
 return function (ContainerConfigurator $container) {
@@ -21,9 +20,5 @@ return function (ContainerConfigurator $container) {
         ->autoconfigure()
         ->autowire();
 
-    $container->set(NoScopePolicy::class)
-        ->tag('oauth2_server_scope_policy', ['policy_name' => 'none']);
-
-    $container->set(ScopePolicyRule::class)
-        ->tag('oauth2_server_client_rule');
+    $container->set(ScopePolicyRule::class);
 };
