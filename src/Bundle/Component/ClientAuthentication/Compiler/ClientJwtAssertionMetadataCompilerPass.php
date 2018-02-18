@@ -11,10 +11,10 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Bundle\DependencyInjection\Compiler;
+namespace OAuth2Framework\Bundle\Component\ClientAuthentication\Compiler;
 
 use OAuth2Framework\Bundle\Service\MetadataBuilder;
-use OAuth2Framework\Bundle\TokenEndpointAuthMethod\ClientAssertionJwt;
+use OAuth2Framework\Component\ClientAuthentication\ClientAssertionJwt;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;

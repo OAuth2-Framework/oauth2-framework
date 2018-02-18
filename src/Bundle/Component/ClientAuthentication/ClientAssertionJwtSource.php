@@ -17,6 +17,7 @@ use Jose\Bundle\JoseFramework\Helper\ConfigurationHelper;
 use OAuth2Framework\Bundle\Component\ClientAuthentication\Compiler\ClientAssertionEncryptedJwtCompilerPass;
 use OAuth2Framework\Bundle\Component\ClientAuthentication\Compiler\ClientAssertionJkuSupportCompilerPass;
 use OAuth2Framework\Bundle\Component\ClientAuthentication\Compiler\ClientAssertionTrustedIssuerSupportCompilerPass;
+use OAuth2Framework\Bundle\Component\ClientAuthentication\Compiler\ClientJwtAssertionMetadataCompilerPass;
 use OAuth2Framework\Bundle\Component\Component;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\FileLocator;
@@ -169,6 +170,7 @@ class ClientAssertionJwtSource implements Component
      */
     public function build(ContainerBuilder $container)
     {
+        $container->addCompilerPass(new ClientJwtAssertionMetadataCompilerPass());
         $container->addCompilerPass(new ClientAssertionTrustedIssuerSupportCompilerPass());
         $container->addCompilerPass(new ClientAssertionJkuSupportCompilerPass());
         $container->addCompilerPass(new ClientAssertionEncryptedJwtCompilerPass());
