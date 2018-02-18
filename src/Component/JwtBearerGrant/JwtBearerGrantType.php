@@ -327,9 +327,9 @@ class JwtBearerGrantType implements GrantType
     private function getClientKeySet(Client $client): JWKSet
     {
         switch (true) {
-            case $client->has('jwks') && $client->getTokenEndpointAuthenticationMethod() === 'private_key_jwt':
+            case $client->has('jwks') && 'private_key_jwt' === $client->getTokenEndpointAuthenticationMethod():
                 return JWKSet::createFromJson($client->get('jwks'));
-            case $client->has('client_secret') && $client->getTokenEndpointAuthenticationMethod() === 'client_secret_jwt':
+            case $client->has('client_secret') && 'client_secret_jwt' === $client->getTokenEndpointAuthenticationMethod():
                 $jwk = JWK::create([
                     'kty' => 'oct',
                     'use' => 'sig',
@@ -337,7 +337,7 @@ class JwtBearerGrantType implements GrantType
                 ]);
 
                 return JWKSet::createFromKeys([$jwk]);
-            case $client->has('jwks_uri') && $client->getTokenEndpointAuthenticationMethod() === 'private_key_jwt' && null !== $this->jkuFactory:
+            case $client->has('jwks_uri') && 'private_key_jwt' === $client->getTokenEndpointAuthenticationMethod() && null !== $this->jkuFactory:
                 return $this->jkuFactory->loadFromUrl($client->get('jwks_uri'));
             default:
                 throw new \InvalidArgumentException('The client has no key or key set.');

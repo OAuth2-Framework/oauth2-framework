@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Component\Grant\JwtBearer\Compiler;
 
-use OAuth2Framework\Component\ClientAuthentication\ClientAssertionJwt;
 use OAuth2Framework\Component\JwtBearerGrant\JwtBearerGrantType;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
