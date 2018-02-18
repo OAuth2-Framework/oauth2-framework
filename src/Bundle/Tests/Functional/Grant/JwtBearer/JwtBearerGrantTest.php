@@ -150,7 +150,7 @@ class JwtBearerGrantTest extends WebTestCase
         $jwk = JWK::create([
             'kty' => 'oct',
             'use' => 'sig',
-            'k'   => Base64Url::encode('secret'),
+            'k' => Base64Url::encode('secret'),
         ]);
         $claims = [];
 
@@ -166,7 +166,7 @@ class JwtBearerGrantTest extends WebTestCase
         $jwk = JWK::create([
             'kty' => 'oct',
             'use' => 'sig',
-            'k'   => Base64Url::encode('secret'),
+            'k' => Base64Url::encode('secret'),
         ]);
         $claims = ['iss' => 'CLIENT_ID_4'];
 
@@ -181,7 +181,7 @@ class JwtBearerGrantTest extends WebTestCase
         $jwk = JWK::create([
             'kty' => 'oct',
             'use' => 'sig',
-            'k'   => Base64Url::encode('secret'),
+            'k' => Base64Url::encode('secret'),
         ]);
         $claims = ['iss' => 'CLIENT_ID_4', 'sub' => 'CLIENT_ID_4'];
 
@@ -196,12 +196,12 @@ class JwtBearerGrantTest extends WebTestCase
         $jwk = JWK::create([
             'kty' => 'oct',
             'use' => 'sig',
-            'k'   => Base64Url::encode('secret'),
+            'k' => Base64Url::encode('secret'),
         ]);
         $claims = [
             'iss' => 'CLIENT_ID_4',
             'sub' => 'CLIENT_ID_4',
-            'aud' => 'https://oauth2.test/'
+            'aud' => 'https://oauth2.test/',
         ];
 
         return $this->sign($claims, $jwk);
@@ -215,24 +215,24 @@ class JwtBearerGrantTest extends WebTestCase
         $jwk = JWK::create([
             'kty' => 'oct',
             'use' => 'sig',
-            'k'   => Base64Url::encode('secret'),
+            'k' => Base64Url::encode('secret'),
         ]);
         $claims = [
             'iss' => 'CLIENT_ID_4',
             'sub' => 'CLIENT_ID_4',
             'aud' => 'https://oauth2.test/',
-            'exp' => time()+3600,
+            'exp' => time() + 3600,
         ];
 
         return $this->sign($claims, $jwk);
     }
 
-/**
- * @param array $claims
- * @param JWK   $jwk
- *
- * @return string
- */
+    /**
+     * @param array $claims
+     * @param JWK   $jwk
+     *
+     * @return string
+     */
     private function sign(array $claims, JWK $jwk): string
     {
         $jsonConverter = new StandardConverter();
