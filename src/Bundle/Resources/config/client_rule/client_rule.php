@@ -13,8 +13,6 @@ declare(strict_types=1);
 
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use OAuth2Framework\Component\ClientRule;
-use OAuth2Framework\Component\ClientAuthentication\AuthenticationMethodManager;
-use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
 return function (ContainerConfigurator $container) {
     $container = $container->services()->defaults()
@@ -28,8 +26,4 @@ return function (ContainerConfigurator $container) {
     $container->set(ClientRule\CommonParametersRule::class);
     $container->set(ClientRule\ContactsParametersRule::class);
     $container->set(ClientRule\RedirectionUriRule::class);
-    $container->set(ClientRule\TokenEndpointAuthenticationMethodEndpointRule::class)
-        ->args([
-            ref(AuthenticationMethodManager::class),
-        ]);
 };

@@ -11,8 +11,8 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
+use Jose\Component\Core\Converter\JsonConverter;
 use OAuth2Framework\Component\JwtBearerGrant\JwtBearerGrantType;
-use OAuth2Framework\Component\JwtBearerGrant\TrustedIssuerRepository;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
@@ -21,14 +21,13 @@ return function (ContainerConfigurator $container) {
         ->private()
         ->autoconfigure();
 
-    $container->set(TrustedIssuerRepository::class);
-
     $container->set(JwtBearerGrantType::class)
         ->args([
-            ref(TrustedIssuerRepository::class),
-            ref('jose.jws_loader.jwt_bearer'),
-            ref('jose.claim_checker.jwt_bearer'),
-            ref('oauth2_server.'),
+            ref(JsonConverter::class),
+            ref('jose.jws_verifier.oauth2_server.grant.jwt_bearer'),
+            ref('jose.header_checker.oauth2_server.grant.jwt_bearer'),
+            ref('jose.claim_checker.oauth2_server.grant.jwt_bearer'),
+            ref('oauth2_server.client_repository'),
             ref('oauth2_server.user_account_repository'),
         ]);
 };

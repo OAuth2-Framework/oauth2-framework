@@ -275,21 +275,34 @@ class ClientAssertionJwt implements AuthenticationMethod
             $validatedParameters = $validatedParameters->with('client_secret', $this->createClientSecret());
             $validatedParameters = $validatedParameters->with('client_secret_expires_at', (0 === $this->secretLifetime ? 0 : time() + $this->secretLifetime));
         } elseif ('private_key_jwt' === $commandParameters->get('token_endpoint_auth_method')) {
-            if (!($commandParameters->has('jwks') xor $commandParameters->has('jwks_uri'))) {
-                throw new \InvalidArgumentException('The parameter "jwks" or "jwks_uri" must be set.');
-            }
-            if ($commandParameters->has('jwks')) {
-                $jwks = JWKSet::createFromKeyData($commandParameters->get('jwks'));
-                if (!$jwks instanceof JWKSet) {
-                    throw new \InvalidArgumentException('The parameter "jwks" must be a valid JWKSet object.');
-                }
-                $validatedParameters = $validatedParameters->with('jwks', $commandParameters->get('jwks'));
-            } else {
-                $jwks = $this->jkuFactory->loadFromUrl($commandParameters->get('jwks_uri'));
-                if (empty($jwks)) {
-                    throw new \InvalidArgumentException('The parameter "jwks_uri" must be a valid uri to a JWK Set and at least one key.');
-                }
-                $validatedParameters = $validatedParameters->with('jwks_uri', $commandParameters->get('jwks_uri'));
+
+            switch (true) {
+                case !($commandParameters->has('jwks') xor $commandParameters->has('jwks_uri')):
+                    throw new \InvalidArgumentException('The parameter "jwks" or "jwks_uri" must be set.');
+                case $commandParameters->has('jwks'):
+                    try {
+                        JWKSet::createFromKeyData($commandParameters->get('jwks'));
+                    } catch (\Exception $e) {
+                        throw new \InvalidArgumentException('The parameter "jwks" must be a valid JWKSet object.', 0, $e);
+                    }
+                    $validatedParameters = $validatedParameters->with('jwks', $commandParameters->get('jwks'));
+                    break;
+                case $commandParameters->has('jwks_uri'):
+                    if (null === $this->jkuFactory) {
+                        throw new \InvalidArgumentException('Distant key sets cannot be used. Please use "jwks" instead of "jwks_uri".');
+                    }
+                    try {
+                        $jwks = $this->jkuFactory->loadFromUrl($commandParameters->get('jwks_uri'));
+                    } catch (\Exception $e) {
+                        throw new \InvalidArgumentException('The parameter "jwks_uri" must be a valid uri to a JWK Set and at least one key.', 0, $e);
+                    }
+                    if (empty($jwks)) {
+                        throw new \InvalidArgumentException('The distant key set is empty.');
+                    }
+                    $validatedParameters = $validatedParameters->with('jwks_uri', $commandParameters->get('jwks_uri'));
+                    break;
+                default;
+                    throw new \InvalidArgumentException('Unsupported token endpoint authentication method.');
             }
         } else {
             throw new \InvalidArgumentException('Unsupported token endpoint authentication method.');
@@ -308,7 +321,8 @@ class ClientAssertionJwt implements AuthenticationMethod
 
     /**
      * @param Client $client
-     * @param array  $claims
+     * @param JWS    $jws
+     * @param array $claims
      *
      * @return JWKSet
      */
@@ -342,9 +356,9 @@ class ClientAssertionJwt implements AuthenticationMethod
     private function getClientKeySet(Client $client): JWKSet
     {
         switch (true) {
-            case $client->has('jwks'):
+            case $client->has('jwks') && $client->getTokenEndpointAuthenticationMethod() === 'private_key_jwt':
                 return JWKSet::createFromJson($client->get('jwks'));
-            case $client->has('client_secret') && in_array($client->getTokenEndpointAuthenticationMethod(), $this->getSupportedMethods()):
+            case $client->has('client_secret') && $client->getTokenEndpointAuthenticationMethod() === 'client_secret_jwt':
                 $jwk = JWK::create([
                     'kty' => 'oct',
                     'use' => 'sig',
@@ -352,7 +366,7 @@ class ClientAssertionJwt implements AuthenticationMethod
                 ]);
 
                 return JWKSet::createFromKeys([$jwk]);
-            case $client->has('jwks_uri') && null !== $this->jkuFactory:
+            case $client->has('jwks_uri') && $client->getTokenEndpointAuthenticationMethod() === 'private_key_jwt' && null !== $this->jkuFactory:
                 return $this->jkuFactory->loadFromUrl($client->get('jwks_uri'));
             default:
                 throw new \InvalidArgumentException('The client has no key or key set.');

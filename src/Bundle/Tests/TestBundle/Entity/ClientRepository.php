@@ -87,5 +87,18 @@ class ClientRepository implements \OAuth2Framework\Component\Core\Client\ClientR
         );
         $client->eraseMessages();
         $this->save($client);
+
+        $client = Client::createEmpty();
+        $client = $client->create(
+            ClientId::create('CLIENT_ID_4'),
+            DataBag::create([
+                'token_endpoint_auth_method' => 'client_secret_jwt',
+                'grant_types' => ['urn:ietf:params:oauth:grant-type:jwt-bearer'],
+                'client_secret' => 'secret',
+            ]),
+            UserAccountId::create('USER_ACCOUNT_1')
+        );
+        $client->eraseMessages();
+        $this->save($client);
     }
 }

@@ -104,7 +104,7 @@ class JwtBearerGrantType implements GrantType
      * @param ClientRepository      $clientRepository
      * @param UserAccountRepository $userAccountRepository
      */
-    public function __construct(JsonConverter $jsonConverter, JWSVerifier $jwsVerifier, $headerCheckerManager, ClaimCheckerManager $claimCheckerManager, ClientRepository $clientRepository, UserAccountRepository $userAccountRepository)
+    public function __construct(JsonConverter $jsonConverter, JWSVerifier $jwsVerifier, HeaderCheckerManager $headerCheckerManager, ClaimCheckerManager $claimCheckerManager, ClientRepository $clientRepository, UserAccountRepository $userAccountRepository)
     {
         $this->jsonConverter = $jsonConverter;
         $this->jwsVerifier = $jwsVerifier;
@@ -189,10 +189,9 @@ class JwtBearerGrantType implements GrantType
             }
             $claims = json_decode($jws->getPayload(), true);
             $this->claimCheckerManager->check($claims);
-            foreach (['iss', 'sub'] as $claim) {
-                if (!array_key_exists($claim, $claims)) {
-                    throw new \InvalidArgumentException(sprintf('The assertion must contain the claim member "%s".', $claim));
-                }
+            $diff = array_diff(['iss', 'sub', 'aud', 'exp'], array_keys($claims));
+            if (!empty($diff)) {
+                throw new \InvalidArgumentException(sprintf('The following claim(s) is/are mandatory: "%s".', implode(', ', array_values($diff))));
             }
             $grantTypeData = $this->checkJWTSignature($grantTypeData, $jws, $claims);
         } catch (OAuth2Exception $e) {
@@ -328,9 +327,9 @@ class JwtBearerGrantType implements GrantType
     private function getClientKeySet(Client $client): JWKSet
     {
         switch (true) {
-            case $client->has('jwks'):
+            case $client->has('jwks') && $client->getTokenEndpointAuthenticationMethod() === 'private_key_jwt':
                 return JWKSet::createFromJson($client->get('jwks'));
-            case $client->has('client_secret') && in_array($client->getTokenEndpointAuthenticationMethod(), $this->getSupportedMethods()):
+            case $client->has('client_secret') && $client->getTokenEndpointAuthenticationMethod() === 'client_secret_jwt':
                 $jwk = JWK::create([
                     'kty' => 'oct',
                     'use' => 'sig',
@@ -338,7 +337,7 @@ class JwtBearerGrantType implements GrantType
                 ]);
 
                 return JWKSet::createFromKeys([$jwk]);
-            case $client->has('jwks_uri') && null !== $this->jkuFactory:
+            case $client->has('jwks_uri') && $client->getTokenEndpointAuthenticationMethod() === 'private_key_jwt' && null !== $this->jkuFactory:
                 return $this->jkuFactory->loadFromUrl($client->get('jwks_uri'));
             default:
                 throw new \InvalidArgumentException('The client has no key or key set.');

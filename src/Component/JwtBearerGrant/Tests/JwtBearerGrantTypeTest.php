@@ -261,6 +261,7 @@ class JwtBearerGrantTypeTest extends TestCase
                     ClientId::create('CLIENT_ID'),
                     DataBag::create([
                         'jwks' => json_encode($keyset),
+                        'token_endpoint_auth_method' => 'private_key_jwt',
                     ]),
                     UserAccountId::create('USER_ACCOUNT_ID')
                 );

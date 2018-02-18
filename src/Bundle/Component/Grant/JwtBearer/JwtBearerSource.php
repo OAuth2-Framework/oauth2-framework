@@ -15,6 +15,7 @@ namespace OAuth2Framework\Bundle\Component\Grant\JwtBearer;
 
 use Jose\Bundle\JoseFramework\Helper\ConfigurationHelper;
 use OAuth2Framework\Bundle\Component\Component;
+use OAuth2Framework\Bundle\Component\Grant\JwtBearer\Compiler\EncryptedAssertionCompilerPass;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -38,8 +39,13 @@ class JwtBearerSource implements Component
         if (!$configs['grant']['jwt_bearer']['enabled']) {
             return;
         }
+
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/grant'));
         $loader->load('jwt_bearer.php');
+
+        if (!$configs['grant']['jwt_bearer']['encryption']['enabled']) {
+            $container->setParameter('oauth2_server.grant.jwt_bearer.encryption.required', $configs['grant']['jwt_bearer']['encryption']['required']);
+        }
     }
 
     /**
@@ -57,9 +63,6 @@ class JwtBearerSource implements Component
                     ->thenInvalid('The option "signature_algorithms" must contain at least one signature algorithm.')
                 ->end()
                 ->children()
-                    ->booleanNode('issue_refresh_token')
-                        ->info('If true, a refresh token will be issued with the access token (the refresh token grant type must be enabled).')
-                    ->end()
                     ->arrayNode('signature_algorithms')
                         ->info('Signature algorithms supported by this grant type.')
                         ->useAttributeAsKey('name')
@@ -91,6 +94,9 @@ class JwtBearerSource implements Component
                                 ->scalarPrototype()->end()
                                 ->treatNullLike([])
                             ->end()
+                            ->scalarNode('key_set')
+                                ->info('The key set used to decrypt incoming assertions.')
+                            ->end()
                             ->arrayNode('content_encryption_algorithms')
                                 ->info('Supported content encryption algorithms.')
                                 ->useAttributeAsKey('name')
@@ -109,15 +115,20 @@ class JwtBearerSource implements Component
      */
     public function build(ContainerBuilder $container)
     {
-        //Nothing to do
+        $container->addCompilerPass(new EncryptedAssertionCompilerPass());
     }
 
     /**
      * {@inheritdoc}
      */
-    public function prepend(ContainerBuilder $container, array $config): array
+    public function prepend(ContainerBuilder $container, array $configs): array
     {
-        //Nothing to do
+        if (!$configs['grant']['jwt_bearer']['enabled']) {
+            return [];
+        }
+        $this->updateJoseBundleConfigurationForVerifier($container, $configs['grant']['jwt_bearer']);
+        $this->updateJoseBundleConfigurationForDecrypter($container, $configs['grant']['jwt_bearer']['encryption']);
+
         return [];
     }
 
@@ -127,8 +138,9 @@ class JwtBearerSource implements Component
      */
     private function updateJoseBundleConfigurationForVerifier(ContainerBuilder $container, array $sourceConfig)
     {
-        ConfigurationHelper::addJWSLoader($container, $this->name(), $sourceConfig['signature_algorithms'], [], ['jws_compact'], false);
-        ConfigurationHelper::addClaimChecker($container, $this->name(), [], false);
+        ConfigurationHelper::addJWSVerifier($container, 'oauth2_server.grant.jwt_bearer', $sourceConfig['signature_algorithms'], false);
+        ConfigurationHelper::addHeaderChecker($container, 'oauth2_server.grant.jwt_bearer', $sourceConfig['header_checkers'], false);
+        ConfigurationHelper::addClaimChecker($container, 'oauth2_server.grant.jwt_bearer', [], false);
     }
 
     /**
@@ -137,9 +149,10 @@ class JwtBearerSource implements Component
      */
     private function updateJoseBundleConfigurationForDecrypter(ContainerBuilder $container, array $sourceConfig)
     {
-        if (true === $sourceConfig['encryption']['enabled']) {
-            //ConfigurationHelper::addKeyset($container, 'jwt_bearer.key_set.encryption', 'jwkset', ['value' => $bundleConfig['key_set']['encryption']]);
-            ConfigurationHelper::addJWELoader($container, $this->name(), $sourceConfig['encryption']['key_encryption_algorithms'], $sourceConfig['encryption']['content_encryption_algorithms'], ['DEF'], [], ['jwe_compact'], false);
+        if (!$sourceConfig['enabled']) {
+            return;
         }
+        ConfigurationHelper::addKeyset($container, 'oauth2_server.grant.jwt_bearer', 'jwkset', ['value' => $sourceConfig['encryption']['key_set']], false);
+        ConfigurationHelper::addJWEDecrypter($container, 'oauth2_server.grant.jwt_bearer', $sourceConfig['key_encryption_algorithms'], $sourceConfig['content_encryption_algorithms'], ['DEF'], false);
     }
 }
