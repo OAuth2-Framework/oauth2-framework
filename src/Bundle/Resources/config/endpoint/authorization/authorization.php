@@ -33,7 +33,7 @@ return function (ContainerConfigurator $container) {
             ref('form.factory'),
             'oauth2_server_authorization_form', //FIXME '%oauth2_server.authorization_endpoint.name%',
             AuthorizationType::class, //FIXME '%oauth2_server.authorization_endpoint.type%',
-            ['Authorize', 'Default']//FIXME '%oauth2_server.authorization_endpoint.validation_groups%'
+            ['Authorize', 'Default'], //FIXME '%oauth2_server.authorization_endpoint.validation_groups%'
         ]);
 
     $container->set(AuthorizationFormHandler::class);
@@ -102,5 +102,4 @@ return function (ContainerConfigurator $container) {
             ref(AuthorizationEndpoint\ResponseTypeManager::class),
         ]);
     //FIXME $container->set(AuthorizationEndpoint\Rule\SectorIdentifierUriRule::class);
-
 };
