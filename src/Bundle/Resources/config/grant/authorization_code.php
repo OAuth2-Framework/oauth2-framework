@@ -12,7 +12,6 @@ declare(strict_types=1);
  */
 
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeGrantType;
-use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeRepository;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeResponseType;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeTypeHint;
 use OAuth2Framework\Component\AuthorizationCodeGrant\PKCEMethod;

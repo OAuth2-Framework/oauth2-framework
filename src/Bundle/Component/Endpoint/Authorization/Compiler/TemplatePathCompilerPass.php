@@ -28,6 +28,6 @@ class TemplatePathCompilerPass implements CompilerPassInterface
         }
 
         $loader = $container->getDefinition('twig.loader.filesystem');
-        $loader->addMethodCall('addPath', [__DIR__ . '/../../../../Resources/views', 'OAuth2FrameworkBundle']);
+        $loader->addMethodCall('addPath', [__DIR__.'/../../../../Resources/views', 'OAuth2FrameworkBundle']);
     }
 }
