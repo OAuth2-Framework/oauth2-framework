@@ -101,7 +101,7 @@ class AuthorizationCodeSource implements Component
      */
     public function build(ContainerBuilder $container)
     {
-        //Nothing to do
+        $container->addCompilerPass(new PKCEMethodCompilerPass());
     }
 
     /**

@@ -11,7 +11,7 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Bundle\DependencyInjection\Compiler;
+namespace OAuth2Framework\Bundle\Component\Grant\AuthorizationCode;
 
 use OAuth2Framework\Bundle\Service\MetadataBuilder;
 use OAuth2Framework\Component\AuthorizationCodeGrant\PKCEMethod\PKCEMethodManager;
@@ -36,7 +36,9 @@ class PKCEMethodCompilerPass implements CompilerPassInterface
         $loaded = [];
         foreach ($taggedServices as $id => $tags) {
             foreach ($tags as $attributes) {
-                Assertion::keyExists($attributes, 'alias', sprintf('The PKCE method  "%s" does not have any "alias" attribute.', $id));
+                if (!array_key_exists('alias', $attributes)) {
+                    throw new \InvalidArgumentException(sprintf('The PKCE method  "%s" does not have any "alias" attribute.', $id));
+                }
                 $loaded[] = $attributes['alias'];
                 $definition->addMethodCall('add', [new Reference($id)]);
             }
