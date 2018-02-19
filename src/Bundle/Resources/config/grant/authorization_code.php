@@ -32,10 +32,11 @@ return function (ContainerConfigurator $container) {
 
     $container->set(AuthorizationCodeResponseType::class)
         ->args([
-            ref(AuthorizationCodeRepository::class),
-            ref(PKCEMethod\PKCEMethodManager::class),
+            ref('oauth2_server.grant.authorization_code.repository'),
             '%oauth2_server.grant.authorization_code.min_length%',
             '%oauth2_server.grant.authorization_code.max_length%',
+            '%oauth2_server.grant.authorization_code.lifetime%',
+            ref(PKCEMethod\PKCEMethodManager::class),
             '%oauth2_server.grant.authorization_code.enforce_pkce%',
         ]);
 

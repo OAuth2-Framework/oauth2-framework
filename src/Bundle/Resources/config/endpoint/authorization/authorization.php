@@ -11,102 +11,109 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
+use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use OAuth2Framework\Bundle\Controller\AuthorizationEndpointController;
 use OAuth2Framework\Bundle\Form\FormFactory;
 use OAuth2Framework\Bundle\Form\Handler\AuthorizationFormHandler;
 use OAuth2Framework\Bundle\Form\Type\AuthorizationType;
-use OAuth2Framework\Bundle\Model\ClientRepository;
-use OAuth2Framework\Component\Endpoint\Authorization\AfterConsentScreen\AfterConsentScreenManager;
-use OAuth2Framework\Component\Endpoint\Authorization\AuthorizationFactory;
-use OAuth2Framework\Component\Endpoint\Authorization\AuthorizationRequestLoader;
-use OAuth2Framework\Component\Endpoint\Authorization\BeforeConsentScreen\BeforeConsentScreenManager;
-use OAuth2Framework\Component\Endpoint\Authorization\ParameterChecker;
-use OAuth2Framework\Component\Endpoint\Authorization\ParameterChecker\ParameterCheckerManager;
-use OAuth2Framework\Component\Endpoint\Authorization\UserAccountDiscovery\UserAccountDiscoveryManager;
-use OAuth2Framework\Component\TokenType\TokenTypeManager;
-use function Fluent\create;
-use function Fluent\get;
+use OAuth2Framework\Component\Middleware;
+use OAuth2Framework\Component\AuthorizationEndpoint;
+use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker;
+use OAuth2Framework\Component\TokenType\TokenTypeMiddleware;
+use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
-return [
-    FormFactory::class => create()
-        ->arguments(
-            get('translator'),
-            get('form.factory'),
-            'oauth2_server_authorization_form', //'%oauth2_server.authorization_endpoint.name%',
-            AuthorizationType::class, //'%oauth2_server.authorization_endpoint.type%',
-            ['Authorize', 'Default']//'%oauth2_server.authorization_endpoint.validation_groups%'
-        ),
+return function (ContainerConfigurator $container) {
+    $container = $container->services()->defaults()
+        ->private()
+        ->autoconfigure();
 
-    AuthorizationFormHandler::class => create(),
+    $container->set(FormFactory::class)
+        ->args([
+            ref('translator'),
+            ref('form.factory'),
+            'oauth2_server_authorization_form', //FIXME '%oauth2_server.authorization_endpoint.name%',
+            AuthorizationType::class, //FIXME '%oauth2_server.authorization_endpoint.type%',
+            ['Authorize', 'Default']//FIXME '%oauth2_server.authorization_endpoint.validation_groups%'
+        ]);
 
-    AuthorizationEndpointController::class => create()
-        ->arguments(
-            get('templating'),
+    $container->set(AuthorizationFormHandler::class);
+
+    $container->set(AuthorizationEndpointController::class)
+        ->args([
+            ref('templating'),
             '%oauth2_server.endpoint.authorization.template%',
-            get(FormFactory::class),
-            get(AuthorizationFormHandler::class),
-            get('translator'),
-            get('router'),
+            ref(FormFactory::class),
+            ref(AuthorizationFormHandler::class),
+            ref('translator'),
+            ref('router'),
             '%oauth2_server.endpoint.authorization.login_route_name%',
             '%oauth2_server.endpoint.authorization.login_route_parameters%',
-            get('httplug.message_factory'),
-            get('session'),
-            get(AuthorizationFactory::class),
-            get(UserAccountDiscoveryManager::class),
-            get(BeforeConsentScreenManager::class),
-            get(AfterConsentScreenManager::class)
-        ),
+            ref('httplug.message_factory'),
+            ref('session'),
+            ref(AuthorizationEndpoint\AuthorizationFactory::class),
+            ref(AuthorizationEndpoint\UserAccountDiscovery\UserAccountDiscoveryManager::class),
+            ref(AuthorizationEndpoint\ConsentScreen\ExtensionManager::class),
+        ]);
 
-    'authorization_endpoint_pipe' => create(\OAuth2Framework\Component\Middleware\Pipe::class)
-        ->arguments([
-            get(\OAuth2Framework\Component\Middleware\OAuth2ResponseMiddleware::class),
-            get(\OAuth2Framework\Component\Middleware\TokenTypeMiddleware::class),
-            get(AuthorizationEndpointController::class),
-        ]),
+    $container->set('authorization_endpoint_pipe')
+        ->class(Middleware\Pipe::class)
+        ->args([[
+            ref(Middleware\OAuth2ResponseMiddleware::class),
+            ref(TokenTypeMiddleware::class),
+            ref(AuthorizationEndpointController::class),
+        ]])
+        ->tag('controller.service_arguments');
 
-    AuthorizationFactory::class => create()
-        ->arguments(
-            get(AuthorizationRequestLoader::class),
-            get(ParameterCheckerManager::class)
-        ),
+    $container->set(AuthorizationEndpoint\AuthorizationFactory::class)
+        ->args([
+            ref(AuthorizationEndpoint\AuthorizationRequestLoader::class),
+            ref(ParameterChecker\ParameterCheckerManager::class),
+        ]);
 
-    AuthorizationRequestLoader::class => create()
-        ->arguments(
-            get(ClientRepository::class)
-        ),
+    $container->set(AuthorizationEndpoint\AuthorizationRequestLoader::class)
+        ->args([
+            ref('oauth2_server.client_repository'),
+        ]);
 
-    ParameterCheckerManager::class => create(),
+    // User Account Discovery
+    $container->set(AuthorizationEndpoint\UserAccountDiscovery\UserAccountDiscoveryManager::class);
 
-    ParameterChecker\RedirectUriParameterChecker::class => create()
-        ->arguments(
-            'oauth2_server.endpoint.authorization.enforce_state',
-            'oauth2_server.endpoint.authorization.enforce_state'
-        )
-        ->tag('oauth2_server_authorization_parameter_checker'),
+    $container->set(AuthorizationEndpoint\UserAccountDiscovery\LoginParameterChecker::class);
+    $container->set(AuthorizationEndpoint\UserAccountDiscovery\MaxAgeParameterChecker::class);
+    $container->set(AuthorizationEndpoint\UserAccountDiscovery\PromptNoneParameterChecker::class);
 
-    ParameterChecker\DisplayParameterChecker::class => create()
-        ->tag('oauth2_server_authorization_parameter_checker'),
+    // Consent Screen Extension
+    $container->set(AuthorizationEndpoint\ConsentScreen\ExtensionManager::class);
 
-    ParameterChecker\NonceParameterChecker::class => create()
-        ->tag('oauth2_server_authorization_parameter_checker'),
+    // Response Type
+    $container->set(AuthorizationEndpoint\ResponseTypeManager::class);
 
-    ParameterChecker\PromptParameterChecker::class => create()
-        ->tag('oauth2_server_authorization_parameter_checker'),
+    // Response Mode
+    $container->set(AuthorizationEndpoint\ResponseMode\ResponseModeManager::class);
 
-    ParameterChecker\StateParameterChecker::class => create()
-        ->arguments(
-            'oauth2_server.endpoint.authorization.enforce_state'
-        )
-        ->tag('oauth2_server_authorization_parameter_checker'),
+    //FIXME $container->set(AuthorizationEndpoint\ResponseMode\QueryResponseMode::class);
+    //FIXME $container->set(AuthorizationEndpoint\ResponseMode\FragmentResponseMode::class);
 
-    ParameterChecker\TokenTypeParameterChecker::class => create()
-        ->arguments(
-            get(TokenTypeManager::class),
-            'oauth2_server.endpoint.authorization.allow_token_type_parameter'
-        )
-        ->tag('oauth2_server_authorization_parameter_checker'),
+    // Parameter Checker
+    $container->set(ParameterChecker\ParameterCheckerManager::class);
 
-    UserAccountDiscoveryManager::class => create(),
-    BeforeConsentScreenManager::class => create(),
-    AfterConsentScreenManager::class => create(),
-];
+    $container->set(ParameterChecker\RedirectUriParameterChecker::class)
+        ->tag('oauth2_server_authorization_parameter_checker');
+    $container->set(ParameterChecker\DisplayParameterChecker::class);
+    //FIXME $container->set(ParameterChecker\NonceParameterChecker::class);
+    $container->set(ParameterChecker\PromptParameterChecker::class);
+    $container->set(ParameterChecker\StateParameterChecker::class)
+        ->args([
+            '%oauth2_server.endpoint.authorization.enforce_state%',
+        ]);
+    //FIXME $container->set(ParameterChecker\TokenTypeParameterChecker::class);
+
+    // Rules
+    $container->set(AuthorizationEndpoint\Rule\RequestUriRule::class);
+    $container->set(AuthorizationEndpoint\Rule\ResponseTypesRule::class)
+        ->args([
+            ref(AuthorizationEndpoint\ResponseTypeManager::class),
+        ]);
+    //FIXME $container->set(AuthorizationEndpoint\Rule\SectorIdentifierUriRule::class);
+
+};

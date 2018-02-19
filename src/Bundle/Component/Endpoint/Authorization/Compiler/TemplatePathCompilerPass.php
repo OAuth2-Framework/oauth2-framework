@@ -13,24 +13,21 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Component\Endpoint\Authorization\Compiler;
 
-use OAuth2Framework\Bundle\Service\MetadataBuilder;
-use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequestLoader;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Reference;
 
-class AuthorizationRequestMetadataCompilerPass implements CompilerPassInterface
+class TemplatePathCompilerPass implements CompilerPassInterface
 {
     /**
      * {@inheritdoc}
      */
     public function process(ContainerBuilder $container)
     {
-        if (!$container->hasDefinition(MetadataBuilder::class) || !$container->hasDefinition(AuthorizationRequestLoader::class)) {
+        if (!$container->hasDefinition('twig.loader.filesystem')) {
             return;
         }
 
-        $metadata = $container->getDefinition(MetadataBuilder::class);
-        $metadata->addMethodCall('setAuthorizationRequestLoader', [new Reference(AuthorizationRequestLoader::class)]);
+        $loader = $container->getDefinition('twig.loader.filesystem');
+        $loader->addMethodCall('addPath', [__DIR__ . '/../../../../Resources/views', 'OAuth2FrameworkBundle']);
     }
 }
