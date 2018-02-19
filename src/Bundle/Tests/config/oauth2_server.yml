@@ -132,16 +132,11 @@ oauth2_server:
                 path: '/.well-known/webfinger'
                 resource_repository: 'MyResourceRepository'
                 server: 'https://my-service.com:9000/'
-#    # Authorization Endpoint Component
-#        authorization:
-#            enabled: true
-#            path: '/authorize'
-#            #allow_scope_selection: true
-#            login_route_name: 'app_login'
-#            allow_token_type_parameter: true
-#            enforce_state: false
-#            enforce_secured_redirect_uri: false
-#            enforce_redirect_uri_storage: false
+        authorization:
+            enabled: true
+            path: '/authorize'
+            login_route_name: 'app_login'
+            enforce_state: false
 #            response_mode:
 #                allow_response_mode_parameter: true
 #                form_post:
@@ -158,9 +153,6 @@ oauth2_server:
 #                reference:
 #                    enabled: true
 #                    uris_registration_required: true
-#            pre_configured_authorization:
-#                enabled: true
-#                repository: 'MyxxxRepository'
     grant:
         authorization_code:
             enabled: true

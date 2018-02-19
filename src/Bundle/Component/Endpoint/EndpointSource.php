@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\Component\Endpoint;
 
 use OAuth2Framework\Bundle\Component\Component;
+use OAuth2Framework\Bundle\Component\Endpoint\Authorization\AuthorizationEndpointSource;
 use OAuth2Framework\Bundle\Component\Endpoint\ClientConfiguration\ClientConfigurationSource;
 use OAuth2Framework\Bundle\Component\Endpoint\ClientRegistration\ClientRegistrationSource;
 use OAuth2Framework\Bundle\Component\Endpoint\IssuerDiscovery\IssuerDiscoveryEndpointSource;
@@ -41,6 +42,7 @@ class EndpointSource implements Component
         $this->subComponents = [
             new ClientRegistrationSource(),
             new ClientConfigurationSource(),
+            new AuthorizationEndpointSource(),
             new TokenEndpointSource(),
             new TokenIntrospectionEndpointSource(),
             new TokenRevocationEndpointSource(),

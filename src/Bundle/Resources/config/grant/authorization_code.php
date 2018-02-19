@@ -37,8 +37,7 @@ return function (ContainerConfigurator $container) {
             '%oauth2_server.grant.authorization_code.min_length%',
             '%oauth2_server.grant.authorization_code.max_length%',
             '%oauth2_server.grant.authorization_code.enforce_pkce%',
-        ])
-        ->tag('oauth2_server_response_type');
+        ]);
 
     $container->set(PKCEMethod\PKCEMethodManager::class);
     $container->set(PKCEMethod\Plain::class)

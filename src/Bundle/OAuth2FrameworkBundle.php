@@ -41,7 +41,12 @@ class OAuth2FrameworkBundle extends Bundle
     public function boot()
     {
         parent::boot();
-        //$this->container->get('twig.loader')->addPath(__DIR__.'/Resources/views', 'OAuth2FrameworkBundle');
+        /**
+         * Use a compiler pass as the service is now private
+         */
+         /* if ($this->container->has('twig.loader')) {
+            $this->container->get('twig.loader')->addPath(__DIR__.'/Resources/views', 'OAuth2FrameworkBundle');
+        }*/
     }
 
     /**
