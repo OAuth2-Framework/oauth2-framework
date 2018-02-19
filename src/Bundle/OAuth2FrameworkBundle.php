@@ -41,7 +41,7 @@ class OAuth2FrameworkBundle extends Bundle
     public function boot()
     {
         parent::boot();
-        /**
+        /*
          * Use a compiler pass as the service is now private
          */
          /* if ($this->container->has('twig.loader')) {
