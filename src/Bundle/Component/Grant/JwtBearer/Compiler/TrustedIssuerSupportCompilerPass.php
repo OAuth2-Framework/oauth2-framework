@@ -13,23 +13,23 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Component\Grant\JwtBearer\Compiler;
 
-use OAuth2Framework\Component\ClientAuthentication\ClientAssertionJwt;
+use OAuth2Framework\Component\JwtBearerGrant\JwtBearerGrantType;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
-class ClientAssertionTrustedIssuerSupportCompilerPass implements CompilerPassInterface
+class TrustedIssuerSupportCompilerPass implements CompilerPassInterface
 {
     /**
      * {@inheritdoc}
      */
     public function process(ContainerBuilder $container)
     {
-        if (!$container->hasDefinition(ClientAssertionJwt::class) || !$container->hasAlias('oauth2_server.trusted_issuer_repository')) {
+        if (!$container->hasDefinition(JwtBearerGrantType::class) || !$container->hasAlias('oauth2_server.trusted_issuer_repository')) {
             return;
         }
 
-        $definition = $container->getDefinition(ClientAssertionJwt::class);
+        $definition = $container->getDefinition(JwtBearerGrantType::class);
         $definition->addMethodCall('enableTrustedIssuerSupport', [new Reference('oauth2_server.trusted_issuer_repository')]);
     }
 }

@@ -15,6 +15,7 @@ namespace OAuth2Framework\Bundle\Component\Grant\JwtBearer;
 
 use Jose\Bundle\JoseFramework\Helper\ConfigurationHelper;
 use OAuth2Framework\Bundle\Component\Component;
+use OAuth2Framework\Bundle\Component\Grant\JwtBearer\Compiler\TrustedIssuerSupportCompilerPass;
 use OAuth2Framework\Bundle\Component\Grant\JwtBearer\Compiler\EncryptedAssertionCompilerPass;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\FileLocator;
@@ -43,7 +44,8 @@ class JwtBearerSource implements Component
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/grant'));
         $loader->load('jwt_bearer.php');
 
-        if (!$configs['grant']['jwt_bearer']['encryption']['enabled']) {
+        $container->setParameter('oauth2_server.grant.jwt_bearer.encryption.enabled', $configs['grant']['jwt_bearer']['encryption']['enabled']);
+        if ($configs['grant']['jwt_bearer']['encryption']['enabled']) {
             $container->setParameter('oauth2_server.grant.jwt_bearer.encryption.required', $configs['grant']['jwt_bearer']['encryption']['required']);
         }
     }
@@ -115,6 +117,7 @@ class JwtBearerSource implements Component
      */
     public function build(ContainerBuilder $container)
     {
+        $container->addCompilerPass(new TrustedIssuerSupportCompilerPass());
         $container->addCompilerPass(new EncryptedAssertionCompilerPass());
     }
 
@@ -152,7 +155,7 @@ class JwtBearerSource implements Component
         if (!$sourceConfig['enabled']) {
             return;
         }
-        ConfigurationHelper::addKeyset($container, 'oauth2_server.grant.jwt_bearer', 'jwkset', ['value' => $sourceConfig['encryption']['key_set']], false);
+        ConfigurationHelper::addKeyset($container, 'oauth2_server.grant.jwt_bearer', 'jwkset', ['value' => $sourceConfig['key_set']], false);
         ConfigurationHelper::addJWEDecrypter($container, 'oauth2_server.grant.jwt_bearer', $sourceConfig['key_encryption_algorithms'], $sourceConfig['content_encryption_algorithms'], ['DEF'], false);
     }
 }
