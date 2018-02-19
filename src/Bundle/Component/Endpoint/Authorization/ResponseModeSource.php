@@ -32,7 +32,7 @@ class ResponseModeSource implements Component
     public function __construct()
     {
         $this->subComponents = [
-            new FormPostResponseModeSource()
+            new FormPostResponseModeSource(),
         ];
     }
 
