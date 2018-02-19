@@ -37,6 +37,6 @@ return function (ContainerConfigurator $container) {
         ->args([
             ref(AuthorizationEndpoint\ResponseTypeManager::class),
             ref(AuthorizationEndpoint\ResponseMode\ResponseModeManager::class),
-            'oauth2_server.endpoint.authorization.response_mode.allow_response_mode_parameter'
+            'oauth2_server.endpoint.authorization.response_mode.allow_response_mode_parameter',
         ]);
 };
