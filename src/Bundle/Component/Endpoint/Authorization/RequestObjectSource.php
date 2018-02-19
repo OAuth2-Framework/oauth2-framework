@@ -11,7 +11,7 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Bundle\Component\Endpoint;
+namespace OAuth2Framework\Bundle\Component\Endpoint\Authorization;
 
 use Jose\Bundle\JoseFramework\Helper\ConfigurationHelper;
 use OAuth2Framework\Bundle\Component\Component;
@@ -19,15 +19,15 @@ use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
-class AuthorizationEndpointRequestObjectSource implements Component
+class RequestObjectSource implements Component
 {
     /**
      * AuthorizationEndpointRequestObjectSource constructor.
      */
     public function __construct()
     {
-        $this->addSubSource(new AuthorizationEndpointRequestObjectReferenceSource());
-        $this->addSubSource(new AuthorizationEndpointRequestObjectEncryptionSource());
+        $this->addSubSource(new RequestObjectReferenceSource());
+        $this->addSubSource(new RequestObjectEncryptionSource());
     }
 
     /**

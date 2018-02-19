@@ -11,13 +11,13 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Bundle\Component\Endpoint;
+namespace OAuth2Framework\Bundle\Component\Endpoint\Authorization;
 
 use OAuth2Framework\Bundle\Component\Component;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-class AuthorizationEndpointRequestObjectEncryptionSource implements Component
+class RequestObjectEncryptionSource implements Component
 {
     /**
      * {@inheritdoc}

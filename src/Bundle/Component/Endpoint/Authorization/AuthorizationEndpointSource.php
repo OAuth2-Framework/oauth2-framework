@@ -21,6 +21,7 @@ use OAuth2Framework\Bundle\Component\Endpoint\Authorization\Compiler\ParameterCh
 use OAuth2Framework\Bundle\Component\Endpoint\Authorization\Compiler\ResponseModeCompilerPass;
 use OAuth2Framework\Bundle\Component\Endpoint\Authorization\Compiler\ResponseTypeCompilerPass;
 use OAuth2Framework\Bundle\Component\Endpoint\Authorization\Compiler\TemplatePathCompilerPass;
+use OAuth2Framework\Bundle\Component\Endpoint\Authorization\Compiler\RequestObjectCompilerPass;
 use OAuth2Framework\Component\AuthorizationEndpoint\ConsentScreen\Extension;
 use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\ParameterChecker;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\ResponseMode;
@@ -44,6 +45,7 @@ class AuthorizationEndpointSource implements Component
     public function __construct()
     {
         $this->subComponents = [
+            new ResponseModeSource(),
         ];
     }
 
@@ -74,6 +76,7 @@ class AuthorizationEndpointSource implements Component
 
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint/authorization'));
         $loader->load('authorization.php');
+        $loader->load('user_account_discovery.php');
 
         $container->setParameter('oauth2_server.endpoint.authorization.enabled', $config['enabled']);
         $container->setParameter('oauth2_server.endpoint.authorization.path', $config['path']);
@@ -81,6 +84,10 @@ class AuthorizationEndpointSource implements Component
         $container->setParameter('oauth2_server.endpoint.authorization.login_route_parameters', $config['login_route_parameters']);
         $container->setParameter('oauth2_server.endpoint.authorization.template', $config['template']);
         $container->setParameter('oauth2_server.endpoint.authorization.enforce_state', $config['enforce_state']);
+
+        foreach ($this->subComponents as $subComponent) {
+            $subComponent->load($configs, $container);
+        }
     }
 
     /**
@@ -144,6 +151,7 @@ class AuthorizationEndpointSource implements Component
     public function build(ContainerBuilder $container)
     {
         $container->addCompilerPass(new AuthorizationEndpointRouteCompilerPass());
+        $container->addCompilerPass(new RequestObjectCompilerPass());
         $container->addCompilerPass(new AuthorizationRequestMetadataCompilerPass());
         $container->addCompilerPass(new ConsentScreenExtensionCompilerPass());
         $container->addCompilerPass(new ParameterCheckerCompilerPass());

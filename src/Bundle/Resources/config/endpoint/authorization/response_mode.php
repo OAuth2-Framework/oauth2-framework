@@ -11,34 +11,32 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use OAuth2Framework\Component\ResponseMode;
-use OAuth2Framework\Component\ResponseType\ResponseTypeManager;
-use OAuth2Framework\Component\Endpoint\Authorization\ParameterChecker\ResponseTypeAndResponseModeParameterChecker;
-use function Fluent\create;
-use function Fluent\get;
+use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use OAuth2Framework\Component\AuthorizationEndpoint;
+use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker;
+use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
-return [
-    ResponseMode\ResponseModeManager::class => create(),
+return function (ContainerConfigurator $container) {
+    $container = $container->services()->defaults()
+        ->private()
+        ->autoconfigure();
 
-    ResponseMode\QueryResponseMode::class => create()
-        ->arguments(
-            get('oauth2_server.http.uri_factory'),
-            get('httplug.message_factory')
-        )
-        ->tag('oauth2_server_response_mode'),
+    // Response Mode
+    $container->set(AuthorizationEndpoint\ResponseMode\ResponseModeManager::class);
 
-    ResponseMode\FragmentResponseMode::class => create()
-        ->arguments(
-            get('oauth2_server.http.uri_factory'),
-            get('httplug.message_factory')
-        )
-        ->tag('oauth2_server_response_mode'),
+    $container->set(AuthorizationEndpoint\ResponseMode\QueryResponseMode::class)
+        ->args([
+            ref('httplug.message_factory'),
+        ]);
+    $container->set(AuthorizationEndpoint\ResponseMode\FragmentResponseMode::class)
+        ->args([
+            ref('httplug.message_factory'),
+        ]);
 
-    ResponseTypeAndResponseModeParameterChecker::class => create()
-        ->arguments(
-            get(ResponseTypeManager::class),
-            get(ResponseMode\ResponseModeManager::class),
+    $container->set(ParameterChecker\ResponseTypeAndResponseModeParameterChecker::class)
+        ->args([
+            ref(AuthorizationEndpoint\ResponseTypeManager::class),
+            ref(AuthorizationEndpoint\ResponseMode\ResponseModeManager::class),
             'oauth2_server.endpoint.authorization.response_mode.allow_response_mode_parameter'
-        )
-        ->tag('oauth2_server_authorization_parameter_checker'),
-];
+        ]);
+};

@@ -11,25 +11,22 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Bundle\Component\Endpoint;
+namespace OAuth2Framework\Bundle\Component\Endpoint\Authorization;
 
-use Fluent\PhpConfigFileLoader;
 use OAuth2Framework\Bundle\Component\Component;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
-use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-class AuthorizationEndpointPreConfiguredAuthorizationSource implements Component
+class RequestObjectReferenceSource implements Component
 {
     /**
      * {@inheritdoc}
      */
     protected function continueLoading(string $path, ContainerBuilder $container, array $config)
     {
-        $container->setAlias($path.'.event_store', $config['event_store']);
-
-        $loader = new PhpConfigFileLoader($container, new FileLocator(__DIR__.'/../../Resources/config/endpoint'));
-        $loader->load('pre_configured_authorization.php');
+        foreach ($config as $k => $v) {
+            $container->setParameter($path.'.'.$k, $v);
+        }
     }
 
     /**
@@ -37,7 +34,7 @@ class AuthorizationEndpointPreConfiguredAuthorizationSource implements Component
      */
     public function name(): string
     {
-        return 'pre_configured_authorization';
+        return 'reference';
     }
 
     /**
@@ -46,14 +43,11 @@ class AuthorizationEndpointPreConfiguredAuthorizationSource implements Component
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
         $node
-            ->validate()
-                ->ifTrue(function ($config) {
-                    return true === $config['enabled'] && empty($config['event_store']);
-                })
-                ->thenInvalid('The option "event_store" must be set.')
-            ->end()
             ->children()
-                ->scalarNode('event_store')->defaultNull()->end()
+                ->booleanNode('uris_registration_required')
+                    ->info('If true, request object reference Uris must be registered to be used (highly recommended).')
+                    ->defaultTrue()
+                ->end()
             ->end();
     }
 }

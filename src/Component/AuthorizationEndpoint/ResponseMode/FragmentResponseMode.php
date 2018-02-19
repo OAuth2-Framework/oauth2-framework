@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode;
 
-use Interop\Http\Factory\ResponseFactoryInterface;
+use Http\Message\ResponseFactory;
 use League\Uri;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType;
 use Psr\Http\Message\ResponseInterface;
@@ -21,16 +21,16 @@ use Psr\Http\Message\ResponseInterface;
 class FragmentResponseMode implements ResponseMode
 {
     /**
-     * @var ResponseFactoryInterface
+     * @var ResponseFactory
      */
     private $responseFactory;
 
     /**
      * FragmentResponseMode constructor.
      *
-     * @param ResponseFactoryInterface $responseFactory
+     * @param ResponseFactory $responseFactory
      */
-    public function __construct(ResponseFactoryInterface $responseFactory)
+    public function __construct(ResponseFactory $responseFactory)
     {
         $this->responseFactory = $responseFactory;
     }

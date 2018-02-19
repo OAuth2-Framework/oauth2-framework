@@ -137,11 +137,11 @@ oauth2_server:
             path: '/authorize'
             login_route_name: 'app_login'
             enforce_state: false
-#            response_mode:
-#                allow_response_mode_parameter: true
-#                form_post:
-#                    enabled: true
-#                    template: '@OAuth2FrameworkBundle/form_post/response.html.twig'
+            response_mode:
+                allow_response_mode_parameter: true
+                form_post:
+                    enabled: true
+                    template: '@OAuth2FrameworkBundle/form_post/response.html.twig'
 #            request_object:
 #                enabled: true
 #                signature_algorithms: ['RS512', 'HS512']

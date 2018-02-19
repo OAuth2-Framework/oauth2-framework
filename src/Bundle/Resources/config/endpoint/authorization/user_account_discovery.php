@@ -11,25 +11,17 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use OAuth2Framework\Bundle\Service\SymfonyUserDiscovery;
-use OAuth2Framework\Component\Endpoint\Authorization\UserAccountDiscovery;
-use function Fluent\create;
-use function Fluent\get;
+use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use OAuth2Framework\Component\AuthorizationEndpoint;
 
-return [
-    UserAccountDiscovery\LoginParameterChecker::class => create()
-        ->tag('oauth2_server_user_account_discovery'),
+return function (ContainerConfigurator $container) {
+    $container = $container->services()->defaults()
+        ->private()
+        ->autoconfigure();
 
-    UserAccountDiscovery\PromptNoneParameterChecker::class => create()
-        ->tag('oauth2_server_user_account_discovery'),
+    $container->set(AuthorizationEndpoint\UserAccountDiscovery\UserAccountDiscoveryManager::class);
 
-    UserAccountDiscovery\MaxAgeParameterChecker::class => create()
-        ->tag('oauth2_server_user_account_discovery'),
-
-    SymfonyUserDiscovery::class => create()
-        ->arguments(
-            get('security.token_storage'),
-            get('security.authorization_checker')
-        )
-        ->tag('oauth2_server_user_account_discovery'),
-];
+    $container->set(AuthorizationEndpoint\UserAccountDiscovery\LoginParameterChecker::class);
+    $container->set(AuthorizationEndpoint\UserAccountDiscovery\MaxAgeParameterChecker::class);
+    $container->set(AuthorizationEndpoint\UserAccountDiscovery\PromptNoneParameterChecker::class);
+};

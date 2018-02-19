@@ -11,22 +11,25 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
+use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use OAuth2Framework\Bundle\Service\TwigFormPostResponseRenderer;
-use OAuth2Framework\Component\ResponseMode;
-use function Fluent\create;
-use function Fluent\get;
+use OAuth2Framework\Component\AuthorizationEndpoint;
+use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
-return [
-    TwigFormPostResponseRenderer::class => create()
-        ->arguments(
-            get('templating'),
+return function (ContainerConfigurator $container) {
+    $container = $container->services()->defaults()
+        ->private()
+        ->autoconfigure();
+
+    $container->set(TwigFormPostResponseRenderer::class)
+        ->args([
+            ref('templating'),
             '%oauth2_server.endpoint.authorization.response_mode.form_post.template%'
-        ),
+        ]);
 
-    ResponseMode\FormPostResponseMode::class => create()
-        ->arguments(
-            get(TwigFormPostResponseRenderer::class),
-            get('httplug.message_factory')
-        )
-        ->tag('oauth2_server_response_mode'),
-];
+    $container->set(AuthorizationEndpoint\ResponseMode\FormPostResponseMode::class)
+        ->args([
+            ref(TwigFormPostResponseRenderer::class),
+            ref('httplug.message_factory'),
+        ]);
+};

@@ -75,24 +75,11 @@ return function (ContainerConfigurator $container) {
             ref('oauth2_server.client_repository'),
         ]);
 
-    // User Account Discovery
-    $container->set(AuthorizationEndpoint\UserAccountDiscovery\UserAccountDiscoveryManager::class);
-
-    $container->set(AuthorizationEndpoint\UserAccountDiscovery\LoginParameterChecker::class);
-    $container->set(AuthorizationEndpoint\UserAccountDiscovery\MaxAgeParameterChecker::class);
-    $container->set(AuthorizationEndpoint\UserAccountDiscovery\PromptNoneParameterChecker::class);
-
     // Consent Screen Extension
     $container->set(AuthorizationEndpoint\ConsentScreen\ExtensionManager::class);
 
     // Response Type
     $container->set(AuthorizationEndpoint\ResponseTypeManager::class);
-
-    // Response Mode
-    $container->set(AuthorizationEndpoint\ResponseMode\ResponseModeManager::class);
-
-    //FIXME $container->set(AuthorizationEndpoint\ResponseMode\QueryResponseMode::class);
-    //FIXME $container->set(AuthorizationEndpoint\ResponseMode\FragmentResponseMode::class);
 
     // Parameter Checker
     $container->set(ParameterChecker\ParameterCheckerManager::class);
