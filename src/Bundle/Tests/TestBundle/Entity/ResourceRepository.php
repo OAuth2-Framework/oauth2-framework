@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Tests\TestBundle\Entity;
 
-use OAuth2Framework\Component\IssuerDiscoveryEndpoint\Resource;
+use OAuth2Framework\Component\IssuerDiscoveryEndpoint\ResourceObject;
 use OAuth2Framework\Component\IssuerDiscoveryEndpoint\ResourceId;
 use OAuth2Framework\Component\IssuerDiscoveryEndpoint\ResourceRepository as ResourceRepositoryInterface;
 
@@ -32,7 +32,7 @@ class ResourceRepository implements ResourceRepositoryInterface
     /**
      * {@inheritdoc}
      */
-    public function find(ResourceId $resourceId): ?Resource
+    public function find(ResourceId $resourceId): ?ResourceObject
     {
         $server = 'my-service.com:9000';
         $length = mb_strlen($server, 'utf-8');

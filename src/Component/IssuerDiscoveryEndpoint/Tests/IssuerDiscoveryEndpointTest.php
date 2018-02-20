@@ -17,7 +17,7 @@ use Http\Message\MessageFactory\DiactorosMessageFactory;
 use Http\Message\ResponseFactory;
 use Psr\Http\Server\RequestHandlerInterface;
 use OAuth2Framework\Component\IssuerDiscoveryEndpoint\IssuerDiscoveryEndpoint;
-use OAuth2Framework\Component\IssuerDiscoveryEndpoint\Resource;
+use OAuth2Framework\Component\IssuerDiscoveryEndpoint\ResourceObject;
 use OAuth2Framework\Component\IssuerDiscoveryEndpoint\ResourceId;
 use OAuth2Framework\Component\IssuerDiscoveryEndpoint\ResourceRepository;
 use PHPUnit\Framework\TestCase;
@@ -183,7 +183,7 @@ class IssuerDiscoveryEndpointTest extends TestCase
             'rel' => 'http://openid.net/specs/connect/1.0/issuer',
             'resource' => 'hello@www.foo.bar:8000',
         ]);
-        $resource = $this->prophesize(Resource::class);
+        $resource = $this->prophesize(ResourceObject::class);
         $resource->getIssuer()->willReturn('https://my.server.com/hello');
         $repository = $this->prophesize(ResourceRepository::class);
         $repository->find(Argument::type(ResourceId::class))->willReturn($resource->reveal());
@@ -211,7 +211,7 @@ class IssuerDiscoveryEndpointTest extends TestCase
             'rel' => 'http://openid.net/specs/connect/1.0/issuer',
             'resource' => 'acct:hello%40you@www.foo.bar:8000',
         ]);
-        $resource = $this->prophesize(Resource::class);
+        $resource = $this->prophesize(ResourceObject::class);
         $resource->getIssuer()->willReturn('https://my.server.com/hello');
         $repository = $this->prophesize(ResourceRepository::class);
         $repository->find(Argument::type(ResourceId::class))->willReturn($resource->reveal());
@@ -239,7 +239,7 @@ class IssuerDiscoveryEndpointTest extends TestCase
             'rel' => 'http://openid.net/specs/connect/1.0/issuer',
             'resource' => 'https://www.foo.bar:8000/+hello',
         ]);
-        $resource = $this->prophesize(Resource::class);
+        $resource = $this->prophesize(ResourceObject::class);
         $resource->getIssuer()->willReturn('https://my.server.com/hello');
         $repository = $this->prophesize(ResourceRepository::class);
         $repository->find(Argument::type(ResourceId::class))->willReturn($resource->reveal());

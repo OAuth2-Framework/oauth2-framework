@@ -94,7 +94,7 @@ class IssuerDiscoveryEndpoint implements MiddlewareInterface
      *
      * @return array
      */
-    private function getResourceData(ResourceId $resourceName, Resource $resource): array
+    private function getResourceData(ResourceId $resourceName, ResourceObject $resource): array
     {
         return [
             'subject' => $resourceName->getValue(),

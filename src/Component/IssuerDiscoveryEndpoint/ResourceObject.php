@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\IssuerDiscoveryEndpoint;
 
-interface Resource
+interface ResourceObject
 {
     /**
      * @return string

@@ -20,5 +20,5 @@ interface ResourceRepository
      *
      * @return resource|null
      */
-    public function find(ResourceId $resourceId): ?Resource;
+    public function find(ResourceId $resourceId): ?ResourceObject;
 }

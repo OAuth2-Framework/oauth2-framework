@@ -13,9 +13,9 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Tests\TestBundle\Entity;
 
-use OAuth2Framework\Component\IssuerDiscoveryEndpoint\Resource;
+use OAuth2Framework\Component\IssuerDiscoveryEndpoint\ResourceObject as ResourceObjectInterface;
 
-class ResourceObject implements Resource
+class ResourceObject implements ResourceObjectInterface
 {
     /**
      * @var string
