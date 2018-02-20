@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2017 Spomky-Labs
+ * Copyright (c) 2014-2018 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -116,7 +116,7 @@ final class Authorization
      *
      * @return Authorization
      */
-    public static function create(Client $client, array $queryParameters): Authorization
+    public static function create(Client $client, array $queryParameters): self
     {
         return new self($client, $queryParameters);
     }
@@ -164,7 +164,7 @@ final class Authorization
      *
      * @return Authorization
      */
-    public function withTokenType(TokenTypeInterface $tokenType): Authorization
+    public function withTokenType(TokenTypeInterface $tokenType): self
     {
         $clone = clone $this;
         $clone->tokenType = $tokenType;
@@ -185,7 +185,7 @@ final class Authorization
      *
      * @return Authorization
      */
-    public function withResponseTypes(array $responseTypes): Authorization
+    public function withResponseTypes(array $responseTypes): self
     {
         Assertion::allIsInstanceOf($responseTypes, ResponseTypeInterface::class);
         $clone = clone $this;
@@ -207,7 +207,7 @@ final class Authorization
      *
      * @return Authorization
      */
-    public function withResponseMode(ResponseModeInterface $responseMode): Authorization
+    public function withResponseMode(ResponseModeInterface $responseMode): self
     {
         $clone = clone $this;
         $clone->responseMode = $responseMode;
@@ -228,7 +228,7 @@ final class Authorization
      *
      * @return Authorization
      */
-    public function withRedirectUri(string $redirectUri): Authorization
+    public function withRedirectUri(string $redirectUri): self
     {
         $clone = clone $this;
         $clone->redirectUri = $redirectUri;
@@ -250,7 +250,7 @@ final class Authorization
      *
      * @return Authorization
      */
-    public function withUserAccount(UserAccountInterface $userAccount, bool $isFullyAuthenticated): Authorization
+    public function withUserAccount(UserAccountInterface $userAccount, bool $isFullyAuthenticated): self
     {
         $clone = clone $this;
         $clone->userAccount = $userAccount;
@@ -273,7 +273,7 @@ final class Authorization
      *
      * @return Authorization
      */
-    public function withResponseParameter(string $responseParameter, $value): Authorization
+    public function withResponseParameter(string $responseParameter, $value): self
     {
         $clone = clone $this;
         $clone->responseParameters[$responseParameter] = $value;
@@ -317,7 +317,7 @@ final class Authorization
      *
      * @return Authorization
      */
-    public function withResponseHeader(string $responseHeader, $value): Authorization
+    public function withResponseHeader(string $responseHeader, $value): self
     {
         $clone = clone $this;
         $clone->responseHeaders[$responseHeader] = $value;
@@ -384,7 +384,7 @@ final class Authorization
      *
      * @return Authorization
      */
-    public function withScopes(array $scope): Authorization
+    public function withScopes(array $scope): self
     {
         $clone = clone $this;
         $clone->scopes = $scope;
@@ -415,7 +415,7 @@ final class Authorization
      *
      * @return Authorization
      */
-    public function withoutScope(string $scope): Authorization
+    public function withoutScope(string $scope): self
     {
         if (!$this->hasScope($scope)) {
             return $this;
@@ -431,7 +431,7 @@ final class Authorization
      *
      * @return Authorization
      */
-    public function addScope(string $scope): Authorization
+    public function addScope(string $scope): self
     {
         if ($this->hasScope($scope)) {
             return $this;
@@ -453,7 +453,7 @@ final class Authorization
     /**
      * @return Authorization
      */
-    public function allow(): Authorization
+    public function allow(): self
     {
         $clone = clone $this;
         $clone->authorized = true;
@@ -464,7 +464,7 @@ final class Authorization
     /**
      * @return Authorization
      */
-    public function deny(): Authorization
+    public function deny(): self
     {
         $clone = clone $this;
         $clone->authorized = false;
@@ -500,7 +500,7 @@ final class Authorization
      *
      * @return Authorization
      */
-    public function withData(string $key, $data): Authorization
+    public function withData(string $key, $data): self
     {
         $clone = clone $this;
         $clone->data[$key] = $data;
@@ -521,7 +521,7 @@ final class Authorization
      *
      * @return Authorization
      */
-    public function withResourceServer(ResourceServerInterface $resourceServer): Authorization
+    public function withResourceServer(ResourceServerInterface $resourceServer): self
     {
         $clone = clone $this;
         $clone->resourceServer = $resourceServer;
@@ -554,7 +554,7 @@ final class Authorization
      *
      * @return Authorization
      */
-    public function withConsentScreenOption(string $option, $value): Authorization
+    public function withConsentScreenOption(string $option, $value): self
     {
         $clone = clone $this;
         $clone->consentScreenOptions[$option] = $value;
@@ -567,7 +567,7 @@ final class Authorization
      *
      * @return Authorization
      */
-    public function withoutConsentScreenOption(string $option): Authorization
+    public function withoutConsentScreenOption(string $option): self
     {
         if (!array_key_exists($option, $this->consentScreenOptions)) {
             return $this;

@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2017 Spomky-Labs
+ * Copyright (c) 2014-2018 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -23,8 +23,11 @@ use Symfony\Component\Finder\Finder;
 final class EventStore implements EventStoreInterface
 {
     private const STORAGE_PATH = '%s/fixtures/%s/';
+
     private const EVENT_PATH = '%s/%s/events/';
+
     private const EVENT_FILENAME = '%s/%s/events/%s.json';
+
     /**
      * @var DomainConverter
      */

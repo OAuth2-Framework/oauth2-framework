@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2017 Spomky-Labs
+ * Copyright (c) 2014-2018 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -148,7 +148,7 @@ class IpAddressMiddleware implements MiddlewareInterface
     protected function isValidIpAddress(string $ip): bool
     {
         $flags = FILTER_FLAG_IPV4 | FILTER_FLAG_IPV6;
-        if (filter_var($ip, FILTER_VALIDATE_IP, $flags) === false) {
+        if (false === filter_var($ip, FILTER_VALIDATE_IP, $flags)) {
             return false;
         }
 
@@ -168,9 +168,9 @@ class IpAddressMiddleware implements MiddlewareInterface
         $items = explode(',', $request->getHeaderLine($header));
         $headerValue = trim(reset($items));
 
-        if (ucfirst($header) == 'Forwarded') {
+        if ('Forwarded' == ucfirst($header)) {
             foreach (explode(';', $headerValue) as $headerPart) {
-                if (strtolower(substr($headerPart, 0, 4)) == 'for=') {
+                if ('for=' == strtolower(substr($headerPart, 0, 4))) {
                     $for = explode(']', $headerPart);
                     $headerValue = trim(substr(reset($for), 4), " \t\n\r\0\x0B".'"[]');
 

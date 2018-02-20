@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2017 Spomky-Labs
+ * Copyright (c) 2014-2018 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -48,7 +48,7 @@ final class InitialAccessToken implements ContainsRecordedMessages, DomainObject
     /**
      * @return InitialAccessToken
      */
-    public static function createEmpty(): InitialAccessToken
+    public static function createEmpty(): self
     {
         return new self();
     }
@@ -60,7 +60,7 @@ final class InitialAccessToken implements ContainsRecordedMessages, DomainObject
      *
      * @return InitialAccessToken
      */
-    public function create(InitialAccessTokenId $initialAccessTokenId, ? UserAccountId $userAccountId, ? \DateTimeImmutable $expiresAt): InitialAccessToken
+    public function create(InitialAccessTokenId $initialAccessTokenId, ? UserAccountId $userAccountId, ? \DateTimeImmutable $expiresAt): self
     {
         $clone = clone $this;
         $clone->initialAccessTokenId = $initialAccessTokenId;
@@ -118,7 +118,7 @@ final class InitialAccessToken implements ContainsRecordedMessages, DomainObject
     /**
      * @return InitialAccessToken
      */
-    public function markAsRevoked(): InitialAccessToken
+    public function markAsRevoked(): self
     {
         $clone = clone $this;
         $clone->revoked = true;
@@ -177,7 +177,7 @@ final class InitialAccessToken implements ContainsRecordedMessages, DomainObject
      *
      * @return InitialAccessToken
      */
-    public function apply(Event $event): InitialAccessToken
+    public function apply(Event $event): self
     {
         $map = $this->getEventMap();
         Assertion::keyExists($map, $event->getType(), 'Unsupported event.');
@@ -205,7 +205,7 @@ final class InitialAccessToken implements ContainsRecordedMessages, DomainObject
      *
      * @return InitialAccessToken
      */
-    protected function applyInitialAccessTokenCreatedEvent(InitialAccessTokenEvent\InitialAccessTokenCreatedEvent $event): InitialAccessToken
+    protected function applyInitialAccessTokenCreatedEvent(InitialAccessTokenEvent\InitialAccessTokenCreatedEvent $event): self
     {
         $clone = clone $this;
         $clone->initialAccessTokenId = $event->getInitialAccessTokenId();
@@ -220,7 +220,7 @@ final class InitialAccessToken implements ContainsRecordedMessages, DomainObject
      *
      * @return InitialAccessToken
      */
-    protected function applyInitialAccessTokenRevokedEvent(InitialAccessTokenEvent\InitialAccessTokenRevokedEvent $event): InitialAccessToken
+    protected function applyInitialAccessTokenRevokedEvent(InitialAccessTokenEvent\InitialAccessTokenRevokedEvent $event): self
     {
         $clone = clone $this;
         $clone->revoked = true;

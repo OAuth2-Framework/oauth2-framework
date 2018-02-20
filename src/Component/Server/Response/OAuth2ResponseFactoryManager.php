@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2017 Spomky-Labs
+ * Copyright (c) 2014-2018 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -21,15 +21,25 @@ final class OAuth2ResponseFactoryManager
 {
     //Error messages from the RFC5749
     const ERROR_INVALID_REQUEST = 'invalid_request';
+
     const ERROR_INVALID_CLIENT = 'invalid_client';
+
     const ERROR_INVALID_GRANT = 'invalid_grant';
+
     const ERROR_INVALID_SCOPE = 'invalid_scope';
+
     const ERROR_INVALID_TOKEN = 'invalid_token';
+
     const ERROR_UNAUTHORIZED_CLIENT = 'unauthorized_client';
+
     const ERROR_UNSUPPORTED_GRANT_TYPE = 'unsupported_grant_type';
+
     const ERROR_ACCESS_DENIED = 'access_denied';
+
     const ERROR_UNSUPPORTED_RESPONSE_TYPE = 'unsupported_response_type';
+
     const ERROR_SERVER_ERROR = 'server_error';
+
     const ERROR_TEMPORARILY_UNAVAILABLE = 'temporarily_unavailable';
 
     // Error messages from the RFC5750
@@ -37,13 +47,21 @@ final class OAuth2ResponseFactoryManager
 
     //Error messages from OpenID Connect specifications
     const ERROR_INTERACTION_REQUIRED = 'interaction_required';
+
     const ERROR_LOGIN_REQUIRED = 'login_required';
+
     const ERROR_ACCOUNT_SELECTION_REQUIRED = 'account_selection_required';
+
     const ERROR_CONSENT_REQUIRED = 'consent_required';
+
     const ERROR_INVALID_REQUEST_URI = 'invalid_request_uri';
+
     const ERROR_INVALID_REQUEST_OBJECT = 'invalid_request_object';
+
     const ERROR_REQUEST_NOT_SUPPORTED = 'request_not_supported';
+
     const ERROR_REQUEST_URI_NOT_SUPPORTED = 'request_uri_not_supported';
+
     const ERROR_REGISTRATION_NOT_SUPPORTED = 'registration_not_supported';
 
     //Error message for server errors (codes 5xx)
@@ -82,7 +100,7 @@ final class OAuth2ResponseFactoryManager
      *
      * @return OAuth2ResponseFactoryManager
      */
-    public function addResponseFactory(ResponseFactoryInterface $responseFactory): OAuth2ResponseFactoryManager
+    public function addResponseFactory(ResponseFactoryInterface $responseFactory): self
     {
         $this->responseFactories[$responseFactory->getSupportedCode()] = $responseFactory;
 

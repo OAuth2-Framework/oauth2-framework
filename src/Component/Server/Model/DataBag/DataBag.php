@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2017 Spomky-Labs
+ * Copyright (c) 2014-2018 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -27,7 +27,7 @@ final class DataBag implements \JsonSerializable
      *
      * @return DataBag
      */
-    public static function createFromArray(array $parameters): DataBag
+    public static function createFromArray(array $parameters): self
     {
         Assertion::allString(array_keys($parameters), 'The array must be an associative array.');
         $bag = new self();
@@ -67,7 +67,7 @@ final class DataBag implements \JsonSerializable
      *
      * @return DataBag
      */
-    public function with(string $key, $value): DataBag
+    public function with(string $key, $value): self
     {
         $clone = clone $this;
         $clone->parameters[$key] = $value;
@@ -80,7 +80,7 @@ final class DataBag implements \JsonSerializable
      *
      * @return DataBag
      */
-    public function withParameters(array $parameters): DataBag
+    public function withParameters(array $parameters): self
     {
         Assertion::allString(array_keys($parameters), 'The parameter must be an associative array.');
         $clone = clone $this;
@@ -94,7 +94,7 @@ final class DataBag implements \JsonSerializable
      *
      * @return DataBag
      */
-    public function withoutParameter(string $key): DataBag
+    public function withoutParameter(string $key): self
     {
         if (!$this->has($key)) {
             return $this;

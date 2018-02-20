@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2017 Spomky-Labs
+ * Copyright (c) 2014-2018 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -40,7 +40,7 @@ final class AccessToken extends Token
     /**
      * @return AccessToken
      */
-    public static function createEmpty(): AccessToken
+    public static function createEmpty(): self
     {
         return new self();
     }
@@ -114,7 +114,7 @@ final class AccessToken extends Token
     /**
      * @return AccessToken
      */
-    public function markAsRevoked(): AccessToken
+    public function markAsRevoked(): self
     {
         $clone = clone $this;
         $clone->revoked = true;
@@ -196,7 +196,7 @@ final class AccessToken extends Token
      *
      * @return AccessToken
      */
-    public function apply(Event $event): AccessToken
+    public function apply(Event $event): self
     {
         $map = $this->getEventMap();
         Assertion::keyExists($map, $event->getType(), 'Unsupported event.');
@@ -224,7 +224,7 @@ final class AccessToken extends Token
      *
      * @return AccessToken
      */
-    protected function applyAccessTokenCreatedEvent(AccessTokenEvent\AccessTokenCreatedEvent $event): AccessToken
+    protected function applyAccessTokenCreatedEvent(AccessTokenEvent\AccessTokenCreatedEvent $event): self
     {
         $clone = clone $this;
         $clone->accessTokenId = $event->getAccessTokenId();
@@ -243,7 +243,7 @@ final class AccessToken extends Token
     /**
      * @return AccessToken
      */
-    protected function applyAccessTokenRevokedEvent(): AccessToken
+    protected function applyAccessTokenRevokedEvent(): self
     {
         $clone = clone $this;
         $clone->revoked = true;

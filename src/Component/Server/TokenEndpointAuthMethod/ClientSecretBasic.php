@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2017 Spomky-Labs
+ * Copyright (c) 2014-2018 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -87,7 +87,7 @@ abstract class ClientSecretBasic implements TokenEndpointAuthMethodInterface
      */
     private function findClientIdAndCredentialsInAuthorizationHeader($authorization_header, &$client_credentials = null)
     {
-        if (mb_strtolower(mb_substr($authorization_header, 0, 6, '8bit'), '8bit') === 'basic ') {
+        if ('basic ' === mb_strtolower(mb_substr($authorization_header, 0, 6, '8bit'), '8bit')) {
             list($client_id, $client_secret) = explode(':', base64_decode(mb_substr($authorization_header, 6, mb_strlen($authorization_header, '8bit') - 6, '8bit')));
             if (!empty($client_id) && !empty($client_secret)) {
                 $client_credentials = $client_secret;

@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2017 Spomky-Labs
+ * Copyright (c) 2014-2018 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -111,7 +111,7 @@ abstract class AuthorizationEndpoint implements MiddlewareInterface
         } catch (Exception\ProcessAuthorizationException $e) {
             $authorization = $e->getAuthorization();
             $authorization = $this->afterConsentScreenManager->process($request, $authorization);
-            if ($authorization->isAuthorized() === false) {
+            if (false === $authorization->isAuthorized()) {
                 $this->throwRedirectionException($authorization, OAuth2ResponseFactoryManager::ERROR_ACCESS_DENIED, 'The resource owner denied access to your client.');
             }
 
