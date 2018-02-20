@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2017 Spomky-Labs
+ * Copyright (c) 2014-2018 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -78,7 +78,7 @@ final class PreConfiguredAuthorizationCreatedEvent extends Event
      *
      * @return PreConfiguredAuthorizationCreatedEvent
      */
-    public static function create(PreConfiguredAuthorizationId $preConfiguredAuthorizationId, ClientId $clientId, UserAccountId $userAccountId, array $scopes): PreConfiguredAuthorizationCreatedEvent
+    public static function create(PreConfiguredAuthorizationId $preConfiguredAuthorizationId, ClientId $clientId, UserAccountId $userAccountId, array $scopes): self
     {
         return new self($preConfiguredAuthorizationId, $clientId, $userAccountId, $scopes, null, null);
     }

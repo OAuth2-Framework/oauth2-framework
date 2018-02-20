@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2017 Spomky-Labs
+ * Copyright (c) 2014-2018 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -76,7 +76,7 @@ final class Client implements ResourceOwnerInterface, ContainsRecordedMessages, 
     /**
      * @return Client
      */
-    public static function createEmpty(): Client
+    public static function createEmpty(): self
     {
         return new self();
     }
@@ -88,7 +88,7 @@ final class Client implements ResourceOwnerInterface, ContainsRecordedMessages, 
      *
      * @return Client
      */
-    public function create(ClientId $clientId, DataBag $parameters, ? UserAccountId $ownerId): Client
+    public function create(ClientId $clientId, DataBag $parameters, ? UserAccountId $ownerId): self
     {
         $clone = clone $this;
         $clone->clientId = $clientId;
@@ -114,7 +114,7 @@ final class Client implements ResourceOwnerInterface, ContainsRecordedMessages, 
      *
      * @return Client
      */
-    public function withOwnerId(UserAccountId $ownerId): Client
+    public function withOwnerId(UserAccountId $ownerId): self
     {
         $clone = clone $this;
         $clone->ownerId = $ownerId;
@@ -129,7 +129,7 @@ final class Client implements ResourceOwnerInterface, ContainsRecordedMessages, 
      *
      * @return Client
      */
-    public function withParameters(DataBag $parameters): Client
+    public function withParameters(DataBag $parameters): self
     {
         $clone = clone $this;
         $clone->parameters = $parameters;
@@ -142,7 +142,7 @@ final class Client implements ResourceOwnerInterface, ContainsRecordedMessages, 
     /**
      * @return Client
      */
-    public function markAsDeleted(): Client
+    public function markAsDeleted(): self
     {
         $clone = clone $this;
         $clone->deleted = true;
@@ -371,7 +371,7 @@ final class Client implements ResourceOwnerInterface, ContainsRecordedMessages, 
      *
      * @return Client
      */
-    public function apply(Event $event): Client
+    public function apply(Event $event): self
     {
         $map = $this->getEventMap();
         Assertion::keyExists($map, $event->getType(), 'Unsupported event.');
@@ -401,7 +401,7 @@ final class Client implements ResourceOwnerInterface, ContainsRecordedMessages, 
      *
      * @return Client
      */
-    protected function applyClientCreatedEvent(ClientEvent\ClientCreatedEvent $event): Client
+    protected function applyClientCreatedEvent(ClientEvent\ClientCreatedEvent $event): self
     {
         $clone = clone $this;
         $clone->clientId = $event->getClientId();
@@ -416,7 +416,7 @@ final class Client implements ResourceOwnerInterface, ContainsRecordedMessages, 
      *
      * @return Client
      */
-    protected function applyClientOwnerChangedEvent(ClientEvent\ClientOwnerChangedEvent $event): Client
+    protected function applyClientOwnerChangedEvent(ClientEvent\ClientOwnerChangedEvent $event): self
     {
         $clone = clone $this;
         $clone->ownerId = $event->getNewOwnerId();
@@ -429,7 +429,7 @@ final class Client implements ResourceOwnerInterface, ContainsRecordedMessages, 
      *
      * @return Client
      */
-    protected function applyClientDeletedEvent(ClientEvent\ClientDeletedEvent $event): Client
+    protected function applyClientDeletedEvent(ClientEvent\ClientDeletedEvent $event): self
     {
         $clone = clone $this;
         $clone->deleted = true;
@@ -442,7 +442,7 @@ final class Client implements ResourceOwnerInterface, ContainsRecordedMessages, 
      *
      * @return Client
      */
-    protected function applyClientParametersUpdatedEvent(ClientEvent\ClientParametersUpdatedEvent $event): Client
+    protected function applyClientParametersUpdatedEvent(ClientEvent\ClientParametersUpdatedEvent $event): self
     {
         $clone = clone $this;
         $clone->parameters = $event->getParameters();

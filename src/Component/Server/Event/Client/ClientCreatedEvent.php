@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2017 Spomky-Labs
+ * Copyright (c) 2014-2018 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -62,7 +62,7 @@ final class ClientCreatedEvent extends Event
      *
      * @return ClientCreatedEvent
      */
-    public static function create(ClientId $clientId, DataBag $parameters, ? UserAccountId $userAccountId): ClientCreatedEvent
+    public static function create(ClientId $clientId, DataBag $parameters, ? UserAccountId $userAccountId): self
     {
         return new self($clientId, $parameters, $userAccountId, null, null);
     }

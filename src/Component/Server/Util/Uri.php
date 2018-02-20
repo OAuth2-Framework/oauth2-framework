@@ -3,7 +3,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2017 Spomky-Labs
+ * Copyright (c) 2014-2018 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -25,7 +25,7 @@ final class Uri
     public static function isRedirectUriAllowed(string $uri, array $storedUris, bool $pathTraversalAllowed = false): bool
     {
         // If storedUris is empty, assume invalid
-        if (count($storedUris) === 0) {
+        if (0 === count($storedUris)) {
             return false;
         }
 

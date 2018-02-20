@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2017 Spomky-Labs
+ * Copyright (c) 2014-2018 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -54,7 +54,7 @@ final class AuthCode extends Token
     /**
      * @return AuthCode
      */
-    public static function createEmpty(): AuthCode
+    public static function createEmpty(): self
     {
         return new self();
     }
@@ -150,7 +150,7 @@ final class AuthCode extends Token
     /**
      * @return AuthCode
      */
-    public function markAsUsed(): AuthCode
+    public function markAsUsed(): self
     {
         if (true === $this->used) {
             return $this;
@@ -166,7 +166,7 @@ final class AuthCode extends Token
     /**
      * @return AuthCode
      */
-    public function markAsRevoked(): AuthCode
+    public function markAsRevoked(): self
     {
         $clone = clone $this;
         $clone->revoked = true;
@@ -287,7 +287,7 @@ final class AuthCode extends Token
      *
      * @return AuthCode
      */
-    public function apply(Event $event): AuthCode
+    public function apply(Event $event): self
     {
         $map = $this->getEventMap();
         Assertion::keyExists($map, $event->getType(), 'Unsupported event.');
@@ -316,7 +316,7 @@ final class AuthCode extends Token
      *
      * @return AuthCode
      */
-    protected function applyAuthCodeCreatedEvent(AuthCodeEvent\AuthCodeCreatedEvent $event): AuthCode
+    protected function applyAuthCodeCreatedEvent(AuthCodeEvent\AuthCodeCreatedEvent $event): self
     {
         $clone = clone $this;
         $clone->authCodeId = $event->getAuthCodeId();
@@ -341,7 +341,7 @@ final class AuthCode extends Token
      *
      * @return AuthCode
      */
-    protected function applyAuthCodeMarkedAsUsedEvent(AuthCodeEvent\AuthCodeMarkedAsUsedEvent $event): AuthCode
+    protected function applyAuthCodeMarkedAsUsedEvent(AuthCodeEvent\AuthCodeMarkedAsUsedEvent $event): self
     {
         $clone = clone $this;
         $clone->used = true;
@@ -354,7 +354,7 @@ final class AuthCode extends Token
      *
      * @return AuthCode
      */
-    protected function applyAuthCodeRevokedEvent(AuthCodeEvent\AuthCodeRevokedEvent $event): AuthCode
+    protected function applyAuthCodeRevokedEvent(AuthCodeEvent\AuthCodeRevokedEvent $event): self
     {
         $clone = clone $this;
         $clone->revoked = true;

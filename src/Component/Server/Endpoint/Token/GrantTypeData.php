@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2017 Spomky-Labs
+ * Copyright (c) 2014-2018 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -72,7 +72,7 @@ final class GrantTypeData
      *
      * @return GrantTypeData
      */
-    public static function create(? Client $client): GrantTypeData
+    public static function create(? Client $client): self
     {
         return new self($client);
     }
@@ -83,7 +83,7 @@ final class GrantTypeData
      *
      * @return GrantTypeData
      */
-    public function withMetadata(string $key, $metadata): GrantTypeData
+    public function withMetadata(string $key, $metadata): self
     {
         $clone = clone $this;
         $clone->metadatas = $this->metadatas->with($key, $metadata);
@@ -127,7 +127,7 @@ final class GrantTypeData
      *
      * @return GrantTypeData
      */
-    public function withParameter(string $key, $parameter): GrantTypeData
+    public function withParameter(string $key, $parameter): self
     {
         $clone = clone $this;
         $clone->parameters = $this->parameters->with($key, $parameter);
@@ -170,7 +170,7 @@ final class GrantTypeData
      *
      * @return GrantTypeData
      */
-    public function withClient(Client $client): GrantTypeData
+    public function withClient(Client $client): self
     {
         $clone = clone $this;
         $clone->client = $client;
@@ -191,7 +191,7 @@ final class GrantTypeData
      *
      * @return GrantTypeData
      */
-    public function withResourceOwnerId(ResourceOwnerId $resourceOwnerId): GrantTypeData
+    public function withResourceOwnerId(ResourceOwnerId $resourceOwnerId): self
     {
         $clone = clone $this;
         $clone->resourceOwnerId = $resourceOwnerId;
@@ -212,7 +212,7 @@ final class GrantTypeData
      *
      * @return GrantTypeData
      */
-    public function withScopes(array $scopes): GrantTypeData
+    public function withScopes(array $scopes): self
     {
         $clone = clone $this;
         $clone->scopes = $scopes;
@@ -225,7 +225,7 @@ final class GrantTypeData
      *
      * @return GrantTypeData
      */
-    public function withScope(string $scope): GrantTypeData
+    public function withScope(string $scope): self
     {
         if ($this->hasScope($scope)) {
             return $this;
@@ -241,7 +241,7 @@ final class GrantTypeData
      *
      * @return GrantTypeData
      */
-    public function withoutScope(string $scope): GrantTypeData
+    public function withoutScope(string $scope): self
     {
         if (!$this->hasScope($scope)) {
             return $this;
@@ -282,7 +282,7 @@ final class GrantTypeData
     /**
      * @return GrantTypeData
      */
-    public function withRefreshToken(): GrantTypeData
+    public function withRefreshToken(): self
     {
         if (true === $this->issueRefreshToken) {
             return $this;
@@ -296,7 +296,7 @@ final class GrantTypeData
     /**
      * @return GrantTypeData
      */
-    public function withoutRefreshToken(): GrantTypeData
+    public function withoutRefreshToken(): self
     {
         if (false === $this->issueRefreshToken) {
             return $this;
@@ -320,7 +320,7 @@ final class GrantTypeData
      *
      * @return GrantTypeData
      */
-    public function withAvailableScopes(array $scopes): GrantTypeData
+    public function withAvailableScopes(array $scopes): self
     {
         $clone = clone $this;
         $clone->availableScopes = $scopes;

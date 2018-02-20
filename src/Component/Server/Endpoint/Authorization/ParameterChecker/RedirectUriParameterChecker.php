@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2017 Spomky-Labs
+ * Copyright (c) 2014-2018 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -140,7 +140,7 @@ final class RedirectUriParameterChecker implements ParameterCheckerInterface
         if (!$client->has('redirect_uris') || empty($redirectUris = $client->get('redirect_uris'))) {
             Assertion::false($this->isRedirectUriStorageEnforced(), 'Clients must register at least one redirect URI.');
             Assertion::false($client->isPublic(), 'Non-confidential clients must register at least one redirect URI.');
-            Assertion::false(!$client->isPublic() && array_key_exists('response_type', $queryParameters) && $queryParameters['response_type'] === 'token', 'Confidential clients must register at least one redirect URI when using \'token\' response type.');
+            Assertion::false(!$client->isPublic() && array_key_exists('response_type', $queryParameters) && 'token' === $queryParameters['response_type'], 'Confidential clients must register at least one redirect URI when using \'token\' response type.');
 
             return [];
         }

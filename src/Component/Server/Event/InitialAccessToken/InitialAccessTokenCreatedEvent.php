@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2017 Spomky-Labs
+ * Copyright (c) 2014-2018 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -69,7 +69,7 @@ final class InitialAccessTokenCreatedEvent extends Event
      *
      * @return InitialAccessTokenCreatedEvent
      */
-    public static function create(InitialAccessTokenId $initialAccessTokenId, ? UserAccountId $userAccountId, ? \DateTimeImmutable $expiresAt): InitialAccessTokenCreatedEvent
+    public static function create(InitialAccessTokenId $initialAccessTokenId, ? UserAccountId $userAccountId, ? \DateTimeImmutable $expiresAt): self
     {
         return new self($initialAccessTokenId, $userAccountId, $expiresAt, null, null);
     }
