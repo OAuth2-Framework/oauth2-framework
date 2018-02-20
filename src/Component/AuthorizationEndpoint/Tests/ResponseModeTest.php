@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\AuthorizationEndpoint\Tests;
 
-use Http\Factory\Diactoros\ResponseFactory;
+use Http\Message\MessageFactory\DiactorosMessageFactory;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\FormPostResponseMode;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\FormPostResponseRenderer;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\FragmentResponseMode;
@@ -181,10 +181,10 @@ class ResponseModeTest extends TestCase
         if (null === $this->responseModeManager) {
             $this->responseModeManager = new ResponseModeManager();
             $this->responseModeManager->add(new QueryResponseMode(
-                new ResponseFactory()
+                new DiactorosMessageFactory()
             ));
             $this->responseModeManager->add(new FragmentResponseMode(
-                new ResponseFactory()
+                new DiactorosMessageFactory()
             ));
             $formPostResponseRenderer = $this->prophesize(FormPostResponseRenderer::class);
             $formPostResponseRenderer->render(Argument::type('string'), ['access_token' => 'ACCESS_TOKEN'])->will(function ($args) {
@@ -192,7 +192,7 @@ class ResponseModeTest extends TestCase
             });
             $this->responseModeManager->add(new FormPostResponseMode(
                 $formPostResponseRenderer->reveal(),
-                new ResponseFactory()
+                new DiactorosMessageFactory()
             ));
         }
 
