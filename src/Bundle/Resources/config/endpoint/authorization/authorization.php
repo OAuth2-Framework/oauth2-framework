@@ -31,7 +31,7 @@ return function (ContainerConfigurator $container) {
         ->args([
             ref('translator'),
             ref('form.factory'),
-            'oauth2_server_authorization_form', //FIXME '%oauth2_server.authorization_endpoint.name%',
+            '%oauth2_server.endpoint.authorization.form%',
             AuthorizationType::class, //FIXME '%oauth2_server.authorization_endpoint.type%',
             ['Authorize', 'Default'], //FIXME '%oauth2_server.authorization_endpoint.validation_groups%'
         ]);

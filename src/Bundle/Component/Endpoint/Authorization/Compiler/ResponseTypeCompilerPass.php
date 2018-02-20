@@ -37,11 +37,9 @@ class ResponseTypeCompilerPass implements CompilerPassInterface
             $definition->addMethodCall('add', [new Reference($id)]);
         }
 
-        if (!$container->hasDefinition(MetadataBuilder::class)) {
-            return;
+        if ($container->hasDefinition(MetadataBuilder::class)) {
+            $metadata = $container->getDefinition(MetadataBuilder::class);
+            $metadata->addMethodCall('setResponseTypeManager', [new Reference(ResponseTypeManager::class)]);
         }
-
-        $metadata = $container->getDefinition(MetadataBuilder::class);
-        $metadata->addMethodCall('setResponseTypeManager', [new Reference(ResponseTypeManager::class)]);
     }
 }

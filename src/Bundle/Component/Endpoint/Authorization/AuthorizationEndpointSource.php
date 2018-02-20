@@ -63,11 +63,11 @@ class AuthorizationEndpointSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        if (!$configs['endpoint']['authorization']['enabled']) {
+        $config = $configs['endpoint']['authorization'];
+        $container->setParameter('oauth2_server.endpoint.authorization.enabled', $config['enabled']);
+        if (!$config['enabled']) {
             return;
         }
-
-        $config = $configs['endpoint']['authorization'];
 
         $container->registerForAutoconfiguration(ResponseType::class)->addTag('oauth2_server_response_type');
         $container->registerForAutoconfiguration(ResponseMode::class)->addTag('oauth2_server_response_mode');
@@ -79,13 +79,13 @@ class AuthorizationEndpointSource implements Component
         $loader->load('authorization.php');
         $loader->load('user_account_discovery.php');
 
-        $container->setParameter('oauth2_server.endpoint.authorization.enabled', $config['enabled']);
         $container->setParameter('oauth2_server.endpoint.authorization.path', $config['path']);
         $container->setParameter('oauth2_server.endpoint.authorization.host', $config['host']);
         $container->setParameter('oauth2_server.endpoint.authorization.login_route_name', $config['login_route_name']);
         $container->setParameter('oauth2_server.endpoint.authorization.login_route_parameters', $config['login_route_parameters']);
         $container->setParameter('oauth2_server.endpoint.authorization.template', $config['template']);
         $container->setParameter('oauth2_server.endpoint.authorization.enforce_state', $config['enforce_state']);
+        $container->setParameter('oauth2_server.endpoint.authorization.form', $config['form']);
 
         foreach ($this->subComponents as $subComponent) {
             $subComponent->load($configs, $container);
@@ -129,6 +129,10 @@ class AuthorizationEndpointSource implements Component
                 ->info('If true the "state" parameter is mandatory (recommended).')
                 ->defaultFalse()
             ->end()
+            ->scalarNode('form')
+                ->info('If form used for authorization requests.')
+                ->defaultValue('oauth2_server_authorization_form')
+            ->end()
         ->end();
 
         foreach ($this->subComponents as $subComponent) {
@@ -141,6 +145,10 @@ class AuthorizationEndpointSource implements Component
      */
     public function prepend(ContainerBuilder $container, array $config): array
     {
+        if (!$config['endpoint']['authorization']['enabled']) {
+            return [];
+        }
+
         $updatedConfig = [];
         foreach ($this->subComponents as $subComponent) {
             $updatedConfig = array_merge(
