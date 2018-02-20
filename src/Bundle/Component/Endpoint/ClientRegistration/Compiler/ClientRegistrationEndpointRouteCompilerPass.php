@@ -31,6 +31,7 @@ class ClientRegistrationEndpointRouteCompilerPass implements CompilerPassInterfa
         }
 
         $path = $container->getParameter('oauth2_server.endpoint.client_registration.path');
+        $host = $container->getParameter('oauth2_server.endpoint.client_registration.host');
         $route_loader = $container->getDefinition(RouteLoader::class);
         $route_loader->addMethodCall('addRoute', [
             'client_registration',
@@ -40,7 +41,7 @@ class ClientRegistrationEndpointRouteCompilerPass implements CompilerPassInterfa
             [], // defaults
             [], // requirements
             [], // options
-            '', // host
+            $host, // host
             ['https'], // schemes
             ['POST'], // methods
             '', // condition

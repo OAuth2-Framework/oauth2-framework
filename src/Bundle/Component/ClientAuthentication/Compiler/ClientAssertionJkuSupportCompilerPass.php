@@ -26,7 +26,7 @@ class ClientAssertionJkuSupportCompilerPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        if (!$container->hasDefinition(ClientAssertionJwt::class) || !$container->getParameter('oauth2_server.client_authentication.client_assertion_jwt.jku_support.enabled') || !$container->hasDefinition(JKUFactory::class)) {
+        if (!$container->hasDefinition(ClientAssertionJwt::class) || !$container->getParameter('oauth2_server.client_authentication.client_assertion_jwt.jku_support') || !$container->hasDefinition(JKUFactory::class)) {
             return;
         }
 

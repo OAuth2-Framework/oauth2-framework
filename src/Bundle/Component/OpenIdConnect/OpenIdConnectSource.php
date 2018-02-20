@@ -68,8 +68,7 @@ class OpenIdConnectSource implements Component
     {
         $childNode = $node->children()
             ->arrayNode($this->name())
-                ->canBeEnabled()
-                ->addDefaultsIfNotSet();
+                ->canBeEnabled();
 
         foreach ($this->subComponents as $subComponent) {
             $subComponent->getNodeDefinition($childNode, $node);

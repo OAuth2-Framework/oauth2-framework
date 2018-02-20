@@ -30,6 +30,7 @@ class TokenRevocationRouteCompilerPass implements CompilerPassInterface
         }
 
         $path = $container->getParameter('oauth2_server.endpoint.token_revocation.path');
+        $host = $container->getParameter('oauth2_server.endpoint.token_revocation.host');
         $route_loader = $container->getDefinition(RouteLoader::class);
         $route_loader->addMethodCall('addRoute', [
             'token_revocation_endpoint',
@@ -39,7 +40,7 @@ class TokenRevocationRouteCompilerPass implements CompilerPassInterface
             [], // defaults
             [], // requirements
             [], // options
-            '', // host
+            $host, // host
             ['https'], // schemes
             ['GET', 'POST'], // methods
             '', // condition

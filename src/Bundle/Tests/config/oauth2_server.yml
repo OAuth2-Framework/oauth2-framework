@@ -58,8 +58,7 @@ oauth2_server:
             signature_algorithms: ['RS256', 'RS512', 'HS256', 'HS512', 'ES256', 'ES512']
             claim_checkers: ['exp', 'iat', 'nbf']
             header_checkers: []
-            jku_support:
-                enabled: true
+            jku_support: true
             encryption:
                 enabled: true
                 required: false
@@ -70,6 +69,7 @@ oauth2_server:
         client_registration:
             enabled: true
             path: '/client/management'
+            host: 'foo.foo.foo'
             initial_access_token:
                 enabled: true
                 required: true
@@ -84,16 +84,20 @@ oauth2_server:
             enabled: true
             realm: 'Client Configuration'
             path: '/client/configure/{client_id}'
+            host: 'foo.foo.foo'
         token_revocation:
             enabled: true
             path: '/token/revoke'
+            host: 'foo.bar'
             allow_callback: true
         token_introspection:
             enabled: true
             path: '/token/introspect'
+            host: 'bar.foo'
         token:
             enabled: true
             path: '/token/get'
+            host: 'bar.bar'
         jwks_uri:
             enabled: true
             path: '/public.jwkset'
@@ -101,6 +105,7 @@ oauth2_server:
         metadata:
             enabled: true
             path: '/.well-known/openid-configuration'
+            host: 'foo.foo.bar'
             signature:
                 enabled: true
                 algorithm: 'RS256'
@@ -126,6 +131,7 @@ oauth2_server:
         session_management:
             enabled: true
             path: '/session/manager/iframe'
+            host: 'bar.bar.foo'
         issuer_discovery:
             main:
                 host: 'oauth2.test'
@@ -135,6 +141,7 @@ oauth2_server:
         authorization:
             enabled: true
             path: '/authorize'
+            host: 'bar.bar.bar'
             login_route_name: 'app_login'
             enforce_state: false
             response_mode:
@@ -142,17 +149,17 @@ oauth2_server:
                 form_post:
                     enabled: true
                     template: '@OAuth2FrameworkBundle/form_post/response.html.twig'
-#            request_object:
-#                enabled: true
-#                signature_algorithms: ['RS512', 'HS512']
-#                encryption:
-#                    enabled: true
-#                    required: true
-#                    key_encryption_algorithms: ['RSA-OAEP-256']
-#                    content_encryption_algorithms: ['A256CBC-HS512']
-#                reference:
-#                    enabled: true
-#                    uris_registration_required: true
+            request_object:
+                enabled: true
+                signature_algorithms: ['RS512', 'HS512']
+                encryption:
+                    enabled: true
+                    required: true
+                    key_encryption_algorithms: ['RSA-OAEP-256']
+                    content_encryption_algorithms: ['A256CBC-HS512']
+                reference:
+                    enabled: true
+                    uris_registration_required: true
     grant:
         authorization_code:
             enabled: true

@@ -46,11 +46,11 @@ class ServicesSource implements Component
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
         $node->children()
-                ->scalarNode('server_uri')
-                    ->info('The URI of this server')
-                    ->isRequired()
-                ->end()
-            ->end();
+            ->scalarNode('server_uri')
+                ->info('The URI of this server')
+                ->isRequired()
+            ->end()
+        ->end();
     }
 
     /**
@@ -58,7 +58,6 @@ class ServicesSource implements Component
      */
     public function build(ContainerBuilder $container)
     {
-        //Nothing to do
     }
 
     /**
@@ -66,7 +65,6 @@ class ServicesSource implements Component
      */
     public function prepend(ContainerBuilder $container, array $config): array
     {
-        //Nothing to do
         return [];
     }
 }

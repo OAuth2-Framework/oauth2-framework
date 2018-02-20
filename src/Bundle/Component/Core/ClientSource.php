@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\Component\Core;
 
 use OAuth2Framework\Bundle\Component\Component;
-use OAuth2Framework\Component\ClientAuthentication\AuthenticationMethod;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -35,7 +34,6 @@ class ClientSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        $container->registerForAutoconfiguration(AuthenticationMethod::class)->addTag('oauth2_server_client_authentication');
         $container->setAlias('oauth2_server.client_repository', $configs['client']['repository']);
 
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../Resources/config/core'));
@@ -65,7 +63,6 @@ class ClientSource implements Component
      */
     public function build(ContainerBuilder $container)
     {
-        //Nothing to do
     }
 
     /**
@@ -73,7 +70,6 @@ class ClientSource implements Component
      */
     public function prepend(ContainerBuilder $container, array $config): array
     {
-        //Nothing to do
         return [];
     }
 }

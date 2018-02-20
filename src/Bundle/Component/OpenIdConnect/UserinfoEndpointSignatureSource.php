@@ -50,7 +50,6 @@ class UserinfoEndpointSignatureSource implements Component
         $node->children()
             ->arrayNode($this->name())
                 ->canBeEnabled()
-                ->addDefaultsIfNotSet()
                 ->validate()
                     ->ifTrue(function ($config) {
                         return true === $config['enabled'] && empty($config['signature_algorithms']);

@@ -30,6 +30,7 @@ class SessionManagementRouteCompilerPass implements CompilerPassInterface
         }
 
         $path = $container->getParameter('oauth2_server.endpoint.session_management.path');
+        $host = $container->getParameter('oauth2_server.endpoint.session_management.host');
         $route_loader = $container->getDefinition(RouteLoader::class);
         $route_loader->addMethodCall('addRoute', [
             'openid_connect_iframe_endpoint',
@@ -39,7 +40,7 @@ class SessionManagementRouteCompilerPass implements CompilerPassInterface
             [], // defaults
             [], // requirements
             [], // options
-            '', // host
+            $host, // host
             ['https'], // schemes
             ['GET'], // methods
             '', // condition

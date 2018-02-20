@@ -53,10 +53,13 @@ class MetadataEndpointSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        if (!$configs['endpoint']['metadata']['enabled']) {
+        $config = $configs['endpoint']['metadata'];
+        $container->setParameter('oauth2_server.endpoint.metadata.enabled', $config['enabled']);
+        if (!$config['enabled']) {
             return;
         }
-        $container->setParameter('oauth2_server.endpoint.metadata.path', $configs['endpoint']['metadata']['path']);
+        $container->setParameter('oauth2_server.endpoint.metadata.path', $config['path']);
+        $container->setParameter('oauth2_server.endpoint.metadata.host', $config['host']);
 
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint/metadata'));
         $loader->load('metadata.php');
@@ -73,12 +76,18 @@ class MetadataEndpointSource implements Component
     {
         $childNode = $node->children()
             ->arrayNode($this->name())
-                ->addDefaultsIfNotSet()
                 ->canBeEnabled();
 
         $childNode->children()
             ->scalarNode('path')
+                ->info('The metadata endpoint path')
                 ->defaultValue('/.well-known/openid-configuration')
+            ->end()
+            ->scalarNode('host')
+                ->info('If set, the route will be limited to that host')
+                ->defaultValue('')
+                ->treatNullLike('')
+                ->treatFalseLike('')
             ->end()
         ->end();
 
@@ -90,13 +99,16 @@ class MetadataEndpointSource implements Component
     /**
      * {@inheritdoc}
      */
-    public function prepend(ContainerBuilder $container, array $config): array
+    public function prepend(ContainerBuilder $container, array $configs): array
     {
+        if (!$configs['endpoint']['metadata']['enabled']) {
+            return [];
+        }
         $updatedConfig = [];
         foreach ($this->subComponents as $subComponent) {
             $updatedConfig = array_merge(
                 $updatedConfig,
-                $subComponent->prepend($container, $config)
+                $subComponent->prepend($container, $configs)
             );
         }
 

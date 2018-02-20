@@ -49,11 +49,10 @@ class ClientSecretPostSource implements Component
     {
         $node->children()
             ->arrayNode($this->name())
-                ->addDefaultsIfNotSet()
                 ->canBeEnabled()
                 ->children()
                     ->integerNode('secret_lifetime')
-                        ->defaultValue(60 * 60 * 24 * 14)
+                        ->defaultValue(60 * 60 * 24 * 14) // 14 days
                         ->min(0)
                         ->info('Secret lifetime (in seconds; 0 = unlimited)')
                     ->end()
@@ -67,7 +66,6 @@ class ClientSecretPostSource implements Component
      */
     public function build(ContainerBuilder $container)
     {
-        //Nothing to do
     }
 
     /**
@@ -75,7 +73,6 @@ class ClientSecretPostSource implements Component
      */
     public function prepend(ContainerBuilder $container, array $config): array
     {
-        //Nothing to do
         return [];
     }
 }

@@ -63,7 +63,6 @@ class UserAccountSource implements Component
      */
     public function build(ContainerBuilder $container)
     {
-        //Nothing to do
     }
 
     /**
@@ -71,7 +70,6 @@ class UserAccountSource implements Component
      */
     public function prepend(ContainerBuilder $container, array $config): array
     {
-        //Nothing to do
         return [];
     }
 }

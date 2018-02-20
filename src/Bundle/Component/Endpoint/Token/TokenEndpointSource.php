@@ -39,13 +39,16 @@ class TokenEndpointSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        if (!$configs['endpoint']['token']['enabled']) {
+        $config = $configs['endpoint']['token'];
+        $container->setParameter('oauth2_server.endpoint.token.enabled', $config['enabled']);
+        if (!$config['enabled']) {
             return;
         }
 
         $container->registerForAutoconfiguration(GrantType::class)->addTag('oauth2_server_grant_type');
         $container->registerForAutoconfiguration(TokenEndpointExtension::class)->addTag('oauth2_server_token_endpoint_extension');
-        $container->setParameter('oauth2_server.endpoint.token.path', $configs['endpoint']['token']['path']);
+        $container->setParameter('oauth2_server.endpoint.token.path', $config['path']);
+        $container->setParameter('oauth2_server.endpoint.token.host', $config['host']);
 
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint/token'));
         $loader->load('token.php');
@@ -58,12 +61,17 @@ class TokenEndpointSource implements Component
     {
         $node->children()
             ->arrayNode($this->name())
-                ->addDefaultsIfNotSet()
                 ->canBeEnabled()
                 ->children()
                     ->scalarNode('path')
                         ->info('The token endpoint path')
                         ->defaultValue('/token/get')
+                    ->end()
+                    ->scalarNode('host')
+                        ->info('If set, the route will be limited to that host')
+                        ->defaultValue('')
+                        ->treatNullLike('')
+                        ->treatFalseLike('')
                     ->end()
                 ->end()
             ->end()

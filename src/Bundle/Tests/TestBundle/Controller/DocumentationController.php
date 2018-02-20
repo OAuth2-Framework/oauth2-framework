@@ -18,7 +18,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * @Route("/doc")
+ * @Route("/doc", host = "foo.foo")
  */
 class DocumentationController extends Controller
 {

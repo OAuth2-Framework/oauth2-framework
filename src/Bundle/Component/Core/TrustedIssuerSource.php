@@ -32,9 +32,10 @@ class TrustedIssuerSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        if (null !== $configs['trusted_issuer']['repository']) {
-            $container->setAlias('oauth2_server.trusted_issuer_repository', $configs['trusted_issuer']['repository']);
+        if (null === $configs['trusted_issuer']['repository']) {
+            return;
         }
+        $container->setAlias('oauth2_server.trusted_issuer_repository', $configs['trusted_issuer']['repository']);
     }
 
     /**
@@ -60,7 +61,6 @@ class TrustedIssuerSource implements Component
      */
     public function build(ContainerBuilder $container)
     {
-        //Nothing to do
     }
 
     /**
@@ -68,7 +68,6 @@ class TrustedIssuerSource implements Component
      */
     public function prepend(ContainerBuilder $container, array $config): array
     {
-        //Nothing to do
         return [];
     }
 }

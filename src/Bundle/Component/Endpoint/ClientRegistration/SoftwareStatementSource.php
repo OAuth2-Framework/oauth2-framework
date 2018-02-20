@@ -35,12 +35,14 @@ class SoftwareStatementSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        if (!$configs['endpoint']['client_registration']['software_statement']['enabled']) {
+        $config = $configs['endpoint']['client_registration']['software_statement'];
+        $container->setParameter('oauth2_server.endpoint.client_registration.software_statement.enabled', $config['enabled']);
+        if (!$config['enabled']) {
             return;
         }
-        $container->setParameter('oauth2_server.endpoint.client_registration.software_statement.required', $configs['endpoint']['client_registration']['software_statement']['required']);
-        $container->setParameter('oauth2_server.endpoint.client_registration.software_statement.allowed_signature_algorithms', $configs['endpoint']['client_registration']['software_statement']['allowed_signature_algorithms']);
-        $container->setParameter('oauth2_server.endpoint.client_registration.software_statement.key_set', $configs['endpoint']['client_registration']['software_statement']['key_set']);
+        $container->setParameter('oauth2_server.endpoint.client_registration.software_statement.required', $config['required']);
+        $container->setParameter('oauth2_server.endpoint.client_registration.software_statement.allowed_signature_algorithms', $config['allowed_signature_algorithms']);
+        $container->setParameter('oauth2_server.endpoint.client_registration.software_statement.key_set', $config['key_set']);
 
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint/client_registration'));
         $loader->load('software_statement.php');
@@ -53,7 +55,6 @@ class SoftwareStatementSource implements Component
     {
         $node->children()
             ->arrayNode($this->name())
-                ->addDefaultsIfNotSet()
                 ->canBeEnabled()
                 ->validate()
                     ->ifTrue(function ($config) {
@@ -91,7 +92,6 @@ class SoftwareStatementSource implements Component
      */
     public function build(ContainerBuilder $container)
     {
-        //Nothing to do
     }
 
     /**
@@ -99,6 +99,10 @@ class SoftwareStatementSource implements Component
      */
     public function prepend(ContainerBuilder $container, array $config): array
     {
+        if (!$config['endpoint']['client_registration']['software_statement']['enabled']) {
+            return [];
+        }
+
         /*$currentPath = $path.'['.$this->name().']';
         $accessor = PropertyAccess::createPropertyAccessor();
         $sourceConfig = $accessor->getValue($config, $currentPath);

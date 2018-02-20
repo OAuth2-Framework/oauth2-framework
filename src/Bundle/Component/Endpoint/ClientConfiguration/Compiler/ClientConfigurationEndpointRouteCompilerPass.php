@@ -30,6 +30,7 @@ class ClientConfigurationEndpointRouteCompilerPass implements CompilerPassInterf
         }
 
         $path = $container->getParameter('oauth2_server.endpoint.client_configuration.path');
+        $host = $container->getParameter('oauth2_server.endpoint.client_configuration.host');
         $route_loader = $container->getDefinition(RouteLoader::class);
         $route_loader->addMethodCall('addRoute', [
             'client_configuration',
@@ -39,7 +40,7 @@ class ClientConfigurationEndpointRouteCompilerPass implements CompilerPassInterf
             [], // defaults
             [], // requirements
             [], // options
-            '', // host
+            $host, // host
             ['https'], // schemes
             ['GET', 'PUT', 'DELETE'], // methods
             '', // condition

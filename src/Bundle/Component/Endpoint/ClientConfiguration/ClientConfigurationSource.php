@@ -35,14 +35,14 @@ class ClientConfigurationSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        if (!$configs['endpoint']['client_configuration']['enabled']) {
+        $config = $configs['endpoint']['client_configuration'];
+        $container->setParameter('oauth2_server.endpoint.client_configuration.enabled', $config['enabled']);
+        if (!$config['enabled']) {
             return;
         }
-        $container->setParameter('oauth2_server.endpoint.client_configuration.path', $configs['endpoint']['client_configuration']['path']);
-        $container->setParameter('oauth2_server.endpoint.client_configuration.realm', $configs['endpoint']['client_configuration']['realm']);
-        $container->setParameter('oauth2_server.endpoint.client_configuration.authorization_header', $configs['endpoint']['client_configuration']['authorization_header']);
-        $container->setParameter('oauth2_server.endpoint.client_configuration.query_string', $configs['endpoint']['client_configuration']['query_string']);
-        $container->setParameter('oauth2_server.endpoint.client_configuration.request_body', $configs['endpoint']['client_configuration']['request_body']);
+        $container->setParameter('oauth2_server.endpoint.client_configuration.path', $config['path']);
+        $container->setParameter('oauth2_server.endpoint.client_configuration.host', $config['host']);
+        $container->setParameter('oauth2_server.endpoint.client_configuration.realm', $config['realm']);
 
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint/client_configuration'));
         $loader->load('client_configuration.php');
@@ -61,22 +61,18 @@ class ClientConfigurationSource implements Component
                     })
                     ->thenInvalid('The option "realm" must be set.')
                 ->end()
-                ->addDefaultsIfNotSet()
                 ->canBeEnabled()
                 ->children()
                     ->scalarNode('realm')
-                        ->end()
-                    ->booleanNode('authorization_header')
-                        ->defaultTrue()
-                    ->end()
-                    ->booleanNode('query_string')
-                        ->defaultFalse()
-                    ->end()
-                    ->booleanNode('request_body')
-                        ->defaultFalse()
                     ->end()
                     ->scalarNode('path')
                         ->defaultValue('/client/configure/{client_id}')
+                    ->end()
+                    ->scalarNode('host')
+                        ->info('If set, the route will be limited to that host')
+                        ->defaultValue('')
+                        ->treatFalseLike('')
+                        ->treatNullLike('')
                     ->end()
                 ->end()
             ->end()

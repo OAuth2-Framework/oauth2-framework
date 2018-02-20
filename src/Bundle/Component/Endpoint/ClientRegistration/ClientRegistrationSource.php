@@ -51,10 +51,13 @@ class ClientRegistrationSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        if (!$configs['endpoint']['client_registration']['enabled']) {
+        $config = $configs['endpoint']['client_registration'];
+        $container->setParameter('oauth2_server.endpoint.client_registration.enabled', $config['enabled']);
+        if (!$config['enabled']) {
             return;
         }
-        $container->setParameter('oauth2_server.endpoint.client_registration.path', $configs['endpoint']['client_registration']['path']);
+        $container->setParameter('oauth2_server.endpoint.client_registration.path', $config['path']);
+        $container->setParameter('oauth2_server.endpoint.client_registration.host', $config['host']);
 
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint/client_registration'));
         $loader->load('client_registration.php');
@@ -71,12 +74,18 @@ class ClientRegistrationSource implements Component
     {
         $childNode = $node->children()
             ->arrayNode($this->name())
-                ->addDefaultsIfNotSet()
                 ->canBeEnabled();
 
         $childNode->children()
             ->scalarNode('path')
                 ->defaultValue('/client/management')
+                ->isRequired()
+            ->end()
+            ->scalarNode('host')
+                ->info('If set, the route will be limited to that host')
+                ->defaultValue('')
+                ->treatFalseLike('')
+                ->treatNullLike('')
             ->end()
         ->end();
 
@@ -90,6 +99,9 @@ class ClientRegistrationSource implements Component
      */
     public function prepend(ContainerBuilder $container, array $config): array
     {
+        if (!$config['endpoint']['client_registration']['enabled']) {
+            return [];
+        }
         $updatedConfig = [];
         foreach ($this->subComponents as $subComponent) {
             $updatedConfig = array_merge(

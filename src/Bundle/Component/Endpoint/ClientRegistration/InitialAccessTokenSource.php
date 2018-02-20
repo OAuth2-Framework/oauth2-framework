@@ -35,17 +35,15 @@ class InitialAccessTokenSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        if (!$configs['endpoint']['client_registration']['initial_access_token']['enabled']) {
+        $config = $configs['endpoint']['client_registration']['initial_access_token'];
+        if (!$config['enabled']) {
             return;
         }
-        $container->setParameter('oauth2_server.endpoint.client_registration.initial_access_token.required', $configs['endpoint']['client_registration']['initial_access_token']['required']);
-        $container->setParameter('oauth2_server.endpoint.client_registration.initial_access_token.realm', $configs['endpoint']['client_registration']['initial_access_token']['realm']);
-        $container->setParameter('oauth2_server.endpoint.client_registration.initial_access_token.authorization_header', $configs['endpoint']['client_registration']['initial_access_token']['authorization_header']);
-        $container->setParameter('oauth2_server.endpoint.client_registration.initial_access_token.query_string', $configs['endpoint']['client_registration']['initial_access_token']['query_string']);
-        $container->setParameter('oauth2_server.endpoint.client_registration.initial_access_token.request_body', $configs['endpoint']['client_registration']['initial_access_token']['request_body']);
-        $container->setParameter('oauth2_server.endpoint.client_registration.initial_access_token.min_length', $configs['endpoint']['client_registration']['initial_access_token']['min_length']);
-        $container->setParameter('oauth2_server.endpoint.client_registration.initial_access_token.max_length', $configs['endpoint']['client_registration']['initial_access_token']['max_length']);
-        $container->setAlias('oauth2_server.endpoint.client_registration.initial_access_token.repository', $configs['endpoint']['client_registration']['initial_access_token']['repository']);
+        $container->setParameter('oauth2_server.endpoint.client_registration.initial_access_token.required', $config['required']);
+        $container->setParameter('oauth2_server.endpoint.client_registration.initial_access_token.realm', $config['realm']);
+        $container->setParameter('oauth2_server.endpoint.client_registration.initial_access_token.min_length', $config['min_length']);
+        $container->setParameter('oauth2_server.endpoint.client_registration.initial_access_token.max_length', $config['max_length']);
+        $container->setAlias('oauth2_server.endpoint.client_registration.initial_access_token.repository', $config['repository']);
 
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint/client_registration'));
         $loader->load('initial_access_token.php');
@@ -58,7 +56,6 @@ class InitialAccessTokenSource implements Component
     {
         $node->children()
             ->arrayNode($this->name())
-            ->addDefaultsIfNotSet()
             ->canBeEnabled()
             ->validate()
                 ->ifTrue(function ($config) {
@@ -84,15 +81,6 @@ class InitialAccessTokenSource implements Component
                 ->end()
                 ->scalarNode('realm')
                     ->defaultNull()
-                ->end()
-                ->booleanNode('authorization_header')
-                    ->defaultTrue()
-                ->end()
-                ->booleanNode('query_string')
-                    ->defaultFalse()
-                ->end()
-                ->booleanNode('request_body')
-                    ->defaultFalse()
                 ->end()
                 ->integerNode('min_length')
                     ->defaultValue(50)

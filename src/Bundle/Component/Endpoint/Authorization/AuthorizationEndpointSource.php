@@ -46,6 +46,7 @@ class AuthorizationEndpointSource implements Component
     {
         $this->subComponents = [
             new ResponseModeSource(),
+            new RequestObjectSource(),
         ];
     }
 
@@ -80,6 +81,7 @@ class AuthorizationEndpointSource implements Component
 
         $container->setParameter('oauth2_server.endpoint.authorization.enabled', $config['enabled']);
         $container->setParameter('oauth2_server.endpoint.authorization.path', $config['path']);
+        $container->setParameter('oauth2_server.endpoint.authorization.host', $config['host']);
         $container->setParameter('oauth2_server.endpoint.authorization.login_route_name', $config['login_route_name']);
         $container->setParameter('oauth2_server.endpoint.authorization.login_route_parameters', $config['login_route_parameters']);
         $container->setParameter('oauth2_server.endpoint.authorization.template', $config['template']);
@@ -97,13 +99,18 @@ class AuthorizationEndpointSource implements Component
     {
         $childNode = $node->children()
             ->arrayNode($this->name())
-                ->canBeEnabled()
-                ->addDefaultsIfNotSet();
+                ->canBeEnabled();
 
         $childNode->children()
             ->scalarNode('path')
                 ->info('The path to the authorization endpoint.')
                 ->defaultValue('/authorize')
+            ->end()
+            ->scalarNode('host')
+            ->info('If set, the route will be limited to that host')
+                ->defaultValue('')
+                ->treatFalseLike('')
+                ->treatNullLike('')
             ->end()
             ->scalarNode('login_route_name')
                 ->info('The name of the login route. Will be converted into URL and used to redirect the user if not logged in. If you use "FOSUserBundle", the route name should be "fos_user_security_login".')

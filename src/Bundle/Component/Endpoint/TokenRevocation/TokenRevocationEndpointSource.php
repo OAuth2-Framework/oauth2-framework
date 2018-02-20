@@ -37,12 +37,15 @@ class TokenRevocationEndpointSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        if (!$configs['endpoint']['token_revocation']['enabled']) {
+        $config = $configs['endpoint']['token_revocation'];
+        $container->setParameter('oauth2_server.endpoint.token_revocation.enabled', $config['enabled']);
+        if (!$config['enabled']) {
             return;
         }
         $container->registerForAutoconfiguration(TokenTypeHint::class)->addTag('oauth2_server_revocation_type_hint');
-        $container->setParameter('oauth2_server.endpoint.token_revocation.path', $configs['endpoint']['token_revocation']['path']);
-        $container->setParameter('oauth2_server.endpoint.token_revocation.allow_callback', $configs['endpoint']['token_revocation']['allow_callback']);
+        $container->setParameter('oauth2_server.endpoint.token_revocation.path', $config['path']);
+        $container->setParameter('oauth2_server.endpoint.token_revocation.host', $config['host']);
+        $container->setParameter('oauth2_server.endpoint.token_revocation.allow_callback', $config['allow_callback']);
 
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint/token_revocation'));
         $loader->load('revocation.php');
@@ -55,12 +58,17 @@ class TokenRevocationEndpointSource implements Component
     {
         $node->children()
             ->arrayNode($this->name())
-                ->addDefaultsIfNotSet()
                 ->canBeEnabled()
                 ->children()
                     ->scalarNode('path')
                         ->info('The token revocation endpoint path')
                         ->defaultValue('/token/revocation')
+                    ->end()
+                    ->scalarNode('host')
+                        ->info('If set, the route will be limited to that host')
+                        ->defaultValue('')
+                        ->treatNullLike('')
+                        ->treatFalseLike('')
                     ->end()
                     ->booleanNode('allow_callback')
                         ->info('If true, GET request with "callback" parameter are allowed.')

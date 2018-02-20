@@ -66,8 +66,7 @@ class UserinfoEndpointSource implements Component
     {
         $childNode = $node->children()
             ->arrayNode($this->name())
-                ->canBeEnabled()
-                ->addDefaultsIfNotSet();
+                ->canBeEnabled();
 
         $childNode->children()
             ->scalarNode('path')

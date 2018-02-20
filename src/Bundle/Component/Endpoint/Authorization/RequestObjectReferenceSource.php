@@ -22,16 +22,6 @@ class RequestObjectReferenceSource implements Component
     /**
      * {@inheritdoc}
      */
-    protected function continueLoading(string $path, ContainerBuilder $container, array $config)
-    {
-        foreach ($config as $k => $v) {
-            $container->setParameter($path.'.'.$k, $v);
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function name(): string
     {
         return 'reference';
@@ -40,14 +30,41 @@ class RequestObjectReferenceSource implements Component
     /**
      * {@inheritdoc}
      */
+    public function load(array $configs, ContainerBuilder $container)
+    {
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
-        $node
-            ->children()
-                ->booleanNode('uris_registration_required')
-                    ->info('If true, request object reference Uris must be registered to be used (highly recommended).')
-                    ->defaultTrue()
+        $node->children()
+            ->arrayNode($this->name())
+                ->canBeEnabled()
+                ->children()
+                    ->booleanNode('uris_registration_required')
+                        ->info('If true, request object reference Uris must be registered to be used (highly recommended).')
+                        ->defaultTrue()
+                    ->end()
                 ->end()
-            ->end();
+            ->end()
+        ->end();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function prepend(ContainerBuilder $container, array $config): array
+    {
+        return [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function build(ContainerBuilder $container)
+    {
+        // Nothing to do
     }
 }

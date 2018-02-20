@@ -11,7 +11,7 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Bundle\DependencyInjection\Compiler;
+namespace OAuth2Framework\Bundle\Component\Endpoint\JwksUri;
 
 use OAuth2Framework\Bundle\Service\MetadataBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
@@ -28,7 +28,7 @@ class JwksUriEndpointRouteCompilerPass implements CompilerPassInterface
             return;
         }
 
-        $routeName = 'jwkset_oauth2_server.endpoint.jwks_uri'; //$container->getParameter('oauth2_server.endpoint.jwks_uri.route_name');
+        $routeName = 'jwkset_jose.controller.oauth2_server.endpoint.jwks_uri';
         $definition = $container->getDefinition(MetadataBuilder::class);
         $definition->addMethodCall('addRoute', ['jwks_uri', $routeName]);
     }

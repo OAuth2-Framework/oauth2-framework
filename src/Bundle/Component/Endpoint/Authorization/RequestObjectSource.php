@@ -16,28 +16,26 @@ namespace OAuth2Framework\Bundle\Component\Endpoint\Authorization;
 use Jose\Bundle\JoseFramework\Helper\ConfigurationHelper;
 use OAuth2Framework\Bundle\Component\Component;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
+use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\PropertyAccess\PropertyAccess;
+use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
 class RequestObjectSource implements Component
 {
     /**
-     * AuthorizationEndpointRequestObjectSource constructor.
+     * @var Component[]
+     */
+    private $subComponents = [];
+
+    /**
+     * RequestObjectSource constructor.
      */
     public function __construct()
     {
-        $this->addSubSource(new RequestObjectReferenceSource());
-        $this->addSubSource(new RequestObjectEncryptionSource());
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function continueLoading(string $path, ContainerBuilder $container, array $config)
-    {
-        foreach ($config as $k => $v) {
-            $container->setParameter($path.'.'.$k, $v);
-        }
+        $this->subComponents = [
+            new RequestObjectReferenceSource(),
+            new RequestObjectEncryptionSource(),
+        ];
     }
 
     /**
@@ -51,36 +49,83 @@ class RequestObjectSource implements Component
     /**
      * {@inheritdoc}
      */
-    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
+    public function load(array $configs, ContainerBuilder $container)
     {
-        $node
-            ->children()
-                ->arrayNode('signature_algorithms')
-                    ->info('Supported signature algorithms.')
-                    ->useAttributeAsKey('name')
-                    ->scalarPrototype()->end()
-                    ->treatNullLike([])
-                ->end()
-            ->end();
+        $config = $configs['endpoint']['authorization']['response_mode'];
+        $container->setParameter('oauth2_server.endpoint.authorization.response_mode.allow_response_mode_parameter', $config['allow_response_mode_parameter']);
+        //$loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint/authorization'));
+        //$loader->load('response_mode.php');
+
+        foreach ($this->subComponents as $subComponent) {
+            $subComponent->load($configs, $container);
+        }
+
+        foreach ($this->subComponents as $subComponent) {
+            $subComponent->load($configs, $container);
+        }
     }
 
     /**
      * {@inheritdoc}
      */
-    public function prepend(array $bundleConfig, string $path, ContainerBuilder $container)
+    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
-        parent::prepend($bundleConfig, $path, $container);
+        $childNode = $node->children()
+            ->arrayNode($this->name())
+                ->canBeEnabled()
+        ;
+
+        $childNode->children()
+            ->arrayNode('signature_algorithms')
+                ->info('Supported signature algorithms.')
+                ->useAttributeAsKey('name')
+                ->scalarPrototype()->end()
+                ->treatNullLike([])
+            ->end()
+        ->end();
+
+        foreach ($this->subComponents as $subComponent) {
+            $subComponent->getNodeDefinition($childNode, $node);
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function prepend(ContainerBuilder $container, array $config): array
+    {
+        /*
         $currentPath = $path.'['.$this->name().']';
         $accessor = PropertyAccess::createPropertyAccessor();
         $sourceConfig = $accessor->getValue($bundleConfig, $currentPath);
         if (true === $sourceConfig['enabled']) {
-            $claim_checkers = ['exp', 'iat', 'nbf'/*'authorization_endpoint_aud'*/]; // FIXME
-            $header_checkers = ['crit']; // FIXME
-            ConfigurationHelper::addJWSLoader($container, $this->name(), $sourceConfig['signature_algorithms'], [], ['jws_compact'], false);
-            ConfigurationHelper::addClaimChecker($container, $this->name(), $claim_checkers, false);
-            if (true === $sourceConfig['encryption']['enabled']) {
-                ConfigurationHelper::addJWELoader($container, $this->name(), $sourceConfig['encryption']['key_encryption_algorithms'], $sourceConfig['encryption']['content_encryption_algorithms'], ['DEF'], [], ['jwe_compact'], false);
-            }
+            $claim_checkers = ['exp', 'iat', 'nbf', 'authorization_endpoint_aud']; // FIXME
+        $header_checkers = ['crit']; // FIXME
+        ConfigurationHelper::addJWSLoader($container, $this->name(), $sourceConfig['signature_algorithms'], [], ['jws_compact'], false);
+        ConfigurationHelper::addClaimChecker($container, $this->name(), $claim_checkers, false);
+        if (true === $sourceConfig['encryption']['enabled']) {
+            ConfigurationHelper::addJWELoader($container, $this->name(), $sourceConfig['encryption']['key_encryption_algorithms'], $sourceConfig['encryption']['content_encryption_algorithms'], ['DEF'], [], ['jwe_compact'], false);
+        }
+         */
+
+        $updatedConfig = [];
+        foreach ($this->subComponents as $subComponent) {
+            $updatedConfig = array_merge(
+                $updatedConfig,
+                $subComponent->prepend($container, $config)
+            );
+        }
+
+        return $updatedConfig;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function build(ContainerBuilder $container)
+    {
+        foreach ($this->subComponents as $component) {
+            $component->build($container);
         }
     }
 }

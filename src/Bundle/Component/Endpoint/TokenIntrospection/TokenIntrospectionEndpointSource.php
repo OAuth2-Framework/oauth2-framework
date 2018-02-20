@@ -37,11 +37,14 @@ class TokenIntrospectionEndpointSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        if (!$configs['endpoint']['token_introspection']['enabled']) {
+        $config = $configs['endpoint']['token_introspection'];
+        $container->setParameter('oauth2_server.endpoint.token_introspection.enabled', $config['enabled']);
+        if (!$config['enabled']) {
             return;
         }
         $container->registerForAutoconfiguration(TokenTypeHint::class)->addTag('oauth2_server_introspection_type_hint');
-        $container->setParameter('oauth2_server.endpoint.token_introspection.path', $configs['endpoint']['token_introspection']['path']);
+        $container->setParameter('oauth2_server.endpoint.token_introspection.path', $config['path']);
+        $container->setParameter('oauth2_server.endpoint.token_introspection.host', $config['host']);
 
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint/token_introspection'));
         $loader->load('introspection.php');
@@ -61,12 +64,17 @@ class TokenIntrospectionEndpointSource implements Component
 
         $node->children()
             ->arrayNode($this->name())
-                ->addDefaultsIfNotSet()
                 ->canBeEnabled()
                 ->children()
                     ->scalarNode('path')
                         ->info('The token introspection endpoint path')
                         ->defaultValue('/token/introspection')
+                    ->end()
+                    ->scalarNode('host')
+                        ->info('If set, the route will be limited to that host')
+                        ->defaultValue('')
+                        ->treatNullLike('')
+                        ->treatFalseLike('')
                     ->end()
                 ->end()
             ->end()

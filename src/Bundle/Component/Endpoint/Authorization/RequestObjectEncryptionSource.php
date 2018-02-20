@@ -22,11 +22,11 @@ class RequestObjectEncryptionSource implements Component
     /**
      * {@inheritdoc}
      */
-    protected function continueLoading(string $path, ContainerBuilder $container, array $config)
+    public function load(array $configs, ContainerBuilder $container)
     {
-        foreach (['required', 'key_encryption_algorithms', 'content_encryption_algorithms'] as $k) {
+        /*foreach (['required', 'key_encryption_algorithms', 'content_encryption_algorithms'] as $k) {
             $container->setParameter($path.'.'.$k, $config[$k]);
-        }
+        }*/
         //$container->setAlias($path.'.key_set', 'jose.key_set.authorization_request_object.key_set.encryption');
     }
 
@@ -43,35 +43,46 @@ class RequestObjectEncryptionSource implements Component
      */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
-        $node
-            ->children()
-                ->booleanNode('required')
-                    ->info('If true, incoming request objects must be encrypted.')
-                    ->defaultFalse()
+        $node->children()
+            ->arrayNode($this->name())
+                ->canBeEnabled()
+                ->children()
+                    ->booleanNode('required')
+                        ->info('If true, incoming request objects must be encrypted.')
+                        ->defaultFalse()
+                    ->end()
+                    ->arrayNode('key_encryption_algorithms')
+                        ->info('Supported key encryption algorithms.')
+                        ->useAttributeAsKey('name')
+                        ->scalarPrototype()->end()
+                        ->treatNullLike([])
+                    ->end()
+                    ->arrayNode('content_encryption_algorithms')
+                        ->info('Supported content encryption algorithms.')
+                        ->useAttributeAsKey('name')
+                        ->scalarPrototype()->end()
+                        ->treatNullLike([])
+                    ->end()
                 ->end()
-                ->arrayNode('key_encryption_algorithms')
-                    ->info('Supported key encryption algorithms.')
-                    ->useAttributeAsKey('name')
-                    ->scalarPrototype()->end()
-                    ->treatNullLike([])
-                ->end()
-                ->arrayNode('content_encryption_algorithms')
-                    ->info('Supported content encryption algorithms.')
-                    ->useAttributeAsKey('name')
-                    ->scalarPrototype()->end()
-                    ->treatNullLike([])
-                ->end()
-            ->end();
+            ->end()
+        ->end();
     }
 
     /**
      * {@inheritdoc}
      */
-    public function prepend(array $bundleConfig, string $path, ContainerBuilder $container)
+    public function prepend(ContainerBuilder $container, array $config): array
     {
-        parent::prepend($bundleConfig, $path, $container);
-
-        Assertion::keyExists($bundleConfig['key_set'], 'encryption', 'The encryption key set must be enabled.');
+        //Assertion::keyExists($bundleConfig['key_set'], 'encryption', 'The encryption key set must be enabled.');
         //ConfigurationHelper::addKeyset($container, 'authorization_request_object.key_set.encryption', 'jwkset', ['value' => $bundleConfig['key_set']['encryption']]);
+        return [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function build(ContainerBuilder $container)
+    {
+        // Nothing to do
     }
 }

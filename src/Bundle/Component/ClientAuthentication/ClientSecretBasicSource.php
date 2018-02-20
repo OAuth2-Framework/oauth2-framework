@@ -54,7 +54,7 @@ class ClientSecretBasicSource implements Component
                         ->info('The realm displayed in the authentication header')
                     ->end()
                     ->integerNode('secret_lifetime')
-                        ->defaultValue(60 * 60 * 24 * 14)
+                        ->defaultValue(60 * 60 * 24 * 14) // 14 days
                         ->min(0)
                         ->info('Secret lifetime (in seconds; 0 = unlimited)')
                     ->end()
@@ -68,7 +68,6 @@ class ClientSecretBasicSource implements Component
      */
     public function build(ContainerBuilder $container)
     {
-        //Nothing to do
     }
 
     /**
@@ -76,7 +75,6 @@ class ClientSecretBasicSource implements Component
      */
     public function prepend(ContainerBuilder $container, array $config): array
     {
-        //Nothing to do
         return [];
     }
 }

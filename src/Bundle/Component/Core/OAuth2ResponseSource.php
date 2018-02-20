@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\Component\Core;
 
 use OAuth2Framework\Bundle\Component\Component;
+use OAuth2Framework\Bundle\Component\Core\Compiler\ResponseFactoryCompilerPass;
 use OAuth2Framework\Component\Core\Response\Factory\ResponseFactory;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\FileLocator;
@@ -46,7 +47,6 @@ class OAuth2ResponseSource implements Component
      */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
-        //Nothing to do
     }
 
     /**
@@ -62,7 +62,6 @@ class OAuth2ResponseSource implements Component
      */
     public function prepend(ContainerBuilder $container, array $config): array
     {
-        //Nothing to do
         return [];
     }
 }

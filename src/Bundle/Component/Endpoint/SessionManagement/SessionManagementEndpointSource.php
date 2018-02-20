@@ -34,10 +34,15 @@ class SessionManagementEndpointSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        if (!$configs['endpoint']['session_management']['enabled']) {
+        $config = $configs['endpoint']['session_management'];
+        $container->setParameter('oauth2_server.endpoint.session_management.enabled', $config['enabled']);
+        if (!$config['enabled']) {
             return;
         }
-        $container->setParameter('oauth2_server.endpoint.session_management.path', $configs['endpoint']['session_management']['path']);
+        $container->setParameter('oauth2_server.endpoint.session_management.path', $config['path']);
+        $container->setParameter('oauth2_server.endpoint.session_management.host', $config['host']);
+        $container->setParameter('oauth2_server.endpoint.session_management.storage_name', $config['storage_name']);
+        $container->setParameter('oauth2_server.endpoint.session_management.template', $config['template']);
 
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint/session_management'));
         //$loader->load('session_management.php');
@@ -50,7 +55,6 @@ class SessionManagementEndpointSource implements Component
     {
         $node->children()
             ->arrayNode($this->name())
-                ->addDefaultsIfNotSet()
                 ->canBeEnabled()
                 ->validate()
                     ->ifTrue(function ($config) {
@@ -70,8 +74,17 @@ class SessionManagementEndpointSource implements Component
                 ->end()
                 ->children()
                     ->scalarNode('path')
+                        ->info('The session management endpoint')
+                        ->defaultValue('/session')
+                    ->end()
+                    ->scalarNode('host')
+                        ->info('If set, the route will be limited to that host')
+                        ->defaultValue('')
+                        ->treatNullLike('')
+                        ->treatFalseLike('')
                     ->end()
                     ->scalarNode('storage_name')
+                        ->info('The name used for the cookie storage')
                         ->defaultValue('oidc_browser_state')
                     ->end()
                     ->scalarNode('template')
@@ -88,7 +101,6 @@ class SessionManagementEndpointSource implements Component
      */
     public function build(ContainerBuilder $container)
     {
-        //Nothing to do
     }
 
     /**

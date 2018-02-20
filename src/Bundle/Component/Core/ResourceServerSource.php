@@ -40,10 +40,12 @@ class ResourceServerSource implements Component
 
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../Resources/config/resource_server'));
         $loader->load('resource_server.php');
-        if (null !== $configs['resource_server']['repository']) {
-            $container->setAlias('oauth2_server.resource_server_repository', $configs['resource_server']['repository']);
-            $loader->load('authentication_middleware.php');
+
+        if (null === $configs['resource_server']['repository']) {
+            return;
         }
+        $container->setAlias('oauth2_server.resource_server_repository', $configs['resource_server']['repository']);
+        $loader->load('authentication_middleware.php');
     }
 
     /**
@@ -77,7 +79,6 @@ class ResourceServerSource implements Component
      */
     public function prepend(ContainerBuilder $container, array $config): array
     {
-        //Nothing to do
         return [];
     }
 }

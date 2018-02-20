@@ -37,11 +37,9 @@ class GrantTypeCompilerPass implements CompilerPassInterface
             $definition->addMethodCall('add', [new Reference($id)]);
         }
 
-        if (!$container->hasDefinition(MetadataBuilder::class)) {
-            return;
+        if ($container->hasDefinition(MetadataBuilder::class)) {
+            $metadata = $container->getDefinition(MetadataBuilder::class);
+            $metadata->addMethodCall('setGrantTypeManager', [new Reference(GrantTypeManager::class)]);
         }
-
-        $metadata = $container->getDefinition(MetadataBuilder::class);
-        $metadata->addMethodCall('setGrantTypeManager', [new Reference(GrantTypeManager::class)]);
     }
 }
