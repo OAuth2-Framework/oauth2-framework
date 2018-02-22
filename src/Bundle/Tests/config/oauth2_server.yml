@@ -134,10 +134,9 @@ oauth2_server:
             host: 'bar.bar.foo'
         issuer_discovery:
             main:
-                host: 'oauth2.test'
+                host: 'my-service.com'
                 path: '/.well-known/webfinger'
                 resource_repository: 'MyResourceRepository'
-                server: 'https://my-service.com:9000/'
         authorization:
             enabled: true
             path: '/authorize'

@@ -35,6 +35,7 @@ class IssuerDiscoveryCompilerPass implements CompilerPassInterface
         }
 
         $issuerDiscoveries = $container->getParameter('oauth2_server.endpoint.issuer_discovery');
+        $port = $container->getParameter('request_listener.https_port');
 
         foreach ($issuerDiscoveries as $id => $issuerDiscovery) {
             $issuerDiscoveryId = sprintf('oauth2_server_issuer_discovery_%s', $id);
@@ -43,7 +44,8 @@ class IssuerDiscoveryCompilerPass implements CompilerPassInterface
                 ->setClass(IssuerDiscoveryEndpoint::class)
                 ->setArguments([
                     new Reference($issuerDiscovery['resource_repository']),
-                    $issuerDiscovery['server'],
+                    $issuerDiscovery['host'],
+                    $port,
                 ]);
             $container->setDefinition($issuerDiscoveryId, $issuerDiscoveryDefinition);
             $container->setDefinition($issuerDiscoveryId, $issuerDiscoveryDefinition);

@@ -13,14 +13,14 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Bundle\Tests\TestBundle\Entity;
 
-use OAuth2Framework\Component\IssuerDiscoveryEndpoint\ResourceObject;
+use OAuth2Framework\Component\IssuerDiscoveryEndpoint\ResourceObject as ResourceObjectInterface;
 use OAuth2Framework\Component\IssuerDiscoveryEndpoint\ResourceId;
 use OAuth2Framework\Component\IssuerDiscoveryEndpoint\ResourceRepository as ResourceRepositoryInterface;
 
 class ResourceRepository implements ResourceRepositoryInterface
 {
     /**
-     * @var resource[]
+     * @var ResourceObjectInterface[]
      */
     private $resources = [];
 
@@ -32,20 +32,8 @@ class ResourceRepository implements ResourceRepositoryInterface
     /**
      * {@inheritdoc}
      */
-    public function find(ResourceId $resourceId): ?ResourceObject
+    public function find(ResourceId $resourceId): ?ResourceObjectInterface
     {
-        $server = 'my-service.com:9000';
-        $length = mb_strlen($server, 'utf-8');
-        if ('https://'.$server.'/+' === mb_substr($resourceId->getValue(), 0, $length + 10, 'utf-8')) {
-            $resourceName = mb_substr($resourceId->getValue(), $length + 10, null, 'utf-8');
-        } elseif ('acct:' === mb_substr($resourceId->getValue(), 0, 5, 'utf-8') && '@'.$server === mb_substr($resourceId->getValue(), -($length + 1), null, 'utf-8')) {
-            $resourceName = mb_substr($resourceId->getValue(), 5, -($length + 1), 'utf-8');
-        } elseif ('@'.$server === mb_substr($resourceId->getValue(), -($length + 1), null, 'utf-8')) {
-            $resourceName = mb_substr($resourceId->getValue(), 0, -($length + 1), 'utf-8');
-        } else {
-            return null;
-        }
-
-        return array_key_exists($resourceName, $this->resources) ? $this->resources[$resourceName] : null;
+        return array_key_exists($resourceId->getValue(), $this->resources) ? $this->resources[$resourceId->getValue()] : null;
     }
 }

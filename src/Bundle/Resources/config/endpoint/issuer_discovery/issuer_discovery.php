@@ -12,6 +12,7 @@ declare(strict_types=1);
  */
 
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use OAuth2Framework\Component\IssuerDiscoveryEndpoint\IdentifierResolver;
 use OAuth2Framework\Bundle\Service\IssuerDiscoveryFactory;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
@@ -23,5 +24,10 @@ return function (ContainerConfigurator $container) {
     $container->set(IssuerDiscoveryFactory::class)
         ->args([
             ref('httplug.message_factory'),
+            ref(IdentifierResolver\IdentifierResolverManager::class),
         ]);
+
+    $container->set(IdentifierResolver\IdentifierResolverManager::class);
+    $container->set(IdentifierResolver\UriResolver::class);
+    $container->set(IdentifierResolver\AccountResolver::class);
 };

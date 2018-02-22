@@ -29,6 +29,7 @@ use OAuth2Framework\Bundle\Tests\TestBundle\Service\UserProvider;
 use OAuth2Framework\Component\OpenIdConnect\UserInfo\Pairwise\EncryptedSubjectIdentifier;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
+use OAuth2Framework\Bundle\Tests\TestBundle\Service\UriPathResolver;
 
 return function (ContainerConfigurator $container) {
     $container = $container->services()->defaults()
@@ -89,6 +90,8 @@ return function (ContainerConfigurator $container) {
 
     $container->set('MyResourceRepository')
         ->class(ResourceRepository::class);
+
+    $container->set(UriPathResolver::class);
 
     /*$container->set(ResourceServerAuthMethodByIpAddress::class)
         ->tag('token_introspection_endpoint_auth_method');*/

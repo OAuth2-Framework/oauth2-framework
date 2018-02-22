@@ -15,6 +15,9 @@ namespace OAuth2Framework\Component\IssuerDiscoveryEndpoint\Tests;
 
 use Http\Message\MessageFactory\DiactorosMessageFactory;
 use Http\Message\ResponseFactory;
+use OAuth2Framework\Component\IssuerDiscoveryEndpoint\IdentifierResolver\Identifier;
+use OAuth2Framework\Component\IssuerDiscoveryEndpoint\IdentifierResolver\IdentifierResolver;
+use OAuth2Framework\Component\IssuerDiscoveryEndpoint\IdentifierResolver\IdentifierResolverManager;
 use Psr\Http\Server\RequestHandlerInterface;
 use OAuth2Framework\Component\IssuerDiscoveryEndpoint\IssuerDiscoveryEndpoint;
 use OAuth2Framework\Component\IssuerDiscoveryEndpoint\ResourceObject;
@@ -37,10 +40,13 @@ class IssuerDiscoveryEndpointTest extends TestCase
         $request = $this->prophesize(ServerRequestInterface::class);
         $repository = $this->prophesize(ResourceRepository::class);
         $handler = $this->prophesize(RequestHandlerInterface::class);
+        $identifierResolverManager = $this->prophesize(IdentifierResolverManager::class);
         $endpoint = new IssuerDiscoveryEndpoint(
             $repository->reveal(),
             $this->getResponseFactory(),
-            'https://www.foo.bar:8000'
+            $identifierResolverManager->reveal(),
+        'www.foo.bar',
+            8000
         );
 
         $response = $endpoint->process($request->reveal(), $handler->reveal());
@@ -61,10 +67,13 @@ class IssuerDiscoveryEndpointTest extends TestCase
         ]);
         $repository = $this->prophesize(ResourceRepository::class);
         $handler = $this->prophesize(RequestHandlerInterface::class);
+        $identifierResolverManager = $this->prophesize(IdentifierResolverManager::class);
         $endpoint = new IssuerDiscoveryEndpoint(
             $repository->reveal(),
             $this->getResponseFactory(),
-            'https://www.foo.bar:8000'
+            $identifierResolverManager->reveal(),
+        'www.foo.bar',
+            8000
         );
 
         $response = $endpoint->process($request->reveal(), $handler->reveal());
@@ -82,19 +91,23 @@ class IssuerDiscoveryEndpointTest extends TestCase
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getQueryParams()->willReturn([
             'rel' => 'http://openid.net/specs/connect/1.0/issuer',
+            'resource' => '=Foo.Bar'
         ]);
         $repository = $this->prophesize(ResourceRepository::class);
         $handler = $this->prophesize(RequestHandlerInterface::class);
+        $identifierResolverManager = new IdentifierResolverManager();
         $endpoint = new IssuerDiscoveryEndpoint(
             $repository->reveal(),
             $this->getResponseFactory(),
-            'https://www.foo.bar:8000'
+            $identifierResolverManager,
+            'www.foo.bar',
+            8000
         );
 
         $response = $endpoint->process($request->reveal(), $handler->reveal());
 
         $response->getBody()->rewind();
-        self::assertEquals('{"error":"invalid_request","error_description":"The parameter \"resource\" is mandatory."}', $response->getBody()->getContents());
+        self::assertEquals('{"error":"invalid_request","error_description":"The resource identified with \"=Foo.Bar\" does not exist or is not supported by this server."}', $response->getBody()->getContents());
         self::assertEquals(400, $response->getStatusCode());
     }
 
@@ -110,16 +123,19 @@ class IssuerDiscoveryEndpointTest extends TestCase
         ]);
         $repository = $this->prophesize(ResourceRepository::class);
         $handler = $this->prophesize(RequestHandlerInterface::class);
+        $identifierResolverManager = new IdentifierResolverManager();
         $endpoint = new IssuerDiscoveryEndpoint(
             $repository->reveal(),
             $this->getResponseFactory(),
-            'https://www.foo.bar:8000'
+            $identifierResolverManager,
+            'www.foo.bar',
+            8000
         );
 
         $response = $endpoint->process($request->reveal(), $handler->reveal());
 
         $response->getBody()->rewind();
-        self::assertEquals('{"error":"invalid_request","error_description":"Unsupported Extensible Resource Identifier (XRI) resource value."}', $response->getBody()->getContents());
+        self::assertEquals('{"error":"invalid_request","error_description":"The resource identified with \"@foo\" does not exist or is not supported by this server."}', $response->getBody()->getContents());
         self::assertEquals(400, $response->getStatusCode());
     }
 
@@ -135,16 +151,19 @@ class IssuerDiscoveryEndpointTest extends TestCase
         ]);
         $repository = $this->prophesize(ResourceRepository::class);
         $handler = $this->prophesize(RequestHandlerInterface::class);
+        $identifierResolverManager = new IdentifierResolverManager();
         $endpoint = new IssuerDiscoveryEndpoint(
             $repository->reveal(),
             $this->getResponseFactory(),
-            'https://www.foo.bar:8000'
+            $identifierResolverManager,
+            'www.foo.bar',
+            8000
         );
 
         $response = $endpoint->process($request->reveal(), $handler->reveal());
 
         $response->getBody()->rewind();
-        self::assertEquals('{"error":"invalid_request","error_description":"Unsupported domain."}', $response->getBody()->getContents());
+        self::assertEquals('{"error":"invalid_request","error_description":"The resource identified with \"hello@me.com\" does not exist or is not supported by this server."}', $response->getBody()->getContents());
         self::assertEquals(400, $response->getStatusCode());
     }
 
@@ -160,16 +179,19 @@ class IssuerDiscoveryEndpointTest extends TestCase
         ]);
         $repository = $this->prophesize(ResourceRepository::class);
         $handler = $this->prophesize(RequestHandlerInterface::class);
+        $identifierResolverManager = new IdentifierResolverManager();
         $endpoint = new IssuerDiscoveryEndpoint(
             $repository->reveal(),
             $this->getResponseFactory(),
-            'https://www.foo.bar:8000'
+            $identifierResolverManager,
+            'www.foo.bar',
+            8000
         );
 
         $response = $endpoint->process($request->reveal(), $handler->reveal());
 
         $response->getBody()->rewind();
-        self::assertEquals('{"error":"invalid_request","error_description":"The resource with name \"bad@www.foo.bar:8000\" does not exist or is not supported by this server."}', $response->getBody()->getContents());
+        self::assertEquals('{"error":"invalid_request","error_description":"The resource identified with \"bad@www.foo.bar:8000\" does not exist or is not supported by this server."}', $response->getBody()->getContents());
         self::assertEquals(400, $response->getStatusCode());
     }
 
@@ -188,10 +210,17 @@ class IssuerDiscoveryEndpointTest extends TestCase
         $repository = $this->prophesize(ResourceRepository::class);
         $repository->find(Argument::type(ResourceId::class))->willReturn($resource->reveal());
         $handler = $this->prophesize(RequestHandlerInterface::class);
+        $resolver = $this->prophesize(IdentifierResolver::class);
+        $resolver->supports('hello@www.foo.bar:8000')->willReturn(true);
+        $resolver->resolve('hello@www.foo.bar:8000')->willReturn(new Identifier('hello', 'www.foo.bar', 8000));
+        $identifierResolverManager = new IdentifierResolverManager();
+        $identifierResolverManager->add($resolver->reveal());
         $endpoint = new IssuerDiscoveryEndpoint(
             $repository->reveal(),
             $this->getResponseFactory(),
-            'https://www.foo.bar:8000'
+            $identifierResolverManager,
+            'www.foo.bar',
+            8000
         );
 
         $response = $endpoint->process($request->reveal(), $handler->reveal());
@@ -216,10 +245,17 @@ class IssuerDiscoveryEndpointTest extends TestCase
         $repository = $this->prophesize(ResourceRepository::class);
         $repository->find(Argument::type(ResourceId::class))->willReturn($resource->reveal());
         $handler = $this->prophesize(RequestHandlerInterface::class);
+        $resolver = $this->prophesize(IdentifierResolver::class);
+        $resolver->supports('acct:hello%40you@www.foo.bar:8000')->willReturn(true);
+        $resolver->resolve('acct:hello%40you@www.foo.bar:8000')->willReturn(new Identifier('hello', 'www.foo.bar', 8000));
+        $identifierResolverManager = new IdentifierResolverManager();
+        $identifierResolverManager->add($resolver->reveal());
         $endpoint = new IssuerDiscoveryEndpoint(
             $repository->reveal(),
             $this->getResponseFactory(),
-            'https://www.foo.bar:8000'
+            $identifierResolverManager,
+            'www.foo.bar',
+            8000
         );
 
         $response = $endpoint->process($request->reveal(), $handler->reveal());
@@ -244,10 +280,17 @@ class IssuerDiscoveryEndpointTest extends TestCase
         $repository = $this->prophesize(ResourceRepository::class);
         $repository->find(Argument::type(ResourceId::class))->willReturn($resource->reveal());
         $handler = $this->prophesize(RequestHandlerInterface::class);
+        $resolver = $this->prophesize(IdentifierResolver::class);
+        $resolver->supports('https://www.foo.bar:8000/+hello')->willReturn(true);
+        $resolver->resolve('https://www.foo.bar:8000/+hello')->willReturn(new Identifier('hello', 'www.foo.bar', 8000));
+        $identifierResolverManager = new IdentifierResolverManager();
+        $identifierResolverManager->add($resolver->reveal());
         $endpoint = new IssuerDiscoveryEndpoint(
             $repository->reveal(),
             $this->getResponseFactory(),
-            'https://www.foo.bar:8000'
+            $identifierResolverManager,
+            'www.foo.bar',
+            8000
         );
 
         $response = $endpoint->process($request->reveal(), $handler->reveal());

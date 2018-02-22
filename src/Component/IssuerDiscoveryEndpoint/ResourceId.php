@@ -13,10 +13,31 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\IssuerDiscoveryEndpoint;
 
-use OAuth2Framework\Component\Core\Id\Id;
-
-class ResourceId extends Id
+class ResourceId
 {
+    /**
+     * @var string
+     */
+    private $value;
+
+    /**
+     * TokenId constructor.
+     *
+     * @param $value
+     */
+    protected function __construct(string $value)
+    {
+        $this->value = $value;
+    }
+
+    /**
+     * @return string
+     */
+    public function getValue(): string
+    {
+        return $this->value;
+    }
+
     /**
      * @param string $value
      *

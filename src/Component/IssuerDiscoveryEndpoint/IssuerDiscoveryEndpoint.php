@@ -14,10 +14,9 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\IssuerDiscoveryEndpoint;
 
 use Http\Message\ResponseFactory;
-use function League\Uri\parse;
+use OAuth2Framework\Component\IssuerDiscoveryEndpoint\IdentifierResolver\IdentifierResolverManager;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Server\MiddlewareInterface;
-use OAuth2Framework\Component\Core\Exception\OAuth2Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -36,22 +35,36 @@ class IssuerDiscoveryEndpoint implements MiddlewareInterface
     private $responseFactory;
 
     /**
+     * @var IdentifierResolverManager
+     */
+    private $identifierResolverManager;
+
+    /**
      * @var string
      */
-    private $host;
+    private $domain;
+
+    /**
+     * @var int
+     */
+    private $port;
 
     /**
      * IssuerDiscoveryEndpoint constructor.
      *
-     * @param ResourceRepository $resourceManager The Resource Manager
-     * @param ResponseFactory    $responseFactory The Response Factory
-     * @param string             $server          The host of this discovery service
+     * @param ResourceRepository        $resourceManager
+     * @param ResponseFactory           $responseFactory
+     * @param IdentifierResolverManager $identifierResolverManager
+     * @param string                    $domain
+     * @param int                       $port
      */
-    public function __construct(ResourceRepository $resourceManager, ResponseFactory $responseFactory, string $server)
+    public function __construct(ResourceRepository $resourceManager, ResponseFactory $responseFactory, IdentifierResolverManager $identifierResolverManager, string $domain, int $port)
     {
         $this->resourceManager = $resourceManager;
         $this->responseFactory = $responseFactory;
-        $this->host = $this->getDomain($server);
+        $this->identifierResolverManager = $identifierResolverManager;
+        $this->domain = $domain;
+        $this->port = $port;
     }
 
     /**
@@ -62,9 +75,10 @@ class IssuerDiscoveryEndpoint implements MiddlewareInterface
         try {
             $this->checkRel($request);
             $resourceName = $this->getResourceName($request);
-            $resource = $this->resourceManager->find($resourceName);
+            $resourceId = $this->getResourceId($resourceName);
+            $resource = $this->resourceManager->find($resourceId);
             if (null === $resource) {
-                throw new \InvalidArgumentException(sprintf('The resource with name "%s" does not exist or is not supported by this server.', $resourceName), 400);
+                throw new \InvalidArgumentException(sprintf('The resource identified with "%s" does not exist or is not supported by this server.', $resourceName), 400);
             }
             $data = $this->getResourceData($resourceName, $resource);
             $response = $this->responseFactory->createResponse(200);
@@ -77,7 +91,7 @@ class IssuerDiscoveryEndpoint implements MiddlewareInterface
             $headers = [
                 'Content-Type' => 'application/json; charset=UTF-8',
             ];
-            $response->getBody()->write(json_encode(['error' => OAuth2Exception::ERROR_INVALID_REQUEST, 'error_description' => $e->getMessage()], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+            $response->getBody()->write(json_encode(['error' => 'invalid_request', 'error_description' => $e->getMessage()], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
         }
         $headers['Cache-Control'] = 'no-cache, no-store, max-age=0, must-revalidate, private';
         $headers['Pragma'] = 'no-cache';
@@ -89,15 +103,15 @@ class IssuerDiscoveryEndpoint implements MiddlewareInterface
     }
 
     /**
-     * @param ResourceId $resourceName
-     * @param resource   $resource
+     * @param string         $resourceName
+     * @param ResourceObject $resource
      *
      * @return array
      */
-    private function getResourceData(ResourceId $resourceName, ResourceObject $resource): array
+    private function getResourceData(string $resourceName, ResourceObject $resource): array
     {
         return [
-            'subject' => $resourceName->getValue(),
+            'subject' => $resourceName,
             'links' => [
                 [
                     'rel' => self::REL_NAME,
@@ -124,82 +138,42 @@ class IssuerDiscoveryEndpoint implements MiddlewareInterface
     }
 
     /**
-     * @param ServerRequestInterface $request
+     * @param string $resourceName
      *
      * @throws \InvalidArgumentException
      *
      * @return ResourceId
      */
-    private function getResourceName(ServerRequestInterface $request): ResourceId
+    private function getResourceId(string $resourceName): ResourceId
+    {
+        try {
+            $identifier = $this->identifierResolverManager->resolve($resourceName);
+        } catch (\Exception $e) {
+            throw new \InvalidArgumentException(sprintf('The resource identified with "%s" does not exist or is not supported by this server.', $resourceName), 400, $e);
+        }
+        if ($this->domain !== $identifier->getDomain()) {
+            throw new \InvalidArgumentException(sprintf('The resource identified with "%s" does not exist or is not supported by this server.', $resourceName), 400);
+        }
+        if ($identifier->getPort() !== null && $this->port !== $identifier->getPort()) {
+            throw new \InvalidArgumentException(sprintf('The resource identified with "%s" does not exist or is not supported by this server.', $resourceName), 400);
+        }
+
+        return ResourceId::create($identifier->getUsername());
+    }
+
+    /**
+     * @param ServerRequestInterface $request
+     *
+     * @throws \InvalidArgumentException
+     *
+     * @return string
+     */
+    private function getResourceName(ServerRequestInterface $request): string
     {
         $query_params = $request->getQueryParams() ?? [];
         if (!array_key_exists('resource', $query_params)) {
             throw new \InvalidArgumentException('The parameter "resource" is mandatory.', 400);
         }
-        $resourceName = $query_params['resource'];
-        $domain = $this->findResourceNameDomain($resourceName);
-        if ($domain !== $this->host) {
-            throw new \InvalidArgumentException('Unsupported domain.', 400);
-        }
-
-        return ResourceId::create($resourceName);
-    }
-
-    /**
-     * @param string $resourceName
-     *
-     * @throws \InvalidArgumentException
-     *
-     * @return string
-     */
-    private function findResourceNameDomain(string $resourceName): string
-    {
-        if ('acct:' === mb_substr($resourceName, 0, 5, 'utf-8')) {
-            $resourceName = mb_substr($resourceName, 5, null, 'utf-8');
-        }
-
-        $at = mb_strpos($resourceName, '@', 0, 'utf-8');
-
-        if (false === $at) {
-            return $this->getDomain($resourceName);
-        }
-
-        return $this->getDomainFromEmailResource($resourceName, $at);
-    }
-
-    /**
-     * @param string $resourceName
-     * @param int    $at
-     *
-     * @return string
-     */
-    private function getDomainFromEmailResource(string $resourceName, int $at): string
-    {
-        if (0 === $at) {
-            throw new \InvalidArgumentException('Unsupported Extensible Resource Identifier (XRI) resource value.', 400);
-        }
-        list(, $domain) = explode('@', $resourceName);
-
-        return $domain;
-    }
-
-    /**
-     * @param string $uri
-     *
-     * @throws \InvalidArgumentException
-     *
-     * @return string
-     */
-    private function getDomain(string $uri): string
-    {
-        $parsed = parse($uri);
-        if (null === $parsed['host']) {
-            throw new \InvalidArgumentException('Invalid server address.');
-        }
-        if (null !== $parsed['port']) {
-            return sprintf('%s:%d', $parsed['host'], $parsed['port']);
-        }
-
-        return $parsed['host'];
+        return $query_params['resource'];
     }
 }

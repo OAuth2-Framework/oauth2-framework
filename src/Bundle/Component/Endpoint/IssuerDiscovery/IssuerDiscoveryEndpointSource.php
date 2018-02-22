@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\Bundle\Component\Endpoint\IssuerDiscovery;
 
 use OAuth2Framework\Bundle\Component\Component;
+use OAuth2Framework\Component\IssuerDiscoveryEndpoint\IdentifierResolver\IdentifierResolver;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -34,6 +35,7 @@ class IssuerDiscoveryEndpointSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
+        $container->registerForAutoconfiguration(IdentifierResolver::class)->addTag('oauth2_server_identifier_resolver');
         $container->setParameter('oauth2_server.endpoint.issuer_discovery', $configs['endpoint']['issuer_discovery']);
 
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint/issuer_discovery'));
@@ -53,21 +55,15 @@ class IssuerDiscoveryEndpointSource implements Component
                 ->arrayPrototype()
                     ->children()
                         ->scalarNode('host')
-                            ->info('If set, the route will be limited to that host')
-                            ->defaultValue('')
-                            ->treatFalseLike('')
-                            ->treatNullLike('')
+                            ->info('The host of the server (e.g. example.com, my-service.net)')
+                            ->isRequired()
                         ->end()
                         ->scalarNode('path')
-                            ->info('The path to the issuer discovery endpoint')
-                            ->isRequired()
+                            ->info('The path to the issuer discovery endpoint. Should be "/.well-known/webfinger" for compliance with the specification.')
+                            ->defaultValue('/.well-known/webfinger')
                         ->end()
                         ->scalarNode('resource_repository')
                             ->info('The resource repository service associated to the issuer discovery')
-                            ->isRequired()
-                        ->end()
-                        ->scalarNode('server')
-                            ->info('The authorization server')
                             ->isRequired()
                         ->end()
                     ->end()
@@ -81,6 +77,7 @@ class IssuerDiscoveryEndpointSource implements Component
      */
     public function build(ContainerBuilder $container)
     {
+        $container->addCompilerPass(new IdentifierResolverCompilerPass());
         $container->addCompilerPass(new IssuerDiscoveryCompilerPass());
     }
 
