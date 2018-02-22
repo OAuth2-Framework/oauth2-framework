@@ -91,7 +91,7 @@ class IssuerDiscoveryEndpointTest extends TestCase
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getQueryParams()->willReturn([
             'rel' => 'http://openid.net/specs/connect/1.0/issuer',
-            'resource' => '=Foo.Bar'
+            'resource' => '=Foo.Bar',
         ]);
         $repository = $this->prophesize(ResourceRepository::class);
         $handler = $this->prophesize(RequestHandlerInterface::class);

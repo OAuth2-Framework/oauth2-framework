@@ -154,7 +154,7 @@ class IssuerDiscoveryEndpoint implements MiddlewareInterface
         if ($this->domain !== $identifier->getDomain()) {
             throw new \InvalidArgumentException(sprintf('The resource identified with "%s" does not exist or is not supported by this server.', $resourceName), 400);
         }
-        if ($identifier->getPort() !== null && $this->port !== $identifier->getPort()) {
+        if (null !== $identifier->getPort() && $this->port !== $identifier->getPort()) {
             throw new \InvalidArgumentException(sprintf('The resource identified with "%s" does not exist or is not supported by this server.', $resourceName), 400);
         }
 
@@ -174,6 +174,7 @@ class IssuerDiscoveryEndpoint implements MiddlewareInterface
         if (!array_key_exists('resource', $query_params)) {
             throw new \InvalidArgumentException('The parameter "resource" is mandatory.', 400);
         }
+
         return $query_params['resource'];
     }
 }
