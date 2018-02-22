@@ -35,7 +35,5 @@ class IdentifierResolverCompilerPass implements CompilerPassInterface
         foreach ($taggedServices as $id => $attributes) {
             $client_manager->addMethodCall('add', [new Reference($id)]);
         }
-
-
     }
 }

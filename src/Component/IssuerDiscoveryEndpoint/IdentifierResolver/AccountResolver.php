@@ -44,10 +44,10 @@ class AccountResolver implements IdentifierResolver
         }
         $parts[0] = str_replace('%40', '@', $parts[0]);
         $pos = strpos($parts[1], ':');
-        if ($pos === false) {
+        if (false === $pos) {
             $port = null;
         } else {
-            $port = intval(substr($parts[1], $pos+1));
+            $port = intval(substr($parts[1], $pos + 1));
             $parts[1] = substr($parts[1], 0, $pos);
         }
 
