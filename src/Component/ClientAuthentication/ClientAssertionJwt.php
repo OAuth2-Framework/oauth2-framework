@@ -24,11 +24,11 @@ use Jose\Component\KeyManagement\JKUFactory;
 use Jose\Component\Signature\JWS;
 use Jose\Component\Signature\JWSVerifier;
 use Jose\Component\Signature\Serializer\CompactSerializer;
-use OAuth2Framework\Bundle\Tests\TestBundle\Entity\TrustedIssuerRepository;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\Exception\OAuth2Exception;
+use OAuth2Framework\Component\TrustedIssuer\TrustedIssuerRepository;
 use Psr\Http\Message\ServerRequestInterface;
 
 class ClientAssertionJwt implements AuthenticationMethod

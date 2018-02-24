@@ -1,0 +1,5 @@
+jose:
+    jku_factory:
+        enabled: true
+        client: 'httplug.client.mock'
+        request_factory: 'OAuth2Framework\ServerBundle\Tests\TestBundle\Service\MessageFactory'

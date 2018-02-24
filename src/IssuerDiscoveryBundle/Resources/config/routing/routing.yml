@@ -1,0 +1,3 @@
+issuer_discovery_routes:
+    resource: '.'
+    type: 'issuer_discovery'

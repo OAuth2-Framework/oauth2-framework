@@ -1,0 +1,223 @@
+oauth2_server:
+    server_uri: 'https://oauth2.test/'
+#    http_client: 'httplug.client.oauth2'
+#    firewall:
+#        enabled: true
+#    # Key Component
+    client:
+        repository: 'MyClientRepository'
+    user_account:
+        manager: 'MyUserAccountManager'
+        repository: 'MyUserAccountRepository'
+    access_token:
+        id_generator: 'MyAccessTokenIdGenerator'
+        repository: 'MyAccessTokenRepository'
+        lifetime: 1800
+    resource_server:
+        repository: 'MyResourceServerRepository'
+    trusted_issuer:
+        repository: 'MyTrustedIssuerRepository'
+    scope:
+        enabled: true
+        repository: 'MyScopeRepository'
+        policy:
+            enabled: true
+            by_default: 'none'
+            error:
+                enabled: true
+            default:
+                enabled: true
+                scope: 'openid profile'
+    token_type:
+        default: 'Bearer'
+        allow_token_type_parameter: true
+        bearer_token:
+            enabled: true
+            realm: 'My super service'
+            authorization_header: true
+            query_string: true
+            request_body: true
+        mac_token:
+            enabled: true
+            min_length: 50
+            max_length: 100
+            algorithm: 'hmac-sha-256'
+            timestamp_lifetime: 10
+    client_authentication:
+        client_secret_basic: # Always available
+            secret_lifetime: 3600
+            realm: 'My OAuth2 Server'
+        none:
+            enabled: true
+        client_secret_post:
+            enabled: true
+            secret_lifetime: 3600
+        client_assertion_jwt:
+            enabled: true
+            secret_lifetime: 3600
+            signature_algorithms: ['RS256', 'RS512', 'HS256', 'HS512', 'ES256', 'ES512']
+            claim_checkers: ['exp', 'iat', 'nbf']
+            header_checkers: []
+            jku_support: true
+            encryption:
+                enabled: true
+                required: false
+                key_set: '{"keys":[{"kty":"EC","crv":"P-256","d":"zudFvuFy_HbN4cZO5kEdN33Zz-VR48YrVV23mCzAwqA","x":"VlZO9X_B43HFSUK8aeQn88UO2_VfeBtVU1Usl3rYq90","y":"oAHPRNZEUpe-T2-Q_rThJ4lGsNYLXomSYW69RZ9jzNQ"},{"kty":"EC","crv":"P-256","d":"336bCh7Zt-3FJmRLyFtINr6IsK5gh1CHJRdk20NcolA","x":"w0qQe7oa_aI3G6irjTbdtMqc4e0vNveQgRoRCyvpIBE","y":"7DyqhillL89iM6fMK216ov1EixmJGda76ugNuE-fsic"},{"kty":"RSA","n":"sLjaCStJYRr_y7_3GLlDb4bnGJ8XirSdFboYmvA38NXJ6PhIIjr-sFzfwlcpxZxz6zzjXkDFs3AcUOvC3_KRT5tn4XBOHcR6ABrT65dZTe_qalEpYeQG4oxevc01vmD_dD6Ho2O69amT4gscus2pvszFPdraMYybH24aQFztVtc","e":"AQAB","d":"By-tJhxNgpZfeoCW4rl95YYd1aF6iphnnt-PapWEINYAvOmDvWiavL86FiQHPdLr38_9CvMlVvOjIyNDLGonwHynPxAzUsT7M891N9D0cSCv9DlV3uqRVtdqF4MtWtpU5JWJ9q6auL1UPx2tJhOygu9tJ7w0bTGFwrUdb8PSnlE","p":"3p-6HWbX9YcSkeksJXW3_Y2cfZgRCUXH2or1dIidmscb4VVtTUwb-8gGzUDEq4iS_5pgLARl3O4lOHK0n6Qbrw","q":"yzdrGWwgaWqK6e9VFv3NXGeq1TEKHLkXjF7J24XWKm9lSmlssPRv0NwMPVp_CJ39BrLfFtpFr_fh0oG1sVZ5WQ","dp":"UQ6rP0VQ4G77zfCuSD1ibol_LyONIGkt6V6rHHEZoV9ZwWPPVlOd5MDh6R3p_eLOUw6scZpwVE7JcpIhPfcMtQ","dq":"Jg8g_cfkYhnUHm_2bbHm7jF0Ky1eCXcY0-9Eutpb--KVA9SuyI1fC6zKlgsG06RTKRgC9BK5DnXMU1J7ptTdMQ","qi":"17kC87NLUV6z-c-wtmbNqAkDbKmwpb2RMsGUQmhEPJwnWuwEKZpSQz776SUVwoc0xiQ8DpvU_FypflIlm6fq9w"},{"kty":"RSA","n":"um8f5neOmoGMsQ-BJMOgehsSOzQiYOk4W7AJL97q-V_8VojXJKHUqvTqiDeVfcgxPz1kNseIkm4PivKYQ1_Yh1j5RxL30V8Pc3VR7ReLMvEsQUbedkJKqhXy7gOYyc4IrYTux1I2dI5I8r_lvtDtTgWB5UrWfwj9ddVhk22z6jc","e":"AQAB","d":"lZqCsMAT0OxQZ-0XJtdMuW9ry9JkG_xKW1kBpkZtrDtYFGCutBigvabXZQOllE_HJQYwmry3XTmwg0F06evJpkPQlvMKEd1opQM2vbqM1t1lgeo1ggckdSHwiYxEDW5URM-TioGqf5RpluU8QZ5Tthm_nBCw-lA4xGhlDawNZjE","p":"5AgVIR3TAtzTXw0i8xIUL1cGJiHB_yokvgAdkhUupDhWQNkK344uCGV7QHm3IqxF2z7l2tOqtOYxnw2zJDtXRQ","q":"0UzuSJJ2CKc_RCd7CKBUIIe6fdekQ2gxleD7HuseEU0CtlTfJlWYC5VF6OwM2PVBxhe0P1FaRCry7tnPSHkFSw","dp":"BU160E5VPdfMwoUXrvdYqNEpP3HBhSGBwTlXdrIvZ3o350Ik0pYH1AIoH5O1AoVnCnYn-jK54YMI3F4BMHKA0Q","dq":"vJcBLksqJ-nrS9H3PnKY2ybxl2qzDDnaVB6Ap_9a_GPTyc73s2b0tZsvfw0TFnsHZSL-uv7mwv2gIDAKYlcJuQ","qi":"ktx8AsCMqNxniI0SpQF4biCFtgUULPmPruuITrTAv90fPzpF-whbRFEi8bdIZaLFyzj7qsscA2bJteUi-i8ITQ"}]}'
+                key_encryption_algorithms: ['RSA-OAEP-256']
+                content_encryption_algorithms: ['A128CBC-HS256']
+    endpoint:
+        client_registration:
+            enabled: true
+            path: '/client/management'
+            host: 'foo.foo.foo'
+            initial_access_token:
+                enabled: true
+                required: true
+                realm: 'Client Registration'
+                repository: 'MyInitialAccessTokenRepository'
+            software_statement:
+                enabled: true
+                required: false
+                key_set: '{"keys":[{"kty":"EC","crv":"P-256","d":"zudFvuFy_HbN4cZO5kEdN33Zz-VR48YrVV23mCzAwqA","x":"VlZO9X_B43HFSUK8aeQn88UO2_VfeBtVU1Usl3rYq90","y":"oAHPRNZEUpe-T2-Q_rThJ4lGsNYLXomSYW69RZ9jzNQ"},{"kty":"EC","crv":"P-256","d":"336bCh7Zt-3FJmRLyFtINr6IsK5gh1CHJRdk20NcolA","x":"w0qQe7oa_aI3G6irjTbdtMqc4e0vNveQgRoRCyvpIBE","y":"7DyqhillL89iM6fMK216ov1EixmJGda76ugNuE-fsic"},{"kty":"RSA","n":"sLjaCStJYRr_y7_3GLlDb4bnGJ8XirSdFboYmvA38NXJ6PhIIjr-sFzfwlcpxZxz6zzjXkDFs3AcUOvC3_KRT5tn4XBOHcR6ABrT65dZTe_qalEpYeQG4oxevc01vmD_dD6Ho2O69amT4gscus2pvszFPdraMYybH24aQFztVtc","e":"AQAB","d":"By-tJhxNgpZfeoCW4rl95YYd1aF6iphnnt-PapWEINYAvOmDvWiavL86FiQHPdLr38_9CvMlVvOjIyNDLGonwHynPxAzUsT7M891N9D0cSCv9DlV3uqRVtdqF4MtWtpU5JWJ9q6auL1UPx2tJhOygu9tJ7w0bTGFwrUdb8PSnlE","p":"3p-6HWbX9YcSkeksJXW3_Y2cfZgRCUXH2or1dIidmscb4VVtTUwb-8gGzUDEq4iS_5pgLARl3O4lOHK0n6Qbrw","q":"yzdrGWwgaWqK6e9VFv3NXGeq1TEKHLkXjF7J24XWKm9lSmlssPRv0NwMPVp_CJ39BrLfFtpFr_fh0oG1sVZ5WQ","dp":"UQ6rP0VQ4G77zfCuSD1ibol_LyONIGkt6V6rHHEZoV9ZwWPPVlOd5MDh6R3p_eLOUw6scZpwVE7JcpIhPfcMtQ","dq":"Jg8g_cfkYhnUHm_2bbHm7jF0Ky1eCXcY0-9Eutpb--KVA9SuyI1fC6zKlgsG06RTKRgC9BK5DnXMU1J7ptTdMQ","qi":"17kC87NLUV6z-c-wtmbNqAkDbKmwpb2RMsGUQmhEPJwnWuwEKZpSQz776SUVwoc0xiQ8DpvU_FypflIlm6fq9w"},{"kty":"RSA","n":"um8f5neOmoGMsQ-BJMOgehsSOzQiYOk4W7AJL97q-V_8VojXJKHUqvTqiDeVfcgxPz1kNseIkm4PivKYQ1_Yh1j5RxL30V8Pc3VR7ReLMvEsQUbedkJKqhXy7gOYyc4IrYTux1I2dI5I8r_lvtDtTgWB5UrWfwj9ddVhk22z6jc","e":"AQAB","d":"lZqCsMAT0OxQZ-0XJtdMuW9ry9JkG_xKW1kBpkZtrDtYFGCutBigvabXZQOllE_HJQYwmry3XTmwg0F06evJpkPQlvMKEd1opQM2vbqM1t1lgeo1ggckdSHwiYxEDW5URM-TioGqf5RpluU8QZ5Tthm_nBCw-lA4xGhlDawNZjE","p":"5AgVIR3TAtzTXw0i8xIUL1cGJiHB_yokvgAdkhUupDhWQNkK344uCGV7QHm3IqxF2z7l2tOqtOYxnw2zJDtXRQ","q":"0UzuSJJ2CKc_RCd7CKBUIIe6fdekQ2gxleD7HuseEU0CtlTfJlWYC5VF6OwM2PVBxhe0P1FaRCry7tnPSHkFSw","dp":"BU160E5VPdfMwoUXrvdYqNEpP3HBhSGBwTlXdrIvZ3o350Ik0pYH1AIoH5O1AoVnCnYn-jK54YMI3F4BMHKA0Q","dq":"vJcBLksqJ-nrS9H3PnKY2ybxl2qzDDnaVB6Ap_9a_GPTyc73s2b0tZsvfw0TFnsHZSL-uv7mwv2gIDAKYlcJuQ","qi":"ktx8AsCMqNxniI0SpQF4biCFtgUULPmPruuITrTAv90fPzpF-whbRFEi8bdIZaLFyzj7qsscA2bJteUi-i8ITQ"}]}'
+                allowed_signature_algorithms: ['RS256']
+        client_configuration:
+            enabled: true
+            realm: 'Client Configuration'
+            path: '/client/configure/{client_id}'
+            host: 'foo.foo.foo'
+        token_revocation:
+            enabled: true
+            path: '/token/revoke'
+            host: 'foo.bar'
+            allow_callback: true
+        token_introspection:
+            enabled: true
+            path: '/token/introspect'
+            host: 'bar.foo'
+        token:
+            enabled: true
+            path: '/token/get'
+            host: 'bar.bar'
+        jwks_uri:
+            enabled: true
+            path: '/public.jwkset'
+            key_set: '{"keys":[{"kty":"EC","crv":"P-256","x":"VlZO9X_B43HFSUK8aeQn88UO2_VfeBtVU1Usl3rYq90","y":"oAHPRNZEUpe-T2-Q_rThJ4lGsNYLXomSYW69RZ9jzNQ"},{"kty":"EC","crv":"P-256","x":"w0qQe7oa_aI3G6irjTbdtMqc4e0vNveQgRoRCyvpIBE","y":"7DyqhillL89iM6fMK216ov1EixmJGda76ugNuE-fsic"},{"kty":"RSA","n":"sLjaCStJYRr_y7_3GLlDb4bnGJ8XirSdFboYmvA38NXJ6PhIIjr-sFzfwlcpxZxz6zzjXkDFs3AcUOvC3_KRT5tn4XBOHcR6ABrT65dZTe_qalEpYeQG4oxevc01vmD_dD6Ho2O69amT4gscus2pvszFPdraMYybH24aQFztVtc","e":"AQAB"},{"kty":"RSA","n":"um8f5neOmoGMsQ-BJMOgehsSOzQiYOk4W7AJL97q-V_8VojXJKHUqvTqiDeVfcgxPz1kNseIkm4PivKYQ1_Yh1j5RxL30V8Pc3VR7ReLMvEsQUbedkJKqhXy7gOYyc4IrYTux1I2dI5I8r_lvtDtTgWB5UrWfwj9ddVhk22z6jc","e":"AQAB"}]}'
+        metadata:
+            enabled: true
+            path: '/.well-known/openid-configuration'
+            host: 'foo.foo.bar'
+            signature:
+                enabled: true
+                algorithm: 'RS256'
+                key: '{"kid":"3JvyzQENw2uBs-lI_3tn_mfNtn7ESxo5DY3rPZvTvLI","kty":"RSA","n":"0gVVThD9kqE45PJeyZGB8yZPv7Cv33zye-3_DspM-a9b_tv1edqdlRfub0DXs40qZ4GaWnCJjnNbLW_p7s3WyMKlMU53AGRADhXxtVkZhoPjD_2Ap4_SXB5Ak6s-IybDOR3Fg0PV9bvco7MMspEg8XXd_ZVa7_3VMOHj_anONZs","e":"AQAB","d":"upuggz_XfwyfV9X-4MzYESruWx1r94C2l-UM5qBbqtLkQ9w_DelwcQQViGauAcyha9ydQFST9K2Myx-QVO4yMw0Cd78WjoWh5IK1U6pwHUVhXsfD_4VXO0swxn2OgOJqRU2QGyR8CEDkdIBt_frl16Plf35psj1nJDkF7v6cP3k","p":"9U4gLOwnhUYS_uulKVl1FHL1dKMxVqz8ZBCX-Hi_y_89OTFtfu7F0t-I33czXY3PeGOzxsGvk1JhOjabuijfjQ","q":"2y1lRyEXhGgli-4tM_nfKWA7e_MknQ-5TdqZmALJ_9UHkxUu5m2pbZl3NwRWrVAhjBnwCQmgZlHUU9gGxJrrxw","dp":"LPMg8Dphz4kUqAO0IwySaKncEoBo5RITuZ5UyqINuyrNJDLLdqv4MfjmEtS749O9hbj3U19gdeVtjYY-KPGebQ","dq":"R0EY3ej6NkeNfVJvS6h-TntEm2VOj-keuxrIOE0f0pY1IjIOz0bzf_gWc8JrU2jrnxqHmMiSZvFPb_qZKK2c3Q","qi":"4dG5rwyzXclvFqWxnv6TW4-p_Nbyl0q5ryVZN3L5NLodur6DgSD7CxiYzmGg57T1QD0q96deM6GnT2rdkoI6kQ"}'
+            custom_routes:
+                service_documentation:
+                    route_name: 'service_documentation'
+                    route_parameters:
+                        'hello': 'developer'
+                op_policy_uri:
+                    route_name: 'op_policy_uri'
+                    route_parameters: []
+                op_tos_uri:
+                    route_name: 'op_tos_uri'
+                    route_parameters: []
+            custom_values:
+                acr_values_supported:
+                    - 'urn:mace:incommon:iap:silver'
+                    - 'urn:mace:incommon:iap:bronze'
+                display_values_supported: ['page']
+                ui_locales_supported: ['fr', 'en']
+                claims_locales_supported: ['en', 'fr', 'de']
+        session_management:
+            enabled: true
+            path: '/session/manager/iframe'
+            host: 'bar.bar.foo'
+        authorization:
+            enabled: true
+            path: '/authorize'
+            host: 'bar.bar.bar'
+            login_route_name: 'app_login'
+            enforce_state: false
+            response_mode:
+                allow_response_mode_parameter: true
+                form_post:
+                    enabled: true
+                    template: '@OAuth2FrameworkServerBundle/form_post/response.html.twig'
+            request_object:
+                enabled: true
+                signature_algorithms: ['RS512', 'HS512']
+                encryption:
+                    enabled: true
+                    required: true
+                    key_encryption_algorithms: ['RSA-OAEP-256']
+                    content_encryption_algorithms: ['A256CBC-HS512']
+                reference:
+                    enabled: true
+                    uris_registration_required: true
+    grant:
+        authorization_code:
+            enabled: true
+            min_length: 50
+            max_length: 100
+            enforce_pkce: false
+            repository: 'MyAuthorizationCodeRepository'
+        refresh_token:
+            enabled: true
+            min_length: 50
+            max_length: 100
+            lifetime: 604800
+            repository: 'MyRefreshTokenRepository'
+        none:
+            enabled: false #Not fully implemented
+        implicit:
+            enabled: true
+        client_credentials:
+            enabled: true
+            issue_refresh_token: true
+        resource_owner_password_credential:
+            enabled: true
+        jwt_bearer:
+            enabled: true
+            signature_algorithms: ['RS256', 'RS512', 'HS256', 'HS512', 'ES256', 'ES512']
+            claim_checkers: ['exp', 'iat', 'nbf']
+            header_checkers: []
+            encryption:
+                enabled: true
+                required: false
+                key_set: '{"keys":[{"kty":"RSA","n":"sLjaCStJYRr_y7_3GLlDb4bnGJ8XirSdFboYmvA38NXJ6PhIIjr-sFzfwlcpxZxz6zzjXkDFs3AcUOvC3_KRT5tn4XBOHcR6ABrT65dZTe_qalEpYeQG4oxevc01vmD_dD6Ho2O69amT4gscus2pvszFPdraMYybH24aQFztVtc","e":"AQAB","d":"By-tJhxNgpZfeoCW4rl95YYd1aF6iphnnt-PapWEINYAvOmDvWiavL86FiQHPdLr38_9CvMlVvOjIyNDLGonwHynPxAzUsT7M891N9D0cSCv9DlV3uqRVtdqF4MtWtpU5JWJ9q6auL1UPx2tJhOygu9tJ7w0bTGFwrUdb8PSnlE","p":"3p-6HWbX9YcSkeksJXW3_Y2cfZgRCUXH2or1dIidmscb4VVtTUwb-8gGzUDEq4iS_5pgLARl3O4lOHK0n6Qbrw","q":"yzdrGWwgaWqK6e9VFv3NXGeq1TEKHLkXjF7J24XWKm9lSmlssPRv0NwMPVp_CJ39BrLfFtpFr_fh0oG1sVZ5WQ","dp":"UQ6rP0VQ4G77zfCuSD1ibol_LyONIGkt6V6rHHEZoV9ZwWPPVlOd5MDh6R3p_eLOUw6scZpwVE7JcpIhPfcMtQ","dq":"Jg8g_cfkYhnUHm_2bbHm7jF0Ky1eCXcY0-9Eutpb--KVA9SuyI1fC6zKlgsG06RTKRgC9BK5DnXMU1J7ptTdMQ","qi":"17kC87NLUV6z-c-wtmbNqAkDbKmwpb2RMsGUQmhEPJwnWuwEKZpSQz776SUVwoc0xiQ8DpvU_FypflIlm6fq9w"},{"kty":"RSA","n":"um8f5neOmoGMsQ-BJMOgehsSOzQiYOk4W7AJL97q-V_8VojXJKHUqvTqiDeVfcgxPz1kNseIkm4PivKYQ1_Yh1j5RxL30V8Pc3VR7ReLMvEsQUbedkJKqhXy7gOYyc4IrYTux1I2dI5I8r_lvtDtTgWB5UrWfwj9ddVhk22z6jc","e":"AQAB","d":"lZqCsMAT0OxQZ-0XJtdMuW9ry9JkG_xKW1kBpkZtrDtYFGCutBigvabXZQOllE_HJQYwmry3XTmwg0F06evJpkPQlvMKEd1opQM2vbqM1t1lgeo1ggckdSHwiYxEDW5URM-TioGqf5RpluU8QZ5Tthm_nBCw-lA4xGhlDawNZjE","p":"5AgVIR3TAtzTXw0i8xIUL1cGJiHB_yokvgAdkhUupDhWQNkK344uCGV7QHm3IqxF2z7l2tOqtOYxnw2zJDtXRQ","q":"0UzuSJJ2CKc_RCd7CKBUIIe6fdekQ2gxleD7HuseEU0CtlTfJlWYC5VF6OwM2PVBxhe0P1FaRCry7tnPSHkFSw","dp":"BU160E5VPdfMwoUXrvdYqNEpP3HBhSGBwTlXdrIvZ3o350Ik0pYH1AIoH5O1AoVnCnYn-jK54YMI3F4BMHKA0Q","dq":"vJcBLksqJ-nrS9H3PnKY2ybxl2qzDDnaVB6Ap_9a_GPTyc73s2b0tZsvfw0TFnsHZSL-uv7mwv2gIDAKYlcJuQ","qi":"ktx8AsCMqNxniI0SpQF4biCFtgUULPmPruuITrTAv90fPzpF-whbRFEi8bdIZaLFyzj7qsscA2bJteUi-i8ITQ"}]}'
+                key_encryption_algorithms: ['RSA-OAEP-256']
+                content_encryption_algorithms: ['A256CBC-HS512']
+    openid_connect:
+        enabled: true
+        pairwise_subject:
+            enabled: true
+            service: 'MyPairwiseSubjectIdentifier'
+            is_default: true
+        response_type:
+            id_token: true
+            code_id_token: true
+            id_token_token: true
+            code_id_token_token: true
+        id_token:
+            lifetime: 1800
+            default_signature_algorithm: 'RS256'
+            signature_algorithms: ['RS256', 'RS512', 'ES256', 'ES512']
+            claim_checkers: ['exp', 'iat', 'nbf']
+            header_checkers: ['crit']
+            encryption:
+                enabled: true
+                key_encryption_algorithms: ['RSA-OAEP-256']
+                content_encryption_algorithms: ['A256CBC-HS512']
+#        id_token_hint:
+#            enabled: true
+        userinfo_endpoint:
+            enabled: true
+            path: '/userinfo'
+            signature:
+                enabled: true
+                signature_algorithms: ['RS256', 'RS512', 'ES256', 'ES512', 'none']
+            encryption:
+                enabled: true
+#                key_set: '{"keys":[{"kty":"RSA","n":"sLjaCStJYRr_y7_3GLlDb4bnGJ8XirSdFboYmvA38NXJ6PhIIjr-sFzfwlcpxZxz6zzjXkDFs3AcUOvC3_KRT5tn4XBOHcR6ABrT65dZTe_qalEpYeQG4oxevc01vmD_dD6Ho2O69amT4gscus2pvszFPdraMYybH24aQFztVtc","e":"AQAB","d":"By-tJhxNgpZfeoCW4rl95YYd1aF6iphnnt-PapWEINYAvOmDvWiavL86FiQHPdLr38_9CvMlVvOjIyNDLGonwHynPxAzUsT7M891N9D0cSCv9DlV3uqRVtdqF4MtWtpU5JWJ9q6auL1UPx2tJhOygu9tJ7w0bTGFwrUdb8PSnlE","p":"3p-6HWbX9YcSkeksJXW3_Y2cfZgRCUXH2or1dIidmscb4VVtTUwb-8gGzUDEq4iS_5pgLARl3O4lOHK0n6Qbrw","q":"yzdrGWwgaWqK6e9VFv3NXGeq1TEKHLkXjF7J24XWKm9lSmlssPRv0NwMPVp_CJ39BrLfFtpFr_fh0oG1sVZ5WQ","dp":"UQ6rP0VQ4G77zfCuSD1ibol_LyONIGkt6V6rHHEZoV9ZwWPPVlOd5MDh6R3p_eLOUw6scZpwVE7JcpIhPfcMtQ","dq":"Jg8g_cfkYhnUHm_2bbHm7jF0Ky1eCXcY0-9Eutpb--KVA9SuyI1fC6zKlgsG06RTKRgC9BK5DnXMU1J7ptTdMQ","qi":"17kC87NLUV6z-c-wtmbNqAkDbKmwpb2RMsGUQmhEPJwnWuwEKZpSQz776SUVwoc0xiQ8DpvU_FypflIlm6fq9w"},{"kty":"RSA","n":"um8f5neOmoGMsQ-BJMOgehsSOzQiYOk4W7AJL97q-V_8VojXJKHUqvTqiDeVfcgxPz1kNseIkm4PivKYQ1_Yh1j5RxL30V8Pc3VR7ReLMvEsQUbedkJKqhXy7gOYyc4IrYTux1I2dI5I8r_lvtDtTgWB5UrWfwj9ddVhk22z6jc","e":"AQAB","d":"lZqCsMAT0OxQZ-0XJtdMuW9ry9JkG_xKW1kBpkZtrDtYFGCutBigvabXZQOllE_HJQYwmry3XTmwg0F06evJpkPQlvMKEd1opQM2vbqM1t1lgeo1ggckdSHwiYxEDW5URM-TioGqf5RpluU8QZ5Tthm_nBCw-lA4xGhlDawNZjE","p":"5AgVIR3TAtzTXw0i8xIUL1cGJiHB_yokvgAdkhUupDhWQNkK344uCGV7QHm3IqxF2z7l2tOqtOYxnw2zJDtXRQ","q":"0UzuSJJ2CKc_RCd7CKBUIIe6fdekQ2gxleD7HuseEU0CtlTfJlWYC5VF6OwM2PVBxhe0P1FaRCry7tnPSHkFSw","dp":"BU160E5VPdfMwoUXrvdYqNEpP3HBhSGBwTlXdrIvZ3o350Ik0pYH1AIoH5O1AoVnCnYn-jK54YMI3F4BMHKA0Q","dq":"vJcBLksqJ-nrS9H3PnKY2ybxl2qzDDnaVB6Ap_9a_GPTyc73s2b0tZsvfw0TFnsHZSL-uv7mwv2gIDAKYlcJuQ","qi":"ktx8AsCMqNxniI0SpQF4biCFtgUULPmPruuITrTAv90fPzpF-whbRFEi8bdIZaLFyzj7qsscA2bJteUi-i8ITQ"}]}'
+                key_encryption_algorithms: ['RSA-OAEP-256']
+                content_encryption_algorithms: ['A256CBC-HS512']

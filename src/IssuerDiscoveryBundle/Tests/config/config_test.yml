@@ -1,0 +1,21 @@
+imports:
+    - { resource: issuer_discovery.yml }
+
+framework:
+    test: ~
+    secret: 'test'
+    translator: ~
+    default_locale:  'en'
+    csrf_protection: ~
+    validation:
+        enable_annotations: true
+    session:
+        storage_id: session.storage.mock_file
+    router:
+        resource: '%kernel.root_dir%/config/routing.yml'
+        strict_requirements: ~
+    assets:
+        enabled: false
+    trusted_hosts:   ~
+    fragments:       ~
+    http_method_override: true

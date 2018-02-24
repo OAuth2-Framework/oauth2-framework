@@ -1,0 +1,23 @@
+security:
+    encoders:
+        Symfony\Component\Security\Core\User\UserInterface: 'plaintext'
+
+    role_hierarchy:
+        ROLE_ADMIN: 'ROLE_USER'
+
+    providers:
+        test_bundle:
+            id: 'OAuth2Framework\ServerBundle\Tests\TestBundle\Service\UserProvider'
+
+    firewalls:
+#        api:
+#            pattern: '^/api'
+#            oauth2:
+#                access_token_handler_manager: OAuth2Framework\Component\Security\AccessTokenHandlerManager
+
+        main:
+            pattern: '^/'
+            anonymous: ~
+            http_basic:
+                realm: "My security system"
+            logout_on_user_change: true

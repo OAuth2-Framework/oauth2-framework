@@ -19,11 +19,15 @@ matrix:
 before_script:
     - composer self-update
     - mkdir -p build/logs
+    - mkdir -p build/cov
     - if [[ $deps = low ]]; then composer update --no-interaction --prefer-lowest ; fi
     - if [[ !$deps ]]; then composer install --no-interaction ; fi
 
 script:
-    - ./vendor/bin/phpunit --coverage-clover build/logs/clover.xml
+    - ./vendor/bin/security-checker security:check
+    - ./vendor/bin/phpunit --coverage-php build/cov/coverage-framework.cov
+    - ./vendor/bin/phpunit -c issuer_discovery.phpunit.xml.dist --coverage-php build/cov/coverage-issuer_discovery.cov
 
 after_success:
+    - ./vendor/bin/phpcov merge --clover build/logs/clover.xml build/cov
     - ./vendor/bin/coveralls --no-interaction
