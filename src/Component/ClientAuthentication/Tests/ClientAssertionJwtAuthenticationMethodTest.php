@@ -433,7 +433,7 @@ class ClientAssertionJwtAuthenticationMethodTest extends TestCase
      *
      * @return JKUFactory
      */
-    private function getJkuFactory(\Http\Mock\Client $client):JKUFactory
+    private function getJkuFactory(\Http\Mock\Client $client): JKUFactory
     {
         return new JKUFactory(
             new StandardConverter(),
@@ -471,7 +471,7 @@ class ClientAssertionJwtAuthenticationMethodTest extends TestCase
                 'iss' => 'ClientId',
                 'sub' => 'ClientId',
                 'aud' => 'My Server',
-                'exp' => time()+3600,
+                'exp' => time() + 3600,
             ]))
             ->addSignature(
                 JWK::createFromJson('{"kty":"oct","k":"bJzb8RaN7TzPz001PeF0lw0ZoUJqbazGxMvBd_xzfms"}'),
