@@ -365,6 +365,7 @@ class ClientAssertionJwt implements AuthenticationMethod
         if (!in_array($signatureAlgorithm, $trustedIssuer->getAllowedSignatureAlgorithms())) {
             throw new \InvalidArgumentException(sprintf('The signature algorithm "%s" is not allowed for that issuer.', $signatureAlgorithm));
         }
+
         return $trustedIssuer->getJWKSet();
     }
 
