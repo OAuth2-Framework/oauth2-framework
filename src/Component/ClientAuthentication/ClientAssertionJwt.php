@@ -327,8 +327,6 @@ class ClientAssertionJwt implements AuthenticationMethod
                 $validatedParameters = $validatedParameters->with('jwks_uri', $commandParameters->get('jwks_uri'));
 
                 break;
-            default:
-                throw new \InvalidArgumentException('Either the parameter "jwks" or "jwks_uri" must be set.');
         }
 
         return $validatedParameters;
@@ -367,7 +365,6 @@ class ClientAssertionJwt implements AuthenticationMethod
         if (!in_array($signatureAlgorithm, $trustedIssuer->getAllowedSignatureAlgorithms())) {
             throw new \InvalidArgumentException(sprintf('The signature algorithm "%s" is not allowed for that issuer.', $signatureAlgorithm));
         }
-
         return $trustedIssuer->getJWKSet();
     }
 
