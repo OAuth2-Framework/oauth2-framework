@@ -192,6 +192,8 @@ class ClientAssertionJwt implements AuthenticationMethod
             $this->headerCheckerManager->check($jws, 0);
             $claims = $this->jsonConverter->decode($jws->getPayload());
             $this->claimCheckerManager->check($claims);
+        } catch (OAuth2Exception $e) {
+            throw $e;
         } catch (\Exception $e) {
             throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_REQUEST, 'Unable to load, decrypt or verify the client assertion.', $e);
         }
@@ -229,7 +231,7 @@ class ClientAssertionJwt implements AuthenticationMethod
             return $jwe->getPayload();
         } catch (\Exception $e) {
             if (true === $this->encryptionRequired) {
-                throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_REQUEST, $e->getMessage(), $e);
+                throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_REQUEST, 'The encryption of the assertion is mandatory but the decryption of the assertion failed.', $e);
             }
 
             return $assertion;
@@ -270,7 +272,7 @@ class ClientAssertionJwt implements AuthenticationMethod
     {
         switch ($commandParameters->get('token_endpoint_auth_method')) {
             case 'client_secret_jwt':
-                return $this->processClientSecretJwtConfiguration($validatedParameters);
+                return $this->processClientSecretJwtConfiguration($commandParameters, $validatedParameters);
             case 'private_key_jwt':
                 return $this->processPrivateKeyJwtConfiguration($commandParameters, $validatedParameters);
             default:
@@ -279,12 +281,14 @@ class ClientAssertionJwt implements AuthenticationMethod
     }
 
     /**
+     * @param DataBag $commandParameters
      * @param DataBag $validatedParameters
      *
      * @return DataBag
      */
-    private function processClientSecretJwtConfiguration(DataBag $validatedParameters): DataBag
+    private function processClientSecretJwtConfiguration(DataBag $commandParameters, DataBag $validatedParameters): DataBag
     {
+        $validatedParameters = $validatedParameters->with('token_endpoint_auth_method', $commandParameters->get('token_endpoint_auth_method'));
         $validatedParameters = $validatedParameters->with('client_secret', $this->createClientSecret());
         $validatedParameters = $validatedParameters->with('client_secret_expires_at', (0 === $this->secretLifetime ? 0 : time() + $this->secretLifetime));
 
@@ -300,14 +304,20 @@ class ClientAssertionJwt implements AuthenticationMethod
     private function processPrivateKeyJwtConfiguration(DataBag $commandParameters, DataBag $validatedParameters): DataBag
     {
         switch (true) {
-            case !($commandParameters->has('jwks') xor $commandParameters->has('jwks_uri')):
+            case $commandParameters->has('jwks') && $commandParameters->has('jwks_uri'):
+            case !$commandParameters->has('jwks') && !$commandParameters->has('jwks_uri') && null === $this->trustedIssuerRepository:
                 throw new \InvalidArgumentException('Either the parameter "jwks" or "jwks_uri" must be set.');
+            case !$commandParameters->has('jwks') && !$commandParameters->has('jwks_uri') && null !== $this->trustedIssuerRepository: //Allowed when trusted issuer support is set
+                $validatedParameters = $validatedParameters->with('token_endpoint_auth_method', $commandParameters->get('token_endpoint_auth_method'));
+
+                break;
             case $commandParameters->has('jwks'):
                 try {
                     JWKSet::createFromJson($commandParameters->get('jwks'));
                 } catch (\Throwable $e) {
                     throw new \InvalidArgumentException('The parameter "jwks" must be a valid JWKSet object.', 0, $e);
                 }
+                $validatedParameters = $validatedParameters->with('token_endpoint_auth_method', $commandParameters->get('token_endpoint_auth_method'));
                 $validatedParameters = $validatedParameters->with('jwks', $commandParameters->get('jwks'));
 
                 break;
@@ -324,6 +334,7 @@ class ClientAssertionJwt implements AuthenticationMethod
                 if (0 === $jwks->count()) {
                     throw new \InvalidArgumentException('The distant key set is empty.');
                 }
+                $validatedParameters = $validatedParameters->with('token_endpoint_auth_method', $commandParameters->get('token_endpoint_auth_method'));
                 $validatedParameters = $validatedParameters->with('jwks_uri', $commandParameters->get('jwks_uri'));
 
                 break;

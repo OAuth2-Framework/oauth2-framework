@@ -139,7 +139,6 @@ class AuthenticationMethodManager
                 return $authenticationMethod->isClientAuthenticated($client, $clientCredentials, $request);
             }
         }
-
         return false;
     }
 
