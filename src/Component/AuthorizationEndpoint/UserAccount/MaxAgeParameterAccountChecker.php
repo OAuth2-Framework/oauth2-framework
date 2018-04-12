@@ -31,9 +31,11 @@ class MaxAgeParameterAccountChecker implements UserAccountChecker
         switch (true) {
             case $authorization->hasQueryParam('max_age'):
                 $max_age = (int) $authorization->getQueryParam('max_age');
+
                 break;
             case $authorization->getClient()->has('default_max_age'):
                 $max_age = (int) $authorization->getClient()->get('default_max_age');
+
                 break;
             default:
                 return;
