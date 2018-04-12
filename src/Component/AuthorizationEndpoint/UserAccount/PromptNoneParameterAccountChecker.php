@@ -11,30 +11,20 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Component\AuthorizationEndpoint\UserAccountDiscovery;
+namespace OAuth2Framework\Component\AuthorizationEndpoint\UserAccount;
 
 use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
 use OAuth2Framework\Component\AuthorizationEndpoint\Exception\CreateRedirectionException;
 use OAuth2Framework\Component\Core\Exception\OAuth2Exception;
-use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 
-class PromptNoneParameterChecker implements UserAccountDiscovery
+class PromptNoneParameterAccountChecker implements UserAccountChecker
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function find(Authorization $authorization, ?bool &$isFullyAuthenticated = null): ?UserAccount
-    {
-        return null;
-    }
-
     /**
      * {@inheritdoc}
      */
     public function check(Authorization $authorization)
     {
-        $userAccount = $authorization->getUserAccount();
-        if (null === $userAccount && $authorization->hasPrompt('none')) {
+        if (null === $authorization->getUserAccount() && $authorization->hasPrompt('none')) {
             throw new CreateRedirectionException($authorization, OAuth2Exception::ERROR_LOGIN_REQUIRED, 'The resource owner is not logged in.');
         }
     }

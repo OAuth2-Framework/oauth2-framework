@@ -51,7 +51,7 @@ return function (ContainerConfigurator $container) {
             ref('httplug.message_factory'),
             ref('session'),
             ref(AuthorizationEndpoint\AuthorizationFactory::class),
-            ref(AuthorizationEndpoint\UserAccountDiscovery\UserAccountDiscoveryManager::class),
+            ref(AuthorizationEndpoint\UserAccount\UserAccountDiscoveryManager::class),
             ref(AuthorizationEndpoint\ConsentScreen\ExtensionManager::class),
         ]);
 

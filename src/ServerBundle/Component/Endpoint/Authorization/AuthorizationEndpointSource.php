@@ -26,7 +26,7 @@ use OAuth2Framework\Component\AuthorizationEndpoint\ConsentScreen\Extension;
 use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\ParameterChecker;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\ResponseMode;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType;
-use OAuth2Framework\Component\AuthorizationEndpoint\UserAccountDiscovery\UserAccountDiscovery;
+use OAuth2Framework\Component\AuthorizationEndpoint\UserAccount\UserAccountDiscovery;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;

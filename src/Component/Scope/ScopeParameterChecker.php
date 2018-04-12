@@ -14,9 +14,10 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\Scope;
 
 use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
+use OAuth2Framework\Component\AuthorizationEndpoint\Exception\OAuth2AuthorizationException;
 use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\ParameterChecker;
-use OAuth2Framework\Component\Scope\Policy\ScopePolicyManager;
 use OAuth2Framework\Component\Core\Exception\OAuth2Exception;
+use OAuth2Framework\Component\Scope\Policy\ScopePolicyManager;
 
 class ScopeParameterChecker implements ParameterChecker
 {
@@ -57,17 +58,20 @@ class ScopeParameterChecker implements ParameterChecker
                 $requestedScope = '';
             }
             $requestedScope = $this->scopePolicyManager->apply($requestedScope, $authorization->getClient());
+            if (empty($requestedScope)) {
+                return $authorization;
+            }
             $scopes = explode(' ', $requestedScope);
 
-            $availableScope = $this->scopeRepository->getAvailableScopesForClient($authorization->getClient());
-            if (!$this->scopeRepository->areRequestedScopesAvailable($scopes, $availableScope)) {
-                throw new \InvalidArgumentException(sprintf('An unsupported scope was requested. Available scopes for the client are %s.', implode(', ', $availableScope)));
+            $availableScopes = $this->scopeRepository->all();
+            if (0 !== count(array_diff($scopes, $availableScopes))) {
+                throw new \InvalidArgumentException(sprintf('An unsupported scope was requested. Available scopes for the client are %s.', implode(', ', $availableScopes)));
             }
-            $authorization = $authorization->withScopes($scope);
+            $authorization = $authorization->withResponseParameter('scope', implode(' ', $scopes));
 
             return $authorization;
         } catch (\InvalidArgumentException $e) {
-            throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_SCOPE, $e->getMessage(), $e);
+            throw new OAuth2AuthorizationException(400, OAuth2Exception::ERROR_INVALID_SCOPE, $e->getMessage(), $authorization, $e);
         }
     }
 }

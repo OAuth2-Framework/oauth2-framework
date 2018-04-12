@@ -192,24 +192,6 @@ class Client implements ResourceOwner, ContainsRecordedMessages, DomainObject
     }
 
     /**
-     * @param string $token_type
-     *
-     * @return bool
-     */
-    public function isTokenTypeAllowed(string $token_type): bool
-    {
-        if (!$this->has('token_types')) {
-            return true;
-        }
-        $token_types = $this->get('token_types');
-        if (!is_array($token_types)) {
-            throw new \InvalidArgumentException('The metadata "token_types" must be an array.');
-        }
-
-        return in_array($token_type, $token_types);
-    }
-
-    /**
      * @return bool
      */
     public function isPublic(): bool

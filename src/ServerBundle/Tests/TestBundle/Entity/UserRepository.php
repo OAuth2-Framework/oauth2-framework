@@ -70,7 +70,7 @@ class UserRepository implements UserAccountRepository
                 'password' => 'secret',
                 'salt' => null,
                 'roles' => ['ROLE_USER'],
-                'last_login_at' => new \DateTimeImmutable('now -100 sec'),
+                'last_login_at' => time() - 100,
                 'parameters' => [
                     'password' => 'doe',
                     'user' => 'john',
@@ -114,7 +114,7 @@ class UserRepository implements UserAccountRepository
                 'password' => 'secret',
                 'salt' => null,
                 'roles' => ['ROLE_USER'],
-                'last_login_at' => new \DateTimeImmutable('now -100 sec'),
+                'last_login_at' => time() - 100,
                 'parameters' => [
                     'password' => 'doe',
                     'user' => 'john',

@@ -18,7 +18,7 @@ use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwner;
 interface UserAccount extends ResourceOwner
 {
     /**
-     * @return \DateTimeImmutable|null
+     * @return int|null
      */
     public function getLastLoginAt();
 }

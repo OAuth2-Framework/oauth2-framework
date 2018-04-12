@@ -44,6 +44,9 @@ class AuthorizationFactory
      * @param ServerRequestInterface $request
      *
      * @return Authorization
+     *
+     * @throws \Http\Client\Exception
+     * @throws \OAuth2Framework\Component\Core\Exception\OAuth2Exception
      */
     public function createAuthorizationFromRequest(ServerRequestInterface $request): Authorization
     {

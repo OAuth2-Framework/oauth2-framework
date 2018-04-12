@@ -13,8 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Service;
 
-use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
-use OAuth2Framework\Component\AuthorizationEndpoint\UserAccountDiscovery\UserAccountDiscovery;
+use OAuth2Framework\Component\AuthorizationEndpoint\UserAccount\UserAccountDiscovery;
 use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -46,24 +45,19 @@ class SymfonyUserDiscovery implements UserAccountDiscovery
     /**
      * {@inheritdoc}
      */
-    public function find(Authorization $authorization, ?bool &$isFullyAuthenticated = null): ?UserAccount
+    public function find(?bool &$isFullyAuthenticated = null): ?UserAccount
     {
-        if (null !== $token = $this->tokenStorage->getToken()) {
-            $userAccount = $token->getUser();
-            if ($userAccount instanceof UserAccount) {
-                $isFullyAuthenticated = $this->authorizationChecker->isGranted('IS_AUTHENTICATED_FULLY');
-
-                return $userAccount;
-            }
+        if (null === $token = $this->tokenStorage->getToken()) {
+            return null;
         }
 
-        return null;
-    }
+        $userAccount = $token->getUser();
+        if (!$userAccount instanceof UserAccount) {
+            return null;
+        }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function check(Authorization $authorization)
-    {
+        $isFullyAuthenticated = $this->authorizationChecker->isGranted('IS_AUTHENTICATED_FULLY');
+
+        return $userAccount;
     }
 }

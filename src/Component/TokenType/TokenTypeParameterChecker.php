@@ -16,7 +16,6 @@ namespace OAuth2Framework\Component\TokenType;
 use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
 use OAuth2Framework\Component\AuthorizationEndpoint\Exception\OAuth2AuthorizationException;
 use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\ParameterChecker;
-use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Exception\OAuth2Exception;
 
 /**
@@ -55,7 +54,6 @@ class TokenTypeParameterChecker implements ParameterChecker
     {
         try {
             $tokenType = $this->getTokenType($authorization);
-            $this->checkTokenTypeForClient($tokenType, $authorization->getClient());
             $authorization = $authorization->withTokenType($tokenType);
 
             return $authorization;
@@ -76,16 +74,5 @@ class TokenTypeParameterChecker implements ParameterChecker
         }
 
         return $this->tokenTypeManager->getDefault();
-    }
-
-    /**
-     * @param TokenType $tokenType
-     * @param Client    $client
-     */
-    private function checkTokenTypeForClient(TokenType $tokenType, Client $client)
-    {
-        if (!$client->isTokenTypeAllowed($tokenType->name())) {
-            throw new \InvalidArgumentException(sprintf('The token type "%s" is not allowed for the client.', $tokenType->name()));
-        }
     }
 }

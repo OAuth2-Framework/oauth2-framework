@@ -11,7 +11,7 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Component\AuthorizationEndpoint\Tests;
+namespace OAuth2Framework\Component\AuthorizationEndpoint\Tests\ResponseMode;
 
 use Http\Message\MessageFactory\DiactorosMessageFactory;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\FormPostResponseMode;

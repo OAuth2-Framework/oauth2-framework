@@ -213,16 +213,11 @@ class TokenEndpoint implements MiddlewareInterface
      * @param GrantTypeData          $grantTypeData
      *
      * @return GrantTypeData
-     *
-     * @throws OAuth2Exception
      */
     private function updateWithTokenTypeParameters(ServerRequestInterface $request, GrantTypeData $grantTypeData): GrantTypeData
     {
         /** @var TokenType $tokenType */
         $tokenType = $request->getAttribute('token_type');
-        if (!$grantTypeData->getClient()->isTokenTypeAllowed($tokenType->name())) {
-            throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_REQUEST, sprintf('The token type "%s" is not allowed for the client.', $tokenType->name()));
-        }
 
         $info = $tokenType->getAdditionalInformation();
         $info['token_type'] = $tokenType->name();

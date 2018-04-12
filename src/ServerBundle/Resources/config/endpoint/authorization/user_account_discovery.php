@@ -19,9 +19,9 @@ return function (ContainerConfigurator $container) {
         ->private()
         ->autoconfigure();
 
-    $container->set(AuthorizationEndpoint\UserAccountDiscovery\UserAccountDiscoveryManager::class);
+    $container->set(AuthorizationEndpoint\UserAccount\UserAccountDiscoveryManager::class);
 
-    $container->set(AuthorizationEndpoint\UserAccountDiscovery\LoginParameterChecker::class);
-    $container->set(AuthorizationEndpoint\UserAccountDiscovery\MaxAgeParameterChecker::class);
-    $container->set(AuthorizationEndpoint\UserAccountDiscovery\PromptNoneParameterChecker::class);
+    $container->set(AuthorizationEndpoint\UserAccount\PromptLoginParameterAccountChecker::class);
+    $container->set(AuthorizationEndpoint\UserAccount\MaxAgeParameterAccountChecker::class);
+    $container->set(AuthorizationEndpoint\UserAccount\PromptNoneParameterAccountChecker::class);
 };

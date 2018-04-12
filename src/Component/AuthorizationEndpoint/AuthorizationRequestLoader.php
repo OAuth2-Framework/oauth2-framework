@@ -122,7 +122,7 @@ class AuthorizationRequestLoader
      */
     public function getSupportedSignatureAlgorithms(): array
     {
-        return null === $this->jwsLoader ? [] : $this->jwsLoader->getSignatureAlgorithmManager()->list();
+        return null === $this->jwsLoader ? [] : $this->jwsLoader->getJwsVerifier()->getSignatureAlgorithmManager()->list();
     }
 
     /**
@@ -130,7 +130,7 @@ class AuthorizationRequestLoader
      */
     public function getSupportedKeyEncryptionAlgorithms(): array
     {
-        return null === $this->jweLoader ? [] : $this->jweLoader->getKeyEncryptionAlgorithmManager()->list();
+        return null === $this->jweLoader ? [] : $this->jweLoader->getJweDecrypter()->getKeyEncryptionAlgorithmManager()->list();
     }
 
     /**
@@ -138,7 +138,7 @@ class AuthorizationRequestLoader
      */
     public function getSupportedContentEncryptionAlgorithms(): array
     {
-        return null === $this->jweLoader ? [] : $this->jweLoader->getContentEncryptionAlgorithmManager()->list();
+        return null === $this->jweLoader ? [] : $this->jweLoader->getJweDecrypter()->getContentEncryptionAlgorithmManager()->list();
     }
 
     /**

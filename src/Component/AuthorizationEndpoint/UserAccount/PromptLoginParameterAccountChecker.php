@@ -11,22 +11,13 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Component\AuthorizationEndpoint\UserAccountDiscovery;
+namespace OAuth2Framework\Component\AuthorizationEndpoint\UserAccount;
 
 use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
 use OAuth2Framework\Component\AuthorizationEndpoint\Exception\RedirectToLoginPageException;
-use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 
-class LoginParameterChecker implements UserAccountDiscovery
+class PromptLoginParameterAccountChecker implements UserAccountChecker
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function find(Authorization $authorization, ?bool &$isFullyAuthenticated = null): ?UserAccount
-    {
-        return null;
-    }
-
     /**
      * {@inheritdoc}
      */

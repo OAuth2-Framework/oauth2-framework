@@ -70,7 +70,7 @@ class RefreshTokenEndpointExtension implements TokenEndpointExtension
         if (in_array('offline_access', $scope) && null !== $this->refreshTokenRepository) {
             $expiresAt = new \DateTimeImmutable(sprintf('now +%u seconds', $this->lifetime));
             $length = random_int($this->minLength, $this->maxLength);
-            $refreshTokenId = RefreshTokenId::create(Base64Url::encode(random_bytes($length * 8)));
+            $refreshTokenId = RefreshTokenId::create(Base64Url::encode(random_bytes($length)));
             $refreshToken = RefreshToken::createEmpty();
             $refreshToken = $refreshToken->create(
                 $refreshTokenId,

@@ -22,7 +22,7 @@ use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationEndpoint;
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationFactory;
 use OAuth2Framework\Component\AuthorizationEndpoint\ConsentScreen\ExtensionManager;
 use OAuth2Framework\Component\AuthorizationEndpoint\Exception\ProcessAuthorizationException;
-use OAuth2Framework\Component\AuthorizationEndpoint\UserAccountDiscovery\UserAccountDiscoveryManager;
+use OAuth2Framework\Component\AuthorizationEndpoint\UserAccount\UserAccountDiscoveryManager;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
@@ -121,7 +121,7 @@ class AuthorizationEndpointController extends AuthorizationEndpoint
     /**
      * {@inheritdoc}
      */
-    protected function redirectToLoginPage(Authorization $authorization, ServerRequestInterface $request): ResponseInterface
+    protected function redirectToLoginPage(ServerRequestInterface $request, Authorization $authorization): ResponseInterface
     {
         $session_data = [
             'uri' => $request->getUri()->__toString(),

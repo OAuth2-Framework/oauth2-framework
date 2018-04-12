@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\AuthorizationEndpoint;
 
+use OAuth2Framework\Component\Core\Exception\OAuth2Exception;
+
 interface ResponseType
 {
     public const RESPONSE_TYPE_MODE_FRAGMENT = 'fragment';
@@ -47,6 +49,8 @@ interface ResponseType
      * @param Authorization $authorization
      *
      * @return Authorization
+     *
+     * @throws OAuth2Exception
      */
     public function process(Authorization $authorization): Authorization;
 }
