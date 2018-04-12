@@ -102,7 +102,7 @@ class TokenTypeParameterCheckerTest extends TestCase
      */
     private function getTokenTypeParameterChecker(bool $tokenTypeParameterAllowed): TokenTypeParameterChecker
     {
-        if ($this->tokenTypeParameterChecker === null) {
+        if (null === $this->tokenTypeParameterChecker) {
             $defaultTokenType = $this->prophesize(TokenType::class);
             $anotherTokenType = $this->prophesize(TokenType::class);
 
