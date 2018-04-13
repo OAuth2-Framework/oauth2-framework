@@ -17,7 +17,6 @@ use Http\Mock\Client;
 use Jose\Component\Checker\ClaimCheckerManager;
 use Jose\Component\Core\AlgorithmManager;
 use Jose\Component\Core\JWKSet;
-use Jose\Component\Encryption\JWELoader;
 use Jose\Component\Signature\JWS;
 use Jose\Component\Signature\JWSVerifier;
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequestLoader;
@@ -398,7 +397,6 @@ class AuthorizationRequestLoaderTest extends TestCase
             $request->reveal()
         );
 
-
         self::assertTrue($authorization->hasQueryParam('client_id'));
         self::assertTrue($authorization->hasQueryParam('request'));
         self::assertEquals('CLIENT_ID', $authorization->getQueryParam('client_id'));
@@ -540,10 +538,10 @@ class AuthorizationRequestLoaderTest extends TestCase
         $verifier->getSignatureAlgorithmManager()->willReturn(
             $this->getSignatureAlgorithmManager()
         );
-        $verifier->verifyWithKeySet(Argument::type(JWS::class), Argument::type(JWKSet::class), 0, null)->will(function(array $args) {
+        $verifier->verifyWithKeySet(Argument::type(JWS::class), Argument::type(JWKSet::class), 0, null)->will(function (array $args) {
             return
-                ($args[0])->getSignature(0)->getProtectedHeaderParameter('alg') === 'RS256' &&
-                ($args[0])->getSignature(0)->getSignature() !== '';
+                'RS256' === ($args[0])->getSignature(0)->getProtectedHeaderParameter('alg') &&
+                '' !== ($args[0])->getSignature(0)->getSignature();
         });
 
         return $verifier->reveal();
@@ -578,8 +576,6 @@ class AuthorizationRequestLoaderTest extends TestCase
      */
     private function getHttpClient(): Client
     {
-
-
         $client = $this->prophesize(Client::class);
         $client->sendRequest(Argument::type(RequestInterface::class))->will(function (array $args) {
             /** @var Uri $uri */

@@ -55,10 +55,10 @@ abstract class AuthorizationEndpoint implements MiddlewareInterface
      * AuthorizationEndpoint constructor.
      *
      * @param AuthorizationRequestLoader $authorizationRequestLoader
-     * @param ParameterCheckerManager $parameterCheckerManager
-     * @param UserAccountDiscovery $userAccountDiscovery
-     * @param UserAccountCheckerManager $userAccountCheckerManager
-     * @param ExtensionManager $consentScreenExtensionManager
+     * @param ParameterCheckerManager    $parameterCheckerManager
+     * @param UserAccountDiscovery       $userAccountDiscovery
+     * @param UserAccountCheckerManager  $userAccountCheckerManager
+     * @param ExtensionManager           $consentScreenExtensionManager
      */
     public function __construct(AuthorizationRequestLoader $authorizationRequestLoader, ParameterCheckerManager $parameterCheckerManager, UserAccountDiscovery $userAccountDiscovery, UserAccountCheckerManager $userAccountCheckerManager, ExtensionManager $consentScreenExtensionManager)
     {
@@ -185,7 +185,6 @@ abstract class AuthorizationEndpoint implements MiddlewareInterface
 
         throw new OAuth2Exception(302, $error, $error_description, $params);
     }
-
 
     /**
      * @param ServerRequestInterface $request
