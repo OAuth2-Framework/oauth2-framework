@@ -29,7 +29,7 @@ use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountRepository;
 use OAuth2Framework\Component\TokenEndpoint\Extension\TokenEndpointExtensionManager;
 use OAuth2Framework\Component\TokenEndpoint\TokenEndpoint;
-use OAuth2Framework\Component\TokenType\TokenType;
+use OAuth2Framework\Component\Core\TokenType\TokenType;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Psr\Http\Message\ServerRequestInterface;

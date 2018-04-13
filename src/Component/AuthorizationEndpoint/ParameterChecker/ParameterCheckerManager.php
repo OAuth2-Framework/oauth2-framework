@@ -14,6 +14,8 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker;
 
 use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
+use OAuth2Framework\Component\AuthorizationEndpoint\Exception\OAuth2AuthorizationException;
+use OAuth2Framework\Component\Core\Exception\OAuth2Exception;
 
 class ParameterCheckerManager
 {
@@ -38,6 +40,9 @@ class ParameterCheckerManager
      * @param Authorization $authorization
      *
      * @return Authorization
+     *
+     * @throws OAuth2Exception
+     * @throws OAuth2AuthorizationException
      */
     public function process(Authorization $authorization): Authorization
     {

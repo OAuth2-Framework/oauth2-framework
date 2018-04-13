@@ -19,7 +19,7 @@ use OAuth2Framework\Component\Middleware\OAuth2SecurityMiddleware;
 use OAuth2Framework\Component\Middleware\Pipe;
 use OAuth2Framework\Component\Model\IdToken\IdTokenBuilderFactory;
 use OAuth2Framework\Component\Security\AccessTokenHandlerManager;
-use OAuth2Framework\Component\TokenType\TokenTypeManager;
+use OAuth2Framework\Component\Core\TokenType\TokenTypeManager;
 use function Fluent\create;
 use function Fluent\get;
 use OAuth2Framework\Component\Middleware\FormPostBodyParserMiddleware;

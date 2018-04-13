@@ -192,7 +192,8 @@ abstract class AuthorizationEndpoint implements MiddlewareInterface
      * @return Authorization
      *
      * @throws \Http\Client\Exception
-     * @throws \OAuth2Framework\Component\Core\Exception\OAuth2Exception
+     * @throws OAuth2Exception
+     * @throws OAuth2AuthorizationException
      */
     public function createAuthorizationFromRequest(ServerRequestInterface $request): Authorization
     {

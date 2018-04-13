@@ -20,7 +20,7 @@ use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use OAuth2Framework\Component\NoneGrant\AuthorizationStorage;
 use OAuth2Framework\Component\NoneGrant\NoneResponseType;
-use OAuth2Framework\Component\TokenType\TokenType;
+use OAuth2Framework\Component\Core\TokenType\TokenType;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 

@@ -18,7 +18,7 @@ use OAuth2Framework\Component\Core\AccessToken\AccessTokenHandlerManager;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
 use OAuth2Framework\Component\Core\Exception\OAuth2Exception;
 use OAuth2Framework\Component\Core\Response\OAuth2ResponseFactoryManager;
-use OAuth2Framework\Component\TokenType\TokenTypeManager;
+use OAuth2Framework\Component\Core\TokenType\TokenTypeManager;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;

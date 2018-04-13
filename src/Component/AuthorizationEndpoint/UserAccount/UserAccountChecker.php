@@ -14,11 +14,17 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\AuthorizationEndpoint\UserAccount;
 
 use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
+use OAuth2Framework\Component\AuthorizationEndpoint\Exception;
 
 interface UserAccountChecker
 {
     /**
      * @param Authorization $authorization
+     *
+     * @throws Exception\CreateRedirectionException
+     * @throws Exception\ProcessAuthorizationException
+     * @throws Exception\RedirectToLoginPageException
+     * @throws Exception\ShowConsentScreenException
      */
     public function check(Authorization $authorization);
 }

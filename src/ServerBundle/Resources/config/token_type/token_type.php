@@ -11,9 +11,9 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use OAuth2Framework\Component\TokenType\TokenTypeManager;
-use OAuth2Framework\Component\TokenType\TokenTypeMiddleware;
-use OAuth2Framework\Component\TokenType\TokenTypeParameterChecker;
+use OAuth2Framework\Component\Core\TokenType\TokenTypeManager;
+use OAuth2Framework\Component\Core\TokenType\TokenTypeMiddleware;
+use OAuth2Framework\Component\Core\TokenType\TokenTypeParameterChecker;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 

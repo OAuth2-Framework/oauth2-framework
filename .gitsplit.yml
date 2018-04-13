@@ -49,8 +49,6 @@ splits:
       target: "https://${GH_TOKEN}@github.com/oauth2-framework/token-introspection-endpoint.git"
     - prefix: "src/Component/TokenRevocationEndpoint"
       target: "https://${GH_TOKEN}@github.com/oauth2-framework/token-revocation-endpoint.git"
-    - prefix: "src/Component/TokenType"
-      target: "https://${GH_TOKEN}@github.com/oauth2-framework/token-type.git"
 
 origins:
     - ^master$

@@ -19,7 +19,7 @@ use OAuth2Framework\ServerBundle\Form\Type\AuthorizationType;
 use OAuth2Framework\Component\Middleware;
 use OAuth2Framework\Component\AuthorizationEndpoint;
 use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker;
-use OAuth2Framework\Component\TokenType\TokenTypeMiddleware;
+use OAuth2Framework\Component\Core\TokenType\TokenTypeMiddleware;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
 return function (ContainerConfigurator $container) {

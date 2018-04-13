@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Component\TokenType;
 
-use OAuth2Framework\Component\TokenType\TokenTypeManager;
+use OAuth2Framework\Component\Core\TokenType\TokenTypeManager;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;

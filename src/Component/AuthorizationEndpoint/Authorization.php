@@ -17,7 +17,7 @@ use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\ResponseMode;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServer;
 use OAuth2Framework\Component\Core\UserAccount\UserAccount;
-use OAuth2Framework\Component\TokenType\TokenType;
+use OAuth2Framework\Component\Core\TokenType\TokenType;
 
 class Authorization
 {

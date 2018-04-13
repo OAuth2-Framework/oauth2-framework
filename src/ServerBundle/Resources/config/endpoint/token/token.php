@@ -14,7 +14,7 @@ declare(strict_types=1);
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use OAuth2Framework\Component\Middleware;
 use OAuth2Framework\Component\TokenEndpoint;
-use OAuth2Framework\Component\TokenType\TokenTypeMiddleware;
+use OAuth2Framework\Component\Core\TokenType\TokenTypeMiddleware;
 use OAuth2Framework\Component\ClientAuthentication\ClientAuthenticationMiddleware;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 

@@ -15,7 +15,7 @@ namespace OAuth2Framework\Component\BearerTokenType;
 
 use OAuth2Framework\Component\Core\AccessToken\AccessToken;
 use OAuth2Framework\Component\Core\Token\Token;
-use OAuth2Framework\Component\TokenType\TokenType;
+use OAuth2Framework\Component\Core\TokenType\TokenType;
 use Psr\Http\Message\ServerRequestInterface;
 
 class BearerToken implements TokenType

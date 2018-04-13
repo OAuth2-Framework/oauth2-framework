@@ -11,15 +11,15 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Component\TokenType\Tests\AccessToken;
+namespace OAuth2Framework\Component\Core\Tests\TokenType;
 
 use Psr\Http\Server\RequestHandlerInterface;
-use OAuth2Framework\Component\TokenType\TokenTypeMiddleware;
+use OAuth2Framework\Component\Core\TokenType\TokenTypeMiddleware;
 use Prophecy\Argument;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use OAuth2Framework\Component\TokenType\TokenType;
-use OAuth2Framework\Component\TokenType\TokenTypeManager;
+use OAuth2Framework\Component\Core\TokenType\TokenType;
+use OAuth2Framework\Component\Core\TokenType\TokenTypeManager;
 use PHPUnit\Framework\TestCase;
 
 /**

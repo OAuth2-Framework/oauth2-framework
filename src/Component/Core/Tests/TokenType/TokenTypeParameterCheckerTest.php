@@ -11,13 +11,13 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Component\TokenType\Tests\AccessToken;
+namespace OAuth2Framework\Component\Core\Tests\TokenType;
 
 use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
 use OAuth2Framework\Component\AuthorizationEndpoint\Exception\OAuth2AuthorizationException;
-use OAuth2Framework\Component\TokenType\TokenType;
-use OAuth2Framework\Component\TokenType\TokenTypeManager;
-use OAuth2Framework\Component\TokenType\TokenTypeParameterChecker;
+use OAuth2Framework\Component\Core\TokenType\TokenType;
+use OAuth2Framework\Component\Core\TokenType\TokenTypeManager;
+use OAuth2Framework\Component\Core\TokenType\TokenTypeParameterChecker;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 

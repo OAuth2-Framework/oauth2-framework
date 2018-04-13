@@ -19,8 +19,8 @@ use OAuth2Framework\Component\Core\AccessToken\AccessToken;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenHandlerManager;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
 use OAuth2Framework\Component\Core\Exception\OAuth2Exception;
-use OAuth2Framework\Component\TokenType\TokenType;
-use OAuth2Framework\Component\TokenType\TokenTypeManager;
+use OAuth2Framework\Component\Core\TokenType\TokenType;
+use OAuth2Framework\Component\Core\TokenType\TokenTypeManager;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
