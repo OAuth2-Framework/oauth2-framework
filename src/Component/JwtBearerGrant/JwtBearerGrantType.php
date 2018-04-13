@@ -34,7 +34,7 @@ use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountRepository;
 use OAuth2Framework\Component\Core\Exception\OAuth2Exception;
 use OAuth2Framework\Component\TokenEndpoint\GrantType;
-use OAuth2Framework\Component\TrustedIssuer\TrustedIssuerRepository;
+use OAuth2Framework\Component\Core\TrustedIssuer\TrustedIssuerRepository;
 use Psr\Http\Message\ServerRequestInterface;
 
 class JwtBearerGrantType implements GrantType

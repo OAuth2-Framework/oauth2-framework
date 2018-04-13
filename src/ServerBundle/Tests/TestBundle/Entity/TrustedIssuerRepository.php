@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Tests\TestBundle\Entity;
 
-use OAuth2Framework\Component\TrustedIssuer\TrustedIssuer;
-use OAuth2Framework\Component\TrustedIssuer\TrustedIssuerRepository as TrustedIssuerRepositoryInterface;
+use OAuth2Framework\Component\Core\TrustedIssuer\TrustedIssuer;
+use OAuth2Framework\Component\Core\TrustedIssuer\TrustedIssuerRepository as TrustedIssuerRepositoryInterface;
 
 class TrustedIssuerRepository implements TrustedIssuerRepositoryInterface
 {

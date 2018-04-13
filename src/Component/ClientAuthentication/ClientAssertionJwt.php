@@ -28,7 +28,7 @@ use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\Exception\OAuth2Exception;
-use OAuth2Framework\Component\TrustedIssuer\TrustedIssuerRepository;
+use OAuth2Framework\Component\Core\TrustedIssuer\TrustedIssuerRepository;
 use Psr\Http\Message\ServerRequestInterface;
 
 class ClientAssertionJwt implements AuthenticationMethod
