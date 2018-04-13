@@ -1,25 +1,35 @@
 language: php
 
-sudo: false
+cache:
+    directories:
+        - "$HOME/.composer/cache"
+        - "vendor"
 
 matrix:
-  fast_finish: true
-  allow_failures:
-    - php: nightly
-  include:
-    - php: 7.1
-    - php: 7.1
-      env: deps=low
-    - php: 7.2
-    - php: nightly
-    - php: nightly
-      env: deps=low
+    allow_failures:
+        - php: nightly
+    fast_finish: true
+    include:
+        - php: 7.1
+          env: deps=low
+        - php: 7.1
+        - php: 7.2
+        - php: nightly
 
-install:
-  # install dependencies
-  - if [[ $deps = low ]]; then composer update --no-interaction --prefer-lowest; fi
-  - if [[ !$deps ]]; then composer install --no-interaction ; fi
+before_script:
+    - composer self-update
+    - mkdir -p build/logs
+    - mkdir -p build/cov
+    - if [[ $deps = low ]]; then composer update --no-interaction --prefer-lowest ; fi
+    - if [[ !$deps ]]; then composer install --no-interaction ; fi
 
 script:
-  - ./vendor/bin/behat -c src/Component/Server/behat.yml -v
-  - ./vendor/bin/behat -c src/Bundle/Server/behat.yml -v
+    - ./vendor/bin/phpunit --coverage-php build/cov/coverage-framework.cov
+    - ./vendor/bin/phpunit -c issuer_discovery.phpunit.xml.dist --coverage-php build/cov/coverage-issuer_discovery.cov
+
+after_success:
+    - ./vendor/bin/phpcov merge --clover build/logs/clover.xml build/cov
+    - ./vendor/bin/coveralls --no-interaction
+
+after_script:
+    - ./vendor/bin/security-checker security:check

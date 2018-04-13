@@ -1,0 +1,36 @@
+{
+    "name": "oauth2-framework/oauth2-authorization-code-grant",
+    "type": "library",
+    "description": "Authorization Code Grant for the OAuth2 Framework",
+    "license": "MIT",
+    "keywords": ["RFC6749", "oauth2", "framework", "authorization", "code", "library"],
+    "homepage": "https://oauth2-framework.spomky-labs.com/",
+    "authors": [
+        {
+            "name": "Florent Morselli",
+            "homepage": "https://github.com/Spomky"
+        },
+        {
+            "name": "All contributors",
+            "homepage": "https://github.com/OAuth2-Framework/oauth2-framework/contributors"
+        }
+    ],
+    "require": {
+        "php": "^7.1"
+    },
+    "require-dev": {
+    },
+    "autoload": {
+        "psr-4": {
+            "OAuth2Framework\\Component\\AuthorizationCodeGrant\\": ""
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "0.0.x-dev"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    }
+}

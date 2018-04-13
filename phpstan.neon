@@ -1,0 +1,4 @@
+parameters:
+    excludes_analyse:
+        - %currentWorkingDirectory%/src/ServerBundle/Tests/*
+        - %currentWorkingDirectory%/src/Component/*/Tests/*

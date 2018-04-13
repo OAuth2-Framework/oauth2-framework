@@ -1,9 +1,0 @@
-OAuth2Framework\Bundle\Server\Tests\TestBundle\Entity\PreConfiguredAuthorization:
-    type: 'entity'
-    table: 'pre_configured_authorizations'
-    id:
-        id:
-            column: 'id'
-            type: 'string'
-            nullable: false
-            generator: { strategy: 'AUTO' }

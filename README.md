@@ -9,6 +9,7 @@ Help me out for a couple of :beers:!
 ----
 
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/OAuth2-Framework/oauth2-framework/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/OAuth2-Framework/oauth2-framework/?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/OAuth2-Framework/oauth2-framework/badge.svg?branch=master)](https://coveralls.io/github/OAuth2-Framework/oauth2-framework?branch=master)
 
 [![Requirements Status](https://requires.io/github/OAuth2-Framework/oauth2-framework/requirements.svg?branch=master)](https://requires.io/github/OAuth2-Framework/oauth2-framework/requirements/?branch=master)
 
@@ -53,7 +54,3 @@ Instead, all security issues must be sent to security [at] spomky-labs.com.
 # Licence
 
 This project is release under [MIT licence](LICENSE).
-
-# Changelog
-
-The changelog for 1.0@dev [is available here](CHANGELOG-1.0dev.md).

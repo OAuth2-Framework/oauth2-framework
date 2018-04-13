@@ -1,0 +1,33 @@
+imports:
+    - { resource: security.yml }
+    - { resource: http.yml }
+    - { resource: jose.yml }
+    - { resource: oauth2_server.yml }
+
+framework:
+    test: ~
+    secret: 'test'
+    translator: ~
+    default_locale:  'en'
+    form: ~
+    csrf_protection: ~
+    validation:
+        enable_annotations: true
+    session:
+        storage_id: session.storage.mock_file
+    router:
+        resource: '%kernel.root_dir%/config/routing.yml'
+        strict_requirements: ~
+    templating:
+        enabled: true
+        engines: ['twig']
+    assets:
+        enabled: false
+    trusted_hosts:   ~
+    fragments:       ~
+    http_method_override: true
+
+# Twig Configuration
+twig:
+    debug:            true
+    strict_variables: true

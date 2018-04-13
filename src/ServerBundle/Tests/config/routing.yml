@@ -1,0 +1,14 @@
+# Jose Routes
+jwkset_endpoint:
+    resource: "@JoseFrameworkBundle/Resources/config/routing/jwkset_controller.yml"
+    prefix: '/keys'
+    host: 'another-server.com'
+
+# OAuth2FrameworkServerBundle Routes
+oauth2:
+    resource: '@OAuth2FrameworkServerBundle/Resources/config/routing/routing.yml'
+
+# API & Login Routes
+api:
+    resource: '@TestBundle/Controller'
+    type:     'annotation'
