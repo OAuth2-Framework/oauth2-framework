@@ -89,21 +89,21 @@ class AuthorizationEndpointController extends AuthorizationEndpoint
     /**
      * AuthorizationEndpointController constructor.
      *
-     * @param EngineInterface             $templateEngine
-     * @param string                      $template
-     * @param FormFactory                 $formFactory
-     * @param AuthorizationFormHandler    $formHandler
-     * @param TranslatorInterface         $translator
-     * @param RouterInterface             $router
-     * @param string                      $loginRoute
-     * @param array                       $loginRouteParams
-     * @param MessageFactory              $messageFactory
-     * @param SessionInterface            $session
-     * @param AuthorizationRequestLoader  $authorizationRequestLoader
-     * @param UserAccountDiscovery        $userAccountDiscovery
-     * @param UserAccountCheckerManager   $userAccountCheckerManager
-     * @param ParameterCheckerManager     $parameterCheckerManager
-     * @param ExtensionManager            $consentScreenExtensionManager
+     * @param EngineInterface            $templateEngine
+     * @param string                     $template
+     * @param FormFactory                $formFactory
+     * @param AuthorizationFormHandler   $formHandler
+     * @param TranslatorInterface        $translator
+     * @param RouterInterface            $router
+     * @param string                     $loginRoute
+     * @param array                      $loginRouteParams
+     * @param MessageFactory             $messageFactory
+     * @param SessionInterface           $session
+     * @param AuthorizationRequestLoader $authorizationRequestLoader
+     * @param UserAccountDiscovery       $userAccountDiscovery
+     * @param UserAccountCheckerManager  $userAccountCheckerManager
+     * @param ParameterCheckerManager    $parameterCheckerManager
+     * @param ExtensionManager           $consentScreenExtensionManager
      */
     public function __construct(EngineInterface $templateEngine, string $template, FormFactory $formFactory, AuthorizationFormHandler $formHandler, TranslatorInterface $translator, RouterInterface $router, string $loginRoute, array $loginRouteParams, MessageFactory $messageFactory, SessionInterface $session, AuthorizationRequestLoader $authorizationRequestLoader, ParameterCheckerManager $parameterCheckerManager, UserAccountDiscovery $userAccountDiscovery, UserAccountCheckerManager $userAccountCheckerManager, ExtensionManager $consentScreenExtensionManager)
     {

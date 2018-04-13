@@ -309,6 +309,7 @@ class AuthorizationRequestLoader
             if ($this->isRequestUriRegistrationRequired()) {
                 throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_REQUEST_URI, 'The clients shall register at least one request object uri.');
             }
+
             return;
         }
 
