@@ -21,6 +21,7 @@ use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
+use OAuth2Framework\Component\TokenRevocationEndpoint\TokenTypeHint;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 
@@ -30,6 +31,16 @@ use Prophecy\Argument;
  */
 class AccessTokenRevocationTypeHintTest extends TestCase
 {
+    /**
+     * {@inheritdoc}
+     */
+    protected function setUp()
+    {
+        if (!interface_exists(TokenTypeHint::class)) {
+            $this->markTestSkipped('The component "oauth2-framework/token-type" is not installed.');
+        }
+    }
+
     /**
      * @test
      */

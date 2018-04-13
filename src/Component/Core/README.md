@@ -1,4 +1,4 @@
-Authorization Code Grant for the OAuth2 Framework
+Core component for the OAuth2 Framework
 =================================================
 
 This repository is a sub repository of [OAuth2 and OpenId Connect Framework](https://github.com/oauth2-framework/oauth2-framework) project and is READ ONLY.
