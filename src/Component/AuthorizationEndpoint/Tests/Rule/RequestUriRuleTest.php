@@ -13,9 +13,10 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\AuthorizationEndpoint\Tests\ResponseMode;
 
-use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\AuthorizationEndpoint\Rule\RequestUriRule;
+use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
+use OAuth2Framework\Component\ClientRule\Rule;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -23,6 +24,16 @@ use PHPUnit\Framework\TestCase;
  */
 class RequestUriRuleTest extends TestCase
 {
+    /**
+     * {@inheritdoc}
+     */
+    protected function setUp()
+    {
+        if (!interface_exists(Rule::class)) {
+            $this->markTestSkipped('The component "oauth2-framework/client-rule" is not installed.');
+        }
+    }
+
     /**
      * @test
      */
