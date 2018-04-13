@@ -13,12 +13,17 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\AuthorizationEndpoint;
 
+use Base64Url\Base64Url;
 use Http\Client\HttpClient;
 use Jose\Component\Checker\ClaimCheckerManager;
+use Jose\Component\Core\Converter\StandardConverter;
+use Jose\Component\Core\JWK;
 use Jose\Component\Core\JWKSet;
 use Jose\Component\Encryption\JWELoader;
+use Jose\Component\KeyManagement\JKUFactory;
 use Jose\Component\Signature\JWS;
-use Jose\Component\Signature\JWSLoader;
+use Jose\Component\Signature\JWSVerifier;
+use Jose\Component\Signature\Serializer\CompactSerializer;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\Client\ClientRepository;
@@ -59,19 +64,14 @@ class AuthorizationRequestLoader
     private $requireEncryption = false;
 
     /**
-     * @var string[]
-     */
-    private $mandatoryClaims = [];
-
-    /**
      * @var null|HttpClient
      */
     private $client = null;
 
     /**
-     * @var JWSLoader
+     * @var JWSVerifier
      */
-    private $jwsLoader = null;
+    private $jwsVerifier = null;
 
     /**
      * @var ClaimCheckerManager
@@ -82,6 +82,11 @@ class AuthorizationRequestLoader
      * @var JWELoader
      */
     private $jweLoader = null;
+
+    /**
+     * @var null|JKUFactory
+     */
+    private $jkuFactory = null;
 
     /**
      * AuthorizationRequestLoader constructor.
@@ -122,7 +127,7 @@ class AuthorizationRequestLoader
      */
     public function getSupportedSignatureAlgorithms(): array
     {
-        return null === $this->jwsLoader ? [] : $this->jwsLoader->getJwsVerifier()->getSignatureAlgorithmManager()->list();
+        return null === $this->jwsVerifier ? [] : $this->jwsVerifier->getSignatureAlgorithmManager()->list();
     }
 
     /**
@@ -142,21 +147,14 @@ class AuthorizationRequestLoader
     }
 
     /**
-     * @param JWSLoader           $jwsLoader
+     * @param JWSVerifier         $jwsVerifier
      * @param ClaimCheckerManager $claimCheckerManager
-     * @param string[]            $mandatoryClaims
      */
-    public function enableRequestObjectSupport(JWSLoader $jwsLoader, ClaimCheckerManager $claimCheckerManager, array $mandatoryClaims = [])
+    public function enableSignedRequestObjectSupport(JWSVerifier $jwsVerifier, ClaimCheckerManager $claimCheckerManager)
     {
-        foreach ($mandatoryClaims as $mandatoryClaim) {
-            if (!is_string($mandatoryClaim)) {
-                throw new \InvalidArgumentException('The mandatory claims array should contain only claims.');
-            }
-        }
-        $this->jwsLoader = $jwsLoader;
+        $this->jwsVerifier = $jwsVerifier;
         $this->claimCheckerManager = $claimCheckerManager;
         $this->requestObjectAllowed = true;
-        $this->mandatoryClaims = $mandatoryClaims;
     }
 
     /**
@@ -194,9 +192,17 @@ class AuthorizationRequestLoader
     }
 
     /**
+     * @param JKUFactory $jkuFactory
+     */
+    public function enableJkuSupport(JKUFactory $jkuFactory)
+    {
+        $this->jkuFactory = $jkuFactory;
+    }
+
+    /**
      * @return bool
      */
-    public function isEncryptedRequestsSupportEnabled(): bool
+    public function isEncryptedRequestSupportEnabled(): bool
     {
         return null !== $this->keyEncryptionKeySet;
     }
@@ -204,37 +210,36 @@ class AuthorizationRequestLoader
     /**
      * @param ServerRequestInterface $request
      *
-     * @return array
+     * @return Authorization
      *
      * @throws OAuth2Exception
      * @throws \Exception
      * @throws \Http\Client\Exception
      */
-    public function loadParametersFromRequest(ServerRequestInterface $request): array
+    public function load(ServerRequestInterface $request): Authorization
     {
+        $client = null;
         $params = $request->getQueryParams();
         if (array_key_exists('request', $params)) {
-            $params = $this->createFromRequestParameter($params);
+            $params = $this->createFromRequestParameter($params, $client);
         } elseif (array_key_exists('request_uri', $params)) {
-            $params = $this->createFromRequestUriParameter($params);
+            $params = $this->createFromRequestUriParameter($params, $client);
         } else {
-            $params = $this->createFromStandardRequest($params);
+            $client = $this->getClient($params);
         }
 
-        $client = $params['client'];
-        unset($params['client']);
-
-        return [$client, $params];
+        return Authorization::create($client, $params);
     }
 
     /**
-     * @param array $params
+     * @param array  $params
+     * @param Client $client
      *
      * @throws OAuth2Exception
      *
      * @return array
      */
-    private function createFromRequestParameter(array $params): array
+    private function createFromRequestParameter(array $params, Client &$client = null): array
     {
         if (false === $this->isRequestObjectSupportEnabled()) {
             throw new OAuth2Exception(400, OAuth2Exception::ERROR_REQUEST_NOT_SUPPORTED, 'The parameter "request" is not supported.');
@@ -244,30 +249,15 @@ class AuthorizationRequestLoader
             throw new OAuth2Exception(400, OAuth2Exception::ERROR_REQUEST_NOT_SUPPORTED, 'The parameter "request" must be an assertion.');
         }
 
-        $jws = $this->loadRequest($params, $request, $client);
-        $claims = json_decode($jws->getPayload(), true);
-        $params = array_merge($params, $claims, ['client' => $client]);
+        $params = $this->loadRequestObject($params, $request, $client);
         $this->checkIssuerAndClientId($params);
 
         return $params;
     }
 
     /**
-     * @param array $params
-     *
-     * @return array
-     *
-     * @throws OAuth2Exception
-     */
-    private function createFromStandardRequest(array $params): array
-    {
-        $client = $this->getClient($params);
-
-        return array_merge($params, ['client' => $client]);
-    }
-
-    /**
-     * @param array $params
+     * @param array  $params
+     * @param Client $client
      *
      * @return array
      *
@@ -275,20 +265,18 @@ class AuthorizationRequestLoader
      * @throws \Exception
      * @throws \Http\Client\Exception
      */
-    private function createFromRequestUriParameter(array $params): array
+    private function createFromRequestUriParameter(array $params, Client &$client = null): array
     {
         if (false === $this->isRequestObjectReferenceSupportEnabled()) {
             throw new OAuth2Exception(400, OAuth2Exception::ERROR_REQUEST_URI_NOT_SUPPORTED, 'The parameter "request_uri" is not supported.');
         }
         $requestUri = $params['request_uri'];
-
-        $content = $this->downloadContent($requestUri);
-        $jws = $this->loadRequest($params, $content, $client);
-        if (true === $this->isRequestUriRegistrationRequired()) {
-            $this->checkRequestUri($client, $requestUri);
+        if (preg_match('#/\.\.?(/|$)#', $requestUri)) {
+            throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_REQUEST_URI, 'The request Uri is not allowed.');
         }
-        $claims = json_decode($jws->getPayload(), true);
-        $params = array_merge($params, $claims, ['client' => $client]);
+        $content = $this->downloadContent($requestUri);
+        $params = $this->loadRequestObject($params, $content, $client);
+        $this->checkRequestUri($client, $requestUri);
         $this->checkIssuerAndClientId($params);
 
         return $params;
@@ -316,44 +304,21 @@ class AuthorizationRequestLoader
      */
     private function checkRequestUri(Client $client, $requestUri)
     {
-        $this->checkRequestUriPathTraversal($requestUri);
-        $stored_request_uris = $this->getClientRequestUris($client);
+        $storedRequestUris = $client->has('request_uris') ? $client->get('request_uris') : [];
+        if (empty($storedRequestUris)) {
+            if ($this->isRequestUriRegistrationRequired()) {
+                throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_REQUEST_URI, 'The clients shall register at least one request object uri.');
+            }
+            return;
+        }
 
-        foreach ($stored_request_uris as $stored_request_uri) {
-            if (0 === strcasecmp(mb_substr($requestUri, 0, mb_strlen($stored_request_uri, '8bit'), '8bit'), $stored_request_uri)) {
+        foreach ($storedRequestUris as $storedRequestUri) {
+            if (0 === strcasecmp(mb_substr($requestUri, 0, mb_strlen($storedRequestUri, '8bit'), '8bit'), $storedRequestUri)) {
                 return;
             }
         }
 
         throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_REQUEST_URI, 'The request Uri is not allowed.');
-    }
-
-    /**
-     * @param string $requestUri
-     *
-     * @throws OAuth2Exception
-     */
-    private function checkRequestUriPathTraversal($requestUri)
-    {
-        if (false === Uri::checkUrl($requestUri, false)) {
-            throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_CLIENT, 'The request Uri must not contain path traversal.');
-        }
-    }
-
-    /**
-     * @param Client $client
-     *
-     * @throws OAuth2Exception
-     *
-     * @return string[]
-     */
-    private function getClientRequestUris(Client $client): array
-    {
-        if (false === $client->has('request_uris') || empty($requestUris = $client->get('request_uris'))) {
-            throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_CLIENT, 'The client must register at least one request Uri.');
-        }
-
-        return $requestUris;
     }
 
     /**
@@ -363,33 +328,43 @@ class AuthorizationRequestLoader
      *
      * @throws OAuth2Exception
      *
-     * @return JWS
+     * @return array
      */
-    private function loadRequest(array $params, string $request, Client &$client = null): JWS
+    private function loadRequestObject(array $params, string $request, Client &$client = null): array
     {
+        // FIXME Can be
+        // - encrypted (not supported)
+        // - encrypted and signed (supported)
+        // - signed (supported)
         $request = $this->tryToLoadEncryptedRequest($request);
 
         try {
-            $jwt = $this->jwsLoader->loadAndVerifyWithKeySet($request);
-            $this->claimCheckerManager->check($jwt);
-            $claims = json_decode($jwt->getPayload(), true);
+            $jsonConverter = new StandardConverter();
+            $serializer = new CompactSerializer($jsonConverter);
+            $jwt = $serializer->unserialize($request);
 
-            $client = $this->getClient(array_merge($params, $claims));
-            $public_key_set = $client->getPublicKeySet();
-            if (null === $public_key_set) {
-                throw new \InvalidArgumentException('The client does not have signature capabilities.');
+            $claims = $jsonConverter->decode(
+                $jwt->getPayload()
+            );
+            if (!is_array($claims)) {
+                throw new \InvalidArgumentException('Invalid assertion. The payload must contain claims.');
             }
-            $index = $this->jwsLoader->verifyWithKeySet($jwt, $public_key_set);
-            $this->checkAlgorithms($jwt, $index, $client);
-            $missing_claims = array_keys(array_diff_key(array_flip($this->mandatoryClaims), $claims));
-            if (!empty($missing_claims)) {
-                throw new \InvalidArgumentException(sprintf('The following mandatory claims are missing: %s.', implode(', ', $missing_claims)));
+            $this->claimCheckerManager->check($claims);
+            $parameters = array_merge($params, $claims);
+            $client = $this->getClient($parameters);
+
+            $public_key_set = $this->getClientKeySet($client);
+            $this->checkAlgorithms($jwt, $client);
+            if (!$this->jwsVerifier->verifyWithKeySet($jwt, $public_key_set, 0)) { //FIXME: header checker should be used
+                throw new \InvalidArgumentException('The verification of the request object failed.');
             }
+        } catch (OAuth2Exception $e) {
+            throw $e;
         } catch (\Exception $e) {
             throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_REQUEST_OBJECT, $e->getMessage(), $e);
         }
 
-        return $jwt;
+        return $parameters;
     }
 
     /**
@@ -423,18 +398,27 @@ class AuthorizationRequestLoader
 
     /**
      * @param JWS    $jws
-     * @param int    $index
      * @param Client $client
      *
      * @throws \InvalidArgumentException
      */
-    private function checkAlgorithms(JWS $jws, int $index, Client $client)
+    private function checkAlgorithms(JWS $jws, Client $client)
     {
-        if (!$client->has('request_object_signing_alg')) {
-            throw new \InvalidArgumentException('Request Object signature algorithm not defined for the client.');
+        if ($client->has('request_object_signing_alg') && $jws->getSignature(0)->getProtectedHeaderParameter('alg') !== $client->get('request_object_signing_alg')) {
+            throw new \InvalidArgumentException('Request Object signature algorithm not allowed for the client.');
         }
-        if ($jws->getSignature($index)->getProtectedHeaderParameter('alg') !== $client->get('request_object_signing_alg')) {
-            throw new \InvalidArgumentException('Request Object signature algorithm not supported by the client.');
+
+        $this->checkUsedAlgorithm($jws->getSignature(0)->getProtectedHeaderParameter('alg'));
+    }
+
+    /**
+     * @param string $algorithm
+     */
+    private function checkUsedAlgorithm(string $algorithm)
+    {
+        $supportedAlgorithms = $this->getSupportedSignatureAlgorithms();
+        if (!in_array($algorithm, $supportedAlgorithms)) {
+            throw new \InvalidArgumentException(sprintf('The algorithm "%s" is not allowed for request object signatures. Please use one of the following algorithm(s): %s', $algorithm, implode(', ', $supportedAlgorithms)));
         }
     }
 
@@ -478,5 +462,30 @@ class AuthorizationRequestLoader
         }
 
         return $client;
+    }
+
+    /**
+     * @param Client $client
+     *
+     * @return JWKSet
+     */
+    private function getClientKeySet(Client $client): JWKSet
+    {
+        switch (true) {
+            case $client->has('jwks') && 'private_key_jwt' === $client->getTokenEndpointAuthenticationMethod():
+                return JWKSet::createFromJson($client->get('jwks'));
+            case $client->has('client_secret') && 'client_secret_jwt' === $client->getTokenEndpointAuthenticationMethod():
+                $jwk = JWK::create([
+                    'kty' => 'oct',
+                    'use' => 'sig',
+                    'k' => Base64Url::encode($client->get('client_secret')),
+                ]);
+
+                return JWKSet::createFromKeys([$jwk]);
+            case $client->has('jwks_uri') && 'private_key_jwt' === $client->getTokenEndpointAuthenticationMethod() && null !== $this->jkuFactory:
+                return $this->jkuFactory->loadFromUrl($client->get('jwks_uri'));
+            default:
+                throw new \InvalidArgumentException('The client has no key or key set.');
+        }
     }
 }

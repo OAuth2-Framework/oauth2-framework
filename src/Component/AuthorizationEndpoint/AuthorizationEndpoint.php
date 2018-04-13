@@ -13,12 +13,13 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\AuthorizationEndpoint;
 
+use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\ParameterCheckerManager;
 use OAuth2Framework\Component\AuthorizationEndpoint\UserAccount\UserAccountCheckerManager;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use OAuth2Framework\Component\AuthorizationEndpoint\ConsentScreen\ExtensionManager;
 use OAuth2Framework\Component\AuthorizationEndpoint\Exception\OAuth2AuthorizationException;
-use OAuth2Framework\Component\AuthorizationEndpoint\UserAccount\UserAccountDiscoveryManager;
+use OAuth2Framework\Component\AuthorizationEndpoint\UserAccount\UserAccountDiscovery;
 use OAuth2Framework\Component\Core\Exception\OAuth2Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -26,9 +27,9 @@ use Psr\Http\Message\ServerRequestInterface;
 abstract class AuthorizationEndpoint implements MiddlewareInterface
 {
     /**
-     * @var UserAccountDiscoveryManager
+     * @var UserAccountDiscovery
      */
-    private $userAccountDiscoveryManager;
+    private $userAccountDiscovery;
 
     /**
      * @var UserAccountCheckerManager
@@ -41,22 +42,29 @@ abstract class AuthorizationEndpoint implements MiddlewareInterface
     private $consentScreenExtensionManager;
 
     /**
-     * @var AuthorizationFactory
+     * @var AuthorizationRequestLoader
      */
-    private $authorizationFactory;
+    private $authorizationRequestLoader;
+
+    /**
+     * @var ParameterCheckerManager
+     */
+    private $parameterCheckerManager;
 
     /**
      * AuthorizationEndpoint constructor.
      *
-     * @param AuthorizationFactory        $authorizationFactory
-     * @param UserAccountDiscoveryManager $userAccountDiscoveryManager
-     * @param UserAccountCheckerManager   $userAccountCheckerManager
-     * @param ExtensionManager            $consentScreenExtensionManager
+     * @param AuthorizationRequestLoader $authorizationRequestLoader
+     * @param ParameterCheckerManager $parameterCheckerManager
+     * @param UserAccountDiscovery $userAccountDiscovery
+     * @param UserAccountCheckerManager $userAccountCheckerManager
+     * @param ExtensionManager $consentScreenExtensionManager
      */
-    public function __construct(AuthorizationFactory $authorizationFactory, UserAccountDiscoveryManager $userAccountDiscoveryManager, UserAccountCheckerManager $userAccountCheckerManager, ExtensionManager $consentScreenExtensionManager)
+    public function __construct(AuthorizationRequestLoader $authorizationRequestLoader, ParameterCheckerManager $parameterCheckerManager, UserAccountDiscovery $userAccountDiscovery, UserAccountCheckerManager $userAccountCheckerManager, ExtensionManager $consentScreenExtensionManager)
     {
-        $this->authorizationFactory = $authorizationFactory;
-        $this->userAccountDiscoveryManager = $userAccountDiscoveryManager;
+        $this->authorizationRequestLoader = $authorizationRequestLoader;
+        $this->parameterCheckerManager = $parameterCheckerManager;
+        $this->userAccountDiscovery = $userAccountDiscovery;
         $this->userAccountCheckerManager = $userAccountCheckerManager;
         $this->consentScreenExtensionManager = $consentScreenExtensionManager;
     }
@@ -83,14 +91,14 @@ abstract class AuthorizationEndpoint implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         try {
-            $authorization = $this->authorizationFactory->createAuthorizationFromRequest($request);
-            $authorization = $this->userAccountDiscoveryManager->find($authorization);
-            $this->userAccountCheckerManager->check($authorization);
-
+            $authorization = $this->createAuthorizationFromRequest($request);
+            $isFullyAuthenticated = null;
+            $userAccount = $this->userAccountDiscovery->find($isFullyAuthenticated);
             if (null === $authorization->getUserAccount()) {
                 return $this->redirectToLoginPage($request, $authorization);
             }
-
+            $authorization = $authorization->withUserAccount($userAccount, $isFullyAuthenticated);
+            $this->userAccountCheckerManager->check($authorization);
             $authorization = $this->consentScreenExtensionManager->processBefore($request, $authorization);
 
             return $this->processConsentScreen($request, $authorization);
@@ -175,5 +183,22 @@ abstract class AuthorizationEndpoint implements MiddlewareInterface
         ];
 
         throw new OAuth2Exception(302, $error, $error_description, $params);
+    }
+
+
+    /**
+     * @param ServerRequestInterface $request
+     *
+     * @return Authorization
+     *
+     * @throws \Http\Client\Exception
+     * @throws \OAuth2Framework\Component\Core\Exception\OAuth2Exception
+     */
+    public function createAuthorizationFromRequest(ServerRequestInterface $request): Authorization
+    {
+        $authorization = $this->authorizationRequestLoader->load($request);
+        $authorization = $this->parameterCheckerManager->process($authorization);
+
+        return $authorization;
     }
 }
