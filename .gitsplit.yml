@@ -52,8 +52,7 @@ splits:
     - prefix: "src/Component/TokenType"
       target: "https://${GH_TOKEN}@github.com/oauth2-framework/token-type.git"
 
-
 origins:
     - ^master$
     - ^v\d+\.\d+$
-    - ^v\d+\.\d+\.\d+$
+    - ^v\d+\.\d+\.\d+.*$
