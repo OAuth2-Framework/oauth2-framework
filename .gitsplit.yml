@@ -10,7 +10,7 @@ splits:
     - prefix: "src/Component/AuthorizationEndpoint"
       target: "https://${GH_TOKEN}@github.com/oauth2-framework/authorization-endpoint.git"
     - prefix: "src/Component/BearerTokenType"
-      target: "https://${GH_TOKEN}@github.com/oauth2-framework/bearer-token.git"
+      target: "https://${GH_TOKEN}@github.com/oauth2-framework/bearer-token-type.git"
     - prefix: "src/Component/ClientAuthentication"
       target: "https://${GH_TOKEN}@github.com/oauth2-framework/client-authentication.git"
     - prefix: "src/Component/ClientConfigurationEndpoint"

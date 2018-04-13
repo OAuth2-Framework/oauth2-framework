@@ -1,5 +1,5 @@
 {
-    "name": "oauth2-framework/mac-token",
+    "name": "oauth2-framework/mac-token-type",
     "type": "library",
     "description": "MAC Token Type for the OAuth2 Framework",
     "license": "MIT",

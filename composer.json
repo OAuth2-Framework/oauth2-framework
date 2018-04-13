@@ -62,7 +62,7 @@
         "oauth2-framework/issuer-discovery-bundle": "self.version",
         "oauth2-framework/authorization-code-grant": "self.version",
         "oauth2-framework/authorization-endpoint": "self.version",
-        "oauth2-framework/bearer-token": "self.version",
+        "oauth2-framework/bearer-token-type": "self.version",
         "oauth2-framework/client-authentication": "self.version",
         "oauth2-framework/client-configuration-endpoint": "self.version",
         "oauth2-framework/client-credentials-grant": "self.version",

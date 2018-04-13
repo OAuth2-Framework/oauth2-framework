@@ -1,5 +1,5 @@
 {
-    "name": "oauth2-framework/bearer-token",
+    "name": "oauth2-framework/bearer-token-type",
     "type": "library",
     "description": "Bearer Token Type for the OAuth2 Framework",
     "license": "MIT",
