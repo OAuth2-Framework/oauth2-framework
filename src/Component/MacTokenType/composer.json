@@ -1,0 +1,39 @@
+{
+    "name": "oauth2-framework/mac-token",
+    "type": "library",
+    "description": "MAC Token Type for the OAuth2 Framework",
+    "license": "MIT",
+    "keywords": ["RFC6749", "oauth2", "framework", "MAC", "token", "library"],
+    "homepage": "https://oauth2-framework.spomky-labs.com/",
+    "authors": [
+        {
+            "name": "Florent Morselli",
+            "homepage": "https://github.com/Spomky"
+        },
+        {
+            "name": "All contributors",
+            "homepage": "https://github.com/OAuth2-Framework/oauth2-framework/contributors"
+        }
+    ],
+    "require": {
+        "php": "^7.1",
+        "oauth2-framework/core": "^0.0@dev",
+        "psr/http-message": "^1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "OAuth2Framework\\Component\\MacTokenType\\": ""
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "0.0.x-dev"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    }
+}
