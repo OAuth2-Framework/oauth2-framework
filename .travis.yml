@@ -30,6 +30,3 @@ script:
 after_success:
     - ./vendor/bin/phpcov merge --clover build/logs/clover.xml build/cov
     - ./vendor/bin/coveralls --no-interaction
-
-after_script:
-    - ./vendor/bin/security-checker security:check
