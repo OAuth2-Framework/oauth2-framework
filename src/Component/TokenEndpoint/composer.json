@@ -24,7 +24,7 @@
         "psr/http-server-middleware": "^1.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^6.5|7.0"
+        "phpunit/phpunit": "^6.5"
     },
     "suggest": {
         "oauth2-framework/openid-connect": "To add an authentication layer on top of the authorization server.",

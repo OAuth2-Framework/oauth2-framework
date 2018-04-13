@@ -1,5 +1,5 @@
 {
-    "name": "oauth2-framework/oauth2-authorization-code-grant",
+    "name": "oauth2-framework/authorization-code-grant",
     "type": "library",
     "description": "Authorization Code Grant for the OAuth2 Framework",
     "license": "MIT",
@@ -16,9 +16,14 @@
         }
     ],
     "require": {
-        "php": "^7.1"
+        "php": "^7.1",
+        "oauth2-framework/authorization-endpoint": "^0.0@dev",
+        "oauth2-framework/core": "^0.0@dev",
+        "oauth2-framework/token-endpoint": "^0.0@dev",
+        "spomky-labs/base64url": "^1.0"
     },
     "require-dev": {
+        "phpunit/phpunit": "^6.5"
     },
     "autoload": {
         "psr-4": {

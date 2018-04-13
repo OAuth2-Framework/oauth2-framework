@@ -30,7 +30,7 @@
         "php-http/httplug": "To use of the Sector Identifier Uri client registration/configuration rule provided by this component."
     },
     "require-dev": {
-        "phpunit/phpunit": "^6.5|7.0",
+        "phpunit/phpunit": "^6.5",
         "http-interop/http-factory-diactoros": "^0.3.0",
         "php-http/mock-client": "^1.1",
         "web-token/jwt-core": "^1.1@beta",

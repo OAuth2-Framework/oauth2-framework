@@ -14,10 +14,9 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\AuthorizationCodeGrant;
 
 use OAuth2Framework\Component\Core\Token\Token;
-use OAuth2Framework\Component\TokenIntrospectionEndpoint\TokenTypeHint as IntrospectionTokenTypeHint;
-use OAuth2Framework\Component\TokenRevocationEndpoint\TokenTypeHint as RevocationTokenTypeHint;
+use OAuth2Framework\Component\TokenIntrospectionEndpoint\TokenTypeHint;
 
-class AuthorizationCodeTypeHint implements IntrospectionTokenTypeHint, RevocationTokenTypeHint
+class AuthorizationCodeIntrospectionTypeHint implements TokenTypeHint
 {
     /**
      * @var AuthorizationCodeRepository
@@ -25,7 +24,7 @@ class AuthorizationCodeTypeHint implements IntrospectionTokenTypeHint, Revocatio
     private $authorizationCodeRepository;
 
     /**
-     * AuthorizationCodeTypeHint constructor.
+     * AuthorizationCodeIntrospectionTypeHint constructor.
      *
      * @param AuthorizationCodeRepository $authorizationCodeRepository
      */
@@ -50,22 +49,6 @@ class AuthorizationCodeTypeHint implements IntrospectionTokenTypeHint, Revocatio
         $id = AuthorizationCodeId::create($token);
 
         return $this->authorizationCodeRepository->find($id);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function revoke(Token $token)
-    {
-        if (!$token instanceof AuthorizationCode) {
-            throw new \InvalidArgumentException('The token is not a valid authorization code.');
-        }
-        if ($token->isRevoked()) {
-            return;
-        }
-
-        $token = $token->markAsRevoked();
-        $this->authorizationCodeRepository->save($token);
     }
 
     /**

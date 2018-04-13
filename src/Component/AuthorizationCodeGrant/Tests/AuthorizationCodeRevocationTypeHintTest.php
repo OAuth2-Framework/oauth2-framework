@@ -16,39 +16,37 @@ namespace OAuth2Framework\Component\AuthorizationCodeGrant\Tests;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCode;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeId;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeRepository;
-use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeTypeHint;
+use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeRevocationTypeHint;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
+use OAuth2Framework\Component\TokenRevocationEndpoint\TokenTypeHint;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 
 /**
  * @group TypeHint
- * @group AuthorizationCodeTypeHint
+ * @group AuthorizationCodeRevocationTypeHint
  */
-class AuthorizationCodeTypeHintTest extends TestCase
+class AuthorizationCodeRevocationTypeHintTest extends TestCase
 {
     /**
-     * @test
+     * {@inheritdoc}
      */
-    public function genericInformation()
+    protected function setUp()
     {
-        self::assertEquals('auth_code', $this->getAuthorizationCodeTypeHint()->hint());
+        if (!interface_exists(TokenTypeHint::class)) {
+            $this->markTestSkipped('The component "oauth2-framework/token-revocation-endpoint" is not installed.');
+        }
     }
 
     /**
      * @test
      */
-    public function theTokenTypeHintCanFindATokenAndReturnValues()
+    public function genericInformation()
     {
-        self::assertNull($this->getAuthorizationCodeTypeHint()->find('UNKNOWN_TOKEN_ID'));
-        $authorizationCode = $this->getAuthorizationCodeTypeHint()->find('AUTHORIZATION_CODE_ID');
-        self::assertInstanceOf(AuthorizationCode::class, $authorizationCode);
-        $introspection = $this->getAuthorizationCodeTypeHint()->introspect($authorizationCode);
-        self::arrayHasKey('active', $introspection);
-        self::assertTrue($introspection['active']);
+        self::assertEquals('auth_code', $this->getAuthorizationCodeRevocationTypeHint()->hint());
     }
 
     /**
@@ -56,24 +54,24 @@ class AuthorizationCodeTypeHintTest extends TestCase
      */
     public function theTokenTypeHintCanFindATokenAndRevokeIt()
     {
-        self::assertNull($this->getAuthorizationCodeTypeHint()->find('UNKNOWN_TOKEN_ID'));
-        $authorizationCode = $this->getAuthorizationCodeTypeHint()->find('AUTHORIZATION_CODE_ID');
+        self::assertNull($this->getAuthorizationCodeRevocationTypeHint()->find('UNKNOWN_TOKEN_ID'));
+        $authorizationCode = $this->getAuthorizationCodeRevocationTypeHint()->find('AUTHORIZATION_CODE_ID');
         self::assertInstanceOf(AuthorizationCode::class, $authorizationCode);
-        $this->getAuthorizationCodeTypeHint()->revoke($authorizationCode);
+        $this->getAuthorizationCodeRevocationTypeHint()->revoke($authorizationCode);
         self::assertTrue(true);
     }
 
     /**
-     * @var null|AuthorizationCodeTypeHint
+     * @var null|AuthorizationCodeRevocationTypeHint
      */
-    private $authorizationCodeTypeHint = null;
+    private $authorizationCodeRevocationTypeHint = null;
 
     /**
-     * @return AuthorizationCodeTypeHint
+     * @return AuthorizationCodeRevocationTypeHint
      */
-    public function getAuthorizationCodeTypeHint(): AuthorizationCodeTypeHint
+    public function getAuthorizationCodeRevocationTypeHint(): AuthorizationCodeRevocationTypeHint
     {
-        if (null === $this->authorizationCodeTypeHint) {
+        if (null === $this->authorizationCodeRevocationTypeHint) {
             $authorizationCode = AuthorizationCode::createEmpty();
             $authorizationCode = $authorizationCode->create(
                 AuthorizationCodeId::create('AUTHORIZATION_CODE_ID'),
@@ -98,11 +96,11 @@ class AuthorizationCodeTypeHintTest extends TestCase
 
                 return null;
             });
-            $this->authorizationCodeTypeHint = new AuthorizationCodeTypeHint(
+            $this->authorizationCodeRevocationTypeHint = new AuthorizationCodeRevocationTypeHint(
                 $authorizationCodeRepository->reveal()
             );
         }
 
-        return $this->authorizationCodeTypeHint;
+        return $this->authorizationCodeRevocationTypeHint;
     }
 }
