@@ -224,7 +224,6 @@ class JwtBearerGrantTypeTest extends TestCase
                 $this->getTrustedIssuerManager()
             );
 
-
             if (class_exists(JWEBuilder::class)) {
                 $this->grantType->enableEncryptedAssertions(
                     $this->getJweDecrypter(),
