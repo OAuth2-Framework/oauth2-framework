@@ -43,7 +43,11 @@ class MetadataEndpointTest extends TestCase
         $response->getBody()->rewind();
         $body = $response->getBody()->getContents();
 
-        self::assertEquals('{"foo":"bar","signed_metadata":"eyJhbGciOiJub25lIn0.eyJmb28iOiJiYXIifQ."}', $body);
+        if (class_exists(JWSBuilder::class)) {
+            self::assertEquals('{"foo":"bar","signed_metadata":"eyJhbGciOiJub25lIn0.eyJmb28iOiJiYXIifQ."}', $body);
+        } else {
+            self::assertEquals('{"foo":"bar"}', $body);
+        }
         self::assertEquals(200, $response->getStatusCode());
         self::assertEquals(['application/json; charset=UTF-8'], $response->getHeader('content-type'));
     }
@@ -59,10 +63,6 @@ class MetadataEndpointTest extends TestCase
     private function getMetadataEndpoint(): MetadataEndpoint
     {
         if (null === $this->metadataEndpoint) {
-            $jwsBuilder = new JWSBuilder(new StandardConverter(), AlgorithmManager::create([new None()]));
-            $key = JWK::create([
-                'kty' => 'none',
-            ]);
             $metadata = new Metadata();
             $metadata->set('foo', 'bar');
 
@@ -70,7 +70,14 @@ class MetadataEndpointTest extends TestCase
                 $this->getResponseFactory(),
                 $metadata
             );
-            $this->metadataEndpoint->enableSignature($jwsBuilder, 'none', $key);
+
+            if (class_exists(JWSBuilder::class)) {
+                $jwsBuilder = new JWSBuilder(new StandardConverter(), AlgorithmManager::create([new None()]));
+                $key = JWK::create([
+                    'kty' => 'none',
+                ]);
+                $this->metadataEndpoint->enableSignature($jwsBuilder, 'none', $key);
+            }
         }
 
         return $this->metadataEndpoint;
