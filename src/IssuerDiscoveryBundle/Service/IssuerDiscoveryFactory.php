@@ -14,9 +14,9 @@ declare(strict_types=1);
 namespace OAuth2Framework\IssuerDiscoveryBundle\Service;
 
 use Http\Message\ResponseFactory;
-use OAuth2Framework\IssuerDiscoveryBundle\Tests\TestBundle\Entity\ResourceRepository;
 use OAuth2Framework\Component\IssuerDiscoveryEndpoint\IdentifierResolver\IdentifierResolverManager;
 use OAuth2Framework\Component\IssuerDiscoveryEndpoint\IssuerDiscoveryEndpoint;
+use OAuth2Framework\Component\IssuerDiscoveryEndpoint\ResourceRepository;
 
 class IssuerDiscoveryFactory
 {
