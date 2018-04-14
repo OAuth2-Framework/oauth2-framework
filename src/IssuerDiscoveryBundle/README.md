@@ -1,13 +1,15 @@
-# Symfony Bundle for OAuth2 And OpenID Connect Server
+Issuer Discovery Bundle the OAuth2 Framework
+=============================================
 
-The Symfony Bundle uses the OAuth2 And OpenID Connect Server library to help you to create
-a fully featured authorization server and an identity provider.
+This repository is a sub repository of [OAuth2 and OpenId Connect Framework](https://github.com/oauth2-framework/oauth2-framework) project and is READ ONLY.
 
-Resources
----------
+**Please do not submit any Pull Request here.**
+You should go to [the main repository](https://github.com/oauth2-framework/oauth2-framework) instead. 
 
-  * [Documentation](https://oauth2-framework.spomky-labs.com/)
-  * [Contributing](https://github.com/OAuth2-Framework/oauth2-framework/blob/master/.github/CONTRIBUTING.md)
-  * [Report issues](https://github.com/OAuth2-Framework/oauth2-framework/issues) and
-    [send Pull Requests](https://github.com/OAuth2-Framework/oauth2-framework/pulls)
-    in the [main repository](https://github.com/OAuth2-Framework/oauth2-framework)
+# Documentation
+
+The official documentation is available as https://oauth2-framework.spomky-labs.com/
+
+# Licence
+
+This software is release under [MIT licence](LICENSE).

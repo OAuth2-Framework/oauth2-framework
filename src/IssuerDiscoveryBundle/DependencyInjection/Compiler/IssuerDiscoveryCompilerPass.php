@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\IssuerDiscoveryBundle\DependencyInjection\Compiler;
 
-use OAuth2Framework\Component\Middleware\Pipe;
+use OAuth2Framework\IssuerDiscoveryBundle\Middleware\Pipe;
 use OAuth2Framework\IssuerDiscoveryBundle\Service\IssuerDiscoveryFactory;
 use OAuth2Framework\IssuerDiscoveryBundle\Service\RouteLoader;
 use OAuth2Framework\Component\IssuerDiscoveryEndpoint\IssuerDiscoveryEndpoint;
