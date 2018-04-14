@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Scope\Tests;
 
+use OAuth2Framework\Component\ClientRule\Rule;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Scope\Rule\ScopeRule;
@@ -23,6 +24,16 @@ use PHPUnit\Framework\TestCase;
  */
 class ScopeRuleTest extends TestCase
 {
+    /**
+     * @inheritdoc}
+     */
+    protected function setUp()
+    {
+        if (!class_exists(Rule::class)) {
+            $this->markTestSkipped('The component "oauth2-framework/client" is not installed.');
+        }
+    }
+
     /**
      * @test
      * @expectedException \InvalidArgumentException

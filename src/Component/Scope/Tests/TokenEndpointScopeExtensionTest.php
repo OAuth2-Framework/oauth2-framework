@@ -28,6 +28,7 @@ use OAuth2Framework\Component\Scope\ScopeRepository;
 use OAuth2Framework\Component\Scope\TokenEndpointScopeExtension;
 use OAuth2Framework\Component\TokenEndpoint\GrantType;
 use OAuth2Framework\Component\TokenEndpoint\GrantTypeData;
+use OAuth2Framework\Component\TokenEndpoint\TokenEndpoint;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -36,6 +37,16 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class TokenEndpointScopeExtensionTest extends TestCase
 {
+    /**
+     * @inheritdoc}
+     */
+    protected function setUp()
+    {
+        if (!class_exists(TokenEndpoint::class)) {
+            $this->markTestSkipped('The component "oauth2-framework/token-endpoint" is not installed.');
+        }
+    }
+
     /**
      * @test
      */

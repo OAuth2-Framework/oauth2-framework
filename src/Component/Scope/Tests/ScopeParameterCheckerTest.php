@@ -33,7 +33,7 @@ class ScopeParameterCheckerTest extends TestCase
     protected function setUp()
     {
         if (!class_exists(Authorization::class)) {
-            $this->markTestSkipped('Authorization Endpoint not available');
+            $this->markTestSkipped('The component "oauth2-framework/authorization-endpoint" is not installed.');
         }
     }
 
