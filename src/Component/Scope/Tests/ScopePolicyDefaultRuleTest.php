@@ -29,7 +29,7 @@ class ScopePolicyDefaultRuleTest extends TestCase
      */
     protected function setUp()
     {
-        if (!class_exists(Rule::class)) {
+        if (!interface_exists(Rule::class)) {
             $this->markTestSkipped('The component "oauth2-framework/client" is not installed.');
         }
     }
