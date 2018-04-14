@@ -27,7 +27,10 @@
     "suggest": {
         "oauth2-framework/openid-connect": "To add an authentication layer on top of the authorization server.",
         "oauth2-framework/client-rule": "To use of the client registration/configuration rules provided by this component.",
-        "php-http/httplug": "To use of the Sector Identifier Uri client registration/configuration rule provided by this component."
+        "php-http/httplug": "To use of the Sector Identifier Uri client registration/configuration rule provided by this component.",
+        "oauth2-framework/authorization-code-grant": "The Authorization Code grant type",
+        "oauth2-framework/implicit-grant": "The Implicit grant type",
+        "oauth2-framework/none-grant": "The None grant type"
     },
     "require-dev": {
         "phpunit/phpunit": "^6.5",

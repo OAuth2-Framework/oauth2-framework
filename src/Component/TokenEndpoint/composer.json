@@ -28,7 +28,13 @@
     },
     "suggest": {
         "oauth2-framework/openid-connect": "To add an authentication layer on top of the authorization server.",
-        "oauth2-framework/client-rule": "To use of the client registration/configuration rules provided by this component."
+        "oauth2-framework/client-rule": "To use of the client registration/configuration rules provided by this component.",
+        "oauth2-framework/authorization-code-grant": "The Authorization Code grant type",
+        "oauth2-framework/client-credentials-grant": "The Client Credentials grant type",
+        "oauth2-framework/implicit-grant": "The Implicit grant type",
+        "oauth2-framework/jwt-bearer-grant": "The JWT Bearer grant type",
+        "oauth2-framework/refresh-token-grant": "The Refresh Token grant type",
+        "oauth2-framework/resource-owner-password-credentials-grant": "The Resource Onwer Password Credentials grant type"
     },
     "autoload": {
         "psr-4": {
