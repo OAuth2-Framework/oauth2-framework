@@ -14,10 +14,9 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\RefreshTokenGrant;
 
 use OAuth2Framework\Component\Core\Token\Token;
-use OAuth2Framework\Component\TokenIntrospectionEndpoint\TokenTypeHint as IntrospectionTokenTypeHint;
-use OAuth2Framework\Component\TokenRevocationEndpoint\TokenTypeHint as RevocationTokenTypeHint;
+use OAuth2Framework\Component\TokenIntrospectionEndpoint\TokenTypeHint;
 
-class RefreshTokenTypeHint implements IntrospectionTokenTypeHint, RevocationTokenTypeHint
+class RefreshTokenIntrospectionTypeHint implements TokenTypeHint
 {
     /**
      * @var RefreshTokenRepository
@@ -25,7 +24,7 @@ class RefreshTokenTypeHint implements IntrospectionTokenTypeHint, RevocationToke
     private $refreshTokenRepository;
 
     /**
-     * RefreshToken constructor.
+     * RefreshTokenIntrospectionTypeHint constructor.
      *
      * @param RefreshTokenRepository $refreshTokenRepository
      */
@@ -50,19 +49,6 @@ class RefreshTokenTypeHint implements IntrospectionTokenTypeHint, RevocationToke
         $id = RefreshTokenId::create($token);
 
         return $this->refreshTokenRepository->find($id);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function revoke(Token $token)
-    {
-        if (!$token instanceof RefreshToken || true === $token->isRevoked()) {
-            return;
-        }
-
-        $token = $token->markAsRevoked();
-        $this->refreshTokenRepository->save($token);
     }
 
     /**

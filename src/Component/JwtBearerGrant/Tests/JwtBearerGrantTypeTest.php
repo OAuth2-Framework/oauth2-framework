@@ -104,6 +104,9 @@ class JwtBearerGrantTypeTest extends TestCase
      */
     public function theTokenResponseIsCorrectlyPreparedWithAssertionFromClient()
     {
+        if (!class_exists(JWEBuilder::class)) {
+            $this->markTestSkipped('The component "web-token/jwt-encryption" is not installed.');
+        }
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getParsedBody()->willReturn(['assertion' => $this->createValidEncryptedAssertionFromClient()]);
         $grantTypeData = GrantTypeData::create(null);
@@ -178,6 +181,9 @@ class JwtBearerGrantTypeTest extends TestCase
      */
     public function theGrantTypeCanGrantTheClientUsingTheTokenIssuedByTheClient()
     {
+        if (!class_exists(JWEBuilder::class)) {
+            $this->markTestSkipped('The component "web-token/jwt-encryption" is not installed.');
+        }
         $client = Client::createEmpty();
         $client = $client->create(
             ClientId::create('CLIENT_ID'),
@@ -218,11 +224,14 @@ class JwtBearerGrantTypeTest extends TestCase
                 $this->getTrustedIssuerManager()
             );
 
-            $this->grantType->enableEncryptedAssertions(
-                $this->getJweDecrypter(),
-                $this->getEncryptionKeySet(),
-                false
-            );
+
+            if (class_exists(JWEBuilder::class)) {
+                $this->grantType->enableEncryptedAssertions(
+                    $this->getJweDecrypter(),
+                    $this->getEncryptionKeySet(),
+                    false
+                );
+            }
         }
 
         return $this->grantType;
@@ -363,13 +372,6 @@ class JwtBearerGrantTypeTest extends TestCase
         $manager->find('Trusted Issuer #1')->willReturn($issuer->reveal());
 
         return $manager->reveal();
-    }
-
-    /**
-     * @return string
-     */
-    private function createExpiredAssertion(): string
-    {
     }
 
     /**

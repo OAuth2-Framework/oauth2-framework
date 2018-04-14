@@ -16,11 +16,12 @@ namespace OAuth2Framework\Component\RefreshTokenGrant\Tests;
 use OAuth2Framework\Component\RefreshTokenGrant\RefreshToken;
 use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenId;
 use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenRepository;
-use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenTypeHint;
+use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenIntrospectionTypeHint;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
+use OAuth2Framework\Component\TokenIntrospectionEndpoint\TokenTypeHint;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 
@@ -28,8 +29,18 @@ use Prophecy\Argument;
  * @group TypeHint
  * @group RefreshTokenTypeHint
  */
-class RefreshTokenTypeHintTest extends TestCase
+class RefreshTokenIntrospectionTypeHintTest extends TestCase
 {
+    /**
+     * {@inheritdoc}
+     */
+    protected function setUp()
+    {
+        if (!interface_exists(TokenTypeHint::class)) {
+            $this->markTestSkipped('The component "oauth2-framework/token-introspection-endpoint" is not installed.');
+        }
+    }
+
     /**
      * @test
      */
@@ -71,35 +82,14 @@ class RefreshTokenTypeHintTest extends TestCase
     }
 
     /**
-     * @test
-     */
-    public function theTokenTypeHintCanFindATokenAndRevokeIt()
-    {
-        self::assertNull($this->getRefreshTokenTypeHint()->find('UNKNOWN_TOKEN_ID'));
-        $refreshToken = $this->getRefreshTokenTypeHint()->find('REFRESH_TOKEN_ID');
-        $this->getRefreshTokenTypeHint()->revoke($refreshToken);
-        self::assertTrue(true);
-    }
-
-    /**
-     * @test
-     */
-    public function aRevokedTokenCannotBeRevokedTwice()
-    {
-        $refreshToken = $this->getRefreshTokenTypeHint()->find('REVOKED_REFRESH_TOKEN_ID');
-        $this->getRefreshTokenTypeHint()->revoke($refreshToken);
-        self::assertTrue(true);
-    }
-
-    /**
-     * @var null|RefreshTokenTypeHint
+     * @var null|RefreshTokenIntrospectionTypeHint
      */
     private $refreshTokenTypeHint = null;
 
     /**
-     * @return RefreshTokenTypeHint
+     * @return RefreshTokenIntrospectionTypeHint
      */
-    public function getRefreshTokenTypeHint(): RefreshTokenTypeHint
+    public function getRefreshTokenTypeHint(): RefreshTokenIntrospectionTypeHint
     {
         if (null === $this->refreshTokenTypeHint) {
             $refreshToken = RefreshToken::createEmpty();
@@ -146,7 +136,7 @@ class RefreshTokenTypeHintTest extends TestCase
             $refreshTokenRepository->find(RefreshTokenId::create('EXPIRED_REFRESH_TOKEN_ID'))->willReturn($expiredRefreshToken);
             $refreshTokenRepository->find(RefreshTokenId::create('REVOKED_REFRESH_TOKEN_ID'))->willReturn($revokedRefreshToken);
             $refreshTokenRepository->find(RefreshTokenId::create('UNKNOWN_TOKEN_ID'))->willReturn(null);
-            $this->refreshTokenTypeHint = new RefreshTokenTypeHint(
+            $this->refreshTokenTypeHint = new RefreshTokenIntrospectionTypeHint(
                 $refreshTokenRepository->reveal()
             );
         }

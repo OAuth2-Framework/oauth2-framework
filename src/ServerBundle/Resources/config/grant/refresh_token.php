@@ -12,7 +12,8 @@ declare(strict_types=1);
  */
 
 use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenGrantType;
-use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenTypeHint;
+use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenIntrospectionTypeHint;
+use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenRevocationTypeHint;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
@@ -26,7 +27,12 @@ return function (ContainerConfigurator $container) {
             ref('oauth2_server.grant.refresh_token.repository'),
         ]);
 
-    $container->set(RefreshTokenTypeHint::class)
+    $container->set(RefreshTokenIntrospectionTypeHint::class)
+        ->args([
+            ref('oauth2_server.grant.refresh_token.repository'),
+        ]);
+
+    $container->set(RefreshTokenRevocationTypeHint::class)
         ->args([
             ref('oauth2_server.grant.refresh_token.repository'),
         ]);

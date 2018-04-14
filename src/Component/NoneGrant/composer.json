@@ -1,9 +1,9 @@
 {
-    "name": "oauth2-framework/authorization-code-grant",
+    "name": "oauth2-framework/none-grant",
     "type": "library",
-    "description": "Authorization Code Grant for the OAuth2 Framework",
+    "description": "None Grant for the OAuth2 Framework",
     "license": "MIT",
-    "keywords": ["RFC6749", "oauth2", "framework", "authorization", "code", "grant", "library"],
+    "keywords": ["RFC6749", "oauth2", "framework", "none", "grant", "library"],
     "homepage": "https://oauth2-framework.spomky-labs.com/",
     "authors": [
         {
@@ -17,17 +17,15 @@
     ],
     "require": {
         "php": "^7.1",
-        "oauth2-framework/authorization-endpoint": "^0.0@dev",
         "oauth2-framework/core": "^0.0@dev",
-        "oauth2-framework/token-endpoint": "^0.0@dev",
-        "spomky-labs/base64url": "^1.0"
+        "oauth2-framework/authorization-endpoint": "^0.0@dev"
     },
     "require-dev": {
         "phpunit/phpunit": "^6.5"
     },
     "autoload": {
         "psr-4": {
-            "OAuth2Framework\\Component\\AuthorizationCodeGrant\\": ""
+            "OAuth2Framework\\Component\\NoneGrant\\": ""
         }
     },
     "extra": {
