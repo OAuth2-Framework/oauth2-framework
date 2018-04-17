@@ -3,7 +3,7 @@
     "type": "symfony-bundle",
     "description": "Security Bundle for the OAuth2 Framework",
     "license": "MIT",
-    "keywords": ["RFC6749", "oauth2", "framework", "security" "bundle", "grant", "library"],
+    "keywords": ["RFC6749", "oauth2", "framework", "security", "bundle", "grant", "library"],
     "homepage": "https://oauth2-framework.spomky-labs.com/",
     "authors": [
         {
