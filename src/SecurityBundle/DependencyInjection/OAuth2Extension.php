@@ -31,7 +31,7 @@ class OAuth2Extension extends Extension
     /**
      * OAuth2Extension constructor.
      *
-     * @param string      $alias
+     * @param string $alias
      */
     public function __construct(string $alias)
     {
@@ -56,7 +56,7 @@ class OAuth2Extension extends Extension
 
         //$processor = new Processor();
         //$config = $processor->processConfiguration($this->getConfiguration($configs, $container), $configs);
-        $loader = new PhpFileLoader($container,new FileLocator(__DIR__.'/../Resources/config/'));
+        $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../Resources/config/'));
         $loader->load('services.php');
 
         $container->setAlias('oauth2.security.token_type_manager', 'oauth2.security.token_type_manager.default');

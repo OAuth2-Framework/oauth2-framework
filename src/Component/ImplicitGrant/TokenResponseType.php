@@ -39,6 +39,7 @@ class TokenResponseType implements ResponseType
 
     /**
      * TokenResponseType constructor.
+     *
      * @param AccessTokenIdGenerator $accessTokenIdGenerator
      * @param AccessTokenRepository  $accessTokenRepository
      * @param int                    $accessTokenLifetime

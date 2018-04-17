@@ -16,7 +16,6 @@ namespace OAuth2Framework\ServerBundle\Component\Grant\AuthorizationCode;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeIdGenerator;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeRepository;
 use OAuth2Framework\ServerBundle\Component\Component;
-use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeGrantType;
 use OAuth2Framework\ServerBundle\Service\RandomAuthorizationCodeIdGenerator;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\FileLocator;

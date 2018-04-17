@@ -257,7 +257,8 @@ class TokenEndpointTest extends TestCase
     {
         if (null === $this->accessTokenRepository) {
             $accessTokenRepository = $this->prophesize(AccessTokenRepository::class);
-            $accessTokenRepository->save(Argument::type(AccessToken::class))->will(function (array $args) {});
+            $accessTokenRepository->save(Argument::type(AccessToken::class))->will(function (array $args) {
+            });
             $this->accessTokenRepository = $accessTokenRepository->reveal();
         }
 
