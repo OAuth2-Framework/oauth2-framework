@@ -58,7 +58,7 @@ class AuthorizationCodeIntrospectionTypeHintTest extends TestCase
         $authorizationCode = $this->getAuthorizationCodeIntrospectionTypeHint()->find('AUTHORIZATION_CODE_ID');
         self::assertInstanceOf(AuthorizationCode::class, $authorizationCode);
         $introspection = $this->getAuthorizationCodeIntrospectionTypeHint()->introspect($authorizationCode);
-        self::arrayHasKey('active', $introspection);
+        self::assertArrayHasKey('active', $introspection);
         self::assertTrue($introspection['active']);
     }
 
@@ -88,8 +88,6 @@ class AuthorizationCodeIntrospectionTypeHintTest extends TestCase
                 ResourceServerId::create('RESOURCE_SERVER_ID')
             );
             $authorizationCodeRepository = $this->prophesize(AuthorizationCodeRepository::class);
-            $authorizationCodeRepository->save(Argument::type(AuthorizationCode::class))->will(function () {
-            });
             $authorizationCodeRepository->find(Argument::type(AuthorizationCodeId::class))->will(function ($args) use ($authorizationCode) {
                 if ('AUTHORIZATION_CODE_ID' === $args[0]->getValue()) {
                     return $authorizationCode;
@@ -97,6 +95,7 @@ class AuthorizationCodeIntrospectionTypeHintTest extends TestCase
 
                 return null;
             });
+
             $this->authorizationCodeIntrospectionTypeHint = new AuthorizationCodeIntrospectionTypeHint(
                 $authorizationCodeRepository->reveal()
             );

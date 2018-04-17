@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Component\Scope;
 
+use OAuth2Framework\Component\Scope\ScopeRepository;
 use OAuth2Framework\ServerBundle\Component\Component;
 use OAuth2Framework\ServerBundle\Component\Scope\Compiler\ScopeMetadataCompilerPass;
 use OAuth2Framework\ServerBundle\Component\Scope\Compiler\ScopePolicyCompilerPass;
@@ -40,7 +41,7 @@ class ScopeSource implements Component
             return;
         }
 
-        $container->setAlias('oauth2_server.scope.repository', $configs['scope']['repository']);
+        $container->setAlias(ScopeRepository::class, $configs['scope']['repository']);
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../Resources/config/scope'));
         $loader->load('scope.php');
 

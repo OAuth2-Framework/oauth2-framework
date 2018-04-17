@@ -424,7 +424,7 @@ class AuthorizationRequestLoader
     }
 
     /**
-     * @param $url
+     * @param string $url
      *
      * @return string
      *
@@ -432,7 +432,7 @@ class AuthorizationRequestLoader
      * @throws \Exception
      * @throws \Http\Client\Exception
      */
-    private function downloadContent($url): string
+    private function downloadContent(string $url): string
     {
         $request = new Request($url, 'GET');
         $response = $this->client->sendRequest($request);

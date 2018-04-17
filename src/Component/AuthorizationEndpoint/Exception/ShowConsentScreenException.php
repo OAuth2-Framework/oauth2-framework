@@ -29,6 +29,7 @@ class ShowConsentScreenException extends \Exception
      */
     public function __construct(Authorization $authorization)
     {
+        parent::__construct();
         $this->authorization = $authorization;
     }
 

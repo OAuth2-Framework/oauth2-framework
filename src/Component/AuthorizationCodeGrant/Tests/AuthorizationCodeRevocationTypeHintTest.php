@@ -87,14 +87,14 @@ class AuthorizationCodeRevocationTypeHintTest extends TestCase
                 ResourceServerId::create('RESOURCE_SERVER_ID')
             );
             $authorizationCodeRepository = $this->prophesize(AuthorizationCodeRepository::class);
-            $authorizationCodeRepository->save(Argument::type(AuthorizationCode::class))->will(function () {
-            });
             $authorizationCodeRepository->find(Argument::type(AuthorizationCodeId::class))->will(function ($args) use ($authorizationCode) {
                 if ('AUTHORIZATION_CODE_ID' === $args[0]->getValue()) {
                     return $authorizationCode;
                 }
 
                 return null;
+            });
+            $authorizationCodeRepository->save(Argument::type(AuthorizationCode::class))->will(function () {
             });
             $this->authorizationCodeRevocationTypeHint = new AuthorizationCodeRevocationTypeHint(
                 $authorizationCodeRepository->reveal()

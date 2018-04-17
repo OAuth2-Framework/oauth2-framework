@@ -11,7 +11,7 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Component\ResourceOwnerPasswordCredentialsGrantType\Tests;
+namespace OAuth2Framework\Component\ResourceOwnerPasswordCredentialsGrant\Tests;
 
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;

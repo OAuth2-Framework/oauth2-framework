@@ -27,12 +27,10 @@ class AuthenticateResponse extends OAuth2Error
      * AuthenticateResponse constructor.
      *
      * {@inheritdoc}
-     *
-     * @param array $schemes Schemes
      */
     public function __construct(int $code, array $data, ResponseInterface $response, array $schemes)
     {
-        parent::__construct(401, $data, $response);
+        parent::__construct($code, $data, $response);
         $this->schemes = $schemes;
     }
 

@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\AuthorizationCodeGrant;
 
-use Base64Url\Base64Url;
 use OAuth2Framework\Component\AuthorizationCodeGrant\PKCEMethod\PKCEMethodManager;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType;
 use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
@@ -28,19 +27,14 @@ class AuthorizationCodeResponseType implements ResponseType
     private $authorizationCodeLifetime;
 
     /**
-     * @var int
-     */
-    private $minLength;
-
-    /**
-     * @var int
-     */
-    private $maxLength;
-
-    /**
      * @var bool
      */
     private $pkceForPublicClientsEnforced;
+
+    /**
+     * @var AuthorizationCodeIdGenerator
+     */
+    private $authorizationCodeIdGenerator;
 
     /**
      * @var AuthorizationCodeRepository
@@ -55,19 +49,16 @@ class AuthorizationCodeResponseType implements ResponseType
     /**
      * AuthorizationCodeResponseType constructor.
      *
-     * @param AuthorizationCodeRepository $authorizationCodeRepository
-     * @param int                         $minLength
-     * @param int                         $maxLength
-     * @param int                         $authorizationCodeLifetime
-     * @param PKCEMethodManager           $pkceMethodManager
-     * @param bool                        $pkceForPublicClientsEnforced
+     * @param AuthorizationCodeIdGenerator $authorizationCodeIdGenerator
+     * @param AuthorizationCodeRepository  $authorizationCodeRepository
+     * @param int                          $authorizationCodeLifetime
+     * @param PKCEMethodManager            $pkceMethodManager
+     * @param bool                         $pkceForPublicClientsEnforced
      */
-    public function __construct(AuthorizationCodeRepository $authorizationCodeRepository, int $minLength, int $maxLength, int $authorizationCodeLifetime, PKCEMethodManager $pkceMethodManager, bool $pkceForPublicClientsEnforced)
+    public function __construct(AuthorizationCodeIdGenerator $authorizationCodeIdGenerator, AuthorizationCodeRepository $authorizationCodeRepository, int $authorizationCodeLifetime, PKCEMethodManager $pkceMethodManager, bool $pkceForPublicClientsEnforced)
     {
+        $this->authorizationCodeIdGenerator = $authorizationCodeIdGenerator;
         $this->authorizationCodeRepository = $authorizationCodeRepository;
-        $this->authorizationCodeLifetime = $authorizationCodeLifetime;
-        $this->minLength = $minLength;
-        $this->maxLength = $maxLength;
         $this->authorizationCodeLifetime = $authorizationCodeLifetime;
         $this->pkceMethodManager = $pkceMethodManager;
         $this->pkceForPublicClientsEnforced = $pkceForPublicClientsEnforced;
@@ -115,10 +106,10 @@ class AuthorizationCodeResponseType implements ResponseType
             }
         }
 
-        $length = random_int($this->minLength, $this->maxLength);
+        $authorizationCodeId = $this->authorizationCodeIdGenerator->createAuthorizationCodeId();
         $authorizationCode = AuthorizationCode::createEmpty();
         $authorizationCode = $authorizationCode->create(
-            AuthorizationCodeId::create(Base64Url::encode(random_bytes($length * 8))),
+            $authorizationCodeId,
             $authorization->getClient()->getPublicId(),
             $authorization->getUserAccount()->getPublicId(),
             $queryParams,
@@ -129,7 +120,7 @@ class AuthorizationCodeResponseType implements ResponseType
             $authorization->getResourceServer() ? $authorization->getResourceServer()->getResourceServerId() : null
         );
         $this->authorizationCodeRepository->save($authorizationCode);
-        $authorization = $authorization->withResponseParameter('code', $authorizationCode->getTokenId()->getValue());
+        $authorization = $authorization->withResponseParameter('code', $authorizationCodeId->getValue());
 
         return $authorization;
     }

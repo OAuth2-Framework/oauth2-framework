@@ -32,7 +32,8 @@ return function (ContainerConfigurator $container) {
 
     $container->set(ClientRegistrationEndpoint::class)
         ->args([
-            ref('oauth2_server.client_repository'),
+            ref(\OAuth2Framework\Component\Core\Client\ClientIdGenerator::class),
+            ref(\OAuth2Framework\Component\Core\Client\ClientRepository::class),
             ref('httplug.message_factory'),
             ref('command_bus'),
             ref(RuleManager::class),

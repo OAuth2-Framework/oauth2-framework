@@ -27,6 +27,11 @@ class KeySet implements Component
         return 'key_set';
     }
 
+    public function load(array $configs, ContainerBuilder $container)
+    {
+        // TODO: Implement load() method.
+    }
+
     /**
      * {@inheritdoc}
      */

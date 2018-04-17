@@ -13,13 +13,12 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\ClientRegistrationEndpoint;
 
-use Base64Url\Base64Url;
 use Http\Message\ResponseFactory;
+use OAuth2Framework\Component\Core\Client\ClientIdGenerator;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use OAuth2Framework\Component\ClientRule\RuleManager;
 use OAuth2Framework\Component\Core\Client\Client;
-use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\Client\ClientRepository;
 use OAuth2Framework\Component\Core\Client\Command\CreateClientCommand;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
@@ -46,6 +45,11 @@ class ClientRegistrationEndpoint implements MiddlewareInterface
     private $clientRepository;
 
     /**
+     * @var ClientIdGenerator
+     */
+    private $clientIdGenerator;
+
+    /**
      * @var RuleManager
      */
     private $ruleManager;
@@ -53,13 +57,15 @@ class ClientRegistrationEndpoint implements MiddlewareInterface
     /**
      * ClientRegistrationEndpoint constructor.
      *
-     * @param ClientRepository $clientRepository
-     * @param ResponseFactory  $responseFactory
-     * @param MessageBus       $messageBus
-     * @param RuleManager      $ruleManager
+     * @param ClientIdGenerator $clientIdGenerator
+     * @param ClientRepository  $clientRepository
+     * @param ResponseFactory   $responseFactory
+     * @param MessageBus        $messageBus
+     * @param RuleManager       $ruleManager
      */
-    public function __construct(ClientRepository $clientRepository, ResponseFactory $responseFactory, MessageBus $messageBus, RuleManager $ruleManager)
+    public function __construct(ClientIdGenerator $clientIdGenerator, ClientRepository $clientRepository, ResponseFactory $responseFactory, MessageBus $messageBus, RuleManager $ruleManager)
     {
+        $this->clientIdGenerator = $clientIdGenerator;
         $this->clientRepository = $clientRepository;
         $this->responseFactory = $responseFactory;
         $this->ruleManager = $ruleManager;
@@ -81,8 +87,7 @@ class ClientRegistrationEndpoint implements MiddlewareInterface
                 $userAccountId = null;
             }
             $commandParameters = DataBag::create($request->getParsedBody() ?? []);
-            $clientIdLength = random_int(50, 100);
-            $clientId = ClientId::create(Base64Url::encode(random_bytes($clientIdLength)));
+            $clientId = $this->clientIdGenerator->createClientId();
             $validatedParameters = $this->ruleManager->handle($clientId, $commandParameters);
             $command = CreateClientCommand::create($clientId, $userAccountId, $validatedParameters);
             $this->messageBus->handle($command);

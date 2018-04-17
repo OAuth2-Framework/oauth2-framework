@@ -16,7 +16,7 @@ namespace OAuth2Framework\Component\Core\Tests\AccessToken;
 use OAuth2Framework\Component\Core\AccessToken\AccessToken;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository;
-use OAuth2Framework\Component\Core\AccessToken\AccessTokenTypeHint;
+use OAuth2Framework\Component\Core\AccessToken\AccessTokenIntrospectionTypeHint;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
@@ -58,19 +58,19 @@ class AccessTokenIntrospectionTypeHintTest extends TestCase
         $accessToken = $this->getAccessTokenIntrospectionTypeHint()->find('ACCESS_TOKEN_ID');
         self::assertInstanceOf(AccessToken::class, $accessToken);
         $introspection = $this->getAccessTokenIntrospectionTypeHint()->introspect($accessToken);
-        self::arrayHasKey('active', $introspection);
+        self::assertArrayHasKey('active', $introspection);
         self::assertTrue($introspection['active']);
     }
 
     /**
-     * @var null|AccessTokenTypeHint
+     * @var null|AccessTokenIntrospectionTypeHint
      */
     private $accessTokenTypeHint = null;
 
     /**
-     * @return AccessTokenTypeHint
+     * @return AccessTokenIntrospectionTypeHint
      */
-    public function getAccessTokenIntrospectionTypeHint(): AccessTokenTypeHint
+    public function getAccessTokenIntrospectionTypeHint(): AccessTokenIntrospectionTypeHint
     {
         if (null === $this->accessTokenTypeHint) {
             $accessToken = AccessToken::createEmpty();
@@ -86,8 +86,6 @@ class AccessTokenIntrospectionTypeHintTest extends TestCase
                 ResourceServerId::create('RESOURCE_SERVER_ID')
             );
             $accessTokenRepository = $this->prophesize(AccessTokenRepository::class);
-            $accessTokenRepository->save(Argument::type(AccessToken::class))->will(function () {
-            });
             $accessTokenRepository->find(Argument::type(AccessTokenId::class))->will(function ($args) use ($accessToken) {
                 if ('ACCESS_TOKEN_ID' === $args[0]->getValue()) {
                     return $accessToken;
@@ -95,7 +93,7 @@ class AccessTokenIntrospectionTypeHintTest extends TestCase
 
                 return null;
             });
-            $this->accessTokenTypeHint = new AccessTokenTypeHint(
+            $this->accessTokenTypeHint = new AccessTokenIntrospectionTypeHint(
                 $accessTokenRepository->reveal()
             );
         }

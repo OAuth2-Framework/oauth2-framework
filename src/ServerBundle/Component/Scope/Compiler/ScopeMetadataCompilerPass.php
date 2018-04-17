@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Component\Scope\Compiler;
 
+use OAuth2Framework\Component\Scope\ScopeRepository;
 use OAuth2Framework\ServerBundle\Service\MetadataBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -25,10 +26,10 @@ class ScopeMetadataCompilerPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        if (!$container->hasDefinition(MetadataBuilder::class) || !$container->hasAlias('oauth2_server.scope.repository')) {
+        if (!$container->hasDefinition(MetadataBuilder::class) || !$container->hasAlias(ScopeRepository::class)) {
             return;
         }
         $metadata = $container->getDefinition(MetadataBuilder::class);
-        $metadata->addMethodCall('setScopeRepository', [new Reference('oauth2_server.scope.repository')]);
+        $metadata->addMethodCall('setScopeRepository', [new Reference(ScopeRepository::class)]);
     }
 }

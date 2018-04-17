@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Component\Core;
 
+use OAuth2Framework\Component\Core\ResourceServer\ResourceServerRepository;
 use OAuth2Framework\ServerBundle\Component\Component;
 use OAuth2Framework\ServerBundle\Component\Core\Compiler\ResourceServerAuthenticationMethodCompilerPass;
 use OAuth2Framework\Component\ResourceServerAuthentication\AuthenticationMethodManager;
@@ -44,7 +45,7 @@ class ResourceServerSource implements Component
         if (null === $configs['resource_server']['repository']) {
             return;
         }
-        $container->setAlias('oauth2_server.resource_server_repository', $configs['resource_server']['repository']);
+        $container->setAlias(ResourceServerRepository::class, $configs['resource_server']['repository']);
         $loader->load('authentication_middleware.php');
     }
 

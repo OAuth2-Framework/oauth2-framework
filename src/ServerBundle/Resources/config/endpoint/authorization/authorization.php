@@ -72,7 +72,7 @@ return function (ContainerConfigurator $container) {
 
     $container->set(AuthorizationEndpoint\AuthorizationRequestLoader::class)
         ->args([
-            ref('oauth2_server.client_repository'),
+            ref(\OAuth2Framework\Component\Core\Client\ClientRepository::class),
         ]);
 
     // Consent Screen Extension

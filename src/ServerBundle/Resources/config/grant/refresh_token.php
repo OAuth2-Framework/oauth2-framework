@@ -22,18 +22,20 @@ return function (ContainerConfigurator $container) {
         ->private()
         ->autoconfigure();
 
+    $container->set(\OAuth2Framework\ServerBundle\Service\RandomRefreshTokenIdGenerator::class);
+
     $container->set(RefreshTokenGrantType::class)
         ->args([
-            ref('oauth2_server.grant.refresh_token.repository'),
+            ref(\OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenRepository::class),
         ]);
 
     $container->set(RefreshTokenIntrospectionTypeHint::class)
         ->args([
-            ref('oauth2_server.grant.refresh_token.repository'),
+            ref(\OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenRepository::class),
         ]);
 
     $container->set(RefreshTokenRevocationTypeHint::class)
         ->args([
-            ref('oauth2_server.grant.refresh_token.repository'),
+            ref(\OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenRepository::class),
         ]);
 };

@@ -176,7 +176,7 @@ class AuthorizationCodeGrantTypeTest extends TestCase
             $authorizationCode->eraseMessages();
             $authorizationCodeRepository = $this->prophesize(AuthorizationCodeRepository::class);
             $authorizationCodeRepository->find(AuthorizationCodeId::create('AUTHORIZATION_CODE_ID'))->willReturn($authorizationCode);
-            $authorizationCodeRepository->save(Argument::type(AuthorizationCode::class))->willReturn(null);
+            $authorizationCodeRepository->save(Argument::type(AuthorizationCode::class))->will(function (array $args) {});
 
             $this->grantType = new AuthorizationCodeGrantType(
                 $authorizationCodeRepository->reveal(),

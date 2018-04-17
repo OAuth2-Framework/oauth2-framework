@@ -43,12 +43,12 @@ return function (ContainerConfigurator $container) {
 
     $container->set(TokenEndpoint\TokenEndpoint::class)
         ->args([
-            ref('oauth2_server.client_repository'),
-            ref('oauth2_server.user_account_repository'),
+            ref(\OAuth2Framework\Component\Core\Client\ClientRepository::class),
+            ref(\OAuth2Framework\Component\Core\UserAccount\UserAccountRepository::class),
             ref(TokenEndpoint\Extension\TokenEndpointExtensionManager::class),
             ref('httplug.message_factory'),
-            ref('oauth2_server.access_token_repository'),
-            ref('oauth2_server.access_token_id_generator'),
+            ref(\OAuth2Framework\Component\Core\AccessToken\AccessTokenIdGenerator::class),
+            ref(\OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository::class),
             '%oauth2_server.access_token_lifetime%',
         ]);
 };

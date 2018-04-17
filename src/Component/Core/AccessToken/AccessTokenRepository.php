@@ -16,14 +16,16 @@ namespace OAuth2Framework\Component\Core\AccessToken;
 interface AccessTokenRepository
 {
     /**
-     * @param AccessToken $token
-     */
-    public function save(AccessToken $token);
-
-    /**
      * @param AccessTokenId $accessTokenId The access token ID
      *
      * @return AccessToken|null Return the access token or null if the argument is not a valid access token
      */
-    public function find(AccessTokenId $accessTokenId);
+    public function find(AccessTokenId $accessTokenId): ?AccessToken;
+
+    /**
+     * @param AccessToken $accessToken The access token to store
+     *
+     * @return void
+     */
+    public function save(AccessToken $accessToken): void;
 }

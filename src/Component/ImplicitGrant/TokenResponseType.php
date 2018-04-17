@@ -23,14 +23,14 @@ use OAuth2Framework\Component\Core\DataBag\DataBag;
 class TokenResponseType implements ResponseType
 {
     /**
-     * @var AccessTokenRepository
-     */
-    private $accessTokenRepository;
-
-    /**
      * @var AccessTokenIdGenerator
      */
     private $accessTokenIdGenerator;
+
+    /**
+     * @var AccessTokenRepository
+     */
+    private $accessTokenRepository;
 
     /**
      * @var int
@@ -39,15 +39,14 @@ class TokenResponseType implements ResponseType
 
     /**
      * TokenResponseType constructor.
-     *
-     * @param AccessTokenRepository  $accessTokenRepository
      * @param AccessTokenIdGenerator $accessTokenIdGenerator
+     * @param AccessTokenRepository  $accessTokenRepository
      * @param int                    $accessTokenLifetime
      */
-    public function __construct(AccessTokenRepository $accessTokenRepository, AccessTokenIdGenerator $accessTokenIdGenerator, int $accessTokenLifetime)
+    public function __construct(AccessTokenIdGenerator $accessTokenIdGenerator, AccessTokenRepository $accessTokenRepository, int $accessTokenLifetime)
     {
-        $this->accessTokenRepository = $accessTokenRepository;
         $this->accessTokenIdGenerator = $accessTokenIdGenerator;
+        $this->accessTokenRepository = $accessTokenRepository;
         $this->accessTokenLifetime = $accessTokenLifetime;
     }
 
@@ -80,7 +79,7 @@ class TokenResponseType implements ResponseType
      */
     public function process(Authorization $authorization): Authorization
     {
-        $accessTokenId = $this->accessTokenIdGenerator->create(
+        $accessTokenId = $this->accessTokenIdGenerator->createAccessTokenId(
             $authorization->getUserAccount()->getPublicId(),
             $authorization->getClient()->getPublicId(),
             DataBag::create($authorization->getTokenType()->getAdditionalInformation()),

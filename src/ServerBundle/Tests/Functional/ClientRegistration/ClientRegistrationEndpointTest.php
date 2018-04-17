@@ -78,7 +78,7 @@ class ClientRegistrationEndpointTest extends WebTestCase
         /** @var ContainerInterface $container */
         $container = $client->getContainer();
         /** @var ClientRepository $clientRepository */
-        $clientRepository = $container->get('MyClientRepository');
+        $clientRepository = $container->get(\OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\ClientRepository::class);
         $client = $clientRepository->find(ClientId::create($content['client_id']));
         self::assertInstanceOf(Client::class, $client);
     }

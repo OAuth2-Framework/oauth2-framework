@@ -73,7 +73,7 @@ class CommandTest extends WebTestCase
         $handler->handle($command);
 
         /** @var AccessTokenRepository $accessTokenRepository */
-        $accessTokenRepository = $container->get('MyAccessTokenRepository');
+        $accessTokenRepository = $container->get(\OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\AccessTokenRepository::class);
 
         $accessToken = $accessTokenRepository->find(AccessTokenId::create('ACCESS_TOKEN_CREATED_USING_A_COMMAND'));
 

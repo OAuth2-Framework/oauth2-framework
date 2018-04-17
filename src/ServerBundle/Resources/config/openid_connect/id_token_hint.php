@@ -27,7 +27,7 @@ return [
     IdTokenHintDiscovery::class => create()
         ->arguments(
             get(IdTokenLoader::class),
-            get('oauth2_server.user_account_repository')
+            get(\OAuth2Framework\Component\Core\UserAccount\UserAccountRepository::class)
         )
         ->tag('oauth2_server_user_account_discovery'),
 ];

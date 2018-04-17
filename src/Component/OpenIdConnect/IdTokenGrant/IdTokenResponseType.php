@@ -100,7 +100,7 @@ class IdTokenResponseType implements ResponseType
      */
     public function process(Authorization $authorization): Authorization
     {
-        if (in_array('openid', $authorization->getScopes())) {
+        if (!$authorization->hasQueryParam('scope') && in_array('openid', explode(' ', $authorization->getQueryParam('scope')))) {
             if (!array_key_exists('nonce', $authorization->getQueryParams())) {
                 throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_REQUEST, 'The parameter "nonce" is mandatory using "id_token" response type.');
             }
@@ -129,7 +129,7 @@ class IdTokenResponseType implements ResponseType
             $authorization->getRedirectUri()
         );
         $idTokenBuilder = $idTokenBuilder->withRequestedClaims($requestedClaims);
-        $idTokenBuilder = $idTokenBuilder->withScope($authorization->getScopes());
+        $idTokenBuilder = $idTokenBuilder->withScope($authorization->getQueryParam('scope'));
         $idTokenBuilder = $idTokenBuilder->withNonce($params['nonce']);
 
         if ($authorization->hasResponseParameter('code')) {

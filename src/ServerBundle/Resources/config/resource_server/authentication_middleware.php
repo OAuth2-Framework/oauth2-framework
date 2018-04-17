@@ -23,7 +23,7 @@ return function (ContainerConfigurator $container) {
 
     $container->set(AuthenticationMiddleware::class)
         ->args([
-            ref('oauth2_server.resource_server_repository'),
+            ref(\OAuth2Framework\Component\Core\ResourceServer\ResourceServerRepository::class),
             ref(AuthenticationMethodManager::class),
         ]);
 };

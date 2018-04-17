@@ -18,7 +18,6 @@ use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwnerId;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
-use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 
 class CreateAccessTokenCommand
 {
@@ -38,7 +37,7 @@ class CreateAccessTokenCommand
     private $clientId;
 
     /**
-     * @var UserAccountId
+     * @var ResourceOwnerId
      */
     private $resourceOwnerId;
 

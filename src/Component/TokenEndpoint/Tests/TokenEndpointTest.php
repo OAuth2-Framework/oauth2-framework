@@ -16,9 +16,9 @@ namespace OAuth2Framework\Component\TokenEndpoint\Tests;
 use Http\Message\MessageFactory\GuzzleMessageFactory;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenIdGenerator;
+use OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository;
 use Psr\Http\Server\RequestHandlerInterface;
 use OAuth2Framework\Component\Core\AccessToken\AccessToken;
-use OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\Client\ClientRepository;
@@ -145,7 +145,7 @@ class TokenEndpointTest extends TestCase
         $body = $response->getBody()->getContents();
 
         self::assertEquals(200, $response->getStatusCode());
-        self::assertRegexp('/^\{"token_type_foo"\:"token_type_bar","token_type"\:"TOKEN_TYPE","access_token"\:"ACCESS_TOKEN_ID","expires_in"\:\d{4}\}$/', $body);
+        self::assertRegExp('/^\{"token_type_foo"\:"token_type_bar","token_type"\:"TOKEN_TYPE","access_token"\:"ACCESS_TOKEN_ID","expires_in"\:\d{4}\}$/', $body);
     }
 
     /**
@@ -164,8 +164,8 @@ class TokenEndpointTest extends TestCase
                 $this->getUserAccountRepository(),
                 new TokenEndpointExtensionManager(),
                 new GuzzleMessageFactory(),
+                $this->getAccessTokenIdTokenGenerator(),
                 $this->getAccessTokenRepository(),
-                $this->getAccessTokenIdGenerator(),
                 1800
             );
         }
@@ -223,6 +223,29 @@ class TokenEndpointTest extends TestCase
     }
 
     /**
+     * @var null|AccessTokenIdGenerator
+     */
+    private $accessTokenIdGenerator = null;
+
+    /**
+     * @return AccessTokenIdGenerator
+     */
+    private function getAccessTokenIdTokenGenerator(): AccessTokenIdGenerator
+    {
+        if (null === $this->accessTokenIdGenerator) {
+            $accessTokenIdGenerator = $this->prophesize(AccessTokenIdGenerator::class);
+            $accessTokenIdGenerator
+                ->createAccessTokenId(Argument::type(ResourceOwnerId::class), Argument::type(ClientId::class), Argument::type(DataBag::class), Argument::type(DataBag::class), null)
+                ->will(function () {
+                    return AccessTokenId::create('ACCESS_TOKEN_ID');
+                });
+            $this->accessTokenIdGenerator = $accessTokenIdGenerator->reveal();
+        }
+
+        return $this->accessTokenIdGenerator;
+    }
+
+    /**
      * @var null|AccessTokenRepository
      */
     private $accessTokenRepository = null;
@@ -234,34 +257,10 @@ class TokenEndpointTest extends TestCase
     {
         if (null === $this->accessTokenRepository) {
             $accessTokenRepository = $this->prophesize(AccessTokenRepository::class);
-            $accessTokenRepository->save(Argument::type(AccessToken::class))->willReturn(null);
-
+            $accessTokenRepository->save(Argument::type(AccessToken::class))->will(function (array $args) {});
             $this->accessTokenRepository = $accessTokenRepository->reveal();
         }
 
         return $this->accessTokenRepository;
-    }
-
-    /**
-     * @var null|AccessTokenIdGenerator
-     */
-    private $accessTokenIdGenerator = null;
-
-    /**
-     * @return AccessTokenIdGenerator
-     */
-    private function getAccessTokenIdGenerator(): AccessTokenIdGenerator
-    {
-        if (null === $this->accessTokenIdGenerator) {
-            $accessTokenIdGenerator = $this->prophesize(AccessTokenIdGenerator::class);
-            $accessTokenIdGenerator
-                ->create(Argument::type(ResourceOwnerId::class), Argument::type(ClientId::class), Argument::type(DataBag::class), Argument::type(DataBag::class), null)
-                ->will(function () {
-                    return AccessTokenId::create('ACCESS_TOKEN_ID');
-                });
-            $this->accessTokenIdGenerator = $accessTokenIdGenerator->reveal();
-        }
-
-        return $this->accessTokenIdGenerator;
     }
 }

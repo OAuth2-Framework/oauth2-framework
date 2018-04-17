@@ -19,6 +19,7 @@ use OAuth2Framework\Component\ClientRegistrationEndpoint\ClientRegistrationEndpo
 use OAuth2Framework\Component\ClientRule\RuleManager;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
+use OAuth2Framework\Component\Core\Client\ClientIdGenerator;
 use OAuth2Framework\Component\Core\Client\ClientRepository;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use PHPUnit\Framework\TestCase;
@@ -65,11 +66,17 @@ class ClientRegistrationEndpointTest extends TestCase
                 DataBag::create([]),
                 null
             );
+            $clientIdGenerator = $this->prophesize(ClientIdGenerator::class);
+            $clientIdGenerator->createClientId()->willReturn(
+                ClientId::create(bin2hex(random_bytes(16)))
+            );
+
             $clientRepository = $this->prophesize(ClientRepository::class);
             $clientRepository->find(Argument::type(ClientId::class))->willReturn($client);
             $messageBus = $this->prophesize(MessageBus::class);
 
             $this->clientRegistrationEndpoint = new ClientRegistrationEndpoint(
+                $clientIdGenerator->reveal(),
                 $clientRepository->reveal(),
                 $this->getResponseFactory(),
                 $messageBus->reveal(),

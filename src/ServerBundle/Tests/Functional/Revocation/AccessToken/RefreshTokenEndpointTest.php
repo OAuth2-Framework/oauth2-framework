@@ -84,8 +84,8 @@ class RevocationEndpointTest extends WebTestCase
         $client = static::createClient([], ['HTTP_HOST' => 'foo.bar']);
         $container = $client->getContainer();
         /** @var AccessTokenIdGenerator $accessTokenIdGenerator */
-        $accessTokenIdGenerator = $container->get('MyAccessTokenIdGenerator');
-        $accessTokenId = $accessTokenIdGenerator->create(
+        $accessTokenIdGenerator = $container->get(\OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\AccessTokenIdGenerator::class);
+        $accessTokenId = $accessTokenIdGenerator->createAccessTokenId(
             UserAccountId::create('john.1'),
             ClientId::create('CLIENT_ID_3'),
             DataBag::create([]),
@@ -105,7 +105,7 @@ class RevocationEndpointTest extends WebTestCase
         );
 
         /** @var AccessTokenRepository $accessTokenRepository */
-        $accessTokenRepository = $container->get('MyAccessTokenRepository');
+        $accessTokenRepository = $container->get(\OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\AccessTokenRepository::class);
         $accessTokenRepository->save($accessToken);
 
         $client->request('POST', '/token/revoke', ['client_id' => 'CLIENT_ID_3', 'client_secret' => 'secret', 'token' => $accessToken->getTokenId()->getValue()], [], ['HTTPS' => 'on'], null);
@@ -126,8 +126,8 @@ class RevocationEndpointTest extends WebTestCase
         $client = static::createClient([], ['HTTP_HOST' => 'foo.bar']);
         $container = $client->getContainer();
         /** @var AccessTokenIdGenerator $accessTokenIdGenerator */
-        $accessTokenIdGenerator = $container->get('MyAccessTokenIdGenerator');
-        $accessTokenId = $accessTokenIdGenerator->create(
+        $accessTokenIdGenerator = $container->get(\OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\AccessTokenIdGenerator::class);
+        $accessTokenId = $accessTokenIdGenerator->createAccessTokenId(
             UserAccountId::create('john.1'),
             ClientId::create('CLIENT_ID_2'),
             DataBag::create([]),
@@ -149,7 +149,7 @@ class RevocationEndpointTest extends WebTestCase
         $client = static::createClient([], ['HTTP_HOST' => 'foo.bar']);
         $container = $client->getContainer();
         /** @var AccessTokenRepository $accessTokenRepository */
-        $accessTokenRepository = $container->get('MyAccessTokenRepository');
+        $accessTokenRepository = $container->get(\OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\AccessTokenRepository::class);
         $accessTokenRepository->save($accessToken);
 
         $client->request('POST', '/token/revoke', ['client_id' => 'CLIENT_ID_3', 'client_secret' => 'secret', 'token' => $accessToken->getTokenId()->getValue()], [], ['HTTPS' => 'on'], null);

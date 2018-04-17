@@ -1,0 +1,4 @@
+# API Routes
+api:
+    resource: '@TestBundle/Controller'
+    type:     'annotation'

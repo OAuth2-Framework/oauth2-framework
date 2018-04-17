@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Component\Core;
 
+use OAuth2Framework\Component\Core\UserAccount\UserAccountManager;
+use OAuth2Framework\Component\Core\UserAccount\UserAccountRepository;
 use OAuth2Framework\ServerBundle\Component\Component;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -32,8 +34,8 @@ class UserAccountSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        $container->setAlias('oauth2_server.user_account_repository', $configs['user_account']['repository']);
-        $container->setAlias('oauth2_server.user_account_manager', $configs['user_account']['manager']);
+        $container->setAlias(UserAccountRepository::class, $configs['user_account']['repository']);
+        $container->setAlias(UserAccountManager::class, $configs['user_account']['manager']);
     }
 
     /**

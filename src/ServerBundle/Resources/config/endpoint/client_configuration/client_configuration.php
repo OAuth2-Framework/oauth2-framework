@@ -41,7 +41,7 @@ return function (ContainerConfigurator $container) {
 
     $container->set(\OAuth2Framework\Component\ClientConfigurationEndpoint\ClientConfigurationEndpoint::class)
         ->args([
-            ref('oauth2_server.client_repository'),
+            ref(\OAuth2Framework\Component\Core\Client\ClientRepository::class),
             ref('client_configuration_bearer_token'),
             ref('command_bus'),
             ref('httplug.message_factory'),
@@ -50,7 +50,7 @@ return function (ContainerConfigurator $container) {
 
     $container->set(\OAuth2Framework\ServerBundle\Controller\ClientConfigurationMiddleware::class)
         ->args([
-            ref('oauth2_server.client_repository'),
+            ref(\OAuth2Framework\Component\Core\Client\ClientRepository::class),
         ]);
 
     $container->set(ClientConfigurationRouteRule::class)

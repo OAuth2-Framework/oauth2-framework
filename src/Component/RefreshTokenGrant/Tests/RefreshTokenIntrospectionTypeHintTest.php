@@ -57,7 +57,7 @@ class RefreshTokenIntrospectionTypeHintTest extends TestCase
         self::assertNull($this->getRefreshTokenTypeHint()->find('UNKNOWN_TOKEN_ID'));
         $refreshToken = $this->getRefreshTokenTypeHint()->find('REFRESH_TOKEN_ID');
         $introspection = $this->getRefreshTokenTypeHint()->introspect($refreshToken);
-        self::arrayHasKey('active', $introspection);
+        self::assertArrayHasKey('active', $introspection);
         self::assertTrue($introspection['active']);
     }
 

@@ -13,12 +13,13 @@ declare(strict_types=1);
 
 use Http\Factory\Diactoros\UriFactory;
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\ClientRepository;
-use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\UserManager;
-use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\UserRepository;
+use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\UserAccountManager;
+use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\UserAccountRepository;
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\RefreshTokenRepository;
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\ResourceServerRepository;
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\AccessTokenIdGenerator;
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\AccessTokenRepository;
+use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\AuthorizationCodeIdGenerator;
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\AuthorizationCodeRepository;
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\ScopeRepository;
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\InitialAccessTokenRepository;
@@ -32,50 +33,42 @@ use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 return function (ContainerConfigurator $container) {
     $container = $container->services()->defaults()
         ->public()
+        ->autowire()
         ->autoconfigure();
 
-    $container->set('MyClientRepository')
-        ->class(ClientRepository::class);
+    $container->set(ClientRepository::class);
 
-    $container->set('MyRefreshTokenRepository')
-        ->class(RefreshTokenRepository::class);
+    $container->set(RefreshTokenRepository::class);
 
-    $container->set('MyUserAccountManager')
-        ->class(UserManager::class);
+    $container->set(UserAccountManager::class);
 
-    $container->set('MyUserAccountRepository')
-        ->class(UserRepository::class);
+    $container->set(UserAccountRepository::class);
 
-    $container->set('MyResourceServerRepository')
-        ->class(ResourceServerRepository::class);
+    $container->set(ResourceServerRepository::class);
 
-    $container->set('MyTrustedIssuerRepository')
-        ->class(TrustedIssuerRepository::class);
+    $container->set(TrustedIssuerRepository::class);
 
-    $container->set(UserProvider::class)
+    $container->set(UserProvider::class)/*
         ->args([
-            ref('MyUserAccountRepository'),
-        ]);
+            ref(UserRepository::class),
+        ])*/;
 
-    $container->set('MyAccessTokenIdGenerator')
-        ->class(AccessTokenIdGenerator::class);
+    $container->set(AccessTokenIdGenerator::class);
 
-    $container->set('MyAccessTokenRepository')
-        ->class(AccessTokenRepository::class);
+    $container->set(AccessTokenRepository::class);
 
-    $container->set('MyAuthorizationCodeRepository')
-        ->class(AuthorizationCodeRepository::class);
+    $container->set(AuthorizationCodeIdGenerator::class);
 
-    $container->set('MyScopeRepository')
-        ->class(ScopeRepository::class);
+    $container->set(AuthorizationCodeRepository::class);
 
-    $container->set('MyInitialAccessTokenRepository')
-        ->class(InitialAccessTokenRepository::class);
+    $container->set(ScopeRepository::class);
+
+    $container->set(InitialAccessTokenRepository::class);
 
     $container->set(UriFactory::class);
 
-    $container->set(AccessTokenHandler::class)
-        ->tag('oauth2_server_access_token_handler');
+    $container->set(AccessTokenHandler::class)/*
+        ->tag('oauth2_server_access_token_handler')*/;
 
     $container->set('MyPairwiseSubjectIdentifier')
         ->class(EncryptedSubjectIdentifier::class)

@@ -29,5 +29,5 @@ interface AccessTokenIdGenerator
      *
      * @return AccessTokenId
      */
-    public function create(ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, ? ResourceServerId $resourceServerId): AccessTokenId;
+    public function createAccessTokenId(ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, ? ResourceServerId $resourceServerId): AccessTokenId;
 }

@@ -33,13 +33,13 @@ return function (ContainerConfigurator $container) {
 
     $container->set(ScopeParameterChecker::class)
         ->args([
-            ref('oauth2_server.scope.repository'),
+            ref(\OAuth2Framework\Component\Scope\ScopeRepository::class),
             ref(ScopePolicyManager::class),
         ]);
 
     $container->set(TokenEndpointScopeExtension::class)
         ->args([
-            ref('oauth2_server.scope.repository'),
+            ref(\OAuth2Framework\Component\Scope\ScopeRepository::class),
             ref(ScopePolicyManager::class),
         ]);
 };

@@ -103,18 +103,19 @@ abstract class AuthorizationEndpoint implements MiddlewareInterface
 
             return $this->processConsentScreen($request, $authorization);
         } catch (OAuth2AuthorizationException $e) {
-            $data = $e->getData();
-            if (null !== $e->getAuthorization()) {
-                $redirectUri = $e->getAuthorization()->getRedirectUri();
-                $responseMode = $e->getAuthorization()->getResponseMode();
-                if (null !== $redirectUri && null !== $responseMode) {
-                    $data['redirect_uri'] = $redirectUri;
-                    $data['response_mode'] = $responseMode;
+            /*$redirectUri = $e->getAuthorization()->getRedirectUri();
+            $responseMode = $e->getAuthorization()->getResponseMode();
+            if (null !== $redirectUri && null !== $responseMode) {
+                $data['redirect_uri'] = $redirectUri;
+                $data['response_mode'] = $responseMode;
 
-                    throw new OAuth2AuthorizationException(302, $data, $e->getAuthorization(), $e);
-                }
-            }
-
+                throw new OAuth2AuthorizationException(
+                    302, $e->getMessage(),
+                    $e->getErrorDescription(),
+                    $e->getAuthorization(),
+                    $e
+                );
+            }*/
             throw $e;
         } catch (Exception\ProcessAuthorizationException $e) {
             $authorization = $e->getAuthorization();
@@ -151,7 +152,7 @@ abstract class AuthorizationEndpoint implements MiddlewareInterface
     private function buildResponse(Authorization $authorization): ResponseInterface
     {
         if (null === $authorization->getResponseMode() || null === $authorization->getRedirectUri()) {
-            throw new OAuth2Exception(400, ['error' => 'EEE', 'error_description' => 'FFF']);
+            throw new OAuth2Exception(400, 'EEE', 'FFF');
         }
 
         $response = $authorization->getResponseMode()->buildResponse(

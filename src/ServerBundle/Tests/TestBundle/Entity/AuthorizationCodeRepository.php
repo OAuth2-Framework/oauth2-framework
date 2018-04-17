@@ -43,7 +43,7 @@ class AuthorizationCodeRepository implements AuthorizationCodeRepositoryInterfac
     /**
      * @param AuthorizationCode $authCode
      */
-    public function save(AuthorizationCode $authCode)
+    public function save(AuthorizationCode $authCode): void
     {
         $this->authorizationCodes[$authCode->getTokenId()->getValue()] = $authCode;
     }

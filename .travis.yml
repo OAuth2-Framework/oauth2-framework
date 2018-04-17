@@ -25,6 +25,7 @@ before_script:
 
 script:
     - ./vendor/bin/phpunit --coverage-php build/cov/coverage-framework.cov
+    - ./vendor/bin/phpunit -c security.phpunit.xml.dist --coverage-php build/cov/coverage-security.cov
     - ./vendor/bin/phpunit -c issuer_discovery.phpunit.xml.dist --coverage-php build/cov/coverage-issuer_discovery.cov
 
 after_success:

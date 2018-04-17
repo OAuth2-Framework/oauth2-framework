@@ -23,13 +23,11 @@ class AccessTokenHandlerManager
     /**
      * @param AccessTokenHandler $accessTokenHandler
      *
-     * @return AccessTokenHandlerManager
+     * @return void
      */
-    public function add(AccessTokenHandler $accessTokenHandler): self
+    public function add(AccessTokenHandler $accessTokenHandler): void
     {
         $this->accessTokenHandlers[] = $accessTokenHandler;
-
-        return $this;
     }
 
     /**

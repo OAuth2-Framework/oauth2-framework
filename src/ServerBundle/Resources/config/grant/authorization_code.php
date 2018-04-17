@@ -25,19 +25,20 @@ return function (ContainerConfigurator $container) {
 
     $container->set(AuthorizationCodeGrantType::class)
         ->args([
-            ref('oauth2_server.grant.authorization_code.repository'),
+            ref(\OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeRepository::class),
             ref(PKCEMethod\PKCEMethodManager::class),
         ]);
 
     $container->set(AuthorizationCodeResponseType::class)
         ->args([
-            ref('oauth2_server.grant.authorization_code.repository'),
-            '%oauth2_server.grant.authorization_code.min_length%',
-            '%oauth2_server.grant.authorization_code.max_length%',
+            ref(\OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeIdGenerator::class),
+            ref(\OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeRepository::class),
             '%oauth2_server.grant.authorization_code.lifetime%',
             ref(PKCEMethod\PKCEMethodManager::class),
             '%oauth2_server.grant.authorization_code.enforce_pkce%',
         ]);
+
+    $container->set(\OAuth2Framework\ServerBundle\Service\RandomAuthorizationCodeIdGenerator::class);
 
     $container->set(PKCEMethod\PKCEMethodManager::class);
     $container->set(PKCEMethod\Plain::class)
@@ -47,6 +48,6 @@ return function (ContainerConfigurator $container) {
 
     $container->set(AuthorizationCodeIntrospectionTypeHint::class)
         ->args([
-            ref('oauth2_server.grant.authorization_code.repository'),
+            ref(\OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeRepository::class),
         ]);
 };

@@ -5,21 +5,20 @@ oauth2_server:
 #        enabled: true
 #    # Key Component
     client:
-        repository: 'MyClientRepository'
+        repository: 'OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\ClientRepository'
     user_account:
-        manager: 'MyUserAccountManager'
-        repository: 'MyUserAccountRepository'
+        manager: 'OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\UserAccountManager'
+        repository: 'OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\UserAccountRepository'
     access_token:
-        id_generator: 'MyAccessTokenIdGenerator'
-        repository: 'MyAccessTokenRepository'
+        repository: 'OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\AccessTokenRepository'
         lifetime: 1800
     resource_server:
-        repository: 'MyResourceServerRepository'
+        repository: 'OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\ResourceServerRepository'
     trusted_issuer:
-        repository: 'MyTrustedIssuerRepository'
+        repository: 'OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\TrustedIssuerRepository'
     scope:
         enabled: true
-        repository: 'MyScopeRepository'
+        repository: 'OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\ScopeRepository'
         policy:
             enabled: true
             by_default: 'none'
@@ -74,7 +73,7 @@ oauth2_server:
                 enabled: true
                 required: true
                 realm: 'Client Registration'
-                repository: 'MyInitialAccessTokenRepository'
+                repository: 'OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\InitialAccessTokenRepository'
             software_statement:
                 enabled: true
                 required: false
@@ -157,16 +156,12 @@ oauth2_server:
     grant:
         authorization_code:
             enabled: true
-            min_length: 50
-            max_length: 100
             enforce_pkce: false
-            repository: 'MyAuthorizationCodeRepository'
+            repository: 'OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\AuthorizationCodeRepository'
         refresh_token:
             enabled: true
-            min_length: 50
-            max_length: 100
             lifetime: 604800
-            repository: 'MyRefreshTokenRepository'
+            repository: 'OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\RefreshTokenRepository'
         none:
             enabled: false #Not fully implemented
         implicit:

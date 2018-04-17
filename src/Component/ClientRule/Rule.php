@@ -22,7 +22,6 @@ interface Rule
      * @param ClientId           $clientId
      * @param DataBag            $commandParameters
      * @param DataBag            $validatedParameters
-     * @param UserAccountId|null $userAccountId
      * @param callable           $next
      *
      * @return DataBag

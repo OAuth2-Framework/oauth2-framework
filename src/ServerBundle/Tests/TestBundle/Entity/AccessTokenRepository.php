@@ -25,18 +25,18 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
     private $accessTokens = [];
 
     /**
-     * {@inheritdoc}
+     * @param AccessToken $accessToken
      */
-    public function find(AccessTokenId $accessTokenId)
+    public function save(AccessToken $accessToken): void
     {
-        return array_key_exists($accessTokenId->getValue(), $this->accessTokens) ? $this->accessTokens[$accessTokenId->getValue()] : null;
+        $this->accessTokens[$accessToken->getTokenId()->getValue()] = $accessToken;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function save(AccessToken $accessToken)
+    public function find(AccessTokenId $accessTokenId): ?AccessToken
     {
-        $this->accessTokens[$accessToken->getTokenId()->getValue()] = $accessToken;
+        return array_key_exists($accessTokenId->getValue(), $this->accessTokens) ? $this->accessTokens[$accessTokenId->getValue()] : null;
     }
 }

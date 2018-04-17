@@ -23,7 +23,7 @@ class ResourceId
     /**
      * TokenId constructor.
      *
-     * @param $value
+     * @param string $value
      */
     protected function __construct(string $value)
     {

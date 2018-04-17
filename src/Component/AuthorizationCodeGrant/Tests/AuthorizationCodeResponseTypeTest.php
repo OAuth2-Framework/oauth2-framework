@@ -11,8 +11,10 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Component\AuthorizationCodeResponse\Tests;
+namespace OAuth2Framework\Component\AuthorizationCodeGrant\Tests;
 
+use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeId;
+use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeRepository;
 use OAuth2Framework\Component\AuthorizationCodeGrant\PKCEMethod\PKCEMethodManager;
 use OAuth2Framework\Component\AuthorizationCodeGrant\PKCEMethod\Plain;
 use OAuth2Framework\Component\AuthorizationCodeGrant\PKCEMethod\S256;
@@ -22,7 +24,7 @@ use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCode;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeResponseType;
-use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeRepository;
+use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeIdGenerator;
 use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use PHPUnit\Framework\TestCase;
@@ -55,6 +57,7 @@ class AuthorizationCodeResponseTypeTest extends TestCase
             DataBag::create([]),
             UserAccountId::create('USER_ACCOUNT_ID')
         );
+        $client->eraseMessages();
         $userAccount = $this->prophesize(UserAccount::class);
         $userAccount->getPublicId()->willReturn(UserAccountId::create('USER_ACCOUNT_ID'));
         $authorization = Authorization::create(
@@ -78,13 +81,16 @@ class AuthorizationCodeResponseTypeTest extends TestCase
     private function getResponseType(): AuthorizationCodeResponseType
     {
         if (null === $this->grantType) {
+            $authorizationCodeIdGenerator = $this->prophesize(AuthorizationCodeIdGenerator::class);
+            $authorizationCodeIdGenerator->createAuthorizationCodeId()->willReturn(
+                AuthorizationCodeId::create(bin2hex(random_bytes(32)))
+            );
             $authorizationCodeRepository = $this->prophesize(AuthorizationCodeRepository::class);
-            $authorizationCodeRepository->save(Argument::type(AuthorizationCode::class))->willReturn(null);
+            $authorizationCodeRepository->save(Argument::type(AuthorizationCode::class))->will(function (array $args) {});
 
             $this->grantType = new AuthorizationCodeResponseType(
+                $authorizationCodeIdGenerator->reveal(),
                 $authorizationCodeRepository->reveal(),
-                10,
-                15,
                 30,
                 $this->getPkceMethodManager(),
                 false

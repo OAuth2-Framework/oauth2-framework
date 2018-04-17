@@ -6,14 +6,14 @@
         convertNoticesToExceptions="true"
         convertWarningsToExceptions="true"
         processIsolation="false"
-        stopOnFailure="false"
+        stopOnFailure="true"
         syntaxCheck="true"
         bootstrap="vendor/autoload.php"
         colors="true">
     <testsuites>
         <testsuite name="OAuth2 Framework Test Suite">
-            <directory>./src/ServerBundle/Tests/</directory>
             <directory>./src/Component/*/Tests/</directory>
+            <directory>./src/ServerBundle/Tests/</directory>
         </testsuite>
     </testsuites>
     <php>

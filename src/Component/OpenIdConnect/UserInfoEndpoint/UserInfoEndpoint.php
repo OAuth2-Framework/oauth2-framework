@@ -190,7 +190,7 @@ class UserInfoEndpoint implements MiddlewareInterface
     private function getClient(AccessToken $accessToken): Client
     {
         $clientId = $accessToken->getClientId();
-        if (null === $clientId || null === $client = $this->clientRepository->find($clientId)) {
+        if (null === $client = $this->clientRepository->find($clientId)) {
             throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_REQUEST, 'Unable to find the client.');
         }
 
@@ -233,7 +233,7 @@ class UserInfoEndpoint implements MiddlewareInterface
      */
     private function checkScope(AccessToken $accessToken)
     {
-        if (!$accessToken->hasScope('openid')) {
+        if (!$accessToken->hasParameter('scope') || !in_array('openid', explode(' ', $accessToken->getParameter('scope')))) {
             throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_TOKEN, 'The access token does not contain the "openid" scope.');
         }
     }

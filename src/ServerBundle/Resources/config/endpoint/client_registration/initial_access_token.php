@@ -25,7 +25,7 @@ return function (ContainerConfigurator $container) {
     $container->set(InitialAccessTokenMiddleware::class)
         ->args([
             ref('client_registration_bearer_token'),
-            ref('oauth2_server.endpoint.client_registration.initial_access_token.repository'),
+            ref(\OAuth2Framework\Component\ClientRegistrationEndpoint\InitialAccessTokenRepository::class),
         ]);
 
     $container->set('client_registration_bearer_token')
@@ -39,13 +39,13 @@ return function (ContainerConfigurator $container) {
 
     $container->set(Command\CreateInitialAccessTokenCommandHandler::class)
         ->args([
-            ref('oauth2_server.endpoint.client_registration.initial_access_token.repository'),
+            ref(\OAuth2Framework\Component\ClientRegistrationEndpoint\InitialAccessTokenRepository::class),
         ])
         ->tag('command_handler', ['handles' => Command\CreateInitialAccessTokenCommand::class]);
 
     $container->set(Command\RevokeInitialAccessTokenCommandHandler::class)
         ->args([
-            ref('oauth2_server.endpoint.client_registration.initial_access_token.repository'),
+            ref(\OAuth2Framework\Component\ClientRegistrationEndpoint\InitialAccessTokenRepository::class),
         ])
         ->tag('command_handler', ['handles' => Command\RevokeInitialAccessTokenCommand::class]);
 };

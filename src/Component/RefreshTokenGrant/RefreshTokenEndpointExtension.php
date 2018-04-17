@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\RefreshTokenGrant;
 
-use Base64Url\Base64Url;
 use OAuth2Framework\Component\Core\AccessToken\AccessToken;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwner;
@@ -30,34 +29,27 @@ class RefreshTokenEndpointExtension implements TokenEndpointExtension
     private $lifetime;
 
     /**
-     * @var int
-     */
-    private $minLength;
-
-    /**
-     * @var int
-     */
-    private $maxLength;
-
-    /**
      * @var RefreshTokenRepository
      */
     private $refreshTokenRepository;
 
     /**
+     * @var RefreshTokenIdGenerator
+     */
+    private $refreshTokenIdGenerator;
+
+    /**
      * RefreshTokenEndpointExtension constructor.
      *
-     * @param int                    $minLength
-     * @param int                    $maxLength
-     * @param int                    $lifetime
-     * @param RefreshTokenRepository $refreshTokenRepository
+     * @param int                     $lifetime
+     * @param RefreshTokenRepository  $refreshTokenRepository
+     * @param RefreshTokenIdGenerator $refreshTokenIdGenerator
      */
-    public function __construct(int $minLength, int $maxLength, int $lifetime, RefreshTokenRepository $refreshTokenRepository)
+    public function __construct(int $lifetime, RefreshTokenRepository $refreshTokenRepository, RefreshTokenIdGenerator $refreshTokenIdGenerator)
     {
-        $this->minLength = $minLength;
-        $this->maxLength = $maxLength;
         $this->lifetime = $lifetime;
         $this->refreshTokenRepository = $refreshTokenRepository;
+        $this->refreshTokenIdGenerator = $refreshTokenIdGenerator;
     }
 
     /**
@@ -69,8 +61,7 @@ class RefreshTokenEndpointExtension implements TokenEndpointExtension
         $scope = explode(' ', $grantTypeData->hasParameter('scope') ? $grantTypeData->getParameter('scope') : '');
         if (in_array('offline_access', $scope) && null !== $this->refreshTokenRepository) {
             $expiresAt = new \DateTimeImmutable(sprintf('now +%u seconds', $this->lifetime));
-            $length = random_int($this->minLength, $this->maxLength);
-            $refreshTokenId = RefreshTokenId::create(Base64Url::encode(random_bytes($length)));
+            $refreshTokenId = $this->refreshTokenIdGenerator->createRefreshTokenId();
             $refreshToken = RefreshToken::createEmpty();
             $refreshToken = $refreshToken->create(
                 $refreshTokenId,

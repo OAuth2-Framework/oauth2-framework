@@ -22,7 +22,7 @@ return function (ContainerConfigurator $container) {
 
     $container->set(ResourceOwnerPasswordCredentialsGrantType::class)
         ->args([
-            ref('oauth2_server.user_account_manager'),
-            ref('oauth2_server.user_account_repository'),
+            ref(\OAuth2Framework\Component\Core\UserAccount\UserAccountManager::class),
+            ref(\OAuth2Framework\Component\Core\UserAccount\UserAccountRepository::class),
         ]);
 };

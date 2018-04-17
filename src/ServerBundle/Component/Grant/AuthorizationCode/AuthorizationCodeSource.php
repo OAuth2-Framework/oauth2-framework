@@ -13,8 +13,11 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Component\Grant\AuthorizationCode;
 
+use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeIdGenerator;
+use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeRepository;
 use OAuth2Framework\ServerBundle\Component\Component;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeGrantType;
+use OAuth2Framework\ServerBundle\Service\RandomAuthorizationCodeIdGenerator;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -36,11 +39,10 @@ class AuthorizationCodeSource implements Component
     public function load(array $configs, ContainerBuilder $container)
     {
         if ($configs['grant']['authorization_code']['enabled']) {
-            $container->setParameter('oauth2_server.grant.authorization_code.min_length', $configs['grant']['authorization_code']['min_length']);
-            $container->setParameter('oauth2_server.grant.authorization_code.max_length', $configs['grant']['authorization_code']['max_length']);
             $container->setParameter('oauth2_server.grant.authorization_code.lifetime', $configs['grant']['authorization_code']['lifetime']);
             $container->setParameter('oauth2_server.grant.authorization_code.enforce_pkce', $configs['grant']['authorization_code']['enforce_pkce']);
-            $container->setAlias('oauth2_server.grant.authorization_code.repository', $configs['grant']['authorization_code']['repository']);
+            $container->setAlias(AuthorizationCodeRepository::class, $configs['grant']['authorization_code']['repository']);
+            $container->setAlias(AuthorizationCodeIdGenerator::class, $configs['grant']['authorization_code']['id_generator']);
 
             $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/grant'));
             $loader->load('authorization_code.php');
@@ -54,30 +56,8 @@ class AuthorizationCodeSource implements Component
     {
         $node->children()
             ->arrayNode('authorization_code')
-                ->validate()
-                    ->ifTrue(function ($config) {
-                        return $config['max_length'] < $config['min_length'];
-                    })
-                    ->thenInvalid('The option "max_length" must be greater than "min_length".')
-                ->end()
-                ->validate()
-                    ->ifTrue(function ($config) {
-                        return $config['enabled'] && !class_exists(AuthorizationCodeGrantType::class);
-                    })
-                    ->thenInvalid('The option "max_length" must be greater than "min_length".')
-                ->end()
                 ->canBeEnabled()
                 ->children()
-                    ->integerNode('min_length')
-                        ->defaultValue(50)
-                        ->min(0)
-                        ->info('Minimum length of the randomly generated authorization code')
-                    ->end()
-                    ->integerNode('max_length')
-                        ->defaultValue(100)
-                        ->min(1)
-                        ->info('Maximum length of the randomly generated authorization code')
-                    ->end()
                     ->integerNode('lifetime')
                         ->defaultValue(30)
                         ->min(1)
@@ -86,6 +66,10 @@ class AuthorizationCodeSource implements Component
                     ->scalarNode('repository')
                         ->isRequired()
                         ->info('The authorization code repository')
+                    ->end()
+                    ->scalarNode('id_generator')
+                        ->info('The authorization code ID generator service')
+                        ->defaultValue(RandomAuthorizationCodeIdGenerator::class)
                     ->end()
                     ->booleanNode('enforce_pkce')
                         ->defaultFalse()

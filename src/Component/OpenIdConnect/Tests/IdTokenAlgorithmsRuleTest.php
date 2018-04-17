@@ -11,7 +11,7 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Component\Core\Tests\Client\Rule;
+namespace OAuth2Framework\Component\OpenIdConnect\Tests;
 
 use Jose\Component\Core\Algorithm;
 use Jose\Component\Core\AlgorithmManager;

@@ -20,27 +20,29 @@ return function (ContainerConfigurator $container) {
         ->public()
         ->autoconfigure();
 
+    $container->set(\OAuth2Framework\ServerBundle\Service\RandomClientIdGenerator::class);
+
     $container->set(Command\ChangeOwnerCommandHandler::class)
         ->args([
-            ref('oauth2_server.client_repository'),
+            ref(\OAuth2Framework\Component\Core\Client\ClientRepository::class),
         ])
         ->tag('command_handler', ['handles' => Command\ChangeOwnerCommand::class]);
 
     $container->set(Command\CreateClientCommandHandler::class)
         ->args([
-            ref('oauth2_server.client_repository'),
+            ref(\OAuth2Framework\Component\Core\Client\ClientRepository::class),
         ])
         ->tag('command_handler', ['handles' => Command\CreateClientCommand::class]);
 
     $container->set(Command\DeleteClientCommandHandler::class)
         ->args([
-            ref('oauth2_server.client_repository'),
+            ref(\OAuth2Framework\Component\Core\Client\ClientRepository::class),
         ])
         ->tag('command_handler', ['handles' => Command\DeleteClientCommand::class]);
 
     $container->set(Command\UpdateClientCommandHandler::class)
         ->args([
-            ref('oauth2_server.client_repository'),
+            ref(\OAuth2Framework\Component\Core\Client\ClientRepository::class),
         ])
         ->tag('command_handler', ['handles' => Command\UpdateClientCommand::class]);
 };

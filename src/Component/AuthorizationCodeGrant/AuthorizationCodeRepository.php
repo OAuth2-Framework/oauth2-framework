@@ -16,11 +16,6 @@ namespace OAuth2Framework\Component\AuthorizationCodeGrant;
 interface AuthorizationCodeRepository
 {
     /**
-     * @param AuthorizationCode $authorizationCode
-     */
-    public function save(AuthorizationCode $authorizationCode);
-
-    /**
      * Retrieve the stored data for the given authorization code.
      *
      * @param AuthorizationCodeId $authorizationCodeId the authorization code string for which to fetch data
@@ -30,4 +25,9 @@ interface AuthorizationCodeRepository
      * @see     http://tools.ietf.org/html/rfc6749#section-4.1
      */
     public function find(AuthorizationCodeId $authorizationCodeId): ? AuthorizationCode;
+
+    /**
+     * @param AuthorizationCode $authorizationCode
+     */
+    public function save(AuthorizationCode $authorizationCode): void;
 }

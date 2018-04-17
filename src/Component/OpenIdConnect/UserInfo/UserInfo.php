@@ -71,21 +71,21 @@ class UserInfo
      * @param UserAccount $userAccount
      * @param string      $redirectUri
      * @param array       $requestClaims
-     * @param string[]    $scopes
+     * @param string      $scope
      * @param string|null $claimsLocales
      *
      * @return array
      */
-    public function getUserinfo(Client $client, UserAccount $userAccount, string $redirectUri, array $requestClaims, array $scopes, ? string $claimsLocales): array
+    public function getUserinfo(Client $client, UserAccount $userAccount, string $redirectUri, array $requestClaims, string $scope, ? string $claimsLocales): array
     {
         $requestClaims = array_merge(
-            $this->getClaimsFromClaimScope($scopes),
+            $this->getClaimsFromClaimScope($scope),
             $requestClaims
         );
         $claims = $this->getClaimValues($userAccount, $requestClaims, $claimsLocales);
         $claims = array_merge(
             $claims,
-            $this->claimSourceManager->getUserInfo($userAccount, $scopes, [])
+            $this->claimSourceManager->getUserInfo($userAccount, $scope, [])
         );
         $claims['sub'] = $this->calculateSubjectIdentifier($client, $userAccount, $redirectUri);
 
@@ -93,16 +93,17 @@ class UserInfo
     }
 
     /**
-     * @param string[] $scopes
+     * @param string $scope
      *
      * @return array
      */
-    private function getClaimsFromClaimScope(array $scopes): array
+    private function getClaimsFromClaimScope(string $scope): array
     {
         $result = [];
-        foreach ($scopes as $scope) {
-            if ($this->userinfoScopeSupportManager->has($scope)) {
-                $scope_claims = $this->userinfoScopeSupportManager->get($scope)->getClaims();
+
+        foreach (explode(' ', $scope) as $scp) {
+            if ($this->userinfoScopeSupportManager->has($scp)) {
+                $scope_claims = $this->userinfoScopeSupportManager->get($scp)->getClaims();
                 foreach ($scope_claims as $scope_claim) {
                     $result[$scope_claim] = null;
                 }

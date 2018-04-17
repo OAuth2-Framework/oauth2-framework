@@ -18,6 +18,7 @@ use Jose\Component\Core\Converter\StandardConverter;
 use Jose\Component\Core\JWK;
 use Jose\Component\Core\JWKSet;
 use Jose\Component\Encryption\JWEBuilder;
+use Jose\Component\KeyManagement\JKUFactory;
 use Jose\Component\Signature\JWSBuilder;
 use Jose\Component\Signature\Serializer\CompactSerializer as JwsCompactSerializer;
 use Jose\Component\Encryption\Serializer\CompactSerializer as JweCompactSerializer;
@@ -67,9 +68,9 @@ class IdTokenBuilder
     private $lifetime;
 
     /**
-     * @var string[]
+     * @var string|null
      */
-    private $scopes = [];
+    private $scope = null;
 
     /**
      * @var array
@@ -82,12 +83,12 @@ class IdTokenBuilder
     private $claimsLocales = null;
 
     /**
-     * @var AccessTokenId|null
+     * @var TokenId|null
      */
     private $accessTokenId = null;
 
     /**
-     * @var AuthorizationCodeId|null
+     * @var TokenId|null
      */
     private $authorizationCodeId = null;
 
@@ -132,16 +133,22 @@ class IdTokenBuilder
     private $expiresAt = null;
 
     /**
+     * @var null|JKUFactory
+     */
+    private $jkuFactory = null;
+
+    /**
      * IdTokenBuilder constructor.
      *
-     * @param string      $issuer
-     * @param UserInfo    $userinfo
-     * @param int         $lifetime
-     * @param Client      $client
-     * @param UserAccount $userAccount
-     * @param string      $redirectUri
+     * @param string          $issuer
+     * @param UserInfo        $userinfo
+     * @param int             $lifetime
+     * @param Client          $client
+     * @param UserAccount     $userAccount
+     * @param string          $redirectUri
+     * @param JKUFactory|null $jkuFactory
      */
-    private function __construct(string $issuer, UserInfo $userinfo, int $lifetime, Client $client, UserAccount $userAccount, string $redirectUri)
+    private function __construct(string $issuer, UserInfo $userinfo, int $lifetime, Client $client, UserAccount $userAccount, string $redirectUri, ?JKUFactory $jkuFactory)
     {
         $this->issuer = $issuer;
         $this->userinfo = $userinfo;
@@ -149,21 +156,23 @@ class IdTokenBuilder
         $this->client = $client;
         $this->userAccount = $userAccount;
         $this->redirectUri = $redirectUri;
+        $this->jkuFactory = $jkuFactory;
     }
 
     /**
-     * @param string      $issuer
-     * @param UserInfo    $userinfo
-     * @param int         $lifetime
-     * @param Client      $client
-     * @param UserAccount $userAccount
-     * @param string      $redirectUri
+     * @param string          $issuer
+     * @param UserInfo        $userinfo
+     * @param int             $lifetime
+     * @param Client          $client
+     * @param UserAccount     $userAccount
+     * @param string          $redirectUri
+     * @param JKUFactory|null $jkuFactory
      *
      * @return IdTokenBuilder
      */
-    public static function create(string $issuer, UserInfo $userinfo, int $lifetime, Client $client, UserAccount $userAccount, string $redirectUri)
+    public static function create(string $issuer, UserInfo $userinfo, int $lifetime, Client $client, UserAccount $userAccount, string $redirectUri, ?JKUFactory $jkuFactory)
     {
-        return new self($issuer, $userinfo, $lifetime, $client, $userAccount, $redirectUri);
+        return new self($issuer, $userinfo, $lifetime, $client, $userAccount, $redirectUri, $jkuFactory);
     }
 
     /**
@@ -176,7 +185,7 @@ class IdTokenBuilder
         $clone = clone $this;
         $clone->accessTokenId = $accessToken->getTokenId();
         $clone->expiresAt = $accessToken->getExpiresAt();
-        $clone->scopes = $accessToken->getScopes();
+        $clone->scope = $accessToken->hasParameter('scope') ? $accessToken->getParameter('scope') : null;
 
         if ($accessToken->hasMetadata('code')) {
             $authorizationCode = $accessToken->getMetadata('code');
@@ -244,14 +253,14 @@ class IdTokenBuilder
     }
 
     /**
-     * @param string[] $scopes
+     * @param string $scope
      *
      * @return IdTokenBuilder
      */
-    public function withScope(array $scopes): self
+    public function withScope(string $scope): self
     {
         $clone = clone $this;
-        $clone->scopes = $scopes;
+        $clone->scope = $scope;
 
         return $clone;
     }
@@ -357,7 +366,10 @@ class IdTokenBuilder
      */
     public function build(): string
     {
-        $data = $this->userinfo->getUserinfo($this->client, $this->userAccount, $this->redirectUri, $this->requestedClaims, $this->scopes, $this->claimsLocales);
+        if (null === $this->scope) {
+            throw new \LogicException('It is mandatory to set the scope.');
+        }
+        $data = $this->userinfo->getUserinfo($this->client, $this->userAccount, $this->redirectUri, $this->requestedClaims, $this->scope, $this->claimsLocales);
         $data = $this->updateClaimsWithAmrAndAcrInfo($data, $this->userAccount);
         $data = $this->updateClaimsWithAuthenticationTime($data, $this->userAccount);
         $data = $this->updateClaimsWithNonce($data);
@@ -489,7 +501,7 @@ class IdTokenBuilder
      */
     private function tryToEncrypt(Client $client, string $jwt): string
     {
-        $clientKeySet = $client->getPublicKeySet();
+        $clientKeySet = $this->getClientKeySet($client);
         $keyEncryptionAlgorithm = $this->jweBuilder->getKeyEncryptionAlgorithmManager()->get($this->keyEncryptionAlgorithm);
         $encryptionKey = $clientKeySet->selectKey('enc', $keyEncryptionAlgorithm);
         if (null === $encryptionKey) {
@@ -637,5 +649,30 @@ class IdTokenBuilder
         }
 
         return $map[$this->signatureAlgorithm];
+    }
+
+    /**
+     * @param Client $client
+     *
+     * @return JWKSet
+     */
+    private function getClientKeySet(Client $client): JWKSet
+    {
+        switch (true) {
+            case $client->has('jwks') && 'private_key_jwt' === $client->getTokenEndpointAuthenticationMethod():
+                return JWKSet::createFromJson($client->get('jwks'));
+            case $client->has('client_secret') && 'client_secret_jwt' === $client->getTokenEndpointAuthenticationMethod():
+                $jwk = JWK::create([
+                    'kty' => 'oct',
+                    'use' => 'sig',
+                    'k' => Base64Url::encode($client->get('client_secret')),
+                ]);
+
+                return JWKSet::createFromKeys([$jwk]);
+            case $client->has('jwks_uri') && 'private_key_jwt' === $client->getTokenEndpointAuthenticationMethod() && null !== $this->jkuFactory:
+                return $this->jkuFactory->loadFromUrl($client->get('jwks_uri'));
+            default:
+                throw new \InvalidArgumentException('The client has no key or key set.');
+        }
     }
 }

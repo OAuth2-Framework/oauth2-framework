@@ -19,7 +19,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
-class SessionStateParameterExtension extends \OAuth2Framework\Component\OpenIdConnect\AfterConsentScreen\SessionStateParameterExtension
+class SessionStateParameterExtension extends \OAuth2Framework\Component\OpenIdConnect\ConsentScreen\SessionStateParameterExtension
 {
     /**
      * @var string

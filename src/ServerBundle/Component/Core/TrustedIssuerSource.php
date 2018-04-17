@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Component\Core;
 
+use OAuth2Framework\Component\Core\TrustedIssuer\TrustedIssuerRepository;
 use OAuth2Framework\ServerBundle\Component\Component;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -35,7 +36,7 @@ class TrustedIssuerSource implements Component
         if (null === $configs['trusted_issuer']['repository']) {
             return;
         }
-        $container->setAlias('oauth2_server.trusted_issuer_repository', $configs['trusted_issuer']['repository']);
+        $container->setAlias(TrustedIssuerRepository::class, $configs['trusted_issuer']['repository']);
     }
 
     /**
