@@ -19,10 +19,10 @@ use OAuth2Framework\Component\Core\DataBag\DataBag;
 interface Rule
 {
     /**
-     * @param ClientId           $clientId
-     * @param DataBag            $commandParameters
-     * @param DataBag            $validatedParameters
-     * @param callable           $next
+     * @param ClientId $clientId
+     * @param DataBag  $commandParameters
+     * @param DataBag  $validatedParameters
+     * @param callable $next
      *
      * @return DataBag
      */

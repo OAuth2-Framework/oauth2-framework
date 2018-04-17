@@ -39,7 +39,6 @@ class AccessTokenIdGenerator implements AccessTokenManagerInterface
         $this->repository = $repository;
     }
 
-
     /**
      * {@inheritdoc}
      */

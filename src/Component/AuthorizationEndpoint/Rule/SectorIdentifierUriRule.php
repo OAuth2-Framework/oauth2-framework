@@ -36,7 +36,7 @@ class SectorIdentifierUriRule implements Rule
      * SectorIdentifierUriRule constructor.
      *
      * @param RequestFactory $requestFactory
-     * @param HttpClient      $client
+     * @param HttpClient     $client
      */
     public function __construct(RequestFactory $requestFactory, HttpClient $client)
     {
@@ -67,7 +67,7 @@ class SectorIdentifierUriRule implements Rule
     {
         $data = parse($url);
 
-        if ($data['scheme'] !== 'https' || $data['host'] === null) {
+        if ('https' !== $data['scheme'] || null === $data['host']) {
             throw new \InvalidArgumentException(sprintf('The sector identifier URI "%s" is not valid.', $url));
         }
 

@@ -89,7 +89,8 @@ class TokenResponseTypeTest extends TestCase
             $accessTokenIdGenerator->createAccessTokenId(Argument::any(), Argument::any(), Argument::any(), Argument::any(), Argument::any(), Argument::any(), Argument::any())->willReturn(AccessTokenId::create('ACCESS_TOKEN_ID'));
 
             $accessTokenRepository = $this->prophesize(AccessTokenRepository::class);
-            $accessTokenRepository->save(Argument::type(AccessToken::class))->will(function (array $args) {});
+            $accessTokenRepository->save(Argument::type(AccessToken::class))->will(function (array $args) {
+            });
 
             $this->grantType = new TokenResponseType(
                 $accessTokenIdGenerator->reveal(),
