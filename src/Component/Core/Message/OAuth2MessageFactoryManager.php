@@ -62,7 +62,7 @@ class OAuth2MessageFactoryManager
 
     /**
      * @param OAuth2Message $message
-     * @param array $additionalData
+     * @param array         $additionalData
      *
      * @return ResponseInterface
      */

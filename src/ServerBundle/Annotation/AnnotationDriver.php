@@ -99,8 +99,7 @@ class AnnotationDriver
 
     /**
      * @param FilterControllerEvent $event
-     *
-     * @param OAuth2 $configuration
+     * @param OAuth2                $configuration
      */
     private function processOAuth2Annotation(FilterControllerEvent $event, OAuth2 $configuration): void
     {
@@ -143,9 +142,9 @@ class AnnotationDriver
 
     /**
      * @param FilterControllerEvent $event
-     * @param string $message
-     * @param OAuth2 $configuration
-     * @param \Exception $previous
+     * @param string                $message
+     * @param OAuth2                $configuration
+     * @param \Exception            $previous
      */
     private function createAccessDeniedException(FilterControllerEvent $event, string $message, OAuth2 $configuration, \Exception $previous)
     {

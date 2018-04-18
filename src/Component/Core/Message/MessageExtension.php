@@ -17,7 +17,7 @@ interface MessageExtension
 {
     /**
      * @param OAuth2Message $code The code of the response
-     * @param array           $data Data that will be sent
+     * @param array         $data Data that will be sent
      *
      * @return array
      */

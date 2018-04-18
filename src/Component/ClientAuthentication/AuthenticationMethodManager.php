@@ -173,7 +173,7 @@ class AuthenticationMethodManager
                 $method->getSchemesParameters()
             );
         }
-        foreach ($schemes as $k=>$scheme) {
+        foreach ($schemes as $k => $scheme) {
             $schemes[$k] = $this->appendParameters($scheme, $additionalAuthenticationParameters);
         }
 

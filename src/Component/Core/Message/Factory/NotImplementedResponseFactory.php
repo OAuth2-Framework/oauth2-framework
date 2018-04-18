@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Core\Message\Factory;
 
-final class NotImplementedResponseFactory  extends OAuth2ResponseFactory
+final class NotImplementedResponseFactory extends OAuth2ResponseFactory
 {
     /**
      * {@inheritdoc}

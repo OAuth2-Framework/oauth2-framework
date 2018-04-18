@@ -38,7 +38,6 @@ return function (ContainerConfigurator $container) {
         ->call('addFactory', [ref(Message\Factory\RedirectResponseFactory::class)])
     ;
 
-
     $container->set('oauth2_message_middleware_with_token_authentication')
         ->class(Middleware\OAuth2MessageMiddleware::class)
         ->args([

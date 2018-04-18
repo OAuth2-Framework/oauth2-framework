@@ -23,7 +23,7 @@ interface ResponseFactory
     public function getSupportedCode(): int;
 
     /**
-     * @param array $data       Data sent to the response
+     * @param array             $data     Data sent to the response
      * @param ResponseInterface $response
      *
      * @return ResponseInterface
