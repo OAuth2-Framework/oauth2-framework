@@ -64,7 +64,7 @@ abstract class OAuth2ResponseFactory implements ResponseFactory
         return [
             'Content-Type' => 'application/json; charset=UTF-8',
             'Cache-Control' => 'no-store, private',
-            'Pragma' => 'no-cache'
+            'Pragma' => 'no-cache',
         ];
     }
 }
