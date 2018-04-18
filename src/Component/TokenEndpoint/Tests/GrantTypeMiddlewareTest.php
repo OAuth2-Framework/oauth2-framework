@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\TokenEndpoint\Tests;
 
 use Psr\Http\Server\RequestHandlerInterface;
-use OAuth2Framework\Component\Core\Exception\OAuth2Exception;
+use OAuth2Framework\Component\Core\Message\OAuth2Message;
 use OAuth2Framework\Component\TokenEndpoint\GrantType;
 use OAuth2Framework\Component\TokenEndpoint\GrantTypeManager;
 use OAuth2Framework\Component\TokenEndpoint\GrantTypeMiddleware;
@@ -49,7 +49,7 @@ class GrantTypeMiddlewareTest extends TestCase
         try {
             $this->getGrantTypeMiddleware()->process($request->reveal(), $handler->reveal());
             $this->fail('An OAuth2 exception should be thrown.');
-        } catch (OAuth2Exception $e) {
+        } catch (OAuth2Message $e) {
             self::assertEquals(400, $e->getCode());
             self::assertEquals([
                 'error' => 'invalid_request',
@@ -72,7 +72,7 @@ class GrantTypeMiddlewareTest extends TestCase
         try {
             $this->getGrantTypeMiddleware()->process($request->reveal(), $handler->reveal());
             $this->fail('An OAuth2 exception should be thrown.');
-        } catch (OAuth2Exception $e) {
+        } catch (OAuth2Message $e) {
             self::assertEquals(400, $e->getCode());
             self::assertEquals([
                 'error' => 'invalid_request',

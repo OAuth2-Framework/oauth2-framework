@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\AuthorizationEndpoint\Tests\ResponseMode;
 
-use Http\Message\MessageFactory\DiactorosMessageFactory;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\FormPostResponseMode;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\FormPostResponseRenderer;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\FragmentResponseMode;
@@ -22,6 +21,7 @@ use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\ResponseMode;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\ResponseModeManager;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Zend\Diactoros\Response;
 
 /**
  * @group ResponseMode
@@ -48,7 +48,8 @@ class ResponseModeTest extends TestCase
     public function buildQueryResponseForUrl()
     {
         $mode = $this->getResponseModeManager()->get('query');
-        $response = $mode->buildResponse('https://localhost/foo?bar=bar#foo=foo', [
+        $response = new Response();
+        $response = $mode->buildResponse($response, 'https://localhost/foo?bar=bar#foo=foo', [
             'access_token' => 'ACCESS_TOKEN',
         ]);
 
@@ -62,7 +63,8 @@ class ResponseModeTest extends TestCase
     public function buildQueryResponseForPrivateUri()
     {
         $mode = $this->getResponseModeManager()->get('query');
-        $response = $mode->buildResponse('com.example.app:/oauth2redirect/example-provider', [
+        $response = new Response();
+        $response = $mode->buildResponse($response, 'com.example.app:/oauth2redirect/example-provider', [
             'access_token' => 'ACCESS_TOKEN',
         ]);
 
@@ -76,7 +78,8 @@ class ResponseModeTest extends TestCase
     public function buildQueryResponseForUrn()
     {
         $mode = $this->getResponseModeManager()->get('query');
-        $response = $mode->buildResponse('urn:ietf:wg:oauth:2.0:oob', [
+        $response = new Response();
+        $response = $mode->buildResponse($response, 'urn:ietf:wg:oauth:2.0:oob', [
             'access_token' => 'ACCESS_TOKEN',
         ]);
 
@@ -90,7 +93,8 @@ class ResponseModeTest extends TestCase
     public function buildFragmentResponseForUrl()
     {
         $mode = $this->getResponseModeManager()->get('fragment');
-        $response = $mode->buildResponse('https://localhost/foo?bar=bar#foo=foo', [
+        $response = new Response();
+        $response = $mode->buildResponse($response, 'https://localhost/foo?bar=bar#foo=foo', [
             'access_token' => 'ACCESS_TOKEN',
         ]);
 
@@ -104,7 +108,8 @@ class ResponseModeTest extends TestCase
     public function buildFragmentResponseForPrivateUri()
     {
         $mode = $this->getResponseModeManager()->get('fragment');
-        $response = $mode->buildResponse('com.example.app:/oauth2redirect/example-provider', [
+        $response = new Response();
+        $response = $mode->buildResponse($response, 'com.example.app:/oauth2redirect/example-provider', [
             'access_token' => 'ACCESS_TOKEN',
         ]);
 
@@ -118,7 +123,8 @@ class ResponseModeTest extends TestCase
     public function buildFragmentResponseForUrn()
     {
         $mode = $this->getResponseModeManager()->get('fragment');
-        $response = $mode->buildResponse('urn:ietf:wg:oauth:2.0:oob', [
+        $response = new Response();
+        $response = $mode->buildResponse($response, 'urn:ietf:wg:oauth:2.0:oob', [
             'access_token' => 'ACCESS_TOKEN',
         ]);
 
@@ -132,7 +138,8 @@ class ResponseModeTest extends TestCase
     public function buildFormPostResponseForUrl()
     {
         $mode = $this->getResponseModeManager()->get('form_post');
-        $response = $mode->buildResponse('https://localhost/foo?bar=bar#foo=foo', [
+        $response = new Response();
+        $response = $mode->buildResponse($response, 'https://localhost/foo?bar=bar#foo=foo', [
             'access_token' => 'ACCESS_TOKEN',
         ]);
 
@@ -147,7 +154,8 @@ class ResponseModeTest extends TestCase
     public function buildFormPostResponseForPrivateUri()
     {
         $mode = $this->getResponseModeManager()->get('form_post');
-        $response = $mode->buildResponse('com.example.app:/oauth2redirect/example-provider', [
+        $response = new Response();
+        $response = $mode->buildResponse($response, 'com.example.app:/oauth2redirect/example-provider', [
             'access_token' => 'ACCESS_TOKEN',
         ]);
 
@@ -162,7 +170,8 @@ class ResponseModeTest extends TestCase
     public function buildFormPostResponseForUrn()
     {
         $mode = $this->getResponseModeManager()->get('form_post');
-        $response = $mode->buildResponse('urn:ietf:wg:oauth:2.0:oob', [
+        $response = new Response();
+        $response = $mode->buildResponse($response, 'urn:ietf:wg:oauth:2.0:oob', [
             'access_token' => 'ACCESS_TOKEN',
         ]);
 
@@ -181,18 +190,15 @@ class ResponseModeTest extends TestCase
         if (null === $this->responseModeManager) {
             $this->responseModeManager = new ResponseModeManager();
             $this->responseModeManager->add(new QueryResponseMode(
-                new DiactorosMessageFactory()
             ));
             $this->responseModeManager->add(new FragmentResponseMode(
-                new DiactorosMessageFactory()
             ));
             $formPostResponseRenderer = $this->prophesize(FormPostResponseRenderer::class);
             $formPostResponseRenderer->render(Argument::type('string'), ['access_token' => 'ACCESS_TOKEN'])->will(function ($args) {
                 return json_encode($args);
             });
             $this->responseModeManager->add(new FormPostResponseMode(
-                $formPostResponseRenderer->reveal(),
-                new DiactorosMessageFactory()
+                $formPostResponseRenderer->reveal()
             ));
         }
 

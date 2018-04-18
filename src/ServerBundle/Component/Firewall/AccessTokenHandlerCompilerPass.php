@@ -11,14 +11,14 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\ServerBundle\DependencyInjection\Compiler;
+namespace OAuth2Framework\ServerBundle\Component\Firewall;
 
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenHandlerManager;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
-class AccessTokenHandlerCompilerPass implements CompilerPassInterface
+final class AccessTokenHandlerCompilerPass implements CompilerPassInterface
 {
     /**
      * {@inheritdoc}
@@ -29,10 +29,11 @@ class AccessTokenHandlerCompilerPass implements CompilerPassInterface
             return;
         }
 
-        $definition = $container->getDefinition(AccessTokenHandlerManager::class);
-        $taggedServices = $container->findTaggedServiceIds('oauth2_server_access_token_handler');
+        $client_manager = $container->getDefinition(AccessTokenHandlerManager::class);
+
+        $taggedServices = $container->findTaggedServiceIds('oauth2_access_token_handler');
         foreach ($taggedServices as $id => $attributes) {
-            $definition->addMethodCall('add', [new Reference($id)]);
+            $client_manager->addMethodCall('add', [new Reference($id)]);
         }
     }
 }

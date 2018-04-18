@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\AuthorizationEndpoint\Tests\ParameterChecker;
 
-use Http\Message\MessageFactory\DiactorosMessageFactory;
 use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
 use OAuth2Framework\Component\AuthorizationEndpoint\Exception\OAuth2AuthorizationException;
 use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\DisplayParameterChecker;
@@ -298,8 +297,8 @@ class ParameterCheckerManagerTest extends TestCase
             $responseTypeManager->add($responseType->reveal());
 
             $responseModeManager = new ResponseModeManager();
-            $responseModeManager->add(new QueryResponseMode(new DiactorosMessageFactory()));
-            $responseModeManager->add(new FragmentResponseMode(new DiactorosMessageFactory()));
+            $responseModeManager->add(new QueryResponseMode());
+            $responseModeManager->add(new FragmentResponseMode());
 
             $this->extensionManager = new ParameterCheckerManager();
             $this->extensionManager->add(new DisplayParameterChecker());

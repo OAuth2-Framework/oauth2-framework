@@ -1,8 +1,8 @@
 oauth2_server:
     server_uri: 'https://oauth2.test/'
 #    http_client: 'httplug.client.oauth2'
-#    firewall:
-#        enabled: true
+    firewall:
+        enabled: true
 #    # Key Component
     client:
         repository: 'OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\ClientRepository'
@@ -136,6 +136,7 @@ oauth2_server:
             path: '/authorize'
             host: 'bar.bar.bar'
             login_route_name: 'app_login'
+            user_account_discovery: 'OAuth2Framework\ServerBundle\Service\SymfonyUserDiscovery'
             enforce_state: false
             response_mode:
                 allow_response_mode_parameter: true

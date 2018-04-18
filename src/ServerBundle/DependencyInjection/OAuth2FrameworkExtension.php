@@ -19,7 +19,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
-class OAuth2FrameworkExtension extends Extension implements PrependExtensionInterface
+final class OAuth2FrameworkExtension extends Extension implements PrependExtensionInterface
 {
     /**
      * @var Component[]

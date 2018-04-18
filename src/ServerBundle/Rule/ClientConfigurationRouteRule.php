@@ -19,7 +19,7 @@ use OAuth2Framework\Component\Core\Client\ClientId;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 
-class ClientConfigurationRouteRule extends Base
+final class ClientConfigurationRouteRule extends Base
 {
     /**
      * @var RouterInterface

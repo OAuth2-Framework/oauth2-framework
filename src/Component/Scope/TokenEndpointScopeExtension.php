@@ -20,7 +20,7 @@ use OAuth2Framework\Component\TokenEndpoint\Extension\TokenEndpointExtension;
 use OAuth2Framework\Component\TokenEndpoint\GrantTypeData;
 use OAuth2Framework\Component\TokenEndpoint\GrantType;
 use OAuth2Framework\Component\Scope\Policy\ScopePolicyManager;
-use OAuth2Framework\Component\Core\Exception\OAuth2Exception;
+use OAuth2Framework\Component\Core\Message\OAuth2Message;
 use Psr\Http\Message\ServerRequestInterface;
 
 class TokenEndpointScopeExtension implements TokenEndpointExtension
@@ -95,14 +95,14 @@ class TokenEndpointScopeExtension implements TokenEndpointExtension
      *
      * @return string
      *
-     * @throws OAuth2Exception
+     * @throws OAuth2Message
      */
     private function applyScopePolicy(string $scope, Client $client): string
     {
         try {
             return $this->scopePolicyManager->apply($scope, $client);
         } catch (\InvalidArgumentException $e) {
-            throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_SCOPE, $e->getMessage(), $e);
+            throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_SCOPE, $e->getMessage(), $e);
         }
     }
 
@@ -110,7 +110,7 @@ class TokenEndpointScopeExtension implements TokenEndpointExtension
      * @param string        $scope
      * @param GrantTypeData $grantTypeData
      *
-     * @throws OAuth2Exception
+     * @throws OAuth2Message
      */
     private function checkRequestedScopeIsAvailable(string $scope, GrantTypeData $grantTypeData)
     {
@@ -123,7 +123,7 @@ class TokenEndpointScopeExtension implements TokenEndpointExtension
         $requestedScopes = empty($scope) ? [] : explode(' ', $scope);
         $diff = array_diff($requestedScopes, $availableScopes);
         if (0 !== count($diff)) {
-            throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_SCOPE, sprintf('An unsupported scope was requested. Available scope is/are: %s.', implode(' ,', $availableScopes)));
+            throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_SCOPE, sprintf('An unsupported scope was requested. Available scope is/are: %s.', implode(' ,', $availableScopes)));
         }
     }
 

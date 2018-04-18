@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use OAuth2Framework\ServerBundle\Rule\ClientConfigurationRouteRule;
-use OAuth2Framework\Component\Middleware;
+use OAuth2Framework\ServerBundle\Middleware;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
 return function (ContainerConfigurator $container) {
@@ -24,7 +24,7 @@ return function (ContainerConfigurator $container) {
     $container->set('client_configuration_endpoint_pipe')
         ->class(Middleware\Pipe::class)
         ->args([[
-            ref(Middleware\OAuth2ResponseMiddleware::class),
+            //ref(Middleware\OAuth2MessageMiddleware::class),
             ref(\OAuth2Framework\ServerBundle\Controller\ClientConfigurationMiddleware::class),
             ref(\OAuth2Framework\Component\ClientConfigurationEndpoint\ClientConfigurationEndpoint::class),
         ]])

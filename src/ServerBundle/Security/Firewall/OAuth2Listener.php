@@ -13,11 +13,11 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Security\Firewall;
 
+use OAuth2Framework\Component\Core\Message\OAuth2Message;
+use OAuth2Framework\Component\Core\Message\OAuth2MessageFactoryManager;
 use OAuth2Framework\ServerBundle\Security\Authentication\Token\OAuth2Token;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenHandlerManager;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
-use OAuth2Framework\Component\Core\Exception\OAuth2Exception;
-use OAuth2Framework\Component\Core\Response\OAuth2ResponseFactoryManager;
 use OAuth2Framework\Component\Core\TokenType\TokenTypeManager;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
@@ -27,7 +27,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Http\Firewall\ListenerInterface;
 
-class OAuth2Listener implements ListenerInterface
+final class OAuth2Listener implements ListenerInterface
 {
     /**
      * @var TokenStorageInterface
@@ -50,7 +50,7 @@ class OAuth2Listener implements ListenerInterface
     private $accessTokenHandlerManager;
 
     /**
-     * @var OAuth2ResponseFactoryManager
+     * @var OAuth2MessageFactoryManager
      */
     private $oauth2ResponseFactoryManager;
 
@@ -61,13 +61,13 @@ class OAuth2Listener implements ListenerInterface
      * @param AuthenticationManagerInterface $authenticationManager
      * @param TokenTypeManager               $tokenTypeManager
      * @param AccessTokenHandlerManager      $accessTokenHandlerManager
-     * @param OAuth2ResponseFactoryManager   $oauth2ResponseFactoryManager
+     * @param OAuth2MessageFactoryManager    $oauth2ResponseFactoryManager
      */
     public function __construct(TokenStorageInterface $tokenStorage,
                                 AuthenticationManagerInterface $authenticationManager,
                                 TokenTypeManager $tokenTypeManager,
                                 AccessTokenHandlerManager $accessTokenHandlerManager,
-                                OAuth2ResponseFactoryManager $oauth2ResponseFactoryManager
+                                OAuth2MessageFactoryManager $oauth2ResponseFactoryManager
     ) {
         $this->tokenStorage = $tokenStorage;
         $this->authenticationManager = $authenticationManager;
@@ -105,14 +105,15 @@ class OAuth2Listener implements ListenerInterface
 
             $this->tokenStorage->setToken($result);
         } catch (AuthenticationException $e) {
-            if (null !== $e->getPrevious()) {
-                $e = $e->getPrevious();
-            }
-            $oauth2Exception = new OAuth2Exception(401, OAuth2Exception::ERROR_INVALID_GRANT, $e->getMessage(), $e);
-            $oauth2Response = $this->oauth2ResponseFactoryManager->getResponse($oauth2Exception);
-            $response = $oauth2Response->getResponse();
+            $psr7Response = $this->oauth2ResponseFactoryManager->getResponse(
+                new OAuth2Message(
+                    401,
+                    OAuth2Message::ERROR_ACCESS_DENIED,
+                    'OAuth2 authentication required'
+                )
+            );
             $factory = new HttpFoundationFactory();
-            $event->setResponse($factory->createResponse($response));
+            $event->setResponse($factory->createResponse($psr7Response));
         }
     }
 }

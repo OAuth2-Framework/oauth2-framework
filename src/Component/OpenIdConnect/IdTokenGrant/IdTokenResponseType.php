@@ -20,7 +20,7 @@ use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeId;
 use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
-use OAuth2Framework\Component\Core\Exception\OAuth2Exception;
+use OAuth2Framework\Component\Core\Message\OAuth2Message;
 use OAuth2Framework\Component\OpenIdConnect\IdTokenBuilderFactory;
 
 class IdTokenResponseType implements ResponseType
@@ -102,7 +102,7 @@ class IdTokenResponseType implements ResponseType
     {
         if (!$authorization->hasQueryParam('scope') && in_array('openid', explode(' ', $authorization->getQueryParam('scope')))) {
             if (!array_key_exists('nonce', $authorization->getQueryParams())) {
-                throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_REQUEST, 'The parameter "nonce" is mandatory using "id_token" response type.');
+                throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, 'The parameter "nonce" is mandatory using "id_token" response type.');
             }
 
             $authorization = $this->populateWithIdToken($authorization);
@@ -114,7 +114,7 @@ class IdTokenResponseType implements ResponseType
     /**
      * @param Authorization $authorization
      *
-     * @throws OAuth2Exception
+     * @throws OAuth2Message
      *
      * @return Authorization
      */
@@ -155,7 +155,7 @@ class IdTokenResponseType implements ResponseType
         if ($authorization->getClient()->has('id_token_signed_response_alg')) {
             $signatureAlgorithm = $authorization->getClient()->get('id_token_signed_response_alg');
             if ('none' === $signatureAlgorithm) {
-                throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_CLIENT, 'The ID Token signature algorithm set for the client (parameter "id_token_signed_response_alg") is "none" but this algorithm is not allowed for ID Tokens issued through the authorization endpoint.');
+                throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_CLIENT, 'The ID Token signature algorithm set for the client (parameter "id_token_signed_response_alg") is "none" but this algorithm is not allowed for ID Tokens issued through the authorization endpoint.');
             }
             $idTokenBuilder = $idTokenBuilder->withSignature($this->jwsBuilder, $this->signatureKeys, $signatureAlgorithm);
         } else {

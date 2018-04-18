@@ -20,7 +20,7 @@ use Symfony\Component\HttpKernel\Controller\ArgumentValueResolverInterface;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
-class AccessTokenResolver implements ArgumentValueResolverInterface
+final class AccessTokenResolver implements ArgumentValueResolverInterface
 {
     /**
      * @var TokenStorageInterface

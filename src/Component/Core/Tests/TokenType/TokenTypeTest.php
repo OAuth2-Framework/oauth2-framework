@@ -33,7 +33,7 @@ class TokenTypeTest extends TestCase
         self::assertInstanceOf(TokenType::class, $this->getTokenTypeManager()->get('foo'));
         self::assertNotEmpty($this->getTokenTypeManager()->all());
         self::assertInstanceOf(TokenType::class, $this->getTokenTypeManager()->getDefault());
-        self::assertEquals(['FOO foo="bar",OOO=123'], $this->getTokenTypeManager()->getSchemes(['all' => ['foo' => 'bar', 'OOO' => 123]]));
+        self::assertEquals(['FOO foo="bar",OOO=123'], $this->getTokenTypeManager()->getSchemes(['foo' => 'bar', 'OOO' => 123]));
         self::assertEquals(['FOO'], $this->getTokenTypeManager()->getSchemes());
     }
 

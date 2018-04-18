@@ -17,7 +17,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServer;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerRepository;
-use OAuth2Framework\Component\Core\Exception\OAuth2Exception;
+use OAuth2Framework\Component\Core\Message\OAuth2Message;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -61,7 +61,7 @@ class AuthenticationMiddleware implements MiddlewareInterface
                 $request = $request->withAttribute('resource_server_credentials', $resourceServer_credentials);
             }
         } catch (\Exception $e) {
-            throw new OAuth2Exception(401, OAuth2Exception::ERROR_INVALID_RESOURCE_SERVER, $e->getMessage(), $e);
+            throw new OAuth2Message(401, OAuth2Message::ERROR_INVALID_RESOURCE_SERVER, $e->getMessage(), $e);
         }
 
         return $handler->handle($request);

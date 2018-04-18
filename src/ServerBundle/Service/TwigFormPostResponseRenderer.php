@@ -16,7 +16,7 @@ namespace OAuth2Framework\ServerBundle\Service;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\FormPostResponseRenderer;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 
-class TwigFormPostResponseRenderer implements FormPostResponseRenderer
+final class TwigFormPostResponseRenderer implements FormPostResponseRenderer
 {
     /**
      * @var EngineInterface

@@ -17,7 +17,7 @@ use Http\Message\ResponseFactory;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use OAuth2Framework\Component\Core\Client\Client;
-use OAuth2Framework\Component\Core\Exception\OAuth2Exception;
+use OAuth2Framework\Component\Core\Message\OAuth2Message;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -65,13 +65,13 @@ abstract class TokenRevocationEndpoint implements MiddlewareInterface
 
                         return $this->getResponse(200, '', $callback);
                     } else {
-                        throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_REQUEST, 'The parameter "token" is invalid.');
+                        throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, 'The parameter "token" is invalid.');
                     }
                 }
             }
 
             return $this->getResponse(200, '', $callback);
-        } catch (OAuth2Exception $e) {
+        } catch (OAuth2Message $e) {
             return $this->getResponse($e->getCode(), json_encode($e->getData(), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), $callback);
         }
     }
@@ -102,7 +102,7 @@ abstract class TokenRevocationEndpoint implements MiddlewareInterface
     /**
      * @param ServerRequestInterface $request
      *
-     * @throws OAuth2Exception
+     * @throws OAuth2Message
      *
      * @return Client
      */
@@ -110,7 +110,7 @@ abstract class TokenRevocationEndpoint implements MiddlewareInterface
     {
         $client = $request->getAttribute('client');
         if (null === $client) {
-            throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_CLIENT, 'Client authentication failed.');
+            throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_CLIENT, 'Client authentication failed.');
         }
 
         return $client;
@@ -119,7 +119,7 @@ abstract class TokenRevocationEndpoint implements MiddlewareInterface
     /**
      * @param ServerRequestInterface $request
      *
-     * @throws OAuth2Exception
+     * @throws OAuth2Message
      *
      * @return string
      */
@@ -127,7 +127,7 @@ abstract class TokenRevocationEndpoint implements MiddlewareInterface
     {
         $params = $this->getRequestParameters($request);
         if (!array_key_exists('token', $params)) {
-            throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_REQUEST, 'The parameter "token" is missing.');
+            throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, 'The parameter "token" is missing.');
         }
 
         return $params['token'];
@@ -136,7 +136,7 @@ abstract class TokenRevocationEndpoint implements MiddlewareInterface
     /**
      * @param ServerRequestInterface $request
      *
-     * @throws OAuth2Exception
+     * @throws OAuth2Message
      *
      * @return TokenTypeHint[]
      */
@@ -148,7 +148,7 @@ abstract class TokenRevocationEndpoint implements MiddlewareInterface
         if (array_key_exists('token_type_hint', $params)) {
             $tokenTypeHint = $params['token_type_hint'];
             if (!array_key_exists($params['token_type_hint'], $tokenTypeHints)) {
-                throw new OAuth2Exception(400, 'unsupported_token_type', sprintf('The token type hint "%s" is not supported. Please use one of the following values: %s.', $params['token_type_hint'], implode(', ', array_keys($tokenTypeHints))));
+                throw new OAuth2Message(400, 'unsupported_token_type', sprintf('The token type hint "%s" is not supported. Please use one of the following values: %s.', $params['token_type_hint'], implode(', ', array_keys($tokenTypeHints))));
             }
 
             $hint = $tokenTypeHints[$tokenTypeHint];

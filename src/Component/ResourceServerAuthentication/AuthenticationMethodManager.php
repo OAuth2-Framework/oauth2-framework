@@ -15,7 +15,7 @@ namespace OAuth2Framework\Component\ResourceServerAuthentication;
 
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServer;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
-use OAuth2Framework\Component\Core\Exception\OAuth2Exception;
+use OAuth2Framework\Component\Core\Message\OAuth2Message;
 use Psr\Http\Message\ServerRequestInterface;
 
 class AuthenticationMethodManager
@@ -94,7 +94,7 @@ class AuthenticationMethodManager
      * @param AuthenticationMethod   $authenticationMethod
      * @param mixed                  $resourceServerCredentials The  resource server credentials found in the request
      *
-     * @throws OAuth2Exception
+     * @throws OAuth2Message
      *
      * @return null|ResourceServerId
      */
@@ -114,7 +114,7 @@ class AuthenticationMethodManager
                 continue;
             }
 
-            throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_REQUEST, 'Only one authentication method may be used to authenticate the resource server.');
+            throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, 'Only one authentication method may be used to authenticate the resource server.');
         }
 
         return $resourceServerId;

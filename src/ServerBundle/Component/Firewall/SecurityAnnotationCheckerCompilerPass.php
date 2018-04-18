@@ -11,14 +11,14 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\ServerBundle\DependencyInjection\Compiler;
+namespace OAuth2Framework\ServerBundle\Component\Firewall;
 
 use OAuth2Framework\ServerBundle\Annotation\AnnotationDriver;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
-class SecurityAnnotationCheckerCompilerPass implements CompilerPassInterface
+final class SecurityAnnotationCheckerCompilerPass implements CompilerPassInterface
 {
     /**
      * {@inheritdoc}
@@ -30,9 +30,9 @@ class SecurityAnnotationCheckerCompilerPass implements CompilerPassInterface
         }
 
         $definition = $container->getDefinition(AnnotationDriver::class);
-        $taggedServices = $container->findTaggedServiceIds('oauth2_server.security.annotation_checker');
+        $taggedServices = $container->findTaggedServiceIds('oauth2_security_annotation_checker');
         foreach ($taggedServices as $id => $attributes) {
-            $definition->addMethodCall('addChecker', [new Reference($id)]);
+            $definition->addMethodCall('add', [new Reference($id)]);
         }
     }
 }

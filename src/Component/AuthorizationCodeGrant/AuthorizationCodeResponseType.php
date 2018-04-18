@@ -17,7 +17,7 @@ use OAuth2Framework\Component\AuthorizationCodeGrant\PKCEMethod\PKCEMethodManage
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType;
 use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
-use OAuth2Framework\Component\Core\Exception\OAuth2Exception;
+use OAuth2Framework\Component\Core\Message\OAuth2Message;
 
 class AuthorizationCodeResponseType implements ResponseType
 {
@@ -97,12 +97,12 @@ class AuthorizationCodeResponseType implements ResponseType
 
         if (!array_key_exists('code_challenge', $queryParams)) {
             if (true === $this->pkceForPublicClientsEnforced && $authorization->getClient()->isPublic()) {
-                throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_REQUEST, 'Non-confidential clients must set a proof key (PKCE) for code exchange.');
+                throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, 'Non-confidential clients must set a proof key (PKCE) for code exchange.');
             }
         } else {
             $codeChallengeMethod = array_key_exists('code_challenge_method', $queryParams) ? $queryParams['code_challenge_method'] : 'plain';
             if (!$this->pkceMethodManager->has($codeChallengeMethod)) {
-                throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_REQUEST, sprintf('The challenge method "%s" is not supported.', $codeChallengeMethod));
+                throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, sprintf('The challenge method "%s" is not supported.', $codeChallengeMethod));
             }
         }
 

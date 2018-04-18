@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\TokenEndpoint;
 
-use OAuth2Framework\Component\Core\Exception\OAuth2Exception;
+use OAuth2Framework\Component\Core\Message\OAuth2Message;
 use Psr\Http\Message\ServerRequestInterface;
 
 interface GrantType
@@ -37,7 +37,7 @@ interface GrantType
      *
      * @param ServerRequestInterface $request The request
      *
-     * @throws OAuth2Exception
+     * @throws OAuth2Message
      */
     public function checkRequest(ServerRequestInterface $request);
 
@@ -47,7 +47,7 @@ interface GrantType
      * @param ServerRequestInterface $request       The request
      * @param GrantTypeData          $grantTypeData
      *
-     * @throws OAuth2Exception
+     * @throws OAuth2Message
      *
      * @return GrantTypeData
      */
@@ -57,7 +57,7 @@ interface GrantType
      * @param ServerRequestInterface $request
      * @param GrantTypeData          $grantTypeData
      *
-     * @throws OAuth2Exception
+     * @throws OAuth2Message
      *
      * @return GrantTypeData
      */

@@ -18,7 +18,7 @@ use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
-class SymfonyUserDiscovery implements UserAccountDiscovery
+final class SymfonyUserDiscovery implements UserAccountDiscovery
 {
     /**
      * @var TokenStorageInterface

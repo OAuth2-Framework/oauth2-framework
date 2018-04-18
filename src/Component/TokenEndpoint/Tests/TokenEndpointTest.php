@@ -24,7 +24,7 @@ use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\Client\ClientRepository;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwnerId;
-use OAuth2Framework\Component\Core\Exception\OAuth2Exception;
+use OAuth2Framework\Component\Core\Message\OAuth2Message;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountRepository;
 use OAuth2Framework\Component\TokenEndpoint\Extension\TokenEndpointExtensionManager;
@@ -58,7 +58,7 @@ class TokenEndpointTest extends TestCase
 
         try {
             $this->getTokenEndpoint()->process($request->reveal(), $handler->reveal());
-        } catch (OAuth2Exception $e) {
+        } catch (OAuth2Message $e) {
             self::assertEquals(401, $e->getCode());
             self::assertEquals([
                 'error' => 'invalid_client',
@@ -94,7 +94,7 @@ class TokenEndpointTest extends TestCase
 
         try {
             $this->getTokenEndpoint()->process($request->reveal(), $handler->reveal());
-        } catch (OAuth2Exception $e) {
+        } catch (OAuth2Message $e) {
             self::assertEquals(400, $e->getCode());
             self::assertEquals([
                 'error' => 'unauthorized_client',

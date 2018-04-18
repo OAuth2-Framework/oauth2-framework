@@ -10,11 +10,11 @@ security:
             id: 'OAuth2Framework\ServerBundle\Tests\TestBundle\Service\UserProvider'
 
     firewalls:
-#        api:
-#            pattern: '^/api'
-#            oauth2:
-#                access_token_handler_manager: OAuth2Framework\Component\Security\AccessTokenHandlerManager
-
+        api:
+            pattern: '^/api'
+            stateless: true
+            anonymous: true
+            oauth2: true
         main:
             pattern: '^/'
             anonymous: ~

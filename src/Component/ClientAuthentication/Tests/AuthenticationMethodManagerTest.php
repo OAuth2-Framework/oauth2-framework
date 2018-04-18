@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\ClientAuthentication\Tests;
 
 use OAuth2Framework\Component\Core\Client\ClientId;
-use OAuth2Framework\Component\Core\Exception\OAuth2Exception;
+use OAuth2Framework\Component\Core\Message\OAuth2Message;
 use OAuth2Framework\Component\ClientAuthentication\AuthenticationMethod;
 use OAuth2Framework\Component\ClientAuthentication\AuthenticationMethodManager;
 use OAuth2Framework\Component\ClientAuthentication\ClientSecretBasic;
@@ -66,7 +66,7 @@ class AuthenticationMethodManagerTest extends TestCase
         try {
             $manager->findClientIdAndCredentials($request->reveal(), $method, $credentials);
             $this->fail('An OAuth2 exception should be thrown.');
-        } catch (OAuth2Exception $e) {
+        } catch (OAuth2Message $e) {
             self::assertEquals(400, $e->getCode());
             self::assertEquals([
                 'error' => 'invalid_request',

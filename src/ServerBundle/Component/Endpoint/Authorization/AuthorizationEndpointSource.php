@@ -27,6 +27,7 @@ use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\ParameterCh
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\ResponseMode;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType;
 use OAuth2Framework\Component\AuthorizationEndpoint\UserAccount\UserAccountDiscovery;
+use OAuth2Framework\ServerBundle\Service\SymfonyUserDiscovery;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -79,6 +80,8 @@ class AuthorizationEndpointSource implements Component
         $loader->load('authorization.php');
         $loader->load('user_account_discovery.php');
 
+        $container->setAlias(UserAccountDiscovery::class, $config['user_account_discovery']);
+
         $container->setParameter('oauth2_server.endpoint.authorization.path', $config['path']);
         $container->setParameter('oauth2_server.endpoint.authorization.host', $config['host']);
         $container->setParameter('oauth2_server.endpoint.authorization.login_route_name', $config['login_route_name']);
@@ -120,6 +123,10 @@ class AuthorizationEndpointSource implements Component
                 ->useAttributeAsKey('name')
                 ->scalarPrototype()->end()
                 ->treatNullLike([])
+            ->end()
+            ->scalarNode('user_account_discovery')
+                ->info('The user account discovery service.')
+                ->defaultValue(SymfonyUserDiscovery::class)
             ->end()
             ->scalarNode('template')
                 ->info('The consent page template.')

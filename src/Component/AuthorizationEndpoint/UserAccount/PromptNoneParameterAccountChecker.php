@@ -15,7 +15,7 @@ namespace OAuth2Framework\Component\AuthorizationEndpoint\UserAccount;
 
 use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
 use OAuth2Framework\Component\AuthorizationEndpoint\Exception\CreateRedirectionException;
-use OAuth2Framework\Component\Core\Exception\OAuth2Exception;
+use OAuth2Framework\Component\Core\Message\OAuth2Message;
 
 class PromptNoneParameterAccountChecker implements UserAccountChecker
 {
@@ -25,7 +25,7 @@ class PromptNoneParameterAccountChecker implements UserAccountChecker
     public function check(Authorization $authorization)
     {
         if (null === $authorization->getUserAccount() && $authorization->hasPrompt('none')) {
-            throw new CreateRedirectionException($authorization, OAuth2Exception::ERROR_LOGIN_REQUIRED, 'The resource owner is not logged in.');
+            throw new CreateRedirectionException($authorization, OAuth2Message::ERROR_LOGIN_REQUIRED, 'The resource owner is not logged in.');
         }
     }
 }

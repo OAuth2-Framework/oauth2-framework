@@ -13,35 +13,28 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Security\EntryPoint;
 
-use Http\Message\MessageFactory;
-use OAuth2Framework\ServerBundle\Response\AuthenticateResponseFactory;
+use OAuth2Framework\Component\Core\Message\OAuth2Message;
+use OAuth2Framework\Component\Core\Message\OAuth2MessageFactoryManager;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface;
 
-class OAuth2EntryPoint implements AuthenticationEntryPointInterface
+final class OAuth2EntryPoint implements AuthenticationEntryPointInterface
 {
     /**
-     * @var MessageFactory
+     * @var OAuth2MessageFactoryManager
      */
-    private $messageFactory;
-
-    /**
-     * @var AuthenticateResponseFactory
-     */
-    private $authenticateResponseFactory;
+    private $oauth2ResponseFactoryManager;
 
     /**
      * OAuth2EntryPoint constructor.
      *
-     * @param MessageFactory              $messageFactory
-     * @param AuthenticateResponseFactory $authenticateResponseFactory
+     * @param OAuth2MessageFactoryManager $oauth2ResponseFactoryManager
      */
-    public function __construct(MessageFactory $messageFactory, AuthenticateResponseFactory $authenticateResponseFactory)
+    public function __construct(OAuth2MessageFactoryManager $oauth2ResponseFactoryManager)
     {
-        $this->messageFactory = $messageFactory;
-        $this->authenticateResponseFactory = $authenticateResponseFactory;
+        $this->oauth2ResponseFactoryManager = $oauth2ResponseFactoryManager;
     }
 
     /**
@@ -49,14 +42,15 @@ class OAuth2EntryPoint implements AuthenticationEntryPointInterface
      */
     public function start(Request $request, AuthenticationException $authException = null)
     {
-        $response = $this->messageFactory->createResponse();
+        $psr7Response = $this->oauth2ResponseFactoryManager->getResponse(
+            new OAuth2Message(
+                401,
+                OAuth2Message::ERROR_ACCESS_DENIED,
+                'OAuth2 authentication required'
+            )
+        );
         $factory = new HttpFoundationFactory();
 
-        $oauth2Response = $this->authenticateResponseFactory->createResponse(
-            ['error' => 'invalid_grant', 'error_description' => 'Access token is missing.'],
-            $response
-        );
-
-        return $factory->createResponse($oauth2Response->getResponse());
+        return $factory->createResponse($psr7Response);
     }
 }

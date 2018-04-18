@@ -23,10 +23,11 @@ interface ResponseMode
     public function name(): string;
 
     /**
-     * @param string $redirectUri
-     * @param array  $data
+     * @param ResponseInterface $response
+     * @param string            $redirectUri
+     * @param array             $data
      *
      * @return ResponseInterface
      */
-    public function buildResponse(string $redirectUri, array $data): ResponseInterface;
+    public function buildResponse(ResponseInterface $response, string $redirectUri, array $data): ResponseInterface;
 }

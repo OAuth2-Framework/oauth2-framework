@@ -20,7 +20,7 @@ use Psr\Http\Server\MiddlewareInterface;
 use OAuth2Framework\Component\AuthorizationEndpoint\ConsentScreen\ExtensionManager;
 use OAuth2Framework\Component\AuthorizationEndpoint\Exception\OAuth2AuthorizationException;
 use OAuth2Framework\Component\AuthorizationEndpoint\UserAccount\UserAccountDiscovery;
-use OAuth2Framework\Component\Core\Exception\OAuth2Exception;
+use OAuth2Framework\Component\Core\Message\OAuth2Message;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -121,14 +121,14 @@ abstract class AuthorizationEndpoint implements MiddlewareInterface
             $authorization = $e->getAuthorization();
             $authorization = $this->consentScreenExtensionManager->processAfter($request, $authorization);
             if (false === $authorization->isAuthorized()) {
-                $this->throwRedirectionException($authorization, OAuth2Exception::ERROR_ACCESS_DENIED, 'The resource owner denied access to your client.');
+                $this->throwRedirectionException($authorization, OAuth2Message::ERROR_ACCESS_DENIED, 'The resource owner denied access to your client.');
             }
 
             $responseType = $authorization->getResponseType();
 
             try {
                 $authorization = $responseType->process($authorization);
-            } catch (OAuth2Exception $e) {
+            } catch (OAuth2Message $e) {
                 $this->throwRedirectionException($authorization, $e->getMessage(), $e->getErrorDescription());
             }
 
@@ -145,14 +145,14 @@ abstract class AuthorizationEndpoint implements MiddlewareInterface
     /**
      * @param Authorization $authorization
      *
-     * @throws OAuth2Exception
+     * @throws OAuth2Message
      *
      * @return ResponseInterface
      */
     private function buildResponse(Authorization $authorization): ResponseInterface
     {
         if (null === $authorization->getResponseMode() || null === $authorization->getRedirectUri()) {
-            throw new OAuth2Exception(400, 'EEE', 'FFF');
+            throw new OAuth2Message(400, 'EEE', 'FFF');
         }
 
         $response = $authorization->getResponseMode()->buildResponse(
@@ -171,20 +171,20 @@ abstract class AuthorizationEndpoint implements MiddlewareInterface
      * @param string        $error
      * @param string        $error_description
      *
-     * @throws OAuth2Exception
+     * @throws OAuth2Message
      */
     private function throwRedirectionException(Authorization $authorization, string $error, string $error_description)
     {
         $params = $authorization->getResponseParameters();
         if (null === $authorization->getResponseMode() || null === $authorization->getRedirectUri()) {
-            throw new OAuth2Exception(400, $error, $error_description, $params);
+            throw new OAuth2Message(400, $error, $error_description, $params);
         }
         $params += [
             'response_mode' => $authorization->getResponseMode(),
             'redirect_uri' => $authorization->getRedirectUri(),
         ];
 
-        throw new OAuth2Exception(302, $error, $error_description, $params);
+        throw new OAuth2Message(302, $error, $error_description, $params);
     }
 
     /**
@@ -193,7 +193,7 @@ abstract class AuthorizationEndpoint implements MiddlewareInterface
      * @return Authorization
      *
      * @throws \Http\Client\Exception
-     * @throws OAuth2Exception
+     * @throws OAuth2Message
      * @throws OAuth2AuthorizationException
      */
     public function createAuthorizationFromRequest(ServerRequestInterface $request): Authorization

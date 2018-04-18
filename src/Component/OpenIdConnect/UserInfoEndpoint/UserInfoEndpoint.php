@@ -25,7 +25,7 @@ use OAuth2Framework\Component\Core\Client\ClientRepository;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountRepository;
-use OAuth2Framework\Component\Core\Exception\OAuth2Exception;
+use OAuth2Framework\Component\Core\Message\OAuth2Message;
 use OAuth2Framework\Component\OpenIdConnect\IdTokenBuilderFactory;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -183,7 +183,7 @@ class UserInfoEndpoint implements MiddlewareInterface
     /**
      * @param AccessToken $accessToken
      *
-     * @throws OAuth2Exception
+     * @throws OAuth2Message
      *
      * @return Client
      */
@@ -191,7 +191,7 @@ class UserInfoEndpoint implements MiddlewareInterface
     {
         $clientId = $accessToken->getClientId();
         if (null === $client = $this->clientRepository->find($clientId)) {
-            throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_REQUEST, 'Unable to find the client.');
+            throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, 'Unable to find the client.');
         }
 
         return $client;
@@ -200,7 +200,7 @@ class UserInfoEndpoint implements MiddlewareInterface
     /**
      * @param AccessToken $accessToken
      *
-     * @throws OAuth2Exception
+     * @throws OAuth2Message
      *
      * @return UserAccount
      */
@@ -208,7 +208,7 @@ class UserInfoEndpoint implements MiddlewareInterface
     {
         $userAccountId = $accessToken->getResourceOwnerId();
         if (!$userAccountId instanceof UserAccountId || null === $userAccount = $this->userAccountRepository->find($userAccountId)) {
-            throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_REQUEST, 'Unable to find the resource owner.');
+            throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, 'Unable to find the resource owner.');
         }
 
         return $userAccount;
@@ -217,24 +217,24 @@ class UserInfoEndpoint implements MiddlewareInterface
     /**
      * @param AccessToken $accessToken
      *
-     * @throws OAuth2Exception
+     * @throws OAuth2Message
      */
     private function checkRedirectUri(AccessToken $accessToken)
     {
         if (!$accessToken->hasMetadata('redirect_uri')) {
-            throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_TOKEN, 'The access token has not been issued through the authorization endpoint and cannot be used.');
+            throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_TOKEN, 'The access token has not been issued through the authorization endpoint and cannot be used.');
         }
     }
 
     /**
      * @param AccessToken $accessToken
      *
-     * @throws OAuth2Exception
+     * @throws OAuth2Message
      */
     private function checkScope(AccessToken $accessToken)
     {
         if (!$accessToken->hasParameter('scope') || !in_array('openid', explode(' ', $accessToken->getParameter('scope')))) {
-            throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_TOKEN, 'The access token does not contain the "openid" scope.');
+            throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_TOKEN, 'The access token does not contain the "openid" scope.');
         }
     }
 }

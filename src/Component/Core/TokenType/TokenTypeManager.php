@@ -120,32 +120,10 @@ class TokenTypeManager
     {
         $schemes = [];
         foreach ($this->all() as $type) {
-            $schemes[] = $this->computeScheme($type, $additionalAuthenticationParameters);
+            $schemes[] = $this->appendParameters($type->getScheme(), $additionalAuthenticationParameters);
         }
 
         return $schemes;
-    }
-
-    /**
-     * @param TokenType $type
-     * @param array     $additionalAuthenticationParameters
-     *
-     * @return string
-     */
-    private function computeScheme(TokenType $type, array $additionalAuthenticationParameters): string
-    {
-        $scheme = trim($type->getScheme());
-        if (0 === count($additionalAuthenticationParameters)) {
-            return $scheme;
-        }
-
-        foreach (['all', $type->name()] as $key) {
-            if (array_key_exists($key, $additionalAuthenticationParameters)) {
-                $scheme = $this->appendParameters($scheme, $additionalAuthenticationParameters[$key]);
-            }
-        }
-
-        return $scheme;
     }
 
     /**

@@ -16,7 +16,7 @@ use OAuth2Framework\ServerBundle\Controller\AuthorizationEndpointController;
 use OAuth2Framework\ServerBundle\Form\FormFactory;
 use OAuth2Framework\ServerBundle\Form\Handler\AuthorizationFormHandler;
 use OAuth2Framework\ServerBundle\Form\Type\AuthorizationType;
-use OAuth2Framework\Component\Middleware;
+use OAuth2Framework\ServerBundle\Middleware;
 use OAuth2Framework\Component\AuthorizationEndpoint;
 use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker;
 use OAuth2Framework\Component\Core\TokenType\TokenTypeMiddleware;
@@ -50,25 +50,22 @@ return function (ContainerConfigurator $container) {
             '%oauth2_server.endpoint.authorization.login_route_parameters%',
             ref('httplug.message_factory'),
             ref('session'),
-            ref(AuthorizationEndpoint\AuthorizationFactory::class),
-            ref(AuthorizationEndpoint\UserAccount\UserAccountDiscoveryManager::class),
+            ref(AuthorizationEndpoint\AuthorizationRequestLoader::class),
+            ref(AuthorizationEndpoint\ParameterChecker\ParameterCheckerManager::class),
+            ref(AuthorizationEndpoint\UserAccount\UserAccountDiscovery::class),
             ref(AuthorizationEndpoint\ConsentScreen\ExtensionManager::class),
         ]);
+
+    $container->set(\OAuth2Framework\ServerBundle\Service\SymfonyUserDiscovery::class);
 
     $container->set('authorization_endpoint_pipe')
         ->class(Middleware\Pipe::class)
         ->args([[
-            ref(Middleware\OAuth2ResponseMiddleware::class),
+            ref('oauth2_message_middleware_with_client_authentication'),
             ref(TokenTypeMiddleware::class),
             ref(AuthorizationEndpointController::class),
         ]])
         ->tag('controller.service_arguments');
-
-    $container->set(AuthorizationEndpoint\AuthorizationFactory::class)
-        ->args([
-            ref(AuthorizationEndpoint\AuthorizationRequestLoader::class),
-            ref(ParameterChecker\ParameterCheckerManager::class),
-        ]);
 
     $container->set(AuthorizationEndpoint\AuthorizationRequestLoader::class)
         ->args([

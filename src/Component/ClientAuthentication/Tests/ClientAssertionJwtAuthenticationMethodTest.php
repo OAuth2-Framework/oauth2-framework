@@ -40,7 +40,7 @@ use Jose\Component\Signature\Serializer\CompactSerializer;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
-use OAuth2Framework\Component\Core\Exception\OAuth2Exception;
+use OAuth2Framework\Component\Core\Message\OAuth2Message;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use OAuth2Framework\Component\ClientAuthentication\AuthenticationMethodManager;
 use OAuth2Framework\Component\ClientAuthentication\ClientAssertionJwt;
@@ -131,7 +131,7 @@ class ClientAssertionJwtAuthenticationMethodTest extends TestCase
         try {
             $method->findClientIdAndCredentials($request->reveal(), $credentials);
             $this->fail('An OAuth2 exception should be thrown.');
-        } catch (OAuth2Exception $e) {
+        } catch (OAuth2Message $e) {
             self::assertEquals('invalid_request', $e->getMessage());
             self::assertEquals('Parameter "client_assertion" is missing.', $e->getErrorDescription());
         }
@@ -153,7 +153,7 @@ class ClientAssertionJwtAuthenticationMethodTest extends TestCase
         try {
             $method->findClientIdAndCredentials($request->reveal(), $credentials);
             $this->fail('An OAuth2 exception should be thrown.');
-        } catch (OAuth2Exception $e) {
+        } catch (OAuth2Message $e) {
             self::assertEquals('invalid_request', $e->getMessage());
             self::assertEquals('Unable to load, decrypt or verify the client assertion.', $e->getErrorDescription());
         }
@@ -178,7 +178,7 @@ class ClientAssertionJwtAuthenticationMethodTest extends TestCase
         try {
             $method->findClientIdAndCredentials($request->reveal(), $credentials);
             $this->fail('An OAuth2 exception should be thrown.');
-        } catch (OAuth2Exception $e) {
+        } catch (OAuth2Message $e) {
             self::assertEquals('invalid_request', $e->getMessage());
             self::assertEquals('The following claim(s) is/are mandatory: "iss, sub, aud, exp".', $e->getErrorDescription());
         }
@@ -203,7 +203,7 @@ class ClientAssertionJwtAuthenticationMethodTest extends TestCase
         try {
             $method->findClientIdAndCredentials($request->reveal(), $credentials);
             $this->fail('An OAuth2 exception should be thrown.');
-        } catch (OAuth2Exception $e) {
+        } catch (OAuth2Message $e) {
             self::assertEquals('invalid_request', $e->getMessage());
             self::assertEquals('The encryption of the assertion is mandatory but the decryption of the assertion failed.', $e->getErrorDescription());
         }
@@ -230,7 +230,7 @@ class ClientAssertionJwtAuthenticationMethodTest extends TestCase
         try {
             $method->findClientIdAndCredentials($request->reveal(), $credentials);
             $this->fail('An OAuth2 exception should be thrown.');
-        } catch (OAuth2Exception $e) {
+        } catch (OAuth2Message $e) {
             self::assertEquals('invalid_request', $e->getMessage());
             self::assertEquals('The following claim(s) is/are mandatory: "iss, sub, aud, exp".', $e->getErrorDescription());
         }

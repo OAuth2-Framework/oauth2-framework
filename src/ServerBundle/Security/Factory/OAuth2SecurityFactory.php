@@ -13,17 +13,23 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Security\Factory;
 
+use OAuth2Framework\Component\Core\AccessToken\AccessTokenHandlerManager;
+use OAuth2Framework\Component\Core\TokenType\TokenTypeManager;
 use OAuth2Framework\ServerBundle\Security\Authentication\Provider\OAuth2Provider;
 use OAuth2Framework\ServerBundle\Security\EntryPoint\OAuth2EntryPoint;
 use OAuth2Framework\ServerBundle\Security\Firewall\OAuth2Listener;
+use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Bundle\SecurityBundle\DependencyInjection\Security\Factory\SecurityFactoryInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
-class OAuth2SecurityFactory implements SecurityFactoryInterface
+final class OAuth2SecurityFactory implements SecurityFactoryInterface
 {
+    /**
+     * {@inheritdoc}
+     */
     public function create(ContainerBuilder $container, $id, $config, $userProvider, $defaultEntryPoint)
     {
         $providerId = 'security.authentication.provider.oauth2.'.$id;
@@ -33,15 +39,17 @@ class OAuth2SecurityFactory implements SecurityFactoryInterface
         ;
 
         $listenerId = 'security.authentication.listener.oauth2.'.$id;
-        $listener = $container
+        $container
             ->setDefinition($listenerId, new ChildDefinition(OAuth2Listener::class))
             ->setArguments([
                 new Reference(TokenStorageInterface::class),
                 new Reference('security.authentication.manager'),
+                new Reference(TokenTypeManager::class),
+                new Reference(AccessTokenHandlerManager::class),
             ])
         ;
 
-        return array($providerId, $listenerId, OAuth2EntryPoint::class);
+        return [$providerId, $listenerId, OAuth2EntryPoint::class];
     }
 
     /**
@@ -65,12 +73,5 @@ class OAuth2SecurityFactory implements SecurityFactoryInterface
      */
     public function addConfiguration(NodeDefinition $node)
     {
-        $node
-            ->children()
-                ->scalarNode('access_token_handler_manager')
-                    ->info('The access token handler manager has to retrieve access tokens on demand. Access token can be find from a database, the introspection or any other method.')
-                    ->isRequired()
-                ->end()
-            ->end();
     }
 }

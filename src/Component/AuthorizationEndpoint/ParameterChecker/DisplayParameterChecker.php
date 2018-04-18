@@ -15,7 +15,7 @@ namespace OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker;
 
 use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
 use OAuth2Framework\Component\AuthorizationEndpoint\Exception\OAuth2AuthorizationException;
-use OAuth2Framework\Component\Core\Exception\OAuth2Exception;
+use OAuth2Framework\Component\Core\Message\OAuth2Message;
 
 class DisplayParameterChecker implements ParameterChecker
 {
@@ -34,12 +34,12 @@ class DisplayParameterChecker implements ParameterChecker
     {
         try {
             if ($authorization->hasQueryParam('display') && !in_array($authorization->getQueryParam('display'), $this->getAllowedDisplayValues())) {
-                throw new OAuth2AuthorizationException(400, OAuth2Exception::ERROR_INVALID_REQUEST, sprintf('Invalid parameter "display". Allowed values are %s', implode(', ', $this->getAllowedDisplayValues())), $authorization);
+                throw new OAuth2AuthorizationException(400, OAuth2Message::ERROR_INVALID_REQUEST, sprintf('Invalid parameter "display". Allowed values are %s', implode(', ', $this->getAllowedDisplayValues())), $authorization);
             }
 
             return $authorization;
         } catch (\InvalidArgumentException $e) {
-            throw new OAuth2AuthorizationException(400, OAuth2Exception::ERROR_INVALID_REQUEST, $e->getMessage(), $authorization, $e);
+            throw new OAuth2AuthorizationException(400, OAuth2Message::ERROR_INVALID_REQUEST, $e->getMessage(), $authorization, $e);
         }
     }
 

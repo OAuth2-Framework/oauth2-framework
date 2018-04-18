@@ -14,15 +14,15 @@ declare(strict_types=1);
 use OAuth2Framework\Component\Model\Client\Rule\UserinfoEndpointAlgorithmsRule;
 use OAuth2Framework\ServerBundle\Model\ClientRepository;
 use OAuth2Framework\Component\Endpoint\UserInfo\UserInfoEndpoint;
-use OAuth2Framework\Component\Middleware\OAuth2ResponseMiddleware;
-use OAuth2Framework\Component\Middleware\OAuth2SecurityMiddleware;
-use OAuth2Framework\Component\Middleware\Pipe;
+use OAuth2Framework\ServerBundle\Middleware\OAuth2MessageMiddleware;
+use OAuth2Framework\ServerBundle\Middleware\OAuth2SecurityMiddleware;
+use OAuth2Framework\ServerBundle\Middleware\Pipe;
 use OAuth2Framework\Component\Model\IdToken\IdTokenBuilderFactory;
 use OAuth2Framework\Component\Security\AccessTokenHandlerManager;
 use OAuth2Framework\Component\Core\TokenType\TokenTypeManager;
 use function Fluent\create;
 use function Fluent\get;
-use OAuth2Framework\Component\Middleware\FormPostBodyParserMiddleware;
+use OAuth2Framework\ServerBundle\Middleware\FormPostBodyParserMiddleware;
 
 return [
     UserInfoEndpoint::class => create()
@@ -43,7 +43,7 @@ return [
 
     'oauth2_server_userinfo_pipe' => create(Pipe::class)
         ->arguments([
-            get(OAuth2ResponseMiddleware::class),
+            get(OAuth2MessageMiddleware::class),
             get(FormPostBodyParserMiddleware::class),
             get('userinfo_security_middleware'),
             get(UserInfoEndpoint::class),

@@ -12,7 +12,7 @@ declare(strict_types=1);
  */
 
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use OAuth2Framework\Component\Middleware;
+use OAuth2Framework\ServerBundle\Middleware;
 use OAuth2Framework\Component\TokenEndpoint;
 use OAuth2Framework\Component\Core\TokenType\TokenTypeMiddleware;
 use OAuth2Framework\Component\ClientAuthentication\ClientAuthenticationMiddleware;
@@ -26,7 +26,7 @@ return function (ContainerConfigurator $container) {
     $container->set('token_endpoint_pipe')
         ->class(Middleware\Pipe::class)
         ->args([[
-            ref(Middleware\OAuth2ResponseMiddleware::class),
+            ref('oauth2_message_middleware_with_client_authentication'),
             ref(ClientAuthenticationMiddleware::class),
             ref(TokenEndpoint\GrantTypeMiddleware::class),
             ref(TokenTypeMiddleware::class),

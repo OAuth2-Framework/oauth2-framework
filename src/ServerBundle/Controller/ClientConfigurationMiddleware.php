@@ -15,13 +15,13 @@ namespace OAuth2Framework\ServerBundle\Controller;
 
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\Client\ClientRepository;
-use OAuth2Framework\Component\Core\Exception\OAuth2Exception;
+use OAuth2Framework\Component\Core\Message\OAuth2Message;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-class ClientConfigurationMiddleware implements MiddlewareInterface
+final class ClientConfigurationMiddleware implements MiddlewareInterface
 {
     /**
      * @var ClientRepository
@@ -45,7 +45,7 @@ class ClientConfigurationMiddleware implements MiddlewareInterface
     {
         $routeParameters = $request->getAttribute('_route_params');
         if (!is_array($routeParameters) || !array_key_exists('client_id', $routeParameters) || null === $client = $this->clientRepository->find(ClientId::create($routeParameters['client_id']))) {
-            throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_REQUEST, 'Invalid client or invalid registration access token.');
+            throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, 'Invalid client or invalid registration access token.');
         }
         $request = $request->withAttribute('client', $client);
 

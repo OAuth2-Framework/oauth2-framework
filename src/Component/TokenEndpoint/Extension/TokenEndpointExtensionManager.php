@@ -16,7 +16,7 @@ namespace OAuth2Framework\Component\TokenEndpoint\Extension;
 use OAuth2Framework\Component\Core\AccessToken\AccessToken;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwner;
-use OAuth2Framework\Component\Core\Exception\OAuth2Exception;
+use OAuth2Framework\Component\Core\Message\OAuth2Message;
 use OAuth2Framework\Component\TokenEndpoint\GrantType;
 use OAuth2Framework\Component\TokenEndpoint\GrantTypeData;
 use Psr\Http\Message\ServerRequestInterface;
@@ -47,7 +47,7 @@ class TokenEndpointExtensionManager
      *
      * @return GrantTypeData
      *
-     * @throws OAuth2Exception
+     * @throws OAuth2Message
      */
     public function handleBeforeAccessTokenIssuance(ServerRequestInterface $request, GrantTypeData $grantTypeData, GrantType $grantType): GrantTypeData
     {
@@ -61,7 +61,7 @@ class TokenEndpointExtensionManager
      *
      * @return array
      *
-     * @throws OAuth2Exception
+     * @throws OAuth2Message
      */
     public function handleAfterAccessTokenIssuance(Client $client, ResourceOwner $resourceOwner, AccessToken $accessToken): array
     {
@@ -73,7 +73,7 @@ class TokenEndpointExtensionManager
      *
      * @return callable
      *
-     * @throws OAuth2Exception
+     * @throws OAuth2Message
      */
     private function getCallableBeforeAccessTokenIssuance(int $index): callable
     {
@@ -94,7 +94,7 @@ class TokenEndpointExtensionManager
      *
      * @return callable
      *
-     * @throws OAuth2Exception
+     * @throws OAuth2Message
      */
     private function getCallableAfterAccessTokenIssuance(int $index): callable
     {

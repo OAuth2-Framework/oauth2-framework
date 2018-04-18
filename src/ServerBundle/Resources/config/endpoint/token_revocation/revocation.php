@@ -12,7 +12,7 @@ declare(strict_types=1);
  */
 
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use OAuth2Framework\Component\Middleware;
+use OAuth2Framework\ServerBundle\Middleware;
 use OAuth2Framework\Component\TokenRevocationEndpoint\TokenTypeHintManager;
 use OAuth2Framework\Component\TokenRevocationEndpoint\TokenRevocationGetEndpoint;
 use OAuth2Framework\Component\TokenRevocationEndpoint\TokenRevocationPostEndpoint;
@@ -26,14 +26,14 @@ return function (ContainerConfigurator $container) {
     $container->set('token_revocation_pipe')
         ->class(Middleware\Pipe::class)
         ->args([[
-            ref(Middleware\OAuth2ResponseMiddleware::class),
+            ref('oauth2_message_middleware_with_client_authentication'),
             ref(\OAuth2Framework\Component\ClientAuthentication\ClientAuthenticationMiddleware::class),
             ref('token_revocation_method_handler'),
         ]])
         ->tag('controller.service_arguments');
 
     $container->set('token_revocation_method_handler')
-        ->class(\OAuth2Framework\Component\Middleware\HttpMethodMiddleware::class)
+        ->class(\OAuth2Framework\ServerBundle\Middleware\HttpMethodMiddleware::class)
         ->call('add', ['POST', ref(TokenRevocationPostEndpoint::class)])
         ->call('add', ['GET', ref(TokenRevocationGetEndpoint::class)]);
 

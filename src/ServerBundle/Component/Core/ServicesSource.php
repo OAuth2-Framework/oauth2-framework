@@ -13,7 +13,9 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Component\Core;
 
+use OAuth2Framework\Component\Core\Message\MessageExtension;
 use OAuth2Framework\ServerBundle\Component\Component;
+use OAuth2Framework\ServerBundle\Component\Core\Compiler\OAuth2MessageExtensionCompilerClass;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -36,8 +38,11 @@ class ServicesSource implements Component
     {
         $container->setParameter('oauth2_server.server_uri', $configs['server_uri']);
 
+        $container->registerForAutoconfiguration(MessageExtension::class)->addTag('oauth2_message_extension');
+
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../Resources/config/core'));
         $loader->load('services.php');
+        $loader->load('message.php');
     }
 
     /**
@@ -58,6 +63,7 @@ class ServicesSource implements Component
      */
     public function build(ContainerBuilder $container)
     {
+        $container->addCompilerPass(new OAuth2MessageExtensionCompilerClass());
     }
 
     /**

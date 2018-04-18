@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\AuthorizationEndpoint;
 
-use OAuth2Framework\Component\Core\Exception\OAuth2Exception;
+use OAuth2Framework\Component\Core\Message\OAuth2Message;
 
 interface ResponseType
 {
@@ -50,7 +50,7 @@ interface ResponseType
      *
      * @return Authorization
      *
-     * @throws OAuth2Exception
+     * @throws OAuth2Message
      */
     public function process(Authorization $authorization): Authorization;
 }

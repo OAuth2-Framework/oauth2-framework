@@ -15,7 +15,7 @@ namespace OAuth2Framework\Component\ClientAuthentication;
 
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
-use OAuth2Framework\Component\Core\Exception\OAuth2Exception;
+use OAuth2Framework\Component\Core\Message\OAuth2Message;
 use Psr\Http\Message\ServerRequestInterface;
 
 class AuthenticationMethodManager
@@ -94,7 +94,7 @@ class AuthenticationMethodManager
      * @param AuthenticationMethod   $authenticationMethod
      * @param mixed                  $clientCredentials    The client credentials found in the request
      *
-     * @throws OAuth2Exception
+     * @throws OAuth2Message
      *
      * @return null|ClientId
      */
@@ -114,7 +114,7 @@ class AuthenticationMethodManager
                 continue;
             }
             if (!$method instanceof None && !$authenticationMethod instanceof None) {
-                throw new OAuth2Exception(400, OAuth2Exception::ERROR_INVALID_REQUEST, 'Only one authentication method may be used to authenticate the client.');
+                throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, 'Only one authentication method may be used to authenticate the client.');
             }
             if (!$method instanceof None) {
                 $authenticationMethod = $method;
@@ -157,5 +157,50 @@ class AuthenticationMethodManager
         }
 
         return $schemes;
+    }
+
+    /**
+     * @param array $additionalAuthenticationParameters
+     *
+     * @return array
+     */
+    public function getSchemes(array $additionalAuthenticationParameters = []): array
+    {
+        $schemes = [];
+        foreach ($this->all() as $method) {
+            $schemes = array_merge(
+                $schemes,
+                $method->getSchemesParameters()
+            );
+        }
+        foreach ($schemes as $k=>$scheme) {
+            $schemes[$k] = $this->appendParameters($scheme, $additionalAuthenticationParameters);
+        }
+
+        return $schemes;
+    }
+
+    /**
+     * @param string $scheme
+     * @param array  $parameters
+     *
+     * @return string
+     */
+    private function appendParameters(string $scheme, array $parameters): string
+    {
+        $position = mb_strpos($scheme, ' ', 0, 'utf-8');
+        $add_comma = false === $position ? false : true;
+
+        foreach ($parameters as $key => $value) {
+            $value = is_string($value) ? sprintf('"%s"', $value) : $value;
+            if (false === $add_comma) {
+                $add_comma = true;
+                $scheme = sprintf('%s %s=%s', $scheme, $key, $value);
+            } else {
+                $scheme = sprintf('%s,%s=%s', $scheme, $key, $value);
+            }
+        }
+
+        return $scheme;
     }
 }

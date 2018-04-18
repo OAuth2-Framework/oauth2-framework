@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 use OAuth2Framework\ServerBundle\Service\IFrameEndpoint;
 use OAuth2Framework\ServerBundle\Service\SessionStateParameterExtension;
-use OAuth2Framework\Component\Middleware\Pipe;
+use OAuth2Framework\ServerBundle\Middleware\Pipe;
 use function Fluent\create;
 use function Fluent\get;
 

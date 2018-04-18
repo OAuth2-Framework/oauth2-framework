@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace OAuth2Framework\ServerBundle;
 
 use OAuth2Framework\ServerBundle\DependencyInjection\OAuth2FrameworkExtension;
-use Symfony\Bundle\SecurityBundle\DependencyInjection\SecurityExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
@@ -38,20 +37,6 @@ class OAuth2FrameworkServerBundle extends Bundle
     /**
      * {@inheritdoc}
      */
-    public function boot()
-    {
-        parent::boot();
-        /*
-         * Use a compiler pass as the service is now private
-         */
-         /* if ($this->container->has('twig.loader')) {
-            $this->container->get('twig.loader')->addPath(__DIR__.'/Resources/views', 'OAuth2FrameworkServerBundle');
-        }*/
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getContainerExtension()
     {
         return new OAuth2FrameworkExtension('oauth2_server', $this->components);
@@ -66,10 +51,6 @@ class OAuth2FrameworkServerBundle extends Bundle
         foreach ($this->components as $component) {
             $component->build($container);
         }
-
-        /* @var SecurityExtension $extension */
-        //$extension = $container->getExtension('security');
-        //$extension->addSecurityListenerFactory(new OAuth2SecurityFactory());
     }
 
     /**
@@ -78,7 +59,6 @@ class OAuth2FrameworkServerBundle extends Bundle
     private function getComponents(): array
     {
         return [
-            new Component\Core\OAuth2ResponseSource(),
             new Component\Core\TrustedIssuerSource(),
             new Component\Core\ClientSource(),
             new Component\Core\AccessTokenSource(),
@@ -94,7 +74,9 @@ class OAuth2FrameworkServerBundle extends Bundle
             new Component\Grant\GrantSource(),
             new Component\OpenIdConnect\OpenIdConnectSource(),
 
-            /*new Component\FirewallSource(),
+            new Component\Firewall\FirewallSource(),
+
+            /*
             new Component\HttpSource(),
             new Component\KeySet(),*/
         ];
