@@ -72,7 +72,8 @@ final class ClientRegistrationEndpointTest extends TestCase
 
             $clientRepository = $this->prophesize(ClientRepository::class);
             $clientRepository->find(Argument::type(ClientId::class))->willReturn($client);
-            $clientRepository->save(Argument::type(Client::class))->will(function (array $args){});
+            $clientRepository->save(Argument::type(Client::class))->will(function (array $args) {
+            });
 
             $this->clientRegistrationEndpoint = new ClientRegistrationEndpoint(
                 $clientIdGenerator->reveal(),
