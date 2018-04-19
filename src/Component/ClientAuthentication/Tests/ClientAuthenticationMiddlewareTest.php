@@ -94,7 +94,6 @@ final class ClientAuthenticationMiddlewareTest extends TestCase
             null
         );
         $client = $client->markAsDeleted();
-        $client->eraseMessages();
 
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getHeader('Authorization')
@@ -136,7 +135,6 @@ final class ClientAuthenticationMiddlewareTest extends TestCase
             ]),
             null
         );
-        $client->eraseMessages();
 
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getHeader('Authorization')
@@ -176,7 +174,6 @@ final class ClientAuthenticationMiddlewareTest extends TestCase
             ]),
             null
         );
-        $client->eraseMessages();
 
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getHeader('Authorization')
@@ -217,7 +214,6 @@ final class ClientAuthenticationMiddlewareTest extends TestCase
             ]),
             null
         );
-        $client->eraseMessages();
 
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getHeader('Authorization')
@@ -258,7 +254,6 @@ final class ClientAuthenticationMiddlewareTest extends TestCase
             ]),
             null
         );
-        $client->eraseMessages();
 
         $response = $this->prophesize(ResponseInterface::class);
         $request = $this->prophesize(ServerRequestInterface::class);

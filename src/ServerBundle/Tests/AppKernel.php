@@ -18,8 +18,6 @@ use Jose\Bundle\JoseFramework\JoseFrameworkBundle;
 use OAuth2Framework\ServerBundle\OAuth2FrameworkServerBundle;
 use OAuth2Framework\ServerBundle\Tests\TestBundle\TestBundle;
 use Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle;
-use SimpleBus\SymfonyBridge\SimpleBusCommandBusBundle;
-use SimpleBus\SymfonyBridge\SimpleBusEventBusBundle;
 use Symfony\Bundle\SecurityBundle\SecurityBundle;
 use Symfony\Bundle\TwigBundle\TwigBundle;
 use Symfony\Component\Config\Loader\LoaderInterface;
@@ -55,8 +53,6 @@ class AppKernel extends Kernel
             new TestBundle(),
 
             new JoseFrameworkBundle(),
-            new SimpleBusEventBusBundle(),
-            new SimpleBusCommandBusBundle(),
         ];
 
         return $bundles;

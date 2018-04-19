@@ -35,7 +35,6 @@ return function (ContainerConfigurator $container) {
             ref(\OAuth2Framework\Component\Core\Client\ClientIdGenerator::class),
             ref(\OAuth2Framework\Component\Core\Client\ClientRepository::class),
             ref('httplug.message_factory'),
-            ref('command_bus'),
             ref(RuleManager::class),
         ]);
 };

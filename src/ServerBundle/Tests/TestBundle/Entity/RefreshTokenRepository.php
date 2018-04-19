@@ -63,7 +63,6 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
             new \DateTimeImmutable('now +1 day'),
             null
         );
-        $refreshToken->eraseMessages();
         $this->save($refreshToken);
 
         $refreshToken = RefreshToken::createEmpty();
@@ -77,7 +76,6 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
             null
         );
         $refreshToken = $refreshToken->markAsRevoked();
-        $refreshToken->eraseMessages();
         $this->save($refreshToken);
 
         $refreshToken = RefreshToken::createEmpty();
@@ -90,7 +88,6 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
             new \DateTimeImmutable('now -1 day'),
             null
         );
-        $refreshToken->eraseMessages();
         $this->save($refreshToken);
     }
 }

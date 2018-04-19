@@ -53,7 +53,6 @@ class InitialAccessTokenRepository implements \OAuth2Framework\Component\ClientR
             UserAccountId::create('john.1'),
             new \DateTimeImmutable('now +1 day')
         );
-        $iat->eraseMessages();
         $this->save($iat);
 
         $iat = InitialAccessToken::createEmpty();
@@ -62,7 +61,6 @@ class InitialAccessTokenRepository implements \OAuth2Framework\Component\ClientR
             UserAccountId::create('john.1'),
             new \DateTimeImmutable('now -1 day')
         );
-        $iat->eraseMessages();
         $this->save($iat);
     }
 }

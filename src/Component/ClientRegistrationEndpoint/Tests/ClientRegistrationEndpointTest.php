@@ -25,7 +25,6 @@ use OAuth2Framework\Component\Core\DataBag\DataBag;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Psr\Http\Message\ServerRequestInterface;
-use SimpleBus\Message\Bus\MessageBus;
 
 /**
  * @group ClientRegistrationEndpoint
@@ -68,18 +67,17 @@ final class ClientRegistrationEndpointTest extends TestCase
             );
             $clientIdGenerator = $this->prophesize(ClientIdGenerator::class);
             $clientIdGenerator->createClientId()->willReturn(
-                ClientId::create(bin2hex(random_bytes(16)))
+                ClientId::create('CLIENT_ID')
             );
 
             $clientRepository = $this->prophesize(ClientRepository::class);
             $clientRepository->find(Argument::type(ClientId::class))->willReturn($client);
-            $messageBus = $this->prophesize(MessageBus::class);
+            $clientRepository->save(Argument::type(Client::class))->will(function (array $args){});
 
             $this->clientRegistrationEndpoint = new ClientRegistrationEndpoint(
                 $clientIdGenerator->reveal(),
                 $clientRepository->reveal(),
                 $this->getResponseFactory(),
-                $messageBus->reveal(),
                 new RuleManager()
             );
         }

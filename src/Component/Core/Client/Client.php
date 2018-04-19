@@ -13,15 +13,10 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Core\Client;
 
-use OAuth2Framework\Component\Core\Client\Event as ClientEvent;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
-use OAuth2Framework\Component\Core\Event\Event;
 use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwnerId;
 use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwner;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
-use OAuth2Framework\Component\Core\Domain\DomainObject;
-use SimpleBus\Message\Recorder\ContainsRecordedMessages;
-use SimpleBus\Message\Recorder\PrivateMessageRecorderCapabilities;
 
 /**
  * Class ClientCredentials.
@@ -30,10 +25,8 @@ use SimpleBus\Message\Recorder\PrivateMessageRecorderCapabilities;
  * A client is a resource owner with a set of allowed grant types and can perform requests against
  * available endpoints.
  */
-class Client implements ResourceOwner, ContainsRecordedMessages, DomainObject
+class Client implements ResourceOwner, \JsonSerializable
 {
-    use PrivateMessageRecorderCapabilities;
-
     /**
      * @var bool
      */
@@ -63,14 +56,6 @@ class Client implements ResourceOwner, ContainsRecordedMessages, DomainObject
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public static function getSchema(): string
-    {
-        return 'https://oauth2-framework.spomky-labs.com/schemas/model/client/1.0/schema';
-    }
-
-    /**
      * @return Client
      */
     public static function createEmpty(): self
@@ -91,9 +76,6 @@ class Client implements ResourceOwner, ContainsRecordedMessages, DomainObject
         $clone->clientId = $clientId;
         $clone->parameters = $parameters;
         $clone->ownerId = $ownerId;
-
-        $event = ClientEvent\ClientCreatedEvent::create($clone->clientId, $parameters, $ownerId);
-        $clone->record($event);
 
         return $clone;
     }
@@ -119,8 +101,6 @@ class Client implements ResourceOwner, ContainsRecordedMessages, DomainObject
 
         $clone = clone $this;
         $clone->ownerId = $ownerId;
-        $event = ClientEvent\ClientOwnerChangedEvent::create($clone->getPublicId(), $ownerId);
-        $clone->record($event);
 
         return $clone;
     }
@@ -134,8 +114,6 @@ class Client implements ResourceOwner, ContainsRecordedMessages, DomainObject
     {
         $clone = clone $this;
         $clone->parameters = $parameters;
-        $event = ClientEvent\ClientParametersUpdatedEvent::create($clone->getPublicId(), $parameters);
-        $clone->record($event);
 
         return $clone;
     }
@@ -147,8 +125,6 @@ class Client implements ResourceOwner, ContainsRecordedMessages, DomainObject
     {
         $clone = clone $this;
         $clone->deleted = true;
-        $event = ClientEvent\ClientDeletedEvent::create($clone->getPublicId());
-        $clone->record($event);
 
         return $clone;
     }
@@ -284,7 +260,6 @@ class Client implements ResourceOwner, ContainsRecordedMessages, DomainObject
     public function jsonSerialize()
     {
         $data = [
-            '$schema' => $this->getSchema(),
             'type' => get_class($this),
             'client_id' => $this->getPublicId()->getValue(),
             'owner_id' => $this->getOwnerId() ? $this->getOwnerId()->getValue() : null,
@@ -296,9 +271,11 @@ class Client implements ResourceOwner, ContainsRecordedMessages, DomainObject
     }
 
     /**
-     * {@inheritdoc}
+     * @param \stdClass $json
+     *
+     * @return Client
      */
-    public static function createFromJson(\stdClass $json): DomainObject
+    public static function createFromJson(\stdClass $json): self
     {
         $clientId = ClientId::create($json->client_id);
         $ownerId = null !== $json->owner_id ? UserAccountId::create($json->owner_id) : null;
@@ -312,91 +289,5 @@ class Client implements ResourceOwner, ContainsRecordedMessages, DomainObject
         $client->deleted = $deleted;
 
         return $client;
-    }
-
-    /**
-     * @param Event $event
-     *
-     * @return Client
-     */
-    public function apply(Event $event): self
-    {
-        $map = $this->getEventMap();
-        if (!array_key_exists($event->getType(), $map)) {
-            throw new \InvalidArgumentException('Unsupported event.');
-        }
-        if (null !== $this->clientId && $this->clientId->getValue() !== $event->getDomainId()->getValue()) {
-            throw new \InvalidArgumentException('Event not applicable for this client.');
-        }
-        $method = $map[$event->getType()];
-
-        return $this->$method($event);
-    }
-
-    /**
-     * @return array
-     */
-    private function getEventMap(): array
-    {
-        return [
-            ClientEvent\ClientCreatedEvent::class => 'applyClientCreatedEvent',
-            ClientEvent\ClientOwnerChangedEvent::class => 'applyClientOwnerChangedEvent',
-            ClientEvent\ClientDeletedEvent::class => 'applyClientDeletedEvent',
-            ClientEvent\ClientParametersUpdatedEvent::class => 'applyClientParametersUpdatedEvent',
-        ];
-    }
-
-    /**
-     * @param ClientEvent\ClientCreatedEvent $event
-     *
-     * @return Client
-     */
-    protected function applyClientCreatedEvent(ClientEvent\ClientCreatedEvent $event): self
-    {
-        $clone = clone $this;
-        $clone->clientId = $event->getClientId();
-        $clone->ownerId = $event->getOwnerId();
-        $clone->parameters = $event->getParameters();
-
-        return $clone;
-    }
-
-    /**
-     * @param ClientEvent\ClientOwnerChangedEvent $event
-     *
-     * @return Client
-     */
-    protected function applyClientOwnerChangedEvent(ClientEvent\ClientOwnerChangedEvent $event): self
-    {
-        $clone = clone $this;
-        $clone->ownerId = $event->getNewOwnerId();
-
-        return $clone;
-    }
-
-    /**
-     * @param ClientEvent\ClientDeletedEvent $event
-     *
-     * @return Client
-     */
-    protected function applyClientDeletedEvent(ClientEvent\ClientDeletedEvent $event): self
-    {
-        $clone = clone $this;
-        $clone->deleted = true;
-
-        return $clone;
-    }
-
-    /**
-     * @param ClientEvent\ClientParametersUpdatedEvent $event
-     *
-     * @return Client
-     */
-    protected function applyClientParametersUpdatedEvent(ClientEvent\ClientParametersUpdatedEvent $event): self
-    {
-        $clone = clone $this;
-        $clone->parameters = $event->getParameters();
-
-        return $clone;
     }
 }

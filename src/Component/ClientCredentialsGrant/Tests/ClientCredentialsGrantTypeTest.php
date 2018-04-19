@@ -76,7 +76,6 @@ final class ClientCredentialsGrantTypeTest extends TestCase
             DataBag::create([]),
             UserAccountId::create('USER_ACCOUNT_ID')
         );
-        $client->eraseMessages();
         $request = $this->prophesize(ServerRequestInterface::class);
         $grantTypeData = GrantTypeData::create($client);
 

@@ -103,7 +103,6 @@ final class ResourceOwnerPasswordCredentialsGrantTypeTest extends TestCase
             DataBag::create([]),
             UserAccountId::create('USER_ACCOUNT_ID')
         );
-        $client->eraseMessages();
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getParsedBody()->willReturn(['password' => 'PASSWORD', 'username' => 'USERNAME']);
         $grantTypeData = GrantTypeData::create($client);

@@ -40,7 +40,6 @@ final class ConsentScreenExtensionManagerTest extends TestCase
             DataBag::create([]),
             null
         );
-        $client->eraseMessages();
         $authorization = Authorization::create($client, []);
         $authorization = $this->getExtensionManager()->processBefore($request->reveal(), $authorization);
         self::assertTrue($authorization->hasData('Before Consent'));
@@ -59,7 +58,6 @@ final class ConsentScreenExtensionManagerTest extends TestCase
             DataBag::create([]),
             null
         );
-        $client->eraseMessages();
         $authorization = Authorization::create($client, []);
         $authorization = $this->getExtensionManager()->processAfter($request->reveal(), $authorization);
         self::assertTrue($authorization->hasData('After Consent'));

@@ -163,7 +163,6 @@ final class JwtBearerGrantTypeTest extends TestCase
             DataBag::create([]),
             UserAccountId::create('USER_ACCOUNT_ID')
         );
-        $client->eraseMessages();
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getParsedBody()->willReturn(['assertion' => $this->createValidAssertionFromIssuer()]);
         $request->getAttribute('client')->willReturn($client);
@@ -190,7 +189,6 @@ final class JwtBearerGrantTypeTest extends TestCase
             DataBag::create([]),
             UserAccountId::create('USER_ACCOUNT_ID')
         );
-        $client->eraseMessages();
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getParsedBody()->willReturn(['assertion' => $this->createValidEncryptedAssertionFromClient()]);
         $request->getAttribute('client')->willReturn($client);
@@ -273,7 +271,6 @@ final class JwtBearerGrantTypeTest extends TestCase
                     ]),
                     UserAccountId::create('USER_ACCOUNT_ID')
                 );
-                $client->eraseMessages();
 
                 return $client;
             }

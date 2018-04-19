@@ -175,7 +175,6 @@ final class InitialAccessTokenMiddlewareTest extends TestCase
                             UserAccountId::create('USER_ACCOUNT_ID'),
                             new \DateTimeImmutable('now +1 day')
                         );
-                        $initialAccessToken->eraseMessages();
 
                         return $initialAccessToken;
                     case 'REVOKED_INITIAL_ACCESS_TOKEN_ID':
@@ -186,7 +185,6 @@ final class InitialAccessTokenMiddlewareTest extends TestCase
                             new \DateTimeImmutable('now +1 day')
                         );
                         $initialAccessToken = $initialAccessToken->markAsRevoked();
-                        $initialAccessToken->eraseMessages();
 
                         return $initialAccessToken;
                     case 'EXPIRED_INITIAL_ACCESS_TOKEN_ID':
@@ -196,7 +194,6 @@ final class InitialAccessTokenMiddlewareTest extends TestCase
                             UserAccountId::create('USER_ACCOUNT_ID'),
                             new \DateTimeImmutable('now -1 day')
                         );
-                        $initialAccessToken->eraseMessages();
 
                         return $initialAccessToken;
                     case 'BAD_INITIAL_ACCESS_TOKEN_ID':

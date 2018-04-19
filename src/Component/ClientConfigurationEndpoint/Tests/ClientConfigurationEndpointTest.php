@@ -22,13 +22,10 @@ use OAuth2Framework\Component\ClientRule\RuleManager;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\Client\ClientRepository;
-use OAuth2Framework\Component\Core\Client\Command\DeleteClientCommand;
-use OAuth2Framework\Component\Core\Client\Command\UpdateClientCommand;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Psr\Http\Message\ServerRequestInterface;
-use SimpleBus\Message\Bus\MessageBus;
 
 /**
  * @group ClientConfigurationEndpoint
@@ -56,9 +53,8 @@ final class ClientConfigurationEndpointTest extends TestCase
         $request->getHeader('AUTHORIZATION')->willReturn(['Bearer REGISTRATION_TOKEN']);
 
         $handler = $this->prophesize(RequestHandlerInterface::class);
-        $messageBus = $this->prophesize(MessageBus::class);
 
-        $response = $this->getClientConfigurationEndpoint($clientRepository->reveal(), $messageBus->reveal())->process($request->reveal(), $handler->reveal());
+        $response = $this->getClientConfigurationEndpoint($clientRepository->reveal())->process($request->reveal(), $handler->reveal());
         $response->getBody()->rewind();
         self::assertEquals(200, $response->getStatusCode());
         self::assertEquals('{"registration_access_token":"REGISTRATION_TOKEN","client_id":"CLIENT_ID"}', $response->getBody()->getContents());
@@ -67,7 +63,7 @@ final class ClientConfigurationEndpointTest extends TestCase
     /**
      * @test
      */
-    public function theClientConfigurationEndpointCanReceivePutRequestsAndSendUpdateCommandsToTheCommandHandler()
+    public function theClientConfigurationEndpointCanReceivePutRequestsAndUpdateTheClient()
     {
         $client = Client::createEmpty();
         $client = $client->create(
@@ -77,12 +73,8 @@ final class ClientConfigurationEndpointTest extends TestCase
             ]),
             null
         );
-        $updatedClient = $client->withParameters(DataBag::create([
-            'registration_access_token' => 'NEW_REGISTRATION_TOKEN',
-            'foo' => 'bar',
-        ]));
         $clientRepository = $this->prophesize(ClientRepository::class);
-        $clientRepository->find(Argument::type(ClientId::class))->willReturn($updatedClient);
+        $clientRepository->save(Argument::type(Client::class))->shouldBeCalled();
 
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getMethod()->willReturn('PUT');
@@ -91,40 +83,11 @@ final class ClientConfigurationEndpointTest extends TestCase
         $request->getHeader('AUTHORIZATION')->willReturn(['Bearer REGISTRATION_TOKEN']);
 
         $handler = $this->prophesize(RequestHandlerInterface::class);
-        $messageBus = $this->prophesize(MessageBus::class);
-        $messageBus->handle(Argument::type(UpdateClientCommand::class))->shouldBeCalled();
 
-        $response = $this->getClientConfigurationEndpoint($clientRepository->reveal(), $messageBus->reveal())->process($request->reveal(), $handler->reveal());
+        $response = $this->getClientConfigurationEndpoint($clientRepository->reveal())->process($request->reveal(), $handler->reveal());
         $response->getBody()->rewind();
         self::assertEquals(200, $response->getStatusCode());
-        self::assertEquals('{"registration_access_token":"NEW_REGISTRATION_TOKEN","foo":"bar","client_id":"CLIENT_ID"}', $response->getBody()->getContents());
-    }
-
-    /**
-     * @test
-     */
-    public function theClientConfigurationEndpointCanReceiveDeleteRequestsAndSendDeleteCommandsToTheCommandHandler()
-    {
-        $client = Client::createEmpty();
-        $client = $client->create(
-            ClientId::create('CLIENT_ID'),
-            DataBag::create([
-                'registration_access_token' => 'REGISTRATION_TOKEN',
-            ]),
-            null
-        );
-        $clientRepository = $this->prophesize(ClientRepository::class);
-
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getMethod()->willReturn('DELETE');
-        $request->getAttribute('client')->willReturn($client);
-        $request->getHeader('AUTHORIZATION')->willReturn(['Bearer REGISTRATION_TOKEN']);
-
-        $handler = $this->prophesize(RequestHandlerInterface::class);
-        $messageBus = $this->prophesize(MessageBus::class);
-        $messageBus->handle(Argument::type(DeleteClientCommand::class))->shouldBeCalled();
-
-        $this->getClientConfigurationEndpoint($clientRepository->reveal(), $messageBus->reveal())->process($request->reveal(), $handler->reveal());
+        self::assertEquals('{"client_id":"CLIENT_ID"}', $response->getBody()->getContents());
     }
 
     /**
@@ -137,13 +100,12 @@ final class ClientConfigurationEndpointTest extends TestCase
      *
      * @return ClientConfigurationEndpoint
      */
-    private function getClientConfigurationEndpoint(ClientRepository $clientRepository, MessageBus $messageBus): ClientConfigurationEndpoint
+    private function getClientConfigurationEndpoint(ClientRepository $clientRepository): ClientConfigurationEndpoint
     {
         if (null === $this->clientConfigurationEndpoint) {
             $this->clientConfigurationEndpoint = new ClientConfigurationEndpoint(
                 $clientRepository,
                 new BearerToken('Client Manager', true, false, false),
-                $messageBus,
                 $this->getResponseFactory(),
                 new RuleManager()
             );

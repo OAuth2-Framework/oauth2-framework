@@ -19,20 +19,13 @@ use Psr\Http\Server\MiddlewareInterface;
 use OAuth2Framework\Component\ClientRule\RuleManager;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientRepository;
-use OAuth2Framework\Component\Core\Client\Command\UpdateClientCommand;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\Message\OAuth2Message;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use SimpleBus\Message\Bus\MessageBus;
 
 final class ClientConfigurationPutEndpoint implements MiddlewareInterface
 {
-    /**
-     * @var MessageBus
-     */
-    private $messageBus;
-
     /**
      * @var ClientRepository
      */
@@ -52,13 +45,11 @@ final class ClientConfigurationPutEndpoint implements MiddlewareInterface
      * ClientConfigurationPutEndpoint constructor.
      *
      * @param ClientRepository $clientRepository
-     * @param MessageBus       $messageBus
      * @param ResponseFactory  $responseFactory
      * @param RuleManager      $ruleManager
      */
-    public function __construct(ClientRepository $clientRepository, MessageBus $messageBus, ResponseFactory $responseFactory, RuleManager $ruleManager)
+    public function __construct(ClientRepository $clientRepository, ResponseFactory $responseFactory, RuleManager $ruleManager)
     {
-        $this->messageBus = $messageBus;
         $this->clientRepository = $clientRepository;
         $this->responseFactory = $responseFactory;
         $this->ruleManager = $ruleManager;
@@ -74,11 +65,10 @@ final class ClientConfigurationPutEndpoint implements MiddlewareInterface
 
         $command_parameters = DataBag::create($request->getParsedBody() ?? []);
         $validated_parameters = $this->ruleManager->handle($client->getPublicId(), $command_parameters);
-        $command = UpdateClientCommand::create($client->getPublicId(), $validated_parameters);
+        $client = $client->withParameters($validated_parameters);
 
         try {
-            $this->messageBus->handle($command);
-            $client = $this->clientRepository->find($client->getPublicId());
+            $this->clientRepository->save($client);
         } catch (\InvalidArgumentException $e) {
             throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, $e->getMessage(), $e);
         }

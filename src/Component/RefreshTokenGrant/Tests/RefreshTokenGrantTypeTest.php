@@ -131,7 +131,6 @@ final class RefreshTokenGrantTypeTest extends TestCase
             DataBag::create([]),
             UserAccountId::create('USER_ACCOUNT_ID')
         );
-        $client->eraseMessages();
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getParsedBody()->willReturn(['refresh_token' => 'REVOKED_REFRESH_TOKEN_ID']);
         $request->getAttribute('client')->willReturn($client);
@@ -160,7 +159,6 @@ final class RefreshTokenGrantTypeTest extends TestCase
             DataBag::create([]),
             UserAccountId::create('USER_ACCOUNT_ID')
         );
-        $client->eraseMessages();
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getParsedBody()->willReturn(['refresh_token' => 'REFRESH_TOKEN_ID']);
         $request->getAttribute('client')->willReturn($client);
@@ -189,7 +187,6 @@ final class RefreshTokenGrantTypeTest extends TestCase
             DataBag::create([]),
             UserAccountId::create('USER_ACCOUNT_ID')
         );
-        $client->eraseMessages();
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getParsedBody()->willReturn(['refresh_token' => 'EXPIRED_REFRESH_TOKEN_ID']);
         $request->getAttribute('client')->willReturn($client);
@@ -218,7 +215,6 @@ final class RefreshTokenGrantTypeTest extends TestCase
             DataBag::create([]),
             UserAccountId::create('USER_ACCOUNT_ID')
         );
-        $client->eraseMessages();
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getParsedBody()->willReturn(['refresh_token' => 'REFRESH_TOKEN_ID']);
         $request->getAttribute('client')->willReturn($client);
@@ -252,7 +248,6 @@ final class RefreshTokenGrantTypeTest extends TestCase
                 new \DateTimeImmutable('now +1 day'),
                 ResourceServerId::create('RESOURCE_SERVER_ID')
             );
-            $refreshToken->eraseMessages();
 
             $revokedRefreshToken = RefreshToken::createEmpty();
             $revokedRefreshToken = $revokedRefreshToken->create(
@@ -269,7 +264,6 @@ final class RefreshTokenGrantTypeTest extends TestCase
                 ResourceServerId::create('RESOURCE_SERVER_ID')
             );
             $revokedRefreshToken = $revokedRefreshToken->markAsRevoked();
-            $revokedRefreshToken->eraseMessages();
 
             $expiredRefreshToken = RefreshToken::createEmpty();
             $expiredRefreshToken = $expiredRefreshToken->create(
@@ -285,7 +279,6 @@ final class RefreshTokenGrantTypeTest extends TestCase
                 new \DateTimeImmutable('now -1 day'),
                 ResourceServerId::create('RESOURCE_SERVER_ID')
             );
-            $expiredRefreshToken->eraseMessages();
 
             $refreshTokenRepository = $this->prophesize(RefreshTokenRepository::class);
             $refreshTokenRepository->find(RefreshTokenId::create('REFRESH_TOKEN_ID'))->willReturn($refreshToken);

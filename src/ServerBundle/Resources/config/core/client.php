@@ -11,9 +11,7 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use OAuth2Framework\Component\Core\Client\Command;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
 return function (ContainerConfigurator $container) {
     $container = $container->services()->defaults()
@@ -21,28 +19,4 @@ return function (ContainerConfigurator $container) {
         ->autoconfigure();
 
     $container->set(\OAuth2Framework\ServerBundle\Service\RandomClientIdGenerator::class);
-
-    $container->set(Command\ChangeOwnerCommandHandler::class)
-        ->args([
-            ref(\OAuth2Framework\Component\Core\Client\ClientRepository::class),
-        ])
-        ->tag('command_handler', ['handles' => Command\ChangeOwnerCommand::class]);
-
-    $container->set(Command\CreateClientCommandHandler::class)
-        ->args([
-            ref(\OAuth2Framework\Component\Core\Client\ClientRepository::class),
-        ])
-        ->tag('command_handler', ['handles' => Command\CreateClientCommand::class]);
-
-    $container->set(Command\DeleteClientCommandHandler::class)
-        ->args([
-            ref(\OAuth2Framework\Component\Core\Client\ClientRepository::class),
-        ])
-        ->tag('command_handler', ['handles' => Command\DeleteClientCommand::class]);
-
-    $container->set(Command\UpdateClientCommandHandler::class)
-        ->args([
-            ref(\OAuth2Framework\Component\Core\Client\ClientRepository::class),
-        ])
-        ->tag('command_handler', ['handles' => Command\UpdateClientCommand::class]);
 };

@@ -20,20 +20,13 @@ use Psr\Http\Server\MiddlewareInterface;
 use OAuth2Framework\Component\ClientRule\RuleManager;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientRepository;
-use OAuth2Framework\Component\Core\Client\Command\CreateClientCommand;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\Message\OAuth2Message;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use SimpleBus\Message\Bus\MessageBus;
 
 final class ClientRegistrationEndpoint implements MiddlewareInterface
 {
-    /**
-     * @var MessageBus
-     */
-    private $messageBus;
-
     /**
      * @var ResponseFactory
      */
@@ -60,16 +53,14 @@ final class ClientRegistrationEndpoint implements MiddlewareInterface
      * @param ClientIdGenerator $clientIdGenerator
      * @param ClientRepository  $clientRepository
      * @param ResponseFactory   $responseFactory
-     * @param MessageBus        $messageBus
      * @param RuleManager       $ruleManager
      */
-    public function __construct(ClientIdGenerator $clientIdGenerator, ClientRepository $clientRepository, ResponseFactory $responseFactory, MessageBus $messageBus, RuleManager $ruleManager)
+    public function __construct(ClientIdGenerator $clientIdGenerator, ClientRepository $clientRepository, ResponseFactory $responseFactory, RuleManager $ruleManager)
     {
         $this->clientIdGenerator = $clientIdGenerator;
         $this->clientRepository = $clientRepository;
         $this->responseFactory = $responseFactory;
         $this->ruleManager = $ruleManager;
-        $this->messageBus = $messageBus;
     }
 
     /**
@@ -89,12 +80,13 @@ final class ClientRegistrationEndpoint implements MiddlewareInterface
             $commandParameters = DataBag::create($request->getParsedBody() ?? []);
             $clientId = $this->clientIdGenerator->createClientId();
             $validatedParameters = $this->ruleManager->handle($clientId, $commandParameters);
-            $command = CreateClientCommand::create($clientId, $userAccountId, $validatedParameters);
-            $this->messageBus->handle($command);
-            $client = $this->clientRepository->find($clientId);
-            if (null === $client) {
-                throw new \Exception('Unable to create or retrieve the client.');
-            }
+            $client = Client::createEmpty();
+            $client = $client->create(
+                $clientId,
+                $validatedParameters,
+                $userAccountId
+            );
+            $this->clientRepository->save($client);
 
             return $this->createResponse($client);
         } catch (\Exception $e) {

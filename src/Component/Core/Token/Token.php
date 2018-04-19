@@ -17,14 +17,9 @@ use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwnerId;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
-use OAuth2Framework\Component\Core\Domain\DomainObject;
-use SimpleBus\Message\Recorder\ContainsRecordedMessages;
-use SimpleBus\Message\Recorder\PrivateMessageRecorderCapabilities;
 
-abstract class Token implements \JsonSerializable, ContainsRecordedMessages, DomainObject
+abstract class Token implements \JsonSerializable
 {
-    use PrivateMessageRecorderCapabilities;
-
     /**
      * @var \DateTimeImmutable|null
      */
@@ -209,7 +204,6 @@ abstract class Token implements \JsonSerializable, ContainsRecordedMessages, Dom
     public function jsonSerialize()
     {
         $data = [
-            '$schema' => $this->getSchema(),
             'type' => get_class($this),
             'expires_at' => $this->getExpiresAt()->getTimestamp(),
             'client_id' => $this->getClientId()->getValue(),

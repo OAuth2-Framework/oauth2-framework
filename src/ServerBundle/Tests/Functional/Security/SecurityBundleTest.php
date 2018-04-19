@@ -85,7 +85,6 @@ class SecurityBundleTest extends WebTestCase
             new \DateTimeImmutable('now +1 hour'),
             ResourceServerId::create('RESOURCE_SERVER_iD')
         );
-        $accessToken->eraseMessages();
         $accessTokenRepository->save($accessToken);
 
         $client->request('GET', '/api/hello-profile', [], [], ['HTTPS' => 'on', 'HTTP_AUTHORIZATION' => 'Bearer ACCESS_TOKEN_WITH_INSUFFICIENT_SCOPE']);

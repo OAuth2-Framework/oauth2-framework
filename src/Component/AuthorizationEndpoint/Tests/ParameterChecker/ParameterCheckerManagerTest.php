@@ -47,7 +47,6 @@ final class ParameterCheckerManagerTest extends TestCase
             DataBag::create([]),
             null
         );
-        $client->eraseMessages();
         $authorization = Authorization::create($client, [
             'display' => 'foo',
         ]);
@@ -73,7 +72,6 @@ final class ParameterCheckerManagerTest extends TestCase
             DataBag::create([]),
             null
         );
-        $client->eraseMessages();
         $authorization = Authorization::create($client, [
             'prompt' => 'foo',
         ]);
@@ -99,7 +97,6 @@ final class ParameterCheckerManagerTest extends TestCase
             DataBag::create([]),
             null
         );
-        $client->eraseMessages();
         $authorization = Authorization::create($client, [
             'prompt' => 'none login',
         ]);
@@ -125,7 +122,6 @@ final class ParameterCheckerManagerTest extends TestCase
             DataBag::create([]),
             null
         );
-        $client->eraseMessages();
         $authorization = Authorization::create($client, []);
 
         try {
@@ -149,7 +145,6 @@ final class ParameterCheckerManagerTest extends TestCase
             DataBag::create([]),
             null
         );
-        $client->eraseMessages();
         $authorization = Authorization::create($client, [
             'redirect_uri' => 'https://www.foo.bar/callback',
         ]);
@@ -177,7 +172,6 @@ final class ParameterCheckerManagerTest extends TestCase
             ]),
             null
         );
-        $client->eraseMessages();
         $authorization = Authorization::create($client, [
             'redirect_uri' => 'https://www.foo.bar/callback',
             'response_type' => 'foo',
@@ -205,7 +199,6 @@ final class ParameterCheckerManagerTest extends TestCase
             DataBag::create([]),
             null
         );
-        $client->eraseMessages();
         $authorization = Authorization::create($client, [
             'redirect_uri' => 'https://www.foo.bar/callback',
             'response_type' => 'bar',
@@ -232,7 +225,6 @@ final class ParameterCheckerManagerTest extends TestCase
             DataBag::create([]),
             null
         );
-        $client->eraseMessages();
         $authorization = Authorization::create($client, [
             'redirect_uri' => 'https://www.foo.bar/callback',
             'response_type' => 'foo',
@@ -261,7 +253,6 @@ final class ParameterCheckerManagerTest extends TestCase
             ]),
             null
         );
-        $client->eraseMessages();
         $authorization = Authorization::create($client, [
             'redirect_uri' => 'https://www.foo.bar/callback',
             'response_type' => 'foo',

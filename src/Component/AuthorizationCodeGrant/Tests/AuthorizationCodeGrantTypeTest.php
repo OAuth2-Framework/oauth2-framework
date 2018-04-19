@@ -108,7 +108,6 @@ final class AuthorizationCodeGrantTypeTest extends TestCase
             DataBag::create([]),
             UserAccountId::create('USER_ACCOUNT_ID')
         );
-        $client->eraseMessages();
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getParsedBody()->willReturn(['code' => 'AUTHORIZATION_CODE_ID', 'redirect_uri' => 'http://localhost:8000/']);
         $request->getAttribute('client')->willReturn($client);
@@ -136,7 +135,6 @@ final class AuthorizationCodeGrantTypeTest extends TestCase
             DataBag::create([]),
             UserAccountId::create('USER_ACCOUNT_ID')
         );
-        $client->eraseMessages();
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getParsedBody()->willReturn(['code' => 'AUTHORIZATION_CODE_ID', 'redirect_uri' => 'http://localhost:8000/', 'code_verifier' => 'ABCDEFGH']);
         $request->getAttribute('client')->willReturn($client);
@@ -173,7 +171,6 @@ final class AuthorizationCodeGrantTypeTest extends TestCase
                 DataBag::create([]),
                 ResourceServerId::create('RESOURCE_SERVER_ID')
             );
-            $authorizationCode->eraseMessages();
             $authorizationCodeRepository = $this->prophesize(AuthorizationCodeRepository::class);
             $authorizationCodeRepository->find(AuthorizationCodeId::create('AUTHORIZATION_CODE_ID'))->willReturn($authorizationCode);
             $authorizationCodeRepository->save(Argument::type(AuthorizationCode::class))->will(function (array $args) {

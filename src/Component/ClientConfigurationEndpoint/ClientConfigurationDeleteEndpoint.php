@@ -14,20 +14,19 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\ClientConfigurationEndpoint;
 
 use Http\Message\ResponseFactory;
+use OAuth2Framework\Component\Core\Client\ClientRepository;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use OAuth2Framework\Component\Core\Client\Client;
-use OAuth2Framework\Component\Core\Client\Command\DeleteClientCommand;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use SimpleBus\Message\Bus\MessageBus;
 
 final class ClientConfigurationDeleteEndpoint implements MiddlewareInterface
 {
     /**
-     * @var MessageBus
+     * @var ClientRepository
      */
-    private $messageBus;
+    private $clientRepository;
 
     /**
      * @var ResponseFactory
@@ -37,12 +36,12 @@ final class ClientConfigurationDeleteEndpoint implements MiddlewareInterface
     /**
      * ClientConfigurationDeleteEndpoint constructor.
      *
-     * @param MessageBus      $messageBus
-     * @param ResponseFactory $responseFactory
+     * @param ClientRepository $clientRepository
+     * @param ResponseFactory  $responseFactory
      */
-    public function __construct(MessageBus $messageBus, ResponseFactory $responseFactory)
+    public function __construct(ClientRepository $clientRepository, ResponseFactory $responseFactory)
     {
-        $this->messageBus = $messageBus;
+        $this->clientRepository = $clientRepository;
         $this->responseFactory = $responseFactory;
     }
 
@@ -51,13 +50,10 @@ final class ClientConfigurationDeleteEndpoint implements MiddlewareInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $next): ResponseInterface
     {
-        /**
-         * @var Client
-         */
+        /** @var Client $client */
         $client = $request->getAttribute('client');
-        $id = $client->getPublicId();
-        $command = DeleteClientCommand::create($id);
-        $this->messageBus->handle($command);
+        $client = $client->markAsDeleted();
+        $this->clientRepository->save($client);
 
         $response = $this->responseFactory->createResponse(204);
         $headers = ['Cache-Control' => 'no-cache, no-store, max-age=0, must-revalidate, private', 'Pragma' => 'no-cache'];

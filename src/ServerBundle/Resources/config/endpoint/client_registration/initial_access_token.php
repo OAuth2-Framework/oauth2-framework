@@ -14,7 +14,6 @@ declare(strict_types=1);
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use OAuth2Framework\Component\BearerTokenType\BearerToken;
 use OAuth2Framework\Component\ClientRegistrationEndpoint\InitialAccessTokenMiddleware;
-use OAuth2Framework\Component\ClientRegistrationEndpoint\Command;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
 return function (ContainerConfigurator $container) {
@@ -36,16 +35,4 @@ return function (ContainerConfigurator $container) {
             false,
             false,
         ]);
-
-    $container->set(Command\CreateInitialAccessTokenCommandHandler::class)
-        ->args([
-            ref(\OAuth2Framework\Component\ClientRegistrationEndpoint\InitialAccessTokenRepository::class),
-        ])
-        ->tag('command_handler', ['handles' => Command\CreateInitialAccessTokenCommand::class]);
-
-    $container->set(Command\RevokeInitialAccessTokenCommandHandler::class)
-        ->args([
-            ref(\OAuth2Framework\Component\ClientRegistrationEndpoint\InitialAccessTokenRepository::class),
-        ])
-        ->tag('command_handler', ['handles' => Command\RevokeInitialAccessTokenCommand::class]);
 };

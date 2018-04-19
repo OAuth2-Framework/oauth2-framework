@@ -15,8 +15,6 @@ namespace OAuth2Framework\Component\ClientRegistrationEndpoint\Tests;
 
 use OAuth2Framework\Component\ClientRegistrationEndpoint\InitialAccessToken;
 use OAuth2Framework\Component\ClientRegistrationEndpoint\InitialAccessTokenId;
-use OAuth2Framework\Component\Core\Domain\DomainConverter;
-use OAuth2Framework\Component\Core\Domain\DomainUriLoader;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use PHPUnit\Framework\TestCase;
 
@@ -49,65 +47,9 @@ final class InitialAccessTokenTest extends TestCase
             null
         );
         $initialAccessToken = $initialAccessToken->markAsRevoked();
-        $events = $initialAccessToken->recordedMessages();
 
         self::assertInstanceOf(InitialAccessToken::class, $initialAccessToken);
-        self::assertEquals('{"$schema":"https://oauth2-framework.spomky-labs.com/schemas/model/initial-access-token/1.0/schema","type":"OAuth2Framework\\\\Component\\\\ClientRegistrationEndpoint\\\\InitialAccessToken","initial_access_token_id":"INITIAL_ACCESS_TOKEN_ID","user_account_id":"USER_ACCOUNT_ID","expires_at":null,"is_revoked":true}', $this->getDomainConverter()->toJson($initialAccessToken));
+        self::assertEquals('{"type":"OAuth2Framework\\\\Component\\\\ClientRegistrationEndpoint\\\\InitialAccessToken","initial_access_token_id":"INITIAL_ACCESS_TOKEN_ID","user_account_id":"USER_ACCOUNT_ID","expires_at":null,"is_revoked":true}', json_encode($initialAccessToken, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
         self::assertEquals('INITIAL_ACCESS_TOKEN_ID', $initialAccessToken->getTokenId()->getValue());
-        self::assertCount(2, $events);
-    }
-
-    /**
-     * @test
-     */
-    public function iCanCreateAnInitialAccessTokenFromDomainObject()
-    {
-        $json = '{"$schema":"https://oauth2-framework.spomky-labs.com/schemas/model/initial-access-token/1.0/schema","type":"OAuth2Framework\\\\Component\\\\ClientRegistrationEndpoint\\\\InitialAccessToken","initial_access_token_id":"INITIAL_ACCESS_TOKEN_ID","user_account_id":"USER_ACCOUNT_ID","expires_at":null,"is_revoked":true}';
-        $initialAccessToken = $this->getDomainConverter()->fromJson($json);
-        self::assertInstanceOf(InitialAccessToken::class, $initialAccessToken);
-    }
-
-    /**
-     * @test
-     */
-    public function iCanAnInitialAccessTokenUsingEvents()
-    {
-        $events = [
-            '{"$schema":"https://oauth2-framework.spomky-labs.com/schemas/events/initial-access-token/created/1.0/schema","type":"OAuth2Framework\\\\Component\\\\ClientRegistrationEndpoint\\\\Event\\\\InitialAccessTokenCreatedEvent","domain_id":"INITIAL_ACCESS_TOKEN_ID","payload":{"user_account_id":"USER_ACCOUNT_ID","expires_at":null}}',
-            '{"$schema":"https://oauth2-framework.spomky-labs.com/schemas/events/initial-access-token/revoked/1.0/schema","type":"OAuth2Framework\\\\Component\\\\ClientRegistrationEndpoint\\\\Event\\\\InitialAccessTokenRevokedEvent","domain_id":"INITIAL_ACCESS_TOKEN_ID"}',
-        ];
-        $initialAccessToken = InitialAccessToken::createEmpty();
-
-        foreach ($events as $event) {
-            $eventObject = $this->getDomainConverter()->fromJson($event);
-            $initialAccessToken = $initialAccessToken->apply($eventObject);
-        }
-        self::assertInstanceOf(InitialAccessToken::class, $initialAccessToken);
-    }
-
-    /**
-     * @var DomainConverter|null
-     */
-    private $domainConverter;
-
-    /**
-     * @return DomainConverter
-     */
-    private function getDomainConverter(): DomainConverter
-    {
-        if (null === $this->domainConverter) {
-            $domainUriLoader = new DomainUriLoader();
-            //Domain Objects
-            $domainUriLoader->add('oauth2-framework.spomky-labs.com/schemas/model/token/1.0/schema', sprintf('file://%s%s', __DIR__.'/../../Core/Token', '/Token-1.0.json'));
-            $domainUriLoader->add('oauth2-framework.spomky-labs.com/schemas/model/initial-access-token/1.0/schema', sprintf('file://%s%s', __DIR__.'/..', '/InitialAccessToken-1.0.json'));
-
-            // Events
-            $domainUriLoader->add('oauth2-framework.spomky-labs.com/schemas/event/1.0/schema', sprintf('file://%s%s', __DIR__.'/../../Core/Event', '/Event-1.0.json'));
-            $domainUriLoader->add('oauth2-framework.spomky-labs.com/schemas/events/initial-access-token/created/1.0/schema', sprintf('file://%s%s', __DIR__.'/..', '/Event/InitialAccessTokenCreatedEvent-1.0.json'));
-            $domainUriLoader->add('oauth2-framework.spomky-labs.com/schemas/events/initial-access-token/revoked/1.0/schema', sprintf('file://%s%s', __DIR__.'/..', '/Event/InitialAccessTokenRevokedEvent-1.0.json'));
-            $this->domainConverter = new DomainConverter($domainUriLoader);
-        }
-
-        return $this->domainConverter;
     }
 }

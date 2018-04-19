@@ -58,7 +58,6 @@ final class TokenEndpointScopeExtensionTest extends TestCase
             DataBag::create([]),
             UserAccountId::create('USER_ACCOUNT_ID')
         );
-        $client->eraseMessages();
 
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getParsedBody()->willReturn([]);
@@ -83,7 +82,6 @@ final class TokenEndpointScopeExtensionTest extends TestCase
             DataBag::create([]),
             UserAccountId::create('USER_ACCOUNT_ID')
         );
-        $client->eraseMessages();
 
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getParsedBody()->willReturn([
@@ -117,7 +115,6 @@ final class TokenEndpointScopeExtensionTest extends TestCase
             DataBag::create([]),
             UserAccountId::create('USER_ACCOUNT_ID')
         );
-        $client->eraseMessages();
 
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getParsedBody()->willReturn([
@@ -146,7 +143,6 @@ final class TokenEndpointScopeExtensionTest extends TestCase
             DataBag::create([]),
             UserAccountId::create('USER_ACCOUNT_ID')
         );
-        $client->eraseMessages();
         $accessToken = AccessToken::createEmpty();
         $accessToken = $accessToken->create(
             AccessTokenId::create('ACCESS_TOKEN_ID'),
@@ -157,7 +153,6 @@ final class TokenEndpointScopeExtensionTest extends TestCase
             new \DateTimeImmutable('now +1 hour'),
             null
         );
-        $accessToken->eraseMessages();
 
         $next = function (Client $client, ResourceOwner $resourceOwner, AccessToken $accessToken): array {
             return $accessToken->getResponseData();

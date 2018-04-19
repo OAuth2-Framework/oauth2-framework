@@ -94,7 +94,6 @@ final class ImplicitGrantTypeTest extends TestCase
             DataBag::create([]),
             UserAccountId::create('USER_ACCOUNT_ID')
         );
-        $client->eraseMessages();
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getParsedBody()->willReturn(['implicit' => 'REFRESH_TOKEN_ID']);
         $request->getAttribute('client')->willReturn($client);

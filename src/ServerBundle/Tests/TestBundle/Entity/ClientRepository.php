@@ -60,7 +60,6 @@ class ClientRepository implements \OAuth2Framework\Component\Core\Client\ClientR
             ]),
             UserAccountId::create('USER_ACCOUNT_1')
         );
-        $client->eraseMessages();
         $this->save($client);
 
         $client = Client::createEmpty();
@@ -72,7 +71,6 @@ class ClientRepository implements \OAuth2Framework\Component\Core\Client\ClientR
             ]),
             UserAccountId::create('USER_ACCOUNT_1')
         );
-        $client->eraseMessages();
         $this->save($client);
 
         $client = Client::createEmpty();
@@ -85,7 +83,6 @@ class ClientRepository implements \OAuth2Framework\Component\Core\Client\ClientR
             ]),
             UserAccountId::create('USER_ACCOUNT_1')
         );
-        $client->eraseMessages();
         $this->save($client);
 
         $client = Client::createEmpty();
@@ -98,7 +95,6 @@ class ClientRepository implements \OAuth2Framework\Component\Core\Client\ClientR
             ]),
             UserAccountId::create('USER_ACCOUNT_1')
         );
-        $client->eraseMessages();
         $this->save($client);
     }
 }

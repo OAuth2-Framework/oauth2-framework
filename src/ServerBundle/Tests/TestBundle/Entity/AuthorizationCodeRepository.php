@@ -62,7 +62,6 @@ class AuthorizationCodeRepository implements AuthorizationCodeRepositoryInterfac
             DataBag::create([]),
             null
         );
-        $refreshToken->eraseMessages();
         $this->save($refreshToken);
 
         $refreshToken = AuthorizationCode::createEmpty();
@@ -78,7 +77,6 @@ class AuthorizationCodeRepository implements AuthorizationCodeRepositoryInterfac
             null
         );
         $refreshToken = $refreshToken->markAsRevoked();
-        $refreshToken->eraseMessages();
         $this->save($refreshToken);
 
         $refreshToken = AuthorizationCode::createEmpty();
@@ -93,7 +91,6 @@ class AuthorizationCodeRepository implements AuthorizationCodeRepositoryInterfac
             DataBag::create([]),
             null
         );
-        $refreshToken->eraseMessages();
         $this->save($refreshToken);
     }
 }

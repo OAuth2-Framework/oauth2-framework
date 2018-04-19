@@ -55,7 +55,6 @@ final class TokenResponseTypeTest extends TestCase
             DataBag::create([]),
             UserAccountId::create('USER_ACCOUNT_ID')
         );
-        $client->eraseMessages();
         $userAccount = $this->prophesize(UserAccount::class);
         $userAccount->getPublicId()->willReturn(UserAccountId::create('USER_ACCOUNT_ID'));
         $tokenType = $this->prophesize(TokenType::class);

@@ -12,7 +12,6 @@ declare(strict_types=1);
  */
 
 use OAuth2Framework\ServerBundle\Routing\RouteLoader;
-use OAuth2Framework\Component\Core\Domain;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 return function (ContainerConfigurator $container) {
@@ -23,7 +22,4 @@ return function (ContainerConfigurator $container) {
 
     $container->set(RouteLoader::class)
         ->tag('routing.loader');
-
-    $container->set(Domain\DomainConverter::class);
-    $container->set(Domain\DomainUriLoader::class);
 };

@@ -23,7 +23,6 @@ use OAuth2Framework\Component\Core\Client\ClientRepository;
 use OAuth2Framework\Component\Core\Message\OAuth2Message;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use SimpleBus\Message\Bus\MessageBus;
 
 final class ClientConfigurationEndpoint implements MiddlewareInterface
 {
@@ -36,11 +35,6 @@ final class ClientConfigurationEndpoint implements MiddlewareInterface
      * @var BearerToken
      */
     private $bearerToken;
-
-    /**
-     * @var MessageBus
-     */
-    private $messageBus;
 
     /**
      * @var ResponseFactory
@@ -57,15 +51,13 @@ final class ClientConfigurationEndpoint implements MiddlewareInterface
      *
      * @param ClientRepository $clientRepository
      * @param BearerToken      $bearerToken
-     * @param MessageBus       $messageBus
      * @param ResponseFactory  $responseFactory
      * @param RuleManager      $ruleManager
      */
-    public function __construct(ClientRepository $clientRepository, BearerToken $bearerToken, MessageBus $messageBus, ResponseFactory $responseFactory, RuleManager $ruleManager)
+    public function __construct(ClientRepository $clientRepository, BearerToken $bearerToken, ResponseFactory $responseFactory, RuleManager $ruleManager)
     {
         $this->clientRepository = $clientRepository;
         $this->bearerToken = $bearerToken;
-        $this->messageBus = $messageBus;
         $this->responseFactory = $responseFactory;
         $this->ruleManager = $ruleManager;
     }
@@ -82,11 +74,11 @@ final class ClientConfigurationEndpoint implements MiddlewareInterface
 
                 return $get->process($request, $next);
             case 'PUT':
-                $put = new ClientConfigurationPutEndpoint($this->clientRepository, $this->messageBus, $this->responseFactory, $this->ruleManager);
+                $put = new ClientConfigurationPutEndpoint($this->clientRepository, $this->responseFactory, $this->ruleManager);
 
                 return $put->process($request, $next);
             case 'DELETE':
-                $delete = new ClientConfigurationDeleteEndpoint($this->messageBus, $this->responseFactory);
+                $delete = new ClientConfigurationDeleteEndpoint($this->clientRepository, $this->responseFactory);
 
                 return $delete->process($request, $next);
             default:

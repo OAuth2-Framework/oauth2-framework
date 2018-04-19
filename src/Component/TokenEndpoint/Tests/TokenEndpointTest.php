@@ -78,7 +78,6 @@ final class TokenEndpointTest extends TestCase
             DataBag::create([]),
             UserAccountId::create('OWNER_ID')
         );
-        $client->eraseMessages();
 
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getAttribute('grant_type')
@@ -116,7 +115,6 @@ final class TokenEndpointTest extends TestCase
             ]),
             UserAccountId::create('OWNER_ID')
         );
-        $client->eraseMessages();
 
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getAttribute('grant_type')
@@ -192,7 +190,6 @@ final class TokenEndpointTest extends TestCase
                 ]),
                 UserAccountId::create('OWNER_ID')
             );
-            $client->eraseMessages();
 
             $clientRepository = $this->prophesize(ClientRepository::class);
             $clientRepository->find(Argument::type(ClientId::class))->willReturn($client);
