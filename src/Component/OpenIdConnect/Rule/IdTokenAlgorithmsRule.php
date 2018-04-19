@@ -19,7 +19,7 @@ use OAuth2Framework\Component\ClientRule\Rule;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 
-class IdTokenAlgorithmsRule implements Rule
+final class IdTokenAlgorithmsRule implements Rule
 {
     /**
      * @var JWSBuilder

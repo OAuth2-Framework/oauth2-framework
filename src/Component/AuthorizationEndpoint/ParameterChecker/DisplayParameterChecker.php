@@ -17,7 +17,7 @@ use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
 use OAuth2Framework\Component\AuthorizationEndpoint\Exception\OAuth2AuthorizationException;
 use OAuth2Framework\Component\Core\Message\OAuth2Message;
 
-class DisplayParameterChecker implements ParameterChecker
+final class DisplayParameterChecker implements ParameterChecker
 {
     public const DISPLAY_PAGE = 'page';
 

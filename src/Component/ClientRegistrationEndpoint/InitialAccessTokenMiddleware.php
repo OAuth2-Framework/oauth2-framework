@@ -20,7 +20,7 @@ use OAuth2Framework\Component\Core\Message\OAuth2Message;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-class InitialAccessTokenMiddleware implements MiddlewareInterface
+final class InitialAccessTokenMiddleware implements MiddlewareInterface
 {
     /**
      * @var BearerToken

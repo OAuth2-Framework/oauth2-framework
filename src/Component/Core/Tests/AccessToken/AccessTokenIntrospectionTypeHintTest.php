@@ -29,7 +29,7 @@ use Prophecy\Argument;
  * @group TypeHint
  * @group AccessTokenIntrospectionTypeHint
  */
-class AccessTokenIntrospectionTypeHintTest extends TestCase
+final class AccessTokenIntrospectionTypeHintTest extends TestCase
 {
     /**
      * {@inheritdoc}

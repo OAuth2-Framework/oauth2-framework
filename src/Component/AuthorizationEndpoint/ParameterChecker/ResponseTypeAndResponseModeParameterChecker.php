@@ -20,7 +20,7 @@ use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseTypeManager;
 use OAuth2Framework\Component\Core\Message\OAuth2Message;
 
-class ResponseTypeAndResponseModeParameterChecker implements ParameterChecker
+final class ResponseTypeAndResponseModeParameterChecker implements ParameterChecker
 {
     /**
      * @var ResponseModeManager

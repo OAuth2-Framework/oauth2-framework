@@ -16,7 +16,7 @@ namespace OAuth2Framework\Component\AuthorizationCodeGrant;
 use OAuth2Framework\Component\Core\Token\Token;
 use OAuth2Framework\Component\TokenIntrospectionEndpoint\TokenTypeHint;
 
-class AuthorizationCodeIntrospectionTypeHint implements TokenTypeHint
+final class AuthorizationCodeIntrospectionTypeHint implements TokenTypeHint
 {
     /**
      * @var AuthorizationCodeRepository

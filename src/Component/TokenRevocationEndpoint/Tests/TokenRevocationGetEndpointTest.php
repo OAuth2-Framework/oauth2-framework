@@ -30,7 +30,7 @@ use Psr\Http\Message\ServerRequestInterface;
 /**
  * @group TokenRevocationEndpoint
  */
-class TokenRevocationGetEndpointTest extends TestCase
+final class TokenRevocationGetEndpointTest extends TestCase
 {
     /**
      * @test

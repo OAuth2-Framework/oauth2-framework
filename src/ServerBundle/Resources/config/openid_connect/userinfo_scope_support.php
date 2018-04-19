@@ -24,5 +24,5 @@ return function (ContainerConfigurator $container) {
 
     $container->set(ScopeSupport\EmailScopeSupport::class);
     $container->set(ScopeSupport\PhoneScopeSupport::class);
-    $container->set(ScopeSupport\ProfilScopeSupport::class);
+    $container->set(ScopeSupport\ProfileScopeSupport::class);
 };

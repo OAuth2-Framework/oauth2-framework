@@ -19,7 +19,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @group DataBag
  */
-class DataBagTest extends TestCase
+final class DataBagTest extends TestCase
 {
     /**
      * @test

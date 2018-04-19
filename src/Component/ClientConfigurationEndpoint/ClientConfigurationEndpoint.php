@@ -25,7 +25,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use SimpleBus\Message\Bus\MessageBus;
 
-class ClientConfigurationEndpoint implements MiddlewareInterface
+final class ClientConfigurationEndpoint implements MiddlewareInterface
 {
     /**
      * @var ClientRepository

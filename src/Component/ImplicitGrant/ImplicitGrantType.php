@@ -18,7 +18,7 @@ use OAuth2Framework\Component\TokenEndpoint\GrantTypeData;
 use OAuth2Framework\Component\Core\Message\OAuth2Message;
 use Psr\Http\Message\ServerRequestInterface;
 
-class ImplicitGrantType implements GrantType
+final class ImplicitGrantType implements GrantType
 {
     /**
      * {@inheritdoc}

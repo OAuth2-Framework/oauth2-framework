@@ -33,7 +33,7 @@ use Zend\Diactoros\Uri;
  * @group AuthorizationEndpoint
  * @group AuthorizationRequestLoader
  */
-class AuthorizationRequestLoaderTest extends TestCase
+final class AuthorizationRequestLoaderTest extends TestCase
 {
     /**
      * @test

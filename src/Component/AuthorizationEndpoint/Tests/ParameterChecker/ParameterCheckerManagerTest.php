@@ -34,7 +34,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @group ParameterCheckerManager
  */
-class ParameterCheckerManagerTest extends TestCase
+final class ParameterCheckerManagerTest extends TestCase
 {
     /**
      * @test

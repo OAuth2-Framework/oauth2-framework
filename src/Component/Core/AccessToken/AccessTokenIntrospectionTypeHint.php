@@ -16,7 +16,7 @@ namespace OAuth2Framework\Component\Core\AccessToken;
 use OAuth2Framework\Component\Core\Token\Token;
 use OAuth2Framework\Component\TokenIntrospectionEndpoint\TokenTypeHint;
 
-class AccessTokenIntrospectionTypeHint implements TokenTypeHint
+final class AccessTokenIntrospectionTypeHint implements TokenTypeHint
 {
     /**
      * @var AccessTokenRepository

@@ -18,7 +18,7 @@ use OAuth2Framework\Component\Core\Token\Token;
 use OAuth2Framework\Component\Core\TokenType\TokenType;
 use Psr\Http\Message\ServerRequestInterface;
 
-class BearerToken implements TokenType
+final class BearerToken implements TokenType
 {
     /**
      * @var string
@@ -57,9 +57,17 @@ class BearerToken implements TokenType
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function name(): string
+    {
+        return 'Bearer';
+    }
+
+    /**
      * @return bool
      */
-    public function isTokenFromAuthorizationHeaderAllowed(): bool
+    private function isTokenFromAuthorizationHeaderAllowed(): bool
     {
         return $this->tokenFromAuthorizationHeaderAllowed;
     }
@@ -67,7 +75,7 @@ class BearerToken implements TokenType
     /**
      * @return bool
      */
-    public function isTokenFromRequestBodyAllowed(): bool
+    private function isTokenFromRequestBodyAllowed(): bool
     {
         return $this->tokenFromRequestBodyAllowed;
     }
@@ -75,17 +83,9 @@ class BearerToken implements TokenType
     /**
      * @return bool
      */
-    public function isTokenFromQueryStringAllowed(): bool
+    private function isTokenFromQueryStringAllowed(): bool
     {
         return $this->tokenFromQueryStringAllowed;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function name(): string
-    {
-        return 'Bearer';
     }
 
     /**

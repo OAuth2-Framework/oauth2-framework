@@ -23,7 +23,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @group InitialAccessToken
  */
-class InitialAccessTokenTest extends TestCase
+final class InitialAccessTokenTest extends TestCase
 {
     /**
      * @test

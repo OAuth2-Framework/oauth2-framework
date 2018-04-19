@@ -19,7 +19,7 @@ use OAuth2Framework\Component\ClientRule\Rule;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 
-class UserinfoEndpointAlgorithmsRule implements Rule
+final class UserinfoEndpointAlgorithmsRule implements Rule
 {
     /**
      * @var JWSBuilder|null

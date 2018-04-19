@@ -19,7 +19,7 @@ use OAuth2Framework\Component\Core\Message\OAuth2Message;
 use OAuth2Framework\Component\TokenEndpoint\GrantType;
 use Psr\Http\Message\ServerRequestInterface;
 
-class RefreshTokenGrantType implements GrantType
+final class RefreshTokenGrantType implements GrantType
 {
     /**
      * @var RefreshTokenRepository

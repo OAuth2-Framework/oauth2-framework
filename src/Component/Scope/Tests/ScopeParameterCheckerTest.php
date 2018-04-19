@@ -25,7 +25,7 @@ use Prophecy\Argument;
 /**
  * @group ScopeParameterChecker
  */
-class ScopeParameterCheckerTest extends TestCase
+final class ScopeParameterCheckerTest extends TestCase
 {
     /**
      * @inheritdoc}

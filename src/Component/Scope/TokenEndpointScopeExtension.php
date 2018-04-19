@@ -23,7 +23,7 @@ use OAuth2Framework\Component\Scope\Policy\ScopePolicyManager;
 use OAuth2Framework\Component\Core\Message\OAuth2Message;
 use Psr\Http\Message\ServerRequestInterface;
 
-class TokenEndpointScopeExtension implements TokenEndpointExtension
+final class TokenEndpointScopeExtension implements TokenEndpointExtension
 {
     /**
      * @var ScopeRepository

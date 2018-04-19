@@ -23,7 +23,7 @@ use Psr\Http\Message\ServerRequestInterface;
  *
  * This middleware should be used with the Token Endpoint.
  */
-class TokenTypeMiddleware implements MiddlewareInterface
+final class TokenTypeMiddleware implements MiddlewareInterface
 {
     /**
      * @var bool

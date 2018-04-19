@@ -20,7 +20,7 @@ use OAuth2Framework\Component\Core\AccessToken\AccessTokenIdGenerator;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 
-class TokenResponseType implements ResponseType
+final class TokenResponseType implements ResponseType
 {
     /**
      * @var AccessTokenIdGenerator

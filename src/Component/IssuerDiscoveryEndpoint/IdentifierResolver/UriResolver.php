@@ -15,7 +15,7 @@ namespace OAuth2Framework\Component\IssuerDiscoveryEndpoint\IdentifierResolver;
 
 use function League\Uri\parse;
 
-class UriResolver implements IdentifierResolver
+final class UriResolver implements IdentifierResolver
 {
     /**
      * @param string $resource_name

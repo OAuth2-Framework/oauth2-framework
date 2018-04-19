@@ -19,7 +19,7 @@ use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use Psr\Http\Message\ServerRequestInterface;
 
-class ClientSecretBasic implements AuthenticationMethod
+final class ClientSecretBasic implements AuthenticationMethod
 {
     /**
      * @var string

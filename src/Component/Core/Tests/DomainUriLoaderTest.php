@@ -19,7 +19,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @group DomainUriLoader
  */
-class DomainUriLoaderTest extends TestCase
+final class DomainUriLoaderTest extends TestCase
 {
     /**
      * @test

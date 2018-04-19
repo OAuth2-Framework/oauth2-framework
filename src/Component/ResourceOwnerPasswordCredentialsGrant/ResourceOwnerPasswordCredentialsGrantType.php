@@ -20,7 +20,7 @@ use OAuth2Framework\Component\Core\UserAccount\UserAccountRepository;
 use OAuth2Framework\Component\Core\Message\OAuth2Message;
 use Psr\Http\Message\ServerRequestInterface;
 
-class ResourceOwnerPasswordCredentialsGrantType implements GrantType
+final class ResourceOwnerPasswordCredentialsGrantType implements GrantType
 {
     /**
      * @var UserAccountManager

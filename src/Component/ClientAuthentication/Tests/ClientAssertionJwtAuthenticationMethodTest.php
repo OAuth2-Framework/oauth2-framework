@@ -54,7 +54,7 @@ use Zend\Diactoros\Response;
  * @group TokenEndpoint
  * @group ClientAuthentication
  */
-class ClientAssertionJwtAuthenticationMethodTest extends TestCase
+final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
 {
     /**
      * @test

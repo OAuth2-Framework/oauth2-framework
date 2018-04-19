@@ -26,7 +26,7 @@ use Zend\Diactoros\Response;
 /**
  * @group ResponseMode
  */
-class ResponseModeTest extends TestCase
+final class ResponseModeTest extends TestCase
 {
     /**
      * @test

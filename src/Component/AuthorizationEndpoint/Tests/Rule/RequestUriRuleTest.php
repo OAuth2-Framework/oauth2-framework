@@ -22,7 +22,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @group Tests
  */
-class RequestUriRuleTest extends TestCase
+final class RequestUriRuleTest extends TestCase
 {
     /**
      * {@inheritdoc}

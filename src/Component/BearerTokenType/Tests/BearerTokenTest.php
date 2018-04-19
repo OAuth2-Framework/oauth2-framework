@@ -25,7 +25,7 @@ use Psr\Http\Message\ServerRequestInterface;
 /**
  * @group BearerToken
  */
-class BearerTokenTest extends TestCase
+final class BearerTokenTest extends TestCase
 {
     /**
      * @test
@@ -37,9 +37,6 @@ class BearerTokenTest extends TestCase
         self::assertEquals('Bearer', $bearerToken->name());
         self::assertEquals('Bearer realm="TEST"', $bearerToken->getScheme());
         self::assertEquals([], $bearerToken->getAdditionalInformation());
-        self::assertTrue($bearerToken->isTokenFromAuthorizationHeaderAllowed());
-        self::assertFalse($bearerToken->isTokenFromQueryStringAllowed());
-        self::assertFalse($bearerToken->isTokenFromRequestBodyAllowed());
     }
 
     /**

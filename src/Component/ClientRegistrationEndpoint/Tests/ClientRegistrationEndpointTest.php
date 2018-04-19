@@ -30,7 +30,7 @@ use SimpleBus\Message\Bus\MessageBus;
 /**
  * @group ClientRegistrationEndpoint
  */
-class ClientRegistrationEndpointTest extends TestCase
+final class ClientRegistrationEndpointTest extends TestCase
 {
     /**
      * @test

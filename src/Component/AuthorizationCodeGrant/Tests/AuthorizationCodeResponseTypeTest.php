@@ -34,7 +34,7 @@ use Prophecy\Argument;
  * @group ResponseType
  * @group AuthorizationCodeResponseType
  */
-class AuthorizationCodeResponseTypeTest extends TestCase
+final class AuthorizationCodeResponseTypeTest extends TestCase
 {
     /**
      * @test

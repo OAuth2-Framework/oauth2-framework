@@ -11,8 +11,6 @@ matrix:
     fast_finish: true
     include:
         - php: 7.1
-          env: deps=low
-        - php: 7.1
         - php: 7.2
         - php: nightly
 
@@ -29,4 +27,4 @@ script:
 
 after_success:
     - ./vendor/bin/phpcov merge --clover build/logs/clover.xml build/cov
-    - ./vendor/bin/coveralls --no-interaction
+    - ./vendor/bin/php-coveralls --no-interaction

@@ -29,7 +29,7 @@ use Prophecy\Argument;
  * @group RefreshTokenCommand
  * @group CreateRefreshTokenCommand
  */
-class CreateRefreshTokenCommandTest extends TestCase
+final class CreateRefreshTokenCommandTest extends TestCase
 {
     /**
      * @test

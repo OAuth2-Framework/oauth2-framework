@@ -18,7 +18,7 @@ use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Scope\Policy\ScopePolicyManager;
 
-class ScopePolicyRule implements Rule
+final class ScopePolicyRule implements Rule
 {
     /**
      * @var ScopePolicyManager

@@ -19,7 +19,7 @@ use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\Message\OAuth2Message;
 
-class AuthorizationCodeResponseType implements ResponseType
+final class AuthorizationCodeResponseType implements ResponseType
 {
     /**
      * @var int

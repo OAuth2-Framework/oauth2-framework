@@ -21,7 +21,7 @@ use OAuth2Framework\Component\Core\Message\OAuth2Message;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-class AuthenticationMiddleware implements MiddlewareInterface
+final class AuthenticationMiddleware implements MiddlewareInterface
 {
     /**
      * @var AuthenticationMethodManager

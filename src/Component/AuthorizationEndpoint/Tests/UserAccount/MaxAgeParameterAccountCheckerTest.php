@@ -24,7 +24,7 @@ use PHPUnit\Framework\TestCase;
  * @group UserAccountChecker
  * @group MaxAgeParameterCheckerAccountChecker
  */
-class MaxAgeParameterAccountCheckerTest extends TestCase
+final class MaxAgeParameterAccountCheckerTest extends TestCase
 {
     /**
      * @test

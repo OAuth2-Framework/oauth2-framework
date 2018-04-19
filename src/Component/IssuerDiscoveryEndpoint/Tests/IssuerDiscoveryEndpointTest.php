@@ -30,7 +30,7 @@ use Psr\Http\Message\ServerRequestInterface;
 /**
  * @group IssuerDiscoveryEndpoint
  */
-class IssuerDiscoveryEndpointTest extends TestCase
+final class IssuerDiscoveryEndpointTest extends TestCase
 {
     /**
      * @test

@@ -23,7 +23,7 @@ use Prophecy\Argument;
  * @group UserAccountChecker
  * @group UserAccountCheckerManager
  */
-class UserAccountCheckerManagerTest extends TestCase
+final class UserAccountCheckerManagerTest extends TestCase
 {
     /**
      * @test

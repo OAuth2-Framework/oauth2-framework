@@ -26,14 +26,13 @@ use Psr\Http\Message\ServerRequestInterface;
  * @group GrantType
  * @group ClientCredentials
  */
-class ClientCredentialsGrantTypeTest extends TestCase
+final class ClientCredentialsGrantTypeTest extends TestCase
 {
     /**
      * @test
      */
     public function genericInformation()
     {
-        self::assertTrue($this->getGrantType()->isRefreshTokenIssuedWithAccessToken());
         self::assertEquals([], $this->getGrantType()->associatedResponseTypes());
         self::assertEquals('client_credentials', $this->getGrantType()->name());
     }

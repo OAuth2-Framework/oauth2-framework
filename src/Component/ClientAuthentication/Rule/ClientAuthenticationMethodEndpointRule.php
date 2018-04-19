@@ -18,7 +18,7 @@ use OAuth2Framework\Component\ClientRule\Rule;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 
-class ClientAuthenticationMethodEndpointRule implements Rule
+final class ClientAuthenticationMethodEndpointRule implements Rule
 {
     /**
      * @var AuthenticationMethodManager

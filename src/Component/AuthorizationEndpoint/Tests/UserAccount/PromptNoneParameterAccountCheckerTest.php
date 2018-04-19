@@ -24,7 +24,7 @@ use PHPUnit\Framework\TestCase;
  * @group UserAccountChecker
  * @group PromptNoneParameterAccountChecker
  */
-class PromptNoneParameterAccountCheckerTest extends TestCase
+final class PromptNoneParameterAccountCheckerTest extends TestCase
 {
     /**
      * @test

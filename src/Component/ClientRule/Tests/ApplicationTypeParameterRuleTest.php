@@ -21,7 +21,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @group Tests
  */
-class ApplicationTypeParameterRuleTest extends TestCase
+final class ApplicationTypeParameterRuleTest extends TestCase
 {
     /**
      * @test

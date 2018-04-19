@@ -22,7 +22,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @group TokenType
  */
-class TokenTypeTest extends TestCase
+final class TokenTypeTest extends TestCase
 {
     /**
      * @test

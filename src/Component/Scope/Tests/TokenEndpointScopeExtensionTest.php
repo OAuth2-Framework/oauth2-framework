@@ -35,7 +35,7 @@ use Psr\Http\Message\ServerRequestInterface;
 /**
  * @group TokenEndpointScopeExtension
  */
-class TokenEndpointScopeExtensionTest extends TestCase
+final class TokenEndpointScopeExtensionTest extends TestCase
 {
     /**
      * @inheritdoc}

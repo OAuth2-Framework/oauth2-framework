@@ -23,7 +23,7 @@ use OAuth2Framework\Component\Core\Message\OAuth2Message;
  *
  * This parameter checker should be used with the Authorization Endpoint
  */
-class TokenTypeParameterChecker implements ParameterChecker
+final class TokenTypeParameterChecker implements ParameterChecker
 {
     /**
      * @var bool

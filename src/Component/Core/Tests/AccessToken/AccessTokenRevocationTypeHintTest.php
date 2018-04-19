@@ -29,7 +29,7 @@ use Prophecy\Argument;
  * @group TypeHint
  * @group AccessTokenRevocationTypeHint
  */
-class AccessTokenRevocationTypeHintTest extends TestCase
+final class AccessTokenRevocationTypeHintTest extends TestCase
 {
     /**
      * {@inheritdoc}

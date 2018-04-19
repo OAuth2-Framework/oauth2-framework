@@ -21,7 +21,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @group Tests
  */
-class ContactsParametersRuleTest extends TestCase
+final class ContactsParametersRuleTest extends TestCase
 {
     /**
      * @test

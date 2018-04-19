@@ -28,7 +28,7 @@ use Prophecy\Argument;
  * @group RefreshTokenCommand
  * @group RevokeRefreshTokenCommand
  */
-class RevokeRefreshTokenCommandTest extends TestCase
+final class RevokeRefreshTokenCommandTest extends TestCase
 {
     /**
      * @test

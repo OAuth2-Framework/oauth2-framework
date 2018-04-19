@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\AuthorizationCodeGrant\PKCEMethod;
 
-class Plain implements PKCEMethod
+final class Plain implements PKCEMethod
 {
     /**
      * {@inheritdoc}

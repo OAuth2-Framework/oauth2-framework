@@ -24,7 +24,7 @@ use Prophecy\Argument;
 /**
  * @group TokenTypeParameterCheck
  */
-class TokenTypeParameterCheckerTest extends TestCase
+final class TokenTypeParameterCheckerTest extends TestCase
 {
     /**
      * @inheritdoc}

@@ -21,7 +21,7 @@ use PHPUnit\Framework\TestCase;
  * @group AuthorizationEndpoint
  * @group ResponseTypeManager
  */
-class ResponseTypeManagerTest extends TestCase
+final class ResponseTypeManagerTest extends TestCase
 {
     /**
      * @test

@@ -27,7 +27,7 @@ use Prophecy\Argument;
 /**
  * @group InitialAccessTokenCommand
  */
-class CommandTest extends TestCase
+final class CommandTest extends TestCase
 {
     /**
      * @test

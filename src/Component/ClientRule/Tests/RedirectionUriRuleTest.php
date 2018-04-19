@@ -21,7 +21,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @group Tests
  */
-class RedirectionUriRuleTest extends TestCase
+final class RedirectionUriRuleTest extends TestCase
 {
     /**
      * @test

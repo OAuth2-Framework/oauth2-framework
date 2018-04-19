@@ -25,7 +25,7 @@ use Psr\Http\Message\UriInterface;
 /**
  * @group MacToken
  */
-class MacTokenTest extends TestCase
+final class MacTokenTest extends TestCase
 {
     /**
      * @test

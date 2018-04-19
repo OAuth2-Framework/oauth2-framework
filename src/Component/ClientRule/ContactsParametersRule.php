@@ -16,7 +16,7 @@ namespace OAuth2Framework\Component\ClientRule;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 
-class ContactsParametersRule implements Rule
+final class ContactsParametersRule implements Rule
 {
     /**
      * {@inheritdoc}

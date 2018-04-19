@@ -56,7 +56,7 @@ use Psr\Http\Message\ServerRequestInterface;
  * @group GrantType
  * @group JwtBearer
  */
-class JwtBearerGrantTypeTest extends TestCase
+final class JwtBearerGrantTypeTest extends TestCase
 {
     /**
      * @test

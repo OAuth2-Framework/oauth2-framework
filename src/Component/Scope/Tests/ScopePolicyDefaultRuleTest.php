@@ -22,7 +22,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @group Tests
  */
-class ScopePolicyDefaultRuleTest extends TestCase
+final class ScopePolicyDefaultRuleTest extends TestCase
 {
     /**
      * @inheritdoc}

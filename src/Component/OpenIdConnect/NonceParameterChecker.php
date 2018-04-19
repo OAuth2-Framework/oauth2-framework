@@ -21,7 +21,7 @@ use OAuth2Framework\Component\Core\Message\OAuth2Message;
 /**
  * Class NonceParameterChecker.
  */
-class NonceParameterChecker implements ParameterChecker
+final class NonceParameterChecker implements ParameterChecker
 {
     /**
      * {@inheritdoc}
@@ -29,7 +29,6 @@ class NonceParameterChecker implements ParameterChecker
     public function check(Authorization $authorization): Authorization
     {
         try {
-            $authorization = $authorization;
             if (false !== strpos($authorization->getQueryParam('response_type'), 'id_token') && !$authorization->hasQueryParam('nonce')) {
                 throw new \InvalidArgumentException('The parameter "nonce" is mandatory when the response type "id_token" is used.');
             }

@@ -29,7 +29,7 @@ use Prophecy\Argument;
  * @group TypeHint
  * @group AuthorizationCodeIntrospectionTypeHint
  */
-class AuthorizationCodeIntrospectionTypeHintTest extends TestCase
+final class AuthorizationCodeIntrospectionTypeHintTest extends TestCase
 {
     /**
      * {@inheritdoc}

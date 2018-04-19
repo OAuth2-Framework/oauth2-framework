@@ -22,7 +22,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use SimpleBus\Message\Bus\MessageBus;
 
-class ClientConfigurationDeleteEndpoint implements MiddlewareInterface
+final class ClientConfigurationDeleteEndpoint implements MiddlewareInterface
 {
     /**
      * @var MessageBus

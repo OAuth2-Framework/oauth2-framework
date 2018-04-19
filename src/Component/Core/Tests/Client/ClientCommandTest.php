@@ -32,7 +32,7 @@ use Prophecy\Argument;
 /**
  * @group ClientCommand
  */
-class ClientCommandTest extends TestCase
+final class ClientCommandTest extends TestCase
 {
     /**
      * @test

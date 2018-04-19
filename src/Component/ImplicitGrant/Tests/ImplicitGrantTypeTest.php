@@ -27,7 +27,7 @@ use Psr\Http\Message\ServerRequestInterface;
  * @group GrantType
  * @group Implicit
  */
-class ImplicitGrantTypeTest extends TestCase
+final class ImplicitGrantTypeTest extends TestCase
 {
     /**
      * @test

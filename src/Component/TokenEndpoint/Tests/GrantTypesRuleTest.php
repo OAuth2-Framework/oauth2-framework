@@ -24,7 +24,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @group Tests
  */
-class GrantTypesRuleTest extends TestCase
+final class GrantTypesRuleTest extends TestCase
 {
     /**
      * {@inheritdoc}

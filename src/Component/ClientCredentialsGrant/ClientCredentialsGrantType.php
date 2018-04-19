@@ -18,7 +18,7 @@ use OAuth2Framework\Component\TokenEndpoint\GrantTypeData;
 use OAuth2Framework\Component\Core\Message\OAuth2Message;
 use Psr\Http\Message\ServerRequestInterface;
 
-class ClientCredentialsGrantType implements GrantType
+final class ClientCredentialsGrantType implements GrantType
 {
     /**
      * @var bool
@@ -81,13 +81,5 @@ class ClientCredentialsGrantType implements GrantType
         $grantTypeData = $grantTypeData->withResourceOwnerId($grantTypeData->getClient()->getPublicId());
 
         return $grantTypeData;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isRefreshTokenIssuedWithAccessToken()
-    {
-        return $this->issueRefreshTokenWithAccessToken;
     }
 }

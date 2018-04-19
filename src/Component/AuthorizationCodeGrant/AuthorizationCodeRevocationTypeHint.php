@@ -16,7 +16,7 @@ namespace OAuth2Framework\Component\AuthorizationCodeGrant;
 use OAuth2Framework\Component\Core\Token\Token;
 use OAuth2Framework\Component\TokenRevocationEndpoint\TokenTypeHint;
 
-class AuthorizationCodeRevocationTypeHint implements TokenTypeHint
+final class AuthorizationCodeRevocationTypeHint implements TokenTypeHint
 {
     /**
      * @var AuthorizationCodeRepository

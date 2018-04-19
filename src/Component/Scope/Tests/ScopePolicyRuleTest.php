@@ -24,7 +24,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @group Tests
  */
-class ScopePolicyRuleTest extends TestCase
+final class ScopePolicyRuleTest extends TestCase
 {
     /**
      * @inheritdoc}

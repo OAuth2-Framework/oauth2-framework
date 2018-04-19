@@ -16,7 +16,7 @@ namespace OAuth2Framework\Component\RefreshTokenGrant;
 use OAuth2Framework\Component\Core\Token\Token;
 use OAuth2Framework\Component\TokenIntrospectionEndpoint\TokenTypeHint;
 
-class RefreshTokenIntrospectionTypeHint implements TokenTypeHint
+final class RefreshTokenIntrospectionTypeHint implements TokenTypeHint
 {
     /**
      * @var RefreshTokenRepository

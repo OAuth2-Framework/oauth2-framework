@@ -26,7 +26,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @group RefreshToken
  */
-class RefreshTokenTest extends TestCase
+final class RefreshTokenTest extends TestCase
 {
     /**
      * @test

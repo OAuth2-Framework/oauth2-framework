@@ -21,7 +21,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @group PKCE
  */
-class PkceTest extends TestCase
+final class PkceTest extends TestCase
 {
     /**
      * @test

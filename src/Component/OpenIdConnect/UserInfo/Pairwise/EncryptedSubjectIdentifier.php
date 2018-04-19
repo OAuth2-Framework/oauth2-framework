@@ -16,7 +16,7 @@ namespace OAuth2Framework\Component\OpenIdConnect\UserInfo\Pairwise;
 use Base64Url\Base64Url;
 use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 
-class EncryptedSubjectIdentifier implements PairwiseSubjectIdentifierAlgorithm
+final class EncryptedSubjectIdentifier implements PairwiseSubjectIdentifierAlgorithm
 {
     /**
      * @var string

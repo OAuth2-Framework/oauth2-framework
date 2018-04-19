@@ -16,7 +16,7 @@ namespace OAuth2Framework\Component\ClientRule;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 
-class ClientIdIssuedAtRule implements Rule
+final class ClientIdIssuedAtRule implements Rule
 {
     /**
      * {@inheritdoc}

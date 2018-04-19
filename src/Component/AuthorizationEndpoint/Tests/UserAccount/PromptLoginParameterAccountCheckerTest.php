@@ -22,7 +22,7 @@ use PHPUnit\Framework\TestCase;
  * @group UserAccountChecker
  * @group PromptLoginParameterCheckerAccountChecker
  */
-class PromptLoginParameterAccountCheckerTest extends TestCase
+final class PromptLoginParameterAccountCheckerTest extends TestCase
 {
     /**
      * @test

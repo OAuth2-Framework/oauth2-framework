@@ -20,7 +20,7 @@ use OAuth2Framework\Component\Core\Message\OAuth2Message;
 use OAuth2Framework\Component\TokenEndpoint\GrantType;
 use Psr\Http\Message\ServerRequestInterface;
 
-class AuthorizationCodeGrantType implements GrantType
+final class AuthorizationCodeGrantType implements GrantType
 {
     /**
      * @var AuthorizationCodeRepository

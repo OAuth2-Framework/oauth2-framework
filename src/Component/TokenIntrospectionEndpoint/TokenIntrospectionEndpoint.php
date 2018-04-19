@@ -21,7 +21,7 @@ use OAuth2Framework\Component\Core\Message\OAuth2Message;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-class TokenIntrospectionEndpoint implements MiddlewareInterface
+final class TokenIntrospectionEndpoint implements MiddlewareInterface
 {
     /**
      * @var TokenTypeHintManager
@@ -112,7 +112,7 @@ class TokenIntrospectionEndpoint implements MiddlewareInterface
      *
      * @return string
      */
-    protected function getToken(ServerRequestInterface $request): string
+    private function getToken(ServerRequestInterface $request): string
     {
         $params = $this->getRequestParameters($request);
         if (!array_key_exists('token', $params)) {
@@ -129,7 +129,7 @@ class TokenIntrospectionEndpoint implements MiddlewareInterface
      *
      * @return TokenTypeHint[]
      */
-    protected function getTokenTypeHints(ServerRequestInterface $request): array
+    private function getTokenTypeHints(ServerRequestInterface $request): array
     {
         $params = $this->getRequestParameters($request);
         $tokenTypeHints = $this->tokenTypeHintManager->getTokenTypeHints();
@@ -153,7 +153,7 @@ class TokenIntrospectionEndpoint implements MiddlewareInterface
      *
      * @return array
      */
-    protected function getRequestParameters(ServerRequestInterface $request): array
+    private function getRequestParameters(ServerRequestInterface $request): array
     {
         $parameters = $request->getParsedBody() ?? [];
 

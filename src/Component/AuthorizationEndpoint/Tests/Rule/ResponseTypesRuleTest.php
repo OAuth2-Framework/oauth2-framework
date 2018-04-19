@@ -24,7 +24,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @group Tests
  */
-class ResponseTypesRuleTest extends TestCase
+final class ResponseTypesRuleTest extends TestCase
 {
     /**
      * {@inheritdoc}

@@ -15,7 +15,7 @@ namespace OAuth2Framework\Component\TokenRevocationEndpoint;
 
 use Psr\Http\Message\ServerRequestInterface;
 
-class TokenRevocationPostEndpoint extends TokenRevocationEndpoint
+final class TokenRevocationPostEndpoint extends TokenRevocationEndpoint
 {
     /**
      * {@inheritdoc}
