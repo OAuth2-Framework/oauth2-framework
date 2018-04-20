@@ -57,7 +57,7 @@ class TokenIntrospectionEndpointSource implements Component
     {
         $rootNode->validate()
             ->ifTrue(function ($config) {
-                return true === $config['endpoint'][$this->name()]['enabled'] && null === $config['resource_server']['repository'];
+                return true === $config['endpoint'][$this->name()]['enabled'] && (!isset($config['resource_server']) || !isset($config['resource_server']['repository']) || null === $config['resource_server']['repository']);
             })
             ->thenInvalid('The resource server repository must be set when the introspection endpoint is enabled')
         ->end();
