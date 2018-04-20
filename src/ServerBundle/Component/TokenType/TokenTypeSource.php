@@ -42,14 +42,14 @@ class TokenTypeSource implements Component
         $container->setParameter('oauth2_server.token_type.default', $configs['token_type']['default']);
         $container->setParameter('oauth2_server.token_type.allow_token_type_parameter', $configs['token_type']['allow_token_type_parameter']);
 
-        if ($configs['token_type']['bearer_token']['enabled'] && class_exists(BearerToken::class)) {
+        if (class_exists(BearerToken::class) && $configs['token_type']['bearer_token']['enabled']) {
             $container->setParameter('oauth2_server.token_type.bearer_token.realm', $configs['token_type']['bearer_token']['realm']);
             $container->setParameter('oauth2_server.token_type.bearer_token.authorization_header', $configs['token_type']['bearer_token']['authorization_header']);
             $container->setParameter('oauth2_server.token_type.bearer_token.query_string', $configs['token_type']['bearer_token']['query_string']);
             $container->setParameter('oauth2_server.token_type.bearer_token.request_body', $configs['token_type']['bearer_token']['request_body']);
             $loader->load('bearer_token.php');
         }
-        if ($configs['token_type']['mac_token']['enabled'] && class_exists(MacToken::class)) {
+        if (class_exists(MacToken::class) && $configs['token_type']['mac_token']['enabled']) {
             $container->setParameter('oauth2_server.token_type.mac_token.min_length', $configs['token_type']['mac_token']['min_length']);
             $container->setParameter('oauth2_server.token_type.mac_token.max_length', $configs['token_type']['mac_token']['max_length']);
             $container->setParameter('oauth2_server.token_type.mac_token.algorithm', $configs['token_type']['mac_token']['algorithm']);

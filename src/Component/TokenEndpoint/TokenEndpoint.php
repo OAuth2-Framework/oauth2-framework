@@ -45,7 +45,7 @@ class TokenEndpoint implements MiddlewareInterface
     private $clientRepository;
 
     /**
-     * @var UserAccountRepository
+     * @var UserAccountRepository|null
      */
     private $userAccountRepository;
 
@@ -73,14 +73,14 @@ class TokenEndpoint implements MiddlewareInterface
      * TokenEndpoint constructor.
      *
      * @param ClientRepository              $clientRepository
-     * @param UserAccountRepository         $userAccountRepository
+     * @param UserAccountRepository|null    $userAccountRepository
      * @param TokenEndpointExtensionManager $tokenEndpointExtensionManager
      * @param ResponseFactory               $responseFactory
      * @param AccessTokenIdGenerator        $accessTokenIdGenerator
      * @param AccessTokenRepository         $accessTokenRepository
      * @param int                           $accessLifetime
      */
-    public function __construct(ClientRepository $clientRepository, UserAccountRepository $userAccountRepository, TokenEndpointExtensionManager $tokenEndpointExtensionManager, ResponseFactory $responseFactory, AccessTokenIdGenerator $accessTokenIdGenerator, AccessTokenRepository $accessTokenRepository, int $accessLifetime)
+    public function __construct(ClientRepository $clientRepository, ?UserAccountRepository $userAccountRepository, TokenEndpointExtensionManager $tokenEndpointExtensionManager, ResponseFactory $responseFactory, AccessTokenIdGenerator $accessTokenIdGenerator, AccessTokenRepository $accessTokenRepository, int $accessLifetime)
     {
         $this->clientRepository = $clientRepository;
         $this->userAccountRepository = $userAccountRepository;
@@ -197,7 +197,7 @@ class TokenEndpoint implements MiddlewareInterface
     private function getResourceOwner(ResourceOwnerId $resourceOwnerId): ResourceOwner
     {
         $resourceOwner = $this->clientRepository->find(ClientId::create($resourceOwnerId->getValue()));
-        if (null === $resourceOwner) {
+        if (null === $resourceOwner && null !== $this->userAccountRepository) {
             $resourceOwner = $this->userAccountRepository->find(UserAccountId::create($resourceOwnerId->getValue()));
         }
 
