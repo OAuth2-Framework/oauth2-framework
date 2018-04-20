@@ -28,6 +28,8 @@
         "phpunit/phpunit": "^6.5"
     },
     "suggest": {
+        "oauth2-framework/bearer-token-type": "To add Bearer token type (RFC6750).",
+        "oauth2-framework/mac-token-type": "To add MAC token type (abandoned specification).",
         "oauth2-framework/openid-connect": "To add an authentication layer on top of the authorization server.",
         "oauth2-framework/client-rule": "To use of the client registration/configuration rules provided by this component.",
         "oauth2-framework/authorization-code-grant": "The Authorization Code grant type",

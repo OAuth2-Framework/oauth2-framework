@@ -24,6 +24,10 @@
     "require-dev": {
         "phpunit/phpunit": "^6.5"
     },
+    "suggest": {
+        "oauth2-framework/bearer-token-type": "To add Bearer token type (RFC6750).",
+        "oauth2-framework/mac-token-type": "To add MAC token type (abandoned specification).",
+    },
     "autoload": {
         "psr-4": {
             "OAuth2Framework\\Component\\ImplicitGrant\\": ""

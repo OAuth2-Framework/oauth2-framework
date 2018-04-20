@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Component\TokenType;
 
+use OAuth2Framework\Component\BearerTokenType\BearerToken;
+use OAuth2Framework\Component\MacTokenType\MacToken;
 use OAuth2Framework\ServerBundle\Component\Component;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\FileLocator;
@@ -40,14 +42,14 @@ class TokenTypeSource implements Component
         $container->setParameter('oauth2_server.token_type.default', $configs['token_type']['default']);
         $container->setParameter('oauth2_server.token_type.allow_token_type_parameter', $configs['token_type']['allow_token_type_parameter']);
 
-        if ($configs['token_type']['bearer_token']['enabled']) {
+        if ($configs['token_type']['bearer_token']['enabled'] && class_exists(BearerToken::class)) {
             $container->setParameter('oauth2_server.token_type.bearer_token.realm', $configs['token_type']['bearer_token']['realm']);
             $container->setParameter('oauth2_server.token_type.bearer_token.authorization_header', $configs['token_type']['bearer_token']['authorization_header']);
             $container->setParameter('oauth2_server.token_type.bearer_token.query_string', $configs['token_type']['bearer_token']['query_string']);
             $container->setParameter('oauth2_server.token_type.bearer_token.request_body', $configs['token_type']['bearer_token']['request_body']);
             $loader->load('bearer_token.php');
         }
-        if ($configs['token_type']['mac_token']['enabled']) {
+        if ($configs['token_type']['mac_token']['enabled'] && class_exists(MacToken::class)) {
             $container->setParameter('oauth2_server.token_type.mac_token.min_length', $configs['token_type']['mac_token']['min_length']);
             $container->setParameter('oauth2_server.token_type.mac_token.max_length', $configs['token_type']['mac_token']['max_length']);
             $container->setParameter('oauth2_server.token_type.mac_token.algorithm', $configs['token_type']['mac_token']['algorithm']);
@@ -61,7 +63,7 @@ class TokenTypeSource implements Component
      */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
-        $node->children()
+        $child = $node->children()
             ->arrayNode($this->name())
                 ->isRequired()
                 ->children()
@@ -73,68 +75,76 @@ class TokenTypeSource implements Component
                         ->defaultFalse()
                         ->info('If true, the "token_type" parameter will be allowed in requests.')
                     ->end()
-                    ->arrayNode('bearer_token')
-                        ->addDefaultsIfNotSet()
-                        ->canBeDisabled()
-                        ->children()
-                            ->scalarNode('realm')
-                                ->isRequired()
-                                ->info('The realm displayed in the authentication header')
-                            ->end()
-                            ->booleanNode('authorization_header')
-                                ->defaultTrue()
-                                ->info('When enabled, the token in the authorization header is allowed (recommended)')
-                            ->end()
-                            ->booleanNode('query_string')
-                                ->defaultFalse()
-                                ->info('When enabled, the token in the query string is allowed (NOT RECOMMENDED)')
-                            ->end()
-                            ->booleanNode('request_body')
-                                ->defaultFalse()
-                                ->info('When enabled, the token in the request body is allowed (NOT RECOMMENDED)')
-                            ->end()
+                ->end();
+
+        if (class_exists(BearerToken::class)) {
+            $child->children()
+                ->arrayNode('bearer_token')
+                    ->addDefaultsIfNotSet()
+                    ->canBeDisabled()
+                    ->children()
+                        ->scalarNode('realm')
+                            ->isRequired()
+                            ->info('The realm displayed in the authentication header')
                         ->end()
-                    ->end()
-                    ->arrayNode('mac_token')
-                        ->addDefaultsIfNotSet()
-                        ->canBeDisabled()
-                        ->validate()
-                            ->ifTrue(function ($config) {
-                                return $config['min_length'] > $config['max_length'];
-                            })
-                            ->thenInvalid('The option "min_length" must not be greater than "max_length".')
+                        ->booleanNode('authorization_header')
+                            ->defaultTrue()
+                            ->info('When enabled, the token in the authorization header is allowed (recommended)')
                         ->end()
-                        ->validate()
-                            ->ifTrue(function ($config) {
-                                return !in_array($config['algorithm'], ['hmac-sha-256', 'hmac-sha-1']);
-                            })
-                            ->thenInvalid('The algorithm is not supported. Please use one of the following one: "hmac-sha-1", "hmac-sha-256".')
+                        ->booleanNode('query_string')
+                            ->defaultFalse()
+                            ->info('When enabled, the token in the query string is allowed (NOT RECOMMENDED)')
                         ->end()
-                        ->children()
-                            ->integerNode('min_length')
-                                ->defaultValue(50)
-                                ->min(1)
-                                ->info('Minimum length for the generated MAC key')
-                            ->end()
-                            ->integerNode('max_length')
-                                ->defaultValue(100)
-                                ->min(2)
-                                ->info('Maximum length for the generated MAC key')
-                            ->end()
-                            ->scalarNode('algorithm')
-                                ->defaultValue('hmac-sha-256')
-                                ->info('Hashing algorithm. Must be either "hmac-sha-1" or "hmac-sha-256"')
-                            ->end()
-                            ->integerNode('timestamp_lifetime')
-                                ->defaultValue(10)
-                                ->min(1)
-                                ->info('Default lifetime of the MAC')
-                            ->end()
+                        ->booleanNode('request_body')
+                            ->defaultFalse()
+                            ->info('When enabled, the token in the request body is allowed (NOT RECOMMENDED)')
                         ->end()
                     ->end()
                 ->end()
-            ->end()
-        ->end();
+            ->end();
+        }
+
+        if (class_exists(MacToken::class)) {
+            $child->children()
+                ->arrayNode('mac_token')
+                    ->addDefaultsIfNotSet()
+                    ->canBeDisabled()
+                    ->validate()
+                        ->ifTrue(function ($config) {
+                            return $config['min_length'] > $config['max_length'];
+                        })
+                        ->thenInvalid('The option "min_length" must not be greater than "max_length".')
+                    ->end()
+                    ->validate()
+                        ->ifTrue(function ($config) {
+                            return !in_array($config['algorithm'], ['hmac-sha-256', 'hmac-sha-1']);
+                        })
+                        ->thenInvalid('The algorithm is not supported. Please use one of the following one: "hmac-sha-1", "hmac-sha-256".')
+                    ->end()
+                    ->children()
+                        ->integerNode('min_length')
+                            ->defaultValue(50)
+                            ->min(1)
+                            ->info('Minimum length for the generated MAC key')
+                        ->end()
+                        ->integerNode('max_length')
+                            ->defaultValue(100)
+                            ->min(2)
+                            ->info('Maximum length for the generated MAC key')
+                        ->end()
+                        ->scalarNode('algorithm')
+                            ->defaultValue('hmac-sha-256')
+                            ->info('Hashing algorithm. Must be either "hmac-sha-1" or "hmac-sha-256"')
+                        ->end()
+                        ->integerNode('timestamp_lifetime')
+                            ->defaultValue(10)
+                            ->min(1)
+                            ->info('Default lifetime of the MAC')
+                        ->end()
+                    ->end()
+                ->end()
+            ->end();
+        }
     }
 
     /**
