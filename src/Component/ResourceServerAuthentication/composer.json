@@ -1,0 +1,48 @@
+{
+    "name": "oauth2-framework/resource-server-authentication",
+    "type": "library",
+    "description": "Resource Server Authentication for the OAuth2 Framework",
+    "license": "MIT",
+    "keywords": ["RFC6749", "oauth2", "framework", "resource", "server", "authentication", "library"],
+    "homepage": "https://oauth2-framework.spomky-labs.com/",
+    "authors": [
+        {
+            "name": "Florent Morselli",
+            "homepage": "https://github.com/Spomky"
+        },
+        {
+            "name": "All contributors",
+            "homepage": "https://github.com/OAuth2-Framework/oauth2-framework/contributors"
+        }
+    ],
+    "require": {
+        "php": "^7.1",
+        "oauth2-framework/core": "^0.0@dev",
+        "psr/http-message": "^1.0",
+        "psr/http-server-handler": "^1.0",
+        "psr/http-server-middleware": "^1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6.5",
+        "php-http/message": "^1.0",
+        "zendframework/zend-diactoros": "^1.0",
+        "php-http/httplug": "^1.0",
+        "php-http/mock-client": "^1.1"
+    },
+    "suggest": {
+        "oauth2-framework/token-introspection-endpoint": "To allow resource servers to get information about tokens"
+    },
+    "autoload": {
+        "psr-4": {
+            "OAuth2Framework\\Component\\ResourceServerAuthentication\\": ""
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "0.0.x-dev"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    }
+}
