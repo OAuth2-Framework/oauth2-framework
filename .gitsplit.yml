@@ -41,6 +41,8 @@ splits:
       target: "https://${GH_TOKEN}@github.com/oauth2-framework/refresh-token-grant.git"
     - prefix: "src/Component/ResourceOwnerPasswordCredentialsGrant"
       target: "https://${GH_TOKEN}@github.com/oauth2-framework/resource-owner-password-credentials-grant.git"
+    - prefix: "src/Component/ResourceServerAuthentication"
+      target: "https://${GH_TOKEN}@github.com/oauth2-framework/resource-server-authentication.git"
     - prefix: "src/Component/Scope"
       target: "https://${GH_TOKEN}@github.com/oauth2-framework/scope.git"
     - prefix: "src/Component/TokenEndpoint"
