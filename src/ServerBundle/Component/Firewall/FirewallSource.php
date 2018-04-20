@@ -55,6 +55,9 @@ final class FirewallSource implements Component
      */
     public function build(ContainerBuilder $container)
     {
+        if (!$container->hasExtension('security')) {
+            return;
+        }
         /** @var \Symfony\Bundle\SecurityBundle\DependencyInjection\SecurityExtension $extension */
         $extension = $container->getExtension('security');
         $extension->addSecurityListenerFactory(new OAuth2SecurityFactory());
