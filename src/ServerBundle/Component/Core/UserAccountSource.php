@@ -34,6 +34,10 @@ class UserAccountSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
+        $config = $configs[$this->name()];
+        if ($config['enabled'] === false) {
+            return;
+        }
         $container->setAlias(UserAccountRepository::class, $configs['user_account']['repository']);
         $container->setAlias(UserAccountManager::class, $configs['user_account']['manager']);
     }
@@ -45,7 +49,8 @@ class UserAccountSource implements Component
     {
         $node->children()
             ->arrayNode($this->name())
-                ->addDefaultsIfNotSet()
+                ->info('When resource owner can be an end-user, this section is mandatory.')
+                ->canBeEnabled()
                 ->children()
                     ->scalarNode('repository')
                         ->info('The user account repository service')

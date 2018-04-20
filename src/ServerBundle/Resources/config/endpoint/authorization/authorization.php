@@ -48,7 +48,7 @@ return function (ContainerConfigurator $container) {
             ref('router'),
             '%oauth2_server.endpoint.authorization.login_route_name%',
             '%oauth2_server.endpoint.authorization.login_route_parameters%',
-            ref('httplug.message_factory'),
+            ref(\Http\Message\ResponseFactory::class),
             ref('session'),
             ref(AuthorizationEndpoint\AuthorizationRequestLoader::class),
             ref(AuthorizationEndpoint\ParameterChecker\ParameterCheckerManager::class),

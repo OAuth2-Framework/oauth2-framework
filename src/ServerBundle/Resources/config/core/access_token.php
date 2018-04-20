@@ -15,23 +15,12 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenHandlerManager;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenIntrospectionTypeHint;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenRevocationTypeHint;
-use OAuth2Framework\Component\Core\AccessToken\Command;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
 return function (ContainerConfigurator $container) {
     $container = $container->services()->defaults()
         ->public()
         ->autoconfigure();
-
-    $container->set(Command\CreateAccessTokenCommandHandler::class)
-        ->args([
-            ref(\OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository::class),
-        ]);
-
-    $container->set(Command\RevokeAccessTokenCommandHandler::class)
-        ->args([
-            ref(\OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository::class),
-        ]);
 
     $container->set(AccessTokenHandlerManager::class);
 

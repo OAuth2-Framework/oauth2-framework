@@ -34,7 +34,7 @@ return function (ContainerConfigurator $container) {
         ->args([
             ref(\OAuth2Framework\Component\Core\Client\ClientIdGenerator::class),
             ref(\OAuth2Framework\Component\Core\Client\ClientRepository::class),
-            ref('httplug.message_factory'),
+            ref(\Http\Message\ResponseFactory::class),
             ref(RuleManager::class),
         ]);
 };

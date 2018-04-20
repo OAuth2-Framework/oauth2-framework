@@ -31,7 +31,7 @@ return function (ContainerConfigurator $container) {
 
     $container->set(MetadataController::class)
         ->args([
-            ref('httplug.message_factory'),
+            ref(\Http\Message\ResponseFactory::class),
             ref(MetadataBuilder::class),
         ]);
 

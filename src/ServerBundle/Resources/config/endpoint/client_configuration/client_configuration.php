@@ -43,7 +43,7 @@ return function (ContainerConfigurator $container) {
         ->args([
             ref(\OAuth2Framework\Component\Core\Client\ClientRepository::class),
             ref('client_configuration_bearer_token'),
-            ref('httplug.message_factory'),
+            ref(\Http\Message\ResponseFactory::class),
             ref(\OAuth2Framework\Component\ClientRule\RuleManager::class),
         ]);
 

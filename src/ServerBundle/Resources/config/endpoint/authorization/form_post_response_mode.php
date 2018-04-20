@@ -30,6 +30,6 @@ return function (ContainerConfigurator $container) {
     $container->set(AuthorizationEndpoint\ResponseMode\FormPostResponseMode::class)
         ->args([
             ref(TwigFormPostResponseRenderer::class),
-            ref('httplug.message_factory'),
+            ref(\Http\Message\ResponseFactory::class),
         ]);
 };

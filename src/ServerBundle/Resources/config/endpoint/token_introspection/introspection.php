@@ -37,6 +37,6 @@ return function (ContainerConfigurator $container) {
     $container->set(TokenIntrospectionEndpoint::class)
         ->args([
             ref(TokenTypeHintManager::class),
-            ref('httplug.message_factory'),
+            ref(\Http\Message\ResponseFactory::class),
         ]);
 };

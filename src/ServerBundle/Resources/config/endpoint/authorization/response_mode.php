@@ -26,11 +26,11 @@ return function (ContainerConfigurator $container) {
 
     $container->set(AuthorizationEndpoint\ResponseMode\QueryResponseMode::class)
         ->args([
-            ref('httplug.message_factory'),
+            ref(\Http\Message\ResponseFactory::class),
         ]);
     $container->set(AuthorizationEndpoint\ResponseMode\FragmentResponseMode::class)
         ->args([
-            ref('httplug.message_factory'),
+            ref(\Http\Message\ResponseFactory::class),
         ]);
 
     $container->set(ParameterChecker\ResponseTypeAndResponseModeParameterChecker::class)
