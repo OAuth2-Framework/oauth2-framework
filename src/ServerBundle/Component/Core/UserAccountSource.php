@@ -35,7 +35,7 @@ class UserAccountSource implements Component
     public function load(array $configs, ContainerBuilder $container)
     {
         $config = $configs[$this->name()];
-        if ($config['enabled'] === false) {
+        if (false === $config['enabled']) {
             return;
         }
         $container->setAlias(UserAccountRepository::class, $configs['user_account']['repository']);
