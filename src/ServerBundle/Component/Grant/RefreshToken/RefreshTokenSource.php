@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Component\Grant\RefreshToken;
 
+use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenGrantType;
 use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenIdGenerator;
 use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenRepository;
 use OAuth2Framework\ServerBundle\Component\Component;
@@ -37,13 +38,14 @@ class RefreshTokenSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        if ($configs['grant']['refresh_token']['enabled']) {
-            $container->setParameter('oauth2_server.grant.refresh_token.lifetime', $configs['grant']['refresh_token']['lifetime']);
-            $container->setAlias(RefreshTokenRepository::class, $configs['grant']['refresh_token']['repository']);
-            $container->setAlias(RefreshTokenIdGenerator::class, $configs['grant']['refresh_token']['id_generator']);
-            $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/grant'));
-            $loader->load('refresh_token.php');
+        if (!class_exists(RefreshTokenGrantType::class) || !$configs['grant']['refresh_token']['enabled']) {
+            return;
         }
+        $container->setParameter('oauth2_server.grant.refresh_token.lifetime', $configs['grant']['refresh_token']['lifetime']);
+        $container->setAlias(RefreshTokenRepository::class, $configs['grant']['refresh_token']['repository']);
+        $container->setAlias(RefreshTokenIdGenerator::class, $configs['grant']['refresh_token']['id_generator']);
+        $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/grant'));
+        $loader->load('refresh_token.php');
     }
 
     /**
@@ -51,6 +53,9 @@ class RefreshTokenSource implements Component
      */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
+        if (!class_exists(RefreshTokenGrantType::class)) {
+            return;
+        }
         $node->children()
             ->arrayNode('refresh_token')
                 ->canBeEnabled()
@@ -78,7 +83,6 @@ class RefreshTokenSource implements Component
      */
     public function build(ContainerBuilder $container)
     {
-        //Nothing to do
     }
 
     /**
@@ -86,7 +90,6 @@ class RefreshTokenSource implements Component
      */
     public function prepend(ContainerBuilder $container, array $config): array
     {
-        //Nothing to do
         return [];
     }
 }

@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Component\Grant\None;
 
+use OAuth2Framework\Component\NoneGrant\NoneResponseType;
 use OAuth2Framework\ServerBundle\Component\Component;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\FileLocator;
@@ -34,10 +35,11 @@ class NoneSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        if ($configs['grant']['none']['enabled']) {
-            $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/grant'));
-            $loader->load('none.php');
+        if (!class_exists(NoneResponseType::class) || !$configs['grant']['none']['enabled']) {
+            return;
         }
+        $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/grant'));
+        $loader->load('none.php');
     }
 
     /**
@@ -45,6 +47,9 @@ class NoneSource implements Component
      */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
+        if (!class_exists(NoneResponseType::class)) {
+            return;
+        }
         $node->children()
             ->arrayNode($this->name())
                 ->canBeEnabled()
@@ -57,7 +62,6 @@ class NoneSource implements Component
      */
     public function build(ContainerBuilder $container)
     {
-        //Nothing to do
     }
 
     /**
@@ -65,7 +69,6 @@ class NoneSource implements Component
      */
     public function prepend(ContainerBuilder $container, array $config): array
     {
-        //Nothing to do
         return [];
     }
 }

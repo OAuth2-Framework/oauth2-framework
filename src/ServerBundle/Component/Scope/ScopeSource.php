@@ -37,7 +37,7 @@ class ScopeSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        if (!$configs['scope']['enabled']) {
+        if (!interface_exists(ScopeRepository::class) || !$configs['scope']['enabled']) {
             return;
         }
 
@@ -68,6 +68,9 @@ class ScopeSource implements Component
      */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
+        if (!interface_exists(ScopeRepository::class)) {
+            return;
+        }
         $node->children()
             ->arrayNode($this->name())
                 ->canBeEnabled()

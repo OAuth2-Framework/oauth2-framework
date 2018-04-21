@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Component\OpenIdConnect;
 
+use OAuth2Framework\Component\OpenIdConnect\IdToken;
 use OAuth2Framework\ServerBundle\Component\Component;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\FileLocator;
@@ -49,7 +50,7 @@ class OpenIdConnectSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        if (!$configs['openid_connect']['enabled']) {
+        if (!class_exists(IdToken::class) ||!$configs['openid_connect']['enabled']) {
             return;
         }
 
@@ -66,6 +67,9 @@ class OpenIdConnectSource implements Component
      */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
+        if (!class_exists(IdToken::class)) {
+            return;
+        }
         $childNode = $node->children()
             ->arrayNode($this->name())
                 ->canBeEnabled();
@@ -80,6 +84,9 @@ class OpenIdConnectSource implements Component
      */
     public function prepend(ContainerBuilder $container, array $config): array
     {
+        if (!class_exists(IdToken::class)) {
+            return [];
+        }
         $updatedConfig = [];
         foreach ($this->subComponents as $subComponent) {
             $updatedConfig = array_merge(
@@ -96,7 +103,9 @@ class OpenIdConnectSource implements Component
      */
     public function build(ContainerBuilder $container)
     {
-        //Nothing to do
+        if (!class_exists(IdToken::class)) {
+            return;
+        }
         foreach ($this->subComponents as $component) {
             $component->build($container);
         }

@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Component\Grant\AuthorizationCode;
 
+use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCode;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeIdGenerator;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeRepository;
 use OAuth2Framework\ServerBundle\Component\Component;
@@ -37,15 +38,16 @@ class AuthorizationCodeSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        if ($configs['grant']['authorization_code']['enabled']) {
-            $container->setParameter('oauth2_server.grant.authorization_code.lifetime', $configs['grant']['authorization_code']['lifetime']);
-            $container->setParameter('oauth2_server.grant.authorization_code.enforce_pkce', $configs['grant']['authorization_code']['enforce_pkce']);
-            $container->setAlias(AuthorizationCodeRepository::class, $configs['grant']['authorization_code']['repository']);
-            $container->setAlias(AuthorizationCodeIdGenerator::class, $configs['grant']['authorization_code']['id_generator']);
-
-            $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/grant'));
-            $loader->load('authorization_code.php');
+        if (!class_exists(AuthorizationCode::class) || !$configs['grant']['authorization_code']['enabled']) {
+            return;
         }
+        $container->setParameter('oauth2_server.grant.authorization_code.lifetime', $configs['grant']['authorization_code']['lifetime']);
+        $container->setParameter('oauth2_server.grant.authorization_code.enforce_pkce', $configs['grant']['authorization_code']['enforce_pkce']);
+        $container->setAlias(AuthorizationCodeRepository::class, $configs['grant']['authorization_code']['repository']);
+        $container->setAlias(AuthorizationCodeIdGenerator::class, $configs['grant']['authorization_code']['id_generator']);
+
+        $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/grant'));
+        $loader->load('authorization_code.php');
     }
 
     /**
@@ -53,6 +55,9 @@ class AuthorizationCodeSource implements Component
      */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
+        if (!class_exists(AuthorizationCode::class)) {
+            return;
+        }
         $node->children()
             ->arrayNode('authorization_code')
                 ->canBeEnabled()
@@ -84,6 +89,9 @@ class AuthorizationCodeSource implements Component
      */
     public function build(ContainerBuilder $container)
     {
+        if (!class_exists(AuthorizationCode::class)) {
+            return;
+        }
         $container->addCompilerPass(new PKCEMethodCompilerPass());
     }
 
@@ -92,7 +100,6 @@ class AuthorizationCodeSource implements Component
      */
     public function prepend(ContainerBuilder $container, array $config): array
     {
-        //Nothing to do
         return [];
     }
 }

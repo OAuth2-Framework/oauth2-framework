@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\ServerBundle\Component\Grant\JwtBearer;
 
 use Jose\Bundle\JoseFramework\Helper\ConfigurationHelper;
+use OAuth2Framework\Component\JwtBearerGrant\JwtBearerGrantType;
 use OAuth2Framework\ServerBundle\Component\Component;
 use OAuth2Framework\ServerBundle\Component\Grant\JwtBearer\Compiler\TrustedIssuerSupportCompilerPass;
 use OAuth2Framework\ServerBundle\Component\Grant\JwtBearer\Compiler\EncryptedAssertionCompilerPass;
@@ -37,7 +38,7 @@ class JwtBearerSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        if (!$configs['grant']['jwt_bearer']['enabled']) {
+        if (!class_exists(JwtBearerGrantType::class) || !$configs['grant']['jwt_bearer']['enabled']) {
             return;
         }
 
@@ -55,6 +56,9 @@ class JwtBearerSource implements Component
      */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
+        if (!class_exists(JwtBearerGrantType::class)) {
+            return;
+        }
         $node->children()
             ->arrayNode($this->name())
                 ->canBeEnabled()
@@ -117,6 +121,9 @@ class JwtBearerSource implements Component
      */
     public function build(ContainerBuilder $container)
     {
+        if (!class_exists(JwtBearerGrantType::class)) {
+            return;
+        }
         $container->addCompilerPass(new TrustedIssuerSupportCompilerPass());
         $container->addCompilerPass(new EncryptedAssertionCompilerPass());
     }
@@ -126,7 +133,7 @@ class JwtBearerSource implements Component
      */
     public function prepend(ContainerBuilder $container, array $configs): array
     {
-        if (!$configs['grant']['jwt_bearer']['enabled']) {
+        if (!class_exists(JwtBearerGrantType::class) || !$configs['grant']['jwt_bearer']['enabled']) {
             return [];
         }
         $this->updateJoseBundleConfigurationForVerifier($container, $configs['grant']['jwt_bearer']);

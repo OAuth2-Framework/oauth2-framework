@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Component\Grant\ClientCredentials;
 
+use OAuth2Framework\Component\ClientCredentialsGrant\ClientCredentialsGrantType;
 use OAuth2Framework\ServerBundle\Component\Component;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\FileLocator;
@@ -34,11 +35,12 @@ class ClientCredentialsSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        if ($configs['grant']['client_credentials']['enabled']) {
-            $container->setParameter('oauth2_server.grant.client_credentials.issue_refresh_token', $configs['grant']['client_credentials']['issue_refresh_token']);
-            $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/grant'));
-            $loader->load('client_credentials.php');
+        if (!class_exists(ClientCredentialsGrantType::class) || !$configs['grant']['client_credentials']['enabled']) {
+            return;
         }
+        $container->setParameter('oauth2_server.grant.client_credentials.issue_refresh_token', $configs['grant']['client_credentials']['issue_refresh_token']);
+        $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/grant'));
+        $loader->load('client_credentials.php');
     }
 
     /**
@@ -46,6 +48,9 @@ class ClientCredentialsSource implements Component
      */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
+        if (!class_exists(ClientCredentialsGrantType::class)) {
+            return;
+        }
         $node->children()
             ->arrayNode('client_credentials')
                 ->canBeEnabled()
@@ -64,7 +69,6 @@ class ClientCredentialsSource implements Component
      */
     public function build(ContainerBuilder $container)
     {
-        //Nothing to do
     }
 
     /**
@@ -72,7 +76,6 @@ class ClientCredentialsSource implements Component
      */
     public function prepend(ContainerBuilder $container, array $config): array
     {
-        //Nothing to do
         return [];
     }
 }
