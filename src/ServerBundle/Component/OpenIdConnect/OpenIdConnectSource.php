@@ -50,7 +50,7 @@ class OpenIdConnectSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        if (!class_exists(IdToken::class) ||!$configs['openid_connect']['enabled']) {
+        if (!class_exists(IdToken::class) || !$configs['openid_connect']['enabled']) {
             return;
         }
 
