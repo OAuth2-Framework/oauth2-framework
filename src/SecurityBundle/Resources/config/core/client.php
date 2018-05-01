@@ -12,7 +12,6 @@ declare(strict_types=1);
  */
 
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-
 use OAuth2Framework\SecurityBundle\Service\RandomClientIdGenerator;
 
 return function (ContainerConfigurator $container) {

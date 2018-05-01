@@ -106,6 +106,7 @@ class ClientConfigurationSource implements Component
         if (!class_exists(ClientConfigurationEndpoint::class)) {
             return [];
         }
+
         return [];
     }
 }
