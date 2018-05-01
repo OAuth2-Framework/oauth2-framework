@@ -13,8 +13,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Component\Core;
 
-use OAuth2Framework\Component\Core\AccessToken\AccessTokenIdGenerator;
-use OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository;
 use OAuth2Framework\ServerBundle\Component\Component;
 use OAuth2Framework\ServerBundle\Service\RandomAccessTokenIdGenerator;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;

@@ -12,9 +12,6 @@ declare(strict_types=1);
  */
 
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use OAuth2Framework\Component\BearerTokenType\BearerToken;
-use OAuth2Framework\Component\Core\Message;
-use OAuth2Framework\Component\Core\TokenType\TokenTypeManager;
 use OAuth2Framework\Component\ClientRegistrationEndpoint\ClientRegistrationEndpoint;
 use OAuth2Framework\SecurityBundle\Middleware;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
@@ -40,5 +37,4 @@ return function (ContainerConfigurator $container) {
             ref(\Http\Message\ResponseFactory::class), //TODO
             ref('oauth2_server.client_rule.manager'),
         ]);
-
 };

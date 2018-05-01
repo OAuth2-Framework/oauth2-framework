@@ -13,8 +13,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Component\Core;
 
-use OAuth2Framework\Component\Core\Client\ClientIdGenerator;
-use OAuth2Framework\Component\Core\Client\ClientRepository;
 use OAuth2Framework\ServerBundle\Component\Component;
 use OAuth2Framework\ServerBundle\Service\RandomClientIdGenerator;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
