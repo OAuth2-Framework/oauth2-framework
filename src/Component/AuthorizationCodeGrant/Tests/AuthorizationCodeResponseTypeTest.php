@@ -59,6 +59,7 @@ final class AuthorizationCodeResponseTypeTest extends TestCase
         );
         $userAccount = $this->prophesize(UserAccount::class);
         $userAccount->getPublicId()->willReturn(UserAccountId::create('USER_ACCOUNT_ID'));
+        $userAccount->getUserAccountId()->willReturn(UserAccountId::create('USER_ACCOUNT_ID'));
         $authorization = Authorization::create(
             $client,
             [

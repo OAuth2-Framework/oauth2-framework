@@ -167,7 +167,7 @@ class TokenEndpoint implements MiddlewareInterface
     {
         $accessTokenId = $this->accessTokenIdGenerator->createAccessTokenId(
             $grantTypeData->getResourceOwnerId(),
-            $grantTypeData->getClient()->getPublicId(),
+            $grantTypeData->getClient()->getClientId(),
             $grantTypeData->getParameters(),
             $grantTypeData->getMetadatas(),
             null
@@ -176,7 +176,7 @@ class TokenEndpoint implements MiddlewareInterface
         $accessToken = $accessToken->create(
             $accessTokenId,
             $grantTypeData->getResourceOwnerId(),
-            $grantTypeData->getClient()->getPublicId(),
+            $grantTypeData->getClient()->getClientId(),
             $grantTypeData->getParameters(),
             $grantTypeData->getMetadatas(),
             new \DateTimeImmutable(sprintf('now +%d seconds', $this->accessTokenLifetime)),

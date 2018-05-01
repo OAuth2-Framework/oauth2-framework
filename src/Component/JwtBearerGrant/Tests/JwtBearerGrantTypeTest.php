@@ -241,6 +241,7 @@ final class JwtBearerGrantTypeTest extends TestCase
     {
         $userAccount = $this->prophesize(UserAccount::class);
         $userAccount->getPublicId()->willReturn(UserAccountId::create('USER_ACCOUNT_ID'));
+        $userAccount->getUserAccountId()->willReturn(UserAccountId::create('USER_ACCOUNT_ID'));
         $userAccountRepository = $this->prophesize(UserAccountRepository::class);
         $userAccountRepository->find(Argument::type(UserAccountId::class))->will(function ($args) use ($userAccount) {
             if ('USER_ACCOUNT_ID' === ($args[0])->getValue()) {

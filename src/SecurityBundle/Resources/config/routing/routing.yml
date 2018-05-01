@@ -1,0 +1,3 @@
+oauth2_server_routes:
+    resource: '.'
+    type: 'oauth2_server'

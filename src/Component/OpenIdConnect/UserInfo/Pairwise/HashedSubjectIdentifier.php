@@ -51,7 +51,7 @@ final class HashedSubjectIdentifier implements PairwiseSubjectIdentifierAlgorith
         $prepared = sprintf(
             '%s%s',
             $sectorIdentifierHost,
-            $userAccount->getPublicId()->getValue()
+            $userAccount->getUserAccountId()->getValue()
         );
 
         return Base64Url::encode(hash_hmac($this->algorithm, $prepared, $this->pairwiseHashKey, true));

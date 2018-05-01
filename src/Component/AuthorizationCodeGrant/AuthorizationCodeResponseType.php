@@ -110,8 +110,8 @@ final class AuthorizationCodeResponseType implements ResponseType
         $authorizationCode = AuthorizationCode::createEmpty();
         $authorizationCode = $authorizationCode->create(
             $authorizationCodeId,
-            $authorization->getClient()->getPublicId(),
-            $authorization->getUserAccount()->getPublicId(),
+            $authorization->getClient()->getClientId(),
+            $authorization->getUserAccount()->getUserAccountId(),
             $queryParams,
             $authorization->getRedirectUri(),
             (new \DateTimeImmutable())->setTimestamp(time() + $this->authorizationCodeLifetime),

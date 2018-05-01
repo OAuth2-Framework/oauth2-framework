@@ -21,21 +21,6 @@ use Psr\Http\Message\ServerRequestInterface;
 final class ClientCredentialsGrantType implements GrantType
 {
     /**
-     * @var bool
-     */
-    private $issueRefreshTokenWithAccessToken = false;
-
-    /**
-     * ClientCredentialsGrantType constructor.
-     *
-     * @param bool $issueRefreshTokenWithAccessToken
-     */
-    public function __construct(bool $issueRefreshTokenWithAccessToken)
-    {
-        $this->issueRefreshTokenWithAccessToken = $issueRefreshTokenWithAccessToken;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function associatedResponseTypes(): array

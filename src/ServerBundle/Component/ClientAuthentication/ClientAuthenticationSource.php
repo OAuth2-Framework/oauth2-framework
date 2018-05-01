@@ -13,9 +13,9 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Component\ClientAuthentication;
 
+use OAuth2Framework\Component\ClientAuthentication\AuthenticationMethodManager;
 use OAuth2Framework\ServerBundle\Component\ClientAuthentication\Compiler\ClientAuthenticationMethodCompilerPass;
 use OAuth2Framework\ServerBundle\Component\Component;
-use OAuth2Framework\Component\ClientAuthentication\AuthenticationMethod;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -54,7 +54,9 @@ class ClientAuthenticationSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        $container->registerForAutoconfiguration(AuthenticationMethod::class)->addTag('oauth2_server_client_authentication');
+        if (!class_exists(AuthenticationMethodManager::class)) {
+            return;
+        }
 
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../Resources/config/client_authentication'));
         $loader->load('client_authentication.php');
@@ -69,6 +71,9 @@ class ClientAuthenticationSource implements Component
      */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
+        if (!class_exists(AuthenticationMethodManager::class)) {
+            return;
+        }
         $childNode = $node->children()
             ->arrayNode($this->name())
             ->addDefaultsIfNotSet();
@@ -83,6 +88,9 @@ class ClientAuthenticationSource implements Component
      */
     public function prepend(ContainerBuilder $container, array $config): array
     {
+        if (!class_exists(AuthenticationMethodManager::class)) {
+            return [];
+        }
         $updatedConfig = [];
         foreach ($this->subComponents as $subComponent) {
             $updatedConfig = array_merge(
@@ -99,6 +107,9 @@ class ClientAuthenticationSource implements Component
      */
     public function build(ContainerBuilder $container)
     {
+        if (!class_exists(AuthenticationMethodManager::class)) {
+            return;
+        }
         $container->addCompilerPass(new ClientAuthenticationMethodCompilerPass());
         foreach ($this->subComponents as $component) {
             $component->build($container);

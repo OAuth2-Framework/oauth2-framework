@@ -20,5 +20,10 @@ interface UserAccount extends ResourceOwner
     /**
      * @return int|null
      */
-    public function getLastLoginAt();
+    public function getLastLoginAt(): ?int;
+
+    /**
+     * @return UserAccountId
+     */
+    public function getUserAccountId(): UserAccountId;
 }

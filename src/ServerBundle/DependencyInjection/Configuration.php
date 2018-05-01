@@ -22,7 +22,7 @@ final class Configuration implements ConfigurationInterface
     /**
      * @var Component[]
      */
-    private $sources;
+    private $components;
 
     /**
      * @var string
@@ -33,12 +33,12 @@ final class Configuration implements ConfigurationInterface
      * Configuration constructor.
      *
      * @param string      $alias
-     * @param Component[] $sources
+     * @param Component[] $components
      */
-    public function __construct(string $alias, array $sources)
+    public function __construct(string $alias, array $components)
     {
         $this->alias = $alias;
-        $this->sources = $sources;
+        $this->components = $components;
     }
 
     /**
@@ -49,8 +49,8 @@ final class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root($this->alias);
 
-        foreach ($this->sources as $source) {
-            $source->getNodeDefinition($rootNode, $rootNode);
+        foreach ($this->components as $component) {
+            $component->getNodeDefinition($rootNode, $rootNode);
         }
 
         return $treeBuilder;

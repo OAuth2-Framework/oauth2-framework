@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Component\Endpoint\TokenIntrospection;
 
+use OAuth2Framework\Component\TokenIntrospectionEndpoint\TokenIntrospectionEndpoint;
 use OAuth2Framework\ServerBundle\Component\Component;
 use OAuth2Framework\ServerBundle\Component\Endpoint\TokenIntrospection\Compiler\TokenIntrospectionRouteCompilerPass;
 use OAuth2Framework\ServerBundle\Component\Endpoint\TokenIntrospection\Compiler\TokenTypeHintCompilerPass;
@@ -37,6 +38,9 @@ class TokenIntrospectionEndpointSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
+        if (!class_exists(TokenIntrospectionEndpoint::class)) {
+            return;
+        }
         $config = $configs['endpoint']['token_introspection'];
         $container->setParameter('oauth2_server.endpoint.token_introspection.enabled', $config['enabled']);
         if (!$config['enabled']) {
@@ -55,6 +59,9 @@ class TokenIntrospectionEndpointSource implements Component
      */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
+        if (!class_exists(TokenIntrospectionEndpoint::class)) {
+            return;
+        }
         $rootNode->validate()
             ->ifTrue(function ($config) {
                 return true === $config['endpoint'][$this->name()]['enabled'] && (!isset($config['resource_server']) || !isset($config['resource_server']['repository']) || null === $config['resource_server']['repository']);
@@ -86,6 +93,9 @@ class TokenIntrospectionEndpointSource implements Component
      */
     public function build(ContainerBuilder $container)
     {
+        if (!class_exists(TokenIntrospectionEndpoint::class)) {
+            return;
+        }
         $container->addCompilerPass(new TokenTypeHintCompilerPass());
         $container->addCompilerPass(new TokenIntrospectionRouteCompilerPass());
     }

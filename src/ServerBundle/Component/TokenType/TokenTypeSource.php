@@ -44,9 +44,6 @@ class TokenTypeSource implements Component
 
         if (class_exists(BearerToken::class) && $configs['token_type']['bearer_token']['enabled']) {
             $container->setParameter('oauth2_server.token_type.bearer_token.realm', $configs['token_type']['bearer_token']['realm']);
-            $container->setParameter('oauth2_server.token_type.bearer_token.authorization_header', $configs['token_type']['bearer_token']['authorization_header']);
-            $container->setParameter('oauth2_server.token_type.bearer_token.query_string', $configs['token_type']['bearer_token']['query_string']);
-            $container->setParameter('oauth2_server.token_type.bearer_token.request_body', $configs['token_type']['bearer_token']['request_body']);
             $loader->load('bearer_token.php');
         }
         if (class_exists(MacToken::class) && $configs['token_type']['mac_token']['enabled']) {
@@ -86,18 +83,6 @@ class TokenTypeSource implements Component
                         ->scalarNode('realm')
                             ->isRequired()
                             ->info('The realm displayed in the authentication header')
-                        ->end()
-                        ->booleanNode('authorization_header')
-                            ->defaultTrue()
-                            ->info('When enabled, the token in the authorization header is allowed (recommended)')
-                        ->end()
-                        ->booleanNode('query_string')
-                            ->defaultFalse()
-                            ->info('When enabled, the token in the query string is allowed (NOT RECOMMENDED)')
-                        ->end()
-                        ->booleanNode('request_body')
-                            ->defaultFalse()
-                            ->info('When enabled, the token in the request body is allowed (NOT RECOMMENDED)')
                         ->end()
                     ->end()
                 ->end()

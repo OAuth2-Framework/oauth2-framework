@@ -123,6 +123,7 @@ final class ResourceOwnerPasswordCredentialsGrantTypeTest extends TestCase
         if (null === $this->grantType) {
             $userAccount = $this->prophesize(UserAccount::class);
             $userAccount->getPublicId()->willReturn(UserAccountId::create('USERNAME'));
+            $userAccount->getUserAccountId()->willReturn(UserAccountId::create('USERNAME'));
 
             $userAccountManager = $this->prophesize(UserAccountManager::class);
             $userAccountManager->isPasswordCredentialValid($userAccount->reveal(), 'PASSWORD')->willReturn(true);

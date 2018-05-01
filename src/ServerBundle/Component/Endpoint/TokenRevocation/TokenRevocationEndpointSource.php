@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Component\Endpoint\TokenRevocation;
 
+use OAuth2Framework\Component\TokenRevocationEndpoint\TokenRevocationEndpoint;
 use OAuth2Framework\ServerBundle\Component\Component;
 use OAuth2Framework\ServerBundle\Component\Endpoint\TokenRevocation\Compiler\TokenRevocationRouteCompilerPass;
 use OAuth2Framework\ServerBundle\Component\Endpoint\TokenRevocation\Compiler\TokenTypeHintCompilerPass;
@@ -37,6 +38,9 @@ class TokenRevocationEndpointSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
+        if (!class_exists(TokenRevocationEndpoint::class)) {
+            return;
+        }
         $config = $configs['endpoint']['token_revocation'];
         $container->setParameter('oauth2_server.endpoint.token_revocation.enabled', $config['enabled']);
         if (!$config['enabled']) {
@@ -56,6 +60,9 @@ class TokenRevocationEndpointSource implements Component
      */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
+        if (!class_exists(TokenRevocationEndpoint::class)) {
+            return;
+        }
         $node->children()
             ->arrayNode($this->name())
                 ->canBeEnabled()
@@ -84,6 +91,9 @@ class TokenRevocationEndpointSource implements Component
      */
     public function build(ContainerBuilder $container)
     {
+        if (!class_exists(TokenRevocationEndpoint::class)) {
+            return;
+        }
         $container->addCompilerPass(new TokenTypeHintCompilerPass());
         $container->addCompilerPass(new TokenRevocationRouteCompilerPass());
     }

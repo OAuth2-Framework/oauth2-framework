@@ -116,6 +116,16 @@ class User implements UserInterface, UserAccount, EquatableInterface
         return $this->publicId;
     }
 
+    public function getUserAccountId(): UserAccountId
+    {
+        $id = $this->getPublicId();
+        if (!$id instanceof UserAccountId) {
+            throw new \RuntimeException();
+        }
+
+        return $id;
+    }
+
     /**
      * @return int|null
      */

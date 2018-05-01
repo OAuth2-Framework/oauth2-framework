@@ -79,6 +79,19 @@ class RefreshToken extends Token
     }
 
     /**
+     * @return RefreshTokenId
+     */
+    public function getRefreshTokenId(): RefreshTokenId
+    {
+        $id = $this->getTokenId();
+        if (!$id instanceof RefreshTokenId) {
+            throw new \LogicException('Refresh token not initialized.');
+        }
+
+        return $this->refreshTokenId;
+    }
+
+    /**
      * @param AccessTokenId $accessTokenId
      *
      * @return RefreshToken

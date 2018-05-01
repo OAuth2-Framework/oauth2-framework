@@ -1,0 +1,36 @@
+<p>
+    {{ 'authorization.form.message'|trans({'%client_id%': authorization.getClient().getPublicId()}, 'OAuth2FrameworkServer', ui_locale) }}<br />
+</p>
+{{ form_start(form, {'action':app.request.uri }) }}
+    {% if authorization.getScopes() is not empty %}
+        {{ 'authorization.form.scope'|trans({}, 'OAuth2FrameworkServer', ui_locale) }}
+        <ul>
+            {% if form.scopes is defined %}
+                {% for scope in form.scopes %}
+                    <li>{{ form_row(scope) }}</li>
+                {% endfor %}
+            {% else %}
+                {% for scope in authorization.getScopes() %}
+                    {% set scope_name = 'authorization.form.scope.'~scope %}
+                    <li>{{ scope_name |trans({}, 'OAuth2FrameworkServer', ui_locale) }}</li>
+                {% endfor %}
+            {% endif %}
+        </ul>
+    {% else %}
+        {{ 'authorization.form.no_scope'|trans({}, 'OAuth2FrameworkServer', ui_locale) }}
+    {% endif %}
+    {% if form.save_configuration is defined %}
+        {{ form_row(form.save_configuration) }}
+    {% endif %}
+    {{ form_row(form.accept) }}
+    {{ form_row(form.reject) }}
+{{ form_end(form) }}
+{% if authorization.getClient().has('logo_uri') %}
+    <img src="{{ authorization.getClient().get('logo_uri') }}" alt="Logo">
+{% endif %}
+{% if authorization.getClient().has('policy_uri') %}
+    <p><a href="{{ authorization.getClient().get('policy_uri') }}">Read the client' Policy</a></p>
+{% endif %}
+{% if authorization.getClient().has('tos_uri') %}
+    <p><a href="{{ authorization.getClient().get('tos_uri') }}">Read the client' Terms of Service</a></p>
+{% endif %}

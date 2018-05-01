@@ -87,7 +87,7 @@ final class AuthorizationCodeGrantType implements GrantType
      */
     public function grant(ServerRequestInterface $request, GrantTypeData $grantTypeData): GrantTypeData
     {
-        $parameters = $request->getParsedBody() ?? [];
+        $parameters = (array) ($request->getParsedBody() ?? []);
         $authorizationCode = $this->getAuthorizationCode($parameters['code']);
 
         if (true === $authorizationCode->isUsed() || true === $authorizationCode->isRevoked()) {

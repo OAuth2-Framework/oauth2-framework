@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\ServerBundle\Component\ClientAuthentication;
 
 use Jose\Bundle\JoseFramework\Helper\ConfigurationHelper;
+use Jose\Component\Core\JWK;
 use OAuth2Framework\ServerBundle\Component\ClientAuthentication\Compiler\ClientAssertionEncryptedJwtCompilerPass;
 use OAuth2Framework\ServerBundle\Component\ClientAuthentication\Compiler\ClientAssertionJkuSupportCompilerPass;
 use OAuth2Framework\ServerBundle\Component\ClientAuthentication\Compiler\ClientAssertionTrustedIssuerSupportCompilerPass;
@@ -39,6 +40,9 @@ class ClientAssertionJwtSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
+        if (!class_exists(JWK::class)) {
+            return;
+        }
         $config = $configs['client_authentication']['client_assertion_jwt'];
         $container->setParameter('oauth2_server.client_authentication.client_assertion_jwt.enabled', $config['enabled']);
         if (!$config['enabled']) {
@@ -71,6 +75,9 @@ class ClientAssertionJwtSource implements Component
      */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
+        if (!class_exists(JWK::class)) {
+            return;
+        }
         $node->children()
             ->arrayNode($this->name())
                 ->canBeEnabled()
@@ -156,6 +163,9 @@ class ClientAssertionJwtSource implements Component
      */
     public function prepend(ContainerBuilder $container, array $configs): array
     {
+        if (!class_exists(JWK::class)) {
+            return [];
+        }
         $config = $configs['client_authentication']['client_assertion_jwt'];
         if (!$config['enabled']) {
             return [];
@@ -176,6 +186,9 @@ class ClientAssertionJwtSource implements Component
      */
     public function build(ContainerBuilder $container)
     {
+        if (!class_exists(JWK::class)) {
+            return;
+        }
         $container->addCompilerPass(new ClientJwtAssertionMetadataCompilerPass());
         $container->addCompilerPass(new ClientAssertionTrustedIssuerSupportCompilerPass());
         $container->addCompilerPass(new ClientAssertionJkuSupportCompilerPass());

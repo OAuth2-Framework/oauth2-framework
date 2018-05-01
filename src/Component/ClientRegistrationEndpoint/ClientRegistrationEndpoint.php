@@ -77,7 +77,7 @@ final class ClientRegistrationEndpoint implements MiddlewareInterface
             } else {
                 $userAccountId = null;
             }
-            $commandParameters = DataBag::create($request->getParsedBody() ?? []);
+            $commandParameters = DataBag::create((array) ($request->getParsedBody() ?? []));
             $clientId = $this->clientIdGenerator->createClientId();
             $validatedParameters = $this->ruleManager->handle($clientId, $commandParameters);
             $client = Client::createEmpty();

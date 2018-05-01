@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Component\Endpoint\Token;
 
+use OAuth2Framework\Component\TokenEndpoint\TokenEndpoint;
 use OAuth2Framework\ServerBundle\Component\Component;
 use OAuth2Framework\ServerBundle\Component\Endpoint\Token\Compiler\GrantTypeCompilerPass;
 use OAuth2Framework\ServerBundle\Component\Endpoint\Token\Compiler\TokenEndpointExtensionCompilerPass;
@@ -39,6 +40,9 @@ class TokenEndpointSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
+        if (!class_exists(TokenEndpoint::class)) {
+            return;
+        }
         $config = $configs['endpoint']['token'];
         $container->setParameter('oauth2_server.endpoint.token.enabled', $config['enabled']);
         if (!$config['enabled']) {
@@ -59,6 +63,9 @@ class TokenEndpointSource implements Component
      */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
+        if (!class_exists(TokenEndpoint::class)) {
+            return;
+        }
         $node->children()
             ->arrayNode($this->name())
                 ->canBeEnabled()
@@ -83,6 +90,9 @@ class TokenEndpointSource implements Component
      */
     public function build(ContainerBuilder $container)
     {
+        if (!class_exists(TokenEndpoint::class)) {
+            return;
+        }
         $container->addCompilerPass(new GrantTypeCompilerPass());
         $container->addCompilerPass(new TokenRouteCompilerPass());
         $container->addCompilerPass(new TokenEndpointExtensionCompilerPass());

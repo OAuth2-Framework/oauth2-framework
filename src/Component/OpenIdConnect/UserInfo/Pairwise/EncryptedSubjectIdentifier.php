@@ -51,7 +51,7 @@ final class EncryptedSubjectIdentifier implements PairwiseSubjectIdentifierAlgor
         $prepared = sprintf(
             '%s:%s',
             $sectorIdentifierHost,
-            $userAccount->getPublicId()->getValue()
+            $userAccount->getUserAccountId()->getValue()
         );
 
         return Base64Url::encode(openssl_encrypt($prepared, $this->algorithm, $this->pairwiseEncryptionKey, OPENSSL_RAW_DATA));
