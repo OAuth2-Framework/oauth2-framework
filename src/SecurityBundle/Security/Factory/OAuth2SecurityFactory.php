@@ -13,11 +13,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\SecurityBundle\Security\Factory;
 
-use OAuth2Framework\Component\Core\AccessToken\AccessTokenHandlerManager;
-use OAuth2Framework\Component\Core\TokenType\TokenTypeManager;
-use OAuth2Framework\SecurityBundle\Security\Authentication\Provider\OAuth2Provider;
-use OAuth2Framework\SecurityBundle\Security\EntryPoint\OAuth2EntryPoint;
-use OAuth2Framework\SecurityBundle\Security\Firewall\OAuth2Listener;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
