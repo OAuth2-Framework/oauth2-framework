@@ -11,10 +11,17 @@
         bootstrap="vendor/autoload.php"
         colors="true">
     <testsuites>
-        <testsuite name="OAuth2 Framework Test Suite">
-            <directory>./src/Component/*/Tests/</directory>
+        <testsuite name="OAuth2 Server Test Suite">
+            <directory>./src/ServerBundle/Tests/</directory>
         </testsuite>
     </testsuites>
+    <php>
+        <ini name="error_reporting" value="-1" />
+        <ini name="intl.default_locale" value="en" />
+        <ini name="intl.error_level" value="0" />
+        <ini name="memory_limit" value="-1" />
+        <server name="KERNEL_CLASS" value="OAuth2Framework\ServerBundle\Tests\AppKernel" />
+    </php>
     <filter>
         <whitelist>
             <directory suffix=".php">./</directory>

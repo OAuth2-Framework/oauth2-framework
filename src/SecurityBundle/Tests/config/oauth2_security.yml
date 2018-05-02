@@ -1,0 +1,4 @@
+oauth2_security:
+    bearer_token:
+        enabled: true
+        realm: 'Protected API'

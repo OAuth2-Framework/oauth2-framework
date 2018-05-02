@@ -15,32 +15,29 @@ namespace OAuth2Framework\SecurityBundle\Tests\TestBundle\Service;
 
 use OAuth2Framework\Component\Core\AccessToken\AccessToken;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
-use OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository;
 
-class AccessTokenHandler implements \OAuth2Framework\Component\Core\AccessToken\AccessTokenHandler
+final class AccessTokenHandler implements \OAuth2Framework\Component\Core\AccessToken\AccessTokenHandler
 {
     /**
-     * @var AccessTokenRepository
+     * @var AccessToken[]
      */
-    private $accessTokenRepository;
+    private $accessTokens = [];
 
     /**
-     * AccessTokenHandler constructor.
-     *
-     * @param AccessTokenRepository $accessTokenRepository
-     */
-    public function __construct(AccessTokenRepository $accessTokenRepository)
-    {
-        $this->accessTokenRepository = $accessTokenRepository;
-    }
-
-    /**
-     * @param AccessTokenId $token
+     * @param AccessTokenId $tokenId
      *
      * @return null|AccessToken
      */
-    public function find(AccessTokenId $token): ?AccessToken
+    public function find(AccessTokenId $tokenId): ?AccessToken
     {
-        return $this->accessTokenRepository->find($token);
+        return array_key_exists($tokenId->getValue(), $this->accessTokens) ? $this->accessTokens[$tokenId->getValue()] : null;
+    }
+
+    /**
+     * @param AccessToken $token
+     */
+    public function save(AccessToken $token): void
+    {
+        $this->accessTokens[$token->getAccessTokenId()->getValue()] = $token;
     }
 }

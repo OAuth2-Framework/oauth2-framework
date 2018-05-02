@@ -46,4 +46,15 @@ class ApiController extends Controller
     {
         return new JsonResponse(['name' => 'I am protected by scope', 'message' => 'Hello!']);
     }
+
+    /**
+     * @return Response
+     *
+     * @OAuth2(token_type="MAC")
+     * @Route("/hello-token", name="api_token")
+     */
+    public function tokenTypeProtectionAction()
+    {
+        return new JsonResponse(['name' => 'I am protected by scope', 'message' => 'Hello!']);
+    }
 }

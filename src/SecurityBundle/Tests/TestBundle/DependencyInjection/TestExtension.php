@@ -26,11 +26,6 @@ class TestExtension extends Extension
     public function load(array $configs, ContainerBuilder $container)
     {
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-        $files = [
-            'services',
-        ];
-        foreach ($files as $basename) {
-            $loader->load(sprintf('%s.php', $basename));
-        }
+        $loader->load('services.php');
     }
 }

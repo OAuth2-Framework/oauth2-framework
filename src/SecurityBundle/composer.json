@@ -35,7 +35,9 @@
         "symfony/yaml": "^3.4|^4.0"
     },
     "suggest": {
-        "symfony/security-bundle": "Mandatory when resource owners can be end users."
+        "symfony/security-bundle": "Mandatory when resource owners can be end users.",
+        "oauth2-framework/bearer-token-type": "Bearer token type support (recommended).",
+        "oauth2-framework/mac-token-type": "MAC token type support (experimental)."
     },
     "autoload": {
         "psr-4": {

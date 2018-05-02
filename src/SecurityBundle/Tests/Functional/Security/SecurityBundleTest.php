@@ -19,7 +19,7 @@ use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
-use OAuth2Framework\SecurityBundle\Tests\TestBundle\Entity\AccessTokenRepository;
+use OAuth2Framework\SecurityBundle\Tests\TestBundle\Service\AccessTokenHandler;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
@@ -62,6 +62,7 @@ class SecurityBundleTest extends WebTestCase
         self::assertEquals(401, $response->getStatusCode());
         self::assertEquals('', $response->getContent());
         self::assertTrue($response->headers->has('www-authenticate'));
+        self::assertEquals('Bearer realm="Protected API",error="access_denied",error_description="OAuth2 authentication required. Invalid access token."', $response->headers->get('www-authenticate'));
     }
 
     /**
@@ -70,8 +71,8 @@ class SecurityBundleTest extends WebTestCase
     public function anApiRequestIsReceivedButTheTokenDoesNotHaveTheRequiredScope()
     {
         $client = static::createClient();
-        /** @var AccessTokenRepository $accessTokenRepository */
-        $accessTokenRepository = $client->getContainer()->get(AccessTokenRepository::class);
+        /** @var AccessTokenHandler $accessTokenHandler */
+        $accessTokenHandler = $client->getContainer()->get(AccessTokenHandler::class);
         $accessToken = AccessToken::createEmpty();
         $accessToken = $accessToken->create(
             AccessTokenId::create('ACCESS_TOKEN_WITH_INSUFFICIENT_SCOPE'),
@@ -85,11 +86,40 @@ class SecurityBundleTest extends WebTestCase
             new \DateTimeImmutable('now +1 hour'),
             ResourceServerId::create('RESOURCE_SERVER_iD')
         );
-        $accessTokenRepository->save($accessToken);
+        $accessTokenHandler->save($accessToken);
 
         $client->request('GET', '/api/hello-profile', [], [], ['HTTPS' => 'on', 'HTTP_AUTHORIZATION' => 'Bearer ACCESS_TOKEN_WITH_INSUFFICIENT_SCOPE']);
         $response = $client->getResponse();
         self::assertEquals(403, $response->getStatusCode());
         self::assertEquals('{"scope":"profile openid","error":"access_denied","error_description":"Insufficient scope. The required scope is \"profile openid\""}', $response->getContent());
+    }
+
+    /**
+     * @test
+     */
+    public function anApiRequestIsReceivedButTheTokenTypeIsNotAllowed()
+    {
+        $client = static::createClient();
+        /** @var AccessTokenHandler $accessTokenHandler */
+        $accessTokenHandler = $client->getContainer()->get(AccessTokenHandler::class);
+        $accessToken = AccessToken::createEmpty();
+        $accessToken = $accessToken->create(
+            AccessTokenId::create('ACCESS_TOKEN_WITH_BAD_TOKEN_TYPE'),
+            UserAccountId::create('USER_ACCOUNT_ID'),
+            ClientId::create('CLIENT_ID'),
+            DataBag::create([
+                'token_type' => 'Bearer',
+                'scope' => 'openid',
+            ]),
+            DataBag::create([]),
+            new \DateTimeImmutable('now +1 hour'),
+            ResourceServerId::create('RESOURCE_SERVER_iD')
+        );
+        $accessTokenHandler->save($accessToken);
+
+        $client->request('GET', '/api/hello-token', [], [], ['HTTPS' => 'on', 'HTTP_AUTHORIZATION' => 'Bearer ACCESS_TOKEN_WITH_BAD_TOKEN_TYPE']);
+        $response = $client->getResponse();
+        self::assertEquals(403, $response->getStatusCode());
+        self::assertEquals('{"error":"access_denied","error_description":"Token type \"Bearer\" not allowed. Please use \"MAC\""}', $response->getContent());
     }
 }

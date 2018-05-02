@@ -31,14 +31,14 @@ class AccessTokenHandlerManager
     }
 
     /**
-     * @param AccessTokenId $token
+     * @param AccessTokenId $tokenId
      *
      * @return null|AccessToken
      */
-    public function find(AccessTokenId $token): ?AccessToken
+    public function find(AccessTokenId $tokenId): ?AccessToken
     {
         foreach ($this->accessTokenHandlers as $accessTokenHandler) {
-            $accessToken = $accessTokenHandler->find($token);
+            $accessToken = $accessTokenHandler->find($tokenId);
             if (null !== $accessToken) {
                 return $accessToken;
             }

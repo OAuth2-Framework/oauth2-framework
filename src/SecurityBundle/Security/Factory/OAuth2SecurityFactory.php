@@ -34,22 +34,22 @@ final class OAuth2SecurityFactory implements SecurityFactoryInterface
     {
         $providerId = 'security.authentication.provider.oauth2.'.$id;
         $container
-            ->setDefinition($providerId, new ChildDefinition(OAuth2Provider::class))
+            ->setDefinition($providerId, new ChildDefinition('oauth2_security.provider'))
             ->setAutowired(true)
         ;
 
         $listenerId = 'security.authentication.listener.oauth2.'.$id;
         $container
-            ->setDefinition($listenerId, new ChildDefinition(OAuth2Listener::class))
+            ->setDefinition($listenerId, new ChildDefinition('oauth2_security.listener'))
             ->setArguments([
                 new Reference(TokenStorageInterface::class),
                 new Reference('security.authentication.manager'),
-                new Reference(TokenTypeManager::class),
-                new Reference(AccessTokenHandlerManager::class),
+                new Reference('oauth2_security.token_type_manager'),
+                new Reference('oauth2_security.access_token_handler_manager'),
             ])
         ;
 
-        return [$providerId, $listenerId, OAuth2EntryPoint::class];
+        return [$providerId, $listenerId, 'oauth2_security.entry_point'];
     }
 
     /**

@@ -13,8 +13,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\SecurityBundle\Tests;
 
-use Http\HttplugBundle\HttplugBundle;
-use Jose\Bundle\JoseFramework\JoseFrameworkBundle;
 use OAuth2Framework\SecurityBundle\OAuth2FrameworkSecurityBundle;
 use OAuth2Framework\SecurityBundle\Tests\TestBundle\TestBundle;
 use Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle;
@@ -27,7 +25,7 @@ use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 /**
  * Class AppKernel.
  */
-class AppKernel extends Kernel
+final class AppKernel extends Kernel
 {
     /**
      * {@inheritdoc}
@@ -47,12 +45,9 @@ class AppKernel extends Kernel
             new SecurityBundle(),
             new TwigBundle(),
             new SensioFrameworkExtraBundle(),
-            new HttplugBundle(),
 
             new OAuth2FrameworkSecurityBundle(),
             new TestBundle(),
-
-            new JoseFrameworkBundle(),
         ];
 
         return $bundles;
@@ -61,24 +56,8 @@ class AppKernel extends Kernel
     /**
      * {@inheritdoc}
      */
-    public function getCacheDir()
-    {
-        return sys_get_temp_dir().'/OAuth2FrameworkSecurityBundle/Test';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getLogDir()
-    {
-        return sys_get_temp_dir().'/OAuth2FrameworkSecurityBundle/log';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
-        $loader->load(__DIR__.'/config/config_'.$this->getEnvironment().'.yml');
+        $loader->load(__DIR__.'/config/config_test.yml');
     }
 }

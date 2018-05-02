@@ -15,6 +15,7 @@ namespace OAuth2Framework\SecurityBundle\Security\Firewall;
 
 use OAuth2Framework\Component\Core\Message\OAuth2Message;
 use OAuth2Framework\Component\Core\Message\OAuth2MessageFactoryManager;
+use OAuth2Framework\Component\Core\TokenType\TokenType;
 use OAuth2Framework\SecurityBundle\Security\Authentication\Token\OAuth2Token;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenHandlerManager;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
@@ -86,17 +87,24 @@ final class OAuth2Listener implements ListenerInterface
 
         try {
             $additionalCredentialValues = [];
-            $accessTokenId = $this->tokenTypeManager->findToken($request, $additionalCredentialValues);
+            $accessTokenId = $this->tokenTypeManager->findToken($request, $additionalCredentialValues, $tokenType);
             if (null === $accessTokenId) {
                 return;
             }
+            /** @var TokenType $tokenType */
         } catch (\Exception $e) {
             return;
         }
 
         try {
             $accessToken = $this->accessTokenHandlerManager->find(AccessTokenId::create($accessTokenId));
-            if (null === $accessToken || true === $accessToken->isRevoked()) {
+            if (null === $accessToken || $accessToken->isRevoked()) {
+                throw new AuthenticationException('Invalid access token.');
+            }
+            if ($accessToken->hasExpired()) {
+                throw new AuthenticationException('The access token expired.');
+            }
+            if (!$tokenType->isRequestValid($accessToken, $request, $additionalCredentialValues)) {
                 throw new AuthenticationException('Invalid access token.');
             }
 
@@ -109,7 +117,8 @@ final class OAuth2Listener implements ListenerInterface
                 new OAuth2Message(
                     401,
                     OAuth2Message::ERROR_ACCESS_DENIED,
-                    'OAuth2 authentication required'
+                    'OAuth2 authentication required. '.$e->getMessage(),
+                    $e
                 )
             );
             $factory = new HttpFoundationFactory();

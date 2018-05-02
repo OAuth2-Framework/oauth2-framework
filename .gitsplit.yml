@@ -1,6 +1,8 @@
 cache_dir: "/cache/gitsplit"
 
 splits:
+    - prefix: "src/SecurityBundle"
+      target: "https://${GH_TOKEN}@github.com/oauth2-framework/oauth2-security-bundle.git"
     - prefix: "src/ServerBundle"
       target: "https://${GH_TOKEN}@github.com/oauth2-framework/authorization-server-bundle.git"
     - prefix: "src/IssuerDiscoveryBundle"

@@ -13,33 +13,23 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\SecurityBundle;
 
-use OAuth2Framework\SecurityBundle\DependencyInjection\OAuth2FrameworkExtension;
+use OAuth2Framework\SecurityBundle\DependencyInjection\Compiler\AccessTokenHandlerCompilerPass;
+use OAuth2Framework\SecurityBundle\DependencyInjection\Compiler\SecurityAnnotationCheckerCompilerPass;
+use OAuth2Framework\SecurityBundle\DependencyInjection\Compiler\TokenTypeCompilerPass;
+use OAuth2Framework\SecurityBundle\DependencyInjection\OAuth2FrameworkSecurityExtension;
+use OAuth2Framework\SecurityBundle\Security\Factory\OAuth2SecurityFactory;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
+use Symfony\Bundle\SecurityBundle\DependencyInjection\SecurityExtension;
 
 class OAuth2FrameworkSecurityBundle extends Bundle
 {
-    /**
-     * @var Component\Component[]
-     */
-    private $components = [];
-
-    /**
-     * JoseFrameworkBundle constructor.
-     */
-    public function __construct()
-    {
-        foreach ($this->getComponents() as $component) {
-            $this->components[$component->name()] = $component;
-        }
-    }
-
     /**
      * {@inheritdoc}
      */
     public function getContainerExtension()
     {
-        return new OAuth2FrameworkExtension('oauth2_server', $this->components);
+        return new OAuth2FrameworkSecurityExtension('oauth2_security');
     }
 
     /**
@@ -47,38 +37,17 @@ class OAuth2FrameworkSecurityBundle extends Bundle
      */
     public function build(ContainerBuilder $container)
     {
-        parent::build($container);
-        foreach ($this->components as $component) {
-            $component->build($container);
+        if (!$container->hasExtension('security')) {
+            throw new \RuntimeException('The security extension is not available');
         }
-    }
+        $extension = $container->getExtension('security');
+        if (!$extension instanceof SecurityExtension) {
+            throw new \RuntimeException('Unsupported security extension');
+        }
+        $extension->addSecurityListenerFactory(new OAuth2SecurityFactory());
 
-    /**
-     * @return Component\Component[]
-     */
-    private function getComponents(): array
-    {
-        return [
-            new Component\Core\TrustedIssuerSource(),
-            new Component\Core\ClientSource(),
-            new Component\Core\AccessTokenSource(),
-            new Component\Core\UserAccountSource(),
-            new Component\Core\ServicesSource(),
-            new Component\Core\ResourceServerSource(),
-            new Component\ClientRule\ClientRuleSource(),
-            new Component\ClientAuthentication\ClientAuthenticationSource(),
-
-            new Component\Scope\ScopeSource(),
-            new Component\TokenType\TokenTypeSource(),
-            new Component\Endpoint\EndpointSource(),
-            new Component\Grant\GrantSource(),
-            new Component\OpenIdConnect\OpenIdConnectSource(),
-
-            new Component\Firewall\FirewallSource(),
-
-            /*
-            new Component\HttpSource(),
-            new Component\KeySet(),*/
-        ];
+        $container->addCompilerPass(new SecurityAnnotationCheckerCompilerPass());
+        $container->addCompilerPass(new AccessTokenHandlerCompilerPass());
+        $container->addCompilerPass(new TokenTypeCompilerPass());
     }
 }
