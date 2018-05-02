@@ -91,7 +91,7 @@ final class OAuth2Listener implements ListenerInterface
             if (null === $accessTokenId) {
                 return;
             }
-            /** @var TokenType $tokenType */
+            /* @var TokenType $tokenType */
         } catch (\Exception $e) {
             return;
         }

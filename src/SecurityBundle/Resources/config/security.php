@@ -87,7 +87,7 @@ return function (ContainerConfigurator $container) {
     $container->set('oauth2_security.message_factory.401')
         ->class(Message\Factory\AuthenticateResponseForTokenFactory::class)
         ->args([
-            ref('oauth2_security.token_type_manager')
+            ref('oauth2_security.token_type_manager'),
         ])
         ->tag('oauth2_security_message_factory');
 
@@ -111,8 +111,6 @@ return function (ContainerConfigurator $container) {
         ->class(Message\Factory\RedirectResponseFactory::class)
         ->tag('oauth2_security_message_factory');
 
-
     $container->set('oauth2_security.psr7_message_factory.default')
         ->class(MessageFactory::class);
-
 };
