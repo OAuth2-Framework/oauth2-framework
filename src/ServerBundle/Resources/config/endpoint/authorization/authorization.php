@@ -101,7 +101,6 @@ return function (ContainerConfigurator $container) {
         ]);
     //FIXME $container->set(AuthorizationEndpoint\Rule\SectorIdentifierUriRule::class);
 
-
     $container->set('oauth2_server.message_middleware.for_authorization_endpoint')
         ->class(Middleware\OAuth2MessageMiddleware::class)
         ->args([

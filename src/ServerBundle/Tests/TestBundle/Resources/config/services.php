@@ -63,7 +63,7 @@ return function (ContainerConfigurator $container) {
 
     $container->set(InitialAccessTokenRepository::class);
 
-    $container->set(UriFactory::class);;
+    $container->set(UriFactory::class);
 
     $container->set('MyPairwiseSubjectIdentifier')
         ->class(EncryptedSubjectIdentifier::class)

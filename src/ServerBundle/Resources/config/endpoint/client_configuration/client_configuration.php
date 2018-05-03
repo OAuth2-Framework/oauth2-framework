@@ -63,7 +63,6 @@ return function (ContainerConfigurator $container) {
             ref('router'),
         ]);
 
-
     $container->set('oauth2_server.message_middleware.for_client_configuration')
         ->class(Middleware\OAuth2MessageMiddleware::class)
         ->args([

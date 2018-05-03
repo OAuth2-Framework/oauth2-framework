@@ -39,7 +39,6 @@ return function (ContainerConfigurator $container) {
             ref('oauth2_server.client_rule.manager'),
         ]);
 
-
     $container->set('oauth2_server.message_middleware.for_client_registration')
         ->class(Middleware\OAuth2MessageMiddleware::class)
         ->args([
