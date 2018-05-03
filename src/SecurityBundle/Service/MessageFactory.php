@@ -26,7 +26,7 @@ final class MessageFactory implements ResponseFactory
      */
     public function createResponse($statusCode = 200, $reasonPhrase = null, array $header = [], $body = null, $protocolVersion = '1.1')
     {
-        $body = $body === null ? 'php://memory' : $body;
+        $body = null === $body ? 'php://memory' : $body;
         $response = new Response($body, $statusCode, $header);
         $response = $response->withProtocolVersion($protocolVersion);
         if (is_string($reasonPhrase)) {
