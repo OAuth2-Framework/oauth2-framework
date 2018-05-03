@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\DependencyInjection\Compiler;
 
-use OAuth2Framework\ServerBundle\Routing\RouteLoader;
 use OAuth2Framework\ServerBundle\Service\MetadataBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -30,7 +29,7 @@ class UserinfoRouteCompilerPass implements CompilerPassInterface
         }
 
         $path = $container->getParameter('oauth2_server.openid_connect.userinfo_endpoint.path');
-        $route_loader = $container->getDefinition(RouteLoader::class);
+        $route_loader = $container->getDefinition('oauth2_server.route_loader');
         $route_loader->addMethodCall('addRoute', [
             'openid_connect_userinfo_endpoint',
             'oauth2_server_userinfo_pipe',

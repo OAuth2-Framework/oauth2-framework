@@ -22,10 +22,10 @@ return function (ContainerConfigurator $container) {
 
     $container->set(BearerToken::class)
         ->args([
-            '%oauth2_server.token_type.bearer_token.realm%',
-            '%oauth2_server.token_type.bearer_token.authorization_header%',
-            '%oauth2_server.token_type.bearer_token.request_body%',
-            '%oauth2_server.token_type.bearer_token.query_string%',
+            'Unused',
+            false,
+            false,
+            false,
         ])
         ->tag('oauth2_server_token_type', ['scheme' => 'Bearer']);
 };

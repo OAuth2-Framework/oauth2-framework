@@ -15,7 +15,7 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
 use OAuth2Framework\Component\BearerTokenType\BearerToken;
 use OAuth2Framework\Component\ClientConfigurationEndpoint\ClientConfigurationEndpoint;
 use OAuth2Framework\ServerBundle\Controller\ClientConfigurationMiddleware;
-use OAuth2Framework\ServerBundle\Middleware;
+use OAuth2Framework\Component\Core\Middleware;
 use OAuth2Framework\ServerBundle\Rule\ClientConfigurationRouteRule;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 

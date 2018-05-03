@@ -12,7 +12,7 @@ declare(strict_types=1);
  */
 
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use OAuth2Framework\ServerBundle\Middleware;
+use OAuth2Framework\Component\Core\Middleware;
 use OAuth2Framework\ServerBundle\Controller\MetadataController;
 use OAuth2Framework\ServerBundle\Service\MetadataBuilder;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;

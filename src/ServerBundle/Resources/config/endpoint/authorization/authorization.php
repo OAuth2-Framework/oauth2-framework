@@ -16,7 +16,7 @@ use OAuth2Framework\ServerBundle\Controller\AuthorizationEndpointController;
 use OAuth2Framework\ServerBundle\Form\FormFactory;
 use OAuth2Framework\ServerBundle\Form\Handler\AuthorizationFormHandler;
 use OAuth2Framework\ServerBundle\Form\Type\AuthorizationType;
-use OAuth2Framework\ServerBundle\Middleware;
+use OAuth2Framework\Component\Core\Middleware;
 use OAuth2Framework\Component\AuthorizationEndpoint;
 use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker;
 use OAuth2Framework\Component\Core\TokenType\TokenTypeMiddleware;

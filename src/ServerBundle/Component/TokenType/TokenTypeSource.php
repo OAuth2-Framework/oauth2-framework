@@ -43,7 +43,6 @@ class TokenTypeSource implements Component
         $container->setParameter('oauth2_server.token_type.allow_token_type_parameter', $configs['token_type']['allow_token_type_parameter']);
 
         if (class_exists(BearerToken::class) && $configs['token_type']['bearer_token']['enabled']) {
-            $container->setParameter('oauth2_server.token_type.bearer_token.realm', $configs['token_type']['bearer_token']['realm']);
             $loader->load('bearer_token.php');
         }
         if (class_exists(MacToken::class) && $configs['token_type']['mac_token']['enabled']) {
@@ -79,12 +78,6 @@ class TokenTypeSource implements Component
                 ->arrayNode('bearer_token')
                     ->addDefaultsIfNotSet()
                     ->canBeDisabled()
-                    ->children()
-                        ->scalarNode('realm')
-                            ->isRequired()
-                            ->info('The realm displayed in the authentication header')
-                        ->end()
-                    ->end()
                 ->end()
             ->end();
         }

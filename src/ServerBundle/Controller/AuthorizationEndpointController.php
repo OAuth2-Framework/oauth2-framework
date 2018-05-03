@@ -34,7 +34,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
-class AuthorizationEndpointController extends AuthorizationEndpoint
+final class AuthorizationEndpointController extends AuthorizationEndpoint
 {
     /**
      * @var SessionInterface
