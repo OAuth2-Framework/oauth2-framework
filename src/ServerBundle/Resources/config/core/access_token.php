@@ -12,27 +12,27 @@ declare(strict_types=1);
  */
 
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use OAuth2Framework\Component\Core\AccessToken\AccessTokenHandlerManager;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenIntrospectionTypeHint;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenRevocationTypeHint;
+use OAuth2Framework\ServerBundle\Service\RandomAccessTokenIdGenerator;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
 return function (ContainerConfigurator $container) {
     $container = $container->services()->defaults()
-        ->public()
-        ->autoconfigure();
+        ->private();
 
-    $container->set(AccessTokenHandlerManager::class);
-
-    $container->set(AccessTokenIntrospectionTypeHint::class)
+    $container->set('oauth2_security.access_token.introspection_type_hint')
+        ->class(AccessTokenIntrospectionTypeHint::class)
         ->args([
-            ref(\OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository::class),
+            ref('oauth2_security.access_token.repository'),
         ]);
 
-    $container->set(AccessTokenRevocationTypeHint::class)
+    $container->set('oauth2_security.access_token.introspection_type_hint')
+        ->class(AccessTokenRevocationTypeHint::class)
         ->args([
-            ref(\OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository::class),
+            ref('oauth2_security.access_token.repository'),
         ]);
 
-    $container->set(\OAuth2Framework\ServerBundle\Service\RandomAccessTokenIdGenerator::class);
+    // Default access token ID generator
+    $container->set(RandomAccessTokenIdGenerator::class);
 };

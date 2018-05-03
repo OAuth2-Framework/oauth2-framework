@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Component\Endpoint\Authorization;
 
+use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationEndpoint;
 use OAuth2Framework\ServerBundle\Component\Component;
 use OAuth2Framework\ServerBundle\Component\Endpoint\Authorization\Compiler\AuthorizationEndpointRouteCompilerPass;
 use OAuth2Framework\ServerBundle\Component\Endpoint\Authorization\Compiler\AuthorizationRequestMetadataCompilerPass;
@@ -64,6 +65,9 @@ class AuthorizationEndpointSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
+        if (!class_exists(AuthorizationEndpoint::class)) {
+            return;
+        }
         $config = $configs['endpoint']['authorization'];
         $container->setParameter('oauth2_server.endpoint.authorization.enabled', $config['enabled']);
         if (!$config['enabled']) {
@@ -100,6 +104,9 @@ class AuthorizationEndpointSource implements Component
      */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
+        if (!class_exists(AuthorizationEndpoint::class)) {
+            return;
+        }
         $childNode = $node->children()
             ->arrayNode($this->name())
                 ->canBeEnabled();
@@ -152,6 +159,9 @@ class AuthorizationEndpointSource implements Component
      */
     public function prepend(ContainerBuilder $container, array $config): array
     {
+        if (!class_exists(AuthorizationEndpoint::class)) {
+            return [];
+        }
         if (!$config['endpoint']['authorization']['enabled']) {
             return [];
         }
@@ -172,6 +182,9 @@ class AuthorizationEndpointSource implements Component
      */
     public function build(ContainerBuilder $container)
     {
+        if (!class_exists(AuthorizationEndpoint::class)) {
+            return;
+        }
         $container->addCompilerPass(new AuthorizationEndpointRouteCompilerPass());
         $container->addCompilerPass(new RequestObjectCompilerPass());
         $container->addCompilerPass(new AuthorizationRequestMetadataCompilerPass());

@@ -16,10 +16,9 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
 
 return function (ContainerConfigurator $container) {
     $container = $container->services()->defaults()
-        ->private()
-        ->autoconfigure()
-        ->autowire();
+        ->private();
 
-    $container->set(RouteLoader::class)
+    $container->set('oauth2_server.route_loader')
+        ->class(RouteLoader::class)
         ->tag('routing.loader');
 };

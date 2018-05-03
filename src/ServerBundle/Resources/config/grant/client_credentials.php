@@ -19,8 +19,5 @@ return function (ContainerConfigurator $container) {
         ->private()
         ->autoconfigure();
 
-    $container->set(ClientCredentialsGrantType::class)
-        ->args([
-            '%oauth2_server.grant.client_credentials.issue_refresh_token%',
-        ]);
+    $container->set(ClientCredentialsGrantType::class);
 };

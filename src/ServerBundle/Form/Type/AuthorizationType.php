@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Form\Type;
 
+use OAuth2Framework\ServerBundle\Form\Model\AuthorizationModel;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -63,17 +64,17 @@ class AuthorizationType extends AbstractType
     {
         $resolver->setDefaults([
             'translation_domain' => 'OAuth2FrameworkServer',
-            'data_class' => 'OAuth2Framework\ServerBundle\Form\Model\AuthorizationModel',
+            'data_class' => AuthorizationModel::class,
             'scopes' => [],
-            'allow_scope_selection' => false,
-            'is_pre_configured_authorization_enabled' => false,
+            //'allow_scope_selection' => false,
+            //'is_pre_configured_authorization_enabled' => false,
             'locale' => null,
             'translator' => null,
         ]);
         $resolver->setAllowedTypes('locale', ['string', 'null']);
         $resolver->setAllowedTypes('scopes', 'array');
-        $resolver->setAllowedTypes('allow_scope_selection', 'bool');
-        $resolver->setAllowedTypes('is_pre_configured_authorization_enabled', 'bool');
+        //$resolver->setAllowedTypes('allow_scope_selection', 'bool');
+        //$resolver->setAllowedTypes('is_pre_configured_authorization_enabled', 'bool');
         $resolver->setAllowedTypes('translator', TranslatorInterface::class);
     }
 

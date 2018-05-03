@@ -16,7 +16,8 @@ use OAuth2Framework\ServerBundle\Controller\AuthorizationEndpointController;
 use OAuth2Framework\ServerBundle\Form\FormFactory;
 use OAuth2Framework\ServerBundle\Form\Handler\AuthorizationFormHandler;
 use OAuth2Framework\ServerBundle\Form\Type\AuthorizationType;
-use OAuth2Framework\ServerBundle\Middleware;
+use OAuth2Framework\Component\Core\Message;
+use OAuth2Framework\Component\Core\Middleware;
 use OAuth2Framework\Component\AuthorizationEndpoint;
 use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker;
 use OAuth2Framework\Component\Core\TokenType\TokenTypeMiddleware;
@@ -61,7 +62,7 @@ return function (ContainerConfigurator $container) {
     $container->set('authorization_endpoint_pipe')
         ->class(Middleware\Pipe::class)
         ->args([[
-            ref('oauth2_message_middleware_with_client_authentication'),
+            ref('oauth2_server.message_middleware.for_authorization_endpoint'),
             ref(TokenTypeMiddleware::class),
             ref(AuthorizationEndpointController::class),
         ]])
@@ -69,14 +70,14 @@ return function (ContainerConfigurator $container) {
 
     $container->set(AuthorizationEndpoint\AuthorizationRequestLoader::class)
         ->args([
-            ref(\OAuth2Framework\Component\Core\Client\ClientRepository::class),
+            ref('oauth2_server.client.repository'),
         ]);
 
     // Consent Screen Extension
     $container->set(AuthorizationEndpoint\ConsentScreen\ExtensionManager::class);
 
     // Response Type
-    $container->set(AuthorizationEndpoint\ResponseTypeManager::class);
+    //$container->set(AuthorizationEndpoint\ResponseTypeManager::class);
 
     // Parameter Checker
     $container->set(ParameterChecker\ParameterCheckerManager::class);
@@ -99,4 +100,12 @@ return function (ContainerConfigurator $container) {
             ref(AuthorizationEndpoint\ResponseTypeManager::class),
         ]);
     //FIXME $container->set(AuthorizationEndpoint\Rule\SectorIdentifierUriRule::class);
+
+    $container->set('oauth2_server.message_middleware.for_authorization_endpoint')
+        ->class(Middleware\OAuth2MessageMiddleware::class)
+        ->args([
+            ref('oauth2_server.message_factory_manager.for_authorization_endpoint'),
+        ]);
+    $container->set('oauth2_server.message_factory_manager.for_authorization_endpoint')
+        ->class(Message\OAuth2MessageFactoryManager::class);
 };

@@ -16,12 +16,12 @@ use OAuth2Framework\Component\ClientAuthentication\ClientSecretBasic;
 
 return function (ContainerConfigurator $container) {
     $container = $container->services()->defaults()
-        ->private()
-        ->autoconfigure();
+        ->private();
 
     $container->set(ClientSecretBasic::class)
         ->args([
             '%oauth2_server.client_authentication.client_secret_basic.realm%',
             '%oauth2_server.client_authentication.client_secret_basic.secret_lifetime%',
-        ]);
+        ])
+        ->tag('oauth2_server_client_authentication');
 };

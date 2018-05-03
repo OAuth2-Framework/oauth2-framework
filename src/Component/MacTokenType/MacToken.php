@@ -30,6 +30,12 @@ abstract class MacToken implements TokenType
      */
     private $macAlgorithm;
 
+    /**
+     * MacToken constructor.
+     *
+     * @param string $macAlgorithm
+     * @param int    $timestampLifetime
+     */
     public function __construct(string $macAlgorithm, int $timestampLifetime)
     {
         if (!in_array($macAlgorithm, array_keys($this->getAlgorithmMap()))) {

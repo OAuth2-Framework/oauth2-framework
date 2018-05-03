@@ -34,6 +34,9 @@ class SessionManagementEndpointSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
+        if (!true) { //FIXME
+            return;
+        }
         $config = $configs['endpoint']['session_management'];
         $container->setParameter('oauth2_server.endpoint.session_management.enabled', $config['enabled']);
         if (!$config['enabled']) {
@@ -53,6 +56,9 @@ class SessionManagementEndpointSource implements Component
      */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
+        if (!true) {
+            return;
+        }
         $node->children()
             ->arrayNode($this->name())
                 ->canBeEnabled()

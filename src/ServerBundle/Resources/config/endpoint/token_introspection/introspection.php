@@ -12,7 +12,7 @@ declare(strict_types=1);
  */
 
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use OAuth2Framework\ServerBundle\Middleware;
+use OAuth2Framework\Component\Core\Middleware;
 use OAuth2Framework\Component\ResourceServerAuthentication\AuthenticationMiddleware;
 use OAuth2Framework\Component\TokenIntrospectionEndpoint\TokenIntrospectionEndpoint;
 use OAuth2Framework\Component\TokenIntrospectionEndpoint\TokenTypeHintManager;
@@ -26,7 +26,7 @@ return function (ContainerConfigurator $container) {
     $container->set('token_introspection_pipe')
         ->class(Middleware\Pipe::class)
         ->args([
-            ref('oauth2_message_middleware_with_client_authentication'),
+            ref('oauth2_server.message_middleware.for_client_authentication'),
             ref(AuthenticationMiddleware::class),
             ref(TokenIntrospectionEndpoint::class),
         ])

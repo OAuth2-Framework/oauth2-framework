@@ -309,7 +309,7 @@ class JwtBearerGrantType implements GrantType
     {
         $userAccount = $this->userAccountRepository->find(UserAccountId::create($subject));
         if (null !== $userAccount) {
-            return $userAccount->getPublicId();
+            return $userAccount->getUserAccountId();
         }
         $client = $this->clientRepository->find(ClientId::create($subject));
         if (null !== $client) {

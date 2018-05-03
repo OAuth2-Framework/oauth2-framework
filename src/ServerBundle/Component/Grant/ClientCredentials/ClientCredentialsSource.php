@@ -38,7 +38,6 @@ class ClientCredentialsSource implements Component
         if (!class_exists(ClientCredentialsGrantType::class) || !$configs['grant']['client_credentials']['enabled']) {
             return;
         }
-        $container->setParameter('oauth2_server.grant.client_credentials.issue_refresh_token', $configs['grant']['client_credentials']['issue_refresh_token']);
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/grant'));
         $loader->load('client_credentials.php');
     }
@@ -54,12 +53,7 @@ class ClientCredentialsSource implements Component
         $node->children()
             ->arrayNode('client_credentials')
                 ->canBeEnabled()
-                ->children()
-                    ->booleanNode('issue_refresh_token')
-                        ->info('If enabled, a refresh token will be issued with an access token (not recommended)')
-                        ->defaultFalse()
-                    ->end()
-                ->end()
+                ->info('This grant type flow allows confidential clients to get access tokens to manage their own resources.')
             ->end()
         ->end();
     }

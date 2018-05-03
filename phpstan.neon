@@ -2,3 +2,6 @@ parameters:
     excludes_analyse:
         - %currentWorkingDirectory%/src/*Bundle/Tests/*
         - %currentWorkingDirectory%/src/Component/*/Tests/*
+    ignoreErrors:
+        - '#Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition::addDefaultsIfNotSet\(\)#'
+        - '#Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition::children\(\)#'

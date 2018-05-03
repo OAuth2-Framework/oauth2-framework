@@ -13,8 +13,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Component\Core;
 
-use OAuth2Framework\Component\Core\AccessToken\AccessTokenIdGenerator;
-use OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository;
 use OAuth2Framework\ServerBundle\Component\Component;
 use OAuth2Framework\ServerBundle\Service\RandomAccessTokenIdGenerator;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
@@ -37,8 +35,8 @@ class AccessTokenSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        $container->setAlias(AccessTokenRepository::class, $configs['access_token']['repository']);
-        $container->setAlias(AccessTokenIdGenerator::class, $configs['access_token']['id_generator']);
+        $container->setAlias('oauth2_server.access_token.repository', $configs['access_token']['repository']);
+        $container->setAlias('oauth2_server.access_token.id_generator', $configs['access_token']['id_generator']);
         $container->setParameter('oauth2_server.access_token_lifetime', $configs['access_token']['lifetime']);
 
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../Resources/config/core'));

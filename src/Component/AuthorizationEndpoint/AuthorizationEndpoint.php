@@ -156,6 +156,7 @@ abstract class AuthorizationEndpoint implements MiddlewareInterface
         }
 
         $response = $authorization->getResponseMode()->buildResponse(
+            $response,
             $authorization->getRedirectUri(),
             $authorization->getResponseParameters()
         );
@@ -177,14 +178,14 @@ abstract class AuthorizationEndpoint implements MiddlewareInterface
     {
         $params = $authorization->getResponseParameters();
         if (null === $authorization->getResponseMode() || null === $authorization->getRedirectUri()) {
-            throw new OAuth2Message(400, $error, $error_description, $params);
+            throw new OAuth2Message(400, $error, $error_description);
         }
         $params += [
             'response_mode' => $authorization->getResponseMode(),
             'redirect_uri' => $authorization->getRedirectUri(),
         ];
 
-        throw new OAuth2Message(302, $error, $error_description, $params);
+        throw new OAuth2Message(302, $error, $error_description);
     }
 
     /**

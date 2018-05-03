@@ -33,6 +33,9 @@ class TrustedIssuerSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
+        if (!interface_exists(TrustedIssuerRepository::class)) {
+            return;
+        }
         if (null === $configs['trusted_issuer']['repository']) {
             return;
         }
@@ -44,6 +47,9 @@ class TrustedIssuerSource implements Component
      */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
+        if (!interface_exists(TrustedIssuerRepository::class)) {
+            return;
+        }
         $node->children()
             ->arrayNode($this->name())
                 ->addDefaultsIfNotSet()

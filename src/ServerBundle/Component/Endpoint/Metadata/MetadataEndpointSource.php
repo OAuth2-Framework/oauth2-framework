@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Component\Endpoint\Metadata;
 
+use OAuth2Framework\Component\MetadataEndpoint\MetadataEndpoint;
 use OAuth2Framework\ServerBundle\Component\Component;
 use OAuth2Framework\ServerBundle\Component\Endpoint\Metadata\Compiler\CommonMetadataCompilerPass;
 use OAuth2Framework\ServerBundle\Component\Endpoint\Metadata\Compiler\MetadataRouteCompilerPass;
@@ -53,6 +54,9 @@ class MetadataEndpointSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
+        if (!class_exists(MetadataEndpoint::class)) {
+            return;
+        }
         $config = $configs['endpoint']['metadata'];
         $container->setParameter('oauth2_server.endpoint.metadata.enabled', $config['enabled']);
         if (!$config['enabled']) {
@@ -74,6 +78,9 @@ class MetadataEndpointSource implements Component
      */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
+        if (!class_exists(MetadataEndpoint::class)) {
+            return;
+        }
         $childNode = $node->children()
             ->arrayNode($this->name())
                 ->canBeEnabled();
@@ -101,6 +108,9 @@ class MetadataEndpointSource implements Component
      */
     public function prepend(ContainerBuilder $container, array $configs): array
     {
+        if (!class_exists(MetadataEndpoint::class)) {
+            return [];
+        }
         if (!$configs['endpoint']['metadata']['enabled']) {
             return [];
         }
@@ -120,6 +130,9 @@ class MetadataEndpointSource implements Component
      */
     public function build(ContainerBuilder $container)
     {
+        if (!class_exists(MetadataEndpoint::class)) {
+            return;
+        }
         $container->addCompilerPass(new CommonMetadataCompilerPass());
         $container->addCompilerPass(new MetadataRouteCompilerPass());
         foreach ($this->subComponents as $component) {

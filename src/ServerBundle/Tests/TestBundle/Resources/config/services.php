@@ -24,11 +24,9 @@ use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\AuthorizationCodeReposi
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\ScopeRepository;
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\InitialAccessTokenRepository;
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\TrustedIssuerRepository;
-use OAuth2Framework\ServerBundle\Tests\TestBundle\Service\AccessTokenHandler;
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Service\UserProvider;
 use OAuth2Framework\Component\OpenIdConnect\UserInfo\Pairwise\EncryptedSubjectIdentifier;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
 return function (ContainerConfigurator $container) {
     $container = $container->services()->defaults()
@@ -66,9 +64,6 @@ return function (ContainerConfigurator $container) {
     $container->set(InitialAccessTokenRepository::class);
 
     $container->set(UriFactory::class);
-
-    $container->set(AccessTokenHandler::class)/*
-        ->tag('oauth2_server_access_token_handler')*/;
 
     $container->set('MyPairwiseSubjectIdentifier')
         ->class(EncryptedSubjectIdentifier::class)

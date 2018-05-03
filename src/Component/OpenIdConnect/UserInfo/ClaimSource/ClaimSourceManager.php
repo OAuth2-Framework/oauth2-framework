@@ -44,13 +44,14 @@ class ClaimSourceManager
 
     /**
      * @param UserAccount $userAccount
-     * @param string[]    $scope
+     * @param string      $scope
      * @param array       $previousClaims
      *
      * @return array
      */
-    public function getUserInfo(UserAccount $userAccount, array $scope, array $previousClaims)
+    public function getUserInfo(UserAccount $userAccount, string $scope, array $previousClaims)
     {
+        $scopes = empty($scope) ? [] : explode(' ', $scope);
         $claims = [
             '_claim_names' => [],
             '_claim_sources' => [],
@@ -58,7 +59,7 @@ class ClaimSourceManager
         $i = 0;
 
         foreach ($this->all() as $claimSource) {
-            $result = $claimSource->getUserInfo($userAccount, $scope, $previousClaims);
+            $result = $claimSource->getUserInfo($userAccount, $scopes, $previousClaims);
             if (null !== $result) {
                 ++$i;
                 $src = sprintf('src%d', $i);

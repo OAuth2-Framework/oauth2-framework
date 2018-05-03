@@ -81,6 +81,19 @@ class Client implements ResourceOwner, \JsonSerializable
     }
 
     /**
+     * @return ClientId
+     */
+    public function getClientId(): ClientId
+    {
+        $id = $this->getPublicId();
+        if (!$id instanceof ClientId) {
+            throw new \RuntimeException('Client not initialized.');
+        }
+
+        return $id;
+    }
+
+    /**
      * @return UserAccountId|null
      */
     public function getOwnerId(): ? UserAccountId

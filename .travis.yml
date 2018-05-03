@@ -23,7 +23,9 @@ before_script:
 
 script:
     - ./vendor/bin/phpunit --coverage-php build/cov/coverage-framework.cov
-    - ./vendor/bin/phpunit -c issuer_discovery.phpunit.xml.dist --coverage-php build/cov/coverage-issuer_discovery.cov
+    - ./vendor/bin/phpunit -c issuer_discovery.phpunit.xml --coverage-php build/cov/coverage-issuer_discovery.cov
+    - ./vendor/bin/phpunit -c oauth2_security.phpunit.xml --coverage-php build/cov/coverage-oauth2_security.cov
+    - ./vendor/bin/phpunit -c oauth2_server.phpunit.xml --coverage-php build/cov/coverage-oauth2_server.cov
 
 after_success:
     - ./vendor/bin/phpcov merge --clover build/logs/clover.xml build/cov

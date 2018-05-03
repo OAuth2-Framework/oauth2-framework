@@ -63,8 +63,8 @@ final class ClientConfigurationPutEndpoint implements MiddlewareInterface
         /** @var Client $client */
         $client = $request->getAttribute('client');
 
-        $command_parameters = DataBag::create($request->getParsedBody() ?? []);
-        $validated_parameters = $this->ruleManager->handle($client->getPublicId(), $command_parameters);
+        $command_parameters = DataBag::create((array) ($request->getParsedBody() ?? []));
+        $validated_parameters = $this->ruleManager->handle($client->getClientId(), $command_parameters);
         $client = $client->withParameters($validated_parameters);
 
         try {

@@ -14,23 +14,27 @@ declare(strict_types=1);
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use OAuth2Framework\Component\ClientAuthentication\AuthenticationMethodManager;
 use OAuth2Framework\Component\ClientAuthentication\ClientAuthenticationMiddleware;
-use OAuth2Framework\Component\ClientAuthentication\Rule\ClientAuthenticationMethodEndpointRule;
+use OAuth2Framework\Component\ClientAuthentication\Rule\ClientAuthenticationMethodRule;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
 return function (ContainerConfigurator $container) {
     $container = $container->services()->defaults()
-        ->private()
-        ->autoconfigure();
+        ->private();
 
-    $container->set(AuthenticationMethodManager::class);
-    $container->set(ClientAuthenticationMethodEndpointRule::class)
+    $container->set('oauth2_server.client_authentication.method_manager')
+        ->class(AuthenticationMethodManager::class);
+
+    $container->set('oauth2_server.client_authentication.middleware')
+        ->class(ClientAuthenticationMiddleware::class)
         ->args([
-            ref(AuthenticationMethodManager::class),
+            ref('oauth2_server.client.repository'),
+            ref('oauth2_server.client_authentication.method_manager'),
         ]);
 
-    $container->set(ClientAuthenticationMiddleware::class)
+    $container->set('oauth2_server.client_authentication.method_rule')
+        ->autoconfigure()
+        ->class(ClientAuthenticationMethodRule::class)
         ->args([
-            ref(\OAuth2Framework\Component\Core\Client\ClientRepository::class),
-            ref(AuthenticationMethodManager::class),
+            ref('oauth2_server.client_authentication.method_manager'),
         ]);
 };

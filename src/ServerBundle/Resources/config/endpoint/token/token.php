@@ -12,10 +12,9 @@ declare(strict_types=1);
  */
 
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use OAuth2Framework\ServerBundle\Middleware;
+use OAuth2Framework\Component\Core\Middleware;
 use OAuth2Framework\Component\TokenEndpoint;
 use OAuth2Framework\Component\Core\TokenType\TokenTypeMiddleware;
-use OAuth2Framework\Component\ClientAuthentication\ClientAuthenticationMiddleware;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
 return function (ContainerConfigurator $container) {
@@ -26,8 +25,8 @@ return function (ContainerConfigurator $container) {
     $container->set('token_endpoint_pipe')
         ->class(Middleware\Pipe::class)
         ->args([[
-            ref('oauth2_message_middleware_with_client_authentication'),
-            ref(ClientAuthenticationMiddleware::class),
+            ref('oauth2_server.message_middleware.for_client_authentication'),
+            ref('oauth2_server.client_authentication.middleware'),
             ref(TokenEndpoint\GrantTypeMiddleware::class),
             ref(TokenTypeMiddleware::class),
             ref(TokenEndpoint\TokenEndpoint::class),
@@ -43,12 +42,12 @@ return function (ContainerConfigurator $container) {
 
     $container->set(TokenEndpoint\TokenEndpoint::class)
         ->args([
-            ref(\OAuth2Framework\Component\Core\Client\ClientRepository::class),
+            ref('oauth2_server.client.repository'),
             ref(\OAuth2Framework\Component\Core\UserAccount\UserAccountRepository::class)->nullOnInvalid(),
             ref(TokenEndpoint\Extension\TokenEndpointExtensionManager::class),
             ref(\Http\Message\ResponseFactory::class),
-            ref(\OAuth2Framework\Component\Core\AccessToken\AccessTokenIdGenerator::class),
-            ref(\OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository::class),
+            ref('oauth2_server.access_token.id_generator'),
+            ref('oauth2_server.access_token.repository'),
             '%oauth2_server.access_token_lifetime%',
         ]);
 };

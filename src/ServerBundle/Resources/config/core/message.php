@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use OAuth2Framework\Component\Core\Message;
-use OAuth2Framework\ServerBundle\Middleware;
+use OAuth2Framework\Component\Core\Middleware;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
 return function (ContainerConfigurator $container) {
@@ -22,44 +22,59 @@ return function (ContainerConfigurator $container) {
         ->autowire()
         ->autoconfigure();
 
-    $container->set('oauth2_message_middleware_with_client_authentication')
+    $container->set('oauth2_server.message_middleware.for_client_authentication')
         ->class(Middleware\OAuth2MessageMiddleware::class)
         ->args([
-            ref('oauth2_message_factory_manager_with_client_authentication'),
-        ])
-    ;
-    $container->set('oauth2_message_factory_manager_with_client_authentication')
-        ->class(Message\OAuth2MessageFactoryManager::class)
-        ->call('addFactory', [ref(Message\Factory\AuthenticateResponseForClientFactory::class)])
-        ->call('addFactory', [ref(Message\Factory\AccessDeniedResponseFactory::class)])
-        ->call('addFactory', [ref(Message\Factory\BadRequestResponseFactory::class)])
-        ->call('addFactory', [ref(Message\Factory\MethodNotAllowedResponseFactory::class)])
-        ->call('addFactory', [ref(Message\Factory\NotImplementedResponseFactory::class)])
-        ->call('addFactory', [ref(Message\Factory\RedirectResponseFactory::class)])
-    ;
+            ref('oauth2_server.message_factory_manager.for_client_authentication'),
+        ]);
+    $container->set('oauth2_server.message_factory_manager.for_client_authentication')
+        ->class(Message\OAuth2MessageFactoryManager::class);
 
-    $container->set('oauth2_message_middleware_with_token_authentication')
+    $container->set('oauth2_server.message_middleware.for_token_authentication')
         ->class(Middleware\OAuth2MessageMiddleware::class)
         ->args([
-            ref('oauth2_message_factory_manager_with_token_authentication'),
-        ])
-    ;
-    $container->set('oauth2_message_factory_manager_with_token_authentication')
-        ->class(Message\OAuth2MessageFactoryManager::class)
-        ->call('addFactory', [ref(Message\Factory\AuthenticateResponseForTokenFactory::class)])
-        ->call('addFactory', [ref(Message\Factory\AccessDeniedResponseFactory::class)])
-        ->call('addFactory', [ref(Message\Factory\BadRequestResponseFactory::class)])
-        ->call('addFactory', [ref(Message\Factory\MethodNotAllowedResponseFactory::class)])
-        ->call('addFactory', [ref(Message\Factory\NotImplementedResponseFactory::class)])
-        ->call('addFactory', [ref(Message\Factory\RedirectResponseFactory::class)])
-    ;
+            ref('oauth2_server.message_factory_manager.for_token_authentication'),
+        ]);
+    $container->set('oauth2_server.message_factory_manager.for_token_authentication')
+        ->class(Message\OAuth2MessageFactoryManager::class);
 
     //Factories
-    $container->set(Message\Factory\AccessDeniedResponseFactory::class);
-    $container->set(Message\Factory\AuthenticateResponseForTokenFactory::class);
-    $container->set(Message\Factory\AuthenticateResponseForClientFactory::class);
-    $container->set(Message\Factory\BadRequestResponseFactory::class);
-    $container->set(Message\Factory\MethodNotAllowedResponseFactory::class);
-    $container->set(Message\Factory\NotImplementedResponseFactory::class);
-    $container->set(Message\Factory\RedirectResponseFactory::class);
+    $container->set('oauth2_server.message_factory.403')
+        ->class(Message\Factory\AccessDeniedResponseFactory::class)
+        ->tag('oauth2_server_message_factory_for_token_authentication')
+        ->tag('oauth2_server_message_factory_for_client_authentication');
+
+    $container->set('oauth2_server.message_factory.401_for_token')
+        ->args([
+            ref(\OAuth2Framework\Component\Core\TokenType\TokenTypeManager::class),
+        ])
+        ->class(Message\Factory\AuthenticateResponseForTokenFactory::class)
+        ->tag('oauth2_server_message_factory_for_token_authentication');
+
+    $container->set('oauth2_server.message_factory.401_for_client')
+        ->args([
+            ref('oauth2_server.client_authentication.method_manager'),
+        ])
+        ->class(Message\Factory\AuthenticateResponseForClientFactory::class)
+        ->tag('oauth2_server_message_factory_for_client_authentication');
+
+    $container->set('oauth2_server.message_factory.400')
+        ->class(Message\Factory\BadRequestResponseFactory::class)
+        ->tag('oauth2_server_message_factory_for_token_authentication')
+        ->tag('oauth2_server_message_factory_for_client_authentication');
+
+    $container->set('oauth2_server.message_factory.405')
+        ->class(Message\Factory\MethodNotAllowedResponseFactory::class)
+        ->tag('oauth2_server_message_factory_for_token_authentication')
+        ->tag('oauth2_server_message_factory_for_client_authentication');
+
+    $container->set('oauth2_server.message_factory.501')
+        ->class(Message\Factory\NotImplementedResponseFactory::class)
+        ->tag('oauth2_server_message_factory_for_token_authentication')
+        ->tag('oauth2_server_message_factory_for_client_authentication');
+
+    $container->set('oauth2_server.message_factory.302')
+        ->class(Message\Factory\RedirectResponseFactory::class)
+        ->tag('oauth2_server_message_factory_for_token_authentication')
+        ->tag('oauth2_server_message_factory_for_client_authentication');
 };

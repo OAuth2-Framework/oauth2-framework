@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Component\Endpoint\ClientRegistration;
 
+use OAuth2Framework\Component\ClientRegistrationEndpoint\ClientRegistrationEndpoint;
 use OAuth2Framework\ServerBundle\Component\Component;
 use OAuth2Framework\ServerBundle\Component\Endpoint\ClientRegistration\Compiler\ClientRegistrationEndpointRouteCompilerPass;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
@@ -51,6 +52,9 @@ class ClientRegistrationSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
+        if (!class_exists(ClientRegistrationEndpoint::class)) {
+            return;
+        }
         $config = $configs['endpoint']['client_registration'];
         $container->setParameter('oauth2_server.endpoint.client_registration.enabled', $config['enabled']);
         if (!$config['enabled']) {
@@ -72,6 +76,9 @@ class ClientRegistrationSource implements Component
      */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
+        if (!class_exists(ClientRegistrationEndpoint::class)) {
+            return;
+        }
         $childNode = $node->children()
             ->arrayNode($this->name())
                 ->canBeEnabled();
@@ -99,6 +106,9 @@ class ClientRegistrationSource implements Component
      */
     public function prepend(ContainerBuilder $container, array $config): array
     {
+        if (!class_exists(ClientRegistrationEndpoint::class)) {
+            return [];
+        }
         if (!$config['endpoint']['client_registration']['enabled']) {
             return [];
         }
@@ -118,6 +128,9 @@ class ClientRegistrationSource implements Component
      */
     public function build(ContainerBuilder $container)
     {
+        if (!class_exists(ClientRegistrationEndpoint::class)) {
+            return;
+        }
         $container->addCompilerPass(new ClientRegistrationEndpointRouteCompilerPass());
         foreach ($this->subComponents as $component) {
             $component->build($container);

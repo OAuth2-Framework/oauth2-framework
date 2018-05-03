@@ -73,6 +73,19 @@ class AccessToken extends Token
     }
 
     /**
+     * @return AccessTokenId
+     */
+    public function getAccessTokenId(): AccessTokenId
+    {
+        $id = $this->getTokenId();
+        if (!$id instanceof AccessTokenId) {
+            throw new \RuntimeException('Access token not initialized.');
+        }
+
+        return $this->accessTokenId;
+    }
+
+    /**
      * @return AccessToken
      */
     public function markAsRevoked(): self

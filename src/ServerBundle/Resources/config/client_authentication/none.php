@@ -16,8 +16,9 @@ use OAuth2Framework\Component\ClientAuthentication\None;
 
 return function (ContainerConfigurator $container) {
     $container = $container->services()->defaults()
-        ->private()
-        ->autoconfigure();
+        ->private();
 
-    $container->set(None::class);
+    $container
+        ->set(None::class)
+        ->tag('oauth2_server_client_authentication');
 };

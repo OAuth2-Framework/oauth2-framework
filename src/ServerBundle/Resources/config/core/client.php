@@ -12,11 +12,12 @@ declare(strict_types=1);
  */
 
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use OAuth2Framework\ServerBundle\Service\RandomClientIdGenerator;
 
 return function (ContainerConfigurator $container) {
     $container = $container->services()->defaults()
-        ->public()
-        ->autoconfigure();
+        ->private();
 
-    $container->set(\OAuth2Framework\ServerBundle\Service\RandomClientIdGenerator::class);
+    // Default client ID generator
+    $container->set(RandomClientIdGenerator::class);
 };

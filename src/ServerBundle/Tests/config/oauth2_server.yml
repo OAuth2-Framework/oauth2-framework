@@ -1,8 +1,6 @@
 oauth2_server:
     server_uri: 'https://oauth2.test/'
 #    http_client: 'httplug.client.oauth2'
-    firewall:
-        enabled: true
 #    # Key Component
     client:
         repository: 'OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\ClientRepository'
@@ -32,10 +30,6 @@ oauth2_server:
         allow_token_type_parameter: true
         bearer_token:
             enabled: true
-            realm: 'My super service'
-            authorization_header: true
-            query_string: true
-            request_body: true
         mac_token:
             enabled: true
             min_length: 50
@@ -97,10 +91,10 @@ oauth2_server:
             enabled: true
             path: '/token/get'
             host: 'bar.bar'
-        jwks_uri:
-            enabled: true
-            path: '/public.jwkset'
-            key_set: '{"keys":[{"kty":"EC","crv":"P-256","x":"VlZO9X_B43HFSUK8aeQn88UO2_VfeBtVU1Usl3rYq90","y":"oAHPRNZEUpe-T2-Q_rThJ4lGsNYLXomSYW69RZ9jzNQ"},{"kty":"EC","crv":"P-256","x":"w0qQe7oa_aI3G6irjTbdtMqc4e0vNveQgRoRCyvpIBE","y":"7DyqhillL89iM6fMK216ov1EixmJGda76ugNuE-fsic"},{"kty":"RSA","n":"sLjaCStJYRr_y7_3GLlDb4bnGJ8XirSdFboYmvA38NXJ6PhIIjr-sFzfwlcpxZxz6zzjXkDFs3AcUOvC3_KRT5tn4XBOHcR6ABrT65dZTe_qalEpYeQG4oxevc01vmD_dD6Ho2O69amT4gscus2pvszFPdraMYybH24aQFztVtc","e":"AQAB"},{"kty":"RSA","n":"um8f5neOmoGMsQ-BJMOgehsSOzQiYOk4W7AJL97q-V_8VojXJKHUqvTqiDeVfcgxPz1kNseIkm4PivKYQ1_Yh1j5RxL30V8Pc3VR7ReLMvEsQUbedkJKqhXy7gOYyc4IrYTux1I2dI5I8r_lvtDtTgWB5UrWfwj9ddVhk22z6jc","e":"AQAB"}]}'
+#        jwks_uri:
+#            enabled: true
+#            path: '/public.jwkset'
+#            key_set: '{"keys":[{"kty":"EC","crv":"P-256","x":"VlZO9X_B43HFSUK8aeQn88UO2_VfeBtVU1Usl3rYq90","y":"oAHPRNZEUpe-T2-Q_rThJ4lGsNYLXomSYW69RZ9jzNQ"},{"kty":"EC","crv":"P-256","x":"w0qQe7oa_aI3G6irjTbdtMqc4e0vNveQgRoRCyvpIBE","y":"7DyqhillL89iM6fMK216ov1EixmJGda76ugNuE-fsic"},{"kty":"RSA","n":"sLjaCStJYRr_y7_3GLlDb4bnGJ8XirSdFboYmvA38NXJ6PhIIjr-sFzfwlcpxZxz6zzjXkDFs3AcUOvC3_KRT5tn4XBOHcR6ABrT65dZTe_qalEpYeQG4oxevc01vmD_dD6Ho2O69amT4gscus2pvszFPdraMYybH24aQFztVtc","e":"AQAB"},{"kty":"RSA","n":"um8f5neOmoGMsQ-BJMOgehsSOzQiYOk4W7AJL97q-V_8VojXJKHUqvTqiDeVfcgxPz1kNseIkm4PivKYQ1_Yh1j5RxL30V8Pc3VR7ReLMvEsQUbedkJKqhXy7gOYyc4IrYTux1I2dI5I8r_lvtDtTgWB5UrWfwj9ddVhk22z6jc","e":"AQAB"}]}'
         metadata:
             enabled: true
             path: '/.well-known/openid-configuration'
@@ -169,7 +163,6 @@ oauth2_server:
             enabled: true
         client_credentials:
             enabled: true
-            issue_refresh_token: true
         resource_owner_password_credential:
             enabled: true
         jwt_bearer:

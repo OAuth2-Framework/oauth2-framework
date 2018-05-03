@@ -218,7 +218,7 @@ class UserInfo
      */
     private function calculateSubjectIdentifier(Client $client, UserAccount $userAccount, string $redirectUri): string
     {
-        $sub = $userAccount->getPublicId()->getValue();
+        $sub = $userAccount->getUserAccountId()->getValue();
         if (false === $this->isPairwiseSubjectIdentifierSupported()) {
             return $sub;
         }

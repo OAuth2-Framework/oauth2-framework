@@ -16,11 +16,11 @@ use OAuth2Framework\Component\ClientAuthentication\ClientSecretPost;
 
 return function (ContainerConfigurator $container) {
     $container = $container->services()->defaults()
-        ->private()
-        ->autoconfigure();
+        ->private();
 
     $container->set(ClientSecretPost::class)
         ->args([
             '%oauth2_server.client_authentication.client_secret_post.secret_lifetime%',
-        ]);
+        ])
+        ->tag('oauth2_server_client_authentication');
 };

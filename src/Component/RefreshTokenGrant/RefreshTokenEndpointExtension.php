@@ -85,7 +85,7 @@ final class RefreshTokenEndpointExtension implements TokenEndpointExtension
             $refreshTokenId = RefreshTokenId::create($accessToken->getParameter('refresh_token'));
             $refreshToken = $this->refreshTokenRepository->find($refreshTokenId);
             if (null !== $refreshToken) {
-                $refreshToken = $refreshToken->addAccessToken($accessToken->getTokenId());
+                $refreshToken = $refreshToken->addAccessToken($accessToken->getAccessTokenId());
                 $this->refreshTokenRepository->save($refreshToken);
             }
         }
