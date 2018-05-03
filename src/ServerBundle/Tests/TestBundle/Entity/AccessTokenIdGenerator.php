@@ -16,13 +16,13 @@ namespace OAuth2Framework\ServerBundle\Tests\TestBundle\Entity;
 use Base64Url\Base64Url;
 use OAuth2Framework\Component\Core\AccessToken\AccessToken;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
-use OAuth2Framework\Component\Core\AccessToken\AccessTokenIdGenerator as AccessTokenManagerInterface;
+use OAuth2Framework\Component\Core\AccessToken\AccessTokenIdGenerator as AccessTokenIdGeneratorInterface;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwnerId;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
 
-class AccessTokenIdGenerator implements AccessTokenManagerInterface
+class AccessTokenIdGenerator implements AccessTokenIdGeneratorInterface
 {
     /**
      * @var AccessTokenRepository

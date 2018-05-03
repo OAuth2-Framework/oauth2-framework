@@ -26,14 +26,14 @@ return function (ContainerConfigurator $container) {
     $container->set('token_revocation_pipe')
         ->class(Middleware\Pipe::class)
         ->args([[
-            ref('oauth2_message_middleware_with_client_authentication'),
-            ref(\OAuth2Framework\Component\ClientAuthentication\ClientAuthenticationMiddleware::class),
+            ref('oauth2_server.message_middleware.for_client_authentication'),
+            ref('oauth2_server.client_authentication.middleware'),
             ref('token_revocation_method_handler'),
         ]])
         ->tag('controller.service_arguments');
 
     $container->set('token_revocation_method_handler')
-        ->class(\OAuth2Framework\ServerBundle\Middleware\HttpMethodMiddleware::class)
+        ->class(\OAuth2Framework\Component\Core\Middleware\HttpMethodMiddleware::class)
         ->call('add', ['POST', ref(TokenRevocationPostEndpoint::class)])
         ->call('add', ['GET', ref(TokenRevocationGetEndpoint::class)]);
 

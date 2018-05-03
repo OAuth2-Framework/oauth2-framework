@@ -15,6 +15,7 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
 use OAuth2Framework\Component\BearerTokenType\BearerToken;
 use OAuth2Framework\Component\ClientConfigurationEndpoint\ClientConfigurationEndpoint;
 use OAuth2Framework\ServerBundle\Controller\ClientConfigurationMiddleware;
+use OAuth2Framework\Component\Core\Message;
 use OAuth2Framework\Component\Core\Middleware;
 use OAuth2Framework\ServerBundle\Rule\ClientConfigurationRouteRule;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
@@ -26,7 +27,7 @@ return function (ContainerConfigurator $container) {
     $container->set('client_configuration_endpoint_pipe')
         ->class(Middleware\Pipe::class)
         ->args([[
-            ref(Middleware\OAuth2MessageMiddleware::class), //FIXME: use a dedicated message factory for this endpoint
+            ref('oauth2_server.message_middleware.for_client_configuration'),
             ref('oauth2_server.client_configuration.middleware'),
             ref('oauth2_server.client_configuration.endpoint'),
         ]])
@@ -61,4 +62,13 @@ return function (ContainerConfigurator $container) {
         ->args([
             ref('router'),
         ]);
+
+
+    $container->set('oauth2_server.message_middleware.for_client_configuration')
+        ->class(Middleware\OAuth2MessageMiddleware::class)
+        ->args([
+            ref('oauth2_server.message_factory_manager.for_client_configuration'),
+        ]);
+    $container->set('oauth2_server.message_factory_manager.for_client_configuration')
+        ->class(Message\OAuth2MessageFactoryManager::class);
 };

@@ -15,6 +15,7 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
 use OAuth2Framework\Component\ClientRegistrationEndpoint\ClientRegistrationEndpoint;
 use OAuth2Framework\Component\Core\Middleware;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
+use OAuth2Framework\Component\Core\Message;
 
 return function (ContainerConfigurator $container) {
     $container = $container->services()->defaults()
@@ -24,7 +25,7 @@ return function (ContainerConfigurator $container) {
     $container->set('client_registration_endpoint_pipe')
         ->class(Middleware\Pipe::class)
         ->args([[
-            ref('oauth2_server.client_registration.message_middleware'),
+            ref('oauth2_server.message_middleware.for_client_registration'),
             ref('oauth2_server.client_registration.endpoint'),
         ]])
         ->tag('controller.service_arguments');
@@ -37,4 +38,13 @@ return function (ContainerConfigurator $container) {
             ref(\Http\Message\ResponseFactory::class), //TODO
             ref('oauth2_server.client_rule.manager'),
         ]);
+
+
+    $container->set('oauth2_server.message_middleware.for_client_registration')
+        ->class(Middleware\OAuth2MessageMiddleware::class)
+        ->args([
+            ref('oauth2_server.message_factory_manager.for_client_registration'),
+        ]);
+    $container->set('oauth2_server.message_factory_manager.for_client_registration')
+        ->class(Message\OAuth2MessageFactoryManager::class);
 };

@@ -27,7 +27,7 @@ return function (ContainerConfigurator $container) {
             ref('jose.jws_verifier.oauth2_server.grant.jwt_bearer'),
             ref('jose.header_checker.oauth2_server.grant.jwt_bearer'),
             ref('jose.claim_checker.oauth2_server.grant.jwt_bearer'),
-            ref(\OAuth2Framework\Component\Core\Client\ClientRepository::class),
+            ref('oauth2_server.client.repository'),
             ref(\OAuth2Framework\Component\Core\UserAccount\UserAccountRepository::class),
         ]);
 };

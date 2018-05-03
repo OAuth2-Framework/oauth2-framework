@@ -16,6 +16,7 @@ namespace OAuth2Framework\ServerBundle\Component\Core;
 use OAuth2Framework\Component\Core\Message\MessageExtension;
 use OAuth2Framework\ServerBundle\Component\Component;
 use OAuth2Framework\ServerBundle\Component\Core\Compiler\OAuth2MessageExtensionCompilerClass;
+use OAuth2Framework\ServerBundle\Component\Core\Compiler\OAuth2MessageFactoryCompilerClass;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -64,6 +65,7 @@ class ServicesSource implements Component
     public function build(ContainerBuilder $container)
     {
         $container->addCompilerPass(new OAuth2MessageExtensionCompilerClass());
+        $container->addCompilerPass(new OAuth2MessageFactoryCompilerClass());
     }
 
     /**

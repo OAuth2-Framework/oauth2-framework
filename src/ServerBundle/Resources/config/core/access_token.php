@@ -12,7 +12,6 @@ declare(strict_types=1);
  */
 
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use OAuth2Framework\Component\Core\AccessToken\AccessTokenHandlerManager;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenIntrospectionTypeHint;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenRevocationTypeHint;
 use OAuth2Framework\ServerBundle\Service\RandomAccessTokenIdGenerator;
@@ -21,10 +20,6 @@ use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 return function (ContainerConfigurator $container) {
     $container = $container->services()->defaults()
         ->private();
-
-    // FIXME: To be moved in its dedicated bundle
-    $container->set('oauth2_security.access_token.handler_manager')
-        ->class(AccessTokenHandlerManager::class);
 
     $container->set('oauth2_security.access_token.introspection_type_hint')
         ->class(AccessTokenIntrospectionTypeHint::class)

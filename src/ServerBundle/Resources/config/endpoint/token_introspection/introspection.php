@@ -26,7 +26,7 @@ return function (ContainerConfigurator $container) {
     $container->set('token_introspection_pipe')
         ->class(Middleware\Pipe::class)
         ->args([
-            ref('oauth2_message_middleware_with_client_authentication'),
+            ref('oauth2_server.message_middleware.for_client_authentication'),
             ref(AuthenticationMiddleware::class),
             ref(TokenIntrospectionEndpoint::class),
         ])
