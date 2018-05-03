@@ -11,7 +11,7 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\SecurityBundle\SecurityPlugin\Resolver;
+namespace OAuth2Framework\SecurityBundle\Resolver;
 
 use OAuth2Framework\SecurityBundle\Security\Authentication\Token\OAuth2Token;
 use OAuth2Framework\Component\Core\AccessToken\AccessToken;
@@ -54,6 +54,9 @@ final class AccessTokenResolver implements ArgumentValueResolverInterface
      */
     public function resolve(Request $request, ArgumentMetadata $argument)
     {
-        yield $this->tokenStorage->getToken()->getAccessToken();
+        $token = $this->tokenStorage->getToken();
+        if ($token instanceof OAuth2Token) {
+            yield $token->getAccessToken();
+        }
     }
 }

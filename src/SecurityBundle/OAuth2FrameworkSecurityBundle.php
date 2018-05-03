@@ -22,7 +22,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Symfony\Bundle\SecurityBundle\DependencyInjection\SecurityExtension;
 
-class OAuth2FrameworkSecurityBundle extends Bundle
+final class OAuth2FrameworkSecurityBundle extends Bundle
 {
     /**
      * {@inheritdoc}

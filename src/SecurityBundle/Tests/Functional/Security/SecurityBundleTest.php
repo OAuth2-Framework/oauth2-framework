@@ -11,7 +11,7 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\SecurityBundle\Tests\Functional;
+namespace OAuth2Framework\SecurityBundle\Tests\Functional\Security;
 
 use OAuth2Framework\Component\Core\AccessToken\AccessToken;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
@@ -84,7 +84,7 @@ class SecurityBundleTest extends WebTestCase
             ]),
             DataBag::create([]),
             new \DateTimeImmutable('now +1 hour'),
-            ResourceServerId::create('RESOURCE_SERVER_iD')
+            ResourceServerId::create('RESOURCE_SERVER_ID')
         );
         $accessTokenHandler->save($accessToken);
 
@@ -113,7 +113,7 @@ class SecurityBundleTest extends WebTestCase
             ]),
             DataBag::create([]),
             new \DateTimeImmutable('now +1 hour'),
-            ResourceServerId::create('RESOURCE_SERVER_iD')
+            ResourceServerId::create('RESOURCE_SERVER_ID')
         );
         $accessTokenHandler->save($accessToken);
 
@@ -121,5 +121,34 @@ class SecurityBundleTest extends WebTestCase
         $response = $client->getResponse();
         self::assertEquals(403, $response->getStatusCode());
         self::assertEquals('{"error":"access_denied","error_description":"Token type \"Bearer\" not allowed. Please use \"MAC\""}', $response->getContent());
+    }
+
+    /**
+     * @test
+     */
+    public function aValidApiRequestIsReceivedAndTheAccessTokenResolverIsUsed()
+    {
+        $client = static::createClient();
+        /** @var AccessTokenHandler $accessTokenHandler */
+        $accessTokenHandler = $client->getContainer()->get(AccessTokenHandler::class);
+        $accessToken = AccessToken::createEmpty();
+        $accessToken = $accessToken->create(
+            AccessTokenId::create('VALID_ACCESS_TOKEN'),
+            UserAccountId::create('USER_ACCOUNT_ID'),
+            ClientId::create('CLIENT_ID'),
+            DataBag::create([
+                'token_type' => 'Bearer',
+                'scope' => 'openid',
+            ]),
+            DataBag::create([]),
+            new \DateTimeImmutable('now +1 hour'),
+            ResourceServerId::create('RESOURCE_SERVER_ID')
+        );
+        $accessTokenHandler->save($accessToken);
+
+        $client->request('GET', '/api/hello-resolver', [], [], ['HTTPS' => 'on', 'HTTP_AUTHORIZATION' => 'Bearer VALID_ACCESS_TOKEN']);
+        $response = $client->getResponse();
+        self::assertEquals(200, $response->getStatusCode());
+        self::assertEquals(json_encode($accessToken), $response->getContent());
     }
 }

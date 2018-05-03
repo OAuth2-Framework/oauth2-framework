@@ -83,7 +83,7 @@ final class OAuth2FrameworkSecurityExtension extends Extension
     /**
      * {@inheritdoc}
      */
-    public function getConfiguration(array $configs, ContainerBuilder $container)
+    public function getConfiguration(array $configs, ContainerBuilder $container): Configuration
     {
         return new Configuration($this->getAlias());
     }

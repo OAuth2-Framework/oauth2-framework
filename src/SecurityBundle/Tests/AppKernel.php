@@ -32,7 +32,8 @@ final class AppKernel extends Kernel
      */
     public function __construct(string $environment, bool $debug)
     {
-        parent::__construct($environment, false);
+        $debug = false;
+        parent::__construct($environment, $debug);
     }
 
     /**

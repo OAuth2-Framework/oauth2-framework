@@ -23,6 +23,7 @@ use OAuth2Framework\SecurityBundle\Service\MessageFactory;
 use OAuth2Framework\SecurityBundle\Annotation;
 use OAuth2Framework\Component\Core\TokenType\TokenTypeManager;
 use OAuth2Framework\Component\Core\Message;
+use OAuth2Framework\SecurityBundle\Resolver\AccessTokenResolver;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
 return function (ContainerConfigurator $container) {
@@ -115,4 +116,6 @@ return function (ContainerConfigurator $container) {
     $container->set('oauth2_security.psr7_message_factory.default')
         ->class(MessageFactory::class);
 
+
+    $container->set(AccessTokenResolver::class);
 };

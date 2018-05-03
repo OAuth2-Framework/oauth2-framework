@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\SecurityBundle\Tests\TestBundle\Controller;
 
+use OAuth2Framework\Component\Core\AccessToken\AccessToken;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use OAuth2Framework\SecurityBundle\Annotation\OAuth2;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -56,5 +57,17 @@ class ApiController extends Controller
     public function tokenTypeProtectionAction()
     {
         return new JsonResponse(['name' => 'I am protected by scope', 'message' => 'Hello!']);
+    }
+
+    /**
+     * @Route("/hello-resolver", name="api_resolver")
+     *
+     * @param AccessToken $accessToken
+     *
+     * @return Response
+     */
+    public function accessTokenResolverAction(AccessToken $accessToken)
+    {
+        return new JsonResponse($accessToken);
     }
 }
