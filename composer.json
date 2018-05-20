@@ -29,9 +29,10 @@
         "symfony/psr-http-message-bridge": "^1.0",
         "symfony/security-bundle": "^3.4|^4.0",
         "symfony/translation": "^3.4|^4.0",
-        "web-token/jwt-core": "^1.1@beta",
-        "web-token/jwt-checker": "^1.1@beta",
-        "web-token/jwt-signature": "^1.1@beta",
+        "web-token/jwt-core": "^1.1",
+        "web-token/jwt-checker": "^1.1",
+        "web-token/jwt-signature": "^1.1",
+        "web-token/jwt-bundle": "^1.1",
         "zendframework/zend-diactoros": "^1.7"
     },
     "require-dev": {
@@ -50,9 +51,8 @@
         "symfony/twig-bundle": "^3.4|^4.0",
         "symfony/validator": "^3.4|^4.0",
         "symfony/var-dumper": "^3.4|^4.0",
-        "web-token/jwt-bundle": "^1.1@beta",
-        "web-token/jwt-encryption": "^1.1@beta",
-        "web-token/jwt-key-mgmt": "^1.1@beta"
+        "web-token/jwt-encryption": "^1.1",
+        "web-token/jwt-key-mgmt": "^1.1"
     },
     "replace": {
         "oauth2-framework/authorization-server-bundle": "self.version",
