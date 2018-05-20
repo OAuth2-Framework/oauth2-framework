@@ -70,7 +70,7 @@ class JwtBearerGrantType implements GrantType
     private $clientRepository;
 
     /**
-     * @var UserAccountRepository
+     * @var UserAccountRepository|null
      */
     private $userAccountRepository;
 
@@ -97,14 +97,14 @@ class JwtBearerGrantType implements GrantType
     /**
      * JWTBearerGrantType constructor.
      *
-     * @param JsonConverter         $jsonConverter
-     * @param JWSVerifier           $jwsVerifier
-     * @param HeaderCheckerManager  $headerCheckerManager
-     * @param ClaimCheckerManager   $claimCheckerManager
-     * @param ClientRepository      $clientRepository
-     * @param UserAccountRepository $userAccountRepository
+     * @param JsonConverter              $jsonConverter
+     * @param JWSVerifier                $jwsVerifier
+     * @param HeaderCheckerManager       $headerCheckerManager
+     * @param ClaimCheckerManager        $claimCheckerManager
+     * @param ClientRepository           $clientRepository
+     * @param UserAccountRepository|null $userAccountRepository
      */
-    public function __construct(JsonConverter $jsonConverter, JWSVerifier $jwsVerifier, HeaderCheckerManager $headerCheckerManager, ClaimCheckerManager $claimCheckerManager, ClientRepository $clientRepository, UserAccountRepository $userAccountRepository)
+    public function __construct(JsonConverter $jsonConverter, JWSVerifier $jwsVerifier, HeaderCheckerManager $headerCheckerManager, ClaimCheckerManager $claimCheckerManager, ClientRepository $clientRepository, ?UserAccountRepository $userAccountRepository)
     {
         $this->jsonConverter = $jsonConverter;
         $this->jwsVerifier = $jwsVerifier;
@@ -307,7 +307,7 @@ class JwtBearerGrantType implements GrantType
      */
     private function findResourceOwner(string $subject): ? ResourceOwnerId
     {
-        $userAccount = $this->userAccountRepository->find(UserAccountId::create($subject));
+        $userAccount = $this->userAccountRepository ? $this->userAccountRepository->find(UserAccountId::create($subject)) : null;
         if (null !== $userAccount) {
             return $userAccount->getUserAccountId();
         }

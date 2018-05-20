@@ -14,6 +14,7 @@ declare(strict_types=1);
 use Jose\Component\Core\Converter\JsonConverter;
 use OAuth2Framework\Component\JwtBearerGrant\JwtBearerGrantType;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use OAuth2Framework\Component\Core\UserAccount\UserAccountRepository;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
 return function (ContainerConfigurator $container) {
@@ -28,6 +29,6 @@ return function (ContainerConfigurator $container) {
             ref('jose.header_checker.oauth2_server.grant.jwt_bearer'),
             ref('jose.claim_checker.oauth2_server.grant.jwt_bearer'),
             ref('oauth2_server.client.repository'),
-            ref(\OAuth2Framework\Component\Core\UserAccount\UserAccountRepository::class),
+            ref(UserAccountRepository::class)->nullOnInvalid(),
         ]);
 };
