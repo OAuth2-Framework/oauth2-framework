@@ -69,5 +69,8 @@ return function (ContainerConfigurator $container) {
             ref('oauth2_server.message_factory_manager.for_client_configuration'),
         ]);
     $container->set('oauth2_server.message_factory_manager.for_client_configuration')
-        ->class(Message\OAuth2MessageFactoryManager::class);
+        ->class(Message\OAuth2MessageFactoryManager::class)
+        ->args([
+            ref(\Http\Message\ResponseFactory::class),
+        ]);
 };

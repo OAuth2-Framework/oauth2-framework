@@ -28,7 +28,10 @@ return function (ContainerConfigurator $container) {
             ref('oauth2_server.message_factory_manager.for_client_authentication'),
         ]);
     $container->set('oauth2_server.message_factory_manager.for_client_authentication')
-        ->class(Message\OAuth2MessageFactoryManager::class);
+        ->class(Message\OAuth2MessageFactoryManager::class)
+        ->args([
+            ref(\Http\Message\ResponseFactory::class),
+        ]);
 
     $container->set('oauth2_server.message_middleware.for_token_authentication')
         ->class(Middleware\OAuth2MessageMiddleware::class)
@@ -36,7 +39,10 @@ return function (ContainerConfigurator $container) {
             ref('oauth2_server.message_factory_manager.for_token_authentication'),
         ]);
     $container->set('oauth2_server.message_factory_manager.for_token_authentication')
-        ->class(Message\OAuth2MessageFactoryManager::class);
+        ->class(Message\OAuth2MessageFactoryManager::class)
+        ->args([
+            ref(\Http\Message\ResponseFactory::class),
+        ]);
 
     //Factories
     $container->set('oauth2_server.message_factory.403')
