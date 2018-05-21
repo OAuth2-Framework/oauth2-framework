@@ -74,9 +74,6 @@ class JwksUriEndpointSource implements Component
      */
     public function prepend(ContainerBuilder $container, array $configs): array
     {
-        if (true) {
-            return [];
-        }
         $config = $configs['endpoint']['jwks_uri'];
         if (!$config['enabled']) {
             return [];
