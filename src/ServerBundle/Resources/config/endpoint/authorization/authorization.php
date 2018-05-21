@@ -57,7 +57,11 @@ return function (ContainerConfigurator $container) {
             ref(AuthorizationEndpoint\ConsentScreen\ExtensionManager::class),
         ]);
 
-    $container->set(\OAuth2Framework\ServerBundle\Service\SymfonyUserDiscovery::class);
+    $container->set(\OAuth2Framework\ServerBundle\Service\SymfonyUserDiscovery::class)
+        ->args([
+            ref('security.token_storage'),
+            ref('security.authorization_checker'),
+        ]);
 
     $container->set('authorization_endpoint_pipe')
         ->class(Middleware\Pipe::class)
