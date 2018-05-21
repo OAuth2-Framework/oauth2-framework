@@ -51,7 +51,7 @@ class JwksUriEndpointSource implements Component
                     ->end()
                     ->scalarNode('key_set')
                         ->info('The public key set to share with third party applications.')
-                    ->end()
+                    ->enKd()
                     ->integerNode('max_age')
                         ->info('When share, this value indicates how many seconds the HTTP client should keep the key in cache. Default is 21600 = 6 hours.')
                         ->defaultValue(21600)

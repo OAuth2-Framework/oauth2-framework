@@ -107,5 +107,8 @@ return function (ContainerConfigurator $container) {
             ref('oauth2_server.message_factory_manager.for_authorization_endpoint'),
         ]);
     $container->set('oauth2_server.message_factory_manager.for_authorization_endpoint')
-        ->class(Message\OAuth2MessageFactoryManager::class);
+        ->class(Message\OAuth2MessageFactoryManager::class)
+        ->args([
+            ref(\Http\Message\ResponseFactory::class),
+        ]);
 };
