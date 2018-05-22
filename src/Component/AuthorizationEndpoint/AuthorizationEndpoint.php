@@ -94,7 +94,7 @@ abstract class AuthorizationEndpoint implements MiddlewareInterface
             $authorization = $this->createAuthorizationFromRequest($request);
             $isFullyAuthenticated = null;
             $userAccount = $this->userAccountDiscovery->find($isFullyAuthenticated);
-            if ( !is_bool($isFullyAuthenticated)) {
+            if (!is_bool($isFullyAuthenticated)) {
                 $isFullyAuthenticated = false;
             }
             if (null === $userAccount) {
