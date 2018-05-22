@@ -30,6 +30,7 @@ use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\ParameterCh
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\ResponseMode;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType;
 use OAuth2Framework\ServerBundle\Component\Endpoint\Authorization\Compiler\UserAccountCheckerCompilerPass;
+use OAuth2Framework\ServerBundle\Form\Type\AuthorizationType;
 use OAuth2Framework\ServerBundle\Service\SymfonyUserDiscovery;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\FileLocator;
@@ -95,6 +96,7 @@ class AuthorizationEndpointSource implements Component
         $container->setParameter('oauth2_server.endpoint.authorization.template', $config['template']);
         $container->setParameter('oauth2_server.endpoint.authorization.enforce_state', $config['enforce_state']);
         $container->setParameter('oauth2_server.endpoint.authorization.form', $config['form']);
+        $container->setParameter('oauth2_server.endpoint.authorization.type', $config['type']);
 
         foreach ($this->subComponents as $subComponent) {
             $subComponent->load($configs, $container);
@@ -148,6 +150,10 @@ class AuthorizationEndpointSource implements Component
             ->scalarNode('form')
                 ->info('If form used for authorization requests.')
                 ->defaultValue('oauth2_server_authorization_form')
+            ->end()
+            ->scalarNode('type')
+                ->info('Form type.')
+                ->defaultValue( AuthorizationType::class)
             ->end()
         ->end();
 

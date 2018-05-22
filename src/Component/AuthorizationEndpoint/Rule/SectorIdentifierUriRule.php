@@ -57,12 +57,6 @@ final class SectorIdentifierUriRule implements Rule
         return $next($clientId, $commandParameters, $validatedParameters);
     }
 
-    /**
-     * @param string $url
-     *
-     * @throws \InvalidArgumentException
-     * @throws \Http\Client\Exception
-     */
     private function checkSectorIdentifierUri(string $url)
     {
         $data = parse($url);

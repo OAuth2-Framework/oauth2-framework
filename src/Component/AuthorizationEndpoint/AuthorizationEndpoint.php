@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\AuthorizationEndpoint;
 
+use Http\Message\MessageFactory;
 use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\ParameterCheckerManager;
 use OAuth2Framework\Component\AuthorizationEndpoint\UserAccount\UserAccountCheckerManager;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -29,39 +30,46 @@ abstract class AuthorizationEndpoint implements MiddlewareInterface
     /**
      * @var UserAccountDiscovery
      */
-    private $userAccountDiscovery;
+    protected $userAccountDiscovery;
 
     /**
      * @var UserAccountCheckerManager
      */
-    private $userAccountCheckerManager;
+    protected $userAccountCheckerManager;
 
     /**
      * @var ExtensionManager
      */
-    private $consentScreenExtensionManager;
+    protected $consentScreenExtensionManager;
 
     /**
      * @var AuthorizationRequestLoader
      */
-    private $authorizationRequestLoader;
+    protected $authorizationRequestLoader;
 
     /**
      * @var ParameterCheckerManager
      */
-    private $parameterCheckerManager;
+    protected $parameterCheckerManager;
+
+    /**
+     * @var MessageFactory
+     */
+    protected $messageFactory;
 
     /**
      * AuthorizationEndpoint constructor.
      *
+     * @param MessageFactory             $messageFactory
      * @param AuthorizationRequestLoader $authorizationRequestLoader
      * @param ParameterCheckerManager    $parameterCheckerManager
      * @param UserAccountDiscovery       $userAccountDiscovery
      * @param UserAccountCheckerManager  $userAccountCheckerManager
      * @param ExtensionManager           $consentScreenExtensionManager
      */
-    public function __construct(AuthorizationRequestLoader $authorizationRequestLoader, ParameterCheckerManager $parameterCheckerManager, UserAccountDiscovery $userAccountDiscovery, UserAccountCheckerManager $userAccountCheckerManager, ExtensionManager $consentScreenExtensionManager)
+    public function __construct(MessageFactory $messageFactory, AuthorizationRequestLoader $authorizationRequestLoader, ParameterCheckerManager $parameterCheckerManager, UserAccountDiscovery $userAccountDiscovery, UserAccountCheckerManager $userAccountCheckerManager, ExtensionManager $consentScreenExtensionManager)
     {
+        $this->messageFactory = $messageFactory;
         $this->authorizationRequestLoader = $authorizationRequestLoader;
         $this->parameterCheckerManager = $parameterCheckerManager;
         $this->userAccountDiscovery = $userAccountDiscovery;
@@ -106,14 +114,12 @@ abstract class AuthorizationEndpoint implements MiddlewareInterface
 
             return $this->processConsentScreen($request, $authorization);
         } catch (OAuth2AuthorizationException $e) {
-            $redirectUri = $e->getAuthorization()->getRedirectUri();
+            /*$redirectUri = $e->getAuthorization()->getRedirectUri();
             $responseMode = $e->getAuthorization()->getResponseMode();
-            /*if (null !== $redirectUri && null !== $responseMode) {
-                $data['redirect_uri'] = $redirectUri;
-                $data['response_mode'] = $responseMode;
-
+            if (null !== $redirectUri && null !== $responseMode) {
                 throw new OAuth2AuthorizationException(
-                    302, $e->getMessage(),
+                    302,
+                    $e->getMessage(),
                     $e->getErrorDescription(),
                     $e->getAuthorization(),
                     $e
@@ -148,18 +154,12 @@ abstract class AuthorizationEndpoint implements MiddlewareInterface
     /**
      * @param Authorization $authorization
      *
-     * @throws OAuth2Message
-     *
      * @return ResponseInterface
      */
-    private function buildResponse(Authorization $authorization): ResponseInterface
+    protected function buildResponse(Authorization $authorization): ResponseInterface
     {
-        if (null === $authorization->getResponseMode() || null === $authorization->getRedirectUri()) {
-            throw new OAuth2Message(400, 'EEE', 'FFF');
-        }
-
         $response = $authorization->getResponseMode()->buildResponse(
-            $response,
+            $this->messageFactory->createResponse(),
             $authorization->getRedirectUri(),
             $authorization->getResponseParameters()
         );
@@ -174,10 +174,8 @@ abstract class AuthorizationEndpoint implements MiddlewareInterface
      * @param Authorization $authorization
      * @param string        $error
      * @param string        $error_description
-     *
-     * @throws OAuth2Message
      */
-    private function throwRedirectionException(Authorization $authorization, string $error, string $error_description)
+    protected function throwRedirectionException(Authorization $authorization, string $error, string $error_description)
     {
         $params = $authorization->getResponseParameters();
         if (null === $authorization->getResponseMode() || null === $authorization->getRedirectUri()) {
@@ -195,10 +193,6 @@ abstract class AuthorizationEndpoint implements MiddlewareInterface
      * @param ServerRequestInterface $request
      *
      * @return Authorization
-     *
-     * @throws \Http\Client\Exception
-     * @throws OAuth2Message
-     * @throws OAuth2AuthorizationException
      */
     public function createAuthorizationFromRequest(ServerRequestInterface $request): Authorization
     {

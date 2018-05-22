@@ -15,7 +15,6 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
 use OAuth2Framework\ServerBundle\Controller\AuthorizationEndpointController;
 use OAuth2Framework\ServerBundle\Form\FormFactory;
 use OAuth2Framework\ServerBundle\Form\Handler\AuthorizationFormHandler;
-use OAuth2Framework\ServerBundle\Form\Type\AuthorizationType;
 use OAuth2Framework\Component\Core\Message;
 use OAuth2Framework\Component\Core\Middleware;
 use OAuth2Framework\Component\AuthorizationEndpoint;
@@ -32,7 +31,7 @@ return function (ContainerConfigurator $container) {
         ->args([
             ref('form.factory'),
             '%oauth2_server.endpoint.authorization.form%',
-            AuthorizationType::class, //FIXME '%oauth2_server.authorization_endpoint.type%',
+            '%oauth2_server.endpoint.authorization.type%',
         ]);
 
     $container->set(AuthorizationFormHandler::class);
@@ -70,6 +69,7 @@ return function (ContainerConfigurator $container) {
         ->class(Middleware\Pipe::class)
         ->args([[
             ref('oauth2_server.message_middleware.for_authorization_endpoint'),
+            //FIXME: catch AuthorizationException here
             ref(TokenTypeMiddleware::class),
             ref(AuthorizationEndpointController::class),
         ]])
@@ -98,7 +98,7 @@ return function (ContainerConfigurator $container) {
         ->args([
             '%oauth2_server.endpoint.authorization.enforce_state%',
         ]);
-    //FIXME $container->set(ParameterChecker\TokenTypeParameterChecker::class);
+    $container->set(\OAuth2Framework\Component\Core\TokenType\TokenTypeParameterChecker::class);
 
     // Rules
     $container->set(AuthorizationEndpoint\Rule\RequestUriRule::class);
@@ -113,6 +113,7 @@ return function (ContainerConfigurator $container) {
         ->args([
             ref('oauth2_server.message_factory_manager.for_authorization_endpoint'),
         ]);
+
     $container->set('oauth2_server.message_factory_manager.for_authorization_endpoint')
         ->class(Message\OAuth2MessageFactoryManager::class)
         ->args([

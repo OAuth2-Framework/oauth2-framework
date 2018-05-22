@@ -42,11 +42,6 @@ final class AuthorizationEndpointController extends AuthorizationEndpoint
     private $session;
 
     /**
-     * @var MessageFactory
-     */
-    private $messageFactory;
-
-    /**
      * @var RouterInterface
      */
     private $router;
@@ -107,7 +102,7 @@ final class AuthorizationEndpointController extends AuthorizationEndpoint
      */
     public function __construct(EngineInterface $templateEngine, string $template, FormFactory $formFactory, AuthorizationFormHandler $formHandler, TranslatorInterface $translator, RouterInterface $router, string $loginRoute, array $loginRouteParams, MessageFactory $messageFactory, SessionInterface $session, AuthorizationRequestLoader $authorizationRequestLoader, ParameterCheckerManager $parameterCheckerManager, UserAccountDiscovery $userAccountDiscovery, UserAccountCheckerManager $userAccountCheckerManager, ExtensionManager $consentScreenExtensionManager)
     {
-        parent::__construct($authorizationRequestLoader, $parameterCheckerManager, $userAccountDiscovery, $userAccountCheckerManager, $consentScreenExtensionManager);
+        parent::__construct($messageFactory, $authorizationRequestLoader, $parameterCheckerManager, $userAccountDiscovery, $userAccountCheckerManager, $consentScreenExtensionManager);
 
         $this->session = $session;
         $this->messageFactory = $messageFactory;
@@ -142,14 +137,6 @@ final class AuthorizationEndpointController extends AuthorizationEndpoint
         return $response;
     }
 
-    /**
-     * @param ServerRequestInterface $request
-     * @param Authorization          $authorization
-     *
-     * @throws ProcessAuthorizationException
-     *
-     * @return ResponseInterface
-     */
     protected function processConsentScreen(ServerRequestInterface $request, Authorization $authorization): ResponseInterface
     {
         //FIXME: $options = $this->processConsentScreenOptions($authorization);
