@@ -40,7 +40,7 @@ class FormFactory
      * @param string               $name
      * @param string               $type
      */
-    public function __construct( FormFactoryInterface $formFactory, string $name, string $type)
+    public function __construct(FormFactoryInterface $formFactory, string $name, string $type)
     {
         $this->formFactory = $formFactory;
         $this->name = $name;
