@@ -153,7 +153,7 @@ class AuthorizationEndpointSource implements Component
             ->end()
             ->scalarNode('type')
                 ->info('Form type.')
-                ->defaultValue( AuthorizationType::class)
+                ->defaultValue(AuthorizationType::class)
             ->end()
         ->end();
 
