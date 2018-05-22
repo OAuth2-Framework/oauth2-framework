@@ -15,7 +15,6 @@ namespace OAuth2Framework\ServerBundle\Form;
 
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\Translation\TranslatorInterface;
 
 class FormFactory
 {
@@ -35,21 +34,14 @@ class FormFactory
     private $type;
 
     /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    /**
      * FormFactory constructor.
      *
-     * @param TranslatorInterface  $translator
      * @param FormFactoryInterface $formFactory
      * @param string               $name
      * @param string               $type
      */
-    public function __construct(TranslatorInterface $translator, FormFactoryInterface $formFactory, string $name, string $type)
+    public function __construct( FormFactoryInterface $formFactory, string $name, string $type)
     {
-        $this->translator = $translator;
         $this->formFactory = $formFactory;
         $this->name = $name;
         $this->type = $type;
@@ -63,8 +55,6 @@ class FormFactory
      */
     public function createForm(array $options = [], $data = null): FormInterface
     {
-        $options = ['translator' => $this->translator] + $options;
-
         $form = $this->formFactory->createNamed($this->name, $this->type, null, $options);
         if (null !== $data) {
             $form->setData($data);

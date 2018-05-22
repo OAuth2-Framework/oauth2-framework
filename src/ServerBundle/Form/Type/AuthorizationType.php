@@ -24,7 +24,6 @@ class AuthorizationType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $translator = $options['translator'];
         /*if (true === $options['allow_scope_selection']) {
             $builder->add('scopes', ChoiceType::class, [
                 'label'             => $translator->trans('authorization.form.scope', [], $options['translation_domain'], $options['locale']),
@@ -41,19 +40,12 @@ class AuthorizationType extends AbstractType
                 },
             ]);
         }*/
-        /*if (true === $options['is_pre_configured_authorization_enabled']) {
-            $builder
-                ->add('save_configuration', CheckboxType::class, [
-                    'label'    => $translator->trans('authorization.form.save', [], $options['translation_domain'], $options['locale']),
-                    'required' => false,
-                ]);
-        }*/
         $builder
             ->add('accept', SubmitType::class, [
-                'label' => $translator->trans('authorization.form.accept', [], $options['translation_domain'], $options['locale']),
+                'label' => 'authorization.form.accept',
             ])
             ->add('reject', SubmitType::class, [
-                'label' => $translator->trans('authorization.form.reject', [], $options['translation_domain'], $options['locale']),
+                'label' => 'authorization.form.reject',
             ]);
     }
 
@@ -66,16 +58,10 @@ class AuthorizationType extends AbstractType
             'translation_domain' => 'OAuth2FrameworkServer',
             'data_class' => AuthorizationModel::class,
             'scopes' => [],
-            //'allow_scope_selection' => false,
-            //'is_pre_configured_authorization_enabled' => false,
             'locale' => null,
-            'translator' => null,
         ]);
         $resolver->setAllowedTypes('locale', ['string', 'null']);
         $resolver->setAllowedTypes('scopes', 'array');
-        //$resolver->setAllowedTypes('allow_scope_selection', 'bool');
-        //$resolver->setAllowedTypes('is_pre_configured_authorization_enabled', 'bool');
-        $resolver->setAllowedTypes('translator', TranslatorInterface::class);
     }
 
     public function getBlockPrefix()

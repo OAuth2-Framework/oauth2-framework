@@ -207,12 +207,7 @@ final class AuthorizationEndpointController extends AuthorizationEndpoint
         return $response;
     }
 
-    /**
-     * @param Authorization $authorization
-     *
-     * @return null|string
-     */
-    private function getUiLocale(Authorization $authorization)
+    private function getUiLocale(Authorization $authorization): ?string
     {
         if (!method_exists($this->translator, 'getCatalogue') || !$authorization->hasQueryParam('ui_locales')) {
             return null;
@@ -224,5 +219,7 @@ final class AuthorizationEndpointController extends AuthorizationEndpoint
                 return $locale;
             }
         }
+
+        return null;
     }
 }

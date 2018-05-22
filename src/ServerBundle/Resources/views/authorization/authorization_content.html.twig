@@ -2,7 +2,7 @@
     {{ 'authorization.form.message'|trans({'%client_id%': authorization.getClient().getPublicId()}, 'OAuth2FrameworkServer', ui_locale) }}<br />
 </p>
 {{ form_start(form, {'action':app.request.uri }) }}
-    {% if authorization.getScopes() is not empty %}
+    {% if authorization.hasScope() %}
         {{ 'authorization.form.scope'|trans({}, 'OAuth2FrameworkServer', ui_locale) }}
         <ul>
             {% if form.scopes is defined %}
@@ -10,9 +10,11 @@
                     <li>{{ form_row(scope) }}</li>
                 {% endfor %}
             {% else %}
-                {% for scope in authorization.getScopes() %}
+                {% for scope in authorization.getScope()split(' ') %}
+                    {% if scope is not empty %}
                     {% set scope_name = 'authorization.form.scope.'~scope %}
                     <li>{{ scope_name |trans({}, 'OAuth2FrameworkServer', ui_locale) }}</li>
+                    {% endif %}
                 {% endfor %}
             {% endif %}
         </ul>

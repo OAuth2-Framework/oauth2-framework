@@ -497,18 +497,14 @@ class Authorization
 
     public function hasScope(): bool
     {
-        return $this->hasQueryParam('scope') && !empty($this->getQueryParam('scope'));
+        return $this->hasQueryParam('scope');
     }
 
     /**
-     * @return string[]
+     * @return string
      */
-    public function getScope(): array
+    public function getScope(): string
     {
-        if (!$this->hasScope()) {
-            return [];
-        }
-
-        return explode(' ', $this->getQueryParam('scope'));
+        return $this->getQueryParam('scope');
     }
 }

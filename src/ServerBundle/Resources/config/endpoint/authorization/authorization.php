@@ -30,7 +30,6 @@ return function (ContainerConfigurator $container) {
 
     $container->set(FormFactory::class)
         ->args([
-            ref('translator'),
             ref('form.factory'),
             '%oauth2_server.endpoint.authorization.form%',
             AuthorizationType::class, //FIXME '%oauth2_server.authorization_endpoint.type%',
