@@ -54,7 +54,12 @@ return function (ContainerConfigurator $container) {
             ref(AuthorizationEndpoint\AuthorizationRequestLoader::class),
             ref(AuthorizationEndpoint\ParameterChecker\ParameterCheckerManager::class),
             ref(AuthorizationEndpoint\UserAccount\UserAccountDiscovery::class),
+            ref(AuthorizationEndpoint\UserAccount\UserAccountCheckerManager::class),
             ref(AuthorizationEndpoint\ConsentScreen\ExtensionManager::class),
+        ]);
+
+    $container->set(AuthorizationEndpoint\UserAccount\UserAccountCheckerManager::class)
+        ->args([
         ]);
 
     $container->set(\OAuth2Framework\ServerBundle\Service\SymfonyUserDiscovery::class)

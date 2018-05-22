@@ -14,6 +14,8 @@ declare(strict_types=1);
 namespace OAuth2Framework\ServerBundle\Component\Endpoint\Authorization;
 
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationEndpoint;
+use OAuth2Framework\Component\AuthorizationEndpoint\UserAccount\UserAccountChecker;
+use OAuth2Framework\Component\AuthorizationEndpoint\UserAccount\UserAccountDiscovery;
 use OAuth2Framework\ServerBundle\Component\Component;
 use OAuth2Framework\ServerBundle\Component\Endpoint\Authorization\Compiler\AuthorizationEndpointRouteCompilerPass;
 use OAuth2Framework\ServerBundle\Component\Endpoint\Authorization\Compiler\AuthorizationRequestMetadataCompilerPass;
@@ -27,7 +29,7 @@ use OAuth2Framework\Component\AuthorizationEndpoint\ConsentScreen\Extension;
 use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\ParameterChecker;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\ResponseMode;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType;
-use OAuth2Framework\Component\AuthorizationEndpoint\UserAccount\UserAccountDiscovery;
+use OAuth2Framework\ServerBundle\Component\Endpoint\Authorization\Compiler\UserAccountCheckerCompilerPass;
 use OAuth2Framework\ServerBundle\Service\SymfonyUserDiscovery;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\FileLocator;
@@ -77,7 +79,7 @@ class AuthorizationEndpointSource implements Component
         $container->registerForAutoconfiguration(ResponseType::class)->addTag('oauth2_server_response_type');
         $container->registerForAutoconfiguration(ResponseMode::class)->addTag('oauth2_server_response_mode');
         $container->registerForAutoconfiguration(ParameterChecker::class)->addTag('oauth2_server_authorization_parameter_checker');
-        $container->registerForAutoconfiguration(UserAccountDiscovery::class)->addTag('oauth2_server_user_account_discovery');
+        $container->registerForAutoconfiguration(UserAccountChecker::class)->addTag('oauth2_server_user_account_checker');
         $container->registerForAutoconfiguration(Extension::class)->addTag('oauth2_server_consent_screen_extension');
 
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint/authorization'));
@@ -193,6 +195,7 @@ class AuthorizationEndpointSource implements Component
         $container->addCompilerPass(new ResponseModeCompilerPass());
         $container->addCompilerPass(new ResponseTypeCompilerPass());
         $container->addCompilerPass(new TemplatePathCompilerPass());
+        $container->addCompilerPass(new UserAccountCheckerCompilerPass());
 
         foreach ($this->subComponents as $component) {
             $component->build($container);
