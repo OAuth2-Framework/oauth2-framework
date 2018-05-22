@@ -494,4 +494,21 @@ class Authorization
 
         return $clone;
     }
+
+    public function hasScope(): bool
+    {
+        return $this->hasQueryParam('scope') && !empty($this->getQueryParam('scope'));
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getScope(): array
+    {
+        if (!$this->hasScope()) {
+            return [];
+        }
+
+        return explode(' ', $this->getQueryParam('scope'));
+    }
 }

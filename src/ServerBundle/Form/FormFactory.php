@@ -35,11 +35,6 @@ class FormFactory
     private $type;
 
     /**
-     * @var array|null
-     */
-    private $validationGroups;
-
-    /**
      * @var TranslatorInterface
      */
     private $translator;
@@ -51,15 +46,13 @@ class FormFactory
      * @param FormFactoryInterface $formFactory
      * @param string               $name
      * @param string               $type
-     * @param array|null           $validationGroups
      */
-    public function __construct(TranslatorInterface $translator, FormFactoryInterface $formFactory, string $name, string $type, array $validationGroups = null)
+    public function __construct(TranslatorInterface $translator, FormFactoryInterface $formFactory, string $name, string $type)
     {
         $this->translator = $translator;
         $this->formFactory = $formFactory;
         $this->name = $name;
         $this->type = $type;
-        $this->validationGroups = $validationGroups;
     }
 
     /**
@@ -70,7 +63,7 @@ class FormFactory
      */
     public function createForm(array $options = [], $data = null): FormInterface
     {
-        $options = ['validation_groups' => $this->validationGroups, 'translator' => $this->translator] + $options;
+        $options = ['translator' => $this->translator] + $options;
 
         $form = $this->formFactory->createNamed($this->name, $this->type, null, $options);
         if (null !== $data) {

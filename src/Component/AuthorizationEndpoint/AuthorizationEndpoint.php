@@ -94,7 +94,10 @@ abstract class AuthorizationEndpoint implements MiddlewareInterface
             $authorization = $this->createAuthorizationFromRequest($request);
             $isFullyAuthenticated = null;
             $userAccount = $this->userAccountDiscovery->find($isFullyAuthenticated);
-            if (null === $authorization->getUserAccount()) {
+            if ( !is_bool($isFullyAuthenticated)) {
+                $isFullyAuthenticated = false;
+            }
+            if (null === $userAccount) {
                 return $this->redirectToLoginPage($request, $authorization);
             }
             $authorization = $authorization->withUserAccount($userAccount, $isFullyAuthenticated);
@@ -103,9 +106,9 @@ abstract class AuthorizationEndpoint implements MiddlewareInterface
 
             return $this->processConsentScreen($request, $authorization);
         } catch (OAuth2AuthorizationException $e) {
-            /*$redirectUri = $e->getAuthorization()->getRedirectUri();
+            $redirectUri = $e->getAuthorization()->getRedirectUri();
             $responseMode = $e->getAuthorization()->getResponseMode();
-            if (null !== $redirectUri && null !== $responseMode) {
+            /*if (null !== $redirectUri && null !== $responseMode) {
                 $data['redirect_uri'] = $redirectUri;
                 $data['response_mode'] = $responseMode;
 
