@@ -24,14 +24,6 @@ use Symfony\Component\Form\FormInterface;
 
 class AuthorizationFormHandler
 {
-    /**
-     * @param FormInterface          $form
-     * @param ServerRequestInterface $request
-     * @param Authorization          $authorization
-     * @param AuthorizationModel     $authorization_model
-     *
-     * @return Authorization
-     */
     public function handle(FormInterface $form, ServerRequestInterface $request, Authorization $authorization, AuthorizationModel $authorization_model): Authorization
     {
         if ('POST' !== $request->getMethod()) {

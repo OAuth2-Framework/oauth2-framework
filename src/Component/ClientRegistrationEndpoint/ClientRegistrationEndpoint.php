@@ -90,7 +90,7 @@ final class ClientRegistrationEndpoint implements MiddlewareInterface
 
             return $this->createResponse($client);
         } catch (\Exception $e) {
-            throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, $e->getMessage(), $e);
+            throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, $e->getMessage(), [], $e);
         }
     }
 

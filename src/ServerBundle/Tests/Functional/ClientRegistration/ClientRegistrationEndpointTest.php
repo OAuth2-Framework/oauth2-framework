@@ -43,7 +43,7 @@ class ClientRegistrationEndpointTest extends WebTestCase
      */
     public function theInitialAccessTokenExpired()
     {
-        $client = static::createClient([], ['HTTP_HOST' => 'foo.foo.foo']);
+        $client = static::createClient();
         $client->request('POST', '/client/management', [], [], ['HTTPS' => 'on', 'HTTP_AUTHORIZATION' => 'Bearer EXPIRED_INITIAL_ACCESS_TOKEN_ID'], null);
         $response = $client->getResponse();
         self::assertEquals(400, $response->getStatusCode());
@@ -55,7 +55,7 @@ class ClientRegistrationEndpointTest extends WebTestCase
      */
     public function theInitialAccessTokenIsMissing()
     {
-        $client = static::createClient([], ['HTTP_HOST' => 'foo.foo.foo']);
+        $client = static::createClient();
         $client->request('POST', '/client/management', [], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
         self::assertEquals(400, $response->getStatusCode());
@@ -67,7 +67,7 @@ class ClientRegistrationEndpointTest extends WebTestCase
      */
     public function theInitialAccessTokenIsValidAndTheClientIsCreated()
     {
-        $client = static::createClient([], ['HTTP_HOST' => 'foo.foo.foo']);
+        $client = static::createClient();
         $client->request('POST', '/client/management', [], [], ['HTTPS' => 'on', 'HTTP_AUTHORIZATION' => 'Bearer VALID_INITIAL_ACCESS_TOKEN_ID'], null);
         $response = $client->getResponse();
         self::assertEquals(201, $response->getStatusCode());

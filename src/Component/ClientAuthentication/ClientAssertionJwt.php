@@ -195,7 +195,7 @@ class ClientAssertionJwt implements AuthenticationMethod
         } catch (OAuth2Message $e) {
             throw $e;
         } catch (\Exception $e) {
-            throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, 'Unable to load, decrypt or verify the client assertion.', $e);
+            throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, 'Unable to load, decrypt or verify the client assertion.', [], $e);
         }
 
         // FIXME: Other claims can be considered as mandatory by the server
@@ -231,7 +231,7 @@ class ClientAssertionJwt implements AuthenticationMethod
             return $jwe->getPayload();
         } catch (\Exception $e) {
             if (true === $this->encryptionRequired) {
-                throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, 'The encryption of the assertion is mandatory but the decryption of the assertion failed.', $e);
+                throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, 'The encryption of the assertion is mandatory but the decryption of the assertion failed.', [], $e);
             }
 
             return $assertion;

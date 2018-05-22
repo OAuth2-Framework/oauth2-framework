@@ -102,7 +102,7 @@ final class TokenEndpointScopeExtension implements TokenEndpointExtension
         try {
             return $this->scopePolicyManager->apply($scope, $client);
         } catch (\InvalidArgumentException $e) {
-            throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_SCOPE, $e->getMessage(), $e);
+            throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_SCOPE, $e->getMessage(), [], $e);
         }
     }
 

@@ -46,7 +46,7 @@ class JwtBearerGrantTest extends WebTestCase
      */
     public function theRequestHasNoGrantType()
     {
-        $client = static::createClient([], ['HTTP_HOST' => 'bar.bar']);
+        $client = static::createClient();
         $client->request('POST', '/token/get', [], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
         self::assertEquals(400, $response->getStatusCode());
@@ -58,7 +58,7 @@ class JwtBearerGrantTest extends WebTestCase
      */
     public function theAssertionIsMissing()
     {
-        $client = static::createClient([], ['HTTP_HOST' => 'bar.bar']);
+        $client = static::createClient();
         $client->request('POST', '/token/get', ['grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer'], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
         self::assertEquals(400, $response->getStatusCode());
@@ -70,7 +70,7 @@ class JwtBearerGrantTest extends WebTestCase
      */
     public function theAssertionIsInvalid()
     {
-        $client = static::createClient([], ['HTTP_HOST' => 'bar.bar']);
+        $client = static::createClient();
         $client->request('POST', '/token/get', ['grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer', 'assertion' => 'FOO'], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
         self::assertEquals(400, $response->getStatusCode());
@@ -82,7 +82,7 @@ class JwtBearerGrantTest extends WebTestCase
      */
     public function theAssertionDoesNotContainTheMandatoryClaims()
     {
-        $client = static::createClient([], ['HTTP_HOST' => 'bar.bar']);
+        $client = static::createClient();
         $assertion = $this->createAnAssertionWithoutClaim();
         $client->request('POST', '/token/get', ['grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer', 'assertion' => $assertion], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
@@ -95,7 +95,7 @@ class JwtBearerGrantTest extends WebTestCase
      */
     public function theAssertionDoesNotContainTheSubjectClaims()
     {
-        $client = static::createClient([], ['HTTP_HOST' => 'bar.bar']);
+        $client = static::createClient();
         $assertion = $this->createAnAssertionWithoutSubject();
         $client->request('POST', '/token/get', ['grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer', 'assertion' => $assertion], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
@@ -108,7 +108,7 @@ class JwtBearerGrantTest extends WebTestCase
      */
     public function theAssertionDoesNotContainTheAudienceClaims()
     {
-        $client = static::createClient([], ['HTTP_HOST' => 'bar.bar']);
+        $client = static::createClient();
         $assertion = $this->createAnAssertionWithoutAudience();
         $client->request('POST', '/token/get', ['grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer', 'assertion' => $assertion], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
@@ -121,7 +121,7 @@ class JwtBearerGrantTest extends WebTestCase
      */
     public function theAssertionDoesNotContainTheExpirationTimeClaims()
     {
-        $client = static::createClient([], ['HTTP_HOST' => 'bar.bar']);
+        $client = static::createClient();
         $assertion = $this->createAnAssertionWithoutExpirationTime();
         $client->request('POST', '/token/get', ['grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer', 'assertion' => $assertion], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
@@ -134,7 +134,7 @@ class JwtBearerGrantTest extends WebTestCase
      */
     public function theAssertionIsValid()
     {
-        $client = static::createClient([], ['HTTP_HOST' => 'bar.bar']);
+        $client = static::createClient();
         $assertion = $this->createAValidAssertion();
         $client->request('POST', '/token/get', ['grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer', 'assertion' => $assertion], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();

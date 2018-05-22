@@ -197,7 +197,7 @@ class JwtBearerGrantType implements GrantType
         } catch (OAuth2Message $e) {
             throw $e;
         } catch (\Exception $e) {
-            throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, $e->getMessage(), $e);
+            throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, $e->getMessage(), [], $e);
         }
 
         return $grantTypeData;
@@ -229,7 +229,7 @@ class JwtBearerGrantType implements GrantType
             throw new \InvalidArgumentException('Unable to decrypt the assertion.');
         } catch (\Exception $e) {
             if (true === $this->encryptionRequired) {
-                throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, $e->getMessage(), $e);
+                throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, $e->getMessage(), [], $e);
             }
 
             return $assertion;

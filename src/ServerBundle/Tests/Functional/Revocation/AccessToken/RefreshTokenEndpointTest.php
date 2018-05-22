@@ -45,7 +45,7 @@ class RevocationEndpointTest extends WebTestCase
      */
     public function theClientIsNotAuthenticated()
     {
-        $client = static::createClient([], ['HTTP_HOST' => 'foo.bar']);
+        $client = static::createClient();
         $client->request('POST', '/token/revoke', [], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
         self::assertEquals(400, $response->getStatusCode());
@@ -57,7 +57,7 @@ class RevocationEndpointTest extends WebTestCase
      */
     public function theTokenParameterIsNotSet()
     {
-        $client = static::createClient([], ['HTTP_HOST' => 'foo.bar']);
+        $client = static::createClient();
         $client->request('POST', '/token/revoke', ['client_id' => 'CLIENT_ID_3', 'client_secret' => 'secret'], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
         self::assertEquals(400, $response->getStatusCode());
@@ -69,7 +69,7 @@ class RevocationEndpointTest extends WebTestCase
      */
     public function anUnknownTokenIsNotFound()
     {
-        $client = static::createClient([], ['HTTP_HOST' => 'foo.bar']);
+        $client = static::createClient();
         $client->request('POST', '/token/revoke', ['client_id' => 'CLIENT_ID_3', 'client_secret' => 'secret', 'token' => 'FOO'], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
         self::assertEquals(200, $response->getStatusCode());
@@ -81,7 +81,7 @@ class RevocationEndpointTest extends WebTestCase
      */
     public function aAccessTokenIsCorrectlyRevoked()
     {
-        $client = static::createClient([], ['HTTP_HOST' => 'foo.bar']);
+        $client = static::createClient();
         $container = $client->getContainer();
         /** @var AccessTokenIdGenerator $accessTokenIdGenerator */
         $accessTokenIdGenerator = $container->get(\OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\AccessTokenIdGenerator::class);
@@ -123,7 +123,7 @@ class RevocationEndpointTest extends WebTestCase
      */
     public function aAccessTokenThatOwnsToAnotherClientIsNotRevoked()
     {
-        $client = static::createClient([], ['HTTP_HOST' => 'foo.bar']);
+        $client = static::createClient();
         $container = $client->getContainer();
         /** @var AccessTokenIdGenerator $accessTokenIdGenerator */
         $accessTokenIdGenerator = $container->get(\OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\AccessTokenIdGenerator::class);
@@ -146,7 +146,7 @@ class RevocationEndpointTest extends WebTestCase
             null
         );
 
-        $client = static::createClient([], ['HTTP_HOST' => 'foo.bar']);
+        $client = static::createClient();
         $container = $client->getContainer();
         /** @var AccessTokenRepository $accessTokenRepository */
         $accessTokenRepository = $container->get(\OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\AccessTokenRepository::class);

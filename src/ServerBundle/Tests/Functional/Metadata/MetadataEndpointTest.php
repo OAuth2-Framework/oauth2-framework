@@ -39,7 +39,7 @@ class MetadataEndpointTest extends WebTestCase
      */
     public function theMetadataEndpointIsAvailable()
     {
-        $client = static::createClient([], ['HTTP_HOST' => 'foo.foo.bar']);
+        $client = static::createClient();
         $client->request('GET', '/.well-known/openid-configuration', [], [], ['HTTPS' => 'on']);
         $response = $client->getResponse();
         self::assertEquals(200, $response->getStatusCode());

@@ -39,7 +39,7 @@ class ImplicitGrantTest extends WebTestCase
      */
     public function theRequestHasNoGrantType()
     {
-        $client = static::createClient([], ['HTTP_HOST' => 'bar.bar']);
+        $client = static::createClient();
         $client->request('POST', '/token/get', [], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
         self::assertEquals('{"error":"invalid_request","error_description":"The \"grant_type\" parameter is missing."}', $response->getContent());
@@ -50,7 +50,7 @@ class ImplicitGrantTest extends WebTestCase
      */
     public function theImplicitGrantTypeCannotBeCalledFromTheTokenEndpoint()
     {
-        $client = static::createClient([], ['HTTP_HOST' => 'bar.bar']);
+        $client = static::createClient();
         $client->request('POST', '/token/get', ['grant_type' => 'implicit'], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
         self::assertEquals(400, $response->getStatusCode());

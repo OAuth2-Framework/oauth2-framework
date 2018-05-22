@@ -62,7 +62,6 @@ oauth2_server:
         client_registration:
             enabled: true
             path: '/client/management'
-            host: 'foo.foo.foo'
             initial_access_token:
                 enabled: true
                 required: true
@@ -77,28 +76,23 @@ oauth2_server:
             enabled: true
             realm: 'Client Configuration'
             path: '/client/configure/{client_id}'
-            host: 'foo.foo.foo'
         token_revocation:
             enabled: true
             path: '/token/revoke'
-            host: 'foo.bar'
             allow_callback: true
         token_introspection:
             enabled: true
             path: '/token/introspect'
-            host: 'bar.foo'
         token:
             enabled: true
             path: '/token/get'
-            host: 'bar.bar'
-#        jwks_uri:
-#            enabled: true
-#            path: '/public.jwkset'
-#            key_set: '{"keys":[{"kty":"EC","crv":"P-256","x":"VlZO9X_B43HFSUK8aeQn88UO2_VfeBtVU1Usl3rYq90","y":"oAHPRNZEUpe-T2-Q_rThJ4lGsNYLXomSYW69RZ9jzNQ"},{"kty":"EC","crv":"P-256","x":"w0qQe7oa_aI3G6irjTbdtMqc4e0vNveQgRoRCyvpIBE","y":"7DyqhillL89iM6fMK216ov1EixmJGda76ugNuE-fsic"},{"kty":"RSA","n":"sLjaCStJYRr_y7_3GLlDb4bnGJ8XirSdFboYmvA38NXJ6PhIIjr-sFzfwlcpxZxz6zzjXkDFs3AcUOvC3_KRT5tn4XBOHcR6ABrT65dZTe_qalEpYeQG4oxevc01vmD_dD6Ho2O69amT4gscus2pvszFPdraMYybH24aQFztVtc","e":"AQAB"},{"kty":"RSA","n":"um8f5neOmoGMsQ-BJMOgehsSOzQiYOk4W7AJL97q-V_8VojXJKHUqvTqiDeVfcgxPz1kNseIkm4PivKYQ1_Yh1j5RxL30V8Pc3VR7ReLMvEsQUbedkJKqhXy7gOYyc4IrYTux1I2dI5I8r_lvtDtTgWB5UrWfwj9ddVhk22z6jc","e":"AQAB"}]}'
+        jwks_uri:
+            enabled: true
+            path: '/public.jwkset'
+            key_set: '{"keys":[{"kty":"EC","crv":"P-256","x":"VlZO9X_B43HFSUK8aeQn88UO2_VfeBtVU1Usl3rYq90","y":"oAHPRNZEUpe-T2-Q_rThJ4lGsNYLXomSYW69RZ9jzNQ"},{"kty":"EC","crv":"P-256","x":"w0qQe7oa_aI3G6irjTbdtMqc4e0vNveQgRoRCyvpIBE","y":"7DyqhillL89iM6fMK216ov1EixmJGda76ugNuE-fsic"},{"kty":"RSA","n":"sLjaCStJYRr_y7_3GLlDb4bnGJ8XirSdFboYmvA38NXJ6PhIIjr-sFzfwlcpxZxz6zzjXkDFs3AcUOvC3_KRT5tn4XBOHcR6ABrT65dZTe_qalEpYeQG4oxevc01vmD_dD6Ho2O69amT4gscus2pvszFPdraMYybH24aQFztVtc","e":"AQAB"},{"kty":"RSA","n":"um8f5neOmoGMsQ-BJMOgehsSOzQiYOk4W7AJL97q-V_8VojXJKHUqvTqiDeVfcgxPz1kNseIkm4PivKYQ1_Yh1j5RxL30V8Pc3VR7ReLMvEsQUbedkJKqhXy7gOYyc4IrYTux1I2dI5I8r_lvtDtTgWB5UrWfwj9ddVhk22z6jc","e":"AQAB"}]}'
         metadata:
             enabled: true
             path: '/.well-known/openid-configuration'
-            host: 'foo.foo.bar'
             signature:
                 enabled: true
                 algorithm: 'RS256'
@@ -124,11 +118,9 @@ oauth2_server:
         session_management:
             enabled: true
             path: '/session/manager/iframe'
-            host: 'bar.bar.foo'
         authorization:
             enabled: true
             path: '/authorize'
-            host: 'bar.bar.bar'
             login_route_name: 'app_login'
             user_account_discovery: 'OAuth2Framework\ServerBundle\Service\SymfonyUserDiscovery'
             enforce_state: false

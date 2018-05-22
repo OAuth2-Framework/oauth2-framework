@@ -35,6 +35,7 @@ return function (ContainerConfigurator $container) {
         ]);
 
     $container->set(AuthorizationFormHandler::class);
+    $container->set(AuthorizationEndpoint\Middleware\AuthorizationExceptionMiddleware::class);
 
     $container->set(AuthorizationEndpointController::class)
         ->args([
@@ -69,7 +70,7 @@ return function (ContainerConfigurator $container) {
         ->class(Middleware\Pipe::class)
         ->args([[
             ref('oauth2_server.message_middleware.for_authorization_endpoint'),
-            //FIXME: catch AuthorizationException here
+            ref(AuthorizationEndpoint\Middleware\AuthorizationExceptionMiddleware::class),
             ref(TokenTypeMiddleware::class),
             ref(AuthorizationEndpointController::class),
         ]])
@@ -98,7 +99,7 @@ return function (ContainerConfigurator $container) {
         ->args([
             '%oauth2_server.endpoint.authorization.enforce_state%',
         ]);
-    $container->set(\OAuth2Framework\Component\Core\TokenType\TokenTypeParameterChecker::class);
+    //$container->set(\OAuth2Framework\Component\Core\TokenType\TokenTypeParameterChecker::class);
 
     // Rules
     $container->set(AuthorizationEndpoint\Rule\RequestUriRule::class);

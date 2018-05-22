@@ -39,7 +39,7 @@ class ResourceOwnerPasswordCredentialsGrantTest extends WebTestCase
      */
     public function theRequestHasNoGrantType()
     {
-        $client = static::createClient([], ['HTTP_HOST' => 'bar.bar']);
+        $client = static::createClient();
         $client->request('POST', '/token/get', [], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
         self::assertEquals('{"error":"invalid_request","error_description":"The \"grant_type\" parameter is missing."}', $response->getContent());
@@ -50,7 +50,7 @@ class ResourceOwnerPasswordCredentialsGrantTest extends WebTestCase
      */
     public function theClientIsNotAuthenticated()
     {
-        $client = static::createClient([], ['HTTP_HOST' => 'bar.bar']);
+        $client = static::createClient();
         $client->request('POST', '/token/get', ['grant_type' => 'password', 'username' => 'FOO', 'password' => 'FOO'], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
         self::assertEquals(401, $response->getStatusCode());
@@ -62,7 +62,7 @@ class ResourceOwnerPasswordCredentialsGrantTest extends WebTestCase
      */
     public function theParametersAreMissing()
     {
-        $client = static::createClient([], ['HTTP_HOST' => 'bar.bar']);
+        $client = static::createClient();
         $client->request('POST', '/token/get', ['grant_type' => 'password', 'client_id' => 'CLIENT_ID_1'], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
         self::assertEquals(400, $response->getStatusCode());
@@ -74,7 +74,7 @@ class ResourceOwnerPasswordCredentialsGrantTest extends WebTestCase
      */
     public function theClientIsNotKnown()
     {
-        $client = static::createClient([], ['HTTP_HOST' => 'bar.bar']);
+        $client = static::createClient();
         $client->request('POST', '/token/get', ['grant_type' => 'password', 'username' => 'FOO', 'password' => 'FOO', 'client_id' => 'UNKNOWN_CLIENT_ID'], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
         self::assertEquals(401, $response->getStatusCode());
@@ -86,7 +86,7 @@ class ResourceOwnerPasswordCredentialsGrantTest extends WebTestCase
      */
     public function theGrantTypeIsNotAllowedForTheClient()
     {
-        $client = static::createClient([], ['HTTP_HOST' => 'bar.bar']);
+        $client = static::createClient();
         $client->request('POST', '/token/get', ['grant_type' => 'password', 'username' => 'FOO', 'password' => 'FOO', 'client_id' => 'CLIENT_ID_1'], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
         self::assertEquals(400, $response->getStatusCode());
@@ -98,7 +98,7 @@ class ResourceOwnerPasswordCredentialsGrantTest extends WebTestCase
      */
     public function theResourceOwnerPasswordCredentialsAreInvalid()
     {
-        $client = static::createClient([], ['HTTP_HOST' => 'bar.bar']);
+        $client = static::createClient();
         $client->request('POST', '/token/get', ['grant_type' => 'password', 'username' => 'FOO', 'password' => 'FOO', 'client_id' => 'CLIENT_ID_3', 'client_secret' => 'secret'], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
         self::assertEquals(400, $response->getStatusCode());
@@ -110,7 +110,7 @@ class ResourceOwnerPasswordCredentialsGrantTest extends WebTestCase
      */
     public function theAccessTokenIsIssued()
     {
-        $client = static::createClient([], ['HTTP_HOST' => 'bar.bar']);
+        $client = static::createClient();
         $client->request('POST', '/token/get', ['grant_type' => 'password', 'username' => 'john.1', 'password' => 'password.1', 'client_id' => 'CLIENT_ID_3', 'client_secret' => 'secret'], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
         self::assertEquals(200, $response->getStatusCode());

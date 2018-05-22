@@ -61,7 +61,7 @@ final class AuthenticationMiddleware implements MiddlewareInterface
                 $request = $request->withAttribute('resource_server_credentials', $resourceServer_credentials);
             }
         } catch (\Exception $e) {
-            throw new OAuth2Message(401, OAuth2Message::ERROR_INVALID_RESOURCE_SERVER, $e->getMessage(), $e);
+            throw new OAuth2Message(401, OAuth2Message::ERROR_INVALID_RESOURCE_SERVER, $e->getMessage(), [], $e);
         }
 
         return $handler->handle($request);

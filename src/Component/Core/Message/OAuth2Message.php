@@ -72,16 +72,23 @@ class OAuth2Message extends \Exception
     private $errorDescription;
 
     /**
+     * @var array
+     */
+    private $data;
+
+    /**
      * oauth2Message constructor.
      *
      * @param int             $code
      * @param string          $error
      * @param null|string     $errorDescription
+     * @param array           $data
      * @param \Exception|null $previous
      */
-    public function __construct(int $code, string $error, ?string $errorDescription, ? \Exception $previous = null)
+    public function __construct(int $code, string $error, ?string $errorDescription, array $data = [], ? \Exception $previous = null)
     {
         $this->errorDescription = $errorDescription;
+        $this->data = $data;
         parent::__construct($error, $code, $previous);
     }
 
@@ -90,7 +97,8 @@ class OAuth2Message extends \Exception
      */
     public function getData(): array
     {
-        $data = ['error' => $this->getMessage()];
+        $data = $this->data;
+        $data['error'] = $this->getMessage();
         if (null !== $this->errorDescription) {
             $data['error_description'] = $this->errorDescription;
         }

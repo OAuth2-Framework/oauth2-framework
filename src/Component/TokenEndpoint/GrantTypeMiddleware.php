@@ -55,7 +55,7 @@ final class GrantTypeMiddleware implements MiddlewareInterface
 
             return $handler->handle($request);
         } catch (\InvalidArgumentException $e) {
-            throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, $e->getMessage(), $e);
+            throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, $e->getMessage(), [], $e);
         }
     }
 }

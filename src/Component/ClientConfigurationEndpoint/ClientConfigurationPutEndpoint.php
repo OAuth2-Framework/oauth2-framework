@@ -70,7 +70,7 @@ final class ClientConfigurationPutEndpoint implements MiddlewareInterface
         try {
             $this->clientRepository->save($client);
         } catch (\InvalidArgumentException $e) {
-            throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, $e->getMessage(), $e);
+            throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, $e->getMessage(), [], $e);
         }
 
         $response = $this->responseFactory->createResponse();

@@ -174,7 +174,7 @@ final class AuthorizationCodeGrantType implements GrantType
             $code_verifier = $parameters['code_verifier'];
             $method = $this->pkceMethodManager->get($code_challenge_method);
         } catch (\InvalidArgumentException $e) {
-            throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, $e->getMessage(), $e);
+            throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, $e->getMessage(), [], $e);
         }
 
         if (false === $method->isChallengeVerified($code_verifier, $code_challenge)) {

@@ -61,7 +61,7 @@ class ClientAuthenticationMiddleware implements MiddlewareInterface
                 $request = $request->withAttribute('client_credentials', $client_credentials);
             }
         } catch (\Exception $e) {
-            throw new OAuth2Message(401, OAuth2Message::ERROR_INVALID_CLIENT, $e->getMessage(), $e);
+            throw new OAuth2Message(401, OAuth2Message::ERROR_INVALID_CLIENT, $e->getMessage(), [], $e);
         }
 
         return $handler->handle($request);

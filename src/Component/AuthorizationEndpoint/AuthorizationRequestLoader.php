@@ -362,7 +362,7 @@ class AuthorizationRequestLoader
         } catch (OAuth2Message $e) {
             throw $e;
         } catch (\Exception $e) {
-            throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST_OBJECT, $e->getMessage(), $e);
+            throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST_OBJECT, $e->getMessage(), [], $e);
         }
 
         return $parameters;
@@ -390,7 +390,7 @@ class AuthorizationRequestLoader
             return $jwe->getPayload();
         } catch (\Exception $e) {
             if (true === $this->requireEncryption) {
-                throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST_OBJECT, $e->getMessage(), $e);
+                throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST_OBJECT, $e->getMessage(), [], $e);
             }
 
             return $request;
