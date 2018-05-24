@@ -99,6 +99,19 @@ class Client implements ResourceOwner, ContainsRecordedMessages, DomainObject
     }
 
     /**
+     * @return ClientId
+     */
+    public function getClientId(): ClientId
+    {
+        $id = $this->getPublicId();
+        if (!$id instanceof ClientId) {
+            throw new \RuntimeException('Client not initialized.');
+        }
+
+        return $id;
+     }
+
+    /**
      * @return UserAccountId|null
      */
     public function getOwnerId(): ? UserAccountId
@@ -119,7 +132,7 @@ class Client implements ResourceOwner, ContainsRecordedMessages, DomainObject
 
         $clone = clone $this;
         $clone->ownerId = $ownerId;
-        $event = ClientEvent\ClientOwnerChangedEvent::create($clone->getPublicId(), $ownerId);
+        $event = ClientEvent\ClientOwnerChangedEvent::create($clone->getClientId(), $ownerId);
         $clone->record($event);
 
         return $clone;
@@ -134,7 +147,7 @@ class Client implements ResourceOwner, ContainsRecordedMessages, DomainObject
     {
         $clone = clone $this;
         $clone->parameters = $parameters;
-        $event = ClientEvent\ClientParametersUpdatedEvent::create($clone->getPublicId(), $parameters);
+        $event = ClientEvent\ClientParametersUpdatedEvent::create($clone->getClientId(), $parameters);
         $clone->record($event);
 
         return $clone;
@@ -147,7 +160,7 @@ class Client implements ResourceOwner, ContainsRecordedMessages, DomainObject
     {
         $clone = clone $this;
         $clone->deleted = true;
-        $event = ClientEvent\ClientDeletedEvent::create($clone->getPublicId());
+        $event = ClientEvent\ClientDeletedEvent::create($clone->getClientId());
         $clone->record($event);
 
         return $clone;

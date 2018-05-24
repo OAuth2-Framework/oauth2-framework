@@ -108,6 +108,20 @@ class AuthorizationCode extends Token
     }
 
     /**
+     * @return AuthorizationCodeId
+     */
+    public function getAuthorizationCodeId(): AuthorizationCodeId
+    {
+        $id = $this->getTokenId();
+        if (!$id instanceof AuthorizationCodeId) {
+            throw new \RuntimeException('Authorization code not initialized.');
+        }
+
+        return $this->authorizationCodeId;
+    }
+
+
+    /**
      * @return array
      */
     public function getQueryParameters(): array

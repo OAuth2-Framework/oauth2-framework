@@ -93,6 +93,19 @@ class RefreshToken extends Token
     }
 
     /**
+     * @return RefreshTokenId
+     */
+    public function getRefreshTokenId(): RefreshTokenId
+    {
+        $id = $this->getTokenId();
+        if (!$id instanceof RefreshTokenId) {
+            throw new \LogicException('Refresh token not initialized.');
+        }
+
+        return $this->refreshTokenId;
+    }
+
+    /**
      * @param AccessTokenId $accessTokenId
      *
      * @return RefreshToken
@@ -106,7 +119,7 @@ class RefreshToken extends Token
 
         $clone = clone $this;
         $clone->accessTokenIds[$id] = $accessTokenId;
-        $event = RefreshTokenEvent\AccessTokenAddedToRefreshTokenEvent::create($clone->getTokenId(), $accessTokenId);
+        $event = RefreshTokenEvent\AccessTokenAddedToRefreshTokenEvent::create($clone->getRefreshTokenId(), $accessTokenId);
         $clone->record($event);
 
         return $clone;
@@ -199,7 +212,7 @@ class RefreshToken extends Token
     {
         $clone = clone $this;
         $clone->revoked = true;
-        $event = RefreshTokenEvent\RefreshTokenRevokedEvent::create($clone->getTokenId());
+        $event = RefreshTokenEvent\RefreshTokenRevokedEvent::create($clone->getRefreshTokenId());
         $clone->record($event);
 
         return $clone;
