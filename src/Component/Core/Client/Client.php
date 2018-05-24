@@ -109,7 +109,7 @@ class Client implements ResourceOwner, ContainsRecordedMessages, DomainObject
         }
 
         return $id;
-     }
+    }
 
     /**
      * @return UserAccountId|null
