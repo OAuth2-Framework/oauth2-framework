@@ -13,12 +13,15 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Core\AccessToken;
 
+use OAuth2Framework\Component\Core\AccessToken\Event as AccessTokenEvent;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
+use OAuth2Framework\Component\Core\Event\Event;
 use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwnerId;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
 use OAuth2Framework\Component\Core\Token\Token;
 use OAuth2Framework\Component\Core\Token\TokenId;
+use OAuth2Framework\Component\Core\Domain\DomainObject;
 
 class AccessToken extends Token
 {
@@ -33,6 +36,14 @@ class AccessToken extends Token
     public static function createEmpty(): self
     {
         return new self();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function getSchema(): string
+    {
+        return 'https://oauth2-framework.spomky-labs.com/schemas/model/access-token/1.0/schema';
     }
 
     /**
@@ -57,6 +68,9 @@ class AccessToken extends Token
         $clone->expiresAt = $expiresAt;
         $clone->resourceServerId = $resourceServerId;
 
+        $event = AccessTokenEvent\AccessTokenCreatedEvent::create($accessTokenId, $resourceOwnerId, $clientId, $parameters, $metadatas, $expiresAt, $resourceServerId);
+        $clone->record($event);
+
         return $clone;
     }
 
@@ -73,25 +87,14 @@ class AccessToken extends Token
     }
 
     /**
-     * @return AccessTokenId
-     */
-    public function getAccessTokenId(): AccessTokenId
-    {
-        $id = $this->getTokenId();
-        if (!$id instanceof AccessTokenId) {
-            throw new \RuntimeException('Access token not initialized.');
-        }
-
-        return $this->accessTokenId;
-    }
-
-    /**
      * @return AccessToken
      */
     public function markAsRevoked(): self
     {
         $clone = clone $this;
         $clone->revoked = true;
+        $event = AccessTokenEvent\AccessTokenRevokedEvent::create($clone->getTokenId());
+        $clone->record($event);
 
         return $clone;
     }
@@ -109,11 +112,9 @@ class AccessToken extends Token
     }
 
     /**
-     * @param \stdClass $json
-     *
-     * @return AccessToken
+     * {@inheritdoc}
      */
-    public static function createFromJson(\stdClass $json): self
+    public static function createFromJson(\stdClass $json): DomainObject
     {
         $accessTokenId = AccessTokenId::create($json->access_token_id);
         $resourceServerId = null !== $json->resource_server_id ? ResourceServerId::create($json->resource_server_id) : null;
@@ -153,5 +154,65 @@ class AccessToken extends Token
         $data['expires_in'] = $this->getExpiresIn();
 
         return $data;
+    }
+
+    /**
+     * @param Event $event
+     *
+     * @return AccessToken
+     */
+    public function apply(Event $event): self
+    {
+        $map = $this->getEventMap();
+        if (!array_key_exists($event->getType(), $map)) {
+            throw new \InvalidArgumentException('Unsupported event.');
+        }
+        if (null !== $this->clientId && $this->accessTokenId->getValue() !== $event->getDomainId()->getValue()) {
+            throw new \InvalidArgumentException('Event not applicable for this access token.');
+        }
+        $method = $map[$event->getType()];
+
+        return $this->$method($event);
+    }
+
+    /**
+     * @return array
+     */
+    private function getEventMap(): array
+    {
+        return [
+            AccessTokenEvent\AccessTokenCreatedEvent::class => 'applyAccessTokenCreatedEvent',
+            AccessTokenEvent\AccessTokenRevokedEvent::class => 'applyAccessTokenRevokedEvent',
+        ];
+    }
+
+    /**
+     * @param AccessTokenEvent\AccessTokenCreatedEvent $event
+     *
+     * @return AccessToken
+     */
+    protected function applyAccessTokenCreatedEvent(AccessTokenEvent\AccessTokenCreatedEvent $event): self
+    {
+        $clone = clone $this;
+        $clone->accessTokenId = $event->getAccessTokenId();
+        $clone->resourceOwnerId = $event->getResourceOwnerId();
+        $clone->clientId = $event->getClientId();
+        $clone->parameters = $event->getParameters();
+        $clone->metadatas = $event->getMetadatas();
+        $clone->expiresAt = $event->getExpiresAt();
+        $clone->resourceServerId = $event->getResourceServerId();
+
+        return $clone;
+    }
+
+    /**
+     * @return AccessToken
+     */
+    protected function applyAccessTokenRevokedEvent(): self
+    {
+        $clone = clone $this;
+        $clone->revoked = true;
+
+        return $clone;
     }
 }

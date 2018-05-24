@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "https://oauth2-framework.spomky-labs.com/schemas/events/client/owner-changed/1.0/schema",
+  "description":"Client owner changed.",
+  "type": "object",
+  "allOf": [
+    {"$ref": "https://oauth2-framework.spomky-labs.com/schemas/event/1.0/schema"},
+    {"payload": {
+      "type": "object",
+      "required": ["new_owner_id"],
+      "properties": {
+        "new_owner_id": {"type": "string"}
+      }
+    }
+    }
+  ],
+  "required": ["payload"]
+}

@@ -13,8 +13,11 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\AuthorizationCodeGrant;
 
+use OAuth2Framework\Component\AuthorizationCodeGrant\Event as AuthorizationCodeEvent;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
+use OAuth2Framework\Component\Core\Domain\DomainObject;
+use OAuth2Framework\Component\Core\Event\Event;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
 use OAuth2Framework\Component\Core\Token\Token;
 use OAuth2Framework\Component\Core\Token\TokenId;
@@ -51,6 +54,14 @@ class AuthorizationCode extends Token
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public static function getSchema(): string
+    {
+        return 'https://oauth2-framework.spomky-labs.com/schemas/model/authorization-code/1.0/schema';
+    }
+
+    /**
      * @param AuthorizationCodeId $authorizationCodeId
      * @param ClientId            $clientId
      * @param UserAccountId       $userAccountId
@@ -78,6 +89,9 @@ class AuthorizationCode extends Token
         $clone->expiresAt = $expiresAt;
         $clone->resourceServerId = $resourceServerId;
 
+        $event = AuthorizationCodeEvent\AuthorizationCodeCreatedEvent::create($authorizationCodeId, $clientId, $userAccountId, $queryParameters, $redirectUri, $expiresAt, $parameters, $metadatas, $resourceServerId);
+        $clone->record($event);
+
         return $clone;
     }
 
@@ -87,19 +101,6 @@ class AuthorizationCode extends Token
     public function getTokenId(): TokenId
     {
         if (null === $this->authorizationCodeId) {
-            throw new \RuntimeException('Authorization code not initialized.');
-        }
-
-        return $this->authorizationCodeId;
-    }
-
-    /**
-     * @return AuthorizationCodeId
-     */
-    public function getAuthorizationCodeId(): AuthorizationCodeId
-    {
-        $id = $this->getTokenId();
-        if (!$id instanceof AuthorizationCodeId) {
             throw new \RuntimeException('Authorization code not initialized.');
         }
 
@@ -132,6 +133,8 @@ class AuthorizationCode extends Token
         }
         $clone = clone $this;
         $clone->used = true;
+        $event = AuthorizationCodeEvent\AuthorizationCodeMarkedAsUsedEvent::create($clone->getTokenId());
+        $clone->record($event);
 
         return $clone;
     }
@@ -143,6 +146,8 @@ class AuthorizationCode extends Token
     {
         $clone = clone $this;
         $clone->revoked = true;
+        $event = AuthorizationCodeEvent\AuthorizationCodeRevokedEvent::create($clone->getTokenId());
+        $clone->record($event);
 
         return $clone;
     }
@@ -202,11 +207,9 @@ class AuthorizationCode extends Token
     }
 
     /**
-     * @param \stdClass $json
-     *
-     * @return AuthorizationCode
+     * {@inheritdoc}
      */
-    public static function createFromJson(\stdClass $json): self
+    public static function createFromJson(\stdClass $json): DomainObject
     {
         $authorizationCodeId = AuthorizationCodeId::create($json->auth_code_id);
         $queryParameters = (array) $json->query_parameters;
@@ -252,5 +255,84 @@ class AuthorizationCode extends Token
             ];
 
         return $data;
+    }
+
+    /**
+     * @param Event $event
+     *
+     * @return AuthorizationCode
+     */
+    public function apply(Event $event): self
+    {
+        $map = $this->getEventMap();
+        if (!array_key_exists($event->getType(), $map)) {
+            throw new \RuntimeException('Unsupported event.');
+        }
+        if (null !== $this->authorizationCodeId && $this->authorizationCodeId->getValue() !== $event->getDomainId()->getValue()) {
+            throw new \RuntimeException('Event not applicable for this authorization code.');
+        }
+        $method = $map[$event->getType()];
+
+        return $this->$method($event);
+    }
+
+    /**
+     * @return array
+     */
+    private function getEventMap(): array
+    {
+        return [
+            AuthorizationCodeEvent\AuthorizationCodeCreatedEvent::class => 'applyAuthorizationCodeCreatedEvent',
+            AuthorizationCodeEvent\AuthorizationCodeMarkedAsUsedEvent::class => 'applyAuthorizationCodeMarkedAsUsedEvent',
+            AuthorizationCodeEvent\AuthorizationCodeRevokedEvent::class => 'applyAuthorizationCodeRevokedEvent',
+        ];
+    }
+
+    /**
+     * @param AuthorizationCodeEvent\AuthorizationCodeCreatedEvent $event
+     *
+     * @return AuthorizationCode
+     */
+    protected function applyAuthorizationCodeCreatedEvent(AuthorizationCodeEvent\AuthorizationCodeCreatedEvent $event): self
+    {
+        $clone = clone $this;
+        $clone->authorizationCodeId = $event->getAuthorizationCodeId();
+        $clone->clientId = $event->getClientId();
+        $clone->resourceOwnerId = $event->getUserAccountId();
+        $clone->queryParameters = $event->getQueryParameters();
+        $clone->redirectUri = $event->getRedirectUri();
+        $clone->expiresAt = $event->getExpiresAt();
+        $clone->parameters = $event->getParameters();
+        $clone->metadatas = $event->getMetadatas();
+        $clone->expiresAt = $event->getExpiresAt();
+        $clone->resourceServerId = $event->getResourceServerId();
+
+        return $clone;
+    }
+
+    /**
+     * @param AuthorizationCodeEvent\AuthorizationCodeMarkedAsUsedEvent $event
+     *
+     * @return AuthorizationCode
+     */
+    protected function applyAuthorizationCodeMarkedAsUsedEvent(AuthorizationCodeEvent\AuthorizationCodeMarkedAsUsedEvent $event): self
+    {
+        $clone = clone $this;
+        $clone->used = true;
+
+        return $clone;
+    }
+
+    /**
+     * @param AuthorizationCodeEvent\AuthorizationCodeRevokedEvent $event
+     *
+     * @return AuthorizationCode
+     */
+    protected function applyAuthorizationCodeRevokedEvent(AuthorizationCodeEvent\AuthorizationCodeRevokedEvent $event): self
+    {
+        $clone = clone $this;
+        $clone->revoked = true;
+
+        return $clone;
     }
 }

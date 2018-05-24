@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "https://oauth2-framework.spomky-labs.com/schemas/model/refresh-token/1.0/schema",
+  "description":"Refresh Token.",
+  "type": "object",
+  "allOf": [
+    {"$ref": "https://oauth2-framework.spomky-labs.com/schemas/model/token/1.0/schema"},
+    {"payload": {
+      "type": "object",
+      "required": ["refresh_token_id", "access_token_ids"],
+      "properties": {
+        "refresh_token_id":{"type":"string"},
+        "access_token_ids":{"type":"array"}
+      }
+    }
+    }
+  ]
+}

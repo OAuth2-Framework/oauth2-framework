@@ -27,6 +27,7 @@
         "psr/http-server-handler": "^1.0",
         "psr/http-server-middleware": "^1.0",
         "sensio/framework-extra-bundle": "^5.0",
+        "simple-bus/symfony-bridge": "^5.1",
         "symfony/form": "^3.4|^4.0",
         "symfony/psr-http-message-bridge": "^1.0",
         "symfony/security-bundle": "^3.4|^4.0",
