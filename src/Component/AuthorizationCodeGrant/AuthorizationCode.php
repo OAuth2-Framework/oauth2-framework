@@ -120,7 +120,6 @@ class AuthorizationCode extends Token
         return $this->authorizationCodeId;
     }
 
-
     /**
      * @return array
      */
