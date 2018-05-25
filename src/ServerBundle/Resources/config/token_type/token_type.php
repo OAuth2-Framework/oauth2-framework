@@ -23,6 +23,13 @@ return function (ContainerConfigurator $container) {
         ->autoconfigure()
         ->autowire();
 
+    $container->set(\OAuth2Framework\Component\Core\TokenType\TokenTypeParameterChecker::class)
+        ->args([
+            ref(TokenTypeManager::class),
+            '%oauth2_server.token_type.allow_token_type_parameter%',
+        ])
+    ;
+
     $container->set(TokenTypeMiddleware::class)
         ->args([
             ref(TokenTypeManager::class),

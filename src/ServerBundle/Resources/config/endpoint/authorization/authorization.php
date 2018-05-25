@@ -19,7 +19,6 @@ use OAuth2Framework\Component\Core\Message;
 use OAuth2Framework\Component\Core\Middleware;
 use OAuth2Framework\Component\AuthorizationEndpoint;
 use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker;
-use OAuth2Framework\Component\Core\TokenType\TokenTypeMiddleware;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
 return function (ContainerConfigurator $container) {
@@ -71,7 +70,6 @@ return function (ContainerConfigurator $container) {
         ->args([[
             ref('oauth2_server.message_middleware.for_authorization_endpoint'),
             ref(AuthorizationEndpoint\Middleware\AuthorizationExceptionMiddleware::class),
-            ref(TokenTypeMiddleware::class),
             ref(AuthorizationEndpointController::class),
         ]])
         ->tag('controller.service_arguments');
@@ -99,7 +97,6 @@ return function (ContainerConfigurator $container) {
         ->args([
             '%oauth2_server.endpoint.authorization.enforce_state%',
         ]);
-    //$container->set(\OAuth2Framework\Component\Core\TokenType\TokenTypeParameterChecker::class);
 
     // Rules
     $container->set(AuthorizationEndpoint\Rule\RequestUriRule::class);
