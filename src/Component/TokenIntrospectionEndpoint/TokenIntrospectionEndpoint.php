@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\TokenIntrospectionEndpoint;
 
 use Http\Message\ResponseFactory;
+use OAuth2Framework\Component\Core\Util\RequestBodyParser;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServer;
@@ -155,7 +156,7 @@ final class TokenIntrospectionEndpoint implements MiddlewareInterface
      */
     private function getRequestParameters(ServerRequestInterface $request): array
     {
-        $parameters = $request->getParsedBody() ?? [];
+        $parameters = RequestBodyParser::parseFormUrlEncoded($request);
 
         return array_intersect_key($parameters, array_flip(['token', 'token_type_hint']));
     }

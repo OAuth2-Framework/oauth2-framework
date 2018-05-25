@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Core\TokenType;
 
+use OAuth2Framework\Component\Core\Util\RequestBodyParser;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -65,9 +66,9 @@ final class TokenTypeMiddleware implements MiddlewareInterface
      */
     private function findTokenType(ServerRequestInterface $request): TokenType
     {
-        $params = $request->getParsedBody() ?? [];
-        if (true === $this->tokenTypeParameterAllowed && array_key_exists('token_type', $params)) {
-            return $this->tokenTypeManager->get($params['token_type']);
+        $parameters = RequestBodyParser::parseFormUrlEncoded($request);
+        if (true === $this->tokenTypeParameterAllowed && array_key_exists('token_type', $parameters)) {
+            return $this->tokenTypeManager->get($parameters['token_type']);
         } else {
             return $this->tokenTypeManager->getDefault();
         }

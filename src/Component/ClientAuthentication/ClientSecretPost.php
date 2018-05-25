@@ -17,6 +17,7 @@ use Base64Url\Base64Url;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
+use OAuth2Framework\Component\Core\Util\RequestBodyParser;
 use Psr\Http\Message\ServerRequestInterface;
 
 final class ClientSecretPost implements AuthenticationMethod
@@ -53,7 +54,7 @@ final class ClientSecretPost implements AuthenticationMethod
      */
     public function findClientIdAndCredentials(ServerRequestInterface $request, &$clientCredentials = null): ? ClientId
     {
-        $parameters = $request->getParsedBody() ?? [];
+        $parameters = RequestBodyParser::parseFormUrlEncoded($request);
         if (array_key_exists('client_id', $parameters) && array_key_exists('client_secret', $parameters)) {
             $clientCredentials = $parameters['client_secret'];
 

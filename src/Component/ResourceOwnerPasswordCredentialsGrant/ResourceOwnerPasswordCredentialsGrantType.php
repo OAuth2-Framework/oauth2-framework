@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\ResourceOwnerPasswordCredentialsGrant;
 
+use OAuth2Framework\Component\Core\Util\RequestBodyParser;
 use OAuth2Framework\Component\TokenEndpoint\GrantType;
 use OAuth2Framework\Component\TokenEndpoint\GrantTypeData;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountManager;
@@ -65,7 +66,7 @@ final class ResourceOwnerPasswordCredentialsGrantType implements GrantType
      */
     public function checkRequest(ServerRequestInterface $request)
     {
-        $parameters = $request->getParsedBody() ?? [];
+        $parameters = RequestBodyParser::parseFormUrlEncoded($request);
         $requiredParameters = ['username', 'password'];
 
         $diff = array_diff($requiredParameters, array_keys($parameters));
@@ -88,9 +89,9 @@ final class ResourceOwnerPasswordCredentialsGrantType implements GrantType
      */
     public function grant(ServerRequestInterface $request, GrantTypeData $grantTypeData): GrantTypeData
     {
-        $parsedBody = $request->getParsedBody() ?? [];
-        $username = $parsedBody['username'];
-        $password = $parsedBody['password'];
+        $parameters = RequestBodyParser::parseFormUrlEncoded($request);
+        $username = $parameters['username'];
+        $password = $parameters['password'];
 
         $userAccount = $this->userAccountRepository->findOneByUsername($username);
         if (null === $userAccount || !$this->userAccountManager->isPasswordCredentialValid($userAccount, $password)) {

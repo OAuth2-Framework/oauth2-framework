@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\RefreshTokenGrant;
 
+use OAuth2Framework\Component\Core\Util\RequestBodyParser;
 use OAuth2Framework\Component\TokenEndpoint\GrantTypeData;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Message\OAuth2Message;
@@ -57,7 +58,7 @@ final class RefreshTokenGrantType implements GrantType
      */
     public function checkRequest(ServerRequestInterface $request)
     {
-        $parameters = $request->getParsedBody() ?? [];
+        $parameters = RequestBodyParser::parseFormUrlEncoded($request);
         $requiredParameters = ['refresh_token'];
 
         $diff = array_diff($requiredParameters, array_keys($parameters));
@@ -80,7 +81,7 @@ final class RefreshTokenGrantType implements GrantType
      */
     public function grant(ServerRequestInterface $request, GrantTypeData $grantTypeData): GrantTypeData
     {
-        $parameters = $request->getParsedBody() ?? [];
+        $parameters = RequestBodyParser::parseFormUrlEncoded($request);
         $refreshToken = $parameters['refresh_token'];
         $token = $this->refreshTokenRepository->find(RefreshTokenId::create($refreshToken));
 

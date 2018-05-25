@@ -16,6 +16,7 @@ namespace OAuth2Framework\Component\ClientAuthentication;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
+use OAuth2Framework\Component\Core\Util\RequestBodyParser;
 use Psr\Http\Message\ServerRequestInterface;
 
 final class None implements AuthenticationMethod
@@ -33,7 +34,7 @@ final class None implements AuthenticationMethod
      */
     public function findClientIdAndCredentials(ServerRequestInterface $request, &$clientCredentials = null): ? ClientId
     {
-        $parameters = $request->getParsedBody() ?? [];
+        $parameters = RequestBodyParser::parseFormUrlEncoded($request);
         if (array_key_exists('client_id', $parameters)) {
             return ClientId::create($parameters['client_id']);
         }

@@ -26,6 +26,7 @@ use Jose\Component\Signature\JWS;
 use Jose\Component\Signature\JWSVerifier;
 use Jose\Component\Signature\Serializer\CompactSerializer as JwsCompactSerializer;
 use OAuth2Framework\Component\Core\Client\Client;
+use OAuth2Framework\Component\Core\Util\RequestBodyParser;
 use OAuth2Framework\Component\TokenEndpoint\GrantTypeData;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\Client\ClientRepository;
@@ -163,7 +164,7 @@ class JwtBearerGrantType implements GrantType
      */
     public function checkRequest(ServerRequestInterface $request)
     {
-        $parameters = $request->getParsedBody() ?? [];
+        $parameters = RequestBodyParser::parseFormUrlEncoded($request);
         $requiredParameters = ['assertion'];
 
         $diff = array_diff($requiredParameters, array_keys($parameters));
@@ -177,7 +178,7 @@ class JwtBearerGrantType implements GrantType
      */
     public function prepareResponse(ServerRequestInterface $request, GrantTypeData $grantTypeData): GrantTypeData
     {
-        $parameters = $request->getParsedBody() ?? [];
+        $parameters = RequestBodyParser::parseFormUrlEncoded($request);
         $assertion = $parameters['assertion'];
         $assertion = $this->tryToDecryptTheAssertion($assertion);
 

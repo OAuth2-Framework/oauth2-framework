@@ -19,6 +19,7 @@ use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Message\OAuth2Message;
 use OAuth2Framework\Component\TokenEndpoint\GrantType;
 use Psr\Http\Message\ServerRequestInterface;
+use OAuth2Framework\Component\Core\Util\RequestBodyParser;
 
 final class AuthorizationCodeGrantType implements GrantType
 {
@@ -65,7 +66,7 @@ final class AuthorizationCodeGrantType implements GrantType
      */
     public function checkRequest(ServerRequestInterface $request)
     {
-        $parameters = $request->getParsedBody() ?? [];
+        $parameters = RequestBodyParser::parseFormUrlEncoded($request);
         $requiredParameters = ['code', 'redirect_uri'];
 
         $diff = array_diff($requiredParameters, array_keys($parameters));
@@ -87,7 +88,7 @@ final class AuthorizationCodeGrantType implements GrantType
      */
     public function grant(ServerRequestInterface $request, GrantTypeData $grantTypeData): GrantTypeData
     {
-        $parameters = (array) ($request->getParsedBody() ?? []);
+        $parameters = RequestBodyParser::parseFormUrlEncoded($request);
         $authorizationCode = $this->getAuthorizationCode($parameters['code']);
 
         if (true === $authorizationCode->isUsed() || true === $authorizationCode->isRevoked()) {

@@ -29,6 +29,7 @@ use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\Message\OAuth2Message;
 use OAuth2Framework\Component\Core\TrustedIssuer\TrustedIssuerRepository;
+use OAuth2Framework\Component\Core\Util\RequestBodyParser;
 use Psr\Http\Message\ServerRequestInterface;
 
 class ClientAssertionJwt implements AuthenticationMethod
@@ -171,7 +172,7 @@ class ClientAssertionJwt implements AuthenticationMethod
      */
     public function findClientIdAndCredentials(ServerRequestInterface $request, &$clientCredentials = null): ? ClientId
     {
-        $parameters = $request->getParsedBody() ?? [];
+        $parameters = RequestBodyParser::parseFormUrlEncoded($request);
         if (!array_key_exists('client_assertion_type', $parameters)) {
             return null;
         }

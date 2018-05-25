@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\TokenEndpoint;
 
+use OAuth2Framework\Component\Core\Util\RequestBodyParser;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use OAuth2Framework\Component\Core\Message\OAuth2Message;
@@ -42,11 +43,11 @@ final class GrantTypeMiddleware implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         try {
-            $requestParameters = $request->getParsedBody() ?? [];
-            if (!array_key_exists('grant_type', $requestParameters)) {
+            $parameters = RequestBodyParser::parseFormUrlEncoded($request);
+            if (!array_key_exists('grant_type', $parameters)) {
                 throw new \InvalidArgumentException('The "grant_type" parameter is missing.');
             }
-            $grant_type = $requestParameters['grant_type'];
+            $grant_type = $parameters['grant_type'];
             if (!$this->grantTypeManager->has($grant_type)) {
                 throw new \InvalidArgumentException(sprintf('The grant type "%s" is not supported by this server.', $grant_type));
             }

@@ -15,6 +15,7 @@ namespace OAuth2Framework\Component\ClientRegistrationEndpoint;
 
 use Http\Message\ResponseFactory;
 use OAuth2Framework\Component\Core\Client\ClientIdGenerator;
+use OAuth2Framework\Component\Core\Util\RequestBodyParser;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use OAuth2Framework\Component\ClientRule\RuleManager;
@@ -77,7 +78,8 @@ final class ClientRegistrationEndpoint implements MiddlewareInterface
             } else {
                 $userAccountId = null;
             }
-            $commandParameters = DataBag::create((array) ($request->getParsedBody() ?? []));
+            $parameters = RequestBodyParser::parseJson($request);
+            $commandParameters = DataBag::create($parameters);
             $clientId = $this->clientIdGenerator->createClientId();
             $validatedParameters = $this->ruleManager->handle($clientId, $commandParameters);
             $client = Client::createEmpty();

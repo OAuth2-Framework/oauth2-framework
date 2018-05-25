@@ -16,6 +16,7 @@ namespace OAuth2Framework\Component\Scope;
 use OAuth2Framework\Component\Core\AccessToken\AccessToken;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwner;
+use OAuth2Framework\Component\Core\Util\RequestBodyParser;
 use OAuth2Framework\Component\TokenEndpoint\Extension\TokenEndpointExtension;
 use OAuth2Framework\Component\TokenEndpoint\GrantTypeData;
 use OAuth2Framework\Component\TokenEndpoint\GrantType;
@@ -81,12 +82,12 @@ final class TokenEndpointScopeExtension implements TokenEndpointExtension
      */
     private function getScope(ServerRequestInterface $request, GrantTypeData $grantTypeData): string
     {
-        $params = $request->getParsedBody() ?? [];
-        if (!array_key_exists('scope', $params)) {
+        $parameters = RequestBodyParser::parseFormUrlEncoded($request);
+        if (!array_key_exists('scope', $parameters)) {
             return $grantTypeData->hasParameter('scope') ? $grantTypeData->getParameter('scope') : '';
         }
 
-        return $params['scope'];
+        return $parameters['scope'];
     }
 
     /**

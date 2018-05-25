@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\ClientConfigurationEndpoint;
 
 use Http\Message\ResponseFactory;
+use OAuth2Framework\Component\Core\Util\RequestBodyParser;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use OAuth2Framework\Component\ClientRule\RuleManager;
@@ -62,8 +63,9 @@ final class ClientConfigurationPutEndpoint implements MiddlewareInterface
     {
         /** @var Client $client */
         $client = $request->getAttribute('client');
+        $parameters = RequestBodyParser::parseJson($request);
 
-        $command_parameters = DataBag::create((array) ($request->getParsedBody() ?? []));
+        $command_parameters = DataBag::create($parameters);
         $validated_parameters = $this->ruleManager->handle($client->getClientId(), $command_parameters);
         $client = $client->withParameters($validated_parameters);
 
