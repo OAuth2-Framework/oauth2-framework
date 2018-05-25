@@ -16,23 +16,15 @@ use OAuth2Framework\Component\ClientRule;
 
 return function (ContainerConfigurator $container) {
     $container = $container->services()->defaults()
-        ->private();
+        ->private()
+        ->autoconfigure();
 
     $container->set('oauth2_server.client_rule.manager')
         ->class(ClientRule\RuleManager::class);
 
-    $container->set(ClientRule\ApplicationTypeParametersRule::class)
-        ->autoconfigure();
-
-    $container->set(ClientRule\ClientIdIssuedAtRule::class)
-        ->autoconfigure();
-
-    $container->set(ClientRule\CommonParametersRule::class)
-        ->autoconfigure();
-
-    $container->set(ClientRule\ContactsParametersRule::class)
-        ->autoconfigure();
-
-    $container->set(ClientRule\RedirectionUriRule::class)
-        ->autoconfigure();
+    $container->set(ClientRule\ApplicationTypeParametersRule::class);
+    $container->set(ClientRule\ClientIdIssuedAtRule::class);
+    $container->set(ClientRule\CommonParametersRule::class);
+    $container->set(ClientRule\ContactsParametersRule::class);
+    $container->set(ClientRule\RedirectionUriRule::class);
 };
