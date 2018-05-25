@@ -33,15 +33,22 @@ final class InitialAccessTokenMiddleware implements MiddlewareInterface
     private $initialAccessTokenRepository;
 
     /**
+     * @var bool
+     */
+    private $isRequired;
+
+    /**
      * InitialAccessTokenMiddleware constructor.
      *
      * @param BearerToken                  $bearerToken
      * @param InitialAccessTokenRepository $initialAccessTokenRepository
+     * @param bool                         $isRequired
      */
-    public function __construct(BearerToken $bearerToken, InitialAccessTokenRepository $initialAccessTokenRepository)
+    public function __construct(BearerToken $bearerToken, InitialAccessTokenRepository $initialAccessTokenRepository, bool $isRequired)
     {
         $this->bearerToken = $bearerToken;
         $this->initialAccessTokenRepository = $initialAccessTokenRepository;
+        $this->isRequired = $isRequired;
     }
 
     /**
@@ -53,6 +60,9 @@ final class InitialAccessTokenMiddleware implements MiddlewareInterface
             $values = [];
             $token = $this->bearerToken->find($request, $values);
             if (null === $token) {
+                if (!$this->isRequired) {
+                    return $handler->handle($request);
+                }
                 throw new \InvalidArgumentException('Initial Access Token is missing or invalid.');
             }
 

@@ -70,7 +70,6 @@ class ClientRegistrationEndpointTest extends WebTestCase
         $client = static::createClient();
         $client->request('POST', '/client/management', [], [], ['HTTPS' => 'on', 'HTTP_AUTHORIZATION' => 'Bearer VALID_INITIAL_ACCESS_TOKEN_ID'], null);
         $response = $client->getResponse();
-        dump($response->getContent());
         self::assertEquals(201, $response->getStatusCode());
         self::assertEquals('application/json; charset=UTF-8', $response->headers->get('content-type'));
         $content = json_decode($response->getContent(), true);
