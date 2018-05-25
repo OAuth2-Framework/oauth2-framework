@@ -26,7 +26,7 @@ return function (ContainerConfigurator $container) {
         ->args([
             ref('client_registration_bearer_token'),
             ref(InitialAccessTokenRepository::class),
-            '%oauth2_server.endpoint.client_registration.initial_access_token.required%'
+            '%oauth2_server.endpoint.client_registration.initial_access_token.required%',
         ]);
 
     $container->set('client_registration_bearer_token')

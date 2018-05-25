@@ -63,6 +63,7 @@ final class InitialAccessTokenMiddleware implements MiddlewareInterface
                 if (!$this->isRequired) {
                     return $handler->handle($request);
                 }
+
                 throw new \InvalidArgumentException('Initial Access Token is missing or invalid.');
             }
 
