@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace OAuth2Framework\ServerBundle\Component\Endpoint\ClientRegistration\Compiler;
 
 use OAuth2Framework\ServerBundle\Service\MetadataBuilder;
-use OAuth2Framework\Component\ClientRegistrationEndpoint\ClientRegistrationEndpoint;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
