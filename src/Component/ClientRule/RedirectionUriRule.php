@@ -32,7 +32,7 @@ final class RedirectionUriRule implements Rule
 
         // No need for redirect URIs as no response type to is used.
         if (!$validatedParameters->has('response_types') || empty($validatedParameters->get('response_types'))) {
-            return $validatedParameters;
+            return $validatedParameters->with('redirect_uris', []);
         }
 
         if (!$validatedParameters->has('token_endpoint_auth_method')) {
