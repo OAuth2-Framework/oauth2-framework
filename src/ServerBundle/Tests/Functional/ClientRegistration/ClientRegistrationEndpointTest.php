@@ -13,10 +13,10 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Tests\Functional\ClientRegistration;
 
+use OAuth2Framework\Component\ClientRegistrationEndpoint\ClientRegistrationEndpoint;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\Client\ClientRepository;
-use OAuth2Framework\Component\TokenRevocationEndpoint\TokenRevocationEndpoint;
 use Psr\Container\ContainerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
@@ -33,7 +33,7 @@ class ClientRegistrationEndpointTest extends WebTestCase
      */
     protected function setUp()
     {
-        if (!class_exists(TokenRevocationEndpoint::class)) {
+        if (!class_exists(ClientRegistrationEndpoint::class)) {
             $this->markTestSkipped('The component "oauth2-framework/client-registration-endpoint" is not installed.');
         }
     }
@@ -70,6 +70,7 @@ class ClientRegistrationEndpointTest extends WebTestCase
         $client = static::createClient();
         $client->request('POST', '/client/management', [], [], ['HTTPS' => 'on', 'HTTP_AUTHORIZATION' => 'Bearer VALID_INITIAL_ACCESS_TOKEN_ID'], null);
         $response = $client->getResponse();
+        dump($response->getContent());
         self::assertEquals(201, $response->getStatusCode());
         self::assertEquals('application/json; charset=UTF-8', $response->headers->get('content-type'));
         $content = json_decode($response->getContent(), true);

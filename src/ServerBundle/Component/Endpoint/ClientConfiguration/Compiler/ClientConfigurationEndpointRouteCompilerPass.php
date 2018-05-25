@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Component\Endpoint\ClientConfiguration\Compiler;
 
-use OAuth2Framework\Component\ClientConfigurationEndpoint\ClientConfigurationEndpoint;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -24,7 +23,7 @@ class ClientConfigurationEndpointRouteCompilerPass implements CompilerPassInterf
      */
     public function process(ContainerBuilder $container)
     {
-        if (!$container->hasDefinition(ClientConfigurationEndpoint::class)) {
+        if (!$container->hasDefinition('oauth2_server.client_configuration.endpoint')) {
             return;
         }
 
