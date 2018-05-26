@@ -23,7 +23,7 @@ final class RandomRefreshTokenIdGenerator implements RefreshTokenIdGenerator
      */
     public function createRefreshTokenId(): RefreshTokenId
     {
-        $value = bin2hex(random_bytes(64));
+        $value = bin2hex(random_bytes(32));
 
         return RefreshTokenId::create($value);
     }

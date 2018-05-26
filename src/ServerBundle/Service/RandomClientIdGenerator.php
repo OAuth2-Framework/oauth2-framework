@@ -23,7 +23,7 @@ final class RandomClientIdGenerator implements ClientIdGenerator
      */
     public function createClientId(): ClientId
     {
-        $value = bin2hex(random_bytes(64));
+        $value = bin2hex(random_bytes(32));
 
         return ClientId::create($value);
     }

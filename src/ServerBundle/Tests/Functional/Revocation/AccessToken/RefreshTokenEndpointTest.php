@@ -119,7 +119,7 @@ class RevocationEndpointTest extends WebTestCase
     }
 
     /**
-     * @test
+     * @testK
      */
     public function aAccessTokenThatOwnsToAnotherClientIsNotRevoked()
     {
