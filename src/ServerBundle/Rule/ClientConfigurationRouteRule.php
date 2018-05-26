@@ -49,7 +49,7 @@ final class ClientConfigurationRouteRule extends Base
      */
     protected function generateRegistrationAccessToken(): string
     {
-        $length = random_int(50, 100);
+        $length = random_int(62, 64);
 
         return Base64Url::encode(random_bytes($length));
     }

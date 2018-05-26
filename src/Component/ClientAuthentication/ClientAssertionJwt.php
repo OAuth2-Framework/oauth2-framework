@@ -314,7 +314,7 @@ class ClientAssertionJwt implements AuthenticationMethod
                 break;
             case $commandParameters->has('jwks'):
                 try {
-                    JWKSet::createFromJson($commandParameters->get('jwks'));
+                    JWKSet::createFromKeyData($commandParameters->get('jwks'));
                 } catch (\Throwable $e) {
                     throw new \InvalidArgumentException('The parameter "jwks" must be a valid JWKSet object.', 0, $e);
                 }
@@ -349,7 +349,7 @@ class ClientAssertionJwt implements AuthenticationMethod
      */
     private function createClientSecret(): string
     {
-        return bin2hex(random_bytes(128));
+        return bin2hex(random_bytes(32));
     }
 
     /**

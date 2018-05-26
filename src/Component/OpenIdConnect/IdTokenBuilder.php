@@ -403,7 +403,7 @@ class IdTokenBuilder
             'iat' => time(),
             'nbf' => time(),
             'exp' => $this->expiresAt->getTimestamp(),
-            'jti' => Base64Url::encode(random_bytes(25)),
+            'jti' => Base64Url::encode(random_bytes(16)),
             'iss' => $this->issuer,
         ];
 
@@ -509,7 +509,7 @@ class IdTokenBuilder
         }
         $header = [
             'typ' => 'JWT',
-            'jti' => Base64Url::encode(random_bytes(25)),
+            'jti' => Base64Url::encode(random_bytes(16)),
             'alg' => $this->keyEncryptionAlgorithm,
             'enc' => $this->contentEncryptionAlgorithm,
         ];

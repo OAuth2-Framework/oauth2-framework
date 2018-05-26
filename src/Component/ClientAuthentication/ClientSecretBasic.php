@@ -127,8 +127,6 @@ final class ClientSecretBasic implements AuthenticationMethod
      */
     private function createClientSecret(): string
     {
-        $length = random_int(64, 128);
-
-        return Base64Url::encode(random_bytes($length));
+        return Base64Url::encode(random_bytes(32));
     }
 }

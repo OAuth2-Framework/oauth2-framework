@@ -487,12 +487,12 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
         $method = $this->getMethod();
         $commandParameters = DataBag::create([
             'token_endpoint_auth_method' => 'private_key_jwt',
-            'jwks' => '{"keys":[{"kty":"oct","k":"U0VDUkVU"}]}',
+            'jwks' => json_decode('{"keys":[{"kty":"oct","k":"U0VDUkVU"}]}', true),
         ]);
         $validatedParameters = $method->checkClientConfiguration($commandParameters, DataBag::create([]));
 
         self::assertTrue($validatedParameters->has('jwks'));
-        self::assertEquals('{"keys":[{"kty":"oct","k":"U0VDUkVU"}]}', $validatedParameters->get('jwks'));
+        self::assertEquals(json_decode('{"keys":[{"kty":"oct","k":"U0VDUkVU"}]}', true), $validatedParameters->get('jwks'));
     }
 
     /**
