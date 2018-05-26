@@ -25,7 +25,9 @@ use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenId;
 use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenRepository;
 use OAuth2Framework\Component\TokenEndpoint\GrantTypeData;
 use PHPUnit\Framework\TestCase;
+use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\StreamInterface;
 
 /**
  * @group GrantType
@@ -47,8 +49,7 @@ final class RefreshTokenGrantTypeTest extends TestCase
      */
     public function theRequestHaveMissingParameters()
     {
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getParsedBody()->willReturn(['password' => 'PASSWORD']);
+        $request = $this->buildRequest(['password' => 'PASSWORD']);
 
         try {
             $this->getGrantType()->checkRequest($request->reveal());
@@ -67,8 +68,7 @@ final class RefreshTokenGrantTypeTest extends TestCase
      */
     public function theRequestHaveAllRequiredParameters()
     {
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getParsedBody()->willReturn(['refresh_token' => 'REFRESH_TOKEN_ID']);
+        $request = $this->buildRequest(['refresh_token' => 'REFRESH_TOKEN_ID']);
 
         $this->getGrantType()->checkRequest($request->reveal());
         self::assertTrue(true);
@@ -86,8 +86,7 @@ final class RefreshTokenGrantTypeTest extends TestCase
             UserAccountId::create('USER_ACCOUNT_ID')
         );
         $grantTypeData = GrantTypeData::create($client);
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getParsedBody()->willReturn(['refresh_token' => 'UNKNOWN_REFRESH_TOKEN_ID']);
+        $request = $this->buildRequest(['refresh_token' => 'UNKNOWN_REFRESH_TOKEN_ID']);
 
         try {
             $this->getGrantType()->grant($request->reveal(), $grantTypeData);
@@ -112,8 +111,7 @@ final class RefreshTokenGrantTypeTest extends TestCase
             DataBag::create([]),
             UserAccountId::create('USER_ACCOUNT_ID')
         );
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getParsedBody()->willReturn(['refresh_token' => 'REFRESH_TOKEN_ID']);
+        $request = $this->buildRequest(['refresh_token' => 'REFRESH_TOKEN_ID']);
         $grantTypeData = GrantTypeData::create($client);
 
         $receivedGrantTypeData = $this->getGrantType()->prepareResponse($request->reveal(), $grantTypeData);
@@ -131,8 +129,7 @@ final class RefreshTokenGrantTypeTest extends TestCase
             DataBag::create([]),
             UserAccountId::create('USER_ACCOUNT_ID')
         );
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getParsedBody()->willReturn(['refresh_token' => 'REVOKED_REFRESH_TOKEN_ID']);
+        $request = $this->buildRequest(['refresh_token' => 'REVOKED_REFRESH_TOKEN_ID']);
         $request->getAttribute('client')->willReturn($client);
         $grantTypeData = GrantTypeData::create($client);
 
@@ -159,8 +156,7 @@ final class RefreshTokenGrantTypeTest extends TestCase
             DataBag::create([]),
             UserAccountId::create('USER_ACCOUNT_ID')
         );
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getParsedBody()->willReturn(['refresh_token' => 'REFRESH_TOKEN_ID']);
+        $request = $this->buildRequest(['refresh_token' => 'REFRESH_TOKEN_ID']);
         $request->getAttribute('client')->willReturn($client);
         $grantTypeData = GrantTypeData::create($client);
 
@@ -187,8 +183,7 @@ final class RefreshTokenGrantTypeTest extends TestCase
             DataBag::create([]),
             UserAccountId::create('USER_ACCOUNT_ID')
         );
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getParsedBody()->willReturn(['refresh_token' => 'EXPIRED_REFRESH_TOKEN_ID']);
+        $request = $this->buildRequest(['refresh_token' => 'EXPIRED_REFRESH_TOKEN_ID']);
         $request->getAttribute('client')->willReturn($client);
         $grantTypeData = GrantTypeData::create($client);
 
@@ -215,8 +210,7 @@ final class RefreshTokenGrantTypeTest extends TestCase
             DataBag::create([]),
             UserAccountId::create('USER_ACCOUNT_ID')
         );
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getParsedBody()->willReturn(['refresh_token' => 'REFRESH_TOKEN_ID']);
+        $request = $this->buildRequest(['refresh_token' => 'REFRESH_TOKEN_ID']);
         $request->getAttribute('client')->willReturn($client);
         $grantTypeData = GrantTypeData::create($client);
 
@@ -292,5 +286,18 @@ final class RefreshTokenGrantTypeTest extends TestCase
         }
 
         return $this->grantType;
+    }
+
+    private function buildRequest(array $data): ObjectProphecy
+    {
+        $body = $this->prophesize(StreamInterface::class);
+        $body->getContents()->willReturn(http_build_query($data));
+        $request = $this->prophesize(ServerRequestInterface::class);
+        $request->hasHeader('Content-Type')->willReturn(true);
+        $request->getHeader('Content-Type')->willReturn(['application/x-www-form-urlencoded']);
+        $request->getBody()->willReturn($body->reveal());
+        $request->getParsedBody()->willReturn([]);
+
+        return $request;
     }
 }

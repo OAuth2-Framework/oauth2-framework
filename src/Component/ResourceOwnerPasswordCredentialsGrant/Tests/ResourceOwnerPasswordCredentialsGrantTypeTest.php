@@ -24,7 +24,9 @@ use OAuth2Framework\Component\Core\UserAccount\UserAccountRepository;
 use OAuth2Framework\Component\ResourceOwnerPasswordCredentialsGrant\ResourceOwnerPasswordCredentialsGrantType;
 use OAuth2Framework\Component\TokenEndpoint\GrantTypeData;
 use PHPUnit\Framework\TestCase;
+use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\StreamInterface;
 
 /**
  * @group GrantType
@@ -46,8 +48,7 @@ final class ResourceOwnerPasswordCredentialsGrantTypeTest extends TestCase
      */
     public function theRequestHaveMissingParameters()
     {
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getParsedBody()->willReturn(['password' => 'PASSWORD']);
+        $request = $this->buildRequest(['password' => 'PASSWORD']);
 
         try {
             $this->getGrantType()->checkRequest($request->reveal());
@@ -66,8 +67,7 @@ final class ResourceOwnerPasswordCredentialsGrantTypeTest extends TestCase
      */
     public function theRequestHaveAllRequiredParameters()
     {
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getParsedBody()->willReturn(['password' => 'PASSWORD', 'username' => 'USERNAME']);
+        $request = $this->buildRequest(['password' => 'PASSWORD', 'username' => 'USERNAME']);
 
         $this->getGrantType()->checkRequest($request->reveal());
         self::assertTrue(true);
@@ -84,8 +84,7 @@ final class ResourceOwnerPasswordCredentialsGrantTypeTest extends TestCase
             DataBag::create([]),
             UserAccountId::create('USER_ACCOUNT_ID')
         );
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getParsedBody()->willReturn(['password' => 'PASSWORD', 'username' => 'USERNAME']);
+        $request = $this->buildRequest(['password' => 'PASSWORD', 'username' => 'USERNAME']);
         $grantTypeData = GrantTypeData::create($client);
 
         $receivedGrantTypeData = $this->getGrantType()->prepareResponse($request->reveal(), $grantTypeData);
@@ -103,8 +102,7 @@ final class ResourceOwnerPasswordCredentialsGrantTypeTest extends TestCase
             DataBag::create([]),
             UserAccountId::create('USER_ACCOUNT_ID')
         );
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getParsedBody()->willReturn(['password' => 'PASSWORD', 'username' => 'USERNAME']);
+        $request = $this->buildRequest(['password' => 'PASSWORD', 'username' => 'USERNAME']);
         $grantTypeData = GrantTypeData::create($client);
 
         $receivedGrantTypeData = $this->getGrantType()->grant($request->reveal(), $grantTypeData);
@@ -138,5 +136,18 @@ final class ResourceOwnerPasswordCredentialsGrantTypeTest extends TestCase
         }
 
         return $this->grantType;
+    }
+
+    private function buildRequest(array $data): ObjectProphecy
+    {
+        $body = $this->prophesize(StreamInterface::class);
+        $body->getContents()->willReturn(http_build_query($data));
+        $request = $this->prophesize(ServerRequestInterface::class);
+        $request->hasHeader('Content-Type')->willReturn(true);
+        $request->getHeader('Content-Type')->willReturn(['application/x-www-form-urlencoded']);
+        $request->getBody()->willReturn($body->reveal());
+        $request->getParsedBody()->willReturn([]);
+
+        return $request;
     }
 }

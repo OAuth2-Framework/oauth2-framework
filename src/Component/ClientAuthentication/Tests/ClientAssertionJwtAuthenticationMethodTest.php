@@ -47,7 +47,9 @@ use OAuth2Framework\Component\ClientAuthentication\ClientAssertionJwt;
 use OAuth2Framework\Component\Core\TrustedIssuer\TrustedIssuer;
 use OAuth2Framework\Component\Core\TrustedIssuer\TrustedIssuerRepository;
 use PHPUnit\Framework\TestCase;
+use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\StreamInterface;
 use Zend\Diactoros\Response;
 
 /**
@@ -90,9 +92,9 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
     public function theClientIdCannotBeFoundInTheRequest()
     {
         $method = $this->getMethod();
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getHeader('Authorization')->willReturn([]);
+        $request = $this->buildRequest([]);
         $request->getParsedBody()->willReturn([]);
+        $request->getHeader('Authorization')->willReturn([]);
 
         $clientId = $method->findClientIdAndCredentials($request->reveal(), $credentials);
         self::assertNull($clientId);
@@ -105,12 +107,11 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
     public function theClientAssertionTypeIsNotSupported()
     {
         $method = $this->getMethod();
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getHeader('Authorization')->willReturn([]);
-        $request->getParsedBody()->willReturn([
+        $request = $this->buildRequest([
             'client_assertion_type' => 'foo',
         ]);
 
+        $request->getHeader('Authorization')->willReturn([]);
         $clientId = $method->findClientIdAndCredentials($request->reveal(), $credentials);
         self::assertNull($clientId);
         self::assertNull($credentials);
@@ -122,12 +123,11 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
     public function theClientAssertionIsMissing()
     {
         $method = $this->getMethod();
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getHeader('Authorization')->willReturn([]);
-        $request->getParsedBody()->willReturn([
+        $request = $this->buildRequest([
             'client_assertion_type' => 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
         ]);
 
+        $request->getHeader('Authorization')->willReturn([]);
         try {
             $method->findClientIdAndCredentials($request->reveal(), $credentials);
             $this->fail('An OAuth2 exception should be thrown.');
@@ -143,13 +143,12 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
     public function theClientAssertionIsInvalid()
     {
         $method = $this->getMethod();
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getHeader('Authorization')->willReturn([]);
-        $request->getParsedBody()->willReturn([
+        $request = $this->buildRequest([
             'client_assertion_type' => 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
             'client_assertion' => 'foo',
         ]);
 
+        $request->getHeader('Authorization')->willReturn([]);
         try {
             $method->findClientIdAndCredentials($request->reveal(), $credentials);
             $this->fail('An OAuth2 exception should be thrown.');
@@ -168,13 +167,12 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
             $this->createInvalidClientAssertionSignedByTheClient()
         );
         $method = $this->getMethod();
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getHeader('Authorization')->willReturn([]);
-        $request->getParsedBody()->willReturn([
+        $request = $this->buildRequest([
             'client_assertion_type' => 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
             'client_assertion' => $assertion,
         ]);
 
+        $request->getHeader('Authorization')->willReturn([]);
         try {
             $method->findClientIdAndCredentials($request->reveal(), $credentials);
             $this->fail('An OAuth2 exception should be thrown.');
@@ -193,13 +191,12 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
             $this->createInvalidClientAssertionSignedByTheClient()
         );
         $method = $this->getMethodWithEncryptionSupport(true);
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getHeader('Authorization')->willReturn([]);
-        $request->getParsedBody()->willReturn([
+        $request = $this->buildRequest([
             'client_assertion_type' => 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
             'client_assertion' => $assertion,
         ]);
 
+        $request->getHeader('Authorization')->willReturn([]);
         try {
             $method->findClientIdAndCredentials($request->reveal(), $credentials);
             $this->fail('An OAuth2 exception should be thrown.');
@@ -220,13 +217,12 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
             )
         );
         $method = $this->getMethodWithEncryptionSupport(false);
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getHeader('Authorization')->willReturn([]);
-        $request->getParsedBody()->willReturn([
+        $request = $this->buildRequest([
             'client_assertion_type' => 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
             'client_assertion' => $assertion,
         ]);
 
+        $request->getHeader('Authorization')->willReturn([]);
         try {
             $method->findClientIdAndCredentials($request->reveal(), $credentials);
             $this->fail('An OAuth2 exception should be thrown.');
@@ -245,13 +241,12 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
             $this->createValidClientAssertionSignedByTheClient()
         );
         $method = $this->getMethod();
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getHeader('Authorization')->willReturn([]);
-        $request->getParsedBody()->willReturn([
+        $request = $this->buildRequest([
             'client_assertion_type' => 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
             'client_assertion' => $assertion,
         ]);
 
+        $request->getHeader('Authorization')->willReturn([]);
         $clientId = $method->findClientIdAndCredentials($request->reveal(), $credentials);
         self::assertEquals('ClientId', $clientId->getValue());
     }
@@ -267,12 +262,11 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
             )
         );
         $method = $this->getMethodWithEncryptionSupport(false);
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getHeader('Authorization')->willReturn([]);
-        $request->getParsedBody()->willReturn([
+        $request = $this->buildRequest([
             'client_assertion_type' => 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
             'client_assertion' => $assertion,
         ]);
+        $request->getHeader('Authorization')->willReturn([]);
 
         $clientId = $method->findClientIdAndCredentials($request->reveal(), $credentials);
         self::assertEquals('ClientId', $clientId->getValue());
@@ -301,8 +295,7 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
             ]),
             UserAccountId::create('USER_ACCOUNT_ID')
         );
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getParsedBody()->willReturn([
+        $request = $this->buildRequest([
             'client_assertion_type' => 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
             'client_assertion' => $assertion,
         ]);
@@ -333,8 +326,7 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
             ]),
             UserAccountId::create('USER_ACCOUNT_ID')
         );
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getParsedBody()->willReturn([
+        $request = $this->buildRequest([
             'client_assertion_type' => 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
             'client_assertion' => $assertion,
         ]);
@@ -365,8 +357,7 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
             ]),
             UserAccountId::create('USER_ACCOUNT_ID')
         );
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getParsedBody()->willReturn([
+        $request = $this->buildRequest([
             'client_assertion_type' => 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
             'client_assertion' => $assertion,
         ]);
@@ -394,8 +385,7 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
             ]),
             UserAccountId::create('USER_ACCOUNT_ID')
         );
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getParsedBody()->willReturn([
+        $request = $this->buildRequest([
             'client_assertion_type' => 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
             'client_assertion' => $assertion,
         ]);
@@ -909,5 +899,18 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
         $serializer = new \Jose\Component\Encryption\Serializer\CompactSerializer($jsonConverter);
 
         return $serializer->serialize($jwe, 0);
+    }
+
+    private function buildRequest(array $data): ObjectProphecy
+    {
+        $body = $this->prophesize(StreamInterface::class);
+        $body->getContents()->willReturn(http_build_query($data));
+        $request = $this->prophesize(ServerRequestInterface::class);
+        $request->hasHeader('Content-Type')->willReturn(true);
+        $request->getHeader('Content-Type')->willReturn(['application/x-www-form-urlencoded']);
+        $request->getBody()->willReturn($body->reveal());
+        $request->getParsedBody()->willReturn([]);
+
+        return $request;
     }
 }

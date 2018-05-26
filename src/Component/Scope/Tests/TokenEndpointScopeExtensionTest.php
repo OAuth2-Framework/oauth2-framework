@@ -30,7 +30,9 @@ use OAuth2Framework\Component\TokenEndpoint\GrantType;
 use OAuth2Framework\Component\TokenEndpoint\GrantTypeData;
 use OAuth2Framework\Component\TokenEndpoint\TokenEndpoint;
 use PHPUnit\Framework\TestCase;
+use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\StreamInterface;
 
 /**
  * @group TokenEndpointScopeExtension
@@ -59,8 +61,7 @@ final class TokenEndpointScopeExtensionTest extends TestCase
             UserAccountId::create('USER_ACCOUNT_ID')
         );
 
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getParsedBody()->willReturn([]);
+        $request = $this->buildRequest([]);
         $grantTypeData = GrantTypeData::create($client);
         $grantType = $this->prophesize(GrantType::class);
         $next = function (ServerRequestInterface $request, GrantTypeData $grantTypeData, GrantType $grantType): GrantTypeData {
@@ -83,8 +84,7 @@ final class TokenEndpointScopeExtensionTest extends TestCase
             UserAccountId::create('USER_ACCOUNT_ID')
         );
 
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getParsedBody()->willReturn([
+        $request = $this->buildRequest([
             'scope' => 'café',
         ]);
         $grantTypeData = GrantTypeData::create($client);
@@ -99,7 +99,7 @@ final class TokenEndpointScopeExtensionTest extends TestCase
             self::assertEquals(400, $e->getCode());
             self::assertEquals([
                 'error' => 'invalid_scope',
-                'error_description' => 'An unsupported scope was requested. Available scope is/are: scope1 ,scope2.',
+                'error_description' => 'An unsupported scope was requested. Available scope is/are: scope1, scope2.',
             ], $e->getData());
         }
     }
@@ -116,8 +116,7 @@ final class TokenEndpointScopeExtensionTest extends TestCase
             UserAccountId::create('USER_ACCOUNT_ID')
         );
 
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getParsedBody()->willReturn([
+        $request = $this->buildRequest([
             'scope' => 'scope2 scope1',
         ]);
         $grantTypeData = GrantTypeData::create($client);
@@ -195,5 +194,18 @@ final class TokenEndpointScopeExtensionTest extends TestCase
         }
 
         return $this->extension;
+    }
+
+    private function buildRequest(array $data): ObjectProphecy
+    {
+        $body = $this->prophesize(StreamInterface::class);
+        $body->getContents()->willReturn(http_build_query($data));
+        $request = $this->prophesize(ServerRequestInterface::class);
+        $request->hasHeader('Content-Type')->willReturn(true);
+        $request->getHeader('Content-Type')->willReturn(['application/x-www-form-urlencoded']);
+        $request->getBody()->willReturn($body->reveal());
+        $request->getParsedBody()->willReturn([]);
+
+        return $request;
     }
 }

@@ -15,6 +15,8 @@ namespace OAuth2Framework\Component\TokenRevocationEndpoint\Tests;
 
 use Http\Message\MessageFactory\DiactorosMessageFactory;
 use Http\Message\ResponseFactory;
+use Prophecy\Prophecy\ObjectProphecy;
+use Psr\Http\Message\StreamInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
@@ -47,8 +49,7 @@ final class TokenRevocationPostEndpointTest extends TestCase
     {
         $endpoint = $this->getTokenRevocationPostEndpoint();
 
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getParsedBody()->willReturn(['token' => 'VALID_TOKEN']);
+        $request = $this->buildRequest(['token' => 'VALID_TOKEN']);
         $request->getAttribute('client')->willReturn($this->getClient());
 
         $handler = $this->prophesize(RequestHandlerInterface::class);
@@ -67,8 +68,7 @@ final class TokenRevocationPostEndpointTest extends TestCase
     {
         $endpoint = $this->getTokenRevocationPostEndpoint();
 
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getParsedBody()->willReturn(['token' => 'VALID_TOKEN', 'token_type_hint' => 'foo']);
+        $request = $this->buildRequest(['token' => 'VALID_TOKEN', 'token_type_hint' => 'foo']);
         $request->getAttribute('client')->willReturn($this->getClient());
 
         $handler = $this->prophesize(RequestHandlerInterface::class);
@@ -87,8 +87,7 @@ final class TokenRevocationPostEndpointTest extends TestCase
     {
         $endpoint = $this->getTokenRevocationPostEndpoint();
 
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getParsedBody()->willReturn(['token' => 'VALID_TOKEN', 'token_type_hint' => 'bar']);
+        $request = $this->buildRequest(['token' => 'VALID_TOKEN', 'token_type_hint' => 'bar']);
         $request->getAttribute('client')->willReturn($this->getClient());
 
         $handler = $this->prophesize(RequestHandlerInterface::class);
@@ -184,5 +183,18 @@ final class TokenRevocationPostEndpointTest extends TestCase
         }
 
         return $this->client;
+    }
+
+    private function buildRequest(array $data): ObjectProphecy
+    {
+        $body = $this->prophesize(StreamInterface::class);
+        $body->getContents()->willReturn(http_build_query($data));
+        $request = $this->prophesize(ServerRequestInterface::class);
+        $request->hasHeader('Content-Type')->willReturn(true);
+        $request->getHeader('Content-Type')->willReturn(['application/x-www-form-urlencoded']);
+        $request->getBody()->willReturn($body->reveal());
+        $request->getParsedBody()->willReturn([]);
+
+        return $request;
     }
 }

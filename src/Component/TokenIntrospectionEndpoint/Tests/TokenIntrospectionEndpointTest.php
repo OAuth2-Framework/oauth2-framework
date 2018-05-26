@@ -15,6 +15,8 @@ namespace OAuth2Framework\Component\TokenIntrospectionEndpoint\Tests;
 
 use Http\Message\MessageFactory\DiactorosMessageFactory;
 use Http\Message\ResponseFactory;
+use Prophecy\Prophecy\ObjectProphecy;
+use Psr\Http\Message\StreamInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServer;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
@@ -45,8 +47,7 @@ final class TokenIntrospectionEndpointTest extends TestCase
     {
         $endpoint = $this->getTokenIntrospectionEndpoint();
 
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getParsedBody()->willReturn(['token' => 'VALID_TOKEN']);
+        $request = $this->buildRequest(['token' => 'VALID_TOKEN']);
         $request->getAttribute('resource_server')->willReturn($this->getResourceServer());
 
         $handler = $this->prophesize(RequestHandlerInterface::class);
@@ -65,8 +66,7 @@ final class TokenIntrospectionEndpointTest extends TestCase
     {
         $endpoint = $this->getTokenIntrospectionEndpoint();
 
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getParsedBody()->willReturn(['token' => 'VALID_TOKEN', 'token_type_hint' => 'foo']);
+        $request = $this->buildRequest(['token' => 'VALID_TOKEN', 'token_type_hint' => 'foo']);
         $request->getAttribute('resource_server')->willReturn($this->getResourceServer());
 
         $handler = $this->prophesize(RequestHandlerInterface::class);
@@ -85,8 +85,7 @@ final class TokenIntrospectionEndpointTest extends TestCase
     {
         $endpoint = $this->getTokenIntrospectionEndpoint();
 
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getParsedBody()->willReturn(['token' => 'VALID_TOKEN', 'token_type_hint' => 'bar']);
+        $request = $this->buildRequest(['token' => 'VALID_TOKEN', 'token_type_hint' => 'bar']);
         $request->getAttribute('resource_server')->willReturn($this->getResourceServer());
 
         $handler = $this->prophesize(RequestHandlerInterface::class);
@@ -178,5 +177,18 @@ final class TokenIntrospectionEndpointTest extends TestCase
         }
 
         return $this->resourceServer->reveal();
+    }
+
+    private function buildRequest(array $data): ObjectProphecy
+    {
+        $body = $this->prophesize(StreamInterface::class);
+        $body->getContents()->willReturn(http_build_query($data));
+        $request = $this->prophesize(ServerRequestInterface::class);
+        $request->hasHeader('Content-Type')->willReturn(true);
+        $request->getHeader('Content-Type')->willReturn(['application/x-www-form-urlencoded']);
+        $request->getBody()->willReturn($body->reveal());
+        $request->getParsedBody()->willReturn([]);
+
+        return $request;
     }
 }

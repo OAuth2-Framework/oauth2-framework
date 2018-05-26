@@ -20,7 +20,9 @@ use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
 use PHPUnit\Framework\TestCase;
+use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\StreamInterface;
 
 /**
  * @group BearerToken
@@ -45,7 +47,7 @@ final class BearerTokenTest extends TestCase
     public function anAccessTokenInTheAuthorizationHeaderIsFound()
     {
         $bearerToken = new BearerToken('TEST', true, false, false);
-        $request = $this->prophesize(ServerRequestInterface::class);
+        $request = $this->buildRequest([]);
         $request->getHeader('AUTHORIZATION')->willReturn(['Bearer ACCESS_TOKEN_ID']);
 
         $additionalCredentialValues = [];
@@ -58,7 +60,7 @@ final class BearerTokenTest extends TestCase
     public function noAccessTokenInTheAuthorizationHeaderIsFound()
     {
         $bearerToken = new BearerToken('TEST', true, false, false);
-        $request = $this->prophesize(ServerRequestInterface::class);
+        $request = $this->buildRequest([]);
         $request->getHeader('AUTHORIZATION')->willReturn(['MAC FOO_MAC_TOKEN']);
 
         $additionalCredentialValues = [];
@@ -71,7 +73,7 @@ final class BearerTokenTest extends TestCase
     public function anAccessTokenInTheQueryStringIsFound()
     {
         $bearerToken = new BearerToken('TEST', false, false, true);
-        $request = $this->prophesize(ServerRequestInterface::class);
+        $request = $this->buildRequest([]);
         $request->getQueryParams()->willReturn(['access_token' => 'ACCESS_TOKEN_ID']);
 
         $additionalCredentialValues = [];
@@ -84,7 +86,7 @@ final class BearerTokenTest extends TestCase
     public function anAccessTokenInTheRequestBodyIsFound()
     {
         $bearerToken = new BearerToken('TEST', false, true, false);
-        $request = $this->prophesize(ServerRequestInterface::class);
+        $request = $this->buildRequest([]);
         $request->getParsedBody()->willReturn(['access_token' => 'ACCESS_TOKEN_ID']);
 
         $additionalCredentialValues = [];
@@ -108,7 +110,7 @@ final class BearerTokenTest extends TestCase
             new \DateTimeImmutable('now'),
             ResourceServerId::create('RESOURCE_SERVER_ID')
         );
-        $request = $this->prophesize(ServerRequestInterface::class);
+        $request = $this->buildRequest([]);
 
         self::assertTrue($bearerToken->isRequestValid($accessToken, $request->reveal(), $additionalCredentialValues));
     }
@@ -133,5 +135,18 @@ final class BearerTokenTest extends TestCase
         $request = $this->prophesize(ServerRequestInterface::class);
 
         self::assertFalse($bearerToken->isRequestValid($accessToken, $request->reveal(), $additionalCredentialValues));
+    }
+
+    private function buildRequest(array $data): ObjectProphecy
+    {
+        $body = $this->prophesize(StreamInterface::class);
+        $body->getContents()->willReturn(http_build_query($data));
+        $request = $this->prophesize(ServerRequestInterface::class);
+        $request->hasHeader('Content-Type')->willReturn(true);
+        $request->getHeader('Content-Type')->willReturn(['application/x-www-form-urlencoded']);
+        $request->getBody()->willReturn($body->reveal());
+        $request->getParsedBody()->willReturn([]);
+
+        return $request;
     }
 }

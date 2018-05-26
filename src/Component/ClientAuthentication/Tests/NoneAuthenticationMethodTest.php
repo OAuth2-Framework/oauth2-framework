@@ -19,7 +19,9 @@ use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use OAuth2Framework\Component\ClientAuthentication\None;
 use PHPUnit\Framework\TestCase;
+use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\StreamInterface;
 
 /**
  * @group TokenEndpoint
@@ -44,8 +46,7 @@ final class NoneAuthenticationMethodTest extends TestCase
     public function theClientIdCannotBeFoundInTheRequest()
     {
         $method = new None();
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getParsedBody()->willReturn([]);
+        $request = $this->buildRequest([]);
 
         $clientId = $method->findClientIdAndCredentials($request->reveal(), $credentials);
         self::assertNull($clientId);
@@ -58,8 +59,7 @@ final class NoneAuthenticationMethodTest extends TestCase
     public function theClientIdHasBeenFoundInTheRequest()
     {
         $method = new None();
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getParsedBody()->willReturn(['client_id' => 'CLIENT_ID']);
+        $request = $this->buildRequest(['client_id' => 'CLIENT_ID']);
 
         $clientId = $method->findClientIdAndCredentials($request->reveal(), $credentials);
         self::assertInstanceOf(ClientId::class, $clientId);
@@ -93,5 +93,18 @@ final class NoneAuthenticationMethodTest extends TestCase
         $validatedParameters = DataBag::create([]);
 
         self::assertSame($validatedParameters, $method->checkClientConfiguration($parameters, $validatedParameters));
+    }
+
+    private function buildRequest(array $data): ObjectProphecy
+    {
+        $body = $this->prophesize(StreamInterface::class);
+        $body->getContents()->willReturn(http_build_query($data));
+        $request = $this->prophesize(ServerRequestInterface::class);
+        $request->hasHeader('Content-Type')->willReturn(true);
+        $request->getHeader('Content-Type')->willReturn(['application/x-www-form-urlencoded']);
+        $request->getBody()->willReturn($body->reveal());
+        $request->getParsedBody()->willReturn([]);
+
+        return $request;
     }
 }

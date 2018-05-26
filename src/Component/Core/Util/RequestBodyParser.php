@@ -48,6 +48,6 @@ class RequestBodyParser
 
         $body = $request->getBody()->getContents();
 
-        return (new QueryParser())->parse($body);
+        return (new QueryParser())->parse($body, '&', QueryParser::RFC1738_ENCODING);
     }
 }

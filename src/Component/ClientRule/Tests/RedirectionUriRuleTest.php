@@ -34,7 +34,8 @@ final class RedirectionUriRuleTest extends TestCase
         ]);
         $rule = new ClientRule\RedirectionUriRule();
         $validatedParameters = $rule->handle($clientId, $commandParameters, DataBag::create([]), $this->getCallable());
-        self::assertFalse($validatedParameters->has('redirect_uris'));
+        self::assertTrue($validatedParameters->has('redirect_uris'));
+        self::assertEquals([], $validatedParameters->get('redirect_uris'));
     }
 
     /**

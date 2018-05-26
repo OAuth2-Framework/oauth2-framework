@@ -24,7 +24,9 @@ use OAuth2Framework\Component\Core\Client\ClientRepository;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\StreamInterface;
 
 /**
  * @group ClientRegistrationEndpoint
@@ -36,10 +38,9 @@ final class ClientRegistrationEndpointTest extends TestCase
      */
     public function theClientRegistrationEndpointCanReceiveRegistrationRequests()
     {
-        $request = $this->prophesize(ServerRequestInterface::class);
+        $request = $this->buildRequest([]);
         $request->getMethod()->willReturn('POST');
         $request->getAttribute('initial_access_token')->willReturn(null);
-        $request->getParsedBody()->willReturn([]);
 
         $response = $this->getClientRegistrationEndpoint()->process($request->reveal());
 
@@ -101,5 +102,18 @@ final class ClientRegistrationEndpointTest extends TestCase
         }
 
         return $this->responseFactory;
+    }
+
+    private function buildRequest(array $data): ObjectProphecy
+    {
+        $body = $this->prophesize(StreamInterface::class);
+        $body->getContents()->willReturn(json_encode($data));
+        $request = $this->prophesize(ServerRequestInterface::class);
+        $request->hasHeader('Content-Type')->willReturn(true);
+        $request->getHeader('Content-Type')->willReturn(['application/json']);
+        $request->getBody()->willReturn($body->reveal());
+        $request->getParsedBody()->willReturn([]);
+
+        return $request;
     }
 }

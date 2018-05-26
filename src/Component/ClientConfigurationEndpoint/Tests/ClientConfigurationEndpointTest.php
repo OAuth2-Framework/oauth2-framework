@@ -15,6 +15,8 @@ namespace OAuth2Framework\Component\ClientConfigurationEndpoint\Tests;
 
 use Http\Message\MessageFactory\DiactorosMessageFactory;
 use Http\Message\ResponseFactory;
+use Prophecy\Prophecy\ObjectProphecy;
+use Psr\Http\Message\StreamInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use OAuth2Framework\Component\BearerTokenType\BearerToken;
 use OAuth2Framework\Component\ClientConfigurationEndpoint\ClientConfigurationEndpoint;
@@ -76,10 +78,9 @@ final class ClientConfigurationEndpointTest extends TestCase
         $clientRepository = $this->prophesize(ClientRepository::class);
         $clientRepository->save(Argument::type(Client::class))->shouldBeCalled();
 
-        $request = $this->prophesize(ServerRequestInterface::class);
+        $request = $this->buildRequest([]);
         $request->getMethod()->willReturn('PUT');
         $request->getAttribute('client')->willReturn($client);
-        $request->getParsedBody()->willReturn([]);
         $request->getHeader('AUTHORIZATION')->willReturn(['Bearer REGISTRATION_TOKEN']);
 
         $handler = $this->prophesize(RequestHandlerInterface::class);
@@ -129,5 +130,18 @@ final class ClientConfigurationEndpointTest extends TestCase
         }
 
         return $this->responseFactory;
+    }
+
+    private function buildRequest(array $data): ObjectProphecy
+    {
+        $body = $this->prophesize(StreamInterface::class);
+        $body->getContents()->willReturn(json_encode($data));
+        $request = $this->prophesize(ServerRequestInterface::class);
+        $request->hasHeader('Content-Type')->willReturn(true);
+        $request->getHeader('Content-Type')->willReturn(['application/json']);
+        $request->getBody()->willReturn($body->reveal());
+        $request->getParsedBody()->willReturn([]);
+
+        return $request;
     }
 }

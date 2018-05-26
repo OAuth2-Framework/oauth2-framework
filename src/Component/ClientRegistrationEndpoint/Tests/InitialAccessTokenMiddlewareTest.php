@@ -36,9 +36,11 @@ final class InitialAccessTokenMiddlewareTest extends TestCase
      */
     public function theInitialAccessTokenIsMissing()
     {
+        $response = $this->prophesize(ResponseInterface::class);
+        $handler = $this->prophesize(RequestHandlerInterface::class);
+        $handler->handle(Argument::type(ServerRequestInterface::class))->willReturn($response->reveal());
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getHeader('AUTHORIZATION')->willReturn([])->shouldBeCalled();
-        $handler = $this->prophesize(RequestHandlerInterface::class);
 
         try {
             $this->getMiddleware()->process($request->reveal(), $handler->reveal());
@@ -56,11 +58,13 @@ final class InitialAccessTokenMiddlewareTest extends TestCase
      */
     public function theInitialAccessTokenIsNotKnown()
     {
+        $response = $this->prophesize(ResponseInterface::class);
+        $handler = $this->prophesize(RequestHandlerInterface::class);
+        $handler->handle(Argument::type(ServerRequestInterface::class))->willReturn($response->reveal());
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getHeader('AUTHORIZATION')->willReturn([
             'Bearer BAD_INITIAL_ACCESS_TOKEN_ID',
         ])->shouldBeCalled();
-        $handler = $this->prophesize(RequestHandlerInterface::class);
 
         try {
             $this->getMiddleware()->process($request->reveal(), $handler->reveal());
@@ -147,7 +151,8 @@ final class InitialAccessTokenMiddlewareTest extends TestCase
         if (null === $this->middleware) {
             $this->middleware = new InitialAccessTokenMiddleware(
                 new BearerToken('Realm', true, false, false),
-                $this->getRepository()
+                $this->getRepository(),
+                false
             );
         }
 

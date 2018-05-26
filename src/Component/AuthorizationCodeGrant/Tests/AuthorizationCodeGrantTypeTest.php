@@ -29,7 +29,9 @@ use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeRepository
 use OAuth2Framework\Component\TokenEndpoint\GrantTypeData;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\StreamInterface;
 
 /**
  * @group GrantType
@@ -51,8 +53,7 @@ final class AuthorizationCodeGrantTypeTest extends TestCase
      */
     public function theRequestHaveMissingParameters()
     {
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getParsedBody()->willReturn([]);
+        $request = $this->buildRequest([]);
 
         try {
             $this->getGrantType()->checkRequest($request->reveal());
@@ -71,8 +72,7 @@ final class AuthorizationCodeGrantTypeTest extends TestCase
      */
     public function theRequestHaveAllRequiredParameters()
     {
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getParsedBody()->willReturn(['code' => 'AUTHORIZATION_CODE_ID', 'redirect_uri' => 'http://localhost:8000/']);
+        $request = $this->buildRequest(['code' => 'AUTHORIZATION_CODE_ID', 'redirect_uri' => 'http://localhost:8000/']);
 
         $this->getGrantType()->checkRequest($request->reveal());
         self::assertTrue(true);
@@ -89,8 +89,7 @@ final class AuthorizationCodeGrantTypeTest extends TestCase
             DataBag::create([]),
             UserAccountId::create('USER_ACCOUNT_ID')
         );
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getParsedBody()->willReturn(['code' => 'AUTHORIZATION_CODE_ID', 'redirect_uri' => 'http://localhost:8000/']);
+        $request = $this->buildRequest(['code' => 'AUTHORIZATION_CODE_ID', 'redirect_uri' => 'http://localhost:8000/']);
         $grantTypeData = GrantTypeData::create($client);
 
         $receivedGrantTypeData = $this->getGrantType()->prepareResponse($request->reveal(), $grantTypeData);
@@ -108,8 +107,7 @@ final class AuthorizationCodeGrantTypeTest extends TestCase
             DataBag::create([]),
             UserAccountId::create('USER_ACCOUNT_ID')
         );
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getParsedBody()->willReturn(['code' => 'AUTHORIZATION_CODE_ID', 'redirect_uri' => 'http://localhost:8000/']);
+        $request = $this->buildRequest(['code' => 'AUTHORIZATION_CODE_ID', 'redirect_uri' => 'http://localhost:8000/']);
         $request->getAttribute('client')->willReturn($client);
         $grantTypeData = GrantTypeData::create($client);
 
@@ -135,8 +133,7 @@ final class AuthorizationCodeGrantTypeTest extends TestCase
             DataBag::create([]),
             UserAccountId::create('USER_ACCOUNT_ID')
         );
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getParsedBody()->willReturn(['code' => 'AUTHORIZATION_CODE_ID', 'redirect_uri' => 'http://localhost:8000/', 'code_verifier' => 'ABCDEFGH']);
+        $request = $this->buildRequest(['code' => 'AUTHORIZATION_CODE_ID', 'redirect_uri' => 'http://localhost:8000/', 'code_verifier' => 'ABCDEFGH']);
         $request->getAttribute('client')->willReturn($client);
         $grantTypeData = GrantTypeData::create($client);
 
@@ -199,5 +196,18 @@ final class AuthorizationCodeGrantTypeTest extends TestCase
         }
 
         return $this->pkceMethodManager;
+    }
+
+    private function buildRequest(array $data): ObjectProphecy
+    {
+        $body = $this->prophesize(StreamInterface::class);
+        $body->getContents()->willReturn(http_build_query($data));
+        $request = $this->prophesize(ServerRequestInterface::class);
+        $request->hasHeader('Content-Type')->willReturn(true);
+        $request->getHeader('Content-Type')->willReturn(['application/x-www-form-urlencoded']);
+        $request->getBody()->willReturn($body->reveal());
+        $request->getParsedBody()->willReturn([]);
+
+        return $request;
     }
 }

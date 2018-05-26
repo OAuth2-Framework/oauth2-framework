@@ -21,7 +21,9 @@ use OAuth2Framework\Component\ClientAuthentication\ClientSecretBasic;
 use OAuth2Framework\Component\ClientAuthentication\ClientSecretPost;
 use OAuth2Framework\Component\ClientAuthentication\None;
 use PHPUnit\Framework\TestCase;
+use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\StreamInterface;
 
 /**
  * @group TokenEndpoint
@@ -56,12 +58,11 @@ final class AuthenticationMethodManagerTest extends TestCase
             ->add(new ClientSecretBasic('My Service'))
             ->add(new ClientSecretPost())
         ;
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getHeader('Authorization')->willReturn(['Basic '.base64_encode('CLIENT_ID:CLIENT_SECRET')]);
-        $request->getParsedBody()->willReturn([
+        $request = $this->buildRequest([
             'client_id' => 'CLIENT_ID',
             'client_secret' => 'CLIENT_SECRET',
         ]);
+        $request->getHeader('Authorization')->willReturn(['Basic '.base64_encode('CLIENT_ID:CLIENT_SECRET')]);
 
         try {
             $manager->findClientIdAndCredentials($request->reveal(), $method, $credentials);
@@ -85,8 +86,7 @@ final class AuthenticationMethodManagerTest extends TestCase
             ->add(new None())
             ->add(new ClientSecretPost())
         ;
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getParsedBody()->willReturn([
+        $request = $this->buildRequest([
             'client_id' => 'CLIENT_ID',
             'client_secret' => 'CLIENT_SECRET',
         ]);
@@ -95,5 +95,18 @@ final class AuthenticationMethodManagerTest extends TestCase
         self::assertInstanceOf(ClientSecretPost::class, $method);
         self::assertInstanceOf(ClientId::class, $clientId);
         self::assertEquals('CLIENT_SECRET', $credentials);
+    }
+
+    private function buildRequest(array $data): ObjectProphecy
+    {
+        $body = $this->prophesize(StreamInterface::class);
+        $body->getContents()->willReturn(http_build_query($data));
+        $request = $this->prophesize(ServerRequestInterface::class);
+        $request->hasHeader('Content-Type')->willReturn(true);
+        $request->getHeader('Content-Type')->willReturn(['application/x-www-form-urlencoded']);
+        $request->getBody()->willReturn($body->reveal());
+        $request->getParsedBody()->willReturn([]);
+
+        return $request;
     }
 }

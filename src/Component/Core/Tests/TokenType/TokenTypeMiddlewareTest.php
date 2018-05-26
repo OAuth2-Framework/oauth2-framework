@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Core\Tests\TokenType;
 
+use Prophecy\Prophecy\ObjectProphecy;
+use Psr\Http\Message\StreamInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use OAuth2Framework\Component\Core\TokenType\TokenTypeMiddleware;
 use Prophecy\Argument;
@@ -32,8 +34,7 @@ final class TokenTypeMiddlewareTest extends TestCase
      */
     public function noTokenTypeFoundInTheRequest()
     {
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getParsedBody()->willReturn([]);
+        $request = $this->buildRequest([]);
         $request->withAttribute('token_type', Argument::type(TokenType::class))->willReturn($request)->shouldBeCalled();
 
         $response = $this->prophesize(ResponseInterface::class);
@@ -49,8 +50,7 @@ final class TokenTypeMiddlewareTest extends TestCase
      */
     public function aTokenTypeIsFoundInTheRequest()
     {
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getParsedBody()->willReturn([
+        $request = $this->buildRequest([
             'token_type' => 'foo',
         ]);
         $request->withAttribute('token_type', Argument::type(TokenType::class))->willReturn($request)->shouldBeCalled();
@@ -70,8 +70,7 @@ final class TokenTypeMiddlewareTest extends TestCase
      */
     public function aTokenTypeIsFoundInTheRequestButNotSupported()
     {
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getParsedBody()->willReturn([
+        $request = $this->buildRequest([
             'token_type' => 'bar',
         ]);
 
@@ -124,5 +123,18 @@ final class TokenTypeMiddlewareTest extends TestCase
         }
 
         return $this->tokenTypeManager;
+    }
+
+    private function buildRequest(array $data): ObjectProphecy
+    {
+        $body = $this->prophesize(StreamInterface::class);
+        $body->getContents()->willReturn(http_build_query($data));
+        $request = $this->prophesize(ServerRequestInterface::class);
+        $request->hasHeader('Content-Type')->willReturn(true);
+        $request->getHeader('Content-Type')->willReturn(['application/x-www-form-urlencoded']);
+        $request->getBody()->willReturn($body->reveal());
+        $request->getParsedBody()->willReturn([]);
+
+        return $request;
     }
 }
