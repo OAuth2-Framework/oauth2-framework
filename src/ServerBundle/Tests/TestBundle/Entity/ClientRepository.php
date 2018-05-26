@@ -96,5 +96,17 @@ class ClientRepository implements \OAuth2Framework\Component\Core\Client\ClientR
             UserAccountId::create('USER_ACCOUNT_1')
         );
         $this->save($client);
+
+        $client = Client::createEmpty();
+        $client = $client->create(
+            ClientId::create('CLIENT_ID_5'),
+            DataBag::create([
+                'token_endpoint_auth_method' => 'client_secret_basic',
+                'grant_types' => ['client_credentials', 'refresh_token', 'authorization_code', 'password', 'implicit'],
+                'client_secret' => 'secret',
+            ]),
+            UserAccountId::create('USER_ACCOUNT_1')
+        );
+        $this->save($client);
     }
 }

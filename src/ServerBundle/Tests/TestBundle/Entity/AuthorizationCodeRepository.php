@@ -50,8 +50,8 @@ class AuthorizationCodeRepository implements AuthorizationCodeRepositoryInterfac
 
     private function initAuthorizationCodes()
     {
-        $refreshToken = AuthorizationCode::createEmpty();
-        $refreshToken = $refreshToken->create(
+        $authorizationCode = AuthorizationCode::createEmpty();
+        $authorizationCode = $authorizationCode->create(
             AuthorizationCodeId::create('VALID_AUTHORIZATION_CODE'),
             ClientId::create('CLIENT_ID_3'),
             UserAccountId::create('john.1'),
@@ -62,10 +62,24 @@ class AuthorizationCodeRepository implements AuthorizationCodeRepositoryInterfac
             DataBag::create([]),
             null
         );
-        $this->save($refreshToken);
+        $this->save($authorizationCode);
 
-        $refreshToken = AuthorizationCode::createEmpty();
-        $refreshToken = $refreshToken->create(
+        $authorizationCode = AuthorizationCode::createEmpty();
+        $authorizationCode = $authorizationCode->create(
+            AuthorizationCodeId::create('VALID_AUTHORIZATION_CODE_FOR_CONFIDENTIAL_CLIENT'),
+            ClientId::create('CLIENT_ID_5'),
+            UserAccountId::create('john.1'),
+            [],
+            'http://localhost/callback',
+            new \DateTimeImmutable('now +1 day'),
+            DataBag::create([]),
+            DataBag::create([]),
+            null
+        );
+        $this->save($authorizationCode);
+
+        $authorizationCode = AuthorizationCode::createEmpty();
+        $authorizationCode = $authorizationCode->create(
             AuthorizationCodeId::create('REVOKED_AUTHORIZATION_CODE'),
             ClientId::create('CLIENT_ID_3'),
             UserAccountId::create('john.1'),
@@ -76,11 +90,11 @@ class AuthorizationCodeRepository implements AuthorizationCodeRepositoryInterfac
             DataBag::create([]),
             null
         );
-        $refreshToken = $refreshToken->markAsRevoked();
-        $this->save($refreshToken);
+        $authorizationCode = $authorizationCode->markAsRevoked();
+        $this->save($authorizationCode);
 
-        $refreshToken = AuthorizationCode::createEmpty();
-        $refreshToken = $refreshToken->create(
+        $authorizationCode = AuthorizationCode::createEmpty();
+        $authorizationCode = $authorizationCode->create(
             AuthorizationCodeId::create('EXPIRED_AUTHORIZATION_CODE'),
             ClientId::create('CLIENT_ID_3'),
             UserAccountId::create('john.1'),
@@ -91,6 +105,6 @@ class AuthorizationCodeRepository implements AuthorizationCodeRepositoryInterfac
             DataBag::create([]),
             null
         );
-        $this->save($refreshToken);
+        $this->save($authorizationCode);
     }
 }
