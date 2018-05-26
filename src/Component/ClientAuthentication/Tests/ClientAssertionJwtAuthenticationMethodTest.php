@@ -128,6 +128,7 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
         ]);
 
         $request->getHeader('Authorization')->willReturn([]);
+
         try {
             $method->findClientIdAndCredentials($request->reveal(), $credentials);
             $this->fail('An OAuth2 exception should be thrown.');
@@ -149,6 +150,7 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
         ]);
 
         $request->getHeader('Authorization')->willReturn([]);
+
         try {
             $method->findClientIdAndCredentials($request->reveal(), $credentials);
             $this->fail('An OAuth2 exception should be thrown.');
@@ -173,6 +175,7 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
         ]);
 
         $request->getHeader('Authorization')->willReturn([]);
+
         try {
             $method->findClientIdAndCredentials($request->reveal(), $credentials);
             $this->fail('An OAuth2 exception should be thrown.');
@@ -197,6 +200,7 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
         ]);
 
         $request->getHeader('Authorization')->willReturn([]);
+
         try {
             $method->findClientIdAndCredentials($request->reveal(), $credentials);
             $this->fail('An OAuth2 exception should be thrown.');
@@ -223,6 +227,7 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
         ]);
 
         $request->getHeader('Authorization')->willReturn([]);
+
         try {
             $method->findClientIdAndCredentials($request->reveal(), $credentials);
             $this->fail('An OAuth2 exception should be thrown.');
