@@ -93,6 +93,9 @@ return function (ContainerConfigurator $container) {
         ->args([
             '%oauth2_server.endpoint.authorization.enforce_state%',
         ]);
+    $container->set(AuthorizationEndpoint\UserAccount\PromptLoginParameterAccountChecker::class);
+    $container->set(AuthorizationEndpoint\UserAccount\MaxAgeParameterAccountChecker::class);
+    $container->set(AuthorizationEndpoint\UserAccount\PromptNoneParameterAccountChecker::class);
 
     // Rules
     $container->set(AuthorizationEndpoint\Rule\RequestUriRule::class);
