@@ -29,7 +29,7 @@ return function (ContainerConfigurator $container) {
             ref(IdTokenBuilderFactory::class),
             ref('oauth2_server.client.repository'),
             ref(UserAccountRepository::class),
-            ref('httplug.message_factory')
+            ref('httplug.message_factory'),
         ]);
 
     /*$container->set('userinfo_security_middleware')
@@ -53,7 +53,6 @@ return function (ContainerConfigurator $container) {
     $container->set(UserinfoEndpointAlgorithmsRule::class)
         ->args([
             ref('jose.jws_builder.id_token')->nullOnInvalid(),
-            ref('jose.jwe_builder.id_token')->nullOnInvalid()
+            ref('jose.jwe_builder.id_token')->nullOnInvalid(),
         ]);
-
 };
