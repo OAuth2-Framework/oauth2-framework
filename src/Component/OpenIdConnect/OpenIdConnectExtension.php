@@ -54,10 +54,11 @@ class OpenIdConnectExtension implements TokenEndpointExtension
 
     /**
      * OpenIdConnectExtension constructor.
+     *
      * @param IdTokenBuilderFactory $idTokenBuilderFactory
-     * @param string $defaultSignatureAlgorithm
-     * @param JWSBuilder $jwsBuilder
-     * @param JWKSet $signatureKeys
+     * @param string                $defaultSignatureAlgorithm
+     * @param JWSBuilder            $jwsBuilder
+     * @param JWKSet                $signatureKeys
      */
     public function __construct(IdTokenBuilderFactory $idTokenBuilderFactory, string $defaultSignatureAlgorithm, JWSBuilder $jwsBuilder, JWKSet $signatureKeys)
     {
