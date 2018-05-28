@@ -151,6 +151,12 @@ class OpenIdConnectExtension implements TokenEndpointExtension
 
     private function accessTokenOpenIdHasScope(AccessToken $accessToken): bool
     {
+        dump($accessToken);
+        dump($accessToken->hasParameter('scope'));
+        dump($accessToken->hasParameter('scope'));
+        dump(explode(' ', $accessToken->getParameter('scope')));
+        dump(in_array('openid', explode(' ', $accessToken->getParameter('scope'))));
+
         return $accessToken->hasParameter('scope') && in_array('openid', explode(' ', $accessToken->getParameter('scope')));
     }
 }
