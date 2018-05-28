@@ -29,11 +29,26 @@ final class RedirectUriParameterChecker implements ParameterChecker
                 throw new \InvalidArgumentException('The parameter "redirect_uri" is mandatory.');
             }
             $redirectUri = $authorization->getQueryParam('redirect_uri');
+            $availableRedirectUris = $this->getRedirectUris($authorization);
+            if (!empty($availableRedirectUris) && !in_array($redirectUri, $availableRedirectUris)) {
+                throw new \InvalidArgumentException(sprintf('The redirect URI "%s" is not registered.', $redirectUri));
+            }
+
             $authorization = $authorization->withRedirectUri($redirectUri);
 
             return $authorization;
         } catch (\InvalidArgumentException $e) {
             throw new OAuth2AuthorizationException(400, OAuth2Message::ERROR_INVALID_REQUEST, $e->getMessage(), $authorization, $e);
         }
+    }
+
+    /**
+     * @param Authorization $authorization
+     *
+     * @return string[]
+     */
+    private function getRedirectUris(Authorization $authorization): array
+    {
+        return $authorization->getClient()->has('redirect_uris') ? $authorization->getClient()->get('redirect_uris') : [];
     }
 }
