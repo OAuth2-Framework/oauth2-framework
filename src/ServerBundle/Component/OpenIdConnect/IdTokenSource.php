@@ -39,6 +39,7 @@ class IdTokenSource implements Component
         $container->setParameter('oauth2_server.openid_connect.id_token.lifetime', $config['lifetime']);
         $container->setParameter('oauth2_server.openid_connect.id_token.default_signature_algorithm', $config['default_signature_algorithm']);
         $container->setParameter('oauth2_server.openid_connect.id_token.signature_algorithms', $config['signature_algorithms']);
+        $container->setParameter('oauth2_server.openid_connect.id_token.signature_keys', $config['signature_keys']);
         $container->setParameter('oauth2_server.openid_connect.id_token.claim_checkers', $config['claim_checkers']);
         $container->setParameter('oauth2_server.openid_connect.id_token.header_checkers', $config['header_checkers']);
         $container->setParameter('oauth2_server.openid_connect.id_token.encryption.enabled', $config['encryption']['enabled']);
@@ -84,6 +85,9 @@ class IdTokenSource implements Component
                     ->scalarPrototype()->end()
                     ->treatNullLike([])
                     ->treatFalseLike([])
+                ->end()
+                ->scalarNode('signature_keys')
+                    ->info('Signature keys used to sign the ID tokens.')
                 ->end()
                 ->arrayNode('claim_checkers')
                     ->info('Checkers will verify the JWT claims.')
@@ -142,11 +146,12 @@ class IdTokenSource implements Component
     {
         $sourceConfig = $config['openid_connect'][$this->name()];
 
-        ConfigurationHelper::addJWSBuilder($container, $this->name(), $sourceConfig['signature_algorithms'], false);
-        ConfigurationHelper::addJWSLoader($container, $this->name(), ['jws_compact'], $sourceConfig['signature_algorithms'], [], false);
+        ConfigurationHelper::addKeyset($container, 'oauth2_server.openid_connect.id_token', 'jwkset', ['value' => $sourceConfig['signature_keys']], false);
+        ConfigurationHelper::addJWSBuilder($container, 'oauth2_server.openid_connect.id_token', $sourceConfig['signature_algorithms'], false);
+        ConfigurationHelper::addJWSLoader($container, 'oauth2_server.openid_connect.id_token', ['jws_compact'], $sourceConfig['signature_algorithms'], [], false);
         if ($sourceConfig['encryption']['enabled']) {
-            ConfigurationHelper::addJWEBuilder($container, $this->name(), $sourceConfig['encryption']['key_encryption_algorithms'], $sourceConfig['encryption']['content_encryption_algorithms'], ['DEF'], false);
-            ConfigurationHelper::addJWELoader($container, $this->name(), ['jwe_compact'], $sourceConfig['encryption']['key_encryption_algorithms'], $sourceConfig['encryption']['content_encryption_algorithms'], ['DEF'], [], false);
+            ConfigurationHelper::addJWEBuilder($container, 'oauth2_server.openid_connect.id_token', $sourceConfig['encryption']['key_encryption_algorithms'], $sourceConfig['encryption']['content_encryption_algorithms'], ['DEF'], false);
+            ConfigurationHelper::addJWELoader($container, 'oauth2_server.openid_connect.id_token', ['jwe_compact'], $sourceConfig['encryption']['key_encryption_algorithms'], $sourceConfig['encryption']['content_encryption_algorithms'], ['DEF'], [], false);
         }
 
         return [];

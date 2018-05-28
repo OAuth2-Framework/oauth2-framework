@@ -52,7 +52,7 @@ return function (ContainerConfigurator $container) {
 
     $container->set(UserinfoEndpointAlgorithmsRule::class)
         ->args([
-            ref('jose.jws_builder.id_token')->nullOnInvalid(),
-            ref('jose.jwe_builder.id_token')->nullOnInvalid(),
+            ref('jose.jws_builder.oauth2_server.openid_connect.id_token')->nullOnInvalid(),
+            ref('jose.jwe_builder.oauth2_server.openid_connect.id_token')->nullOnInvalid(),
         ]);
 };

@@ -12,8 +12,9 @@ declare(strict_types=1);
  */
 
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use OAuth2Framework\Component\OpenIdConnect\IdTokenGrant\CodeIdTokenResponseType;
 use OAuth2Framework\Component\OpenIdConnect\IdTokenGrant\IdTokenResponseType;
-use OAuth2Framework\Component\OpenIdConnect\IdTokenBuilderFactory;
+use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeResponseType;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
 return function (ContainerConfigurator $container) {
@@ -21,12 +22,9 @@ return function (ContainerConfigurator $container) {
         ->private()
         ->autoconfigure();
 
-    $container->set(IdTokenResponseType::class)
+    $container->set(CodeIdTokenResponseType::class)
         ->args([
-            ref(IdTokenBuilderFactory::class),
-            '%oauth2_server.openid_connect.id_token.default_signature_algorithm%',
-            ref('jose.jws_builder.id_token'),
-            ref('jose.key_set.oauth2_server.key_set.signature'),
-            ref('jose.encrypter.id_token')->nullOnInvalid(),
+            ref(AuthorizationCodeResponseType::class),
+            ref(IdTokenResponseType::class),
         ]);
 };

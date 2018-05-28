@@ -53,8 +53,8 @@ return function (ContainerConfigurator $container) {
 
     $container->set(Rule\IdTokenAlgorithmsRule::class)
         ->args([
-            ref('jose.jws_builder.id_token'),
-            ref('jose.jwe_builder.id_token')->nullOnInvalid(),
+            ref('jose.jws_builder.oauth2_server.openid_connect.id_token'),
+            ref('jose.jwe_builder.oauth2_server.openid_connect.id_token')->nullOnInvalid(),
         ]);
 
     $container->set(Rule\SubjectTypeRule::class)

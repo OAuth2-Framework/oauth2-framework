@@ -19,8 +19,8 @@ use function Fluent\get;
 return [
     IdTokenLoader::class => create()
         ->arguments(
-            get('jose.jws_loader.id_token'),
-            get('jose.key_set.oauth2_server.key_set.signature'),
+            get('jose.jws_loader.oauth2_server.openid_connect.id_token.signature'),
+            get('jose.key_set.oauth2_server.openid_connect.id_token'),
             '%oauth2_server.openid_connect.id_token.signature_algorithms%'
         ),
 

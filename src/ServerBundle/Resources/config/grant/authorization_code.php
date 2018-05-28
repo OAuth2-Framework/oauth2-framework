@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeGrantType;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeResponseType;
-use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeIntrospectionTypeHint;
 use OAuth2Framework\Component\AuthorizationCodeGrant\PKCEMethod;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
@@ -45,9 +44,4 @@ return function (ContainerConfigurator $container) {
         ->tag('oauth2_server_pkce_method', ['alias' => 'plain']);
     $container->set(PKCEMethod\S256::class)
         ->tag('oauth2_server_pkce_method', ['alias' => 'S256']);
-
-    $container->set(AuthorizationCodeIntrospectionTypeHint::class)
-        ->args([
-            ref(\OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeRepository::class),
-        ]);
 };
