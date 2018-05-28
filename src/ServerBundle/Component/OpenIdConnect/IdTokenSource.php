@@ -133,7 +133,7 @@ class IdTokenSource implements Component
         $sourceConfig = $config['openid_connect'][$this->name()];
 
         ConfigurationHelper::addJWSBuilder($container, $this->name(), $sourceConfig['signature_algorithms'], false);
-        ConfigurationHelper::addJWSLoader($container, $this->name(), $sourceConfig['signature_algorithms'], [], ['jws_compact'], false);
+        ConfigurationHelper::addJWSLoader($container, $this->name(), ['jws_compact'], $sourceConfig['signature_algorithms'], [], false);
         if ($sourceConfig['encryption']['enabled']) {
             ConfigurationHelper::addJWEBuilder($container, $this->name(), $sourceConfig['encryption']['key_encryption_algorithms'], $sourceConfig['encryption']['content_encryption_algorithms'], ['DEF'], false);
             ConfigurationHelper::addJWELoader($container, $this->name(), ['jwe_compact'], $sourceConfig['encryption']['key_encryption_algorithms'], $sourceConfig['encryption']['content_encryption_algorithms'], ['DEF'], [], false);
