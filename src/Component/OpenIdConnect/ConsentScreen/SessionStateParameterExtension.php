@@ -44,7 +44,7 @@ abstract class SessionStateParameterExtension implements Extension
             return false;
         }
 
-        $scope = $authorization->hasQueryParam('scope');
+        $scope = $authorization->getQueryParam('scope');
         $scopes = explode(' ', $scope);
 
         return in_array('openid', $scopes);
