@@ -105,6 +105,7 @@ class UserinfoEndpointEncryptionSource implements Component
         $sourceConfig = $config['openid_connect']['userinfo_endpoint'][$this->name()];
 
         ConfigurationHelper::addJWEBuilder($container, 'oauth2_server.userinfo', $sourceConfig['key_encryption_algorithms'], $sourceConfig['content_encryption_algorithms'], ['DEF'], false);
+
         return [];
     }
 }
