@@ -136,7 +136,7 @@ class IdTokenSource implements Component
         ConfigurationHelper::addJWSLoader($container, $this->name(), $sourceConfig['signature_algorithms'], [], ['jws_compact'], false);
         if ($sourceConfig['encryption']['enabled']) {
             ConfigurationHelper::addJWEBuilder($container, $this->name(), $sourceConfig['encryption']['key_encryption_algorithms'], $sourceConfig['encryption']['content_encryption_algorithms'], ['DEF'], false);
-            ConfigurationHelper::addJWELoader($container, $this->name(), $sourceConfig['encryption']['key_encryption_algorithms'], $sourceConfig['encryption']['content_encryption_algorithms'], ['DEF'], [], ['jws_compact'], false);
+            ConfigurationHelper::addJWELoader($container, $this->name(), ['jwe_compact'], $sourceConfig['encryption']['key_encryption_algorithms'], $sourceConfig['encryption']['content_encryption_algorithms'], ['DEF'], [], false);
         }
 
         return [];
