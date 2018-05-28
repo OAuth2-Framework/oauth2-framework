@@ -70,8 +70,7 @@ return function (ContainerConfigurator $container) {
         ->args([
             'This is my secret Key !!!',
             'aes-128-cbc',
-            mb_substr('This is my salt or my IV !!!', 0, 16, '8bit'),
-            mb_substr('This is my salt or my IV !!!', 0, 16, '8bit'),
+            16
         ]);
 
     /*$container->set(ResourceServerAuthMethodByIpAddress::class)

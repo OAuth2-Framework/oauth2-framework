@@ -29,18 +29,24 @@ final class EncryptedSubjectIdentifier implements PairwiseSubjectIdentifierAlgor
     private $algorithm;
 
     /**
+     * @var int
+     */
+    private $ivSize;
+
+    /**
      * EncryptedSubjectIdentifier constructor.
      *
      * @param string $pairwiseEncryptionKey
      * @param string $algorithm
      */
-    public function __construct(string $pairwiseEncryptionKey, string $algorithm)
+    public function __construct(string $pairwiseEncryptionKey, string $algorithm, int $ivSize)
     {
         if (!in_array($algorithm, openssl_get_cipher_methods())) {
             throw new \InvalidArgumentException(sprintf('The algorithm "%s" is not supported.', $algorithm));
         }
         $this->pairwiseEncryptionKey = $pairwiseEncryptionKey;
         $this->algorithm = $algorithm;
+        $this->ivSize = $ivSize;
     }
 
     /**
@@ -53,7 +59,7 @@ final class EncryptedSubjectIdentifier implements PairwiseSubjectIdentifierAlgor
             $sectorIdentifierHost,
             $userAccount->getUserAccountId()->getValue()
         );
-        $iv = random_bytes(32);
+        $iv = random_bytes($this->ivSize);
 
         return Base64Url::encode($iv).':'.Base64Url::encode(openssl_encrypt($prepared, $this->algorithm, $this->pairwiseEncryptionKey, OPENSSL_RAW_DATA, $iv));
     }
