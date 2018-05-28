@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Component\OpenIdConnect;
 
+use Jose\Bundle\JoseFramework\Helper\ConfigurationHelper;
 use OAuth2Framework\ServerBundle\Component\Component;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -32,6 +33,10 @@ class IdTokenSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
+        $config = $configs['openid_connect'][$this->name()];
+        $container->setParameter('oauth2_server.openid_connect.id_token.lifetime', $config['lifetime']);
+        $container->setParameter('oauth2_server.openid_connect.id_token.default_signature_algorithm', $config['default_signature_algorithm']);
+        $container->setParameter('oauth2_server.openid_connect.id_token.encryption.enabled', $config['encryption']['enabled']);
     }
 
     /**
@@ -125,16 +130,15 @@ class IdTokenSource implements Component
      */
     public function prepend(ContainerBuilder $container, array $config): array
     {
-        /*
-        $currentPath = $path.'['.$this->name().']';
-        $accessor = PropertyAccess::createPropertyAccessor();
-        $sourceConfig = $accessor->getValue($bundleConfig, $currentPath);
+        $sourceConfig = $config['openid_connect'][$this->name()];
+
         ConfigurationHelper::addJWSBuilder($container, $this->name(), $sourceConfig['signature_algorithms'], false);
         ConfigurationHelper::addJWSLoader($container, $this->name(), $sourceConfig['signature_algorithms'], [], ['jws_compact'], false);
+        if ($sourceConfig['encryption']['enabled']) {
+            ConfigurationHelper::addJWEBuilder($container, $this->name(), $sourceConfig['encryption']['key_encryption_algorithms'], $sourceConfig['encryption']['content_encryption_algorithms'], ['DEF'], false);
+            ConfigurationHelper::addJWELoader($container, $this->name(), $sourceConfig['encryption']['key_encryption_algorithms'], $sourceConfig['encryption']['content_encryption_algorithms'], ['DEF'], [], ['jws_compact'], false);
+        }
 
-        Assertion::keyExists($bundleConfig['key_set'], 'signature', 'The signature key set must be enabled.');
-        //ConfigurationHelper::addKeyset($container, 'id_token.key_set.signature', 'jwkset', ['value' => $bundleConfig['key_set']['signature']]);
-         */
         return [];
     }
 }

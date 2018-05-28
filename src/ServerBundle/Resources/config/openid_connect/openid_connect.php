@@ -16,6 +16,7 @@ use OAuth2Framework\Component\OpenIdConnect\UserInfo\ClaimSource\ClaimSourceMana
 use OAuth2Framework\Component\OpenIdConnect\UserInfo\UserInfo;
 use OAuth2Framework\Component\OpenIdConnect\Rule;
 use OAuth2Framework\Component\OpenIdConnect\UserInfo\ScopeSupport\UserInfoScopeSupportManager;
+use OAuth2Framework\Component\OpenIdConnect\IdTokenBuilderFactory;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
 return function (ContainerConfigurator $container) {
@@ -33,7 +34,7 @@ return function (ContainerConfigurator $container) {
             ref(ClaimSourceManager::class),
         ]);
 
-    $container->set(OpenIdConnectExtension::class)
+    /*$container->set(Extension::class)
         ->args([
             ref(IdTokenBuilderFactory::class),
             '%oauth2_server.openid_connect.id_token.default_signature_algorithm%',
@@ -41,7 +42,7 @@ return function (ContainerConfigurator $container) {
             ref('jose.key_set.oauth2_server.key_set.signature'),
             ref('jose.jwe_builder.id_token')->nullOnInvalid(),
         ])
-        ->tag('oauth2_server_token_endpoint_extension');
+        ->tag('oauth2_server_token_endpoint_extension');*/
 
     $container->set(IdTokenBuilderFactory::class)
         ->args([

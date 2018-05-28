@@ -327,7 +327,7 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
             ClientId::create('CLIENT_ID'),
             DataBag::create([
                 'token_endpoint_auth_method' => 'private_key_jwt',
-                'jwks' => '{"keys":[{"kty":"oct","k":"U0VDUkVU"}]}',
+                'jwks' => json_decode('{"keys":[{"kty":"oct","k":"U0VDUkVU"}]}', true),
             ]),
             UserAccountId::create('USER_ACCOUNT_ID')
         );

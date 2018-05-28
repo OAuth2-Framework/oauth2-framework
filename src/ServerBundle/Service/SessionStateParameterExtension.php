@@ -43,6 +43,11 @@ class SessionStateParameterExtension extends \OAuth2Framework\Component\OpenIdCo
         $this->storageName = $storageName;
     }
 
+    public function processBefore(ServerRequestInterface $request, Authorization $authorization): Authorization
+    {
+        return $authorization;
+    }
+
     /**
      * {@inheritdoc}
      */

@@ -19,9 +19,7 @@ return function (ContainerConfigurator $container) {
         ->private()
         ->autoconfigure();
 
-    $container->set(ScopeSupport\AddressScopeSupport::class)
-        ->tag('oauth2_server_userinfo_scope_support');
-
+    $container->set(ScopeSupport\AddressScopeSupport::class);
     $container->set(ScopeSupport\EmailScopeSupport::class);
     $container->set(ScopeSupport\PhoneScopeSupport::class);
     $container->set(ScopeSupport\ProfileScopeSupport::class);
