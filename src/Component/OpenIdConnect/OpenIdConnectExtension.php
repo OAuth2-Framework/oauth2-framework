@@ -83,13 +83,10 @@ class OpenIdConnectExtension implements TokenEndpointExtension
 
     public function afterAccessTokenIssuance(Client $client, ResourceOwner $resourceOwner, AccessToken $accessToken, callable $next): array
     {
-        dump($resourceOwner instanceof UserAccount, $this->accessTokenOpenIdHasScope($accessToken), $accessToken->hasMetadata('redirect_uri'));
         if ($resourceOwner instanceof UserAccount && $this->accessTokenOpenIdHasScope($accessToken) && $accessToken->hasMetadata('redirect_uri')) {
             $idToken = $this->issueIdToken($client, $resourceOwner, $accessToken);
             $data = $next($client, $resourceOwner, $accessToken);
-            dump($data);
             $data['id_token'] = $idToken;
-            dump($data);
 
             return $data;
         }
@@ -151,12 +148,6 @@ class OpenIdConnectExtension implements TokenEndpointExtension
 
     private function accessTokenOpenIdHasScope(AccessToken $accessToken): bool
     {
-        dump($accessToken);
-        dump($accessToken->hasParameter('scope'));
-        dump($accessToken->getParameter('scope'));
-        dump(explode(' ', $accessToken->getParameter('scope')));
-        dump(in_array('openid', explode(' ', $accessToken->getParameter('scope'))));
-
         return $accessToken->hasParameter('scope') && in_array('openid', explode(' ', $accessToken->getParameter('scope')));
     }
 }

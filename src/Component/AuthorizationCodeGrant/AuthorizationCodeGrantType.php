@@ -105,11 +105,12 @@ final class AuthorizationCodeGrantType implements GrantType
         // Validate the redirect URI.
         $this->checkRedirectUri($authorizationCode, $redirectUri);
 
-        dump($authorizationCode->getParameters());
+        foreach ($authorizationCode->getQueryParameters() as $key => $parameter) {
+            $grantTypeData = $grantTypeData->withParameter($key, $parameter);
+        }
         foreach ($authorizationCode->getParameters() as $key => $parameter) {
             $grantTypeData = $grantTypeData->withParameter($key, $parameter);
         }
-        dump($grantTypeData);
 
         $grantTypeData = $grantTypeData->withMetadata('redirect_uri', $redirectUri);
 
