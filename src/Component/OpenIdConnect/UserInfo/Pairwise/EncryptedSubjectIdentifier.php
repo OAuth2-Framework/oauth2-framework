@@ -53,8 +53,9 @@ final class EncryptedSubjectIdentifier implements PairwiseSubjectIdentifierAlgor
             $sectorIdentifierHost,
             $userAccount->getUserAccountId()->getValue()
         );
+        $iv = random_bytes(32);
 
-        return Base64Url::encode(openssl_encrypt($prepared, $this->algorithm, $this->pairwiseEncryptionKey, OPENSSL_RAW_DATA));
+        return Base64Url::encode($iv).':'.Base64Url::encode(openssl_encrypt($prepared, $this->algorithm, $this->pairwiseEncryptionKey, OPENSSL_RAW_DATA, $iv));
     }
 
     /**
@@ -62,7 +63,11 @@ final class EncryptedSubjectIdentifier implements PairwiseSubjectIdentifierAlgor
      */
     public function getPublicIdFromSubjectIdentifier(string $subjectIdentifier): ? string
     {
-        $decoded = openssl_decrypt(Base64Url::decode($subjectIdentifier), $this->algorithm, $this->pairwiseEncryptionKey, OPENSSL_RAW_DATA);
+        $data = explode(':', $subjectIdentifier);
+        if (2 !== count($data)) {
+            return null;
+        }
+        $decoded = openssl_decrypt(Base64Url::decode($data[1]), $this->algorithm, $this->pairwiseEncryptionKey, OPENSSL_RAW_DATA, Base64Url::decode($data[0]));
         $parts = explode(':', $decoded);
         if (3 !== count($parts)) {
             return null;
