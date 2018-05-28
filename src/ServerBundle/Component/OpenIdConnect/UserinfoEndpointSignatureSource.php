@@ -13,7 +13,9 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Component\OpenIdConnect;
 
+use Jose\Bundle\JoseFramework\Helper\ConfigurationHelper;
 use OAuth2Framework\ServerBundle\Component\Component;
+use OAuth2Framework\ServerBundle\Component\OpenIdConnect\Compiler\UserinfoEndpointSignatureCompilerPass;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -34,9 +36,13 @@ class UserinfoEndpointSignatureSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        if (!$configs['openid_connect']['userinfo_endpoint']['signature']['enabled']) {
+        $config = $configs['openid_connect']['userinfo_endpoint']['signature'];
+        $container->setParameter('oauth2_server.openid_connect.userinfo_endpoint.signature.enabled', $config['enabled']);
+        if (!$config['enabled']) {
             return;
         }
+
+        $container->setParameter('oauth2_server.openid_connect.userinfo_endpoint.signature.signature_algorithms', $config['signature_algorithms']);
 
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../Resources/config/openid_connect'));
         //$loader->load('userinfo_endpoint.php');
@@ -74,7 +80,7 @@ class UserinfoEndpointSignatureSource implements Component
      */
     public function build(ContainerBuilder $container)
     {
-        //Nothing to do
+        $container->addCompilerPass(new UserinfoEndpointSignatureCompilerPass());
     }
 
     /**
@@ -82,12 +88,9 @@ class UserinfoEndpointSignatureSource implements Component
      */
     public function prepend(ContainerBuilder $container, array $config): array
     {
-        /*Assertion::keyExists($bundleConfig['key_set'], 'signature', 'The signature key set must be enabled.');
-        $currentPath = $path.'['.$this->name().']';
-        $accessor = PropertyAccess::createPropertyAccessor();
-        $sourceConfig = $accessor->getValue($bundleConfig, $currentPath);
+        $sourceConfig = $config['openid_connect']['userinfo_endpoint'][$this->name()];
 
-        ConfigurationHelper::addJWSBuilder($container, 'oauth2_server.userinfo', $sourceConfig['signature_algorithms'], false);*/
+        ConfigurationHelper::addJWSBuilder($container, 'oauth2_server.userinfo', $sourceConfig['signature_algorithms'], false);
         return [];
     }
 }

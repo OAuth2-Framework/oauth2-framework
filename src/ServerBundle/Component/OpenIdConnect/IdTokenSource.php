@@ -15,6 +15,8 @@ namespace OAuth2Framework\ServerBundle\Component\OpenIdConnect;
 
 use Jose\Bundle\JoseFramework\Helper\ConfigurationHelper;
 use OAuth2Framework\ServerBundle\Component\Component;
+use OAuth2Framework\ServerBundle\Component\OpenIdConnect\Compiler\ClaimSourceCompilerPass;
+use OAuth2Framework\ServerBundle\Component\OpenIdConnect\Compiler\IdTokenMetadataCompilerPass;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -36,7 +38,14 @@ class IdTokenSource implements Component
         $config = $configs['openid_connect'][$this->name()];
         $container->setParameter('oauth2_server.openid_connect.id_token.lifetime', $config['lifetime']);
         $container->setParameter('oauth2_server.openid_connect.id_token.default_signature_algorithm', $config['default_signature_algorithm']);
+        $container->setParameter('oauth2_server.openid_connect.id_token.signature_algorithms', $config['signature_algorithms']);
+        $container->setParameter('oauth2_server.openid_connect.id_token.claim_checkers', $config['claim_checkers']);
+        $container->setParameter('oauth2_server.openid_connect.id_token.header_checkers', $config['header_checkers']);
         $container->setParameter('oauth2_server.openid_connect.id_token.encryption.enabled', $config['encryption']['enabled']);
+        if ($config['encryption']['enabled']) {
+            $container->setParameter('oauth2_server.openid_connect.id_token.encryption.key_encryption_algorithms', $config['encryption']['key_encryption_algorithms']);
+            $container->setParameter('oauth2_server.openid_connect.id_token.encryption.content_encryption_algorithms', $config['encryption']['content_encryption_algorithms']);
+        }
     }
 
     /**
@@ -122,7 +131,8 @@ class IdTokenSource implements Component
      */
     public function build(ContainerBuilder $container)
     {
-        //Nothing to do
+        $container->addCompilerPass(new ClaimSourceCompilerPass());
+        $container->addCompilerPass(new IdTokenMetadataCompilerPass());
     }
 
     /**

@@ -11,7 +11,7 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\ServerBundle\DependencyInjection\Compiler;
+namespace OAuth2Framework\ServerBundle\Component\OpenIdConnect\Compiler;
 
 use OAuth2Framework\ServerBundle\Service\MetadataBuilder;
 use OAuth2Framework\Component\OpenIdConnect\UserInfoEndpoint\UserInfoEndpoint;
@@ -26,6 +26,8 @@ class UserinfoEndpointEncryptionCompilerPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
+        dump($container->hasDefinition(UserInfoEndpoint::class));
+        dump($container->hasDefinition('jose.jwe_builder.oauth2_server.userinfo'));
         if (!$container->hasDefinition(UserInfoEndpoint::class) || !$container->hasDefinition('jose.jwe_builder.oauth2_server.userinfo')) {
             return;
         }
