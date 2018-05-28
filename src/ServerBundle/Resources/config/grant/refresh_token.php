@@ -14,6 +14,10 @@ declare(strict_types=1);
 use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenGrantType;
 use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenRevocationTypeHint;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenIdGenerator;
+use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenRepository;
+use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenEndpointExtension;
+use OAuth2Framework\ServerBundle\Service\RandomRefreshTokenIdGenerator;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
 return function (ContainerConfigurator $container) {
@@ -21,15 +25,22 @@ return function (ContainerConfigurator $container) {
         ->private()
         ->autoconfigure();
 
-    $container->set(\OAuth2Framework\ServerBundle\Service\RandomRefreshTokenIdGenerator::class);
+    $container->set(RandomRefreshTokenIdGenerator::class);
 
     $container->set(RefreshTokenGrantType::class)
         ->args([
-            ref(\OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenRepository::class),
+            ref(RefreshTokenRepository::class),
         ]);
 
     $container->set(RefreshTokenRevocationTypeHint::class)
         ->args([
-            ref(\OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenRepository::class),
+            ref(RefreshTokenRepository::class),
+        ]);
+
+    $container->set(RefreshTokenEndpointExtension::class)
+        ->args([
+            '%oauth2_server.grant.refresh_token.lifetime%',
+            ref(RefreshTokenRepository::class),
+            ref(RefreshTokenIdGenerator::class),
         ]);
 };

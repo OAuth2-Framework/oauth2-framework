@@ -113,7 +113,7 @@ class RevocationEndpointTest extends WebTestCase
         self::assertEquals(200, $response->getStatusCode());
         self::assertEquals('', $response->getContent());
 
-        $newAccessToken = $accessTokenRepository->find($accessToken->getTokenId());
+        $newAccessToken = $accessTokenRepository->find($accessToken->getAccessTokenId());
         self::assertInstanceOf(AccessToken::class, $newAccessToken);
         self::AssertTrue($newAccessToken->isRevoked());
     }
