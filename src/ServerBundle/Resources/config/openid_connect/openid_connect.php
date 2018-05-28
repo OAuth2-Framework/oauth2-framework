@@ -17,6 +17,7 @@ use OAuth2Framework\Component\OpenIdConnect\UserInfo\UserInfo;
 use OAuth2Framework\Component\OpenIdConnect\Rule;
 use OAuth2Framework\Component\OpenIdConnect\UserInfo\ScopeSupport\UserInfoScopeSupportManager;
 use OAuth2Framework\Component\OpenIdConnect\IdTokenBuilderFactory;
+use OAuth2Framework\Component\OpenIdConnect\NonceParameterChecker;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
 return function (ContainerConfigurator $container) {
@@ -61,4 +62,6 @@ return function (ContainerConfigurator $container) {
         ->args([
             ref(UserInfo::class),
         ]);
+
+    $container->set(NonceParameterChecker::class);
 };

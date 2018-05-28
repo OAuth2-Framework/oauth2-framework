@@ -11,30 +11,38 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
+use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use OAuth2Framework\ServerBundle\Service\IFrameEndpoint;
+use OAuth2Framework\Component\Core\Middleware\Pipe;
 use OAuth2Framework\ServerBundle\Service\SessionStateParameterExtension;
-use OAuth2Framework\ServerBundle\Middleware\Pipe;
-use function Fluent\create;
-use function Fluent\get;
+use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
-return [
-    'session_management_pipe' => create(Pipe::class)
-        ->arguments([
-            get(IFrameEndpoint::class),
-        ]),
+return function (ContainerConfigurator $container) {
+    $container = $container->services()->defaults()
+        ->private()
+        ->autoconfigure();
 
-    IFrameEndpoint::class => create()
-        ->arguments(
-            get('templating'),
-            get('httplug.message_factory'),
+    $container->set('oauth2_server.endpoint.session_management_pipe')
+        ->class(Pipe::class)
+        ->args([
+            ref(IFrameEndpoint::class),
+        ])
+    ;
+
+    $container->set(IFrameEndpoint::class)
+        ->args([
+            ref('templating'),
+            ref('httplug.message_factory'),
             '%oauth2_server.endpoint.session_management.template%',
             '%oauth2_server.endpoint.session_management.storage_name%'
-        ),
+        ])
+    ;
 
-    SessionStateParameterExtension::class => create()
-        ->arguments(
-            get('session'),
+    $container->set(SessionStateParameterExtension::class)
+        ->args([
+            ref('session'),
             '%oauth2_server.endpoint.session_management.storage_name%'
-        )
-        ->tag('oauth2_server_after_consent_screen'),
-];
+        ])
+        ->tag('oauth2_server_after_consent_screen')
+    ;
+};

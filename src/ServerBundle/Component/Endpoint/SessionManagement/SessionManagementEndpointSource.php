@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\ServerBundle\Component\Endpoint\SessionManagement;
 
 use OAuth2Framework\ServerBundle\Component\Component;
+use OAuth2Framework\ServerBundle\Component\Endpoint\SessionManagement\Compiler\SessionManagementRouteCompilerPass;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -48,7 +49,7 @@ class SessionManagementEndpointSource implements Component
         $container->setParameter('oauth2_server.endpoint.session_management.template', $config['template']);
 
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint/session_management'));
-        //$loader->load('session_management.php');
+        $loader->load('session_management.php');
     }
 
     /**
@@ -107,6 +108,7 @@ class SessionManagementEndpointSource implements Component
      */
     public function build(ContainerBuilder $container)
     {
+        $container->addCompilerPass(new SessionManagementRouteCompilerPass());
     }
 
     /**

@@ -99,19 +99,14 @@ class SoftwareStatementSource implements Component
      */
     public function prepend(ContainerBuilder $container, array $config): array
     {
-        if (!$config['endpoint']['client_registration']['software_statement']['enabled']) {
+        $sourceConfig = $config['endpoint']['client_registration']['software_statement'];
+        if (!$sourceConfig['enabled']) {
             return [];
         }
 
-        /*$currentPath = $path.'['.$this->name().']';
-        $accessor = PropertyAccess::createPropertyAccessor();
-        $sourceConfig = $accessor->getValue($config, $currentPath);
+        ConfigurationHelper::addJWSLoader($container, 'oauth2_server.endpoint.client_registration.software_statement',  ['jws_compact'], $sourceConfig['allowed_signature_algorithms'], [],false);
+        ConfigurationHelper::addKeyset($container, 'oauth2_server.endpoint.client_registration.software_statement', 'jwkset', ['value' => $sourceConfig['key_set']]);
 
-        if (true === $sourceConfig['enabled']) {
-            // FIXME
-            ConfigurationHelper::addJWSLoader($container, $this->name(), $sourceConfig['allowed_signature_algorithms'], [], ['jws_compact'], false);
-            ConfigurationHelper::addKeyset($container, 'client_registration_software_statement.key_set.signature', 'jwkset', ['value' => $sourceConfig['key_set']]);
-        }*/
         return [];
     }
 }

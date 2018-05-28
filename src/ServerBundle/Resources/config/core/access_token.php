@@ -33,6 +33,5 @@ return function (ContainerConfigurator $container) {
             ref('oauth2_security.access_token.repository'),
         ]);
 
-    // Default access token ID generator
     $container->set(RandomAccessTokenIdGenerator::class);
 };

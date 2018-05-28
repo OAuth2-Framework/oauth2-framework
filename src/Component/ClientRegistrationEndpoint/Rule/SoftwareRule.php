@@ -89,7 +89,9 @@ final class SoftwareRule implements Rule
         }
 
         $validatedParameters = $next($clientId, $commandParameters, $validatedParameters);
-        $validatedParameters = $validatedParameters->withParameters($software_statement);
+        foreach ($software_statement as $k => $v) {
+            $validatedParameters = $validatedParameters->with($k, $v);
+        }
 
         return $validatedParameters;
     }

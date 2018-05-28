@@ -11,17 +11,21 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-/*use OAuth2Framework\Component\Model\ClientCredentials\Tests;
-use function Fluent\create;
-use function Fluent\get;
 
-return [
-    Tests\SoftwareRule::class => create()
-        ->arguments(
-            get('jose.jws_loader.software_statement'),
-            get('oauth2_server.endpoint.client_registration.software_statement.key_set'),
+use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use OAuth2Framework\Component\ClientRegistrationEndpoint\Rule\SoftwareRule;
+use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
+
+return function (ContainerConfigurator $container) {
+    $container = $container->services()->defaults()
+        ->private()
+        ->autoconfigure();
+
+    $container->set(SoftwareRule::class)
+        ->args([
+            ref('jose.jws_loader.oauth2_server.endpoint.client_registration.software_statement'),
+            ref('jose.key_set.oauth2_server.endpoint.client_registration.software_statement'),
             '%oauth2_server.endpoint.client_registration.software_statement.required%',
             '%oauth2_server.endpoint.client_registration.software_statement.allowed_signature_algorithms%'
-        )
-        ->tag('oauth2_server_client_rule'),
-];*/
+        ]);
+};

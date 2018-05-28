@@ -11,7 +11,7 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\ServerBundle\DependencyInjection\Compiler;
+namespace OAuth2Framework\ServerBundle\Component\Endpoint\SessionManagement\Compiler;
 
 use OAuth2Framework\ServerBundle\Service\MetadataBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
@@ -24,7 +24,7 @@ class SessionManagementRouteCompilerPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        if (!$container->hasDefinition('session_management_pipe') || !$container->getParameter('oauth2_server.endpoint.session_management.enabled')) {
+        if (!$container->hasDefinition('oauth2_server.endpoint.session_management_pipe') || !$container->getParameter('oauth2_server.endpoint.session_management.enabled')) {
             return;
         }
 
@@ -33,7 +33,7 @@ class SessionManagementRouteCompilerPass implements CompilerPassInterface
         $route_loader = $container->getDefinition('oauth2_server.route_loader');
         $route_loader->addMethodCall('addRoute', [
             'openid_connect_iframe_endpoint',
-            'session_management_pipe',
+            'oauth2_server.endpoint.session_management_pipe',
             'dispatch',
             $path, // path
             [], // defaults

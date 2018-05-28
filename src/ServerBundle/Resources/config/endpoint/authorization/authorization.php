@@ -82,16 +82,12 @@ return function (ContainerConfigurator $container) {
     // Consent Screen Extension
     $container->set(AuthorizationEndpoint\ConsentScreen\ExtensionManager::class);
 
-    // Response Type
-    //$container->set(AuthorizationEndpoint\ResponseTypeManager::class);
-
     // Parameter Checker
     $container->set(ParameterChecker\ParameterCheckerManager::class);
 
     $container->set(ParameterChecker\RedirectUriParameterChecker::class)
         ->tag('oauth2_server_authorization_parameter_checker');
     $container->set(ParameterChecker\DisplayParameterChecker::class);
-    //FIXME $container->set(ParameterChecker\NonceParameterChecker::class);
     $container->set(ParameterChecker\PromptParameterChecker::class);
     $container->set(ParameterChecker\StateParameterChecker::class)
         ->args([

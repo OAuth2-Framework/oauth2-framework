@@ -18,6 +18,5 @@ return function (ContainerConfigurator $container) {
     $container = $container->services()->defaults()
         ->private();
 
-    // Default client ID generator
     $container->set(RandomClientIdGenerator::class);
 };
