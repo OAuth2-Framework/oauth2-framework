@@ -85,7 +85,6 @@ class AuthorizationEndpointSource implements Component
 
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint/authorization'));
         $loader->load('authorization.php');
-        $loader->load('user_account_discovery.php');
 
         $container->setAlias(UserAccountDiscovery::class, $config['user_account_discovery']);
 
