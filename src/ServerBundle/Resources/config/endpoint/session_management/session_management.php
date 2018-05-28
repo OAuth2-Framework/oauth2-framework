@@ -34,14 +34,14 @@ return function (ContainerConfigurator $container) {
             ref('templating'),
             ref('httplug.message_factory'),
             '%oauth2_server.endpoint.session_management.template%',
-            '%oauth2_server.endpoint.session_management.storage_name%'
+            '%oauth2_server.endpoint.session_management.storage_name%',
         ])
     ;
 
     $container->set(SessionStateParameterExtension::class)
         ->args([
             ref('session'),
-            '%oauth2_server.endpoint.session_management.storage_name%'
+            '%oauth2_server.endpoint.session_management.storage_name%',
         ])
         ->tag('oauth2_server_after_consent_screen')
     ;

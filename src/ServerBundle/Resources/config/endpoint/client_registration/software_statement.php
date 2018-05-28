@@ -11,7 +11,6 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use OAuth2Framework\Component\ClientRegistrationEndpoint\Rule\SoftwareRule;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
@@ -26,6 +25,6 @@ return function (ContainerConfigurator $container) {
             ref('jose.jws_loader.oauth2_server.endpoint.client_registration.software_statement'),
             ref('jose.key_set.oauth2_server.endpoint.client_registration.software_statement'),
             '%oauth2_server.endpoint.client_registration.software_statement.required%',
-            '%oauth2_server.endpoint.client_registration.software_statement.allowed_signature_algorithms%'
+            '%oauth2_server.endpoint.client_registration.software_statement.allowed_signature_algorithms%',
         ]);
 };
