@@ -17,6 +17,7 @@ use OAuth2Framework\Component\Scope\ScopeParameterChecker;
 use OAuth2Framework\Component\Scope\TokenEndpointScopeExtension;
 use OAuth2Framework\Component\Scope\Policy\NoScopePolicy;
 use OAuth2Framework\Component\Scope\Policy\ScopePolicyManager;
+use OAuth2Framework\Component\Scope\ScopeRepository;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
 return function (ContainerConfigurator $container) {
@@ -33,13 +34,13 @@ return function (ContainerConfigurator $container) {
 
     $container->set(ScopeParameterChecker::class)
         ->args([
-            ref(\OAuth2Framework\Component\Scope\ScopeRepository::class),
+            ref(ScopeRepository::class),
             ref(ScopePolicyManager::class),
         ]);
 
     $container->set(TokenEndpointScopeExtension::class)
         ->args([
-            ref(\OAuth2Framework\Component\Scope\ScopeRepository::class),
+            ref(ScopeRepository::class),
             ref(ScopePolicyManager::class),
         ]);
 };

@@ -67,7 +67,9 @@ class ScopeParameterChecker implements ParameterChecker
             if (0 !== count(array_diff($scopes, $availableScopes))) {
                 throw new \InvalidArgumentException(sprintf('An unsupported scope was requested. Available scopes for the client are %s.', implode(', ', $availableScopes)));
             }
+            dump($authorization);
             $authorization = $authorization->withResponseParameter('scope', implode(' ', $scopes));
+            dump($authorization);
 
             return $authorization;
         } catch (\InvalidArgumentException $e) {
