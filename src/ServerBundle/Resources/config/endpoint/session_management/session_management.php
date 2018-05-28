@@ -27,6 +27,7 @@ return function (ContainerConfigurator $container) {
         ->args([
             ref(IFrameEndpoint::class),
         ])
+        ->tag('controller.service_arguments')
     ;
 
     $container->set(IFrameEndpoint::class)
