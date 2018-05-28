@@ -33,12 +33,13 @@ class PairwiseSubjectSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        if (!$configs['openid_connect']['pairwise_subject']['enabled']) {
+        $config = $configs['openid_connect']['pairwise_subject'];
+        if (!$config['enabled']) {
             return;
         }
 
-        $container->setAlias('oauth2_server.openid_connect.pairwise.service', $configs['openid_connect']['pairwise_subject']['service']);
-        $container->setParameter('oauth2_server.openid_connect.pairwise.is_default', $configs['openid_connect']['pairwise_subject']['is_default']);
+        $container->setAlias('oauth2_server.openid_connect.pairwise.service', $config['service']);
+        $container->setParameter('oauth2_server.openid_connect.pairwise.is_default', $config['is_default']);
     }
 
     /**

@@ -26,8 +26,6 @@ class UserinfoEndpointEncryptionCompilerPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        dump($container->hasDefinition(UserInfoEndpoint::class));
-        dump($container->hasDefinition('jose.jwe_builder.oauth2_server.userinfo'));
         if (!$container->hasDefinition(UserInfoEndpoint::class) || !$container->hasDefinition('jose.jwe_builder.oauth2_server.userinfo')) {
             return;
         }

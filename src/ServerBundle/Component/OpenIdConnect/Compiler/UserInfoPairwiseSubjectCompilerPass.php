@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Component\OpenIdConnect\Compiler;
 
-use OAuth2Framework\Component\AuthorizationEndpoint\UserAccount\IdTokenHintDiscovery;
 use OAuth2Framework\Component\OpenIdConnect\UserInfo\UserInfo;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -26,19 +25,12 @@ class UserInfoPairwiseSubjectCompilerPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        if (!$container->hasAlias('oauth2_server.openid_connect.pairwise_subject.service')) {
+        if (!$container->hasAlias('oauth2_server.openid_connect.pairwise.service')) {
             return;
         }
 
         $definition = $container->getDefinition(UserInfo::class);
-        $service = $container->getAlias('oauth2_server.openid_connect.pairwise_subject.service');
-        $isDefault = $container->getParameter('oauth2_server.openid_connect.pairwise_subject.is_default');
-        $definition->addMethodCall('enablePairwiseSubject', [new Reference($service), $isDefault]);
-
-        // Enabled the pairwise support for the Id Token Hint Discovery service if available
-        if ($container->hasDefinition(IdTokenHintDiscovery::class)) {
-            $definition = $container->getDefinition(IdTokenHintDiscovery::class);
-            $definition->addMethodCall('enablePairwiseSubject', [new Reference($service)]);
-        }
+        $isDefault = $container->getParameter('oauth2_server.openid_connect.pairwise.is_default');
+        $definition->addMethodCall('enablePairwiseSubject', [new Reference('oauth2_server.openid_connect.pairwise.service'), $isDefault]);
     }
 }
