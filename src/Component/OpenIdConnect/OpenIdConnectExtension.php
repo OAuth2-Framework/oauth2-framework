@@ -153,7 +153,7 @@ class OpenIdConnectExtension implements TokenEndpointExtension
     {
         dump($accessToken);
         dump($accessToken->hasParameter('scope'));
-        dump($accessToken->hasParameter('scope'));
+        dump($accessToken->getParameter('scope'));
         dump(explode(' ', $accessToken->getParameter('scope')));
         dump(in_array('openid', explode(' ', $accessToken->getParameter('scope'))));
 
