@@ -83,10 +83,13 @@ class OpenIdConnectExtension implements TokenEndpointExtension
 
     public function afterAccessTokenIssuance(Client $client, ResourceOwner $resourceOwner, AccessToken $accessToken, callable $next): array
     {
+        dump($resourceOwner instanceof UserAccount, $this->accessTokenOpenIdHasScope($accessToken), $accessToken->hasMetadata('redirect_uri'));
         if ($resourceOwner instanceof UserAccount && $this->accessTokenOpenIdHasScope($accessToken) && $accessToken->hasMetadata('redirect_uri')) {
             $idToken = $this->issueIdToken($client, $resourceOwner, $accessToken);
             $data = $next($client, $resourceOwner, $accessToken);
+            dump($data);
             $data['id_token'] = $idToken;
+            dump($data);
 
             return $data;
         }
