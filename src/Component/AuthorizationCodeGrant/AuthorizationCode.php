@@ -180,7 +180,7 @@ class AuthorizationCode extends Token
      */
     public function getQueryParam(string $key)
     {
-        if ($this->hasQueryParams($key)) {
+        if ($this->hasQueryParam($key)) {
             throw new \RuntimeException(sprintf('Query parameter with key "%s" does not exist.', $key));
         }
 
@@ -192,7 +192,7 @@ class AuthorizationCode extends Token
      *
      * @return bool
      */
-    public function hasQueryParams(string $key): bool
+    public function hasQueryParam(string $key): bool
     {
         return array_key_exists($key, $this->getQueryParams());
     }
