@@ -104,7 +104,7 @@ class SoftwareStatementSource implements Component
             return [];
         }
 
-        ConfigurationHelper::addJWSLoader($container, 'oauth2_server.endpoint.client_registration.software_statement',  ['jws_compact'], $sourceConfig['allowed_signature_algorithms'], [],false);
+        ConfigurationHelper::addJWSLoader($container, 'oauth2_server.endpoint.client_registration.software_statement', ['jws_compact'], $sourceConfig['allowed_signature_algorithms'], [], false);
         ConfigurationHelper::addKeyset($container, 'oauth2_server.endpoint.client_registration.software_statement', 'jwkset', ['value' => $sourceConfig['key_set']]);
 
         return [];
