@@ -24,9 +24,9 @@ return function (ContainerConfigurator $container) {
 
     $container->set('oauth2_server.endpoint.session_management_pipe')
         ->class(Pipe::class)
-        ->args([
+        ->args([[
             ref(IFrameEndpoint::class),
-        ])
+        ]])
         ->tag('controller.service_arguments')
     ;
 
