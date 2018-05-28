@@ -91,6 +91,7 @@ class UserinfoEndpointSignatureSource implements Component
         $sourceConfig = $config['openid_connect']['userinfo_endpoint'][$this->name()];
 
         ConfigurationHelper::addJWSBuilder($container, 'oauth2_server.userinfo', $sourceConfig['signature_algorithms'], false);
+
         return [];
     }
 }
