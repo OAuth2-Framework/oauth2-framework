@@ -17,9 +17,7 @@ use Jose\Bundle\JoseFramework\Helper\ConfigurationHelper;
 use OAuth2Framework\ServerBundle\Component\Component;
 use OAuth2Framework\ServerBundle\Component\OpenIdConnect\Compiler\UserinfoEndpointEncryptionCompilerPass;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
-use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
 class UserinfoEndpointEncryptionSource implements Component
 {
@@ -44,9 +42,6 @@ class UserinfoEndpointEncryptionSource implements Component
 
         $container->setParameter('oauth2_server.openid_connect.userinfo_endpoint.encryption.key_encryption_algorithms', $config['key_encryption_algorithms']);
         $container->setParameter('oauth2_server.openid_connect.userinfo_endpoint.encryption.content_encryption_algorithms', $config['content_encryption_algorithms']);
-
-        $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../Resources/config/openid_connect'));
-        //$loader->load('userinfo_endpoint.php');
     }
 
     /**
@@ -104,7 +99,7 @@ class UserinfoEndpointEncryptionSource implements Component
     {
         $sourceConfig = $config['openid_connect']['userinfo_endpoint'][$this->name()];
 
-        ConfigurationHelper::addJWEBuilder($container, 'oauth2_server.userinfo', $sourceConfig['key_encryption_algorithms'], $sourceConfig['content_encryption_algorithms'], ['DEF'], false);
+        ConfigurationHelper::addJWEBuilder($container, 'oauth2_server.openid_connect.id_token_from_userinfo', $sourceConfig['key_encryption_algorithms'], $sourceConfig['content_encryption_algorithms'], ['DEF'], false);
 
         return [];
     }

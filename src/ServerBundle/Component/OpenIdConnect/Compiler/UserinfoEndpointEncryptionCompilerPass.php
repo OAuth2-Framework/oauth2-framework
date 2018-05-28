@@ -26,12 +26,12 @@ class UserinfoEndpointEncryptionCompilerPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        if (!$container->hasDefinition(UserInfoEndpoint::class) || !$container->hasDefinition('jose.jwe_builder.oauth2_server.userinfo')) {
+        if (!$container->hasDefinition(UserInfoEndpoint::class) || !$container->hasDefinition('jose.jwe_builder.oauth2_server.openid_connect.id_token_from_userinfo')) {
             return;
         }
 
         $definition = $container->getDefinition(UserInfoEndpoint::class);
-        $definition->addMethodCall('enableEncryption', [new Reference('jose.jwe_builder.oauth2_server.userinfo')]);
+        $definition->addMethodCall('enableEncryption', [new Reference('jose.jwe_builder.oauth2_server.openid_connect.id_token_from_userinfo')]);
 
         if ($container->hasDefinition(MetadataBuilder::class)) {
             $definition = $container->getDefinition(MetadataBuilder::class);

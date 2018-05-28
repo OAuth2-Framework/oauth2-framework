@@ -17,9 +17,7 @@ use Jose\Bundle\JoseFramework\Helper\ConfigurationHelper;
 use OAuth2Framework\ServerBundle\Component\Component;
 use OAuth2Framework\ServerBundle\Component\OpenIdConnect\Compiler\UserinfoEndpointSignatureCompilerPass;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
-use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
 class UserinfoEndpointSignatureSource implements Component
 {
@@ -43,9 +41,6 @@ class UserinfoEndpointSignatureSource implements Component
         }
 
         $container->setParameter('oauth2_server.openid_connect.userinfo_endpoint.signature.signature_algorithms', $config['signature_algorithms']);
-
-        $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../Resources/config/openid_connect'));
-        //$loader->load('userinfo_endpoint.php');
     }
 
     /**
@@ -90,7 +85,7 @@ class UserinfoEndpointSignatureSource implements Component
     {
         $sourceConfig = $config['openid_connect']['userinfo_endpoint'][$this->name()];
 
-        ConfigurationHelper::addJWSBuilder($container, 'oauth2_server.userinfo', $sourceConfig['signature_algorithms'], false);
+        ConfigurationHelper::addJWSBuilder($container, 'oauth2_server.openid_connect.id_token_from_userinfo', $sourceConfig['signature_algorithms'], false);
 
         return [];
     }

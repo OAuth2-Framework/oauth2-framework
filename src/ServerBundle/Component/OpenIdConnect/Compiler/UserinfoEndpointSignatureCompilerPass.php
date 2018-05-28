@@ -26,14 +26,14 @@ class UserinfoEndpointSignatureCompilerPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        if (!$container->hasDefinition(UserInfoEndpoint::class) || !$container->hasDefinition('jose.jws_builder.oauth2_server.userinfo')) {
+        if (!$container->hasDefinition(UserInfoEndpoint::class) || !$container->hasDefinition('jose.jws_builder.oauth2_server.openid_connect.id_token_from_userinfo')) {
             return;
         }
 
         $definition = $container->getDefinition(UserInfoEndpoint::class);
         $definition->addMethodCall('enableSignature', [
-            new Reference('jose.jws_builder.oauth2_server.userinfo'),
-            new Reference('jose.key_set.oauth2_server.key_set.signature'),
+            new Reference('jose.jws_builder.oauth2_server.openid_connect.id_token_from_userinfo'),
+            new Reference('jose.key_set.oauth2_server.openid_connect.id_token_from_userinfo'),
         ]);
 
         if ($container->hasDefinition(MetadataBuilder::class)) {
