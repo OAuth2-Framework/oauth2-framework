@@ -70,7 +70,7 @@ return function (ContainerConfigurator $container) {
         ->args([
             'This is my secret Key !!!',
             'aes-128-cbc',
-            16
+            16,
         ]);
 
     /*$container->set(ResourceServerAuthMethodByIpAddress::class)
