@@ -177,8 +177,9 @@ oauth2_server:
         response_type:
             id_token: true
             code_id_token: true
-            id_token_token: true
             code_id_token_token: true
+            code_token: true
+            id_token_token: true
         id_token:
             lifetime: 1800
             default_signature_algorithm: 'RS256'

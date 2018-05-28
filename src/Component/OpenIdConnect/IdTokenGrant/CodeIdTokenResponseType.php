@@ -57,7 +57,7 @@ final class CodeIdTokenResponseType implements ResponseType
      */
     public function name(): string
     {
-        return 'code id_token token';
+        return 'code id_token';
     }
 
     /**
