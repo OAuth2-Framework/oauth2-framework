@@ -29,5 +29,5 @@ framework:
 
 # Twig Configuration
 twig:
-    debug:            true
-    strict_variables: true
+    debug:            '%kernel.debug%'
+    strict_variables: '%kernel.debug%'
