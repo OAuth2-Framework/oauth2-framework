@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Component\Endpoint\TokenIntrospection\Compiler;
 
+use OAuth2Framework\ServerBundle\Routing\RouteLoader;
 use OAuth2Framework\ServerBundle\Service\MetadataBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -30,7 +31,7 @@ class TokenIntrospectionRouteCompilerPass implements CompilerPassInterface
 
         $path = $container->getParameter('oauth2_server.endpoint.token_introspection.path');
         $host = $container->getParameter('oauth2_server.endpoint.token_introspection.host');
-        $route_loader = $container->getDefinition('oauth2_server.route_loader');
+        $route_loader = $container->getDefinition(RouteLoader::class);
         $route_loader->addMethodCall('addRoute', [
             'token_introspection_endpoint',
             'token_introspection_pipe',

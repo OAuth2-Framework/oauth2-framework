@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Component\ClientAuthentication;
 
+use OAuth2Framework\Component\ClientAuthentication\AuthenticationMethod;
 use OAuth2Framework\Component\ClientAuthentication\AuthenticationMethodManager;
 use OAuth2Framework\ServerBundle\Component\ClientAuthentication\Compiler\ClientAuthenticationMethodCompilerPass;
 use OAuth2Framework\ServerBundle\Component\Component;
@@ -58,6 +59,7 @@ class ClientAuthenticationSource implements Component
             return;
         }
 
+        $container->registerForAutoconfiguration(AuthenticationMethod::class)->addTag('oauth2_server_client_authentication');
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../Resources/config/client_authentication'));
         $loader->load('client_authentication.php');
 

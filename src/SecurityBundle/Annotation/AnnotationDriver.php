@@ -154,6 +154,7 @@ class AnnotationDriver
             403,
             OAuth2Message::ERROR_ACCESS_DENIED,
                 $message,
+                [],
                 $previous
             ),
             $additionalData

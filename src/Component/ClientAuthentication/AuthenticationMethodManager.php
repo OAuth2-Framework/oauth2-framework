@@ -32,18 +32,14 @@ class AuthenticationMethodManager
 
     /**
      * @param AuthenticationMethod $method
-     *
-     * @return AuthenticationMethodManager
      */
-    public function add(AuthenticationMethod $method): self
+    public function add(AuthenticationMethod $method): void
     {
         $class = get_class($method);
         $this->methods[$class] = $method;
         foreach ($method->getSupportedMethods() as $name) {
             $this->names[$name] = $class;
         }
-
-        return $this;
     }
 
     /**

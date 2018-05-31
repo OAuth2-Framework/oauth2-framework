@@ -19,8 +19,7 @@ return function (ContainerConfigurator $container) {
         ->private()
         ->autoconfigure();
 
-    $container->set('oauth2_server.client_rule.manager')
-        ->class(ClientRule\RuleManager::class);
+    $container->set(ClientRule\RuleManager::class);
 
     $container->set(ClientRule\ApplicationTypeParametersRule::class);
     $container->set(ClientRule\ClientIdIssuedAtRule::class);

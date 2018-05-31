@@ -16,6 +16,7 @@ use OAuth2Framework\Component\ClientRegistrationEndpoint\ClientRegistrationEndpo
 use OAuth2Framework\Component\Core\Middleware;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 use OAuth2Framework\Component\Core\Message;
+use OAuth2Framework\Component\ClientRule\RuleManager;
 
 return function (ContainerConfigurator $container) {
     $container = $container->services()->defaults()
@@ -36,7 +37,7 @@ return function (ContainerConfigurator $container) {
             ref('oauth2_server.client.id_generator'),
             ref('oauth2_server.client.repository'),
             ref(\Http\Message\ResponseFactory::class), //TODO
-            ref('oauth2_server.client_rule.manager'),
+            ref(RuleManager::class),
         ]);
 
     $container->set('oauth2_server.message_middleware.for_client_registration')

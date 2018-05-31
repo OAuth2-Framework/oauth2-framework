@@ -18,7 +18,6 @@ return function (ContainerConfigurator $container) {
     $container = $container->services()->defaults()
         ->private();
 
-    $container->set('oauth2_server.route_loader')
-        ->class(RouteLoader::class)
+    $container->set(RouteLoader::class)
         ->tag('routing.loader');
 };

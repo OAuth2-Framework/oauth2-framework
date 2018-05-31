@@ -78,6 +78,7 @@ class RevocationEndpointTest extends WebTestCase
 
     /**
      * @test
+     * @group FOO
      */
     public function aAccessTokenIsCorrectlyRevoked()
     {
@@ -103,6 +104,7 @@ class RevocationEndpointTest extends WebTestCase
             new \DateTimeImmutable('now +1 hour'),
             null
         );
+        $accessToken->eraseMessages();
 
         /** @var AccessTokenRepository $accessTokenRepository */
         $accessTokenRepository = $container->get(\OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\AccessTokenRepository::class);

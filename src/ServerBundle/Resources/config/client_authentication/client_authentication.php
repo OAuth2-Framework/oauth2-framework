@@ -21,20 +21,19 @@ return function (ContainerConfigurator $container) {
     $container = $container->services()->defaults()
         ->private();
 
-    $container->set('oauth2_server.client_authentication.method_manager')
-        ->class(AuthenticationMethodManager::class);
+    $container->set(AuthenticationMethodManager::class);
 
     $container->set('oauth2_server.client_authentication.middleware')
         ->class(ClientAuthenticationMiddleware::class)
         ->args([
             ref('oauth2_server.client.repository'),
-            ref('oauth2_server.client_authentication.method_manager'),
+            ref(AuthenticationMethodManager::class),
         ]);
 
     $container->set('oauth2_server.client_authentication.method_rule')
         ->autoconfigure()
         ->class(ClientAuthenticationMethodRule::class)
         ->args([
-            ref('oauth2_server.client_authentication.method_manager'),
+            ref(AuthenticationMethodManager::class),
         ]);
 };

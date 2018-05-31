@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Component\Endpoint\ClientRegistration\Compiler;
 
+use OAuth2Framework\ServerBundle\Routing\RouteLoader;
 use OAuth2Framework\ServerBundle\Service\MetadataBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -30,7 +31,7 @@ class ClientRegistrationEndpointRouteCompilerPass implements CompilerPassInterfa
 
         $path = $container->getParameter('oauth2_server.endpoint.client_registration.path');
         $host = $container->getParameter('oauth2_server.endpoint.client_registration.host');
-        $route_loader = $container->getDefinition('oauth2_server.route_loader');
+        $route_loader = $container->getDefinition(RouteLoader::class);
         $route_loader->addMethodCall('addRoute', [
             'client_registration',
             'client_registration_endpoint_pipe',

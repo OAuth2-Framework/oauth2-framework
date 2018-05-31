@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Component\ClientAuthentication\Compiler;
 
+use OAuth2Framework\Component\ClientAuthentication\AuthenticationMethodManager;
 use OAuth2Framework\ServerBundle\Service\MetadataBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -25,11 +26,11 @@ class ClientAuthenticationMethodCompilerPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        if (!$container->hasDefinition('oauth2_server.client_authentication.method_manager')) {
+        if (!$container->hasDefinition(AuthenticationMethodManager::class)) {
             return;
         }
 
-        $definition = $container->getDefinition('oauth2_server.client_authentication.method_manager');
+        $definition = $container->getDefinition(AuthenticationMethodManager::class);
 
         $taggedServices = $container->findTaggedServiceIds('oauth2_server_client_authentication');
         foreach ($taggedServices as $id => $attributes) {
@@ -42,6 +43,6 @@ class ClientAuthenticationMethodCompilerPass implements CompilerPassInterface
         }
 
         $metadata = $container->getDefinition(MetadataBuilder::class);
-        $metadata->addMethodCall('setTokenEndpointAuthMethodManager', [new Reference('oauth2_server.client_authentication.method_manager')]);
+        $metadata->addMethodCall('setTokenEndpointAuthMethodManager', [new Reference(AuthenticationMethodManager::class)]);
     }
 }

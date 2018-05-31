@@ -12,6 +12,7 @@ declare(strict_types=1);
  */
 
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use OAuth2Framework\Component\ClientAuthentication\AuthenticationMethodManager;
 use OAuth2Framework\Component\Core\Message;
 use OAuth2Framework\Component\Core\Middleware;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
@@ -59,7 +60,7 @@ return function (ContainerConfigurator $container) {
 
     $container->set('oauth2_server.message_factory.401_for_client')
         ->args([
-            ref('oauth2_server.client_authentication.method_manager'),
+            ref(AuthenticationMethodManager::class),
         ])
         ->class(Message\Factory\AuthenticateResponseForClientFactory::class)
         ->tag('oauth2_server_message_factory_for_client_authentication');

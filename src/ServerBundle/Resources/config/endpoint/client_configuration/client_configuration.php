@@ -19,6 +19,7 @@ use OAuth2Framework\Component\Core\Message;
 use OAuth2Framework\Component\Core\Middleware;
 use OAuth2Framework\ServerBundle\Rule\ClientConfigurationRouteRule;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
+use OAuth2Framework\Component\ClientRule\RuleManager;
 
 return function (ContainerConfigurator $container) {
     $container = $container->services()->defaults()
@@ -29,7 +30,7 @@ return function (ContainerConfigurator $container) {
         ->args([[
             ref('oauth2_server.message_middleware.for_client_configuration'),
             ref('oauth2_server.client_configuration.middleware'),
-            ref('oauth2_server.client_configuration.endpoint'),
+            ref(ClientConfigurationEndpoint::class),
         ]])
         ->tag('controller.service_arguments');
 
@@ -42,13 +43,12 @@ return function (ContainerConfigurator $container) {
             false, // Query String
         ]);
 
-    $container->set('oauth2_server.client_configuration.endpoint')
-        ->class(ClientConfigurationEndpoint::class)
+    $container->set(ClientConfigurationEndpoint::class)
         ->args([
             ref('oauth2_server.client.repository'),
             ref('oauth2_server.client_configuration.bearer_token'),
             ref(\Http\Message\ResponseFactory::class), //TODO: change the way the response factory is managed
-            ref('oauth2_server.client_rule.manager'),
+            ref(RuleManager::class),
         ]);
 
     $container->set('oauth2_server.client_configuration.middleware')

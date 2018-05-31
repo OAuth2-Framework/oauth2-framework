@@ -18,7 +18,8 @@ use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
 return function (ContainerConfigurator $container) {
     $container = $container->services()->defaults()
-        ->private();
+        ->private()
+        ->autoconfigure();
 
     $container->set(ClientAssertionJwt::class)
         ->args([
@@ -27,6 +28,5 @@ return function (ContainerConfigurator $container) {
             ref('jose.header_checker.client_authentication.client_assertion_jwt'),
             ref('jose.claim_checker.client_authentication.client_assertion_jwt'),
             '%oauth2_server.client_authentication.client_assertion_jwt.secret_lifetime%',
-        ])
-        ->tag('oauth2_server_client_authentication');
+        ]);
 };

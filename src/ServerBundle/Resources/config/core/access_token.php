@@ -19,18 +19,17 @@ use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
 return function (ContainerConfigurator $container) {
     $container = $container->services()->defaults()
-        ->private();
+        ->private()
+        ->autoconfigure();
 
-    $container->set('oauth2_security.access_token.introspection_type_hint')
-        ->class(AccessTokenIntrospectionTypeHint::class)
+    $container->set(AccessTokenRevocationTypeHint::class)
         ->args([
-            ref('oauth2_security.access_token.repository'),
+            ref('oauth2_server.access_token.repository'),
         ]);
 
-    $container->set('oauth2_security.access_token.introspection_type_hint')
-        ->class(AccessTokenRevocationTypeHint::class)
+    $container->set(AccessTokenIntrospectionTypeHint::class)
         ->args([
-            ref('oauth2_security.access_token.repository'),
+            ref('oauth2_server.access_token.repository'),
         ]);
 
     $container->set(RandomAccessTokenIdGenerator::class);

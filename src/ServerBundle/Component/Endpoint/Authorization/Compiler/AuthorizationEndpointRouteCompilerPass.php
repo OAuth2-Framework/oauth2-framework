@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Component\Endpoint\Authorization\Compiler;
 
+use OAuth2Framework\ServerBundle\Routing\RouteLoader;
 use OAuth2Framework\ServerBundle\Service\MetadataBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -30,7 +31,7 @@ class AuthorizationEndpointRouteCompilerPass implements CompilerPassInterface
 
         $path = $container->getParameter('oauth2_server.endpoint.authorization.path');
         $host = $container->getParameter('oauth2_server.endpoint.authorization.host');
-        $route_loader = $container->getDefinition('oauth2_server.route_loader');
+        $route_loader = $container->getDefinition(RouteLoader::class);
         $route_loader->addMethodCall('addRoute', [
             'authorization_endpoint',
             'authorization_endpoint_pipe',

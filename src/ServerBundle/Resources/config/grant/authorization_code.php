@@ -22,6 +22,11 @@ return function (ContainerConfigurator $container) {
         ->private()
         ->autoconfigure();
 
+    $container->set(\OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeRevocationTypeHint::class)
+        ->args([
+            ref(\OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeRepository::class),
+        ]);
+
     $container->set(AuthorizationCodeGrantType::class)
         ->args([
             ref(\OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeRepository::class),
