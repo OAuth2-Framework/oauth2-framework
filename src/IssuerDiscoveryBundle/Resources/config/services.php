@@ -34,4 +34,5 @@ return function (ContainerConfigurator $container) {
     $container->set(IdentifierResolver\IdentifierResolverManager::class);
     $container->set(IdentifierResolver\UriResolver::class);
     $container->set(IdentifierResolver\AccountResolver::class);
+    $container->set(IdentifierResolver\EmailResolver::class);
 };

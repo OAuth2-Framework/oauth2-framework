@@ -51,22 +51,6 @@ class AppKernel extends Kernel
     /**
      * {@inheritdoc}
      */
-    public function getCacheDir()
-    {
-        return sys_get_temp_dir().'/OAuth2FrameworkIssuerDiscoveryBundle/Test';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getLogDir()
-    {
-        return sys_get_temp_dir().'/OAuth2FrameworkIssuerDiscoveryBundle/log';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
         $loader->load(__DIR__.'/config/config_test.yml');
