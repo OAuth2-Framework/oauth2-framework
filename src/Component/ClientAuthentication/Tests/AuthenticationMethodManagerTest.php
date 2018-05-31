@@ -37,10 +37,8 @@ final class AuthenticationMethodManagerTest extends TestCase
     public function genericCalls()
     {
         $manager = new AuthenticationMethodManager();
-        $manager
-            ->add(new None())
-            ->add(new ClientSecretBasic('Realm'))
-        ;
+        $manager->add(new None());
+        $manager->add(new ClientSecretBasic('Realm'));
         self::assertTrue($manager->has('none'));
         self::assertEquals(['none', 'client_secret_basic'], $manager->list());
         self::assertInstanceOf(AuthenticationMethod::class, $manager->get('none'));
@@ -54,10 +52,8 @@ final class AuthenticationMethodManagerTest extends TestCase
     public function theClientCannotUseSeveralAuthenticationMethods()
     {
         $manager = new AuthenticationMethodManager();
-        $manager
-            ->add(new ClientSecretBasic('My Service'))
-            ->add(new ClientSecretPost())
-        ;
+        $manager->add(new ClientSecretBasic('My Service'));
+        $manager->add(new ClientSecretPost());
         $request = $this->buildRequest([
             'client_id' => 'CLIENT_ID',
             'client_secret' => 'CLIENT_SECRET',
@@ -82,10 +78,8 @@ final class AuthenticationMethodManagerTest extends TestCase
     public function theClientCanUseSeveralAuthenticationMethodsWhenOneIsNone()
     {
         $manager = new AuthenticationMethodManager();
-        $manager
-            ->add(new None())
-            ->add(new ClientSecretPost())
-        ;
+        $manager->add(new None());
+        $manager->add(new ClientSecretPost());
         $request = $this->buildRequest([
             'client_id' => 'CLIENT_ID',
             'client_secret' => 'CLIENT_SECRET',
