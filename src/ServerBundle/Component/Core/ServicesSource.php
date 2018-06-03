@@ -38,6 +38,9 @@ class ServicesSource implements Component
     public function load(array $configs, ContainerBuilder $container)
     {
         $container->setParameter('oauth2_server.server_uri', $configs['server_uri']);
+        if ($configs['http_client'] !== null) {
+            $container->setAlias('oauth2_server.http_client', $configs['http_client']);
+        }
 
         $container->registerForAutoconfiguration(MessageExtension::class)->addTag('oauth2_message_extension');
 
@@ -54,6 +57,10 @@ class ServicesSource implements Component
         $node->children()
             ->scalarNode('server_uri')
                 ->info('The URI of this server. Required by several components (e.g. when JWT are issued/received)')
+                ->defaultNull()
+            ->end()
+            ->scalarNode('http_client')
+                ->info('HTTP Client. Used by some client rules.')
                 ->defaultNull()
             ->end()
         ->end();

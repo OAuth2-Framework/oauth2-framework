@@ -18,7 +18,7 @@ use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 
 /**
-If there are multiple hostnames in the registered redirect_uris and pairwise ID is set, the ClientCredentials MUST register a sector_identifier_uri.
+TODO: If there are multiple hostnames in the registered redirect_uris and pairwise ID is set, the cliert MUST register a sector_identifier_uri.
  */
 final class RedirectionUriRule implements Rule
 {

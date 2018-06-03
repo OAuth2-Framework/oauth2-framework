@@ -1,6 +1,6 @@
 oauth2_server:
     server_uri: 'https://oauth2.test/'
-#    http_client: 'httplug.client.oauth2'
+    http_client: 'httplug.client.mock'
 #    # Key Component
     client:
         repository: 'OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\ClientRepository'

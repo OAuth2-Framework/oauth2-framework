@@ -97,6 +97,9 @@ class AuthorizationEndpointSource implements Component
         $container->setParameter('oauth2_server.endpoint.authorization.form', $config['form']);
         $container->setParameter('oauth2_server.endpoint.authorization.type', $config['type']);
 
+        if ($container->hasAlias('oauth2_server.http_client')) {
+            $loader->load('sector_identifier_uri.php');
+        }
         foreach ($this->subComponents as $subComponent) {
             $subComponent->load($configs, $container);
         }
