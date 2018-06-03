@@ -76,10 +76,5 @@ final class SectorIdentifierUriRule implements Rule
         if (!is_array($data) || empty($data)) {
             throw new \InvalidArgumentException('The provided sector identifier URI is not valid: it must contain at least one URI.');
         }
-        foreach ($data as $sector_url) {
-            //FIXME
-            //Assertion::url($sector_url, 'The provided sector identifier URI is not valid: it must contain only URIs.');
-            //Assertion::inArray(mb_substr($sector_url, 0, mb_strpos($sector_url, '://', 0, '8bit'), '8bit'), $allowedProtocols, sprintf('An URL provided in the sector identifier URI is not valid: scheme must be one of the following: %s.', implode(', ', $allowedProtocols)));
-        }
     }
 }
