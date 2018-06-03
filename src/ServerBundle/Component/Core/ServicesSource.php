@@ -38,7 +38,7 @@ class ServicesSource implements Component
     public function load(array $configs, ContainerBuilder $container)
     {
         $container->setParameter('oauth2_server.server_uri', $configs['server_uri']);
-        if ($configs['http_client'] !== null) {
+        if (null !== $configs['http_client']) {
             $container->setAlias('oauth2_server.http_client', $configs['http_client']);
         }
 
