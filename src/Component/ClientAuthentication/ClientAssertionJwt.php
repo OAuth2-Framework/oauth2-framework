@@ -390,7 +390,7 @@ class ClientAssertionJwt implements AuthenticationMethod
     {
         switch (true) {
             case $client->has('jwks') && 'private_key_jwt' === $client->getTokenEndpointAuthenticationMethod():
-                $jwks = json_decode(json_encode($client->get('jwks'), JSON_FORCE_OBJECT), false);;
+                $jwks = json_decode(json_encode($client->get('jwks'), JSON_FORCE_OBJECT), true);
 
                 return JWKSet::createFromKeyData($jwks);
             case $client->has('client_secret') && 'client_secret_jwt' === $client->getTokenEndpointAuthenticationMethod():
