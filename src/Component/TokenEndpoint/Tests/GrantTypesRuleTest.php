@@ -113,6 +113,25 @@ final class GrantTypesRuleTest extends TestCase
     }
 
     /**
+     * @test
+     */
+    public function theAssociatedResponseTypesAreSet()
+    {
+        $clientId = ClientId::create('CLIENT_ID');
+        $commandParameters = DataBag::create([
+            'grant_types' => ['authorization_code'],
+        ]);
+        $validatedParameters = DataBag::create(['response_types' => ['code id_token token']]);
+        $rule = $this->getGrantTypesRule();
+        $validatedParameters = $rule->handle($clientId, $commandParameters, $validatedParameters, $this->getCallable());
+
+        self::assertTrue($validatedParameters->has('grant_types'));
+        self::assertEquals(['authorization_code'], $validatedParameters->get('grant_types'));
+        self::assertTrue($validatedParameters->has('response_types'));
+        self::assertEquals(['code id_token token'], $validatedParameters->get('response_types'));
+    }
+
+    /**
      * @return callable
      */
     private function getCallable(): callable

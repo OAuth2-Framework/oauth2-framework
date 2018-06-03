@@ -79,9 +79,16 @@ final class GrantTypesRule implements Rule
     private function checkResponseTypes(DataBag $parameters)
     {
         $responseTypes = $parameters->has('response_types') ? $parameters->get('response_types') : [];
+        $list = [];
+        foreach ($responseTypes as $responseType) {
+            $list = array_merge(
+                $list,
+                explode(' ', $responseType)
+            );
+        }
         foreach ($parameters->get('grant_types') as $grantType) {
             $type = $this->grantTypeManager->get($grantType);
-            $diff = array_diff($type->associatedResponseTypes(), $responseTypes);
+            $diff = array_diff($type->associatedResponseTypes(), $list);
             if (!empty($diff)) {
                 throw new \InvalidArgumentException(sprintf('The grant type "%s" requires the following response type(s): %s.', $grantType, implode(', ', $diff)));
             }
