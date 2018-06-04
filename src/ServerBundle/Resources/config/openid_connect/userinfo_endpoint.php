@@ -32,10 +32,25 @@ return function (ContainerConfigurator $container) {
             ref('httplug.message_factory'),
         ]);
 
+    $container->set('oauth2_server.userinfo_security.bearer_token_type')
+        ->class(\OAuth2Framework\Component\BearerTokenType\BearerToken::class)
+        ->args([
+            'Realm',
+            true,
+            true,
+            false,
+        ]);
+
+    $container->set('oauth2_server.userinfo_security.token_type_manager')
+        ->class(\OAuth2Framework\Component\Core\TokenType\TokenTypeManager::class)
+        ->call('add', [
+            ref('oauth2_server.userinfo_security.bearer_token_type'),
+        ]);
+
     $container->set('userinfo_security_middleware')
         ->class(\OAuth2Framework\Component\Core\Middleware\AccessTokenMiddleware::class)
         ->args([
-            ref(\OAuth2Framework\Component\Core\TokenType\TokenTypeManager::class),
+            ref('oauth2_server.userinfo_security.token_type_manager'),
             ref('oauth2_server.access_token.repository'),
         ]);
 
