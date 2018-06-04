@@ -110,6 +110,9 @@ class UserInfoEndpoint implements MiddlewareInterface
          * @var AccessToken
          */
         $accessToken = $request->getAttribute('access_token');
+        if (!$accessToken instanceof AccessToken) {
+            throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_TOKEN, 'The access token is missing or invalid.');
+        }
 
         $this->checkScope($accessToken);
         $this->checkRedirectUri($accessToken);
