@@ -166,9 +166,13 @@ final class BearerToken implements TokenType
      */
     private function getTokenFromRequestBody(ServerRequestInterface $request): ?string
     {
-        $parameters = RequestBodyParser::parseFormUrlEncoded($request);
+        try {
+            $parameters = RequestBodyParser::parseFormUrlEncoded($request);
 
-        return is_array($parameters) ? $this->getAccessTokenFromParameters($parameters) : null;
+            return is_array($parameters) ? $this->getAccessTokenFromParameters($parameters) : null;
+        } catch (\Exception $e) {
+            return null;
+        }
     }
 
     /**
