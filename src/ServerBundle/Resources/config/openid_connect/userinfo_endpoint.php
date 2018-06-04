@@ -36,7 +36,7 @@ return function (ContainerConfigurator $container) {
         ->class(\OAuth2Framework\Component\Core\Middleware\AccessTokenMiddleware::class)
         ->args([
             ref(\OAuth2Framework\Component\Core\TokenType\TokenTypeManager::class),
-            ref(\OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository::class),
+            ref('oauth2_server.access_token.repository'),
         ]);
 
     $container->set('oauth2_server_userinfo_pipe')
