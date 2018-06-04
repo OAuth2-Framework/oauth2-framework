@@ -533,7 +533,7 @@ class IdTokenBuilder
     private function getSignatureKey(string $signatureAlgorithm): JWK
     {
         $keys = $this->signatureKeys;
-        if ($this->client->has('client_secret') && 'client_secret_jwt' === $this->client->getTokenEndpointAuthenticationMethod()) {
+        if ($this->client->has('client_secret')) {
             $jwk = JWK::create([
                 'kty' => 'oct',
                 'use' => 'sig',
@@ -546,9 +546,6 @@ class IdTokenBuilder
             return JWK::create(['kty' => 'none', 'alg' => 'none', 'use' => 'sig']);
         }
         $signatureKey = $keys->selectKey('sig', $signatureAlgorithm);
-        dump($keys);
-        dump($signatureAlgorithm);
-        dump($signatureKey);
         if (null === $signatureKey) {
             throw new \InvalidArgumentException('Unable to find a key to sign the ID Token. Please verify the selected key set contains suitable keys.');
         }
