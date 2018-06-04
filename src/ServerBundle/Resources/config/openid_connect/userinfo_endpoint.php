@@ -41,10 +41,10 @@ return function (ContainerConfigurator $container) {
 
     $container->set('oauth2_server_userinfo_pipe')
         ->class(Pipe::class)
-        ->args([
+        ->args([[
             ref('userinfo_security_middleware'),
             ref(UserInfoEndpoint::class),
-        ])
+        ]])
         ->tag('controller.service_arguments');
 
     $container->set(UserinfoEndpointAlgorithmsRule::class)
