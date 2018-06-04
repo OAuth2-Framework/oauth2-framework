@@ -45,7 +45,8 @@ return function (ContainerConfigurator $container) {
             ref('userinfo_security_middleware'),
             ref('userinfo_security_middleware'),
             ref(UserInfoEndpoint::class),
-        ]);
+        ])
+        ->tag('controller.service_arguments');
 
     $container->set(UserinfoEndpointAlgorithmsRule::class)
         ->args([
