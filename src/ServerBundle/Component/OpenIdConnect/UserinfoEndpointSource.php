@@ -48,12 +48,15 @@ class UserinfoEndpointSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        if (!$configs['openid_connect']['userinfo_endpoint']['enabled']) {
+        $config = $configs['openid_connect']['userinfo_endpoint'];
+        if (!$config['enabled']) {
             return;
         }
 
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../Resources/config/openid_connect'));
         $loader->load('userinfo_endpoint.php');
+
+        $container->setParameter('oauth2_server.openid_connect.userinfo_endpoint.path', $config['path']);
 
         foreach ($this->subComponents as $subComponent) {
             $subComponent->load($configs, $container);

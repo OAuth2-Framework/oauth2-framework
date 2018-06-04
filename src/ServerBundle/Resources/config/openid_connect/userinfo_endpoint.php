@@ -32,23 +32,20 @@ return function (ContainerConfigurator $container) {
             ref('httplug.message_factory'),
         ]);
 
-    /*$container->set('userinfo_security_middleware')
-        ->class(OAuth2SecurityMiddleware::class)
+    $container->set('userinfo_security_middleware')
+        ->class(\OAuth2Framework\Component\Core\Middleware\AccessTokenMiddleware::class)
         ->args([
-            ref(TokenTypeManager::class),
-            ref(AccessTokenHandlerManager::class),
-            'openid', //Scope,
-            [] // Additional Data
-        ]);*/
+            ref(\OAuth2Framework\Component\Core\TokenType\TokenTypeManager::class),
+            ref(\OAuth2Framework\Component\Core\AccessToken\AccessTokenHandlerManager::class),
+        ]);
 
-    /*$container->set('oauth2_server_userinfo_pipe')
+    $container->set('oauth2_server_userinfo_pipe')
         ->class(Pipe::class)
         ->args([
-            ref(OAuth2MessageMiddleware::class),
-            ref(FormPostBodyParserMiddleware::class),
+            ref('userinfo_security_middleware'),
             ref('userinfo_security_middleware'),
             ref(UserInfoEndpoint::class),
-        ]);*/
+        ]);
 
     $container->set(UserinfoEndpointAlgorithmsRule::class)
         ->args([

@@ -61,6 +61,7 @@ class OpenIdConnectSource implements Component
 
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../Resources/config/openid_connect'));
         $loader->load('openid_connect.php');
+        $loader->load('userinfo_scope_support.php');
 
         foreach ($this->subComponents as $subComponent) {
             $subComponent->load($configs, $container);
