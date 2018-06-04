@@ -56,7 +56,7 @@ final class AccessTokenMiddleware implements MiddlewareInterface
         if (null !== $token) {
             $tokenId = AccessTokenId::create($token);
             $accessToken = $this->accessTokenRepository->find($tokenId);
-            if (null === $accessToken || false === $type->isTokenRequestValid($accessToken, $request, $additional_credential_values)) {
+            if (null === $accessToken || false === $type->isRequestValid($accessToken, $request, $additional_credential_values)) {
                 throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_TOKEN, 'Invalid access token.');
             }
             $request = $request->withAttribute('access_token', $accessToken);
