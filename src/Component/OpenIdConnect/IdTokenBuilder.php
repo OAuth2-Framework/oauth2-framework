@@ -536,6 +536,8 @@ class IdTokenBuilder
         if ('none' === $signatureAlgorithm->name()) {
             return JWK::create(['kty' => 'none', 'alg' => 'none', 'use' => 'sig']);
         }
+        dump($this->signatureKeys);
+        dump($signatureAlgorithm);
         $signatureKey = $this->signatureKeys->selectKey('sig', $signatureAlgorithm);
         if (null === $signatureKey) {
             throw new \InvalidArgumentException('Unable to find a key to sign the ID Token. Please verify the selected key set contains suitable keys.');
