@@ -57,6 +57,7 @@ class UserinfoEndpointSource implements Component
         $loader->load('userinfo_endpoint.php');
 
         $container->setParameter('oauth2_server.openid_connect.userinfo_endpoint.path', $config['path']);
+        $container->setParameter('oauth2_server.openid_connect.userinfo_endpoint.host', $config['host']);
 
         foreach ($this->subComponents as $subComponent) {
             $subComponent->load($configs, $container);
@@ -74,7 +75,11 @@ class UserinfoEndpointSource implements Component
 
         $childNode->children()
             ->scalarNode('path')
+                ->info('Path to the userinfo endpoint.')
                 ->defaultValue('/userinfo')
+            ->end()
+            ->scalarNode('host')
+                ->defaultValue('')
             ->end()
         ->end();
 

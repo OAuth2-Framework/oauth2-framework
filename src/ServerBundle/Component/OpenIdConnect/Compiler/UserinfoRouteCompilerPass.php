@@ -30,6 +30,7 @@ class UserinfoRouteCompilerPass implements CompilerPassInterface
         }
 
         $path = $container->getParameter('oauth2_server.openid_connect.userinfo_endpoint.path');
+        $host = $container->getParameter('oauth2_server.openid_connect.userinfo_endpoint.host');
         $route_loader = $container->getDefinition(RouteLoader::class);
         $route_loader->addMethodCall('addRoute', [
             'openid_connect_userinfo_endpoint',
@@ -39,7 +40,7 @@ class UserinfoRouteCompilerPass implements CompilerPassInterface
             [], // defaults
             [], // requirements
             [], // options
-            '', // host
+            $host, // host
             ['https'], // schemes
             ['GET', 'POST'], // methods
             '', // condition
