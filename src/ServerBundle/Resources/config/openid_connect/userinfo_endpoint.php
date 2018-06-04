@@ -36,13 +36,12 @@ return function (ContainerConfigurator $container) {
         ->class(\OAuth2Framework\Component\Core\Middleware\AccessTokenMiddleware::class)
         ->args([
             ref(\OAuth2Framework\Component\Core\TokenType\TokenTypeManager::class),
-            ref(\OAuth2Framework\Component\Core\AccessToken\AccessTokenHandlerManager::class),
+            ref(\OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository::class),
         ]);
 
     $container->set('oauth2_server_userinfo_pipe')
         ->class(Pipe::class)
         ->args([
-            ref('userinfo_security_middleware'),
             ref('userinfo_security_middleware'),
             ref(UserInfoEndpoint::class),
         ])
