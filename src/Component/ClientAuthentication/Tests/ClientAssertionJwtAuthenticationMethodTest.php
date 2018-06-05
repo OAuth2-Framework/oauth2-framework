@@ -50,7 +50,6 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
-use Zend\Diactoros\Response;
 
 /**
  * @group TokenEndpoint
@@ -460,14 +459,12 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
         ]);
         $validatedParameters = $method->checkClientConfiguration($commandParameters, DataBag::create([]));
 
-        self::assertTrue($validatedParameters->has('token_endpoint_auth_method'));
-        self::assertEquals('private_key_jwt', $validatedParameters->get('token_endpoint_auth_method'));
+        self::assertFalse($validatedParameters->has('jwks'));
+        self::assertFalse($validatedParameters->has('jwks_uri'));
     }
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The parameter "jwks" must be a valid JWKSet object.
      */
     public function theClientConfigurationCannotBeCheckedWithPrivateKeyJwtIfJwksIsNotAValidKeySet()
     {
@@ -476,7 +473,8 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
             'token_endpoint_auth_method' => 'private_key_jwt',
             'jwks' => 'foo',
         ]);
-        $method->checkClientConfiguration($commandParameters, DataBag::create([]));
+        $validatedParameters = $method->checkClientConfiguration($commandParameters, DataBag::create([]));
+        self::assertTrue($validatedParameters->has('jwks'));
     }
 
     /**
@@ -497,8 +495,6 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Distant key sets cannot be used. Please use "jwks" instead of "jwks_uri".
      */
     public function theClientConfigurationCannotBeCheckedWithPrivateKeyJwtIfJwksUriFactoryIsNotAvailable()
     {
@@ -507,116 +503,9 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
             'token_endpoint_auth_method' => 'private_key_jwt',
             'jwks_uri' => 'foo',
         ]);
-        $method->checkClientConfiguration($commandParameters, DataBag::create([]));
-    }
-
-    /**
-     * @test
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The parameter "jwks_uri" must be a valid uri to a JWKSet.
-     */
-    public function theClientConfigurationCannotBeCheckedWithPrivateKeyJwtIfJwksUriIsNotValid()
-    {
-        $method = clone $this->getMethod();
-        $httpClient = $this->getHttpClient();
-        $method->enableJkuSupport(
-            $this->getJkuFactory($httpClient)
-        );
-        $commandParameters = DataBag::create([
-            'token_endpoint_auth_method' => 'private_key_jwt',
-            'jwks_uri' => 'foo',
-        ]);
-        $method->checkClientConfiguration($commandParameters, DataBag::create([]));
-    }
-
-    /**
-     * @test
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The parameter "jwks_uri" must be a valid uri to a JWKSet.
-     */
-    public function theClientConfigurationCannotBeCheckedWithPrivateKeyJwtIfJwksUriCannotBeReached()
-    {
-        $method = clone $this->getMethod();
-        $httpClient = $this->getHttpClient();
-        $httpClient->addResponse(new Response('php://memory', 404));
-        $method->enableJkuSupport(
-            $this->getJkuFactory($httpClient)
-        );
-        $commandParameters = DataBag::create([
-            'token_endpoint_auth_method' => 'private_key_jwt',
-            'jwks_uri' => 'https://www.foo.com/bad-url.jwkset',
-        ]);
-        $method->checkClientConfiguration($commandParameters, DataBag::create([]));
-    }
-
-    /**
-     * @test
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The parameter "jwks_uri" must be a valid uri to a JWKSet.
-     */
-    public function theClientConfigurationCannotBeCheckedWithPrivateKeyJwtIfJwksUriDoesNotContainAValidKeySet()
-    {
-        $method = clone $this->getMethod();
-        $httpClient = $this->getHttpClient();
-        $stream = fopen('php://memory', 'w+');
-        fwrite($stream, 'Hello World!');
-        rewind($stream);
-        $httpClient->addResponse(new Response($stream, 200));
-        $method->enableJkuSupport(
-            $this->getJkuFactory($httpClient)
-        );
-        $commandParameters = DataBag::create([
-            'token_endpoint_auth_method' => 'private_key_jwt',
-            'jwks_uri' => 'https://www.foo.com/index.html',
-        ]);
-        $method->checkClientConfiguration($commandParameters, DataBag::create([]));
-    }
-
-    /**
-     * @test
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The distant key set is empty.
-     */
-    public function theClientConfigurationCannotBeCheckedWithPrivateKeyJwtIfJwksUriDoesContainAnEmptyKeySet()
-    {
-        $method = clone $this->getMethod();
-        $httpClient = $this->getHttpClient();
-        $stream = fopen('php://memory', 'w+');
-        fwrite($stream, '{"keys":[]}');
-        rewind($stream);
-        $httpClient->addResponse(new Response($stream, 200));
-        $method->enableJkuSupport(
-            $this->getJkuFactory($httpClient)
-        );
-        $commandParameters = DataBag::create([
-            'token_endpoint_auth_method' => 'private_key_jwt',
-            'jwks_uri' => 'https://www.foo.com/index.html',
-        ]);
-        $method->checkClientConfiguration($commandParameters, DataBag::create([]));
-    }
-
-    /**
-     * @test
-     */
-    public function theClientConfigurationCanBeCheckedWithPrivateKeyJwt()
-    {
-        $method = clone $this->getMethod();
-        $httpClient = $this->getHttpClient();
-        $stream = fopen('php://memory', 'w+');
-        fwrite($stream, '{"keys":[{"kty":"oct","k":"U0VDUkVU"}]}');
-        rewind($stream);
-        $httpClient->addResponse(new Response($stream, 200));
-        $method->enableJkuSupport(
-            $this->getJkuFactory($httpClient)
-        );
-        $commandParameters = DataBag::create([
-            'token_endpoint_auth_method' => 'private_key_jwt',
-            'jwks_uri' => 'https://www.foo.com/keyset',
-        ]);
         $validatedParameters = $method->checkClientConfiguration($commandParameters, DataBag::create([]));
 
         self::assertTrue($validatedParameters->has('jwks_uri'));
-        self::assertEquals('https://www.foo.com/keyset', $validatedParameters->get('jwks_uri'));
     }
 
     /**

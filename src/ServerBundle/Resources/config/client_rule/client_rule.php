@@ -26,4 +26,5 @@ return function (ContainerConfigurator $container) {
     $container->set(ClientRule\CommonParametersRule::class);
     $container->set(ClientRule\ContactsParametersRule::class);
     $container->set(ClientRule\RedirectionUriRule::class);
+    $container->set(ClientRule\JwksRule::class);
 };

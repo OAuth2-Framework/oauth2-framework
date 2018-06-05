@@ -273,9 +273,9 @@ class ClientAssertionJwt implements AuthenticationMethod
     {
         switch ($commandParameters->get('token_endpoint_auth_method')) {
             case 'client_secret_jwt':
-                return $this->processClientSecretJwtConfiguration($commandParameters, $validatedParameters);
+                return $this->checkClientSecretJwtConfiguration($commandParameters, $validatedParameters);
             case 'private_key_jwt':
-                return $this->processPrivateKeyJwtConfiguration($commandParameters, $validatedParameters);
+                return $this->checkPrivateKeyJwtConfiguration($commandParameters, $validatedParameters);
             default:
                 return $validatedParameters;
         }
@@ -287,7 +287,7 @@ class ClientAssertionJwt implements AuthenticationMethod
      *
      * @return DataBag
      */
-    private function processClientSecretJwtConfiguration(DataBag $commandParameters, DataBag $validatedParameters): DataBag
+    private function checkClientSecretJwtConfiguration(DataBag $commandParameters, DataBag $validatedParameters): DataBag
     {
         $validatedParameters = $validatedParameters->with('token_endpoint_auth_method', $commandParameters->get('token_endpoint_auth_method'));
         $validatedParameters = $validatedParameters->with('client_secret', $this->createClientSecret());
@@ -302,40 +302,20 @@ class ClientAssertionJwt implements AuthenticationMethod
      *
      * @return DataBag
      */
-    private function processPrivateKeyJwtConfiguration(DataBag $commandParameters, DataBag $validatedParameters): DataBag
+    private function checkPrivateKeyJwtConfiguration(DataBag $commandParameters, DataBag $validatedParameters): DataBag
     {
         switch (true) {
             case $commandParameters->has('jwks') && $commandParameters->has('jwks_uri'):
             case !$commandParameters->has('jwks') && !$commandParameters->has('jwks_uri') && null === $this->trustedIssuerRepository:
                 throw new \InvalidArgumentException('Either the parameter "jwks" or "jwks_uri" must be set.');
             case !$commandParameters->has('jwks') && !$commandParameters->has('jwks_uri') && null !== $this->trustedIssuerRepository: //Allowed when trusted issuer support is set
-                $validatedParameters = $validatedParameters->with('token_endpoint_auth_method', $commandParameters->get('token_endpoint_auth_method'));
 
                 break;
             case $commandParameters->has('jwks'):
-                try {
-                    JWKSet::createFromKeyData($commandParameters->get('jwks'));
-                } catch (\Throwable $e) {
-                    throw new \InvalidArgumentException('The parameter "jwks" must be a valid JWKSet object.', 0, $e);
-                }
-                $validatedParameters = $validatedParameters->with('token_endpoint_auth_method', $commandParameters->get('token_endpoint_auth_method'));
                 $validatedParameters = $validatedParameters->with('jwks', $commandParameters->get('jwks'));
 
                 break;
             case $commandParameters->has('jwks_uri'):
-                if (null === $this->jkuFactory) {
-                    throw new \InvalidArgumentException('Distant key sets cannot be used. Please use "jwks" instead of "jwks_uri".');
-                }
-
-                try {
-                    $jwks = $this->jkuFactory->loadFromUrl($commandParameters->get('jwks_uri'));
-                } catch (\Exception $e) {
-                    throw new \InvalidArgumentException('The parameter "jwks_uri" must be a valid uri to a JWKSet.', 0, $e);
-                }
-                if (0 === $jwks->count()) {
-                    throw new \InvalidArgumentException('The distant key set is empty.');
-                }
-                $validatedParameters = $validatedParameters->with('token_endpoint_auth_method', $commandParameters->get('token_endpoint_auth_method'));
                 $validatedParameters = $validatedParameters->with('jwks_uri', $commandParameters->get('jwks_uri'));
 
                 break;
