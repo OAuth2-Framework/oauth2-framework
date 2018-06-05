@@ -28,7 +28,7 @@ return function (ContainerConfigurator $container) {
     $container->set(UserInfoEndpoint::class)
         ->args([
             ref(IdTokenBuilderFactory::class),
-            ref('oauth2_server.client.repository'),
+            ref(\OAuth2Framework\Component\Core\Client\ClientRepository::class),
             ref(UserAccountRepository::class),
             ref('httplug.message_factory'),
         ]);

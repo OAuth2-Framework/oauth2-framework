@@ -34,8 +34,8 @@ return function (ContainerConfigurator $container) {
     $container->set('oauth2_server.client_registration.endpoint')
         ->class(ClientRegistrationEndpoint::class)
         ->args([
-            ref('oauth2_server.client.id_generator'),
-            ref('oauth2_server.client.repository'),
+            ref(\OAuth2Framework\Component\Core\Client\ClientIdGenerator::class),
+            ref(\OAuth2Framework\Component\Core\Client\ClientRepository::class),
             ref(\Http\Message\ResponseFactory::class), //TODO
             ref(RuleManager::class),
         ]);

@@ -45,7 +45,7 @@ return function (ContainerConfigurator $container) {
 
     $container->set(ClientConfigurationEndpoint::class)
         ->args([
-            ref('oauth2_server.client.repository'),
+            ref(\OAuth2Framework\Component\Core\Client\ClientRepository::class),
             ref('oauth2_server.client_configuration.bearer_token'),
             ref(\Http\Message\ResponseFactory::class), //TODO: change the way the response factory is managed
             ref(RuleManager::class),
@@ -54,7 +54,7 @@ return function (ContainerConfigurator $container) {
     $container->set('oauth2_server.client_configuration.middleware')
         ->class(ClientConfigurationMiddleware::class)
         ->args([
-            ref('oauth2_server.client.repository'),
+            ref(\OAuth2Framework\Component\Core\Client\ClientRepository::class),
         ]);
 
     $container->set(ClientConfigurationRouteRule::class)

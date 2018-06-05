@@ -42,7 +42,7 @@ return function (ContainerConfigurator $container) {
 
     $container->set(TokenEndpoint\TokenEndpoint::class)
         ->args([
-            ref('oauth2_server.client.repository'),
+            ref(\OAuth2Framework\Component\Core\Client\ClientRepository::class),
             ref(\OAuth2Framework\Component\Core\UserAccount\UserAccountRepository::class)->nullOnInvalid(),
             ref(TokenEndpoint\Extension\TokenEndpointExtensionManager::class),
             ref(\Http\Message\ResponseFactory::class),

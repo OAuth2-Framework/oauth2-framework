@@ -26,7 +26,7 @@ return function (ContainerConfigurator $container) {
     $container->set('oauth2_server.client_authentication.middleware')
         ->class(ClientAuthenticationMiddleware::class)
         ->args([
-            ref('oauth2_server.client.repository'),
+            ref(\OAuth2Framework\Component\Core\Client\ClientRepository::class),
             ref(AuthenticationMethodManager::class),
         ]);
 

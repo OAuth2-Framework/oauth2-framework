@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Component\Core;
 
+use OAuth2Framework\Component\Core\Client\ClientIdGenerator;
+use OAuth2Framework\Component\Core\Client\ClientRepository;
 use OAuth2Framework\ServerBundle\Component\Component;
 use OAuth2Framework\ServerBundle\Service\RandomClientIdGenerator;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
@@ -35,8 +37,8 @@ class ClientSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        $container->setAlias('oauth2_server.client.repository', $configs['client']['repository']);
-        $container->setAlias('oauth2_server.client.id_generator', $configs['client']['id_generator']);
+        $container->setAlias(ClientRepository::class, $configs['client']['repository']);
+        $container->setAlias(ClientIdGenerator::class, $configs['client']['id_generator']);
 
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../Resources/config/core'));
         $loader->load('client.php');
