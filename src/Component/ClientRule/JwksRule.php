@@ -25,7 +25,7 @@ class JwksRule implements Rule
      */
     private $jkuFactory;
 
-    public function __construct(JKUFactory $jkuFactory)
+    public function __construct(?JKUFactory $jkuFactory)
     {
         $this->jkuFactory = $jkuFactory;
     }
