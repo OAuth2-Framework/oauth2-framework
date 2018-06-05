@@ -54,6 +54,8 @@ final class EncryptedSubjectIdentifier implements PairwiseSubjectIdentifierAlgor
             $userAccount->getUserAccountId()->getValue()
         );
         $iv = hash('sha512', $userAccount->getUserAccountId()->getValue(), true);
+        $ivSize = openssl_cipher_iv_length($this->algorithm);
+        $iv = mb_substr($iv, 0, $ivSize, '8bit');
 
         return Base64Url::encode($iv).':'.Base64Url::encode(openssl_encrypt($prepared, $this->algorithm, $this->pairwiseEncryptionKey, OPENSSL_RAW_DATA, $iv));
     }
