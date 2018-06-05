@@ -36,50 +36,6 @@ class Pipe implements MiddlewareInterface
     }
 
     /**
-     * Appends new middleware for this message bus. Should only be used at configuration time.
-     *
-     * @param MiddlewareInterface $middleware
-     */
-    public function appendMiddleware(MiddlewareInterface $middleware)
-    {
-        $this->middlewares[] = $middleware;
-    }
-
-    /**
-     * Prepends new middleware for this message bus. Should only be used at configuration time.
-     *
-     * @param MiddlewareInterface $middleware
-     */
-    public function prependMiddleware(MiddlewareInterface $middleware)
-    {
-        array_unshift($this->middlewares, $middleware);
-    }
-
-    /**
-     * @param MiddlewareInterface $middleware
-     */
-    public function addMiddlewareAfterFirstOne(MiddlewareInterface $middleware)
-    {
-        $count = count($this->middlewares);
-        $temp = array_slice($this->middlewares, 1, $count);
-        array_unshift($temp, $middleware);
-        array_unshift($temp, $this->middlewares[0]);
-        $this->middlewares = $temp;
-    }
-
-    /**
-     * @param MiddlewareInterface $middleware
-     */
-    public function addMiddlewareBeforeLastOne(MiddlewareInterface $middleware)
-    {
-        $count = count($this->middlewares);
-        $temp = array_slice($this->middlewares, 0, $count - 1);
-        $temp[] = $middleware;
-        $temp[] = $this->middlewares[$count - 1];
-        $this->middlewares = $temp;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
