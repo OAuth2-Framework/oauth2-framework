@@ -16,6 +16,7 @@ use OAuth2Framework\Component\Core\AccessToken\AccessTokenIntrospectionTypeHint;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenRevocationTypeHint;
 use OAuth2Framework\ServerBundle\Service\RandomAccessTokenIdGenerator;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
+use OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository;
 
 return function (ContainerConfigurator $container) {
     $container = $container->services()->defaults()
@@ -24,12 +25,12 @@ return function (ContainerConfigurator $container) {
 
     $container->set(AccessTokenRevocationTypeHint::class)
         ->args([
-            ref('oauth2_server.access_token.repository'),
+            ref(AccessTokenRepository::class),
         ]);
 
     $container->set(AccessTokenIntrospectionTypeHint::class)
         ->args([
-            ref('oauth2_server.access_token.repository'),
+            ref(AccessTokenRepository::class),
         ]);
 
     $container->set(RandomAccessTokenIdGenerator::class);

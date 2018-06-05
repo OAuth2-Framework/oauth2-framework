@@ -15,6 +15,8 @@ use OAuth2Framework\Component\ImplicitGrant\ImplicitGrantType;
 use OAuth2Framework\Component\ImplicitGrant\TokenResponseType;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
+use OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository;
+use OAuth2Framework\Component\Core\AccessToken\AccessTokenIdGenerator;
 
 return function (ContainerConfigurator $container) {
     $container = $container->services()->defaults()
@@ -25,8 +27,8 @@ return function (ContainerConfigurator $container) {
 
     $container->set(TokenResponseType::class)
         ->args([
-            ref('oauth2_server.access_token.id_generator'),
-            ref('oauth2_server.access_token.repository'),
+            ref(AccessTokenIdGenerator::class),
+            ref(AccessTokenRepository::class),
             '%oauth2_server.access_token_lifetime%',
         ]);
 };

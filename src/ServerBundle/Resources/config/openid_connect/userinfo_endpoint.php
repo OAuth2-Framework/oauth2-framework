@@ -18,6 +18,7 @@ use OAuth2Framework\Component\Core\UserAccount\UserAccountRepository;
 use OAuth2Framework\Component\Core\Middleware\Pipe;
 use OAuth2Framework\Component\OpenIdConnect\Rule\UserinfoEndpointAlgorithmsRule;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
+use OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository;
 
 return function (ContainerConfigurator $container) {
     $container = $container->services()->defaults()
@@ -51,7 +52,7 @@ return function (ContainerConfigurator $container) {
         ->class(\OAuth2Framework\Component\Core\Middleware\AccessTokenMiddleware::class)
         ->args([
             ref('oauth2_server.userinfo_security.token_type_manager'),
-            ref('oauth2_server.access_token.repository'),
+            ref(AccessTokenRepository::class),
         ]);
 
     $container->set('oauth2_server_userinfo_pipe')
