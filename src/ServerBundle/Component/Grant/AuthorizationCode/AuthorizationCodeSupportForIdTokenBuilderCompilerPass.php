@@ -26,7 +26,7 @@ class AuthorizationCodeSupportForIdTokenBuilderCompilerPass implements CompilerP
      */
     public function process(ContainerBuilder $container)
     {
-        if (!$container->hasDefinition(IdTokenBuilderFactory::class) || $container->hasAlias(AuthorizationCodeRepository::class) ) {
+        if (!$container->hasDefinition(IdTokenBuilderFactory::class) || $container->hasAlias(AuthorizationCodeRepository::class)) {
             return;
         }
 
