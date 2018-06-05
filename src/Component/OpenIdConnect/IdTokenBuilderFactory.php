@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\OpenIdConnect;
 
 use Jose\Component\KeyManagement\JKUFactory;
+use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeRepository;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 use OAuth2Framework\Component\OpenIdConnect\UserInfo\UserInfo;
@@ -41,6 +42,11 @@ class IdTokenBuilderFactory
     private $jkuFactory = null;
 
     /**
+     * @var null|AuthorizationCodeRepository
+     */
+    private $authorizationCodeRepository = null;
+
+    /**
      * IdTokenBuilder constructor.
      *
      * @param string   $issuer
@@ -63,14 +69,16 @@ class IdTokenBuilderFactory
      */
     public function createBuilder(Client $client, UserAccount $userAccount, string $redirectUri)
     {
-        return IdTokenBuilder::create($this->issuer, $this->userinfo, $this->lifetime, $client, $userAccount, $redirectUri, $this->jkuFactory);
+        return IdTokenBuilder::create($this->issuer, $this->userinfo, $this->lifetime, $client, $userAccount, $redirectUri, $this->jkuFactory, $this->authorizationCodeRepository);
     }
 
-    /**
-     * @param JKUFactory $jkuFactory
-     */
-    public function enableJkuSupport(JKUFactory $jkuFactory)
+    public function enableJkuSupport(JKUFactory $jkuFactory): void
     {
         $this->jkuFactory = $jkuFactory;
+    }
+
+    public function enableAuthorizationCodeSupport(AuthorizationCodeRepository $authorizationCodeRepository): void
+    {
+        $this->authorizationCodeRepository = $authorizationCodeRepository;
     }
 }

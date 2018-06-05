@@ -93,6 +93,7 @@ class AuthorizationCodeSource implements Component
             return;
         }
         $container->addCompilerPass(new PKCEMethodCompilerPass());
+        $container->addCompilerPass(new AuthorizationCodeSupportForIdTokenBuilderCompilerPass());
     }
 
     /**

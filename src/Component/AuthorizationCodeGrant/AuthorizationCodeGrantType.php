@@ -113,8 +113,7 @@ final class AuthorizationCodeGrantType implements GrantType
         }
 
         $grantTypeData = $grantTypeData->withMetadata('redirect_uri', $redirectUri);
-
-        $grantTypeData = $grantTypeData->withMetadata('code', $authorizationCode);
+        $grantTypeData = $grantTypeData->withMetadata('authorization_code_id', $authorizationCode->getAuthorizationCodeId()->getValue());
         $grantTypeData = $grantTypeData->withResourceOwnerId($authorizationCode->getResourceOwnerId());
         $authorizationCode = $authorizationCode->markAsUsed();
         $this->authorizationCodeRepository->save($authorizationCode);

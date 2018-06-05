@@ -23,6 +23,7 @@ use Jose\Component\Signature\JWSBuilder;
 use Jose\Component\Signature\Serializer\CompactSerializer as JwsCompactSerializer;
 use Jose\Component\Encryption\Serializer\CompactSerializer as JweCompactSerializer;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeId;
+use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeRepository;
 use OAuth2Framework\Component\Core\AccessToken\AccessToken;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
 use OAuth2Framework\Component\Core\Client\Client;
@@ -138,17 +139,11 @@ class IdTokenBuilder
     private $jkuFactory = null;
 
     /**
-     * IdTokenBuilder constructor.
-     *
-     * @param string          $issuer
-     * @param UserInfo        $userinfo
-     * @param int             $lifetime
-     * @param Client          $client
-     * @param UserAccount     $userAccount
-     * @param string          $redirectUri
-     * @param JKUFactory|null $jkuFactory
+     * @var null|AuthorizationCodeRepository
      */
-    private function __construct(string $issuer, UserInfo $userinfo, int $lifetime, Client $client, UserAccount $userAccount, string $redirectUri, ?JKUFactory $jkuFactory)
+    private $authorizationCodeRepository = null;
+
+    private function __construct(string $issuer, UserInfo $userinfo, int $lifetime, Client $client, UserAccount $userAccount, string $redirectUri, ?JKUFactory $jkuFactory, ?AuthorizationCodeRepository $authorizationCodeRepository)
     {
         $this->issuer = $issuer;
         $this->userinfo = $userinfo;
@@ -157,22 +152,12 @@ class IdTokenBuilder
         $this->userAccount = $userAccount;
         $this->redirectUri = $redirectUri;
         $this->jkuFactory = $jkuFactory;
+        $this->authorizationCodeRepository = $authorizationCodeRepository;
     }
 
-    /**
-     * @param string          $issuer
-     * @param UserInfo        $userinfo
-     * @param int             $lifetime
-     * @param Client          $client
-     * @param UserAccount     $userAccount
-     * @param string          $redirectUri
-     * @param JKUFactory|null $jkuFactory
-     *
-     * @return IdTokenBuilder
-     */
-    public static function create(string $issuer, UserInfo $userinfo, int $lifetime, Client $client, UserAccount $userAccount, string $redirectUri, ?JKUFactory $jkuFactory)
+    public static function create(string $issuer, UserInfo $userinfo, int $lifetime, Client $client, UserAccount $userAccount, string $redirectUri, ?JKUFactory $jkuFactory, ?AuthorizationCodeRepository $authorizationCodeRepository): self
     {
-        return new self($issuer, $userinfo, $lifetime, $client, $userAccount, $redirectUri, $jkuFactory);
+        return new self($issuer, $userinfo, $lifetime, $client, $userAccount, $redirectUri, $jkuFactory, $authorizationCodeRepository);
     }
 
     /**
@@ -187,9 +172,13 @@ class IdTokenBuilder
         $clone->expiresAt = $accessToken->getExpiresAt();
         $clone->scope = $accessToken->hasParameter('scope') ? $accessToken->getParameter('scope') : null;
 
-        if ($accessToken->hasMetadata('code')) {
-            $authorizationCode = $accessToken->getMetadata('code');
-            $clone->authorizationCodeId = $authorizationCode->getTokenId();
+        if ($accessToken->hasMetadata('authorization_code_id') && null !== $this->authorizationCodeRepository) {
+            $authorizationCodeId = AuthorizationCodeId::create($accessToken->getMetadata('authorization_code_id'));
+            $authorizationCode = $this->authorizationCodeRepository->find($authorizationCodeId);
+            if (null === $authorizationCode) {
+                return $clone;
+            }
+            $clone->authorizationCodeId = $authorizationCodeId;
             $queryParams = $authorizationCode->getQueryParams();
             foreach (['nonce' => 'nonce', 'claims_locales' => 'claimsLocales'] as $k => $v) {
                 if (array_key_exists($k, $queryParams)) {
