@@ -29,7 +29,7 @@ class JkuSupportForIdTokenBuilderCompilerPass implements CompilerPassInterface
         if (!$container->hasDefinition(JKUFactory::class) || !$container->hasDefinition(IdTokenBuilderFactory::class)) {
             return;
         }
-        dump('fooooooo');
+
         $definition = $container->getDefinition(IdTokenBuilderFactory::class);
         $definition->addMethodCall('enableJkuSupport', [new Reference(JKUFactory::class)]);
     }
