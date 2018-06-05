@@ -17,6 +17,8 @@ use OAuth2Framework\Component\OpenIdConnect\IdToken;
 use OAuth2Framework\Component\OpenIdConnect\UserInfo\ClaimSource\ClaimSource;
 use OAuth2Framework\Component\OpenIdConnect\UserInfo\ScopeSupport\UserInfoScopeSupport;
 use OAuth2Framework\ServerBundle\Component\Component;
+use OAuth2Framework\ServerBundle\Component\OpenIdConnect\Compiler\JkuSupportForIdTokenBuilderCompilerPass;
+use OAuth2Framework\ServerBundle\Component\OpenIdConnect\Compiler\OpenIdConnectExtensionEncryptionCompilerPass;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -112,6 +114,9 @@ class OpenIdConnectSource implements Component
         if (!class_exists(IdToken::class)) {
             return;
         }
+        $container->addCompilerPass(new OpenIdConnectExtensionEncryptionCompilerPass());
+        $container->addCompilerPass(new JkuSupportForIdTokenBuilderCompilerPass());
+
         foreach ($this->subComponents as $component) {
             $component->build($container);
         }

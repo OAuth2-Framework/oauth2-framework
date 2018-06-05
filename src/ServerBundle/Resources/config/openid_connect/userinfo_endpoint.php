@@ -35,7 +35,7 @@ return function (ContainerConfigurator $container) {
     $container->set('oauth2_server.userinfo_security.bearer_token_type')
         ->class(\OAuth2Framework\Component\BearerTokenType\BearerToken::class)
         ->args([
-            'Realm',
+            'Realm', //FIXME
             true,
             true,
             false,
