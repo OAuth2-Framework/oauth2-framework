@@ -472,21 +472,31 @@ class AuthorizationRequestLoader
      */
     private function getClientKeySet(Client $client): JWKSet
     {
-        switch (true) {
-            case $client->has('jwks') && 'private_key_jwt' === $client->getTokenEndpointAuthenticationMethod():
-                return JWKSet::createFromJson($client->get('jwks'));
-            case $client->has('client_secret') && 'client_secret_jwt' === $client->getTokenEndpointAuthenticationMethod():
-                $jwk = JWK::create([
-                    'kty' => 'oct',
-                    'use' => 'sig',
-                    'k' => Base64Url::encode($client->get('client_secret')),
-                ]);
-
-                return JWKSet::createFromKeys([$jwk]);
-            case $client->has('jwks_uri') && 'private_key_jwt' === $client->getTokenEndpointAuthenticationMethod() && null !== $this->jkuFactory:
-                return $this->jkuFactory->loadFromUrl($client->get('jwks_uri'));
-            default:
-                throw new \InvalidArgumentException('The client has no key or key set.');
+        $keyset = JWKSet::createFromKeys([]);
+        if ($client->has('jwks')) {
+            $jwks = JWKSet::createFromJson($client->get('jwks'));
+            foreach ($jwks as $jwk) {
+                $keyset = $keyset->with($jwk);
+            }
         }
+        if ($client->has('client_secret')) {
+            $jwk = JWK::create([
+                'kty' => 'oct',
+                'k' => Base64Url::encode($client->get('client_secret')),
+            ]);
+            $keyset = $keyset->with($jwk);
+        }
+        if ($client->has('jwks_uri') && null !== $this->jkuFactory) {
+            $jwks_uri = $this->jkuFactory->loadFromUrl($client->get('jwks_uri'));
+            foreach ($jwks_uri as $jwk) {
+                $keyset = $keyset->with($jwk);
+            }
+        }
+
+        if (empty($keyset)) {
+            throw new \InvalidArgumentException('The client has no key or key set.');
+        }
+
+        return $keyset;
     }
 }
