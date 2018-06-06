@@ -491,7 +491,13 @@ class AuthorizationRequestLoader
                 $keyset = $keyset->with($jwk);
             }
         }
-
+        if (in_array('none', $this->getSupportedSignatureAlgorithms())) {
+            $keyset = $keyset->with(JWK::create([
+                'kty' => 'none',
+                'alg' => 'none',
+                'use' => 'sig',
+            ]));
+        }
         if (empty($keyset)) {
             throw new \InvalidArgumentException('The client has no key or key set.');
         }
