@@ -82,15 +82,17 @@ final class RefreshTokenEndpointExtension implements TokenEndpointExtension
      */
     public function afterAccessTokenIssuance(Client $client, ResourceOwner $resourceOwner, AccessToken $accessToken, callable $next): array
     {
+        $result = $next($client, $resourceOwner, $accessToken);
         if ($accessToken->hasParameter('refresh_token')) {
             $refreshTokenId = RefreshTokenId::create($accessToken->getParameter('refresh_token'));
             $refreshToken = $this->refreshTokenRepository->find($refreshTokenId);
             if (null !== $refreshToken) {
                 $refreshToken = $refreshToken->addAccessToken($accessToken->getAccessTokenId());
                 $this->refreshTokenRepository->save($refreshToken);
+                $result['refresh_token'] = $refreshToken->getRefreshTokenId()->getValue();
             }
         }
 
-        return $next($client, $resourceOwner, $accessToken);
+        return $result;
     }
 }
