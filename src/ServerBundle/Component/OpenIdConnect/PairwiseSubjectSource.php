@@ -39,7 +39,6 @@ class PairwiseSubjectSource implements Component
         }
 
         $container->setAlias('oauth2_server.openid_connect.pairwise.service', $config['service']);
-        $container->setParameter('oauth2_server.openid_connect.pairwise.is_default', $config['is_default']);
     }
 
     /**
@@ -58,9 +57,6 @@ class PairwiseSubjectSource implements Component
                 ->end()
                 ->children()
                     ->scalarNode('service')
-                    ->end()
-                    ->booleanNode('is_default')
-                        ->defaultTrue()
                     ->end()
                 ->end()
             ->end()

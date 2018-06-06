@@ -27,11 +27,6 @@ class UserInfo
     private $pairwiseAlgorithm = null;
 
     /**
-     * @var bool
-     */
-    private $isPairwiseSubjectDefault = false;
-
-    /**
      * @var UserInfoScopeSupportManager
      */
     private $userinfoScopeSupportManager;
@@ -182,7 +177,6 @@ class UserInfo
     public function enablePairwiseSubject(PairwiseSubjectIdentifierAlgorithm $pairwiseAlgorithm, bool $isPairwiseSubjectDefault)
     {
         $this->pairwiseAlgorithm = $pairwiseAlgorithm;
-        $this->isPairwiseSubjectDefault = $isPairwiseSubjectDefault;
     }
 
     /**
@@ -202,14 +196,6 @@ class UserInfo
     }
 
     /**
-     * @return bool
-     */
-    public function isPairwiseSubjectDefault(): bool
-    {
-        return $this->isPairwiseSubjectDefault;
-    }
-
-    /**
      * @param Client      $client
      * @param UserAccount $userAccount
      * @param string      $redirectUri
@@ -222,7 +208,7 @@ class UserInfo
         if (false === $this->isPairwiseSubjectIdentifierSupported()) {
             return $sub;
         }
-        if (($client->has('subject_type') && ('pairwise' === $client->get('subject_type')) || true === $this->isPairwiseSubjectDefault())) {
+        if (($client->has('subject_type') && ('pairwise' === $client->get('subject_type')))) {
             $sectorIdentifierHost = $this->getSectorIdentifierHost($client, $redirectUri);
 
             return $this->pairwiseAlgorithm->calculateSubjectIdentifier(
