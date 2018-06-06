@@ -59,7 +59,7 @@ final class RefreshTokenEndpointExtension implements TokenEndpointExtension
     {
         $grantTypeData = $next($request, $grantTypeData, $grantType);
         $scope = explode(' ', $grantTypeData->hasParameter('scope') ? $grantTypeData->getParameter('scope') : '');
-        if (in_array('offline_access', $scope) && null !== $this->refreshTokenRepository) {
+        if (in_array('offline_access', $scope)) {
             $expiresAt = new \DateTimeImmutable(sprintf('now +%u seconds', $this->lifetime));
             $refreshTokenId = $this->refreshTokenIdGenerator->createRefreshTokenId();
             $refreshToken = RefreshToken::createEmpty();
@@ -70,7 +70,8 @@ final class RefreshTokenEndpointExtension implements TokenEndpointExtension
                 $grantTypeData->getParameters(),
                 $grantTypeData->getMetadatas(), $expiresAt,
                 null);
-            $grantTypeData = $grantTypeData->withParameter('refresh_token', $refreshToken->getTokenId()->getValue());
+            $this->refreshTokenRepository->save($refreshToken);
+            $grantTypeData = $grantTypeData->withParameter('refresh_token', $refreshToken->getRefreshTokenId()->getValue());
         }
 
         return $grantTypeData;
