@@ -493,6 +493,9 @@ class IdTokenBuilder
         $clientKeySet = $this->getClientKeySet($client);
         $keyEncryptionAlgorithm = $this->jweBuilder->getKeyEncryptionAlgorithmManager()->get($this->keyEncryptionAlgorithm);
         $encryptionKey = $clientKeySet->selectKey('enc', $keyEncryptionAlgorithm);
+        dump($clientKeySet);
+        dump($keyEncryptionAlgorithm);
+        dump($encryptionKey);
         if (null === $encryptionKey) {
             throw new \InvalidArgumentException('No encryption key available for the client.');
         }
