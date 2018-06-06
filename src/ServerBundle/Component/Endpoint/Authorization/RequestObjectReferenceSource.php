@@ -33,6 +33,10 @@ class RequestObjectReferenceSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
+        $config = $configs['endpoint']['authorization']['request_object']['reference'];
+        $container->setParameter('oauth2_server.endpoint.authorization.request_object.reference.enabled', $config['enabled']);
+        $container->setParameter('oauth2_server.endpoint.authorization.request_object.reference.uris_registration_required', $config['uris_registration_required']);
+
     }
 
     /**
