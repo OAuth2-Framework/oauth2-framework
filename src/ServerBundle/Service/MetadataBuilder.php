@@ -149,7 +149,7 @@ class MetadataBuilder
     public function setAuthorizationRequestLoader(AuthorizationRequestLoader $authorizationRequestLoader)
     {
         $requestObjectSupported = $authorizationRequestLoader->isRequestObjectSupportEnabled();
-        $this->metadata->set('request_parameter_supported', $authorizationRequestLoader->isRequestObjectSupportEnabled());
+        $this->metadata->set('request_parameter_supported', $requestObjectSupported);
         if ($requestObjectSupported) {
             $this->metadata->set('request_uri_parameter_supported', $authorizationRequestLoader->isRequestObjectReferenceSupportEnabled());
             $this->metadata->set('require_request_uri_registration', $authorizationRequestLoader->isRequestUriRegistrationRequired());

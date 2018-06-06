@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\ServerBundle\Component\Endpoint\Authorization;
 
 use OAuth2Framework\ServerBundle\Component\Component;
+use OAuth2Framework\ServerBundle\Component\Endpoint\Authorization\Compiler\RequestObjectReferenceCompilerPass;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -65,6 +66,6 @@ class RequestObjectReferenceSource implements Component
      */
     public function build(ContainerBuilder $container)
     {
-        // Nothing to do
+        $container->addCompilerPass(new RequestObjectReferenceCompilerPass());
     }
 }
