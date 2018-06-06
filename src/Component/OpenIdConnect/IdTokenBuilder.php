@@ -493,9 +493,6 @@ class IdTokenBuilder
         $clientKeySet = $this->getClientKeySet($client);
         $keyEncryptionAlgorithm = $this->jweBuilder->getKeyEncryptionAlgorithmManager()->get($this->keyEncryptionAlgorithm);
         $encryptionKey = $clientKeySet->selectKey('enc', $keyEncryptionAlgorithm);
-        dump($clientKeySet);
-        dump($keyEncryptionAlgorithm);
-        dump($encryptionKey);
         if (null === $encryptionKey) {
             throw new \InvalidArgumentException('No encryption key available for the client.');
         }
@@ -660,14 +657,12 @@ class IdTokenBuilder
     private function getClientKeySet(Client $client): JWKSet
     {
         $keyset = JWKSet::createFromKeys([]);
-        dump($client->has('jwks'));
         if ($client->has('jwks')) {
             $jwks = JWKSet::createFromJson($client->get('jwks'));
             foreach ($jwks as $jwk) {
                 $keyset = $keyset->with($jwk);
             }
         }
-        dump($client->has('client_secret'));
         if ($client->has('client_secret')) {
             $jwk = JWK::create([
                 'kty' => 'oct',
@@ -676,14 +671,10 @@ class IdTokenBuilder
             ]);
             $keyset = $keyset->with($jwk);
         }
-        dump($client->has('jwks_uri'));
-        dump(null !== $this->jkuFactory);
         if ($client->has('jwks_uri') && null !== $this->jkuFactory) {
-            if ($client->has('jwks')) {
-                $jwks_uri = $this->jkuFactory->loadFromUrl($client->get('jwks_uri'));
-                foreach ($jwks_uri as $jwk) {
-                    $keyset = $keyset->with($jwk);
-                }
+            $jwks_uri = $this->jkuFactory->loadFromUrl($client->get('jwks_uri'));
+            foreach ($jwks_uri as $jwk) {
+                $keyset = $keyset->with($jwk);
             }
         }
 
