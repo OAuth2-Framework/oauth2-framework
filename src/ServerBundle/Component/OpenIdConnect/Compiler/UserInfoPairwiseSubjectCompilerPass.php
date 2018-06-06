@@ -30,6 +30,6 @@ class UserInfoPairwiseSubjectCompilerPass implements CompilerPassInterface
         }
 
         $definition = $container->getDefinition(UserInfo::class);
-        $definition->addMethodCall('enablePairwiseSubject', [new Reference('oauth2_server.openid_connect.pairwise.service'), $isDefault]);
+        $definition->addMethodCall('enablePairwiseSubject', [new Reference('oauth2_server.openid_connect.pairwise.service')]);
     }
 }
