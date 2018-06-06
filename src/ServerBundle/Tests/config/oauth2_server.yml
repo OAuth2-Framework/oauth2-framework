@@ -173,7 +173,6 @@ oauth2_server:
         pairwise_subject:
             enabled: true
             service: 'MyPairwiseSubjectIdentifier'
-            is_default: true
         response_type:
             id_token: true
             code_id_token: true
