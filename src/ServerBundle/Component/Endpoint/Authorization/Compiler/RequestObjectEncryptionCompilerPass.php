@@ -18,18 +18,19 @@ use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
-class RequestObjectCompilerPass implements CompilerPassInterface
+class RequestObjectEncryptionCompilerPass implements CompilerPassInterface
 {
     /**
      * {@inheritdoc}
      */
     public function process(ContainerBuilder $container)
     {
-        if (!$container->hasDefinition('jose.jws_verifier.oauth2_server.endpoint.authorization.request_object') || !$container->hasDefinition(AuthorizationRequestLoader::class)) {
+        if (!$container->hasDefinition('jose.jwe_loader.oauth2_server.endpoint.authorization.request_object') || !$container->hasDefinition(AuthorizationRequestLoader::class)) {
             return;
         }
 
         $metadata = $container->getDefinition(AuthorizationRequestLoader::class);
-        $metadata->addMethodCall('enableSignedRequestObjectSupport', [new Reference('jose.jws_verifier.oauth2_server.endpoint.authorization.request_object'), new Reference('jose.claim_checker.oauth2_server.endpoint.authorization.request_object')]);
+        $required = $container->getParameter('oauth2_server.endpoint.authorization.request_object.encryption.required');
+        $metadata->addMethodCall('enableEncryptedRequestObjectSupport', [new Reference('jose.jwe_loader.oauth2_server.endpoint.authorization.request_object'), new Reference('jose.key_set.oauth2_server.endpoint.authorization.request_object'), $required]);
     }
 }

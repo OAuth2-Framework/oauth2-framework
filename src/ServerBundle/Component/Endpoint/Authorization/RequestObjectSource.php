@@ -15,6 +15,7 @@ namespace OAuth2Framework\ServerBundle\Component\Endpoint\Authorization;
 
 use Jose\Bundle\JoseFramework\Helper\ConfigurationHelper;
 use OAuth2Framework\ServerBundle\Component\Component;
+use OAuth2Framework\ServerBundle\Component\Endpoint\Authorization\Compiler\RequestObjectCompilerPass;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -49,8 +50,8 @@ class RequestObjectSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        $config = $configs['endpoint']['authorization']['response_mode'];
-        $container->setParameter('oauth2_server.endpoint.authorization.response_mode.allow_response_mode_parameter', $config['allow_response_mode_parameter']);
+        $config = $configs['endpoint']['authorization']['request_object'];
+        $container->setParameter('oauth2_server.endpoint.authorization.request_object.enabled', $config['enabled']);
 
         foreach ($this->subComponents as $subComponent) {
             $subComponent->load($configs, $container);
@@ -90,19 +91,14 @@ class RequestObjectSource implements Component
      */
     public function prepend(ContainerBuilder $container, array $config): array
     {
-        /*
-        $currentPath = $path.'['.$this->name().']';
-        $accessor = PropertyAccess::createPropertyAccessor();
-        $sourceConfig = $accessor->getValue($bundleConfig, $currentPath);
+        $sourceConfig = $config['endpoint']['authorization']['request_object'];
         if (true === $sourceConfig['enabled']) {
-            $claim_checkers = ['exp', 'iat', 'nbf', 'authorization_endpoint_aud']; // FIXME
-        $header_checkers = ['crit']; // FIXME
-        ConfigurationHelper::addJWSLoader($container, $this->name(), $sourceConfig['signature_algorithms'], [], ['jws_compact'], false);
-        ConfigurationHelper::addClaimChecker($container, $this->name(), $claim_checkers, false);
-        if (true === $sourceConfig['encryption']['enabled']) {
-            ConfigurationHelper::addJWELoader($container, $this->name(), $sourceConfig['encryption']['key_encryption_algorithms'], $sourceConfig['encryption']['content_encryption_algorithms'], ['DEF'], [], ['jwe_compact'], false);
+            $claim_checkers = ['exp', 'iat', 'nbf', /*'authorization_endpoint_aud'*/]; // FIXME
+            $header_checkers = []; // FIXME
+            ConfigurationHelper::addJWSVerifier($container, 'oauth2_server.endpoint.authorization.request_object', $sourceConfig['signature_algorithms'], false);
+            ConfigurationHelper::addHeaderChecker($container, 'oauth2_server.endpoint.authorization.request_object', $header_checkers, false);
+            ConfigurationHelper::addClaimChecker($container, 'oauth2_server.endpoint.authorization.request_object', $claim_checkers, false);
         }
-         */
 
         $updatedConfig = [];
         foreach ($this->subComponents as $subComponent) {
@@ -120,6 +116,8 @@ class RequestObjectSource implements Component
      */
     public function build(ContainerBuilder $container)
     {
+        $container->addCompilerPass(new RequestObjectCompilerPass());
+
         foreach ($this->subComponents as $component) {
             $component->build($container);
         }

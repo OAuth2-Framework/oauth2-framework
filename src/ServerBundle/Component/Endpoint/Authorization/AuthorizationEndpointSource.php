@@ -24,7 +24,6 @@ use OAuth2Framework\ServerBundle\Component\Endpoint\Authorization\Compiler\Param
 use OAuth2Framework\ServerBundle\Component\Endpoint\Authorization\Compiler\ResponseModeCompilerPass;
 use OAuth2Framework\ServerBundle\Component\Endpoint\Authorization\Compiler\ResponseTypeCompilerPass;
 use OAuth2Framework\ServerBundle\Component\Endpoint\Authorization\Compiler\TemplatePathCompilerPass;
-use OAuth2Framework\ServerBundle\Component\Endpoint\Authorization\Compiler\RequestObjectCompilerPass;
 use OAuth2Framework\Component\AuthorizationEndpoint\ConsentScreen\Extension;
 use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\ParameterChecker;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\ResponseMode;
@@ -196,7 +195,6 @@ class AuthorizationEndpointSource implements Component
             return;
         }
         $container->addCompilerPass(new AuthorizationEndpointRouteCompilerPass());
-        $container->addCompilerPass(new RequestObjectCompilerPass());
         $container->addCompilerPass(new AuthorizationRequestMetadataCompilerPass());
         $container->addCompilerPass(new ConsentScreenExtensionCompilerPass());
         $container->addCompilerPass(new ParameterCheckerCompilerPass());

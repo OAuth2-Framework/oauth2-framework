@@ -18,18 +18,19 @@ use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
-class RequestObjectCompilerPass implements CompilerPassInterface
+class RequestObjectReferenceCompilerPass implements CompilerPassInterface
 {
     /**
      * {@inheritdoc}
      */
     public function process(ContainerBuilder $container)
     {
-        if (!$container->hasDefinition('jose.jws_verifier.oauth2_server.endpoint.authorization.request_object') || !$container->hasDefinition(AuthorizationRequestLoader::class)) {
+        if (!$container->hasAlias('oauth2_server.http_client') || !true === $container->getParameter('oauth2_server.endpoint.authorization.request_object.reference.enabled') || !$container->hasDefinition(AuthorizationRequestLoader::class)) {
             return;
         }
 
         $metadata = $container->getDefinition(AuthorizationRequestLoader::class);
-        $metadata->addMethodCall('enableSignedRequestObjectSupport', [new Reference('jose.jws_verifier.oauth2_server.endpoint.authorization.request_object'), new Reference('jose.claim_checker.oauth2_server.endpoint.authorization.request_object')]);
+        $uriRegistrationRequired = $container->getParameter('oauth2_server.endpoint.authorization.request_object.reference.uris_registration_required');
+        $metadata->addMethodCall('enableRequestObjectReferenceSupport', [new Reference('oauth2_server.http_client'), $uriRegistrationRequired]);
     }
 }
