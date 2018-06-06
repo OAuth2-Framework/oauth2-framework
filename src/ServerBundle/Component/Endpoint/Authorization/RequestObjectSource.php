@@ -93,7 +93,7 @@ class RequestObjectSource implements Component
     {
         $sourceConfig = $config['endpoint']['authorization']['request_object'];
         if (true === $sourceConfig['enabled']) {
-            $claim_checkers = ['exp', 'iat', 'nbf', /*'authorization_endpoint_aud'*/]; // FIXME
+            $claim_checkers = ['exp', 'iat', 'nbf'/*'authorization_endpoint_aud'*/]; // FIXME
             $header_checkers = []; // FIXME
             ConfigurationHelper::addJWSVerifier($container, 'oauth2_server.endpoint.authorization.request_object', $sourceConfig['signature_algorithms'], false);
             ConfigurationHelper::addHeaderChecker($container, 'oauth2_server.endpoint.authorization.request_object', $header_checkers, false);
