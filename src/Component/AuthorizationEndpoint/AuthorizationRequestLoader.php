@@ -342,7 +342,9 @@ class AuthorizationRequestLoader
         try {
             $jsonConverter = new StandardConverter();
             $serializer = new CompactSerializer($jsonConverter);
+            dump($request);
             $jwt = $serializer->unserialize($request);
+            dump($jwt);
 
             $claims = $jsonConverter->decode(
                 $jwt->getPayload()
@@ -378,17 +380,23 @@ class AuthorizationRequestLoader
     private function tryToLoadEncryptedRequest(string $request): string
     {
         if (null === $this->jweLoader) {
+            dump('No encryption support', $request);
             return $request;
         }
 
         try {
             $jwe = $this->jweLoader->loadAndDecryptWithKeySet($request, $this->keyEncryptionKeySet, $recipient);
+            dump($jwe);
             if (1 !== $jwe->countRecipients()) {
                 throw new \InvalidArgumentException('The request must use the compact serialization mode.');
             }
 
             return $jwe->getPayload();
         } catch (\Exception $e) {
+            dump($e->getFile());
+            dump($e->getLine());
+            dump($e->getMessage());
+            dump($request);
             if (true === $this->requireEncryption) {
                 throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST_OBJECT, $e->getMessage(), [], $e);
             }
