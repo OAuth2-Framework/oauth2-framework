@@ -355,8 +355,6 @@ class AuthorizationRequestLoader
             $client = $this->getClient($parameters);
 
             $public_key_set = $this->getClientKeySet($client);
-            dump($public_key_set);
-            dump($jwt);
             $this->checkAlgorithms($jwt, $client);
             if (!$this->jwsVerifier->verifyWithKeySet($jwt, $public_key_set, 0)) { //FIXME: header checker should be used
                 throw new \InvalidArgumentException('The verification of the request object failed.');
