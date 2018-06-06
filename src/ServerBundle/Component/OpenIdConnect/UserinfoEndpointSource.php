@@ -15,6 +15,7 @@ namespace OAuth2Framework\ServerBundle\Component\OpenIdConnect;
 
 use OAuth2Framework\ServerBundle\Component\Component;
 use OAuth2Framework\ServerBundle\Component\OpenIdConnect\Compiler\UserinfoRouteCompilerPass;
+use OAuth2Framework\ServerBundle\Component\OpenIdConnect\Compiler\UserInfoScopeSupportCompilerPass;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -110,6 +111,7 @@ class UserinfoEndpointSource implements Component
     public function build(ContainerBuilder $container)
     {
         $container->addCompilerPass(new UserinfoRouteCompilerPass());
+        $container->addCompilerPass(new UserInfoScopeSupportCompilerPass());
         foreach ($this->subComponents as $component) {
             $component->build($container);
         }

@@ -30,9 +30,6 @@ class UserAccountCheckerManager
         $this->checkers[] = $checker;
     }
 
-    /**
-     * @param Authorization $authorization
-     */
     public function check(Authorization $authorization)
     {
         foreach ($this->checkers as $checker) {
