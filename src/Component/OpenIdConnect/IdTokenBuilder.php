@@ -153,8 +153,6 @@ class IdTokenBuilder
         $this->redirectUri = $redirectUri;
         $this->jkuFactory = $jkuFactory;
         $this->authorizationCodeRepository = $authorizationCodeRepository;
-
-        dump($this->jkuFactory);
     }
 
     public static function create(string $issuer, UserInfo $userinfo, int $lifetime, Client $client, UserAccount $userAccount, string $redirectUri, ?JKUFactory $jkuFactory, ?AuthorizationCodeRepository $authorizationCodeRepository): self
@@ -662,12 +660,14 @@ class IdTokenBuilder
     private function getClientKeySet(Client $client): JWKSet
     {
         $keyset = JWKSet::createFromKeys([]);
+        dump($client->has('jwks'));
         if ($client->has('jwks')) {
             $jwks = JWKSet::createFromJson($client->get('jwks'));
             foreach ($jwks as $jwk) {
                 $keyset = $keyset->with($jwk);
             }
         }
+        dump($client->has('client_secret'));
         if ($client->has('client_secret')) {
             $jwk = JWK::create([
                 'kty' => 'oct',
@@ -676,6 +676,8 @@ class IdTokenBuilder
             ]);
             $keyset = $keyset->with($jwk);
         }
+        dump($client->has('jwks_uri'));
+        dump(null !== $this->jkuFactory);
         if ($client->has('jwks_uri') && null !== $this->jkuFactory) {
             if ($client->has('jwks')) {
                 $jwks_uri = $this->jkuFactory->loadFromUrl($client->get('jwks_uri'));
