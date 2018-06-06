@@ -153,6 +153,8 @@ class IdTokenBuilder
         $this->redirectUri = $redirectUri;
         $this->jkuFactory = $jkuFactory;
         $this->authorizationCodeRepository = $authorizationCodeRepository;
+
+        dump($this->jkuFactory);
     }
 
     public static function create(string $issuer, UserInfo $userinfo, int $lifetime, Client $client, UserAccount $userAccount, string $redirectUri, ?JKUFactory $jkuFactory, ?AuthorizationCodeRepository $authorizationCodeRepository): self
@@ -676,8 +678,8 @@ class IdTokenBuilder
         }
         if ($client->has('jwks_uri') && null !== $this->jkuFactory) {
             if ($client->has('jwks')) {
-                $jwks = $this->jkuFactory->loadFromUrl($client->get('jwks_uri'));
-                foreach ($jwks as $jwk) {
+                $jwks_uri = $this->jkuFactory->loadFromUrl($client->get('jwks_uri'));
+                foreach ($jwks_uri as $jwk) {
                     $keyset = $keyset->with($jwk);
                 }
             }

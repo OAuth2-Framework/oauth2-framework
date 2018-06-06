@@ -69,6 +69,8 @@ class IdTokenBuilderFactory
      */
     public function createBuilder(Client $client, UserAccount $userAccount, string $redirectUri)
     {
+        dump($this->jkuFactory);
+
         return IdTokenBuilder::create($this->issuer, $this->userinfo, $this->lifetime, $client, $userAccount, $redirectUri, $this->jkuFactory, $this->authorizationCodeRepository);
     }
 
