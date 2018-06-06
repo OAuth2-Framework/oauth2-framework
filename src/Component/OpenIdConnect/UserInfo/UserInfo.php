@@ -172,9 +172,8 @@ class UserInfo
 
     /**
      * @param PairwiseSubjectIdentifierAlgorithm $pairwiseAlgorithm
-     * @param bool                               $isPairwiseSubjectDefault
      */
-    public function enablePairwiseSubject(PairwiseSubjectIdentifierAlgorithm $pairwiseAlgorithm, bool $isPairwiseSubjectDefault)
+    public function enablePairwiseSubject(PairwiseSubjectIdentifierAlgorithm $pairwiseAlgorithm)
     {
         $this->pairwiseAlgorithm = $pairwiseAlgorithm;
     }
