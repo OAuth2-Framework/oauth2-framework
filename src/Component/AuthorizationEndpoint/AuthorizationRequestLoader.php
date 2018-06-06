@@ -381,6 +381,7 @@ class AuthorizationRequestLoader
     {
         if (null === $this->jweLoader) {
             dump('No encryption support', $request);
+
             return $request;
         }
 
