@@ -355,17 +355,19 @@ class AuthorizationRequestLoader
             $client = $this->getClient($parameters);
 
             $public_key_set = $this->getClientKeySet($client);
+            dump($public_key_set);
+            dump($jwt);
             $this->checkAlgorithms($jwt, $client);
             if (!$this->jwsVerifier->verifyWithKeySet($jwt, $public_key_set, 0)) { //FIXME: header checker should be used
                 throw new \InvalidArgumentException('The verification of the request object failed.');
             }
+
+            return $parameters;
         } catch (OAuth2Message $e) {
             throw $e;
         } catch (\Exception $e) {
             throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST_OBJECT, $e->getMessage(), [], $e);
         }
-
-        return $parameters;
     }
 
     /**
@@ -405,17 +407,15 @@ class AuthorizationRequestLoader
      */
     private function checkAlgorithms(JWS $jws, Client $client)
     {
-        if ($client->has('request_object_signing_alg') && $jws->getSignature(0)->getProtectedHeaderParameter('alg') !== $client->get('request_object_signing_alg')) {
+        $signatureAlgorithm = $jws->getSignature(0)->getProtectedHeaderParameter('alg');
+        if ($client->has('request_object_signing_alg') && $signatureAlgorithm !== $client->get('request_object_signing_alg')) {
             throw new \InvalidArgumentException('Request Object signature algorithm not allowed for the client.');
         }
 
-        $this->checkUsedAlgorithm($jws->getSignature(0)->getProtectedHeaderParameter('alg'));
+        $this->checkUsedAlgorithm($signatureAlgorithm);
     }
 
-    /**
-     * @param string $algorithm
-     */
-    private function checkUsedAlgorithm(string $algorithm)
+    private function checkUsedAlgorithm(string $algorithm): void
     {
         $supportedAlgorithms = $this->getSupportedSignatureAlgorithms();
         if (!in_array($algorithm, $supportedAlgorithms)) {
@@ -482,6 +482,7 @@ class AuthorizationRequestLoader
         if ($client->has('client_secret')) {
             $jwk = JWK::create([
                 'kty' => 'oct',
+                'use' => 'sig',
                 'k' => Base64Url::encode($client->get('client_secret')),
             ]);
             $keyset = $keyset->with($jwk);
