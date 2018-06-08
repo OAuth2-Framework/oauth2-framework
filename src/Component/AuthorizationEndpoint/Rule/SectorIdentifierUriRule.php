@@ -49,15 +49,18 @@ final class SectorIdentifierUriRule implements Rule
      */
     public function handle(ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters, callable $next): DataBag
     {
+        $validatedParameters = $next($clientId, $commandParameters, $validatedParameters);
+
         if ($commandParameters->has('sector_identifier_uri')) {
-            $this->checkSectorIdentifierUri($commandParameters->get('sector_identifier_uri'));
+            $redirectUris = $validatedParameters->has('redirect_uris') ? $validatedParameters->get('redirect_uris') : [];
+            $this->checkSectorIdentifierUri($commandParameters->get('sector_identifier_uri'), $redirectUris);
             $validatedParameters = $validatedParameters->with('sector_identifier_uri', $commandParameters->get('sector_identifier_uri'));
         }
 
-        return $next($clientId, $commandParameters, $validatedParameters);
+        return $validatedParameters;
     }
 
-    private function checkSectorIdentifierUri(string $url)
+    private function checkSectorIdentifierUri(string $url, array $redirectUris)
     {
         $data = parse($url);
 
@@ -75,6 +78,11 @@ final class SectorIdentifierUriRule implements Rule
         $data = json_decode($body, true);
         if (!is_array($data) || empty($data)) {
             throw new \InvalidArgumentException('The provided sector identifier URI is not valid: it must contain at least one URI.');
+        }
+
+        $diff = array_diff($redirectUris, $data);
+        if (!empty($diff)) {
+            throw new \InvalidArgumentException('The provided sector identifier URI is not valid: it must contain at least the redirect URI(s) set in the registration request.');
         }
     }
 }
