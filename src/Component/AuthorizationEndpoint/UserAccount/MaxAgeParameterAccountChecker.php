@@ -15,15 +15,15 @@ namespace OAuth2Framework\Component\AuthorizationEndpoint\UserAccount;
 
 use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
 use OAuth2Framework\Component\AuthorizationEndpoint\Exception\RedirectToLoginPageException;
+use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 
 final class MaxAgeParameterAccountChecker implements UserAccountChecker
 {
     /**
      * {@inheritdoc}
      */
-    public function check(Authorization $authorization)
+    public function check(Authorization $authorization, ?UserAccount $userAccount, bool $isFullyAuthenticated): void
     {
-        $userAccount = $authorization->getUserAccount();
         if (null === $userAccount) {
             throw new RedirectToLoginPageException($authorization);
         }

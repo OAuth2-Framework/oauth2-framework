@@ -105,11 +105,13 @@ abstract class AuthorizationEndpoint implements MiddlewareInterface
             if (!is_bool($isFullyAuthenticated)) {
                 $isFullyAuthenticated = false;
             }
+            if (null !== $userAccount) {
+                $authorization = $authorization->withUserAccount($userAccount, $isFullyAuthenticated);
+            }
+            $this->userAccountCheckerManager->check($authorization, $userAccount, $isFullyAuthenticated);
             if (null === $userAccount) {
                 return $this->redirectToLoginPage($request, $authorization);
             }
-            $authorization = $authorization->withUserAccount($userAccount, $isFullyAuthenticated);
-            $this->userAccountCheckerManager->check($authorization);
             $authorization = $this->consentScreenExtensionManager->processBefore($request, $authorization);
 
             return $this->processConsentScreen($request, $authorization);
