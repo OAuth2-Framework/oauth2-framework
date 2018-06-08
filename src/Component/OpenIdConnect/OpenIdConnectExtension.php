@@ -122,6 +122,9 @@ class OpenIdConnectExtension implements TokenEndpointExtension
             $contentEncryptionAlgorithm = $client->get('userinfo_encrypted_response_enc');
             $idTokenBuilder = $idTokenBuilder->withEncryption($this->jweBuilder, $keyEncryptionAlgorithm, $contentEncryptionAlgorithm);
         }
+        if ($client->has('require_auth_time')) {
+            $idTokenBuilder->withAuthenticationTime();
+        }
         $idTokenBuilder = $idTokenBuilder->withAccessToken($accessToken);
 
         return $idTokenBuilder->build();

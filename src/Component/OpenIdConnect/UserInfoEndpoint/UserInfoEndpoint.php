@@ -159,6 +159,9 @@ class UserInfoEndpoint implements MiddlewareInterface
         }
         $idTokenBuilder = $idTokenBuilder->withAccessToken($accessToken);
         $idTokenBuilder = $idTokenBuilder->withRequestedClaims($requestedClaims);
+        if ($client->has('require_auth_time')) {
+            $idTokenBuilder->withAuthenticationTime();
+        }
         $idToken = $idTokenBuilder->build();
 
         return $idToken;
