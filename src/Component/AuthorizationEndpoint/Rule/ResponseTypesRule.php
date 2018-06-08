@@ -47,7 +47,7 @@ final class ResponseTypesRule implements Rule
 
         $validatedParameters = $validatedParameters->with('response_types', $commandParameters->get('response_types'));
         $validatedParameters = $next($clientId, $commandParameters, $validatedParameters);
-        $this->checkGrantTypes($validatedParameters);
+        //$this->checkGrantTypes($validatedParameters);
 
         return $validatedParameters;
     }

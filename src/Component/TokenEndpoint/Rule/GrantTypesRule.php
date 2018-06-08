@@ -46,7 +46,7 @@ final class GrantTypesRule implements Rule
         $this->checkGrantTypes($commandParameters);
         $validatedParameters = $validatedParameters->with('grant_types', $commandParameters->get('grant_types'));
         $validatedParameters = $next($clientId, $commandParameters, $validatedParameters);
-        $this->checkResponseTypes($validatedParameters);
+        //$this->checkResponseTypes($validatedParameters);
 
         return $validatedParameters;
     }
