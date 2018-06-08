@@ -244,7 +244,7 @@ final class AuthorizationRequestLoaderTest extends TestCase
         $client->has('jwks')->willReturn(false)->shouldBeCalled();
         $client->has('jwks_uri')->willReturn(false)->shouldBeCalled();
         $client->has('client_secret')->willReturn(false)->shouldBeCalled();
-        $client->has("request_object_signing_alg")->willReturn(false)->shouldBeCalled();
+        $client->has('request_object_signing_alg')->willReturn(false)->shouldBeCalled();
 
         $clientRepository = $this->prophesize(ClientRepository::class);
         $clientRepository->find(Argument::any())->willReturn($client->reveal())->shouldBeCalled();
