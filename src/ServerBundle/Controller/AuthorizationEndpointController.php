@@ -124,12 +124,14 @@ final class AuthorizationEndpointController extends AuthorizationEndpoint
     {
         $session_data = [
             'uri' => $request->getUri()->__toString(),
-            'ui_locale' => $this->getUiLocale($authorization),
         ];
         foreach (['display', 'id_token_hint', 'login_hint', 'acr_values'] as $key) {
             $session_data[$key] = $authorization->hasQueryParam($key) ? $authorization->getQueryParam($key) : null;
         }
 
+        if ($locale = $this->getUiLocale($authorization)) {
+            $this->session->set('_locale', $locale);
+        }
         $this->session->set('oauth2_authorization_request_data', $session_data);
         $response = $this->messageFactory->createResponse(302);
         $response = $response->withHeader('Location', $this->router->generate($this->loginRoute, $this->loginRouteParams, UrlGeneratorInterface::ABSOLUTE_URL));
@@ -140,11 +142,12 @@ final class AuthorizationEndpointController extends AuthorizationEndpoint
     protected function processConsentScreen(ServerRequestInterface $request, Authorization $authorization): ResponseInterface
     {
         //FIXME: $options = $this->processConsentScreenOptions($authorization);
-        $ui_locale = $this->getUiLocale($authorization);
+        if ($locale = $this->getUiLocale($authorization)) {
+            $this->session->set('_locale', $locale);
+        }
         $options = array_merge(
             //FIXME: $options,
             [
-                'locale' => $ui_locale,
                 //'scopes' => $authorization->getScopes(),
                 //FIXME: 'allowScopeSelection' => $this->allowScopeSelection,
             ]
@@ -166,24 +169,22 @@ final class AuthorizationEndpointController extends AuthorizationEndpoint
             }
         }
 
-        return $this->prepareResponse($authorization, $form, $ui_locale);
+        return $this->prepareResponse($authorization, $form);
     }
 
     /**
      * @param Authorization $authorization
      * @param FormInterface $form
-     * @param string|null   $ui_locale
      *
      * @return ResponseInterface
      */
-    private function prepareResponse(Authorization $authorization, FormInterface $form, string $ui_locale = null): ResponseInterface
+    private function prepareResponse(Authorization $authorization, FormInterface $form): ResponseInterface
     {
         $content = $this->templateEngine->render(
             $this->template,
             [
                 'form' => $form->createView(),
                 'authorization' => $authorization,
-                'ui_locale' => $ui_locale,
                 //FIXME: 'is_pre_configured_authorization_enabled' => true,
             ]
         );
