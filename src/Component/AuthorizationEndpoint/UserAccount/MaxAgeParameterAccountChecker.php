@@ -41,6 +41,10 @@ final class MaxAgeParameterAccountChecker implements UserAccountChecker
                 return;
         }
 
+        if ($authorization->isUserAccountFullyAuthenticated()) {
+            return;
+        }
+
         if (null === $userAccount->getLastLoginAt() || time() - $userAccount->getLastLoginAt() > $max_age) {
             throw new RedirectToLoginPageException($authorization);
         }
