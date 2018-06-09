@@ -20,9 +20,9 @@ use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 interface UserAccountChecker
 {
     /**
-     * @param Authorization $authorization
+     * @param Authorization    $authorization
      * @param null|UserAccount $userAccount
-     * @param bool $isFullyAuthenticated
+     * @param bool             $isFullyAuthenticated
      *
      * @throws Exception\CreateRedirectionException
      * @throws Exception\ProcessAuthorizationException
