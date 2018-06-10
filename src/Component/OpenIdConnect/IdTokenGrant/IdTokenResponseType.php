@@ -184,6 +184,10 @@ final class IdTokenResponseType implements ResponseType
         }
 
         $requestedClaims = $authorization->getQueryParam('claims');
+        $requestedClaims = json_decode($requestedClaims, true);
+        if (!is_array($requestedClaims)) {
+            throw new \InvalidArgumentException('Invalid claim request');
+        }
         if (true === array_key_exists('id_token', $requestedClaims)) {
             return $requestedClaims['id_token'];
         }
