@@ -163,10 +163,15 @@ class UserInfo
      */
     private function getUserClaim(UserAccount $userAccount, string $claimName, ?array $config)
     {
+        // FIXME: "acr" claim support has to be added.
         if ($userAccount->has($claimName)) {
             $claim = $userAccount->get($claimName);
             switch (true) {
                 case is_array($config) && array_key_exists('value', $config):
+                    dump($config);
+                    dump($claimName);
+                    dump($claim);
+                    dump($claim === $config['value']);
                     if ($claim === $config['value']) {
                         return $claim;
                     }
