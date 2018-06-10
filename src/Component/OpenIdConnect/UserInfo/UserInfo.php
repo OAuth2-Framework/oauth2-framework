@@ -156,18 +156,32 @@ class UserInfo
 
     /**
      * @param UserAccount $userAccount
-     * @param string      $claim
+     * @param string      $claimName
      * @param null|array  $config
      *
      * @return null|mixed
      */
-    private function getUserClaim(UserAccount $userAccount, $claim, $config)
+    private function getUserClaim(UserAccount $userAccount, string $claimName, ?array $config)
     {
-        //The parameter $config is not yet used and the claim is returned as-is whatever the client requested
-        //FIXME
-        if ($userAccount->has($claim)) {
-            return $userAccount->get($claim);
+        if ($userAccount->has($claimName)) {
+            $claim = $userAccount->get($claimName);
+            switch (true) {
+                case is_array($config) && array_key_exists('value', $config):
+                    if ($claim === $config['value']) {
+                        return $claim;
+                    }
+                    break;
+                case is_array($config) && array_key_exists('values', $config) && is_array($config['values']):
+                    if (in_array($claim, $config['values'])) {
+                        return $claim;
+                    }
+                    break;
+                default:
+                    return $claim;
+            }
         }
+
+        return null;
     }
 
     /**
