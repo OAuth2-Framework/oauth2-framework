@@ -170,11 +170,13 @@ class UserInfo
                     if ($claim === $config['value']) {
                         return $claim;
                     }
+
                     break;
                 case is_array($config) && array_key_exists('values', $config) && is_array($config['values']):
                     if (in_array($claim, $config['values'])) {
                         return $claim;
                     }
+
                     break;
                 default:
                     return $claim;
