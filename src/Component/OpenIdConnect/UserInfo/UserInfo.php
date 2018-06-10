@@ -136,6 +136,8 @@ class UserInfo
             }
         }
 
+        dump($result);
+
         return $result;
     }
 
@@ -168,10 +170,6 @@ class UserInfo
             $claim = $userAccount->get($claimName);
             switch (true) {
                 case is_array($config) && array_key_exists('value', $config):
-                    dump($config);
-                    dump($claimName);
-                    dump($claim);
-                    dump($claim === $config['value']);
                     if ($claim === $config['value']) {
                         return $claim;
                     }

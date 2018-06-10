@@ -359,8 +359,8 @@ class IdTokenBuilder
             throw new \LogicException('It is mandatory to set the scope.');
         }
         $data = $this->userinfo->getUserinfo($this->client, $this->userAccount, $this->redirectUri, $this->requestedClaims, $this->scope, $this->claimsLocales);
-        $data = $this->updateClaimsWithAmrAndAcrInfo($data, $this->userAccount);
-        $data = $this->updateClaimsWithAuthenticationTime($data, $this->userAccount);
+        //$data = $this->updateClaimsWithAmrAndAcrInfo($data, $this->userAccount);
+        $data = $this->updateClaimsWithAuthenticationTime($data, $this->userAccount, $this->requestedClaims);
         $data = $this->updateClaimsWithNonce($data);
         if (null !== $this->signatureAlgorithm) {
             $data = $this->updateClaimsWithJwtClaims($data);
@@ -405,9 +405,9 @@ class IdTokenBuilder
      *
      * @return array
      */
-    private function updateClaimsWithAuthenticationTime(array $claims, UserAccount $userAccount): array
+    private function updateClaimsWithAuthenticationTime(array $claims, UserAccount $userAccount, array $requestedClaims): array
     {
-        if (true === $this->withAuthenticationTime && null !== $userAccount->getLastLoginAt()) {
+        if ((true === $this->withAuthenticationTime || array_key_exists('auth_time', $requestedClaims)) && null !== $userAccount->getLastLoginAt()) {
             $claims['auth_time'] = $userAccount->getLastLoginAt();
         }
 

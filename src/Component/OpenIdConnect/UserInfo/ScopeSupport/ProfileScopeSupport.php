@@ -29,7 +29,6 @@ final class ProfileScopeSupport implements UserInfoScopeSupport
     public function getClaims(): array
     {
         return [
-            'sub',
             'name',
             'given_name',
             'middle_name',
