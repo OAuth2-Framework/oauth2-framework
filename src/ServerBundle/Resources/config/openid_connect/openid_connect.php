@@ -55,6 +55,7 @@ return function (ContainerConfigurator $container) {
     $container->set(UserInfo::class)
         ->args([
             ref(UserInfoScopeSupportManager::class),
+            ref(Claim\ClaimManager::class),
             ref(Claim\ClaimSourceManager::class),
         ]);
 
