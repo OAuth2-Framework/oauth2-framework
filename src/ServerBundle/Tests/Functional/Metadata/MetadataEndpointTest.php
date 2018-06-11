@@ -46,6 +46,5 @@ class MetadataEndpointTest extends WebTestCase
         self::assertEquals('application/json; charset=UTF-8', $response->headers->get('content-type'));
         $content = json_decode($response->getContent(), true);
         self::assertInternalType('array', $content);
-        dump($content);
     }
 }

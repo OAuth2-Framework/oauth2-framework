@@ -67,7 +67,7 @@ class ClaimManager
     public function getUserInfo(UserAccount $userAccount, array $claims, array $claimLocales): array
     {
         $result = [];
-        $claimLocale[] = null;
+        $claimLocales[] = null;
         foreach ($claims as $claimName => $config) {
             if ($this->has($claimName)) {
                 $claim = $this->get($claimName);

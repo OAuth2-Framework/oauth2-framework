@@ -47,7 +47,7 @@ final class Gender implements Claim
         );
     }
 
-    private function getComputedClaimName(string $claimLocale): string
+    private function getComputedClaimName(?string $claimLocale): string
     {
         return $claimLocale ? sprintf('%s#%s', self::CLAIM_NAME, $claimLocale) : self::CLAIM_NAME;
     }
