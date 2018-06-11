@@ -68,10 +68,12 @@ class UserInfo
      */
     public function getUserinfo(Client $client, UserAccount $userAccount, string $redirectUri, array $requestedClaims, string $scope, ? string $claimsLocales): array
     {
+        dump($requestedClaims);
         $requestedClaims = array_merge(
             $this->getClaimsFromClaimScope($scope),
             $requestedClaims
         );
+        dump($requestedClaims);
         $claims = $this->getClaimValues($userAccount, $requestedClaims, $claimsLocales);
         /*$claims = array_merge(
             $claims,
