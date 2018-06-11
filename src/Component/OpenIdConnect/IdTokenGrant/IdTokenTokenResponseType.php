@@ -73,8 +73,8 @@ final class IdTokenTokenResponseType implements ResponseType
      */
     public function process(Authorization $authorization): Authorization
     {
-        $authorization = $this->idTokenResponseType->process($authorization);
         $authorization = $this->tokenResponseType->process($authorization);
+        $authorization = $this->idTokenResponseType->process($authorization);
 
         return $authorization;
     }
