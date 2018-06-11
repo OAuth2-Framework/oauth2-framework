@@ -87,7 +87,6 @@ return function (ContainerConfigurator $container) {
 
     $container->set(ParameterChecker\RedirectUriParameterChecker::class)
         ->tag('oauth2_server_authorization_parameter_checker');
-    $container->set(ParameterChecker\ClaimsParameterChecker::class);
     $container->set(ParameterChecker\DisplayParameterChecker::class);
     $container->set(ParameterChecker\PromptParameterChecker::class);
     $container->set(ParameterChecker\StateParameterChecker::class)
