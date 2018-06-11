@@ -146,8 +146,8 @@ class OpenIdConnectExtension implements TokenEndpointExtension
         if (!is_array($requestedClaims)) {
             throw new \InvalidArgumentException('Invalid claim request');
         }
-        if (true === array_key_exists('userinfo', $requestedClaims)) {
-            return $requestedClaims['userinfo'];
+        if (true === array_key_exists('id_token', $requestedClaims)) {
+            return $requestedClaims['id_token'];
         }
 
         return [];
