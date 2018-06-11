@@ -15,7 +15,9 @@ namespace OAuth2Framework\ServerBundle\Component\OpenIdConnect;
 
 use Jose\Bundle\JoseFramework\Helper\ConfigurationHelper;
 use OAuth2Framework\ServerBundle\Component\Component;
+use OAuth2Framework\ServerBundle\Component\OpenIdConnect\Compiler\ClaimCompilerPass;
 use OAuth2Framework\ServerBundle\Component\OpenIdConnect\Compiler\ClaimSourceCompilerPass;
+use OAuth2Framework\ServerBundle\Component\OpenIdConnect\Compiler\ClaimsSupportedMetadataCompilerPass;
 use OAuth2Framework\ServerBundle\Component\OpenIdConnect\Compiler\IdTokenMetadataCompilerPass;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -135,8 +137,10 @@ class IdTokenSource implements Component
      */
     public function build(ContainerBuilder $container)
     {
+        $container->addCompilerPass(new ClaimCompilerPass());
         $container->addCompilerPass(new ClaimSourceCompilerPass());
         $container->addCompilerPass(new IdTokenMetadataCompilerPass());
+        $container->addCompilerPass(new ClaimsSupportedMetadataCompilerPass());
     }
 
     /**

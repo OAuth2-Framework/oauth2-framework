@@ -20,5 +20,5 @@ interface UserInfoScopeSupport extends Scope
     /**
      * @return string[]
      */
-    public function getClaims(): array;
+    public function getAssociatedClaims(): array;
 }

@@ -26,6 +26,22 @@ class OpenIdScopeSupport implements UserInfoScopeSupport
     /**
      * {@inheritdoc}
      */
+    public function parent(): ?string
+    {
+        return null;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isParentMandatory(): bool
+    {
+        return false;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function __toString(): string
     {
         return $this->name();
@@ -34,7 +50,7 @@ class OpenIdScopeSupport implements UserInfoScopeSupport
     /**
      * {@inheritdoc}
      */
-    public function getClaims(): array
+    public function getAssociatedClaims(): array
     {
         return [
             'sub',

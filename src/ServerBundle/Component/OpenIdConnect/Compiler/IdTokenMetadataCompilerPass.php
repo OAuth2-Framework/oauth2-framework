@@ -32,8 +32,6 @@ class IdTokenMetadataCompilerPass implements CompilerPassInterface
         $metadata = $container->getDefinition(MetadataBuilder::class);
 
         $metadata->addMethodCall('setUserinfo', [new Reference(UserInfo::class)]);
-        $metadata->addMethodCall('addKeyValuePair', ['claim_types_supported', ['normal', 'aggregated', 'distributed']]);
-        $metadata->addMethodCall('addKeyValuePair', ['claims_parameter_supported', true]);
         $metadata->addMethodCall('addKeyValuePair', ['id_token_signing_alg_values_supported', $container->getParameter('oauth2_server.openid_connect.id_token.signature_algorithms')]);
         if (true === $container->getParameter('oauth2_server.openid_connect.id_token.encryption.enabled')) {
             $metadata->addMethodCall('addKeyValuePair', ['id_token_encryption_alg_values_supported', $container->getParameter('oauth2_server.openid_connect.id_token.encryption.key_encryption_algorithms')]);

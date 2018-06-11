@@ -13,25 +13,25 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Component\OpenIdConnect\Compiler;
 
-use OAuth2Framework\Component\OpenIdConnect\UserInfo\Claim\ClaimSourceManager;
+use OAuth2Framework\Component\OpenIdConnect\UserInfo\Claim\ClaimManager;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
-class ClaimSourceCompilerPass implements CompilerPassInterface
+class ClaimCompilerPass implements CompilerPassInterface
 {
     /**
      * {@inheritdoc}
      */
     public function process(ContainerBuilder $container)
     {
-        if (!$container->hasDefinition(ClaimSourceManager::class)) {
+        if (!$container->hasDefinition(ClaimManager::class)) {
             return;
         }
 
-        $definition = $container->getDefinition(ClaimSourceManager::class);
+        $definition = $container->getDefinition(ClaimManager::class);
 
-        $taggedServices = $container->findTaggedServiceIds('oauth2_server_claim_source');
+        $taggedServices = $container->findTaggedServiceIds('oauth2_server_claim');
         foreach ($taggedServices as $id => $attributes) {
             $definition->addMethodCall('add', [new Reference($id)]);
         }

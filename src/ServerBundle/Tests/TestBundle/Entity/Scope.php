@@ -21,15 +21,44 @@ class Scope implements ScopeInterface
      * @var string
      */
     private $name;
+    /**
+     * @var string
+     */
+    private $parent;
+
+    /**
+     * @var bool
+     */
+    private $isParentMandatory;
 
     /**
      * Scope constructor.
      *
-     * @param string $name
+     * @param string      $name
+     * @param string|null $parent
+     * @param bool        $isParentMandatory
      */
-    public function __construct(string $name)
+    public function __construct(string $name, string $parent = null, bool $isParentMandatory = false)
     {
         $this->name = $name;
+        $this->parent = $parent;
+        $this->isParentMandatory = $isParentMandatory;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function parent(): ?string
+    {
+        return $this->parent;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isParentMandatory(): bool
+    {
+        return $this->isParentMandatory;
     }
 
     /**

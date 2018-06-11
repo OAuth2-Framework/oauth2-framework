@@ -52,9 +52,14 @@ class User implements UserInterface, UserAccount, EquatableInterface
     private $publicId;
 
     /**
-     * @var int|null
+     * @var \DateTimeImmutable|null
      */
     private $lastLoginAt;
+
+    /**
+     * @var \DateTimeImmutable|null
+     */
+    private $lastUpdateAt;
 
     /**
      * @var array
@@ -62,16 +67,17 @@ class User implements UserInterface, UserAccount, EquatableInterface
     private $parameters = [];
 
     /**
-     * @param string        $username
-     * @param string        $password
-     * @param string|null   $salt
-     * @param string[]      $roles
-     * @param string[]      $oauth2Passwords
-     * @param UserAccountId $publicId
-     * @param int|null      $lastLoginAt
-     * @param array         $parameters
+     * @param string                  $username
+     * @param string                  $password
+     * @param string|null             $salt
+     * @param string[]                $roles
+     * @param string[]                $oauth2Passwords
+     * @param UserAccountId           $publicId
+     * @param \DateTimeImmutable|null $lastLoginAt
+     * @param \DateTimeImmutable|null $lastLoginAt
+     * @param array                   $parameters
      */
-    public function __construct(string $username, string $password, string $salt = null, array $roles, array $oauth2Passwords, UserAccountId $publicId, ?int $lastLoginAt = null, array $parameters = [])
+    public function __construct(string $username, string $password, string $salt = null, array $roles, array $oauth2Passwords, UserAccountId $publicId, ?int $lastLoginAt = null, ?int $lastUpdateAt = null, array $parameters = [])
     {
         $this->username = $username;
         $this->password = $password;
@@ -80,6 +86,7 @@ class User implements UserInterface, UserAccount, EquatableInterface
         $this->oauth2Passwords = $oauth2Passwords;
         $this->publicId = $publicId;
         $this->lastLoginAt = $lastLoginAt;
+        $this->lastUpdateAt = $lastUpdateAt;
         $this->parameters = $parameters;
     }
 
@@ -91,13 +98,14 @@ class User implements UserInterface, UserAccount, EquatableInterface
      * @param string[]                $oauth2Passwords
      * @param UserAccountId           $publicId
      * @param \DateTimeImmutable|null $lastLoginAt
+     * @param \DateTimeImmutable|null $lastUpdateAt
      * @param array                   $parameters
      *
      * @return User
      */
-    public static function create(string $username, string $password, string $salt = null, array $roles, array $oauth2Passwords, UserAccountId $publicId, \DateTimeImmutable $lastLoginAt = null, array $parameters = [])
+    public static function create(string $username, string $password, string $salt = null, array $roles, array $oauth2Passwords, UserAccountId $publicId, \DateTimeImmutable $lastLoginAt = null, \DateTimeImmutable $lastUpdateAt= null, array $parameters = [])
     {
-        return new self($username, $password, $salt, $roles, $oauth2Passwords, $publicId, $lastLoginAt, $parameters);
+        return new self($username, $password, $salt, $roles, $oauth2Passwords, $publicId, $lastLoginAt, $lastUpdateAt, $parameters);
     }
 
     /**
@@ -131,7 +139,15 @@ class User implements UserInterface, UserAccount, EquatableInterface
      */
     public function getLastLoginAt(): ?int
     {
-        return $this->lastLoginAt;
+        return $this->lastLoginAt ? $this->lastLoginAt->getTimestamp() : null;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getLastUpdateAt(): ?int
+    {
+        return $this->lastUpdateAt ? $this->lastUpdateAt->getTimestamp() : null;
     }
 
     /**

@@ -14,7 +14,8 @@ declare(strict_types=1);
 namespace OAuth2Framework\ServerBundle\Component\OpenIdConnect;
 
 use OAuth2Framework\Component\OpenIdConnect\IdToken;
-use OAuth2Framework\Component\OpenIdConnect\UserInfo\ClaimSource\ClaimSource;
+use OAuth2Framework\Component\OpenIdConnect\UserInfo\Claim\Claim;
+use OAuth2Framework\Component\OpenIdConnect\UserInfo\Claim\ClaimSource;
 use OAuth2Framework\Component\OpenIdConnect\UserInfo\ScopeSupport\UserInfoScopeSupport;
 use OAuth2Framework\ServerBundle\Component\Component;
 use OAuth2Framework\ServerBundle\Component\OpenIdConnect\Compiler\JkuSupportForIdTokenBuilderCompilerPass;
@@ -58,6 +59,7 @@ class OpenIdConnectSource implements Component
             return;
         }
 
+        $container->registerForAutoconfiguration(Claim::class)->addTag('oauth2_server_claim');
         $container->registerForAutoconfiguration(ClaimSource::class)->addTag('oauth2_server_claim_source');
         $container->registerForAutoconfiguration(UserInfoScopeSupport::class)->addTag('oauth2_server_userinfo_scope_support');
 

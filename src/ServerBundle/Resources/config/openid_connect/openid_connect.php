@@ -12,7 +12,7 @@ declare(strict_types=1);
  */
 
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use OAuth2Framework\Component\OpenIdConnect\UserInfo\ClaimSource\ClaimSourceManager;
+use OAuth2Framework\Component\OpenIdConnect\UserInfo\Claim;
 use OAuth2Framework\Component\OpenIdConnect\UserInfo\UserInfo;
 use OAuth2Framework\Component\OpenIdConnect\Rule;
 use OAuth2Framework\Component\OpenIdConnect\UserInfo\ScopeSupport\UserInfoScopeSupportManager;
@@ -28,12 +28,34 @@ return function (ContainerConfigurator $container) {
 
     $container->set(UserInfoScopeSupportManager::class);
 
-    $container->set(ClaimSourceManager::class);
+    $container->set(Claim\ClaimManager::class);
+    $container->set(Claim\Address::class);
+    $container->set(Claim\AuthenticationTime::class);
+    $container->set(Claim\Birthdate::class);
+    $container->set(Claim\Email::class);
+    $container->set(Claim\EmailVerified::class);
+    $container->set(Claim\FamilyName::class);
+    $container->set(Claim\Gender::class);
+    $container->set(Claim\GivenName::class);
+    $container->set(Claim\Locale::class);
+    $container->set(Claim\MiddleName::class);
+    $container->set(Claim\Name::class);
+    $container->set(Claim\Nickname::class);
+    $container->set(Claim\PhoneNumber::class);
+    $container->set(Claim\PhoneNumberVerified::class);
+    $container->set(Claim\Picture::class);
+    $container->set(Claim\PreferredUsername::class);
+    $container->set(Claim\Profile::class);
+    $container->set(Claim\UpdatedAt::class);
+    $container->set(Claim\Website::class);
+    $container->set(Claim\Zoneinfo::class);
+
+    $container->set(Claim\ClaimSourceManager::class);
 
     $container->set(UserInfo::class)
         ->args([
             ref(UserInfoScopeSupportManager::class),
-            ref(ClaimSourceManager::class),
+            ref(Claim\ClaimSourceManager::class),
         ]);
 
     $container->set(OpenIdConnectExtension::class)

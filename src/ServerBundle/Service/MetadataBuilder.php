@@ -20,6 +20,7 @@ use OAuth2Framework\Component\AuthorizationEndpoint\ResponseTypeManager;
 use OAuth2Framework\Component\ClientAuthentication\AuthenticationMethodManager;
 use OAuth2Framework\Component\ClientAuthentication\ClientAssertionJwt;
 use OAuth2Framework\Component\MetadataEndpoint\Metadata;
+use OAuth2Framework\Component\OpenIdConnect\UserInfo\Claim\ClaimManager;
 use OAuth2Framework\Component\OpenIdConnect\UserInfo\UserInfo;
 use OAuth2Framework\Component\Scope\ScopeRepository;
 use OAuth2Framework\Component\TokenEndpoint\GrantTypeManager;
@@ -131,7 +132,14 @@ class MetadataBuilder
     public function setUserinfo(UserInfo $userInfo)
     {
         $this->metadata->set('subject_types_supported', $userInfo->isPairwiseSubjectIdentifierSupported() ? ['public', 'pairwise'] : ['public']);
-        $this->metadata->set('claims_supported', $userInfo->getSupportedClaims());
+    }
+
+    /**
+     * @param ClaimManager $claimManager
+     */
+    public function setClaimsSupported(ClaimManager $claimManager)
+    {
+        $this->metadata->set('claims_supported', $claimManager->list());
     }
 
     /**

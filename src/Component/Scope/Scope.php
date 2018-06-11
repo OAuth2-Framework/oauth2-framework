@@ -19,6 +19,16 @@ interface Scope extends \JsonSerializable
     public function name(): string;
 
     /**
+     * @return null|string
+     */
+    public function parent(): ?string;
+
+    /**
+     * @return bool
+     */
+    public function isParentMandatory(): bool;
+
+    /**
      * @return string
      */
     public function __toString(): string;

@@ -26,6 +26,22 @@ class AddressScopeSupport implements UserInfoScopeSupport
     /**
      * {@inheritdoc}
      */
+    public function parent(): ?string
+    {
+        return 'openid';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isParentMandatory(): bool
+    {
+        return true;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function __toString(): string
     {
         return $this->name();
@@ -34,7 +50,7 @@ class AddressScopeSupport implements UserInfoScopeSupport
     /**
      * {@inheritdoc}
      */
-    public function getClaims(): array
+    public function getAssociatedClaims(): array
     {
         return [
             'address',

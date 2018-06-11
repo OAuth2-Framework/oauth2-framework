@@ -11,7 +11,7 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Component\OpenIdConnect\UserInfo\ClaimSource;
+namespace OAuth2Framework\Component\OpenIdConnect\UserInfo\Claim;
 
 use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 

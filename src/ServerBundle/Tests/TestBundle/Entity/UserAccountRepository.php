@@ -33,7 +33,8 @@ class UserAccountRepository implements UserAccountRepositoryInterface
                 $userInformation['roles'],
                 $userInformation['oauth2Passwords'],
                 $userInformation['public_id'],
-                $userInformation['last_login_at'],
+                $userInformation['login_at'],
+                $userInformation['updated_at'],
                 $userInformation['parameters']
             );
             $this->usersByUsername[$userInformation['username']] = $user;
@@ -70,7 +71,8 @@ class UserAccountRepository implements UserAccountRepositoryInterface
                 'password' => 'secret',
                 'salt' => null,
                 'roles' => ['ROLE_USER'],
-                'last_login_at' => time() - 100,
+                'login_at' => time() - 100,
+                'updated_at' => time() - 3600,
                 'parameters' => [
                     'password' => 'doe',
                     'user' => 'john',
@@ -91,7 +93,6 @@ class UserAccountRepository implements UserAccountRepositoryInterface
                     'gender' => 'M',
                     'phone_number' => '+0123456789',
                     'phone_number_verified' => true,
-                    'updated_at' => 1485431232,
                     'zoneinfo' => 'Europe/Paris',
                     'locale' => 'en',
                     'picture' => 'https://www.google.com',
@@ -99,7 +100,6 @@ class UserAccountRepository implements UserAccountRepositoryInterface
                     'birthdate' => '1950-01-01',
                     'email' => 'root@localhost.com',
                     'email_verified' => false,
-                    'last_login_at' => time() - 100,
                     'website' => 'https://john.doe.com',
                     'website#fr_fr' => 'https://john.doe.fr',
                     'website#fr' => 'https://john.doe.fr',
@@ -114,7 +114,8 @@ class UserAccountRepository implements UserAccountRepositoryInterface
                 'password' => 'secret',
                 'salt' => null,
                 'roles' => ['ROLE_USER'],
-                'last_login_at' => time() - 100,
+                'login_at' => time() - 100,
+                'updated_at' => null,
                 'parameters' => [
                     'password' => 'doe',
                     'user' => 'john',

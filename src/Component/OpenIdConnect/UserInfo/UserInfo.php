@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\OpenIdConnect\UserInfo;
 
-use OAuth2Framework\Component\OpenIdConnect\UserInfo\ClaimSource\ClaimSourceManager;
+use OAuth2Framework\Component\OpenIdConnect\UserInfo\Claim\ClaimSourceManager;
 use OAuth2Framework\Component\OpenIdConnect\UserInfo\Pairwise\PairwiseSubjectIdentifierAlgorithm;
 use OAuth2Framework\Component\OpenIdConnect\UserInfo\ScopeSupport\UserInfoScopeSupportManager;
 use OAuth2Framework\Component\Core\Client\Client;
@@ -49,35 +49,22 @@ class UserInfo
     }
 
     /**
-     * @return string[]
-     */
-    public function getSupportedClaims(): array
-    {
-        $claimsSupported = [];
-        foreach ($this->userinfoScopeSupportManager->all() as $infoScopeSupport) {
-            $claimsSupported += $infoScopeSupport->getClaims();
-        }
-
-        return array_unique($claimsSupported);
-    }
-
-    /**
      * @param Client      $client
      * @param UserAccount $userAccount
      * @param string      $redirectUri
-     * @param array       $requestClaims
+     * @param array       $requestedClaims
      * @param string      $scope
      * @param string|null $claimsLocales
      *
      * @return array
      */
-    public function getUserinfo(Client $client, UserAccount $userAccount, string $redirectUri, array $requestClaims, string $scope, ? string $claimsLocales): array
+    public function getUserinfo(Client $client, UserAccount $userAccount, string $redirectUri, array $requestedClaims, string $scope, ? string $claimsLocales): array
     {
-        $requestClaims = array_merge(
+        $requestedClaims = array_merge(
             $this->getClaimsFromClaimScope($scope),
-            $requestClaims
+            $requestedClaims
         );
-        $claims = $this->getClaimValues($userAccount, $requestClaims, $claimsLocales);
+        $claims = $this->getClaimValues($userAccount, $requestedClaims, $claimsLocales);
         $claims = array_merge(
             $claims,
             $this->claimSourceManager->getUserInfo($userAccount, $scope, [])
@@ -98,7 +85,7 @@ class UserInfo
 
         foreach (explode(' ', $scope) as $scp) {
             if ($this->userinfoScopeSupportManager->has($scp)) {
-                $scope_claims = $this->userinfoScopeSupportManager->get($scp)->getClaims();
+                $scope_claims = $this->userinfoScopeSupportManager->get($scp)->getAssociatedClaims();
                 foreach ($scope_claims as $scope_claim) {
                     $result[$scope_claim] = null;
                 }
