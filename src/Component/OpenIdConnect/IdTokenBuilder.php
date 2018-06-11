@@ -360,7 +360,7 @@ class IdTokenBuilder
         }
         $data = $this->userinfo->getUserinfo($this->client, $this->userAccount, $this->redirectUri, $this->requestedClaims, $this->scope, $this->claimsLocales);
         //$data = $this->updateClaimsWithAmrAndAcrInfo($data, $this->userAccount);
-        $data = $this->updateClaimsWithAuthenticationTime($data, $this->userAccount, $this->requestedClaims);
+        //$data = $this->updateClaimsWithAuthenticationTime($data, $this->userAccount, $this->requestedClaims);
         $data = $this->updateClaimsWithNonce($data);
         if (null !== $this->signatureAlgorithm) {
             $data = $this->updateClaimsWithJwtClaims($data);
@@ -378,11 +378,6 @@ class IdTokenBuilder
         return $result;
     }
 
-    /**
-     * @param array $claims
-     *
-     * @return array
-     */
     private function updateClaimsWithJwtClaims(array $claims): array
     {
         if (null === $this->expiresAt) {
@@ -414,11 +409,6 @@ class IdTokenBuilder
         return $claims;
     }
 
-    /**
-     * @param array $claims
-     *
-     * @return array
-     */
     private function updateClaimsWithNonce(array $claims): array
     {
         if (null !== $this->nonce) {
@@ -428,11 +418,6 @@ class IdTokenBuilder
         return $claims;
     }
 
-    /**
-     * @param array $claims
-     *
-     * @return array
-     */
     private function updateClaimsAudience(array $claims): array
     {
         $claims['aud'] = [
@@ -444,28 +429,6 @@ class IdTokenBuilder
         return $claims;
     }
 
-    /**
-     * @param array       $claims
-     * @param UserAccount $userAccount
-     *
-     * @return array
-     */
-    private function updateClaimsWithAmrAndAcrInfo(array $claims, UserAccount $userAccount): array
-    {
-        foreach (['amr' => 'amr', 'acr' => 'acr'] as $claim => $key) {
-            if ($userAccount->has($claim)) {
-                $claims[$key] = $userAccount->get($claim);
-            }
-        }
-
-        return $claims;
-    }
-
-    /**
-     * @param array $claims
-     *
-     * @return string
-     */
     private function computeIdToken(array $claims): string
     {
         $signatureKey = $this->getSignatureKey($this->signatureAlgorithm);
@@ -482,12 +445,6 @@ class IdTokenBuilder
         return $serializer->serialize($jws, 0);
     }
 
-    /**
-     * @param Client $client
-     * @param string $jwt
-     *
-     * @return string
-     */
     private function tryToEncrypt(Client $client, string $jwt): string
     {
         $clientKeySet = $this->getClientKeySet($client);

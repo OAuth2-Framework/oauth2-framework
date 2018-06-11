@@ -74,10 +74,10 @@ class User implements UserInterface, UserAccount, EquatableInterface
      * @param string[]                $oauth2Passwords
      * @param UserAccountId           $publicId
      * @param \DateTimeImmutable|null $lastLoginAt
-     * @param \DateTimeImmutable|null $lastLoginAt
+     * @param \DateTimeImmutable|null $lastUpdateAt
      * @param array                   $parameters
      */
-    public function __construct(string $username, string $password, string $salt = null, array $roles, array $oauth2Passwords, UserAccountId $publicId, ?int $lastLoginAt = null, ?int $lastUpdateAt = null, array $parameters = [])
+    public function __construct(string $username, string $password, string $salt = null, array $roles, array $oauth2Passwords, UserAccountId $publicId, ?\DateTimeImmutable $lastLoginAt = null, ?\DateTimeImmutable $lastUpdateAt = null, array $parameters = [])
     {
         $this->username = $username;
         $this->password = $password;
@@ -88,24 +88,6 @@ class User implements UserInterface, UserAccount, EquatableInterface
         $this->lastLoginAt = $lastLoginAt;
         $this->lastUpdateAt = $lastUpdateAt;
         $this->parameters = $parameters;
-    }
-
-    /**
-     * @param string                  $username
-     * @param string                  $password
-     * @param string|null             $salt
-     * @param string[]                $roles
-     * @param string[]                $oauth2Passwords
-     * @param UserAccountId           $publicId
-     * @param \DateTimeImmutable|null $lastLoginAt
-     * @param \DateTimeImmutable|null $lastUpdateAt
-     * @param array                   $parameters
-     *
-     * @return User
-     */
-    public static function create(string $username, string $password, string $salt = null, array $roles, array $oauth2Passwords, UserAccountId $publicId, \DateTimeImmutable $lastLoginAt = null, \DateTimeImmutable $lastUpdateAt = null, array $parameters = [])
-    {
-        return new self($username, $password, $salt, $roles, $oauth2Passwords, $publicId, $lastLoginAt, $lastUpdateAt, $parameters);
     }
 
     /**

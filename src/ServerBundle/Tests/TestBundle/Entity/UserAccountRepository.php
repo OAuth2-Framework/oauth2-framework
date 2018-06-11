@@ -33,8 +33,8 @@ class UserAccountRepository implements UserAccountRepositoryInterface
                 $userInformation['roles'],
                 $userInformation['oauth2Passwords'],
                 $userInformation['public_id'],
-                $userInformation['login_at'],
-                $userInformation['updated_at'],
+                $userInformation['last_login_at'],
+                $userInformation['last_update_at'],
                 $userInformation['parameters']
             );
             $this->usersByUsername[$userInformation['username']] = $user;
@@ -71,8 +71,10 @@ class UserAccountRepository implements UserAccountRepositoryInterface
                 'password' => 'secret',
                 'salt' => null,
                 'roles' => ['ROLE_USER'],
-                'login_at' => time() - 100,
-                'updated_at' => time() - 3600,
+                'last_login_at' => time() - 100,
+                'last_update_at' => time() - 3600,
+                'amr' => ['password' => 'otp'],
+                'acr' => 0,
                 'parameters' => [
                     'password' => 'doe',
                     'user' => 'john',
@@ -96,7 +98,6 @@ class UserAccountRepository implements UserAccountRepositoryInterface
                     'zoneinfo' => 'Europe/Paris',
                     'locale' => 'en',
                     'picture' => 'https://www.google.com',
-                    'amr' => ['password' => 'otp'],
                     'birthdate' => '1950-01-01',
                     'email' => 'root@localhost.com',
                     'email_verified' => false,
@@ -114,8 +115,8 @@ class UserAccountRepository implements UserAccountRepositoryInterface
                 'password' => 'secret',
                 'salt' => null,
                 'roles' => ['ROLE_USER'],
-                'login_at' => time() - 100,
-                'updated_at' => null,
+                'last_login_at' => time() - 100,
+                'last_update_at' => null,
                 'parameters' => [
                     'password' => 'doe',
                     'user' => 'john',

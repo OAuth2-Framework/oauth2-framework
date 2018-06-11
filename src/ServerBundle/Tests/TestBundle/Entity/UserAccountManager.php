@@ -13,10 +13,12 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Tests\TestBundle\Entity;
 
+use OAuth2Framework\Component\Core\UserAccount\AuthenticationContextClassReferenceSupport;
+use OAuth2Framework\Component\Core\UserAccount\AuthenticationMethodReferenceSupport;
 use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountManager as UserAccountManagerInterface;
 
-class UserAccountManager implements UserAccountManagerInterface
+class UserAccountManager implements UserAccountManagerInterface, AuthenticationMethodReferenceSupport, AuthenticationContextClassReferenceSupport
 {
     /**
      * {@inheritdoc}
@@ -28,5 +30,15 @@ class UserAccountManager implements UserAccountManagerInterface
         }
 
         return in_array($password, $user->getOAuth2Passwords());
+    }
+
+    public function getAuthenticationContextClassReferenceFor(UserAccount $user): ?string
+    {
+        return null;
+    }
+
+    public function getAuthenticationMethodReferenceFor(UserAccount $user): ?array
+    {
+        return null;
     }
 }
