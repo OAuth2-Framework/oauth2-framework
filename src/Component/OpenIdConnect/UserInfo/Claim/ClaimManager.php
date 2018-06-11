@@ -73,7 +73,23 @@ class ClaimManager
                 $claim = $this->get($claimName);
                 foreach ($claimLocales as $claimLocale) {
                     if ($claim->isAvailableForUserAccount($userAccount, $claimLocale)) {
-                        $result[$claimName] = $claim->getForUserAccount($userAccount, $claimLocale);
+                        $value = $claim->getForUserAccount($userAccount, $claimLocale);
+                        switch (true) {
+                            case is_array($config) && array_key_exists('value', $config):
+                                if ($claim === $config['value']) {
+                                    $result[$claimName] = $value;
+                                }
+
+                                break;
+                            case is_array($config) && array_key_exists('values', $config) && is_array($config['values']):
+                                if (in_array($claim, $config['values'])) {
+                                    $result[$claimName] = $value;
+                                }
+
+                                break;
+                            default:
+                                $result[$claimName] = $value;
+                        }
                     }
                 }
             }

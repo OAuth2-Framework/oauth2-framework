@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\OpenIdConnect\UserInfo;
 
+use OAuth2Framework\Component\OpenIdConnect\UserInfo\Claim\ClaimManager;
 use OAuth2Framework\Component\OpenIdConnect\UserInfo\Claim\ClaimSourceManager;
 use OAuth2Framework\Component\OpenIdConnect\UserInfo\Pairwise\PairwiseSubjectIdentifierAlgorithm;
 use OAuth2Framework\Component\OpenIdConnect\UserInfo\ScopeSupport\UserInfoScopeSupportManager;
@@ -37,14 +38,21 @@ class UserInfo
     private $claimSourceManager;
 
     /**
+     * @var ClaimManager
+     */
+    private $claimManager;
+
+    /**
      * UserInfo constructor.
      *
      * @param UserInfoScopeSupportManager $userinfoScopeSupportManager
+     * @param ClaimManager                $claimManager
      * @param ClaimSourceManager          $claimSourceManager
      */
-    public function __construct(UserInfoScopeSupportManager $userinfoScopeSupportManager, ClaimSourceManager $claimSourceManager)
+    public function __construct(UserInfoScopeSupportManager $userinfoScopeSupportManager, ClaimManager $claimManager, ClaimSourceManager $claimSourceManager)
     {
         $this->userinfoScopeSupportManager = $userinfoScopeSupportManager;
+        $this->claimManager = $claimManager;
         $this->claimSourceManager = $claimSourceManager;
     }
 
@@ -65,10 +73,10 @@ class UserInfo
             $requestedClaims
         );
         $claims = $this->getClaimValues($userAccount, $requestedClaims, $claimsLocales);
-        $claims = array_merge(
+        /*$claims = array_merge(
             $claims,
             $this->claimSourceManager->getUserInfo($userAccount, $scope, [])
-        );
+        );*/
         $claims['sub'] = $this->calculateSubjectIdentifier($client, $userAccount, $redirectUri);
 
         return $claims;
@@ -98,20 +106,20 @@ class UserInfo
     /**
      * @param UserAccount $userAccount
      * @param string|null $claimsLocales
-     * @param array       $claims
+     * @param array       $requestedClaims
      *
      * @return array
      */
-    private function getClaimValues(UserAccount $userAccount, array $claims, ? string $claimsLocales): array
+    private function getClaimValues(UserAccount $userAccount, array $requestedClaims, ?string $claimsLocales): array
     {
         $result = [];
         if (null === $claimsLocales) {
             $claimsLocales = [];
         } elseif (true === is_string($claimsLocales)) {
-            $claimsLocales = explode(' ', $claimsLocales);
+            $claimsLocales = array_unique(explode(' ', $claimsLocales));
         }
-        $claimsLocales[] = '';
-        foreach ($claims as $claim => $config) {
+        $result = $this->claimManager->getUserInfo($userAccount, $requestedClaims, $claimsLocales);
+        /*foreach ($requestedClaims as $claim => $config) {
             foreach ($claimsLocales as $claims_locale) {
                 $claim_locale = $this->computeClaimWithLocale($claim, $claims_locale);
                 $claim_value = $this->getUserClaim($userAccount, $claim_locale, $config);
@@ -121,24 +129,9 @@ class UserInfo
                     break;
                 }
             }
-        }
+        }*/
 
         return $result;
-    }
-
-    /**
-     * @param string $claim
-     * @param string $locale
-     *
-     * @return string
-     */
-    private function computeClaimWithLocale($claim, $locale): string
-    {
-        if (empty($locale)) {
-            return $claim;
-        }
-
-        return sprintf('%s#%s', $claim, $locale);
     }
 
     /**
