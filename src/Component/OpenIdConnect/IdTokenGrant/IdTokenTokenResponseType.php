@@ -41,7 +41,7 @@ final class IdTokenTokenResponseType implements ResponseType
         $this->tokenResponseType = $tokenResponseType;
     }
 
-    /**
+    /**K
      * {@inheritdoc}
      */
     public function associatedGrantTypes(): array

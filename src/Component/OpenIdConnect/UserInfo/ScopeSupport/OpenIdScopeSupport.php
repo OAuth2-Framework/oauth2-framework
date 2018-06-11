@@ -13,14 +13,22 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\OpenIdConnect\UserInfo\ScopeSupport;
 
-final class OpenIdScopeSupport implements UserInfoScopeSupport
+class OpenIdScopeSupport implements UserInfoScopeSupport
 {
     /**
      * {@inheritdoc}
      */
-    public function getScope(): string
+    public function name(): string
     {
         return 'openid';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function __toString(): string
+    {
+        return $this->name();
     }
 
     /**
@@ -31,5 +39,13 @@ final class OpenIdScopeSupport implements UserInfoScopeSupport
         return [
             'sub',
         ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function jsonSerialize()
+    {
+        return $this->name();
     }
 }

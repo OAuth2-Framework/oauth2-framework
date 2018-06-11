@@ -35,7 +35,7 @@ class UserInfoScopeSupportManager
      */
     public function add(UserInfoScopeSupport $userinfoScopeSupport): self
     {
-        $this->userinfoScopeSupports[$userinfoScopeSupport->getScope()] = $userinfoScopeSupport;
+        $this->userinfoScopeSupports[$userinfoScopeSupport->name()] = $userinfoScopeSupport;
 
         return $this;
     }

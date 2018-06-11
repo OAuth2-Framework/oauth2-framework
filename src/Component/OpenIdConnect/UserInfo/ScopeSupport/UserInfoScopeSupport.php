@@ -13,13 +13,10 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\OpenIdConnect\UserInfo\ScopeSupport;
 
-interface UserInfoScopeSupport
-{
-    /**
-     * @return string
-     */
-    public function getScope(): string;
+use OAuth2Framework\Component\Scope\Scope;
 
+interface UserInfoScopeSupport extends Scope
+{
     /**
      * @return string[]
      */
