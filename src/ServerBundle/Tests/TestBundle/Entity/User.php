@@ -103,7 +103,7 @@ class User implements UserInterface, UserAccount, EquatableInterface
      *
      * @return User
      */
-    public static function create(string $username, string $password, string $salt = null, array $roles, array $oauth2Passwords, UserAccountId $publicId, \DateTimeImmutable $lastLoginAt = null, \DateTimeImmutable $lastUpdateAt= null, array $parameters = [])
+    public static function create(string $username, string $password, string $salt = null, array $roles, array $oauth2Passwords, UserAccountId $publicId, \DateTimeImmutable $lastLoginAt = null, \DateTimeImmutable $lastUpdateAt = null, array $parameters = [])
     {
         return new self($username, $password, $salt, $roles, $oauth2Passwords, $publicId, $lastLoginAt, $lastUpdateAt, $parameters);
     }

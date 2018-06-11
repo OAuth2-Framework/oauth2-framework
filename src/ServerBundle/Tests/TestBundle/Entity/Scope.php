@@ -21,6 +21,7 @@ class Scope implements ScopeInterface
      * @var string
      */
     private $name;
+
     /**
      * @var string
      */
