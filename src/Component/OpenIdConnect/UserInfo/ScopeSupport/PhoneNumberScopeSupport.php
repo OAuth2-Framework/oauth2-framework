@@ -13,14 +13,14 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\OpenIdConnect\UserInfo\ScopeSupport;
 
-class PhoneScopeSupport implements UserInfoScopeSupport
+class PhoneNumberScopeSupport implements UserInfoScopeSupport
 {
     /**
      * {@inheritdoc}
      */
     public function name(): string
     {
-        return 'phone';
+        return 'phone_number';
     }
 
     /**
