@@ -30,7 +30,7 @@ final class FamilyName implements Claim
     /**
      * {@inheritdoc}
      */
-    public function isAvailableForUserAccount(UserAccount $userAccount, ?string $claimLocale):bool
+    public function isAvailableForUserAccount(UserAccount $userAccount, ?string $claimLocale): bool
     {
         return $userAccount->has(
             $this->getComputedClaimName($claimLocale)

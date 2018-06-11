@@ -30,7 +30,7 @@ final class UpdatedAt implements Claim
     /**
      * {@inheritdoc}
      */
-    public function isAvailableForUserAccount(UserAccount $userAccount, ?string $claimLocale):bool
+    public function isAvailableForUserAccount(UserAccount $userAccount, ?string $claimLocale): bool
     {
         return null !== $userAccount->getLastUpdateAt();
     }
