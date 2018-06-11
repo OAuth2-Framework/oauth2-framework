@@ -136,8 +136,6 @@ class UserInfo
             }
         }
 
-        dump($result);
-
         return $result;
     }
 
