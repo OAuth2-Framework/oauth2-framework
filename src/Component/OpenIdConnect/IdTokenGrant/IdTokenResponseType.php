@@ -122,6 +122,9 @@ final class IdTokenResponseType implements ResponseType
     {
         $params = $authorization->getQueryParams();
         $requestedClaims = $this->getIdTokenClaims($authorization);
+        if ($authorization->hasQueryParam('claims')) {
+            $authorization = $authorization->withMetadata('requested_claims', $authorization->getQueryParam('claims'));
+        }
 
         $idTokenBuilder = $this->idTokenBuilderFactory->createBuilder(
             $authorization->getClient(),
