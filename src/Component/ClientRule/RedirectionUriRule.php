@@ -38,25 +38,25 @@ final class RedirectionUriRule implements Rule
         if (!$validatedParameters->has('token_endpoint_auth_method')) {
             throw new \InvalidArgumentException('Unable to determine the token endpoint authentication method.');
         }
-        $is_client_public = 'none' === $validatedParameters->get('token_endpoint_auth_method');
+        $isClientPublic = 'none' === $validatedParameters->get('token_endpoint_auth_method');
 
-        $application_type = $validatedParameters->has('application_type') ? $validatedParameters->get('application_type') : 'web';
+        $applicationType = $validatedParameters->has('application_type') ? $validatedParameters->get('application_type') : 'web';
         $response_types = $validatedParameters->has('response_types') ? $validatedParameters->get('response_types') : [];
-        $uses_implicit_grant_type = false;
+        $usesImplicitGrantType = false;
         foreach ($response_types as $response_type) {
             $types = explode(' ', $response_type);
             if (in_array('token', $types)) {
-                $uses_implicit_grant_type = true;
+                $usesImplicitGrantType = true;
 
                 break;
             }
         }
 
         if (!$commandParameters->has('redirect_uris')) {
-            if ($is_client_public) {
+            if ($isClientPublic) {
                 throw new \InvalidArgumentException('Non-confidential clients must register at least one redirect URI.');
             }
-            if ($uses_implicit_grant_type) {
+            if ($usesImplicitGrantType) {
                 throw new \InvalidArgumentException('Confidential clients must register at least one redirect URI when using the "token" response type.');
             }
             $redirectUris = [];
@@ -67,7 +67,7 @@ final class RedirectionUriRule implements Rule
             }
         }
 
-        $this->checkAllUris($redirectUris, $application_type, $uses_implicit_grant_type, $is_client_public);
+        $this->checkAllUris($redirectUris, $applicationType, $usesImplicitGrantType, $isClientPublic);
         $validatedParameters->with('redirect_uris', $redirectUris);
 
         return $validatedParameters;
@@ -75,26 +75,26 @@ final class RedirectionUriRule implements Rule
 
     /**
      * @param array  $value
-     * @param string $application_type
-     * @param bool   $uses_implicit_grant_type
-     * @param bool   $is_client_public
+     * @param string $applicationType
+     * @param bool   $usesImplicitGrantType
+     * @param bool   $isClientPublic
      */
-    private function checkAllUris(array $value, string $application_type, bool $uses_implicit_grant_type, bool $is_client_public)
+    private function checkAllUris(array $value, string $applicationType, bool $usesImplicitGrantType, bool $isClientPublic)
     {
         foreach ($value as $redirectUri) {
             if (!is_string($redirectUri)) {
                 throw new \InvalidArgumentException('The parameter "redirect_uris" must be a list of URI or URN.');
             }
-            $this->checkUri($redirectUri, $application_type, $uses_implicit_grant_type);
+            $this->checkUri($redirectUri, $applicationType, $usesImplicitGrantType);
         }
     }
 
     /**
      * @param string $uri
-     * @param string $application_type
-     * @param bool   $uses_implicit_grant_type
+     * @param string $applicationType
+     * @param bool   $usesImplicitGrantType
      */
-    private function checkUri(string $uri, string $application_type, bool $uses_implicit_grant_type)
+    private function checkUri(string $uri, string $applicationType, bool $usesImplicitGrantType)
     {
         if ('urn:' === mb_substr($uri, 0, 4, '8bit')) {
             $this->checkUrn($uri);
@@ -109,7 +109,7 @@ final class RedirectionUriRule implements Rule
             if (null !== $parsed['fragment']) {
                 throw new \InvalidArgumentException('The parameter "redirect_uris" must only contain URIs without fragment.');
             }
-            if ('web' === $application_type && true === $uses_implicit_grant_type) {
+            if ('web' === $applicationType && true === $usesImplicitGrantType) {
                 if ('localhost' === $parsed['host']) {
                     throw new \InvalidArgumentException('The host "localhost" is not allowed for web applications that use the Implicit Grant Type.');
                 }
