@@ -499,7 +499,7 @@ class AuthorizationRequestLoader
             ]));
         }
 
-        if ($keyset->count() === 0) {
+        if (0 === $keyset->count()) {
             throw new \InvalidArgumentException('The client has no key or key set.');
         }
 
