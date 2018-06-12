@@ -71,8 +71,8 @@ class UserAccountRepository implements UserAccountRepositoryInterface
                 'password' => 'secret',
                 'salt' => null,
                 'roles' => ['ROLE_USER'],
-                'last_login_at' => time() - 100,
-                'last_update_at' => time() - 3600,
+                'last_login_at' => new \DateTimeImmutable('now -100 seconds'),
+                'last_update_at' => new \DateTimeImmutable('now -2 hours'),
                 'amr' => ['password' => 'otp'],
                 'acr' => 0,
                 'parameters' => [
@@ -115,7 +115,7 @@ class UserAccountRepository implements UserAccountRepositoryInterface
                 'password' => 'secret',
                 'salt' => null,
                 'roles' => ['ROLE_USER'],
-                'last_login_at' => time() - 100,
+                'last_login_at' => new \DateTimeImmutable('now -100 seconds'),
                 'last_update_at' => null,
                 'parameters' => [
                     'password' => 'doe',

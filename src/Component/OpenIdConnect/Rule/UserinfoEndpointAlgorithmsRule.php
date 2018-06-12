@@ -50,14 +50,14 @@ final class UserinfoEndpointAlgorithmsRule implements Rule
     {
         if ($commandParameters->has('userinfo_signed_response_alg') && null !== $this->jwsBuilder) {
             $this->checkAlgorithms('userinfo_signed_response_alg', $commandParameters, $this->jwsBuilder->getSignatureAlgorithmManager()->list());
-            $validatedParameters = $validatedParameters->with('userinfo_signed_response_alg', $commandParameters->get('userinfo_signed_response_alg'));
+            $validatedParameters->with('userinfo_signed_response_alg', $commandParameters->get('userinfo_signed_response_alg'));
         }
 
         if ($commandParameters->has('userinfo_encrypted_response_alg') && $commandParameters->has('userinfo_encrypted_response_enc') && null !== $this->jweBuilder) {
             $this->checkAlgorithms('userinfo_encrypted_response_alg', $commandParameters, $this->jweBuilder->getKeyEncryptionAlgorithmManager()->list());
-            $validatedParameters = $validatedParameters->with('userinfo_encrypted_response_alg', $commandParameters->get('userinfo_encrypted_response_alg'));
+            $validatedParameters->with('userinfo_encrypted_response_alg', $commandParameters->get('userinfo_encrypted_response_alg'));
             $this->checkAlgorithms('userinfo_encrypted_response_enc', $commandParameters, $this->jweBuilder->getContentEncryptionAlgorithmManager()->list());
-            $validatedParameters = $validatedParameters->with('userinfo_encrypted_response_enc', $commandParameters->get('userinfo_encrypted_response_enc'));
+            $validatedParameters->with('userinfo_encrypted_response_enc', $commandParameters->get('userinfo_encrypted_response_enc'));
         }
 
         return $next($clientId, $commandParameters, $validatedParameters);

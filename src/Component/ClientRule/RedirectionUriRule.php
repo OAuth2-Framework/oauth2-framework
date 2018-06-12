@@ -68,7 +68,7 @@ final class RedirectionUriRule implements Rule
         }
 
         $this->checkAllUris($redirectUris, $application_type, $uses_implicit_grant_type, $is_client_public);
-        $validatedParameters = $validatedParameters->with('redirect_uris', $redirectUris);
+        $validatedParameters->with('redirect_uris', $redirectUris);
 
         return $validatedParameters;
     }

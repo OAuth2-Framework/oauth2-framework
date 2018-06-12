@@ -63,7 +63,7 @@ final class ClientCredentialsGrantType implements GrantType
             throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_CLIENT, 'The client is not a confidential client.');
         }
 
-        $grantTypeData = $grantTypeData->withResourceOwnerId($grantTypeData->getClient()->getPublicId());
+        $grantTypeData->withResourceOwnerId($grantTypeData->getClient()->getPublicId());
 
         return $grantTypeData;
     }

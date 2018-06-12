@@ -40,7 +40,7 @@ final class PromptNoneParameterAccountCheckerTest extends TestCase
         $checker = new PromptNoneParameterAccountChecker();
 
         try {
-            $checker->check($authorization->reveal());
+            $checker->check($authorization->reveal(), null, false);
             $this->fail('The expected exception has not been thrown.');
         } catch (CreateRedirectionException $e) {
             self::assertTrue(true);
@@ -62,7 +62,7 @@ final class PromptNoneParameterAccountCheckerTest extends TestCase
         $authorization->getClient()->willReturn($client->reveal());
         $checker = new PromptNoneParameterAccountChecker();
 
-        $checker->check($authorization->reveal());
+        $checker->check($authorization->reveal(), $userAccount->reveal(), true);
         self::assertTrue(true);
     }
 
@@ -81,7 +81,7 @@ final class PromptNoneParameterAccountCheckerTest extends TestCase
         $authorization->getClient()->willReturn($client->reveal());
         $checker = new PromptNoneParameterAccountChecker();
 
-        $checker->check($authorization->reveal());
+        $checker->check($authorization->reveal(), $userAccount->reveal(), true);
         self::assertTrue(true);
     }
 }

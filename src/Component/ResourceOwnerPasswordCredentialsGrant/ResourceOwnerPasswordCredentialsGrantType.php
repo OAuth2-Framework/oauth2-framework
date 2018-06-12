@@ -98,7 +98,7 @@ final class ResourceOwnerPasswordCredentialsGrantType implements GrantType
             throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_GRANT, 'Invalid username and password combination.');
         }
 
-        $grantTypeData = $grantTypeData->withResourceOwnerId($userAccount->getUserAccountId());
+        $grantTypeData->withResourceOwnerId($userAccount->getUserAccountId());
 
         return $grantTypeData;
     }

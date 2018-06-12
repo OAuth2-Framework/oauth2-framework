@@ -73,10 +73,9 @@ class DataBag implements \JsonSerializable, \IteratorAggregate, \Countable
      */
     public function with(string $key, $value): self
     {
-        $clone = clone $this;
-        $clone->parameters[$key] = $value;
+        $this->parameters[$key] = $value;
 
-        return $clone;
+        return $this;
     }
 
     /**
@@ -89,10 +88,9 @@ class DataBag implements \JsonSerializable, \IteratorAggregate, \Countable
         if (!$this->has($key)) {
             return $this;
         }
-        $clone = clone $this;
-        unset($clone->parameters[$key]);
+        unset($this->parameters[$key]);
 
-        return $clone;
+        return $this;
     }
 
     /**

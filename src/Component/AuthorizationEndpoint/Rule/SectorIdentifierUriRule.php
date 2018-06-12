@@ -54,7 +54,7 @@ final class SectorIdentifierUriRule implements Rule
         if ($commandParameters->has('sector_identifier_uri')) {
             $redirectUris = $validatedParameters->has('redirect_uris') ? $validatedParameters->get('redirect_uris') : [];
             $this->checkSectorIdentifierUri($commandParameters->get('sector_identifier_uri'), $redirectUris);
-            $validatedParameters = $validatedParameters->with('sector_identifier_uri', $commandParameters->get('sector_identifier_uri'));
+            $validatedParameters->with('sector_identifier_uri', $commandParameters->get('sector_identifier_uri'));
         }
 
         return $validatedParameters;

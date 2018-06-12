@@ -65,8 +65,8 @@ final class TokenResponseTypeTest extends TestCase
             $client,
             []
         );
-        $authorization = $authorization->withUserAccount($userAccount->reveal(), true);
-        $authorization = $authorization->withTokenType($tokenType->reveal());
+        $authorization->withUserAccount($userAccount->reveal(), true);
+        $authorization->withTokenType($tokenType->reveal());
 
         $authorization = $this->getResponseType()->process($authorization, function (Authorization $authorization) {
             return $authorization;

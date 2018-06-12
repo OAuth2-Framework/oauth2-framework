@@ -60,7 +60,7 @@ final class TokenEndpointScopeExtension implements TokenEndpointExtension
         $this->checkRequestedScopeIsAvailable($scope, $grantTypeData);
 
         if (!empty($scope)) {
-            $grantTypeData = $grantTypeData->withParameter('scope', $scope);
+            $grantTypeData->withParameter('scope', $scope);
         }
 
         return $grantTypeData;
@@ -84,7 +84,7 @@ final class TokenEndpointScopeExtension implements TokenEndpointExtension
     {
         $parameters = RequestBodyParser::parseFormUrlEncoded($request);
         if (!array_key_exists('scope', $parameters)) {
-            return $grantTypeData->hasParameter('scope') ? $grantTypeData->getParameter('scope') : '';
+            return $grantTypeData->getParameter()->has('scope') ? $grantTypeData->getParameter()->get('scope') : '';
         }
 
         return $parameters['scope'];
@@ -119,7 +119,7 @@ final class TokenEndpointScopeExtension implements TokenEndpointExtension
         // * the grant type (e.g. refresh token, authorization code parameter)
         // * the client configuration
         // * the scope repository
-        $availableScope = $grantTypeData->hasParameter('scope') ? $grantTypeData->getParameter('scope') : $this->getAvailableScopesForClient($grantTypeData->getClient());
+        $availableScope = $grantTypeData->getParameter()->has('scope') ? $grantTypeData->getParameter()->get('scope') : $this->getAvailableScopesForClient($grantTypeData->getClient());
         $availableScopes = explode(' ', $availableScope);
         $requestedScopes = empty($scope) ? [] : explode(' ', $scope);
         $diff = array_diff($requestedScopes, $availableScopes);

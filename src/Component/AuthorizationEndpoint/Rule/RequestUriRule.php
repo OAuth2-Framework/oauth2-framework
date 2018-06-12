@@ -30,7 +30,7 @@ final class RequestUriRule implements Rule
         }
         if ($commandParameters->has('request_uris')) {
             $this->checkAllUris($commandParameters->get('request_uris'));
-            $validatedParameters = $validatedParameters->with('request_uris', $commandParameters->get('request_uris'));
+            $validatedParameters->with('request_uris', $commandParameters->get('request_uris'));
         }
 
         return $validatedParameters;

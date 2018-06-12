@@ -111,9 +111,8 @@ final class JwtBearerGrantTypeTest extends TestCase
         $grantTypeData = GrantTypeData::create(null);
 
         $receivedGrantTypeData = $this->getGrantType()->prepareResponse($request->reveal(), $grantTypeData);
-        self::assertNotSame($receivedGrantTypeData, $grantTypeData);
-        self::assertTrue($receivedGrantTypeData->hasMetadata('jwt'));
-        self::assertTrue($receivedGrantTypeData->hasMetadata('claims'));
+        self::assertTrue($receivedGrantTypeData->getMetadata()->has('jwt'));
+        self::assertTrue($receivedGrantTypeData->getMetadata()->has('claims'));
     }
 
     /**
@@ -125,9 +124,8 @@ final class JwtBearerGrantTypeTest extends TestCase
         $grantTypeData = GrantTypeData::create(null);
 
         $receivedGrantTypeData = $this->getGrantType()->prepareResponse($request->reveal(), $grantTypeData);
-        self::assertNotSame($receivedGrantTypeData, $grantTypeData);
-        self::assertTrue($receivedGrantTypeData->hasMetadata('jwt'));
-        self::assertTrue($receivedGrantTypeData->hasMetadata('claims'));
+        self::assertTrue($receivedGrantTypeData->getMetadata()->has('jwt'));
+        self::assertTrue($receivedGrantTypeData->getMetadata()->has('claims'));
     }
 
     /**
@@ -163,7 +161,7 @@ final class JwtBearerGrantTypeTest extends TestCase
         $request = $this->buildRequest(['assertion' => $this->createValidAssertionFromIssuer()]);
         $request->getAttribute('client')->willReturn($client);
         $grantTypeData = GrantTypeData::create($client);
-        $grantTypeData = $grantTypeData->withResourceOwnerId(UserAccountId::create('USER_ACCOUNT_ID'));
+        $grantTypeData->withResourceOwnerId(UserAccountId::create('USER_ACCOUNT_ID'));
 
         $receivedGrantTypeData = $this->getGrantType()->grant($request->reveal(), $grantTypeData);
         self::assertSame($receivedGrantTypeData, $grantTypeData);
@@ -188,7 +186,7 @@ final class JwtBearerGrantTypeTest extends TestCase
         $request = $this->buildRequest(['assertion' => $this->createValidEncryptedAssertionFromClient()]);
         $request->getAttribute('client')->willReturn($client);
         $grantTypeData = GrantTypeData::create($client);
-        $grantTypeData = $grantTypeData->withResourceOwnerId(UserAccountId::create('CLIENT_ID'));
+        $grantTypeData->withResourceOwnerId(UserAccountId::create('CLIENT_ID'));
 
         $receivedGrantTypeData = $this->getGrantType()->grant($request->reveal(), $grantTypeData);
         self::assertSame($receivedGrantTypeData, $grantTypeData);

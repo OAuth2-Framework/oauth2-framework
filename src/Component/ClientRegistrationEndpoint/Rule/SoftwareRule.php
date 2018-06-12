@@ -77,20 +77,20 @@ final class SoftwareRule implements Rule
                 throw new \InvalidArgumentException('The software statement must be a string.');
             }
             $software_statement = $this->loadSoftwareStatement($statement);
-            $validatedParameters = $validatedParameters->with('software_statement', $commandParameters->get('software_statement'));
+            $validatedParameters->with('software_statement', $commandParameters->get('software_statement'));
         } else {
             $software_statement = [];
         }
 
         foreach (['software_id', 'software_version'] as $key) {
             if ($commandParameters->has($key)) {
-                $validatedParameters = $validatedParameters->with($key, $commandParameters->get($key));
+                $validatedParameters->with($key, $commandParameters->get($key));
             }
         }
 
         $validatedParameters = $next($clientId, $commandParameters, $validatedParameters);
         foreach ($software_statement as $k => $v) {
-            $validatedParameters = $validatedParameters->with($k, $v);
+            $validatedParameters->with($k, $v);
         }
 
         return $validatedParameters;

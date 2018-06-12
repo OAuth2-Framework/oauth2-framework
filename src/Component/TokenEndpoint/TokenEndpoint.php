@@ -168,8 +168,8 @@ class TokenEndpoint implements MiddlewareInterface
         $accessTokenId = $this->accessTokenIdGenerator->createAccessTokenId(
             $grantTypeData->getResourceOwnerId(),
             $grantTypeData->getClient()->getClientId(),
-            $grantTypeData->getParameters(),
-            $grantTypeData->getMetadatas(),
+            $grantTypeData->getParameter(),
+            $grantTypeData->getMetadata(),
             null
         );
         $accessToken = AccessToken::createEmpty();
@@ -177,8 +177,8 @@ class TokenEndpoint implements MiddlewareInterface
             $accessTokenId,
             $grantTypeData->getResourceOwnerId(),
             $grantTypeData->getClient()->getClientId(),
-            $grantTypeData->getParameters(),
-            $grantTypeData->getMetadatas(),
+            $grantTypeData->getParameter(),
+            $grantTypeData->getMetadata(),
             new \DateTimeImmutable(sprintf('now +%d seconds', $this->accessTokenLifetime)),
             null
         );
@@ -222,7 +222,7 @@ class TokenEndpoint implements MiddlewareInterface
         $info = $tokenType->getAdditionalInformation();
         $info['token_type'] = $tokenType->name();
         foreach ($info as $k => $v) {
-            $grantTypeData = $grantTypeData->withParameter($k, $v);
+            $grantTypeData->withParameter($k, $v);
         }
 
         return $grantTypeData;

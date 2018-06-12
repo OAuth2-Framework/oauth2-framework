@@ -41,6 +41,7 @@
         "zendframework/zend-diactoros": "^1.7"
     },
     "require-dev": {
+        "blackfire/php-sdk": "^1.14",
         "http-interop/http-factory-diactoros": "^0.3.0",
         "infection/infection": "^0.8.2",
         "php-http/mock-client": "^1.1",

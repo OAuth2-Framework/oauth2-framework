@@ -50,14 +50,14 @@ final class IdTokenAlgorithmsRule implements Rule
     {
         if ($commandParameters->has('id_token_signed_response_alg')) {
             $this->checkAlgorithms('id_token_signed_response_alg', $commandParameters, $this->jwsBuilder->getSignatureAlgorithmManager()->list());
-            $validatedParameters = $validatedParameters->with('id_token_signed_response_alg', $commandParameters->get('id_token_signed_response_alg'));
+            $validatedParameters->with('id_token_signed_response_alg', $commandParameters->get('id_token_signed_response_alg'));
         }
 
         if ($commandParameters->has('id_token_encrypted_response_alg') && $commandParameters->has('id_token_encrypted_response_enc') && null !== $this->jweBuilder) {
             $this->checkAlgorithms('id_token_encrypted_response_alg', $commandParameters, $this->jweBuilder->getKeyEncryptionAlgorithmManager()->list());
             $this->checkAlgorithms('id_token_encrypted_response_enc', $commandParameters, $this->jweBuilder->getContentEncryptionAlgorithmManager()->list());
-            $validatedParameters = $validatedParameters->with('id_token_encrypted_response_alg', $commandParameters->get('id_token_encrypted_response_alg'));
-            $validatedParameters = $validatedParameters->with('id_token_encrypted_response_enc', $commandParameters->get('id_token_encrypted_response_enc'));
+            $validatedParameters->with('id_token_encrypted_response_alg', $commandParameters->get('id_token_encrypted_response_alg'));
+            $validatedParameters->with('id_token_encrypted_response_enc', $commandParameters->get('id_token_encrypted_response_enc'));
         }
 
         return $next($clientId, $commandParameters, $validatedParameters);

@@ -106,7 +106,6 @@ final class ResourceOwnerPasswordCredentialsGrantTypeTest extends TestCase
         $grantTypeData = GrantTypeData::create($client);
 
         $receivedGrantTypeData = $this->getGrantType()->grant($request->reveal(), $grantTypeData);
-        self::assertNotSame($receivedGrantTypeData, $grantTypeData);
         self::assertEquals('USERNAME', $receivedGrantTypeData->getResourceOwnerId()->getValue());
         self::assertEquals('CLIENT_ID', $receivedGrantTypeData->getClient()->getPublicId()->getValue());
     }

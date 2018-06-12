@@ -15,6 +15,7 @@ namespace OAuth2Framework\Component\AuthorizationEndpoint;
 
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\ResponseMode;
 use OAuth2Framework\Component\Core\Client\Client;
+use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServer;
 use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 use OAuth2Framework\Component\Core\TokenType\TokenType;
@@ -22,9 +23,9 @@ use OAuth2Framework\Component\Core\TokenType\TokenType;
 class Authorization
 {
     /**
-     * @var bool|null
+     * @var bool
      */
-    private $authorized = null;
+    private $authorized;
 
     /**
      * @var Client
@@ -35,6 +36,11 @@ class Authorization
      * @var UserAccount|null
      */
     private $userAccount = null;
+
+    /**
+     * @var DataBag
+     */
+    private $metadata;
 
     /**
      * @var null|bool
@@ -106,6 +112,7 @@ class Authorization
     {
         $this->client = $client;
         $this->queryParameters = $queryParameters;
+        $this->metadata = DataBag::create([]);
     }
 
     /**
@@ -166,10 +173,9 @@ class Authorization
      */
     public function withTokenType(TokenType $tokenType): self
     {
-        $clone = clone $this;
-        $clone->tokenType = $tokenType;
+        $this->tokenType = $tokenType;
 
-        return $clone;
+        return $this;
     }
 
     /**
@@ -187,10 +193,9 @@ class Authorization
      */
     public function withClaims(array $claims): self
     {
-        $clone = clone $this;
-        $clone->claims = $claims;
+        $this->claims = $claims;
 
-        return $clone;
+        return $this;
     }
 
     /**
@@ -208,10 +213,9 @@ class Authorization
      */
     public function withResponseType(ResponseType $responseType): self
     {
-        $clone = clone $this;
-        $clone->responseType = $responseType;
+        $this->responseType = $responseType;
 
-        return $clone;
+        return $this;
     }
 
     /**
@@ -229,10 +233,9 @@ class Authorization
      */
     public function withResponseMode(ResponseMode $responseMode): self
     {
-        $clone = clone $this;
-        $clone->responseMode = $responseMode;
+        $this->responseMode = $responseMode;
 
-        return $clone;
+        return $this;
     }
 
     /**
@@ -250,10 +253,9 @@ class Authorization
      */
     public function withRedirectUri(string $redirectUri): self
     {
-        $clone = clone $this;
-        $clone->redirectUri = $redirectUri;
+        $this->redirectUri = $redirectUri;
 
-        return $clone;
+        return $this;
     }
 
     /**
@@ -272,11 +274,10 @@ class Authorization
      */
     public function withUserAccount(UserAccount $userAccount, bool $isFullyAuthenticated): self
     {
-        $clone = clone $this;
-        $clone->userAccount = $userAccount;
-        $clone->userAccountFullyAuthenticated = $isFullyAuthenticated;
+        $this->userAccount = $userAccount;
+        $this->userAccountFullyAuthenticated = $isFullyAuthenticated;
 
-        return $clone;
+        return $this;
     }
 
     /**
@@ -295,10 +296,9 @@ class Authorization
      */
     public function withResponseParameter(string $responseParameter, $value): self
     {
-        $clone = clone $this;
-        $clone->responseParameters[$responseParameter] = $value;
+        $this->responseParameters[$responseParameter] = $value;
 
-        return $clone;
+        return $this;
     }
 
     /**
@@ -341,10 +341,9 @@ class Authorization
      */
     public function withResponseHeader(string $responseHeader, $value): self
     {
-        $clone = clone $this;
-        $clone->responseHeaders[$responseHeader] = $value;
+        $this->responseHeaders[$responseHeader] = $value;
 
-        return $clone;
+        return $this;
     }
 
     /**
@@ -402,9 +401,9 @@ class Authorization
     }
 
     /**
-     * @return bool|null
+     * @return bool
      */
-    public function isAuthorized(): ? bool
+    public function isAuthorized(): bool
     {
         return $this->authorized;
     }
@@ -414,10 +413,9 @@ class Authorization
      */
     public function allow(): self
     {
-        $clone = clone $this;
-        $clone->authorized = true;
+        $this->authorized = true;
 
-        return $clone;
+        return $this;
     }
 
     /**
@@ -425,10 +423,9 @@ class Authorization
      */
     public function deny(): self
     {
-        $clone = clone $this;
-        $clone->authorized = false;
+        $this->authorized = false;
 
-        return $clone;
+        return $this;
     }
 
     /**
@@ -463,10 +460,9 @@ class Authorization
      */
     public function withData(string $key, $data): self
     {
-        $clone = clone $this;
-        $clone->data[$key] = $data;
+        $this->data[$key] = $data;
 
-        return $clone;
+        return $this;
     }
 
     /**
@@ -484,10 +480,9 @@ class Authorization
      */
     public function withResourceServer(ResourceServer $resourceServer): self
     {
-        $clone = clone $this;
-        $clone->resourceServer = $resourceServer;
+        $this->resourceServer = $resourceServer;
 
-        return $clone;
+        return $this;
     }
 
     /**
@@ -498,10 +493,9 @@ class Authorization
      */
     public function withConsentScreenOption(string $option, $value): self
     {
-        $clone = clone $this;
-        $clone->consentScreenOptions[$option] = $value;
+        $this->consentScreenOptions[$option] = $value;
 
-        return $clone;
+        return $this;
     }
 
     /**
@@ -515,10 +509,9 @@ class Authorization
             return $this;
         }
 
-        $clone = clone $this;
-        unset($clone->consentScreenOptions[$option]);
+        unset($this->consentScreenOptions[$option]);
 
-        return $clone;
+        return $this;
     }
 
     public function hasScope(): bool
@@ -532,5 +525,47 @@ class Authorization
     public function getScope(): string
     {
         return $this->getQueryParam('scope');
+    }
+
+    /**
+     * @param string     $key
+     * @param mixed|null $data
+     *
+     * @return Authorization
+     */
+    public function withMetadata(string $key, $data): self
+    {
+        $this->metadata = $this->metadata->with($key, $data);
+
+        return $this;
+    }
+
+    /**
+     * @param string $key
+     *
+     * @return bool
+     */
+    public function hasMetadata(string $key): bool
+    {
+        return $this->metadata->has($key);
+    }
+
+    /**
+     * @param string $key
+     *
+     * @return bool
+     */
+    public function getMetadata(string $key): bool
+    {
+        if (!$this->hasMetadata($key)) {
+            throw new \InvalidArgumentException(sprintf('The metadata "%s" does not exist.', $key));
+        }
+
+        return $this->metadata->get($key);
+    }
+
+    public function getMetadatas(): DataBag
+    {
+        return $this->metadata;
     }
 }

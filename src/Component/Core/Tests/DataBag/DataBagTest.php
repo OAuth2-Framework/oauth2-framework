@@ -29,17 +29,13 @@ final class DataBagTest extends TestCase
         $data = DataBag::create([
             'foo' => 'bar',
         ]);
-        $dataModified = $data->with('foo', 'BAR');
-        $dataModified = $dataModified->without('bar');
-        $dataModified = $dataModified->without('foo');
+        $data->with('foo', 'BAR');
+        $data = $data->without('bar');
+        $data = $data->without('foo');
 
         self::assertInstanceOf(DataBag::class, $data);
-        self::assertInstanceOf(DataBag::class, $dataModified);
-        self::assertNotSame($dataModified, $data);
-        self::assertTrue($data->has('foo'));
+        self::assertFalse($data->has('foo'));
         self::assertFalse($data->has('---'));
-        self::assertEquals('bar', $data->get('foo'));
-        self::assertEquals('{"foo":"bar"}', json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
-        self::assertEquals('[]', json_encode($dataModified, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
+        self::assertEquals('[]', json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
     }
 }

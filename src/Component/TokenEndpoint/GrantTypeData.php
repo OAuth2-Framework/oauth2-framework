@@ -62,49 +62,11 @@ class GrantTypeData
     }
 
     /**
-     * @param string $key
-     * @param mixed  $metadata
-     *
-     * @return GrantTypeData
-     */
-    public function withMetadata(string $key, $metadata): self
-    {
-        $clone = clone $this;
-        $clone->metadatas = $this->metadatas->with($key, $metadata);
-
-        return $clone;
-    }
-
-    /**
      * @return DataBag
      */
-    public function getMetadatas(): DataBag
+    public function getMetadata(): DataBag
     {
         return $this->metadatas;
-    }
-
-    /**
-     * @param string $key
-     *
-     * @return mixed
-     */
-    public function getMetadata(string $key)
-    {
-        if (!$this->hasMetadata($key)) {
-            throw new \InvalidArgumentException(sprintf('The metadata with key "%s" does not exist.', $key));
-        }
-
-        return $this->metadatas->get($key);
-    }
-
-    /**
-     * @param string $key
-     *
-     * @return bool
-     */
-    public function hasMetadata(string $key): bool
-    {
-        return $this->metadatas->has($key);
     }
 
     /**
@@ -115,42 +77,17 @@ class GrantTypeData
      */
     public function withParameter(string $key, $parameter): self
     {
-        $clone = clone $this;
-        $clone->parameters = $this->parameters->with($key, $parameter);
+        $this->parameters = $this->parameters->with($key, $parameter);
 
-        return $clone;
+        return $this;
     }
 
     /**
      * @return DataBag
      */
-    public function getParameters(): DataBag
+    public function getParameter(): DataBag
     {
         return $this->parameters;
-    }
-
-    /**
-     * @param string $key
-     *
-     * @return mixed
-     */
-    public function getParameter(string $key)
-    {
-        if (!$this->hasParameter($key)) {
-            throw new \InvalidArgumentException(sprintf('The parameter with key "%s" does not exist.', $key));
-        }
-
-        return $this->parameters->get($key);
-    }
-
-    /**
-     * @param string $key
-     *
-     * @return bool
-     */
-    public function hasParameter(string $key): bool
-    {
-        return $this->parameters->has($key);
     }
 
     /**
@@ -160,10 +97,9 @@ class GrantTypeData
      */
     public function withClient(Client $client): self
     {
-        $clone = clone $this;
-        $clone->client = $client;
+        $this->client = $client;
 
-        return $clone;
+        return $this;
     }
 
     /**
@@ -181,10 +117,9 @@ class GrantTypeData
      */
     public function withResourceOwnerId(ResourceOwnerId $resourceOwnerId): self
     {
-        $clone = clone $this;
-        $clone->resourceOwnerId = $resourceOwnerId;
+        $this->resourceOwnerId = $resourceOwnerId;
 
-        return $clone;
+        return $this;
     }
 
     /**

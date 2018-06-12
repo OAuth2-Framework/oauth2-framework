@@ -126,9 +126,8 @@ final class TokenEndpointScopeExtensionTest extends TestCase
         };
 
         $result = $this->getExtension()->beforeAccessTokenIssuance($request->reveal(), $grantTypeData, $grantType->reveal(), $next);
-        self::assertNotSame($grantTypeData, $result);
-        self::assertTrue($result->hasParameter('scope'));
-        self::assertEquals('scope2 scope1', $result->getParameter('scope'));
+        self::assertTrue($result->getParameter()->has('scope'));
+        self::assertEquals('scope2 scope1', $result->getParameter()->get('scope'));
     }
 
     /**

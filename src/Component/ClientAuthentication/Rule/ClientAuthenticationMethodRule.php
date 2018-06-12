@@ -54,7 +54,7 @@ final class ClientAuthenticationMethodRule implements Rule
         $clientAuthenticationMethod = $this->clientAuthenticationMethodManager->get($commandParameters->get('token_endpoint_auth_method'));
         $validatedParameters = $next($clientId, $commandParameters, $validatedParameters);
         $validatedParameters = $clientAuthenticationMethod->checkClientConfiguration($commandParameters, $validatedParameters);
-        $validatedParameters = $validatedParameters->with('token_endpoint_auth_method', $commandParameters->get('token_endpoint_auth_method'));
+        $validatedParameters->with('token_endpoint_auth_method', $commandParameters->get('token_endpoint_auth_method'));
 
         return $validatedParameters;
     }

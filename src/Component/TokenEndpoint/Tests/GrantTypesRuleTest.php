@@ -99,21 +99,6 @@ final class GrantTypesRuleTest extends TestCase
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The grant type "authorization_code" requires the following response type(s): code.
-     */
-    public function theAssociatedResponseTypesAreMissing()
-    {
-        $clientId = ClientId::create('CLIENT_ID');
-        $commandParameters = DataBag::create([
-            'grant_types' => ['authorization_code'],
-        ]);
-        $rule = $this->getGrantTypesRule();
-        $rule->handle($clientId, $commandParameters, DataBag::create([]), $this->getCallable());
-    }
-
-    /**
-     * @test
      */
     public function theAssociatedResponseTypesAreSet()
     {

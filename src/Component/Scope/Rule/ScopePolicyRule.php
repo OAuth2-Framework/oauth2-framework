@@ -46,7 +46,7 @@ final class ScopePolicyRule implements Rule
             if (!$this->scopePolicyManager->has($policy)) {
                 throw new \InvalidArgumentException(sprintf('The scope policy "%s" is not supported.', $policy));
             }
-            $validatedParameters = $validatedParameters->with('scope_policy', $commandParameters->get('scope_policy'));
+            $validatedParameters->with('scope_policy', $commandParameters->get('scope_policy'));
         }
 
         return $next($clientId, $commandParameters, $validatedParameters);

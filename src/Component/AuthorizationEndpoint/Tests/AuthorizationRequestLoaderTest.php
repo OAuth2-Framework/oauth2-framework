@@ -244,7 +244,7 @@ final class AuthorizationRequestLoaderTest extends TestCase
         $client->has('jwks')->willReturn(false)->shouldBeCalled();
         $client->has('jwks_uri')->willReturn(false)->shouldBeCalled();
         $client->has('client_secret')->willReturn(false)->shouldBeCalled();
-        $client->has('request_object_signing_alg')->willReturn(false)->shouldBeCalled();
+        $client->has('request_object_signing_alg')->willReturn(false)->shouldNotBeCalled();
 
         $clientRepository = $this->prophesize(ClientRepository::class);
         $clientRepository->find(Argument::any())->willReturn($client->reveal())->shouldBeCalled();
@@ -275,10 +275,11 @@ final class AuthorizationRequestLoaderTest extends TestCase
         $client = $this->prophesize(\OAuth2Framework\Component\Core\Client\Client::class);
         $client->isDeleted()->willReturn(false)->shouldBeCalled();
         $client->has('jwks')->willReturn(false)->shouldBeCalled();
+        $client->has('jwks_uri')->willReturn(false)->shouldBeCalled();
         $client->has('client_secret')->willReturn(true)->shouldBeCalled();
         $client->get('client_secret')->willReturn('SECRET')->shouldBeCalled();
-        $client->has('request_object_signing_alg')->willReturn(false)->shouldBeCalled();
-        $client->getTokenEndpointAuthenticationMethod()->willReturn('client_secret_jwt')->shouldBeCalled();
+        $client->has('request_object_signing_alg')->willReturn(false);
+        $client->getTokenEndpointAuthenticationMethod()->willReturn('client_secret_jwt');
 
         $clientRepository = $this->prophesize(ClientRepository::class);
         $clientRepository->find(Argument::any())->willReturn($client->reveal())->shouldBeCalled();
@@ -309,11 +310,12 @@ final class AuthorizationRequestLoaderTest extends TestCase
         $client = $this->prophesize(\OAuth2Framework\Component\Core\Client\Client::class);
         $client->isDeleted()->willReturn(false)->shouldBeCalled();
         $client->has('jwks')->willReturn(false)->shouldBeCalled();
+        $client->has('jwks_uri')->willReturn(false)->shouldBeCalled();
         $client->has('client_secret')->willReturn(true)->shouldBeCalled();
         $client->get('client_secret')->willReturn('SECRET')->shouldBeCalled();
         $client->has('request_object_signing_alg')->willReturn(true)->shouldBeCalled();
         $client->get('request_object_signing_alg')->willReturn('RS256')->shouldBeCalled();
-        $client->getTokenEndpointAuthenticationMethod()->willReturn('client_secret_jwt')->shouldBeCalled();
+        $client->getTokenEndpointAuthenticationMethod()->willReturn('client_secret_jwt');
 
         $clientRepository = $this->prophesize(ClientRepository::class);
         $clientRepository->find(Argument::any())->willReturn($client->reveal())->shouldBeCalled();
@@ -344,11 +346,12 @@ final class AuthorizationRequestLoaderTest extends TestCase
         $client = $this->prophesize(\OAuth2Framework\Component\Core\Client\Client::class);
         $client->isDeleted()->willReturn(false)->shouldBeCalled();
         $client->has('jwks')->willReturn(false)->shouldBeCalled();
+        $client->has('jwks_uri')->willReturn(false)->shouldBeCalled();
         $client->has('client_secret')->willReturn(true)->shouldBeCalled();
         $client->get('client_secret')->willReturn('SECRET')->shouldBeCalled();
         $client->has('request_object_signing_alg')->willReturn(true)->shouldBeCalled();
         $client->get('request_object_signing_alg')->willReturn('RS256')->shouldBeCalled();
-        $client->getTokenEndpointAuthenticationMethod()->willReturn('client_secret_jwt')->shouldBeCalled();
+        $client->getTokenEndpointAuthenticationMethod()->willReturn('client_secret_jwt');
 
         $clientRepository = $this->prophesize(ClientRepository::class);
         $clientRepository->find(Argument::any())->willReturn($client->reveal())->shouldBeCalled();
@@ -384,7 +387,7 @@ final class AuthorizationRequestLoaderTest extends TestCase
         $client->get('client_secret')->willReturn('SECRET')->shouldBeCalled();
         $client->has('request_object_signing_alg')->willReturn(true)->shouldBeCalled();
         $client->get('request_object_signing_alg')->willReturn('RS256')->shouldBeCalled();
-        $client->getTokenEndpointAuthenticationMethod()->willReturn('client_secret_jwt')->shouldBeCalled();
+        $client->getTokenEndpointAuthenticationMethod()->willReturn('client_secret_jwt');
 
         $clientRepository = $this->prophesize(ClientRepository::class);
         $clientRepository->find(Argument::any())->willReturn($client->reveal())->shouldBeCalled();
@@ -421,7 +424,7 @@ final class AuthorizationRequestLoaderTest extends TestCase
         $client->get('request_object_signing_alg')->willReturn('RS256')->shouldBeCalled();
         $client->has('request_uris')->willReturn(true)->shouldBeCalled();
         $client->get('request_uris')->willReturn(['https://www.foo.bar/'])->shouldBeCalled();
-        $client->getTokenEndpointAuthenticationMethod()->willReturn('client_secret_jwt')->shouldBeCalled();
+        $client->getTokenEndpointAuthenticationMethod()->willReturn('client_secret_jwt');
 
         $clientRepository = $this->prophesize(ClientRepository::class);
         $clientRepository->find(Argument::any())->willReturn($client->reveal())->shouldBeCalled();
@@ -451,13 +454,14 @@ final class AuthorizationRequestLoaderTest extends TestCase
         $client = $this->prophesize(\OAuth2Framework\Component\Core\Client\Client::class);
         $client->isDeleted()->willReturn(false)->shouldBeCalled();
         $client->has('jwks')->willReturn(false)->shouldBeCalled();
+        $client->has('jwks_uri')->willReturn(false)->shouldBeCalled();
         $client->has('client_secret')->willReturn(true)->shouldBeCalled();
         $client->get('client_secret')->willReturn('SECRET')->shouldBeCalled();
         $client->has('request_object_signing_alg')->willReturn(true)->shouldBeCalled();
         $client->get('request_object_signing_alg')->willReturn('RS256')->shouldBeCalled();
         $client->has('request_uris')->willReturn(true)->shouldBeCalled();
         $client->get('request_uris')->willReturn(['https://www.foo.bar/'])->shouldBeCalled();
-        $client->getTokenEndpointAuthenticationMethod()->willReturn('client_secret_jwt')->shouldBeCalled();
+        $client->getTokenEndpointAuthenticationMethod()->willReturn('client_secret_jwt');
 
         $clientRepository = $this->prophesize(ClientRepository::class);
         $clientRepository->find(Argument::any())->willReturn($client->reveal())->shouldBeCalled();

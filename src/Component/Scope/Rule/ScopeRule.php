@@ -32,7 +32,7 @@ final class ScopeRule implements Rule
             if (1 !== preg_match('/^[\x20\x23-\x5B\x5D-\x7E]+$/', $scope)) {
                 throw new \InvalidArgumentException('Invalid characters found in the "scope" parameter.');
             }
-            $validatedParameters = $validatedParameters->with('scope', $scope);
+            $validatedParameters->with('scope', $scope);
         }
 
         return $next($clientId, $commandParameters, $validatedParameters);

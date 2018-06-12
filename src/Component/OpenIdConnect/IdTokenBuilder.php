@@ -167,28 +167,27 @@ class IdTokenBuilder
      */
     public function withAccessToken(AccessToken $accessToken): self
     {
-        $clone = clone $this;
-        $clone->accessTokenId = $accessToken->getTokenId();
-        $clone->expiresAt = $accessToken->getExpiresAt();
-        $clone->scope = $accessToken->hasParameter('scope') ? $accessToken->getParameter('scope') : null;
+        $this->accessTokenId = $accessToken->getTokenId();
+        $this->expiresAt = $accessToken->getExpiresAt();
+        $this->scope = $accessToken->hasParameter('scope') ? $accessToken->getParameter('scope') : null;
 
         if ($accessToken->hasMetadata('authorization_code_id') && null !== $this->authorizationCodeRepository) {
             $authorizationCodeId = AuthorizationCodeId::create($accessToken->getMetadata('authorization_code_id'));
             $authorizationCode = $this->authorizationCodeRepository->find($authorizationCodeId);
             if (null === $authorizationCode) {
-                return $clone;
+                return $this;
             }
-            $clone->authorizationCodeId = $authorizationCodeId;
+            $this->authorizationCodeId = $authorizationCodeId;
             $queryParams = $authorizationCode->getQueryParams();
             foreach (['nonce' => 'nonce', 'claims_locales' => 'claimsLocales'] as $k => $v) {
                 if (array_key_exists($k, $queryParams)) {
-                    $clone->$v = $queryParams[$k];
+                    $this->$v = $queryParams[$k];
                 }
             }
-            $clone->withAuthenticationTime = array_key_exists('max_age', $authorizationCode->getQueryParams());
+            $this->withAuthenticationTime = array_key_exists('max_age', $authorizationCode->getQueryParams());
         }
 
-        return $clone;
+        return $this;
     }
 
     /**
@@ -198,10 +197,9 @@ class IdTokenBuilder
      */
     public function withAccessTokenId(AccessTokenId $accessTokenId): self
     {
-        $clone = clone $this;
-        $clone->accessTokenId = $accessTokenId;
+        $this->accessTokenId = $accessTokenId;
 
-        return $clone;
+        return $this;
     }
 
     /**
@@ -211,10 +209,9 @@ class IdTokenBuilder
      */
     public function withAuthorizationCodeId(AuthorizationCodeId $authorizationCodeId): self
     {
-        $clone = clone $this;
-        $clone->authorizationCodeId = $authorizationCodeId;
+        $this->authorizationCodeId = $authorizationCodeId;
 
-        return $clone;
+        return $this;
     }
 
     /**
@@ -224,10 +221,9 @@ class IdTokenBuilder
      */
     public function withClaimsLocales(string $claimsLocales): self
     {
-        $clone = clone $this;
-        $clone->claimsLocales = $claimsLocales;
+        $this->claimsLocales = $claimsLocales;
 
-        return $clone;
+        return $this;
     }
 
     /**
@@ -235,10 +231,9 @@ class IdTokenBuilder
      */
     public function withAuthenticationTime(): self
     {
-        $clone = clone $this;
-        $clone->withAuthenticationTime = true;
+        $this->withAuthenticationTime = true;
 
-        return $clone;
+        return $this;
     }
 
     /**
@@ -248,10 +243,9 @@ class IdTokenBuilder
      */
     public function withScope(string $scope): self
     {
-        $clone = clone $this;
-        $clone->scope = $scope;
+        $this->scope = $scope;
 
-        return $clone;
+        return $this;
     }
 
     /**
@@ -261,10 +255,9 @@ class IdTokenBuilder
      */
     public function withRequestedClaims(array $requestedClaims): self
     {
-        $clone = clone $this;
-        $clone->requestedClaims = $requestedClaims;
+        $this->requestedClaims = $requestedClaims;
 
-        return $clone;
+        return $this;
     }
 
     /**
@@ -274,10 +267,9 @@ class IdTokenBuilder
      */
     public function withNonce(string $nonce): self
     {
-        $clone = clone $this;
-        $clone->nonce = $nonce;
+        $this->nonce = $nonce;
 
-        return $clone;
+        return $this;
     }
 
     /**
@@ -287,10 +279,9 @@ class IdTokenBuilder
      */
     public function withExpirationAt(\DateTimeImmutable $expiresAt): self
     {
-        $clone = clone $this;
-        $clone->expiresAt = $expiresAt;
+        $this->expiresAt = $expiresAt;
 
-        return $clone;
+        return $this;
     }
 
     /**
@@ -298,10 +289,9 @@ class IdTokenBuilder
      */
     public function withoutAuthenticationTime(): self
     {
-        $clone = clone $this;
-        $clone->withAuthenticationTime = false;
+        $this->withAuthenticationTime = false;
 
-        return $clone;
+        return $this;
     }
 
     /**
@@ -319,12 +309,11 @@ class IdTokenBuilder
         if (0 === $signatureKeys->count()) {
             throw new \InvalidArgumentException('The signature key set must contain at least one key.');
         }
-        $clone = clone $this;
-        $clone->jwsBuilder = $jwsBuilder;
-        $clone->signatureKeys = $signatureKeys;
-        $clone->signatureAlgorithm = $signatureAlgorithm;
+        $this->jwsBuilder = $jwsBuilder;
+        $this->signatureKeys = $signatureKeys;
+        $this->signatureAlgorithm = $signatureAlgorithm;
 
-        return $clone;
+        return $this;
     }
 
     /**
@@ -342,12 +331,11 @@ class IdTokenBuilder
         if (!in_array($contentEncryptionAlgorithm, $jweBuilder->getContentEncryptionAlgorithmManager()->list())) {
             throw new \InvalidArgumentException(sprintf('Unsupported content encryption algorithm "%s". Please use one of the following one: %s', $contentEncryptionAlgorithm, implode(', ', $jweBuilder->getContentEncryptionAlgorithmManager()->list())));
         }
-        $clone = clone $this;
-        $clone->jweBuilder = $jweBuilder;
-        $clone->keyEncryptionAlgorithm = $keyEncryptionAlgorithm;
-        $clone->contentEncryptionAlgorithm = $contentEncryptionAlgorithm;
+        $this->jweBuilder = $jweBuilder;
+        $this->keyEncryptionAlgorithm = $keyEncryptionAlgorithm;
+        $this->contentEncryptionAlgorithm = $contentEncryptionAlgorithm;
 
-        return $clone;
+        return $this;
     }
 
     /**

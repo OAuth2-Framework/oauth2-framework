@@ -41,7 +41,7 @@ final class MaxAgeParameterAccountCheckerTest extends TestCase
         $checker = new MaxAgeParameterAccountChecker();
 
         try {
-            $checker->check($authorization->reveal());
+            $checker->check($authorization->reveal(), null, false);
             $this->fail('The expected exception has not been thrown.');
         } catch (RedirectToLoginPageException $e) {
             self::assertTrue(true);
@@ -64,7 +64,7 @@ final class MaxAgeParameterAccountCheckerTest extends TestCase
         $authorization->getClient()->willReturn($client->reveal());
         $checker = new MaxAgeParameterAccountChecker();
 
-        $checker->check($authorization->reveal());
+        $checker->check($authorization->reveal(), $userAccount->reveal(), false);
         self::assertTrue(true);
     }
 
@@ -87,7 +87,7 @@ final class MaxAgeParameterAccountCheckerTest extends TestCase
         $authorization->getClient()->willReturn($client->reveal());
         $checker = new MaxAgeParameterAccountChecker();
 
-        $checker->check($authorization->reveal());
+        $checker->check($authorization->reveal(), $userAccount->reveal(), false);
         self::assertTrue(true);
     }
 
@@ -110,7 +110,7 @@ final class MaxAgeParameterAccountCheckerTest extends TestCase
         $authorization->isUserAccountFullyAuthenticated()->willReturn(false);
         $checker = new MaxAgeParameterAccountChecker();
 
-        $checker->check($authorization->reveal());
+        $checker->check($authorization->reveal(), $userAccount->reveal(), false);
         self::assertTrue(true);
     }
 
@@ -134,7 +134,7 @@ final class MaxAgeParameterAccountCheckerTest extends TestCase
         $checker = new MaxAgeParameterAccountChecker();
 
         try {
-            $checker->check($authorization->reveal());
+            $checker->check($authorization->reveal(), $userAccount->reveal(), false);
             $this->fail('The expected exception has not been thrown.');
         } catch (RedirectToLoginPageException $e) {
             self::assertTrue(true);
@@ -161,7 +161,7 @@ final class MaxAgeParameterAccountCheckerTest extends TestCase
         $checker = new MaxAgeParameterAccountChecker();
 
         try {
-            $checker->check($authorization->reveal());
+            $checker->check($authorization->reveal(), $userAccount->reveal(), false);
             $this->fail('The expected exception has not been thrown.');
         } catch (RedirectToLoginPageException $e) {
             self::assertTrue(true);

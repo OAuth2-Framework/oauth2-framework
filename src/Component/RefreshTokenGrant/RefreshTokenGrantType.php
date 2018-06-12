@@ -92,12 +92,12 @@ final class RefreshTokenGrantType implements GrantType
         $client = $request->getAttribute('client');
         $this->checkRefreshToken($token, $client);
 
-        $grantTypeData = $grantTypeData->withResourceOwnerId($token->getResourceOwnerId());
+        $grantTypeData->withResourceOwnerId($token->getResourceOwnerId());
         foreach ($token->getMetadatas()->all() as $k => $v) {
-            $grantTypeData = $grantTypeData->withMetadata($k, $v);
+            $grantTypeData->getMetadata()->with($k, $v);
         }
         foreach ($token->getParameters()->all() as $k => $v) {
-            $grantTypeData = $grantTypeData->withParameter($k, $v);
+            $grantTypeData->withParameter($k, $v);
         }
 
         return $grantTypeData;

@@ -31,11 +31,11 @@ final class UserAccountCheckerManagerTest extends TestCase
     public function theUserAccountCheckerManagerCallsAllCheckers()
     {
         $checker1 = $this->prophesize(UserAccountChecker::class);
-        $checker1->check(Argument::any())
+        $checker1->check(Argument::any(), Argument::any(), Argument::any())
             ->shouldBeCalled();
 
         $checker2 = $this->prophesize(UserAccountChecker::class);
-        $checker2->check(Argument::any())
+        $checker2->check(Argument::any(), Argument::any(), Argument::any())
             ->shouldBeCalled();
 
         $authorization = $this->prophesize(Authorization::class);
@@ -44,6 +44,6 @@ final class UserAccountCheckerManagerTest extends TestCase
         $manager->add($checker1->reveal());
         $manager->add($checker2->reveal());
 
-        $manager->check($authorization->reveal());
+        $manager->check($authorization->reveal(), null, false);
     }
 }

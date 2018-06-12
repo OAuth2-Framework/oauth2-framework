@@ -41,11 +41,11 @@ final class ResponseTypesRule implements Rule
     public function handle(ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters, callable $next): DataBag
     {
         if (!$commandParameters->has('response_types')) {
-            $commandParameters = $commandParameters->with('response_types', []);
+            $commandParameters->with('response_types', []);
         }
         $this->checkResponseTypes($commandParameters);
 
-        $validatedParameters = $validatedParameters->with('response_types', $commandParameters->get('response_types'));
+        $validatedParameters->with('response_types', $commandParameters->get('response_types'));
         $validatedParameters = $next($clientId, $commandParameters, $validatedParameters);
         //$this->checkGrantTypes($validatedParameters);
 
