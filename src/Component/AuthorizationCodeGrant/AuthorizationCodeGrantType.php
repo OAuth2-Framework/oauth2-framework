@@ -167,20 +167,20 @@ final class AuthorizationCodeGrantType implements GrantType
             return;
         }
 
-        $code_challenge = $params['code_challenge'];
-        $code_challenge_method = array_key_exists('code_challenge_method', $params) ? $params['code_challenge_method'] : 'plain';
+        $codeChallenge = $params['code_challenge'];
+        $codeChallengeMethod = array_key_exists('code_challenge_method', $params) ? $params['code_challenge_method'] : 'plain';
 
         try {
             if (!array_key_exists('code_verifier', $parameters)) {
                 throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_GRANT, 'The parameter "code_verifier" is missing or invalid.');
             }
             $code_verifier = $parameters['code_verifier'];
-            $method = $this->pkceMethodManager->get($code_challenge_method);
+            $method = $this->pkceMethodManager->get($codeChallengeMethod);
         } catch (\InvalidArgumentException $e) {
             throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, $e->getMessage(), [], $e);
         }
 
-        if (false === $method->isChallengeVerified($code_verifier, $code_challenge)) {
+        if (false === $method->isChallengeVerified($code_verifier, $codeChallenge)) {
             throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_GRANT, 'The parameter "code_verifier" is invalid or invalid.');
         }
     }
