@@ -103,6 +103,46 @@ final class TokenRevocationGetEndpointTest extends TestCase
     /**
      * @test
      */
+    public function theTokenDoesNotExistAndCannotBeRevoked()
+    {
+        $endpoint = $this->getTokenRevocationGetEndpoint();
+
+        $request = $this->prophesize(ServerRequestInterface::class);
+        $request->getQueryParams()->willReturn(['token' => 'UNKNOWN_TOKEN', 'callback' => 'callThisFunctionPlease']);
+        $request->getAttribute('client')->willReturn($this->getClient());
+
+        $handler = $this->prophesize(RequestHandlerInterface::class);
+
+        $response = $endpoint->process($request->reveal(), $handler->reveal());
+
+        self::assertEquals(200, $response->getStatusCode());
+        $response->getBody()->rewind();
+        self::assertEquals('callThisFunctionPlease()', $response->getBody()->getContents());
+    }
+
+    /**
+     * @test
+     */
+    public function theTokenRevocationEndpointReceivesFromAnotherClient()
+    {
+        $endpoint = $this->getTokenRevocationGetEndpoint();
+
+        $request = $this->prophesize(ServerRequestInterface::class);
+        $request->getQueryParams()->willReturn(['token' => 'TOKEN_FOR_ANOTHER_CLIENT', 'callback' => 'callThisFunctionPlease']);
+        $request->getAttribute('client')->willReturn($this->getClient());
+
+        $handler = $this->prophesize(RequestHandlerInterface::class);
+
+        $response = $endpoint->process($request->reveal(), $handler->reveal());
+
+        self::assertEquals(400, $response->getStatusCode());
+        $response->getBody()->rewind();
+        self::assertEquals('callThisFunctionPlease({"error":"invalid_request","error_description":"The parameter \"token\" is invalid."})', $response->getBody()->getContents());
+    }
+
+    /**
+     * @test
+     */
     public function theTokenRevocationEndpointReceivesARequestWithAnUnsupportedTokenHint()
     {
         $endpoint = $this->getTokenRevocationGetEndpoint();
@@ -131,14 +171,18 @@ final class TokenRevocationGetEndpointTest extends TestCase
     private function getTokenTypeHintManager(): TokenTypeHintManager
     {
         if (null === $this->tokenTypeHintManager) {
-            $token = $this->prophesize(Token::class);
-            $token->getClientId()->willReturn(ClientId::create('CLIENT_ID'));
+            $token1 = $this->prophesize(Token::class);
+            $token1->getClientId()->willReturn(ClientId::create('CLIENT_ID'));
+
+            $token2 = $this->prophesize(Token::class);
+            $token2->getClientId()->willReturn(ClientId::create('OTHER_CLIENT_ID'));
 
             $tokenType = $this->prophesize(TokenTypeHint::class);
-            $tokenType->find('VALID_TOKEN')->willReturn($token->reveal());
-            $tokenType->find('BAD_TOKEN')->willReturn(null);
+            $tokenType->find('VALID_TOKEN')->willReturn($token1->reveal());
+            $tokenType->find('TOKEN_FOR_ANOTHER_CLIENT')->willReturn($token2->reveal());
+            $tokenType->find('UNKNOWN_TOKEN')->willReturn(null);
             $tokenType->hint()->willReturn('foo');
-            $tokenType->revoke($token)->willReturn(null);
+            $tokenType->revoke($token1)->willReturn(null);
 
             $this->tokenTypeHintManager = new TokenTypeHintManager();
             $this->tokenTypeHintManager->add($tokenType->reveal());
