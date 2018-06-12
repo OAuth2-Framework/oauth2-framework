@@ -617,8 +617,8 @@ class IdTokenBuilder
             $keyset = $keyset->with($jwk);
         }
         if ($client->has('jwks_uri') && null !== $this->jkuFactory) {
-            $jwks_uri = $this->jkuFactory->loadFromUrl($client->get('jwks_uri'));
-            foreach ($jwks_uri as $jwk) {
+            $jwksUri = $this->jkuFactory->loadFromUrl($client->get('jwks_uri'));
+            foreach ($jwksUri as $jwk) {
                 $keyset = $keyset->with($jwk);
             }
         }
