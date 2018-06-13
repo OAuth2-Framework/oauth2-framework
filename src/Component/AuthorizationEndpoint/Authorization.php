@@ -53,11 +53,6 @@ class Authorization
     private $data = [];
 
     /**
-     * @var null|array
-     */
-    private $claims = null;
-
-    /**
      * @var TokenType|null
      */
     private $tokenType = null;
@@ -184,26 +179,6 @@ class Authorization
     public function getTokenType(): ? TokenType
     {
         return $this->tokenType;
-    }
-
-    /**
-     * @param array $claims
-     *
-     * @return Authorization
-     */
-    public function withClaims(array $claims): self
-    {
-        $this->claims = $claims;
-
-        return $this;
-    }
-
-    /**
-     * @return null|array
-     */
-    public function getClaims(): ?array
-    {
-        return $this->claims;
     }
 
     /**

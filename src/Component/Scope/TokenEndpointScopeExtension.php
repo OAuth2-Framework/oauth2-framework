@@ -87,11 +87,17 @@ final class TokenEndpointScopeExtension implements TokenEndpointExtension
     private function getScope(ServerRequestInterface $request, GrantTypeData $grantTypeData): string
     {
         $parameters = RequestBodyParser::parseFormUrlEncoded($request);
-        if (!array_key_exists('scope', $parameters)) {
-            return $grantTypeData->getParameter()->has('scope') ? $grantTypeData->getParameter()->get('scope') : '';
-        }
 
-        return $parameters['scope'];
+        switch (true) {
+            case array_key_exists('scope', $parameters):
+                return $parameters['scope'];
+            case $grantTypeData->getParameter()->has('scope'):
+                return $grantTypeData->getParameter()->get('scope');
+            case $grantTypeData->getMetadata()->has('scope'):
+                return $grantTypeData->getMetadata()->get('scope');
+            default:
+                return '';
+        }
     }
 
     /**

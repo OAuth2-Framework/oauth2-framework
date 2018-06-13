@@ -32,7 +32,7 @@ final class ClaimsParameterChecker implements ParameterChecker
                     throw new \InvalidArgumentException('Invalid "claims" parameter.');
                 }
 
-                return $authorization->withClaims($decoded);
+                $authorization->getMetadata()->with('claims', $authorization->getQueryParam('claims'));
             }
 
             return $authorization;
