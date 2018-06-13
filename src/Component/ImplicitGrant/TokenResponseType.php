@@ -80,12 +80,12 @@ final class TokenResponseType implements ResponseType
      */
     public function process(Authorization $authorization): Authorization
     {
-        $authorization = $authorization->withMetadata('redirect_uri', $authorization->getRedirectUri());
+        $authorization->getMetadata()->with('redirect_uri', $authorization->getRedirectUri());
         $accessTokenId = $this->accessTokenIdGenerator->createAccessTokenId(
             $authorization->getUserAccount()->getUserAccountId(),
             $authorization->getClient()->getClientId(),
             DataBag::create($authorization->getTokenType()->getAdditionalInformation()),
-            $authorization->getMetadatas(),
+            $authorization->getMetadata(),
             null
         );
         $accessToken = AccessToken::createEmpty();

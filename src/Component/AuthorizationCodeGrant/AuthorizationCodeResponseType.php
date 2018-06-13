@@ -116,7 +116,7 @@ final class AuthorizationCodeResponseType implements ResponseType
             $authorization->getRedirectUri(),
             (new \DateTimeImmutable())->setTimestamp(time() + $this->authorizationCodeLifetime),
             DataBag::create([]),
-            $authorization->getMetadatas(),
+            $authorization->getMetadata(),
             $authorization->getResourceServer() ? $authorization->getResourceServer()->getResourceServerId() : null
         );
         $this->authorizationCodeRepository->save($authorizationCode);

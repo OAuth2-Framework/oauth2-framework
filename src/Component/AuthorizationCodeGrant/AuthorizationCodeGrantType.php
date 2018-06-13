@@ -96,20 +96,17 @@ final class AuthorizationCodeGrantType implements GrantType
         }
 
         $this->checkClient($grantTypeData->getClient(), $parameters);
-
         $this->checkAuthorizationCode($authorizationCode, $grantTypeData->getClient());
         $this->checkPKCE($authorizationCode, $parameters);
 
         $redirectUri = $parameters['redirect_uri'];
-
-        // Validate the redirect URI.
         $this->checkRedirectUri($authorizationCode, $redirectUri);
 
-        if ($authorizationCode->hasQueryParam('scope')) {
-            $grantTypeData->getParameter()->with('scope', $authorizationCode->getQueryParam('scope'));
-        }
         foreach ($authorizationCode->getParameter() as $key => $parameter) {
             $grantTypeData->getParameter()->with($key, $parameter);
+        }
+        foreach ($authorizationCode->getMetadata() as $key => $parameter) {
+            $grantTypeData->getMetadata()->with($key, $parameter);
         }
 
         $grantTypeData->getMetadata()->with('redirect_uri', $redirectUri);

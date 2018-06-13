@@ -527,44 +527,7 @@ class Authorization
         return $this->getQueryParam('scope');
     }
 
-    /**
-     * @param string     $key
-     * @param mixed|null $data
-     *
-     * @return Authorization
-     */
-    public function withMetadata(string $key, $data): self
-    {
-        $this->metadata = $this->metadata->with($key, $data);
-
-        return $this;
-    }
-
-    /**
-     * @param string $key
-     *
-     * @return bool
-     */
-    public function hasMetadata(string $key): bool
-    {
-        return $this->metadata->has($key);
-    }
-
-    /**
-     * @param string $key
-     *
-     * @return bool
-     */
-    public function getMetadata(string $key): bool
-    {
-        if (!$this->hasMetadata($key)) {
-            throw new \InvalidArgumentException(sprintf('The metadata "%s" does not exist.', $key));
-        }
-
-        return $this->metadata->get($key);
-    }
-
-    public function getMetadatas(): DataBag
+    public function getMetadata(): DataBag
     {
         return $this->metadata;
     }

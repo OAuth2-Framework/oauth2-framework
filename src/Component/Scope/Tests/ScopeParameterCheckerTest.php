@@ -16,6 +16,7 @@ namespace OAuth2Framework\Component\Scope\Tests;
 use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
 use OAuth2Framework\Component\AuthorizationEndpoint\Exception\OAuth2AuthorizationException;
 use OAuth2Framework\Component\Core\Client\Client;
+use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Scope\Policy\ScopePolicyManager;
 use OAuth2Framework\Component\Scope\ScopeParameterChecker;
 use OAuth2Framework\Component\Scope\ScopeRepository;
@@ -62,6 +63,7 @@ final class ScopeParameterCheckerTest extends TestCase
         $authorization->getClient()->willReturn($client->reveal());
         $authorization->hasQueryParam('scope')->willReturn(true)->shouldBeCalled();
         $authorization->getQueryParam('scope')->willReturn('scope1')->shouldBeCalled();
+        $authorization->getMetadata()->willReturn(DataBag::create([]))->shouldBeCalled();
         $authorization->withResponseParameter('scope', Argument::any())->willReturn($authorization)->shouldBeCalled();
         $this->getScopeParameterChecker()->check(
             $authorization->reveal()
