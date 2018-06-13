@@ -52,5 +52,14 @@ interface ResponseType
      *
      * @throws OAuth2Message
      */
+    public function preProcess(Authorization $authorization): Authorization;
+
+    /**
+     * @param Authorization $authorization
+     *
+     * @return Authorization
+     *
+     * @throws OAuth2Message
+     */
     public function process(Authorization $authorization): Authorization;
 }

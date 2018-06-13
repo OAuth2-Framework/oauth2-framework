@@ -70,6 +70,14 @@ final class NoneResponseType implements ResponseType
     /**
      * {@inheritdoc}
      */
+    public function preProcess(Authorization $authorization): Authorization
+    {
+        return $authorization;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function process(Authorization $authorization): Authorization
     {
         $this->authorizationStorage->save($authorization);

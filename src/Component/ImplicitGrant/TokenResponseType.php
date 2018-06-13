@@ -78,9 +78,16 @@ final class TokenResponseType implements ResponseType
     /**
      * {@inheritdoc}
      */
+    public function preProcess(Authorization $authorization): Authorization
+    {
+        return $authorization;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function process(Authorization $authorization): Authorization
     {
-        $authorization->getMetadata()->with('redirect_uri', $authorization->getRedirectUri());
         $accessTokenId = $this->accessTokenIdGenerator->createAccessTokenId(
             $authorization->getUserAccount()->getUserAccountId(),
             $authorization->getClient()->getClientId(),

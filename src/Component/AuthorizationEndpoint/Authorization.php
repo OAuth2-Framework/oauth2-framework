@@ -229,6 +229,7 @@ class Authorization
     public function withRedirectUri(string $redirectUri): self
     {
         $this->redirectUri = $redirectUri;
+        $this->metadata->with('redirect_uri', $redirectUri);
 
         return $this;
     }

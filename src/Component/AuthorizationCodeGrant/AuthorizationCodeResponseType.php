@@ -91,7 +91,7 @@ final class AuthorizationCodeResponseType implements ResponseType
     /**
      * {@inheritdoc}
      */
-    public function process(Authorization $authorization): Authorization
+    public function preProcess(Authorization $authorization): Authorization
     {
         $queryParams = $authorization->getQueryParams();
 
@@ -106,13 +106,21 @@ final class AuthorizationCodeResponseType implements ResponseType
             }
         }
 
+        return $authorization;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function process(Authorization $authorization): Authorization
+    {
         $authorizationCodeId = $this->authorizationCodeIdGenerator->createAuthorizationCodeId();
         $authorizationCode = AuthorizationCode::createEmpty();
         $authorizationCode = $authorizationCode->create(
             $authorizationCodeId,
             $authorization->getClient()->getClientId(),
             $authorization->getUserAccount()->getUserAccountId(),
-            $queryParams,
+            $authorization->getQueryParams(),
             $authorization->getRedirectUri(),
             (new \DateTimeImmutable())->setTimestamp(time() + $this->authorizationCodeLifetime),
             DataBag::create([]),

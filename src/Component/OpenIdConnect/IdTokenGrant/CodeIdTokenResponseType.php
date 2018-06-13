@@ -71,6 +71,17 @@ final class CodeIdTokenResponseType implements ResponseType
     /**
      * {@inheritdoc}
      */
+    public function preProcess(Authorization $authorization): Authorization
+    {
+        $authorization = $this->codeResponseType->preProcess($authorization);
+        $authorization = $this->idTokenResponseType->preProcess($authorization);
+
+        return $authorization;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function process(Authorization $authorization): Authorization
     {
         $authorization = $this->codeResponseType->process($authorization);
