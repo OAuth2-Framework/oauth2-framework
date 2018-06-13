@@ -106,14 +106,6 @@ final class AuthorizationCodeResponseType implements ResponseType
             }
         }
 
-        return $authorization;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function process(Authorization $authorization): Authorization
-    {
         $authorizationCodeId = $this->authorizationCodeIdGenerator->createAuthorizationCodeId();
         $authorizationCode = AuthorizationCode::createEmpty();
         $authorizationCode = $authorizationCode->create(
@@ -130,6 +122,14 @@ final class AuthorizationCodeResponseType implements ResponseType
         $this->authorizationCodeRepository->save($authorizationCode);
         $authorization = $authorization->withResponseParameter('code', $authorizationCodeId->getValue());
 
+        return $authorization;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function process(Authorization $authorization): Authorization
+    {
         return $authorization;
     }
 }
