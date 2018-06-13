@@ -83,8 +83,8 @@ final class CodeIdTokenTokenResponseType implements ResponseType
     public function preProcess(Authorization $authorization): Authorization
     {
         $authorization = $this->codeResponseType->preProcess($authorization);
-        $authorization = $this->tokenResponseType->preProcess($authorization);
         $authorization = $this->idTokenResponseType->preProcess($authorization);
+        $authorization = $this->tokenResponseType->preProcess($authorization);
 
         return $authorization;
     }
@@ -95,8 +95,8 @@ final class CodeIdTokenTokenResponseType implements ResponseType
     public function process(Authorization $authorization): Authorization
     {
         $authorization = $this->codeResponseType->process($authorization);
-        $authorization = $this->tokenResponseType->process($authorization);
         $authorization = $this->idTokenResponseType->process($authorization);
+        $authorization = $this->tokenResponseType->process($authorization);
 
         return $authorization;
     }

@@ -121,6 +121,7 @@ final class AuthorizationCodeResponseType implements ResponseType
         );
         $this->authorizationCodeRepository->save($authorizationCode);
         $authorization = $authorization->withResponseParameter('code', $authorizationCodeId->getValue());
+        $authorization->getMetadata()->with('authorization_code_id', $authorizationCode->getAuthorizationCodeId()->getValue());
 
         return $authorization;
     }
