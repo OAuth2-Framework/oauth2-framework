@@ -127,7 +127,7 @@ abstract class AuthorizationEndpoint implements MiddlewareInterface
             $responseType = $authorization->getResponseType();
 
             try {
-                $authorization = $responseType->prePocess($authorization);
+                $authorization = $responseType->preProcess($authorization);
                 $authorization = $responseType->process($authorization);
             } catch (OAuth2Message $e) {
                 $this->throwRedirectionException($authorization, $e->getMessage(), $e->getErrorDescription());
