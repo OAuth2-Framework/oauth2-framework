@@ -74,9 +74,9 @@ final class RefreshTokenEndpointExtension implements TokenEndpointExtension
             $refreshToken = $refreshToken->create(
                 $refreshTokenId,
                 $accessToken->getResourceOwnerId(),
-                $accessToken->getClient()->getPublicId(),
+                $accessToken->getClientId(),
                 $accessToken->getParameter(),
-                $accessToken->getMetadatas(),
+                $accessToken->getMetadata(),
                 $expiresAt,
                 null);
             $refreshToken = $refreshToken->addAccessToken($accessToken->getAccessTokenId());
