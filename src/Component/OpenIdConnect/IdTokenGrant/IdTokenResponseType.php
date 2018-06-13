@@ -98,6 +98,14 @@ final class IdTokenResponseType implements ResponseType
     /**
      * {@inheritdoc}
      */
+    public function preProcess(Authorization $authorization): Authorization
+    {
+        return $authorization;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function process(Authorization $authorization): Authorization
     {
         if ($authorization->hasQueryParam('scope') && in_array('openid', explode(' ', $authorization->getQueryParam('scope')))) {
