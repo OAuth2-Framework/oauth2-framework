@@ -235,6 +235,18 @@ class Authorization
     }
 
     /**
+     * @return array|null
+     */
+    public function getClaims(): ?array
+    {
+        if ($this->metadata->has('claims')) {
+            return json_decode($this->metadata->get('claims'), true);
+        }
+
+        return null;
+    }
+
+    /**
      * @return null|string
      */
     public function getRedirectUri(): ? string
