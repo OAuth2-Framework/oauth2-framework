@@ -53,7 +53,7 @@ final class RefreshTokenEndpointExtension implements TokenEndpointExtension
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritdoc}K
      */
     public function beforeAccessTokenIssuance(ServerRequestInterface $request, GrantTypeData $grantTypeData, GrantType $grantType, callable $next): GrantTypeData
     {

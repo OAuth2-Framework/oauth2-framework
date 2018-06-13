@@ -70,19 +70,6 @@ class GrantTypeData
     }
 
     /**
-     * @param string $key
-     * @param mixed  $parameter
-     *
-     * @return GrantTypeData
-     */
-    public function withParameter(string $key, $parameter): self
-    {
-        $this->parameters = $this->parameters->with($key, $parameter);
-
-        return $this;
-    }
-
-    /**
      * @return DataBag
      */
     public function getParameter(): DataBag

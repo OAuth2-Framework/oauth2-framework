@@ -58,9 +58,8 @@ final class TokenEndpointScopeExtension implements TokenEndpointExtension
         $scope = $this->getScope($request, $grantTypeData);
         $scope = $this->applyScopePolicy($scope, $grantTypeData->getClient());
         $this->checkRequestedScopeIsAvailable($scope, $grantTypeData);
-
         if (!empty($scope)) {
-            $grantTypeData->withParameter('scope', $scope);
+            $grantTypeData->getParameter()->with('scope', $scope);
         }
 
         return $grantTypeData;
@@ -71,7 +70,12 @@ final class TokenEndpointScopeExtension implements TokenEndpointExtension
      */
     public function afterAccessTokenIssuance(Client $client, ResourceOwner $resourceOwner, AccessToken $accessToken, callable $next): array
     {
-        return $next($client, $resourceOwner, $accessToken);
+        $result = $next($client, $resourceOwner, $accessToken);
+        if ($accessToken->getParameter()->has('scope')) {
+            $result['scope'] = $accessToken->getParameter()->get('scope');
+        }
+
+        return $result;
     }
 
     /**
