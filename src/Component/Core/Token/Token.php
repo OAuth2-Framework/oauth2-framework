@@ -122,19 +122,9 @@ abstract class Token implements \JsonSerializable, ContainsRecordedMessages, Dom
     /**
      * @return DataBag
      */
-    public function getParameters(): DataBag
+    public function getParameter(): DataBag
     {
         return $this->parameters;
-    }
-
-    /**
-     * @param string $key
-     *
-     * @return bool
-     */
-    public function hasParameter(string $key): bool
-    {
-        return $this->parameters->has($key);
     }
 
     /**
@@ -146,53 +136,11 @@ abstract class Token implements \JsonSerializable, ContainsRecordedMessages, Dom
     }
 
     /**
-     * @param string $key
-     *
-     * @throws \InvalidArgumentException
-     *
-     * @return mixed
-     */
-    public function getParameter(string $key)
-    {
-        if (!$this->hasParameter($key)) {
-            throw new \InvalidArgumentException(sprintf('The parameter "%s" does not exist.', $key));
-        }
-
-        return $this->parameters->get($key);
-    }
-
-    /**
      * @return DataBag
      */
-    public function getMetadatas(): DataBag
+    public function getMetadata(): DataBag
     {
         return $this->metadatas;
-    }
-
-    /**
-     * @param string $key
-     *
-     * @return bool
-     */
-    public function hasMetadata(string $key): bool
-    {
-        return $this->metadatas->has($key);
-    }
-
-    /**
-     * @param string $key
-     *
-     * @throws \InvalidArgumentException
-     *
-     * @return mixed
-     */
-    public function getMetadata(string $key)
-    {
-        if (!$this->hasMetadata($key)) {
-            throw new \InvalidArgumentException(sprintf('The metadata "%s" does not exist.', $key));
-        }
-
-        return $this->metadatas->get($key);
     }
 
     /**
@@ -213,8 +161,8 @@ abstract class Token implements \JsonSerializable, ContainsRecordedMessages, Dom
             'type' => get_class($this),
             'expires_at' => $this->getExpiresAt()->getTimestamp(),
             'client_id' => $this->getClientId()->getValue(),
-            'parameters' => (object) $this->getParameters()->all(),
-            'metadatas' => (object) $this->getMetadatas()->all(),
+            'parameters' => (object) $this->getParameter()->all(),
+            'metadatas' => (object) $this->getMetadata()->all(),
             'is_revoked' => $this->isRevoked(),
             'resource_owner_id' => $this->getResourceOwnerId()->getValue(),
             'resource_owner_class' => get_class($this->getResourceOwnerId()),

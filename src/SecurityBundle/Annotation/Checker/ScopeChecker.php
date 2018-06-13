@@ -29,7 +29,7 @@ final class ScopeChecker implements Checker
         }
 
         $scopes = explode(' ', $scope);
-        $tokenScope = $token->getAccessToken()->hasParameter('scope') ? explode(' ', $token->getAccessToken()->getParameter('scope')) : [];
+        $tokenScope = $token->getAccessToken()->getParameter()->has('scope') ? explode(' ', $token->getAccessToken()->getParameter()->get('scope')) : [];
         $diff = array_diff($scopes, $tokenScope);
 
         if (!empty($diff)) {

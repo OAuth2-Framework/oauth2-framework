@@ -68,10 +68,10 @@ final class AccessTokenIntrospectionTypeHint implements TokenTypeHint
             'resource_owner' => $token->getResourceOwnerId(),
             'expires_in' => $token->getExpiresIn(),
         ];
-        if (!$token->hasParameter('scope')) {
-            $values['scope'] = $token->getParameter('scope');
+        if (!$token->getParameter()->has('scope')) {
+            $values['scope'] = $token->getParameter()->get('scope');
         }
 
-        return $values + $token->getParameters()->all();
+        return $values + $token->getParameter()->all();
     }
 }

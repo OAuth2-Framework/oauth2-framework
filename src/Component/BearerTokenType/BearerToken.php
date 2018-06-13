@@ -130,11 +130,11 @@ final class BearerToken implements TokenType
      */
     public function isRequestValid(Token $token, ServerRequestInterface $request, array $additionalCredentialValues): bool
     {
-        if (!$token instanceof AccessToken || !$token->hasParameter('token_type')) {
+        if (!$token instanceof AccessToken || !$token->getParameter()->has('token_type')) {
             return false;
         }
 
-        return $token->getParameter('token_type') === $this->name();
+        return $token->getParameter()->get('token_type') === $this->name();
     }
 
     /**

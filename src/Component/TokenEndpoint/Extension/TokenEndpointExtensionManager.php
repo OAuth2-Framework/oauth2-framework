@@ -29,13 +29,13 @@ class TokenEndpointExtensionManager
     private $extensions = [];
 
     /**
-     * @param TokenEndpointExtension $accessTokenParameterExtension
+     * @param TokenEndpointExtension $tokenEndpointExtension
      *
      * @return TokenEndpointExtensionManager
      */
-    public function add(TokenEndpointExtension $accessTokenParameterExtension): self
+    public function add(TokenEndpointExtension $tokenEndpointExtension): self
     {
-        $this->extensions[] = $accessTokenParameterExtension;
+        $this->extensions[] = $tokenEndpointExtension;
 
         return $this;
     }

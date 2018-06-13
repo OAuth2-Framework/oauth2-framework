@@ -83,7 +83,7 @@ class OpenIdConnectExtension implements TokenEndpointExtension
 
     public function afterAccessTokenIssuance(Client $client, ResourceOwner $resourceOwner, AccessToken $accessToken, callable $next): array
     {
-        if ($resourceOwner instanceof UserAccount && $this->accessTokenOpenIdHasScope($accessToken) && $accessToken->hasMetadata('redirect_uri')) {
+        if ($resourceOwner instanceof UserAccount && $this->accessTokenOpenIdHasScope($accessToken) && $accessToken->getMetadata()->has('redirect_uri')) {
             $idToken = $this->issueIdToken($client, $resourceOwner, $accessToken);
             $data = $next($client, $resourceOwner, $accessToken);
             $data['id_token'] = $idToken;
@@ -103,7 +103,7 @@ class OpenIdConnectExtension implements TokenEndpointExtension
      */
     private function issueIdToken(Client $client, UserAccount $userAccount, AccessToken $accessToken): string
     {
-        $redirectUri = $accessToken->getMetadata('redirect_uri');
+        $redirectUri = $accessToken->getMetadata()->get('redirect_uri');
         $idTokenBuilder = $this->idTokenBuilderFactory->createBuilder($client, $userAccount, $redirectUri);
 
         $requestedClaims = $this->getIdTokenClaims($accessToken);
@@ -137,11 +137,11 @@ class OpenIdConnectExtension implements TokenEndpointExtension
      */
     private function getIdTokenClaims(AccessToken $accessToken): array
     {
-        if (!$accessToken->hasMetadata('requested_claims')) {
+        if (!$accessToken->getMetadata()->has('requested_claims')) {
             return [];
         }
 
-        $requestedClaims = $accessToken->getMetadata('requested_claims');
+        $requestedClaims = $accessToken->getMetadata()->get('requested_claims');
         $requestedClaims = json_decode($requestedClaims, true);
         if (!is_array($requestedClaims)) {
             throw new \InvalidArgumentException('Invalid claim request');
@@ -155,6 +155,6 @@ class OpenIdConnectExtension implements TokenEndpointExtension
 
     private function accessTokenOpenIdHasScope(AccessToken $accessToken): bool
     {
-        return $accessToken->hasParameter('scope') && in_array('openid', explode(' ', $accessToken->getParameter('scope')));
+        return $accessToken->getParameter()->has('scope') && in_array('openid', explode(' ', $accessToken->getParameter()->get('scope')));
     }
 }

@@ -144,7 +144,7 @@ class UserInfoEndpoint implements MiddlewareInterface
     {
         $isJwt = false;
         $requestedClaims = $this->getEndpointClaims($accessToken);
-        $idTokenBuilder = $this->idTokenBuilderFactory->createBuilder($client, $userAccount, $accessToken->getMetadata('redirect_uri'));
+        $idTokenBuilder = $this->idTokenBuilderFactory->createBuilder($client, $userAccount, $accessToken->getMetadata()->get('redirect_uri'));
 
         if ($client->has('userinfo_signed_response_alg') && null !== $this->jwsBuilder) {
             $isJwt = true;
@@ -174,11 +174,11 @@ class UserInfoEndpoint implements MiddlewareInterface
      */
     private function getEndpointClaims(AccessToken $accessToken): array
     {
-        if (!$accessToken->hasMetadata('requested_claims')) {
+        if (!$accessToken->getMetadata()->has('requested_claims')) {
             return [];
         }
 
-        $requested_claims = $accessToken->getMetadata('requested_claims');
+        $requested_claims = $accessToken->getMetadata()->get('requested_claims');
         if (true === array_key_exists('userinfo', $requested_claims)) {
             return $requested_claims['userinfo'];
         }
@@ -227,7 +227,7 @@ class UserInfoEndpoint implements MiddlewareInterface
      */
     private function checkRedirectUri(AccessToken $accessToken)
     {
-        if (!$accessToken->hasMetadata('redirect_uri')) {
+        if (!$accessToken->getMetadata()->has('redirect_uri')) {
             throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_TOKEN, 'The access token has not been issued through the authorization endpoint and cannot be used.');
         }
     }
@@ -239,7 +239,7 @@ class UserInfoEndpoint implements MiddlewareInterface
      */
     private function checkScope(AccessToken $accessToken)
     {
-        if (!$accessToken->hasParameter('scope') || !in_array('openid', explode(' ', $accessToken->getParameter('scope')))) {
+        if (!$accessToken->getParameter()->has('scope') || !in_array('openid', explode(' ', $accessToken->getParameter()->get('scope')))) {
             throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_TOKEN, 'The access token does not contain the "openid" scope.');
         }
     }

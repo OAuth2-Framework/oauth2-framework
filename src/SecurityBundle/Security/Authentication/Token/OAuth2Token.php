@@ -42,7 +42,7 @@ class OAuth2Token extends AbstractToken
      */
     public function getTokenType(): string
     {
-        return $this->accessToken->getParameter('token_type');
+        return $this->accessToken->getParameter()->get('token_type');
     }
 
     /**

@@ -162,7 +162,7 @@ class AccessToken extends Token
      */
     public function getResponseData(): array
     {
-        $data = $this->getParameters()->all();
+        $data = $this->getParameter()->all();
         $data['access_token'] = $this->getTokenId()->getValue();
         $data['expires_in'] = $this->getExpiresIn();
 

@@ -169,10 +169,10 @@ class IdTokenBuilder
     {
         $this->accessTokenId = $accessToken->getTokenId();
         $this->expiresAt = $accessToken->getExpiresAt();
-        $this->scope = $accessToken->hasParameter('scope') ? $accessToken->getParameter('scope') : null;
+        $this->scope = $accessToken->getParameter()->has('scope') ? $accessToken->getParameter()->get('scope') : null;
 
-        if ($accessToken->hasMetadata('authorization_code_id') && null !== $this->authorizationCodeRepository) {
-            $authorizationCodeId = AuthorizationCodeId::create($accessToken->getMetadata('authorization_code_id'));
+        if ($accessToken->getMetadata()->has('authorization_code_id') && null !== $this->authorizationCodeRepository) {
+            $authorizationCodeId = AuthorizationCodeId::create($accessToken->getMetadata()->get('authorization_code_id'));
             $authorizationCode = $this->authorizationCodeRepository->find($authorizationCodeId);
             if (null === $authorizationCode) {
                 return $this;

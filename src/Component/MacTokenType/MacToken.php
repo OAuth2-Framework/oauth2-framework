@@ -115,7 +115,7 @@ abstract class MacToken implements TokenType
      */
     public function isRequestValid(Token $token, ServerRequestInterface $request, array $additionalCredentialValues): bool
     {
-        if (!$token instanceof AccessToken || $token->getParameter('token_type') !== $this->name()) {
+        if (!$token instanceof AccessToken || $token->getParameter()->get('token_type') !== $this->name()) {
             return false;
         }
 
@@ -172,14 +172,14 @@ abstract class MacToken implements TokenType
             $ext."\n";
 
         $algorithms = $this->getAlgorithmMap();
-        if (!array_key_exists($token->getParameter('mac_algorithm'), $algorithms)) {
-            throw new \RuntimeException(sprintf('The MAC algorithm "%s" is not supported.', $token->getParameter('mac_algorithm')));
+        if (!array_key_exists($token->getParameter()->get('mac_algorithm'), $algorithms)) {
+            throw new \RuntimeException(sprintf('The MAC algorithm "%s" is not supported.', $token->getParameter()->get('mac_algorithm')));
         }
 
         return base64_encode(hash_hmac(
-            $algorithms[$token->getParameter('mac_algorithm')],
+            $algorithms[$token->getParameter()->get('mac_algorithm')],
             $basestr,
-            $token->getParameter('mac_key'),
+            $token->getParameter()->get('mac_key'),
             true
         ));
     }
