@@ -36,8 +36,8 @@ class PKCEMethodCompilerPass implements CompilerPassInterface
         $loaded = [];
         foreach ($taggedServices as $id => $tags) {
             foreach ($tags as $attributes) {
-                if (!array_key_exists('alias', $attributes)) {
-                    throw new \InvalidArgumentException(sprintf('The PKCE method  "%s" does not have any "alias" attribute.', $id));
+                if (!\array_key_exists('alias', $attributes)) {
+                    throw new \InvalidArgumentException(\sprintf('The PKCE method  "%s" does not have any "alias" attribute.', $id));
                 }
                 $loaded[] = $attributes['alias'];
                 $definition->addMethodCall('add', [new Reference($id)]);

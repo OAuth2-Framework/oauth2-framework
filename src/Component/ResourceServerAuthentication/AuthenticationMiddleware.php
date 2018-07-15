@@ -85,7 +85,7 @@ final class AuthenticationMiddleware implements MiddlewareInterface
      */
     private function checkAuthenticationMethod(ServerRequestInterface $request, ResourceServer $resourceServer, AuthenticationMethod $authenticationMethod, $resourceServer_credentials)
     {
-        if (!in_array($resourceServer->getAuthenticationMethod(), $authenticationMethod->getSupportedMethods())) {
+        if (!\in_array($resourceServer->getAuthenticationMethod(), $authenticationMethod->getSupportedMethods(), true)) {
             throw new \InvalidArgumentException('Unknown resource server or resource server not authenticated.');
         }
         if (!$authenticationMethod->isResourceServerAuthenticated($resourceServer, $resourceServer_credentials, $request)) {

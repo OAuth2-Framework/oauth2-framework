@@ -63,7 +63,7 @@ final class MacTokenTest extends TestCase
         $mac = $this->generateMac(
             'sha256',
             'adijq39jdlaska9asud',
-            time(),
+            \time(),
             'dj83hs9s',
             'POST',
             '/request?b5=%3D%253D&a3=a&c%40=&a2=r%20b&c2&a3=2+q',
@@ -71,7 +71,7 @@ final class MacTokenTest extends TestCase
             80,
             null
         );
-        $additionalCredentialValues = ['id' => 'h480djs93hd8', 'ts' => time(), 'nonce' => 'dj83hs9s', 'mac' => $mac];
+        $additionalCredentialValues = ['id' => 'h480djs93hd8', 'ts' => \time(), 'nonce' => 'dj83hs9s', 'mac' => $mac];
         $accessToken = $accessToken->create(
             AccessTokenId::create('h480djs93hd8'),
             ClientId::create('CLIENT_ID'),
@@ -107,8 +107,8 @@ final class MacTokenTest extends TestCase
      */
     private function generateMac(string $algorithm, string $key, int $timestamp, string $nonce, string $method, string $requestUri, string $host, int $port, ?string $ext): string
     {
-        $basestr = sprintf("%d\n%s\n%s\n%s\n%s\n%s\n%s\n", $timestamp, $nonce, $method, $requestUri, $host, $port, $ext);
+        $basestr = \sprintf("%d\n%s\n%s\n%s\n%s\n%s\n%s\n", $timestamp, $nonce, $method, $requestUri, $host, $port, $ext);
 
-        return base64_encode(hash_hmac($algorithm, $basestr, $key, true));
+        return \base64_encode(\hash_hmac($algorithm, $basestr, $key, true));
     }
 }

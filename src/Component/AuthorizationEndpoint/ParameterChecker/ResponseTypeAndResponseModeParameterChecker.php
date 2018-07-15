@@ -66,7 +66,7 @@ final class ResponseTypeAndResponseModeParameterChecker implements ParameterChec
             $responseTypeName = $authorization->getQueryParam('response_type');
             $responseType = $this->getResponseType($responseTypeName);
             if (!$authorization->getClient()->isResponseTypeAllowed($responseTypeName)) {
-                throw new \InvalidArgumentException(sprintf('The response type "%s" is not allowed for this client.', $responseTypeName)); // Should try to find the response mode before exception
+                throw new \InvalidArgumentException(\sprintf('The response type "%s" is not allowed for this client.', $responseTypeName)); // Should try to find the response mode before exception
             }
             $authorization = $authorization->withResponseType($responseType);
 
@@ -76,7 +76,7 @@ final class ResponseTypeAndResponseModeParameterChecker implements ParameterChec
                 $responseMode = $responseType->getResponseMode();
             }
             if (!$this->responseModeManager->has($responseMode)) {
-                throw new \InvalidArgumentException(sprintf('The response mode "%s" is not supported. Please use one of the following values: %s.', $responseMode, implode(', ', $this->responseModeManager->list())));
+                throw new \InvalidArgumentException(\sprintf('The response mode "%s" is not supported. Please use one of the following values: %s.', $responseMode, \implode(', ', $this->responseModeManager->list())));
             }
             $authorization = $authorization->withResponseMode($this->responseModeManager->get($responseMode));
 
@@ -96,7 +96,7 @@ final class ResponseTypeAndResponseModeParameterChecker implements ParameterChec
     private function getResponseType(string $responseType): ResponseType
     {
         if (!$this->responseTypeManager->has($responseType)) {
-            throw new \InvalidArgumentException(sprintf('The response type "%s" is not supported by this server', $responseType));
+            throw new \InvalidArgumentException(\sprintf('The response type "%s" is not supported by this server', $responseType));
         }
 
         return $this->responseTypeManager->get($responseType);

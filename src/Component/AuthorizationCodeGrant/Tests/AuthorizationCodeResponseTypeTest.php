@@ -84,7 +84,7 @@ final class AuthorizationCodeResponseTypeTest extends TestCase
         if (null === $this->grantType) {
             $authorizationCodeIdGenerator = $this->prophesize(AuthorizationCodeIdGenerator::class);
             $authorizationCodeIdGenerator->createAuthorizationCodeId()->willReturn(
-                AuthorizationCodeId::create(bin2hex(random_bytes(32)))
+                AuthorizationCodeId::create(\bin2hex(\random_bytes(32)))
             );
             $authorizationCodeRepository = $this->prophesize(AuthorizationCodeRepository::class);
             $authorizationCodeRepository->save(Argument::type(AuthorizationCode::class))->will(function (array $args) {

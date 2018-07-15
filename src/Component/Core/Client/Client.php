@@ -182,11 +182,11 @@ class Client implements ResourceOwner, ContainsRecordedMessages, DomainObject
     public function isGrantTypeAllowed(string $grant_type): bool
     {
         $grant_types = $this->has('grant_types') ? $this->get('grant_types') : [];
-        if (!is_array($grant_types)) {
+        if (!\is_array($grant_types)) {
             throw new \InvalidArgumentException('The metadata "grant_types" must be an array.');
         }
 
-        return in_array($grant_type, $grant_types);
+        return \in_array($grant_type, $grant_types, true);
     }
 
     /**
@@ -197,11 +197,11 @@ class Client implements ResourceOwner, ContainsRecordedMessages, DomainObject
     public function isResponseTypeAllowed(string $response_type): bool
     {
         $response_types = $this->has('response_types') ? $this->get('response_types') : [];
-        if (!is_array($response_types)) {
+        if (!\is_array($response_types)) {
             throw new \InvalidArgumentException('The metadata "response_types" must be an array.');
         }
 
-        return in_array($response_type, $response_types);
+        return \in_array($response_type, $response_types, true);
     }
 
     /**
@@ -245,7 +245,7 @@ class Client implements ResourceOwner, ContainsRecordedMessages, DomainObject
             return false;
         }
 
-        return time() > $this->getClientCredentialsExpiresAt();
+        return \time() > $this->getClientCredentialsExpiresAt();
     }
 
     /**
@@ -274,7 +274,7 @@ class Client implements ResourceOwner, ContainsRecordedMessages, DomainObject
     public function get(string $key)
     {
         if (!$this->has($key)) {
-            throw new \InvalidArgumentException(sprintf('Configuration value with key "%s" does not exist.', $key));
+            throw new \InvalidArgumentException(\sprintf('Configuration value with key "%s" does not exist.', $key));
         }
 
         return $this->parameters->get($key);
@@ -298,7 +298,7 @@ class Client implements ResourceOwner, ContainsRecordedMessages, DomainObject
     {
         $data = [
             '$schema' => $this->getSchema(),
-            'type' => get_class($this),
+            'type' => \get_class($this),
             'client_id' => $this->getPublicId()->getValue(),
             'owner_id' => $this->getOwnerId() ? $this->getOwnerId()->getValue() : null,
             'parameters' => (object) $this->all(),
@@ -335,7 +335,7 @@ class Client implements ResourceOwner, ContainsRecordedMessages, DomainObject
     public function apply(Event $event): self
     {
         $map = $this->getEventMap();
-        if (!array_key_exists($event->getType(), $map)) {
+        if (!\array_key_exists($event->getType(), $map)) {
             throw new \InvalidArgumentException('Unsupported event.');
         }
         if (null !== $this->clientId && $this->clientId->getValue() !== $event->getDomainId()->getValue()) {

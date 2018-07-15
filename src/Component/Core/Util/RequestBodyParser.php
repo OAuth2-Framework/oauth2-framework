@@ -20,17 +20,17 @@ class RequestBodyParser
 {
     public static function parseJson(ServerRequestInterface $request): array
     {
-        if (!$request->hasHeader('Content-Type') || !in_array('application/json', $request->getHeader('Content-Type'))) {
+        if (!$request->hasHeader('Content-Type') || !\in_array('application/json', $request->getHeader('Content-Type'), true)) {
             throw new \InvalidArgumentException('Unsupported request body content type.');
         }
-        if (is_array($request->getParsedBody()) && !empty($request->getParsedBody())) {
+        if (\is_array($request->getParsedBody()) && !empty($request->getParsedBody())) {
             return $request->getParsedBody();
         }
 
         $body = $request->getBody()->getContents();
-        $json = json_decode($body, true);
+        $json = \json_decode($body, true);
 
-        if (!is_array($json)) {
+        if (!\is_array($json)) {
             throw new \InvalidArgumentException('Invalid body');
         }
 
@@ -39,10 +39,10 @@ class RequestBodyParser
 
     public static function parseFormUrlEncoded(ServerRequestInterface $request): array
     {
-        if (!$request->hasHeader('Content-Type') || !in_array('application/x-www-form-urlencoded', $request->getHeader('Content-Type'))) {
+        if (!$request->hasHeader('Content-Type') || !\in_array('application/x-www-form-urlencoded', $request->getHeader('Content-Type'), true)) {
             throw new \InvalidArgumentException('Unsupported request body content type.');
         }
-        if (is_array($request->getParsedBody()) && !empty($request->getParsedBody())) {
+        if (\is_array($request->getParsedBody()) && !empty($request->getParsedBody())) {
             return $request->getParsedBody();
         }
 

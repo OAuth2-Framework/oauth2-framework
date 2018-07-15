@@ -35,7 +35,7 @@ final class RefreshTokenTest extends TestCase
 
         self::assertInstanceOf(RefreshTokenId::class, $refreshTokenId);
         self::assertEquals('REFRESH_TOKEN_ID', $refreshTokenId->getValue());
-        self::assertEquals('"REFRESH_TOKEN_ID"', json_encode($refreshTokenId, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
+        self::assertEquals('"REFRESH_TOKEN_ID"', \json_encode($refreshTokenId, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
     }
 
     /**
@@ -59,7 +59,7 @@ final class RefreshTokenTest extends TestCase
         $refreshToken = $refreshToken->markAsRevoked();
 
         self::assertInstanceOf(RefreshToken::class, $refreshToken);
-        self::assertEquals('{"$schema":"https://oauth2-framework.spomky-labs.com/schemas/model/refresh-token/1.0/schema","type":"OAuth2Framework\\\\Component\\\\RefreshTokenGrant\\\\RefreshToken","expires_at":1264683600,"client_id":"CLIENT_ID","parameters":{"refresh_token_id":"REFRESH_TOKEN_ID"},"metadatas":{},"is_revoked":true,"resource_owner_id":"CLIENT_ID","resource_owner_class":"OAuth2Framework\\\\Component\\\\Core\\\\Client\\\\ClientId","resource_server_id":"RESOURCE_SERVER_ID","refresh_token_id":"REFRESH_TOKEN_ID","access_token_ids":["ACCESS_TOKEN_ID"]}', json_encode($refreshToken, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+        self::assertEquals('{"$schema":"https://oauth2-framework.spomky-labs.com/schemas/model/refresh-token/1.0/schema","type":"OAuth2Framework\\\\Component\\\\RefreshTokenGrant\\\\RefreshToken","expires_at":1264683600,"client_id":"CLIENT_ID","parameters":{"refresh_token_id":"REFRESH_TOKEN_ID"},"metadatas":{},"is_revoked":true,"resource_owner_id":"CLIENT_ID","resource_owner_class":"OAuth2Framework\\\\Component\\\\Core\\\\Client\\\\ClientId","resource_server_id":"RESOURCE_SERVER_ID","refresh_token_id":"REFRESH_TOKEN_ID","access_token_ids":["ACCESS_TOKEN_ID"]}', \json_encode($refreshToken, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
         self::assertEquals('REFRESH_TOKEN_ID', $refreshToken->getTokenId()->getValue());
     }
 }

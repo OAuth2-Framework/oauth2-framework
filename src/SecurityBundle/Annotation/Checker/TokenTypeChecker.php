@@ -28,7 +28,7 @@ final class TokenTypeChecker implements Checker
         }
 
         if ($configuration->getTokenType() !== $token->getTokenType()) {
-            throw new \Exception(sprintf('Token type "%s" not allowed. Please use "%s"', $token->getTokenType(), $configuration->getTokenType()));
+            throw new \Exception(\sprintf('Token type "%s" not allowed. Please use "%s"', $token->getTokenType(), $configuration->getTokenType()));
         }
     }
 }

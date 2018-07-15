@@ -51,7 +51,7 @@ class TokenEndpointExtensionManager
      */
     public function handleBeforeAccessTokenIssuance(ServerRequestInterface $request, GrantTypeData $grantTypeData, GrantType $grantType): GrantTypeData
     {
-        return call_user_func($this->getCallableBeforeAccessTokenIssuance(0), $request, $grantTypeData, $grantType);
+        return \call_user_func($this->getCallableBeforeAccessTokenIssuance(0), $request, $grantTypeData, $grantType);
     }
 
     /**
@@ -65,7 +65,7 @@ class TokenEndpointExtensionManager
      */
     public function handleAfterAccessTokenIssuance(Client $client, ResourceOwner $resourceOwner, AccessToken $accessToken): array
     {
-        return call_user_func($this->getCallableAfterAccessTokenIssuance(0), $client, $resourceOwner, $accessToken);
+        return \call_user_func($this->getCallableAfterAccessTokenIssuance(0), $client, $resourceOwner, $accessToken);
     }
 
     /**
@@ -98,7 +98,7 @@ class TokenEndpointExtensionManager
      */
     private function getCallableAfterAccessTokenIssuance(int $index): callable
     {
-        if (!array_key_exists($index, $this->extensions)) {
+        if (!\array_key_exists($index, $this->extensions)) {
             return function (Client $client, ResourceOwner $resourceOwner, AccessToken $accessToken): array {
                 return $accessToken->getResponseData();
             };

@@ -62,7 +62,7 @@ final class ClientSecretBasicAuthenticationMethodTest extends TestCase
         $manager = new AuthenticationMethodManager();
         $manager->add(new ClientSecretBasic('My Service'));
         $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getHeader('Authorization')->willReturn(['Basic '.base64_encode('CLIENT_ID:CLIENT_SECRET')]);
+        $request->getHeader('Authorization')->willReturn(['Basic '.\base64_encode('CLIENT_ID:CLIENT_SECRET')]);
 
         $clientId = $manager->findClientIdAndCredentials($request->reveal(), $method, $credentials);
         self::assertInstanceOf(ClientSecretBasic::class, $method);

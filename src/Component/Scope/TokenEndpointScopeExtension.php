@@ -89,7 +89,7 @@ final class TokenEndpointScopeExtension implements TokenEndpointExtension
         $parameters = RequestBodyParser::parseFormUrlEncoded($request);
 
         switch (true) {
-            case array_key_exists('scope', $parameters):
+            case \array_key_exists('scope', $parameters):
                 return $parameters['scope'];
             case $grantTypeData->getParameter()->has('scope'):
                 return $grantTypeData->getParameter()->get('scope');
@@ -130,11 +130,11 @@ final class TokenEndpointScopeExtension implements TokenEndpointExtension
         // * the client configuration
         // * the scope repository
         $availableScope = $grantTypeData->getParameter()->has('scope') ? $grantTypeData->getParameter()->get('scope') : $this->getAvailableScopesForClient($grantTypeData->getClient());
-        $availableScopes = explode(' ', $availableScope);
-        $requestedScopes = empty($scope) ? [] : explode(' ', $scope);
-        $diff = array_diff($requestedScopes, $availableScopes);
-        if (0 !== count($diff)) {
-            throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_SCOPE, sprintf('An unsupported scope was requested. Available scope is/are: %s.', implode(', ', $availableScopes)));
+        $availableScopes = \explode(' ', $availableScope);
+        $requestedScopes = empty($scope) ? [] : \explode(' ', $scope);
+        $diff = \array_diff($requestedScopes, $availableScopes);
+        if (0 !== \count($diff)) {
+            throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_SCOPE, \sprintf('An unsupported scope was requested. Available scope is/are: %s.', \implode(', ', $availableScopes)));
         }
     }
 
@@ -145,6 +145,6 @@ final class TokenEndpointScopeExtension implements TokenEndpointExtension
      */
     private function getAvailableScopesForClient(Client $client): string
     {
-        return ($client->has('scope')) ? $client->get('scope') : implode(' ', $this->scopeRepository->all());
+        return ($client->has('scope')) ? $client->get('scope') : \implode(' ', $this->scopeRepository->all());
     }
 }

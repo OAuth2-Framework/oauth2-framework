@@ -137,7 +137,7 @@ class User implements UserInterface, UserAccount, EquatableInterface
      */
     public function has(string $key): bool
     {
-        return array_key_exists($key, $this->parameters);
+        return \array_key_exists($key, $this->parameters);
     }
 
     /**
@@ -146,7 +146,7 @@ class User implements UserInterface, UserAccount, EquatableInterface
     public function get(string $key)
     {
         if (!$this->has($key)) {
-            throw new \InvalidArgumentException(sprintf('Configuration value with key "%s" does not exist.', $key));
+            throw new \InvalidArgumentException(\sprintf('Configuration value with key "%s" does not exist.', $key));
         }
 
         return $this->parameters[$key];

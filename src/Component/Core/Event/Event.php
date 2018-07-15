@@ -33,7 +33,7 @@ abstract class Event implements DomainObject
      */
     public function getType(): string
     {
-        return get_class($this);
+        return \get_class($this);
     }
 
     /**
@@ -43,7 +43,7 @@ abstract class Event implements DomainObject
     {
         $data = [
             '$schema' => $this->getSchema(),
-            'type' => get_class($this),
+            'type' => \get_class($this),
             'domain_id' => $this->getDomainId()->getValue(),
         ];
         $payload = $this->getPayload();

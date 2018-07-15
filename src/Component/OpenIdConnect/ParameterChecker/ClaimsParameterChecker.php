@@ -27,8 +27,8 @@ final class ClaimsParameterChecker implements ParameterChecker
     {
         try {
             if ($authorization->hasQueryParam('claims')) {
-                $decoded = json_decode($authorization->getQueryParam('claims'), true);
-                if (!is_array($decoded)) {
+                $decoded = \json_decode($authorization->getQueryParam('claims'), true);
+                if (!\is_array($decoded)) {
                     throw new \InvalidArgumentException('Invalid "claims" parameter.');
                 }
 

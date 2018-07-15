@@ -72,7 +72,7 @@ abstract class TokenRevocationEndpoint implements MiddlewareInterface
 
             return $this->getResponse(200, '', $callback);
         } catch (OAuth2Message $e) {
-            return $this->getResponse($e->getCode(), json_encode($e->getData(), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), $callback);
+            return $this->getResponse($e->getCode(), \json_encode($e->getData(), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), $callback);
         }
     }
 
@@ -86,7 +86,7 @@ abstract class TokenRevocationEndpoint implements MiddlewareInterface
     private function getResponse(int $code, string $data, ?string $callback): ResponseInterface
     {
         if (null !== $callback) {
-            $data = sprintf('%s(%s)', $callback, $data);
+            $data = \sprintf('%s(%s)', $callback, $data);
         }
 
         $response = $this->responseFactory->createResponse($code);
@@ -126,7 +126,7 @@ abstract class TokenRevocationEndpoint implements MiddlewareInterface
     protected function getToken(ServerRequestInterface $request): string
     {
         $params = $this->getRequestParameters($request);
-        if (!array_key_exists('token', $params)) {
+        if (!\array_key_exists('token', $params)) {
             throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, 'The parameter "token" is missing.');
         }
 
@@ -145,10 +145,10 @@ abstract class TokenRevocationEndpoint implements MiddlewareInterface
         $params = $this->getRequestParameters($request);
         $tokenTypeHints = $this->tokenTypeHintManager->getTokenTypeHints();
 
-        if (array_key_exists('token_type_hint', $params)) {
+        if (\array_key_exists('token_type_hint', $params)) {
             $tokenTypeHint = $params['token_type_hint'];
-            if (!array_key_exists($params['token_type_hint'], $tokenTypeHints)) {
-                throw new OAuth2Message(400, 'unsupported_token_type', sprintf('The token type hint "%s" is not supported. Please use one of the following values: %s.', $params['token_type_hint'], implode(', ', array_keys($tokenTypeHints))));
+            if (!\array_key_exists($params['token_type_hint'], $tokenTypeHints)) {
+                throw new OAuth2Message(400, 'unsupported_token_type', \sprintf('The token type hint "%s" is not supported. Please use one of the following values: %s.', $params['token_type_hint'], \implode(', ', \array_keys($tokenTypeHints))));
             }
 
             $hint = $tokenTypeHints[$tokenTypeHint];
@@ -167,7 +167,7 @@ abstract class TokenRevocationEndpoint implements MiddlewareInterface
     protected function getCallback(ServerRequestInterface $request): ?string
     {
         $params = $this->getRequestParameters($request);
-        if (array_key_exists('callback', $params)) {
+        if (\array_key_exists('callback', $params)) {
             return $params['callback'];
         }
 

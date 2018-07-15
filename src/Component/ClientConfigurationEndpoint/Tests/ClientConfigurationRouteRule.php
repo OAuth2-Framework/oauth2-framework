@@ -23,7 +23,7 @@ class ClientConfigurationRouteRule extends Base
      */
     protected function getRegistrationClientUri(ClientId $clientId): string
     {
-        return sprintf('https://www.example.com/client/%s', $clientId->getValue());
+        return \sprintf('https://www.example.com/client/%s', $clientId->getValue());
     }
 
     /**
@@ -31,6 +31,6 @@ class ClientConfigurationRouteRule extends Base
      */
     protected function generateRegistrationAccessToken(): string
     {
-        return base64_encode(random_bytes(16));
+        return \base64_encode(\random_bytes(16));
     }
 }

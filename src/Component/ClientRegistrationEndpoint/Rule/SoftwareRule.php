@@ -73,7 +73,7 @@ final class SoftwareRule implements Rule
         }
         if ($commandParameters->has('software_statement')) {
             $statement = $commandParameters->get('software_statement');
-            if (!is_string($statement)) {
+            if (!\is_string($statement)) {
                 throw new \InvalidArgumentException('The software statement must be a string.');
             }
             $software_statement = $this->loadSoftwareStatement($statement);
@@ -105,11 +105,11 @@ final class SoftwareRule implements Rule
     {
         try {
             $jws = $this->jwsLoader->loadAndVerifyWithKeySet($software_statement, $this->softwareStatementSignatureKeySet, $signatureVerified);
-            if (!in_array($jws->getSignature($signatureVerified)->getProtectedHeaderParameter('alg'), $this->allowedSignatureAlgorithms)) {
+            if (!\in_array($jws->getSignature($signatureVerified)->getProtectedHeaderParameter('alg'), $this->allowedSignatureAlgorithms, true)) {
                 throw new \InvalidArgumentException('Invalid Software Statement.');
             }
-            $claims = json_decode($jws->getPayload(), true);
-            if (!is_array($claims)) {
+            $claims = \json_decode($jws->getPayload(), true);
+            if (!\is_array($claims)) {
                 throw new \InvalidArgumentException('Invalid Software Statement.');
             }
 

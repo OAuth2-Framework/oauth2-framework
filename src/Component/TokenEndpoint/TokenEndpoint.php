@@ -122,7 +122,7 @@ class TokenEndpoint implements MiddlewareInterface
 
         // We check the client is allowed to use the selected grant type
         if (!$grantTypeData->getClient()->isGrantTypeAllowed($grantType->name())) {
-            throw new OAuth2Message(400, OAuth2Message::ERROR_UNAUTHORIZED_CLIENT, sprintf('The grant type "%s" is unauthorized for this client.', $grantType->name()));
+            throw new OAuth2Message(400, OAuth2Message::ERROR_UNAUTHORIZED_CLIENT, \sprintf('The grant type "%s" is unauthorized for this client.', $grantType->name()));
         }
 
         // We populate the token type parameters
@@ -153,7 +153,7 @@ class TokenEndpoint implements MiddlewareInterface
     {
         $headers = ['Content-Type' => 'application/json; charset=UTF-8', 'Cache-Control' => 'no-cache, no-store, max-age=0, must-revalidate, private', 'Pragma' => 'no-cache'];
         $response = $this->responseFactory->createResponse(200, null, $headers);
-        $response->getBody()->write(json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+        $response->getBody()->write(\json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
 
         return $response;
     }
@@ -179,7 +179,7 @@ class TokenEndpoint implements MiddlewareInterface
             $grantTypeData->getClient()->getClientId(),
             $grantTypeData->getParameter(),
             $grantTypeData->getMetadata(),
-            new \DateTimeImmutable(sprintf('now +%d seconds', $this->accessTokenLifetime)),
+            new \DateTimeImmutable(\sprintf('now +%d seconds', $this->accessTokenLifetime)),
             null
         );
         $this->accessTokenRepository->save($accessToken);
@@ -237,10 +237,10 @@ class TokenEndpoint implements MiddlewareInterface
     private function isGrantTypeAllowedForTheClient(Client $client, string $grant_type): bool
     {
         $grant_types = $client->has('grant_types') ? $client->get('grant_types') : [];
-        if (!is_array($grant_types)) {
+        if (!\is_array($grant_types)) {
             throw new \InvalidArgumentException('The metadata "grant_types" must be an array.');
         }
 
-        return in_array($grant_type, $grant_types);
+        return \in_array($grant_type, $grant_types, true);
     }
 }

@@ -46,7 +46,7 @@ final class CodeIdTokenResponseType implements ResponseType
      */
     public function associatedGrantTypes(): array
     {
-        return array_merge(
+        return \array_merge(
             $this->codeResponseType->associatedGrantTypes(),
             $this->idTokenResponseType->associatedGrantTypes()
         );

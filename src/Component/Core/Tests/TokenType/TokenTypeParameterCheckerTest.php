@@ -31,7 +31,7 @@ final class TokenTypeParameterCheckerTest extends TestCase
      */
     protected function setUp()
     {
-        if (!class_exists(Authorization::class)) {
+        if (!\class_exists(Authorization::class)) {
             $this->markTestSkipped('Authorization Endpoint not available');
         }
     }

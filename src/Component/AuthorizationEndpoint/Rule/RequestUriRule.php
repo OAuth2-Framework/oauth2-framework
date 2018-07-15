@@ -41,11 +41,11 @@ final class RequestUriRule implements Rule
      */
     private function checkAllUris($value)
     {
-        if (!is_array($value)) {
+        if (!\is_array($value)) {
             throw new \InvalidArgumentException('The parameter "request_uris" must be a list of URI.');
         }
         foreach ($value as $redirectUri) {
-            if (!is_string($redirectUri) || !filter_var($redirectUri, FILTER_VALIDATE_URL)) {
+            if (!\is_string($redirectUri) || !\filter_var($redirectUri, FILTER_VALIDATE_URL)) {
                 throw new \InvalidArgumentException('The parameter "request_uris" must be a list of URI.');
             }
         }

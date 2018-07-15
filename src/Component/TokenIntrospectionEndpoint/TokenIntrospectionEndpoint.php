@@ -62,7 +62,7 @@ final class TokenIntrospectionEndpoint implements MiddlewareInterface
                     if (null === $result->getResourceServerId() || $result->getResourceServerId()->getValue() === $resourceServer->getResourceServerId()->getValue()) {
                         $data = $hint->introspect($result);
                         $response = $this->responseFactory->createResponse();
-                        $response->getBody()->write(json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+                        $response->getBody()->write(\json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
                         $headers = ['Content-Type' => 'application/json; charset=UTF-8', 'Cache-Control' => 'no-cache, no-store, max-age=0, must-revalidate, private', 'Pragma' => 'no-cache'];
                         foreach ($headers as $k => $v) {
                             $response = $response->withHeader($k, $v);
@@ -80,7 +80,7 @@ final class TokenIntrospectionEndpoint implements MiddlewareInterface
         }
 
         $response = $this->responseFactory->createResponse($responseStatucCode);
-        $response->getBody()->write(json_encode($responseContent, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+        $response->getBody()->write(\json_encode($responseContent, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
         $headers = ['Content-Type' => 'application/json; charset=UTF-8', 'Cache-Control' => 'no-cache, no-store, max-age=0, must-revalidate, private', 'Pragma' => 'no-cache'];
         foreach ($headers as $k => $v) {
             $response = $response->withHeader($k, $v);
@@ -116,7 +116,7 @@ final class TokenIntrospectionEndpoint implements MiddlewareInterface
     private function getToken(ServerRequestInterface $request): string
     {
         $params = $this->getRequestParameters($request);
-        if (!array_key_exists('token', $params)) {
+        if (!\array_key_exists('token', $params)) {
             throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, 'The parameter "token" is missing.');
         }
 
@@ -135,10 +135,10 @@ final class TokenIntrospectionEndpoint implements MiddlewareInterface
         $params = $this->getRequestParameters($request);
         $tokenTypeHints = $this->tokenTypeHintManager->getTokenTypeHints();
 
-        if (array_key_exists('token_type_hint', $params)) {
+        if (\array_key_exists('token_type_hint', $params)) {
             $tokenTypeHint = $params['token_type_hint'];
-            if (!array_key_exists($params['token_type_hint'], $tokenTypeHints)) {
-                throw new OAuth2Message(400, 'unsupported_token_type', sprintf('The token type hint "%s" is not supported. Please use one of the following values: %s.', $params['token_type_hint'], implode(', ', array_keys($tokenTypeHints))));
+            if (!\array_key_exists($params['token_type_hint'], $tokenTypeHints)) {
+                throw new OAuth2Message(400, 'unsupported_token_type', \sprintf('The token type hint "%s" is not supported. Please use one of the following values: %s.', $params['token_type_hint'], \implode(', ', \array_keys($tokenTypeHints))));
             }
 
             $hint = $tokenTypeHints[$tokenTypeHint];
@@ -158,6 +158,6 @@ final class TokenIntrospectionEndpoint implements MiddlewareInterface
     {
         $parameters = RequestBodyParser::parseFormUrlEncoded($request);
 
-        return array_intersect_key($parameters, array_flip(['token', 'token_type_hint']));
+        return \array_intersect_key($parameters, \array_flip(['token', 'token_type_hint']));
     }
 }

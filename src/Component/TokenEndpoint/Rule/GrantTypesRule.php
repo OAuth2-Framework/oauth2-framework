@@ -58,15 +58,15 @@ final class GrantTypesRule implements Rule
      */
     private function checkGrantTypes(DataBag $parameters)
     {
-        if (!is_array($parameters->get('grant_types'))) {
+        if (!\is_array($parameters->get('grant_types'))) {
             throw new \InvalidArgumentException('The parameter "grant_types" must be an array of strings.');
         }
         foreach ($parameters->get('grant_types') as $grant_type) {
-            if (!is_string($grant_type)) {
+            if (!\is_string($grant_type)) {
                 throw new \InvalidArgumentException('The parameter "grant_types" must be an array of strings.');
             }
             if (!$this->grantTypeManager->has($grant_type)) {
-                throw new \InvalidArgumentException(sprintf('The grant_type "%s" is not supported by this server.', $grant_type));
+                throw new \InvalidArgumentException(\sprintf('The grant_type "%s" is not supported by this server.', $grant_type));
             }
         }
     }
@@ -81,16 +81,16 @@ final class GrantTypesRule implements Rule
         $responseTypes = $parameters->has('response_types') ? $parameters->get('response_types') : [];
         $list = [];
         foreach ($responseTypes as $responseType) {
-            $list = array_merge(
+            $list = \array_merge(
                 $list,
-                explode(' ', $responseType)
+                \explode(' ', $responseType)
             );
         }
         foreach ($parameters->get('grant_types') as $grantType) {
             $type = $this->grantTypeManager->get($grantType);
-            $diff = array_diff($type->associatedResponseTypes(), $list);
+            $diff = \array_diff($type->associatedResponseTypes(), $list);
             if (!empty($diff)) {
-                throw new \InvalidArgumentException(sprintf('The grant type "%s" requires the following response type(s): %s.', $grantType, implode(', ', $diff)));
+                throw new \InvalidArgumentException(\sprintf('The grant type "%s" requires the following response type(s): %s.', $grantType, \implode(', ', $diff)));
             }
         }
     }

@@ -42,10 +42,10 @@ class TokenTypeSource implements Component
         $container->setParameter('oauth2_server.token_type.default', $configs['token_type']['default']);
         $container->setParameter('oauth2_server.token_type.allow_token_type_parameter', $configs['token_type']['allow_token_type_parameter']);
 
-        if (class_exists(BearerToken::class) && $configs['token_type']['bearer_token']['enabled']) {
+        if (\class_exists(BearerToken::class) && $configs['token_type']['bearer_token']['enabled']) {
             $loader->load('bearer_token.php');
         }
-        if (class_exists(MacToken::class) && $configs['token_type']['mac_token']['enabled']) {
+        if (\class_exists(MacToken::class) && $configs['token_type']['mac_token']['enabled']) {
             $container->setParameter('oauth2_server.token_type.mac_token.min_length', $configs['token_type']['mac_token']['min_length']);
             $container->setParameter('oauth2_server.token_type.mac_token.max_length', $configs['token_type']['mac_token']['max_length']);
             $container->setParameter('oauth2_server.token_type.mac_token.algorithm', $configs['token_type']['mac_token']['algorithm']);
@@ -73,7 +73,7 @@ class TokenTypeSource implements Component
                     ->end()
                 ->end();
 
-        if (class_exists(BearerToken::class)) {
+        if (\class_exists(BearerToken::class)) {
             $child->children()
                 ->arrayNode('bearer_token')
                     ->addDefaultsIfNotSet()
@@ -82,7 +82,7 @@ class TokenTypeSource implements Component
             ->end();
         }
 
-        if (class_exists(MacToken::class)) {
+        if (\class_exists(MacToken::class)) {
             $child->children()
                 ->arrayNode('mac_token')
                     ->addDefaultsIfNotSet()
@@ -95,7 +95,7 @@ class TokenTypeSource implements Component
                     ->end()
                     ->validate()
                         ->ifTrue(function ($config) {
-                            return !in_array($config['algorithm'], ['hmac-sha-256', 'hmac-sha-1']);
+                            return !\in_array($config['algorithm'], ['hmac-sha-256', 'hmac-sha-1'], true);
                         })
                         ->thenInvalid('The algorithm is not supported. Please use one of the following one: "hmac-sha-1", "hmac-sha-256".')
                     ->end()

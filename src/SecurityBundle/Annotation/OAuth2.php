@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\SecurityBundle\Annotation;
 
 /**
- * Annotation class for @OAuth2().
+ * Annotation class for @OAuth2.
  *
  * @Annotation
  * @Target({"CLASS", "METHOD"})
@@ -49,8 +49,8 @@ class OAuth2
     public function __construct(array $data)
     {
         foreach ($data as $key => $value) {
-            if (!property_exists($this, $key)) {
-                throw new \BadMethodCallException(sprintf('Unknown property "%s" on annotation "%s".', $key, get_class($this)));
+            if (!\property_exists($this, $key)) {
+                throw new \BadMethodCallException(\sprintf('Unknown property "%s" on annotation "%s".', $key, \get_class($this)));
             }
             $this->$key = $value;
         }

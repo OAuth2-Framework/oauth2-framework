@@ -32,7 +32,7 @@ final class InitialAccessTokenTest extends TestCase
 
         self::assertInstanceOf(InitialAccessTokenId::class, $initialAccessTokenId);
         self::assertEquals('INITIAL_ACCESS_TOKEN_ID', $initialAccessTokenId->getValue());
-        self::assertEquals('"INITIAL_ACCESS_TOKEN_ID"', json_encode($initialAccessTokenId, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
+        self::assertEquals('"INITIAL_ACCESS_TOKEN_ID"', \json_encode($initialAccessTokenId, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
     }
 
     /**
@@ -49,7 +49,7 @@ final class InitialAccessTokenTest extends TestCase
         $initialAccessToken = $initialAccessToken->markAsRevoked();
 
         self::assertInstanceOf(InitialAccessToken::class, $initialAccessToken);
-        self::assertEquals('{"$schema":"https://oauth2-framework.spomky-labs.com/schemas/model/initial-access-token/1.0/schema","type":"OAuth2Framework\\\\Component\\\\ClientRegistrationEndpoint\\\\InitialAccessToken","initial_access_token_id":"INITIAL_ACCESS_TOKEN_ID","user_account_id":"USER_ACCOUNT_ID","expires_at":null,"is_revoked":true}', json_encode($initialAccessToken, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+        self::assertEquals('{"$schema":"https://oauth2-framework.spomky-labs.com/schemas/model/initial-access-token/1.0/schema","type":"OAuth2Framework\\\\Component\\\\ClientRegistrationEndpoint\\\\InitialAccessToken","initial_access_token_id":"INITIAL_ACCESS_TOKEN_ID","user_account_id":"USER_ACCOUNT_ID","expires_at":null,"is_revoked":true}', \json_encode($initialAccessToken, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
         self::assertEquals('INITIAL_ACCESS_TOKEN_ID', $initialAccessToken->getTokenId()->getValue());
     }
 }

@@ -88,7 +88,7 @@ class ClientAuthenticationMiddleware implements MiddlewareInterface
      */
     private function checkAuthenticationMethod(ServerRequestInterface $request, Client $client, AuthenticationMethod $authenticationMethod, $client_credentials)
     {
-        if (!$client->has('token_endpoint_auth_method') || !in_array($client->get('token_endpoint_auth_method'), $authenticationMethod->getSupportedMethods())) {
+        if (!$client->has('token_endpoint_auth_method') || !\in_array($client->get('token_endpoint_auth_method'), $authenticationMethod->getSupportedMethods(), true)) {
             throw new \InvalidArgumentException('Client authentication failed.');
         }
         if (!$authenticationMethod->isClientAuthenticated($client, $client_credentials, $request)) {

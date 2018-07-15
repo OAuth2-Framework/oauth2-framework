@@ -59,11 +59,11 @@ final class ResponseTypesRule implements Rule
      */
     private function checkResponseTypes(DataBag $parameters)
     {
-        if (!is_array($parameters->get('response_types'))) {
+        if (!\is_array($parameters->get('response_types'))) {
             throw new \InvalidArgumentException('The parameter "response_types" must be an array of strings.');
         }
         foreach ($parameters->get('response_types') as $grant_type) {
-            if (!is_string($grant_type)) {
+            if (!\is_string($grant_type)) {
                 throw new \InvalidArgumentException('The parameter "response_types" must be an array of strings.');
             }
         }
@@ -79,9 +79,9 @@ final class ResponseTypesRule implements Rule
         $grantTypes = $parameters->has('grant_types') ? $parameters->get('grant_types') : [];
         foreach ($parameters->get('response_types') as $responseType) {
             $type = $this->responseTypeManager->get($responseType);
-            $diff = array_diff($type->associatedGrantTypes(), $grantTypes);
+            $diff = \array_diff($type->associatedGrantTypes(), $grantTypes);
             if (!empty($diff)) {
-                throw new \InvalidArgumentException(sprintf('The response type "%s" requires the following grant type(s): %s.', $responseType, implode(', ', $diff)));
+                throw new \InvalidArgumentException(\sprintf('The response type "%s" requires the following grant type(s): %s.', $responseType, \implode(', ', $diff)));
             }
         }
     }

@@ -173,7 +173,7 @@ class ClientAssertionJwt implements AuthenticationMethod
     public function findClientIdAndCredentials(ServerRequestInterface $request, &$clientCredentials = null): ? ClientId
     {
         $parameters = RequestBodyParser::parseFormUrlEncoded($request);
-        if (!array_key_exists('client_assertion_type', $parameters)) {
+        if (!\array_key_exists('client_assertion_type', $parameters)) {
             return null;
         }
         $clientAssertionType = $parameters['client_assertion_type'];
@@ -181,7 +181,7 @@ class ClientAssertionJwt implements AuthenticationMethod
         if (self::CLIENT_ASSERTION_TYPE !== $clientAssertionType) {
             return null;
         }
-        if (!array_key_exists('client_assertion', $parameters)) {
+        if (!\array_key_exists('client_assertion', $parameters)) {
             throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, 'Parameter "client_assertion" is missing.');
         }
 
@@ -200,9 +200,9 @@ class ClientAssertionJwt implements AuthenticationMethod
         }
 
         // FIXME: Other claims can be considered as mandatory by the server
-        $diff = array_diff(['iss', 'sub', 'aud', 'exp'], array_keys($claims));
+        $diff = \array_diff(['iss', 'sub', 'aud', 'exp'], \array_keys($claims));
         if (!empty($diff)) {
-            throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, sprintf('The following claim(s) is/are mandatory: "%s".', implode(', ', array_values($diff))));
+            throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, \sprintf('The following claim(s) is/are mandatory: "%s".', \implode(', ', \array_values($diff))));
         }
 
         $clientCredentials = $jws;
@@ -291,7 +291,7 @@ class ClientAssertionJwt implements AuthenticationMethod
     {
         $validatedParameters->with('token_endpoint_auth_method', $commandParameters->get('token_endpoint_auth_method'));
         $validatedParameters->with('client_secret', $this->createClientSecret());
-        $validatedParameters->with('client_secret_expires_at', (0 === $this->secretLifetime ? 0 : time() + $this->secretLifetime));
+        $validatedParameters->with('client_secret_expires_at', (0 === $this->secretLifetime ? 0 : \time() + $this->secretLifetime));
 
         return $validatedParameters;
     }
@@ -329,7 +329,7 @@ class ClientAssertionJwt implements AuthenticationMethod
      */
     private function createClientSecret(): string
     {
-        return bin2hex(random_bytes(32));
+        return \bin2hex(\random_bytes(32));
     }
 
     /**
@@ -349,13 +349,13 @@ class ClientAssertionJwt implements AuthenticationMethod
             throw new \InvalidArgumentException('Unable to retrieve the key set of the issuer.');
         }
 
-        if (!in_array(self::CLIENT_ASSERTION_TYPE, $trustedIssuer->getAllowedAssertionTypes())) {
-            throw new \InvalidArgumentException(sprintf('The assertion type "%s" is not allowed for that issuer.', self::CLIENT_ASSERTION_TYPE));
+        if (!\in_array(self::CLIENT_ASSERTION_TYPE, $trustedIssuer->getAllowedAssertionTypes(), true)) {
+            throw new \InvalidArgumentException(\sprintf('The assertion type "%s" is not allowed for that issuer.', self::CLIENT_ASSERTION_TYPE));
         }
 
         $signatureAlgorithm = $jws->getSignature(0)->getProtectedHeaderParameter('alg');
-        if (!in_array($signatureAlgorithm, $trustedIssuer->getAllowedSignatureAlgorithms())) {
-            throw new \InvalidArgumentException(sprintf('The signature algorithm "%s" is not allowed for that issuer.', $signatureAlgorithm));
+        if (!\in_array($signatureAlgorithm, $trustedIssuer->getAllowedSignatureAlgorithms(), true)) {
+            throw new \InvalidArgumentException(\sprintf('The signature algorithm "%s" is not allowed for that issuer.', $signatureAlgorithm));
         }
 
         return $trustedIssuer->getJWKSet();
@@ -370,7 +370,7 @@ class ClientAssertionJwt implements AuthenticationMethod
     {
         switch (true) {
             case $client->has('jwks') && 'private_key_jwt' === $client->getTokenEndpointAuthenticationMethod():
-                $jwks = json_decode(json_encode($client->get('jwks'), JSON_FORCE_OBJECT), true);
+                $jwks = \json_decode(\json_encode($client->get('jwks'), JSON_FORCE_OBJECT), true);
 
                 return JWKSet::createFromKeyData($jwks);
             case $client->has('client_secret') && 'client_secret_jwt' === $client->getTokenEndpointAuthenticationMethod():

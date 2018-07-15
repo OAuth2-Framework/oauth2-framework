@@ -176,7 +176,7 @@ class RefreshTokenCreatedEvent extends Event
     {
         return (object) [
             'resource_owner_id' => $this->resourceOwnerId->jsonSerialize(),
-            'resource_owner_class' => get_class($this->resourceOwnerId),
+            'resource_owner_class' => \get_class($this->resourceOwnerId),
             'client_id' => $this->clientId->jsonSerialize(),
             'parameters' => (object) $this->parameters->all(),
             'expires_at' => $this->expiresAt->getTimestamp(),

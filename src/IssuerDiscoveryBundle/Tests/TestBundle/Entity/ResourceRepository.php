@@ -34,6 +34,6 @@ class ResourceRepository implements ResourceRepositoryInterface
      */
     public function find(ResourceId $resourceId): ?ResourceObjectInterface
     {
-        return array_key_exists($resourceId->getValue(), $this->resources) ? $this->resources[$resourceId->getValue()] : null;
+        return \array_key_exists($resourceId->getValue(), $this->resources) ? $this->resources[$resourceId->getValue()] : null;
     }
 }

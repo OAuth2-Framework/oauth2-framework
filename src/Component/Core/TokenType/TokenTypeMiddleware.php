@@ -67,7 +67,7 @@ final class TokenTypeMiddleware implements MiddlewareInterface
     private function findTokenType(ServerRequestInterface $request): TokenType
     {
         $parameters = RequestBodyParser::parseFormUrlEncoded($request);
-        if (true === $this->tokenTypeParameterAllowed && array_key_exists('token_type', $parameters)) {
+        if (true === $this->tokenTypeParameterAllowed && \array_key_exists('token_type', $parameters)) {
             return $this->tokenTypeManager->get($parameters['token_type']);
         } else {
             return $this->tokenTypeManager->getDefault();

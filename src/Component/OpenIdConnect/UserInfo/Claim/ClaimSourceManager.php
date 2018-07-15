@@ -51,7 +51,7 @@ class ClaimSourceManager
      */
     public function getUserInfo(UserAccount $userAccount, string $scope, array $previousClaims): array
     {
-        $scopes = empty($scope) ? [] : explode(' ', $scope);
+        $scopes = empty($scope) ? [] : \explode(' ', $scope);
         $claims = [
             '_claim_names' => [],
             '_claim_sources' => [],
@@ -62,14 +62,14 @@ class ClaimSourceManager
             $result = $claimSource->getUserInfo($userAccount, $scopes, $previousClaims);
             if (null !== $result) {
                 ++$i;
-                $src = sprintf('src%d', $i);
+                $src = \sprintf('src%d', $i);
                 $_claim_names = [];
                 foreach ($result->getAvailableClaims() as $claim) {
                     if ('sub' !== $claim) {
                         $_claim_names[$claim] = $src;
                     }
                 }
-                $claims['_claim_names'] = array_merge(
+                $claims['_claim_names'] = \array_merge(
                     $claims['_claim_names'],
                     $_claim_names
                 );

@@ -55,7 +55,7 @@ class ClientAuthenticationSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        if (!class_exists(AuthenticationMethodManager::class)) {
+        if (!\class_exists(AuthenticationMethodManager::class)) {
             return;
         }
 
@@ -73,7 +73,7 @@ class ClientAuthenticationSource implements Component
      */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
-        if (!class_exists(AuthenticationMethodManager::class)) {
+        if (!\class_exists(AuthenticationMethodManager::class)) {
             return;
         }
         $childNode = $node->children()
@@ -90,12 +90,12 @@ class ClientAuthenticationSource implements Component
      */
     public function prepend(ContainerBuilder $container, array $config): array
     {
-        if (!class_exists(AuthenticationMethodManager::class)) {
+        if (!\class_exists(AuthenticationMethodManager::class)) {
             return [];
         }
         $updatedConfig = [];
         foreach ($this->subComponents as $subComponent) {
-            $updatedConfig = array_merge(
+            $updatedConfig = \array_merge(
                 $updatedConfig,
                 $subComponent->prepend($container, $config)
             );
@@ -109,7 +109,7 @@ class ClientAuthenticationSource implements Component
      */
     public function build(ContainerBuilder $container)
     {
-        if (!class_exists(AuthenticationMethodManager::class)) {
+        if (!\class_exists(AuthenticationMethodManager::class)) {
             return;
         }
         $container->addCompilerPass(new ClientAuthenticationMethodCompilerPass());

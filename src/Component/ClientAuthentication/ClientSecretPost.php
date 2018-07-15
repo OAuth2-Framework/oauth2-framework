@@ -55,7 +55,7 @@ final class ClientSecretPost implements AuthenticationMethod
     public function findClientIdAndCredentials(ServerRequestInterface $request, &$clientCredentials = null): ? ClientId
     {
         $parameters = RequestBodyParser::parseFormUrlEncoded($request);
-        if (array_key_exists('client_id', $parameters) && array_key_exists('client_secret', $parameters)) {
+        if (\array_key_exists('client_id', $parameters) && \array_key_exists('client_secret', $parameters)) {
             $clientCredentials = $parameters['client_secret'];
 
             return ClientId::create($parameters['client_id']);
@@ -70,7 +70,7 @@ final class ClientSecretPost implements AuthenticationMethod
     public function checkClientConfiguration(DataBag $command_parameters, DataBag $validatedParameters): DataBag
     {
         $validatedParameters->with('client_secret', $this->createClientSecret());
-        $validatedParameters->with('client_secret_expires_at', (0 === $this->secretLifetime ? 0 : time() + $this->secretLifetime));
+        $validatedParameters->with('client_secret_expires_at', (0 === $this->secretLifetime ? 0 : \time() + $this->secretLifetime));
 
         return $validatedParameters;
     }
@@ -80,7 +80,7 @@ final class ClientSecretPost implements AuthenticationMethod
      */
     public function isClientAuthenticated(Client $client, $clientCredentials, ServerRequestInterface $request): bool
     {
-        return hash_equals($client->get('client_secret'), $clientCredentials);
+        return \hash_equals($client->get('client_secret'), $clientCredentials);
     }
 
     /**
@@ -96,6 +96,6 @@ final class ClientSecretPost implements AuthenticationMethod
      */
     private function createClientSecret(): string
     {
-        return Base64Url::encode(random_bytes(32));
+        return Base64Url::encode(\random_bytes(32));
     }
 }

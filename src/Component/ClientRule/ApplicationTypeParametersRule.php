@@ -25,7 +25,7 @@ final class ApplicationTypeParametersRule implements Rule
     {
         if ($commandParameters->has('application_type')) {
             $application_type = $commandParameters->get('application_type');
-            if (!in_array($application_type, ['native', 'web'])) {
+            if (!\in_array($application_type, ['native', 'web'], true)) {
                 throw new \InvalidArgumentException('The parameter "application_type" must be either "native" or "web".');
             }
             $validatedParameters->with('application_type', $application_type);

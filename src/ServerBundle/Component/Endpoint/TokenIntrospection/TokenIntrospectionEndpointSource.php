@@ -38,7 +38,7 @@ class TokenIntrospectionEndpointSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        if (!class_exists(TokenIntrospectionEndpoint::class)) {
+        if (!\class_exists(TokenIntrospectionEndpoint::class)) {
             return;
         }
         $config = $configs['endpoint']['token_introspection'];
@@ -59,7 +59,7 @@ class TokenIntrospectionEndpointSource implements Component
      */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
-        if (!class_exists(TokenIntrospectionEndpoint::class)) {
+        if (!\class_exists(TokenIntrospectionEndpoint::class)) {
             return;
         }
         $rootNode->validate()
@@ -93,7 +93,7 @@ class TokenIntrospectionEndpointSource implements Component
      */
     public function build(ContainerBuilder $container)
     {
-        if (!class_exists(TokenIntrospectionEndpoint::class)) {
+        if (!\class_exists(TokenIntrospectionEndpoint::class)) {
             return;
         }
         $container->addCompilerPass(new TokenTypeHintCompilerPass());

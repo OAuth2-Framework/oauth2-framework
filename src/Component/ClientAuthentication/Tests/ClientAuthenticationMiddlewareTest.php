@@ -60,7 +60,7 @@ final class ClientAuthenticationMiddlewareTest extends TestCase
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getHeader('Authorization')
             ->willReturn([
-                'Basic '.base64_encode('FOO:BAR'),
+                'Basic '.\base64_encode('FOO:BAR'),
             ])
             ->shouldBeCalled();
         $handler = $this->prophesize(RequestHandlerInterface::class);
@@ -98,7 +98,7 @@ final class ClientAuthenticationMiddlewareTest extends TestCase
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getHeader('Authorization')
             ->willReturn([
-                'Basic '.base64_encode('FOO:BAR'),
+                'Basic '.\base64_encode('FOO:BAR'),
             ])
             ->shouldBeCalled();
         $handler = $this->prophesize(RequestHandlerInterface::class);
@@ -131,7 +131,7 @@ final class ClientAuthenticationMiddlewareTest extends TestCase
             DataBag::create([
                 'token_endpoint_auth_method' => 'client_secret_basic',
                 'client_secret' => 'BAR',
-                'client_secret_expires_at' => time() - 1,
+                'client_secret_expires_at' => \time() - 1,
             ]),
             null
         );
@@ -139,7 +139,7 @@ final class ClientAuthenticationMiddlewareTest extends TestCase
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getHeader('Authorization')
             ->willReturn([
-                'Basic '.base64_encode('FOO:BAR'),
+                'Basic '.\base64_encode('FOO:BAR'),
             ])
             ->shouldBeCalled();
         $handler = $this->prophesize(RequestHandlerInterface::class);
@@ -178,7 +178,7 @@ final class ClientAuthenticationMiddlewareTest extends TestCase
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getHeader('Authorization')
             ->willReturn([
-                'Basic '.base64_encode('FOO:BAR'),
+                'Basic '.\base64_encode('FOO:BAR'),
             ])
             ->shouldBeCalled();
         $handler = $this->prophesize(RequestHandlerInterface::class);
@@ -218,7 +218,7 @@ final class ClientAuthenticationMiddlewareTest extends TestCase
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getHeader('Authorization')
             ->willReturn([
-                'Basic '.base64_encode('FOO:BAD_SECRET'),
+                'Basic '.\base64_encode('FOO:BAD_SECRET'),
             ])
             ->shouldBeCalled();
         $handler = $this->prophesize(RequestHandlerInterface::class);
@@ -259,7 +259,7 @@ final class ClientAuthenticationMiddlewareTest extends TestCase
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getHeader('Authorization')
             ->willReturn([
-                'Basic '.base64_encode('FOO:BAR'),
+                'Basic '.\base64_encode('FOO:BAR'),
             ])
             ->shouldBeCalled();
         $request->withAttribute('client', $client)->shouldBeCalled()->willReturn($request->reveal());

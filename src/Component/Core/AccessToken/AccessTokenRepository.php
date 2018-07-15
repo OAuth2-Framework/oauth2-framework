@@ -24,8 +24,6 @@ interface AccessTokenRepository
 
     /**
      * @param AccessToken $accessToken The access token to store
-     *
-     * @return void
      */
     public function save(AccessToken $accessToken): void;
 }

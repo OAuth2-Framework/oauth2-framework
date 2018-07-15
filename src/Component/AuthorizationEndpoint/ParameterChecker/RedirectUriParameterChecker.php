@@ -30,8 +30,8 @@ final class RedirectUriParameterChecker implements ParameterChecker
             }
             $redirectUri = $authorization->getQueryParam('redirect_uri');
             $availableRedirectUris = $this->getRedirectUris($authorization);
-            if (!empty($availableRedirectUris) && !in_array($redirectUri, $availableRedirectUris)) {
-                throw new \InvalidArgumentException(sprintf('The redirect URI "%s" is not registered.', $redirectUri));
+            if (!empty($availableRedirectUris) && !\in_array($redirectUri, $availableRedirectUris, true)) {
+                throw new \InvalidArgumentException(\sprintf('The redirect URI "%s" is not registered.', $redirectUri));
             }
 
             $authorization = $authorization->withRedirectUri($redirectUri);

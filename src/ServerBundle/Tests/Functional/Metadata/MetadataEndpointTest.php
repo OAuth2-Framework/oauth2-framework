@@ -29,7 +29,7 @@ class MetadataEndpointTest extends WebTestCase
      */
     protected function setUp()
     {
-        if (!class_exists(MetadataEndpoint::class)) {
+        if (!\class_exists(MetadataEndpoint::class)) {
             $this->markTestSkipped('The component "oauth2-framework/metadata-endpoint" is not installed.');
         }
     }
@@ -44,7 +44,7 @@ class MetadataEndpointTest extends WebTestCase
         $response = $client->getResponse();
         self::assertEquals(200, $response->getStatusCode());
         self::assertEquals('application/json; charset=UTF-8', $response->headers->get('content-type'));
-        $content = json_decode($response->getContent(), true);
+        $content = \json_decode($response->getContent(), true);
         self::assertInternalType('array', $content);
     }
 }

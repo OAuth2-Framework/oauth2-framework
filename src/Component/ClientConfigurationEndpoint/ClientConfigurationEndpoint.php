@@ -106,7 +106,7 @@ final class ClientConfigurationEndpoint implements MiddlewareInterface
             if (null === $token) {
                 throw new \RuntimeException('Invalid client or invalid registration access token.');
             }
-            if (!hash_equals($client->get('registration_access_token'), $token)) {
+            if (!\hash_equals($client->get('registration_access_token'), $token)) {
                 throw new \InvalidArgumentException('Invalid client or invalid registration access token.');
             }
         } catch (\InvalidArgumentException $e) {

@@ -37,7 +37,7 @@ class IssuerDiscoveryCompilerPass implements CompilerPassInterface
         $port = $container->getParameter('request_listener.https_port');
 
         foreach ($issuerDiscoveries as $id => $issuerDiscovery) {
-            $issuerDiscoveryId = sprintf('issuer_discovery.%s', $id);
+            $issuerDiscoveryId = \sprintf('issuer_discovery.%s', $id);
             $issuerDiscoveryDefinition = (new Definition())
                 ->setFactory([new Reference(IssuerDiscoveryFactory::class), 'create'])
                 ->setClass(IssuerDiscoveryEndpoint::class)
@@ -48,7 +48,7 @@ class IssuerDiscoveryCompilerPass implements CompilerPassInterface
                 ]);
             $container->setDefinition($issuerDiscoveryId, $issuerDiscoveryDefinition);
 
-            $issuerDiscoveryPipeId = sprintf('issuer_discovery_pipe_%s', $id);
+            $issuerDiscoveryPipeId = \sprintf('issuer_discovery_pipe_%s', $id);
             $issuerDiscoveryPipeDefinition = (new Definition())
                 ->setClass(Pipe::class)
                 ->setArguments([[

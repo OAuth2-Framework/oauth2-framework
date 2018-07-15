@@ -220,9 +220,9 @@ class AuthorizationRequestLoader
     {
         $client = null;
         $params = $request->getQueryParams();
-        if (array_key_exists('request', $params)) {
+        if (\array_key_exists('request', $params)) {
             $params = $this->createFromRequestParameter($params, $client);
-        } elseif (array_key_exists('request_uri', $params)) {
+        } elseif (\array_key_exists('request_uri', $params)) {
             $params = $this->createFromRequestUriParameter($params, $client);
         } else {
             $client = $this->getClient($params);
@@ -245,7 +245,7 @@ class AuthorizationRequestLoader
             throw new OAuth2Message(400, OAuth2Message::ERROR_REQUEST_NOT_SUPPORTED, 'The parameter "request" is not supported.');
         }
         $request = $params['request'];
-        if (!is_string($request)) {
+        if (!\is_string($request)) {
             throw new OAuth2Message(400, OAuth2Message::ERROR_REQUEST_NOT_SUPPORTED, 'The parameter "request" must be an assertion.');
         }
 
@@ -271,7 +271,7 @@ class AuthorizationRequestLoader
             throw new OAuth2Message(400, OAuth2Message::ERROR_REQUEST_URI_NOT_SUPPORTED, 'The parameter "request_uri" is not supported.');
         }
         $requestUri = $params['request_uri'];
-        if (preg_match('#/\.\.?(/|$)#', $requestUri)) {
+        if (\preg_match('#/\.\.?(/|$)#', $requestUri)) {
             throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST_URI, 'The request Uri is not allowed.');
         }
         $content = $this->downloadContent($requestUri);
@@ -289,7 +289,7 @@ class AuthorizationRequestLoader
      */
     private function checkIssuerAndClientId(array $params)
     {
-        if (array_key_exists('iss', $params) && array_key_exists('client_id', $params)) {
+        if (\array_key_exists('iss', $params) && \array_key_exists('client_id', $params)) {
             if ($params['iss'] !== $params['client_id']) {
                 throw new \InvalidArgumentException('The issuer of the request object is not the client who requests the authorization.');
             }
@@ -314,7 +314,7 @@ class AuthorizationRequestLoader
         }
 
         foreach ($storedRequestUris as $storedRequestUri) {
-            if (0 === strcasecmp(mb_substr($requestUri, 0, mb_strlen($storedRequestUri, '8bit'), '8bit'), $storedRequestUri)) {
+            if (0 === \strcasecmp(\mb_substr($requestUri, 0, \mb_strlen($storedRequestUri, '8bit'), '8bit'), $storedRequestUri)) {
                 return;
             }
         }
@@ -347,11 +347,11 @@ class AuthorizationRequestLoader
             $claims = $jsonConverter->decode(
                 $jwt->getPayload()
             );
-            if (!is_array($claims)) {
+            if (!\is_array($claims)) {
                 throw new \InvalidArgumentException('Invalid assertion. The payload must contain claims.');
             }
             $this->claimCheckerManager->check($claims);
-            $parameters = array_merge($params, $claims);
+            $parameters = \array_merge($params, $claims);
             $client = $this->getClient($parameters);
 
             $public_key_set = $this->getClientKeySet($client);
@@ -416,8 +416,8 @@ class AuthorizationRequestLoader
     private function checkUsedAlgorithm(string $algorithm): void
     {
         $supportedAlgorithms = $this->getSupportedSignatureAlgorithms();
-        if (!in_array($algorithm, $supportedAlgorithms)) {
-            throw new \InvalidArgumentException(sprintf('The algorithm "%s" is not allowed for request object signatures. Please use one of the following algorithm(s): %s', $algorithm, implode(', ', $supportedAlgorithms)));
+        if (!\in_array($algorithm, $supportedAlgorithms, true)) {
+            throw new \InvalidArgumentException(\sprintf('The algorithm "%s" is not allowed for request object signatures. Please use one of the following algorithm(s): %s', $algorithm, \implode(', ', $supportedAlgorithms)));
         }
     }
 
@@ -439,7 +439,7 @@ class AuthorizationRequestLoader
         }
 
         $content = $response->getBody()->getContents();
-        if (!is_string($content)) {
+        if (!\is_string($content)) {
             throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST_URI, 'Unable to get content.');
         }
 
@@ -455,7 +455,7 @@ class AuthorizationRequestLoader
      */
     private function getClient(array $params): Client
     {
-        $client = array_key_exists('client_id', $params) ? $this->clientRepository->find(ClientId::create($params['client_id'])) : null;
+        $client = \array_key_exists('client_id', $params) ? $this->clientRepository->find(ClientId::create($params['client_id'])) : null;
         if (!$client instanceof Client || true === $client->isDeleted()) {
             throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, 'Parameter "client_id" missing or invalid.');
         }
@@ -491,7 +491,7 @@ class AuthorizationRequestLoader
                 $keyset = $keyset->with($jwk);
             }
         }
-        if (in_array('none', $this->getSupportedSignatureAlgorithms())) {
+        if (\in_array('none', $this->getSupportedSignatureAlgorithms(), true)) {
             $keyset = $keyset->with(JWK::create([
                 'kty' => 'none',
                 'alg' => 'none',

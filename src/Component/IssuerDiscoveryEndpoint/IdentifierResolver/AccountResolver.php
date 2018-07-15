@@ -35,20 +35,20 @@ final class AccountResolver implements IdentifierResolver
     public function resolve(string $resource_name): Identifier
     {
         $uri = parse($resource_name);
-        if (!is_string($uri['path'])) {
+        if (!\is_string($uri['path'])) {
             throw new \InvalidArgumentException('Invalid resource.');
         }
-        $parts = explode('@', $uri['path']);
-        if (2 !== count($parts)) {
+        $parts = \explode('@', $uri['path']);
+        if (2 !== \count($parts)) {
             throw new \InvalidArgumentException('Invalid resource.');
         }
-        $parts[0] = str_replace('%40', '@', $parts[0]);
-        $pos = strpos($parts[1], ':');
+        $parts[0] = \str_replace('%40', '@', $parts[0]);
+        $pos = \mb_strpos($parts[1], ':');
         if (false === $pos) {
             $port = null;
         } else {
-            $port = intval(substr($parts[1], $pos + 1));
-            $parts[1] = substr($parts[1], 0, $pos);
+            $port = \intval(\mb_substr($parts[1], $pos + 1));
+            $parts[1] = \mb_substr($parts[1], 0, $pos);
         }
 
         return new Identifier($parts[0], $parts[1], $port);

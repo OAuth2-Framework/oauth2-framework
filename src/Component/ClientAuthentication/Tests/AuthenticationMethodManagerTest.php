@@ -42,7 +42,7 @@ final class AuthenticationMethodManagerTest extends TestCase
         self::assertTrue($manager->has('none'));
         self::assertEquals(['none', 'client_secret_basic'], $manager->list());
         self::assertInstanceOf(AuthenticationMethod::class, $manager->get('none'));
-        self::assertEquals(2, count($manager->all()));
+        self::assertEquals(2, \count($manager->all()));
         self::assertEquals(['Basic realm="Realm",charset="UTF-8"'], $manager->getSchemesParameters());
     }
 
@@ -58,7 +58,7 @@ final class AuthenticationMethodManagerTest extends TestCase
             'client_id' => 'CLIENT_ID',
             'client_secret' => 'CLIENT_SECRET',
         ]);
-        $request->getHeader('Authorization')->willReturn(['Basic '.base64_encode('CLIENT_ID:CLIENT_SECRET')]);
+        $request->getHeader('Authorization')->willReturn(['Basic '.\base64_encode('CLIENT_ID:CLIENT_SECRET')]);
 
         try {
             $manager->findClientIdAndCredentials($request->reveal(), $method, $credentials);
@@ -94,7 +94,7 @@ final class AuthenticationMethodManagerTest extends TestCase
     private function buildRequest(array $data): ObjectProphecy
     {
         $body = $this->prophesize(StreamInterface::class);
-        $body->getContents()->willReturn(http_build_query($data));
+        $body->getContents()->willReturn(\http_build_query($data));
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->hasHeader('Content-Type')->willReturn(true);
         $request->getHeader('Content-Type')->willReturn(['application/x-www-form-urlencoded']);

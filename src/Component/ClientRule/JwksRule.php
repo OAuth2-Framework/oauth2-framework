@@ -42,7 +42,7 @@ class JwksRule implements Rule
             } catch (\Throwable $e) {
                 throw new \InvalidArgumentException('The parameter "jwks" must be a valid JWKSet object.', 0, $e);
             }
-            if (0 === count($keyset)) {
+            if (0 === \count($keyset)) {
                 throw new \InvalidArgumentException('The parameter "jwks" must not be empty.');
             }
             $validatedParameters->with('jwks', $commandParameters->get('jwks'));

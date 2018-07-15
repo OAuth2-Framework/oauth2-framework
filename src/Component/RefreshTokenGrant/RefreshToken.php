@@ -113,7 +113,7 @@ class RefreshToken extends Token
     public function addAccessToken(AccessTokenId $accessTokenId): self
     {
         $id = $accessTokenId->getValue();
-        if (array_key_exists($id, $this->accessTokenIds)) {
+        if (\array_key_exists($id, $this->accessTokenIds)) {
             return $this;
         }
 
@@ -189,10 +189,10 @@ class RefreshToken extends Token
     public function jsonSerialize()
     {
         $data = parent::jsonSerialize() + [
-                'refresh_token_id' => $this->getTokenId()->getValue(),
-                'access_token_ids' => array_keys($this->getAccessTokenIds()),
-                'resource_server_id' => $this->getResourceServerId() ? $this->getResourceServerId()->getValue() : null,
-            ];
+            'refresh_token_id' => $this->getTokenId()->getValue(),
+            'access_token_ids' => \array_keys($this->getAccessTokenIds()),
+            'resource_server_id' => $this->getResourceServerId() ? $this->getResourceServerId()->getValue() : null,
+        ];
 
         return $data;
     }
@@ -226,7 +226,7 @@ class RefreshToken extends Token
     public function apply(Event $event): self
     {
         $map = $this->getEventMap();
-        if (!array_key_exists($event->getType(), $map)) {
+        if (!\array_key_exists($event->getType(), $map)) {
             throw new \InvalidArgumentException('Unsupported event.');
         }
         if (null !== $this->refreshTokenId && $this->refreshTokenId->getValue() !== $event->getDomainId()->getValue()) {

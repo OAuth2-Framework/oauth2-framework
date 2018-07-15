@@ -35,7 +35,7 @@ class RevocationEndpointTest extends WebTestCase
      */
     protected function setUp()
     {
-        if (!class_exists(TokenRevocationEndpoint::class)) {
+        if (!\class_exists(TokenRevocationEndpoint::class)) {
             $this->markTestSkipped('The component "oauth2-framework/token-revocation-endpoint" is not installed.');
         }
     }

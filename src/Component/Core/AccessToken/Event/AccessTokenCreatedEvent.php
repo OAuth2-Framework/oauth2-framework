@@ -193,7 +193,7 @@ class AccessTokenCreatedEvent extends Event
     {
         return (object) [
             'resource_owner_id' => $this->resourceOwnerId->getValue(),
-            'resource_owner_class' => get_class($this->resourceOwnerId),
+            'resource_owner_class' => \get_class($this->resourceOwnerId),
             'client_id' => $this->clientId->getValue(),
             'parameters' => (object) $this->parameters->all(),
             'metadatas' => (object) $this->metadatas->all(),

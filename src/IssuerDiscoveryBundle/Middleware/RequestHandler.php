@@ -40,6 +40,6 @@ class RequestHandler implements RequestHandlerInterface
      */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        return call_user_func($this->callback, $request);
+        return \call_user_func($this->callback, $request);
     }
 }

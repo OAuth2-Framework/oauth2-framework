@@ -29,7 +29,7 @@ class RefreshTokenGrantTest extends WebTestCase
      */
     protected function setUp()
     {
-        if (!class_exists(RefreshTokenGrantType::class)) {
+        if (!\class_exists(RefreshTokenGrantType::class)) {
             $this->markTestSkipped('The component "oauth2-framework/refresh-token-grant" is not installed.');
         }
     }

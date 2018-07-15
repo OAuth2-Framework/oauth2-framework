@@ -35,11 +35,11 @@ final class PromptParameterChecker implements ParameterChecker
         try {
             if ($authorization->hasQueryParam('prompt')) {
                 $prompt = $authorization->getPrompt();
-                $diff = array_diff($prompt, $this->getAllowedPromptValues());
+                $diff = \array_diff($prompt, $this->getAllowedPromptValues());
                 if (!empty($diff)) {
-                    throw new \InvalidArgumentException(sprintf('Invalid parameter "prompt". Allowed values are %s', implode(', ', $this->getAllowedPromptValues())));
+                    throw new \InvalidArgumentException(\sprintf('Invalid parameter "prompt". Allowed values are %s', \implode(', ', $this->getAllowedPromptValues())));
                 }
-                if (in_array('none', $prompt) && 1 !== count($prompt)) {
+                if (\in_array('none', $prompt, true) && 1 !== \count($prompt)) {
                     throw new \InvalidArgumentException('Invalid parameter "prompt". Prompt value "none" must be used alone.');
                 }
             }

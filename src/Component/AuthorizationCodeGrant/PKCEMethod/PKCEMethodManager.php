@@ -39,7 +39,7 @@ class PKCEMethodManager
      */
     public function has(string $method): bool
     {
-        return array_key_exists($method, $this->pkceMethods);
+        return \array_key_exists($method, $this->pkceMethods);
     }
 
     /**
@@ -59,6 +59,6 @@ class PKCEMethodManager
      */
     public function names(): array
     {
-        return array_keys($this->pkceMethods);
+        return \array_keys($this->pkceMethods);
     }
 }

@@ -102,7 +102,7 @@ class RequestObjectSource implements Component
 
         $updatedConfig = [];
         foreach ($this->subComponents as $subComponent) {
-            $updatedConfig = array_merge(
+            $updatedConfig = \array_merge(
                 $updatedConfig,
                 $subComponent->prepend($container, $config)
             );

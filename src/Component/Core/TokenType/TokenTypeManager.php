@@ -50,7 +50,7 @@ class TokenTypeManager
      */
     public function has(string $tokenTypeName): bool
     {
-        return array_key_exists($tokenTypeName, $this->tokenTypes);
+        return \array_key_exists($tokenTypeName, $this->tokenTypes);
     }
 
     /**
@@ -61,7 +61,7 @@ class TokenTypeManager
     public function get(string $tokenTypeName): TokenType
     {
         if (!$this->has($tokenTypeName)) {
-            throw new \InvalidArgumentException(sprintf('Unsupported token type "%s".', $tokenTypeName));
+            throw new \InvalidArgumentException(\sprintf('Unsupported token type "%s".', $tokenTypeName));
         }
 
         return $this->tokenTypes[$tokenTypeName];
@@ -134,16 +134,16 @@ class TokenTypeManager
      */
     private function appendParameters(string $scheme, array $parameters): string
     {
-        $position = mb_strpos($scheme, ' ', 0, 'utf-8');
+        $position = \mb_strpos($scheme, ' ', 0, 'utf-8');
         $add_comma = false === $position ? false : true;
 
         foreach ($parameters as $key => $value) {
-            $value = is_string($value) ? sprintf('"%s"', $value) : $value;
+            $value = \is_string($value) ? \sprintf('"%s"', $value) : $value;
             if (false === $add_comma) {
                 $add_comma = true;
-                $scheme = sprintf('%s %s=%s', $scheme, $key, $value);
+                $scheme = \sprintf('%s %s=%s', $scheme, $key, $value);
             } else {
-                $scheme = sprintf('%s,%s=%s', $scheme, $key, $value);
+                $scheme = \sprintf('%s,%s=%s', $scheme, $key, $value);
             }
         }
 

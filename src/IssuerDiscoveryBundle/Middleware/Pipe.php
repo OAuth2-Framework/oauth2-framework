@@ -46,7 +46,7 @@ class Pipe implements MiddlewareInterface
 
         $response = $this->dispatch($request);
 
-        array_pop($this->middlewares);
+        \array_pop($this->middlewares);
 
         return $response;
     }

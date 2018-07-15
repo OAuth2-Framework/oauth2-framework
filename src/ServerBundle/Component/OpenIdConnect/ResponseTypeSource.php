@@ -38,7 +38,7 @@ class ResponseTypeSource implements Component
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../Resources/config/openid_connect/response_type'));
         foreach ($config as $k => $v) {
             if ($config[$k]['enabled']) {
-                $loader->load(sprintf('%s.php', $k));
+                $loader->load(\sprintf('%s.php', $k));
             }
         }
     }

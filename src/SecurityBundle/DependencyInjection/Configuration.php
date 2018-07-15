@@ -52,7 +52,7 @@ final class Configuration implements ConfigurationInterface
                     ->info('PSR7 requests and responses factory')
                 ->end()
             ->end();
-        if (class_exists(BearerToken::class)) {
+        if (\class_exists(BearerToken::class)) {
             $rootNode
                 ->children()
                     ->arrayNode('bearer_token')
@@ -80,7 +80,7 @@ final class Configuration implements ConfigurationInterface
                 ->end();
         }
 
-        if (class_exists(MacToken::class)) {
+        if (\class_exists(MacToken::class)) {
             $rootNode
                 ->children()
                     ->arrayNode('mac_token')
@@ -94,7 +94,7 @@ final class Configuration implements ConfigurationInterface
                         ->end()
                         ->validate()
                             ->ifTrue(function ($config) {
-                                return !in_array($config['algorithm'], ['hmac-sha-256', 'hmac-sha-1']);
+                                return !\in_array($config['algorithm'], ['hmac-sha-256', 'hmac-sha-1'], true);
                             })
                             ->thenInvalid('The algorithm is not supported. Please use one of the following one: "hmac-sha-1", "hmac-sha-256".')
                         ->end()

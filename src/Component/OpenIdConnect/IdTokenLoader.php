@@ -69,8 +69,8 @@ class IdTokenLoader
             if (0 !== $signature) {
                 throw new \InvalidArgumentException('Invalid ID Token.');
             }
-            $claims = json_decode($jwt->getPayload(), true);
-            if (!is_array($claims)) {
+            $claims = \json_decode($jwt->getPayload(), true);
+            if (!\is_array($claims)) {
                 throw new \InvalidArgumentException('Invalid ID Token.');
             }
             $idToken = IdToken::create($idTokenId, $claims);

@@ -181,7 +181,7 @@ class AuthorizationCode extends Token
     public function getQueryParam(string $key)
     {
         if (!$this->hasQueryParam($key)) {
-            throw new \RuntimeException(sprintf('Query parameter with key "%s" does not exist.', $key));
+            throw new \RuntimeException(\sprintf('Query parameter with key "%s" does not exist.', $key));
         }
 
         return $this->queryParameters[$key];
@@ -194,7 +194,7 @@ class AuthorizationCode extends Token
      */
     public function hasQueryParam(string $key): bool
     {
-        return array_key_exists($key, $this->getQueryParams());
+        return \array_key_exists($key, $this->getQueryParams());
     }
 
     /**
@@ -261,11 +261,11 @@ class AuthorizationCode extends Token
     public function jsonSerialize()
     {
         $data = parent::jsonSerialize() + [
-                'auth_code_id' => $this->getTokenId()->getValue(),
-                'query_parameters' => (object) $this->getQueryParameters(),
-                'redirect_uri' => $this->getRedirectUri(),
-                'is_used' => $this->isUsed(),
-            ];
+            'auth_code_id' => $this->getTokenId()->getValue(),
+            'query_parameters' => (object) $this->getQueryParameters(),
+            'redirect_uri' => $this->getRedirectUri(),
+            'is_used' => $this->isUsed(),
+        ];
 
         return $data;
     }
@@ -278,7 +278,7 @@ class AuthorizationCode extends Token
     public function apply(Event $event): self
     {
         $map = $this->getEventMap();
-        if (!array_key_exists($event->getType(), $map)) {
+        if (!\array_key_exists($event->getType(), $map)) {
             throw new \RuntimeException('Unsupported event.');
         }
         if (null !== $this->authorizationCodeId && $this->authorizationCodeId->getValue() !== $event->getDomainId()->getValue()) {

@@ -145,7 +145,7 @@ final class AuthorizationEndpointController extends AuthorizationEndpoint
         if ($locale = $this->getUiLocale($authorization)) {
             $this->session->set('_locale', $locale);
         }
-        $options = array_merge(
+        $options = \array_merge(
             //FIXME: $options,
             [
                 //'scopes' => $authorization->getScopes(),
@@ -160,7 +160,7 @@ final class AuthorizationEndpointController extends AuthorizationEndpoint
         if ('POST' === $request->getMethod()) {
             $authorization = $this->formHandler->handle($form, $request, $authorization, $authorization_model);
 
-            if (is_bool($authorization->isAuthorized())) {
+            if (\is_bool($authorization->isAuthorized())) {
                 throw new ProcessAuthorizationException($authorization);
                 //FIXME
                 /*return [
@@ -197,13 +197,13 @@ final class AuthorizationEndpointController extends AuthorizationEndpoint
 
     private function getUiLocale(Authorization $authorization): ?string
     {
-        if (!method_exists($this->translator, 'getCatalogue') || !$authorization->hasQueryParam('ui_locales')) {
+        if (!\method_exists($this->translator, 'getCatalogue') || !$authorization->hasQueryParam('ui_locales')) {
             return null;
         }
 
         foreach ($authorization->getUiLocales() as $locale) {
             $catalogue = $this->translator->getCatalogue($locale);
-            if (in_array('OAuth2FrameworkServer', $catalogue->getDomains())) {
+            if (\in_array('OAuth2FrameworkServer', $catalogue->getDomains(), true)) {
                 return $locale;
             }
         }

@@ -78,20 +78,20 @@ final class IssuerDiscoveryEndpoint implements MiddlewareInterface
             $resourceId = $this->getResourceId($resourceName);
             $resource = $this->resourceManager->find($resourceId);
             if (null === $resource) {
-                throw new \InvalidArgumentException(sprintf('The resource identified with "%s" does not exist or is not supported by this server.', $resourceName), 400);
+                throw new \InvalidArgumentException(\sprintf('The resource identified with "%s" does not exist or is not supported by this server.', $resourceName), 400);
             }
             $data = $this->getResourceData($resourceName, $resource);
             $response = $this->responseFactory->createResponse(200);
             $headers = [
                 'Content-Type' => 'application/jrd+json; charset=UTF-8',
             ];
-            $response->getBody()->write(json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+            $response->getBody()->write(\json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
         } catch (\InvalidArgumentException $e) {
             $response = $this->responseFactory->createResponse($e->getCode());
             $headers = [
                 'Content-Type' => 'application/json; charset=UTF-8',
             ];
-            $response->getBody()->write(json_encode(['error' => 'invalid_request', 'error_description' => $e->getMessage()], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+            $response->getBody()->write(\json_encode(['error' => 'invalid_request', 'error_description' => $e->getMessage()], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
         }
         $headers['Cache-Control'] = 'no-cache, no-store, max-age=0, must-revalidate, private';
         $headers['Pragma'] = 'no-cache';
@@ -129,7 +129,7 @@ final class IssuerDiscoveryEndpoint implements MiddlewareInterface
     private function checkRel(ServerRequestInterface $request)
     {
         $query_params = $request->getQueryParams() ?? [];
-        if (!array_key_exists('rel', $query_params)) {
+        if (!\array_key_exists('rel', $query_params)) {
             throw new \InvalidArgumentException('The parameter "rel" is mandatory.', 400);
         }
         if (self::REL_NAME !== $query_params['rel']) {
@@ -149,13 +149,13 @@ final class IssuerDiscoveryEndpoint implements MiddlewareInterface
         try {
             $identifier = $this->identifierResolverManager->resolve($resourceName);
         } catch (\Exception $e) {
-            throw new \InvalidArgumentException(sprintf('The resource identified with "%s" does not exist or is not supported by this server.', $resourceName), 400, $e);
+            throw new \InvalidArgumentException(\sprintf('The resource identified with "%s" does not exist or is not supported by this server.', $resourceName), 400, $e);
         }
         if ($this->domain !== $identifier->getDomain()) {
-            throw new \InvalidArgumentException(sprintf('The resource identified with "%s" does not exist or is not supported by this server.', $resourceName), 400);
+            throw new \InvalidArgumentException(\sprintf('The resource identified with "%s" does not exist or is not supported by this server.', $resourceName), 400);
         }
         if (null !== $identifier->getPort() && $this->port !== $identifier->getPort()) {
-            throw new \InvalidArgumentException(sprintf('The resource identified with "%s" does not exist or is not supported by this server.', $resourceName), 400);
+            throw new \InvalidArgumentException(\sprintf('The resource identified with "%s" does not exist or is not supported by this server.', $resourceName), 400);
         }
 
         return ResourceId::create($identifier->getUsername());
@@ -171,7 +171,7 @@ final class IssuerDiscoveryEndpoint implements MiddlewareInterface
     private function getResourceName(ServerRequestInterface $request): string
     {
         $query_params = $request->getQueryParams() ?? [];
-        if (!array_key_exists('resource', $query_params)) {
+        if (!\array_key_exists('resource', $query_params)) {
             throw new \InvalidArgumentException('The parameter "resource" is mandatory.', 400);
         }
 

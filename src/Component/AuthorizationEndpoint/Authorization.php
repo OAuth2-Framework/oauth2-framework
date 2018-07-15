@@ -136,7 +136,7 @@ class Authorization
      */
     public function hasQueryParam(string $param): bool
     {
-        return array_key_exists($param, $this->queryParameters);
+        return \array_key_exists($param, $this->queryParameters);
     }
 
     /**
@@ -147,7 +147,7 @@ class Authorization
     public function getQueryParam(string $param)
     {
         if (!$this->hasQueryParam($param)) {
-            throw new \InvalidArgumentException(sprintf('Invalid parameter "%s".', $param));
+            throw new \InvalidArgumentException(\sprintf('Invalid parameter "%s".', $param));
         }
 
         return $this->queryParameters[$param];
@@ -240,7 +240,7 @@ class Authorization
     public function getClaims(): ?array
     {
         if ($this->metadata->has('claims')) {
-            return json_decode($this->metadata->get('claims'), true);
+            return \json_decode($this->metadata->get('claims'), true);
         }
 
         return null;
@@ -305,7 +305,7 @@ class Authorization
     public function getResponseParameter(string $param)
     {
         if (!$this->hasResponseParameter($param)) {
-            throw new \InvalidArgumentException(sprintf('Invalid response parameter "%s".', $param));
+            throw new \InvalidArgumentException(\sprintf('Invalid response parameter "%s".', $param));
         }
 
         return $this->getResponseParameters()[$param];
@@ -318,7 +318,7 @@ class Authorization
      */
     public function hasResponseParameter(string $param): bool
     {
-        return array_key_exists($param, $this->getResponseParameters());
+        return \array_key_exists($param, $this->getResponseParameters());
     }
 
     /**
@@ -359,7 +359,7 @@ class Authorization
             return [];
         }
 
-        return explode(' ', $this->getQueryParam('prompt'));
+        return \explode(' ', $this->getQueryParam('prompt'));
     }
 
     /**
@@ -375,7 +375,7 @@ class Authorization
      */
     public function getUiLocales(): array
     {
-        return $this->hasQueryParam('ui_locales') ? explode(' ', $this->getQueryParam('ui_locales')) : [];
+        return $this->hasQueryParam('ui_locales') ? \explode(' ', $this->getQueryParam('ui_locales')) : [];
     }
 
     /**
@@ -385,7 +385,7 @@ class Authorization
      */
     public function hasPrompt(string $prompt): bool
     {
-        return in_array($prompt, $this->getPrompt());
+        return \in_array($prompt, $this->getPrompt(), true);
     }
 
     /**
@@ -423,7 +423,7 @@ class Authorization
      */
     public function hasData(string $key): bool
     {
-        return array_key_exists($key, $this->data);
+        return \array_key_exists($key, $this->data);
     }
 
     /**
@@ -434,7 +434,7 @@ class Authorization
     public function getData(string $key)
     {
         if (!$this->hasData($key)) {
-            throw new \InvalidArgumentException(sprintf('Invalid data "%s".', $key));
+            throw new \InvalidArgumentException(\sprintf('Invalid data "%s".', $key));
         }
 
         return $this->data[$key];
@@ -493,7 +493,7 @@ class Authorization
      */
     public function withoutConsentScreenOption(string $option): self
     {
-        if (!array_key_exists($option, $this->consentScreenOptions)) {
+        if (!\array_key_exists($option, $this->consentScreenOptions)) {
             return $this;
         }
 

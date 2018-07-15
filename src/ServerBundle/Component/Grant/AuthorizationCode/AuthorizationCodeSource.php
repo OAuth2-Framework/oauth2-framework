@@ -38,7 +38,7 @@ class AuthorizationCodeSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        if (!class_exists(AuthorizationCode::class) || !$configs['grant']['authorization_code']['enabled']) {
+        if (!\class_exists(AuthorizationCode::class) || !$configs['grant']['authorization_code']['enabled']) {
             return;
         }
         $container->setParameter('oauth2_server.grant.authorization_code.lifetime', $configs['grant']['authorization_code']['lifetime']);
@@ -55,7 +55,7 @@ class AuthorizationCodeSource implements Component
      */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
-        if (!class_exists(AuthorizationCode::class)) {
+        if (!\class_exists(AuthorizationCode::class)) {
             return;
         }
         $node->children()
@@ -89,7 +89,7 @@ class AuthorizationCodeSource implements Component
      */
     public function build(ContainerBuilder $container)
     {
-        if (!class_exists(AuthorizationCode::class)) {
+        if (!\class_exists(AuthorizationCode::class)) {
             return;
         }
         $container->addCompilerPass(new PKCEMethodCompilerPass());

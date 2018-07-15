@@ -31,7 +31,7 @@ class UriPathResolver implements IdentifierResolver
         return 'https' === $uri['scheme']
             && null === $uri['user']
             && null !== $uri['path']
-            && '/+' === substr($uri['path'], 0, 2)
+            && '/+' === \mb_substr($uri['path'], 0, 2)
             ;
     }
 
@@ -41,10 +41,10 @@ class UriPathResolver implements IdentifierResolver
     public function resolve(string $resource_name): Identifier
     {
         $uri = parse($resource_name);
-        if (!is_string($uri['path']) || !is_string($uri['host'])) {
+        if (!\is_string($uri['path']) || !\is_string($uri['host'])) {
             throw new \InvalidArgumentException('Invalid resource.');
         }
 
-        return new Identifier(substr($uri['path'], 2), $uri['host'], $uri['port']);
+        return new Identifier(\mb_substr($uri['path'], 2), $uri['host'], $uri['port']);
     }
 }

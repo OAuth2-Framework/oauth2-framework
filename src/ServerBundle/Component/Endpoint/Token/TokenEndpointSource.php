@@ -40,7 +40,7 @@ class TokenEndpointSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        if (!class_exists(TokenEndpoint::class)) {
+        if (!\class_exists(TokenEndpoint::class)) {
             return;
         }
         $config = $configs['endpoint']['token'];
@@ -63,7 +63,7 @@ class TokenEndpointSource implements Component
      */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
-        if (!class_exists(TokenEndpoint::class)) {
+        if (!\class_exists(TokenEndpoint::class)) {
             return;
         }
         $node->children()
@@ -90,7 +90,7 @@ class TokenEndpointSource implements Component
      */
     public function build(ContainerBuilder $container)
     {
-        if (!class_exists(TokenEndpoint::class)) {
+        if (!\class_exists(TokenEndpoint::class)) {
             return;
         }
         $container->addCompilerPass(new GrantTypeCompilerPass());

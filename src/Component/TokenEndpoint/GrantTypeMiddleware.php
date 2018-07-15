@@ -44,12 +44,12 @@ final class GrantTypeMiddleware implements MiddlewareInterface
     {
         try {
             $parameters = RequestBodyParser::parseFormUrlEncoded($request);
-            if (!array_key_exists('grant_type', $parameters)) {
+            if (!\array_key_exists('grant_type', $parameters)) {
                 throw new \InvalidArgumentException('The "grant_type" parameter is missing.');
             }
             $grant_type = $parameters['grant_type'];
             if (!$this->grantTypeManager->has($grant_type)) {
-                throw new \InvalidArgumentException(sprintf('The grant type "%s" is not supported by this server.', $grant_type));
+                throw new \InvalidArgumentException(\sprintf('The grant type "%s" is not supported by this server.', $grant_type));
             }
             $type = $this->grantTypeManager->get($grant_type);
             $request = $request->withAttribute('grant_type', $type);

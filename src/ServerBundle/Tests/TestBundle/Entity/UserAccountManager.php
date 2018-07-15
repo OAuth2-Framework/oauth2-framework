@@ -29,7 +29,7 @@ class UserAccountManager implements UserAccountManagerInterface, AuthenticationM
             return false;
         }
 
-        return in_array($password, $user->getOAuth2Passwords());
+        return \in_array($password, $user->getOAuth2Passwords(), true);
     }
 
     public function getAuthenticationContextClassReferenceFor(UserAccount $user): ?string

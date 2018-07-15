@@ -49,6 +49,6 @@ final class MiddleName implements Claim
 
     private function getComputedClaimName(?string $claimLocale): string
     {
-        return $claimLocale ? sprintf('%s#%s', self::CLAIM_NAME, $claimLocale) : self::CLAIM_NAME;
+        return $claimLocale ? \sprintf('%s#%s', self::CLAIM_NAME, $claimLocale) : self::CLAIM_NAME;
     }
 }

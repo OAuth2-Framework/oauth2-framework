@@ -53,7 +53,7 @@ class RuleManager
      */
     public function handle(ClientId $clientId, DataBag $commandParameters): DataBag
     {
-        return call_user_func($this->callableForNextRule(0), $clientId, $commandParameters, DataBag::create([]));
+        return \call_user_func($this->callableForNextRule(0), $clientId, $commandParameters, DataBag::create([]));
     }
 
     /**

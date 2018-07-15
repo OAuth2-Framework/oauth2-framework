@@ -43,7 +43,7 @@ final class MetadataEndpointTest extends TestCase
         $response->getBody()->rewind();
         $body = $response->getBody()->getContents();
 
-        if (class_exists(JWSBuilder::class)) {
+        if (\class_exists(JWSBuilder::class)) {
             self::assertEquals('{"foo":"bar","signed_metadata":"eyJhbGciOiJub25lIn0.eyJmb28iOiJiYXIifQ."}', $body);
         } else {
             self::assertEquals('{"foo":"bar"}', $body);
@@ -71,7 +71,7 @@ final class MetadataEndpointTest extends TestCase
                 $metadata
             );
 
-            if (class_exists(JWSBuilder::class)) {
+            if (\class_exists(JWSBuilder::class)) {
                 $jwsBuilder = new JWSBuilder(new StandardConverter(), AlgorithmManager::create([new None()]));
                 $key = JWK::create([
                     'kty' => 'none',

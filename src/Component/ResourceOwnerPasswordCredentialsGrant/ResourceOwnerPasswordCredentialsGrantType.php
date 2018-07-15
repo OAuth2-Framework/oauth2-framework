@@ -69,9 +69,9 @@ final class ResourceOwnerPasswordCredentialsGrantType implements GrantType
         $parameters = RequestBodyParser::parseFormUrlEncoded($request);
         $requiredParameters = ['username', 'password'];
 
-        $diff = array_diff($requiredParameters, array_keys($parameters));
+        $diff = \array_diff($requiredParameters, \array_keys($parameters));
         if (!empty($diff)) {
-            throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, sprintf('Missing grant type parameter(s): %s.', implode(', ', $diff)));
+            throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, \sprintf('Missing grant type parameter(s): %s.', \implode(', ', $diff)));
         }
     }
 

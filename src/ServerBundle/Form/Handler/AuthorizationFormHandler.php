@@ -30,7 +30,7 @@ class AuthorizationFormHandler
             throw new OAuth2Message(
                 405,
                 OAuth2Message::ERROR_INVALID_REQUEST,
-                sprintf('The method "%s" is not supported.', $request->getMethod())
+                \sprintf('The method "%s" is not supported.', $request->getMethod())
             );
         }
 

@@ -47,7 +47,7 @@ class DataBag implements \JsonSerializable, \IteratorAggregate, \Countable
      */
     public function has(string $key): bool
     {
-        return array_key_exists($key, $this->parameters);
+        return \array_key_exists($key, $this->parameters);
     }
 
     /**
@@ -114,7 +114,7 @@ class DataBag implements \JsonSerializable, \IteratorAggregate, \Countable
      */
     public function count()
     {
-        return count($this->parameters);
+        return \count($this->parameters);
     }
 
     /**

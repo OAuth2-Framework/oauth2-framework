@@ -35,7 +35,7 @@ class NoneSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        if (!class_exists(NoneResponseType::class) || !$configs['grant']['none']['enabled']) {
+        if (!\class_exists(NoneResponseType::class) || !$configs['grant']['none']['enabled']) {
             return;
         }
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/grant'));
@@ -47,7 +47,7 @@ class NoneSource implements Component
      */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
-        if (!class_exists(NoneResponseType::class)) {
+        if (!\class_exists(NoneResponseType::class)) {
             return;
         }
         $node->children()

@@ -48,7 +48,7 @@ final class MacToken extends Base
      */
     protected function generateMacKey(): string
     {
-        return Base64Url::encode(random_bytes($this->getMacKeyLength()));
+        return Base64Url::encode(\random_bytes($this->getMacKeyLength()));
     }
 
     /**
@@ -56,6 +56,6 @@ final class MacToken extends Base
      */
     private function getMacKeyLength(): int
     {
-        return random_int($this->minLength, $this->maxLength);
+        return \random_int($this->minLength, $this->maxLength);
     }
 }

@@ -37,6 +37,6 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
      */
     public function find(AccessTokenId $accessTokenId): ?AccessToken
     {
-        return array_key_exists($accessTokenId->getValue(), $this->accessTokens) ? $this->accessTokens[$accessTokenId->getValue()] : null;
+        return \array_key_exists($accessTokenId->getValue(), $this->accessTokens) ? $this->accessTokens[$accessTokenId->getValue()] : null;
     }
 }

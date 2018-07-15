@@ -35,7 +35,7 @@ class ResourceOwnerPasswordCredentialSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        if (!class_exists(ResourceOwnerPasswordCredentialsGrantType::class) || !$configs['grant']['resource_owner_password_credential']['enabled']) {
+        if (!\class_exists(ResourceOwnerPasswordCredentialsGrantType::class) || !$configs['grant']['resource_owner_password_credential']['enabled']) {
             return;
         }
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/grant'));
@@ -47,7 +47,7 @@ class ResourceOwnerPasswordCredentialSource implements Component
      */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
-        if (!class_exists(ResourceOwnerPasswordCredentialsGrantType::class)) {
+        if (!\class_exists(ResourceOwnerPasswordCredentialsGrantType::class)) {
             return;
         }
         $node->children()

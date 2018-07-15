@@ -44,7 +44,7 @@ final class ClientConfigurationMiddleware implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $routeParameters = $request->getAttribute('_route_params');
-        if (!is_array($routeParameters) || !array_key_exists('client_id', $routeParameters) || null === $client = $this->clientRepository->find(ClientId::create($routeParameters['client_id']))) {
+        if (!\is_array($routeParameters) || !\array_key_exists('client_id', $routeParameters) || null === $client = $this->clientRepository->find(ClientId::create($routeParameters['client_id']))) {
             throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, 'Invalid client or invalid registration access token.');
         }
         $request = $request->withAttribute('client', $client);

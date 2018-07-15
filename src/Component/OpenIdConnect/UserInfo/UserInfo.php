@@ -68,7 +68,7 @@ class UserInfo
      */
     public function getUserinfo(Client $client, UserAccount $userAccount, string $redirectUri, array $requestedClaims, string $scope, ? string $claimsLocales): array
     {
-        $requestedClaims = array_merge(
+        $requestedClaims = \array_merge(
             $this->getClaimsFromClaimScope($scope),
             $requestedClaims
         );
@@ -91,7 +91,7 @@ class UserInfo
     {
         $result = [];
 
-        foreach (explode(' ', $scope) as $scp) {
+        foreach (\explode(' ', $scope) as $scp) {
             if ($this->userinfoScopeSupportManager->has($scp)) {
                 $scope_claims = $this->userinfoScopeSupportManager->get($scp)->getAssociatedClaims();
                 foreach ($scope_claims as $scope_claim) {
@@ -115,8 +115,8 @@ class UserInfo
         $result = [];
         if (null === $claimsLocales) {
             $claimsLocales = [];
-        } elseif (true === is_string($claimsLocales)) {
-            $claimsLocales = array_unique(explode(' ', $claimsLocales));
+        } elseif (true === \is_string($claimsLocales)) {
+            $claimsLocales = \array_unique(\explode(' ', $claimsLocales));
         }
         $result = $this->claimManager->getUserInfo($userAccount, $requestedClaims, $claimsLocales);
         /*foreach ($requestedClaims as $claim => $config) {
@@ -147,14 +147,14 @@ class UserInfo
         if ($userAccount->has($claimName)) {
             $claim = $userAccount->get($claimName);
             switch (true) {
-                case is_array($config) && array_key_exists('value', $config):
+                case \is_array($config) && \array_key_exists('value', $config):
                     if ($claim === $config['value']) {
                         return $claim;
                     }
 
                     break;
-                case is_array($config) && array_key_exists('values', $config) && is_array($config['values']):
-                    if (in_array($claim, $config['values'])) {
+                case \is_array($config) && \array_key_exists('values', $config) && \is_array($config['values']):
+                    if (\in_array($claim, $config['values'], true)) {
                         return $claim;
                     }
 
@@ -230,9 +230,9 @@ class UserInfo
             $uri = $client->get('sector_identifier_uri');
         }
 
-        $data = parse_url($uri);
-        if (!is_array($data) || !array_key_exists('host', $data)) {
-            throw new \InvalidArgumentException(sprintf('Invalid Sector Identifier Uri "%s".', $uri));
+        $data = \parse_url($uri);
+        if (!\is_array($data) || !\array_key_exists('host', $data)) {
+            throw new \InvalidArgumentException(\sprintf('Invalid Sector Identifier Uri "%s".', $uri));
         }
 
         return $data['host'];

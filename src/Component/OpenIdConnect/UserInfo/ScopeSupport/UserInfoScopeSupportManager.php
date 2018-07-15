@@ -47,7 +47,7 @@ class UserInfoScopeSupportManager
      */
     public function has(string $scope): bool
     {
-        return array_key_exists($scope, $this->userinfoScopeSupports);
+        return \array_key_exists($scope, $this->userinfoScopeSupports);
     }
 
     /**
@@ -60,7 +60,7 @@ class UserInfoScopeSupportManager
     public function get(string $scope): UserInfoScopeSupport
     {
         if (!$this->has($scope)) {
-            throw new \InvalidArgumentException(sprintf('The userinfo scope "%s" is not supported.', $scope));
+            throw new \InvalidArgumentException(\sprintf('The userinfo scope "%s" is not supported.', $scope));
         }
 
         return $this->userinfoScopeSupports[$scope];

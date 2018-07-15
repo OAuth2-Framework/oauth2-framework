@@ -18,7 +18,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * @Route("/doc", host = "foo.foo")
+ * @Route("/doc", host="foo.foo")
  */
 class DocumentationController extends Controller
 {
@@ -27,7 +27,7 @@ class DocumentationController extends Controller
      */
     public function serviceAction(string $hello)
     {
-        return new Response(sprintf('Hello %s, you are on the documentation service page', $hello));
+        return new Response(\sprintf('Hello %s, you are on the documentation service page', $hello));
     }
 
     /**

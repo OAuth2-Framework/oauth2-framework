@@ -35,8 +35,8 @@ abstract class AbstractInternationalizedRule implements Rule
                 continue;
             }
 
-            $sub = mb_substr($k, 0, mb_strlen($base, '8bit') + 1, '8bit');
-            if (sprintf('%s#', $base) === $sub && !empty(mb_substr($k, mb_strlen($base, '8bit') + 1, null, '8bit'))) {
+            $sub = \mb_substr($k, 0, \mb_strlen($base, '8bit') + 1, '8bit');
+            if (\sprintf('%s#', $base) === $sub && !empty(\mb_substr($k, \mb_strlen($base, '8bit') + 1, null, '8bit'))) {
                 if (null !== $closure) {
                     $closure($k, $v);
                 }

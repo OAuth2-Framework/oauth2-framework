@@ -35,7 +35,7 @@ class ClientCredentialsSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        if (!class_exists(ClientCredentialsGrantType::class) || !$configs['grant']['client_credentials']['enabled']) {
+        if (!\class_exists(ClientCredentialsGrantType::class) || !$configs['grant']['client_credentials']['enabled']) {
             return;
         }
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/grant'));
@@ -47,7 +47,7 @@ class ClientCredentialsSource implements Component
      */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
-        if (!class_exists(ClientCredentialsGrantType::class)) {
+        if (!\class_exists(ClientCredentialsGrantType::class)) {
             return;
         }
         $node->children()

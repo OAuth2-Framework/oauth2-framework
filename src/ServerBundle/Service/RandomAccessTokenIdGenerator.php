@@ -27,7 +27,7 @@ final class RandomAccessTokenIdGenerator implements AccessTokenIdGenerator
      */
     public function createAccessTokenId(ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, ? ResourceServerId $resourceServerId): AccessTokenId
     {
-        $value = bin2hex(random_bytes(32));
+        $value = \bin2hex(\random_bytes(32));
 
         return AccessTokenId::create($value);
     }

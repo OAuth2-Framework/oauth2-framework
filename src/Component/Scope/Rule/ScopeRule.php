@@ -26,10 +26,10 @@ final class ScopeRule implements Rule
     {
         if ($commandParameters->has('scope')) {
             $scope = $commandParameters->get('scope');
-            if (!is_string($scope)) {
+            if (!\is_string($scope)) {
                 throw new \InvalidArgumentException('The "scope" parameter must be a string.');
             }
-            if (1 !== preg_match('/^[\x20\x23-\x5B\x5D-\x7E]+$/', $scope)) {
+            if (1 !== \preg_match('/^[\x20\x23-\x5B\x5D-\x7E]+$/', $scope)) {
                 throw new \InvalidArgumentException('Invalid characters found in the "scope" parameter.');
             }
             $validatedParameters->with('scope', $scope);

@@ -138,7 +138,7 @@ class AccessToken extends Token
         $metadatas = DataBag::create((array) $json->metadatas);
         $revoked = $json->is_revoked;
         $resourceOwnerClass = $json->resource_owner_class;
-        if (!method_exists($resourceOwnerClass, 'create')) {
+        if (!\method_exists($resourceOwnerClass, 'create')) {
             throw new \InvalidArgumentException('Invalid resource owner.');
         }
         $resourceOwnerId = $resourceOwnerClass::create($json->resource_owner_id);
@@ -177,7 +177,7 @@ class AccessToken extends Token
     public function apply(Event $event): self
     {
         $map = $this->getEventMap();
-        if (!array_key_exists($event->getType(), $map)) {
+        if (!\array_key_exists($event->getType(), $map)) {
             throw new \InvalidArgumentException('Unsupported event.');
         }
         if (null !== $this->clientId && $this->accessTokenId->getValue() !== $event->getDomainId()->getValue()) {

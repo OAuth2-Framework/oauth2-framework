@@ -94,7 +94,7 @@ final class BearerToken implements TokenType
      */
     public function getScheme(): string
     {
-        return sprintf('%s realm="%s"', $this->name(), $this->realm);
+        return \sprintf('%s realm="%s"', $this->name(), $this->realm);
     }
 
     /**
@@ -144,12 +144,12 @@ final class BearerToken implements TokenType
      *
      * @return string|null
      */
-    protected function getTokenFromAuthorizationHeaders(ServerRequestInterface $request): ?string
+    private function getTokenFromAuthorizationHeaders(ServerRequestInterface $request): ?string
     {
         $authorization_headers = $request->getHeader('AUTHORIZATION');
 
         foreach ($authorization_headers as $authorization_header) {
-            if (1 === preg_match('/'.preg_quote('Bearer', '/').'\s([a-zA-Z0-9\-_\+~\/\.]+)/', $authorization_header, $matches)) {
+            if (1 === \preg_match('/'.\preg_quote('Bearer', '/').'\s([a-zA-Z0-9\-_\+~\/\.]+)/', $authorization_header, $matches)) {
                 return $matches[1];
             }
         }
@@ -169,7 +169,7 @@ final class BearerToken implements TokenType
         try {
             $parameters = RequestBodyParser::parseFormUrlEncoded($request);
 
-            return is_array($parameters) ? $this->getAccessTokenFromParameters($parameters) : null;
+            return \is_array($parameters) ? $this->getAccessTokenFromParameters($parameters) : null;
         } catch (\Exception $e) {
             return null;
         }
@@ -182,7 +182,7 @@ final class BearerToken implements TokenType
      *
      * @return string|null
      */
-    protected function getTokenFromQuery(ServerRequestInterface $request): ?string
+    private function getTokenFromQuery(ServerRequestInterface $request): ?string
     {
         $query_params = $request->getQueryParams();
 
@@ -194,8 +194,8 @@ final class BearerToken implements TokenType
      *
      * @return string|null
      */
-    protected function getAccessTokenFromParameters(array $params): ?string
+    private function getAccessTokenFromParameters(array $params): ?string
     {
-        return array_key_exists('access_token', $params) ? $params['access_token'] : null;
+        return \array_key_exists('access_token', $params) ? $params['access_token'] : null;
     }
 }

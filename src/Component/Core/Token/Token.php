@@ -95,7 +95,7 @@ abstract class Token implements \JsonSerializable, ContainsRecordedMessages, Dom
      */
     public function hasExpired(): bool
     {
-        return $this->expiresAt->getTimestamp() < time();
+        return $this->expiresAt->getTimestamp() < \time();
     }
 
     /**
@@ -108,7 +108,7 @@ abstract class Token implements \JsonSerializable, ContainsRecordedMessages, Dom
             return 0;
         }
 
-        return $this->expiresAt->getTimestamp() - time() < 0 ? 0 : $this->expiresAt->getTimestamp() - time();
+        return $this->expiresAt->getTimestamp() - \time() < 0 ? 0 : $this->expiresAt->getTimestamp() - \time();
     }
 
     /**
@@ -158,14 +158,14 @@ abstract class Token implements \JsonSerializable, ContainsRecordedMessages, Dom
     {
         $data = [
             '$schema' => $this->getSchema(),
-            'type' => get_class($this),
+            'type' => \get_class($this),
             'expires_at' => $this->getExpiresAt()->getTimestamp(),
             'client_id' => $this->getClientId()->getValue(),
             'parameters' => (object) $this->getParameter()->all(),
             'metadatas' => (object) $this->getMetadata()->all(),
             'is_revoked' => $this->isRevoked(),
             'resource_owner_id' => $this->getResourceOwnerId()->getValue(),
-            'resource_owner_class' => get_class($this->getResourceOwnerId()),
+            'resource_owner_class' => \get_class($this->getResourceOwnerId()),
             'resource_server_id' => $this->getResourceServerId() ? $this->getResourceServerId()->getValue() : null,
         ];
 

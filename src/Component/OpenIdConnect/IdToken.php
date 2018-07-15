@@ -64,7 +64,7 @@ class IdToken
      */
     public function getNonce()
     {
-        return array_key_exists('nonce', $this->claims) ? $this->claims['nonce'] : null;
+        return \array_key_exists('nonce', $this->claims) ? $this->claims['nonce'] : null;
     }
 
     /**
@@ -72,7 +72,7 @@ class IdToken
      */
     public function getAccessTokenHash()
     {
-        return array_key_exists('at_hash', $this->claims) ? $this->claims['at_hash'] : null;
+        return \array_key_exists('at_hash', $this->claims) ? $this->claims['at_hash'] : null;
     }
 
     /**
@@ -80,7 +80,7 @@ class IdToken
      */
     public function getAuthorizationCodeHash()
     {
-        return array_key_exists('c_hash', $this->claims) ? $this->claims['c_hash'] : null;
+        return \array_key_exists('c_hash', $this->claims) ? $this->claims['c_hash'] : null;
     }
 
     /**
@@ -88,7 +88,7 @@ class IdToken
      */
     public function getClientId(): ClientId
     {
-        if (!array_key_exists('aud', $this->claims)) {
+        if (!\array_key_exists('aud', $this->claims)) {
             throw new \InvalidArgumentException('Invalid ID Token.');
         }
 
@@ -100,7 +100,7 @@ class IdToken
      */
     public function getUserAccountId(): UserAccountId
     {
-        if (!array_key_exists('sub', $this->claims)) {
+        if (!\array_key_exists('sub', $this->claims)) {
             throw new \InvalidArgumentException('Invalid ID Token.');
         }
 
@@ -112,7 +112,7 @@ class IdToken
      */
     public function getExpiresAt(): \DateTimeImmutable
     {
-        if (!array_key_exists('exp', $this->claims)) {
+        if (!\array_key_exists('exp', $this->claims)) {
             throw new \InvalidArgumentException('Invalid ID Token.');
         }
 
@@ -124,12 +124,12 @@ class IdToken
      */
     public function hasExpired(): bool
     {
-        return $this->getExpiresAt()->getTimestamp() < time();
+        return $this->getExpiresAt()->getTimestamp() < \time();
     }
 
     public function getExpiresIn(): int
     {
-        return $this->getExpiresAt()->getTimestamp() - time() < 0 ? 0 : $this->getExpiresAt()->getTimestamp() - time();
+        return $this->getExpiresAt()->getTimestamp() - \time() < 0 ? 0 : $this->getExpiresAt()->getTimestamp() - \time();
     }
 
     /**

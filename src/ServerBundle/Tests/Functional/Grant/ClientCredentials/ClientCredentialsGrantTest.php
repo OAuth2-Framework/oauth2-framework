@@ -29,7 +29,7 @@ class ClientCredentialsGrantTest extends WebTestCase
      */
     protected function setUp()
     {
-        if (!class_exists(ClientCredentialsGrantType::class)) {
+        if (!\class_exists(ClientCredentialsGrantType::class)) {
             $this->markTestSkipped('The component "oauth2-framework/client-credentials-grant" is not installed.');
         }
     }

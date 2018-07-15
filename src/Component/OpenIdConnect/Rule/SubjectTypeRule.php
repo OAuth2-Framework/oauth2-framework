@@ -42,7 +42,7 @@ final class SubjectTypeRule implements Rule
     {
         if ($commandParameters->has('subject_type')) {
             $subjectType = $commandParameters->get('subject_type');
-            if (!is_string($subjectType)) {
+            if (!\is_string($subjectType)) {
                 throw new \InvalidArgumentException('Invalid parameter "subject_type". The value must be a string.');
             }
             $supported_types = ['public'];
@@ -50,8 +50,8 @@ final class SubjectTypeRule implements Rule
                 $supported_types[] = 'pairwise';
             }
 
-            if (!in_array($subjectType, $supported_types)) {
-                throw new \InvalidArgumentException(sprintf('The subject type "%s" is not supported. Please use one of the following value(s): %s', $subjectType, implode(', ', $supported_types)));
+            if (!\in_array($subjectType, $supported_types, true)) {
+                throw new \InvalidArgumentException(\sprintf('The subject type "%s" is not supported. Please use one of the following value(s): %s', $subjectType, \implode(', ', $supported_types)));
             }
             $validatedParameters->with('subject_type', $subjectType);
         }

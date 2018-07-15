@@ -40,7 +40,7 @@ class ClientAssertionJwtSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        if (!class_exists(JWK::class)) {
+        if (!\class_exists(JWK::class)) {
             return;
         }
         $config = $configs['client_authentication']['client_assertion_jwt'];
@@ -75,7 +75,7 @@ class ClientAssertionJwtSource implements Component
      */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
-        if (!class_exists(JWK::class)) {
+        if (!\class_exists(JWK::class)) {
             return;
         }
         $node->children()
@@ -163,7 +163,7 @@ class ClientAssertionJwtSource implements Component
      */
     public function prepend(ContainerBuilder $container, array $configs): array
     {
-        if (!class_exists(JWK::class)) {
+        if (!\class_exists(JWK::class)) {
             return [];
         }
         $config = $configs['client_authentication']['client_assertion_jwt'];
@@ -186,7 +186,7 @@ class ClientAssertionJwtSource implements Component
      */
     public function build(ContainerBuilder $container)
     {
-        if (!class_exists(JWK::class)) {
+        if (!\class_exists(JWK::class)) {
             return;
         }
         $container->addCompilerPass(new ClientJwtAssertionMetadataCompilerPass());

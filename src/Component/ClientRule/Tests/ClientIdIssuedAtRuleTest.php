@@ -44,7 +44,7 @@ final class ClientIdIssuedAtRuleTest extends TestCase
     {
         $clientId = ClientId::create('CLIENT_ID');
         $commandParameters = DataBag::create([
-            'client_id_issued_at' => time() - 1000,
+            'client_id_issued_at' => \time() - 1000,
         ]);
         $rule = new ClientRule\ClientIdIssuedAtRule();
         $validatedParameters = $rule->handle($clientId, $commandParameters, DataBag::create([]), $this->getCallable());

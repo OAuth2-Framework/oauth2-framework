@@ -38,7 +38,7 @@ class ScopePolicyManager
         $name = $scopePolicy->name();
         $this->scopePolicies[$name] = $scopePolicy;
 
-        if (true === $isDefault || 1 === count($this->scopePolicies)) {
+        if (true === $isDefault || 1 === \count($this->scopePolicies)) {
             $this->defaultScopePolicy = $name;
         }
 
@@ -69,7 +69,7 @@ class ScopePolicyManager
      */
     public function all(): array
     {
-        return array_keys($this->scopePolicies);
+        return \array_keys($this->scopePolicies);
     }
 
     /**
@@ -79,7 +79,7 @@ class ScopePolicyManager
      */
     public function has(string $scopePolicy): bool
     {
-        return array_key_exists($scopePolicy, $this->scopePolicies);
+        return \array_key_exists($scopePolicy, $this->scopePolicies);
     }
 
     /**
@@ -90,7 +90,7 @@ class ScopePolicyManager
     private function get(string $scopePolicyName): ScopePolicy
     {
         if (!$this->has($scopePolicyName)) {
-            throw new \InvalidArgumentException(sprintf('The scope policy with name "%s" is not supported', $scopePolicyName));
+            throw new \InvalidArgumentException(\sprintf('The scope policy with name "%s" is not supported', $scopePolicyName));
         }
 
         return $this->scopePolicies[$scopePolicyName];

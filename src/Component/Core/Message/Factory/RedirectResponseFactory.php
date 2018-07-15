@@ -31,10 +31,10 @@ final class RedirectResponseFactory implements ResponseFactory
      */
     public function createResponse(array $data, ResponseInterface $response): ResponseInterface
     {
-        if (!array_key_exists('response_mode', $data) || !$data['response_mode'] instanceof ResponseMode) {
+        if (!\array_key_exists('response_mode', $data) || !$data['response_mode'] instanceof ResponseMode) {
             throw new \InvalidArgumentException('The "response_mode" parameter is missing or invalid.');
         }
-        if (!array_key_exists('redirect_uri', $data) || !is_string($data['redirect_uri'])) {
+        if (!\array_key_exists('redirect_uri', $data) || !\is_string($data['redirect_uri'])) {
             throw new \InvalidArgumentException('The "redirect_uri" parameter is missing or invalid.');
         }
 

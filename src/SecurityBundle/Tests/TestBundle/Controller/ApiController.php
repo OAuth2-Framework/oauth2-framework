@@ -34,7 +34,7 @@ class ApiController extends Controller
      */
     public function serviceAction(string $name)
     {
-        return new JsonResponse(['name' => $name, 'message' => sprintf('Hello %s!', $name)]);
+        return new JsonResponse(['name' => $name, 'message' => \sprintf('Hello %s!', $name)]);
     }
 
     /**

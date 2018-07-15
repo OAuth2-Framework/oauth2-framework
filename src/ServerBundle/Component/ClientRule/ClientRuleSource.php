@@ -35,7 +35,7 @@ class ClientRuleSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        if (!interface_exists(Rule::class)) {
+        if (!\interface_exists(Rule::class)) {
             return;
         }
         $container->registerForAutoconfiguration(Rule::class)->addTag('oauth2_server_client_rule');
@@ -63,7 +63,7 @@ class ClientRuleSource implements Component
      */
     public function build(ContainerBuilder $container)
     {
-        if (!interface_exists(Rule::class)) {
+        if (!\interface_exists(Rule::class)) {
             return;
         }
         $container->addCompilerPass(new ClientRuleCompilerPass());

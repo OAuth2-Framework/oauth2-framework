@@ -29,7 +29,7 @@ class ImplicitGrantTest extends WebTestCase
      */
     protected function setUp()
     {
-        if (!class_exists(ImplicitGrantType::class)) {
+        if (!\class_exists(ImplicitGrantType::class)) {
             $this->markTestSkipped('The component "oauth2-framework/implicit-grant" is not installed.');
         }
     }

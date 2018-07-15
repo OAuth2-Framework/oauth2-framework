@@ -66,9 +66,9 @@ final class RefreshTokenEndpointExtension implements TokenEndpointExtension
     public function afterAccessTokenIssuance(Client $client, ResourceOwner $resourceOwner, AccessToken $accessToken, callable $next): array
     {
         $result = $next($client, $resourceOwner, $accessToken);
-        $scope = $accessToken->getParameter()->has('scope') ? explode(' ', $accessToken->getParameter()->get('scope')) : [];
-        if (in_array('offline_access', $scope)) {
-            $expiresAt = new \DateTimeImmutable(sprintf('now +%u seconds', $this->lifetime));
+        $scope = $accessToken->getParameter()->has('scope') ? \explode(' ', $accessToken->getParameter()->get('scope')) : [];
+        if (\in_array('offline_access', $scope, true)) {
+            $expiresAt = new \DateTimeImmutable(\sprintf('now +%u seconds', $this->lifetime));
             $refreshTokenId = $this->refreshTokenIdGenerator->createRefreshTokenId();
             $refreshToken = RefreshToken::createEmpty();
             $refreshToken = $refreshToken->create(

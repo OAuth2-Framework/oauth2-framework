@@ -35,7 +35,7 @@ class ImplicitSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        if (!class_exists(ImplicitGrantType::class) || !$configs['grant']['implicit']['enabled']) {
+        if (!\class_exists(ImplicitGrantType::class) || !$configs['grant']['implicit']['enabled']) {
             return;
         }
 
@@ -48,7 +48,7 @@ class ImplicitSource implements Component
      */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
-        if (!class_exists(ImplicitGrantType::class)) {
+        if (!\class_exists(ImplicitGrantType::class)) {
             return;
         }
 

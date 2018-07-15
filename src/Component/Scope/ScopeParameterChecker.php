@@ -51,7 +51,7 @@ class ScopeParameterChecker implements ParameterChecker
         try {
             if ($authorization->hasQueryParam('scope')) {
                 $requestedScope = $authorization->getQueryParam('scope');
-                if (1 !== preg_match('/^[\x20\x23-\x5B\x5D-\x7E]+$/', $requestedScope)) {
+                if (1 !== \preg_match('/^[\x20\x23-\x5B\x5D-\x7E]+$/', $requestedScope)) {
                     throw new \InvalidArgumentException('Invalid characters found in the "scope" parameter.');
                 }
             } else {
@@ -61,14 +61,14 @@ class ScopeParameterChecker implements ParameterChecker
             if (empty($requestedScope)) {
                 return $authorization;
             }
-            $scopes = explode(' ', $requestedScope);
+            $scopes = \explode(' ', $requestedScope);
 
             $availableScopes = $this->scopeRepository->all();
-            if (0 !== count(array_diff($scopes, $availableScopes))) {
-                throw new \InvalidArgumentException(sprintf('An unsupported scope was requested. Available scopes for the client are %s.', implode(', ', $availableScopes)));
+            if (0 !== \count(\array_diff($scopes, $availableScopes))) {
+                throw new \InvalidArgumentException(\sprintf('An unsupported scope was requested. Available scopes for the client are %s.', \implode(', ', $availableScopes)));
             }
-            $authorization->getMetadata()->with('scope', implode(' ', $scopes));
-            $authorization = $authorization->withResponseParameter('scope', implode(' ', $scopes));
+            $authorization->getMetadata()->with('scope', \implode(' ', $scopes));
+            $authorization = $authorization->withResponseParameter('scope', \implode(' ', $scopes));
 
             return $authorization;
         } catch (\InvalidArgumentException $e) {

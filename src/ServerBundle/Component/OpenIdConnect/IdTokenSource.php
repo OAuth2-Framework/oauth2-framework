@@ -73,7 +73,7 @@ class IdTokenSource implements Component
                 ->end()
                 ->validate()
                     ->ifTrue(function ($config) {
-                        return !in_array($config['default_signature_algorithm'], $config['signature_algorithms']);
+                        return !\in_array($config['default_signature_algorithm'], $config['signature_algorithms'], true);
                     })
                     ->thenInvalid('The default signature algorithm must be in the supported signature algorithms.')
                 ->end()

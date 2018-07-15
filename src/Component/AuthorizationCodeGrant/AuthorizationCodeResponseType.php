@@ -95,14 +95,14 @@ final class AuthorizationCodeResponseType implements ResponseType
     {
         $queryParams = $authorization->getQueryParams();
 
-        if (!array_key_exists('code_challenge', $queryParams)) {
+        if (!\array_key_exists('code_challenge', $queryParams)) {
             if (true === $this->pkceForPublicClientsEnforced && $authorization->getClient()->isPublic()) {
                 throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, 'Non-confidential clients must set a proof key (PKCE) for code exchange.');
             }
         } else {
-            $codeChallengeMethod = array_key_exists('code_challenge_method', $queryParams) ? $queryParams['code_challenge_method'] : 'plain';
+            $codeChallengeMethod = \array_key_exists('code_challenge_method', $queryParams) ? $queryParams['code_challenge_method'] : 'plain';
             if (!$this->pkceMethodManager->has($codeChallengeMethod)) {
-                throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, sprintf('The challenge method "%s" is not supported.', $codeChallengeMethod));
+                throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, \sprintf('The challenge method "%s" is not supported.', $codeChallengeMethod));
             }
         }
 
@@ -114,7 +114,7 @@ final class AuthorizationCodeResponseType implements ResponseType
             $authorization->getUserAccount()->getUserAccountId(),
             $authorization->getQueryParams(),
             $authorization->getRedirectUri(),
-            (new \DateTimeImmutable())->setTimestamp(time() + $this->authorizationCodeLifetime),
+            (new \DateTimeImmutable())->setTimestamp(\time() + $this->authorizationCodeLifetime),
             DataBag::create([]),
             $authorization->getMetadata(),
             $authorization->getResourceServer() ? $authorization->getResourceServer()->getResourceServerId() : null

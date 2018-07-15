@@ -83,15 +83,13 @@ class OpenIdConnectExtension implements TokenEndpointExtension
 
     public function afterAccessTokenIssuance(Client $client, ResourceOwner $resourceOwner, AccessToken $accessToken, callable $next): array
     {
-        if ($resourceOwner instanceof UserAccount && $this->accessTokenOpenIdHasScope($accessToken) && $accessToken->getMetadata()->has('redirect_uri')) {
+        $data = $next($client, $resourceOwner, $accessToken);
+        if ($resourceOwner instanceof UserAccount && $this->hasOpenIdScope($accessToken) && $accessToken->getMetadata()->has('redirect_uri')) {
             $idToken = $this->issueIdToken($client, $resourceOwner, $accessToken);
-            $data = $next($client, $resourceOwner, $accessToken);
             $data['id_token'] = $idToken;
-
-            return $data;
         }
 
-        return $next($client, $resourceOwner, $accessToken);
+        return $data;
     }
 
     /**
@@ -142,19 +140,19 @@ class OpenIdConnectExtension implements TokenEndpointExtension
         }
 
         $requestedClaims = $accessToken->getMetadata()->get('requested_claims');
-        $requestedClaims = json_decode($requestedClaims, true);
-        if (!is_array($requestedClaims)) {
+        $requestedClaims = \json_decode($requestedClaims, true);
+        if (!\is_array($requestedClaims)) {
             throw new \InvalidArgumentException('Invalid claim request');
         }
-        if (true === array_key_exists('id_token', $requestedClaims)) {
+        if (true === \array_key_exists('id_token', $requestedClaims)) {
             return $requestedClaims['id_token'];
         }
 
         return [];
     }
 
-    private function accessTokenOpenIdHasScope(AccessToken $accessToken): bool
+    private function hasOpenIdScope(AccessToken $accessToken): bool
     {
-        return $accessToken->getParameter()->has('scope') && in_array('openid', explode(' ', $accessToken->getParameter()->get('scope')));
+        return $accessToken->getParameter()->has('scope') && \in_array('openid', \explode(' ', $accessToken->getParameter()->get('scope')), true);
     }
 }

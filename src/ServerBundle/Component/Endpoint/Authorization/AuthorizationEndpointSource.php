@@ -67,7 +67,7 @@ class AuthorizationEndpointSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        if (!class_exists(AuthorizationEndpoint::class)) {
+        if (!\class_exists(AuthorizationEndpoint::class)) {
             return;
         }
         $config = $configs['endpoint']['authorization'];
@@ -109,7 +109,7 @@ class AuthorizationEndpointSource implements Component
      */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
-        if (!class_exists(AuthorizationEndpoint::class)) {
+        if (!\class_exists(AuthorizationEndpoint::class)) {
             return;
         }
         $childNode = $node->children()
@@ -168,7 +168,7 @@ class AuthorizationEndpointSource implements Component
      */
     public function prepend(ContainerBuilder $container, array $config): array
     {
-        if (!class_exists(AuthorizationEndpoint::class)) {
+        if (!\class_exists(AuthorizationEndpoint::class)) {
             return [];
         }
         if (!$config['endpoint']['authorization']['enabled']) {
@@ -177,7 +177,7 @@ class AuthorizationEndpointSource implements Component
 
         $updatedConfig = [];
         foreach ($this->subComponents as $subComponent) {
-            $updatedConfig = array_merge(
+            $updatedConfig = \array_merge(
                 $updatedConfig,
                 $subComponent->prepend($container, $config)
             );
@@ -191,7 +191,7 @@ class AuthorizationEndpointSource implements Component
      */
     public function build(ContainerBuilder $container)
     {
-        if (!class_exists(AuthorizationEndpoint::class)) {
+        if (!\class_exists(AuthorizationEndpoint::class)) {
             return;
         }
         $container->addCompilerPass(new AuthorizationEndpointRouteCompilerPass());

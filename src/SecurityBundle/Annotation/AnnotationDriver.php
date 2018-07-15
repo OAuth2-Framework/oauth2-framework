@@ -81,7 +81,7 @@ class AnnotationDriver
 
     public function onKernelController(FilterControllerEvent $event)
     {
-        if (!is_array($controller = $event->getController())) {
+        if (!\is_array($controller = $event->getController())) {
             return;
         }
 
@@ -90,7 +90,7 @@ class AnnotationDriver
         $classConfigurations = $this->reader->getClassAnnotations($object);
         $methodConfigurations = $this->reader->getMethodAnnotations($method);
 
-        foreach (array_merge($classConfigurations, $methodConfigurations) as $configuration) {
+        foreach (\array_merge($classConfigurations, $methodConfigurations) as $configuration) {
             if ($configuration instanceof OAuth2) {
                 $this->processOAuth2Annotation($event, $configuration);
             }

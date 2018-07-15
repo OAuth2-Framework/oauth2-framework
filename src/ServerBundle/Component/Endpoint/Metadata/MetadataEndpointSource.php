@@ -54,7 +54,7 @@ class MetadataEndpointSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        if (!class_exists(MetadataEndpoint::class)) {
+        if (!\class_exists(MetadataEndpoint::class)) {
             return;
         }
         $config = $configs['endpoint']['metadata'];
@@ -78,7 +78,7 @@ class MetadataEndpointSource implements Component
      */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
-        if (!class_exists(MetadataEndpoint::class)) {
+        if (!\class_exists(MetadataEndpoint::class)) {
             return;
         }
         $childNode = $node->children()
@@ -108,7 +108,7 @@ class MetadataEndpointSource implements Component
      */
     public function prepend(ContainerBuilder $container, array $configs): array
     {
-        if (!class_exists(MetadataEndpoint::class)) {
+        if (!\class_exists(MetadataEndpoint::class)) {
             return [];
         }
         if (!$configs['endpoint']['metadata']['enabled']) {
@@ -116,7 +116,7 @@ class MetadataEndpointSource implements Component
         }
         $updatedConfig = [];
         foreach ($this->subComponents as $subComponent) {
-            $updatedConfig = array_merge(
+            $updatedConfig = \array_merge(
                 $updatedConfig,
                 $subComponent->prepend($container, $configs)
             );
@@ -130,7 +130,7 @@ class MetadataEndpointSource implements Component
      */
     public function build(ContainerBuilder $container)
     {
-        if (!class_exists(MetadataEndpoint::class)) {
+        if (!\class_exists(MetadataEndpoint::class)) {
             return;
         }
         $container->addCompilerPass(new CommonMetadataCompilerPass());

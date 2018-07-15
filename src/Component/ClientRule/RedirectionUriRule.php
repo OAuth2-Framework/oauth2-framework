@@ -18,7 +18,7 @@ use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 
 /**
-TODO: If there are multiple hostnames in the registered redirect_uris and pairwise ID is set, the client MUST register a sector_identifier_uri.
+ * TODO: If there are multiple hostnames in the registered redirect_uris and pairwise ID is set, the client MUST register a sector_identifier_uri.
  */
 final class RedirectionUriRule implements Rule
 {
@@ -44,8 +44,8 @@ final class RedirectionUriRule implements Rule
         $response_types = $validatedParameters->has('response_types') ? $validatedParameters->get('response_types') : [];
         $usesImplicitGrantType = false;
         foreach ($response_types as $response_type) {
-            $types = explode(' ', $response_type);
-            if (in_array('token', $types)) {
+            $types = \explode(' ', $response_type);
+            if (\in_array('token', $types, true)) {
                 $usesImplicitGrantType = true;
 
                 break;
@@ -62,7 +62,7 @@ final class RedirectionUriRule implements Rule
             $redirectUris = [];
         } else {
             $redirectUris = $commandParameters->get('redirect_uris');
-            if (!is_array($redirectUris)) {
+            if (!\is_array($redirectUris)) {
                 throw new \InvalidArgumentException('The parameter "redirect_uris" must be a list of URI or URN.');
             }
         }
@@ -82,7 +82,7 @@ final class RedirectionUriRule implements Rule
     private function checkAllUris(array $value, string $applicationType, bool $usesImplicitGrantType, bool $isClientPublic)
     {
         foreach ($value as $redirectUri) {
-            if (!is_string($redirectUri)) {
+            if (!\is_string($redirectUri)) {
                 throw new \InvalidArgumentException('The parameter "redirect_uris" must be a list of URI or URN.');
             }
             $this->checkUri($redirectUri, $applicationType, $usesImplicitGrantType);
@@ -96,14 +96,14 @@ final class RedirectionUriRule implements Rule
      */
     private function checkUri(string $uri, string $applicationType, bool $usesImplicitGrantType)
     {
-        if ('urn:' === mb_substr($uri, 0, 4, '8bit')) {
+        if ('urn:' === \mb_substr($uri, 0, 4, '8bit')) {
             $this->checkUrn($uri);
         } else {
             $parsed = parse($uri);
             if (null === $parsed['scheme'] || null === $parsed['path']) {
                 throw new \InvalidArgumentException('The parameter "redirect_uris" must be a list of URI or URN.');
             }
-            if (1 === preg_match('#/\.\.?(/|$)#', $parsed['path'])) {
+            if (1 === \preg_match('#/\.\.?(/|$)#', $parsed['path'])) {
                 throw new \InvalidArgumentException('The URI listed in the "redirect_uris" parameter must not contain any path traversal.');
             }
             if (null !== $parsed['fragment']) {
@@ -125,7 +125,7 @@ final class RedirectionUriRule implements Rule
      */
     private function checkUrn(string $urn)
     {
-        if (1 !== preg_match('/^urn:[a-z0-9][a-z0-9-]{0,31}:([a-z0-9()+,-.:=@;$_!*\']|%(0[1-9a-f]|[1-9a-f][0-9a-f]))+$/i', $urn)) {
+        if (1 !== \preg_match('/^urn:[a-z0-9][a-z0-9-]{0,31}:([a-z0-9()+,-.:=@;$_!*\']|%(0[1-9a-f]|[1-9a-f][0-9a-f]))+$/i', $urn)) {
             throw new \InvalidArgumentException('The parameter "redirect_uris" must be a list of URI or URN.');
         }
     }

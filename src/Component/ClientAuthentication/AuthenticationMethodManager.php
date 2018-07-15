@@ -35,7 +35,7 @@ class AuthenticationMethodManager
      */
     public function add(AuthenticationMethod $method): void
     {
-        $class = get_class($method);
+        $class = \get_class($method);
         $this->methods[$class] = $method;
         foreach ($method->getSupportedMethods() as $name) {
             $this->names[$name] = $class;
@@ -47,7 +47,7 @@ class AuthenticationMethodManager
      */
     public function list(): array
     {
-        return array_keys($this->names);
+        return \array_keys($this->names);
     }
 
     /**
@@ -57,7 +57,7 @@ class AuthenticationMethodManager
      */
     public function has(string $name): bool
     {
-        return array_key_exists($name, $this->names);
+        return \array_key_exists($name, $this->names);
     }
 
     /**
@@ -70,7 +70,7 @@ class AuthenticationMethodManager
     public function get(string $name): AuthenticationMethod
     {
         if (!$this->has($name)) {
-            throw new \InvalidArgumentException(sprintf('The token endpoint authentication method "%s" is not supported. Please use one of the following values: %s', $name, implode(', ', $this->list())));
+            throw new \InvalidArgumentException(\sprintf('The token endpoint authentication method "%s" is not supported. Please use one of the following values: %s', $name, \implode(', ', $this->list())));
         }
         $class = $this->names[$name];
 
@@ -82,7 +82,7 @@ class AuthenticationMethodManager
      */
     public function all(): array
     {
-        return array_values($this->methods);
+        return \array_values($this->methods);
     }
 
     /**
@@ -130,7 +130,7 @@ class AuthenticationMethodManager
      */
     public function isClientAuthenticated(ServerRequestInterface $request, Client $client, AuthenticationMethod $authenticationMethod, $clientCredentials): bool
     {
-        if (in_array($client->get('token_endpoint_auth_method'), $authenticationMethod->getSupportedMethods())) {
+        if (\in_array($client->get('token_endpoint_auth_method'), $authenticationMethod->getSupportedMethods(), true)) {
             if (false === $client->areClientCredentialsExpired()) {
                 return $authenticationMethod->isClientAuthenticated($client, $clientCredentials, $request);
             }
@@ -146,7 +146,7 @@ class AuthenticationMethodManager
     {
         $schemes = [];
         foreach ($this->all() as $method) {
-            $schemes = array_merge(
+            $schemes = \array_merge(
                 $schemes,
                 $method->getSchemesParameters()
             );
@@ -164,7 +164,7 @@ class AuthenticationMethodManager
     {
         $schemes = [];
         foreach ($this->all() as $method) {
-            $schemes = array_merge(
+            $schemes = \array_merge(
                 $schemes,
                 $method->getSchemesParameters()
             );
@@ -184,16 +184,16 @@ class AuthenticationMethodManager
      */
     private function appendParameters(string $scheme, array $parameters): string
     {
-        $position = mb_strpos($scheme, ' ', 0, 'utf-8');
+        $position = \mb_strpos($scheme, ' ', 0, 'utf-8');
         $add_comma = false === $position ? false : true;
 
         foreach ($parameters as $key => $value) {
-            $value = is_string($value) ? sprintf('"%s"', $value) : $value;
+            $value = \is_string($value) ? \sprintf('"%s"', $value) : $value;
             if (false === $add_comma) {
                 $add_comma = true;
-                $scheme = sprintf('%s %s=%s', $scheme, $key, $value);
+                $scheme = \sprintf('%s %s=%s', $scheme, $key, $value);
             } else {
-                $scheme = sprintf('%s,%s=%s', $scheme, $key, $value);
+                $scheme = \sprintf('%s,%s=%s', $scheme, $key, $value);
             }
         }
 

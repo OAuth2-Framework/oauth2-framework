@@ -103,7 +103,7 @@ final class TokenResponseType implements ResponseType
             $authorization->getClient()->getClientId(),
             DataBag::create($additionalInformation),
             $authorization->getMetadata(),
-            new \DateTimeImmutable(sprintf('now +%d seconds', $this->accessTokenLifetime)),
+            new \DateTimeImmutable(\sprintf('now +%d seconds', $this->accessTokenLifetime)),
             null
         );
         $this->accessTokenRepository->save($accessToken);

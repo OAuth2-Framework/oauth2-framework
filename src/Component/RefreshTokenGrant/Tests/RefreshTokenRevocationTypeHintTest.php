@@ -36,7 +36,7 @@ final class RefreshTokenRevocationTypeHintTest extends TestCase
      */
     protected function setUp()
     {
-        if (!interface_exists(TokenTypeHint::class)) {
+        if (!\interface_exists(TokenTypeHint::class)) {
             $this->markTestSkipped('The component "oauth2-framework/token-revocation-endpoint" is not installed.');
         }
     }

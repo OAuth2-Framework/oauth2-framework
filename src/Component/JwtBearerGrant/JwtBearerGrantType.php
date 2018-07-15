@@ -167,9 +167,9 @@ class JwtBearerGrantType implements GrantType
         $parameters = RequestBodyParser::parseFormUrlEncoded($request);
         $requiredParameters = ['assertion'];
 
-        $diff = array_diff($requiredParameters, array_keys($parameters));
+        $diff = \array_diff($requiredParameters, \array_keys($parameters));
         if (!empty($diff)) {
-            throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, sprintf('Missing grant type parameter(s): %s.', implode(', ', $diff)));
+            throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, \sprintf('Missing grant type parameter(s): %s.', \implode(', ', $diff)));
         }
     }
 
@@ -188,11 +188,11 @@ class JwtBearerGrantType implements GrantType
             if (1 !== $jws->countSignatures()) {
                 throw new \InvalidArgumentException('The assertion must have only one signature.');
             }
-            $claims = json_decode($jws->getPayload(), true);
+            $claims = \json_decode($jws->getPayload(), true);
             $this->claimCheckerManager->check($claims);
-            $diff = array_diff(['iss', 'sub', 'aud', 'exp'], array_keys($claims));
+            $diff = \array_diff(['iss', 'sub', 'aud', 'exp'], \array_keys($claims));
             if (!empty($diff)) {
-                throw new \InvalidArgumentException(sprintf('The following claim(s) is/are mandatory: "%s".', implode(', ', array_values($diff))));
+                throw new \InvalidArgumentException(\sprintf('The following claim(s) is/are mandatory: "%s".', \implode(', ', \array_values($diff))));
             }
             $grantTypeData = $this->checkJWTSignature($grantTypeData, $jws, $claims);
         } catch (OAuth2Message $e) {
@@ -283,15 +283,15 @@ class JwtBearerGrantType implements GrantType
             $signatureKeys = $issuer->getJWKSet();
             $resourceOwnerId = $this->findResourceOwner($sub);
             if (null === $resourceOwnerId) {
-                throw new \InvalidArgumentException(sprintf('Unknown resource owner with ID "%s"', $sub));
+                throw new \InvalidArgumentException(\sprintf('Unknown resource owner with ID "%s"', $sub));
             }
             $grantTypeData->withResourceOwnerId($resourceOwnerId);
         } else {
             throw new \InvalidArgumentException('Unable to find the issuer of the assertion.');
         }
 
-        if (!$jws->getSignature(0)->hasProtectedHeaderParameter('alg') || !in_array($jws->getSignature(0)->getProtectedHeaderParameter('alg'), $allowedSignatureAlgorithms)) {
-            throw new \InvalidArgumentException(sprintf('The signature algorithm "%s" is not allowed.', $jws->getSignature(0)->getProtectedHeaderParameter('alg')));
+        if (!$jws->getSignature(0)->hasProtectedHeaderParameter('alg') || !\in_array($jws->getSignature(0)->getProtectedHeaderParameter('alg'), $allowedSignatureAlgorithms, true)) {
+            throw new \InvalidArgumentException(\sprintf('The signature algorithm "%s" is not allowed.', $jws->getSignature(0)->getProtectedHeaderParameter('alg')));
         }
 
         $this->jwsVerifier->verifyWithKeySet($jws, $signatureKeys, 0);

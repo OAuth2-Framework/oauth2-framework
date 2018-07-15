@@ -39,7 +39,7 @@ class ResponseTypeManager
      */
     public function has(string $responseType): bool
     {
-        return array_key_exists($responseType, $this->responseTypes);
+        return \array_key_exists($responseType, $this->responseTypes);
     }
 
     /**
@@ -52,7 +52,7 @@ class ResponseTypeManager
     public function get(string $responseType): ResponseType
     {
         if (!$this->has($responseType)) {
-            throw new \InvalidArgumentException(sprintf('The response type "%s" is not supported.', $responseType));
+            throw new \InvalidArgumentException(\sprintf('The response type "%s" is not supported.', $responseType));
         }
 
         return $this->responseTypes[$responseType];
@@ -63,7 +63,7 @@ class ResponseTypeManager
      */
     public function list(): array
     {
-        return array_keys($this->responseTypes);
+        return \array_keys($this->responseTypes);
     }
 
     /**
@@ -71,6 +71,6 @@ class ResponseTypeManager
      */
     public function all(): array
     {
-        return array_values($this->responseTypes);
+        return \array_values($this->responseTypes);
     }
 }

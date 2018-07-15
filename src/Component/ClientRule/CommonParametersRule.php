@@ -54,8 +54,8 @@ final class CommonParametersRule extends AbstractInternationalizedRule
     private function getUriVerificationClosure(): \Closure
     {
         return function ($k, $v) {
-            if (!filter_var($v, FILTER_VALIDATE_URL)) {
-                throw new \InvalidArgumentException(sprintf('The parameter with key "%s" is not a valid URL.', $k));
+            if (!\filter_var($v, FILTER_VALIDATE_URL)) {
+                throw new \InvalidArgumentException(\sprintf('The parameter with key "%s" is not a valid URL.', $k));
             }
         };
     }

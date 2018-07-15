@@ -78,7 +78,7 @@ final class MaxAgeParameterAccountCheckerTest extends TestCase
         $client->get('default_max_age')->willReturn(3600);
 
         $userAccount = $this->prophesize(UserAccount::class);
-        $userAccount->getLastLoginAt()->willReturn(time() - 100);
+        $userAccount->getLastLoginAt()->willReturn(\time() - 100);
 
         $authorization = $this->prophesize(Authorization::class);
         $authorization->isUserAccountFullyAuthenticated()->willReturn(false);
@@ -100,7 +100,7 @@ final class MaxAgeParameterAccountCheckerTest extends TestCase
         $client->has('default_max_age')->willReturn(false);
 
         $userAccount = $this->prophesize(UserAccount::class);
-        $userAccount->getLastLoginAt()->willReturn(time() - 100);
+        $userAccount->getLastLoginAt()->willReturn(\time() - 100);
 
         $authorization = $this->prophesize(Authorization::class);
         $authorization->hasQueryParam('max_age')->willReturn(true);
@@ -150,7 +150,7 @@ final class MaxAgeParameterAccountCheckerTest extends TestCase
         $client->has('default_max_age')->willReturn(false);
 
         $userAccount = $this->prophesize(UserAccount::class);
-        $userAccount->getLastLoginAt()->willReturn(time() - 10000);
+        $userAccount->getLastLoginAt()->willReturn(\time() - 10000);
 
         $authorization = $this->prophesize(Authorization::class);
         $authorization->isUserAccountFullyAuthenticated()->willReturn(false);

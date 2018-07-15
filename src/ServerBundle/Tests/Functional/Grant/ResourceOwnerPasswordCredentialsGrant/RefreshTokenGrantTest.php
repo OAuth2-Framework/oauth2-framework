@@ -29,7 +29,7 @@ class ResourceOwnerPasswordCredentialsGrantTest extends WebTestCase
      */
     protected function setUp()
     {
-        if (!class_exists(ResourceOwnerPasswordCredentialsGrantType::class)) {
+        if (!\class_exists(ResourceOwnerPasswordCredentialsGrantType::class)) {
             $this->markTestSkipped('The component "oauth2-framework/resource-owner-password-credentials-grant" is not installed.');
         }
     }

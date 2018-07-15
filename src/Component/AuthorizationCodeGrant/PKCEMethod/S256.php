@@ -30,6 +30,6 @@ final class S256 implements PKCEMethod
      */
     public function isChallengeVerified(string $codeVerifier, string $codeChallenge): bool
     {
-        return hash_equals($codeChallenge, Base64Url::encode(hash('sha256', $codeVerifier, true)));
+        return \hash_equals($codeChallenge, Base64Url::encode(\hash('sha256', $codeVerifier, true)));
     }
 }

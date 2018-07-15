@@ -26,7 +26,7 @@ final class ClientIdIssuedAtRule implements Rule
         if ($commandParameters->has('client_id_issued_at')) {
             $validatedParameters->with('client_id_issued_at', $commandParameters->get('client_id_issued_at'));
         } else {
-            $validatedParameters->with('client_id_issued_at', time());
+            $validatedParameters->with('client_id_issued_at', \time());
         }
 
         return $next($clientId, $commandParameters, $validatedParameters);

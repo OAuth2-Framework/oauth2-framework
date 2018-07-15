@@ -36,7 +36,7 @@ class JwtBearerGrantTest extends WebTestCase
      */
     protected function setUp()
     {
-        if (!class_exists(JwtBearerGrantType::class)) {
+        if (!\class_exists(JwtBearerGrantType::class)) {
             $this->markTestSkipped('The component "oauth2-framework/jwt-bearer-grant" is not installed.');
         }
     }
@@ -221,7 +221,7 @@ class JwtBearerGrantTest extends WebTestCase
             'iss' => 'CLIENT_ID_4',
             'sub' => 'CLIENT_ID_4',
             'aud' => 'https://oauth2.test/',
-            'exp' => time() + 3600,
+            'exp' => \time() + 3600,
         ];
 
         return $this->sign($claims, $jwk);

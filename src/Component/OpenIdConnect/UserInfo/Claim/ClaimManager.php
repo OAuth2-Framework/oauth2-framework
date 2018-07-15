@@ -39,7 +39,7 @@ class ClaimManager
      */
     public function list(): array
     {
-        return array_keys($this->claims);
+        return \array_keys($this->claims);
     }
 
     /**
@@ -52,13 +52,13 @@ class ClaimManager
 
     public function has(string $claim): bool
     {
-        return array_key_exists($claim, $this->claims);
+        return \array_key_exists($claim, $this->claims);
     }
 
     public function get(string $claim): Claim
     {
         if (!$this->has($claim)) {
-            throw new \InvalidArgumentException(sprintf('Unsupported claim "%s".', $claim));
+            throw new \InvalidArgumentException(\sprintf('Unsupported claim "%s".', $claim));
         }
 
         return $this->claims[$claim];
@@ -75,14 +75,14 @@ class ClaimManager
                     if ($claim->isAvailableForUserAccount($userAccount, $claimLocale)) {
                         $value = $claim->getForUserAccount($userAccount, $claimLocale);
                         switch (true) {
-                            case is_array($config) && array_key_exists('value', $config):
+                            case \is_array($config) && \array_key_exists('value', $config):
                                 if ($claim === $config['value']) {
                                     $result[$claimName] = $value;
                                 }
 
                                 break;
-                            case is_array($config) && array_key_exists('values', $config) && is_array($config['values']):
-                                if (in_array($claim, $config['values'])) {
+                            case \is_array($config) && \array_key_exists('values', $config) && \is_array($config['values']):
+                                if (\in_array($claim, $config['values'], true)) {
                                     $result[$claimName] = $value;
                                 }
 

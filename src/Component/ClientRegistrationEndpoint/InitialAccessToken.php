@@ -109,7 +109,7 @@ class InitialAccessToken implements ContainsRecordedMessages, DomainObject
      */
     public function hasExpired(): bool
     {
-        return $this->expiresAt->getTimestamp() < time();
+        return $this->expiresAt->getTimestamp() < \time();
     }
 
     /**
@@ -167,7 +167,7 @@ class InitialAccessToken implements ContainsRecordedMessages, DomainObject
     {
         $data = [
             '$schema' => $this->getSchema(),
-            'type' => get_class($this),
+            'type' => \get_class($this),
             'initial_access_token_id' => $this->getTokenId() ? $this->getTokenId()->getValue() : null,
             'user_account_id' => $this->getUserAccountId() ? $this->getUserAccountId()->getValue() : null,
             'expires_at' => $this->getExpiresAt() ? $this->getExpiresAt()->getTimestamp() : null,
@@ -185,7 +185,7 @@ class InitialAccessToken implements ContainsRecordedMessages, DomainObject
     public function apply(Event $event): self
     {
         $map = $this->getEventMap();
-        if (!array_key_exists($event->getType(), $map)) {
+        if (!\array_key_exists($event->getType(), $map)) {
             throw new \InvalidArgumentException('Unsupported event.');
         }
         if (null !== $this->initialAccessTokenId && $this->initialAccessTokenId->getValue() !== $event->getDomainId()->getValue()) {

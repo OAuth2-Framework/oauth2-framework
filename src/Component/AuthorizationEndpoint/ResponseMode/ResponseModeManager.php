@@ -25,7 +25,7 @@ class ResponseModeManager
      */
     public function list(): array
     {
-        return array_keys($this->responseModes);
+        return \array_keys($this->responseModes);
     }
 
     /**
@@ -33,7 +33,7 @@ class ResponseModeManager
      */
     public function all(): array
     {
-        return array_values($this->responseModes);
+        return \array_values($this->responseModes);
     }
 
     /**
@@ -55,7 +55,7 @@ class ResponseModeManager
      */
     public function has(string $name): bool
     {
-        return array_key_exists($name, $this->responseModes);
+        return \array_key_exists($name, $this->responseModes);
     }
 
     /**
@@ -68,7 +68,7 @@ class ResponseModeManager
     public function get(string $name): ResponseMode
     {
         if (!$this->has($name)) {
-            throw new \InvalidArgumentException(sprintf('The response mode with name "%s" is not supported.', $name));
+            throw new \InvalidArgumentException(\sprintf('The response mode with name "%s" is not supported.', $name));
         }
 
         return $this->responseModes[$name];

@@ -39,7 +39,7 @@ class GrantTypeManager
      */
     public function has(string $name): bool
     {
-        return array_key_exists($name, $this->grantTypes);
+        return \array_key_exists($name, $this->grantTypes);
     }
 
     /**
@@ -50,7 +50,7 @@ class GrantTypeManager
     public function get(string $name): GrantType
     {
         if (!$this->has($name)) {
-            throw new \InvalidArgumentException(sprintf('The grant type "%s" is not supported.', $name));
+            throw new \InvalidArgumentException(\sprintf('The grant type "%s" is not supported.', $name));
         }
 
         return $this->grantTypes[$name];
@@ -61,6 +61,6 @@ class GrantTypeManager
      */
     public function list(): array
     {
-        return array_keys($this->grantTypes);
+        return \array_keys($this->grantTypes);
     }
 }

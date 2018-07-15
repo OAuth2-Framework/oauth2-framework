@@ -33,8 +33,8 @@ final class DisplayParameterChecker implements ParameterChecker
     public function check(Authorization $authorization): Authorization
     {
         try {
-            if ($authorization->hasQueryParam('display') && !in_array($authorization->getQueryParam('display'), $this->getAllowedDisplayValues())) {
-                throw new OAuth2AuthorizationException(400, OAuth2Message::ERROR_INVALID_REQUEST, sprintf('Invalid parameter "display". Allowed values are %s', implode(', ', $this->getAllowedDisplayValues())), $authorization);
+            if ($authorization->hasQueryParam('display') && !\in_array($authorization->getQueryParam('display'), $this->getAllowedDisplayValues(), true)) {
+                throw new OAuth2AuthorizationException(400, OAuth2Message::ERROR_INVALID_REQUEST, \sprintf('Invalid parameter "display". Allowed values are %s', \implode(', ', $this->getAllowedDisplayValues())), $authorization);
             }
 
             return $authorization;

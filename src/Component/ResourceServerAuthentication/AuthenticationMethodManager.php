@@ -37,7 +37,7 @@ class AuthenticationMethodManager
      */
     public function add(AuthenticationMethod $method): self
     {
-        $class = get_class($method);
+        $class = \get_class($method);
         $this->methods[$class] = $method;
         foreach ($method->getSupportedMethods() as $name) {
             $this->names[$name] = $class;
@@ -51,7 +51,7 @@ class AuthenticationMethodManager
      */
     public function list(): array
     {
-        return array_keys($this->names);
+        return \array_keys($this->names);
     }
 
     /**
@@ -61,7 +61,7 @@ class AuthenticationMethodManager
      */
     public function has(string $name): bool
     {
-        return array_key_exists($name, $this->names);
+        return \array_key_exists($name, $this->names);
     }
 
     /**
@@ -74,7 +74,7 @@ class AuthenticationMethodManager
     public function get(string $name): AuthenticationMethod
     {
         if (!$this->has($name)) {
-            throw new \InvalidArgumentException(sprintf('The resource server authentication method "%s" is not supported. Please use one of the following values: %s', $name, implode(', ', $this->list())));
+            throw new \InvalidArgumentException(\sprintf('The resource server authentication method "%s" is not supported. Please use one of the following values: %s', $name, \implode(', ', $this->list())));
         }
         $class = $this->names[$name];
 
@@ -86,7 +86,7 @@ class AuthenticationMethodManager
      */
     public function all(): array
     {
-        return array_values($this->methods);
+        return \array_values($this->methods);
     }
 
     /**
@@ -130,7 +130,7 @@ class AuthenticationMethodManager
      */
     public function isResourceServerAuthenticated(ServerRequestInterface $request, ResourceServer $resourceServer, AuthenticationMethod $authenticationMethod, $resourceServerCredentials): bool
     {
-        if (in_array($resourceServer->getAuthenticationMethod(), $authenticationMethod->getSupportedMethods())) {
+        if (\in_array($resourceServer->getAuthenticationMethod(), $authenticationMethod->getSupportedMethods(), true)) {
             return $authenticationMethod->isResourceServerAuthenticated($resourceServer, $resourceServerCredentials, $request);
         }
 
@@ -144,7 +144,7 @@ class AuthenticationMethodManager
     {
         $schemes = [];
         foreach ($this->all() as $method) {
-            $schemes = array_merge(
+            $schemes = \array_merge(
                 $schemes,
                 $method->getSchemesParameters()
             );

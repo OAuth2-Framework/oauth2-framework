@@ -38,7 +38,7 @@ class RefreshTokenSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        if (!class_exists(RefreshTokenGrantType::class) || !$configs['grant']['refresh_token']['enabled']) {
+        if (!\class_exists(RefreshTokenGrantType::class) || !$configs['grant']['refresh_token']['enabled']) {
             return;
         }
         $container->setParameter('oauth2_server.grant.refresh_token.lifetime', $configs['grant']['refresh_token']['lifetime']);
@@ -53,7 +53,7 @@ class RefreshTokenSource implements Component
      */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
-        if (!class_exists(RefreshTokenGrantType::class)) {
+        if (!\class_exists(RefreshTokenGrantType::class)) {
             return;
         }
         $node->children()

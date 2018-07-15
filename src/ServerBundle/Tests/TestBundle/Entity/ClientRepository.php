@@ -38,7 +38,7 @@ class ClientRepository implements \OAuth2Framework\Component\Core\Client\ClientR
      */
     public function find(ClientId $clientId): ? Client
     {
-        return array_key_exists($clientId->getValue(), $this->clients) ? $this->clients[$clientId->getValue()] : null;
+        return \array_key_exists($clientId->getValue(), $this->clients) ? $this->clients[$clientId->getValue()] : null;
     }
 
     /**

@@ -28,6 +28,6 @@ final class Plain implements PKCEMethod
      */
     public function isChallengeVerified(string $codeVerifier, string $codeChallenge): bool
     {
-        return hash_equals($codeChallenge, $codeVerifier);
+        return \hash_equals($codeChallenge, $codeVerifier);
     }
 }

@@ -326,7 +326,7 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
             ClientId::create('CLIENT_ID'),
             DataBag::create([
                 'token_endpoint_auth_method' => 'private_key_jwt',
-                'jwks' => json_decode('{"keys":[{"kty":"oct","k":"U0VDUkVU"}]}', true),
+                'jwks' => \json_decode('{"keys":[{"kty":"oct","k":"U0VDUkVU"}]}', true),
             ]),
             UserAccountId::create('USER_ACCOUNT_ID')
         );
@@ -485,12 +485,12 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
         $method = $this->getMethod();
         $commandParameters = DataBag::create([
             'token_endpoint_auth_method' => 'private_key_jwt',
-            'jwks' => json_decode('{"keys":[{"kty":"oct","k":"U0VDUkVU"}]}', true),
+            'jwks' => \json_decode('{"keys":[{"kty":"oct","k":"U0VDUkVU"}]}', true),
         ]);
         $validatedParameters = $method->checkClientConfiguration($commandParameters, DataBag::create([]));
 
         self::assertTrue($validatedParameters->has('jwks'));
-        self::assertEquals(json_decode('{"keys":[{"kty":"oct","k":"U0VDUkVU"}]}', true), $validatedParameters->get('jwks'));
+        self::assertEquals(\json_decode('{"keys":[{"kty":"oct","k":"U0VDUkVU"}]}', true), $validatedParameters->get('jwks'));
     }
 
     /**
@@ -655,7 +655,7 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
                 'iss' => 'ClientId',
                 'sub' => 'ClientId',
                 'aud' => 'My Server',
-                'exp' => time() + 3600,
+                'exp' => \time() + 3600,
             ]))
             ->addSignature(
                 JWK::createFromJson('{"kty":"oct","k":"U0VDUkVU"}'),
@@ -683,7 +683,7 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
                 'iss' => 'TRUSTED_ISSUER',
                 'sub' => 'ClientId',
                 'aud' => 'My Server',
-                'exp' => time() + 3600,
+                'exp' => \time() + 3600,
             ]))
             ->addSignature(
                 JWK::create([
@@ -798,7 +798,7 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
     private function buildRequest(array $data): ObjectProphecy
     {
         $body = $this->prophesize(StreamInterface::class);
-        $body->getContents()->willReturn(http_build_query($data));
+        $body->getContents()->willReturn(\http_build_query($data));
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->hasHeader('Content-Type')->willReturn(true);
         $request->getHeader('Content-Type')->willReturn(['application/x-www-form-urlencoded']);

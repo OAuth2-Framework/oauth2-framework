@@ -53,7 +53,7 @@ final class ClientSecretBasic implements AuthenticationMethod
     public function getSchemesParameters(): array
     {
         return [
-            sprintf('Basic realm="%s",charset="UTF-8"', $this->realm),
+            \sprintf('Basic realm="%s",charset="UTF-8"', $this->realm),
         ];
     }
 
@@ -63,7 +63,7 @@ final class ClientSecretBasic implements AuthenticationMethod
     public function findClientIdAndCredentials(ServerRequestInterface $request, &$client_credentials = null): ? ClientId
     {
         $authorization_headers = $request->getHeader('Authorization');
-        if (0 < count($authorization_headers)) {
+        if (0 < \count($authorization_headers)) {
             foreach ($authorization_headers as $authorization_header) {
                 $clientId = $this->findClientIdAndCredentialsInAuthorizationHeader($authorization_header, $client_credentials);
                 if (null !== $clientId) {
@@ -83,8 +83,8 @@ final class ClientSecretBasic implements AuthenticationMethod
      */
     private function findClientIdAndCredentialsInAuthorizationHeader(string $authorization_header, ?string &$client_credentials = null)
     {
-        if ('basic ' === mb_strtolower(mb_substr($authorization_header, 0, 6, '8bit'), '8bit')) {
-            list($client_id, $client_secret) = explode(':', base64_decode(mb_substr($authorization_header, 6, mb_strlen($authorization_header, '8bit') - 6, '8bit')));
+        if ('basic ' === \mb_strtolower(\mb_substr($authorization_header, 0, 6, '8bit'), '8bit')) {
+            list($client_id, $client_secret) = \explode(':', \base64_decode(\mb_substr($authorization_header, 6, \mb_strlen($authorization_header, '8bit') - 6, '8bit'), true));
             if (!empty($client_id) && !empty($client_secret)) {
                 $client_credentials = $client_secret;
 
@@ -101,7 +101,7 @@ final class ClientSecretBasic implements AuthenticationMethod
     public function checkClientConfiguration(DataBag $command_parameters, DataBag $validated_parameters): DataBag
     {
         $validated_parameters = $validated_parameters->with('client_secret', $this->createClientSecret());
-        $validated_parameters = $validated_parameters->with('client_secret_expires_at', (0 === $this->secretLifetime ? 0 : time() + $this->secretLifetime));
+        $validated_parameters = $validated_parameters->with('client_secret_expires_at', (0 === $this->secretLifetime ? 0 : \time() + $this->secretLifetime));
 
         return $validated_parameters;
     }
@@ -111,7 +111,7 @@ final class ClientSecretBasic implements AuthenticationMethod
      */
     public function isClientAuthenticated(Client $client, $client_credentials, ServerRequestInterface $request): bool
     {
-        return hash_equals($client->get('client_secret'), $client_credentials);
+        return \hash_equals($client->get('client_secret'), $client_credentials);
     }
 
     /**
@@ -127,6 +127,6 @@ final class ClientSecretBasic implements AuthenticationMethod
      */
     private function createClientSecret(): string
     {
-        return Base64Url::encode(random_bytes(32));
+        return Base64Url::encode(\random_bytes(32));
     }
 }

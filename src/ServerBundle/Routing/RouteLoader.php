@@ -48,9 +48,9 @@ class RouteLoader implements LoaderInterface
      */
     public function addRoute($name, $controllerId, $methodName, $path, array $defaults = [], array $requirements = [], array $options = [], $host = '', $schemes = [], $methods = [], $condition = '')
     {
-        $defaults['_controller'] = sprintf('%s:%s', $controllerId, $methodName);
+        $defaults['_controller'] = \sprintf('%s:%s', $controllerId, $methodName);
         $route = new Route($path, $defaults, $requirements, $options, $host, $schemes, $methods, $condition);
-        $this->routes->add(sprintf('oauth2_server_%s', $name), $route);
+        $this->routes->add(\sprintf('oauth2_server_%s', $name), $route);
     }
 
     /**

@@ -69,9 +69,9 @@ final class AuthorizationCodeGrantType implements GrantType
         $parameters = RequestBodyParser::parseFormUrlEncoded($request);
         $requiredParameters = ['code', 'redirect_uri'];
 
-        $diff = array_diff($requiredParameters, array_keys($parameters));
+        $diff = \array_diff($requiredParameters, \array_keys($parameters));
         if (!empty($diff)) {
-            throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, sprintf('Missing grant type parameter(s): %s.', implode(', ', $diff)));
+            throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, \sprintf('Missing grant type parameter(s): %s.', \implode(', ', $diff)));
         }
     }
 
@@ -145,7 +145,7 @@ final class AuthorizationCodeGrantType implements GrantType
     private function checkClient(Client $client, array $parameters)
     {
         if (true === $client->isPublic()) {
-            if (!array_key_exists('client_id', $parameters) || $client->getPublicId()->getValue() !== $parameters['client_id']) {
+            if (!\array_key_exists('client_id', $parameters) || $client->getPublicId()->getValue() !== $parameters['client_id']) {
                 throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, 'The "client_id" parameter is required for non-confidential clients.');
             }
         }
@@ -160,15 +160,15 @@ final class AuthorizationCodeGrantType implements GrantType
     private function checkPKCE(AuthorizationCode $authorizationCode, array $parameters)
     {
         $params = $authorizationCode->getQueryParams();
-        if (!array_key_exists('code_challenge', $params)) {
+        if (!\array_key_exists('code_challenge', $params)) {
             return;
         }
 
         $codeChallenge = $params['code_challenge'];
-        $codeChallengeMethod = array_key_exists('code_challenge_method', $params) ? $params['code_challenge_method'] : 'plain';
+        $codeChallengeMethod = \array_key_exists('code_challenge_method', $params) ? $params['code_challenge_method'] : 'plain';
 
         try {
-            if (!array_key_exists('code_verifier', $parameters)) {
+            if (!\array_key_exists('code_verifier', $parameters)) {
                 throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_GRANT, 'The parameter "code_verifier" is missing or invalid.');
             }
             $code_verifier = $parameters['code_verifier'];

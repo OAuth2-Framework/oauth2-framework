@@ -37,6 +37,6 @@ class ResourceServerRepository implements ResourceServerRepositoryInterface
      */
     public function supports(ResourceId $resourceId): bool
     {
-        return 'http://foo.com' === mb_substr($resourceId->getValue(), 0, 14);
+        return 'http://foo.com' === \mb_substr($resourceId->getValue(), 0, 14);
     }
 }

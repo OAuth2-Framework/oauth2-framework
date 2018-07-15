@@ -37,7 +37,7 @@ class AuthorizationCodeRepository implements AuthorizationCodeRepositoryInterfac
      */
     public function find(AuthorizationCodeId $authCodeId): ? AuthorizationCode
     {
-        return array_key_exists($authCodeId->getValue(), $this->authorizationCodes) ? $this->authorizationCodes[$authCodeId->getValue()] : null;
+        return \array_key_exists($authCodeId->getValue(), $this->authorizationCodes) ? $this->authorizationCodes[$authCodeId->getValue()] : null;
     }
 
     /**

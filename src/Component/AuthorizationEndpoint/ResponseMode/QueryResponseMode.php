@@ -33,9 +33,9 @@ final class QueryResponseMode implements ResponseMode
     public function buildResponse(ResponseInterface $response, string $redirectUri, array $data): ResponseInterface
     {
         $uri = Uri\parse($redirectUri);
-        if (array_key_exists('query', $uri) && null !== $uri['query']) {
+        if (\array_key_exists('query', $uri) && null !== $uri['query']) {
             $query = Uri\parse_query($uri['query']);
-            $data = array_merge($query, $data);
+            $data = \array_merge($query, $data);
         }
         $uri['query'] = Uri\build_query($data);
         $uri['fragment'] = '_=_'; //A redirect Uri is not supposed to have fragment so we override it.

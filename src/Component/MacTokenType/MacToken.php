@@ -38,7 +38,7 @@ abstract class MacToken implements TokenType
      */
     public function __construct(string $macAlgorithm, int $timestampLifetime)
     {
-        if (!in_array($macAlgorithm, array_keys($this->getAlgorithmMap()))) {
+        if (!\in_array($macAlgorithm, \array_keys($this->getAlgorithmMap()), true)) {
             throw new \InvalidArgumentException('Unsupported ma algorithm.');
         }
         if ($timestampLifetime <= 0) {
@@ -99,8 +99,8 @@ abstract class MacToken implements TokenType
         $authorization_headers = $request->getHeader('AUTHORIZATION');
 
         foreach ($authorization_headers as $authorization_header) {
-            if ('MAC ' === mb_substr($authorization_header, 0, 4, '8bit')) {
-                $header = trim(mb_substr($authorization_header, 4, null, '8bit'));
+            if ('MAC ' === \mb_substr($authorization_header, 0, 4, '8bit')) {
+                $header = \trim(\mb_substr($authorization_header, 4, null, '8bit'));
                 if (true === $this->isHeaderValid($header, $additionalCredentialValues, $token)) {
                     return $token;
                 }
@@ -120,24 +120,24 @@ abstract class MacToken implements TokenType
         }
 
         foreach ($this->getParametersToCheck() as $key => $closure) {
-            if (!array_key_exists($key, $additionalCredentialValues) || false === $closure($additionalCredentialValues[$key], $token)) {
+            if (!\array_key_exists($key, $additionalCredentialValues) || false === $closure($additionalCredentialValues[$key], $token)) {
                 return false;
             }
         }
 
         $mac = $this->generateMac($request, $token, $additionalCredentialValues);
 
-        return hash_equals($mac, $additionalCredentialValues['mac']);
+        return \hash_equals($mac, $additionalCredentialValues['mac']);
     }
 
     private function getParametersToCheck(): array
     {
         return [
             'id' => function ($value, AccessToken $token) {
-                return hash_equals($token->getTokenId()->getValue(), $value);
+                return \hash_equals($token->getTokenId()->getValue(), $value);
             },
             'ts' => function ($value) {
-                return time() < $this->getTimestampLifetime() + (int) $value;
+                return \time() < $this->getTimestampLifetime() + (int) $value;
             },
             'nonce' => function () {
                 return true;
@@ -160,7 +160,7 @@ abstract class MacToken implements TokenType
         $request_uri = $request->getRequestTarget();
         $host = $request->getUri()->getHost();
         $port = $request->getUri()->getPort();
-        $ext = array_key_exists('ext', $values) ? $values['ext'] : null;
+        $ext = \array_key_exists('ext', $values) ? $values['ext'] : null;
 
         $basestr =
             $timestamp."\n".
@@ -172,11 +172,11 @@ abstract class MacToken implements TokenType
             $ext."\n";
 
         $algorithms = $this->getAlgorithmMap();
-        if (!array_key_exists($token->getParameter()->get('mac_algorithm'), $algorithms)) {
-            throw new \RuntimeException(sprintf('The MAC algorithm "%s" is not supported.', $token->getParameter()->get('mac_algorithm')));
+        if (!\array_key_exists($token->getParameter()->get('mac_algorithm'), $algorithms)) {
+            throw new \RuntimeException(\sprintf('The MAC algorithm "%s" is not supported.', $token->getParameter()->get('mac_algorithm')));
         }
 
-        return base64_encode(hash_hmac(
+        return \base64_encode(\hash_hmac(
             $algorithms[$token->getParameter()->get('mac_algorithm')],
             $basestr,
             $token->getParameter()->get('mac_key'),
@@ -204,10 +204,10 @@ abstract class MacToken implements TokenType
      */
     private function isHeaderValid(string $header, array &$additionalCredentialValues, string &$token = null): bool
     {
-        if (1 === preg_match('/(\w+)=("((?:[^"\\\\]|\\\\.)+)"|([^\s,$]+))/', $header, $matches)) {
-            preg_match_all('/(\w+)=("((?:[^"\\\\]|\\\\.)+)"|([^\s,$]+))/', $header, $matches, PREG_SET_ORDER);
+        if (1 === \preg_match('/(\w+)=("((?:[^"\\\\]|\\\\.)+)"|([^\s,$]+))/', $header, $matches)) {
+            \preg_match_all('/(\w+)=("((?:[^"\\\\]|\\\\.)+)"|([^\s,$]+))/', $header, $matches, PREG_SET_ORDER);
 
-            if (!is_array($matches)) {
+            if (!\is_array($matches)) {
                 return false;
             }
 
@@ -216,7 +216,7 @@ abstract class MacToken implements TokenType
                 $values[$match[1]] = isset($match[4]) ? $match[4] : $match[3];
             }
 
-            if (array_key_exists('id', $values)) {
+            if (\array_key_exists('id', $values)) {
                 $additionalCredentialValues = $values;
 
                 $token = $values['id'];

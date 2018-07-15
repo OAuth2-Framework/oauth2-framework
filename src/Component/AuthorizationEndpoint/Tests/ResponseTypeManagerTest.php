@@ -41,7 +41,7 @@ final class ResponseTypeManagerTest extends TestCase
         self::assertFalse($manager->has('bar'));
         self::assertInstanceOf(ResponseType::class, $manager->get('foo'));
         self::assertEquals(['foo'], $manager->list());
-        self::assertEquals(1, count($manager->all()));
+        self::assertEquals(1, \count($manager->all()));
 
         $manager->get('bar');
     }

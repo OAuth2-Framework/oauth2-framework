@@ -69,7 +69,7 @@ class OAuth2MessageFactoryManager
     public function getResponse(OAuth2Message $message, array $additionalData = []): ResponseInterface
     {
         $code = $message->getCode();
-        $data = array_merge(
+        $data = \array_merge(
             $additionalData,
             $message->getData()
         );
@@ -92,8 +92,8 @@ class OAuth2MessageFactoryManager
      */
     private function getFactory(int $code): ResponseFactory
     {
-        if (!array_key_exists($code, $this->responseFactories)) {
-            throw new \InvalidArgumentException(sprintf('The response code "%d" is not supported', $code));
+        if (!\array_key_exists($code, $this->responseFactories)) {
+            throw new \InvalidArgumentException(\sprintf('The response code "%d" is not supported', $code));
         }
 
         return $this->responseFactories[$code];

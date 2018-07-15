@@ -28,12 +28,12 @@ final class ScopeChecker implements Checker
             return;
         }
 
-        $scopes = explode(' ', $scope);
-        $tokenScope = $token->getAccessToken()->getParameter()->has('scope') ? explode(' ', $token->getAccessToken()->getParameter()->get('scope')) : [];
-        $diff = array_diff($scopes, $tokenScope);
+        $scopes = \explode(' ', $scope);
+        $tokenScope = $token->getAccessToken()->getParameter()->has('scope') ? \explode(' ', $token->getAccessToken()->getParameter()->get('scope')) : [];
+        $diff = \array_diff($scopes, $tokenScope);
 
         if (!empty($diff)) {
-            throw new \Exception(sprintf('Insufficient scope. The required scope is "%s"', $configuration->getScope()));
+            throw new \Exception(\sprintf('Insufficient scope. The required scope is "%s"', $configuration->getScope()));
         }
     }
 }

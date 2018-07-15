@@ -124,7 +124,7 @@ class UserInfoEndpoint implements MiddlewareInterface
 
         $response = $this->responseFactory->createResponse();
         $response->getBody()->write($idToken);
-        $headers = ['Content-Type' => sprintf('application/%s; charset=UTF-8', $isJwt ? 'jwt' : 'json'), 'Cache-Control' => 'no-cache, no-store, max-age=0, must-revalidate, private', 'Pragma' => 'no-cache'];
+        $headers = ['Content-Type' => \sprintf('application/%s; charset=UTF-8', $isJwt ? 'jwt' : 'json'), 'Cache-Control' => 'no-cache, no-store, max-age=0, must-revalidate, private', 'Pragma' => 'no-cache'];
         foreach ($headers as $k => $v) {
             $response = $response->withHeader($k, $v);
         }
@@ -179,7 +179,7 @@ class UserInfoEndpoint implements MiddlewareInterface
         }
 
         $requested_claims = $accessToken->getMetadata()->get('requested_claims');
-        if (true === array_key_exists('userinfo', $requested_claims)) {
+        if (true === \array_key_exists('userinfo', $requested_claims)) {
             return $requested_claims['userinfo'];
         }
 
@@ -239,7 +239,7 @@ class UserInfoEndpoint implements MiddlewareInterface
      */
     private function checkScope(AccessToken $accessToken)
     {
-        if (!$accessToken->getParameter()->has('scope') || !in_array('openid', explode(' ', $accessToken->getParameter()->get('scope')))) {
+        if (!$accessToken->getParameter()->has('scope') || !\in_array('openid', \explode(' ', $accessToken->getParameter()->get('scope')), true)) {
             throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_TOKEN, 'The access token does not contain the "openid" scope.');
         }
     }

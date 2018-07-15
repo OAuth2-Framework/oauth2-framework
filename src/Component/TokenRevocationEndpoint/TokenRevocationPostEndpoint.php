@@ -25,6 +25,6 @@ final class TokenRevocationPostEndpoint extends TokenRevocationEndpoint
     {
         $parameters = RequestBodyParser::parseFormUrlEncoded($request);
 
-        return array_intersect_key($parameters, array_flip(['token', 'token_type_hint']));
+        return \array_intersect_key($parameters, \array_flip(['token', 'token_type_hint']));
     }
 }

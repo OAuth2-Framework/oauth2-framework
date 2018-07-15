@@ -22,8 +22,6 @@ class AccessTokenHandlerManager
 
     /**
      * @param AccessTokenHandler $accessTokenHandler
-     *
-     * @return void
      */
     public function add(AccessTokenHandler $accessTokenHandler): void
     {

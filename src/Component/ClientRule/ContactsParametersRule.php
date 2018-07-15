@@ -25,11 +25,11 @@ final class ContactsParametersRule implements Rule
     {
         if ($commandParameters->has('contacts')) {
             $contacts = $commandParameters->get('contacts');
-            if (!is_array($contacts)) {
+            if (!\is_array($contacts)) {
                 throw new \InvalidArgumentException('The parameter "contacts" must be a list of e-mail addresses.');
             }
-            array_map(function ($contact) {
-                if (!filter_var($contact, FILTER_VALIDATE_EMAIL)) {
+            \array_map(function ($contact) {
+                if (!\filter_var($contact, FILTER_VALIDATE_EMAIL)) {
                     throw new \InvalidArgumentException('The parameter "contacts" must be a list of e-mail addresses.');
                 }
             }, $contacts);

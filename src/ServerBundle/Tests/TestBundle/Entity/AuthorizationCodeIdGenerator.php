@@ -39,7 +39,7 @@ class AuthorizationCodeIdGenerator implements AuthorizationCodeManagerInterface
      */
     public function createAuthorizationCodeId(): AuthorizationCodeId
     {
-        return AuthorizationCodeId::create(bin2hex(random_bytes(32)));
+        return AuthorizationCodeId::create(\bin2hex(\random_bytes(32)));
     }
 
     /**

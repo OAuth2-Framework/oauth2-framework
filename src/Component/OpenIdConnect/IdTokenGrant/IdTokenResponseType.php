@@ -108,8 +108,8 @@ final class IdTokenResponseType implements ResponseType
      */
     public function process(Authorization $authorization): Authorization
     {
-        if ($authorization->hasQueryParam('scope') && in_array('openid', explode(' ', $authorization->getQueryParam('scope')))) {
-            if (!array_key_exists('nonce', $authorization->getQueryParams())) {
+        if ($authorization->hasQueryParam('scope') && \in_array('openid', \explode(' ', $authorization->getQueryParam('scope')), true)) {
+            if (!\array_key_exists('nonce', $authorization->getQueryParams())) {
                 throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, 'The parameter "nonce" is mandatory using "id_token" response type.');
             }
 
@@ -156,7 +156,7 @@ final class IdTokenResponseType implements ResponseType
         }
 
         if ($authorization->hasResponseParameter('expires_in')) {
-            $idTokenBuilder = $idTokenBuilder->withExpirationAt(new \DateTimeImmutable(sprintf('now +%s sec', $authorization->getResponseParameter('expires_in'))));
+            $idTokenBuilder = $idTokenBuilder->withExpirationAt(new \DateTimeImmutable(\sprintf('now +%s sec', $authorization->getResponseParameter('expires_in'))));
         }
 
         if ($authorization->hasQueryParam('max_age')) {
@@ -195,11 +195,11 @@ final class IdTokenResponseType implements ResponseType
         }
 
         $requestedClaims = $authorization->getQueryParam('claims');
-        $requestedClaims = json_decode($requestedClaims, true);
-        if (!is_array($requestedClaims)) {
+        $requestedClaims = \json_decode($requestedClaims, true);
+        if (!\is_array($requestedClaims)) {
             throw new \InvalidArgumentException('Invalid claim request');
         }
-        if (true === array_key_exists('id_token', $requestedClaims)) {
+        if (true === \array_key_exists('id_token', $requestedClaims)) {
             return $requestedClaims['id_token'];
         }
 

@@ -29,7 +29,7 @@ final class MessageFactory implements ResponseFactory
         $body = null === $body ? 'php://memory' : $body;
         $response = new Response($body, $statusCode, $header);
         $response = $response->withProtocolVersion($protocolVersion);
-        if (is_string($reasonPhrase)) {
+        if (\is_string($reasonPhrase)) {
             $response = $response->withStatus($statusCode, $reasonPhrase);
         }
 

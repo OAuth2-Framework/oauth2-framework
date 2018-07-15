@@ -47,6 +47,6 @@ final class TokenRevocationGetEndpoint extends TokenRevocationEndpoint
             $supported_parameters[] = 'callback';
         }
 
-        return array_intersect_key($parameters, array_flip($supported_parameters));
+        return \array_intersect_key($parameters, \array_flip($supported_parameters));
     }
 }

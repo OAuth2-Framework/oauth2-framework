@@ -35,7 +35,7 @@ final class AuthorizationCodeTest extends TestCase
 
         self::assertInstanceOf(AuthorizationCodeId::class, $authorizationCodeId);
         self::assertEquals('AUTHORIZATION_CODE_ID', $authorizationCodeId->getValue());
-        self::assertEquals('"AUTHORIZATION_CODE_ID"', json_encode($authorizationCodeId, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
+        self::assertEquals('"AUTHORIZATION_CODE_ID"', \json_encode($authorizationCodeId, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
     }
 
     /**
@@ -59,7 +59,7 @@ final class AuthorizationCodeTest extends TestCase
         $authorizationCode = $authorizationCode->markAsRevoked();
 
         self::assertInstanceOf(AuthorizationCode::class, $authorizationCode);
-        self::assertEquals('{"$schema":"https://oauth2-framework.spomky-labs.com/schemas/model/authorization-code/1.0/schema","type":"OAuth2Framework\\\\Component\\\\AuthorizationCodeGrant\\\\AuthorizationCode","expires_at":1264683600,"client_id":"CLIENT_ID","parameters":{},"metadatas":{},"is_revoked":true,"resource_owner_id":"USER_ACCOUNT_ID","resource_owner_class":"OAuth2Framework\\\\Component\\\\Core\\\\UserAccount\\\\UserAccountId","resource_server_id":"RESOURCE_SERVER_ID","auth_code_id":"AUTHORIZATION_CODE_ID","query_parameters":{},"redirect_uri":"http://localhost","is_used":true}', json_encode($authorizationCode, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+        self::assertEquals('{"$schema":"https://oauth2-framework.spomky-labs.com/schemas/model/authorization-code/1.0/schema","type":"OAuth2Framework\\\\Component\\\\AuthorizationCodeGrant\\\\AuthorizationCode","expires_at":1264683600,"client_id":"CLIENT_ID","parameters":{},"metadatas":{},"is_revoked":true,"resource_owner_id":"USER_ACCOUNT_ID","resource_owner_class":"OAuth2Framework\\\\Component\\\\Core\\\\UserAccount\\\\UserAccountId","resource_server_id":"RESOURCE_SERVER_ID","auth_code_id":"AUTHORIZATION_CODE_ID","query_parameters":{},"redirect_uri":"http://localhost","is_used":true}', \json_encode($authorizationCode, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
         self::assertEquals('AUTHORIZATION_CODE_ID', $authorizationCode->getTokenId()->getValue());
     }
 }

@@ -37,7 +37,7 @@ class ScopeRepository implements ScopeRepositoryInterface
      */
     public function has(string $scope): bool
     {
-        return array_key_exists($scope, $this->scopes);
+        return \array_key_exists($scope, $this->scopes);
     }
 
     /**
@@ -46,7 +46,7 @@ class ScopeRepository implements ScopeRepositoryInterface
     public function get(string $scope): ScopeInterface
     {
         if (!$this->has($scope)) {
-            throw new \InvalidArgumentException(sprintf('The scope "%s" is not supported.', $scope));
+            throw new \InvalidArgumentException(\sprintf('The scope "%s" is not supported.', $scope));
         }
 
         return $this->scopes[$scope];
@@ -57,6 +57,6 @@ class ScopeRepository implements ScopeRepositoryInterface
      */
     public function all(): array
     {
-        return array_values($this->scopes);
+        return \array_values($this->scopes);
     }
 }

@@ -40,7 +40,7 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
      */
     public function find(RefreshTokenId $refreshTokenId)
     {
-        return array_key_exists($refreshTokenId->getValue(), $this->refreshTokens) ? $this->refreshTokens[$refreshTokenId->getValue()] : null;
+        return \array_key_exists($refreshTokenId->getValue(), $this->refreshTokens) ? $this->refreshTokens[$refreshTokenId->getValue()] : null;
     }
 
     /**

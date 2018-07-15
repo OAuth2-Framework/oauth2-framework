@@ -40,11 +40,11 @@ final class ScopePolicyRule implements Rule
     {
         if ($commandParameters->has('scope_policy')) {
             $policy = $commandParameters->get('scope_policy');
-            if (!is_string($policy)) {
+            if (!\is_string($policy)) {
                 throw new \InvalidArgumentException('The parameter "scope_policy" must be a string.');
             }
             if (!$this->scopePolicyManager->has($policy)) {
-                throw new \InvalidArgumentException(sprintf('The scope policy "%s" is not supported.', $policy));
+                throw new \InvalidArgumentException(\sprintf('The scope policy "%s" is not supported.', $policy));
             }
             $validatedParameters->with('scope_policy', $commandParameters->get('scope_policy'));
         }

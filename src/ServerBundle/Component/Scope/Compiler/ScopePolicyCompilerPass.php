@@ -37,8 +37,8 @@ class ScopePolicyCompilerPass implements CompilerPassInterface
         $policy_names = [];
         foreach ($taggedServices as $id => $tags) {
             foreach ($tags as $attributes) {
-                if (!array_key_exists('policy_name', $attributes)) {
-                    throw new \InvalidArgumentException(sprintf('The scope policy "%s" does not have any "policy_name" attribute.', $id));
+                if (!\array_key_exists('policy_name', $attributes)) {
+                    throw new \InvalidArgumentException(\sprintf('The scope policy "%s" does not have any "policy_name" attribute.', $id));
                 }
                 $is_default = $default === $attributes['policy_name'];
                 $policy_names[] = $attributes['policy_name'];
@@ -50,7 +50,7 @@ class ScopePolicyCompilerPass implements CompilerPassInterface
         }
 
         if (!$default_found) {
-            throw new \InvalidArgumentException(sprintf('Unable to find the scope policy "%s". Available policies are: %s.', $default, implode(', ', $policy_names)));
+            throw new \InvalidArgumentException(\sprintf('Unable to find the scope policy "%s". Available policies are: %s.', $default, \implode(', ', $policy_names)));
         }
     }
 }

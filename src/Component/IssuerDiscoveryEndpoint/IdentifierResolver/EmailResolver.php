@@ -35,7 +35,7 @@ final class EmailResolver implements IdentifierResolver
     public function resolve(string $resource_name): Identifier
     {
         $uri = parse('http://'.$resource_name);
-        if (!is_string($uri['user']) || !is_string($uri['host'])) {
+        if (!\is_string($uri['user']) || !\is_string($uri['host'])) {
             throw new \InvalidArgumentException('Invalid resource.');
         }
 

@@ -36,7 +36,7 @@ class ClientConfigurationSource implements Component
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        if (!class_exists(ClientConfigurationEndpoint::class)) {
+        if (!\class_exists(ClientConfigurationEndpoint::class)) {
             return;
         }
         $config = $configs['endpoint']['client_configuration'];
@@ -57,7 +57,7 @@ class ClientConfigurationSource implements Component
      */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
-        if (!class_exists(ClientConfigurationEndpoint::class)) {
+        if (!\class_exists(ClientConfigurationEndpoint::class)) {
             return;
         }
         $node->children()
@@ -92,7 +92,7 @@ class ClientConfigurationSource implements Component
      */
     public function build(ContainerBuilder $container)
     {
-        if (!class_exists(ClientConfigurationEndpoint::class)) {
+        if (!\class_exists(ClientConfigurationEndpoint::class)) {
             return;
         }
         $container->addCompilerPass(new ClientConfigurationEndpointRouteCompilerPass());
@@ -103,7 +103,7 @@ class ClientConfigurationSource implements Component
      */
     public function prepend(ContainerBuilder $container, array $config): array
     {
-        if (!class_exists(ClientConfigurationEndpoint::class)) {
+        if (!\class_exists(ClientConfigurationEndpoint::class)) {
             return [];
         }
 

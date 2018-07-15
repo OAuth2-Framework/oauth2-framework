@@ -44,7 +44,7 @@ final class TokenEndpointScopeExtensionTest extends TestCase
      */
     protected function setUp()
     {
-        if (!class_exists(TokenEndpoint::class)) {
+        if (!\class_exists(TokenEndpoint::class)) {
             $this->markTestSkipped('The component "oauth2-framework/token-endpoint" is not installed.');
         }
     }
@@ -157,7 +157,7 @@ final class TokenEndpointScopeExtensionTest extends TestCase
         };
 
         $result = $this->getExtension()->afterAccessTokenIssuance($client, $client, $accessToken, $next);
-        self::assertEquals(2, count($result));
+        self::assertEquals(2, \count($result));
     }
 
     /**
@@ -198,7 +198,7 @@ final class TokenEndpointScopeExtensionTest extends TestCase
     private function buildRequest(array $data): ObjectProphecy
     {
         $body = $this->prophesize(StreamInterface::class);
-        $body->getContents()->willReturn(http_build_query($data));
+        $body->getContents()->willReturn(\http_build_query($data));
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->hasHeader('Content-Type')->willReturn(true);
         $request->getHeader('Content-Type')->willReturn(['application/x-www-form-urlencoded']);

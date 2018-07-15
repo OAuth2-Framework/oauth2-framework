@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * The MIT License (MIT)
  *
@@ -21,9 +23,9 @@ class Checker
      */
     public static function checkUsedOnce(string $scope, string $scopes)
     {
-        $scopes = explode(' ', $scopes);
-        if (1 < count(array_keys($scopes, $scope))) {
-            throw new \InvalidArgumentException(sprintf('Scope "%s" appears more than once.', $scope));
+        $scopes = \explode(' ', $scopes);
+        if (1 < \count(\array_keys($scopes, $scope, true))) {
+            throw new \InvalidArgumentException(\sprintf('Scope "%s" appears more than once.', $scope));
         }
     }
 
@@ -34,7 +36,7 @@ class Checker
      */
     public static function checkCharset(string $scope)
     {
-        if (1 !== preg_match('/^[\x20\x23-\x5B\x5D-\x7E]+$/', $scope)) {
+        if (1 !== \preg_match('/^[\x20\x23-\x5B\x5D-\x7E]+$/', $scope)) {
             throw new \InvalidArgumentException('Scope contains illegal characters.');
         }
     }
