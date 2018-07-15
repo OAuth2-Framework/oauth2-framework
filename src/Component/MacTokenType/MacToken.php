@@ -213,7 +213,7 @@ abstract class MacToken implements TokenType
 
             $values = [];
             foreach ($matches as $match) {
-                $values[$match[1]] = isset($match[4]) ? $match[4] : $match[3];
+                $values[$match[1]] = $match[4] ?? $match[3];
             }
 
             if (\array_key_exists('id', $values)) {

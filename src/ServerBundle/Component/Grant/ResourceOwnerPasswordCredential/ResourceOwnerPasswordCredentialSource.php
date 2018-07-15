@@ -52,9 +52,9 @@ class ResourceOwnerPasswordCredentialSource implements Component
         }
         $node->children()
             ->arrayNode('resource_owner_password_credential')
-                ->canBeEnabled()
+            ->canBeEnabled()
             ->end()
-        ->end();
+            ->end();
     }
 
     /**

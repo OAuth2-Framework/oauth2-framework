@@ -51,19 +51,19 @@ class ClientSource implements Component
     {
         $node->children()
             ->arrayNode($this->name())
-                ->addDefaultsIfNotSet()
-                ->children()
-                    ->scalarNode('repository')
-                        ->info('The client repository service')
-                        ->isRequired()
-                    ->end()
-                    ->scalarNode('id_generator')
-                        ->info('The client ID generator service')
-                        ->defaultValue(RandomClientIdGenerator::class)
-                    ->end()
-                ->end()
+            ->addDefaultsIfNotSet()
+            ->children()
+            ->scalarNode('repository')
+            ->info('The client repository service')
+            ->isRequired()
             ->end()
-        ->end();
+            ->scalarNode('id_generator')
+            ->info('The client ID generator service')
+            ->defaultValue(RandomClientIdGenerator::class)
+            ->end()
+            ->end()
+            ->end()
+            ->end();
     }
 
     /**

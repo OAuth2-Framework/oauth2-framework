@@ -25,7 +25,7 @@ final class RandomAccessTokenIdGenerator implements AccessTokenIdGenerator
     /**
      * {@inheritdoc}
      */
-    public function createAccessTokenId(ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, ? ResourceServerId $resourceServerId): AccessTokenId
+    public function createAccessTokenId(ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, ?ResourceServerId $resourceServerId): AccessTokenId
     {
         $value = \bin2hex(\random_bytes(32));
 

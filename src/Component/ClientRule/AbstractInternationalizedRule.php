@@ -24,7 +24,7 @@ abstract class AbstractInternationalizedRule implements Rule
      *
      * @return array
      */
-    protected function getInternationalizedParameters(DataBag $requestedParameters, string $base, ? \Closure $closure): array
+    protected function getInternationalizedParameters(DataBag $requestedParameters, string $base, ?\Closure $closure): array
     {
         $result = [];
         foreach ($requestedParameters->all() as $k => $v) {

@@ -40,8 +40,8 @@ class KeySet implements Component
         $node
             ->addDefaultsIfNotSet()
             ->children()
-                ->scalarNode('signature')->defaultNull()->end()
-                ->scalarNode('encryption')->defaultNull()->end()
+            ->scalarNode('signature')->defaultNull()->end()
+            ->scalarNode('encryption')->defaultNull()->end()
             ->end();
     }
 

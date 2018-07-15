@@ -56,15 +56,15 @@ class ResourceServerSource implements Component
     {
         $node->children()
             ->arrayNode($this->name())
-                ->addDefaultsIfNotSet()
-                ->children()
-                    ->scalarNode('repository')
-                        ->info('The resource server repository service')
-                        ->defaultNull()
-                    ->end()
-                ->end()
+            ->addDefaultsIfNotSet()
+            ->children()
+            ->scalarNode('repository')
+            ->info('The resource server repository service')
+            ->defaultNull()
             ->end()
-        ->end();
+            ->end()
+            ->end()
+            ->end();
     }
 
     /**

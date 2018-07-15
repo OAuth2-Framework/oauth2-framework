@@ -82,7 +82,7 @@ class AuthorizationCodeCreatedEvent extends Event
      * @param DataBag               $metadatas
      * @param ResourceServerId|null $resourceServerId
      */
-    protected function __construct(AuthorizationCodeId $authorizationCodeId, ClientId $clientId, UserAccountId $userAccountId, array $queryParameters, string $redirectUri, \DateTimeImmutable $expiresAt, DataBag $parameters, DataBag $metadatas, ? ResourceServerId $resourceServerId)
+    protected function __construct(AuthorizationCodeId $authorizationCodeId, ClientId $clientId, UserAccountId $userAccountId, array $queryParameters, string $redirectUri, \DateTimeImmutable $expiresAt, DataBag $parameters, DataBag $metadatas, ?ResourceServerId $resourceServerId)
     {
         $this->authorizationCodeId = $authorizationCodeId;
         $this->userAccountId = $userAccountId;
@@ -116,7 +116,7 @@ class AuthorizationCodeCreatedEvent extends Event
      *
      * @return AuthorizationCodeCreatedEvent
      */
-    public static function create(AuthorizationCodeId $authorizationCodeId, ClientId $clientId, UserAccountId $userAccountId, array $queryParameters, string $redirectUri, \DateTimeImmutable $expiresAt, DataBag $parameters, DataBag $metadatas, ? ResourceServerId $resourceServerId): self
+    public static function create(AuthorizationCodeId $authorizationCodeId, ClientId $clientId, UserAccountId $userAccountId, array $queryParameters, string $redirectUri, \DateTimeImmutable $expiresAt, DataBag $parameters, DataBag $metadatas, ?ResourceServerId $resourceServerId): self
     {
         return new self($authorizationCodeId, $clientId, $userAccountId, $queryParameters, $redirectUri, $expiresAt, $parameters, $metadatas, $resourceServerId);
     }
@@ -188,7 +188,7 @@ class AuthorizationCodeCreatedEvent extends Event
     /**
      * @return ResourceServerId|null
      */
-    public function getResourceServerId(): ? ResourceServerId
+    public function getResourceServerId(): ?ResourceServerId
     {
         return $this->resourceServerId;
     }

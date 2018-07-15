@@ -23,7 +23,7 @@ class ResourceServerRepository implements ResourceServerRepositoryInterface
     /**
      * {@inheritdoc}
      */
-    public function find(ResourceServerId $resourceServerId): ? ResourceServerInterface
+    public function find(ResourceServerId $resourceServerId): ?ResourceServerInterface
     {
         if ('http://foo.com' === $resourceServerId->getValue()) {
             return new ResourceServer($resourceServerId);

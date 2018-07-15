@@ -63,7 +63,7 @@ final class EncryptedSubjectIdentifier implements PairwiseSubjectIdentifierAlgor
     /**
      * {@inheritdoc}
      */
-    public function getPublicIdFromSubjectIdentifier(string $subjectIdentifier): ? string
+    public function getPublicIdFromSubjectIdentifier(string $subjectIdentifier): ?string
     {
         $data = \explode(':', $subjectIdentifier);
         if (2 !== \count($data)) {

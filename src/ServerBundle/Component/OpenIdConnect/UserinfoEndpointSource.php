@@ -72,17 +72,17 @@ class UserinfoEndpointSource implements Component
     {
         $childNode = $node->children()
             ->arrayNode($this->name())
-                ->canBeEnabled();
+            ->canBeEnabled();
 
         $childNode->children()
             ->scalarNode('path')
-                ->info('Path to the userinfo endpoint.')
-                ->defaultValue('/userinfo')
+            ->info('Path to the userinfo endpoint.')
+            ->defaultValue('/userinfo')
             ->end()
             ->scalarNode('host')
-                ->defaultValue('')
+            ->defaultValue('')
             ->end()
-        ->end();
+            ->end();
 
         foreach ($this->subComponents as $subComponent) {
             $subComponent->getNodeDefinition($childNode, $node);

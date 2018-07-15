@@ -81,20 +81,20 @@ class ClientRegistrationSource implements Component
         }
         $childNode = $node->children()
             ->arrayNode($this->name())
-                ->canBeEnabled();
+            ->canBeEnabled();
 
         $childNode->children()
             ->scalarNode('path')
-                ->defaultValue('/client/management')
-                ->isRequired()
+            ->defaultValue('/client/management')
+            ->isRequired()
             ->end()
             ->scalarNode('host')
-                ->info('If set, the route will be limited to that host')
-                ->defaultValue('')
-                ->treatFalseLike('')
-                ->treatNullLike('')
+            ->info('If set, the route will be limited to that host')
+            ->defaultValue('')
+            ->treatFalseLike('')
+            ->treatNullLike('')
             ->end()
-        ->end();
+            ->end();
 
         foreach ($this->subComponents as $subComponent) {
             $subComponent->getNodeDefinition($childNode, $node);

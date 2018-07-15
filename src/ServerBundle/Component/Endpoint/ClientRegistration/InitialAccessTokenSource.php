@@ -59,42 +59,42 @@ class InitialAccessTokenSource implements Component
             ->arrayNode($this->name())
             ->canBeEnabled()
             ->validate()
-                ->ifTrue(function ($config) {
-                    return true === $config['enabled'] && empty($config['realm']);
-                })
+            ->ifTrue(function ($config) {
+                return true === $config['enabled'] && empty($config['realm']);
+            })
                 ->thenInvalid('The option "realm" must be set.')
-            ->end()
-            ->validate()
+                ->end()
+                ->validate()
                 ->ifTrue(function ($config) {
                     return true === $config['enabled'] && empty($config['repository']);
                 })
                 ->thenInvalid('The option "repository" must be set.')
-            ->end()
-            ->validate()
+                ->end()
+                ->validate()
                 ->ifTrue(function ($config) {
                     return true === $config['enabled'] && $config['max_length'] < $config['min_length'];
                 })
                 ->thenInvalid('The option "max_length" must be greater than "min_length".')
-            ->end()
-            ->children()
+                ->end()
+                ->children()
                 ->booleanNode('required')
-                    ->defaultFalse()
+                ->defaultFalse()
                 ->end()
                 ->scalarNode('realm')
-                    ->defaultNull()
+                ->defaultNull()
                 ->end()
                 ->integerNode('min_length')
-                    ->defaultValue(50)
-                    ->min(0)
+                ->defaultValue(50)
+                ->min(0)
                 ->end()
                 ->integerNode('max_length')
-                    ->defaultValue(100)
-                    ->min(1)
+                ->defaultValue(100)
+                ->min(1)
                 ->end()
                 ->scalarNode('repository')
-                    ->defaultNull()
+                ->defaultNull()
                 ->end()
-            ->end();
+                ->end();
     }
 
     /**

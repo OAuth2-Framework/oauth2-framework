@@ -74,7 +74,7 @@ class AuthorizationCode extends Token
      *
      * @return AuthorizationCode
      */
-    public function create(AuthorizationCodeId $authorizationCodeId, ClientId $clientId, UserAccountId $userAccountId, array $queryParameters, string $redirectUri, \DateTimeImmutable $expiresAt, DataBag $parameters, DataBag $metadatas, ? ResourceServerId $resourceServerId)
+    public function create(AuthorizationCodeId $authorizationCodeId, ClientId $clientId, UserAccountId $userAccountId, array $queryParameters, string $redirectUri, \DateTimeImmutable $expiresAt, DataBag $parameters, DataBag $metadatas, ?ResourceServerId $resourceServerId)
     {
         $clone = clone $this;
         $clone->authorizationCodeId = $authorizationCodeId;
@@ -146,7 +146,7 @@ class AuthorizationCode extends Token
         }
         $clone = clone $this;
         $clone->used = true;
-        $event = AuthorizationCodeEvent\AuthorizationCodeMarkedAsUsedEvent::create($clone->getTokenId());
+        $event = AuthorizationCodeEvent\AuthorizationCodeMarkedAsUsedEvent::create($clone->getAuthorizationCodeId());
         $clone->record($event);
 
         return $clone;
@@ -159,7 +159,7 @@ class AuthorizationCode extends Token
     {
         $clone = clone $this;
         $clone->revoked = true;
-        $event = AuthorizationCodeEvent\AuthorizationCodeRevokedEvent::create($clone->getTokenId());
+        $event = AuthorizationCodeEvent\AuthorizationCodeRevokedEvent::create($clone->getAuthorizationCodeId());
         $clone->record($event);
 
         return $clone;

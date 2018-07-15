@@ -44,7 +44,7 @@ class GrantTypeData
      *
      * @param Client|null $client
      */
-    private function __construct(? Client $client)
+    private function __construct(?Client $client)
     {
         $this->parameters = DataBag::create([]);
         $this->metadatas = DataBag::create([]);
@@ -56,7 +56,7 @@ class GrantTypeData
      *
      * @return GrantTypeData
      */
-    public static function create(? Client $client): self
+    public static function create(?Client $client): self
     {
         return new self($client);
     }
@@ -92,7 +92,7 @@ class GrantTypeData
     /**
      * @return Client|null
      */
-    public function getClient(): ? Client
+    public function getClient(): ?Client
     {
         return $this->client;
     }

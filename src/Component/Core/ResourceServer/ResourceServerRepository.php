@@ -22,7 +22,7 @@ interface ResourceServerRepository
      *
      * @return ResourceServer|null Return the resource server or null if the argument is not a valid resource server ID
      */
-    public function find(ResourceServerId $resourceServerId): ? ResourceServer;
+    public function find(ResourceServerId $resourceServerId): ?ResourceServer;
 
     /**
      * @param ResourceId $resourceId

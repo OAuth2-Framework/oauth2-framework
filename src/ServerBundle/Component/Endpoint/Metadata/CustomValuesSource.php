@@ -43,13 +43,13 @@ class CustomValuesSource implements Component
     {
         $node->children()
             ->arrayNode('custom_values')
-                ->info('Custom values added to the metadata response.')
-                ->useAttributeAsKey('name')
-                ->variablePrototype()->end()
-                ->treatNullLike([])
-                ->treatFalseLike([])
+            ->info('Custom values added to the metadata response.')
+            ->useAttributeAsKey('name')
+            ->variablePrototype()->end()
+            ->treatNullLike([])
+            ->treatFalseLike([])
             ->end()
-        ->end();
+            ->end();
     }
 
     /**

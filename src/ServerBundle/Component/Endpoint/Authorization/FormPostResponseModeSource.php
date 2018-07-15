@@ -51,15 +51,15 @@ class FormPostResponseModeSource implements Component
     {
         $node->children()
             ->arrayNode($this->name())
-                ->canBeEnabled()
-                ->children()
-                    ->scalarNode('template')
-                        ->info('The template used to render the form.')
-                        ->defaultValue('@OAuth2FrameworkServerBundle/form_post/response.html.twig')
-                    ->end()
-                ->end()
+            ->canBeEnabled()
+            ->children()
+            ->scalarNode('template')
+            ->info('The template used to render the form.')
+            ->defaultValue('@OAuth2FrameworkServerBundle/form_post/response.html.twig')
             ->end()
-        ->end();
+            ->end()
+            ->end()
+            ->end();
     }
 
     /**

@@ -170,7 +170,7 @@ class ClientAssertionJwt implements AuthenticationMethod
     /**
      * {@inheritdoc}
      */
-    public function findClientIdAndCredentials(ServerRequestInterface $request, &$clientCredentials = null): ? ClientId
+    public function findClientIdAndCredentials(ServerRequestInterface $request, &$clientCredentials = null): ?ClientId
     {
         $parameters = RequestBodyParser::parseFormUrlEncoded($request);
         if (!\array_key_exists('client_assertion_type', $parameters)) {

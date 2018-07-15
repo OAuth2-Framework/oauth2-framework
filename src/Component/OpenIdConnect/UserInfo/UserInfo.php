@@ -66,7 +66,7 @@ class UserInfo
      *
      * @return array
      */
-    public function getUserinfo(Client $client, UserAccount $userAccount, string $redirectUri, array $requestedClaims, string $scope, ? string $claimsLocales): array
+    public function getUserinfo(Client $client, UserAccount $userAccount, string $redirectUri, array $requestedClaims, string $scope, ?string $claimsLocales): array
     {
         $requestedClaims = \array_merge(
             $this->getClaimsFromClaimScope($scope),
@@ -186,7 +186,7 @@ class UserInfo
     /**
      * @return PairwiseSubjectIdentifierAlgorithm|null
      */
-    public function getPairwiseSubjectIdentifierAlgorithm(): ? PairwiseSubjectIdentifierAlgorithm
+    public function getPairwiseSubjectIdentifierAlgorithm(): ?PairwiseSubjectIdentifierAlgorithm
     {
         return $this->pairwiseAlgorithm;
     }

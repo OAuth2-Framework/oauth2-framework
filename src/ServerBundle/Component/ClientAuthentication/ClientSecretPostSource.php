@@ -49,16 +49,16 @@ class ClientSecretPostSource implements Component
     {
         $node->children()
             ->arrayNode($this->name())
-                ->canBeEnabled()
-                ->children()
-                    ->integerNode('secret_lifetime')
-                        ->defaultValue(60 * 60 * 24 * 14) // 14 days
-                        ->min(0)
-                        ->info('Secret lifetime (in seconds; 0 = unlimited)')
-                    ->end()
-                ->end()
+            ->canBeEnabled()
+            ->children()
+            ->integerNode('secret_lifetime')
+            ->defaultValue(60 * 60 * 24 * 14) // 14 days
+            ->min(0)
+            ->info('Secret lifetime (in seconds; 0 = unlimited)')
             ->end()
-        ->end();
+            ->end()
+            ->end()
+            ->end();
     }
 
     /**

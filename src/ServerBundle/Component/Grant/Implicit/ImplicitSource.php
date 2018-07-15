@@ -54,9 +54,9 @@ class ImplicitSource implements Component
 
         $node->children()
             ->arrayNode('implicit')
-                ->canBeEnabled()
+            ->canBeEnabled()
             ->end()
-        ->end();
+            ->end();
     }
 
     /**

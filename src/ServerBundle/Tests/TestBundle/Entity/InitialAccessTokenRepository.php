@@ -32,7 +32,7 @@ class InitialAccessTokenRepository implements \OAuth2Framework\Component\ClientR
     /**
      * {@inheritdoc}
      */
-    public function find(InitialAccessTokenId $initialAccessTokenId): ? InitialAccessToken
+    public function find(InitialAccessTokenId $initialAccessTokenId): ?InitialAccessToken
     {
         return \array_key_exists($initialAccessTokenId->getValue(), $this->initialAccessTokens) ? $this->initialAccessTokens[$initialAccessTokenId->getValue()] : null;
     }

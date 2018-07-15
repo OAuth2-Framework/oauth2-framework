@@ -59,7 +59,7 @@ class InitialAccessToken implements ContainsRecordedMessages, DomainObject
      *
      * @return InitialAccessToken
      */
-    public function create(InitialAccessTokenId $initialAccessTokenId, UserAccountId $userAccountId, ? \DateTimeImmutable $expiresAt): self
+    public function create(InitialAccessTokenId $initialAccessTokenId, UserAccountId $userAccountId, ?\DateTimeImmutable $expiresAt): self
     {
         $clone = clone $this;
         $clone->initialAccessTokenId = $initialAccessTokenId;
@@ -99,7 +99,7 @@ class InitialAccessToken implements ContainsRecordedMessages, DomainObject
     /**
      * @return \DateTimeImmutable|null
      */
-    public function getExpiresAt(): ? \DateTimeImmutable
+    public function getExpiresAt(): ?\DateTimeImmutable
     {
         return $this->expiresAt;
     }

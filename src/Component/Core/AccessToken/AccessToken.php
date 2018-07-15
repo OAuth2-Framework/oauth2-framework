@@ -57,7 +57,7 @@ class AccessToken extends Token
      *
      * @return AccessToken
      */
-    public function create(AccessTokenId $accessTokenId, ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, \DateTimeImmutable $expiresAt, ? ResourceServerId $resourceServerId)
+    public function create(AccessTokenId $accessTokenId, ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, \DateTimeImmutable $expiresAt, ?ResourceServerId $resourceServerId)
     {
         $clone = clone $this;
         $clone->accessTokenId = $accessTokenId;
@@ -106,7 +106,7 @@ class AccessToken extends Token
     {
         $clone = clone $this;
         $clone->revoked = true;
-        $event = AccessTokenEvent\AccessTokenRevokedEvent::create($clone->getTokenId());
+        $event = AccessTokenEvent\AccessTokenRevokedEvent::create($clone->getAccessTokenId());
         $clone->record($event);
 
         return $clone;

@@ -176,7 +176,7 @@ class Authorization
     /**
      * @return null|TokenType
      */
-    public function getTokenType(): ? TokenType
+    public function getTokenType(): ?TokenType
     {
         return $this->tokenType;
     }
@@ -216,7 +216,7 @@ class Authorization
     /**
      * @return null|ResponseMode
      */
-    public function getResponseMode(): ? ResponseMode
+    public function getResponseMode(): ?ResponseMode
     {
         return $this->responseMode;
     }
@@ -249,7 +249,7 @@ class Authorization
     /**
      * @return null|string
      */
-    public function getRedirectUri(): ? string
+    public function getRedirectUri(): ?string
     {
         return $this->redirectUri;
     }
@@ -271,7 +271,7 @@ class Authorization
     /**
      * @return null|UserAccount
      */
-    public function getUserAccount(): ? UserAccount
+    public function getUserAccount(): ?UserAccount
     {
         return $this->userAccount;
     }
@@ -345,7 +345,7 @@ class Authorization
     /**
      * @return bool|null
      */
-    public function isUserAccountFullyAuthenticated(): ? bool
+    public function isUserAccountFullyAuthenticated(): ?bool
     {
         return $this->userAccountFullyAuthenticated;
     }
@@ -456,7 +456,7 @@ class Authorization
     /**
      * @return null|ResourceServer
      */
-    public function getResourceServer(): ? ResourceServer
+    public function getResourceServer(): ?ResourceServer
     {
         return $this->resourceServer;
     }

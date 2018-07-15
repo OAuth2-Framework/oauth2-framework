@@ -44,7 +44,7 @@ class ClientCreatedEvent extends Event
      * @param DataBag            $parameters
      * @param UserAccountId|null $userAccountId
      */
-    protected function __construct(ClientId $clientId, DataBag $parameters, ? UserAccountId $userAccountId)
+    protected function __construct(ClientId $clientId, DataBag $parameters, ?UserAccountId $userAccountId)
     {
         $this->clientId = $clientId;
         $this->parameters = $parameters;
@@ -58,7 +58,7 @@ class ClientCreatedEvent extends Event
      *
      * @return ClientCreatedEvent
      */
-    public static function create(ClientId $clientId, DataBag $parameters, ? UserAccountId $userAccountId): self
+    public static function create(ClientId $clientId, DataBag $parameters, ?UserAccountId $userAccountId): self
     {
         return new self($clientId, $parameters, $userAccountId);
     }
@@ -125,7 +125,7 @@ class ClientCreatedEvent extends Event
     /**
      * @return null|UserAccountId
      */
-    public function getOwnerId(): ? UserAccountId
+    public function getOwnerId(): ?UserAccountId
     {
         return $this->userAccountId;
     }

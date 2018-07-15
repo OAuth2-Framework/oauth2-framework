@@ -48,10 +48,10 @@ class NoneSource implements Component
     {
         $node->children()
             ->arrayNode($this->name())
-                ->info('The "none" authentication method is designed for public clients')
-                ->canBeEnabled()
+            ->info('The "none" authentication method is designed for public clients')
+            ->canBeEnabled()
             ->end()
-        ->end();
+            ->end();
     }
 
     /**

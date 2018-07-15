@@ -60,7 +60,7 @@ final class ClientSecretBasic implements AuthenticationMethod
     /**
      * {@inheritdoc}
      */
-    public function findClientIdAndCredentials(ServerRequestInterface $request, &$client_credentials = null): ? ClientId
+    public function findClientIdAndCredentials(ServerRequestInterface $request, &$client_credentials = null): ?ClientId
     {
         $authorization_headers = $request->getHeader('Authorization');
         if (0 < \count($authorization_headers)) {

@@ -28,5 +28,5 @@ interface InitialAccessTokenRepository
      *
      * @return InitialAccessToken|null Return the initial access token or null if the argument is not a valid initial access token
      */
-    public function find(InitialAccessTokenId $initialAccessTokenId): ? InitialAccessToken;
+    public function find(InitialAccessTokenId $initialAccessTokenId): ?InitialAccessToken;
 }

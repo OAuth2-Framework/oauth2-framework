@@ -146,7 +146,7 @@ abstract class Token implements \JsonSerializable, ContainsRecordedMessages, Dom
     /**
      * @return null|ResourceServerId
      */
-    public function getResourceServerId(): ? ResourceServerId
+    public function getResourceServerId(): ?ResourceServerId
     {
         return $this->resourceServerId;
     }

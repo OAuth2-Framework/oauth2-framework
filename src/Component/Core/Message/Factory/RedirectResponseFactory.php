@@ -43,8 +43,7 @@ final class RedirectResponseFactory implements ResponseFactory
         /** @var string $redirectUri */
         $redirectUri = $data['redirect_uri'];
 
-        unset($data['response_mode']);
-        unset($data['redirect_uri']);
+        unset($data['response_mode'], $data['redirect_uri']);
 
         $response = $responseMode->buildResponse($response, $redirectUri, $data);
 

@@ -66,15 +66,15 @@ class ResponseModeSource implements Component
     {
         $childNode = $node->children()
             ->arrayNode($this->name())
-                ->addDefaultsIfNotSet()
-                ->treatFalseLike([])
-                ->treatNullLike([]);
+            ->addDefaultsIfNotSet()
+            ->treatFalseLike([])
+            ->treatNullLike([]);
 
         $childNode->children()
             ->booleanNode('allow_response_mode_parameter')
-                ->defaultFalse()
+            ->defaultFalse()
             ->end()
-        ->end();
+            ->end();
 
         foreach ($this->subComponents as $subComponent) {
             $subComponent->getNodeDefinition($childNode, $node);

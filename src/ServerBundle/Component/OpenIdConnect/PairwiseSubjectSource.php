@@ -48,19 +48,19 @@ class PairwiseSubjectSource implements Component
     {
         $node->children()
             ->arrayNode($this->name())
-                ->canBeEnabled()
-                ->validate()
-                    ->ifTrue(function ($config) {
-                        return true === $config['enabled'] && empty($config['service']);
-                    })
-                    ->thenInvalid('The pairwise subject service must be set.')
-                ->end()
-                ->children()
-                    ->scalarNode('service')
-                    ->end()
-                ->end()
+            ->canBeEnabled()
+            ->validate()
+            ->ifTrue(function ($config) {
+                return true === $config['enabled'] && empty($config['service']);
+            })
+            ->thenInvalid('The pairwise subject service must be set.')
             ->end()
-        ->end();
+            ->children()
+            ->scalarNode('service')
+            ->end()
+            ->end()
+            ->end()
+            ->end();
     }
 
     /**

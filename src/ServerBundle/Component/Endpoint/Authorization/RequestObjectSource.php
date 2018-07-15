@@ -69,17 +69,17 @@ class RequestObjectSource implements Component
     {
         $childNode = $node->children()
             ->arrayNode($this->name())
-                ->canBeEnabled()
+            ->canBeEnabled()
         ;
 
         $childNode->children()
             ->arrayNode('signature_algorithms')
-                ->info('Supported signature algorithms.')
-                ->useAttributeAsKey('name')
-                ->scalarPrototype()->end()
-                ->treatNullLike([])
+            ->info('Supported signature algorithms.')
+            ->useAttributeAsKey('name')
+            ->scalarPrototype()->end()
+            ->treatNullLike([])
             ->end()
-        ->end();
+            ->end();
 
         foreach ($this->subComponents as $subComponent) {
             $subComponent->getNodeDefinition($childNode, $node);

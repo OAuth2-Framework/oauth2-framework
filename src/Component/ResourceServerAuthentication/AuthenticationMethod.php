@@ -33,7 +33,7 @@ interface AuthenticationMethod
      *
      * @return null|ResourceServerId Return the  resource server public ID if found else null. If credentials have are needed to authenticate the ResourceServer, they are set to the variable $resourceServerCredentials
      */
-    public function findResourceServerIdAndCredentials(ServerRequestInterface $request, &$resourceServerCredentials = null): ? ResourceServerId;
+    public function findResourceServerIdAndCredentials(ServerRequestInterface $request, &$resourceServerCredentials = null): ?ResourceServerId;
 
     /**
      * This method verifies the ResourceServer credentials in the request.

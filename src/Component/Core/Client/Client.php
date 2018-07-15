@@ -85,7 +85,7 @@ class Client implements ResourceOwner, ContainsRecordedMessages, DomainObject
      *
      * @return Client
      */
-    public function create(ClientId $clientId, DataBag $parameters, ? UserAccountId $ownerId): self
+    public function create(ClientId $clientId, DataBag $parameters, ?UserAccountId $ownerId): self
     {
         $clone = clone $this;
         $clone->clientId = $clientId;
@@ -114,7 +114,7 @@ class Client implements ResourceOwner, ContainsRecordedMessages, DomainObject
     /**
      * @return UserAccountId|null
      */
-    public function getOwnerId(): ? UserAccountId
+    public function getOwnerId(): ?UserAccountId
     {
         return $this->ownerId;
     }

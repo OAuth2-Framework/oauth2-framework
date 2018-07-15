@@ -63,7 +63,7 @@ class RefreshToken extends Token
      *
      * @return RefreshToken
      */
-    public function create(RefreshTokenId $refreshTokenId, ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, \DateTimeImmutable $expiresAt, ? ResourceServerId $resourceServerId): self
+    public function create(RefreshTokenId $refreshTokenId, ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, \DateTimeImmutable $expiresAt, ?ResourceServerId $resourceServerId): self
     {
         $clone = clone $this;
         $clone->refreshTokenId = $refreshTokenId;

@@ -36,7 +36,7 @@ class ClientRepository implements \OAuth2Framework\Component\Core\Client\ClientR
     /**
      * {@inheritdoc}
      */
-    public function find(ClientId $clientId): ? Client
+    public function find(ClientId $clientId): ?Client
     {
         return \array_key_exists($clientId->getValue(), $this->clients) ? $this->clients[$clientId->getValue()] : null;
     }

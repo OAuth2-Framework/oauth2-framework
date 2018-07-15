@@ -49,20 +49,20 @@ class UserAccountSource implements Component
     {
         $node->children()
             ->arrayNode($this->name())
-                ->info('When resource owner can be an end-user, this section is mandatory.')
-                ->canBeEnabled()
-                ->children()
-                    ->scalarNode('repository')
-                        ->info('The user account repository service')
-                        ->isRequired()
-                    ->end()
-                    ->scalarNode('manager')
-                        ->info('The user account manager service')
-                        ->isRequired()
-                    ->end()
-                ->end()
+            ->info('When resource owner can be an end-user, this section is mandatory.')
+            ->canBeEnabled()
+            ->children()
+            ->scalarNode('repository')
+            ->info('The user account repository service')
+            ->isRequired()
             ->end()
-        ->end();
+            ->scalarNode('manager')
+            ->info('The user account manager service')
+            ->isRequired()
+            ->end()
+            ->end()
+            ->end()
+            ->end();
     }
 
     /**

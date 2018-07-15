@@ -74,7 +74,7 @@ class GrantSource implements Component
     {
         $childNode = $node->children()
             ->arrayNode($this->name())
-                ->addDefaultsIfNotSet();
+            ->addDefaultsIfNotSet();
 
         foreach ($this->subComponents as $subComponent) {
             $subComponent->getNodeDefinition($childNode, $node);

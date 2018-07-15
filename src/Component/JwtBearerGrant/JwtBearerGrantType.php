@@ -306,7 +306,7 @@ class JwtBearerGrantType implements GrantType
      *
      * @return ResourceOwnerId|null
      */
-    private function findResourceOwner(string $subject): ? ResourceOwnerId
+    private function findResourceOwner(string $subject): ?ResourceOwnerId
     {
         $userAccount = $this->userAccountRepository ? $this->userAccountRepository->find(UserAccountId::create($subject)) : null;
         if (null !== $userAccount) {

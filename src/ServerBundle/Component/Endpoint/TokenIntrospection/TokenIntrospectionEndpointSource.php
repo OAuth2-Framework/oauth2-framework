@@ -67,25 +67,25 @@ class TokenIntrospectionEndpointSource implements Component
                 return true === $config['endpoint'][$this->name()]['enabled'] && (!isset($config['resource_server']) || !isset($config['resource_server']['repository']) || null === $config['resource_server']['repository']);
             })
             ->thenInvalid('The resource server repository must be set when the introspection endpoint is enabled')
-        ->end();
+            ->end();
 
         $node->children()
             ->arrayNode($this->name())
-                ->canBeEnabled()
-                ->children()
-                    ->scalarNode('path')
-                        ->info('The token introspection endpoint path')
-                        ->defaultValue('/token/introspection')
-                    ->end()
-                    ->scalarNode('host')
-                        ->info('If set, the route will be limited to that host')
-                        ->defaultValue('')
-                        ->treatNullLike('')
-                        ->treatFalseLike('')
-                    ->end()
-                ->end()
+            ->canBeEnabled()
+            ->children()
+            ->scalarNode('path')
+            ->info('The token introspection endpoint path')
+            ->defaultValue('/token/introspection')
             ->end()
-        ->end();
+            ->scalarNode('host')
+            ->info('If set, the route will be limited to that host')
+            ->defaultValue('')
+            ->treatNullLike('')
+            ->treatFalseLike('')
+            ->end()
+            ->end()
+            ->end()
+            ->end();
     }
 
     /**

@@ -51,29 +51,29 @@ class SignatureSource implements Component
     {
         $node->children()
             ->arrayNode('signature')
-                ->canBeEnabled()
-                ->validate()
-                    ->ifTrue(function ($config) {
-                        return true === $config['enabled'] && empty($config['algorithm']);
-                    })
+            ->canBeEnabled()
+            ->validate()
+            ->ifTrue(function ($config) {
+                return true === $config['enabled'] && empty($config['algorithm']);
+            })
                     ->thenInvalid('The signature algorithm must be set.')
-                ->end()
-                ->validate()
+                    ->end()
+                    ->validate()
                     ->ifTrue(function ($config) {
                         return true === $config['enabled'] && empty($config['key']);
                     })
                     ->thenInvalid('The signature key must be set.')
-                ->end()
-                ->children()
+                    ->end()
+                    ->children()
                     ->scalarNode('algorithm')
-                        ->info('Signature algorithm used to sign the metadata.')
+                    ->info('Signature algorithm used to sign the metadata.')
                     ->end()
                     ->scalarNode('key')
-                        ->info('Signature key.')
+                    ->info('Signature key.')
                     ->end()
-                ->end()
-            ->end()
-        ->end();
+                    ->end()
+                    ->end()
+                    ->end();
     }
 
     /**

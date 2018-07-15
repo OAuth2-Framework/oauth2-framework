@@ -50,24 +50,24 @@ class UserinfoEndpointSignatureSource implements Component
     {
         $node->children()
             ->arrayNode($this->name())
-                ->canBeEnabled()
-                ->validate()
-                    ->ifTrue(function ($config) {
-                        return true === $config['enabled'] && empty($config['signature_algorithms']);
-                    })
-                    ->thenInvalid('You must set at least one signature algorithm.')
-                ->end()
-                ->children()
-                    ->arrayNode('signature_algorithms')
-                        ->info('Signature algorithm used to sign the user information.')
-                        ->useAttributeAsKey('name')
-                        ->scalarPrototype()->end()
-                        ->treatNullLike([])
-                        ->treatFalseLike([])
-                    ->end()
-                ->end()
+            ->canBeEnabled()
+            ->validate()
+            ->ifTrue(function ($config) {
+                return true === $config['enabled'] && empty($config['signature_algorithms']);
+            })
+            ->thenInvalid('You must set at least one signature algorithm.')
             ->end()
-        ->end();
+            ->children()
+            ->arrayNode('signature_algorithms')
+            ->info('Signature algorithm used to sign the user information.')
+            ->useAttributeAsKey('name')
+            ->scalarPrototype()->end()
+            ->treatNullLike([])
+            ->treatFalseLike([])
+            ->end()
+            ->end()
+            ->end()
+            ->end();
     }
 
     /**

@@ -52,15 +52,15 @@ class TrustedIssuerSource implements Component
         }
         $node->children()
             ->arrayNode($this->name())
-                ->addDefaultsIfNotSet()
-                ->children()
-                    ->scalarNode('repository')
-                        ->info('If set, trusted issuer support will be enabled')
-                        ->defaultNull()
-                    ->end()
-                ->end()
+            ->addDefaultsIfNotSet()
+            ->children()
+            ->scalarNode('repository')
+            ->info('If set, trusted issuer support will be enabled')
+            ->defaultNull()
             ->end()
-        ->end();
+            ->end()
+            ->end()
+            ->end();
     }
 
     /**

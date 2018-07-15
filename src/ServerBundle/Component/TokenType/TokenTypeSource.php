@@ -61,67 +61,67 @@ class TokenTypeSource implements Component
     {
         $child = $node->children()
             ->arrayNode($this->name())
-                ->isRequired()
-                ->children()
-                    ->scalarNode('default')
-                        ->defaultValue('bearer')
-                        ->info('The default token type used for access token issuance.')
-                    ->end()
-                    ->booleanNode('allow_token_type_parameter')
-                        ->defaultFalse()
-                        ->info('If true, the "token_type" parameter will be allowed in requests.')
-                    ->end()
-                ->end();
+            ->isRequired()
+            ->children()
+            ->scalarNode('default')
+            ->defaultValue('bearer')
+            ->info('The default token type used for access token issuance.')
+            ->end()
+            ->booleanNode('allow_token_type_parameter')
+            ->defaultFalse()
+            ->info('If true, the "token_type" parameter will be allowed in requests.')
+            ->end()
+            ->end();
 
         if (\class_exists(BearerToken::class)) {
             $child->children()
                 ->arrayNode('bearer_token')
-                    ->addDefaultsIfNotSet()
-                    ->canBeDisabled()
+                ->addDefaultsIfNotSet()
+                ->canBeDisabled()
                 ->end()
-            ->end();
+                ->end();
         }
 
         if (\class_exists(MacToken::class)) {
             $child->children()
                 ->arrayNode('mac_token')
-                    ->addDefaultsIfNotSet()
-                    ->canBeDisabled()
-                    ->validate()
-                        ->ifTrue(function ($config) {
-                            return $config['min_length'] > $config['max_length'];
-                        })
+                ->addDefaultsIfNotSet()
+                ->canBeDisabled()
+                ->validate()
+                ->ifTrue(function ($config) {
+                    return $config['min_length'] > $config['max_length'];
+                })
                         ->thenInvalid('The option "min_length" must not be greater than "max_length".')
-                    ->end()
-                    ->validate()
+                        ->end()
+                        ->validate()
                         ->ifTrue(function ($config) {
                             return !\in_array($config['algorithm'], ['hmac-sha-256', 'hmac-sha-1'], true);
                         })
                         ->thenInvalid('The algorithm is not supported. Please use one of the following one: "hmac-sha-1", "hmac-sha-256".')
-                    ->end()
-                    ->children()
+                        ->end()
+                        ->children()
                         ->integerNode('min_length')
-                            ->defaultValue(50)
-                            ->min(1)
-                            ->info('Minimum length for the generated MAC key')
+                        ->defaultValue(50)
+                        ->min(1)
+                        ->info('Minimum length for the generated MAC key')
                         ->end()
                         ->integerNode('max_length')
-                            ->defaultValue(100)
-                            ->min(2)
-                            ->info('Maximum length for the generated MAC key')
+                        ->defaultValue(100)
+                        ->min(2)
+                        ->info('Maximum length for the generated MAC key')
                         ->end()
                         ->scalarNode('algorithm')
-                            ->defaultValue('hmac-sha-256')
-                            ->info('Hashing algorithm. Must be either "hmac-sha-1" or "hmac-sha-256"')
+                        ->defaultValue('hmac-sha-256')
+                        ->info('Hashing algorithm. Must be either "hmac-sha-1" or "hmac-sha-256"')
                         ->end()
                         ->integerNode('timestamp_lifetime')
-                            ->defaultValue(10)
-                            ->min(1)
-                            ->info('Default lifetime of the MAC')
+                        ->defaultValue(10)
+                        ->min(1)
+                        ->info('Default lifetime of the MAC')
                         ->end()
-                    ->end()
-                ->end()
-            ->end();
+                        ->end()
+                        ->end()
+                        ->end();
         }
     }
 

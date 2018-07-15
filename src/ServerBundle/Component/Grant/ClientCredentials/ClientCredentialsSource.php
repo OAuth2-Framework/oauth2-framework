@@ -52,10 +52,10 @@ class ClientCredentialsSource implements Component
         }
         $node->children()
             ->arrayNode('client_credentials')
-                ->canBeEnabled()
-                ->info('This grant type flow allows confidential clients to get access tokens to manage their own resources.')
+            ->canBeEnabled()
+            ->info('This grant type flow allows confidential clients to get access tokens to manage their own resources.')
             ->end()
-        ->end();
+            ->end();
     }
 
     /**

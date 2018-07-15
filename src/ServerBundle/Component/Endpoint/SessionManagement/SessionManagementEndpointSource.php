@@ -62,45 +62,45 @@ class SessionManagementEndpointSource implements Component
         }
         $node->children()
             ->arrayNode($this->name())
-                ->canBeEnabled()
-                ->validate()
-                    ->ifTrue(function ($config) {
-                        return true === $config['enabled'] && empty($config['path']);
-                    })
+            ->canBeEnabled()
+            ->validate()
+            ->ifTrue(function ($config) {
+                return true === $config['enabled'] && empty($config['path']);
+            })
                     ->thenInvalid('The route name must be set.')
-                ->end()
-                ->validate()
+                    ->end()
+                    ->validate()
                     ->ifTrue(function ($config) {
                         return true === $config['enabled'] && empty($config['storage_name']);
                     })->thenInvalid('The option "storage_name" must be set.')
-                ->end()
-                ->validate()
-                    ->ifTrue(function ($config) {
-                        return true === $config['enabled'] && empty($config['template']);
-                    })->thenInvalid('The option "template" must be set.')
-                ->end()
-                ->children()
-                    ->scalarNode('path')
+                        ->end()
+                        ->validate()
+                        ->ifTrue(function ($config) {
+                            return true === $config['enabled'] && empty($config['template']);
+                        })->thenInvalid('The option "template" must be set.')
+                        ->end()
+                        ->children()
+                        ->scalarNode('path')
                         ->info('The session management endpoint')
                         ->defaultValue('/session')
-                    ->end()
-                    ->scalarNode('host')
+                        ->end()
+                        ->scalarNode('host')
                         ->info('If set, the route will be limited to that host')
                         ->defaultValue('')
                         ->treatNullLike('')
                         ->treatFalseLike('')
-                    ->end()
-                    ->scalarNode('storage_name')
+                        ->end()
+                        ->scalarNode('storage_name')
                         ->info('The name used for the cookie storage')
                         ->defaultValue('oidc_browser_state')
-                    ->end()
-                    ->scalarNode('template')
+                        ->end()
+                        ->scalarNode('template')
                         ->info('The template of the OP iframe.')
                         ->defaultValue('@OAuth2FrameworkServerBundle/iframe/iframe.html.twig')
-                    ->end()
-                ->end()
-            ->end()
-        ->end();
+                        ->end()
+                        ->end()
+                        ->end()
+                        ->end();
     }
 
     /**

@@ -55,36 +55,36 @@ class SoftwareStatementSource implements Component
     {
         $node->children()
             ->arrayNode($this->name())
-                ->canBeEnabled()
-                ->validate()
-                    ->ifTrue(function ($config) {
-                        return true === $config['enabled'] && empty($config['key_set']);
-                    })
+            ->canBeEnabled()
+            ->validate()
+            ->ifTrue(function ($config) {
+                return true === $config['enabled'] && empty($config['key_set']);
+            })
                     ->thenInvalid('The option "key_set" must be set.')
-                ->end()
-                ->validate()
+                    ->end()
+                    ->validate()
                     ->ifTrue(function ($config) {
                         return true === $config['enabled'] && empty($config['allowed_signature_algorithms']);
                     })
                     ->thenInvalid('At least one signature algorithm must be set.')
-                ->end()
-                ->children()
+                    ->end()
+                    ->children()
                     ->booleanNode('required')
-                        ->info('If true, the software statement is mandatory, otherwise optional.')
-                        ->defaultFalse()
+                    ->info('If true, the software statement is mandatory, otherwise optional.')
+                    ->defaultFalse()
                     ->end()
                     ->scalarNode('key_set')
-                        ->info('The public keys used to verify the software statement.')
+                    ->info('The public keys used to verify the software statement.')
                     ->end()
                     ->arrayNode('allowed_signature_algorithms')
-                        ->info('Signature algorithms allowed for the software statements. The algorithm "none" should not be used.')
-                        ->useAttributeAsKey('name')
-                        ->scalarPrototype()->end()
-                        ->treatNullLike([])
+                    ->info('Signature algorithms allowed for the software statements. The algorithm "none" should not be used.')
+                    ->useAttributeAsKey('name')
+                    ->scalarPrototype()->end()
+                    ->treatNullLike([])
                     ->end()
-                ->end()
-            ->end()
-        ->end();
+                    ->end()
+                    ->end()
+                    ->end();
     }
 
     /**

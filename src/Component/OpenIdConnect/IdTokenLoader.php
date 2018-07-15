@@ -60,7 +60,7 @@ class IdTokenLoader
      *
      * @return IdToken|null
      */
-    public function load(IdTokenId $idTokenId): ? IdToken
+    public function load(IdTokenId $idTokenId): ?IdToken
     {
         $value = $idTokenId->getValue();
 

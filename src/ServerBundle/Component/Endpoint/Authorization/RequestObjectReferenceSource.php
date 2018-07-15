@@ -45,15 +45,15 @@ class RequestObjectReferenceSource implements Component
     {
         $node->children()
             ->arrayNode($this->name())
-                ->canBeEnabled()
-                ->children()
-                    ->booleanNode('uris_registration_required')
-                        ->info('If true, request object reference Uris must be registered to be used (highly recommended).')
-                        ->defaultTrue()
-                    ->end()
-                ->end()
+            ->canBeEnabled()
+            ->children()
+            ->booleanNode('uris_registration_required')
+            ->info('If true, request object reference Uris must be registered to be used (highly recommended).')
+            ->defaultTrue()
             ->end()
-        ->end();
+            ->end()
+            ->end()
+            ->end();
     }
 
     /**

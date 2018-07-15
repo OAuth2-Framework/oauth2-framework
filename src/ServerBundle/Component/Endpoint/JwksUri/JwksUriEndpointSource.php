@@ -43,22 +43,22 @@ class JwksUriEndpointSource implements Component
     {
         $node->children()
             ->arrayNode($this->name())
-                ->canBeEnabled()
-                ->children()
-                    ->scalarNode('path')
-                        ->info('The path of the key set (e.g. "/openid_connect/certs").')
-                        ->isRequired()
-                    ->end()
-                    ->scalarNode('key_set')
-                        ->info('The public key set to share with third party applications.')
-                    ->end()
-                    ->integerNode('max_age')
-                        ->info('When share, this value indicates how many seconds the HTTP client should keep the key in cache. Default is 21600 = 6 hours.')
-                        ->defaultValue(21600)
-                    ->end()
-                ->end()
+            ->canBeEnabled()
+            ->children()
+            ->scalarNode('path')
+            ->info('The path of the key set (e.g. "/openid_connect/certs").')
+            ->isRequired()
             ->end()
-        ->end();
+            ->scalarNode('key_set')
+            ->info('The public key set to share with third party applications.')
+            ->end()
+            ->integerNode('max_age')
+            ->info('When share, this value indicates how many seconds the HTTP client should keep the key in cache. Default is 21600 = 6 hours.')
+            ->defaultValue(21600)
+            ->end()
+            ->end()
+            ->end()
+            ->end();
     }
 
     /**

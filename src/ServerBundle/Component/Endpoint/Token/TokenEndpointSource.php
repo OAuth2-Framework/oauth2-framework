@@ -68,21 +68,21 @@ class TokenEndpointSource implements Component
         }
         $node->children()
             ->arrayNode($this->name())
-                ->canBeEnabled()
-                ->children()
-                    ->scalarNode('path')
-                        ->info('The token endpoint path')
-                        ->defaultValue('/token/get')
-                    ->end()
-                    ->scalarNode('host')
-                        ->info('If set, the route will be limited to that host')
-                        ->defaultValue('')
-                        ->treatNullLike('')
-                        ->treatFalseLike('')
-                    ->end()
-                ->end()
+            ->canBeEnabled()
+            ->children()
+            ->scalarNode('path')
+            ->info('The token endpoint path')
+            ->defaultValue('/token/get')
             ->end()
-        ->end();
+            ->scalarNode('host')
+            ->info('If set, the route will be limited to that host')
+            ->defaultValue('')
+            ->treatNullLike('')
+            ->treatFalseLike('')
+            ->end()
+            ->end()
+            ->end()
+            ->end();
     }
 
     /**

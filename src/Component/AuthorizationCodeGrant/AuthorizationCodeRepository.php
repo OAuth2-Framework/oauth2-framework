@@ -24,7 +24,7 @@ interface AuthorizationCodeRepository
      *
      * @see     http://tools.ietf.org/html/rfc6749#section-4.1
      */
-    public function find(AuthorizationCodeId $authorizationCodeId): ? AuthorizationCode;
+    public function find(AuthorizationCodeId $authorizationCodeId): ?AuthorizationCode;
 
     /**
      * @param AuthorizationCode $authorizationCode

@@ -62,29 +62,29 @@ class ClientConfigurationSource implements Component
         }
         $node->children()
             ->arrayNode($this->name())
-                ->validate()
-                    ->ifTrue(function ($config) {
-                        return true === $config['enabled'] && empty($config['realm']);
-                    })
+            ->validate()
+            ->ifTrue(function ($config) {
+                return true === $config['enabled'] && empty($config['realm']);
+            })
                     ->thenInvalid('The option "realm" must be set.')
-                ->end()
-                ->canBeEnabled()
-                ->children()
+                    ->end()
+                    ->canBeEnabled()
+                    ->children()
                     ->scalarNode('realm')
-                        ->isRequired()
+                    ->isRequired()
                     ->end()
                     ->scalarNode('path')
-                        ->defaultValue('/client/configure/{client_id}')
+                    ->defaultValue('/client/configure/{client_id}')
                     ->end()
                     ->scalarNode('host')
-                        ->info('If set, the route will be limited to that host')
-                        ->defaultValue('')
-                        ->treatFalseLike('')
-                        ->treatNullLike('')
+                    ->info('If set, the route will be limited to that host')
+                    ->defaultValue('')
+                    ->treatFalseLike('')
+                    ->treatNullLike('')
                     ->end()
-                ->end()
-            ->end()
-        ->end();
+                    ->end()
+                    ->end()
+                    ->end();
     }
 
     /**

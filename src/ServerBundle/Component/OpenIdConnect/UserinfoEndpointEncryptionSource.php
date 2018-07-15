@@ -51,37 +51,37 @@ class UserinfoEndpointEncryptionSource implements Component
     {
         $node->children()
             ->arrayNode($this->name())
-                ->canBeEnabled()
-                ->validate()
-                    ->ifTrue(function ($config) {
-                        return true === $config['enabled'] && empty($config['key_encryption_algorithms']);
-                    })
-                    ->thenInvalid('You must set at least one key encryption algorithm.')
-                ->end()
-                ->validate()
-                    ->ifTrue(function ($config) {
-                        return true === $config['enabled'] && empty($config['content_encryption_algorithms']);
-                    })
+            ->canBeEnabled()
+            ->validate()
+            ->ifTrue(function ($config) {
+                return true === $config['enabled'] && empty($config['key_encryption_algorithms']);
+            })
+            ->thenInvalid('You must set at least one key encryption algorithm.')
+            ->end()
+            ->validate()
+            ->ifTrue(function ($config) {
+                return true === $config['enabled'] && empty($config['content_encryption_algorithms']);
+            })
                     ->thenInvalid('You must set at least one content encryption algorithm.')
-                ->end()
-                ->children()
+                    ->end()
+                    ->children()
                     ->arrayNode('key_encryption_algorithms')
-                        ->info('Supported key encryption algorithms.')
-                        ->useAttributeAsKey('name')
-                        ->scalarPrototype()->end()
-                        ->treatNullLike([])
-                        ->treatFalseLike([])
+                    ->info('Supported key encryption algorithms.')
+                    ->useAttributeAsKey('name')
+                    ->scalarPrototype()->end()
+                    ->treatNullLike([])
+                    ->treatFalseLike([])
                     ->end()
                     ->arrayNode('content_encryption_algorithms')
-                        ->info('Supported content encryption algorithms.')
-                        ->useAttributeAsKey('name')
-                        ->scalarPrototype()->end()
-                        ->treatNullLike([])
-                        ->treatFalseLike([])
+                    ->info('Supported content encryption algorithms.')
+                    ->useAttributeAsKey('name')
+                    ->scalarPrototype()->end()
+                    ->treatNullLike([])
+                    ->treatFalseLike([])
                     ->end()
-                ->end()
-            ->end()
-        ->end();
+                    ->end()
+                    ->end()
+                    ->end();
     }
 
     /**

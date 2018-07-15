@@ -52,9 +52,9 @@ class NoneSource implements Component
         }
         $node->children()
             ->arrayNode($this->name())
-                ->canBeEnabled()
+            ->canBeEnabled()
             ->end()
-        ->end();
+            ->end();
     }
 
     /**

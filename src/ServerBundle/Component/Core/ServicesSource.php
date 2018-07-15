@@ -56,14 +56,14 @@ class ServicesSource implements Component
     {
         $node->children()
             ->scalarNode('server_uri')
-                ->info('The URI of this server. Required by several components (e.g. when JWT are issued/received)')
-                ->defaultNull()
+            ->info('The URI of this server. Required by several components (e.g. when JWT are issued/received)')
+            ->defaultNull()
             ->end()
             ->scalarNode('http_client')
-                ->info('HTTP Client. Used by some client rules.')
-                ->defaultNull()
+            ->info('HTTP Client. Used by some client rules.')
+            ->defaultNull()
             ->end()
-        ->end();
+            ->end();
     }
 
     /**
