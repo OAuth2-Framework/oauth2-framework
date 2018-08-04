@@ -49,8 +49,7 @@ final class TokenResponseTypeTest extends TestCase
      */
     public function anAccessTokenIsCreatedDuringTheAuthorizationProcess()
     {
-        $client = Client::createEmpty();
-        $client = $client->create(
+        $client = new Client(
             new ClientId('CLIENT_ID'),
             new DataBag([]),
             new UserAccountId('USER_ACCOUNT_ID')

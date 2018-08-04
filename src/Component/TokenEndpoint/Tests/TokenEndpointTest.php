@@ -72,8 +72,7 @@ final class TokenEndpointTest extends TestCase
      */
     public function theClientIsNotAllowedToUseTheGrantType()
     {
-        $client = Client::createEmpty();
-        $client = $client->create(
+        $client = new Client(
             new ClientId('CLIENT_ID'),
             new DataBag([]),
             new UserAccountId('OWNER_ID')
@@ -107,8 +106,7 @@ final class TokenEndpointTest extends TestCase
      */
     public function theTokenRequestIsValidAndAnAccessTokenIsIssued()
     {
-        $client = Client::createEmpty();
-        $client = $client->create(
+        $client = new Client(
             new ClientId('CLIENT_ID'),
             new DataBag([
                 'grant_types' => ['foo'],
@@ -176,8 +174,7 @@ final class TokenEndpointTest extends TestCase
     private function getClientRepository(): ClientRepository
     {
         if (null === $this->clientRepository) {
-            $client = Client::createEmpty();
-            $client = $client->create(
+            $client = new Client(
                 new ClientId('CLIENT_ID'),
                 new DataBag([
                     'grant_types' => ['foo'],

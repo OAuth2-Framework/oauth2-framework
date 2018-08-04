@@ -239,11 +239,11 @@ class JwtBearerGrantType implements GrantType
                 throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_GRANT, 'Unable to find the issuer of the assertion.');
             }
             if (null === $grantTypeData->getClient()) {
-                $grantTypeData->withClient($client);
+                $grantTypeData->setClient($client);
             } elseif ($grantTypeData->getClient()->getPublicId()->getValue() !== $client->getPublicId()->getValue()) {
                 throw new OAuth2Message(401, OAuth2Message::ERROR_INVALID_CLIENT, 'Client authentication failed.');
             }
-            $grantTypeData->withResourceOwnerId($client->getPublicId());
+            $grantTypeData->setResourceOwnerId($client->getPublicId());
             $allowedSignatureAlgorithms = $this->jwsVerifier->getSignatureAlgorithmManager()->list();
             $signatureKeys = $this->getClientKeySet($client);
         } elseif (null !== $this->trustedIssuerRepository) { // Trusted issuer support
@@ -257,7 +257,7 @@ class JwtBearerGrantType implements GrantType
             if (null === $resourceOwnerId) {
                 throw new \InvalidArgumentException(\sprintf('Unknown resource owner with ID "%s"', $sub));
             }
-            $grantTypeData->withResourceOwnerId($resourceOwnerId);
+            $grantTypeData->setResourceOwnerId($resourceOwnerId);
         } else {
             throw new \InvalidArgumentException('Unable to find the issuer of the assertion.');
         }

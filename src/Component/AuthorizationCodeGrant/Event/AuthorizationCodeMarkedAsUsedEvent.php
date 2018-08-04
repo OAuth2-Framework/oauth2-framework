@@ -34,11 +34,6 @@ class AuthorizationCodeMarkedAsUsedEvent extends Event
         return 'https://oauth2-framework.spomky-labs.com/schemas/events/authorization-code/marked-as-used/1.0/schema';
     }
 
-    public static function create(AuthorizationCodeId $authorizationCodeId): self
-    {
-        return new self($authorizationCodeId);
-    }
-
     public function getAuthorizationCodeId(): AuthorizationCodeId
     {
         return $this->authorizationCodeId;

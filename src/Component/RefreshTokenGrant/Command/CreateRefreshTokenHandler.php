@@ -33,7 +33,7 @@ class CreateRefreshTokenHandler
     {
         $refreshToken = $this->refreshTokenRepository->find($command->getRefreshTokenId());
         if ($refreshToken) {
-            throw new \InvalidArgumentException(\sprintf('The authorization code/ with ID "%s" already exist.', $command->getRefreshTokenId()->getValue()));
+            throw new \InvalidArgumentException(\sprintf('The refresh token with ID "%s" already exist.', $command->getRefreshTokenId()->getValue()));
         }
 
         $refreshToken = new RefreshToken(

@@ -39,8 +39,7 @@ final class ClientConfigurationEndpointTest extends TestCase
      */
     public function theClientConfigurationEndpointCanReceiveGetRequestsAndRetrieveClientInformation()
     {
-        $client = Client::createEmpty();
-        $client = $client->create(
+        $client = new Client(
             new ClientId('CLIENT_ID'),
             new DataBag([
                 'registration_access_token' => 'REGISTRATION_TOKEN',
@@ -67,8 +66,7 @@ final class ClientConfigurationEndpointTest extends TestCase
      */
     public function theClientConfigurationEndpointCanReceivePutRequestsAndUpdateTheClient()
     {
-        $client = Client::createEmpty();
-        $client = $client->create(
+        $client = new Client(
             new ClientId('CLIENT_ID'),
             new DataBag([
                 'registration_access_token' => 'REGISTRATION_TOKEN',

@@ -34,44 +34,14 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class TokenEndpoint implements MiddlewareInterface
 {
-    /**
-     * @var TokenEndpointExtensionManager
-     */
     private $tokenEndpointExtensionManager;
-
-    /**
-     * @var ClientRepository
-     */
     private $clientRepository;
-
-    /**
-     * @var UserAccountRepository|null
-     */
     private $userAccountRepository;
-
-    /**
-     * @var ResponseFactory
-     */
     private $responseFactory;
-
-    /**
-     * @var AccessTokenIdGenerator
-     */
     private $accessTokenIdGenerator;
-
-    /**
-     * @var AccessTokenRepository
-     */
     private $accessTokenRepository;
-
-    /**
-     * @var int
-     */
     private $accessTokenLifetime;
 
-    /**
-     * TokenEndpoint constructor.
-     */
     public function __construct(ClientRepository $clientRepository, ?UserAccountRepository $userAccountRepository, TokenEndpointExtensionManager $tokenEndpointExtensionManager, ResponseFactory $responseFactory, AccessTokenIdGenerator $accessTokenIdGenerator, AccessTokenRepository $accessTokenRepository, int $accessLifetime)
     {
         $this->clientRepository = $clientRepository;
@@ -83,14 +53,11 @@ class TokenEndpoint implements MiddlewareInterface
         $this->accessTokenLifetime = $accessLifetime;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         // We prepare the Grant Type Data.
         // The client may be null (authenticated by other means).
-        $grantTypeData = GrantTypeData::create($request->getAttribute('client'));
+        $grantTypeData = new GrantTypeData($request->getAttribute('client'));
 
         // We retrieve the Grant Type.
         // This middleware must be behind the GrantTypeMiddleware

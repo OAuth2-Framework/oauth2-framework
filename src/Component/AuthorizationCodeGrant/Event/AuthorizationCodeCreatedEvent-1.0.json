@@ -7,13 +7,13 @@
     {"$ref": "https://oauth2-framework.spomky-labs.com/schemas/event/1.0/schema"},
     {"payload": {
       "type": "object",
-      "required": ["user_account_id", "client_id", "expires_at", "parameters", "metadatas", "redirect_uri", "query_parameters", "resource_server_id"],
+      "required": ["user_account_id", "client_id", "expires_at", "parameter", "metadata", "redirect_uri", "query_parameters", "resource_server_id"],
       "properties": {
         "user_account_id":{"type":"string"},
         "client_id":{"type":"string"},
         "expires_at":{"type":"integer"},
-        "parameters":{"type":"object"},
-        "metadatas":{"type":"object"},
+        "parameter":{"type":"object"},
+        "metadata":{"type":"object"},
         "redirect_uri":{"type":"string"},
         "query_parameters":{"type":"object"},
         "resource_server_id":{"type":["string", "null"]}

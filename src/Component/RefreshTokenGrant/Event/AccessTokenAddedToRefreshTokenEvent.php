@@ -14,46 +14,24 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\RefreshTokenGrant\Event;
 
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
-use OAuth2Framework\Component\Core\Domain\DomainObject;
 use OAuth2Framework\Component\Core\Event\Event;
 use OAuth2Framework\Component\Core\Id\Id;
 use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenId;
 
 class AccessTokenAddedToRefreshTokenEvent extends Event
 {
-    /**
-     * @var RefreshTokenId
-     */
     private $refreshTokenId;
-
-    /**
-     * @var AccessTokenId
-     */
     private $accessTokenId;
 
-    /**
-     * AccessTokenAddedToRefreshTokenEvent constructor.
-     */
-    protected function __construct(RefreshTokenId $refreshTokenId, AccessTokenId $accessTokenId)
+    public function __construct(RefreshTokenId $refreshTokenId, AccessTokenId $accessTokenId)
     {
         $this->refreshTokenId = $refreshTokenId;
         $this->accessTokenId = $accessTokenId;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public static function getSchema(): string
     {
         return 'https://oauth2-framework.spomky-labs.com/schemas/events/refresh-token/access-token-added/1.0/schema';
-    }
-
-    /**
-     * @return AccessTokenAddedToRefreshTokenEvent
-     */
-    public static function create(RefreshTokenId $refreshTokenId, AccessTokenId $accessTokenId): self
-    {
-        return new self($refreshTokenId, $accessTokenId);
     }
 
     public function getRefreshTokenId(): RefreshTokenId
@@ -66,32 +44,15 @@ class AccessTokenAddedToRefreshTokenEvent extends Event
         return $this->accessTokenId;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getDomainId(): Id
     {
         return $this->getRefreshTokenId();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getPayload()
     {
         return (object) [
             'access_token_id' => $this->accessTokenId->getValue(),
         ];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public static function createFromJson(\stdClass $json): DomainObject
-    {
-        $refreshTokenId = new RefreshTokenId($json->domain_id);
-        $accessTokenId = new AccessTokenId($json->payload->access_token_id);
-
-        return new self($refreshTokenId, $accessTokenId);
     }
 }

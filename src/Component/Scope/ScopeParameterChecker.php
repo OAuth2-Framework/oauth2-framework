@@ -21,28 +21,16 @@ use OAuth2Framework\Component\Scope\Policy\ScopePolicyManager;
 
 class ScopeParameterChecker implements ParameterChecker
 {
-    /**
-     * @var ScopeRepository
-     */
     private $scopeRepository;
 
-    /**
-     * @var ScopePolicyManager
-     */
     private $scopePolicyManager;
 
-    /**
-     * ScopeParameterChecker constructor.
-     */
     public function __construct(ScopeRepository $scopeRepository, ScopePolicyManager $scopePolicyManager)
     {
         $this->scopeRepository = $scopeRepository;
         $this->scopePolicyManager = $scopePolicyManager;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function check(Authorization $authorization): Authorization
     {
         try {

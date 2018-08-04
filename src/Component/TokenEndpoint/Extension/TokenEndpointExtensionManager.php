@@ -28,14 +28,9 @@ class TokenEndpointExtensionManager
      */
     private $extensions = [];
 
-    /**
-     * @return TokenEndpointExtensionManager
-     */
-    public function add(TokenEndpointExtension $tokenEndpointExtension): self
+    public function add(TokenEndpointExtension $tokenEndpointExtension): void
     {
         $this->extensions[] = $tokenEndpointExtension;
-
-        return $this;
     }
 
     /**

@@ -17,30 +17,18 @@ use OAuth2Framework\Component\Core\Client\Client;
 
 final class DefaultScopePolicy implements ScopePolicy
 {
-    /**
-     * @var string
-     */
     private $defaultScopes;
 
-    /**
-     * DefaultScopePolicy constructor.
-     */
     public function __construct(string $defaultScopes)
     {
         $this->defaultScopes = $defaultScopes;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function name(): string
     {
         return 'default';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function applyScopePolicy(string $scope, Client $client): string
     {
         return $client->has('default_scope') ? $client->get('default_scope') : $this->getDefaultScopes();

@@ -23,28 +23,15 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 abstract class TokenRevocationEndpoint implements MiddlewareInterface
 {
-    /**
-     * @var TokenTypeHintManager
-     */
     private $tokenTypeHintManager;
-
-    /**
-     * @var ResponseFactory
-     */
     private $responseFactory;
 
-    /**
-     * TokenRevocationEndpoint constructor.
-     */
     public function __construct(TokenTypeHintManager $tokenTypeHintManager, ResponseFactory $responseFactory)
     {
         $this->tokenTypeHintManager = $tokenTypeHintManager;
         $this->responseFactory = $responseFactory;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $callback = $this->getCallback($request);

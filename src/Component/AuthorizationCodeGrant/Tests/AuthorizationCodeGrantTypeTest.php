@@ -83,14 +83,13 @@ final class AuthorizationCodeGrantTypeTest extends TestCase
      */
     public function theTokenResponseIsCorrectlyPrepared()
     {
-        $client = Client::createEmpty();
-        $client = $client->create(
+        $client = new Client(
             new ClientId('CLIENT_ID'),
             new DataBag([]),
             new UserAccountId('USER_ACCOUNT_ID')
         );
         $request = $this->buildRequest(['code' => 'AUTHORIZATION_CODE_ID', 'redirect_uri' => 'http://localhost:8000/']);
-        $grantTypeData = GrantTypeData::create($client);
+        $grantTypeData = new GrantTypeData($client);
 
         $receivedGrantTypeData = $this->getGrantType()->prepareResponse($request->reveal(), $grantTypeData);
         static::assertSame($receivedGrantTypeData, $grantTypeData);
@@ -101,15 +100,14 @@ final class AuthorizationCodeGrantTypeTest extends TestCase
      */
     public function theGrantTypeCannotGrantTheClientAsTheCodeVerifierIsMissing()
     {
-        $client = Client::createEmpty();
-        $client = $client->create(
+        $client = new Client(
             new ClientId('CLIENT_ID'),
             new DataBag([]),
             new UserAccountId('USER_ACCOUNT_ID')
         );
         $request = $this->buildRequest(['code' => 'AUTHORIZATION_CODE_ID', 'redirect_uri' => 'http://localhost:8000/']);
         $request->getAttribute('client')->willReturn($client);
-        $grantTypeData = GrantTypeData::create($client);
+        $grantTypeData = new GrantTypeData($client);
 
         try {
             $this->getGrantType()->grant($request->reveal(), $grantTypeData);
@@ -127,15 +125,14 @@ final class AuthorizationCodeGrantTypeTest extends TestCase
      */
     public function theGrantTypeCanGrantTheClient()
     {
-        $client = Client::createEmpty();
-        $client = $client->create(
+        $client = new Client(
             new ClientId('CLIENT_ID'),
             new DataBag([]),
             new UserAccountId('USER_ACCOUNT_ID')
         );
         $request = $this->buildRequest(['code' => 'AUTHORIZATION_CODE_ID', 'redirect_uri' => 'http://localhost:8000/', 'code_verifier' => 'ABCDEFGH']);
         $request->getAttribute('client')->willReturn($client);
-        $grantTypeData = GrantTypeData::create($client);
+        $grantTypeData = new GrantTypeData($client);
 
         $receivedGrantTypeData = $this->getGrantType()->grant($request->reveal(), $grantTypeData);
         static::assertEquals('USER_ACCOUNT_ID', $receivedGrantTypeData->getResourceOwnerId()->getValue());

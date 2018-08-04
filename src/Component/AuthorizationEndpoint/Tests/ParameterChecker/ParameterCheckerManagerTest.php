@@ -41,8 +41,7 @@ final class ParameterCheckerManagerTest extends TestCase
      */
     public function anAuthorizationRequestIsReceivedButTheDisplayParameterIsNotValid()
     {
-        $client = Client::createEmpty();
-        $client = $client->create(
+        $client = new Client(
             new ClientId('CLIENT_ID'),
             new DataBag([]),
             null
@@ -66,8 +65,7 @@ final class ParameterCheckerManagerTest extends TestCase
      */
     public function anAuthorizationRequestIsReceivedButThePromptParameterIsNotValid()
     {
-        $client = Client::createEmpty();
-        $client = $client->create(
+        $client = new Client(
             new ClientId('CLIENT_ID'),
             new DataBag([]),
             null
@@ -91,8 +89,7 @@ final class ParameterCheckerManagerTest extends TestCase
      */
     public function anAuthorizationRequestIsReceivedButThePromptParameterNoneMustBeUsedAlone()
     {
-        $client = Client::createEmpty();
-        $client = $client->create(
+        $client = new Client(
             new ClientId('CLIENT_ID'),
             new DataBag([]),
             null
@@ -116,8 +113,7 @@ final class ParameterCheckerManagerTest extends TestCase
      */
     public function anAuthorizationRequestIsReceivedButNoRedirectUriIsSet()
     {
-        $client = Client::createEmpty();
-        $client = $client->create(
+        $client = new Client(
             new ClientId('CLIENT_ID'),
             new DataBag([]),
             null
@@ -139,8 +135,7 @@ final class ParameterCheckerManagerTest extends TestCase
      */
     public function anAuthorizationRequestIsReceivedButNoResponseTypeIsSet()
     {
-        $client = Client::createEmpty();
-        $client = $client->create(
+        $client = new Client(
             new ClientId('CLIENT_ID'),
             new DataBag([]),
             null
@@ -164,8 +159,7 @@ final class ParameterCheckerManagerTest extends TestCase
      */
     public function anAuthorizationRequestIsReceivedButTheResponseModeIsNotSupported()
     {
-        $client = Client::createEmpty();
-        $client = $client->create(
+        $client = new Client(
             new ClientId('CLIENT_ID'),
             new DataBag([
                 'response_types' => ['foo'],
@@ -193,8 +187,7 @@ final class ParameterCheckerManagerTest extends TestCase
      */
     public function anAuthorizationRequestIsReceivedButTheResponseTypeIsNotSupportedByThisServer()
     {
-        $client = Client::createEmpty();
-        $client = $client->create(
+        $client = new Client(
             new ClientId('CLIENT_ID'),
             new DataBag([]),
             null
@@ -219,8 +212,7 @@ final class ParameterCheckerManagerTest extends TestCase
      */
     public function anAuthorizationRequestIsReceivedButTheResponseTypeIsNotAllowedForTheClient()
     {
-        $client = Client::createEmpty();
-        $client = $client->create(
+        $client = new Client(
             new ClientId('CLIENT_ID'),
             new DataBag([]),
             null
@@ -245,8 +237,7 @@ final class ParameterCheckerManagerTest extends TestCase
      */
     public function anAuthorizationRequestIsReceivedAndIsValid()
     {
-        $client = Client::createEmpty();
-        $client = $client->create(
+        $client = new Client(
             new ClientId('CLIENT_ID'),
             new DataBag([
                 'response_types' => ['foo'],

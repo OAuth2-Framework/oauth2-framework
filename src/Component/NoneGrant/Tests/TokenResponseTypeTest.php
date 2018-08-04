@@ -52,8 +52,7 @@ final class TokenResponseTypeTest extends TestCase
         $authorizationStorage->save(Argument::type(Authorization::class))->shouldBeCalled();
         $responseType = new NoneResponseType($authorizationStorage->reveal());
 
-        $client = Client::createEmpty();
-        $client = $client->create(
+        $client = new Client(
             new ClientId('CLIENT_ID'),
             new DataBag([]),
             new UserAccountId('USER_ACCOUNT_ID')

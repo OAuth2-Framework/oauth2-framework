@@ -57,8 +57,7 @@ final class ClientRegistrationEndpointTest extends TestCase
     private function getClientRegistrationEndpoint(): ClientRegistrationEndpoint
     {
         if (null === $this->clientRegistrationEndpoint) {
-            $client = Client::createEmpty();
-            $client = $client->create(
+            $client = new Client(
                 new ClientId('CLIENT_ID'),
                 new DataBag([]),
                 null

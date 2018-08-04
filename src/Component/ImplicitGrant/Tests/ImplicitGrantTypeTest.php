@@ -62,15 +62,14 @@ final class ImplicitGrantTypeTest extends TestCase
      */
     public function theTokenResponseIsCorrectlyPrepared()
     {
-        $client = Client::createEmpty();
-        $client = $client->create(
+        $client = new Client(
             new ClientId('CLIENT_ID'),
             new DataBag([]),
             new UserAccountId('USER_ACCOUNT_ID')
         );
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getParsedBody()->willReturn(['implicit' => 'REFRESH_TOKEN_ID']);
-        $grantTypeData = GrantTypeData::create($client);
+        $grantTypeData = new GrantTypeData($client);
 
         try {
             $this->getGrantType()->prepareResponse($request->reveal(), $grantTypeData);
@@ -88,8 +87,7 @@ final class ImplicitGrantTypeTest extends TestCase
      */
     public function theGrantTypeCanGrantTheClient()
     {
-        $client = Client::createEmpty();
-        $client = $client->create(
+        $client = new Client(
             new ClientId('CLIENT_ID'),
             new DataBag([]),
             new UserAccountId('USER_ACCOUNT_ID')
@@ -97,7 +95,7 @@ final class ImplicitGrantTypeTest extends TestCase
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getParsedBody()->willReturn(['implicit' => 'REFRESH_TOKEN_ID']);
         $request->getAttribute('client')->willReturn($client);
-        $grantTypeData = GrantTypeData::create($client);
+        $grantTypeData = new GrantTypeData($client);
 
         try {
             $this->getGrantType()->grant($request->reveal(), $grantTypeData);

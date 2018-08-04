@@ -290,8 +290,7 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
         $method = $this->getMethodWithEncryptionSupport(false);
         $manager = new AuthenticationMethodManager();
         $manager->add($method);
-        $client = Client::createEmpty();
-        $client = $client->create(
+        $client = new Client(
             new ClientId('CLIENT_ID'),
             new DataBag([
                 'client_secret' => 'CLIENT_SECRET',
@@ -321,8 +320,7 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
         $method = $this->getMethodWithEncryptionSupport(false);
         $manager = new AuthenticationMethodManager();
         $manager->add($method);
-        $client = Client::createEmpty();
-        $client = $client->create(
+        $client = new Client(
             new ClientId('CLIENT_ID'),
             new DataBag([
                 'token_endpoint_auth_method' => 'private_key_jwt',
@@ -352,8 +350,7 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
         $method = $this->getMethodWithEncryptionSupport(false);
         $manager = new AuthenticationMethodManager();
         $manager->add($method);
-        $client = Client::createEmpty();
-        $client = $client->create(
+        $client = new Client(
             new ClientId('CLIENT_ID'),
             new DataBag([
                 'token_endpoint_auth_method' => 'client_secret_jwt',
@@ -381,8 +378,7 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
         $method = $this->getMethodWithTrustedIssuerSupport();
         $manager = new AuthenticationMethodManager();
         $manager->add($method);
-        $client = Client::createEmpty();
-        $client = $client->create(
+        $client = new Client(
             new ClientId('CLIENT_ID'),
             new DataBag([
                 'token_endpoint_auth_method' => 'client_secret_jwt',

@@ -41,18 +41,17 @@ final class ClientTest extends TestCase
      */
     public function iCanCreateAClient()
     {
-        $client = Client::createEmpty();
-        $client = $client->create(
+        $client = new Client(
             new ClientId('CLIENT_ID'),
             new DataBag([
             ]),
             new UserAccountId('USER_ACCOUNT_ID')
         );
-        $client = $client->withParameters(new DataBag([
+        $client->setParameter(new DataBag([
             'token_endpoint_auth_method' => 'none',
         ]));
-        $client = $client->withOwnerId(new UserAccountId('NEW_USER_ACCOUNT_ID'));
-        $client = $client->markAsDeleted();
+        $client->setOwnerId(new UserAccountId('NEW_USER_ACCOUNT_ID'));
+        $client->markAsDeleted();
 
         static::assertInstanceOf(Client::class, $client);
         static::assertTrue($client->isPublic());

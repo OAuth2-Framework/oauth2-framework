@@ -18,7 +18,7 @@ class Checker
     /**
      * @throws \InvalidArgumentException
      */
-    public static function checkUsedOnce(string $scope, string $scopes)
+    public static function checkUsedOnce(string $scope, string $scopes): void
     {
         $scopes = \explode(' ', $scopes);
         if (1 < \count(\array_keys($scopes, $scope, true))) {
@@ -29,7 +29,7 @@ class Checker
     /**
      * @throws \InvalidArgumentException
      */
-    public static function checkCharset(string $scope)
+    public static function checkCharset(string $scope): void
     {
         if (1 !== \preg_match('/^[\x20\x23-\x5B\x5D-\x7E]+$/', $scope)) {
             throw new \InvalidArgumentException('Scope contains illegal characters.');

@@ -87,8 +87,7 @@ final class ClientAuthenticationMiddlewareTest extends TestCase
      */
     public function aClientIdIsSetButTheClientIsDeleted()
     {
-        $client = Client::createEmpty();
-        $client = $client->create(
+        $client = new Client(
             new ClientId('FOO'),
             new DataBag([]),
             null
@@ -125,8 +124,7 @@ final class ClientAuthenticationMiddlewareTest extends TestCase
      */
     public function aClientIdIsSetButTheClientCredentialsExpired()
     {
-        $client = Client::createEmpty();
-        $client = $client->create(
+        $client = new Client(
             new ClientId('FOO'),
             new DataBag([
                 'token_endpoint_auth_method' => 'client_secret_basic',
@@ -166,8 +164,7 @@ final class ClientAuthenticationMiddlewareTest extends TestCase
      */
     public function aClientIdIsSetButTheAuthenticationMethodIsNotSupportedByTheClient()
     {
-        $client = Client::createEmpty();
-        $client = $client->create(
+        $client = new Client(
             new ClientId('FOO'),
             new DataBag([
                 'token_endpoint_auth_method' => 'none',
@@ -205,8 +202,7 @@ final class ClientAuthenticationMiddlewareTest extends TestCase
      */
     public function aClientIdIsSetButTheClientIsNotAuthenticated()
     {
-        $client = Client::createEmpty();
-        $client = $client->create(
+        $client = new Client(
             new ClientId('FOO'),
             new DataBag([
                 'token_endpoint_auth_method' => 'client_secret_basic',
@@ -245,8 +241,7 @@ final class ClientAuthenticationMiddlewareTest extends TestCase
      */
     public function aClientIsFullyAuthenticated()
     {
-        $client = Client::createEmpty();
-        $client = $client->create(
+        $client = new Client(
             new ClientId('FOO'),
             new DataBag([
                 'token_endpoint_auth_method' => 'client_secret_basic',

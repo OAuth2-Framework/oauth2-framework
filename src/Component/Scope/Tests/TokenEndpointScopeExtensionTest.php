@@ -54,15 +54,14 @@ final class TokenEndpointScopeExtensionTest extends TestCase
      */
     public function theRequestHasNoScope()
     {
-        $client = Client::createEmpty();
-        $client = $client->create(
+        $client = new Client(
             new ClientId('CLIENT_ID'),
             new DataBag([]),
             new UserAccountId('USER_ACCOUNT_ID')
         );
 
         $request = $this->buildRequest([]);
-        $grantTypeData = GrantTypeData::create($client);
+        $grantTypeData = new GrantTypeData($client);
         $grantType = $this->prophesize(GrantType::class);
         $next = function (ServerRequestInterface $request, GrantTypeData $grantTypeData, GrantType $grantType): GrantTypeData {
             return $grantTypeData;
@@ -77,8 +76,7 @@ final class TokenEndpointScopeExtensionTest extends TestCase
      */
     public function theRequestedScopeIsNotSupported()
     {
-        $client = Client::createEmpty();
-        $client = $client->create(
+        $client = new Client(
             new ClientId('CLIENT_ID'),
             new DataBag([]),
             new UserAccountId('USER_ACCOUNT_ID')
@@ -87,7 +85,7 @@ final class TokenEndpointScopeExtensionTest extends TestCase
         $request = $this->buildRequest([
             'scope' => 'café',
         ]);
-        $grantTypeData = GrantTypeData::create($client);
+        $grantTypeData = new GrantTypeData($client);
         $grantType = $this->prophesize(GrantType::class);
         $next = function (ServerRequestInterface $request, GrantTypeData $grantTypeData, GrantType $grantType): GrantTypeData {
             return $grantTypeData;
@@ -109,8 +107,7 @@ final class TokenEndpointScopeExtensionTest extends TestCase
      */
     public function theRequestedScopeIsValid()
     {
-        $client = Client::createEmpty();
-        $client = $client->create(
+        $client = new Client(
             new ClientId('CLIENT_ID'),
             new DataBag([]),
             new UserAccountId('USER_ACCOUNT_ID')
@@ -119,7 +116,7 @@ final class TokenEndpointScopeExtensionTest extends TestCase
         $request = $this->buildRequest([
             'scope' => 'scope2 scope1',
         ]);
-        $grantTypeData = GrantTypeData::create($client);
+        $grantTypeData = new GrantTypeData($client);
         $grantType = $this->prophesize(GrantType::class);
         $next = function (ServerRequestInterface $request, GrantTypeData $grantTypeData, GrantType $grantType): GrantTypeData {
             return $grantTypeData;
@@ -135,8 +132,7 @@ final class TokenEndpointScopeExtensionTest extends TestCase
      */
     public function after()
     {
-        $client = Client::createEmpty();
-        $client = $client->create(
+        $client = new Client(
             new ClientId('CLIENT_ID'),
             new DataBag([]),
             new UserAccountId('USER_ACCOUNT_ID')

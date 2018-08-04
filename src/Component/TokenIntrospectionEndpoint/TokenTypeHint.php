@@ -19,9 +19,6 @@ interface TokenTypeHint
 {
     public function hint(): string;
 
-    /**
-     * @return null|Token
-     */
     public function find(string $token): ?Token;
 
     public function introspect(Token $token): array;

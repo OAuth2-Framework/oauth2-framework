@@ -44,8 +44,7 @@ final class ScopePolicyManagerTest extends TestCase
      */
     public function scopesAreProvided()
     {
-        $client = Client::createEmpty();
-        $client = $client->create(
+        $client = new Client(
             new ClientId('CLIENT_ID'),
             new DataBag([]),
             new UserAccountId('USER_ACCOUNT_ID')
@@ -60,8 +59,7 @@ final class ScopePolicyManagerTest extends TestCase
      */
     public function theClientHasNoScopePolicy()
     {
-        $client = Client::createEmpty();
-        $client = $client->create(
+        $client = new Client(
             new ClientId('CLIENT_ID'),
             new DataBag([]),
             new UserAccountId('USER_ACCOUNT_ID')
@@ -76,8 +74,7 @@ final class ScopePolicyManagerTest extends TestCase
      */
     public function usingTheNonePolicy()
     {
-        $client = Client::createEmpty();
-        $client = $client->create(
+        $client = new Client(
             new ClientId('CLIENT_ID'),
             new DataBag([
                 'scope_policy' => 'none',
@@ -94,8 +91,7 @@ final class ScopePolicyManagerTest extends TestCase
      */
     public function usingTheDefaultPolicyWithCustomDefaultScope()
     {
-        $client = Client::createEmpty();
-        $client = $client->create(
+        $client = new Client(
             new ClientId('CLIENT_ID'),
             new DataBag([
                 'scope_policy' => 'default',
@@ -113,8 +109,7 @@ final class ScopePolicyManagerTest extends TestCase
      */
     public function usingTheDefaultPolicy()
     {
-        $client = Client::createEmpty();
-        $client = $client->create(
+        $client = new Client(
             new ClientId('CLIENT_ID'),
             new DataBag([
                 'scope_policy' => 'default',
@@ -133,8 +128,7 @@ final class ScopePolicyManagerTest extends TestCase
      */
     public function usingTheErrorPolicy()
     {
-        $client = Client::createEmpty();
-        $client = $client->create(
+        $client = new Client(
             new ClientId('CLIENT_ID'),
             new DataBag([
                 'scope_policy' => 'error',
@@ -176,10 +170,9 @@ final class ScopePolicyManagerTest extends TestCase
     {
         if (null === $this->scopePolicyManager) {
             $this->scopePolicyManager = new ScopePolicyManager();
-            $this->scopePolicyManager
-                ->add(new NoScopePolicy())
-                ->add(new DefaultScopePolicy('scope1 scope2'))
-                ->add(new ErrorScopePolicy());
+            $this->scopePolicyManager->add(new NoScopePolicy());
+            $this->scopePolicyManager->add(new DefaultScopePolicy('scope1 scope2'));
+            $this->scopePolicyManager->add(new ErrorScopePolicy());
         }
 
         return $this->scopePolicyManager;

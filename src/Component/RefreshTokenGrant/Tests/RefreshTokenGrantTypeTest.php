@@ -79,13 +79,12 @@ final class RefreshTokenGrantTypeTest extends TestCase
      */
     public function theRefreshTokenDoesNotExist()
     {
-        $client = Client::createEmpty();
-        $client = $client->create(
+        $client = new Client(
             new ClientId('CLIENT_ID'),
             new DataBag([]),
             new UserAccountId('USER_ACCOUNT_ID')
         );
-        $grantTypeData = GrantTypeData::create($client);
+        $grantTypeData = new GrantTypeData($client);
         $request = $this->buildRequest(['refresh_token' => 'UNKNOWN_REFRESH_TOKEN_ID']);
 
         try {
@@ -105,14 +104,13 @@ final class RefreshTokenGrantTypeTest extends TestCase
      */
     public function theTokenResponseIsCorrectlyPrepared()
     {
-        $client = Client::createEmpty();
-        $client = $client->create(
+        $client = new Client(
             new ClientId('CLIENT_ID'),
             new DataBag([]),
             new UserAccountId('USER_ACCOUNT_ID')
         );
         $request = $this->buildRequest(['refresh_token' => 'REFRESH_TOKEN_ID']);
-        $grantTypeData = GrantTypeData::create($client);
+        $grantTypeData = new GrantTypeData($client);
 
         $receivedGrantTypeData = $this->getGrantType()->prepareResponse($request->reveal(), $grantTypeData);
         static::assertSame($receivedGrantTypeData, $grantTypeData);
@@ -123,15 +121,14 @@ final class RefreshTokenGrantTypeTest extends TestCase
      */
     public function theRefreshTokenIsRevoked()
     {
-        $client = Client::createEmpty();
-        $client = $client->create(
+        $client = new Client(
             new ClientId('CLIENT_ID'),
             new DataBag([]),
             new UserAccountId('USER_ACCOUNT_ID')
         );
         $request = $this->buildRequest(['refresh_token' => 'REVOKED_REFRESH_TOKEN_ID']);
         $request->getAttribute('client')->willReturn($client);
-        $grantTypeData = GrantTypeData::create($client);
+        $grantTypeData = new GrantTypeData($client);
 
         try {
             $this->getGrantType()->grant($request->reveal(), $grantTypeData);
@@ -150,15 +147,14 @@ final class RefreshTokenGrantTypeTest extends TestCase
      */
     public function theRefreshTokenIsNotForThatClient()
     {
-        $client = Client::createEmpty();
-        $client = $client->create(
+        $client = new Client(
             new ClientId('OTHER_CLIENT_ID'),
             new DataBag([]),
             new UserAccountId('USER_ACCOUNT_ID')
         );
         $request = $this->buildRequest(['refresh_token' => 'REFRESH_TOKEN_ID']);
         $request->getAttribute('client')->willReturn($client);
-        $grantTypeData = GrantTypeData::create($client);
+        $grantTypeData = new GrantTypeData($client);
 
         try {
             $this->getGrantType()->grant($request->reveal(), $grantTypeData);
@@ -177,15 +173,14 @@ final class RefreshTokenGrantTypeTest extends TestCase
      */
     public function theRefreshTokenExpired()
     {
-        $client = Client::createEmpty();
-        $client = $client->create(
+        $client = new Client(
             new ClientId('CLIENT_ID'),
             new DataBag([]),
             new UserAccountId('USER_ACCOUNT_ID')
         );
         $request = $this->buildRequest(['refresh_token' => 'EXPIRED_REFRESH_TOKEN_ID']);
         $request->getAttribute('client')->willReturn($client);
-        $grantTypeData = GrantTypeData::create($client);
+        $grantTypeData = new GrantTypeData($client);
 
         try {
             $this->getGrantType()->grant($request->reveal(), $grantTypeData);
@@ -204,15 +199,14 @@ final class RefreshTokenGrantTypeTest extends TestCase
      */
     public function theGrantTypeCanGrantTheClient()
     {
-        $client = Client::createEmpty();
-        $client = $client->create(
+        $client = new Client(
             new ClientId('CLIENT_ID'),
             new DataBag([]),
             new UserAccountId('USER_ACCOUNT_ID')
         );
         $request = $this->buildRequest(['refresh_token' => 'REFRESH_TOKEN_ID']);
         $request->getAttribute('client')->willReturn($client);
-        $grantTypeData = GrantTypeData::create($client);
+        $grantTypeData = new GrantTypeData($client);
 
         $receivedGrantTypeData = $this->getGrantType()->grant($request->reveal(), $grantTypeData);
         static::assertEquals('CLIENT_ID', $receivedGrantTypeData->getResourceOwnerId()->getValue());

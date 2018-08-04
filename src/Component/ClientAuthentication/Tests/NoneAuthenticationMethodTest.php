@@ -73,8 +73,7 @@ final class NoneAuthenticationMethodTest extends TestCase
     {
         $method = new None();
         $request = $this->prophesize(ServerRequestInterface::class);
-        $client = Client::createEmpty();
-        $client = $client->create(
+        $client = new Client(
             new ClientId('CLIENT_ID'),
             new DataBag([]),
             new UserAccountId('USER_ACCOUNT_ID')

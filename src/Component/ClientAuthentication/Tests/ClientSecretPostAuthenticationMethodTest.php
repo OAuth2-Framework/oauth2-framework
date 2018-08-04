@@ -92,8 +92,7 @@ final class ClientSecretPostAuthenticationMethodTest extends TestCase
             'client_id' => 'CLIENT_ID',
             'client_secret' => 'CLIENT_SECRET',
         ]);
-        $client = Client::createEmpty();
-        $client = $client->create(
+        $client = new Client(
             new ClientId('CLIENT_ID'),
             new DataBag([
                 'client_secret' => 'CLIENT_SECRET',

@@ -17,17 +17,11 @@ use OAuth2Framework\Component\Core\Client\Client;
 
 final class ErrorScopePolicy implements ScopePolicy
 {
-    /**
-     * {@inheritdoc}
-     */
     public function name(): string
     {
         return 'error';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function applyScopePolicy(string $scope, Client $client): string
     {
         throw new \RuntimeException('No scope was requested.');

@@ -20,22 +20,13 @@ use OAuth2Framework\Component\TokenEndpoint\GrantTypeManager;
 
 final class GrantTypesRule implements Rule
 {
-    /**
-     * @var GrantTypeManager
-     */
     private $grantTypeManager;
 
-    /**
-     * GrantTypeFlowRule constructor.
-     */
     public function __construct(GrantTypeManager $grantTypeManager)
     {
         $this->grantTypeManager = $grantTypeManager;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function handle(ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters, callable $next): DataBag
     {
         if (!$commandParameters->has('grant_types')) {
@@ -52,7 +43,7 @@ final class GrantTypesRule implements Rule
     /**
      * @throws \InvalidArgumentException
      */
-    private function checkGrantTypes(DataBag $parameters)
+    private function checkGrantTypes(DataBag $parameters): void
     {
         if (!\is_array($parameters->get('grant_types'))) {
             throw new \InvalidArgumentException('The parameter "grant_types" must be an array of strings.');
@@ -70,7 +61,7 @@ final class GrantTypesRule implements Rule
     /**
      * @throws \InvalidArgumentException
      */
-    private function checkResponseTypes(DataBag $parameters)
+    private function checkResponseTypes(DataBag $parameters): void
     {
         $responseTypes = $parameters->has('response_types') ? $parameters->get('response_types') : [];
         $list = [];

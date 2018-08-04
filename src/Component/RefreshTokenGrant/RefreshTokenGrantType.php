@@ -22,38 +22,23 @@ use Psr\Http\Message\ServerRequestInterface;
 
 final class RefreshTokenGrantType implements GrantType
 {
-    /**
-     * @var RefreshTokenRepository
-     */
     private $refreshTokenRepository;
 
-    /**
-     * RefreshTokenGrantType constructor.
-     */
     public function __construct(RefreshTokenRepository $refreshTokenRepository)
     {
         $this->refreshTokenRepository = $refreshTokenRepository;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function associatedResponseTypes(): array
     {
         return [];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function name(): string
     {
         return 'refresh_token';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function checkRequest(ServerRequestInterface $request)
     {
         $parameters = RequestBodyParser::parseFormUrlEncoded($request);
@@ -65,18 +50,12 @@ final class RefreshTokenGrantType implements GrantType
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function prepareResponse(ServerRequestInterface $request, GrantTypeData $grantTypeData): GrantTypeData
     {
         // Nothing to do
         return $grantTypeData;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function grant(ServerRequestInterface $request, GrantTypeData $grantTypeData): GrantTypeData
     {
         $parameters = RequestBodyParser::parseFormUrlEncoded($request);
@@ -90,7 +69,7 @@ final class RefreshTokenGrantType implements GrantType
         $client = $request->getAttribute('client');
         $this->checkRefreshToken($token, $client);
 
-        $grantTypeData->withResourceOwnerId($token->getResourceOwnerId());
+        $grantTypeData->setResourceOwnerId($token->getResourceOwnerId());
         foreach ($token->getMetadata() as $k => $v) {
             $grantTypeData->getMetadata()->with($k, $v);
         }
@@ -101,9 +80,6 @@ final class RefreshTokenGrantType implements GrantType
         return $grantTypeData;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     private function checkRefreshToken(RefreshToken $token, Client $client)
     {
         if (true === $token->isRevoked() || $client->getPublicId()->getValue() !== $token->getClientId()->getValue()) {

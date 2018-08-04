@@ -20,9 +20,6 @@ use OAuth2Framework\Component\Scope\Policy\ScopePolicyManager;
 
 final class ScopePolicyRule implements Rule
 {
-    /**
-     * @var ScopePolicyManager
-     */
     private $scopePolicyManager;
 
     public function __construct(ScopePolicyManager $scopePolicyManager)
@@ -30,9 +27,6 @@ final class ScopePolicyRule implements Rule
         $this->scopePolicyManager = $scopePolicyManager;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function handle(ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters, callable $next): DataBag
     {
         if ($commandParameters->has('scope_policy')) {

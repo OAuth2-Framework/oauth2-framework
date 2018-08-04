@@ -19,62 +19,35 @@ use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwnerId;
 
 class GrantTypeData
 {
-    /**
-     * @var DataBag
-     */
-    private $metadatas;
-
-    /**
-     * @var DataBag
-     */
-    private $parameters;
+    private $metadata;
+    private $parameter;
 
     /**
      * @var ResourceOwnerId|null
      */
     private $resourceOwnerId;
-
-    /**
-     * @var Client|null
-     */
     private $client;
 
-    /**
-     * GrantTypeData constructor.
-     */
-    private function __construct(?Client $client)
+    public function __construct(?Client $client)
     {
-        $this->parameters = new DataBag([]);
-        $this->metadatas = new DataBag([]);
+        $this->parameter = new DataBag([]);
+        $this->metadata = new DataBag([]);
         $this->client = $client;
-    }
-
-    /**
-     * @return GrantTypeData
-     */
-    public static function create(?Client $client): self
-    {
-        return new self($client);
     }
 
     public function getMetadata(): DataBag
     {
-        return $this->metadatas;
+        return $this->metadata;
     }
 
     public function getParameter(): DataBag
     {
-        return $this->parameters;
+        return $this->parameter;
     }
 
-    /**
-     * @return GrantTypeData
-     */
-    public function withClient(Client $client): self
+    public function setClient(Client $client): void
     {
         $this->client = $client;
-
-        return $this;
     }
 
     public function getClient(): ?Client
@@ -82,19 +55,11 @@ class GrantTypeData
         return $this->client;
     }
 
-    /**
-     * @return GrantTypeData
-     */
-    public function withResourceOwnerId(ResourceOwnerId $resourceOwnerId): self
+    public function setResourceOwnerId(ResourceOwnerId $resourceOwnerId): void
     {
         $this->resourceOwnerId = $resourceOwnerId;
-
-        return $this;
     }
 
-    /**
-     * @return null|ResourceOwnerId
-     */
     public function getResourceOwnerId(): ?ResourceOwnerId
     {
         return $this->resourceOwnerId;

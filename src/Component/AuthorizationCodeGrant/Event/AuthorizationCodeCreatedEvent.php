@@ -33,14 +33,14 @@ class AuthorizationCodeCreatedEvent extends Event
     private $redirectUri;
     private $resourceServerId;
 
-    public function __construct(AuthorizationCodeId $authorizationCodeId, ClientId $clientId, UserAccountId $userAccountId, array $queryParameters, string $redirectUri, \DateTimeImmutable $expiresAt, DataBag $parameters, DataBag $metadatas, ?ResourceServerId $resourceServerId)
+    public function __construct(AuthorizationCodeId $authorizationCodeId, ClientId $clientId, UserAccountId $userAccountId, array $queryParameters, string $redirectUri, \DateTimeImmutable $expiresAt, DataBag $parameter, DataBag $metadata, ?ResourceServerId $resourceServerId)
     {
         $this->authorizationCodeId = $authorizationCodeId;
         $this->userAccountId = $userAccountId;
         $this->clientId = $clientId;
         $this->expiresAt = $expiresAt;
-        $this->parameter = $parameters;
-        $this->metadata = $metadatas;
+        $this->parameter = $parameter;
+        $this->metadata = $metadata;
         $this->redirectUri = $redirectUri;
         $this->queryParameters = $queryParameters;
         $this->resourceServerId = $resourceServerId;
@@ -116,8 +116,8 @@ class AuthorizationCodeCreatedEvent extends Event
             'user_account_id' => $this->userAccountId->getValue(),
             'client_id' => $this->clientId->getValue(),
             'expires_at' => $this->expiresAt->getTimestamp(),
-            'parameters' => (object) $this->parameter->all(),
-            'metadatas' => (object) $this->metadata->all(),
+            'parameter' => (object) $this->parameter->all(),
+            'metadata' => (object) $this->metadata->all(),
             'redirect_uri' => $this->redirectUri,
             'query_parameters' => (object) $this->queryParameters,
             'resource_server_id' => $this->resourceServerId ? $this->resourceServerId->getValue() : null,

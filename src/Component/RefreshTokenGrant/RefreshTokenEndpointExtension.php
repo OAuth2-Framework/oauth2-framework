@@ -23,24 +23,10 @@ use Psr\Http\Message\ServerRequestInterface;
 
 final class RefreshTokenEndpointExtension implements TokenEndpointExtension
 {
-    /**
-     * @var int
-     */
     private $lifetime;
-
-    /**
-     * @var RefreshTokenRepository
-     */
     private $refreshTokenRepository;
-
-    /**
-     * @var RefreshTokenIdGenerator
-     */
     private $refreshTokenIdGenerator;
 
-    /**
-     * RefreshTokenEndpointExtension constructor.
-     */
     public function __construct(int $lifetime, RefreshTokenRepository $refreshTokenRepository, RefreshTokenIdGenerator $refreshTokenIdGenerator)
     {
         $this->lifetime = $lifetime;
@@ -48,17 +34,11 @@ final class RefreshTokenEndpointExtension implements TokenEndpointExtension
         $this->refreshTokenIdGenerator = $refreshTokenIdGenerator;
     }
 
-    /**
-     * {@inheritdoc}K
-     */
     public function beforeAccessTokenIssuance(ServerRequestInterface $request, GrantTypeData $grantTypeData, GrantType $grantType, callable $next): GrantTypeData
     {
         return $next($request, $grantTypeData, $grantType);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function afterAccessTokenIssuance(Client $client, ResourceOwner $resourceOwner, AccessToken $accessToken, callable $next): array
     {
         $result = $next($client, $resourceOwner, $accessToken);
@@ -68,15 +48,15 @@ final class RefreshTokenEndpointExtension implements TokenEndpointExtension
             $refreshTokenId = $this->refreshTokenIdGenerator->createRefreshTokenId();
             $refreshToken = new RefreshToken(
                 $refreshTokenId,
-                $accessToken->getResourceOwnerId(),
                 $accessToken->getClientId(),
+                $accessToken->getResourceOwnerId(),
                 $accessToken->getParameter(),
                 $accessToken->getMetadata(),
                 $expiresAt,
                 null);
-            $refreshToken = $refreshToken->addAccessToken($accessToken->getAccessTokenId());
+            $refreshToken->addAccessToken($accessToken->getTokenId());
             $this->refreshTokenRepository->save($refreshToken);
-            $result['refresh_token'] = $refreshToken->getRefreshTokenId()->getValue();
+            $result['refresh_token'] = $refreshToken->getTokenId()->getValue();
         }
 
         return $result;

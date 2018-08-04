@@ -17,17 +17,11 @@ use OAuth2Framework\Component\Core\Client\Client;
 
 final class NoScopePolicy implements ScopePolicy
 {
-    /**
-     * {@inheritdoc}
-     */
     public function name(): string
     {
         return 'none';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function applyScopePolicy(string $scope, Client $client): string
     {
         return $scope;

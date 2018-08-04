@@ -23,14 +23,11 @@ class ScopePolicyManager
     private $scopePolicies = [];
 
     /**
-     * @var string
+     * @var string|null
      */
     private $defaultScopePolicy = null;
 
-    /**
-     * @return ScopePolicyManager
-     */
-    public function add(ScopePolicy $scopePolicy, bool $isDefault = false): self
+    public function add(ScopePolicy $scopePolicy, bool $isDefault = false): void
     {
         $name = $scopePolicy->name();
         $this->scopePolicies[$name] = $scopePolicy;
@@ -38,8 +35,6 @@ class ScopePolicyManager
         if (true === $isDefault || 1 === \count($this->scopePolicies)) {
             $this->defaultScopePolicy = $name;
         }
-
-        return $this;
     }
 
     public function apply(string $scope, Client $client): string

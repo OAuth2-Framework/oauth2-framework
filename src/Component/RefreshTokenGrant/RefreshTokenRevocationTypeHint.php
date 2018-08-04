@@ -18,30 +18,18 @@ use OAuth2Framework\Component\TokenRevocationEndpoint\TokenTypeHint;
 
 final class RefreshTokenRevocationTypeHint implements TokenTypeHint
 {
-    /**
-     * @var RefreshTokenRepository
-     */
     private $refreshTokenRepository;
 
-    /**
-     * RefreshTokenRevocationTypeHint constructor.
-     */
     public function __construct(RefreshTokenRepository $refreshTokenRepository)
     {
         $this->refreshTokenRepository = $refreshTokenRepository;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function hint(): string
     {
         return 'refresh_token';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function find(string $token): ?Token
     {
         $id = new RefreshTokenId($token);
@@ -49,9 +37,6 @@ final class RefreshTokenRevocationTypeHint implements TokenTypeHint
         return $this->refreshTokenRepository->find($id);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function revoke(Token $token)
     {
         if (!$token instanceof RefreshToken || true === $token->isRevoked()) {

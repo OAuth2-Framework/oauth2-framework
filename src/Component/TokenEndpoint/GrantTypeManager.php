@@ -20,14 +20,9 @@ class GrantTypeManager
      */
     private $grantTypes = [];
 
-    /**
-     * @return GrantTypeManager
-     */
-    public function add(GrantType $grantType): self
+    public function add(GrantType $grantType): void
     {
         $this->grantTypes[$grantType->name()] = $grantType;
-
-        return $this;
     }
 
     public function has(string $name): bool

@@ -23,44 +23,25 @@ use Psr\Http\Message\ServerRequestInterface;
 
 final class ResourceOwnerPasswordCredentialsGrantType implements GrantType
 {
-    /**
-     * @var UserAccountManager
-     */
     private $userAccountManager;
-
-    /**
-     * @var UserAccountRepository
-     */
     private $userAccountRepository;
 
-    /**
-     * ResourceOwnerPasswordCredentialsGrantType constructor.
-     */
     public function __construct(UserAccountManager $userAccountManager, UserAccountRepository $userAccountRepository)
     {
         $this->userAccountManager = $userAccountManager;
         $this->userAccountRepository = $userAccountRepository;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function associatedResponseTypes(): array
     {
         return [];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function name(): string
     {
         return 'password';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function checkRequest(ServerRequestInterface $request)
     {
         $parameters = RequestBodyParser::parseFormUrlEncoded($request);
@@ -72,18 +53,12 @@ final class ResourceOwnerPasswordCredentialsGrantType implements GrantType
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function prepareResponse(ServerRequestInterface $request, GrantTypeData $grantTypeData): GrantTypeData
     {
         // Nothing to do
         return $grantTypeData;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function grant(ServerRequestInterface $request, GrantTypeData $grantTypeData): GrantTypeData
     {
         $parameters = RequestBodyParser::parseFormUrlEncoded($request);
@@ -95,7 +70,7 @@ final class ResourceOwnerPasswordCredentialsGrantType implements GrantType
             throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_GRANT, 'Invalid username and password combination.');
         }
 
-        $grantTypeData->withResourceOwnerId($userAccount->getUserAccountId());
+        $grantTypeData->setResourceOwnerId($userAccount->getUserAccountId());
 
         return $grantTypeData;
     }

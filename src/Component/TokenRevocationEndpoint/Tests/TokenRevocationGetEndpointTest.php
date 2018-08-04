@@ -228,8 +228,7 @@ final class TokenRevocationGetEndpointTest extends TestCase
     private function getClient(): Client
     {
         if (null === $this->client) {
-            $this->client = Client::createEmpty();
-            $this->client = $this->client->create(
+            $this->client = new Client(
                 new ClientId('CLIENT_ID'),
                 new DataBag([]),
                 new UserAccountId('USER_ACCOUNT')

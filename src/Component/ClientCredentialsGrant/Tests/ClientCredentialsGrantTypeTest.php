@@ -52,14 +52,13 @@ final class ClientCredentialsGrantTypeTest extends TestCase
      */
     public function theTokenResponseIsCorrectlyPrepared()
     {
-        $client = Client::createEmpty();
-        $client = $client->create(
+        $client = new Client(
             new ClientId('CLIENT_ID'),
             new DataBag([]),
             new UserAccountId('USER_ACCOUNT_ID')
         );
         $request = $this->prophesize(ServerRequestInterface::class);
-        $grantTypeData = GrantTypeData::create($client);
+        $grantTypeData = new GrantTypeData($client);
 
         $receivedGrantTypeData = $this->getGrantType()->prepareResponse($request->reveal(), $grantTypeData);
         static::assertSame($receivedGrantTypeData, $grantTypeData);
@@ -70,14 +69,13 @@ final class ClientCredentialsGrantTypeTest extends TestCase
      */
     public function theGrantTypeCanGrantTheClient()
     {
-        $client = Client::createEmpty();
-        $client = $client->create(
+        $client = new Client(
             new ClientId('CLIENT_ID'),
             new DataBag([]),
             new UserAccountId('USER_ACCOUNT_ID')
         );
         $request = $this->prophesize(ServerRequestInterface::class);
-        $grantTypeData = GrantTypeData::create($client);
+        $grantTypeData = new GrantTypeData($client);
 
         $receivedGrantTypeData = $this->getGrantType()->grant($request->reveal(), $grantTypeData);
         static::assertEquals('CLIENT_ID', $receivedGrantTypeData->getResourceOwnerId()->getValue());

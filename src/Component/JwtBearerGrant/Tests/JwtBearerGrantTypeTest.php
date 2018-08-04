@@ -108,7 +108,7 @@ final class JwtBearerGrantTypeTest extends TestCase
             static::markTestSkipped('The component "web-token/jwt-encryption" is not installed.');
         }
         $request = $this->buildRequest(['assertion' => $this->createValidEncryptedAssertionFromClient()]);
-        $grantTypeData = GrantTypeData::create(null);
+        $grantTypeData = new GrantTypeData(null);
 
         $receivedGrantTypeData = $this->getGrantType()->prepareResponse($request->reveal(), $grantTypeData);
         static::assertTrue($receivedGrantTypeData->getMetadata()->has('jwt'));
@@ -121,7 +121,7 @@ final class JwtBearerGrantTypeTest extends TestCase
     public function theTokenResponseIsCorrectlyPreparedWithAssertionFromTrustedIssuer()
     {
         $request = $this->buildRequest(['assertion' => $this->createValidAssertionFromIssuer()]);
-        $grantTypeData = GrantTypeData::create(null);
+        $grantTypeData = new GrantTypeData(null);
 
         $receivedGrantTypeData = $this->getGrantType()->prepareResponse($request->reveal(), $grantTypeData);
         static::assertTrue($receivedGrantTypeData->getMetadata()->has('jwt'));
@@ -134,7 +134,7 @@ final class JwtBearerGrantTypeTest extends TestCase
     public function theAssertionHasBeenIssuedByAnUnknownIssuer()
     {
         $request = $this->buildRequest(['assertion' => $this->createAssertionFromUnknownIssuer()]);
-        $grantTypeData = GrantTypeData::create(null);
+        $grantTypeData = new GrantTypeData(null);
 
         try {
             $this->getGrantType()->prepareResponse($request->reveal(), $grantTypeData);
@@ -152,16 +152,15 @@ final class JwtBearerGrantTypeTest extends TestCase
      */
     public function theGrantTypeCanGrantTheClientUsingTheTokenIssuedByATrustedIssuer()
     {
-        $client = Client::createEmpty();
-        $client = $client->create(
+        $client = new Client(
             new ClientId('CLIENT_ID'),
             new DataBag([]),
             new UserAccountId('USER_ACCOUNT_ID')
         );
         $request = $this->buildRequest(['assertion' => $this->createValidAssertionFromIssuer()]);
         $request->getAttribute('client')->willReturn($client);
-        $grantTypeData = GrantTypeData::create($client);
-        $grantTypeData->withResourceOwnerId(new UserAccountId('USER_ACCOUNT_ID'));
+        $grantTypeData = new GrantTypeData($client);
+        $grantTypeData->setResourceOwnerId(new UserAccountId('USER_ACCOUNT_ID'));
 
         $receivedGrantTypeData = $this->getGrantType()->grant($request->reveal(), $grantTypeData);
         static::assertSame($receivedGrantTypeData, $grantTypeData);
@@ -177,16 +176,15 @@ final class JwtBearerGrantTypeTest extends TestCase
         if (!\class_exists(JWEBuilder::class)) {
             static::markTestSkipped('The component "web-token/jwt-encryption" is not installed.');
         }
-        $client = Client::createEmpty();
-        $client = $client->create(
+        $client = new Client(
             new ClientId('CLIENT_ID'),
             new DataBag([]),
             new UserAccountId('USER_ACCOUNT_ID')
         );
         $request = $this->buildRequest(['assertion' => $this->createValidEncryptedAssertionFromClient()]);
         $request->getAttribute('client')->willReturn($client);
-        $grantTypeData = GrantTypeData::create($client);
-        $grantTypeData->withResourceOwnerId(new UserAccountId('CLIENT_ID'));
+        $grantTypeData = new GrantTypeData($client);
+        $grantTypeData->setResourceOwnerId(new UserAccountId('CLIENT_ID'));
 
         $receivedGrantTypeData = $this->getGrantType()->grant($request->reveal(), $grantTypeData);
         static::assertSame($receivedGrantTypeData, $grantTypeData);
@@ -250,8 +248,7 @@ final class JwtBearerGrantTypeTest extends TestCase
         $clientRepository = $this->prophesize(ClientRepository::class);
         $clientRepository->find(Argument::type(ClientId::class))->will(function ($args) use ($keyset) {
             if ('CLIENT_ID' === ($args[0])->getValue()) {
-                $client = Client::createEmpty();
-                $client = $client->create(
+                $client = new Client(
                     new ClientId('CLIENT_ID'),
                     new DataBag([
                         'jwks' => \json_encode($keyset),
@@ -263,7 +260,7 @@ final class JwtBearerGrantTypeTest extends TestCase
                 return $client;
             }
 
-            return;
+            return null;
         });
 
         return $clientRepository->reveal();

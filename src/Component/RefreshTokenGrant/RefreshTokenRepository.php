@@ -19,14 +19,6 @@ namespace OAuth2Framework\Component\RefreshTokenGrant;
  */
 interface RefreshTokenRepository
 {
-    public function save(RefreshToken $refreshToken);
-
-    /**
-     * @param RefreshTokenId $refreshTokenId refresh token ID
-     *
-     * @return RefreshToken|null
-     *
-     * @see     http://tools.ietf.org/html/rfc6749#section-6
-     */
-    public function find(RefreshTokenId $refreshTokenId);
+    public function save(RefreshToken $refreshToken): void;
+    public function find(RefreshTokenId $refreshTokenId): ?RefreshToken;
 }

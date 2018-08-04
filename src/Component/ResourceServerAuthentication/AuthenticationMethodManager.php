@@ -30,18 +30,13 @@ class AuthenticationMethodManager
      */
     private $names = [];
 
-    /**
-     * @return AuthenticationMethodManager
-     */
-    public function add(AuthenticationMethod $method): self
+    public function add(AuthenticationMethod $method): void
     {
         $class = \get_class($method);
         $this->methods[$class] = $method;
         foreach ($method->getSupportedMethods() as $name) {
             $this->names[$name] = $class;
         }
-
-        return $this;
     }
 
     /**
@@ -79,14 +74,11 @@ class AuthenticationMethodManager
     }
 
     /**
-     * @param AuthenticationMethod $authenticationMethod
-     * @param mixed                $resourceServerCredentials The  resource server credentials found in the request
+     * @param mixed $resourceServerCredentials The resource server credentials found in the request
      *
      * @throws OAuth2Message
-     *
-     * @return null|ResourceServerId
      */
-    public function findResourceServerIdAndCredentials(ServerRequestInterface $request, AuthenticationMethod &$authenticationMethod = null, &$resourceServerCredentials = null)
+    public function findResourceServerIdAndCredentials(ServerRequestInterface $request, AuthenticationMethod &$authenticationMethod = null, &$resourceServerCredentials = null): ?ResourceServerId
     {
         $resourceServerId = null;
         $resourceServerCredentials = null;

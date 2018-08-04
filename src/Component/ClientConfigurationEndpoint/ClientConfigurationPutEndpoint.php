@@ -63,7 +63,7 @@ final class ClientConfigurationPutEndpoint implements MiddlewareInterface
 
         $command_parameters = new DataBag($parameters);
         $validated_parameters = $this->ruleManager->handle($client->getClientId(), $command_parameters);
-        $client = $client->withParameters($validated_parameters);
+        $client->setParameter($validated_parameters);
 
         try {
             $this->clientRepository->save($client);

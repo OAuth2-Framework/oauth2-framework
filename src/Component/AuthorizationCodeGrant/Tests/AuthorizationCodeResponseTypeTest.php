@@ -51,8 +51,7 @@ final class AuthorizationCodeResponseTypeTest extends TestCase
      */
     public function theRequestHaveMissingParameters()
     {
-        $client = Client::createEmpty();
-        $client = $client->create(
+        $client = new Client(
             new ClientId('CLIENT_ID'),
             new DataBag([]),
             new UserAccountId('USER_ACCOUNT_ID')

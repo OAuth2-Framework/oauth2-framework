@@ -17,15 +17,15 @@ use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenId;
 
 class MarkRefreshTokenAsRevoked
 {
-    private $RefreshTokenId;
+    private $refreshTokenId;
 
-    public function __construct(RefreshTokenId $RefreshTokenId)
+    public function __construct(RefreshTokenId $refreshTokenId)
     {
-        $this->RefreshTokenId = $RefreshTokenId;
+        $this->refreshTokenId = $refreshTokenId;
     }
 
     public function getRefreshTokenId(): RefreshTokenId
     {
-        return $this->RefreshTokenId;
+        return $this->refreshTokenId;
     }
 }

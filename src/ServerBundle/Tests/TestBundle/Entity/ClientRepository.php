@@ -51,8 +51,7 @@ class ClientRepository implements \OAuth2Framework\Component\Core\Client\ClientR
 
     private function populateClients()
     {
-        $client = Client::createEmpty();
-        $client = $client->create(
+        $client = new Client(
             new ClientId('CLIENT_ID_1'),
             new DataBag([
                 'token_endpoint_auth_method' => 'none',
@@ -62,8 +61,7 @@ class ClientRepository implements \OAuth2Framework\Component\Core\Client\ClientR
         );
         $this->save($client);
 
-        $client = Client::createEmpty();
-        $client = $client->create(
+        $client = new Client(
             new ClientId('CLIENT_ID_2'),
             new DataBag([
                 'token_endpoint_auth_method' => 'none',
@@ -73,8 +71,7 @@ class ClientRepository implements \OAuth2Framework\Component\Core\Client\ClientR
         );
         $this->save($client);
 
-        $client = Client::createEmpty();
-        $client = $client->create(
+        $client = new Client(
             new ClientId('CLIENT_ID_3'),
             new DataBag([
                 'token_endpoint_auth_method' => 'client_secret_post',
@@ -85,8 +82,7 @@ class ClientRepository implements \OAuth2Framework\Component\Core\Client\ClientR
         );
         $this->save($client);
 
-        $client = Client::createEmpty();
-        $client = $client->create(
+        $client = new Client(
             new ClientId('CLIENT_ID_4'),
             new DataBag([
                 'token_endpoint_auth_method' => 'client_secret_jwt',
@@ -97,8 +93,7 @@ class ClientRepository implements \OAuth2Framework\Component\Core\Client\ClientR
         );
         $this->save($client);
 
-        $client = Client::createEmpty();
-        $client = $client->create(
+        $client = new Client(
             new ClientId('CLIENT_ID_5'),
             new DataBag([
                 'token_endpoint_auth_method' => 'client_secret_basic',

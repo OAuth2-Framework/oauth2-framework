@@ -20,8 +20,6 @@ use OAuth2Framework\Component\Core\Event\Event;
 use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwner;
 use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwnerId;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
-use SimpleBus\Message\Recorder\ContainsRecordedMessages;
-use SimpleBus\Message\Recorder\PrivateMessageRecorderCapabilities;
 
 /**
  * Class ClientCredentials.
@@ -30,68 +28,24 @@ use SimpleBus\Message\Recorder\PrivateMessageRecorderCapabilities;
  * A client is a resource owner with a set of allowed grant types and can perform requests against
  * available endpoints.
  */
-class Client implements ResourceOwner, ContainsRecordedMessages, DomainObject
+class Client implements ResourceOwner, DomainObject
 {
-    use PrivateMessageRecorderCapabilities;
+    private $clientId;
+    private $ownerId;
+    protected $parameter;
+    private $deleted;
 
-    /**
-     * @var bool
-     */
-    private $deleted = false;
-
-    /**
-     * @var UserAccountId|null
-     */
-    private $ownerId = null;
-
-    /**
-     * @var ClientId|null
-     */
-    private $clientId = null;
-
-    /**
-     * @var DataBag
-     */
-    protected $parameters;
-
-    /**
-     * ClientCredentials constructor.
-     */
-    private function __construct()
+    public function __construct(ClientId $clientId, DataBag $parameters, ?UserAccountId $ownerId)
     {
-        $this->parameters = new DataBag([]);
+        $this->clientId = $clientId;
+        $this->parameter = $parameters;
+        $this->ownerId = $ownerId;
+        $this->deleted = false;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public static function getSchema(): string
     {
         return 'https://oauth2-framework.spomky-labs.com/schemas/model/client/1.0/schema';
-    }
-
-    /**
-     * @return Client
-     */
-    public static function createEmpty(): self
-    {
-        return new self();
-    }
-
-    /**
-     * @return Client
-     */
-    public function create(ClientId $clientId, DataBag $parameters, ?UserAccountId $ownerId): self
-    {
-        $clone = clone $this;
-        $clone->clientId = $clientId;
-        $clone->parameters = $parameters;
-        $clone->ownerId = $ownerId;
-
-        $event = ClientEvent\ClientCreatedEvent::create($clone->clientId, $parameters, $ownerId);
-        $clone->record($event);
-
-        return $clone;
     }
 
     public function getClientId(): ClientId
@@ -109,47 +63,19 @@ class Client implements ResourceOwner, ContainsRecordedMessages, DomainObject
         return $this->ownerId;
     }
 
-    /**
-     * @return Client
-     */
-    public function withOwnerId(UserAccountId $ownerId): self
+    public function setOwnerId(UserAccountId $ownerId): void
     {
-        if ($this->getOwnerId()->getValue() === $ownerId->getValue()) {
-            return $this;
-        }
-
-        $clone = clone $this;
-        $clone->ownerId = $ownerId;
-        $event = ClientEvent\ClientOwnerChangedEvent::create($clone->getClientId(), $ownerId);
-        $clone->record($event);
-
-        return $clone;
+        $this->ownerId = $ownerId;
     }
 
-    /**
-     * @return Client
-     */
-    public function withParameters(DataBag $parameters): self
+    public function setParameter(DataBag $parameter): void
     {
-        $clone = clone $this;
-        $clone->parameters = $parameters;
-        $event = ClientEvent\ClientParametersUpdatedEvent::create($clone->getClientId(), $parameters);
-        $clone->record($event);
-
-        return $clone;
+        $this->parameter = $parameter;
     }
 
-    /**
-     * @return Client
-     */
-    public function markAsDeleted(): self
+    public function markAsDeleted(): void
     {
-        $clone = clone $this;
-        $clone->deleted = true;
-        $event = ClientEvent\ClientDeletedEvent::create($clone->getClientId());
-        $clone->record($event);
-
-        return $clone;
+        $this->deleted = true;
     }
 
     public function isDeleted(): bool
@@ -209,9 +135,6 @@ class Client implements ResourceOwner, ContainsRecordedMessages, DomainObject
         return \time() > $this->getClientCredentialsExpiresAt();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getPublicId(): ResourceOwnerId
     {
         if (null === $this->clientId) {
@@ -221,37 +144,28 @@ class Client implements ResourceOwner, ContainsRecordedMessages, DomainObject
         return $this->clientId;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function has(string $key): bool
     {
-        return $this->parameters->has($key);
+        return $this->parameter->has($key);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function get(string $key)
     {
         if (!$this->has($key)) {
             throw new \InvalidArgumentException(\sprintf('Configuration value with key "%s" does not exist.', $key));
         }
 
-        return $this->parameters->get($key);
+        return $this->parameter->get($key);
     }
 
     public function all(): array
     {
-        $all = $this->parameters->all();
+        $all = $this->parameter->all();
         $all['client_id'] = $this->getPublicId()->getValue();
 
         return $all;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function jsonSerialize()
     {
         $data = [
@@ -266,29 +180,7 @@ class Client implements ResourceOwner, ContainsRecordedMessages, DomainObject
         return $data;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public static function createFromJson(\stdClass $json): DomainObject
-    {
-        $clientId = new ClientId($json->client_id);
-        $ownerId = null !== $json->owner_id ? new UserAccountId($json->owner_id) : null;
-        $parameters = new DataBag((array) $json->parameters);
-        $deleted = $json->is_deleted;
-
-        $client = new self();
-        $client->clientId = $clientId;
-        $client->ownerId = $ownerId;
-        $client->parameters = $parameters;
-        $client->deleted = $deleted;
-
-        return $client;
-    }
-
-    /**
-     * @return Client
-     */
-    public function apply(Event $event): self
+    public function apply(Event $event): void
     {
         $map = $this->getEventMap();
         if (!\array_key_exists($event->getType(), $map)) {
@@ -298,8 +190,7 @@ class Client implements ResourceOwner, ContainsRecordedMessages, DomainObject
             throw new \InvalidArgumentException('Event not applicable for this client.');
         }
         $method = $map[$event->getType()];
-
-        return $this->$method($event);
+        $this->$method($event);
     }
 
     private function getEventMap(): array
@@ -312,49 +203,25 @@ class Client implements ResourceOwner, ContainsRecordedMessages, DomainObject
         ];
     }
 
-    /**
-     * @return Client
-     */
-    protected function applyClientCreatedEvent(ClientEvent\ClientCreatedEvent $event): self
+    protected function applyClientCreatedEvent(ClientEvent\ClientCreatedEvent $event): void
     {
-        $clone = clone $this;
-        $clone->clientId = $event->getClientId();
-        $clone->ownerId = $event->getOwnerId();
-        $clone->parameters = $event->getParameters();
-
-        return $clone;
+        $this->clientId = $event->getClientId();
+        $this->ownerId = $event->getOwnerId();
+        $this->parameter = $event->getParameters();
     }
 
-    /**
-     * @return Client
-     */
-    protected function applyClientOwnerChangedEvent(ClientEvent\ClientOwnerChangedEvent $event): self
+    protected function applyClientOwnerChangedEvent(ClientEvent\ClientOwnerChangedEvent $event): void
     {
-        $clone = clone $this;
-        $clone->ownerId = $event->getNewOwnerId();
-
-        return $clone;
+        $this->ownerId = $event->getNewOwnerId();
     }
 
-    /**
-     * @return Client
-     */
-    protected function applyClientDeletedEvent(ClientEvent\ClientDeletedEvent $event): self
+    protected function applyClientDeletedEvent(ClientEvent\ClientDeletedEvent $event): void
     {
-        $clone = clone $this;
-        $clone->deleted = true;
-
-        return $clone;
+        $this->deleted = true;
     }
 
-    /**
-     * @return Client
-     */
-    protected function applyClientParametersUpdatedEvent(ClientEvent\ClientParametersUpdatedEvent $event): self
+    protected function applyClientParametersUpdatedEvent(ClientEvent\ClientParametersUpdatedEvent $event): void
     {
-        $clone = clone $this;
-        $clone->parameters = $event->getParameters();
-
-        return $clone;
+        $this->parameter = $event->getParameters();
     }
 }

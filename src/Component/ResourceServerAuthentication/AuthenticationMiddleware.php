@@ -23,28 +23,15 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 final class AuthenticationMiddleware implements MiddlewareInterface
 {
-    /**
-     * @var AuthenticationMethodManager
-     */
     private $authenticationMethodManager;
-
-    /**
-     * @var ResourceServerRepository
-     */
     private $resourceServerRepository;
 
-    /**
-     * ResourceServerAuthenticationMiddleware constructor.
-     */
     public function __construct(ResourceServerRepository $resourceServerRepository, AuthenticationMethodManager $authenticationMethodManager)
     {
         $this->resourceServerRepository = $resourceServerRepository;
         $this->authenticationMethodManager = $authenticationMethodManager;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         try {
@@ -64,17 +51,14 @@ final class AuthenticationMiddleware implements MiddlewareInterface
         return $handler->handle($request);
     }
 
-    /**
-     * @param null|ResourceServer $resourceServer
-     */
-    private function checkResourceServer(?ResourceServer $resourceServer)
+    private function checkResourceServer(?ResourceServer $resourceServer): void
     {
         if (null === $resourceServer) {
             throw new \InvalidArgumentException('Unknown resource server or resource server not authenticated.');
         }
     }
 
-    private function checkAuthenticationMethod(ServerRequestInterface $request, ResourceServer $resourceServer, AuthenticationMethod $authenticationMethod, $resourceServer_credentials)
+    private function checkAuthenticationMethod(ServerRequestInterface $request, ResourceServer $resourceServer, AuthenticationMethod $authenticationMethod, $resourceServer_credentials): void
     {
         if (!\in_array($resourceServer->getAuthenticationMethod(), $authenticationMethod->getSupportedMethods(), true)) {
             throw new \InvalidArgumentException('Unknown resource server or resource server not authenticated.');

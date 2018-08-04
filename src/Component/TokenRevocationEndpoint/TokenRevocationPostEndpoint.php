@@ -18,9 +18,6 @@ use Psr\Http\Message\ServerRequestInterface;
 
 final class TokenRevocationPostEndpoint extends TokenRevocationEndpoint
 {
-    /**
-     * {@inheritdoc}
-     */
     protected function getRequestParameters(ServerRequestInterface $request): array
     {
         $parameters = RequestBodyParser::parseFormUrlEncoded($request);

@@ -26,28 +26,15 @@ use Psr\Http\Message\ServerRequestInterface;
 
 final class TokenEndpointScopeExtension implements TokenEndpointExtension
 {
-    /**
-     * @var ScopeRepository
-     */
     private $scopeRepository;
-
-    /**
-     * @var ScopePolicyManager
-     */
     private $scopePolicyManager;
 
-    /**
-     * ScopeProcessor constructor.
-     */
     public function __construct(ScopeRepository $scopeRepository, ScopePolicyManager $scopePolicyManager)
     {
         $this->scopeRepository = $scopeRepository;
         $this->scopePolicyManager = $scopePolicyManager;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function beforeAccessTokenIssuance(ServerRequestInterface $request, GrantTypeData $grantTypeData, GrantType $grantType, callable $next): GrantTypeData
     {
         /** @var GrantTypeData $grantTypeData */
@@ -62,9 +49,6 @@ final class TokenEndpointScopeExtension implements TokenEndpointExtension
         return $grantTypeData;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function afterAccessTokenIssuance(Client $client, ResourceOwner $resourceOwner, AccessToken $accessToken, callable $next): array
     {
         $result = $next($client, $resourceOwner, $accessToken);
@@ -106,7 +90,7 @@ final class TokenEndpointScopeExtension implements TokenEndpointExtension
     /**
      * @throws OAuth2Message
      */
-    private function checkRequestedScopeIsAvailable(string $scope, GrantTypeData $grantTypeData)
+    private function checkRequestedScopeIsAvailable(string $scope, GrantTypeData $grantTypeData): void
     {
         // The available scope can be limited by (in this order):
         // * the grant type (e.g. refresh token, authorization code parameter)

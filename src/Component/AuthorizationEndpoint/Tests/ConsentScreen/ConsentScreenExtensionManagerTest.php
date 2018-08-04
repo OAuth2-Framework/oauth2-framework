@@ -34,8 +34,7 @@ final class ConsentScreenExtensionManagerTest extends TestCase
     public function theManagerCanCallExtensionsBeforeConsentScreenExtension()
     {
         $request = $this->prophesize(ServerRequestInterface::class);
-        $client = Client::createEmpty();
-        $client = $client->create(
+        $client = new Client(
             new ClientId('CLIENT_ID'),
             new DataBag([]),
             null
@@ -52,8 +51,7 @@ final class ConsentScreenExtensionManagerTest extends TestCase
     public function theManagerCanCallExtensionsAfterConsentScreenExtension()
     {
         $request = $this->prophesize(ServerRequestInterface::class);
-        $client = Client::createEmpty();
-        $client = $client->create(
+        $client = new Client(
             new ClientId('CLIENT_ID'),
             new DataBag([]),
             null

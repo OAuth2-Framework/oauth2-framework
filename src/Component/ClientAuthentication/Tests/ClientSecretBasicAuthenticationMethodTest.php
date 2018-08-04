@@ -69,8 +69,7 @@ final class ClientSecretBasicAuthenticationMethodTest extends TestCase
         static::assertInstanceOf(ClientId::class, $clientId);
         static::assertEquals('CLIENT_SECRET', $credentials);
 
-        $client = Client::createEmpty();
-        $client = $client->create(
+        $client = new Client(
             new ClientId('CLIENT_ID'),
             new DataBag([
                 'client_secret' => 'CLIENT_SECRET',
@@ -90,8 +89,7 @@ final class ClientSecretBasicAuthenticationMethodTest extends TestCase
         $method = new ClientSecretBasic('My Service');
         $manager = new AuthenticationMethodManager();
         $manager->add($method);
-        $client = Client::createEmpty();
-        $client = $client->create(
+        $client = new Client(
             new ClientId('CLIENT_ID'),
             new DataBag([
                 'client_secret' => 'CLIENT_SECRET',
