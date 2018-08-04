@@ -34,7 +34,7 @@ final class ScopeParameterCheckerTest extends TestCase
     protected function setUp()
     {
         if (!\class_exists(Authorization::class)) {
-            $this->markTestSkipped('The component "oauth2-framework/authorization-endpoint" is not installed.');
+            static::markTestSkipped('The component "oauth2-framework/authorization-endpoint" is not installed.');
         }
     }
 
@@ -63,7 +63,7 @@ final class ScopeParameterCheckerTest extends TestCase
         $authorization->getClient()->willReturn($client->reveal());
         $authorization->hasQueryParam('scope')->willReturn(true)->shouldBeCalled();
         $authorization->getQueryParam('scope')->willReturn('scope1')->shouldBeCalled();
-        $authorization->getMetadata()->willReturn(DataBag::create([]))->shouldBeCalled();
+        $authorization->getMetadata()->willReturn(new DataBag([]))->shouldBeCalled();
         $authorization->withResponseParameter('scope', Argument::any())->willReturn($authorization)->shouldBeCalled();
         $this->getScopeParameterChecker()->check(
             $authorization->reveal()
@@ -86,11 +86,11 @@ final class ScopeParameterCheckerTest extends TestCase
             $this->getScopeParameterChecker()->check(
                 $authorization->reveal()
             );
-            $this->fail('Expected exception nt thrown.');
+            static::fail('Expected exception nt thrown.');
         } catch (OAuth2AuthorizationException $e) {
-            self::assertEquals('invalid_scope', $e->getMessage());
-            self::assertEquals('An unsupported scope was requested. Available scopes for the client are scope1, scope2.', $e->getErrorDescription());
-            self::assertEquals(400, $e->getCode());
+            static::assertEquals('invalid_scope', $e->getMessage());
+            static::assertEquals('An unsupported scope was requested. Available scopes for the client are scope1, scope2.', $e->getErrorDescription());
+            static::assertEquals(400, $e->getCode());
         }
     }
 

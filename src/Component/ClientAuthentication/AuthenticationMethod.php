@@ -36,25 +36,8 @@ interface AuthenticationMethod
      */
     public function findClientIdAndCredentials(ServerRequestInterface $request, &$clientCredentials = null): ?ClientId;
 
-    /**
-     * @param DataBag $command_parameters
-     * @param DataBag $validated_parameters
-     *
-     * @throws \InvalidArgumentException
-     *
-     * @return DataBag
-     */
     public function checkClientConfiguration(DataBag $command_parameters, DataBag $validated_parameters): DataBag;
 
-    /**
-     * This method verifies the client credentials in the request.
-     *
-     * @param Client                 $client
-     * @param mixed                  $clientCredentials
-     * @param ServerRequestInterface $request
-     *
-     * @return bool Returns true if the client is authenticated, else false
-     */
     public function isClientAuthenticated(Client $client, $clientCredentials, ServerRequestInterface $request): bool;
 
     /**

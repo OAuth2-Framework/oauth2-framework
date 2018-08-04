@@ -34,10 +34,6 @@ class Scope implements ScopeInterface
 
     /**
      * Scope constructor.
-     *
-     * @param string      $name
-     * @param string|null $parent
-     * @param bool        $isParentMandatory
      */
     public function __construct(string $name, string $parent = null, bool $isParentMandatory = false)
     {

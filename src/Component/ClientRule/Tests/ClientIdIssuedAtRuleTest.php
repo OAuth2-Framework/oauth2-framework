@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\ClientRule\Tests;
 
-use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\ClientRule;
+use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use PHPUnit\Framework\TestCase;
 
@@ -26,36 +26,33 @@ final class ClientIdIssuedAtRuleTest extends TestCase
     /**
      * @test
      */
-    public function testClientIdIssuedAtRuleSetAsDefault()
+    public function clientIdIssuedAtRuleSetAsDefault()
     {
-        $clientId = ClientId::create('CLIENT_ID');
-        $commandParameters = DataBag::create([]);
+        $clientId = new ClientId('CLIENT_ID');
+        $commandParameters = new DataBag([]);
         $rule = new ClientRule\ClientIdIssuedAtRule();
-        $validatedParameters = $rule->handle($clientId, $commandParameters, DataBag::create([]), $this->getCallable());
+        $validatedParameters = $rule->handle($clientId, $commandParameters, new DataBag([]), $this->getCallable());
 
-        self::assertTrue($validatedParameters->has('client_id_issued_at'));
-        self::assertInternalType('integer', $validatedParameters->get('client_id_issued_at'));
+        static::assertTrue($validatedParameters->has('client_id_issued_at'));
+        static::assertInternalType('integer', $validatedParameters->get('client_id_issued_at'));
     }
 
     /**
      * @test
      */
-    public function testClientIdIssuedAtRuleDefineInParameters()
+    public function clientIdIssuedAtRuleDefineInParameters()
     {
-        $clientId = ClientId::create('CLIENT_ID');
-        $commandParameters = DataBag::create([
+        $clientId = new ClientId('CLIENT_ID');
+        $commandParameters = new DataBag([
             'client_id_issued_at' => \time() - 1000,
         ]);
         $rule = new ClientRule\ClientIdIssuedAtRule();
-        $validatedParameters = $rule->handle($clientId, $commandParameters, DataBag::create([]), $this->getCallable());
+        $validatedParameters = $rule->handle($clientId, $commandParameters, new DataBag([]), $this->getCallable());
 
-        self::assertTrue($validatedParameters->has('client_id_issued_at'));
-        self::assertInternalType('integer', $validatedParameters->get('client_id_issued_at'));
+        static::assertTrue($validatedParameters->has('client_id_issued_at'));
+        static::assertInternalType('integer', $validatedParameters->get('client_id_issued_at'));
     }
 
-    /**
-     * @return callable
-     */
     private function getCallable(): callable
     {
         return function (ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters): DataBag {

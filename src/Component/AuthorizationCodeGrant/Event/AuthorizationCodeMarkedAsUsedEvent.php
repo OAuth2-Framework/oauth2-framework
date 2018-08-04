@@ -14,23 +14,14 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\AuthorizationCodeGrant\Event;
 
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeId;
-use OAuth2Framework\Component\Core\Domain\DomainObject;
 use OAuth2Framework\Component\Core\Event\Event;
 use OAuth2Framework\Component\Core\Id\Id;
 
 class AuthorizationCodeMarkedAsUsedEvent extends Event
 {
-    /**
-     * @var AuthorizationCodeId
-     */
     private $authorizationCodeId;
 
-    /**
-     * AuthorizationCodeMarkedAsUsedEvent constructor.
-     *
-     * @param AuthorizationCodeId $authorizationCodeId
-     */
-    protected function __construct(AuthorizationCodeId $authorizationCodeId)
+    public function __construct(AuthorizationCodeId $authorizationCodeId)
     {
         $this->authorizationCodeId = $authorizationCodeId;
     }
@@ -43,19 +34,11 @@ class AuthorizationCodeMarkedAsUsedEvent extends Event
         return 'https://oauth2-framework.spomky-labs.com/schemas/events/authorization-code/marked-as-used/1.0/schema';
     }
 
-    /**
-     * @param AuthorizationCodeId $authorizationCodeId
-     *
-     * @return AuthorizationCodeMarkedAsUsedEvent
-     */
     public static function create(AuthorizationCodeId $authorizationCodeId): self
     {
         return new self($authorizationCodeId);
     }
 
-    /**
-     * @return AuthorizationCodeId
-     */
     public function getAuthorizationCodeId(): AuthorizationCodeId
     {
         return $this->authorizationCodeId;
@@ -74,15 +57,5 @@ class AuthorizationCodeMarkedAsUsedEvent extends Event
      */
     public function getPayload()
     {
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public static function createFromJson(\stdClass $json): DomainObject
-    {
-        $authorizationCodeId = AuthorizationCodeId::create($json->domain_id);
-
-        return new self($authorizationCodeId);
     }
 }

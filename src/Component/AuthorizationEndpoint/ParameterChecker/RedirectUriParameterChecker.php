@@ -43,8 +43,6 @@ final class RedirectUriParameterChecker implements ParameterChecker
     }
 
     /**
-     * @param Authorization $authorization
-     *
      * @return string[]
      */
     private function getRedirectUris(Authorization $authorization): array

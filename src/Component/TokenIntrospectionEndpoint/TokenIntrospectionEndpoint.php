@@ -14,13 +14,13 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\TokenIntrospectionEndpoint;
 
 use Http\Message\ResponseFactory;
-use OAuth2Framework\Component\Core\Util\RequestBodyParser;
-use Psr\Http\Server\RequestHandlerInterface;
-use Psr\Http\Server\MiddlewareInterface;
-use OAuth2Framework\Component\Core\ResourceServer\ResourceServer;
 use OAuth2Framework\Component\Core\Message\OAuth2Message;
+use OAuth2Framework\Component\Core\ResourceServer\ResourceServer;
+use OAuth2Framework\Component\Core\Util\RequestBodyParser;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 final class TokenIntrospectionEndpoint implements MiddlewareInterface
 {
@@ -36,9 +36,6 @@ final class TokenIntrospectionEndpoint implements MiddlewareInterface
 
     /**
      * TokenIntrospectionEndpoint constructor.
-     *
-     * @param TokenTypeHintManager $tokenTypeHintManager
-     * @param ResponseFactory      $responseFactory
      */
     public function __construct(TokenTypeHintManager $tokenTypeHintManager, ResponseFactory $responseFactory)
     {
@@ -90,11 +87,7 @@ final class TokenIntrospectionEndpoint implements MiddlewareInterface
     }
 
     /**
-     * @param ServerRequestInterface $request
-     *
      * @throws OAuth2Message
-     *
-     * @return ResourceServer
      */
     private function getResourceServer(ServerRequestInterface $request): ResourceServer
     {
@@ -107,11 +100,7 @@ final class TokenIntrospectionEndpoint implements MiddlewareInterface
     }
 
     /**
-     * @param ServerRequestInterface $request
-     *
      * @throws OAuth2Message
-     *
-     * @return string
      */
     private function getToken(ServerRequestInterface $request): string
     {
@@ -124,8 +113,6 @@ final class TokenIntrospectionEndpoint implements MiddlewareInterface
     }
 
     /**
-     * @param ServerRequestInterface $request
-     *
      * @throws OAuth2Message
      *
      * @return TokenTypeHint[]
@@ -149,11 +136,6 @@ final class TokenIntrospectionEndpoint implements MiddlewareInterface
         return $tokenTypeHints;
     }
 
-    /**
-     * @param ServerRequestInterface $request
-     *
-     * @return array
-     */
     private function getRequestParameters(ServerRequestInterface $request): array
     {
         $parameters = RequestBodyParser::parseFormUrlEncoded($request);

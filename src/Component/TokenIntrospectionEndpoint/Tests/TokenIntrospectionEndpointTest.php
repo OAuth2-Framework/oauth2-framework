@@ -15,9 +15,6 @@ namespace OAuth2Framework\Component\TokenIntrospectionEndpoint\Tests;
 
 use Http\Message\MessageFactory\DiactorosMessageFactory;
 use Http\Message\ResponseFactory;
-use Prophecy\Prophecy\ObjectProphecy;
-use Psr\Http\Message\StreamInterface;
-use Psr\Http\Server\RequestHandlerInterface;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServer;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
 use OAuth2Framework\Component\Core\Token\Token;
@@ -25,7 +22,10 @@ use OAuth2Framework\Component\TokenIntrospectionEndpoint\TokenIntrospectionEndpo
 use OAuth2Framework\Component\TokenIntrospectionEndpoint\TokenTypeHint;
 use OAuth2Framework\Component\TokenIntrospectionEndpoint\TokenTypeHintManager;
 use PHPUnit\Framework\TestCase;
+use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\StreamInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 /**
  * @group TokenIntrospectionEndpoint
@@ -37,7 +37,7 @@ final class TokenIntrospectionEndpointTest extends TestCase
      */
     public function aTokenTypeHintManagerCanHandleTokenTypeHints()
     {
-        self::assertNotEmpty($this->getTokenTypeHintManager()->getTokenTypeHints());
+        static::assertNotEmpty($this->getTokenTypeHintManager()->getTokenTypeHints());
     }
 
     /**
@@ -54,9 +54,9 @@ final class TokenIntrospectionEndpointTest extends TestCase
 
         $response = $endpoint->process($request->reveal(), $handler->reveal());
 
-        self::assertEquals(200, $response->getStatusCode());
+        static::assertEquals(200, $response->getStatusCode());
         $response->getBody()->rewind();
-        self::assertEquals('{"active":true}', $response->getBody()->getContents());
+        static::assertEquals('{"active":true}', $response->getBody()->getContents());
     }
 
     /**
@@ -73,9 +73,9 @@ final class TokenIntrospectionEndpointTest extends TestCase
 
         $response = $endpoint->process($request->reveal(), $handler->reveal());
 
-        self::assertEquals(200, $response->getStatusCode());
+        static::assertEquals(200, $response->getStatusCode());
         $response->getBody()->rewind();
-        self::assertEquals('{"active":true}', $response->getBody()->getContents());
+        static::assertEquals('{"active":true}', $response->getBody()->getContents());
     }
 
     /**
@@ -92,9 +92,9 @@ final class TokenIntrospectionEndpointTest extends TestCase
 
         $response = $endpoint->process($request->reveal(), $handler->reveal());
 
-        self::assertEquals(400, $response->getStatusCode());
+        static::assertEquals(400, $response->getStatusCode());
         $response->getBody()->rewind();
-        self::assertEquals('{"error":"unsupported_token_type","error_description":"The token type hint \"bar\" is not supported. Please use one of the following values: foo."}', $response->getBody()->getContents());
+        static::assertEquals('{"error":"unsupported_token_type","error_description":"The token type hint \"bar\" is not supported. Please use one of the following values: foo."}', $response->getBody()->getContents());
     }
 
     /**
@@ -102,14 +102,11 @@ final class TokenIntrospectionEndpointTest extends TestCase
      */
     private $tokenTypeHintManager = null;
 
-    /**
-     * @return TokenTypeHintManager
-     */
     private function getTokenTypeHintManager(): TokenTypeHintManager
     {
         if (null === $this->tokenTypeHintManager) {
             $token = $this->prophesize(Token::class);
-            $token->getResourceServerId()->willReturn(ResourceServerId::create('RESOURCE_SERVER_ID'));
+            $token->getResourceServerId()->willReturn(new ResourceServerId('RESOURCE_SERVER_ID'));
 
             $tokenType = $this->prophesize(TokenTypeHint::class);
             $tokenType->find('VALID_TOKEN')->willReturn($token->reveal());
@@ -129,9 +126,6 @@ final class TokenIntrospectionEndpointTest extends TestCase
      */
     private $tokenIntrospectionEndpoint = null;
 
-    /**
-     * @return TokenIntrospectionEndpoint
-     */
     private function getTokenIntrospectionEndpoint(): TokenIntrospectionEndpoint
     {
         if (null === $this->tokenIntrospectionEndpoint) {
@@ -149,9 +143,6 @@ final class TokenIntrospectionEndpointTest extends TestCase
      */
     private $responseFactory = null;
 
-    /**
-     * @return ResponseFactory
-     */
     private function getResponseFactory(): ResponseFactory
     {
         if (null === $this->responseFactory) {
@@ -166,14 +157,11 @@ final class TokenIntrospectionEndpointTest extends TestCase
      */
     private $resourceServer = null;
 
-    /**
-     * @return ResourceServer
-     */
     private function getResourceServer(): ResourceServer
     {
         if (null === $this->resourceServer) {
             $this->resourceServer = $this->prophesize(ResourceServer::class);
-            $this->resourceServer->getResourceServerId()->willReturn(ResourceServerId::create('RESOURCE_SERVER_ID'));
+            $this->resourceServer->getResourceServerId()->willReturn(new ResourceServerId('RESOURCE_SERVER_ID'));
         }
 
         return $this->resourceServer->reveal();

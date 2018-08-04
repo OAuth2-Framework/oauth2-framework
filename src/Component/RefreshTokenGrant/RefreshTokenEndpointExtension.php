@@ -40,10 +40,6 @@ final class RefreshTokenEndpointExtension implements TokenEndpointExtension
 
     /**
      * RefreshTokenEndpointExtension constructor.
-     *
-     * @param int                     $lifetime
-     * @param RefreshTokenRepository  $refreshTokenRepository
-     * @param RefreshTokenIdGenerator $refreshTokenIdGenerator
      */
     public function __construct(int $lifetime, RefreshTokenRepository $refreshTokenRepository, RefreshTokenIdGenerator $refreshTokenIdGenerator)
     {
@@ -70,8 +66,7 @@ final class RefreshTokenEndpointExtension implements TokenEndpointExtension
         if (\in_array('offline_access', $scope, true)) {
             $expiresAt = new \DateTimeImmutable(\sprintf('now +%u seconds', $this->lifetime));
             $refreshTokenId = $this->refreshTokenIdGenerator->createRefreshTokenId();
-            $refreshToken = RefreshToken::createEmpty();
-            $refreshToken = $refreshToken->create(
+            $refreshToken = new RefreshToken(
                 $refreshTokenId,
                 $accessToken->getResourceOwnerId(),
                 $accessToken->getClientId(),

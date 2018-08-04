@@ -26,8 +26,6 @@ class RuleManager
     /**
      * Appends new middleware for this message bus. Should only be used at configuration time.
      *
-     * @param Rule $rule
-     *
      * @return RuleManager
      */
     public function add(Rule $rule): self
@@ -45,22 +43,11 @@ class RuleManager
         return $this->rules;
     }
 
-    /**
-     * @param ClientId $clientId
-     * @param DataBag  $commandParameters
-     *
-     * @return DataBag
-     */
     public function handle(ClientId $clientId, DataBag $commandParameters): DataBag
     {
-        return \call_user_func($this->callableForNextRule(0), $clientId, $commandParameters, DataBag::create([]));
+        return \call_user_func($this->callableForNextRule(0), $clientId, $commandParameters, new DataBag([]));
     }
 
-    /**
-     * @param int $index
-     *
-     * @return \Closure
-     */
     private function callableForNextRule(int $index): \Closure
     {
         if (!isset($this->rules[$index])) {

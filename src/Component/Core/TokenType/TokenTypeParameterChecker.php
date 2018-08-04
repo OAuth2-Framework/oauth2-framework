@@ -37,9 +37,6 @@ final class TokenTypeParameterChecker implements ParameterChecker
 
     /**
      * TokenTypeParameterChecker constructor.
-     *
-     * @param TokenTypeManager $tokenTypeManager
-     * @param bool             $tokenTypeParameterAllowed
      */
     public function __construct(TokenTypeManager $tokenTypeManager, bool $tokenTypeParameterAllowed)
     {
@@ -62,11 +59,6 @@ final class TokenTypeParameterChecker implements ParameterChecker
         }
     }
 
-    /**
-     * @param Authorization $authorization
-     *
-     * @return TokenType
-     */
     private function getTokenType(Authorization $authorization): TokenType
     {
         if (true === $this->tokenTypeParameterAllowed && $authorization->hasQueryParam('token_type')) {

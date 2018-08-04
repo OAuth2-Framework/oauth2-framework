@@ -13,17 +13,12 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\IssuerDiscoveryBundle\Tests\TestBundle\Service;
 
-use function League\Uri\parse;
 use OAuth2Framework\Component\IssuerDiscoveryEndpoint\IdentifierResolver\Identifier;
 use OAuth2Framework\Component\IssuerDiscoveryEndpoint\IdentifierResolver\IdentifierResolver;
+use function League\Uri\parse;
 
 class UriPathResolver implements IdentifierResolver
 {
-    /**
-     * @param string $resource_name
-     *
-     * @return bool
-     */
     public function supports(string $resource_name): bool
     {
         $uri = parse($resource_name);

@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\SecurityBundle\Resolver;
 
-use OAuth2Framework\SecurityBundle\Security\Authentication\Token\OAuth2Token;
 use OAuth2Framework\Component\Core\AccessToken\AccessToken;
+use OAuth2Framework\SecurityBundle\Security\Authentication\Token\OAuth2Token;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ArgumentValueResolverInterface;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
@@ -29,8 +29,6 @@ final class AccessTokenResolver implements ArgumentValueResolverInterface
 
     /**
      * AccessTokenResolver constructor.
-     *
-     * @param TokenStorageInterface $tokenStorage
      */
     public function __construct(TokenStorageInterface $tokenStorage)
     {

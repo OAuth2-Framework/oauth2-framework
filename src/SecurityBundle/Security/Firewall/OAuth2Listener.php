@@ -13,13 +13,13 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\SecurityBundle\Security\Firewall;
 
+use OAuth2Framework\Component\Core\AccessToken\AccessTokenHandlerManager;
+use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
 use OAuth2Framework\Component\Core\Message\OAuth2Message;
 use OAuth2Framework\Component\Core\Message\OAuth2MessageFactoryManager;
 use OAuth2Framework\Component\Core\TokenType\TokenType;
-use OAuth2Framework\SecurityBundle\Security\Authentication\Token\OAuth2Token;
-use OAuth2Framework\Component\Core\AccessToken\AccessTokenHandlerManager;
-use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
 use OAuth2Framework\Component\Core\TokenType\TokenTypeManager;
+use OAuth2Framework\SecurityBundle\Security\Authentication\Token\OAuth2Token;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
@@ -57,12 +57,6 @@ final class OAuth2Listener implements ListenerInterface
 
     /**
      * OAuth2Listener constructor.
-     *
-     * @param TokenStorageInterface          $tokenStorage
-     * @param AuthenticationManagerInterface $authenticationManager
-     * @param TokenTypeManager               $tokenTypeManager
-     * @param AccessTokenHandlerManager      $accessTokenHandlerManager
-     * @param OAuth2MessageFactoryManager    $oauth2ResponseFactoryManager
      */
     public function __construct(TokenStorageInterface $tokenStorage,
                                 AuthenticationManagerInterface $authenticationManager,
@@ -97,7 +91,7 @@ final class OAuth2Listener implements ListenerInterface
         }
 
         try {
-            $accessToken = $this->accessTokenHandlerManager->find(AccessTokenId::create($accessTokenId));
+            $accessToken = $this->accessTokenHandlerManager->find(new AccessTokenId($accessTokenId));
             if (null === $accessToken || $accessToken->isRevoked()) {
                 throw new AuthenticationException('Invalid access token.');
             }

@@ -42,9 +42,9 @@ final class MaxAgeParameterAccountCheckerTest extends TestCase
 
         try {
             $checker->check($authorization->reveal(), null, false);
-            $this->fail('The expected exception has not been thrown.');
+            static::fail('The expected exception has not been thrown.');
         } catch (RedirectToLoginPageException $e) {
-            self::assertTrue(true);
+            static::assertTrue(true);
         }
     }
 
@@ -65,7 +65,7 @@ final class MaxAgeParameterAccountCheckerTest extends TestCase
         $checker = new MaxAgeParameterAccountChecker();
 
         $checker->check($authorization->reveal(), $userAccount->reveal(), false);
-        self::assertTrue(true);
+        static::assertTrue(true);
     }
 
     /**
@@ -88,7 +88,7 @@ final class MaxAgeParameterAccountCheckerTest extends TestCase
         $checker = new MaxAgeParameterAccountChecker();
 
         $checker->check($authorization->reveal(), $userAccount->reveal(), false);
-        self::assertTrue(true);
+        static::assertTrue(true);
     }
 
     /**
@@ -111,7 +111,7 @@ final class MaxAgeParameterAccountCheckerTest extends TestCase
         $checker = new MaxAgeParameterAccountChecker();
 
         $checker->check($authorization->reveal(), $userAccount->reveal(), false);
-        self::assertTrue(true);
+        static::assertTrue(true);
     }
 
     /**
@@ -135,9 +135,9 @@ final class MaxAgeParameterAccountCheckerTest extends TestCase
 
         try {
             $checker->check($authorization->reveal(), $userAccount->reveal(), false);
-            $this->fail('The expected exception has not been thrown.');
+            static::fail('The expected exception has not been thrown.');
         } catch (RedirectToLoginPageException $e) {
-            self::assertTrue(true);
+            static::assertTrue(true);
         }
     }
 
@@ -162,9 +162,9 @@ final class MaxAgeParameterAccountCheckerTest extends TestCase
 
         try {
             $checker->check($authorization->reveal(), $userAccount->reveal(), false);
-            $this->fail('The expected exception has not been thrown.');
+            static::fail('The expected exception has not been thrown.');
         } catch (RedirectToLoginPageException $e) {
-            self::assertTrue(true);
+            static::assertTrue(true);
         }
     }
 }

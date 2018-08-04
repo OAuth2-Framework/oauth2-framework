@@ -16,9 +16,9 @@ namespace OAuth2Framework\IssuerDiscoveryBundle\Tests;
 use OAuth2Framework\IssuerDiscoveryBundle\OAuth2FrameworkIssuerDiscoveryBundle;
 use OAuth2Framework\IssuerDiscoveryBundle\Tests\TestBundle\TestBundle;
 use Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle;
+use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\HttpKernel\Kernel;
-use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 
 /**
  * Class AppKernel.

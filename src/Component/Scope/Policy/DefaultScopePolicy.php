@@ -24,8 +24,6 @@ final class DefaultScopePolicy implements ScopePolicy
 
     /**
      * DefaultScopePolicy constructor.
-     *
-     * @param string $defaultScopes
      */
     public function __construct(string $defaultScopes)
     {
@@ -48,9 +46,6 @@ final class DefaultScopePolicy implements ScopePolicy
         return $client->has('default_scope') ? $client->get('default_scope') : $this->getDefaultScopes();
     }
 
-    /**
-     * @return string
-     */
     private function getDefaultScopes(): string
     {
         return $this->defaultScopes;

@@ -15,8 +15,8 @@ namespace OAuth2Framework\ServerBundle\Service;
 
 use Http\Message\MessageFactory;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 
@@ -44,11 +44,6 @@ final class IFrameEndpoint implements MiddlewareInterface
 
     /**
      * IFrameEndpoint constructor.
-     *
-     * @param EngineInterface $templateEngine
-     * @param MessageFactory  $messageFactory
-     * @param string          $template
-     * @param string          $storageName
      */
     public function __construct(EngineInterface $templateEngine, MessageFactory $messageFactory, string $template, string $storageName)
     {

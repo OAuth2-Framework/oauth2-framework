@@ -23,9 +23,6 @@ use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
 class ClientConfigurationSource implements Component
 {
-    /**
-     * @return string
-     */
     public function name(): string
     {
         return 'client_configuration';
@@ -66,25 +63,25 @@ class ClientConfigurationSource implements Component
             ->ifTrue(function ($config) {
                 return true === $config['enabled'] && empty($config['realm']);
             })
-                    ->thenInvalid('The option "realm" must be set.')
-                    ->end()
-                    ->canBeEnabled()
-                    ->children()
-                    ->scalarNode('realm')
-                    ->isRequired()
-                    ->end()
-                    ->scalarNode('path')
-                    ->defaultValue('/client/configure/{client_id}')
-                    ->end()
-                    ->scalarNode('host')
-                    ->info('If set, the route will be limited to that host')
-                    ->defaultValue('')
-                    ->treatFalseLike('')
-                    ->treatNullLike('')
-                    ->end()
-                    ->end()
-                    ->end()
-                    ->end();
+            ->thenInvalid('The option "realm" must be set.')
+            ->end()
+            ->canBeEnabled()
+            ->children()
+            ->scalarNode('realm')
+            ->isRequired()
+            ->end()
+            ->scalarNode('path')
+            ->defaultValue('/client/configure/{client_id}')
+            ->end()
+            ->scalarNode('host')
+            ->info('If set, the route will be limited to that host')
+            ->defaultValue('')
+            ->treatFalseLike('')
+            ->treatNullLike('')
+            ->end()
+            ->end()
+            ->end()
+            ->end();
     }
 
     /**

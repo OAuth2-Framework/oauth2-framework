@@ -18,19 +18,7 @@ use Psr\Http\Message\ServerRequestInterface;
 
 interface Extension
 {
-    /**
-     * @param ServerRequestInterface $request
-     * @param Authorization          $authorization
-     *
-     * @return Authorization
-     */
     public function processAfter(ServerRequestInterface $request, Authorization $authorization): Authorization;
 
-    /**
-     * @param ServerRequestInterface $request
-     * @param Authorization          $authorization
-     *
-     * @return Authorization
-     */
     public function processBefore(ServerRequestInterface $request, Authorization $authorization): Authorization;
 }

@@ -22,9 +22,6 @@ class ClientParametersUpdatedListener
      */
     private $events = [];
 
-    /**
-     * @param ClientParametersUpdatedEvent $event
-     */
     public function handle(ClientParametersUpdatedEvent $event)
     {
         $this->events[] = $event;

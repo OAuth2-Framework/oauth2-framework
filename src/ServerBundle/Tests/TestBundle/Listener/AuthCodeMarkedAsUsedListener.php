@@ -22,9 +22,6 @@ class AuthCodeMarkedAsUsedListener
      */
     private $events = [];
 
-    /**
-     * @param AuthorizationCodeMarkedAsUsedEvent $event
-     */
     public function handle(AuthorizationCodeMarkedAsUsedEvent $event)
     {
         $this->events[] = $event;

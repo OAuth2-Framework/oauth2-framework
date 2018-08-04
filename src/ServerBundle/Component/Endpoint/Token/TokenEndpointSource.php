@@ -13,13 +13,13 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Component\Endpoint\Token;
 
+use OAuth2Framework\Component\TokenEndpoint\Extension\TokenEndpointExtension;
+use OAuth2Framework\Component\TokenEndpoint\GrantType;
 use OAuth2Framework\Component\TokenEndpoint\TokenEndpoint;
 use OAuth2Framework\ServerBundle\Component\Component;
 use OAuth2Framework\ServerBundle\Component\Endpoint\Token\Compiler\GrantTypeCompilerPass;
 use OAuth2Framework\ServerBundle\Component\Endpoint\Token\Compiler\TokenEndpointExtensionCompilerPass;
 use OAuth2Framework\ServerBundle\Component\Endpoint\Token\Compiler\TokenRouteCompilerPass;
-use OAuth2Framework\Component\TokenEndpoint\Extension\TokenEndpointExtension;
-use OAuth2Framework\Component\TokenEndpoint\GrantType;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -27,9 +27,6 @@ use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
 class TokenEndpointSource implements Component
 {
-    /**
-     * @return string
-     */
     public function name(): string
     {
         return 'token';

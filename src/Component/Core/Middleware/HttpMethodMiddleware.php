@@ -26,10 +26,6 @@ class HttpMethodMiddleware implements MiddlewareInterface
      */
     private $methodMap = [];
 
-    /**
-     * @param string              $method
-     * @param MiddlewareInterface $middleware
-     */
     public function add(string $method, MiddlewareInterface $middleware)
     {
         if (\array_key_exists($method, $this->methodMap)) {

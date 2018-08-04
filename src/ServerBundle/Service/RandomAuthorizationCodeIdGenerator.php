@@ -25,6 +25,6 @@ final class RandomAuthorizationCodeIdGenerator implements AuthorizationCodeIdGen
     {
         $value = \bin2hex(\random_bytes(32));
 
-        return AuthorizationCodeId::create($value);
+        return new AuthorizationCodeId($value);
     }
 }

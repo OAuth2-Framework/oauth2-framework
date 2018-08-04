@@ -13,12 +13,12 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\ClientRegistrationEndpoint;
 
-use Psr\Http\Server\RequestHandlerInterface;
-use Psr\Http\Server\MiddlewareInterface;
 use OAuth2Framework\Component\BearerTokenType\BearerToken;
 use OAuth2Framework\Component\Core\Message\OAuth2Message;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 final class InitialAccessTokenMiddleware implements MiddlewareInterface
 {
@@ -39,10 +39,6 @@ final class InitialAccessTokenMiddleware implements MiddlewareInterface
 
     /**
      * InitialAccessTokenMiddleware constructor.
-     *
-     * @param BearerToken                  $bearerToken
-     * @param InitialAccessTokenRepository $initialAccessTokenRepository
-     * @param bool                         $isRequired
      */
     public function __construct(BearerToken $bearerToken, InitialAccessTokenRepository $initialAccessTokenRepository, bool $isRequired)
     {
@@ -67,7 +63,7 @@ final class InitialAccessTokenMiddleware implements MiddlewareInterface
                 throw new \InvalidArgumentException('Initial Access Token is missing or invalid.');
             }
 
-            $initialAccessToken = $this->initialAccessTokenRepository->find(InitialAccessTokenId::create($token));
+            $initialAccessToken = $this->initialAccessTokenRepository->find(new InitialAccessTokenId($token));
 
             if (null === $initialAccessToken || $initialAccessToken->isRevoked()) {
                 throw new \InvalidArgumentException('Initial Access Token is missing or invalid.');

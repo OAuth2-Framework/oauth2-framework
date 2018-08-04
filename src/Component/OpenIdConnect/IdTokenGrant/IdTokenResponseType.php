@@ -52,12 +52,6 @@ final class IdTokenResponseType implements ResponseType
 
     /**
      * IdTokenResponseType constructor.
-     *
-     * @param IdTokenBuilderFactory $idTokenBuilderFactory
-     * @param string                $defaultSignatureAlgorithm
-     * @param JWSBuilder            $jwsBuilder
-     * @param JWKSet                $signatureKeys
-     * @param JWEBuilder|null       $jweBuilder
      */
     public function __construct(IdTokenBuilderFactory $idTokenBuilderFactory, string $defaultSignatureAlgorithm, JWSBuilder $jwsBuilder, JWKSet $signatureKeys, ?JWEBuilder $jweBuilder)
     {
@@ -120,11 +114,7 @@ final class IdTokenResponseType implements ResponseType
     }
 
     /**
-     * @param Authorization $authorization
-     *
      * @throws OAuth2Message
-     *
-     * @return Authorization
      */
     private function populateWithIdToken(Authorization $authorization): Authorization
     {
@@ -144,11 +134,11 @@ final class IdTokenResponseType implements ResponseType
         $idTokenBuilder = $idTokenBuilder->withNonce($params['nonce']);
 
         if ($authorization->hasResponseParameter('code')) {
-            $idTokenBuilder = $idTokenBuilder->withAuthorizationCodeId(AuthorizationCodeId::create($authorization->getResponseParameter('code')));
+            $idTokenBuilder = $idTokenBuilder->withAuthorizationCodeId(new AuthorizationCodeId($authorization->getResponseParameter('code')));
         }
 
         if ($authorization->hasResponseParameter('access_token')) {
-            $idTokenBuilder = $idTokenBuilder->withAccessTokenId(AccessTokenId::create($authorization->getResponseParameter('access_token')));
+            $idTokenBuilder = $idTokenBuilder->withAccessTokenId(new AccessTokenId($authorization->getResponseParameter('access_token')));
         }
 
         if ($authorization->hasQueryParam('claims_locales')) {
@@ -183,11 +173,6 @@ final class IdTokenResponseType implements ResponseType
         return $authorization->withResponseParameter('id_token', $idToken);
     }
 
-    /**
-     * @param Authorization $authorization
-     *
-     * @return array
-     */
     private function getIdTokenClaims(Authorization $authorization): array
     {
         if (!$authorization->hasQueryParam('claims')) {

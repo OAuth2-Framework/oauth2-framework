@@ -14,10 +14,10 @@ declare(strict_types=1);
 namespace OAuth2Framework\SecurityBundle\Annotation;
 
 use Doctrine\Common\Annotations\Reader;
-use OAuth2Framework\SecurityBundle\Annotation\Checker\Checker;
-use OAuth2Framework\SecurityBundle\Security\Authentication\Token\OAuth2Token;
 use OAuth2Framework\Component\Core\Message\OAuth2Message;
 use OAuth2Framework\Component\Core\Message\OAuth2MessageFactoryManager;
+use OAuth2Framework\SecurityBundle\Annotation\Checker\Checker;
+use OAuth2Framework\SecurityBundle\Security\Authentication\Token\OAuth2Token;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
@@ -47,10 +47,6 @@ class AnnotationDriver
 
     /**
      * AnnotationDriver constructor.
-     *
-     * @param Reader                      $reader
-     * @param TokenStorageInterface       $tokenStorage
-     * @param OAuth2MessageFactoryManager $oauth2ResponseFactoryManager
      */
     public function __construct(Reader $reader, TokenStorageInterface $tokenStorage, OAuth2MessageFactoryManager $oauth2ResponseFactoryManager)
     {
@@ -60,8 +56,6 @@ class AnnotationDriver
     }
 
     /**
-     * @param Checker $checker
-     *
      * @return AnnotationDriver
      */
     public function add(Checker $checker): self
@@ -97,10 +91,6 @@ class AnnotationDriver
         }
     }
 
-    /**
-     * @param FilterControllerEvent $event
-     * @param OAuth2                $configuration
-     */
     private function processOAuth2Annotation(FilterControllerEvent $event, OAuth2 $configuration): void
     {
         $token = $this->tokenStorage->getToken();
@@ -120,11 +110,6 @@ class AnnotationDriver
         }
     }
 
-    /**
-     * @param FilterControllerEvent $event
-     * @param string                $message
-     * @param OAuth2                $configuration
-     */
     private function createAuthenticationException(FilterControllerEvent $event, string $message, OAuth2 $configuration)
     {
         $additionalData = $configuration->getScope() ? ['scope' => $configuration->getScope()] : [];
@@ -140,12 +125,6 @@ class AnnotationDriver
         $this->updateFilterControllerEvent($event, $response);
     }
 
-    /**
-     * @param FilterControllerEvent $event
-     * @param string                $message
-     * @param OAuth2                $configuration
-     * @param \Exception            $previous
-     */
     private function createAccessDeniedException(FilterControllerEvent $event, string $message, OAuth2 $configuration, \Exception $previous)
     {
         $additionalData = $configuration->getScope() ? ['scope' => $configuration->getScope()] : [];
@@ -162,10 +141,6 @@ class AnnotationDriver
         $this->updateFilterControllerEvent($event, $response);
     }
 
-    /**
-     * @param FilterControllerEvent $event
-     * @param ResponseInterface     $psr7Response
-     */
     private function updateFilterControllerEvent(FilterControllerEvent $event, ResponseInterface $psr7Response)
     {
         $event->setController(function () use ($psr7Response) {

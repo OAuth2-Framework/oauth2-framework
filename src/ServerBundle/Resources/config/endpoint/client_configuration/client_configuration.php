@@ -11,15 +11,15 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use OAuth2Framework\Component\BearerTokenType\BearerToken;
 use OAuth2Framework\Component\ClientConfigurationEndpoint\ClientConfigurationEndpoint;
-use OAuth2Framework\ServerBundle\Controller\ClientConfigurationMiddleware;
+use OAuth2Framework\Component\ClientRule\RuleManager;
 use OAuth2Framework\Component\Core\Message;
 use OAuth2Framework\Component\Core\Middleware;
+use OAuth2Framework\ServerBundle\Controller\ClientConfigurationMiddleware;
 use OAuth2Framework\ServerBundle\Rule\ClientConfigurationRouteRule;
+use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
-use OAuth2Framework\Component\ClientRule\RuleManager;
 
 return function (ContainerConfigurator $container) {
     $container = $container->services()->defaults()

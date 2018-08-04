@@ -13,14 +13,14 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\RefreshTokenGrant\Tests;
 
-use OAuth2Framework\Component\RefreshTokenGrant\RefreshToken;
-use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenId;
-use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenRepository;
-use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenRevocationTypeHint;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
+use OAuth2Framework\Component\RefreshTokenGrant\RefreshToken;
+use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenId;
+use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenRepository;
+use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenRevocationTypeHint;
 use OAuth2Framework\Component\TokenIntrospectionEndpoint\TokenTypeHint;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
@@ -37,7 +37,7 @@ final class RefreshTokenRevocationTypeHintTest extends TestCase
     protected function setUp()
     {
         if (!\interface_exists(TokenTypeHint::class)) {
-            $this->markTestSkipped('The component "oauth2-framework/token-revocation-endpoint" is not installed.');
+            static::markTestSkipped('The component "oauth2-framework/token-revocation-endpoint" is not installed.');
         }
     }
 
@@ -46,7 +46,7 @@ final class RefreshTokenRevocationTypeHintTest extends TestCase
      */
     public function genericInformation()
     {
-        self::assertEquals('refresh_token', $this->getRefreshTokenTypeHint()->hint());
+        static::assertEquals('refresh_token', $this->getRefreshTokenTypeHint()->hint());
     }
 
     /**
@@ -54,10 +54,10 @@ final class RefreshTokenRevocationTypeHintTest extends TestCase
      */
     public function theTokenTypeHintCanFindATokenAndRevokeIt()
     {
-        self::assertNull($this->getRefreshTokenTypeHint()->find('UNKNOWN_TOKEN_ID'));
+        static::assertNull($this->getRefreshTokenTypeHint()->find('UNKNOWN_TOKEN_ID'));
         $refreshToken = $this->getRefreshTokenTypeHint()->find('REFRESH_TOKEN_ID');
         $this->getRefreshTokenTypeHint()->revoke($refreshToken);
-        self::assertTrue(true);
+        static::assertTrue(true);
     }
 
     /**
@@ -67,7 +67,7 @@ final class RefreshTokenRevocationTypeHintTest extends TestCase
     {
         $refreshToken = $this->getRefreshTokenTypeHint()->find('REVOKED_REFRESH_TOKEN_ID');
         $this->getRefreshTokenTypeHint()->revoke($refreshToken);
-        self::assertTrue(true);
+        static::assertTrue(true);
     }
 
     /**
@@ -75,56 +75,50 @@ final class RefreshTokenRevocationTypeHintTest extends TestCase
      */
     private $refreshTokenTypeHint = null;
 
-    /**
-     * @return RefreshTokenRevocationTypeHint
-     */
     public function getRefreshTokenTypeHint(): RefreshTokenRevocationTypeHint
     {
         if (null === $this->refreshTokenTypeHint) {
-            $refreshToken = RefreshToken::createEmpty();
-            $refreshToken = $refreshToken->create(
-                RefreshTokenId::create('REFRESH_TOKEN_ID'),
-                UserAccountId::create('USER_ACCOUNT_ID'),
-                ClientId::create('CLIENT_ID'),
-                DataBag::create([
+            $refreshToken = new RefreshToken(
+                new RefreshTokenId('REFRESH_TOKEN_ID'),
+                new ClientId('CLIENT_ID'),
+                new UserAccountId('USER_ACCOUNT_ID'),
+                new DataBag([
                     'scope' => 'scope1 scope2',
                 ]),
-                DataBag::create([]),
+                new DataBag([]),
                 new \DateTimeImmutable('now +1hour'),
-                ResourceServerId::create('RESOURCE_SERVER_ID')
+                new ResourceServerId('RESOURCE_SERVER_ID')
             );
-            $revokedRefreshToken = RefreshToken::createEmpty();
-            $revokedRefreshToken = $revokedRefreshToken->create(
-                RefreshTokenId::create('REVOKED_REFRESH_TOKEN_ID'),
-                UserAccountId::create('USER_ACCOUNT_ID'),
-                ClientId::create('CLIENT_ID'),
-                DataBag::create([
+            $revokedRefreshToken = new RefreshToken(
+                new RefreshTokenId('REVOKED_REFRESH_TOKEN_ID'),
+                new ClientId('CLIENT_ID'),
+                new UserAccountId('USER_ACCOUNT_ID'),
+                new DataBag([
                     'scope' => 'scope1 scope2',
                 ]),
-                DataBag::create([]),
+                new DataBag([]),
                 new \DateTimeImmutable('now +1hour'),
-                ResourceServerId::create('RESOURCE_SERVER_ID')
+                new ResourceServerId('RESOURCE_SERVER_ID')
             );
-            $revokedRefreshToken = $revokedRefreshToken->markAsRevoked();
-            $expiredRefreshToken = RefreshToken::createEmpty();
-            $expiredRefreshToken = $expiredRefreshToken->create(
-                RefreshTokenId::create('EXPIRED_REFRESH_TOKEN_ID'),
-                UserAccountId::create('USER_ACCOUNT_ID'),
-                ClientId::create('CLIENT_ID'),
-                DataBag::create([
+            $revokedRefreshToken->markAsRevoked();
+            $expiredRefreshToken = new RefreshToken(
+                new RefreshTokenId('EXPIRED_REFRESH_TOKEN_ID'),
+                new ClientId('CLIENT_ID'),
+                new UserAccountId('USER_ACCOUNT_ID'),
+                new DataBag([
                     'scope' => 'scope1 scope2',
                 ]),
-                DataBag::create([]),
+                new DataBag([]),
                 new \DateTimeImmutable('now -1hour'),
-                ResourceServerId::create('RESOURCE_SERVER_ID')
+                new ResourceServerId('RESOURCE_SERVER_ID')
             );
             $refreshTokenRepository = $this->prophesize(RefreshTokenRepository::class);
             $refreshTokenRepository->save(Argument::type(RefreshToken::class))->will(function () {
             });
-            $refreshTokenRepository->find(RefreshTokenId::create('REFRESH_TOKEN_ID'))->willReturn($refreshToken);
-            $refreshTokenRepository->find(RefreshTokenId::create('EXPIRED_REFRESH_TOKEN_ID'))->willReturn($expiredRefreshToken);
-            $refreshTokenRepository->find(RefreshTokenId::create('REVOKED_REFRESH_TOKEN_ID'))->willReturn($revokedRefreshToken);
-            $refreshTokenRepository->find(RefreshTokenId::create('UNKNOWN_TOKEN_ID'))->willReturn(null);
+            $refreshTokenRepository->find(new RefreshTokenId('REFRESH_TOKEN_ID'))->willReturn($refreshToken);
+            $refreshTokenRepository->find(new RefreshTokenId('EXPIRED_REFRESH_TOKEN_ID'))->willReturn($expiredRefreshToken);
+            $refreshTokenRepository->find(new RefreshTokenId('REVOKED_REFRESH_TOKEN_ID'))->willReturn($revokedRefreshToken);
+            $refreshTokenRepository->find(new RefreshTokenId('UNKNOWN_TOKEN_ID'))->willReturn(null);
             $this->refreshTokenTypeHint = new RefreshTokenRevocationTypeHint(
                 $refreshTokenRepository->reveal()
             );

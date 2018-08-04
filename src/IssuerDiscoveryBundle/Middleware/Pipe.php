@@ -13,10 +13,10 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\IssuerDiscoveryBundle\Middleware;
 
-use Psr\Http\Server\RequestHandlerInterface;
-use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 class Pipe implements MiddlewareInterface
 {
@@ -54,8 +54,6 @@ class Pipe implements MiddlewareInterface
     /**
      * Dispatches the middleware and returns the resulting `ResponseInterface`.
      *
-     * @param ServerRequestInterface $request
-     *
      * @throws \LogicException on unexpected result from any middleware on the middlewares
      *
      * @return ResponseInterface
@@ -69,8 +67,6 @@ class Pipe implements MiddlewareInterface
 
     /**
      * @param int $index Middleware index
-     *
-     * @return RequestHandlerInterface
      */
     private function resolve(int $index): RequestHandlerInterface
     {

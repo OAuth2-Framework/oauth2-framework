@@ -14,10 +14,10 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\RefreshTokenGrant\Event;
 
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
+use OAuth2Framework\Component\Core\Domain\DomainObject;
 use OAuth2Framework\Component\Core\Event\Event;
 use OAuth2Framework\Component\Core\Id\Id;
 use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenId;
-use OAuth2Framework\Component\Core\Domain\DomainObject;
 
 class AccessTokenAddedToRefreshTokenEvent extends Event
 {
@@ -33,9 +33,6 @@ class AccessTokenAddedToRefreshTokenEvent extends Event
 
     /**
      * AccessTokenAddedToRefreshTokenEvent constructor.
-     *
-     * @param RefreshTokenId $refreshTokenId
-     * @param AccessTokenId  $accessTokenId
      */
     protected function __construct(RefreshTokenId $refreshTokenId, AccessTokenId $accessTokenId)
     {
@@ -52,9 +49,6 @@ class AccessTokenAddedToRefreshTokenEvent extends Event
     }
 
     /**
-     * @param RefreshTokenId $refreshTokenId
-     * @param AccessTokenId  $accessTokenId
-     *
      * @return AccessTokenAddedToRefreshTokenEvent
      */
     public static function create(RefreshTokenId $refreshTokenId, AccessTokenId $accessTokenId): self
@@ -62,17 +56,11 @@ class AccessTokenAddedToRefreshTokenEvent extends Event
         return new self($refreshTokenId, $accessTokenId);
     }
 
-    /**
-     * @return RefreshTokenId
-     */
     public function getRefreshTokenId(): RefreshTokenId
     {
         return $this->refreshTokenId;
     }
 
-    /**
-     * @return AccessTokenId
-     */
     public function getAccessTokenId(): AccessTokenId
     {
         return $this->accessTokenId;
@@ -101,8 +89,8 @@ class AccessTokenAddedToRefreshTokenEvent extends Event
      */
     public static function createFromJson(\stdClass $json): DomainObject
     {
-        $refreshTokenId = RefreshTokenId::create($json->domain_id);
-        $accessTokenId = AccessTokenId::create($json->payload->access_token_id);
+        $refreshTokenId = new RefreshTokenId($json->domain_id);
+        $accessTokenId = new AccessTokenId($json->payload->access_token_id);
 
         return new self($refreshTokenId, $accessTokenId);
     }

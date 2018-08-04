@@ -14,21 +14,21 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\OpenIdConnect\UserInfoEndpoint;
 
 use Http\Message\ResponseFactory;
-use Psr\Http\Server\RequestHandlerInterface;
-use Psr\Http\Server\MiddlewareInterface;
 use Jose\Component\Core\JWKSet;
 use Jose\Component\Encryption\JWEBuilder;
 use Jose\Component\Signature\JWSBuilder;
 use OAuth2Framework\Component\Core\AccessToken\AccessToken;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientRepository;
-use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
-use OAuth2Framework\Component\Core\UserAccount\UserAccount;
-use OAuth2Framework\Component\Core\UserAccount\UserAccountRepository;
 use OAuth2Framework\Component\Core\Message\OAuth2Message;
+use OAuth2Framework\Component\Core\UserAccount\UserAccount;
+use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
+use OAuth2Framework\Component\Core\UserAccount\UserAccountRepository;
 use OAuth2Framework\Component\OpenIdConnect\IdTokenBuilderFactory;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 class UserInfoEndpoint implements MiddlewareInterface
 {
@@ -69,11 +69,6 @@ class UserInfoEndpoint implements MiddlewareInterface
 
     /**
      * UserInfoEndpoint constructor.
-     *
-     * @param IdTokenBuilderFactory $idTokenBuilderFactory
-     * @param ClientRepository      $clientRepository
-     * @param UserAccountRepository $userAccountRepository
-     * @param ResponseFactory       $responseFactory
      */
     public function __construct(IdTokenBuilderFactory $idTokenBuilderFactory, ClientRepository $clientRepository, UserAccountRepository $userAccountRepository, ResponseFactory $responseFactory)
     {
@@ -83,19 +78,12 @@ class UserInfoEndpoint implements MiddlewareInterface
         $this->responseFactory = $responseFactory;
     }
 
-    /**
-     * @param JWSBuilder $jwsBuilder
-     * @param JWKSet     $signatureKeys
-     */
     public function enableSignature(JWSBuilder $jwsBuilder, JWKSet $signatureKeys)
     {
         $this->jwsBuilder = $jwsBuilder;
         $this->signatureKeys = $signatureKeys;
     }
 
-    /**
-     * @param JWEBuilder $jweBuilder
-     */
     public function enableEncryption(JWEBuilder $jweBuilder)
     {
         $this->jweBuilder = $jweBuilder;
@@ -132,14 +120,6 @@ class UserInfoEndpoint implements MiddlewareInterface
         return $response;
     }
 
-    /**
-     * @param Client      $client
-     * @param UserAccount $userAccount
-     * @param AccessToken $accessToken
-     * @param bool|null   $isJwt
-     *
-     * @return string
-     */
     private function buildUserinfoContent(Client $client, UserAccount $userAccount, AccessToken $accessToken, ?bool &$isJwt): string
     {
         $isJwt = false;
@@ -167,11 +147,6 @@ class UserInfoEndpoint implements MiddlewareInterface
         return $idToken;
     }
 
-    /**
-     * @param AccessToken $accessToken
-     *
-     * @return array
-     */
     private function getEndpointClaims(AccessToken $accessToken): array
     {
         if (!$accessToken->getMetadata()->has('requested_claims')) {
@@ -187,11 +162,7 @@ class UserInfoEndpoint implements MiddlewareInterface
     }
 
     /**
-     * @param AccessToken $accessToken
-     *
      * @throws OAuth2Message
-     *
-     * @return Client
      */
     private function getClient(AccessToken $accessToken): Client
     {
@@ -204,11 +175,7 @@ class UserInfoEndpoint implements MiddlewareInterface
     }
 
     /**
-     * @param AccessToken $accessToken
-     *
      * @throws OAuth2Message
-     *
-     * @return UserAccount
      */
     private function getUserAccount(AccessToken $accessToken): UserAccount
     {
@@ -221,8 +188,6 @@ class UserInfoEndpoint implements MiddlewareInterface
     }
 
     /**
-     * @param AccessToken $accessToken
-     *
      * @throws OAuth2Message
      */
     private function checkRedirectUri(AccessToken $accessToken)
@@ -233,8 +198,6 @@ class UserInfoEndpoint implements MiddlewareInterface
     }
 
     /**
-     * @param AccessToken $accessToken
-     *
      * @throws OAuth2Message
      */
     private function checkScope(AccessToken $accessToken)

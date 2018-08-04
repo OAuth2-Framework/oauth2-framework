@@ -13,16 +13,16 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Core\Tests\TokenType;
 
-use Prophecy\Prophecy\ObjectProphecy;
-use Psr\Http\Message\StreamInterface;
-use Psr\Http\Server\RequestHandlerInterface;
-use OAuth2Framework\Component\Core\TokenType\TokenTypeMiddleware;
-use Prophecy\Argument;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
 use OAuth2Framework\Component\Core\TokenType\TokenType;
 use OAuth2Framework\Component\Core\TokenType\TokenTypeManager;
+use OAuth2Framework\Component\Core\TokenType\TokenTypeMiddleware;
 use PHPUnit\Framework\TestCase;
+use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\StreamInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 /**
  * @group TokenTypeMiddleware
@@ -87,9 +87,6 @@ final class TokenTypeMiddlewareTest extends TestCase
      */
     private $tokenTypeMiddleware = null;
 
-    /**
-     * @return TokenTypeMiddleware
-     */
     private function getTokenTypeMiddleware(): TokenTypeMiddleware
     {
         if (null === $this->tokenTypeMiddleware) {
@@ -107,9 +104,6 @@ final class TokenTypeMiddlewareTest extends TestCase
      */
     private $tokenTypeManager = null;
 
-    /**
-     * @return TokenTypeManager
-     */
     private function getTokenTypeManager(): TokenTypeManager
     {
         if (null === $this->tokenTypeManager) {

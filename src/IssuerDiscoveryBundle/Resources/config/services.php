@@ -11,10 +11,10 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use OAuth2Framework\Component\IssuerDiscoveryEndpoint\IdentifierResolver;
 use OAuth2Framework\IssuerDiscoveryBundle\Service\IssuerDiscoveryFactory;
 use OAuth2Framework\IssuerDiscoveryBundle\Service\RouteLoader;
+use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
 return function (ContainerConfigurator $container) {

@@ -28,9 +28,6 @@ class ScopePolicyManager
     private $defaultScopePolicy = null;
 
     /**
-     * @param ScopePolicy $scopePolicy
-     * @param bool        $isDefault
-     *
      * @return ScopePolicyManager
      */
     public function add(ScopePolicy $scopePolicy, bool $isDefault = false): self
@@ -45,12 +42,6 @@ class ScopePolicyManager
         return $this;
     }
 
-    /**
-     * @param string $scope
-     * @param Client $client
-     *
-     * @return string
-     */
     public function apply(string $scope, Client $client): string
     {
         if (empty($scope)) {
@@ -72,21 +63,11 @@ class ScopePolicyManager
         return \array_keys($this->scopePolicies);
     }
 
-    /**
-     * @param string $scopePolicy
-     *
-     * @return bool
-     */
     public function has(string $scopePolicy): bool
     {
         return \array_key_exists($scopePolicy, $this->scopePolicies);
     }
 
-    /**
-     * @param string $scopePolicyName
-     *
-     * @return ScopePolicy
-     */
     private function get(string $scopePolicyName): ScopePolicy
     {
         if (!$this->has($scopePolicyName)) {
@@ -96,9 +77,6 @@ class ScopePolicyManager
         return $this->scopePolicies[$scopePolicyName];
     }
 
-    /**
-     * @return ScopePolicy|null
-     */
     private function default(): ?ScopePolicy
     {
         if (null === $this->defaultScopePolicy) {
@@ -108,11 +86,6 @@ class ScopePolicyManager
         return $this->scopePolicies[$this->defaultScopePolicy];
     }
 
-    /**
-     * @param Client $client
-     *
-     * @return ScopePolicy|null
-     */
     private function getForClient(Client $client): ?ScopePolicy
     {
         if ($client->has('scope_policy') && $this->has($client->get('scope_policy'))) {

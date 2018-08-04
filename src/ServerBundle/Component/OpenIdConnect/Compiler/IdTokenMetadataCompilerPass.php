@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Component\OpenIdConnect\Compiler;
 
-use OAuth2Framework\ServerBundle\Service\MetadataBuilder;
 use OAuth2Framework\Component\OpenIdConnect\UserInfo\UserInfo;
+use OAuth2Framework\ServerBundle\Service\MetadataBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;

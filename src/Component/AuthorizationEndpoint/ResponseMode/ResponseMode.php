@@ -17,17 +17,7 @@ use Psr\Http\Message\ResponseInterface;
 
 interface ResponseMode
 {
-    /**
-     * @return string
-     */
     public function name(): string;
 
-    /**
-     * @param ResponseInterface $response
-     * @param string            $redirectUri
-     * @param array             $data
-     *
-     * @return ResponseInterface
-     */
     public function buildResponse(ResponseInterface $response, string $redirectUri, array $data): ResponseInterface;
 }

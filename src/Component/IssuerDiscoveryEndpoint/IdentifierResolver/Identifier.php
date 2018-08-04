@@ -33,8 +33,6 @@ class Identifier
     /**
      * Identifier constructor.
      *
-     * @param string   $username
-     * @param string   $domain
      * @param null|int $port
      */
     public function __construct(string $username, string $domain, ?int $port)
@@ -44,25 +42,16 @@ class Identifier
         $this->port = $port;
     }
 
-    /**
-     * @return string
-     */
     public function getUsername(): string
     {
         return $this->username;
     }
 
-    /**
-     * @return string
-     */
     public function getDomain(): string
     {
         return $this->domain;
     }
 
-    /**
-     * @return int|null
-     */
     public function getPort(): ?int
     {
         return $this->port;

@@ -11,14 +11,14 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use OAuth2Framework\Component\OpenIdConnect\UserInfo\Claim;
-use OAuth2Framework\Component\OpenIdConnect\UserInfo\UserInfo;
-use OAuth2Framework\Component\OpenIdConnect\Rule;
-use OAuth2Framework\Component\OpenIdConnect\UserInfo\ScopeSupport\UserInfoScopeSupportManager;
 use OAuth2Framework\Component\OpenIdConnect\IdTokenBuilderFactory;
-use OAuth2Framework\Component\OpenIdConnect\ParameterChecker;
 use OAuth2Framework\Component\OpenIdConnect\OpenIdConnectExtension;
+use OAuth2Framework\Component\OpenIdConnect\ParameterChecker;
+use OAuth2Framework\Component\OpenIdConnect\Rule;
+use OAuth2Framework\Component\OpenIdConnect\UserInfo\Claim;
+use OAuth2Framework\Component\OpenIdConnect\UserInfo\ScopeSupport\UserInfoScopeSupportManager;
+use OAuth2Framework\Component\OpenIdConnect\UserInfo\UserInfo;
+use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
 return function (ContainerConfigurator $container) {

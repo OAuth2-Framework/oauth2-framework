@@ -27,8 +27,6 @@ final class GrantTypesRule implements Rule
 
     /**
      * GrantTypeFlowRule constructor.
-     *
-     * @param GrantTypeManager $grantTypeManager
      */
     public function __construct(GrantTypeManager $grantTypeManager)
     {
@@ -52,8 +50,6 @@ final class GrantTypesRule implements Rule
     }
 
     /**
-     * @param DataBag $parameters
-     *
      * @throws \InvalidArgumentException
      */
     private function checkGrantTypes(DataBag $parameters)
@@ -72,8 +68,6 @@ final class GrantTypesRule implements Rule
     }
 
     /**
-     * @param DataBag $parameters
-     *
      * @throws \InvalidArgumentException
      */
     private function checkResponseTypes(DataBag $parameters)

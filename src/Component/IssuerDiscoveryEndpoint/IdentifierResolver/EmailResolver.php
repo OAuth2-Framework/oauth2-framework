@@ -17,11 +17,6 @@ use function League\Uri\parse;
 
 final class EmailResolver implements IdentifierResolver
 {
-    /**
-     * @param string $resource_name
-     *
-     * @return bool
-     */
     public function supports(string $resource_name): bool
     {
         $uri = parse('http://'.$resource_name);

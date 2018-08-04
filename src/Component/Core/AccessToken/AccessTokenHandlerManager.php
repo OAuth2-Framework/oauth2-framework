@@ -20,17 +20,12 @@ class AccessTokenHandlerManager
      */
     private $accessTokenHandlers = [];
 
-    /**
-     * @param AccessTokenHandler $accessTokenHandler
-     */
     public function add(AccessTokenHandler $accessTokenHandler): void
     {
         $this->accessTokenHandlers[] = $accessTokenHandler;
     }
 
     /**
-     * @param AccessTokenId $tokenId
-     *
      * @return null|AccessToken
      */
     public function find(AccessTokenId $tokenId): ?AccessToken

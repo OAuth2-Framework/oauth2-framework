@@ -18,8 +18,6 @@ interface MessageExtension
     /**
      * @param OAuth2Message $code The code of the response
      * @param array         $data Data that will be sent
-     *
-     * @return array
      */
     public function process(OAuth2Message $code, array $data): array;
 }

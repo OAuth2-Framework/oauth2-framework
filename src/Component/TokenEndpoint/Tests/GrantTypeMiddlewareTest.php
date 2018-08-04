@@ -13,17 +13,17 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\TokenEndpoint\Tests;
 
-use Prophecy\Prophecy\ObjectProphecy;
-use Psr\Http\Message\StreamInterface;
-use Psr\Http\Server\RequestHandlerInterface;
 use OAuth2Framework\Component\Core\Message\OAuth2Message;
 use OAuth2Framework\Component\TokenEndpoint\GrantType;
 use OAuth2Framework\Component\TokenEndpoint\GrantTypeManager;
 use OAuth2Framework\Component\TokenEndpoint\GrantTypeMiddleware;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\StreamInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 /**
  * @group TokenEndpoint
@@ -36,8 +36,8 @@ final class GrantTypeMiddlewareTest extends TestCase
      */
     public function genericCalls()
     {
-        self::assertEquals(['foo'], $this->getGrantTypeManager()->list());
-        self::assertInstanceOf(GrantType::class, $this->getGrantTypeManager()->get('foo'));
+        static::assertEquals(['foo'], $this->getGrantTypeManager()->list());
+        static::assertInstanceOf(GrantType::class, $this->getGrantTypeManager()->get('foo'));
     }
 
     /**
@@ -50,10 +50,10 @@ final class GrantTypeMiddlewareTest extends TestCase
 
         try {
             $this->getGrantTypeMiddleware()->process($request->reveal(), $handler->reveal());
-            $this->fail('An OAuth2 exception should be thrown.');
+            static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2Message $e) {
-            self::assertEquals(400, $e->getCode());
-            self::assertEquals([
+            static::assertEquals(400, $e->getCode());
+            static::assertEquals([
                 'error' => 'invalid_request',
                 'error_description' => 'The "grant_type" parameter is missing.',
             ], $e->getData());
@@ -72,10 +72,10 @@ final class GrantTypeMiddlewareTest extends TestCase
 
         try {
             $this->getGrantTypeMiddleware()->process($request->reveal(), $handler->reveal());
-            $this->fail('An OAuth2 exception should be thrown.');
+            static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2Message $e) {
-            self::assertEquals(400, $e->getCode());
-            self::assertEquals([
+            static::assertEquals(400, $e->getCode());
+            static::assertEquals([
                 'error' => 'invalid_request',
                 'error_description' => 'The grant type "bar" is not supported by this server.',
             ], $e->getData());
@@ -113,9 +113,6 @@ final class GrantTypeMiddlewareTest extends TestCase
      */
     private $grantTypeMiddleware = null;
 
-    /**
-     * @return GrantTypeManager
-     */
     private function getGrantTypeManager(): GrantTypeManager
     {
         if (null === $this->grantTypeManager) {
@@ -129,9 +126,6 @@ final class GrantTypeMiddlewareTest extends TestCase
         return $this->grantTypeManager;
     }
 
-    /**
-     * @return GrantTypeMiddleware
-     */
     private function getGrantTypeMiddleware(): GrantTypeMiddleware
     {
         if (null === $this->grantTypeMiddleware) {

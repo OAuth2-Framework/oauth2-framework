@@ -2,6 +2,7 @@ parameters:
     excludes_analyse:
         - %currentWorkingDirectory%/src/*Bundle/Tests/*
         - %currentWorkingDirectory%/src/Component/*/Tests/*
-    ignoreErrors:
-        - '#Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition::addDefaultsIfNotSet\(\)#'
-        - '#Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition::children\(\)#'
+    includes:
+        - %rootDir%/../phpstan-phpunit/extension.neon
+        - %rootDir%/../phpstan-phpunit/rules.neon
+        - %rootDir%/../phpstan-symfony/extension.neon

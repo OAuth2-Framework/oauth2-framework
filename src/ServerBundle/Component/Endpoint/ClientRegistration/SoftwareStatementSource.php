@@ -22,9 +22,6 @@ use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
 class SoftwareStatementSource implements Component
 {
-    /**
-     * @return string
-     */
     public function name(): string
     {
         return 'software_statement';
@@ -60,31 +57,31 @@ class SoftwareStatementSource implements Component
             ->ifTrue(function ($config) {
                 return true === $config['enabled'] && empty($config['key_set']);
             })
-                    ->thenInvalid('The option "key_set" must be set.')
-                    ->end()
-                    ->validate()
-                    ->ifTrue(function ($config) {
-                        return true === $config['enabled'] && empty($config['allowed_signature_algorithms']);
-                    })
-                    ->thenInvalid('At least one signature algorithm must be set.')
-                    ->end()
-                    ->children()
-                    ->booleanNode('required')
-                    ->info('If true, the software statement is mandatory, otherwise optional.')
-                    ->defaultFalse()
-                    ->end()
-                    ->scalarNode('key_set')
-                    ->info('The public keys used to verify the software statement.')
-                    ->end()
-                    ->arrayNode('allowed_signature_algorithms')
-                    ->info('Signature algorithms allowed for the software statements. The algorithm "none" should not be used.')
-                    ->useAttributeAsKey('name')
-                    ->scalarPrototype()->end()
-                    ->treatNullLike([])
-                    ->end()
-                    ->end()
-                    ->end()
-                    ->end();
+            ->thenInvalid('The option "key_set" must be set.')
+            ->end()
+            ->validate()
+            ->ifTrue(function ($config) {
+                return true === $config['enabled'] && empty($config['allowed_signature_algorithms']);
+            })
+            ->thenInvalid('At least one signature algorithm must be set.')
+            ->end()
+            ->children()
+            ->booleanNode('required')
+            ->info('If true, the software statement is mandatory, otherwise optional.')
+            ->defaultFalse()
+            ->end()
+            ->scalarNode('key_set')
+            ->info('The public keys used to verify the software statement.')
+            ->end()
+            ->arrayNode('allowed_signature_algorithms')
+            ->info('Signature algorithms allowed for the software statements. The algorithm "none" should not be used.')
+            ->useAttributeAsKey('name')
+            ->scalarPrototype()->end()
+            ->treatNullLike([])
+            ->end()
+            ->end()
+            ->end()
+            ->end();
     }
 
     /**

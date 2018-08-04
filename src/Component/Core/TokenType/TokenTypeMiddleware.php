@@ -14,10 +14,10 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\Core\TokenType;
 
 use OAuth2Framework\Component\Core\Util\RequestBodyParser;
-use Psr\Http\Server\RequestHandlerInterface;
-use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 /**
  * Class TokenTypeMiddleware.
@@ -38,9 +38,6 @@ final class TokenTypeMiddleware implements MiddlewareInterface
 
     /**
      * ClientAuthenticationMiddleware constructor.
-     *
-     * @param TokenTypeManager $tokenTypeManager
-     * @param bool             $tokenTypeParameterAllowed
      */
     public function __construct(TokenTypeManager $tokenTypeManager, bool $tokenTypeParameterAllowed)
     {
@@ -59,11 +56,6 @@ final class TokenTypeMiddleware implements MiddlewareInterface
         return $handler->handle($request);
     }
 
-    /**
-     * @param ServerRequestInterface $request
-     *
-     * @return TokenType
-     */
     private function findTokenType(ServerRequestInterface $request): TokenType
     {
         $parameters = RequestBodyParser::parseFormUrlEncoded($request);

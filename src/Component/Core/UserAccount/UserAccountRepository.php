@@ -19,8 +19,6 @@ interface UserAccountRepository
      * Get the user account with the specified User Account Name.
      *
      * @param string $username User Account Name
-     *
-     * @return UserAccount|null
      */
     public function findOneByUsername(string $username): ?UserAccount;
 
@@ -28,8 +26,6 @@ interface UserAccountRepository
      * Get the user account with the specified public ID.
      *
      * @param UserAccountId $publicId Public ID
-     *
-     * @return UserAccount|null
      */
     public function find(UserAccountId $publicId): ?UserAccount;
 }

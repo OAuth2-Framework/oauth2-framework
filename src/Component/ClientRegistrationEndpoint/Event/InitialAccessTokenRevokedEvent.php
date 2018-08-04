@@ -27,8 +27,6 @@ class InitialAccessTokenRevokedEvent extends Event
 
     /**
      * InitialAccessTokenRevokedEvent constructor.
-     *
-     * @param InitialAccessTokenId $initialAccessTokenId
      */
     protected function __construct(InitialAccessTokenId $initialAccessTokenId)
     {
@@ -44,8 +42,6 @@ class InitialAccessTokenRevokedEvent extends Event
     }
 
     /**
-     * @param InitialAccessTokenId $initialAccessTokenId
-     *
      * @return InitialAccessTokenRevokedEvent
      */
     public static function create(InitialAccessTokenId $initialAccessTokenId): self
@@ -53,9 +49,6 @@ class InitialAccessTokenRevokedEvent extends Event
         return new self($initialAccessTokenId);
     }
 
-    /**
-     * @return InitialAccessTokenId
-     */
     public function getInitialAccessTokenId(): InitialAccessTokenId
     {
         return $this->initialAccessTokenId;
@@ -81,7 +74,7 @@ class InitialAccessTokenRevokedEvent extends Event
      */
     public static function createFromJson(\stdClass $json): DomainObject
     {
-        $initialAccessTokenId = InitialAccessTokenId::create($json->domain_id);
+        $initialAccessTokenId = new InitialAccessTokenId($json->domain_id);
 
         return new self($initialAccessTokenId);
     }

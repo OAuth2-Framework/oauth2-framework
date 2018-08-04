@@ -22,16 +22,8 @@ use Psr\Http\Message\ServerRequestInterface;
 
 final class ClientSecretPost implements AuthenticationMethod
 {
-    /**
-     * @var int
-     */
     private $secretLifetime;
 
-    /**
-     * ClientSecretPost constructor.
-     *
-     * @param int $secretLifetime
-     */
     public function __construct(int $secretLifetime = 0)
     {
         if ($secretLifetime < 0) {
@@ -58,7 +50,7 @@ final class ClientSecretPost implements AuthenticationMethod
         if (\array_key_exists('client_id', $parameters) && \array_key_exists('client_secret', $parameters)) {
             $clientCredentials = $parameters['client_secret'];
 
-            return ClientId::create($parameters['client_id']);
+            return new ClientId($parameters['client_id']);
         }
 
         return null;
@@ -91,9 +83,6 @@ final class ClientSecretPost implements AuthenticationMethod
         return ['client_secret_post'];
     }
 
-    /**
-     * @return string
-     */
     private function createClientSecret(): string
     {
         return Base64Url::encode(\random_bytes(32));

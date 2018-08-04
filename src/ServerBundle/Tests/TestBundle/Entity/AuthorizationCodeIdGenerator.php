@@ -26,8 +26,6 @@ class AuthorizationCodeIdGenerator implements AuthorizationCodeManagerInterface
 
     /**
      * AuthorizationCodeManager constructor.
-     *
-     * @param AuthorizationCodeRepository $repository
      */
     public function __construct(AuthorizationCodeRepository $repository)
     {
@@ -39,7 +37,7 @@ class AuthorizationCodeIdGenerator implements AuthorizationCodeManagerInterface
      */
     public function createAuthorizationCodeId(): AuthorizationCodeId
     {
-        return AuthorizationCodeId::create(\bin2hex(\random_bytes(32)));
+        return new AuthorizationCodeId(\bin2hex(\random_bytes(32)));
     }
 
     /**

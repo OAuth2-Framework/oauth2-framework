@@ -36,9 +36,6 @@ final class RequestUriRule implements Rule
         return $validatedParameters;
     }
 
-    /**
-     * @param mixed $value
-     */
     private function checkAllUris($value)
     {
         if (!\is_array($value)) {

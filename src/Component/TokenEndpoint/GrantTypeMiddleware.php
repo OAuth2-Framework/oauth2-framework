@@ -13,12 +13,12 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\TokenEndpoint;
 
-use OAuth2Framework\Component\Core\Util\RequestBodyParser;
-use Psr\Http\Server\RequestHandlerInterface;
-use Psr\Http\Server\MiddlewareInterface;
 use OAuth2Framework\Component\Core\Message\OAuth2Message;
+use OAuth2Framework\Component\Core\Util\RequestBodyParser;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 final class GrantTypeMiddleware implements MiddlewareInterface
 {
@@ -29,8 +29,6 @@ final class GrantTypeMiddleware implements MiddlewareInterface
 
     /**
      * GrantTypeMiddleware constructor.
-     *
-     * @param GrantTypeManager $grantTypeManager
      */
     public function __construct(GrantTypeManager $grantTypeManager)
     {

@@ -11,9 +11,9 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use OAuth2Framework\Component\OpenIdConnect\IdTokenGrant\IdTokenResponseType;
 use OAuth2Framework\Component\OpenIdConnect\IdTokenBuilderFactory;
+use OAuth2Framework\Component\OpenIdConnect\IdTokenGrant\IdTokenResponseType;
+use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
 return function (ContainerConfigurator $container) {

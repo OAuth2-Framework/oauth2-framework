@@ -20,8 +20,6 @@ interface UserAccountManager
      *
      * @param UserAccount $user     The user account
      * @param string      $password Password
-     *
-     * @return bool
      */
     public function isPasswordCredentialValid(UserAccount $user, string $password): bool;
 }

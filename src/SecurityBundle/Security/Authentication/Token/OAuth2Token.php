@@ -29,41 +29,26 @@ class OAuth2Token extends AbstractToken
         $this->accessToken = $accessToken;
     }
 
-    /**
-     * @return string
-     */
     public function getToken(): string
     {
         return $this->accessToken->getTokenId()->getValue();
     }
 
-    /**
-     * @return string
-     */
     public function getTokenType(): string
     {
         return $this->accessToken->getParameter()->get('token_type');
     }
 
-    /**
-     * @return AccessToken
-     */
     public function getAccessToken(): AccessToken
     {
         return $this->accessToken;
     }
 
-    /**
-     * @return string
-     */
     public function getClientId(): string
     {
         return $this->accessToken->getClientId()->getValue();
     }
 
-    /**
-     * @return string
-     */
     public function getResourceOwnerId(): string
     {
         return $this->accessToken->getResourceOwnerId()->getValue();

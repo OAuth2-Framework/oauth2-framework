@@ -29,11 +29,11 @@ final class ClientTest extends TestCase
      */
     public function iCanCreateAClientId()
     {
-        $clientId = ClientId::create('CLIENT_ID');
+        $clientId = new ClientId('CLIENT_ID');
 
-        self::assertInstanceOf(ClientId::class, $clientId);
-        self::assertEquals('CLIENT_ID', $clientId->getValue());
-        self::assertEquals('"CLIENT_ID"', \json_encode($clientId, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
+        static::assertInstanceOf(ClientId::class, $clientId);
+        static::assertEquals('CLIENT_ID', $clientId->getValue());
+        static::assertEquals('"CLIENT_ID"', \json_encode($clientId, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
     }
 
     /**
@@ -43,20 +43,20 @@ final class ClientTest extends TestCase
     {
         $client = Client::createEmpty();
         $client = $client->create(
-            ClientId::create('CLIENT_ID'),
-            DataBag::create([
+            new ClientId('CLIENT_ID'),
+            new DataBag([
             ]),
-            UserAccountId::create('USER_ACCOUNT_ID')
+            new UserAccountId('USER_ACCOUNT_ID')
         );
-        $client = $client->withParameters(DataBag::create([
+        $client = $client->withParameters(new DataBag([
             'token_endpoint_auth_method' => 'none',
         ]));
-        $client = $client->withOwnerId(UserAccountId::create('NEW_USER_ACCOUNT_ID'));
+        $client = $client->withOwnerId(new UserAccountId('NEW_USER_ACCOUNT_ID'));
         $client = $client->markAsDeleted();
 
-        self::assertInstanceOf(Client::class, $client);
-        self::assertTrue($client->isPublic());
-        self::assertTrue($client->isDeleted());
-        self::assertEquals('{"$schema":"https://oauth2-framework.spomky-labs.com/schemas/model/client/1.0/schema","type":"OAuth2Framework\\\\Component\\\\Core\\\\Client\\\\Client","client_id":"CLIENT_ID","owner_id":"NEW_USER_ACCOUNT_ID","parameters":{"token_endpoint_auth_method":"none","client_id":"CLIENT_ID"},"is_deleted":true}', \json_encode($client, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+        static::assertInstanceOf(Client::class, $client);
+        static::assertTrue($client->isPublic());
+        static::assertTrue($client->isDeleted());
+        static::assertEquals('{"$schema":"https://oauth2-framework.spomky-labs.com/schemas/model/client/1.0/schema","type":"OAuth2Framework\\\\Component\\\\Core\\\\Client\\\\Client","client_id":"CLIENT_ID","owner_id":"NEW_USER_ACCOUNT_ID","parameters":{"token_endpoint_auth_method":"none","client_id":"CLIENT_ID"},"is_deleted":true}', \json_encode($client, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
     }
 }

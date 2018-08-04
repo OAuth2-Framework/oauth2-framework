@@ -15,9 +15,6 @@ namespace OAuth2Framework\Component\Scope;
 
 interface Scope extends \JsonSerializable
 {
-    /**
-     * @return string
-     */
     public function name(): string;
 
     /**
@@ -25,13 +22,7 @@ interface Scope extends \JsonSerializable
      */
     public function parent(): ?string;
 
-    /**
-     * @return bool
-     */
     public function isParentMandatory(): bool;
 
-    /**
-     * @return string
-     */
     public function __toString(): string;
 }

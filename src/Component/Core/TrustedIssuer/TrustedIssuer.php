@@ -17,9 +17,6 @@ use Jose\Component\Core\JWKSet;
 
 interface TrustedIssuer
 {
-    /**
-     * @return string
-     */
     public function name(): string;
 
     /**
@@ -32,8 +29,5 @@ interface TrustedIssuer
      */
     public function getAllowedSignatureAlgorithms(): array;
 
-    /**
-     * @return JWKSet
-     */
     public function getJWKSet(): JWKSet;
 }

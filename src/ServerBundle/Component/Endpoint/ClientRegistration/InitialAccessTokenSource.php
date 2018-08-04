@@ -23,9 +23,6 @@ use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
 class InitialAccessTokenSource implements Component
 {
-    /**
-     * @return string
-     */
     public function name(): string
     {
         return 'initial_access_token';
@@ -62,39 +59,39 @@ class InitialAccessTokenSource implements Component
             ->ifTrue(function ($config) {
                 return true === $config['enabled'] && empty($config['realm']);
             })
-                ->thenInvalid('The option "realm" must be set.')
-                ->end()
-                ->validate()
-                ->ifTrue(function ($config) {
-                    return true === $config['enabled'] && empty($config['repository']);
-                })
-                ->thenInvalid('The option "repository" must be set.')
-                ->end()
-                ->validate()
-                ->ifTrue(function ($config) {
-                    return true === $config['enabled'] && $config['max_length'] < $config['min_length'];
-                })
-                ->thenInvalid('The option "max_length" must be greater than "min_length".')
-                ->end()
-                ->children()
-                ->booleanNode('required')
-                ->defaultFalse()
-                ->end()
-                ->scalarNode('realm')
-                ->defaultNull()
-                ->end()
-                ->integerNode('min_length')
-                ->defaultValue(50)
-                ->min(0)
-                ->end()
-                ->integerNode('max_length')
-                ->defaultValue(100)
-                ->min(1)
-                ->end()
-                ->scalarNode('repository')
-                ->defaultNull()
-                ->end()
-                ->end();
+            ->thenInvalid('The option "realm" must be set.')
+            ->end()
+            ->validate()
+            ->ifTrue(function ($config) {
+                return true === $config['enabled'] && empty($config['repository']);
+            })
+            ->thenInvalid('The option "repository" must be set.')
+            ->end()
+            ->validate()
+            ->ifTrue(function ($config) {
+                return true === $config['enabled'] && $config['max_length'] < $config['min_length'];
+            })
+            ->thenInvalid('The option "max_length" must be greater than "min_length".')
+            ->end()
+            ->children()
+            ->booleanNode('required')
+            ->defaultFalse()
+            ->end()
+            ->scalarNode('realm')
+            ->defaultNull()
+            ->end()
+            ->integerNode('min_length')
+            ->defaultValue(50)
+            ->min(0)
+            ->end()
+            ->integerNode('max_length')
+            ->defaultValue(100)
+            ->min(1)
+            ->end()
+            ->scalarNode('repository')
+            ->defaultNull()
+            ->end()
+            ->end();
     }
 
     /**

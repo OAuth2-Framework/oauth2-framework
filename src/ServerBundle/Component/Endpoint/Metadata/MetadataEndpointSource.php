@@ -41,9 +41,6 @@ class MetadataEndpointSource implements Component
         ];
     }
 
-    /**
-     * @return string
-     */
     public function name(): string
     {
         return 'metadata';

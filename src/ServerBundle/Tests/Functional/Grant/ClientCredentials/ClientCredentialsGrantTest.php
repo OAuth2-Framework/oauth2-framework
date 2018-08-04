@@ -30,7 +30,7 @@ class ClientCredentialsGrantTest extends WebTestCase
     protected function setUp()
     {
         if (!\class_exists(ClientCredentialsGrantType::class)) {
-            $this->markTestSkipped('The component "oauth2-framework/client-credentials-grant" is not installed.');
+            static::markTestSkipped('The component "oauth2-framework/client-credentials-grant" is not installed.');
         }
     }
 
@@ -42,7 +42,7 @@ class ClientCredentialsGrantTest extends WebTestCase
         $client = static::createClient();
         $client->request('POST', '/token/get', [], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
-        self::assertEquals('{"error":"invalid_request","error_description":"The \"grant_type\" parameter is missing."}', $response->getContent());
+        static::assertEquals('{"error":"invalid_request","error_description":"The \"grant_type\" parameter is missing."}', $response->getContent());
     }
 
     /**
@@ -53,8 +53,8 @@ class ClientCredentialsGrantTest extends WebTestCase
         $client = static::createClient();
         $client->request('POST', '/token/get', ['grant_type' => 'client_credentials'], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
-        self::assertEquals(401, $response->getStatusCode());
-        self::assertEquals('Basic realm="My OAuth2 Server",charset="UTF-8",error="invalid_client",error_description="Client authentication failed."', $response->headers->get('www-authenticate'));
+        static::assertEquals(401, $response->getStatusCode());
+        static::assertEquals('Basic realm="My OAuth2 Server",charset="UTF-8",error="invalid_client",error_description="Client authentication failed."', $response->headers->get('www-authenticate'));
     }
 
     /**
@@ -65,8 +65,8 @@ class ClientCredentialsGrantTest extends WebTestCase
         $client = static::createClient();
         $client->request('POST', '/token/get', ['grant_type' => 'client_credentials', 'client_id' => 'UNKNOWN_CLIENT_ID'], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
-        self::assertEquals(401, $response->getStatusCode());
-        self::assertEquals('Basic realm="My OAuth2 Server",charset="UTF-8",error="invalid_client",error_description="Client authentication failed."', $response->headers->get('www-authenticate'));
+        static::assertEquals(401, $response->getStatusCode());
+        static::assertEquals('Basic realm="My OAuth2 Server",charset="UTF-8",error="invalid_client",error_description="Client authentication failed."', $response->headers->get('www-authenticate'));
     }
 
     /**
@@ -77,8 +77,8 @@ class ClientCredentialsGrantTest extends WebTestCase
         $client = static::createClient();
         $client->request('POST', '/token/get', ['grant_type' => 'client_credentials', 'client_id' => 'CLIENT_ID_1'], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
-        self::assertEquals(400, $response->getStatusCode());
-        self::assertEquals('{"error":"unauthorized_client","error_description":"The grant type \"client_credentials\" is unauthorized for this client."}', $response->getContent());
+        static::assertEquals(400, $response->getStatusCode());
+        static::assertEquals('{"error":"unauthorized_client","error_description":"The grant type \"client_credentials\" is unauthorized for this client."}', $response->getContent());
     }
 
     /**
@@ -89,8 +89,8 @@ class ClientCredentialsGrantTest extends WebTestCase
         $client = static::createClient();
         $client->request('POST', '/token/get', ['grant_type' => 'client_credentials', 'client_id' => 'CLIENT_ID_2'], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
-        self::assertEquals(400, $response->getStatusCode());
-        self::assertEquals('{"error":"invalid_client","error_description":"The client is not a confidential client."}', $response->getContent());
+        static::assertEquals(400, $response->getStatusCode());
+        static::assertEquals('{"error":"invalid_client","error_description":"The client is not a confidential client."}', $response->getContent());
     }
 
     /**
@@ -101,7 +101,7 @@ class ClientCredentialsGrantTest extends WebTestCase
         $client = static::createClient();
         $client->request('POST', '/token/get', ['grant_type' => 'client_credentials', 'client_id' => 'CLIENT_ID_3', 'client_secret' => 'secret'], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
-        self::assertEquals(200, $response->getStatusCode());
+        static::assertEquals(200, $response->getStatusCode());
         self::assertRegexp('/\{"token_type"\:"Bearer","access_token"\:"[0-9a-zA-Z-_]+","expires_in":[0-9]{4}\}/', $response->getContent());
     }
 }

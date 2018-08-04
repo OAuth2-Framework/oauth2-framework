@@ -32,9 +32,6 @@ final class SymfonyUserDiscovery implements UserAccountDiscovery
 
     /**
      * SymfonyUserDiscovery constructor.
-     *
-     * @param TokenStorageInterface         $tokenStorage
-     * @param AuthorizationCheckerInterface $authorizationChecker
      */
     public function __construct(TokenStorageInterface $tokenStorage, AuthorizationCheckerInterface $authorizationChecker)
     {

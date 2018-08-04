@@ -18,9 +18,9 @@ use OAuth2Framework\SecurityBundle\DependencyInjection\Compiler\SecurityAnnotati
 use OAuth2Framework\SecurityBundle\DependencyInjection\Compiler\TokenTypeCompilerPass;
 use OAuth2Framework\SecurityBundle\DependencyInjection\OAuth2FrameworkSecurityExtension;
 use OAuth2Framework\SecurityBundle\Security\Factory\OAuth2SecurityFactory;
+use Symfony\Bundle\SecurityBundle\DependencyInjection\SecurityExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
-use Symfony\Bundle\SecurityBundle\DependencyInjection\SecurityExtension;
 
 final class OAuth2FrameworkSecurityBundle extends Bundle
 {

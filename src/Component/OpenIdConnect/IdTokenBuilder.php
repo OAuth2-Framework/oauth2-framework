@@ -18,10 +18,10 @@ use Jose\Component\Core\Converter\StandardConverter;
 use Jose\Component\Core\JWK;
 use Jose\Component\Core\JWKSet;
 use Jose\Component\Encryption\JWEBuilder;
+use Jose\Component\Encryption\Serializer\CompactSerializer as JweCompactSerializer;
 use Jose\Component\KeyManagement\JKUFactory;
 use Jose\Component\Signature\JWSBuilder;
 use Jose\Component\Signature\Serializer\CompactSerializer as JwsCompactSerializer;
-use Jose\Component\Encryption\Serializer\CompactSerializer as JweCompactSerializer;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeId;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeRepository;
 use OAuth2Framework\Component\Core\AccessToken\AccessToken;
@@ -161,8 +161,6 @@ class IdTokenBuilder
     }
 
     /**
-     * @param AccessToken $accessToken
-     *
      * @return IdTokenBuilder
      */
     public function withAccessToken(AccessToken $accessToken): self
@@ -172,7 +170,7 @@ class IdTokenBuilder
         $this->scope = $accessToken->getParameter()->has('scope') ? $accessToken->getParameter()->get('scope') : null;
 
         if ($accessToken->getMetadata()->has('authorization_code_id') && null !== $this->authorizationCodeRepository) {
-            $authorizationCodeId = AuthorizationCodeId::create($accessToken->getMetadata()->get('authorization_code_id'));
+            $authorizationCodeId = new AuthorizationCodeId($accessToken->getMetadata()->get('authorization_code_id'));
             $authorizationCode = $this->authorizationCodeRepository->find($authorizationCodeId);
             if (null === $authorizationCode) {
                 return $this;
@@ -191,8 +189,6 @@ class IdTokenBuilder
     }
 
     /**
-     * @param AccessTokenId $accessTokenId
-     *
      * @return IdTokenBuilder
      */
     public function withAccessTokenId(AccessTokenId $accessTokenId): self
@@ -203,8 +199,6 @@ class IdTokenBuilder
     }
 
     /**
-     * @param AuthorizationCodeId $authorizationCodeId
-     *
      * @return IdTokenBuilder
      */
     public function withAuthorizationCodeId(AuthorizationCodeId $authorizationCodeId): self
@@ -215,8 +209,6 @@ class IdTokenBuilder
     }
 
     /**
-     * @param string $claimsLocales
-     *
      * @return IdTokenBuilder
      */
     public function withClaimsLocales(string $claimsLocales): self
@@ -237,8 +229,6 @@ class IdTokenBuilder
     }
 
     /**
-     * @param string $scope
-     *
      * @return IdTokenBuilder
      */
     public function withScope(string $scope): self
@@ -249,8 +239,6 @@ class IdTokenBuilder
     }
 
     /**
-     * @param array $requestedClaims
-     *
      * @return IdTokenBuilder
      */
     public function withRequestedClaims(array $requestedClaims): self
@@ -261,8 +249,6 @@ class IdTokenBuilder
     }
 
     /**
-     * @param string $nonce
-     *
      * @return IdTokenBuilder
      */
     public function withNonce(string $nonce): self
@@ -273,8 +259,6 @@ class IdTokenBuilder
     }
 
     /**
-     * @param \DateTimeImmutable $expiresAt
-     *
      * @return IdTokenBuilder
      */
     public function withExpirationAt(\DateTimeImmutable $expiresAt): self
@@ -295,10 +279,6 @@ class IdTokenBuilder
     }
 
     /**
-     * @param JWSBuilder $jwsBuilder
-     * @param JWKSet     $signatureKeys
-     * @param string     $signatureAlgorithm
-     *
      * @return IdTokenBuilder
      */
     public function withSignature(JWSBuilder $jwsBuilder, JWKSet $signatureKeys, string $signatureAlgorithm): self
@@ -317,10 +297,6 @@ class IdTokenBuilder
     }
 
     /**
-     * @param JWEBuilder $jweBuilder
-     * @param string     $keyEncryptionAlgorithm
-     * @param string     $contentEncryptionAlgorithm
-     *
      * @return IdTokenBuilder
      */
     public function withEncryption(JWEBuilder $jweBuilder, string $keyEncryptionAlgorithm, string $contentEncryptionAlgorithm): self
@@ -338,9 +314,6 @@ class IdTokenBuilder
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function build(): string
     {
         if (null === $this->scope) {
@@ -382,12 +355,6 @@ class IdTokenBuilder
         return $claims;
     }
 
-    /**
-     * @param array       $claims
-     * @param UserAccount $userAccount
-     *
-     * @return array
-     */
     private function updateClaimsWithAuthenticationTime(array $claims, UserAccount $userAccount, array $requestedClaims): array
     {
         if ((true === $this->withAuthenticationTime || \array_key_exists('auth_time', $requestedClaims)) && null !== $userAccount->getLastLoginAt()) {
@@ -459,11 +426,6 @@ class IdTokenBuilder
         return $serializer->serialize($jwe, 0);
     }
 
-    /**
-     * @param string $signatureAlgorithm
-     *
-     * @return JWK
-     */
     private function getSignatureKey(string $signatureAlgorithm): JWK
     {
         $keys = $this->signatureKeys;
@@ -487,12 +449,6 @@ class IdTokenBuilder
         return $signatureKey;
     }
 
-    /**
-     * @param JWK    $signatureKey
-     * @param string $signatureAlgorithm
-     *
-     * @return array
-     */
     private function getHeaders(JWK $signatureKey, string $signatureAlgorithm): array
     {
         $header = [
@@ -506,11 +462,6 @@ class IdTokenBuilder
         return $header;
     }
 
-    /**
-     * @param array $claims
-     *
-     * @return array
-     */
     private function updateClaimsWithTokenHash(array $claims): array
     {
         if ('none' === $this->signatureAlgorithm) {
@@ -526,11 +477,6 @@ class IdTokenBuilder
         return $claims;
     }
 
-    /**
-     * @param TokenId $tokenId
-     *
-     * @return string
-     */
     private function getHash(TokenId $tokenId): string
     {
         return Base64Url::encode(\mb_substr(\hash($this->getHashMethod(), $tokenId->getValue(), true), 0, $this->getHashSize(), '8bit'));
@@ -538,8 +484,6 @@ class IdTokenBuilder
 
     /**
      * @throws \InvalidArgumentException
-     *
-     * @return string
      */
     private function getHashMethod(): string
     {
@@ -567,8 +511,6 @@ class IdTokenBuilder
 
     /**
      * @throws \InvalidArgumentException
-     *
-     * @return int
      */
     private function getHashSize(): int
     {
@@ -594,11 +536,6 @@ class IdTokenBuilder
         return $map[$this->signatureAlgorithm];
     }
 
-    /**
-     * @param Client $client
-     *
-     * @return JWKSet
-     */
     private function getClientKeySet(Client $client): JWKSet
     {
         $keyset = JWKSet::createFromKeys([]);

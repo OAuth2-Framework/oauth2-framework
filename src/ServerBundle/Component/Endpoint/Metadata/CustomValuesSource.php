@@ -20,9 +20,6 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class CustomValuesSource implements Component
 {
-    /**
-     * @return string
-     */
     public function name(): string
     {
         return 'custom_routes';

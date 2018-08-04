@@ -16,9 +16,6 @@ namespace OAuth2Framework\Component\Scope;
 class Checker
 {
     /**
-     * @param string $scope
-     * @param string $scopes
-     *
      * @throws \InvalidArgumentException
      */
     public static function checkUsedOnce(string $scope, string $scopes)
@@ -30,8 +27,6 @@ class Checker
     }
 
     /**
-     * @param string $scope
-     *
      * @throws \InvalidArgumentException
      */
     public static function checkCharset(string $scope)

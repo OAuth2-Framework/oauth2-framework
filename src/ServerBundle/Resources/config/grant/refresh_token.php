@@ -11,13 +11,13 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
+use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenEndpointExtension;
 use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenGrantType;
-use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenRevocationTypeHint;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenIdGenerator;
 use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenRepository;
-use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenEndpointExtension;
+use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenRevocationTypeHint;
 use OAuth2Framework\ServerBundle\Service\RandomRefreshTokenIdGenerator;
+use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
 return function (ContainerConfigurator $container) {

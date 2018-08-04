@@ -33,9 +33,6 @@ class SessionStateParameterExtension extends \OAuth2Framework\Component\OpenIdCo
 
     /**
      * SessionStateParameterExtension constructor.
-     *
-     * @param SessionInterface $session
-     * @param string           $storageName
      */
     public function __construct(SessionInterface $session, string $storageName)
     {
@@ -77,11 +74,6 @@ class SessionStateParameterExtension extends \OAuth2Framework\Component\OpenIdCo
         return \sprintf('%s.%s', $hash, $salt);
     }
 
-    /**
-     * @param string $redirectUri
-     *
-     * @return string
-     */
     private function getOriginUri(string $redirectUri): string
     {
         $url_parts = \parse_url($redirectUri);

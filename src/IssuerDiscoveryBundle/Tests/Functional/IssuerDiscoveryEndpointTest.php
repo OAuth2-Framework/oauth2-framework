@@ -31,8 +31,8 @@ class IssuerDiscoveryEndpointTest extends WebTestCase
         $client = static::createClient([], ['HTTP_HOST' => 'my-service.com', 'HTTP_PORT' => 443]);
         $client->request('GET', '/.well-known/webfinger', [], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
-        self::assertEquals(400, $response->getStatusCode());
-        self::assertEquals('{"error":"invalid_request","error_description":"The parameter \"rel\" is mandatory."}', $response->getContent());
+        static::assertEquals(400, $response->getStatusCode());
+        static::assertEquals('{"error":"invalid_request","error_description":"The parameter \"rel\" is mandatory."}', $response->getContent());
     }
 
     /**
@@ -43,8 +43,8 @@ class IssuerDiscoveryEndpointTest extends WebTestCase
         $client = static::createClient([], ['HTTP_HOST' => 'my-service.com', 'HTTP_PORT' => 443]);
         $client->request('GET', '/.well-known/webfinger', ['rel' => 'foo.bar'], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
-        self::assertEquals(400, $response->getStatusCode());
-        self::assertEquals('{"error":"invalid_request","error_description":"Unsupported \"rel\" parameter value."}', $response->getContent());
+        static::assertEquals(400, $response->getStatusCode());
+        static::assertEquals('{"error":"invalid_request","error_description":"Unsupported \"rel\" parameter value."}', $response->getContent());
     }
 
     /**
@@ -55,8 +55,8 @@ class IssuerDiscoveryEndpointTest extends WebTestCase
         $client = static::createClient([], ['HTTP_HOST' => 'my-service.com', 'HTTP_PORT' => 443]);
         $client->request('GET', '/.well-known/webfinger', ['rel' => 'http://openid.net/specs/connect/1.0/issuer'], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
-        self::assertEquals(400, $response->getStatusCode());
-        self::assertEquals('{"error":"invalid_request","error_description":"The parameter \"resource\" is mandatory."}', $response->getContent());
+        static::assertEquals(400, $response->getStatusCode());
+        static::assertEquals('{"error":"invalid_request","error_description":"The parameter \"resource\" is mandatory."}', $response->getContent());
     }
 
     /**
@@ -67,8 +67,8 @@ class IssuerDiscoveryEndpointTest extends WebTestCase
         $client = static::createClient([], ['HTTP_HOST' => 'my-service.com', 'HTTP_PORT' => 443]);
         $client->request('GET', '/.well-known/webfinger', ['rel' => 'http://openid.net/specs/connect/1.0/issuer', 'resource' => '@foo'], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
-        self::assertEquals(400, $response->getStatusCode());
-        self::assertEquals('{"error":"invalid_request","error_description":"The resource identified with \"@foo\" does not exist or is not supported by this server."}', $response->getContent());
+        static::assertEquals(400, $response->getStatusCode());
+        static::assertEquals('{"error":"invalid_request","error_description":"The resource identified with \"@foo\" does not exist or is not supported by this server."}', $response->getContent());
     }
 
     /**
@@ -79,8 +79,8 @@ class IssuerDiscoveryEndpointTest extends WebTestCase
         $client = static::createClient([], ['HTTP_HOST' => 'my-service.com', 'HTTP_PORT' => 443]);
         $client->request('GET', '/.well-known/webfinger', ['rel' => 'http://openid.net/specs/connect/1.0/issuer', 'resource' => 'acct:john@example.com'], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
-        self::assertEquals(400, $response->getStatusCode());
-        self::assertEquals('{"error":"invalid_request","error_description":"The resource identified with \"acct:john@example.com\" does not exist or is not supported by this server."}', $response->getContent());
+        static::assertEquals(400, $response->getStatusCode());
+        static::assertEquals('{"error":"invalid_request","error_description":"The resource identified with \"acct:john@example.com\" does not exist or is not supported by this server."}', $response->getContent());
     }
 
     /**
@@ -91,8 +91,8 @@ class IssuerDiscoveryEndpointTest extends WebTestCase
         $client = static::createClient([], ['HTTP_HOST' => 'my-service.com', 'HTTP_PORT' => 443]);
         $client->request('GET', '/.well-known/webfinger', ['rel' => 'http://openid.net/specs/connect/1.0/issuer', 'resource' => 'john@example.com'], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
-        self::assertEquals(400, $response->getStatusCode());
-        self::assertEquals('{"error":"invalid_request","error_description":"The resource identified with \"john@example.com\" does not exist or is not supported by this server."}', $response->getContent());
+        static::assertEquals(400, $response->getStatusCode());
+        static::assertEquals('{"error":"invalid_request","error_description":"The resource identified with \"john@example.com\" does not exist or is not supported by this server."}', $response->getContent());
     }
 
     /**
@@ -103,8 +103,8 @@ class IssuerDiscoveryEndpointTest extends WebTestCase
         $client = static::createClient([], ['HTTP_HOST' => 'my-service.com', 'HTTP_PORT' => 443]);
         $client->request('GET', '/.well-known/webfinger', ['rel' => 'http://openid.net/specs/connect/1.0/issuer', 'resource' => 'https://example.com:8080/+john'], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
-        self::assertEquals(400, $response->getStatusCode());
-        self::assertEquals('{"error":"invalid_request","error_description":"The resource identified with \"https://example.com:8080/+john\" does not exist or is not supported by this server."}', $response->getContent());
+        static::assertEquals(400, $response->getStatusCode());
+        static::assertEquals('{"error":"invalid_request","error_description":"The resource identified with \"https://example.com:8080/+john\" does not exist or is not supported by this server."}', $response->getContent());
     }
 
     /**
@@ -115,8 +115,8 @@ class IssuerDiscoveryEndpointTest extends WebTestCase
         $client = static::createClient([], ['HTTP_HOST' => 'my-service.com', 'HTTP_PORT' => 443]);
         $client->request('GET', '/.well-known/webfinger', ['rel' => 'http://openid.net/specs/connect/1.0/issuer', 'resource' => 'acct:john@my-service.com:443'], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
-        self::assertEquals(200, $response->getStatusCode());
-        self::assertEquals('{"subject":"acct:john@my-service.com:443","links":[{"rel":"http://openid.net/specs/connect/1.0/issuer","href":"https://server.example.com"}]}', $response->getContent());
+        static::assertEquals(200, $response->getStatusCode());
+        static::assertEquals('{"subject":"acct:john@my-service.com:443","links":[{"rel":"http://openid.net/specs/connect/1.0/issuer","href":"https://server.example.com"}]}', $response->getContent());
     }
 
     /**
@@ -127,7 +127,7 @@ class IssuerDiscoveryEndpointTest extends WebTestCase
         $client = static::createClient([], ['HTTP_HOST' => 'my-service.com', 'HTTP_PORT' => 443]);
         $client->request('GET', '/.well-known/webfinger', ['rel' => 'http://openid.net/specs/connect/1.0/issuer', 'resource' => 'https://my-service.com:443/+john'], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
-        self::assertEquals(200, $response->getStatusCode());
-        self::assertEquals('{"subject":"https://my-service.com:443/+john","links":[{"rel":"http://openid.net/specs/connect/1.0/issuer","href":"https://server.example.com"}]}', $response->getContent());
+        static::assertEquals(200, $response->getStatusCode());
+        static::assertEquals('{"subject":"https://my-service.com:443/+john","links":[{"rel":"http://openid.net/specs/connect/1.0/issuer","href":"https://server.example.com"}]}', $response->getContent());
     }
 }

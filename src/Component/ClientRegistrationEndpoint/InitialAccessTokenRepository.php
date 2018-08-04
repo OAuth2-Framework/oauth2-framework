@@ -15,9 +15,6 @@ namespace OAuth2Framework\Component\ClientRegistrationEndpoint;
 
 interface InitialAccessTokenRepository
 {
-    /**
-     * @param InitialAccessToken $initialAccessToken
-     */
     public function save(InitialAccessToken $initialAccessToken);
 
     /**

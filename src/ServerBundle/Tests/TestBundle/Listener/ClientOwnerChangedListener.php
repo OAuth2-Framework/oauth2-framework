@@ -22,9 +22,6 @@ class ClientOwnerChangedListener
      */
     private $events = [];
 
-    /**
-     * @param ClientOwnerChangedEvent $event
-     */
     public function handle(ClientOwnerChangedEvent $event)
     {
         $this->events[] = $event;

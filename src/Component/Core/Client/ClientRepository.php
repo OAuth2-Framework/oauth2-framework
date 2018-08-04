@@ -17,15 +17,11 @@ interface ClientRepository
 {
     /**
      * Save the client.
-     *
-     * @param Client $client
      */
     public function save(Client $client);
 
     /**
      * Get a client using its Id.
-     *
-     * @param ClientId $clientId
      *
      * @return null|Client return the client object or null if no client is found
      */

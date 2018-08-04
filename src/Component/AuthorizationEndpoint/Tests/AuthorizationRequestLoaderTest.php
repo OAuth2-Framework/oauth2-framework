@@ -44,13 +44,13 @@ final class AuthorizationRequestLoaderTest extends TestCase
         $loader = $this->getAuthorizationRequestLoader(
             $clientRepository->reveal()
         );
-        self::assertEquals([], $loader->getSupportedKeyEncryptionAlgorithms());
-        self::assertEquals([], $loader->getSupportedContentEncryptionAlgorithms());
-        self::assertEquals(['RS256'], $loader->getSupportedSignatureAlgorithms());
-        self::assertTrue($loader->isRequestObjectSupportEnabled());
-        self::assertTrue($loader->isRequestUriRegistrationRequired());
-        self::assertTrue($loader->isRequestObjectReferenceSupportEnabled());
-        self::assertFalse($loader->isEncryptedRequestSupportEnabled());
+        static::assertEquals([], $loader->getSupportedKeyEncryptionAlgorithms());
+        static::assertEquals([], $loader->getSupportedContentEncryptionAlgorithms());
+        static::assertEquals(['RS256'], $loader->getSupportedSignatureAlgorithms());
+        static::assertTrue($loader->isRequestObjectSupportEnabled());
+        static::assertTrue($loader->isRequestUriRegistrationRequired());
+        static::assertTrue($loader->isRequestObjectReferenceSupportEnabled());
+        static::assertFalse($loader->isEncryptedRequestSupportEnabled());
 
         //$this->authorizationRequestLoader->enableEncryptedRequestObjectSupport($jweLoader, $keyset, false);
     }
@@ -70,11 +70,11 @@ final class AuthorizationRequestLoaderTest extends TestCase
             $this->getAuthorizationRequestLoader($clientRepository->reveal())->load(
                 $request->reveal()
             );
-            $this->fail('The expected exception has not been thrown.');
+            static::fail('The expected exception has not been thrown.');
         } catch (OAuth2Message $e) {
-            self::assertEquals(400, $e->getCode());
-            self::assertEquals('invalid_request', $e->getMessage());
-            self::assertEquals('Parameter "client_id" missing or invalid.', $e->getErrorDescription());
+            static::assertEquals(400, $e->getCode());
+            static::assertEquals('invalid_request', $e->getMessage());
+            static::assertEquals('Parameter "client_id" missing or invalid.', $e->getErrorDescription());
         }
     }
 
@@ -96,11 +96,11 @@ final class AuthorizationRequestLoaderTest extends TestCase
             $this->getAuthorizationRequestLoader($clientRepository->reveal())->load(
                 $request->reveal()
             );
-            $this->fail('The expected exception has not been thrown.');
+            static::fail('The expected exception has not been thrown.');
         } catch (OAuth2Message $e) {
-            self::assertEquals(400, $e->getCode());
-            self::assertEquals('invalid_request', $e->getMessage());
-            self::assertEquals('Parameter "client_id" missing or invalid.', $e->getErrorDescription());
+            static::assertEquals(400, $e->getCode());
+            static::assertEquals('invalid_request', $e->getMessage());
+            static::assertEquals('Parameter "client_id" missing or invalid.', $e->getErrorDescription());
         }
     }
 
@@ -125,11 +125,11 @@ final class AuthorizationRequestLoaderTest extends TestCase
             $this->getAuthorizationRequestLoader($clientRepository->reveal())->load(
                 $request->reveal()
             );
-            $this->fail('The expected exception has not been thrown.');
+            static::fail('The expected exception has not been thrown.');
         } catch (OAuth2Message $e) {
-            self::assertEquals(400, $e->getCode());
-            self::assertEquals('invalid_request', $e->getMessage());
-            self::assertEquals('Parameter "client_id" missing or invalid.', $e->getErrorDescription());
+            static::assertEquals(400, $e->getCode());
+            static::assertEquals('invalid_request', $e->getMessage());
+            static::assertEquals('Parameter "client_id" missing or invalid.', $e->getErrorDescription());
         }
     }
 
@@ -154,9 +154,9 @@ final class AuthorizationRequestLoaderTest extends TestCase
             $request->reveal()
         );
 
-        self::assertTrue($authorization->hasQueryParam('client_id'));
-        self::assertEquals('CLIENT_ID', $authorization->getQueryParam('client_id'));
-        self::assertInstanceOf(\OAuth2Framework\Component\Core\Client\Client::class, $authorization->getClient());
+        static::assertTrue($authorization->hasQueryParam('client_id'));
+        static::assertEquals('CLIENT_ID', $authorization->getQueryParam('client_id'));
+        static::assertInstanceOf(\OAuth2Framework\Component\Core\Client\Client::class, $authorization->getClient());
     }
 
     /**
@@ -176,11 +176,11 @@ final class AuthorizationRequestLoaderTest extends TestCase
             $this->getAuthorizationRequestLoader($clientRepository->reveal())->load(
                 $request->reveal()
             );
-            $this->fail('The expected exception has not been thrown.');
+            static::fail('The expected exception has not been thrown.');
         } catch (OAuth2Message $e) {
-            self::assertEquals(400, $e->getCode());
-            self::assertEquals('invalid_request_object', $e->getMessage());
-            self::assertEquals('Unsupported input', $e->getErrorDescription());
+            static::assertEquals(400, $e->getCode());
+            static::assertEquals('invalid_request_object', $e->getMessage());
+            static::assertEquals('Unsupported input', $e->getErrorDescription());
         }
     }
 
@@ -201,11 +201,11 @@ final class AuthorizationRequestLoaderTest extends TestCase
             $this->getAuthorizationRequestLoader($clientRepository->reveal())->load(
                 $request->reveal()
             );
-            $this->fail('The expected exception has not been thrown.');
+            static::fail('The expected exception has not been thrown.');
         } catch (OAuth2Message $e) {
-            self::assertEquals(400, $e->getCode());
-            self::assertEquals('invalid_request_object', $e->getMessage());
-            self::assertEquals('Invalid assertion. The payload must contain claims.', $e->getErrorDescription());
+            static::assertEquals(400, $e->getCode());
+            static::assertEquals('invalid_request_object', $e->getMessage());
+            static::assertEquals('Invalid assertion. The payload must contain claims.', $e->getErrorDescription());
         }
     }
 
@@ -226,11 +226,11 @@ final class AuthorizationRequestLoaderTest extends TestCase
             $this->getAuthorizationRequestLoader($clientRepository->reveal())->load(
                 $request->reveal()
             );
-            $this->fail('The expected exception has not been thrown.');
+            static::fail('The expected exception has not been thrown.');
         } catch (OAuth2Message $e) {
-            self::assertEquals(400, $e->getCode());
-            self::assertEquals('invalid_request', $e->getMessage());
-            self::assertEquals('Parameter "client_id" missing or invalid.', $e->getErrorDescription());
+            static::assertEquals(400, $e->getCode());
+            static::assertEquals('invalid_request', $e->getMessage());
+            static::assertEquals('Parameter "client_id" missing or invalid.', $e->getErrorDescription());
         }
     }
 
@@ -259,11 +259,11 @@ final class AuthorizationRequestLoaderTest extends TestCase
             $this->getAuthorizationRequestLoader($clientRepository->reveal())->load(
                 $request->reveal()
             );
-            $this->fail('The expected exception has not been thrown.');
+            static::fail('The expected exception has not been thrown.');
         } catch (OAuth2Message $e) {
-            self::assertEquals(400, $e->getCode());
-            self::assertEquals('invalid_request_object', $e->getMessage());
-            self::assertEquals('The client has no key or key set.', $e->getErrorDescription());
+            static::assertEquals(400, $e->getCode());
+            static::assertEquals('invalid_request_object', $e->getMessage());
+            static::assertEquals('The client has no key or key set.', $e->getErrorDescription());
         }
     }
 
@@ -294,11 +294,11 @@ final class AuthorizationRequestLoaderTest extends TestCase
             $this->getAuthorizationRequestLoader($clientRepository->reveal())->load(
                 $request->reveal()
             );
-            $this->fail('The expected exception has not been thrown.');
+            static::fail('The expected exception has not been thrown.');
         } catch (OAuth2Message $e) {
-            self::assertEquals(400, $e->getCode());
-            self::assertEquals('invalid_request_object', $e->getMessage());
-            self::assertEquals('The algorithm "none" is not allowed for request object signatures. Please use one of the following algorithm(s): RS256', $e->getErrorDescription());
+            static::assertEquals(400, $e->getCode());
+            static::assertEquals('invalid_request_object', $e->getMessage());
+            static::assertEquals('The algorithm "none" is not allowed for request object signatures. Please use one of the following algorithm(s): RS256', $e->getErrorDescription());
         }
     }
 
@@ -330,11 +330,11 @@ final class AuthorizationRequestLoaderTest extends TestCase
             $this->getAuthorizationRequestLoader($clientRepository->reveal())->load(
                 $request->reveal()
             );
-            $this->fail('The expected exception has not been thrown.');
+            static::fail('The expected exception has not been thrown.');
         } catch (OAuth2Message $e) {
-            self::assertEquals(400, $e->getCode());
-            self::assertEquals('invalid_request_object', $e->getMessage());
-            self::assertEquals('Request Object signature algorithm not allowed for the client.', $e->getErrorDescription());
+            static::assertEquals(400, $e->getCode());
+            static::assertEquals('invalid_request_object', $e->getMessage());
+            static::assertEquals('Request Object signature algorithm not allowed for the client.', $e->getErrorDescription());
         }
     }
 
@@ -366,11 +366,11 @@ final class AuthorizationRequestLoaderTest extends TestCase
             $this->getAuthorizationRequestLoader($clientRepository->reveal())->load(
                 $request->reveal()
             );
-            $this->fail('The expected exception has not been thrown.');
+            static::fail('The expected exception has not been thrown.');
         } catch (OAuth2Message $e) {
-            self::assertEquals(400, $e->getCode());
-            self::assertEquals('invalid_request_object', $e->getMessage());
-            self::assertEquals('The verification of the request object failed.', $e->getErrorDescription());
+            static::assertEquals(400, $e->getCode());
+            static::assertEquals('invalid_request_object', $e->getMessage());
+            static::assertEquals('The verification of the request object failed.', $e->getErrorDescription());
         }
     }
 
@@ -402,11 +402,11 @@ final class AuthorizationRequestLoaderTest extends TestCase
             $request->reveal()
         );
 
-        self::assertTrue($authorization->hasQueryParam('client_id'));
-        self::assertTrue($authorization->hasQueryParam('request'));
-        self::assertEquals('CLIENT_ID', $authorization->getQueryParam('client_id'));
-        self::assertEquals('eyJhbGciOiJSUzI1NiJ9.eyJjbGllbnRfaWQiOiJDTElFTlRfSUQifQ.R09PRF9TSUdOQVRVUkU', $authorization->getQueryParam('request'));
-        self::assertInstanceOf(\OAuth2Framework\Component\Core\Client\Client::class, $authorization->getClient());
+        static::assertTrue($authorization->hasQueryParam('client_id'));
+        static::assertTrue($authorization->hasQueryParam('request'));
+        static::assertEquals('CLIENT_ID', $authorization->getQueryParam('client_id'));
+        static::assertEquals('eyJhbGciOiJSUzI1NiJ9.eyJjbGllbnRfaWQiOiJDTElFTlRfSUQifQ.R09PRF9TSUdOQVRVUkU', $authorization->getQueryParam('request'));
+        static::assertInstanceOf(\OAuth2Framework\Component\Core\Client\Client::class, $authorization->getClient());
     }
 
     /**
@@ -439,11 +439,11 @@ final class AuthorizationRequestLoaderTest extends TestCase
             $request->reveal()
         );
 
-        self::assertTrue($authorization->hasQueryParam('client_id'));
-        self::assertTrue($authorization->hasQueryParam('request_uri'));
-        self::assertEquals('CLIENT_ID', $authorization->getQueryParam('client_id'));
-        self::assertEquals('https://www.foo.bar/eyJhbGciOiJSUzI1NiJ9.eyJjbGllbnRfaWQiOiJDTElFTlRfSUQifQ.R09PRF9TSUdOQVRVUkU', $authorization->getQueryParam('request_uri'));
-        self::assertInstanceOf(\OAuth2Framework\Component\Core\Client\Client::class, $authorization->getClient());
+        static::assertTrue($authorization->hasQueryParam('client_id'));
+        static::assertTrue($authorization->hasQueryParam('request_uri'));
+        static::assertEquals('CLIENT_ID', $authorization->getQueryParam('client_id'));
+        static::assertEquals('https://www.foo.bar/eyJhbGciOiJSUzI1NiJ9.eyJjbGllbnRfaWQiOiJDTElFTlRfSUQifQ.R09PRF9TSUdOQVRVUkU', $authorization->getQueryParam('request_uri'));
+        static::assertInstanceOf(\OAuth2Framework\Component\Core\Client\Client::class, $authorization->getClient());
     }
 
     /**
@@ -476,11 +476,11 @@ final class AuthorizationRequestLoaderTest extends TestCase
             $this->getAuthorizationRequestLoader($clientRepository->reveal())->load(
                 $request->reveal()
             );
-            $this->fail('The expected exception has not been thrown.');
+            static::fail('The expected exception has not been thrown.');
         } catch (OAuth2Message $e) {
-            self::assertEquals(400, $e->getCode());
-            self::assertEquals('invalid_request_uri', $e->getMessage());
-            self::assertEquals('The request Uri is not allowed.', $e->getErrorDescription());
+            static::assertEquals(400, $e->getCode());
+            static::assertEquals('invalid_request_uri', $e->getMessage());
+            static::assertEquals('The request Uri is not allowed.', $e->getErrorDescription());
         }
     }
 
@@ -501,11 +501,11 @@ final class AuthorizationRequestLoaderTest extends TestCase
             $this->getAuthorizationRequestLoader($clientRepository->reveal())->load(
                 $request->reveal()
             );
-            $this->fail('The expected exception has not been thrown.');
+            static::fail('The expected exception has not been thrown.');
         } catch (OAuth2Message $e) {
-            self::assertEquals(400, $e->getCode());
-            self::assertEquals('invalid_request_uri', $e->getMessage());
-            self::assertEquals('The request Uri is not allowed.', $e->getErrorDescription());
+            static::assertEquals(400, $e->getCode());
+            static::assertEquals('invalid_request_uri', $e->getMessage());
+            static::assertEquals('The request Uri is not allowed.', $e->getErrorDescription());
         }
     }
 
@@ -514,11 +514,6 @@ final class AuthorizationRequestLoaderTest extends TestCase
      */
     private $authorizationRequestLoader;
 
-    /**
-     * @param ClientRepository $clientRepository
-     *
-     * @return AuthorizationRequestLoader
-     */
     private function getAuthorizationRequestLoader(ClientRepository $clientRepository): AuthorizationRequestLoader
     {
         if (null === $this->authorizationRequestLoader) {
@@ -536,9 +531,6 @@ final class AuthorizationRequestLoaderTest extends TestCase
         return $this->authorizationRequestLoader;
     }
 
-    /**
-     * @return JWSVerifier
-     */
     private function getJWSVerifier(): JWSVerifier
     {
         $verifier = $this->prophesize(JWSVerifier::class);
@@ -554,9 +546,6 @@ final class AuthorizationRequestLoaderTest extends TestCase
         return $verifier->reveal();
     }
 
-    /**
-     * @return AlgorithmManager
-     */
     private function getSignatureAlgorithmManager(): AlgorithmManager
     {
         $manager = $this->prophesize(AlgorithmManager::class);
@@ -565,9 +554,6 @@ final class AuthorizationRequestLoaderTest extends TestCase
         return $manager->reveal();
     }
 
-    /**
-     * @return ClaimCheckerManager
-     */
     private function getClaimCheckerManager(): ClaimCheckerManager
     {
         $manager = $this->prophesize(ClaimCheckerManager::class);
@@ -578,9 +564,6 @@ final class AuthorizationRequestLoaderTest extends TestCase
         return $manager->reveal();
     }
 
-    /**
-     * @return Client
-     */
     private function getHttpClient(): Client
     {
         $client = $this->prophesize(Client::class);

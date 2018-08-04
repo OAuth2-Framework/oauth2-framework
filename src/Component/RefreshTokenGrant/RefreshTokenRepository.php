@@ -19,9 +19,6 @@ namespace OAuth2Framework\Component\RefreshTokenGrant;
  */
 interface RefreshTokenRepository
 {
-    /**
-     * @param RefreshToken $refreshToken
-     */
     public function save(RefreshToken $refreshToken);
 
     /**

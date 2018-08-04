@@ -15,10 +15,10 @@ namespace OAuth2Framework\Component\AuthorizationEndpoint\Rule;
 
 use Http\Client\HttpClient;
 use Http\Message\RequestFactory;
-use function League\Uri\parse;
 use OAuth2Framework\Component\ClientRule\Rule;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
+use function League\Uri\parse;
 
 final class SectorIdentifierUriRule implements Rule
 {
@@ -34,9 +34,6 @@ final class SectorIdentifierUriRule implements Rule
 
     /**
      * SectorIdentifierUriRule constructor.
-     *
-     * @param RequestFactory $requestFactory
-     * @param HttpClient     $client
      */
     public function __construct(RequestFactory $requestFactory, HttpClient $client)
     {

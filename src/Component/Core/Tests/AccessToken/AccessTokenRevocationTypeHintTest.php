@@ -37,7 +37,7 @@ final class AccessTokenRevocationTypeHintTest extends TestCase
     protected function setUp()
     {
         if (!\interface_exists(TokenTypeHint::class)) {
-            $this->markTestSkipped('The component "oauth2-framework/token-type" is not installed.');
+            static::markTestSkipped('The component "oauth2-framework/token-type" is not installed.');
         }
     }
 
@@ -46,7 +46,7 @@ final class AccessTokenRevocationTypeHintTest extends TestCase
      */
     public function genericInformation()
     {
-        self::assertEquals('access_token', $this->getAccessTokenRevocationTypeHint()->hint());
+        static::assertEquals('access_token', $this->getAccessTokenRevocationTypeHint()->hint());
     }
 
     /**
@@ -54,11 +54,11 @@ final class AccessTokenRevocationTypeHintTest extends TestCase
      */
     public function theTokenTypeHintCanFindATokenAndRevokeIt()
     {
-        self::assertNull($this->getAccessTokenRevocationTypeHint()->find('UNKNOWN_TOKEN_ID'));
+        static::assertNull($this->getAccessTokenRevocationTypeHint()->find('UNKNOWN_TOKEN_ID'));
         $accessToken = $this->getAccessTokenRevocationTypeHint()->find('ACCESS_TOKEN_ID');
-        self::assertInstanceOf(AccessToken::class, $accessToken);
+        static::assertInstanceOf(AccessToken::class, $accessToken);
         $this->getAccessTokenRevocationTypeHint()->revoke($accessToken);
-        self::assertTrue(true);
+        static::assertTrue(true);
     }
 
     /**
@@ -66,23 +66,19 @@ final class AccessTokenRevocationTypeHintTest extends TestCase
      */
     private $accessTokenTypeHint = null;
 
-    /**
-     * @return AccessTokenRevocationTypeHint
-     */
     public function getAccessTokenRevocationTypeHint(): AccessTokenRevocationTypeHint
     {
         if (null === $this->accessTokenTypeHint) {
-            $accessToken = AccessToken::createEmpty();
-            $accessToken = $accessToken->create(
-                AccessTokenId::create('ACCESS_TOKEN_ID'),
-                UserAccountId::create('USER_ACCOUNT_ID'),
-                ClientId::create('CLIENT_ID'),
-                DataBag::create([
+            $accessToken = new AccessToken(
+                new AccessTokenId('ACCESS_TOKEN_ID'),
+                new ClientId('CLIENT_ID'),
+                new UserAccountId('USER_ACCOUNT_ID'),
+                new \DateTimeImmutable('now +1hour'),
+                new DataBag([
                     'scope' => 'scope1 scope2',
                 ]),
-                DataBag::create([]),
-                new \DateTimeImmutable('now +1hour'),
-                ResourceServerId::create('RESOURCE_SERVER_ID')
+                new DataBag([]),
+                new ResourceServerId('RESOURCE_SERVER_ID')
             );
             $accessTokenRepository = $this->prophesize(AccessTokenRepository::class);
             $accessTokenRepository->find(Argument::type(AccessTokenId::class))->will(function ($args) use ($accessToken) {
@@ -90,7 +86,7 @@ final class AccessTokenRevocationTypeHintTest extends TestCase
                     return $accessToken;
                 }
 
-                return null;
+                return;
             });
             $accessTokenRepository->save(Argument::type(AccessToken::class))->will(function () {
             });

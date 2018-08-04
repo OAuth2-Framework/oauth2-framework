@@ -36,36 +36,22 @@ class OAuth2MessageFactoryManager
 
     /**
      * OAuth2ResponseFactoryManager constructor.
-     *
-     * @param Psr7ResponseFactory $psr7responseFactory
      */
     public function __construct(Psr7ResponseFactory $psr7responseFactory)
     {
         $this->psr7responseFactory = $psr7responseFactory;
     }
 
-    /**
-     * @param ResponseFactory $responseFactory
-     */
     public function addFactory(ResponseFactory $responseFactory)
     {
         $this->responseFactories[$responseFactory->getSupportedCode()] = $responseFactory;
     }
 
-    /**
-     * @param MessageExtension $extension
-     */
     public function addExtension(MessageExtension $extension)
     {
         $this->extensions[] = $extension;
     }
 
-    /**
-     * @param OAuth2Message $message
-     * @param array         $additionalData
-     *
-     * @return ResponseInterface
-     */
     public function getResponse(OAuth2Message $message, array $additionalData = []): ResponseInterface
     {
         $code = $message->getCode();
@@ -84,11 +70,7 @@ class OAuth2MessageFactoryManager
     }
 
     /**
-     * @param int $code
-     *
      * @throws \InvalidArgumentException
-     *
-     * @return ResponseFactory
      */
     private function getFactory(int $code): ResponseFactory
     {

@@ -14,12 +14,12 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\ClientConfigurationEndpoint;
 
 use Http\Message\ResponseFactory;
-use OAuth2Framework\Component\Core\Client\ClientRepository;
-use Psr\Http\Server\RequestHandlerInterface;
-use Psr\Http\Server\MiddlewareInterface;
 use OAuth2Framework\Component\Core\Client\Client;
+use OAuth2Framework\Component\Core\Client\ClientRepository;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 final class ClientConfigurationDeleteEndpoint implements MiddlewareInterface
 {
@@ -35,9 +35,6 @@ final class ClientConfigurationDeleteEndpoint implements MiddlewareInterface
 
     /**
      * ClientConfigurationDeleteEndpoint constructor.
-     *
-     * @param ClientRepository $clientRepository
-     * @param ResponseFactory  $responseFactory
      */
     public function __construct(ClientRepository $clientRepository, ResponseFactory $responseFactory)
     {

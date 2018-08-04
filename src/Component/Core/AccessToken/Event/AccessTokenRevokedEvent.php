@@ -14,9 +14,9 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\Core\AccessToken\Event;
 
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
+use OAuth2Framework\Component\Core\Domain\DomainObject;
 use OAuth2Framework\Component\Core\Event\Event;
 use OAuth2Framework\Component\Core\Id\Id;
-use OAuth2Framework\Component\Core\Domain\DomainObject;
 
 class AccessTokenRevokedEvent extends Event
 {
@@ -27,8 +27,6 @@ class AccessTokenRevokedEvent extends Event
 
     /**
      * AccessTokenRevokedEvent constructor.
-     *
-     * @param AccessTokenId $accessTokenId
      */
     protected function __construct(AccessTokenId $accessTokenId)
     {
@@ -44,8 +42,6 @@ class AccessTokenRevokedEvent extends Event
     }
 
     /**
-     * @param AccessTokenId $accessTokenId
-     *
      * @return AccessTokenRevokedEvent
      */
     public static function create(AccessTokenId $accessTokenId): self
@@ -58,14 +54,11 @@ class AccessTokenRevokedEvent extends Event
      */
     public static function createFromJson(\stdClass $json): DomainObject
     {
-        $accessTokenId = AccessTokenId::create($json->domain_id);
+        $accessTokenId = new AccessTokenId($json->domain_id);
 
         return new self($accessTokenId);
     }
 
-    /**
-     * @return AccessTokenId
-     */
     public function getAccessTokenId(): AccessTokenId
     {
         return $this->accessTokenId;

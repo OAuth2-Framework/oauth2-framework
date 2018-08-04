@@ -27,16 +27,16 @@ final class MetadataTest extends TestCase
     public function genericObjectMethods()
     {
         $metadata = new Metadata();
-        self::assertFalse($metadata->has('foo'));
+        static::assertFalse($metadata->has('foo'));
         $metadata->set('foo', 'bar');
-        self::assertTrue($metadata->has('foo'));
-        self::assertEquals('bar', $metadata->get('foo'));
-        self::assertEquals('{"foo":"bar"}', \json_encode($metadata));
+        static::assertTrue($metadata->has('foo'));
+        static::assertEquals('bar', $metadata->get('foo'));
+        static::assertEquals('{"foo":"bar"}', \json_encode($metadata));
 
         try {
             $metadata->get('bar');
         } catch (\InvalidArgumentException $e) {
-            self::assertEquals('The value with key "bar" does not exist.', $e->getMessage());
+            static::assertEquals('The value with key "bar" does not exist.', $e->getMessage());
         }
     }
 }

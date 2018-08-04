@@ -37,15 +37,15 @@ use Jose\Component\Signature\JWSBuilder;
 use Jose\Component\Signature\JWSTokenSupport;
 use Jose\Component\Signature\JWSVerifier;
 use Jose\Component\Signature\Serializer\CompactSerializer;
+use OAuth2Framework\Component\ClientAuthentication\AuthenticationMethodManager;
+use OAuth2Framework\Component\ClientAuthentication\ClientAssertionJwt;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\Message\OAuth2Message;
-use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
-use OAuth2Framework\Component\ClientAuthentication\AuthenticationMethodManager;
-use OAuth2Framework\Component\ClientAuthentication\ClientAssertionJwt;
 use OAuth2Framework\Component\Core\TrustedIssuer\TrustedIssuer;
 use OAuth2Framework\Component\Core\TrustedIssuer\TrustedIssuerRepository;
+use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ServerRequestInterface;
@@ -64,11 +64,11 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
     {
         $method = $this->getMethod();
 
-        self::assertEquals([], $method->getSchemesParameters());
-        self::assertEquals(['client_secret_jwt', 'private_key_jwt'], $method->getSupportedMethods());
-        self::assertEquals(['HS256', 'RS256'], $method->getSupportedSignatureAlgorithms());
-        self::assertEquals([], $method->getSupportedKeyEncryptionAlgorithms());
-        self::assertEquals([], $method->getSupportedContentEncryptionAlgorithms());
+        static::assertEquals([], $method->getSchemesParameters());
+        static::assertEquals(['client_secret_jwt', 'private_key_jwt'], $method->getSupportedMethods());
+        static::assertEquals(['HS256', 'RS256'], $method->getSupportedSignatureAlgorithms());
+        static::assertEquals([], $method->getSupportedKeyEncryptionAlgorithms());
+        static::assertEquals([], $method->getSupportedContentEncryptionAlgorithms());
     }
 
     /**
@@ -78,11 +78,11 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
     {
         $method = $this->getMethodWithEncryptionSupport(false);
 
-        self::assertEquals([], $method->getSchemesParameters());
-        self::assertEquals(['client_secret_jwt', 'private_key_jwt'], $method->getSupportedMethods());
-        self::assertEquals(['HS256', 'RS256'], $method->getSupportedSignatureAlgorithms());
-        self::assertEquals(['RSA-OAEP-256'], $method->getSupportedKeyEncryptionAlgorithms());
-        self::assertEquals(['A256CBC-HS512'], $method->getSupportedContentEncryptionAlgorithms());
+        static::assertEquals([], $method->getSchemesParameters());
+        static::assertEquals(['client_secret_jwt', 'private_key_jwt'], $method->getSupportedMethods());
+        static::assertEquals(['HS256', 'RS256'], $method->getSupportedSignatureAlgorithms());
+        static::assertEquals(['RSA-OAEP-256'], $method->getSupportedKeyEncryptionAlgorithms());
+        static::assertEquals(['A256CBC-HS512'], $method->getSupportedContentEncryptionAlgorithms());
     }
 
     /**
@@ -96,8 +96,8 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
         $request->getHeader('Authorization')->willReturn([]);
 
         $clientId = $method->findClientIdAndCredentials($request->reveal(), $credentials);
-        self::assertNull($clientId);
-        self::assertNull($credentials);
+        static::assertNull($clientId);
+        static::assertNull($credentials);
     }
 
     /**
@@ -112,8 +112,8 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
 
         $request->getHeader('Authorization')->willReturn([]);
         $clientId = $method->findClientIdAndCredentials($request->reveal(), $credentials);
-        self::assertNull($clientId);
-        self::assertNull($credentials);
+        static::assertNull($clientId);
+        static::assertNull($credentials);
     }
 
     /**
@@ -130,10 +130,10 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
 
         try {
             $method->findClientIdAndCredentials($request->reveal(), $credentials);
-            $this->fail('An OAuth2 exception should be thrown.');
+            static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2Message $e) {
-            self::assertEquals('invalid_request', $e->getMessage());
-            self::assertEquals('Parameter "client_assertion" is missing.', $e->getErrorDescription());
+            static::assertEquals('invalid_request', $e->getMessage());
+            static::assertEquals('Parameter "client_assertion" is missing.', $e->getErrorDescription());
         }
     }
 
@@ -152,10 +152,10 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
 
         try {
             $method->findClientIdAndCredentials($request->reveal(), $credentials);
-            $this->fail('An OAuth2 exception should be thrown.');
+            static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2Message $e) {
-            self::assertEquals('invalid_request', $e->getMessage());
-            self::assertEquals('Unable to load, decrypt or verify the client assertion.', $e->getErrorDescription());
+            static::assertEquals('invalid_request', $e->getMessage());
+            static::assertEquals('Unable to load, decrypt or verify the client assertion.', $e->getErrorDescription());
         }
     }
 
@@ -177,10 +177,10 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
 
         try {
             $method->findClientIdAndCredentials($request->reveal(), $credentials);
-            $this->fail('An OAuth2 exception should be thrown.');
+            static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2Message $e) {
-            self::assertEquals('invalid_request', $e->getMessage());
-            self::assertEquals('The following claim(s) is/are mandatory: "iss, sub, aud, exp".', $e->getErrorDescription());
+            static::assertEquals('invalid_request', $e->getMessage());
+            static::assertEquals('The following claim(s) is/are mandatory: "iss, sub, aud, exp".', $e->getErrorDescription());
         }
     }
 
@@ -202,10 +202,10 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
 
         try {
             $method->findClientIdAndCredentials($request->reveal(), $credentials);
-            $this->fail('An OAuth2 exception should be thrown.');
+            static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2Message $e) {
-            self::assertEquals('invalid_request', $e->getMessage());
-            self::assertEquals('The encryption of the assertion is mandatory but the decryption of the assertion failed.', $e->getErrorDescription());
+            static::assertEquals('invalid_request', $e->getMessage());
+            static::assertEquals('The encryption of the assertion is mandatory but the decryption of the assertion failed.', $e->getErrorDescription());
         }
     }
 
@@ -229,10 +229,10 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
 
         try {
             $method->findClientIdAndCredentials($request->reveal(), $credentials);
-            $this->fail('An OAuth2 exception should be thrown.');
+            static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2Message $e) {
-            self::assertEquals('invalid_request', $e->getMessage());
-            self::assertEquals('The following claim(s) is/are mandatory: "iss, sub, aud, exp".', $e->getErrorDescription());
+            static::assertEquals('invalid_request', $e->getMessage());
+            static::assertEquals('The following claim(s) is/are mandatory: "iss, sub, aud, exp".', $e->getErrorDescription());
         }
     }
 
@@ -252,7 +252,7 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
 
         $request->getHeader('Authorization')->willReturn([]);
         $clientId = $method->findClientIdAndCredentials($request->reveal(), $credentials);
-        self::assertEquals('ClientId', $clientId->getValue());
+        static::assertEquals('ClientId', $clientId->getValue());
     }
 
     /**
@@ -273,7 +273,7 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
         $request->getHeader('Authorization')->willReturn([]);
 
         $clientId = $method->findClientIdAndCredentials($request->reveal(), $credentials);
-        self::assertEquals('ClientId', $clientId->getValue());
+        static::assertEquals('ClientId', $clientId->getValue());
     }
 
     /**
@@ -292,19 +292,19 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
         $manager->add($method);
         $client = Client::createEmpty();
         $client = $client->create(
-            ClientId::create('CLIENT_ID'),
-            DataBag::create([
+            new ClientId('CLIENT_ID'),
+            new DataBag([
                 'client_secret' => 'CLIENT_SECRET',
                 'token_endpoint_auth_method' => 'client_secret_post',
             ]),
-            UserAccountId::create('USER_ACCOUNT_ID')
+            new UserAccountId('USER_ACCOUNT_ID')
         );
         $request = $this->buildRequest([
             'client_assertion_type' => 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
             'client_assertion' => $assertion,
         ]);
 
-        self::assertFalse($manager->isClientAuthenticated($request->reveal(), $client, $method, $jws));
+        static::assertFalse($manager->isClientAuthenticated($request->reveal(), $client, $method, $jws));
     }
 
     /**
@@ -323,19 +323,19 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
         $manager->add($method);
         $client = Client::createEmpty();
         $client = $client->create(
-            ClientId::create('CLIENT_ID'),
-            DataBag::create([
+            new ClientId('CLIENT_ID'),
+            new DataBag([
                 'token_endpoint_auth_method' => 'private_key_jwt',
                 'jwks' => \json_decode('{"keys":[{"kty":"oct","k":"U0VDUkVU"}]}', true),
             ]),
-            UserAccountId::create('USER_ACCOUNT_ID')
+            new UserAccountId('USER_ACCOUNT_ID')
         );
         $request = $this->buildRequest([
             'client_assertion_type' => 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
             'client_assertion' => $assertion,
         ]);
 
-        self::assertTrue($manager->isClientAuthenticated($request->reveal(), $client, $method, $jws));
+        static::assertTrue($manager->isClientAuthenticated($request->reveal(), $client, $method, $jws));
     }
 
     /**
@@ -354,19 +354,19 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
         $manager->add($method);
         $client = Client::createEmpty();
         $client = $client->create(
-            ClientId::create('CLIENT_ID'),
-            DataBag::create([
+            new ClientId('CLIENT_ID'),
+            new DataBag([
                 'token_endpoint_auth_method' => 'client_secret_jwt',
                 'client_secret' => 'SECRET',
             ]),
-            UserAccountId::create('USER_ACCOUNT_ID')
+            new UserAccountId('USER_ACCOUNT_ID')
         );
         $request = $this->buildRequest([
             'client_assertion_type' => 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
             'client_assertion' => $assertion,
         ]);
 
-        self::assertTrue($manager->isClientAuthenticated($request->reveal(), $client, $method, $jws));
+        static::assertTrue($manager->isClientAuthenticated($request->reveal(), $client, $method, $jws));
     }
 
     /**
@@ -383,18 +383,18 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
         $manager->add($method);
         $client = Client::createEmpty();
         $client = $client->create(
-            ClientId::create('CLIENT_ID'),
-            DataBag::create([
+            new ClientId('CLIENT_ID'),
+            new DataBag([
                 'token_endpoint_auth_method' => 'client_secret_jwt',
             ]),
-            UserAccountId::create('USER_ACCOUNT_ID')
+            new UserAccountId('USER_ACCOUNT_ID')
         );
         $request = $this->buildRequest([
             'client_assertion_type' => 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
             'client_assertion' => $assertion,
         ]);
 
-        self::assertTrue($manager->isClientAuthenticated($request->reveal(), $client, $method, $jws));
+        static::assertTrue($manager->isClientAuthenticated($request->reveal(), $client, $method, $jws));
     }
 
     /**
@@ -403,13 +403,13 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
     public function theClientConfigurationCanBeCheckedWithClientSecretJwt()
     {
         $method = $this->getMethod();
-        $commandParameters = DataBag::create([
+        $commandParameters = new DataBag([
             'token_endpoint_auth_method' => 'client_secret_jwt',
         ]);
-        $validatedParameters = $method->checkClientConfiguration($commandParameters, DataBag::create([]));
+        $validatedParameters = $method->checkClientConfiguration($commandParameters, new DataBag([]));
 
-        self::assertTrue($validatedParameters->has('client_secret'));
-        self::assertTrue($validatedParameters->has('client_secret_expires_at'));
+        static::assertTrue($validatedParameters->has('client_secret'));
+        static::assertTrue($validatedParameters->has('client_secret_expires_at'));
     }
 
     /**
@@ -420,15 +420,15 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
     public function theClientConfigurationCannotBeCheckedWithPrivateKeyJwtIfBothJwksAndJwksUriAreSet()
     {
         $method = $this->getMethod();
-        $commandParameters = DataBag::create([
+        $commandParameters = new DataBag([
             'token_endpoint_auth_method' => 'private_key_jwt',
             'jwks' => 'foo',
             'jwks_uri' => 'bar',
         ]);
-        $validatedParameters = $method->checkClientConfiguration($commandParameters, DataBag::create([]));
+        $validatedParameters = $method->checkClientConfiguration($commandParameters, new DataBag([]));
 
-        self::assertTrue($validatedParameters->has('token_endpoint_auth_method'));
-        self::assertEquals('private_key_jwt', $validatedParameters->get('token_endpoint_auth_method'));
+        static::assertTrue($validatedParameters->has('token_endpoint_auth_method'));
+        static::assertEquals('private_key_jwt', $validatedParameters->get('token_endpoint_auth_method'));
     }
 
     /**
@@ -439,13 +439,13 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
     public function theClientConfigurationCannotBeCheckedWithPrivateKeyJwtIfBothJwksAndJwksUriAreNotSetBecauseTrustedIssuerSupportIsDisabled()
     {
         $method = $this->getMethod();
-        $commandParameters = DataBag::create([
+        $commandParameters = new DataBag([
             'token_endpoint_auth_method' => 'private_key_jwt',
         ]);
-        $validatedParameters = $method->checkClientConfiguration($commandParameters, DataBag::create([]));
+        $validatedParameters = $method->checkClientConfiguration($commandParameters, new DataBag([]));
 
-        self::assertTrue($validatedParameters->has('token_endpoint_auth_method'));
-        self::assertEquals('private_key_jwt', $validatedParameters->get('token_endpoint_auth_method'));
+        static::assertTrue($validatedParameters->has('token_endpoint_auth_method'));
+        static::assertEquals('private_key_jwt', $validatedParameters->get('token_endpoint_auth_method'));
     }
 
     /**
@@ -454,13 +454,13 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
     public function theClientConfigurationCanBeCheckedWithPrivateKeyJwtIfBothJwksAndJwksUriAreNotSetBecauseTrustedIssuerSupportIsEnabled()
     {
         $method = $this->getMethodWithTrustedIssuerSupport();
-        $commandParameters = DataBag::create([
+        $commandParameters = new DataBag([
             'token_endpoint_auth_method' => 'private_key_jwt',
         ]);
-        $validatedParameters = $method->checkClientConfiguration($commandParameters, DataBag::create([]));
+        $validatedParameters = $method->checkClientConfiguration($commandParameters, new DataBag([]));
 
-        self::assertFalse($validatedParameters->has('jwks'));
-        self::assertFalse($validatedParameters->has('jwks_uri'));
+        static::assertFalse($validatedParameters->has('jwks'));
+        static::assertFalse($validatedParameters->has('jwks_uri'));
     }
 
     /**
@@ -469,12 +469,12 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
     public function theClientConfigurationCannotBeCheckedWithPrivateKeyJwtIfJwksIsNotAValidKeySet()
     {
         $method = $this->getMethod();
-        $commandParameters = DataBag::create([
+        $commandParameters = new DataBag([
             'token_endpoint_auth_method' => 'private_key_jwt',
             'jwks' => 'foo',
         ]);
-        $validatedParameters = $method->checkClientConfiguration($commandParameters, DataBag::create([]));
-        self::assertTrue($validatedParameters->has('jwks'));
+        $validatedParameters = $method->checkClientConfiguration($commandParameters, new DataBag([]));
+        static::assertTrue($validatedParameters->has('jwks'));
     }
 
     /**
@@ -483,14 +483,14 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
     public function theClientConfigurationCanBeCheckedWithPrivateKeyJwtIfJwksIsValid()
     {
         $method = $this->getMethod();
-        $commandParameters = DataBag::create([
+        $commandParameters = new DataBag([
             'token_endpoint_auth_method' => 'private_key_jwt',
             'jwks' => \json_decode('{"keys":[{"kty":"oct","k":"U0VDUkVU"}]}', true),
         ]);
-        $validatedParameters = $method->checkClientConfiguration($commandParameters, DataBag::create([]));
+        $validatedParameters = $method->checkClientConfiguration($commandParameters, new DataBag([]));
 
-        self::assertTrue($validatedParameters->has('jwks'));
-        self::assertEquals(\json_decode('{"keys":[{"kty":"oct","k":"U0VDUkVU"}]}', true), $validatedParameters->get('jwks'));
+        static::assertTrue($validatedParameters->has('jwks'));
+        static::assertEquals(\json_decode('{"keys":[{"kty":"oct","k":"U0VDUkVU"}]}', true), $validatedParameters->get('jwks'));
     }
 
     /**
@@ -499,13 +499,13 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
     public function theClientConfigurationCannotBeCheckedWithPrivateKeyJwtIfJwksUriFactoryIsNotAvailable()
     {
         $method = $this->getMethod();
-        $commandParameters = DataBag::create([
+        $commandParameters = new DataBag([
             'token_endpoint_auth_method' => 'private_key_jwt',
             'jwks_uri' => 'foo',
         ]);
-        $validatedParameters = $method->checkClientConfiguration($commandParameters, DataBag::create([]));
+        $validatedParameters = $method->checkClientConfiguration($commandParameters, new DataBag([]));
 
-        self::assertTrue($validatedParameters->has('jwks_uri'));
+        static::assertTrue($validatedParameters->has('jwks_uri'));
     }
 
     /**
@@ -513,9 +513,6 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
      */
     private $method = null;
 
-    /**
-     * @return ClientAssertionJwt
-     */
     private function getMethod(): ClientAssertionJwt
     {
         if (null === $this->method) {
@@ -531,11 +528,6 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
         return $this->method;
     }
 
-    /**
-     * @param bool $isRequired
-     *
-     * @return ClientAssertionJwt
-     */
     private function getMethodWithEncryptionSupport(bool $isRequired): ClientAssertionJwt
     {
         $method = clone $this->getMethod();
@@ -570,9 +562,6 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
         return $method;
     }
 
-    /**
-     * @return ClientAssertionJwt
-     */
     private function getMethodWithTrustedIssuerSupport(): ClientAssertionJwt
     {
         $method = clone $this->getMethod();
@@ -597,11 +586,6 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
         return $method;
     }
 
-    /**
-     * @param \Http\Mock\Client $client
-     *
-     * @return JKUFactory
-     */
     private function getJkuFactory(\Http\Mock\Client $client): JKUFactory
     {
         return new JKUFactory(
@@ -611,9 +595,6 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
         );
     }
 
-    /**
-     * @return \Http\Mock\Client
-     */
     private function getHttpClient(): \Http\Mock\Client
     {
         return new \Http\Mock\Client(
@@ -622,10 +603,6 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
     }
 
     /**
-     * @param JWS $jws
-     *
-     * @return string
-     *
      * @throws \Exception
      */
     private function serializeJWS(JWS $jws): string
@@ -636,9 +613,6 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
         return $serializer->serialize($jws, 0);
     }
 
-    /**
-     * @return JWS
-     */
     private function createValidClientAssertionSignedByTheClient(): JWS
     {
         $jsonConverter = new StandardConverter();
@@ -664,9 +638,6 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
             ->build();
     }
 
-    /**
-     * @return JWS
-     */
     private function createValidClientAssertionSignedByATrustedIssuer(): JWS
     {
         $jsonConverter = new StandardConverter();
@@ -703,8 +674,6 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
     }
 
     /**
-     * @return JWS
-     *
      * @throws \Exception
      */
     private function createInvalidClientAssertionSignedByTheClient(): JWS
@@ -727,9 +696,6 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
             ->build();
     }
 
-    /**
-     * @return JWS
-     */
     private function createInvalidClientAssertionSignedByATrustedIssuer(): JWS
     {
         $jsonConverter = new StandardConverter();
@@ -762,10 +728,6 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
     }
 
     /**
-     * @param string $assertion
-     *
-     * @return string
-     *
      * @throws \Exception
      */
     private function encryptAssertion(string $assertion): string

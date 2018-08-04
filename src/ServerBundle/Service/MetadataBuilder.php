@@ -40,8 +40,6 @@ class MetadataBuilder
 
     /**
      * MetadataBuilder constructor.
-     *
-     * @param RouterInterface $router
      */
     public function __construct(RouterInterface $router)
     {
@@ -49,36 +47,22 @@ class MetadataBuilder
         $this->metadata = new Metadata();
     }
 
-    /**
-     * @return Metadata
-     */
     public function getMetadata(): Metadata
     {
         return $this->metadata;
     }
 
-    /**
-     * @param string $name
-     * @param string $routeName
-     * @param array  $routeParameters
-     */
     public function addRoute(string $name, string $routeName, array $routeParameters = [])
     {
         $path = $this->router->generate($routeName, $routeParameters, RouterInterface::ABSOLUTE_URL);
         $this->metadata->set($name, $path);
     }
 
-    /**
-     * @param PKCEMethodManager $PKCEMethodManager
-     */
     public function setCodeChallengeMethodsSupported(PKCEMethodManager $PKCEMethodManager)
     {
         $this->metadata->set('code_challenge_methods_supported', $PKCEMethodManager->names());
     }
 
-    /**
-     * @param ClientAssertionJwt $clientAssertionJwt
-     */
     public function setClientAssertionJwt(ClientAssertionJwt $clientAssertionJwt)
     {
         $this->metadata->set('token_endpoint_auth_signing_alg_values_supported', $clientAssertionJwt->getSupportedSignatureAlgorithms());
@@ -86,74 +70,46 @@ class MetadataBuilder
         $this->metadata->set('token_endpoint_auth_encryption_enc_values_supported', $clientAssertionJwt->getSupportedContentEncryptionAlgorithms());
     }
 
-    /**
-     * @param GrantTypeManager $grantTypeManager
-     */
     public function setGrantTypeManager(GrantTypeManager $grantTypeManager)
     {
         $this->metadata->set('grant_types_supported', $grantTypeManager->list());
     }
 
-    /**
-     * @param ResponseTypeManager $responseTypeManager
-     */
     public function setResponseTypeManager(ResponseTypeManager $responseTypeManager)
     {
         $this->metadata->set('response_types_supported', $responseTypeManager->list());
     }
 
-    /**
-     * @param ResponseModeManager $responseModeManager
-     */
     public function setResponseModeManager(ResponseModeManager $responseModeManager)
     {
         $this->metadata->set('response_modes_supported', $responseModeManager->list());
     }
 
-    /**
-     * @param AuthenticationMethodManager $tokenEndpointAuthMethodManager
-     */
     public function setTokenEndpointAuthMethodManager(AuthenticationMethodManager $tokenEndpointAuthMethodManager)
     {
         $this->metadata->set('token_endpoint_auth_methods_supported', $tokenEndpointAuthMethodManager->list());
     }
 
-    /**
-     * @param ScopeRepository $scopeRepository
-     */
     public function setScopeRepository(ScopeRepository $scopeRepository)
     {
         $this->metadata->set('scopes_supported', $scopeRepository->all());
     }
 
-    /**
-     * @param UserInfo $userInfo
-     */
     public function setUserinfo(UserInfo $userInfo)
     {
         $this->metadata->set('subject_types_supported', $userInfo->isPairwiseSubjectIdentifierSupported() ? ['public', 'pairwise'] : ['public']);
     }
 
-    /**
-     * @param ClaimManager $claimManager
-     */
     public function setClaimsSupported(ClaimManager $claimManager)
     {
         $this->metadata->set('claims_supported', $claimManager->list());
     }
 
-    /**
-     * @param string $name
-     * @param mixed  $value
-     */
     public function addKeyValuePair(string $name, $value)
     {
         $this->metadata->set($name, $value);
     }
 
-    /**
-     * @param AuthorizationRequestLoader $authorizationRequestLoader
-     */
     public function setAuthorizationRequestLoader(AuthorizationRequestLoader $authorizationRequestLoader)
     {
         $requestObjectSupported = $authorizationRequestLoader->isRequestObjectSupportEnabled();

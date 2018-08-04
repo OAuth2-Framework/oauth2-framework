@@ -18,13 +18,5 @@ use OAuth2Framework\Component\Core\DataBag\DataBag;
 
 interface Rule
 {
-    /**
-     * @param ClientId $clientId
-     * @param DataBag  $commandParameters
-     * @param DataBag  $validatedParameters
-     * @param callable $next
-     *
-     * @return DataBag
-     */
     public function handle(ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters, callable $next): DataBag;
 }

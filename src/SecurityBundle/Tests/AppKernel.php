@@ -16,11 +16,11 @@ namespace OAuth2Framework\SecurityBundle\Tests;
 use OAuth2Framework\SecurityBundle\OAuth2FrameworkSecurityBundle;
 use OAuth2Framework\SecurityBundle\Tests\TestBundle\TestBundle;
 use Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle;
+use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\SecurityBundle\SecurityBundle;
 use Symfony\Bundle\TwigBundle\TwigBundle;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\HttpKernel\Kernel;
-use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 
 /**
  * Class AppKernel.

@@ -23,8 +23,6 @@ class ClaimSourceManager
     private $claimSources = [];
 
     /**
-     * @param ClaimSource $claimSource
-     *
      * @return ClaimSourceManager
      */
     public function add(ClaimSource $claimSource): self
@@ -42,13 +40,6 @@ class ClaimSourceManager
         return $this->claimSources;
     }
 
-    /**
-     * @param UserAccount $userAccount
-     * @param string      $scope
-     * @param array       $previousClaims
-     *
-     * @return array
-     */
     public function getUserInfo(UserAccount $userAccount, string $scope, array $previousClaims): array
     {
         $scopes = empty($scope) ? [] : \explode(' ', $scope);

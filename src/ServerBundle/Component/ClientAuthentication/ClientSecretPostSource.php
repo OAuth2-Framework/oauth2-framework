@@ -21,9 +21,6 @@ use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
 class ClientSecretPostSource implements Component
 {
-    /**
-     * @return string
-     */
     public function name(): string
     {
         return 'client_secret_post';

@@ -36,7 +36,7 @@ class RevocationEndpointTest extends WebTestCase
     protected function setUp()
     {
         if (!\class_exists(TokenRevocationEndpoint::class)) {
-            $this->markTestSkipped('The component "oauth2-framework/token-revocation-endpoint" is not installed.');
+            static::markTestSkipped('The component "oauth2-framework/token-revocation-endpoint" is not installed.');
         }
     }
 
@@ -48,8 +48,8 @@ class RevocationEndpointTest extends WebTestCase
         $client = static::createClient();
         $client->request('POST', '/token/revoke', [], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
-        self::assertEquals(400, $response->getStatusCode());
-        self::assertEquals('{"error":"invalid_client","error_description":"Client authentication failed."}', $response->getContent());
+        static::assertEquals(400, $response->getStatusCode());
+        static::assertEquals('{"error":"invalid_client","error_description":"Client authentication failed."}', $response->getContent());
     }
 
     /**
@@ -60,8 +60,8 @@ class RevocationEndpointTest extends WebTestCase
         $client = static::createClient();
         $client->request('POST', '/token/revoke', ['client_id' => 'CLIENT_ID_3', 'client_secret' => 'secret'], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
-        self::assertEquals(400, $response->getStatusCode());
-        self::assertEquals('{"error":"invalid_request","error_description":"The parameter \"token\" is missing."}', $response->getContent());
+        static::assertEquals(400, $response->getStatusCode());
+        static::assertEquals('{"error":"invalid_request","error_description":"The parameter \"token\" is missing."}', $response->getContent());
     }
 
     /**
@@ -72,8 +72,8 @@ class RevocationEndpointTest extends WebTestCase
         $client = static::createClient();
         $client->request('POST', '/token/revoke', ['client_id' => 'CLIENT_ID_3', 'client_secret' => 'secret', 'token' => 'FOO'], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
-        self::assertEquals(200, $response->getStatusCode());
-        self::assertEquals('', $response->getContent());
+        static::assertEquals(200, $response->getStatusCode());
+        static::assertEquals('', $response->getContent());
     }
 
     /**
@@ -87,24 +87,22 @@ class RevocationEndpointTest extends WebTestCase
         /** @var AccessTokenIdGenerator $accessTokenIdGenerator */
         $accessTokenIdGenerator = $container->get(\OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\AccessTokenIdGenerator::class);
         $accessTokenId = $accessTokenIdGenerator->createAccessTokenId(
-            UserAccountId::create('john.1'),
-            ClientId::create('CLIENT_ID_3'),
-            DataBag::create([]),
-            DataBag::create([]),
+            new UserAccountId('john.1'),
+            new ClientId('CLIENT_ID_3'),
+            new DataBag([]),
+            new DataBag([]),
             null
         );
 
-        $accessToken = AccessToken::createEmpty();
-        $accessToken = $accessToken->create(
+        $accessToken = new AccessToken(
             $accessTokenId,
-            UserAccountId::create('john.1'),
-            ClientId::create('CLIENT_ID_3'),
-            DataBag::create([]),
-            DataBag::create([]),
+            new ClientId('CLIENT_ID_3'),
+            new UserAccountId('john.1'),
             new \DateTimeImmutable('now +1 hour'),
+            new DataBag([]),
+            new DataBag([]),
             null
         );
-        $accessToken->eraseMessages();
 
         /** @var AccessTokenRepository $accessTokenRepository */
         $accessTokenRepository = $container->get(\OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\AccessTokenRepository::class);
@@ -112,16 +110,18 @@ class RevocationEndpointTest extends WebTestCase
 
         $client->request('POST', '/token/revoke', ['client_id' => 'CLIENT_ID_3', 'client_secret' => 'secret', 'token' => $accessToken->getTokenId()->getValue()], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
-        self::assertEquals(200, $response->getStatusCode());
-        self::assertEquals('', $response->getContent());
+        static::assertEquals(200, $response->getStatusCode());
+        static::assertEquals('', $response->getContent());
 
-        $newAccessToken = $accessTokenRepository->find($accessToken->getAccessTokenId());
-        self::assertInstanceOf(AccessToken::class, $newAccessToken);
+        $newAccessToken = $accessTokenRepository->find($accessToken->getTokenId());
+        static::assertInstanceOf(AccessToken::class, $newAccessToken);
         self::AssertTrue($newAccessToken->isRevoked());
     }
 
     /**
      * @testK
+     *
+     * @test
      */
     public function aAccessTokenThatOwnsToAnotherClientIsNotRevoked()
     {
@@ -130,21 +130,20 @@ class RevocationEndpointTest extends WebTestCase
         /** @var AccessTokenIdGenerator $accessTokenIdGenerator */
         $accessTokenIdGenerator = $container->get(\OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\AccessTokenIdGenerator::class);
         $accessTokenId = $accessTokenIdGenerator->createAccessTokenId(
-            UserAccountId::create('john.1'),
-            ClientId::create('CLIENT_ID_2'),
-            DataBag::create([]),
-            DataBag::create([]),
+            new UserAccountId('john.1'),
+            new ClientId('CLIENT_ID_2'),
+            new DataBag([]),
+            new DataBag([]),
             null
         );
 
-        $accessToken = AccessToken::createEmpty();
-        $accessToken = $accessToken->create(
+        $accessToken = new AccessToken(
             $accessTokenId,
-            UserAccountId::create('john.1'),
-            ClientId::create('CLIENT_ID_2'),
-            DataBag::create([]),
-            DataBag::create([]),
+            new ClientId('CLIENT_ID_2'),
+            new UserAccountId('john.1'),
             new \DateTimeImmutable('now +1 hour'),
+            new DataBag([]),
+            new DataBag([]),
             null
         );
 
@@ -156,11 +155,11 @@ class RevocationEndpointTest extends WebTestCase
 
         $client->request('POST', '/token/revoke', ['client_id' => 'CLIENT_ID_3', 'client_secret' => 'secret', 'token' => $accessToken->getTokenId()->getValue()], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
-        self::assertEquals(400, $response->getStatusCode());
-        self::assertEquals('{"error":"invalid_request","error_description":"The parameter \"token\" is invalid."}', $response->getContent());
+        static::assertEquals(400, $response->getStatusCode());
+        static::assertEquals('{"error":"invalid_request","error_description":"The parameter \"token\" is invalid."}', $response->getContent());
 
         $newAccessToken = $accessTokenRepository->find($accessToken->getTokenId());
-        self::assertInstanceOf(AccessToken::class, $newAccessToken);
+        static::assertInstanceOf(AccessToken::class, $newAccessToken);
         self::AssertFalse($newAccessToken->isRevoked());
     }
 }

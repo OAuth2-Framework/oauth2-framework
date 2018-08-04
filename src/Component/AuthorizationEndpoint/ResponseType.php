@@ -25,8 +25,6 @@ interface ResponseType
 
     /**
      * This function returns the supported response type.
-     *
-     * @return string
      */
     public function name(): string;
 
@@ -40,25 +38,15 @@ interface ResponseType
     /**
      * Returns the response mode of the response type or the error returned.
      * For possible values, see constants above.
-     *
-     * @return string
      */
     public function getResponseMode(): string;
 
     /**
-     * @param Authorization $authorization
-     *
-     * @return Authorization
-     *
      * @throws OAuth2Message
      */
     public function preProcess(Authorization $authorization): Authorization;
 
     /**
-     * @param Authorization $authorization
-     *
-     * @return Authorization
-     *
      * @throws OAuth2Message
      */
     public function process(Authorization $authorization): Authorization;

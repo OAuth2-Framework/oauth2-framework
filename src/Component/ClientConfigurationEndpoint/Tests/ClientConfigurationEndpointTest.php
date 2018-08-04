@@ -15,9 +15,6 @@ namespace OAuth2Framework\Component\ClientConfigurationEndpoint\Tests;
 
 use Http\Message\MessageFactory\DiactorosMessageFactory;
 use Http\Message\ResponseFactory;
-use Prophecy\Prophecy\ObjectProphecy;
-use Psr\Http\Message\StreamInterface;
-use Psr\Http\Server\RequestHandlerInterface;
 use OAuth2Framework\Component\BearerTokenType\BearerToken;
 use OAuth2Framework\Component\ClientConfigurationEndpoint\ClientConfigurationEndpoint;
 use OAuth2Framework\Component\ClientRule\RuleManager;
@@ -27,7 +24,10 @@ use OAuth2Framework\Component\Core\Client\ClientRepository;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\StreamInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 /**
  * @group ClientConfigurationEndpoint
@@ -41,8 +41,8 @@ final class ClientConfigurationEndpointTest extends TestCase
     {
         $client = Client::createEmpty();
         $client = $client->create(
-            ClientId::create('CLIENT_ID'),
-            DataBag::create([
+            new ClientId('CLIENT_ID'),
+            new DataBag([
                 'registration_access_token' => 'REGISTRATION_TOKEN',
             ]),
             null
@@ -58,8 +58,8 @@ final class ClientConfigurationEndpointTest extends TestCase
 
         $response = $this->getClientConfigurationEndpoint($clientRepository->reveal())->process($request->reveal(), $handler->reveal());
         $response->getBody()->rewind();
-        self::assertEquals(200, $response->getStatusCode());
-        self::assertEquals('{"registration_access_token":"REGISTRATION_TOKEN","client_id":"CLIENT_ID"}', $response->getBody()->getContents());
+        static::assertEquals(200, $response->getStatusCode());
+        static::assertEquals('{"registration_access_token":"REGISTRATION_TOKEN","client_id":"CLIENT_ID"}', $response->getBody()->getContents());
     }
 
     /**
@@ -69,8 +69,8 @@ final class ClientConfigurationEndpointTest extends TestCase
     {
         $client = Client::createEmpty();
         $client = $client->create(
-            ClientId::create('CLIENT_ID'),
-            DataBag::create([
+            new ClientId('CLIENT_ID'),
+            new DataBag([
                 'registration_access_token' => 'REGISTRATION_TOKEN',
             ]),
             null
@@ -87,8 +87,8 @@ final class ClientConfigurationEndpointTest extends TestCase
 
         $response = $this->getClientConfigurationEndpoint($clientRepository->reveal())->process($request->reveal(), $handler->reveal());
         $response->getBody()->rewind();
-        self::assertEquals(200, $response->getStatusCode());
-        self::assertEquals('{"client_id":"CLIENT_ID"}', $response->getBody()->getContents());
+        static::assertEquals(200, $response->getStatusCode());
+        static::assertEquals('{"client_id":"CLIENT_ID"}', $response->getBody()->getContents());
     }
 
     /**
@@ -96,11 +96,6 @@ final class ClientConfigurationEndpointTest extends TestCase
      */
     private $clientConfigurationEndpoint = null;
 
-    /**
-     * @param ClientRepository $clientRepository
-     *
-     * @return ClientConfigurationEndpoint
-     */
     private function getClientConfigurationEndpoint(ClientRepository $clientRepository): ClientConfigurationEndpoint
     {
         if (null === $this->clientConfigurationEndpoint) {
@@ -120,9 +115,6 @@ final class ClientConfigurationEndpointTest extends TestCase
      */
     private $responseFactory = null;
 
-    /**
-     * @return ResponseFactory
-     */
     private function getResponseFactory(): ResponseFactory
     {
         if (null === $this->responseFactory) {

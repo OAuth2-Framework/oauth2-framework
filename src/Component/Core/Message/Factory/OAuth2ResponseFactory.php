@@ -32,10 +32,6 @@ abstract class OAuth2ResponseFactory implements ResponseFactory
         return $response;
     }
 
-    /**
-     * @param array             $data
-     * @param ResponseInterface $response
-     */
     public function updateBody(array $data, ResponseInterface $response)
     {
         $response->getBody()->write(\json_encode(
@@ -56,9 +52,6 @@ abstract class OAuth2ResponseFactory implements ResponseFactory
         return $response;
     }
 
-    /**
-     * @return array
-     */
     protected function getDefaultHeaders(): array
     {
         return [

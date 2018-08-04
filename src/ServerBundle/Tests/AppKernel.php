@@ -18,11 +18,11 @@ use Jose\Bundle\JoseFramework\JoseFrameworkBundle;
 use OAuth2Framework\ServerBundle\OAuth2FrameworkServerBundle;
 use OAuth2Framework\ServerBundle\Tests\TestBundle\TestBundle;
 use Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle;
+use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\SecurityBundle\SecurityBundle;
 use Symfony\Bundle\TwigBundle\TwigBundle;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\HttpKernel\Kernel;
-use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 
 /**
  * Class AppKernel.

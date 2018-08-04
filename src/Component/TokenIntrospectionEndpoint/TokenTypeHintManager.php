@@ -29,8 +29,6 @@ class TokenTypeHintManager
     }
 
     /**
-     * @param TokenTypeHint $tokenTypeHint
-     *
      * @return TokenTypeHintManager
      */
     public function add(TokenTypeHint $tokenTypeHint): self

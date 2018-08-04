@@ -20,9 +20,6 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class JwksUriEndpointSource implements Component
 {
-    /**
-     * @return string
-     */
     public function name(): string
     {
         return 'jwks_uri';

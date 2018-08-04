@@ -14,9 +14,9 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\Core\Client\Event;
 
 use OAuth2Framework\Component\Core\Client\ClientId;
+use OAuth2Framework\Component\Core\Domain\DomainObject;
 use OAuth2Framework\Component\Core\Event\Event;
 use OAuth2Framework\Component\Core\Id\Id;
-use OAuth2Framework\Component\Core\Domain\DomainObject;
 
 class ClientDeletedEvent extends Event
 {
@@ -27,8 +27,6 @@ class ClientDeletedEvent extends Event
 
     /**
      * ClientDeletedEvent constructor.
-     *
-     * @param ClientId $clientId
      */
     protected function __construct(ClientId $clientId)
     {
@@ -44,8 +42,6 @@ class ClientDeletedEvent extends Event
     }
 
     /**
-     * @param ClientId $clientId
-     *
      * @return ClientDeletedEvent
      */
     public static function create(ClientId $clientId): self
@@ -58,7 +54,7 @@ class ClientDeletedEvent extends Event
      */
     public static function createFromJson(\stdClass $json): DomainObject
     {
-        $clientId = ClientId::create($json->domain_id);
+        $clientId = new ClientId($json->domain_id);
 
         return new self($clientId);
     }
@@ -78,9 +74,6 @@ class ClientDeletedEvent extends Event
     {
     }
 
-    /**
-     * @return ClientId
-     */
     public function getClientId(): ClientId
     {
         return $this->clientId;

@@ -29,8 +29,6 @@ class OAuth2FrameworkIssuerDiscoveryExtension extends Extension
 
     /**
      * OAuth2FrameworkIssuerDiscoveryExtension constructor.
-     *
-     * @param string $alias
      */
     public function __construct(string $alias)
     {

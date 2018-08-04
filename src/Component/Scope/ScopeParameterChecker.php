@@ -33,9 +33,6 @@ class ScopeParameterChecker implements ParameterChecker
 
     /**
      * ScopeParameterChecker constructor.
-     *
-     * @param ScopeRepository    $scopeRepository
-     * @param ScopePolicyManager $scopePolicyManager
      */
     public function __construct(ScopeRepository $scopeRepository, ScopePolicyManager $scopePolicyManager)
     {

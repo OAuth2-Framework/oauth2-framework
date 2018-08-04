@@ -33,11 +33,6 @@ abstract class SessionStateParameterExtension implements Extension
         return $authorization;
     }
 
-    /**
-     * @param Authorization $authorization
-     *
-     * @return bool
-     */
     private function hasOpenIdScope(Authorization $authorization): bool
     {
         if (!$authorization->hasQueryParam('scope')) {
@@ -50,20 +45,7 @@ abstract class SessionStateParameterExtension implements Extension
         return \in_array('openid', $scopes, true);
     }
 
-    /**
-     * @param ServerRequestInterface $request
-     * @param Authorization          $authorization
-     *
-     * @return string
-     */
     abstract protected function getBrowserState(ServerRequestInterface $request, Authorization &$authorization): string;
 
-    /**
-     * @param ServerRequestInterface $request
-     * @param Authorization          $authorization
-     * @param string                 $browserState
-     *
-     * @return string
-     */
     abstract protected function calculateSessionState(ServerRequestInterface $request, Authorization $authorization, string $browserState): string;
 }

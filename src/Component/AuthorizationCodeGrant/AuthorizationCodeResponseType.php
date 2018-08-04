@@ -14,47 +14,23 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\AuthorizationCodeGrant;
 
 use OAuth2Framework\Component\AuthorizationCodeGrant\PKCEMethod\PKCEMethodManager;
-use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType;
 use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
+use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\Message\OAuth2Message;
 
 final class AuthorizationCodeResponseType implements ResponseType
 {
-    /**
-     * @var int
-     */
     private $authorizationCodeLifetime;
 
-    /**
-     * @var bool
-     */
     private $pkceForPublicClientsEnforced;
 
-    /**
-     * @var AuthorizationCodeIdGenerator
-     */
     private $authorizationCodeIdGenerator;
 
-    /**
-     * @var AuthorizationCodeRepository
-     */
     private $authorizationCodeRepository;
 
-    /**
-     * @var PKCEMethodManager
-     */
     private $pkceMethodManager;
 
-    /**
-     * AuthorizationCodeResponseType constructor.
-     *
-     * @param AuthorizationCodeIdGenerator $authorizationCodeIdGenerator
-     * @param AuthorizationCodeRepository  $authorizationCodeRepository
-     * @param int                          $authorizationCodeLifetime
-     * @param PKCEMethodManager            $pkceMethodManager
-     * @param bool                         $pkceForPublicClientsEnforced
-     */
     public function __construct(AuthorizationCodeIdGenerator $authorizationCodeIdGenerator, AuthorizationCodeRepository $authorizationCodeRepository, int $authorizationCodeLifetime, PKCEMethodManager $pkceMethodManager, bool $pkceForPublicClientsEnforced)
     {
         $this->authorizationCodeIdGenerator = $authorizationCodeIdGenerator;
@@ -107,15 +83,14 @@ final class AuthorizationCodeResponseType implements ResponseType
         }
 
         $authorizationCodeId = $this->authorizationCodeIdGenerator->createAuthorizationCodeId();
-        $authorizationCode = AuthorizationCode::createEmpty();
-        $authorizationCode = $authorizationCode->create(
+        $authorizationCode = new AuthorizationCode(
             $authorizationCodeId,
             $authorization->getClient()->getClientId(),
             $authorization->getUserAccount()->getUserAccountId(),
             $authorization->getQueryParams(),
             $authorization->getRedirectUri(),
             (new \DateTimeImmutable())->setTimestamp(\time() + $this->authorizationCodeLifetime),
-            DataBag::create([]),
+            new DataBag([]),
             $authorization->getMetadata(),
             $authorization->getResourceServer() ? $authorization->getResourceServer()->getResourceServerId() : null
         );

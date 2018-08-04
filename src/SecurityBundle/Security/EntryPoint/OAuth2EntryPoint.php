@@ -29,8 +29,6 @@ final class OAuth2EntryPoint implements AuthenticationEntryPointInterface
 
     /**
      * OAuth2EntryPoint constructor.
-     *
-     * @param OAuth2MessageFactoryManager $oauth2ResponseFactoryManager
      */
     public function __construct(OAuth2MessageFactoryManager $oauth2ResponseFactoryManager)
     {

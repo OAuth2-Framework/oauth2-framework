@@ -54,11 +54,6 @@ class OpenIdConnectExtension implements TokenEndpointExtension
 
     /**
      * OpenIdConnectExtension constructor.
-     *
-     * @param IdTokenBuilderFactory $idTokenBuilderFactory
-     * @param string                $defaultSignatureAlgorithm
-     * @param JWSBuilder            $jwsBuilder
-     * @param JWKSet                $signatureKeys
      */
     public function __construct(IdTokenBuilderFactory $idTokenBuilderFactory, string $defaultSignatureAlgorithm, JWSBuilder $jwsBuilder, JWKSet $signatureKeys)
     {
@@ -68,9 +63,6 @@ class OpenIdConnectExtension implements TokenEndpointExtension
         $this->defaultSignatureAlgorithm = $defaultSignatureAlgorithm;
     }
 
-    /**
-     * @param JWEBuilder $jweBuilder
-     */
     public function enableEncryption(JWEBuilder $jweBuilder)
     {
         $this->jweBuilder = $jweBuilder;
@@ -92,13 +84,6 @@ class OpenIdConnectExtension implements TokenEndpointExtension
         return $data;
     }
 
-    /**
-     * @param Client      $client
-     * @param UserAccount $userAccount
-     * @param AccessToken $accessToken
-     *
-     * @return string
-     */
     private function issueIdToken(Client $client, UserAccount $userAccount, AccessToken $accessToken): string
     {
         $redirectUri = $accessToken->getMetadata()->get('redirect_uri');
@@ -128,11 +113,6 @@ class OpenIdConnectExtension implements TokenEndpointExtension
         return $idTokenBuilder->build();
     }
 
-    /**
-     * @param AccessToken $accessToken
-     *
-     * @return array
-     */
     private function getIdTokenClaims(AccessToken $accessToken): array
     {
         if (!$accessToken->getMetadata()->has('requested_claims')) {

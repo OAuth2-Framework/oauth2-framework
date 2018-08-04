@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\ClientRule\Tests;
 
-use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\ClientRule;
+use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use PHPUnit\Framework\TestCase;
 
@@ -30,22 +30,22 @@ final class CommonParametersRuleTest extends TestCase
      */
     public function aParameterIsNotAValidUrl()
     {
-        $clientId = ClientId::create('CLIENT_ID');
-        $commandParameters = DataBag::create([
+        $clientId = new ClientId('CLIENT_ID');
+        $commandParameters = new DataBag([
             'client_name' => 'Client name',
             'client_uri' => 'urn:foo:bar:OK',
         ]);
         $rule = new ClientRule\CommonParametersRule();
-        $rule->handle($clientId, $commandParameters, DataBag::create([]), $this->getCallable());
+        $rule->handle($clientId, $commandParameters, new DataBag([]), $this->getCallable());
     }
 
     /**
      * @test
      */
-    public function testCommonParameterRule()
+    public function commonParameterRule()
     {
-        $clientId = ClientId::create('CLIENT_ID');
-        $commandParameters = DataBag::create([
+        $clientId = new ClientId('CLIENT_ID');
+        $commandParameters = new DataBag([
             'client_name' => 'Client name',
             'client_name#fr' => 'Nom du client',
             'client_uri' => 'http://localhost/information',
@@ -54,23 +54,20 @@ final class CommonParametersRuleTest extends TestCase
             'policy_uri' => 'http://localhost/policy',
         ]);
         $rule = new ClientRule\CommonParametersRule();
-        $validatedParameters = $rule->handle($clientId, $commandParameters, DataBag::create([]), $this->getCallable());
+        $validatedParameters = $rule->handle($clientId, $commandParameters, new DataBag([]), $this->getCallable());
 
-        self::assertTrue($validatedParameters->has('client_name'));
-        self::assertEquals('Client name', $validatedParameters->get('client_name'));
-        self::assertTrue($validatedParameters->has('client_uri'));
-        self::assertEquals('http://localhost/information', $validatedParameters->get('client_uri'));
-        self::assertTrue($validatedParameters->has('logo_uri'));
-        self::assertEquals('http://127.0.0.1:8000/logo.png', $validatedParameters->get('logo_uri'));
-        self::assertTrue($validatedParameters->has('tos_uri'));
-        self::assertEquals('http://[FEDC:BA98:7654:3210:FEDC:BA98:7654:3210]:80/tos.html', $validatedParameters->get('tos_uri'));
-        self::assertTrue($validatedParameters->has('policy_uri'));
-        self::assertEquals('http://localhost/policy', $validatedParameters->get('policy_uri'));
+        static::assertTrue($validatedParameters->has('client_name'));
+        static::assertEquals('Client name', $validatedParameters->get('client_name'));
+        static::assertTrue($validatedParameters->has('client_uri'));
+        static::assertEquals('http://localhost/information', $validatedParameters->get('client_uri'));
+        static::assertTrue($validatedParameters->has('logo_uri'));
+        static::assertEquals('http://127.0.0.1:8000/logo.png', $validatedParameters->get('logo_uri'));
+        static::assertTrue($validatedParameters->has('tos_uri'));
+        static::assertEquals('http://[FEDC:BA98:7654:3210:FEDC:BA98:7654:3210]:80/tos.html', $validatedParameters->get('tos_uri'));
+        static::assertTrue($validatedParameters->has('policy_uri'));
+        static::assertEquals('http://localhost/policy', $validatedParameters->get('policy_uri'));
     }
 
-    /**
-     * @return callable
-     */
     private function getCallable(): callable
     {
         return function (ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters): DataBag {

@@ -34,9 +34,9 @@ final class MacTokenTest extends TestCase
     {
         $macToken = new FooMacToken('hmac-sha-256', 30);
 
-        self::assertEquals('MAC', $macToken->name());
-        self::assertEquals('MAC', $macToken->getScheme());
-        self::assertEquals(['mac_key' => 'MAC_KEY_FOO_BAR', 'mac_algorithm' => 'hmac-sha-256'], $macToken->getAdditionalInformation());
+        static::assertEquals('MAC', $macToken->name());
+        static::assertEquals('MAC', $macToken->getScheme());
+        static::assertEquals(['mac_key' => 'MAC_KEY_FOO_BAR', 'mac_algorithm' => 'hmac-sha-256'], $macToken->getAdditionalInformation());
     }
 
     /**
@@ -49,8 +49,8 @@ final class MacTokenTest extends TestCase
         $request->getHeader('AUTHORIZATION')->willReturn(['MAC id="h480djs93hd8",ts="1336363200",nonce="dj83hs9s",mac="bhCQXTVyfj5cmA9uKkPFx1zeOXM="']);
 
         $additionalCredentialValues = [];
-        self::assertEquals('h480djs93hd8', $macToken->find($request->reveal(), $additionalCredentialValues));
-        self::assertEquals(['id' => 'h480djs93hd8', 'ts' => '1336363200', 'nonce' => 'dj83hs9s', 'mac' => 'bhCQXTVyfj5cmA9uKkPFx1zeOXM='], $additionalCredentialValues);
+        static::assertEquals('h480djs93hd8', $macToken->find($request->reveal(), $additionalCredentialValues));
+        static::assertEquals(['id' => 'h480djs93hd8', 'ts' => '1336363200', 'nonce' => 'dj83hs9s', 'mac' => 'bhCQXTVyfj5cmA9uKkPFx1zeOXM='], $additionalCredentialValues);
     }
 
     /**
@@ -59,7 +59,6 @@ final class MacTokenTest extends TestCase
     public function iFoundAValidAccessToken()
     {
         $macToken = new FooMacToken('hmac-sha-256', 30);
-        $accessToken = AccessToken::createEmpty();
         $mac = $this->generateMac(
             'sha256',
             'adijq39jdlaska9asud',
@@ -72,14 +71,14 @@ final class MacTokenTest extends TestCase
             null
         );
         $additionalCredentialValues = ['id' => 'h480djs93hd8', 'ts' => \time(), 'nonce' => 'dj83hs9s', 'mac' => $mac];
-        $accessToken = $accessToken->create(
-            AccessTokenId::create('h480djs93hd8'),
-            ClientId::create('CLIENT_ID'),
-            ClientId::create('CLIENT_ID'),
-            DataBag::create(['token_type' => 'MAC', 'mac_key' => 'adijq39jdlaska9asud', 'mac_algorithm' => 'hmac-sha-256']),
-            DataBag::create([]),
+        $accessToken = new AccessToken(
+            new AccessTokenId('h480djs93hd8'),
+            new ClientId('CLIENT_ID'),
+            new ClientId('CLIENT_ID'),
             new \DateTimeImmutable('now'),
-            ResourceServerId::create('RESOURCE_SERVER_ID')
+            new DataBag(['token_type' => 'MAC', 'mac_key' => 'adijq39jdlaska9asud', 'mac_algorithm' => 'hmac-sha-256']),
+            new DataBag([]),
+            new ResourceServerId('RESOURCE_SERVER_ID')
         );
         $uri = $this->prophesize(UriInterface::class);
         $uri->getHost()->willReturn('example.com');
@@ -89,21 +88,11 @@ final class MacTokenTest extends TestCase
         $request->getMethod()->willReturn('POST');
         $request->getRequestTarget()->willReturn('/request?b5=%3D%253D&a3=a&c%40=&a2=r%20b&c2&a3=2+q');
 
-        self::assertTrue($macToken->isRequestValid($accessToken, $request->reveal(), $additionalCredentialValues));
+        static::assertTrue($macToken->isRequestValid($accessToken, $request->reveal(), $additionalCredentialValues));
     }
 
     /**
-     * @param string      $algorithm
-     * @param string      $key
-     * @param int         $timestamp
-     * @param string      $nonce
-     * @param string      $method
-     * @param string      $requestUri
-     * @param string      $host
-     * @param int         $port
      * @param null|string $ext
-     *
-     * @return string
      */
     private function generateMac(string $algorithm, string $key, int $timestamp, string $nonce, string $method, string $requestUri, string $host, int $port, ?string $ext): string
     {

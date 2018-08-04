@@ -15,8 +15,8 @@ namespace OAuth2Framework\Component\Core\Tests\AccessToken;
 
 use OAuth2Framework\Component\Core\AccessToken\AccessToken;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
-use OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenIntrospectionTypeHint;
+use OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
@@ -37,7 +37,7 @@ final class AccessTokenIntrospectionTypeHintTest extends TestCase
     protected function setUp()
     {
         if (!\interface_exists(TokenTypeHint::class)) {
-            $this->markTestSkipped('The component "oauth2-framework/token-type" is not installed.');
+            static::markTestSkipped('The component "oauth2-framework/token-type" is not installed.');
         }
     }
 
@@ -46,7 +46,7 @@ final class AccessTokenIntrospectionTypeHintTest extends TestCase
      */
     public function genericInformation()
     {
-        self::assertEquals('access_token', $this->getAccessTokenIntrospectionTypeHint()->hint());
+        static::assertEquals('access_token', $this->getAccessTokenIntrospectionTypeHint()->hint());
     }
 
     /**
@@ -54,12 +54,12 @@ final class AccessTokenIntrospectionTypeHintTest extends TestCase
      */
     public function theTokenTypeHintCanFindATokenAndReturnValues()
     {
-        self::assertNull($this->getAccessTokenIntrospectionTypeHint()->find('UNKNOWN_TOKEN_ID'));
+        static::assertNull($this->getAccessTokenIntrospectionTypeHint()->find('UNKNOWN_TOKEN_ID'));
         $accessToken = $this->getAccessTokenIntrospectionTypeHint()->find('ACCESS_TOKEN_ID');
-        self::assertInstanceOf(AccessToken::class, $accessToken);
+        static::assertInstanceOf(AccessToken::class, $accessToken);
         $introspection = $this->getAccessTokenIntrospectionTypeHint()->introspect($accessToken);
-        self::assertArrayHasKey('active', $introspection);
-        self::assertTrue($introspection['active']);
+        static::assertArrayHasKey('active', $introspection);
+        static::assertTrue($introspection['active']);
     }
 
     /**
@@ -67,23 +67,19 @@ final class AccessTokenIntrospectionTypeHintTest extends TestCase
      */
     private $accessTokenTypeHint = null;
 
-    /**
-     * @return AccessTokenIntrospectionTypeHint
-     */
     public function getAccessTokenIntrospectionTypeHint(): AccessTokenIntrospectionTypeHint
     {
         if (null === $this->accessTokenTypeHint) {
-            $accessToken = AccessToken::createEmpty();
-            $accessToken = $accessToken->create(
-                AccessTokenId::create('ACCESS_TOKEN_ID'),
-                UserAccountId::create('USER_ACCOUNT_ID'),
-                ClientId::create('CLIENT_ID'),
-                DataBag::create([
+            $accessToken = new AccessToken(
+                new AccessTokenId('ACCESS_TOKEN_ID'),
+                new ClientId('CLIENT_ID'),
+                new UserAccountId('USER_ACCOUNT_ID'),
+                new \DateTimeImmutable('now +1hour'),
+                new DataBag([
                     'scope' => 'scope1 scope2',
                 ]),
-                DataBag::create([]),
-                new \DateTimeImmutable('now +1hour'),
-                ResourceServerId::create('RESOURCE_SERVER_ID')
+                new DataBag([]),
+                new ResourceServerId('RESOURCE_SERVER_ID')
             );
             $accessTokenRepository = $this->prophesize(AccessTokenRepository::class);
             $accessTokenRepository->find(Argument::type(AccessTokenId::class))->will(function ($args) use ($accessToken) {
@@ -91,7 +87,7 @@ final class AccessTokenIntrospectionTypeHintTest extends TestCase
                     return $accessToken;
                 }
 
-                return null;
+                return;
             });
             $this->accessTokenTypeHint = new AccessTokenIntrospectionTypeHint(
                 $accessTokenRepository->reveal()

@@ -30,15 +30,7 @@ abstract class ClientConfigurationRouteRule implements Rule
         return $next($clientId, $commandParameters, $validatedParameters);
     }
 
-    /**
-     * @param ClientId $clientId
-     *
-     * @return string
-     */
     abstract protected function getRegistrationClientUri(ClientId $clientId): string;
 
-    /**
-     * @return string
-     */
     abstract protected function generateRegistrationAccessToken(): string;
 }

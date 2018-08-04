@@ -36,9 +36,9 @@ final class PromptLoginParameterAccountCheckerTest extends TestCase
 
         try {
             $checker->check($authorization->reveal(), null, false);
-            $this->fail('The expected exception has not been thrown.');
+            static::fail('The expected exception has not been thrown.');
         } catch (RedirectToLoginPageException $e) {
-            self::assertTrue(true);
+            static::assertTrue(true);
         }
     }
 
@@ -53,6 +53,6 @@ final class PromptLoginParameterAccountCheckerTest extends TestCase
         $checker = new PromptLoginParameterAccountChecker();
 
         $checker->check($authorization->reveal(), null, true);
-        self::assertTrue(true);
+        static::assertTrue(true);
     }
 }

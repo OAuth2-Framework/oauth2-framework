@@ -35,10 +35,10 @@ final class ResponseModeTest extends TestCase
      */
     public function genericCalls()
     {
-        self::assertEquals(['query', 'fragment', 'form_post'], $this->getResponseModeManager()->list());
-        self::assertTrue($this->getResponseModeManager()->has('query'));
-        self::assertFalse($this->getResponseModeManager()->has('foo'));
-        self::assertInstanceOf(ResponseMode::class, $this->getResponseModeManager()->get('fragment'));
+        static::assertEquals(['query', 'fragment', 'form_post'], $this->getResponseModeManager()->list());
+        static::assertTrue($this->getResponseModeManager()->has('query'));
+        static::assertFalse($this->getResponseModeManager()->has('foo'));
+        static::assertInstanceOf(ResponseMode::class, $this->getResponseModeManager()->get('fragment'));
         $this->getResponseModeManager()->get('foo');
     }
 
@@ -53,8 +53,8 @@ final class ResponseModeTest extends TestCase
             'access_token' => 'ACCESS_TOKEN',
         ]);
 
-        self::assertTrue($response->hasHeader('Location'));
-        self::assertEquals(['https://localhost/foo?bar=bar&access_token=ACCESS_TOKEN#_=_'], $response->getHeader('Location'));
+        static::assertTrue($response->hasHeader('Location'));
+        static::assertEquals(['https://localhost/foo?bar=bar&access_token=ACCESS_TOKEN#_=_'], $response->getHeader('Location'));
     }
 
     /**
@@ -68,8 +68,8 @@ final class ResponseModeTest extends TestCase
             'access_token' => 'ACCESS_TOKEN',
         ]);
 
-        self::assertTrue($response->hasHeader('Location'));
-        self::assertEquals(['com.example.app:/oauth2redirect/example-provider?access_token=ACCESS_TOKEN#_=_'], $response->getHeader('Location'));
+        static::assertTrue($response->hasHeader('Location'));
+        static::assertEquals(['com.example.app:/oauth2redirect/example-provider?access_token=ACCESS_TOKEN#_=_'], $response->getHeader('Location'));
     }
 
     /**
@@ -83,8 +83,8 @@ final class ResponseModeTest extends TestCase
             'access_token' => 'ACCESS_TOKEN',
         ]);
 
-        self::assertTrue($response->hasHeader('Location'));
-        self::assertEquals(['urn:ietf:wg:oauth:2.0:oob?access_token=ACCESS_TOKEN#_=_'], $response->getHeader('Location'));
+        static::assertTrue($response->hasHeader('Location'));
+        static::assertEquals(['urn:ietf:wg:oauth:2.0:oob?access_token=ACCESS_TOKEN#_=_'], $response->getHeader('Location'));
     }
 
     /**
@@ -98,8 +98,8 @@ final class ResponseModeTest extends TestCase
             'access_token' => 'ACCESS_TOKEN',
         ]);
 
-        self::assertTrue($response->hasHeader('Location'));
-        self::assertEquals(['https://localhost/foo?bar=bar#access_token=ACCESS_TOKEN&_=_'], $response->getHeader('Location'));
+        static::assertTrue($response->hasHeader('Location'));
+        static::assertEquals(['https://localhost/foo?bar=bar#access_token=ACCESS_TOKEN&_=_'], $response->getHeader('Location'));
     }
 
     /**
@@ -113,8 +113,8 @@ final class ResponseModeTest extends TestCase
             'access_token' => 'ACCESS_TOKEN',
         ]);
 
-        self::assertTrue($response->hasHeader('Location'));
-        self::assertEquals(['com.example.app:/oauth2redirect/example-provider#access_token=ACCESS_TOKEN&_=_'], $response->getHeader('Location'));
+        static::assertTrue($response->hasHeader('Location'));
+        static::assertEquals(['com.example.app:/oauth2redirect/example-provider#access_token=ACCESS_TOKEN&_=_'], $response->getHeader('Location'));
     }
 
     /**
@@ -128,8 +128,8 @@ final class ResponseModeTest extends TestCase
             'access_token' => 'ACCESS_TOKEN',
         ]);
 
-        self::assertTrue($response->hasHeader('Location'));
-        self::assertEquals(['urn:ietf:wg:oauth:2.0:oob#access_token=ACCESS_TOKEN&_=_'], $response->getHeader('Location'));
+        static::assertTrue($response->hasHeader('Location'));
+        static::assertEquals(['urn:ietf:wg:oauth:2.0:oob#access_token=ACCESS_TOKEN&_=_'], $response->getHeader('Location'));
     }
 
     /**
@@ -145,7 +145,7 @@ final class ResponseModeTest extends TestCase
 
         $response->getBody()->rewind();
         $body = $response->getBody()->getContents();
-        self::assertEquals('["https:\/\/localhost\/foo?bar=bar#_=_",{"access_token":"ACCESS_TOKEN"}]', $body);
+        static::assertEquals('["https:\/\/localhost\/foo?bar=bar#_=_",{"access_token":"ACCESS_TOKEN"}]', $body);
     }
 
     /**
@@ -161,7 +161,7 @@ final class ResponseModeTest extends TestCase
 
         $response->getBody()->rewind();
         $body = $response->getBody()->getContents();
-        self::assertEquals('["com.example.app:\/oauth2redirect\/example-provider#_=_",{"access_token":"ACCESS_TOKEN"}]', $body);
+        static::assertEquals('["com.example.app:\/oauth2redirect\/example-provider#_=_",{"access_token":"ACCESS_TOKEN"}]', $body);
     }
 
     /**
@@ -177,7 +177,7 @@ final class ResponseModeTest extends TestCase
 
         $response->getBody()->rewind();
         $body = $response->getBody()->getContents();
-        self::assertEquals('["urn:ietf:wg:oauth:2.0:oob#_=_",{"access_token":"ACCESS_TOKEN"}]', $body);
+        static::assertEquals('["urn:ietf:wg:oauth:2.0:oob#_=_",{"access_token":"ACCESS_TOKEN"}]', $body);
     }
 
     /**

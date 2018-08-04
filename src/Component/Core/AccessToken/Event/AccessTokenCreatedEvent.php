@@ -16,11 +16,11 @@ namespace OAuth2Framework\Component\Core\AccessToken\Event;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
+use OAuth2Framework\Component\Core\Domain\DomainObject;
 use OAuth2Framework\Component\Core\Event\Event;
 use OAuth2Framework\Component\Core\Id\Id;
 use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwnerId;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
-use OAuth2Framework\Component\Core\Domain\DomainObject;
 
 class AccessTokenCreatedEvent extends Event
 {
@@ -61,14 +61,6 @@ class AccessTokenCreatedEvent extends Event
 
     /**
      * AccessTokenCreatedEvent constructor.
-     *
-     * @param AccessTokenId         $accessTokenId
-     * @param ResourceOwnerId       $resourceOwnerId
-     * @param ClientId              $clientId
-     * @param DataBag               $parameters
-     * @param DataBag               $metadatas
-     * @param \DateTimeImmutable    $expiresAt
-     * @param ResourceServerId|null $resourceServerId
      */
     protected function __construct(AccessTokenId $accessTokenId, ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, \DateTimeImmutable $expiresAt, ?ResourceServerId $resourceServerId)
     {
@@ -90,14 +82,6 @@ class AccessTokenCreatedEvent extends Event
     }
 
     /**
-     * @param AccessTokenId         $accessTokenId
-     * @param ResourceOwnerId       $resourceOwnerId
-     * @param ClientId              $clientId
-     * @param DataBag               $parameters
-     * @param DataBag               $metadatas
-     * @param \DateTimeImmutable    $expiresAt
-     * @param ResourceServerId|null $resourceServerId
-     *
      * @return AccessTokenCreatedEvent
      */
     public static function create(AccessTokenId $accessTokenId, ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, \DateTimeImmutable $expiresAt, ?ResourceServerId $resourceServerId): self
@@ -110,62 +94,44 @@ class AccessTokenCreatedEvent extends Event
      */
     public static function createFromJson(\stdClass $json): DomainObject
     {
-        $accessTokenId = AccessTokenId::create($json->domain_id);
+        $accessTokenId = new AccessTokenId($json->domain_id);
         $resourceOwnerClass = $json->payload->resource_owner_class;
         $resourceOwnerId = $resourceOwnerClass::create($json->payload->resource_owner_id);
-        $clientId = ClientId::create($json->payload->client_id);
-        $parameters = DataBag::create((array) $json->payload->parameters);
-        $metadatas = DataBag::create((array) $json->payload->metadatas);
+        $clientId = new ClientId($json->payload->client_id);
+        $parameters = new DataBag((array) $json->payload->parameters);
+        $metadatas = new DataBag((array) $json->payload->metadatas);
         $expiresAt = \DateTimeImmutable::createFromFormat('U', (string) $json->payload->expires_at);
-        $resourceServerId = null !== $json->payload->resource_server_id ? ResourceServerId::create($json->payload->resource_server_id) : null;
+        $resourceServerId = null !== $json->payload->resource_server_id ? new ResourceServerId($json->payload->resource_server_id) : null;
 
         return new self($accessTokenId, $resourceOwnerId, $clientId, $parameters, $metadatas, $expiresAt, $resourceServerId);
     }
 
-    /**
-     * @return AccessTokenId
-     */
     public function getAccessTokenId(): AccessTokenId
     {
         return $this->accessTokenId;
     }
 
-    /**
-     * @return \DateTimeImmutable
-     */
     public function getExpiresAt(): \DateTimeImmutable
     {
         return $this->expiresAt;
     }
 
-    /**
-     * @return ResourceOwnerId
-     */
     public function getResourceOwnerId(): ResourceOwnerId
     {
         return $this->resourceOwnerId;
     }
 
-    /**
-     * @return ClientId
-     */
     public function getClientId(): ClientId
     {
         return $this->clientId;
     }
 
-    /**
-     * @return DataBag
-     */
-    public function getParameters(): DataBag
+    public function getParameter(): DataBag
     {
         return $this->parameters;
     }
 
-    /**
-     * @return DataBag
-     */
-    public function getMetadatas(): DataBag
+    public function getMetadata(): DataBag
     {
         return $this->metadatas;
     }

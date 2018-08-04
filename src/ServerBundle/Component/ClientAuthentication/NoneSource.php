@@ -21,9 +21,6 @@ use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
 class NoneSource implements Component
 {
-    /**
-     * @return string
-     */
     public function name(): string
     {
         return 'none';

@@ -67,15 +67,8 @@ class User implements UserInterface, UserAccount, EquatableInterface
     private $parameters = [];
 
     /**
-     * @param string                  $username
-     * @param string                  $password
-     * @param string|null             $salt
-     * @param string[]                $roles
-     * @param string[]                $oauth2Passwords
-     * @param UserAccountId           $publicId
-     * @param \DateTimeImmutable|null $lastLoginAt
-     * @param \DateTimeImmutable|null $lastUpdateAt
-     * @param array                   $parameters
+     * @param string[] $roles
+     * @param string[] $oauth2Passwords
      */
     public function __construct(string $username, string $password, string $salt = null, array $roles, array $oauth2Passwords, UserAccountId $publicId, ?\DateTimeImmutable $lastLoginAt = null, ?\DateTimeImmutable $lastUpdateAt = null, array $parameters = [])
     {
@@ -90,17 +83,11 @@ class User implements UserInterface, UserAccount, EquatableInterface
         $this->parameters = $parameters;
     }
 
-    /**
-     * @return array
-     */
     public function getOAuth2Passwords(): array
     {
         return $this->oauth2Passwords;
     }
 
-    /**
-     * @return ResourceOwnerId
-     */
     public function getPublicId(): ResourceOwnerId
     {
         return $this->publicId;
@@ -116,17 +103,11 @@ class User implements UserInterface, UserAccount, EquatableInterface
         return $publicId;
     }
 
-    /**
-     * @return int|null
-     */
     public function getLastLoginAt(): ?int
     {
         return $this->lastLoginAt ? $this->lastLoginAt->getTimestamp() : null;
     }
 
-    /**
-     * @return int|null
-     */
     public function getLastUpdateAt(): ?int
     {
         return $this->lastUpdateAt ? $this->lastUpdateAt->getTimestamp() : null;

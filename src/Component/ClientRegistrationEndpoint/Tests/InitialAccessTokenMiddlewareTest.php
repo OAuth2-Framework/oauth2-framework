@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\ClientRegistrationEndpoint\Tests;
 
-use Psr\Http\Server\RequestHandlerInterface;
 use OAuth2Framework\Component\BearerTokenType\BearerToken;
 use OAuth2Framework\Component\ClientRegistrationEndpoint\InitialAccessToken;
 use OAuth2Framework\Component\ClientRegistrationEndpoint\InitialAccessTokenId;
@@ -25,6 +24,7 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 /**
  * @group InitialAccessTokenMiddleware
@@ -45,8 +45,8 @@ final class InitialAccessTokenMiddlewareTest extends TestCase
         try {
             $this->getMiddleware()->process($request->reveal(), $handler->reveal());
         } catch (OAuth2Message $e) {
-            self::assertEquals(400, $e->getCode());
-            self::assertEquals([
+            static::assertEquals(400, $e->getCode());
+            static::assertEquals([
                 'error' => 'invalid_request',
                 'error_description' => 'Initial Access Token is missing or invalid.',
             ], $e->getData());
@@ -69,8 +69,8 @@ final class InitialAccessTokenMiddlewareTest extends TestCase
         try {
             $this->getMiddleware()->process($request->reveal(), $handler->reveal());
         } catch (OAuth2Message $e) {
-            self::assertEquals(400, $e->getCode());
-            self::assertEquals([
+            static::assertEquals(400, $e->getCode());
+            static::assertEquals([
                 'error' => 'invalid_request',
                 'error_description' => 'Initial Access Token is missing or invalid.',
             ], $e->getData());
@@ -91,8 +91,8 @@ final class InitialAccessTokenMiddlewareTest extends TestCase
         try {
             $this->getMiddleware()->process($request->reveal(), $handler->reveal());
         } catch (OAuth2Message $e) {
-            self::assertEquals(400, $e->getCode());
-            self::assertEquals([
+            static::assertEquals(400, $e->getCode());
+            static::assertEquals([
                 'error' => 'invalid_request',
                 'error_description' => 'Initial Access Token is missing or invalid.',
             ], $e->getData());
@@ -113,8 +113,8 @@ final class InitialAccessTokenMiddlewareTest extends TestCase
         try {
             $this->getMiddleware()->process($request->reveal(), $handler->reveal());
         } catch (OAuth2Message $e) {
-            self::assertEquals(400, $e->getCode());
-            self::assertEquals([
+            static::assertEquals(400, $e->getCode());
+            static::assertEquals([
                 'error' => 'invalid_request',
                 'error_description' => 'Initial Access Token expired.',
             ], $e->getData());
@@ -143,9 +143,6 @@ final class InitialAccessTokenMiddlewareTest extends TestCase
      */
     private $middleware = null;
 
-    /**
-     * @return InitialAccessTokenMiddleware
-     */
     private function getMiddleware(): InitialAccessTokenMiddleware
     {
         if (null === $this->middleware) {
@@ -164,9 +161,6 @@ final class InitialAccessTokenMiddlewareTest extends TestCase
      */
     private $repository = null;
 
-    /**
-     * @return InitialAccessTokenRepository
-     */
     private function getRepository(): InitialAccessTokenRepository
     {
         if (null === $this->repository) {
@@ -177,7 +171,7 @@ final class InitialAccessTokenMiddlewareTest extends TestCase
                         $initialAccessToken = InitialAccessToken::createEmpty();
                         $initialAccessToken = $initialAccessToken->create(
                             $args[0],
-                            UserAccountId::create('USER_ACCOUNT_ID'),
+                            new UserAccountId('USER_ACCOUNT_ID'),
                             new \DateTimeImmutable('now +1 day')
                         );
 
@@ -186,7 +180,7 @@ final class InitialAccessTokenMiddlewareTest extends TestCase
                         $initialAccessToken = InitialAccessToken::createEmpty();
                         $initialAccessToken = $initialAccessToken->create(
                             $args[0],
-                            UserAccountId::create('USER_ACCOUNT_ID'),
+                            new UserAccountId('USER_ACCOUNT_ID'),
                             new \DateTimeImmutable('now +1 day')
                         );
                         $initialAccessToken = $initialAccessToken->markAsRevoked();
@@ -196,14 +190,14 @@ final class InitialAccessTokenMiddlewareTest extends TestCase
                         $initialAccessToken = InitialAccessToken::createEmpty();
                         $initialAccessToken = $initialAccessToken->create(
                             $args[0],
-                            UserAccountId::create('USER_ACCOUNT_ID'),
+                            new UserAccountId('USER_ACCOUNT_ID'),
                             new \DateTimeImmutable('now -1 day')
                         );
 
                         return $initialAccessToken;
                     case 'BAD_INITIAL_ACCESS_TOKEN_ID':
                     default:
-                        return null;
+                        return;
                 }
             });
 

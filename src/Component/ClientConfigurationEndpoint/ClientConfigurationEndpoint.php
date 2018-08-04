@@ -14,8 +14,6 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\ClientConfigurationEndpoint;
 
 use Http\Message\ResponseFactory;
-use Psr\Http\Server\RequestHandlerInterface;
-use Psr\Http\Server\MiddlewareInterface;
 use OAuth2Framework\Component\BearerTokenType\BearerToken;
 use OAuth2Framework\Component\ClientRule\RuleManager;
 use OAuth2Framework\Component\Core\Client\Client;
@@ -23,6 +21,8 @@ use OAuth2Framework\Component\Core\Client\ClientRepository;
 use OAuth2Framework\Component\Core\Message\OAuth2Message;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 final class ClientConfigurationEndpoint implements MiddlewareInterface
 {
@@ -48,11 +48,6 @@ final class ClientConfigurationEndpoint implements MiddlewareInterface
 
     /**
      * ClientConfigurationEndpoint constructor.
-     *
-     * @param ClientRepository $clientRepository
-     * @param BearerToken      $bearerToken
-     * @param ResponseFactory  $responseFactory
-     * @param RuleManager      $ruleManager
      */
     public function __construct(ClientRepository $clientRepository, BearerToken $bearerToken, ResponseFactory $responseFactory, RuleManager $ruleManager)
     {
@@ -87,8 +82,6 @@ final class ClientConfigurationEndpoint implements MiddlewareInterface
     }
 
     /**
-     * @param ServerRequestInterface $request
-     *
      * @throws OAuth2Message
      */
     private function checkClient(ServerRequestInterface $request)

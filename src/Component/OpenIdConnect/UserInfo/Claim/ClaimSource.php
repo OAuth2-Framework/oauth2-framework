@@ -18,11 +18,7 @@ use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 interface ClaimSource
 {
     /**
-     * @param UserAccount $userAccount
-     * @param string[]    $scope
-     * @param array       $claims
-     *
-     * @return Source|null
+     * @param string[] $scope
      */
     public function getUserInfo(UserAccount $userAccount, array $scope, array $claims): ?Source;
 }

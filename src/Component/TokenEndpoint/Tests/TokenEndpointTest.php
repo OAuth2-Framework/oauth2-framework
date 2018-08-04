@@ -14,25 +14,25 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\TokenEndpoint\Tests;
 
 use Http\Message\MessageFactory\GuzzleMessageFactory;
+use OAuth2Framework\Component\Core\AccessToken\AccessToken;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenIdGenerator;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository;
-use Psr\Http\Server\RequestHandlerInterface;
-use OAuth2Framework\Component\Core\AccessToken\AccessToken;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\Client\ClientRepository;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
-use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwnerId;
 use OAuth2Framework\Component\Core\Message\OAuth2Message;
+use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwnerId;
+use OAuth2Framework\Component\Core\TokenType\TokenType;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountRepository;
 use OAuth2Framework\Component\TokenEndpoint\Extension\TokenEndpointExtensionManager;
 use OAuth2Framework\Component\TokenEndpoint\TokenEndpoint;
-use OAuth2Framework\Component\Core\TokenType\TokenType;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 /**
  * @group TokenEndpoint
@@ -59,8 +59,8 @@ final class TokenEndpointTest extends TestCase
         try {
             $this->getTokenEndpoint()->process($request->reveal(), $handler->reveal());
         } catch (OAuth2Message $e) {
-            self::assertEquals(401, $e->getCode());
-            self::assertEquals([
+            static::assertEquals(401, $e->getCode());
+            static::assertEquals([
                 'error' => 'invalid_client',
                 'error_description' => 'Client authentication failed.',
             ], $e->getData());
@@ -74,9 +74,9 @@ final class TokenEndpointTest extends TestCase
     {
         $client = Client::createEmpty();
         $client = $client->create(
-            ClientId::create('CLIENT_ID'),
-            DataBag::create([]),
-            UserAccountId::create('OWNER_ID')
+            new ClientId('CLIENT_ID'),
+            new DataBag([]),
+            new UserAccountId('OWNER_ID')
         );
 
         $request = $this->prophesize(ServerRequestInterface::class);
@@ -94,8 +94,8 @@ final class TokenEndpointTest extends TestCase
         try {
             $this->getTokenEndpoint()->process($request->reveal(), $handler->reveal());
         } catch (OAuth2Message $e) {
-            self::assertEquals(400, $e->getCode());
-            self::assertEquals([
+            static::assertEquals(400, $e->getCode());
+            static::assertEquals([
                 'error' => 'unauthorized_client',
                 'error_description' => 'The grant type "foo" is unauthorized for this client.',
             ], $e->getData());
@@ -109,11 +109,11 @@ final class TokenEndpointTest extends TestCase
     {
         $client = Client::createEmpty();
         $client = $client->create(
-            ClientId::create('CLIENT_ID'),
-            DataBag::create([
+            new ClientId('CLIENT_ID'),
+            new DataBag([
                 'grant_types' => ['foo'],
             ]),
-            UserAccountId::create('OWNER_ID')
+            new UserAccountId('OWNER_ID')
         );
 
         $request = $this->prophesize(ServerRequestInterface::class);
@@ -142,8 +142,8 @@ final class TokenEndpointTest extends TestCase
         $response->getBody()->rewind();
         $body = $response->getBody()->getContents();
 
-        self::assertEquals(200, $response->getStatusCode());
-        self::assertRegExp('/^\{"token_type_foo"\:"token_type_bar","token_type"\:"TOKEN_TYPE","access_token"\:"ACCESS_TOKEN_ID","expires_in"\:\d{4}\}$/', $body);
+        static::assertEquals(200, $response->getStatusCode());
+        static::assertRegExp('/^\{"token_type_foo"\:"token_type_bar","token_type"\:"TOKEN_TYPE","access_token"\:"ACCESS_TOKEN_ID","expires_in"\:\d{4}\}$/', $body);
     }
 
     /**
@@ -151,9 +151,6 @@ final class TokenEndpointTest extends TestCase
      */
     private $tokenEndpoint = null;
 
-    /**
-     * @return TokenEndpoint
-     */
     private function getTokenEndpoint(): TokenEndpoint
     {
         if (null === $this->tokenEndpoint) {
@@ -176,19 +173,16 @@ final class TokenEndpointTest extends TestCase
      */
     private $clientRepository = null;
 
-    /**
-     * @return ClientRepository
-     */
     private function getClientRepository(): ClientRepository
     {
         if (null === $this->clientRepository) {
             $client = Client::createEmpty();
             $client = $client->create(
-                ClientId::create('CLIENT_ID'),
-                DataBag::create([
+                new ClientId('CLIENT_ID'),
+                new DataBag([
                     'grant_types' => ['foo'],
                 ]),
-                UserAccountId::create('OWNER_ID')
+                new UserAccountId('OWNER_ID')
             );
 
             $clientRepository = $this->prophesize(ClientRepository::class);
@@ -205,9 +199,6 @@ final class TokenEndpointTest extends TestCase
      */
     private $userAccountRepository = null;
 
-    /**
-     * @return UserAccountRepository
-     */
     private function getUserAccountRepository(): UserAccountRepository
     {
         if (null === $this->userAccountRepository) {
@@ -224,9 +215,6 @@ final class TokenEndpointTest extends TestCase
      */
     private $accessTokenIdGenerator = null;
 
-    /**
-     * @return AccessTokenIdGenerator
-     */
     private function getAccessTokenIdTokenGenerator(): AccessTokenIdGenerator
     {
         if (null === $this->accessTokenIdGenerator) {
@@ -234,7 +222,7 @@ final class TokenEndpointTest extends TestCase
             $accessTokenIdGenerator
                 ->createAccessTokenId(Argument::type(ResourceOwnerId::class), Argument::type(ClientId::class), Argument::type(DataBag::class), Argument::type(DataBag::class), null)
                 ->will(function () {
-                    return AccessTokenId::create('ACCESS_TOKEN_ID');
+                    return new AccessTokenId('ACCESS_TOKEN_ID');
                 });
             $this->accessTokenIdGenerator = $accessTokenIdGenerator->reveal();
         }
@@ -247,9 +235,6 @@ final class TokenEndpointTest extends TestCase
      */
     private $accessTokenRepository = null;
 
-    /**
-     * @return AccessTokenRepository
-     */
     private function getAccessTokenRepository(): AccessTokenRepository
     {
         if (null === $this->accessTokenRepository) {

@@ -15,15 +15,6 @@ namespace OAuth2Framework\Component\RefreshTokenGrant;
 
 use OAuth2Framework\Component\Core\Token\TokenId;
 
-class RefreshTokenId extends TokenId
+final class RefreshTokenId extends TokenId
 {
-    /**
-     * @param string $value
-     *
-     * @return RefreshTokenId
-     */
-    public static function create(string $value): self
-    {
-        return new self($value);
-    }
 }

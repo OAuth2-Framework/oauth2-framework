@@ -15,9 +15,9 @@ namespace OAuth2Framework\Component\Core\Client\Event;
 
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
+use OAuth2Framework\Component\Core\Domain\DomainObject;
 use OAuth2Framework\Component\Core\Event\Event;
 use OAuth2Framework\Component\Core\Id\Id;
-use OAuth2Framework\Component\Core\Domain\DomainObject;
 
 class ClientParametersUpdatedEvent extends Event
 {
@@ -33,9 +33,6 @@ class ClientParametersUpdatedEvent extends Event
 
     /**
      * ClientParametersUpdatedEvent constructor.
-     *
-     * @param ClientId $clientId
-     * @param DataBag  $parameters
      */
     protected function __construct(ClientId $clientId, DataBag $parameters)
     {
@@ -52,9 +49,6 @@ class ClientParametersUpdatedEvent extends Event
     }
 
     /**
-     * @param ClientId $clientId
-     * @param DataBag  $parameters
-     *
      * @return ClientParametersUpdatedEvent
      */
     public static function create(ClientId $clientId, DataBag $parameters): self
@@ -62,17 +56,11 @@ class ClientParametersUpdatedEvent extends Event
         return new self($clientId, $parameters);
     }
 
-    /**
-     * @return ClientId
-     */
     public function getClientId(): ClientId
     {
         return $this->clientId;
     }
 
-    /**
-     * @return DataBag
-     */
     public function getParameters(): DataBag
     {
         return $this->parameters;
@@ -101,8 +89,8 @@ class ClientParametersUpdatedEvent extends Event
      */
     public static function createFromJson(\stdClass $json): DomainObject
     {
-        $clientId = ClientId::create($json->domain_id);
-        $parameters = DataBag::create((array) $json->payload->parameters);
+        $clientId = new ClientId($json->domain_id);
+        $parameters = new DataBag((array) $json->payload->parameters);
 
         return new self(
             $clientId,

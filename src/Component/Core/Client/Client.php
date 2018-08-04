@@ -15,11 +15,11 @@ namespace OAuth2Framework\Component\Core\Client;
 
 use OAuth2Framework\Component\Core\Client\Event as ClientEvent;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
-use OAuth2Framework\Component\Core\Event\Event;
-use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwnerId;
-use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwner;
-use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use OAuth2Framework\Component\Core\Domain\DomainObject;
+use OAuth2Framework\Component\Core\Event\Event;
+use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwner;
+use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwnerId;
+use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use SimpleBus\Message\Recorder\ContainsRecordedMessages;
 use SimpleBus\Message\Recorder\PrivateMessageRecorderCapabilities;
 
@@ -59,7 +59,7 @@ class Client implements ResourceOwner, ContainsRecordedMessages, DomainObject
      */
     private function __construct()
     {
-        $this->parameters = DataBag::create([]);
+        $this->parameters = new DataBag([]);
     }
 
     /**
@@ -79,10 +79,6 @@ class Client implements ResourceOwner, ContainsRecordedMessages, DomainObject
     }
 
     /**
-     * @param ClientId           $clientId
-     * @param DataBag            $parameters
-     * @param UserAccountId|null $ownerId
-     *
      * @return Client
      */
     public function create(ClientId $clientId, DataBag $parameters, ?UserAccountId $ownerId): self
@@ -98,9 +94,6 @@ class Client implements ResourceOwner, ContainsRecordedMessages, DomainObject
         return $clone;
     }
 
-    /**
-     * @return ClientId
-     */
     public function getClientId(): ClientId
     {
         $id = $this->getPublicId();
@@ -111,17 +104,12 @@ class Client implements ResourceOwner, ContainsRecordedMessages, DomainObject
         return $id;
     }
 
-    /**
-     * @return UserAccountId|null
-     */
     public function getOwnerId(): ?UserAccountId
     {
         return $this->ownerId;
     }
 
     /**
-     * @param UserAccountId $ownerId
-     *
      * @return Client
      */
     public function withOwnerId(UserAccountId $ownerId): self
@@ -139,8 +127,6 @@ class Client implements ResourceOwner, ContainsRecordedMessages, DomainObject
     }
 
     /**
-     * @param DataBag $parameters
-     *
      * @return Client
      */
     public function withParameters(DataBag $parameters): self
@@ -166,19 +152,11 @@ class Client implements ResourceOwner, ContainsRecordedMessages, DomainObject
         return $clone;
     }
 
-    /**
-     * @return bool
-     */
     public function isDeleted(): bool
     {
         return $this->deleted;
     }
 
-    /**
-     * @param string $grant_type
-     *
-     * @return bool
-     */
     public function isGrantTypeAllowed(string $grant_type): bool
     {
         $grant_types = $this->has('grant_types') ? $this->get('grant_types') : [];
@@ -189,11 +167,6 @@ class Client implements ResourceOwner, ContainsRecordedMessages, DomainObject
         return \in_array($grant_type, $grant_types, true);
     }
 
-    /**
-     * @param string $response_type
-     *
-     * @return bool
-     */
     public function isResponseTypeAllowed(string $response_type): bool
     {
         $response_types = $this->has('response_types') ? $this->get('response_types') : [];
@@ -204,17 +177,11 @@ class Client implements ResourceOwner, ContainsRecordedMessages, DomainObject
         return \in_array($response_type, $response_types, true);
     }
 
-    /**
-     * @return bool
-     */
     public function isPublic(): bool
     {
         return 'none' === $this->getTokenEndpointAuthenticationMethod();
     }
 
-    /**
-     * @return string
-     */
     public function getTokenEndpointAuthenticationMethod(): string
     {
         if ($this->has('token_endpoint_auth_method')) {
@@ -224,9 +191,6 @@ class Client implements ResourceOwner, ContainsRecordedMessages, DomainObject
         return 'client_secret_basic';
     }
 
-    /**
-     * @return int
-     */
     public function getClientCredentialsExpiresAt(): int
     {
         if ($this->has('client_secret_expires_at')) {
@@ -236,9 +200,6 @@ class Client implements ResourceOwner, ContainsRecordedMessages, DomainObject
         return 0;
     }
 
-    /**
-     * @return bool
-     */
     public function areClientCredentialsExpired(): bool
     {
         if (0 === $this->getClientCredentialsExpiresAt()) {
@@ -280,9 +241,6 @@ class Client implements ResourceOwner, ContainsRecordedMessages, DomainObject
         return $this->parameters->get($key);
     }
 
-    /**
-     * @return array
-     */
     public function all(): array
     {
         $all = $this->parameters->all();
@@ -313,9 +271,9 @@ class Client implements ResourceOwner, ContainsRecordedMessages, DomainObject
      */
     public static function createFromJson(\stdClass $json): DomainObject
     {
-        $clientId = ClientId::create($json->client_id);
-        $ownerId = null !== $json->owner_id ? UserAccountId::create($json->owner_id) : null;
-        $parameters = DataBag::create((array) $json->parameters);
+        $clientId = new ClientId($json->client_id);
+        $ownerId = null !== $json->owner_id ? new UserAccountId($json->owner_id) : null;
+        $parameters = new DataBag((array) $json->parameters);
         $deleted = $json->is_deleted;
 
         $client = new self();
@@ -328,8 +286,6 @@ class Client implements ResourceOwner, ContainsRecordedMessages, DomainObject
     }
 
     /**
-     * @param Event $event
-     *
      * @return Client
      */
     public function apply(Event $event): self
@@ -346,9 +302,6 @@ class Client implements ResourceOwner, ContainsRecordedMessages, DomainObject
         return $this->$method($event);
     }
 
-    /**
-     * @return array
-     */
     private function getEventMap(): array
     {
         return [
@@ -360,8 +313,6 @@ class Client implements ResourceOwner, ContainsRecordedMessages, DomainObject
     }
 
     /**
-     * @param ClientEvent\ClientCreatedEvent $event
-     *
      * @return Client
      */
     protected function applyClientCreatedEvent(ClientEvent\ClientCreatedEvent $event): self
@@ -375,8 +326,6 @@ class Client implements ResourceOwner, ContainsRecordedMessages, DomainObject
     }
 
     /**
-     * @param ClientEvent\ClientOwnerChangedEvent $event
-     *
      * @return Client
      */
     protected function applyClientOwnerChangedEvent(ClientEvent\ClientOwnerChangedEvent $event): self
@@ -388,8 +337,6 @@ class Client implements ResourceOwner, ContainsRecordedMessages, DomainObject
     }
 
     /**
-     * @param ClientEvent\ClientDeletedEvent $event
-     *
      * @return Client
      */
     protected function applyClientDeletedEvent(ClientEvent\ClientDeletedEvent $event): self
@@ -401,8 +348,6 @@ class Client implements ResourceOwner, ContainsRecordedMessages, DomainObject
     }
 
     /**
-     * @param ClientEvent\ClientParametersUpdatedEvent $event
-     *
      * @return Client
      */
     protected function applyClientParametersUpdatedEvent(ClientEvent\ClientParametersUpdatedEvent $event): self

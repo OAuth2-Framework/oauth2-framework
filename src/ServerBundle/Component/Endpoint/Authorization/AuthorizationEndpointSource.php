@@ -14,6 +14,10 @@ declare(strict_types=1);
 namespace OAuth2Framework\ServerBundle\Component\Endpoint\Authorization;
 
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationEndpoint;
+use OAuth2Framework\Component\AuthorizationEndpoint\ConsentScreen\Extension;
+use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\ParameterChecker;
+use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\ResponseMode;
+use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType;
 use OAuth2Framework\Component\AuthorizationEndpoint\UserAccount\UserAccountChecker;
 use OAuth2Framework\Component\AuthorizationEndpoint\UserAccount\UserAccountDiscovery;
 use OAuth2Framework\ServerBundle\Component\Component;
@@ -24,10 +28,6 @@ use OAuth2Framework\ServerBundle\Component\Endpoint\Authorization\Compiler\Param
 use OAuth2Framework\ServerBundle\Component\Endpoint\Authorization\Compiler\ResponseModeCompilerPass;
 use OAuth2Framework\ServerBundle\Component\Endpoint\Authorization\Compiler\ResponseTypeCompilerPass;
 use OAuth2Framework\ServerBundle\Component\Endpoint\Authorization\Compiler\TemplatePathCompilerPass;
-use OAuth2Framework\Component\AuthorizationEndpoint\ConsentScreen\Extension;
-use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\ParameterChecker;
-use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\ResponseMode;
-use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType;
 use OAuth2Framework\ServerBundle\Component\Endpoint\Authorization\Compiler\UserAccountCheckerCompilerPass;
 use OAuth2Framework\ServerBundle\Form\Type\AuthorizationType;
 use OAuth2Framework\ServerBundle\Service\SymfonyUserDiscovery;

@@ -33,9 +33,6 @@ final class CommonParametersRule extends AbstractInternationalizedRule
         return $next($clientId, $commandParameters, $validatedParameters);
     }
 
-    /**
-     * @return array
-     */
     private function getSupportedParameters(): array
     {
         return [
@@ -48,9 +45,6 @@ final class CommonParametersRule extends AbstractInternationalizedRule
         ];
     }
 
-    /**
-     * @return \Closure
-     */
     private function getUriVerificationClosure(): \Closure
     {
         return function ($k, $v) {

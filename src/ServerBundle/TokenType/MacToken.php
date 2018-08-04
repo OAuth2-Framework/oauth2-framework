@@ -30,11 +30,6 @@ final class MacToken extends Base
 
     /**
      * MacToken constructor.
-     *
-     * @param string $macAlgorithm
-     * @param int    $timestampLifetime
-     * @param int    $minLength
-     * @param int    $maxLength
      */
     public function __construct(string $macAlgorithm, int $timestampLifetime, int $minLength, int $maxLength)
     {
@@ -51,9 +46,6 @@ final class MacToken extends Base
         return Base64Url::encode(\random_bytes($this->getMacKeyLength()));
     }
 
-    /**
-     * @return int
-     */
     private function getMacKeyLength(): int
     {
         return \random_int($this->minLength, $this->maxLength);

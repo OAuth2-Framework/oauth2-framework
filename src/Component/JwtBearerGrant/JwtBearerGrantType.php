@@ -26,16 +26,16 @@ use Jose\Component\Signature\JWS;
 use Jose\Component\Signature\JWSVerifier;
 use Jose\Component\Signature\Serializer\CompactSerializer as JwsCompactSerializer;
 use OAuth2Framework\Component\Core\Client\Client;
-use OAuth2Framework\Component\Core\Util\RequestBodyParser;
-use OAuth2Framework\Component\TokenEndpoint\GrantTypeData;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\Client\ClientRepository;
+use OAuth2Framework\Component\Core\Message\OAuth2Message;
 use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwnerId;
+use OAuth2Framework\Component\Core\TrustedIssuer\TrustedIssuerRepository;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountRepository;
-use OAuth2Framework\Component\Core\Message\OAuth2Message;
+use OAuth2Framework\Component\Core\Util\RequestBodyParser;
 use OAuth2Framework\Component\TokenEndpoint\GrantType;
-use OAuth2Framework\Component\Core\TrustedIssuer\TrustedIssuerRepository;
+use OAuth2Framework\Component\TokenEndpoint\GrantTypeData;
 use Psr\Http\Message\ServerRequestInterface;
 
 class JwtBearerGrantType implements GrantType
@@ -97,13 +97,6 @@ class JwtBearerGrantType implements GrantType
 
     /**
      * JWTBearerGrantType constructor.
-     *
-     * @param JsonConverter              $jsonConverter
-     * @param JWSVerifier                $jwsVerifier
-     * @param HeaderCheckerManager       $headerCheckerManager
-     * @param ClaimCheckerManager        $claimCheckerManager
-     * @param ClientRepository           $clientRepository
-     * @param UserAccountRepository|null $userAccountRepository
      */
     public function __construct(JsonConverter $jsonConverter, JWSVerifier $jwsVerifier, HeaderCheckerManager $headerCheckerManager, ClaimCheckerManager $claimCheckerManager, ClientRepository $clientRepository, ?UserAccountRepository $userAccountRepository)
     {
@@ -123,11 +116,6 @@ class JwtBearerGrantType implements GrantType
         return [];
     }
 
-    /**
-     * @param JWEDecrypter $jweDecrypter
-     * @param JWKSet       $keyEncryptionKeySet
-     * @param bool         $encryptionRequired
-     */
     public function enableEncryptedAssertions(JWEDecrypter $jweDecrypter, JWKSet $keyEncryptionKeySet, bool $encryptionRequired)
     {
         $this->jweDecrypter = $jweDecrypter;
@@ -135,17 +123,11 @@ class JwtBearerGrantType implements GrantType
         $this->keyEncryptionKeySet = $keyEncryptionKeySet;
     }
 
-    /**
-     * @param TrustedIssuerRepository $trustedIssuerRepository
-     */
     public function enableTrustedIssuerSupport(TrustedIssuerRepository $trustedIssuerRepository)
     {
         $this->trustedIssuerRepository = $trustedIssuerRepository;
     }
 
-    /**
-     * @param JKUFactory $jkuFactory
-     */
     public function enableJkuSupport(JKUFactory $jkuFactory)
     {
         $this->jkuFactory = $jkuFactory;
@@ -205,10 +187,6 @@ class JwtBearerGrantType implements GrantType
     }
 
     /**
-     * @param string $assertion
-     *
-     * @return string
-     *
      * @throws OAuth2Message
      */
     private function tryToDecryptTheAssertion(string $assertion): string
@@ -247,13 +225,7 @@ class JwtBearerGrantType implements GrantType
     }
 
     /**
-     * @param GrantTypeData $grantTypeData
-     * @param JWS           $jws
-     * @param array         $claims
-     *
      * @throws OAuth2Message
-     *
-     * @return GrantTypeData
      */
     private function checkJWTSignature(GrantTypeData $grantTypeData, JWS $jws, array $claims): GrantTypeData
     {
@@ -261,7 +233,7 @@ class JwtBearerGrantType implements GrantType
         $sub = $claims['sub'];
 
         if ($iss === $sub) { // The issuer is the resource owner
-            $client = $this->clientRepository->find(ClientId::create($iss));
+            $client = $this->clientRepository->find(new ClientId($iss));
 
             if (null === $client || true === $client->isDeleted()) {
                 throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_GRANT, 'Unable to find the issuer of the assertion.');
@@ -301,18 +273,13 @@ class JwtBearerGrantType implements GrantType
         return $grantTypeData;
     }
 
-    /**
-     * @param string $subject
-     *
-     * @return ResourceOwnerId|null
-     */
     private function findResourceOwner(string $subject): ?ResourceOwnerId
     {
-        $userAccount = $this->userAccountRepository ? $this->userAccountRepository->find(UserAccountId::create($subject)) : null;
+        $userAccount = $this->userAccountRepository ? $this->userAccountRepository->find(new UserAccountId($subject)) : null;
         if (null !== $userAccount) {
             return $userAccount->getUserAccountId();
         }
-        $client = $this->clientRepository->find(ClientId::create($subject));
+        $client = $this->clientRepository->find(new ClientId($subject));
         if (null !== $client) {
             return $client->getPublicId();
         }
@@ -320,11 +287,6 @@ class JwtBearerGrantType implements GrantType
         return null;
     }
 
-    /**
-     * @param Client $client
-     *
-     * @return JWKSet
-     */
     private function getClientKeySet(Client $client): JWKSet
     {
         switch (true) {

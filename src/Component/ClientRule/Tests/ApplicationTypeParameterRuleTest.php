@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\ClientRule\Tests;
 
-use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\ClientRule;
+use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use PHPUnit\Framework\TestCase;
 
@@ -26,31 +26,31 @@ final class ApplicationTypeParameterRuleTest extends TestCase
     /**
      * @test
      */
-    public function testApplicationTypeParameterRuleSetAsDefault()
+    public function applicationTypeParameterRuleSetAsDefault()
     {
-        $clientId = ClientId::create('CLIENT_ID');
-        $commandParameters = DataBag::create([]);
+        $clientId = new ClientId('CLIENT_ID');
+        $commandParameters = new DataBag([]);
         $rule = new ClientRule\ApplicationTypeParametersRule();
-        $validatedParameters = $rule->handle($clientId, $commandParameters, DataBag::create([]), $this->getCallable());
+        $validatedParameters = $rule->handle($clientId, $commandParameters, new DataBag([]), $this->getCallable());
 
-        self::assertTrue($validatedParameters->has('application_type'));
-        self::assertEquals('web', $validatedParameters->get('application_type'));
+        static::assertTrue($validatedParameters->has('application_type'));
+        static::assertEquals('web', $validatedParameters->get('application_type'));
     }
 
     /**
      * @test
      */
-    public function testApplicationTypeParameterRuleDefineInParameters()
+    public function applicationTypeParameterRuleDefineInParameters()
     {
-        $clientId = ClientId::create('CLIENT_ID');
-        $commandParameters = DataBag::create([
+        $clientId = new ClientId('CLIENT_ID');
+        $commandParameters = new DataBag([
             'application_type' => 'native',
         ]);
         $rule = new ClientRule\ApplicationTypeParametersRule();
-        $validatedParameters = $rule->handle($clientId, $commandParameters, DataBag::create([]), $this->getCallable());
+        $validatedParameters = $rule->handle($clientId, $commandParameters, new DataBag([]), $this->getCallable());
 
-        self::assertTrue($validatedParameters->has('application_type'));
-        self::assertEquals('native', $validatedParameters->get('application_type'));
+        static::assertTrue($validatedParameters->has('application_type'));
+        static::assertEquals('native', $validatedParameters->get('application_type'));
     }
 
     /**
@@ -58,19 +58,16 @@ final class ApplicationTypeParameterRuleTest extends TestCase
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage The parameter "application_type" must be either "native" or "web".
      */
-    public function testApplicationTypeParameterRule()
+    public function applicationTypeParameterRule()
     {
-        $clientId = ClientId::create('CLIENT_ID');
-        $commandParameters = DataBag::create([
+        $clientId = new ClientId('CLIENT_ID');
+        $commandParameters = new DataBag([
             'application_type' => 'foo',
         ]);
         $rule = new ClientRule\ApplicationTypeParametersRule();
-        $rule->handle($clientId, $commandParameters, DataBag::create([]), $this->getCallable());
+        $rule->handle($clientId, $commandParameters, new DataBag([]), $this->getCallable());
     }
 
-    /**
-     * @return callable
-     */
     private function getCallable(): callable
     {
         return function (ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters): DataBag {

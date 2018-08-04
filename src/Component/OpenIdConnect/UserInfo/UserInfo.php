@@ -13,12 +13,12 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\OpenIdConnect\UserInfo;
 
+use OAuth2Framework\Component\Core\Client\Client;
+use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 use OAuth2Framework\Component\OpenIdConnect\UserInfo\Claim\ClaimManager;
 use OAuth2Framework\Component\OpenIdConnect\UserInfo\Claim\ClaimSourceManager;
 use OAuth2Framework\Component\OpenIdConnect\UserInfo\Pairwise\PairwiseSubjectIdentifierAlgorithm;
 use OAuth2Framework\Component\OpenIdConnect\UserInfo\ScopeSupport\UserInfoScopeSupportManager;
-use OAuth2Framework\Component\Core\Client\Client;
-use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 
 class UserInfo
 {
@@ -44,10 +44,6 @@ class UserInfo
 
     /**
      * UserInfo constructor.
-     *
-     * @param UserInfoScopeSupportManager $userinfoScopeSupportManager
-     * @param ClaimManager                $claimManager
-     * @param ClaimSourceManager          $claimSourceManager
      */
     public function __construct(UserInfoScopeSupportManager $userinfoScopeSupportManager, ClaimManager $claimManager, ClaimSourceManager $claimSourceManager)
     {
@@ -56,16 +52,6 @@ class UserInfo
         $this->claimSourceManager = $claimSourceManager;
     }
 
-    /**
-     * @param Client      $client
-     * @param UserAccount $userAccount
-     * @param string      $redirectUri
-     * @param array       $requestedClaims
-     * @param string      $scope
-     * @param string|null $claimsLocales
-     *
-     * @return array
-     */
     public function getUserinfo(Client $client, UserAccount $userAccount, string $redirectUri, array $requestedClaims, string $scope, ?string $claimsLocales): array
     {
         $requestedClaims = \array_merge(
@@ -82,11 +68,6 @@ class UserInfo
         return $claims;
     }
 
-    /**
-     * @param string $scope
-     *
-     * @return array
-     */
     private function getClaimsFromClaimScope(string $scope): array
     {
         $result = [];
@@ -103,13 +84,6 @@ class UserInfo
         return $result;
     }
 
-    /**
-     * @param UserAccount $userAccount
-     * @param string|null $claimsLocales
-     * @param array       $requestedClaims
-     *
-     * @return array
-     */
     private function getClaimValues(UserAccount $userAccount, array $requestedClaims, ?string $claimsLocales): array
     {
         $result = [];
@@ -135,9 +109,7 @@ class UserInfo
     }
 
     /**
-     * @param UserAccount $userAccount
-     * @param string      $claimName
-     * @param null|array  $config
+     * @param null|array $config
      *
      * @return null|mixed
      */
@@ -167,37 +139,21 @@ class UserInfo
         return null;
     }
 
-    /**
-     * @param PairwiseSubjectIdentifierAlgorithm $pairwiseAlgorithm
-     */
     public function enablePairwiseSubject(PairwiseSubjectIdentifierAlgorithm $pairwiseAlgorithm)
     {
         $this->pairwiseAlgorithm = $pairwiseAlgorithm;
     }
 
-    /**
-     * @return bool
-     */
     public function isPairwiseSubjectIdentifierSupported(): bool
     {
         return null !== $this->pairwiseAlgorithm;
     }
 
-    /**
-     * @return PairwiseSubjectIdentifierAlgorithm|null
-     */
     public function getPairwiseSubjectIdentifierAlgorithm(): ?PairwiseSubjectIdentifierAlgorithm
     {
         return $this->pairwiseAlgorithm;
     }
 
-    /**
-     * @param Client      $client
-     * @param UserAccount $userAccount
-     * @param string      $redirectUri
-     *
-     * @return string
-     */
     private function calculateSubjectIdentifier(Client $client, UserAccount $userAccount, string $redirectUri): string
     {
         $sub = $userAccount->getUserAccountId()->getValue();
@@ -216,12 +172,6 @@ class UserInfo
         return $sub;
     }
 
-    /**
-     * @param Client $client
-     * @param string $redirectUri
-     *
-     * @return string
-     */
     private function getSectorIdentifierHost(Client $client, string $redirectUri): string
     {
         $uri = $redirectUri;

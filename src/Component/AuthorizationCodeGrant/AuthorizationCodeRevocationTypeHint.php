@@ -18,16 +18,8 @@ use OAuth2Framework\Component\TokenRevocationEndpoint\TokenTypeHint;
 
 final class AuthorizationCodeRevocationTypeHint implements TokenTypeHint
 {
-    /**
-     * @var AuthorizationCodeRepository
-     */
     private $authorizationCodeRepository;
 
-    /**
-     * AuthorizationCodeRevocationTypeHint constructor.
-     *
-     * @param AuthorizationCodeRepository $authorizationCodeRepository
-     */
     public function __construct(AuthorizationCodeRepository $authorizationCodeRepository)
     {
         $this->authorizationCodeRepository = $authorizationCodeRepository;
@@ -46,7 +38,7 @@ final class AuthorizationCodeRevocationTypeHint implements TokenTypeHint
      */
     public function find(string $token): ?Token
     {
-        $id = AuthorizationCodeId::create($token);
+        $id = new AuthorizationCodeId($token);
 
         return $this->authorizationCodeRepository->find($id);
     }
@@ -63,7 +55,7 @@ final class AuthorizationCodeRevocationTypeHint implements TokenTypeHint
             return;
         }
 
-        $token = $token->markAsRevoked();
+        $token->markAsRevoked();
         $this->authorizationCodeRepository->save($token);
     }
 }

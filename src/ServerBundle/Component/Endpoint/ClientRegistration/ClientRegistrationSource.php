@@ -39,9 +39,6 @@ class ClientRegistrationSource implements Component
         ];
     }
 
-    /**
-     * @return string
-     */
     public function name(): string
     {
         return 'client_registration';

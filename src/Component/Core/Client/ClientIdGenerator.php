@@ -15,8 +15,5 @@ namespace OAuth2Framework\Component\Core\Client;
 
 interface ClientIdGenerator
 {
-    /**
-     * @return ClientId
-     */
     public function createClientId(): ClientId;
 }

@@ -42,9 +42,6 @@ class ClientAuthenticationSource implements Component
         ];
     }
 
-    /**
-     * @return string
-     */
     public function name(): string
     {
         return 'client_authentication';

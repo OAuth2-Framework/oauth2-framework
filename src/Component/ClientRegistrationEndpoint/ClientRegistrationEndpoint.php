@@ -14,17 +14,17 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\ClientRegistrationEndpoint;
 
 use Http\Message\ResponseFactory;
-use OAuth2Framework\Component\Core\Client\ClientIdGenerator;
-use OAuth2Framework\Component\Core\Util\RequestBodyParser;
-use Psr\Http\Server\RequestHandlerInterface;
-use Psr\Http\Server\MiddlewareInterface;
 use OAuth2Framework\Component\ClientRule\RuleManager;
 use OAuth2Framework\Component\Core\Client\Client;
+use OAuth2Framework\Component\Core\Client\ClientIdGenerator;
 use OAuth2Framework\Component\Core\Client\ClientRepository;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\Message\OAuth2Message;
+use OAuth2Framework\Component\Core\Util\RequestBodyParser;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 final class ClientRegistrationEndpoint implements MiddlewareInterface
 {
@@ -50,11 +50,6 @@ final class ClientRegistrationEndpoint implements MiddlewareInterface
 
     /**
      * ClientRegistrationEndpoint constructor.
-     *
-     * @param ClientIdGenerator $clientIdGenerator
-     * @param ClientRepository  $clientRepository
-     * @param ResponseFactory   $responseFactory
-     * @param RuleManager       $ruleManager
      */
     public function __construct(ClientIdGenerator $clientIdGenerator, ClientRepository $clientRepository, ResponseFactory $responseFactory, RuleManager $ruleManager)
     {
@@ -79,7 +74,7 @@ final class ClientRegistrationEndpoint implements MiddlewareInterface
                 $userAccountId = null;
             }
             $parameters = RequestBodyParser::parseJson($request);
-            $commandParameters = DataBag::create($parameters);
+            $commandParameters = new DataBag($parameters);
             $clientId = $this->clientIdGenerator->createClientId();
             $validatedParameters = $this->ruleManager->handle($clientId, $commandParameters);
             $client = Client::createEmpty();
@@ -97,8 +92,6 @@ final class ClientRegistrationEndpoint implements MiddlewareInterface
     }
 
     /**
-     * @param ServerRequestInterface $request
-     *
      * @throws OAuth2Message
      */
     private function checkRequest(ServerRequestInterface $request)
@@ -108,11 +101,6 @@ final class ClientRegistrationEndpoint implements MiddlewareInterface
         }
     }
 
-    /**
-     * @param Client $client
-     *
-     * @return ResponseInterface
-     */
     private function createResponse(Client $client): ResponseInterface
     {
         $response = $this->responseFactory->createResponse(201);

@@ -21,22 +21,10 @@ use Psr\Http\Message\ServerRequestInterface;
 
 final class ClientSecretBasic implements AuthenticationMethod
 {
-    /**
-     * @var string
-     */
     private $realm;
 
-    /**
-     * @var int
-     */
     private $secretLifetime;
 
-    /**
-     * ClientSecretBasic constructor.
-     *
-     * @param string $realm
-     * @param int    $secretLifetime
-     */
     public function __construct(string $realm, int $secretLifetime = 0)
     {
         if ($secretLifetime < 0) {
@@ -75,20 +63,14 @@ final class ClientSecretBasic implements AuthenticationMethod
         return null;
     }
 
-    /**
-     * @param string      $authorization_header
-     * @param string|null $client_credentials
-     *
-     * @return ClientId|null
-     */
-    private function findClientIdAndCredentialsInAuthorizationHeader(string $authorization_header, ?string &$client_credentials = null)
+    private function findClientIdAndCredentialsInAuthorizationHeader(string $authorization_header, ?string &$client_credentials = null): ?ClientId
     {
         if ('basic ' === \mb_strtolower(\mb_substr($authorization_header, 0, 6, '8bit'), '8bit')) {
             list($client_id, $client_secret) = \explode(':', \base64_decode(\mb_substr($authorization_header, 6, \mb_strlen($authorization_header, '8bit') - 6, '8bit'), true));
             if (!empty($client_id) && !empty($client_secret)) {
                 $client_credentials = $client_secret;
 
-                return ClientId::create($client_id);
+                return new ClientId($client_id);
             }
         }
 
@@ -122,9 +104,6 @@ final class ClientSecretBasic implements AuthenticationMethod
         return ['client_secret_basic'];
     }
 
-    /**
-     * @return string
-     */
     private function createClientSecret(): string
     {
         return Base64Url::encode(\random_bytes(32));

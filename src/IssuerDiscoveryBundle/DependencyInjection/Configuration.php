@@ -25,8 +25,6 @@ class Configuration implements ConfigurationInterface
 
     /**
      * Configuration constructor.
-     *
-     * @param string $alias
      */
     public function __construct(string $alias)
     {

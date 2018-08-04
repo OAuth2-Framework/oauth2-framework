@@ -30,9 +30,6 @@ final class EncryptedSubjectIdentifier implements PairwiseSubjectIdentifierAlgor
 
     /**
      * EncryptedSubjectIdentifier constructor.
-     *
-     * @param string $pairwiseEncryptionKey
-     * @param string $algorithm
      */
     public function __construct(string $pairwiseEncryptionKey, string $algorithm)
     {

@@ -13,13 +13,13 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\ClientAuthentication\Tests;
 
-use OAuth2Framework\Component\Core\Client\ClientId;
-use OAuth2Framework\Component\Core\Message\OAuth2Message;
 use OAuth2Framework\Component\ClientAuthentication\AuthenticationMethod;
 use OAuth2Framework\Component\ClientAuthentication\AuthenticationMethodManager;
 use OAuth2Framework\Component\ClientAuthentication\ClientSecretBasic;
 use OAuth2Framework\Component\ClientAuthentication\ClientSecretPost;
 use OAuth2Framework\Component\ClientAuthentication\None;
+use OAuth2Framework\Component\Core\Client\ClientId;
+use OAuth2Framework\Component\Core\Message\OAuth2Message;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ServerRequestInterface;
@@ -39,11 +39,11 @@ final class AuthenticationMethodManagerTest extends TestCase
         $manager = new AuthenticationMethodManager();
         $manager->add(new None());
         $manager->add(new ClientSecretBasic('Realm'));
-        self::assertTrue($manager->has('none'));
-        self::assertEquals(['none', 'client_secret_basic'], $manager->list());
-        self::assertInstanceOf(AuthenticationMethod::class, $manager->get('none'));
-        self::assertEquals(2, \count($manager->all()));
-        self::assertEquals(['Basic realm="Realm",charset="UTF-8"'], $manager->getSchemesParameters());
+        static::assertTrue($manager->has('none'));
+        static::assertEquals(['none', 'client_secret_basic'], $manager->list());
+        static::assertInstanceOf(AuthenticationMethod::class, $manager->get('none'));
+        static::assertEquals(2, \count($manager->all()));
+        static::assertEquals(['Basic realm="Realm",charset="UTF-8"'], $manager->getSchemesParameters());
     }
 
     /**
@@ -62,10 +62,10 @@ final class AuthenticationMethodManagerTest extends TestCase
 
         try {
             $manager->findClientIdAndCredentials($request->reveal(), $method, $credentials);
-            $this->fail('An OAuth2 exception should be thrown.');
+            static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2Message $e) {
-            self::assertEquals(400, $e->getCode());
-            self::assertEquals([
+            static::assertEquals(400, $e->getCode());
+            static::assertEquals([
                 'error' => 'invalid_request',
                 'error_description' => 'Only one authentication method may be used to authenticate the client.',
             ], $e->getData());
@@ -86,9 +86,9 @@ final class AuthenticationMethodManagerTest extends TestCase
         ]);
 
         $clientId = $manager->findClientIdAndCredentials($request->reveal(), $method, $credentials);
-        self::assertInstanceOf(ClientSecretPost::class, $method);
-        self::assertInstanceOf(ClientId::class, $clientId);
-        self::assertEquals('CLIENT_SECRET', $credentials);
+        static::assertInstanceOf(ClientSecretPost::class, $method);
+        static::assertInstanceOf(ClientId::class, $clientId);
+        static::assertEquals('CLIENT_SECRET', $credentials);
     }
 
     private function buildRequest(array $data): ObjectProphecy

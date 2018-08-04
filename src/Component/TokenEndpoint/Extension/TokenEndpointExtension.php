@@ -22,23 +22,7 @@ use Psr\Http\Message\ServerRequestInterface;
 
 interface TokenEndpointExtension
 {
-    /**
-     * @param ServerRequestInterface $request
-     * @param GrantTypeData          $grantTypeData
-     * @param GrantType              $grantType
-     * @param callable               $next
-     *
-     * @return GrantTypeData
-     */
     public function beforeAccessTokenIssuance(ServerRequestInterface $request, GrantTypeData $grantTypeData, GrantType $grantType, callable $next): GrantTypeData;
 
-    /**
-     * @param Client        $client
-     * @param ResourceOwner $resourceOwner
-     * @param AccessToken   $accessToken
-     * @param callable      $next
-     *
-     * @return array
-     */
     public function afterAccessTokenIssuance(Client $client, ResourceOwner $resourceOwner, AccessToken $accessToken, callable $next): array;
 }

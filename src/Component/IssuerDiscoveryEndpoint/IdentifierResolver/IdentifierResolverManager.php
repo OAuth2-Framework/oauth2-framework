@@ -20,19 +20,11 @@ class IdentifierResolverManager
      */
     private $resolvers = [];
 
-    /**
-     * @param IdentifierResolver $resolver
-     */
     public function add(IdentifierResolver $resolver)
     {
         $this->resolvers[] = $resolver;
     }
 
-    /**
-     * @param string $resource
-     *
-     * @return Identifier
-     */
     public function resolve(string $resource): Identifier
     {
         foreach ($this->resolvers as $resolver) {

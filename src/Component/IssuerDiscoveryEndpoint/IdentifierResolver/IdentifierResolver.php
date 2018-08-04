@@ -15,17 +15,7 @@ namespace OAuth2Framework\Component\IssuerDiscoveryEndpoint\IdentifierResolver;
 
 interface IdentifierResolver
 {
-    /**
-     * @param string $resource_name
-     *
-     * @return bool
-     */
     public function supports(string $resource_name): bool;
 
-    /**
-     * @param string $resource_name
-     *
-     * @return Identifier
-     */
     public function resolve(string $resource_name): Identifier;
 }

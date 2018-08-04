@@ -13,11 +13,11 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\RefreshTokenGrant;
 
-use OAuth2Framework\Component\Core\Util\RequestBodyParser;
-use OAuth2Framework\Component\TokenEndpoint\GrantTypeData;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Message\OAuth2Message;
+use OAuth2Framework\Component\Core\Util\RequestBodyParser;
 use OAuth2Framework\Component\TokenEndpoint\GrantType;
+use OAuth2Framework\Component\TokenEndpoint\GrantTypeData;
 use Psr\Http\Message\ServerRequestInterface;
 
 final class RefreshTokenGrantType implements GrantType
@@ -29,8 +29,6 @@ final class RefreshTokenGrantType implements GrantType
 
     /**
      * RefreshTokenGrantType constructor.
-     *
-     * @param RefreshTokenRepository $refreshTokenRepository
      */
     public function __construct(RefreshTokenRepository $refreshTokenRepository)
     {
@@ -83,7 +81,7 @@ final class RefreshTokenGrantType implements GrantType
     {
         $parameters = RequestBodyParser::parseFormUrlEncoded($request);
         $refreshToken = $parameters['refresh_token'];
-        $token = $this->refreshTokenRepository->find(RefreshTokenId::create($refreshToken));
+        $token = $this->refreshTokenRepository->find(new RefreshTokenId($refreshToken));
 
         if (null === $token) {
             throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_GRANT, 'The parameter "refresh_token" is invalid.');

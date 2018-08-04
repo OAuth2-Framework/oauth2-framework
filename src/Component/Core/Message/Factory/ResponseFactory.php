@@ -17,16 +17,10 @@ use Psr\Http\Message\ResponseInterface;
 
 interface ResponseFactory
 {
-    /**
-     * @return int
-     */
     public function getSupportedCode(): int;
 
     /**
-     * @param array             $data     Data sent to the response
-     * @param ResponseInterface $response
-     *
-     * @return ResponseInterface
+     * @param array $data Data sent to the response
      */
     public function createResponse(array $data, ResponseInterface $response): ResponseInterface;
 }

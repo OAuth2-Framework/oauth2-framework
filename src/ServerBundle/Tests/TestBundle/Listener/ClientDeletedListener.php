@@ -22,9 +22,6 @@ class ClientDeletedListener
      */
     private $events = [];
 
-    /**
-     * @param ClientDeletedEvent $event
-     */
     public function handle(ClientDeletedEvent $event)
     {
         $this->events[] = $event;

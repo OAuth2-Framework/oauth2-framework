@@ -14,10 +14,10 @@ declare(strict_types=1);
 namespace OAuth2Framework\ServerBundle\Component\Endpoint\TokenRevocation;
 
 use OAuth2Framework\Component\TokenRevocationEndpoint\TokenRevocationEndpoint;
+use OAuth2Framework\Component\TokenRevocationEndpoint\TokenTypeHint;
 use OAuth2Framework\ServerBundle\Component\Component;
 use OAuth2Framework\ServerBundle\Component\Endpoint\TokenRevocation\Compiler\TokenRevocationRouteCompilerPass;
 use OAuth2Framework\ServerBundle\Component\Endpoint\TokenRevocation\Compiler\TokenTypeHintCompilerPass;
-use OAuth2Framework\Component\TokenRevocationEndpoint\TokenTypeHint;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -25,9 +25,6 @@ use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
 class TokenRevocationEndpointSource implements Component
 {
-    /**
-     * @return string
-     */
     public function name(): string
     {
         return 'token_revocation';

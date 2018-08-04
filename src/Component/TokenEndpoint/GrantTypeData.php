@@ -41,19 +41,15 @@ class GrantTypeData
 
     /**
      * GrantTypeData constructor.
-     *
-     * @param Client|null $client
      */
     private function __construct(?Client $client)
     {
-        $this->parameters = DataBag::create([]);
-        $this->metadatas = DataBag::create([]);
+        $this->parameters = new DataBag([]);
+        $this->metadatas = new DataBag([]);
         $this->client = $client;
     }
 
     /**
-     * @param Client|null $client
-     *
      * @return GrantTypeData
      */
     public static function create(?Client $client): self
@@ -61,25 +57,17 @@ class GrantTypeData
         return new self($client);
     }
 
-    /**
-     * @return DataBag
-     */
     public function getMetadata(): DataBag
     {
         return $this->metadatas;
     }
 
-    /**
-     * @return DataBag
-     */
     public function getParameter(): DataBag
     {
         return $this->parameters;
     }
 
     /**
-     * @param Client $client
-     *
      * @return GrantTypeData
      */
     public function withClient(Client $client): self
@@ -89,17 +77,12 @@ class GrantTypeData
         return $this;
     }
 
-    /**
-     * @return Client|null
-     */
     public function getClient(): ?Client
     {
         return $this->client;
     }
 
     /**
-     * @param ResourceOwnerId $resourceOwnerId
-     *
      * @return GrantTypeData
      */
     public function withResourceOwnerId(ResourceOwnerId $resourceOwnerId): self

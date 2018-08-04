@@ -15,24 +15,13 @@ namespace OAuth2Framework\Component\Core\Id;
 
 abstract class Id implements \JsonSerializable
 {
-    /**
-     * @var string
-     */
     private $value;
 
-    /**
-     * TokenId constructor.
-     *
-     * @param string $value
-     */
-    protected function __construct(string $value)
+    public function __construct(string $value)
     {
         $this->value = $value;
     }
 
-    /**
-     * @return string
-     */
     public function getValue(): string
     {
         return $this->value;

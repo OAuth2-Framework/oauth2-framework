@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\IssuerDiscoveryBundle\Tests\TestBundle\Entity;
 
-use OAuth2Framework\Component\IssuerDiscoveryEndpoint\ResourceObject as ResourceObjectInterface;
 use OAuth2Framework\Component\IssuerDiscoveryEndpoint\ResourceId;
+use OAuth2Framework\Component\IssuerDiscoveryEndpoint\ResourceObject as ResourceObjectInterface;
 use OAuth2Framework\Component\IssuerDiscoveryEndpoint\ResourceRepository as ResourceRepositoryInterface;
 
 class ResourceRepository implements ResourceRepositoryInterface

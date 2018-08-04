@@ -35,10 +35,10 @@ class AuthenticationMethodManagerTest extends TestCase
         $manager
             ->add($method->reveal())
         ;
-        self::assertTrue($manager->has('foo'));
-        self::assertEquals(['foo'], $manager->list());
-        self::assertInstanceOf(AuthenticationMethod::class, $manager->get('foo'));
-        self::assertEquals(1, \count($manager->all()));
-        self::assertEquals(['Basic realm="Realm",charset="UTF-8"'], $manager->getSchemesParameters());
+        static::assertTrue($manager->has('foo'));
+        static::assertEquals(['foo'], $manager->list());
+        static::assertInstanceOf(AuthenticationMethod::class, $manager->get('foo'));
+        static::assertEquals(1, \count($manager->all()));
+        static::assertEquals(['Basic realm="Realm",charset="UTF-8"'], $manager->getSchemesParameters());
     }
 }

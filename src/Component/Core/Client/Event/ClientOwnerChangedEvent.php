@@ -14,10 +14,10 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\Core\Client\Event;
 
 use OAuth2Framework\Component\Core\Client\ClientId;
+use OAuth2Framework\Component\Core\Domain\DomainObject;
 use OAuth2Framework\Component\Core\Event\Event;
 use OAuth2Framework\Component\Core\Id\Id;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
-use OAuth2Framework\Component\Core\Domain\DomainObject;
 
 class ClientOwnerChangedEvent extends Event
 {
@@ -33,9 +33,6 @@ class ClientOwnerChangedEvent extends Event
 
     /**
      * ClientOwnerChangedEvent constructor.
-     *
-     * @param ClientId      $clientId
-     * @param UserAccountId $newOwnerId
      */
     protected function __construct(ClientId $clientId, UserAccountId $newOwnerId)
     {
@@ -52,9 +49,6 @@ class ClientOwnerChangedEvent extends Event
     }
 
     /**
-     * @param ClientId      $clientId
-     * @param UserAccountId $newOwnerId
-     *
      * @return ClientOwnerChangedEvent
      */
     public static function create(ClientId $clientId, UserAccountId $newOwnerId): self
@@ -67,8 +61,8 @@ class ClientOwnerChangedEvent extends Event
      */
     public static function createFromJson(\stdClass $json): DomainObject
     {
-        $clientId = ClientId::create($json->domain_id);
-        $userAccountId = null === $json->payload->new_owner_id ? null : UserAccountId::create($json->payload->new_owner_id);
+        $clientId = new ClientId($json->domain_id);
+        $userAccountId = null === $json->payload->new_owner_id ? null : new UserAccountId($json->payload->new_owner_id);
 
         return new self(
             $clientId,
@@ -84,17 +78,11 @@ class ClientOwnerChangedEvent extends Event
         return $this->getClientId();
     }
 
-    /**
-     * @return ClientId
-     */
     public function getClientId(): ClientId
     {
         return $this->clientId;
     }
 
-    /**
-     * @return UserAccountId
-     */
     public function getNewOwnerId(): UserAccountId
     {
         return $this->newOwnerId;

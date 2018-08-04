@@ -21,8 +21,6 @@ class GrantTypeManager
     private $grantTypes = [];
 
     /**
-     * @param GrantType $grantType
-     *
      * @return GrantTypeManager
      */
     public function add(GrantType $grantType): self
@@ -32,21 +30,11 @@ class GrantTypeManager
         return $this;
     }
 
-    /**
-     * @param string $name
-     *
-     * @return bool
-     */
     public function has(string $name): bool
     {
         return \array_key_exists($name, $this->grantTypes);
     }
 
-    /**
-     * @param string $name
-     *
-     * @return GrantType
-     */
     public function get(string $name): GrantType
     {
         if (!$this->has($name)) {

@@ -25,8 +25,6 @@ final class AccessTokenIntrospectionTypeHint implements TokenTypeHint
 
     /**
      * AccessToken constructor.
-     *
-     * @param AccessTokenRepository $accessTokenRepository
      */
     public function __construct(AccessTokenRepository $accessTokenRepository)
     {
@@ -46,7 +44,7 @@ final class AccessTokenIntrospectionTypeHint implements TokenTypeHint
      */
     public function find(string $token): ?Token
     {
-        $id = AccessTokenId::create($token);
+        $id = new AccessTokenId($token);
 
         return $this->accessTokenRepository->find($id);
     }

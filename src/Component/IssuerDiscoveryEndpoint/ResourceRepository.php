@@ -15,10 +15,5 @@ namespace OAuth2Framework\Component\IssuerDiscoveryEndpoint;
 
 interface ResourceRepository
 {
-    /**
-     * @param ResourceId $resourceId
-     *
-     * @return ResourceObject|null
-     */
     public function find(ResourceId $resourceId): ?ResourceObject;
 }

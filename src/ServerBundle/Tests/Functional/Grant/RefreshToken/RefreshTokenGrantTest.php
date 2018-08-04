@@ -30,7 +30,7 @@ class RefreshTokenGrantTest extends WebTestCase
     protected function setUp()
     {
         if (!\class_exists(RefreshTokenGrantType::class)) {
-            $this->markTestSkipped('The component "oauth2-framework/refresh-token-grant" is not installed.');
+            static::markTestSkipped('The component "oauth2-framework/refresh-token-grant" is not installed.');
         }
     }
 
@@ -42,7 +42,7 @@ class RefreshTokenGrantTest extends WebTestCase
         $client = static::createClient();
         $client->request('POST', '/token/get', [], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
-        self::assertEquals('{"error":"invalid_request","error_description":"The \"grant_type\" parameter is missing."}', $response->getContent());
+        static::assertEquals('{"error":"invalid_request","error_description":"The \"grant_type\" parameter is missing."}', $response->getContent());
     }
 
     /**
@@ -53,8 +53,8 @@ class RefreshTokenGrantTest extends WebTestCase
         $client = static::createClient();
         $client->request('POST', '/token/get', ['grant_type' => 'refresh_token', 'refresh_token' => 'FOO'], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
-        self::assertEquals(401, $response->getStatusCode());
-        self::assertEquals('Basic realm="My OAuth2 Server",charset="UTF-8",error="invalid_client",error_description="Client authentication failed."', $response->headers->get('www-authenticate'));
+        static::assertEquals(401, $response->getStatusCode());
+        static::assertEquals('Basic realm="My OAuth2 Server",charset="UTF-8",error="invalid_client",error_description="Client authentication failed."', $response->headers->get('www-authenticate'));
     }
 
     /**
@@ -65,8 +65,8 @@ class RefreshTokenGrantTest extends WebTestCase
         $client = static::createClient();
         $client->request('POST', '/token/get', ['grant_type' => 'refresh_token', 'client_id' => 'CLIENT_ID_1'], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
-        self::assertEquals(400, $response->getStatusCode());
-        self::assertEquals('{"error":"invalid_request","error_description":"Missing grant type parameter(s): refresh_token."}', $response->getContent());
+        static::assertEquals(400, $response->getStatusCode());
+        static::assertEquals('{"error":"invalid_request","error_description":"Missing grant type parameter(s): refresh_token."}', $response->getContent());
     }
 
     /**
@@ -77,8 +77,8 @@ class RefreshTokenGrantTest extends WebTestCase
         $client = static::createClient();
         $client->request('POST', '/token/get', ['grant_type' => 'refresh_token', 'refresh_token' => 'FOO', 'client_id' => 'UNKNOWN_CLIENT_ID'], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
-        self::assertEquals(401, $response->getStatusCode());
-        self::assertEquals('Basic realm="My OAuth2 Server",charset="UTF-8",error="invalid_client",error_description="Client authentication failed."', $response->headers->get('www-authenticate'));
+        static::assertEquals(401, $response->getStatusCode());
+        static::assertEquals('Basic realm="My OAuth2 Server",charset="UTF-8",error="invalid_client",error_description="Client authentication failed."', $response->headers->get('www-authenticate'));
     }
 
     /**
@@ -89,8 +89,8 @@ class RefreshTokenGrantTest extends WebTestCase
         $client = static::createClient();
         $client->request('POST', '/token/get', ['grant_type' => 'refresh_token', 'refresh_token' => 'FOO', 'client_id' => 'CLIENT_ID_1'], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
-        self::assertEquals(400, $response->getStatusCode());
-        self::assertEquals('{"error":"unauthorized_client","error_description":"The grant type \"refresh_token\" is unauthorized for this client."}', $response->getContent());
+        static::assertEquals(400, $response->getStatusCode());
+        static::assertEquals('{"error":"unauthorized_client","error_description":"The grant type \"refresh_token\" is unauthorized for this client."}', $response->getContent());
     }
 
     /**
@@ -101,8 +101,8 @@ class RefreshTokenGrantTest extends WebTestCase
         $client = static::createClient();
         $client->request('POST', '/token/get', ['grant_type' => 'refresh_token', 'refresh_token' => 'EXPIRED_REFRESH_TOKEN', 'client_id' => 'CLIENT_ID_3', 'client_secret' => 'secret'], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
-        self::assertEquals(400, $response->getStatusCode());
-        self::assertEquals('{"error":"invalid_grant","error_description":"The refresh token expired."}', $response->getContent());
+        static::assertEquals(400, $response->getStatusCode());
+        static::assertEquals('{"error":"invalid_grant","error_description":"The refresh token expired."}', $response->getContent());
     }
 
     /**
@@ -113,8 +113,8 @@ class RefreshTokenGrantTest extends WebTestCase
         $client = static::createClient();
         $client->request('POST', '/token/get', ['grant_type' => 'refresh_token', 'refresh_token' => 'VALID_REFRESH_TOKEN', 'client_id' => 'CLIENT_ID_2'], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
-        self::assertEquals(400, $response->getStatusCode());
-        self::assertEquals('{"error":"invalid_grant","error_description":"The parameter \"refresh_token\" is invalid."}', $response->getContent());
+        static::assertEquals(400, $response->getStatusCode());
+        static::assertEquals('{"error":"invalid_grant","error_description":"The parameter \"refresh_token\" is invalid."}', $response->getContent());
     }
 
     /**
@@ -125,8 +125,8 @@ class RefreshTokenGrantTest extends WebTestCase
         $client = static::createClient();
         $client->request('POST', '/token/get', ['grant_type' => 'refresh_token', 'refresh_token' => 'REVOKED_REFRESH_TOKEN', 'client_id' => 'CLIENT_ID_3', 'client_secret' => 'secret'], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
-        self::assertEquals(400, $response->getStatusCode());
-        self::assertEquals('{"error":"invalid_grant","error_description":"The parameter \"refresh_token\" is invalid."}', $response->getContent());
+        static::assertEquals(400, $response->getStatusCode());
+        static::assertEquals('{"error":"invalid_grant","error_description":"The parameter \"refresh_token\" is invalid."}', $response->getContent());
     }
 
     /**
@@ -137,7 +137,7 @@ class RefreshTokenGrantTest extends WebTestCase
         $client = static::createClient();
         $client->request('POST', '/token/get', ['grant_type' => 'refresh_token', 'refresh_token' => 'VALID_REFRESH_TOKEN', 'client_id' => 'CLIENT_ID_3', 'client_secret' => 'secret'], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
-        self::assertEquals(200, $response->getStatusCode());
+        static::assertEquals(200, $response->getStatusCode());
         self::assertRegexp('/\{"token_type"\:"Bearer","access_token"\:"[0-9a-zA-Z-_]+","expires_in":[0-9]{4}\}/', $response->getContent());
     }
 }

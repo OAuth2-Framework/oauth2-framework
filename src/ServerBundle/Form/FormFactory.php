@@ -35,10 +35,6 @@ class FormFactory
 
     /**
      * FormFactory constructor.
-     *
-     * @param FormFactoryInterface $formFactory
-     * @param string               $name
-     * @param string               $type
      */
     public function __construct(FormFactoryInterface $formFactory, string $name, string $type)
     {
@@ -48,10 +44,7 @@ class FormFactory
     }
 
     /**
-     * @param array                    $options
      * @param Model\AuthorizationModel $data
-     *
-     * @return FormInterface
      */
     public function createForm(array $options = [], $data = null): FormInterface
     {

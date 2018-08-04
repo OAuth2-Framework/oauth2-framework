@@ -24,8 +24,6 @@ class ResourceObject implements ResourceObjectInterface
 
     /**
      * Resource constructor.
-     *
-     * @param string $issuer
      */
     public function __construct(string $issuer)
     {

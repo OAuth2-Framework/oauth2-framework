@@ -33,16 +33,15 @@ final class AccessTokenHandlerManagerTest extends TestCase
      */
     public function theAccessTokenHandlerManager()
     {
-        $accessTokenId = AccessTokenId::create('ACCESS_TOKEN_ID');
-        $accessToken = AccessToken::createEmpty();
-        $accessToken = $accessToken->create(
+        $accessTokenId = new AccessTokenId('ACCESS_TOKEN_ID');
+        $accessToken = new AccessToken(
             $accessTokenId,
-            UserAccountId::create('USER_ACCOUNT_ID'),
-            ClientId::create('CLIENT_ID'),
-            DataBag::create([]),
-            DataBag::create([]),
+            new ClientId('CLIENT_ID'),
+            new UserAccountId('USER_ACCOUNT_ID'),
             new \DateTimeImmutable('now +1year'),
-            ResourceServerId::create('RESOURCE_SERVER_ID')
+            new DataBag([]),
+            new DataBag([]),
+            new ResourceServerId('RESOURCE_SERVER_ID')
         );
         $handler = $this->prophesize(AccessTokenHandler::class);
         $handler->find($accessTokenId)->willReturn($accessToken)->shouldBeCalled();
@@ -50,6 +49,6 @@ final class AccessTokenHandlerManagerTest extends TestCase
         $handlerManager->add($handler->reveal());
 
         $accessToken = $handlerManager->find($accessTokenId);
-        self::assertInstanceOf(AccessToken::class, $accessToken);
+        static::assertInstanceOf(AccessToken::class, $accessToken);
     }
 }

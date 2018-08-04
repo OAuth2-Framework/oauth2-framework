@@ -26,8 +26,5 @@ interface AuthorizationCodeRepository
      */
     public function find(AuthorizationCodeId $authorizationCodeId): ?AuthorizationCode;
 
-    /**
-     * @param AuthorizationCode $authorizationCode
-     */
     public function save(AuthorizationCode $authorizationCode): void;
 }

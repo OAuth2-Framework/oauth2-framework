@@ -23,20 +23,11 @@ class ExtensionManager
      */
     private $extensions = [];
 
-    /**
-     * @param Extension $extension
-     */
     public function add(Extension $extension)
     {
         $this->extensions[] = $extension;
     }
 
-    /**
-     * @param ServerRequestInterface $request
-     * @param Authorization          $authorization
-     *
-     * @return Authorization
-     */
     public function processBefore(ServerRequestInterface $request, Authorization $authorization): Authorization
     {
         foreach ($this->extensions as $extension) {
@@ -46,12 +37,6 @@ class ExtensionManager
         return $authorization;
     }
 
-    /**
-     * @param ServerRequestInterface $request
-     * @param Authorization          $authorization
-     *
-     * @return Authorization
-     */
     public function processAfter(ServerRequestInterface $request, Authorization $authorization): Authorization
     {
         foreach ($this->extensions as $extension) {

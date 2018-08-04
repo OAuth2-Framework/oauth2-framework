@@ -35,8 +35,6 @@ final class NoneResponseType implements ResponseType
 
     /**
      * NoneResponseType constructor.
-     *
-     * @param AuthorizationStorage $authorizationStorage
      */
     public function __construct(AuthorizationStorage $authorizationStorage)
     {

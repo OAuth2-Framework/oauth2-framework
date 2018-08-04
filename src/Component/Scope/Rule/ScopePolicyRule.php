@@ -25,9 +25,6 @@ final class ScopePolicyRule implements Rule
      */
     private $scopePolicyManager;
 
-    /**
-     * @param ScopePolicyManager $scopePolicyManager
-     */
     public function __construct(ScopePolicyManager $scopePolicyManager)
     {
         $this->scopePolicyManager = $scopePolicyManager;

@@ -27,7 +27,7 @@ final class OAuth2Provider implements AuthenticationProviderInterface
     public function authenticate(TokenInterface $token)
     {
         if (!$token instanceof OAuth2Token) {
-            return null;
+            return;
         }
         $accessToken = $token->getAccessToken();
 

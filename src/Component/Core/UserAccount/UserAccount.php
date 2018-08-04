@@ -17,18 +17,9 @@ use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwner;
 
 interface UserAccount extends ResourceOwner
 {
-    /**
-     * @return int|null
-     */
     public function getLastLoginAt(): ?int;
 
-    /**
-     * @return int|null
-     */
     public function getLastUpdateAt(): ?int;
 
-    /**
-     * @return UserAccountId
-     */
     public function getUserAccountId(): UserAccountId;
 }

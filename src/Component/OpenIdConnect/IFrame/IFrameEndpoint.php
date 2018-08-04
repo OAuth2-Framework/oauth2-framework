@@ -14,10 +14,10 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\OpenIdConnect\IFrame;
 
 use Http\Message\ResponseFactory;
-use Psr\Http\Server\RequestHandlerInterface;
-use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 final class IFrameEndpoint implements MiddlewareInterface
 {
@@ -28,8 +28,6 @@ final class IFrameEndpoint implements MiddlewareInterface
 
     /**
      * IFrameEndpoint constructor.
-     *
-     * @param ResponseFactory $responseFactory
      */
     public function __construct(ResponseFactory $responseFactory)
     {
@@ -53,9 +51,6 @@ final class IFrameEndpoint implements MiddlewareInterface
         return $response;
     }
 
-    /**
-     * @return string
-     */
     private function renderTemplate(): string
     {
         $content = <<<'EOT'

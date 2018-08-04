@@ -13,13 +13,13 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\ResourceServerAuthentication;
 
-use Psr\Http\Server\RequestHandlerInterface;
-use Psr\Http\Server\MiddlewareInterface;
+use OAuth2Framework\Component\Core\Message\OAuth2Message;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServer;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerRepository;
-use OAuth2Framework\Component\Core\Message\OAuth2Message;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 final class AuthenticationMiddleware implements MiddlewareInterface
 {
@@ -35,9 +35,6 @@ final class AuthenticationMiddleware implements MiddlewareInterface
 
     /**
      * ResourceServerAuthenticationMiddleware constructor.
-     *
-     * @param ResourceServerRepository    $resourceServerRepository
-     * @param AuthenticationMethodManager $authenticationMethodManager
      */
     public function __construct(ResourceServerRepository $resourceServerRepository, AuthenticationMethodManager $authenticationMethodManager)
     {
@@ -77,12 +74,6 @@ final class AuthenticationMiddleware implements MiddlewareInterface
         }
     }
 
-    /**
-     * @param ServerRequestInterface $request
-     * @param ResourceServer         $resourceServer
-     * @param AuthenticationMethod   $authenticationMethod
-     * @param mixed                  $resourceServer_credentials
-     */
     private function checkAuthenticationMethod(ServerRequestInterface $request, ResourceServer $resourceServer, AuthenticationMethod $authenticationMethod, $resourceServer_credentials)
     {
         if (!\in_array($resourceServer->getAuthenticationMethod(), $authenticationMethod->getSupportedMethods(), true)) {

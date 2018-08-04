@@ -22,9 +22,6 @@ class ClientCreatedListener
      */
     private $events = [];
 
-    /**
-     * @param ClientCreatedEvent $event
-     */
     public function handle(ClientCreatedEvent $event)
     {
         $this->events[] = $event;

@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Tests\TestBundle\Service;
 
-use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\User;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountRepository;
+use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\User;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -29,8 +29,6 @@ class UserProvider implements UserProviderInterface
 
     /**
      * UserProvider constructor.
-     *
-     * @param UserAccountRepository $userRepository
      */
     public function __construct(UserAccountRepository $userRepository)
     {

@@ -13,11 +13,11 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\ClientCredentialsGrant\Tests;
 
+use OAuth2Framework\Component\ClientCredentialsGrant\ClientCredentialsGrantType;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
-use OAuth2Framework\Component\ClientCredentialsGrant\ClientCredentialsGrantType;
 use OAuth2Framework\Component\TokenEndpoint\GrantTypeData;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
@@ -33,8 +33,8 @@ final class ClientCredentialsGrantTypeTest extends TestCase
      */
     public function genericInformation()
     {
-        self::assertEquals([], $this->getGrantType()->associatedResponseTypes());
-        self::assertEquals('client_credentials', $this->getGrantType()->name());
+        static::assertEquals([], $this->getGrantType()->associatedResponseTypes());
+        static::assertEquals('client_credentials', $this->getGrantType()->name());
     }
 
     /**
@@ -44,7 +44,7 @@ final class ClientCredentialsGrantTypeTest extends TestCase
     {
         $request = $this->prophesize(ServerRequestInterface::class);
         $this->getGrantType()->checkRequest($request->reveal());
-        self::assertTrue(true);
+        static::assertTrue(true);
     }
 
     /**
@@ -54,15 +54,15 @@ final class ClientCredentialsGrantTypeTest extends TestCase
     {
         $client = Client::createEmpty();
         $client = $client->create(
-            ClientId::create('CLIENT_ID'),
-            DataBag::create([]),
-            UserAccountId::create('USER_ACCOUNT_ID')
+            new ClientId('CLIENT_ID'),
+            new DataBag([]),
+            new UserAccountId('USER_ACCOUNT_ID')
         );
         $request = $this->prophesize(ServerRequestInterface::class);
         $grantTypeData = GrantTypeData::create($client);
 
         $receivedGrantTypeData = $this->getGrantType()->prepareResponse($request->reveal(), $grantTypeData);
-        self::assertSame($receivedGrantTypeData, $grantTypeData);
+        static::assertSame($receivedGrantTypeData, $grantTypeData);
     }
 
     /**
@@ -72,16 +72,16 @@ final class ClientCredentialsGrantTypeTest extends TestCase
     {
         $client = Client::createEmpty();
         $client = $client->create(
-            ClientId::create('CLIENT_ID'),
-            DataBag::create([]),
-            UserAccountId::create('USER_ACCOUNT_ID')
+            new ClientId('CLIENT_ID'),
+            new DataBag([]),
+            new UserAccountId('USER_ACCOUNT_ID')
         );
         $request = $this->prophesize(ServerRequestInterface::class);
         $grantTypeData = GrantTypeData::create($client);
 
         $receivedGrantTypeData = $this->getGrantType()->grant($request->reveal(), $grantTypeData);
-        self::assertEquals('CLIENT_ID', $receivedGrantTypeData->getResourceOwnerId()->getValue());
-        self::assertEquals('CLIENT_ID', $receivedGrantTypeData->getClient()->getPublicId()->getValue());
+        static::assertEquals('CLIENT_ID', $receivedGrantTypeData->getResourceOwnerId()->getValue());
+        static::assertEquals('CLIENT_ID', $receivedGrantTypeData->getClient()->getPublicId()->getValue());
     }
 
     /**

@@ -39,8 +39,6 @@ class InitialAccessTokenCreatedEvent extends Event
     /**
      * InitialAccessTokenCreatedEvent constructor.
      *
-     * @param InitialAccessTokenId    $initialAccessTokenId
-     * @param UserAccountId           $userAccountId
      * @param null|\DateTimeImmutable $expiresAt
      */
     protected function __construct(InitialAccessTokenId $initialAccessTokenId, UserAccountId $userAccountId, ?\DateTimeImmutable $expiresAt)
@@ -59,8 +57,6 @@ class InitialAccessTokenCreatedEvent extends Event
     }
 
     /**
-     * @param InitialAccessTokenId    $initialAccessTokenId
-     * @param UserAccountId           $userAccountId
      * @param null|\DateTimeImmutable $expiresAt
      *
      * @return InitialAccessTokenCreatedEvent
@@ -70,25 +66,16 @@ class InitialAccessTokenCreatedEvent extends Event
         return new self($initialAccessTokenId, $userAccountId, $expiresAt);
     }
 
-    /**
-     * @return InitialAccessTokenId
-     */
     public function getInitialAccessTokenId(): InitialAccessTokenId
     {
         return $this->initialAccessTokenId;
     }
 
-    /**
-     * @return UserAccountId
-     */
     public function getUserAccountId(): UserAccountId
     {
         return $this->userAccountId;
     }
 
-    /**
-     * @return \DateTimeImmutable|null
-     */
     public function getExpiresAt(): ?\DateTimeImmutable
     {
         return $this->expiresAt;
@@ -118,8 +105,8 @@ class InitialAccessTokenCreatedEvent extends Event
      */
     public static function createFromJson(\stdClass $json): DomainObject
     {
-        $initialAccessTokenId = InitialAccessTokenId::create($json->domain_id);
-        $userAccountId = null === $json->payload->user_account_id ? null : UserAccountId::create($json->payload->user_account_id);
+        $initialAccessTokenId = new InitialAccessTokenId($json->domain_id);
+        $userAccountId = null === $json->payload->user_account_id ? null : new UserAccountId($json->payload->user_account_id);
         $expiresAt = null === $json->payload->expires_at ? null : \DateTimeImmutable::createFromFormat('U', (string) $json->payload->expires_at);
 
         return new self(

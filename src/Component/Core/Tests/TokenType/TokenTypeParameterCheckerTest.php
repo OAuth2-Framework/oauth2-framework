@@ -32,7 +32,7 @@ final class TokenTypeParameterCheckerTest extends TestCase
     protected function setUp()
     {
         if (!\class_exists(Authorization::class)) {
-            $this->markTestSkipped('Authorization Endpoint not available');
+            static::markTestSkipped('Authorization Endpoint not available');
         }
     }
 
@@ -82,11 +82,11 @@ final class TokenTypeParameterCheckerTest extends TestCase
             $this->getTokenTypeParameterChecker(true)->check(
                 $authorization->reveal()
             );
-            $this->fail('Expected exception nt thrown.');
+            static::fail('Expected exception nt thrown.');
         } catch (OAuth2AuthorizationException $e) {
-            self::assertEquals('invalid_request', $e->getMessage());
-            self::assertEquals('Unsupported token type "UnknownTokenType".', $e->getErrorDescription());
-            self::assertEquals(400, $e->getCode());
+            static::assertEquals('invalid_request', $e->getMessage());
+            static::assertEquals('Unsupported token type "UnknownTokenType".', $e->getErrorDescription());
+            static::assertEquals(400, $e->getCode());
         }
     }
 
@@ -95,11 +95,6 @@ final class TokenTypeParameterCheckerTest extends TestCase
      */
     private $tokenTypeParameterChecker;
 
-    /**
-     * @param bool $tokenTypeParameterAllowed
-     *
-     * @return TokenTypeParameterChecker
-     */
     private function getTokenTypeParameterChecker(bool $tokenTypeParameterAllowed): TokenTypeParameterChecker
     {
         if (null === $this->tokenTypeParameterChecker) {

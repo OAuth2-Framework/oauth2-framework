@@ -17,13 +17,6 @@ use OAuth2Framework\Component\Core\DataBag\DataBag;
 
 abstract class AbstractInternationalizedRule implements Rule
 {
-    /**
-     * @param DataBag       $requestedParameters
-     * @param string        $base
-     * @param \Closure|null $closure
-     *
-     * @return array
-     */
     protected function getInternationalizedParameters(DataBag $requestedParameters, string $base, ?\Closure $closure): array
     {
         $result = [];

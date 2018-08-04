@@ -16,8 +16,8 @@ namespace OAuth2Framework\ServerBundle\Component\Grant\JwtBearer;
 use Jose\Bundle\JoseFramework\Helper\ConfigurationHelper;
 use OAuth2Framework\Component\JwtBearerGrant\JwtBearerGrantType;
 use OAuth2Framework\ServerBundle\Component\Component;
-use OAuth2Framework\ServerBundle\Component\Grant\JwtBearer\Compiler\TrustedIssuerSupportCompilerPass;
 use OAuth2Framework\ServerBundle\Component\Grant\JwtBearer\Compiler\EncryptedAssertionCompilerPass;
+use OAuth2Framework\ServerBundle\Component\Grant\JwtBearer\Compiler\TrustedIssuerSupportCompilerPass;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -66,54 +66,54 @@ class JwtBearerSource implements Component
             ->ifTrue(function ($config) {
                 return true === $config['enabled'] && empty($config['signature_algorithms']);
             })
-                    ->thenInvalid('The option "signature_algorithms" must contain at least one signature algorithm.')
-                    ->end()
-                    ->children()
-                    ->arrayNode('signature_algorithms')
-                    ->info('Signature algorithms supported by this grant type.')
-                    ->useAttributeAsKey('name')
-                    ->scalarPrototype()->end()
-                    ->treatNullLike([])
-                    ->end()
-                    ->arrayNode('claim_checkers')
-                    ->info('Checkers will verify the JWT claims.')
-                    ->useAttributeAsKey('name')
-                    ->scalarPrototype()->end()
-                    ->treatNullLike(['exp', 'iat', 'nbf'])
-                    ->end()
-                    ->arrayNode('header_checkers')
-                    ->info('Checkers will verify the JWT headers.')
-                    ->useAttributeAsKey('name')
-                    ->scalarPrototype()->end()
-                    ->treatNullLike(['crit'])
-                    ->end()
-                    ->arrayNode('encryption')
-                    ->canBeEnabled()
-                    ->children()
-                    ->booleanNode('required')
-                    ->info('If set to true, all ID Token sent to the server must be encrypted.')
-                    ->defaultFalse()
-                    ->end()
-                    ->arrayNode('key_encryption_algorithms')
-                    ->info('Supported key encryption algorithms.')
-                    ->useAttributeAsKey('name')
-                    ->scalarPrototype()->end()
-                    ->treatNullLike([])
-                    ->end()
-                    ->scalarNode('key_set')
-                    ->info('The key set used to decrypt incoming assertions.')
-                    ->end()
-                    ->arrayNode('content_encryption_algorithms')
-                    ->info('Supported content encryption algorithms.')
-                    ->useAttributeAsKey('name')
-                    ->scalarPrototype()->end()
-                    ->treatNullLike([])
-                    ->end()
-                    ->end()
-                    ->end()
-                    ->end()
-                    ->end()
-                    ->end();
+            ->thenInvalid('The option "signature_algorithms" must contain at least one signature algorithm.')
+            ->end()
+            ->children()
+            ->arrayNode('signature_algorithms')
+            ->info('Signature algorithms supported by this grant type.')
+            ->useAttributeAsKey('name')
+            ->scalarPrototype()->end()
+            ->treatNullLike([])
+            ->end()
+            ->arrayNode('claim_checkers')
+            ->info('Checkers will verify the JWT claims.')
+            ->useAttributeAsKey('name')
+            ->scalarPrototype()->end()
+            ->treatNullLike(['exp', 'iat', 'nbf'])
+            ->end()
+            ->arrayNode('header_checkers')
+            ->info('Checkers will verify the JWT headers.')
+            ->useAttributeAsKey('name')
+            ->scalarPrototype()->end()
+            ->treatNullLike(['crit'])
+            ->end()
+            ->arrayNode('encryption')
+            ->canBeEnabled()
+            ->children()
+            ->booleanNode('required')
+            ->info('If set to true, all ID Token sent to the server must be encrypted.')
+            ->defaultFalse()
+            ->end()
+            ->arrayNode('key_encryption_algorithms')
+            ->info('Supported key encryption algorithms.')
+            ->useAttributeAsKey('name')
+            ->scalarPrototype()->end()
+            ->treatNullLike([])
+            ->end()
+            ->scalarNode('key_set')
+            ->info('The key set used to decrypt incoming assertions.')
+            ->end()
+            ->arrayNode('content_encryption_algorithms')
+            ->info('Supported content encryption algorithms.')
+            ->useAttributeAsKey('name')
+            ->scalarPrototype()->end()
+            ->treatNullLike([])
+            ->end()
+            ->end()
+            ->end()
+            ->end()
+            ->end()
+            ->end();
     }
 
     /**
@@ -142,10 +142,6 @@ class JwtBearerSource implements Component
         return [];
     }
 
-    /**
-     * @param ContainerBuilder $container
-     * @param array            $sourceConfig
-     */
     private function updateJoseBundleConfigurationForVerifier(ContainerBuilder $container, array $sourceConfig)
     {
         ConfigurationHelper::addJWSVerifier($container, 'oauth2_server.grant.jwt_bearer', $sourceConfig['signature_algorithms'], false);
@@ -153,10 +149,6 @@ class JwtBearerSource implements Component
         ConfigurationHelper::addClaimChecker($container, 'oauth2_server.grant.jwt_bearer', [], false);
     }
 
-    /**
-     * @param ContainerBuilder $container
-     * @param array            $sourceConfig
-     */
     private function updateJoseBundleConfigurationForDecrypter(ContainerBuilder $container, array $sourceConfig)
     {
         if (!$sourceConfig['enabled']) {

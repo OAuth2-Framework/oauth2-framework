@@ -17,10 +17,10 @@ use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
+use OAuth2Framework\Component\Core\TokenType\TokenType;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use OAuth2Framework\Component\NoneGrant\AuthorizationStorage;
 use OAuth2Framework\Component\NoneGrant\NoneResponseType;
-use OAuth2Framework\Component\Core\TokenType\TokenType;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 
@@ -38,9 +38,9 @@ final class TokenResponseTypeTest extends TestCase
         $authorizationStorage = $this->prophesize(AuthorizationStorage::class);
         $responseType = new NoneResponseType($authorizationStorage->reveal());
 
-        self::assertEquals([], $responseType->associatedGrantTypes());
-        self::assertEquals('none', $responseType->name());
-        self::assertEquals('query', $responseType->getResponseMode());
+        static::assertEquals([], $responseType->associatedGrantTypes());
+        static::assertEquals('none', $responseType->name());
+        static::assertEquals('query', $responseType->getResponseMode());
     }
 
     /**
@@ -54,9 +54,9 @@ final class TokenResponseTypeTest extends TestCase
 
         $client = Client::createEmpty();
         $client = $client->create(
-            ClientId::create('CLIENT_ID'),
-            DataBag::create([]),
-            UserAccountId::create('USER_ACCOUNT_ID')
+            new ClientId('CLIENT_ID'),
+            new DataBag([]),
+            new UserAccountId('USER_ACCOUNT_ID')
         );
         $tokenType = $this->prophesize(TokenType::class);
         $tokenType->getAdditionalInformation()->willReturn(['token_type' => 'FOO']);
@@ -66,7 +66,7 @@ final class TokenResponseTypeTest extends TestCase
 
         $authorization = $responseType->process($authorization);
 
-        self::assertEquals('CLIENT_ID', $authorization->getClient()->getPublicId()->getValue());
-        self::assertFalse($authorization->hasResponseParameter('access_token'));
+        static::assertEquals('CLIENT_ID', $authorization->getClient()->getPublicId()->getValue());
+        static::assertFalse($authorization->hasResponseParameter('access_token'));
     }
 }

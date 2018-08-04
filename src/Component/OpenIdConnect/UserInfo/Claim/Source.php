@@ -29,7 +29,6 @@ class Source
      * Source constructor.
      *
      * @param string[] $availableClaims
-     * @param array    $source
      */
     public function __construct(array $availableClaims, array $source)
     {
@@ -45,9 +44,6 @@ class Source
         return $this->availableClaims;
     }
 
-    /**
-     * @return array
-     */
     public function getSource(): array
     {
         return $this->source;

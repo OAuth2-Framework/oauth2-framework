@@ -14,23 +14,23 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\TokenEndpoint;
 
 use Http\Message\ResponseFactory;
+use OAuth2Framework\Component\Core\AccessToken\AccessToken;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenIdGenerator;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository;
-use Psr\Http\Server\RequestHandlerInterface;
-use Psr\Http\Server\MiddlewareInterface;
-use OAuth2Framework\Component\Core\AccessToken\AccessToken;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\Client\ClientRepository;
-use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwnerId;
+use OAuth2Framework\Component\Core\Message\OAuth2Message;
 use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwner;
+use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwnerId;
+use OAuth2Framework\Component\Core\TokenType\TokenType;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountRepository;
-use OAuth2Framework\Component\Core\Message\OAuth2Message;
 use OAuth2Framework\Component\TokenEndpoint\Extension\TokenEndpointExtensionManager;
-use OAuth2Framework\Component\Core\TokenType\TokenType;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 class TokenEndpoint implements MiddlewareInterface
 {
@@ -71,14 +71,6 @@ class TokenEndpoint implements MiddlewareInterface
 
     /**
      * TokenEndpoint constructor.
-     *
-     * @param ClientRepository              $clientRepository
-     * @param UserAccountRepository|null    $userAccountRepository
-     * @param TokenEndpointExtensionManager $tokenEndpointExtensionManager
-     * @param ResponseFactory               $responseFactory
-     * @param AccessTokenIdGenerator        $accessTokenIdGenerator
-     * @param AccessTokenRepository         $accessTokenRepository
-     * @param int                           $accessLifetime
      */
     public function __construct(ClientRepository $clientRepository, ?UserAccountRepository $userAccountRepository, TokenEndpointExtensionManager $tokenEndpointExtensionManager, ResponseFactory $responseFactory, AccessTokenIdGenerator $accessTokenIdGenerator, AccessTokenRepository $accessTokenRepository, int $accessLifetime)
     {
@@ -144,11 +136,6 @@ class TokenEndpoint implements MiddlewareInterface
         return $this->createResponse($data);
     }
 
-    /**
-     * @param array $data
-     *
-     * @return ResponseInterface
-     */
     private function createResponse(array $data): ResponseInterface
     {
         $headers = ['Content-Type' => 'application/json; charset=UTF-8', 'Cache-Control' => 'no-cache, no-store, max-age=0, must-revalidate, private', 'Pragma' => 'no-cache'];
@@ -158,11 +145,6 @@ class TokenEndpoint implements MiddlewareInterface
         return $response;
     }
 
-    /**
-     * @param GrantTypeData $grantTypeData
-     *
-     * @return AccessToken
-     */
     private function issueAccessToken(GrantTypeData $grantTypeData): AccessToken
     {
         $accessTokenId = $this->accessTokenIdGenerator->createAccessTokenId(
@@ -172,14 +154,13 @@ class TokenEndpoint implements MiddlewareInterface
             $grantTypeData->getMetadata(),
             null
         );
-        $accessToken = AccessToken::createEmpty();
-        $accessToken = $accessToken->create(
+        $accessToken = new AccessToken(
             $accessTokenId,
-            $grantTypeData->getResourceOwnerId(),
             $grantTypeData->getClient()->getClientId(),
+            $grantTypeData->getResourceOwnerId(),
+            new \DateTimeImmutable(\sprintf('now +%d seconds', $this->accessTokenLifetime)),
             $grantTypeData->getParameter(),
             $grantTypeData->getMetadata(),
-            new \DateTimeImmutable(\sprintf('now +%d seconds', $this->accessTokenLifetime)),
             null
         );
         $this->accessTokenRepository->save($accessToken);
@@ -188,17 +169,13 @@ class TokenEndpoint implements MiddlewareInterface
     }
 
     /**
-     * @param ResourceOwnerId $resourceOwnerId
-     *
      * @throws OAuth2Message
-     *
-     * @return ResourceOwner
      */
     private function getResourceOwner(ResourceOwnerId $resourceOwnerId): ResourceOwner
     {
-        $resourceOwner = $this->clientRepository->find(ClientId::create($resourceOwnerId->getValue()));
+        $resourceOwner = $this->clientRepository->find(new ClientId($resourceOwnerId->getValue()));
         if (null === $resourceOwner && null !== $this->userAccountRepository) {
-            $resourceOwner = $this->userAccountRepository->find(UserAccountId::create($resourceOwnerId->getValue()));
+            $resourceOwner = $this->userAccountRepository->find(new UserAccountId($resourceOwnerId->getValue()));
         }
 
         if (null === $resourceOwner) {
@@ -208,12 +185,6 @@ class TokenEndpoint implements MiddlewareInterface
         return $resourceOwner;
     }
 
-    /**
-     * @param ServerRequestInterface $request
-     * @param GrantTypeData          $grantTypeData
-     *
-     * @return GrantTypeData
-     */
     private function updateWithTokenTypeParameters(ServerRequestInterface $request, GrantTypeData $grantTypeData): GrantTypeData
     {
         /** @var TokenType $tokenType */
@@ -228,12 +199,6 @@ class TokenEndpoint implements MiddlewareInterface
         return $grantTypeData;
     }
 
-    /**
-     * @param Client $client
-     * @param string $grant_type
-     *
-     * @return bool
-     */
     private function isGrantTypeAllowedForTheClient(Client $client, string $grant_type): bool
     {
         $grant_types = $client->has('grant_types') ? $client->get('grant_types') : [];

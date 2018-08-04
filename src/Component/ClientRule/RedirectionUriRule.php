@@ -13,9 +13,9 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\ClientRule;
 
-use function League\Uri\parse;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
+use function League\Uri\parse;
 
 /**
  * TODO: If there are multiple hostnames in the registered redirect_uris and pairwise ID is set, the client MUST register a sector_identifier_uri.
@@ -73,12 +73,6 @@ final class RedirectionUriRule implements Rule
         return $validatedParameters;
     }
 
-    /**
-     * @param array  $value
-     * @param string $applicationType
-     * @param bool   $usesImplicitGrantType
-     * @param bool   $isClientPublic
-     */
     private function checkAllUris(array $value, string $applicationType, bool $usesImplicitGrantType, bool $isClientPublic)
     {
         foreach ($value as $redirectUri) {
@@ -89,11 +83,6 @@ final class RedirectionUriRule implements Rule
         }
     }
 
-    /**
-     * @param string $uri
-     * @param string $applicationType
-     * @param bool   $usesImplicitGrantType
-     */
     private function checkUri(string $uri, string $applicationType, bool $usesImplicitGrantType)
     {
         if ('urn:' === \mb_substr($uri, 0, 4, '8bit')) {
@@ -120,9 +109,6 @@ final class RedirectionUriRule implements Rule
         }
     }
 
-    /**
-     * @param string $urn
-     */
     private function checkUrn(string $urn)
     {
         if (1 !== \preg_match('/^urn:[a-z0-9][a-z0-9-]{0,31}:([a-z0-9()+,-.:=@;$_!*\']|%(0[1-9a-f]|[1-9a-f][0-9a-f]))+$/i', $urn)) {

@@ -13,32 +13,20 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\ClientAuthentication;
 
-use Psr\Http\Server\RequestHandlerInterface;
-use Psr\Http\Server\MiddlewareInterface;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientRepository;
 use OAuth2Framework\Component\Core\Message\OAuth2Message;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 class ClientAuthenticationMiddleware implements MiddlewareInterface
 {
-    /**
-     * @var AuthenticationMethodManager
-     */
     private $authenticationMethodManager;
 
-    /**
-     * @var ClientRepository
-     */
     private $clientRepository;
 
-    /**
-     * ClientAuthenticationMiddleware constructor.
-     *
-     * @param ClientRepository            $clientRepository
-     * @param AuthenticationMethodManager $authenticationMethodManager
-     */
     public function __construct(ClientRepository $clientRepository, AuthenticationMethodManager $authenticationMethodManager)
     {
         $this->clientRepository = $clientRepository;
@@ -67,10 +55,7 @@ class ClientAuthenticationMiddleware implements MiddlewareInterface
         return $handler->handle($request);
     }
 
-    /**
-     * @param null|Client $client
-     */
-    private function checkClient(?Client $client)
+    private function checkClient(?Client $client): void
     {
         if (null === $client || $client->isDeleted()) {
             throw new \InvalidArgumentException('Client authentication failed.');
@@ -80,13 +65,7 @@ class ClientAuthenticationMiddleware implements MiddlewareInterface
         }
     }
 
-    /**
-     * @param ServerRequestInterface $request
-     * @param Client                 $client
-     * @param AuthenticationMethod   $authenticationMethod
-     * @param mixed                  $client_credentials
-     */
-    private function checkAuthenticationMethod(ServerRequestInterface $request, Client $client, AuthenticationMethod $authenticationMethod, $client_credentials)
+    private function checkAuthenticationMethod(ServerRequestInterface $request, Client $client, AuthenticationMethod $authenticationMethod, $client_credentials): void
     {
         if (!$client->has('token_endpoint_auth_method') || !\in_array($client->get('token_endpoint_auth_method'), $authenticationMethod->getSupportedMethods(), true)) {
             throw new \InvalidArgumentException('Client authentication failed.');

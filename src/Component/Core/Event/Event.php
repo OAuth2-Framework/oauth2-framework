@@ -13,24 +13,15 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Core\Event;
 
+use OAuth2Framework\Component\Core\Domain\DomainEvent;
 use OAuth2Framework\Component\Core\Id\Id;
-use OAuth2Framework\Component\Core\Domain\DomainObject;
 
-abstract class Event implements DomainObject
+abstract class Event implements DomainEvent
 {
-    /**
-     * @return mixed
-     */
     abstract public function getPayload();
 
-    /**
-     * @return Id
-     */
     abstract public function getDomainId(): Id;
 
-    /**
-     * @return string
-     */
     public function getType(): string
     {
         return \get_class($this);

@@ -32,39 +32,39 @@ final class GrantTypesRuleTest extends TestCase
     protected function setUp()
     {
         if (!\interface_exists(Rule::class)) {
-            $this->markTestSkipped('The component "oauth2-framework/client-rule" is not installed.');
+            static::markTestSkipped('The component "oauth2-framework/client-rule" is not installed.');
         }
     }
 
     /**
      * @test
      */
-    public function testGrantTypesSetAsAnEmptyArray()
+    public function grantTypesSetAsAnEmptyArray()
     {
-        $clientId = ClientId::create('CLIENT_ID');
-        $commandParameters = DataBag::create([]);
+        $clientId = new ClientId('CLIENT_ID');
+        $commandParameters = new DataBag([]);
         $rule = $this->getGrantTypesRule();
-        $validatedParameters = $rule->handle($clientId, $commandParameters, DataBag::create([]), $this->getCallable());
+        $validatedParameters = $rule->handle($clientId, $commandParameters, new DataBag([]), $this->getCallable());
 
-        self::assertTrue($validatedParameters->has('grant_types'));
-        self::assertEquals([], $validatedParameters->get('grant_types'));
+        static::assertTrue($validatedParameters->has('grant_types'));
+        static::assertEquals([], $validatedParameters->get('grant_types'));
     }
 
     /**
      * @test
      */
-    public function testGrantTypesCorrectlyDefined()
+    public function grantTypesCorrectlyDefined()
     {
-        $clientId = ClientId::create('CLIENT_ID');
-        $commandParameters = DataBag::create([
+        $clientId = new ClientId('CLIENT_ID');
+        $commandParameters = new DataBag([
             'grant_types' => ['authorization_code'],
         ]);
-        $validatedParameters = DataBag::create(['response_types' => ['code']]);
+        $validatedParameters = new DataBag(['response_types' => ['code']]);
         $rule = $this->getGrantTypesRule();
         $validatedParameters = $rule->handle($clientId, $commandParameters, $validatedParameters, $this->getCallable());
 
-        self::assertTrue($validatedParameters->has('grant_types'));
-        self::assertEquals(['authorization_code'], $validatedParameters->get('grant_types'));
+        static::assertTrue($validatedParameters->has('grant_types'));
+        static::assertEquals(['authorization_code'], $validatedParameters->get('grant_types'));
     }
 
     /**
@@ -74,12 +74,12 @@ final class GrantTypesRuleTest extends TestCase
      */
     public function theGrantTypeParameterMustBeAnArray()
     {
-        $clientId = ClientId::create('CLIENT_ID');
-        $commandParameters = DataBag::create([
+        $clientId = new ClientId('CLIENT_ID');
+        $commandParameters = new DataBag([
             'grant_types' => 'hello',
         ]);
         $rule = $this->getGrantTypesRule();
-        $rule->handle($clientId, $commandParameters, DataBag::create([]), $this->getCallable());
+        $rule->handle($clientId, $commandParameters, new DataBag([]), $this->getCallable());
     }
 
     /**
@@ -89,12 +89,12 @@ final class GrantTypesRuleTest extends TestCase
      */
     public function theGrantTypeParameterMustBeAnArrayOfStrings()
     {
-        $clientId = ClientId::create('CLIENT_ID');
-        $commandParameters = DataBag::create([
+        $clientId = new ClientId('CLIENT_ID');
+        $commandParameters = new DataBag([
             'grant_types' => [123],
         ]);
         $rule = $this->getGrantTypesRule();
-        $rule->handle($clientId, $commandParameters, DataBag::create([]), $this->getCallable());
+        $rule->handle($clientId, $commandParameters, new DataBag([]), $this->getCallable());
     }
 
     /**
@@ -102,23 +102,20 @@ final class GrantTypesRuleTest extends TestCase
      */
     public function theAssociatedResponseTypesAreSet()
     {
-        $clientId = ClientId::create('CLIENT_ID');
-        $commandParameters = DataBag::create([
+        $clientId = new ClientId('CLIENT_ID');
+        $commandParameters = new DataBag([
             'grant_types' => ['authorization_code'],
         ]);
-        $validatedParameters = DataBag::create(['response_types' => ['code id_token token']]);
+        $validatedParameters = new DataBag(['response_types' => ['code id_token token']]);
         $rule = $this->getGrantTypesRule();
         $validatedParameters = $rule->handle($clientId, $commandParameters, $validatedParameters, $this->getCallable());
 
-        self::assertTrue($validatedParameters->has('grant_types'));
-        self::assertEquals(['authorization_code'], $validatedParameters->get('grant_types'));
-        self::assertTrue($validatedParameters->has('response_types'));
-        self::assertEquals(['code id_token token'], $validatedParameters->get('response_types'));
+        static::assertTrue($validatedParameters->has('grant_types'));
+        static::assertEquals(['authorization_code'], $validatedParameters->get('grant_types'));
+        static::assertTrue($validatedParameters->has('response_types'));
+        static::assertEquals(['code id_token token'], $validatedParameters->get('response_types'));
     }
 
-    /**
-     * @return callable
-     */
     private function getCallable(): callable
     {
         return function (ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters): DataBag {
@@ -131,12 +128,9 @@ final class GrantTypesRuleTest extends TestCase
      */
     private $grantTypesRule = null;
 
-    /**
-     * @return GrantTypesRule
-     */
     private function getGrantTypesRule(): GrantTypesRule
     {
-        if (null == $this->grantTypesRule) {
+        if (null === $this->grantTypesRule) {
             $authorizationCodeGrantType = $this->prophesize(GrantType::class);
             $authorizationCodeGrantType->name()->willReturn('authorization_code');
             $authorizationCodeGrantType->associatedResponseTypes()->willReturn(['code']);

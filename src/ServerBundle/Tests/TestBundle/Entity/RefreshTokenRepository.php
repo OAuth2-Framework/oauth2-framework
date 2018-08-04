@@ -53,38 +53,35 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
 
     private function initRefreshTokens()
     {
-        $refreshToken = RefreshToken::createEmpty();
-        $refreshToken = $refreshToken->create(
-            RefreshTokenId::create('VALID_REFRESH_TOKEN'),
-            UserAccountId::create('john.1'),
-            ClientId::create('CLIENT_ID_3'),
-            DataBag::create([]),
-            DataBag::create([]),
+        $refreshToken = new RefreshToken(
+            new RefreshTokenId('VALID_REFRESH_TOKEN'),
+            new ClientId('CLIENT_ID_3'),
+            new UserAccountId('john.1'),
+            new DataBag([]),
+            new DataBag([]),
             new \DateTimeImmutable('now +1 day'),
             null
         );
         $this->save($refreshToken);
 
-        $refreshToken = RefreshToken::createEmpty();
-        $refreshToken = $refreshToken->create(
-            RefreshTokenId::create('REVOKED_REFRESH_TOKEN'),
-            UserAccountId::create('john.1'),
-            ClientId::create('CLIENT_ID_3'),
-            DataBag::create([]),
-            DataBag::create([]),
+        $refreshToken = new RefreshToken(
+            new RefreshTokenId('REVOKED_REFRESH_TOKEN'),
+            new ClientId('CLIENT_ID_3'),
+            new UserAccountId('john.1'),
+            new DataBag([]),
+            new DataBag([]),
             new \DateTimeImmutable('now +1 day'),
             null
         );
-        $refreshToken = $refreshToken->markAsRevoked();
+        $refreshToken->markAsRevoked();
         $this->save($refreshToken);
 
-        $refreshToken = RefreshToken::createEmpty();
-        $refreshToken = $refreshToken->create(
-            RefreshTokenId::create('EXPIRED_REFRESH_TOKEN'),
-            UserAccountId::create('john.1'),
-            ClientId::create('CLIENT_ID_3'),
-            DataBag::create([]),
-            DataBag::create([]),
+        $refreshToken = new RefreshToken(
+            new RefreshTokenId('EXPIRED_REFRESH_TOKEN'),
+            new ClientId('CLIENT_ID_3'),
+            new UserAccountId('john.1'),
+            new DataBag([]),
+            new DataBag([]),
             new \DateTimeImmutable('now -1 day'),
             null
         );

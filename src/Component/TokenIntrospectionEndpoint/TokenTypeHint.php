@@ -17,22 +17,12 @@ use OAuth2Framework\Component\Core\Token\Token;
 
 interface TokenTypeHint
 {
-    /**
-     * @return string
-     */
     public function hint(): string;
 
     /**
-     * @param string $token
-     *
      * @return null|Token
      */
     public function find(string $token): ?Token;
 
-    /**
-     * @param Token $token
-     *
-     * @return array
-     */
     public function introspect(Token $token): array;
 }

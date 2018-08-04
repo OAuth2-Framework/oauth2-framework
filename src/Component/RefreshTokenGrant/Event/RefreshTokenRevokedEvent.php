@@ -13,10 +13,10 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\RefreshTokenGrant\Event;
 
+use OAuth2Framework\Component\Core\Domain\DomainObject;
 use OAuth2Framework\Component\Core\Event\Event;
 use OAuth2Framework\Component\Core\Id\Id;
 use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenId;
-use OAuth2Framework\Component\Core\Domain\DomainObject;
 
 class RefreshTokenRevokedEvent extends Event
 {
@@ -27,8 +27,6 @@ class RefreshTokenRevokedEvent extends Event
 
     /**
      * RefreshTokenRevokedEvent constructor.
-     *
-     * @param RefreshTokenId $refreshTokenId
      */
     protected function __construct(RefreshTokenId $refreshTokenId)
     {
@@ -44,8 +42,6 @@ class RefreshTokenRevokedEvent extends Event
     }
 
     /**
-     * @param RefreshTokenId $refreshTokenId
-     *
      * @return RefreshTokenRevokedEvent
      */
     public static function create(RefreshTokenId $refreshTokenId): self
@@ -53,9 +49,6 @@ class RefreshTokenRevokedEvent extends Event
         return new self($refreshTokenId);
     }
 
-    /**
-     * @return RefreshTokenId
-     */
     public function getRefreshTokenId(): RefreshTokenId
     {
         return $this->refreshTokenId;
@@ -81,7 +74,7 @@ class RefreshTokenRevokedEvent extends Event
      */
     public static function createFromJson(\stdClass $json): DomainObject
     {
-        $refreshTokenId = RefreshTokenId::create($json->domain_id);
+        $refreshTokenId = new RefreshTokenId($json->domain_id);
 
         return new self($refreshTokenId);
     }

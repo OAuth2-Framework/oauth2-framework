@@ -16,10 +16,10 @@ namespace OAuth2Framework\Component\AuthorizationEndpoint\Middleware;
 use OAuth2Framework\Component\AuthorizationEndpoint\Exception\OAuth2AuthorizationException;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\QueryResponseMode;
 use OAuth2Framework\Component\Core\Message\OAuth2Message;
-use Psr\Http\Server\RequestHandlerInterface;
-use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 final class AuthorizationExceptionMiddleware implements MiddlewareInterface
 {
@@ -46,7 +46,8 @@ final class AuthorizationExceptionMiddleware implements MiddlewareInterface
                     ],
                     $e
                 );
-            } elseif (null !== $redirectUri) {
+            }
+            if (null !== $redirectUri) {
                 throw new OAuth2Message(
                     302,
                     $e->getMessage(),

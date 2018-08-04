@@ -13,19 +13,19 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\AuthorizationCodeGrant\Tests;
 
+use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCode;
+use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeGrantType;
+use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeId;
+use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeRepository;
 use OAuth2Framework\Component\AuthorizationCodeGrant\PKCEMethod\PKCEMethodManager;
 use OAuth2Framework\Component\AuthorizationCodeGrant\PKCEMethod\Plain;
 use OAuth2Framework\Component\AuthorizationCodeGrant\PKCEMethod\S256;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
-use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
 use OAuth2Framework\Component\Core\Message\OAuth2Message;
+use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
-use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCode;
-use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeGrantType;
-use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeId;
-use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeRepository;
 use OAuth2Framework\Component\TokenEndpoint\GrantTypeData;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
@@ -44,8 +44,8 @@ final class AuthorizationCodeGrantTypeTest extends TestCase
      */
     public function genericInformation()
     {
-        self::assertEquals(['code'], $this->getGrantType()->associatedResponseTypes());
-        self::assertEquals('authorization_code', $this->getGrantType()->name());
+        static::assertEquals(['code'], $this->getGrantType()->associatedResponseTypes());
+        static::assertEquals('authorization_code', $this->getGrantType()->name());
     }
 
     /**
@@ -57,10 +57,10 @@ final class AuthorizationCodeGrantTypeTest extends TestCase
 
         try {
             $this->getGrantType()->checkRequest($request->reveal());
-            $this->fail('An OAuth2 exception should be thrown.');
+            static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2Message $e) {
-            self::assertEquals(400, $e->getCode());
-            self::assertEquals([
+            static::assertEquals(400, $e->getCode());
+            static::assertEquals([
                 'error' => 'invalid_request',
                 'error_description' => 'Missing grant type parameter(s): code, redirect_uri.',
             ], $e->getData());
@@ -75,7 +75,7 @@ final class AuthorizationCodeGrantTypeTest extends TestCase
         $request = $this->buildRequest(['code' => 'AUTHORIZATION_CODE_ID', 'redirect_uri' => 'http://localhost:8000/']);
 
         $this->getGrantType()->checkRequest($request->reveal());
-        self::assertTrue(true);
+        static::assertTrue(true);
     }
 
     /**
@@ -85,15 +85,15 @@ final class AuthorizationCodeGrantTypeTest extends TestCase
     {
         $client = Client::createEmpty();
         $client = $client->create(
-            ClientId::create('CLIENT_ID'),
-            DataBag::create([]),
-            UserAccountId::create('USER_ACCOUNT_ID')
+            new ClientId('CLIENT_ID'),
+            new DataBag([]),
+            new UserAccountId('USER_ACCOUNT_ID')
         );
         $request = $this->buildRequest(['code' => 'AUTHORIZATION_CODE_ID', 'redirect_uri' => 'http://localhost:8000/']);
         $grantTypeData = GrantTypeData::create($client);
 
         $receivedGrantTypeData = $this->getGrantType()->prepareResponse($request->reveal(), $grantTypeData);
-        self::assertSame($receivedGrantTypeData, $grantTypeData);
+        static::assertSame($receivedGrantTypeData, $grantTypeData);
     }
 
     /**
@@ -103,9 +103,9 @@ final class AuthorizationCodeGrantTypeTest extends TestCase
     {
         $client = Client::createEmpty();
         $client = $client->create(
-            ClientId::create('CLIENT_ID'),
-            DataBag::create([]),
-            UserAccountId::create('USER_ACCOUNT_ID')
+            new ClientId('CLIENT_ID'),
+            new DataBag([]),
+            new UserAccountId('USER_ACCOUNT_ID')
         );
         $request = $this->buildRequest(['code' => 'AUTHORIZATION_CODE_ID', 'redirect_uri' => 'http://localhost:8000/']);
         $request->getAttribute('client')->willReturn($client);
@@ -114,8 +114,8 @@ final class AuthorizationCodeGrantTypeTest extends TestCase
         try {
             $this->getGrantType()->grant($request->reveal(), $grantTypeData);
         } catch (OAuth2Message $e) {
-            self::assertEquals(400, $e->getCode());
-            self::assertEquals([
+            static::assertEquals(400, $e->getCode());
+            static::assertEquals([
                 'error' => 'invalid_grant',
                 'error_description' => 'The parameter "code_verifier" is missing or invalid.',
             ], $e->getData());
@@ -129,17 +129,17 @@ final class AuthorizationCodeGrantTypeTest extends TestCase
     {
         $client = Client::createEmpty();
         $client = $client->create(
-            ClientId::create('CLIENT_ID'),
-            DataBag::create([]),
-            UserAccountId::create('USER_ACCOUNT_ID')
+            new ClientId('CLIENT_ID'),
+            new DataBag([]),
+            new UserAccountId('USER_ACCOUNT_ID')
         );
         $request = $this->buildRequest(['code' => 'AUTHORIZATION_CODE_ID', 'redirect_uri' => 'http://localhost:8000/', 'code_verifier' => 'ABCDEFGH']);
         $request->getAttribute('client')->willReturn($client);
         $grantTypeData = GrantTypeData::create($client);
 
         $receivedGrantTypeData = $this->getGrantType()->grant($request->reveal(), $grantTypeData);
-        self::assertEquals('USER_ACCOUNT_ID', $receivedGrantTypeData->getResourceOwnerId()->getValue());
-        self::assertEquals('CLIENT_ID', $receivedGrantTypeData->getClient()->getPublicId()->getValue());
+        static::assertEquals('USER_ACCOUNT_ID', $receivedGrantTypeData->getResourceOwnerId()->getValue());
+        static::assertEquals('CLIENT_ID', $receivedGrantTypeData->getClient()->getPublicId()->getValue());
     }
 
     /**
@@ -150,25 +150,24 @@ final class AuthorizationCodeGrantTypeTest extends TestCase
     private function getGrantType(): AuthorizationCodeGrantType
     {
         if (null === $this->grantType) {
-            $authorizationCode = AuthorizationCode::createEmpty();
-            $authorizationCode = $authorizationCode->create(
-                AuthorizationCodeId::create('AUTHORIZATION_CODE_ID'),
-                ClientId::create('CLIENT_ID'),
-                UserAccountId::create('USER_ACCOUNT_ID'),
+            $authorizationCode = new AuthorizationCode(
+                new AuthorizationCodeId('AUTHORIZATION_CODE_ID'),
+                new ClientId('CLIENT_ID'),
+                new UserAccountId('USER_ACCOUNT_ID'),
                 [
                     'code_challenge' => 'ABCDEFGH',
                     'code_challenge_method' => 'plain',
                 ],
                 'http://localhost:8000/',
                 new \DateTimeImmutable('now +1 day'),
-                DataBag::create([
+                new DataBag([
                     'scope' => 'scope1 scope2',
                 ]),
-                DataBag::create([]),
-                ResourceServerId::create('RESOURCE_SERVER_ID')
+                new DataBag([]),
+                new ResourceServerId('RESOURCE_SERVER_ID')
             );
             $authorizationCodeRepository = $this->prophesize(AuthorizationCodeRepository::class);
-            $authorizationCodeRepository->find(AuthorizationCodeId::create('AUTHORIZATION_CODE_ID'))->willReturn($authorizationCode);
+            $authorizationCodeRepository->find(new AuthorizationCodeId('AUTHORIZATION_CODE_ID'))->willReturn($authorizationCode);
             $authorizationCodeRepository->save(Argument::type(AuthorizationCode::class))->will(function (array $args) {
             });
 

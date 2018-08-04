@@ -14,9 +14,9 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\AuthorizationEndpoint\Tests\Rule;
 
 use OAuth2Framework\Component\AuthorizationEndpoint\Rule\RequestUriRule;
+use OAuth2Framework\Component\ClientRule\Rule;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
-use OAuth2Framework\Component\ClientRule\Rule;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -30,7 +30,7 @@ final class RequestUriRuleTest extends TestCase
     protected function setUp()
     {
         if (!\interface_exists(Rule::class)) {
-            $this->markTestSkipped('The component "oauth2-framework/client-rule" is not installed.');
+            static::markTestSkipped('The component "oauth2-framework/client-rule" is not installed.');
         }
     }
 
@@ -39,11 +39,11 @@ final class RequestUriRuleTest extends TestCase
      */
     public function noResponseType()
     {
-        $clientId = ClientId::create('CLIENT_ID');
-        $commandParameters = DataBag::create([]);
+        $clientId = new ClientId('CLIENT_ID');
+        $commandParameters = new DataBag([]);
         $rule = new RequestUriRule();
-        $validatedParameters = $rule->handle($clientId, $commandParameters, DataBag::create([]), $this->getCallable());
-        self::assertFalse($validatedParameters->has('request_uris'));
+        $validatedParameters = $rule->handle($clientId, $commandParameters, new DataBag([]), $this->getCallable());
+        static::assertFalse($validatedParameters->has('request_uris'));
     }
 
     /**
@@ -53,12 +53,12 @@ final class RequestUriRuleTest extends TestCase
      */
     public function theParameterMustBeAnArray()
     {
-        $clientId = ClientId::create('CLIENT_ID');
-        $commandParameters = DataBag::create([
+        $clientId = new ClientId('CLIENT_ID');
+        $commandParameters = new DataBag([
             'request_uris' => 'hello',
         ]);
         $rule = new RequestUriRule();
-        $validatedParameters = DataBag::create([
+        $validatedParameters = new DataBag([
             'response_types' => ['code'],
         ]);
         $rule->handle($clientId, $commandParameters, $validatedParameters, $this->getCallable());
@@ -71,12 +71,12 @@ final class RequestUriRuleTest extends TestCase
      */
     public function theParameterMustBeAnArrayOfString()
     {
-        $clientId = ClientId::create('CLIENT_ID');
-        $commandParameters = DataBag::create([
+        $clientId = new ClientId('CLIENT_ID');
+        $commandParameters = new DataBag([
             'request_uris' => [123],
         ]);
         $rule = new RequestUriRule();
-        $validatedParameters = DataBag::create([
+        $validatedParameters = new DataBag([
             'response_types' => ['code'],
         ]);
         $rule->handle($clientId, $commandParameters, $validatedParameters, $this->getCallable());
@@ -89,12 +89,12 @@ final class RequestUriRuleTest extends TestCase
      */
     public function theParameterMustBeAnArrayOfUris()
     {
-        $clientId = ClientId::create('CLIENT_ID');
-        $commandParameters = DataBag::create([
+        $clientId = new ClientId('CLIENT_ID');
+        $commandParameters = new DataBag([
             'request_uris' => ['hello'],
         ]);
         $rule = new RequestUriRule();
-        $validatedParameters = DataBag::create([
+        $validatedParameters = new DataBag([
             'response_types' => ['code'],
         ]);
         $rule->handle($clientId, $commandParameters, $validatedParameters, $this->getCallable());
@@ -105,22 +105,19 @@ final class RequestUriRuleTest extends TestCase
      */
     public function theParameterIsValid()
     {
-        $clientId = ClientId::create('CLIENT_ID');
-        $commandParameters = DataBag::create([
+        $clientId = new ClientId('CLIENT_ID');
+        $commandParameters = new DataBag([
             'request_uris' => ['https://foo.com/bar'],
         ]);
         $rule = new RequestUriRule();
-        $validatedParameters = DataBag::create([
+        $validatedParameters = new DataBag([
             'response_types' => ['code'],
         ]);
         $validatedParameters = $rule->handle($clientId, $commandParameters, $validatedParameters, $this->getCallable());
-        self::assertTrue($validatedParameters->has('request_uris'));
-        self::assertEquals(['https://foo.com/bar'], $validatedParameters->get('request_uris'));
+        static::assertTrue($validatedParameters->has('request_uris'));
+        static::assertEquals(['https://foo.com/bar'], $validatedParameters->get('request_uris'));
     }
 
-    /**
-     * @return callable
-     */
     private function getCallable(): callable
     {
         return function (ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters): DataBag {

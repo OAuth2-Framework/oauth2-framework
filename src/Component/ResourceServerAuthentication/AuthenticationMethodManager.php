@@ -13,9 +13,9 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\ResourceServerAuthentication;
 
+use OAuth2Framework\Component\Core\Message\OAuth2Message;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServer;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
-use OAuth2Framework\Component\Core\Message\OAuth2Message;
 use Psr\Http\Message\ServerRequestInterface;
 
 class AuthenticationMethodManager
@@ -31,8 +31,6 @@ class AuthenticationMethodManager
     private $names = [];
 
     /**
-     * @param AuthenticationMethod $method
-     *
      * @return AuthenticationMethodManager
      */
     public function add(AuthenticationMethod $method): self
@@ -54,22 +52,13 @@ class AuthenticationMethodManager
         return \array_keys($this->names);
     }
 
-    /**
-     * @param string $name
-     *
-     * @return bool
-     */
     public function has(string $name): bool
     {
         return \array_key_exists($name, $this->names);
     }
 
     /**
-     * @param string $name
-     *
      * @throws \InvalidArgumentException
-     *
-     * @return AuthenticationMethod
      */
     public function get(string $name): AuthenticationMethod
     {
@@ -90,9 +79,8 @@ class AuthenticationMethodManager
     }
 
     /**
-     * @param ServerRequestInterface $request
-     * @param AuthenticationMethod   $authenticationMethod
-     * @param mixed                  $resourceServerCredentials The  resource server credentials found in the request
+     * @param AuthenticationMethod $authenticationMethod
+     * @param mixed                $resourceServerCredentials The  resource server credentials found in the request
      *
      * @throws OAuth2Message
      *
@@ -120,14 +108,6 @@ class AuthenticationMethodManager
         return $resourceServerId;
     }
 
-    /**
-     * @param ServerRequestInterface $request
-     * @param ResourceServer         $resourceServer
-     * @param AuthenticationMethod   $authenticationMethod
-     * @param mixed                  $resourceServerCredentials
-     *
-     * @return bool
-     */
     public function isResourceServerAuthenticated(ServerRequestInterface $request, ResourceServer $resourceServer, AuthenticationMethod $authenticationMethod, $resourceServerCredentials): bool
     {
         if (\in_array($resourceServer->getAuthenticationMethod(), $authenticationMethod->getSupportedMethods(), true)) {

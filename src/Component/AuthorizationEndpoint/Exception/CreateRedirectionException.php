@@ -30,9 +30,7 @@ class CreateRedirectionException extends \Exception
     /**
      * CreateRedirectionException constructor.
      *
-     * @param Authorization $authorization
-     * @param string        $message
-     * @param null|string   $description
+     * @param null|string $description
      */
     public function __construct(Authorization $authorization, string $message, ?string $description)
     {
@@ -41,9 +39,6 @@ class CreateRedirectionException extends \Exception
         $this->description = $description;
     }
 
-    /**
-     * @return Authorization
-     */
     public function getAuthorization(): Authorization
     {
         return $this->authorization;

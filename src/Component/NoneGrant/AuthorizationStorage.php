@@ -20,10 +20,5 @@ use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
  */
 interface AuthorizationStorage
 {
-    /**
-     * @param Authorization $authorization
-     *
-     * @return mixed
-     */
     public function save(Authorization $authorization);
 }

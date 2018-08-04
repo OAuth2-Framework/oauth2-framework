@@ -27,8 +27,6 @@ final class SubjectTypeRule implements Rule
 
     /**
      * SubjectTypeRule constructor.
-     *
-     * @param UserInfo $userinfo
      */
     public function __construct(UserInfo $userinfo)
     {

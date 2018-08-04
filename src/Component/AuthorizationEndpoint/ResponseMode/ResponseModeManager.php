@@ -37,8 +37,6 @@ class ResponseModeManager
     }
 
     /**
-     * @param ResponseMode $responseMode
-     *
      * @return ResponseModeManager
      */
     public function add(ResponseMode $responseMode)
@@ -48,22 +46,13 @@ class ResponseModeManager
         return $this;
     }
 
-    /**
-     * @param string $name
-     *
-     * @return bool
-     */
     public function has(string $name): bool
     {
         return \array_key_exists($name, $this->responseModes);
     }
 
     /**
-     * @param string $name
-     *
      * @throws \InvalidArgumentException
-     *
-     * @return ResponseMode
      */
     public function get(string $name): ResponseMode
     {

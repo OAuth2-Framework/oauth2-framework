@@ -31,8 +31,6 @@ class AccessTokenIdGenerator implements AccessTokenIdGeneratorInterface
 
     /**
      * AccessTokenManager constructor.
-     *
-     * @param AccessTokenRepository $repository
      */
     public function __construct(AccessTokenRepository $repository)
     {
@@ -44,7 +42,7 @@ class AccessTokenIdGenerator implements AccessTokenIdGeneratorInterface
      */
     public function createAccessTokenId(ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, ?ResourceServerId $resourceServerId): AccessTokenId
     {
-        return AccessTokenId::create(Base64Url::encode(\random_bytes(32)));
+        return new AccessTokenId(Base64Url::encode(\random_bytes(32)));
     }
 
     /**

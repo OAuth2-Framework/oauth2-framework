@@ -13,11 +13,11 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\ClientAuthentication\Tests;
 
+use OAuth2Framework\Component\ClientAuthentication\ClientSecretPost;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
-use OAuth2Framework\Component\ClientAuthentication\ClientSecretPost;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ServerRequestInterface;
@@ -36,8 +36,8 @@ final class ClientSecretPostAuthenticationMethodTest extends TestCase
     {
         $method = new ClientSecretPost();
 
-        self::assertEquals([], $method->getSchemesParameters());
-        self::assertEquals(['client_secret_post'], $method->getSupportedMethods());
+        static::assertEquals([], $method->getSchemesParameters());
+        static::assertEquals(['client_secret_post'], $method->getSupportedMethods());
     }
 
     /**
@@ -49,8 +49,8 @@ final class ClientSecretPostAuthenticationMethodTest extends TestCase
         $request = $this->buildRequest([]);
 
         $clientId = $method->findClientIdAndCredentials($request->reveal(), $credentials);
-        self::assertNull($clientId);
-        self::assertNull($credentials);
+        static::assertNull($clientId);
+        static::assertNull($credentials);
     }
 
     /**
@@ -62,8 +62,8 @@ final class ClientSecretPostAuthenticationMethodTest extends TestCase
         $request = $this->buildRequest(['client_id' => 'CLIENT_ID']);
 
         $clientId = $method->findClientIdAndCredentials($request->reveal(), $credentials);
-        self::assertNull($clientId);
-        self::assertNull($credentials);
+        static::assertNull($clientId);
+        static::assertNull($credentials);
     }
 
     /**
@@ -78,8 +78,8 @@ final class ClientSecretPostAuthenticationMethodTest extends TestCase
         ]);
 
         $clientId = $method->findClientIdAndCredentials($request->reveal(), $credentials);
-        self::assertInstanceOf(ClientId::class, $clientId);
-        self::assertEquals('CLIENT_SECRET', $credentials);
+        static::assertInstanceOf(ClientId::class, $clientId);
+        static::assertEquals('CLIENT_SECRET', $credentials);
     }
 
     /**
@@ -94,14 +94,14 @@ final class ClientSecretPostAuthenticationMethodTest extends TestCase
         ]);
         $client = Client::createEmpty();
         $client = $client->create(
-            ClientId::create('CLIENT_ID'),
-            DataBag::create([
+            new ClientId('CLIENT_ID'),
+            new DataBag([
                 'client_secret' => 'CLIENT_SECRET',
             ]),
-            UserAccountId::create('USER_ACCOUNT_ID')
+            new UserAccountId('USER_ACCOUNT_ID')
         );
 
-        self::assertTrue($method->isClientAuthenticated($client, 'CLIENT_SECRET', $request->reveal()));
+        static::assertTrue($method->isClientAuthenticated($client, 'CLIENT_SECRET', $request->reveal()));
     }
 
     /**
@@ -110,10 +110,10 @@ final class ClientSecretPostAuthenticationMethodTest extends TestCase
     public function theClientConfigurationCanBeChecked()
     {
         $method = new ClientSecretPost();
-        $validatedParameters = $method->checkClientConfiguration(DataBag::create([]), DataBag::create([]));
+        $validatedParameters = $method->checkClientConfiguration(new DataBag([]), new DataBag([]));
 
-        self::assertTrue($validatedParameters->has('client_secret'));
-        self::assertTrue($validatedParameters->has('client_secret_expires_at'));
+        static::assertTrue($validatedParameters->has('client_secret'));
+        static::assertTrue($validatedParameters->has('client_secret_expires_at'));
     }
 
     private function buildRequest(array $data): ObjectProphecy

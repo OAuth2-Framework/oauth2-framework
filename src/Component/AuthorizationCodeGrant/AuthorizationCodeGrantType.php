@@ -14,31 +14,19 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\AuthorizationCodeGrant;
 
 use OAuth2Framework\Component\AuthorizationCodeGrant\PKCEMethod\PKCEMethodManager;
-use OAuth2Framework\Component\TokenEndpoint\GrantTypeData;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Message\OAuth2Message;
-use OAuth2Framework\Component\TokenEndpoint\GrantType;
-use Psr\Http\Message\ServerRequestInterface;
 use OAuth2Framework\Component\Core\Util\RequestBodyParser;
+use OAuth2Framework\Component\TokenEndpoint\GrantType;
+use OAuth2Framework\Component\TokenEndpoint\GrantTypeData;
+use Psr\Http\Message\ServerRequestInterface;
 
 final class AuthorizationCodeGrantType implements GrantType
 {
-    /**
-     * @var AuthorizationCodeRepository
-     */
     private $authorizationCodeRepository;
 
-    /**
-     * @var PKCEMethodManager
-     */
     private $pkceMethodManager;
 
-    /**
-     * AuthorizationCodeGrantType constructor.
-     *
-     * @param AuthorizationCodeRepository $authorizationCodeRepository
-     * @param PKCEMethodManager           $pkceMethodManager
-     */
     public function __construct(AuthorizationCodeRepository $authorizationCodeRepository, PKCEMethodManager $pkceMethodManager)
     {
         $this->authorizationCodeRepository = $authorizationCodeRepository;
@@ -110,24 +98,17 @@ final class AuthorizationCodeGrantType implements GrantType
         }
 
         $grantTypeData->getMetadata()->with('redirect_uri', $redirectUri);
-        $grantTypeData->getMetadata()->with('authorization_code_id', $authorizationCode->getAuthorizationCodeId()->getValue());
+        $grantTypeData->getMetadata()->with('authorization_code_id', $authorizationCode->getTokenId()->getValue());
         $grantTypeData->withResourceOwnerId($authorizationCode->getResourceOwnerId());
-        $authorizationCode = $authorizationCode->markAsUsed();
+        $authorizationCode->markAsUsed();
         $this->authorizationCodeRepository->save($authorizationCode);
 
         return $grantTypeData;
     }
 
-    /**
-     * @param string $code
-     *
-     * @throws OAuth2Message
-     *
-     * @return AuthorizationCode
-     */
-    private function getAuthorizationCode(string $code)
+    private function getAuthorizationCode(string $code): AuthorizationCode
     {
-        $authorizationCode = $this->authorizationCodeRepository->find(AuthorizationCodeId::create($code));
+        $authorizationCode = $this->authorizationCodeRepository->find(new AuthorizationCodeId($code));
 
         if (!$authorizationCode instanceof AuthorizationCode) {
             throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_GRANT, 'The parameter "code" is invalid.');
@@ -136,13 +117,7 @@ final class AuthorizationCodeGrantType implements GrantType
         return $authorizationCode;
     }
 
-    /**
-     * @param Client $client
-     * @param array  $parameters
-     *
-     * @throws OAuth2Message
-     */
-    private function checkClient(Client $client, array $parameters)
+    private function checkClient(Client $client, array $parameters): void
     {
         if (true === $client->isPublic()) {
             if (!\array_key_exists('client_id', $parameters) || $client->getPublicId()->getValue() !== $parameters['client_id']) {
@@ -151,13 +126,7 @@ final class AuthorizationCodeGrantType implements GrantType
         }
     }
 
-    /**
-     * @param AuthorizationCode $authorizationCode
-     * @param array             $parameters
-     *
-     * @throws OAuth2Message
-     */
-    private function checkPKCE(AuthorizationCode $authorizationCode, array $parameters)
+    private function checkPKCE(AuthorizationCode $authorizationCode, array $parameters): void
     {
         $params = $authorizationCode->getQueryParams();
         if (!\array_key_exists('code_challenge', $params)) {
@@ -182,26 +151,14 @@ final class AuthorizationCodeGrantType implements GrantType
         }
     }
 
-    /**
-     * @param AuthorizationCode $authorizationCode
-     * @param string            $redirectUri
-     *
-     * @throws OAuth2Message
-     */
-    private function checkRedirectUri(AuthorizationCode $authorizationCode, string $redirectUri)
+    private function checkRedirectUri(AuthorizationCode $authorizationCode, string $redirectUri): void
     {
         if ($redirectUri !== $authorizationCode->getRedirectUri()) {
             throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, 'The parameter "redirect_uri" is invalid.');
         }
     }
 
-    /**
-     * @param AuthorizationCode $authorizationCode
-     * @param Client            $client
-     *
-     * @throws OAuth2Message
-     */
-    private function checkAuthorizationCode(AuthorizationCode $authorizationCode, Client $client)
+    private function checkAuthorizationCode(AuthorizationCode $authorizationCode, Client $client): void
     {
         if ($client->getPublicId()->getValue() !== $authorizationCode->getClientId()->getValue()) {
             throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_GRANT, 'The parameter "code" is invalid.');

@@ -25,6 +25,6 @@ final class RandomClientIdGenerator implements ClientIdGenerator
     {
         $value = \bin2hex(\random_bytes(32));
 
-        return ClientId::create($value);
+        return new ClientId($value);
     }
 }

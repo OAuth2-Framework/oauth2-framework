@@ -13,9 +13,9 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Form\Handler;
 
-use OAuth2Framework\ServerBundle\Form\Model\AuthorizationModel;
 use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
 use OAuth2Framework\Component\Core\Message\OAuth2Message;
+use OAuth2Framework\ServerBundle\Form\Model\AuthorizationModel;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Component\Form\ClickableInterface;

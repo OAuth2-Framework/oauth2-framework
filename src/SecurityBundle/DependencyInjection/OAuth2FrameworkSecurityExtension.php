@@ -32,8 +32,6 @@ final class OAuth2FrameworkSecurityExtension extends Extension
 
     /**
      * OAuth2FrameworkSecurityExtension constructor.
-     *
-     * @param string $alias
      */
     public function __construct(string $alias)
     {

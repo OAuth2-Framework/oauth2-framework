@@ -32,9 +32,6 @@ class IssuerDiscoveryFactory
 
     /**
      * IssuerDiscoveryFactory constructor.
-     *
-     * @param ResponseFactory           $responseFactory
-     * @param IdentifierResolverManager $identifierResolverManager
      */
     public function __construct(ResponseFactory $responseFactory, IdentifierResolverManager $identifierResolverManager)
     {
@@ -42,13 +39,6 @@ class IssuerDiscoveryFactory
         $this->identifierResolverManager = $identifierResolverManager;
     }
 
-    /**
-     * @param ResourceRepository $resourceManager
-     * @param string             $server
-     * @param int                $port
-     *
-     * @return IssuerDiscoveryEndpoint
-     */
     public function create(ResourceRepository $resourceManager, string $server, int $port): IssuerDiscoveryEndpoint
     {
         return new IssuerDiscoveryEndpoint($resourceManager, $this->responseFactory, $this->identifierResolverManager, $server, $port);

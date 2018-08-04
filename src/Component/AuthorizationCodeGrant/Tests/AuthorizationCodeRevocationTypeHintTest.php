@@ -37,7 +37,7 @@ final class AuthorizationCodeRevocationTypeHintTest extends TestCase
     protected function setUp()
     {
         if (!\interface_exists(TokenTypeHint::class)) {
-            $this->markTestSkipped('The component "oauth2-framework/token-revocation-endpoint" is not installed.');
+            static::markTestSkipped('The component "oauth2-framework/token-revocation-endpoint" is not installed.');
         }
     }
 
@@ -46,7 +46,7 @@ final class AuthorizationCodeRevocationTypeHintTest extends TestCase
      */
     public function genericInformation()
     {
-        self::assertEquals('auth_code', $this->getAuthorizationCodeRevocationTypeHint()->hint());
+        static::assertEquals('auth_code', $this->getAuthorizationCodeRevocationTypeHint()->hint());
     }
 
     /**
@@ -54,11 +54,11 @@ final class AuthorizationCodeRevocationTypeHintTest extends TestCase
      */
     public function theTokenTypeHintCanFindATokenAndRevokeIt()
     {
-        self::assertNull($this->getAuthorizationCodeRevocationTypeHint()->find('UNKNOWN_TOKEN_ID'));
+        static::assertNull($this->getAuthorizationCodeRevocationTypeHint()->find('UNKNOWN_TOKEN_ID'));
         $authorizationCode = $this->getAuthorizationCodeRevocationTypeHint()->find('AUTHORIZATION_CODE_ID');
-        self::assertInstanceOf(AuthorizationCode::class, $authorizationCode);
+        static::assertInstanceOf(AuthorizationCode::class, $authorizationCode);
         $this->getAuthorizationCodeRevocationTypeHint()->revoke($authorizationCode);
-        self::assertTrue(true);
+        static::assertTrue(true);
     }
 
     /**
@@ -66,25 +66,21 @@ final class AuthorizationCodeRevocationTypeHintTest extends TestCase
      */
     private $authorizationCodeRevocationTypeHint = null;
 
-    /**
-     * @return AuthorizationCodeRevocationTypeHint
-     */
     public function getAuthorizationCodeRevocationTypeHint(): AuthorizationCodeRevocationTypeHint
     {
         if (null === $this->authorizationCodeRevocationTypeHint) {
-            $authorizationCode = AuthorizationCode::createEmpty();
-            $authorizationCode = $authorizationCode->create(
-                AuthorizationCodeId::create('AUTHORIZATION_CODE_ID'),
-                ClientId::create('CLIENT_ID'),
-                UserAccountId::create('USER_ACCOUNT_ID'),
+            $authorizationCode = new AuthorizationCode(
+                new AuthorizationCodeId('AUTHORIZATION_CODE_ID'),
+                new ClientId('CLIENT_ID'),
+                new UserAccountId('USER_ACCOUNT_ID'),
                 [],
                 'http://localhost:8000',
                 new \DateTimeImmutable('now +1hour'),
-                DataBag::create([
+                new DataBag([
                     'scope' => 'scope1 scope2',
                 ]),
-                DataBag::create([]),
-                ResourceServerId::create('RESOURCE_SERVER_ID')
+                new DataBag([]),
+                new ResourceServerId('RESOURCE_SERVER_ID')
             );
             $authorizationCodeRepository = $this->prophesize(AuthorizationCodeRepository::class);
             $authorizationCodeRepository->find(Argument::type(AuthorizationCodeId::class))->will(function ($args) use ($authorizationCode) {
@@ -92,7 +88,7 @@ final class AuthorizationCodeRevocationTypeHintTest extends TestCase
                     return $authorizationCode;
                 }
 
-                return null;
+                return;
             });
             $authorizationCodeRepository->save(Argument::type(AuthorizationCode::class))->will(function () {
             });

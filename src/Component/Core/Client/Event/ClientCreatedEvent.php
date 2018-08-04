@@ -15,10 +15,10 @@ namespace OAuth2Framework\Component\Core\Client\Event;
 
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
+use OAuth2Framework\Component\Core\Domain\DomainObject;
 use OAuth2Framework\Component\Core\Event\Event;
 use OAuth2Framework\Component\Core\Id\Id;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
-use OAuth2Framework\Component\Core\Domain\DomainObject;
 
 class ClientCreatedEvent extends Event
 {
@@ -39,10 +39,6 @@ class ClientCreatedEvent extends Event
 
     /**
      * ClientCreatedEvent constructor.
-     *
-     * @param ClientId           $clientId
-     * @param DataBag            $parameters
-     * @param UserAccountId|null $userAccountId
      */
     protected function __construct(ClientId $clientId, DataBag $parameters, ?UserAccountId $userAccountId)
     {
@@ -52,10 +48,6 @@ class ClientCreatedEvent extends Event
     }
 
     /**
-     * @param ClientId           $clientId
-     * @param DataBag            $parameters
-     * @param UserAccountId|null $userAccountId
-     *
      * @return ClientCreatedEvent
      */
     public static function create(ClientId $clientId, DataBag $parameters, ?UserAccountId $userAccountId): self
@@ -68,9 +60,9 @@ class ClientCreatedEvent extends Event
      */
     public static function createFromJson(\stdClass $json): DomainObject
     {
-        $clientId = ClientId::create($json->domain_id);
-        $userAccountId = null === $json->payload->user_account_id ? null : UserAccountId::create($json->payload->user_account_id);
-        $parameters = DataBag::create((array) $json->payload->parameters);
+        $clientId = new ClientId($json->domain_id);
+        $userAccountId = null === $json->payload->user_account_id ? null : new UserAccountId($json->payload->user_account_id);
+        $parameters = new DataBag((array) $json->payload->parameters);
 
         return new self(
             $clientId,
@@ -106,17 +98,11 @@ class ClientCreatedEvent extends Event
         ];
     }
 
-    /**
-     * @return ClientId
-     */
     public function getClientId(): ClientId
     {
         return $this->clientId;
     }
 
-    /**
-     * @return DataBag
-     */
     public function getParameters(): DataBag
     {
         return $this->parameters;

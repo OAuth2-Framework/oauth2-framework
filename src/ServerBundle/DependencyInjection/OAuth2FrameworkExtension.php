@@ -34,7 +34,6 @@ final class OAuth2FrameworkExtension extends Extension implements PrependExtensi
     /**
      * OAuth2FrameworkExtension constructor.
      *
-     * @param string      $alias
      * @param Component[] $components
      */
     public function __construct(string $alias, array $components)
@@ -64,12 +63,6 @@ final class OAuth2FrameworkExtension extends Extension implements PrependExtensi
         }
     }
 
-    /**
-     * @param array            $configs
-     * @param ContainerBuilder $container
-     *
-     * @return Configuration
-     */
     public function getConfiguration(array $configs, ContainerBuilder $container): Configuration
     {
         return new Configuration($this->getAlias(), $this->components);

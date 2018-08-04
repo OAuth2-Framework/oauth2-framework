@@ -37,7 +37,7 @@ class JwtBearerGrantTest extends WebTestCase
     protected function setUp()
     {
         if (!\class_exists(JwtBearerGrantType::class)) {
-            $this->markTestSkipped('The component "oauth2-framework/jwt-bearer-grant" is not installed.');
+            static::markTestSkipped('The component "oauth2-framework/jwt-bearer-grant" is not installed.');
         }
     }
 
@@ -49,8 +49,8 @@ class JwtBearerGrantTest extends WebTestCase
         $client = static::createClient();
         $client->request('POST', '/token/get', [], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
-        self::assertEquals(400, $response->getStatusCode());
-        self::assertEquals('{"error":"invalid_request","error_description":"The \"grant_type\" parameter is missing."}', $response->getContent());
+        static::assertEquals(400, $response->getStatusCode());
+        static::assertEquals('{"error":"invalid_request","error_description":"The \"grant_type\" parameter is missing."}', $response->getContent());
     }
 
     /**
@@ -61,8 +61,8 @@ class JwtBearerGrantTest extends WebTestCase
         $client = static::createClient();
         $client->request('POST', '/token/get', ['grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer'], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
-        self::assertEquals(400, $response->getStatusCode());
-        self::assertEquals('{"error":"invalid_request","error_description":"Missing grant type parameter(s): assertion."}', $response->getContent());
+        static::assertEquals(400, $response->getStatusCode());
+        static::assertEquals('{"error":"invalid_request","error_description":"Missing grant type parameter(s): assertion."}', $response->getContent());
     }
 
     /**
@@ -73,8 +73,8 @@ class JwtBearerGrantTest extends WebTestCase
         $client = static::createClient();
         $client->request('POST', '/token/get', ['grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer', 'assertion' => 'FOO'], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
-        self::assertEquals(400, $response->getStatusCode());
-        self::assertEquals('{"error":"invalid_request","error_description":"Unsupported input"}', $response->getContent());
+        static::assertEquals(400, $response->getStatusCode());
+        static::assertEquals('{"error":"invalid_request","error_description":"Unsupported input"}', $response->getContent());
     }
 
     /**
@@ -86,8 +86,8 @@ class JwtBearerGrantTest extends WebTestCase
         $assertion = $this->createAnAssertionWithoutClaim();
         $client->request('POST', '/token/get', ['grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer', 'assertion' => $assertion], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
-        self::assertEquals(400, $response->getStatusCode());
-        self::assertEquals('{"error":"invalid_request","error_description":"The following claim(s) is/are mandatory: \"iss, sub, aud, exp\"."}', $response->getContent());
+        static::assertEquals(400, $response->getStatusCode());
+        static::assertEquals('{"error":"invalid_request","error_description":"The following claim(s) is/are mandatory: \"iss, sub, aud, exp\"."}', $response->getContent());
     }
 
     /**
@@ -99,8 +99,8 @@ class JwtBearerGrantTest extends WebTestCase
         $assertion = $this->createAnAssertionWithoutSubject();
         $client->request('POST', '/token/get', ['grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer', 'assertion' => $assertion], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
-        self::assertEquals(400, $response->getStatusCode());
-        self::assertEquals('{"error":"invalid_request","error_description":"The following claim(s) is/are mandatory: \"sub, aud, exp\"."}', $response->getContent());
+        static::assertEquals(400, $response->getStatusCode());
+        static::assertEquals('{"error":"invalid_request","error_description":"The following claim(s) is/are mandatory: \"sub, aud, exp\"."}', $response->getContent());
     }
 
     /**
@@ -112,8 +112,8 @@ class JwtBearerGrantTest extends WebTestCase
         $assertion = $this->createAnAssertionWithoutAudience();
         $client->request('POST', '/token/get', ['grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer', 'assertion' => $assertion], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
-        self::assertEquals(400, $response->getStatusCode());
-        self::assertEquals('{"error":"invalid_request","error_description":"The following claim(s) is/are mandatory: \"aud, exp\"."}', $response->getContent());
+        static::assertEquals(400, $response->getStatusCode());
+        static::assertEquals('{"error":"invalid_request","error_description":"The following claim(s) is/are mandatory: \"aud, exp\"."}', $response->getContent());
     }
 
     /**
@@ -125,8 +125,8 @@ class JwtBearerGrantTest extends WebTestCase
         $assertion = $this->createAnAssertionWithoutExpirationTime();
         $client->request('POST', '/token/get', ['grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer', 'assertion' => $assertion], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
-        self::assertEquals(400, $response->getStatusCode());
-        self::assertEquals('{"error":"invalid_request","error_description":"The following claim(s) is/are mandatory: \"exp\"."}', $response->getContent());
+        static::assertEquals(400, $response->getStatusCode());
+        static::assertEquals('{"error":"invalid_request","error_description":"The following claim(s) is/are mandatory: \"exp\"."}', $response->getContent());
     }
 
     /**
@@ -138,13 +138,10 @@ class JwtBearerGrantTest extends WebTestCase
         $assertion = $this->createAValidAssertion();
         $client->request('POST', '/token/get', ['grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer', 'assertion' => $assertion], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
-        self::assertEquals(200, $response->getStatusCode());
+        static::assertEquals(200, $response->getStatusCode());
         self::assertRegexp('/\{"token_type"\:"Bearer","access_token"\:"[0-9a-zA-Z-_]+","expires_in":[0-9]{4}\}/', $response->getContent());
     }
 
-    /**
-     * @return string
-     */
     private function createAnAssertionWithoutClaim(): string
     {
         $jwk = JWK::create([
@@ -158,9 +155,6 @@ class JwtBearerGrantTest extends WebTestCase
         //$jwk = JWK::createFromJson('{"kty":"RSA","n":"sLjaCStJYRr_y7_3GLlDb4bnGJ8XirSdFboYmvA38NXJ6PhIIjr-sFzfwlcpxZxz6zzjXkDFs3AcUOvC3_KRT5tn4XBOHcR6ABrT65dZTe_qalEpYeQG4oxevc01vmD_dD6Ho2O69amT4gscus2pvszFPdraMYybH24aQFztVtc","e":"AQAB","d":"By-tJhxNgpZfeoCW4rl95YYd1aF6iphnnt-PapWEINYAvOmDvWiavL86FiQHPdLr38_9CvMlVvOjIyNDLGonwHynPxAzUsT7M891N9D0cSCv9DlV3uqRVtdqF4MtWtpU5JWJ9q6auL1UPx2tJhOygu9tJ7w0bTGFwrUdb8PSnlE","p":"3p-6HWbX9YcSkeksJXW3_Y2cfZgRCUXH2or1dIidmscb4VVtTUwb-8gGzUDEq4iS_5pgLARl3O4lOHK0n6Qbrw","q":"yzdrGWwgaWqK6e9VFv3NXGeq1TEKHLkXjF7J24XWKm9lSmlssPRv0NwMPVp_CJ39BrLfFtpFr_fh0oG1sVZ5WQ","dp":"UQ6rP0VQ4G77zfCuSD1ibol_LyONIGkt6V6rHHEZoV9ZwWPPVlOd5MDh6R3p_eLOUw6scZpwVE7JcpIhPfcMtQ","dq":"Jg8g_cfkYhnUHm_2bbHm7jF0Ky1eCXcY0-9Eutpb--KVA9SuyI1fC6zKlgsG06RTKRgC9BK5DnXMU1J7ptTdMQ","qi":"17kC87NLUV6z-c-wtmbNqAkDbKmwpb2RMsGUQmhEPJwnWuwEKZpSQz776SUVwoc0xiQ8DpvU_FypflIlm6fq9w"}');
     }
 
-    /**
-     * @return string
-     */
     private function createAnAssertionWithoutSubject(): string
     {
         $jwk = JWK::create([
@@ -173,9 +167,6 @@ class JwtBearerGrantTest extends WebTestCase
         return $this->sign($claims, $jwk);
     }
 
-    /**
-     * @return string
-     */
     private function createAnAssertionWithoutAudience(): string
     {
         $jwk = JWK::create([
@@ -188,9 +179,6 @@ class JwtBearerGrantTest extends WebTestCase
         return $this->sign($claims, $jwk);
     }
 
-    /**
-     * @return string
-     */
     private function createAnAssertionWithoutExpirationTime(): string
     {
         $jwk = JWK::create([
@@ -207,9 +195,6 @@ class JwtBearerGrantTest extends WebTestCase
         return $this->sign($claims, $jwk);
     }
 
-    /**
-     * @return string
-     */
     private function createAValidAssertion(): string
     {
         $jwk = JWK::create([
@@ -227,12 +212,6 @@ class JwtBearerGrantTest extends WebTestCase
         return $this->sign($claims, $jwk);
     }
 
-    /**
-     * @param array $claims
-     * @param JWK   $jwk
-     *
-     * @return string
-     */
     private function sign(array $claims, JWK $jwk): string
     {
         $jsonConverter = new StandardConverter();

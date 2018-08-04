@@ -24,10 +24,5 @@ interface ResourceServerRepository
      */
     public function find(ResourceServerId $resourceServerId): ?ResourceServer;
 
-    /**
-     * @param ResourceId $resourceId
-     *
-     * @return bool
-     */
     public function supports(ResourceId $resourceId): bool;
 }

@@ -36,7 +36,7 @@ final class None implements AuthenticationMethod
     {
         $parameters = RequestBodyParser::parseFormUrlEncoded($request);
         if (\array_key_exists('client_id', $parameters)) {
-            return ClientId::create($parameters['client_id']);
+            return new ClientId($parameters['client_id']);
         }
 
         return null;

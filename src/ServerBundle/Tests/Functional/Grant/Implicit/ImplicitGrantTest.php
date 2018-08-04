@@ -30,7 +30,7 @@ class ImplicitGrantTest extends WebTestCase
     protected function setUp()
     {
         if (!\class_exists(ImplicitGrantType::class)) {
-            $this->markTestSkipped('The component "oauth2-framework/implicit-grant" is not installed.');
+            static::markTestSkipped('The component "oauth2-framework/implicit-grant" is not installed.');
         }
     }
 
@@ -42,7 +42,7 @@ class ImplicitGrantTest extends WebTestCase
         $client = static::createClient();
         $client->request('POST', '/token/get', [], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
-        self::assertEquals('{"error":"invalid_request","error_description":"The \"grant_type\" parameter is missing."}', $response->getContent());
+        static::assertEquals('{"error":"invalid_request","error_description":"The \"grant_type\" parameter is missing."}', $response->getContent());
     }
 
     /**
@@ -53,7 +53,7 @@ class ImplicitGrantTest extends WebTestCase
         $client = static::createClient();
         $client->request('POST', '/token/get', ['grant_type' => 'implicit'], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
-        self::assertEquals(400, $response->getStatusCode());
-        self::assertEquals('{"error":"invalid_grant","error_description":"The implicit grant type cannot be called from the token endpoint."}', $response->getContent());
+        static::assertEquals(400, $response->getStatusCode());
+        static::assertEquals('{"error":"invalid_grant","error_description":"The implicit grant type cannot be called from the token endpoint."}', $response->getContent());
     }
 }

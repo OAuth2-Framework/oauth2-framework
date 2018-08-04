@@ -15,15 +15,5 @@ namespace OAuth2Framework\Component\Core\Domain;
 
 interface DomainObject extends \JsonSerializable
 {
-    /**
-     * @return string
-     */
     public static function getSchema(): string;
-
-    /**
-     * @param \stdClass $json
-     *
-     * @return DomainObject
-     */
-    public static function createFromJson(\stdClass $json): self;
 }

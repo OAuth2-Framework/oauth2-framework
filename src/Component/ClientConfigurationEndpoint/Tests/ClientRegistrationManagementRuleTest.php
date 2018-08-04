@@ -25,21 +25,18 @@ final class ClientRegistrationManagementRuleTest extends TestCase
     /**
      * @test
      */
-    public function testClientRegistrationManagementRuleSetAsDefault()
+    public function clientRegistrationManagementRuleSetAsDefault()
     {
-        $clientId = ClientId::create('CLIENT_ID');
-        $commandParameters = DataBag::create([]);
+        $clientId = new ClientId('CLIENT_ID');
+        $commandParameters = new DataBag([]);
         $rule = new ClientConfigurationRouteRule();
-        $validatedParameters = $rule->handle($clientId, $commandParameters, DataBag::create([]), $this->getCallable());
+        $validatedParameters = $rule->handle($clientId, $commandParameters, new DataBag([]), $this->getCallable());
 
-        self::assertTrue($validatedParameters->has('registration_access_token'));
-        self::assertTrue($validatedParameters->has('registration_client_uri'));
-        self::assertEquals('https://www.example.com/client/CLIENT_ID', $validatedParameters->get('registration_client_uri'));
+        static::assertTrue($validatedParameters->has('registration_access_token'));
+        static::assertTrue($validatedParameters->has('registration_client_uri'));
+        static::assertEquals('https://www.example.com/client/CLIENT_ID', $validatedParameters->get('registration_client_uri'));
     }
 
-    /**
-     * @return callable
-     */
     private function getCallable(): callable
     {
         return function (ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters): DataBag {

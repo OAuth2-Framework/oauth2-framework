@@ -13,11 +13,11 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Core\Tests\TokenType;
 
-use Prophecy\Argument;
-use Psr\Http\Message\ServerRequestInterface;
 use OAuth2Framework\Component\Core\TokenType\TokenType;
 use OAuth2Framework\Component\Core\TokenType\TokenTypeManager;
 use PHPUnit\Framework\TestCase;
+use Prophecy\Argument;
+use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * @group TokenType
@@ -29,12 +29,12 @@ final class TokenTypeTest extends TestCase
      */
     public function aTokenTypeManagerCanHandleTokenTypes()
     {
-        self::assertTrue($this->getTokenTypeManager()->has('foo'));
-        self::assertInstanceOf(TokenType::class, $this->getTokenTypeManager()->get('foo'));
-        self::assertNotEmpty($this->getTokenTypeManager()->all());
-        self::assertInstanceOf(TokenType::class, $this->getTokenTypeManager()->getDefault());
-        self::assertEquals(['FOO foo="bar",OOO=123'], $this->getTokenTypeManager()->getSchemes(['foo' => 'bar', 'OOO' => 123]));
-        self::assertEquals(['FOO'], $this->getTokenTypeManager()->getSchemes());
+        static::assertTrue($this->getTokenTypeManager()->has('foo'));
+        static::assertInstanceOf(TokenType::class, $this->getTokenTypeManager()->get('foo'));
+        static::assertNotEmpty($this->getTokenTypeManager()->all());
+        static::assertInstanceOf(TokenType::class, $this->getTokenTypeManager()->getDefault());
+        static::assertEquals(['FOO foo="bar",OOO=123'], $this->getTokenTypeManager()->getSchemes(['foo' => 'bar', 'OOO' => 123]));
+        static::assertEquals(['FOO'], $this->getTokenTypeManager()->getSchemes());
     }
 
     /**
@@ -56,7 +56,7 @@ final class TokenTypeTest extends TestCase
         $tokenType = null;
         $request = $this->prophesize(ServerRequestInterface::class);
 
-        self::assertEquals('__--TOKEN--__', $this->getTokenTypeManager()->findToken($request->reveal(), $additionalCredentialValues, $tokenType));
+        static::assertEquals('__--TOKEN--__', $this->getTokenTypeManager()->findToken($request->reveal(), $additionalCredentialValues, $tokenType));
     }
 
     /**
@@ -64,9 +64,6 @@ final class TokenTypeTest extends TestCase
      */
     private $tokenTypeManager = null;
 
-    /**
-     * @return TokenTypeManager
-     */
     private function getTokenTypeManager(): TokenTypeManager
     {
         if (null === $this->tokenTypeManager) {

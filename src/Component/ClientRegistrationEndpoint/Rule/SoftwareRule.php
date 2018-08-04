@@ -41,12 +41,6 @@ final class SoftwareRule implements Rule
      */
     private $allowedSignatureAlgorithms;
 
-    /**
-     * @param JWSLoader $jwsLoader
-     * @param JWKSet    $signatureKeySet
-     * @param bool      $isSoftwareStatementRequired
-     * @param array     $allowedSignatureAlgorithms
-     */
     public function __construct(JWSLoader $jwsLoader, JWKSet $signatureKeySet, bool $isSoftwareStatementRequired, array $allowedSignatureAlgorithms)
     {
         $this->jwsLoader = $jwsLoader;
@@ -55,9 +49,6 @@ final class SoftwareRule implements Rule
         $this->allowedSignatureAlgorithms = $allowedSignatureAlgorithms;
     }
 
-    /**
-     * @return bool
-     */
     public function isSoftwareStatementRequired(): bool
     {
         return $this->isSoftwareStatementRequired;
@@ -96,11 +87,6 @@ final class SoftwareRule implements Rule
         return $validatedParameters;
     }
 
-    /**
-     * @param string $software_statement
-     *
-     * @return array
-     */
     private function loadSoftwareStatement(string $software_statement): array
     {
         try {

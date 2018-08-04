@@ -21,8 +21,6 @@ class ResponseTypeManager
     private $responseTypes = [];
 
     /**
-     * @param ResponseType $responseType
-     *
      * @return ResponseTypeManager
      */
     public function add(ResponseType $responseType): self
@@ -32,22 +30,13 @@ class ResponseTypeManager
         return $this;
     }
 
-    /**
-     * @param string $responseType
-     *
-     * @return bool
-     */
     public function has(string $responseType): bool
     {
         return \array_key_exists($responseType, $this->responseTypes);
     }
 
     /**
-     * @param string $responseType
-     *
      * @throws \InvalidArgumentException
-     *
-     * @return ResponseType
      */
     public function get(string $responseType): ResponseType
     {

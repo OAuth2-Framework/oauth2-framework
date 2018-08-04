@@ -14,8 +14,8 @@ declare(strict_types=1);
 namespace OAuth2Framework\SecurityBundle\Tests\TestBundle\Controller;
 
 use OAuth2Framework\Component\Core\AccessToken\AccessToken;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use OAuth2Framework\SecurityBundle\Annotation\OAuth2;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,8 +26,6 @@ use Symfony\Component\HttpFoundation\Response;
 class ApiController extends Controller
 {
     /**
-     * @param string $name
-     *
      * @return Response
      *
      * @Route("/hello/{name}", name="api_hello")
@@ -61,8 +59,6 @@ class ApiController extends Controller
 
     /**
      * @Route("/hello-resolver", name="api_resolver")
-     *
-     * @param AccessToken $accessToken
      *
      * @return Response
      */

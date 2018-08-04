@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Core\Util;
 
-use Psr\Http\Message\ServerRequestInterface;
 use League\Uri\QueryParser;
+use Psr\Http\Message\ServerRequestInterface;
 
 class RequestBodyParser
 {

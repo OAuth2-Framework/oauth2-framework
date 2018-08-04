@@ -14,16 +14,16 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\AuthorizationEndpoint;
 
 use Http\Message\MessageFactory;
-use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\ParameterCheckerManager;
-use OAuth2Framework\Component\AuthorizationEndpoint\UserAccount\UserAccountCheckerManager;
-use Psr\Http\Server\RequestHandlerInterface;
-use Psr\Http\Server\MiddlewareInterface;
 use OAuth2Framework\Component\AuthorizationEndpoint\ConsentScreen\ExtensionManager;
 use OAuth2Framework\Component\AuthorizationEndpoint\Exception\OAuth2AuthorizationException;
+use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\ParameterCheckerManager;
+use OAuth2Framework\Component\AuthorizationEndpoint\UserAccount\UserAccountCheckerManager;
 use OAuth2Framework\Component\AuthorizationEndpoint\UserAccount\UserAccountDiscovery;
 use OAuth2Framework\Component\Core\Message\OAuth2Message;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 abstract class AuthorizationEndpoint implements MiddlewareInterface
 {
@@ -59,13 +59,6 @@ abstract class AuthorizationEndpoint implements MiddlewareInterface
 
     /**
      * AuthorizationEndpoint constructor.
-     *
-     * @param MessageFactory             $messageFactory
-     * @param AuthorizationRequestLoader $authorizationRequestLoader
-     * @param ParameterCheckerManager    $parameterCheckerManager
-     * @param UserAccountDiscovery       $userAccountDiscovery
-     * @param UserAccountCheckerManager  $userAccountCheckerManager
-     * @param ExtensionManager           $consentScreenExtensionManager
      */
     public function __construct(MessageFactory $messageFactory, AuthorizationRequestLoader $authorizationRequestLoader, ParameterCheckerManager $parameterCheckerManager, UserAccountDiscovery $userAccountDiscovery, UserAccountCheckerManager $userAccountCheckerManager, ExtensionManager $consentScreenExtensionManager)
     {
@@ -77,20 +70,8 @@ abstract class AuthorizationEndpoint implements MiddlewareInterface
         $this->consentScreenExtensionManager = $consentScreenExtensionManager;
     }
 
-    /**
-     * @param ServerRequestInterface $request
-     * @param Authorization          $authorization
-     *
-     * @return ResponseInterface
-     */
     abstract protected function redirectToLoginPage(ServerRequestInterface $request, Authorization $authorization): ResponseInterface;
 
-    /**
-     * @param ServerRequestInterface $request
-     * @param Authorization          $authorization
-     *
-     * @return ResponseInterface
-     */
     abstract protected function processConsentScreen(ServerRequestInterface $request, Authorization $authorization): ResponseInterface;
 
     /**
@@ -143,11 +124,6 @@ abstract class AuthorizationEndpoint implements MiddlewareInterface
         }
     }
 
-    /**
-     * @param Authorization $authorization
-     *
-     * @return ResponseInterface
-     */
     protected function buildResponse(Authorization $authorization): ResponseInterface
     {
         $response = $authorization->getResponseMode()->buildResponse(
@@ -162,11 +138,6 @@ abstract class AuthorizationEndpoint implements MiddlewareInterface
         return $response;
     }
 
-    /**
-     * @param Authorization $authorization
-     * @param string        $error
-     * @param string        $errorDescription
-     */
     protected function throwRedirectionException(Authorization $authorization, string $error, string $errorDescription)
     {
         $params = $authorization->getResponseParameters();
@@ -181,11 +152,6 @@ abstract class AuthorizationEndpoint implements MiddlewareInterface
         throw new OAuth2Message(302, $error, $errorDescription, $params);
     }
 
-    /**
-     * @param ServerRequestInterface $request
-     *
-     * @return Authorization
-     */
     public function createAuthorizationFromRequest(ServerRequestInterface $request): Authorization
     {
         $authorization = $this->authorizationRequestLoader->load($request);

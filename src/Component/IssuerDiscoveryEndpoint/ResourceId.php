@@ -22,25 +22,18 @@ class ResourceId
 
     /**
      * TokenId constructor.
-     *
-     * @param string $value
      */
     protected function __construct(string $value)
     {
         $this->value = $value;
     }
 
-    /**
-     * @return string
-     */
     public function getValue(): string
     {
         return $this->value;
     }
 
     /**
-     * @param string $value
-     *
      * @return ResourceId
      */
     public static function create(string $value): self

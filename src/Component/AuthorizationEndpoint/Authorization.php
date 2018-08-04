@@ -17,8 +17,8 @@ use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\ResponseMode;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServer;
-use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 use OAuth2Framework\Component\Core\TokenType\TokenType;
+use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 
 class Authorization
 {
@@ -99,21 +99,15 @@ class Authorization
 
     /**
      * Authorization constructor.
-     *
-     * @param Client $client
-     * @param array  $queryParameters
      */
     private function __construct(Client $client, array $queryParameters)
     {
         $this->client = $client;
         $this->queryParameters = $queryParameters;
-        $this->metadata = DataBag::create([]);
+        $this->metadata = new DataBag([]);
     }
 
     /**
-     * @param Client $client
-     * @param array  $queryParameters
-     *
      * @return Authorization
      */
     public static function create(Client $client, array $queryParameters): self
@@ -121,29 +115,16 @@ class Authorization
         return new self($client, $queryParameters);
     }
 
-    /**
-     * @return array
-     */
     public function getQueryParams(): array
     {
         return $this->queryParameters;
     }
 
-    /**
-     * @param string $param
-     *
-     * @return bool
-     */
     public function hasQueryParam(string $param): bool
     {
         return \array_key_exists($param, $this->queryParameters);
     }
 
-    /**
-     * @param string $param
-     *
-     * @return mixed
-     */
     public function getQueryParam(string $param)
     {
         if (!$this->hasQueryParam($param)) {
@@ -153,17 +134,12 @@ class Authorization
         return $this->queryParameters[$param];
     }
 
-    /**
-     * @return Client
-     */
     public function getClient(): Client
     {
         return $this->client;
     }
 
     /**
-     * @param TokenType $tokenType
-     *
      * @return Authorization
      */
     public function withTokenType(TokenType $tokenType): self
@@ -182,8 +158,6 @@ class Authorization
     }
 
     /**
-     * @param ResponseType $responseType
-     *
      * @return Authorization
      */
     public function withResponseType(ResponseType $responseType): self
@@ -193,17 +167,12 @@ class Authorization
         return $this;
     }
 
-    /**
-     * @return ResponseType
-     */
     public function getResponseType(): ResponseType
     {
         return $this->responseType;
     }
 
     /**
-     * @param ResponseMode $responseMode
-     *
      * @return Authorization
      */
     public function withResponseMode(ResponseMode $responseMode): self
@@ -222,8 +191,6 @@ class Authorization
     }
 
     /**
-     * @param string $redirectUri
-     *
      * @return Authorization
      */
     public function withRedirectUri(string $redirectUri): self
@@ -234,9 +201,6 @@ class Authorization
         return $this;
     }
 
-    /**
-     * @return array|null
-     */
     public function getClaims(): ?array
     {
         if ($this->metadata->has('claims')) {
@@ -255,9 +219,6 @@ class Authorization
     }
 
     /**
-     * @param UserAccount $userAccount
-     * @param bool        $isFullyAuthenticated
-     *
      * @return Authorization
      */
     public function withUserAccount(UserAccount $userAccount, bool $isFullyAuthenticated): self
@@ -277,9 +238,6 @@ class Authorization
     }
 
     /**
-     * @param string $responseParameter
-     * @param mixed  $value
-     *
      * @return Authorization
      */
     public function withResponseParameter(string $responseParameter, $value): self
@@ -289,19 +247,11 @@ class Authorization
         return $this;
     }
 
-    /**
-     * @return array
-     */
     public function getResponseParameters(): array
     {
         return $this->responseParameters;
     }
 
-    /**
-     * @param string $param
-     *
-     * @return mixed
-     */
     public function getResponseParameter(string $param)
     {
         if (!$this->hasResponseParameter($param)) {
@@ -311,20 +261,12 @@ class Authorization
         return $this->getResponseParameters()[$param];
     }
 
-    /**
-     * @param string $param
-     *
-     * @return bool
-     */
     public function hasResponseParameter(string $param): bool
     {
         return \array_key_exists($param, $this->getResponseParameters());
     }
 
     /**
-     * @param string $responseHeader
-     * @param mixed  $value
-     *
      * @return Authorization
      */
     public function withResponseHeader(string $responseHeader, $value): self
@@ -334,17 +276,11 @@ class Authorization
         return $this;
     }
 
-    /**
-     * @return array
-     */
     public function getResponseHeaders(): array
     {
         return $this->responseHeaders;
     }
 
-    /**
-     * @return bool|null
-     */
     public function isUserAccountFullyAuthenticated(): ?bool
     {
         return $this->userAccountFullyAuthenticated;
@@ -362,9 +298,6 @@ class Authorization
         return \explode(' ', $this->getQueryParam('prompt'));
     }
 
-    /**
-     * @return bool
-     */
     public function hasUiLocales(): bool
     {
         return $this->hasQueryParam('ui_locales');
@@ -378,19 +311,11 @@ class Authorization
         return $this->hasQueryParam('ui_locales') ? \explode(' ', $this->getQueryParam('ui_locales')) : [];
     }
 
-    /**
-     * @param string $prompt
-     *
-     * @return bool
-     */
     public function hasPrompt(string $prompt): bool
     {
         return \in_array($prompt, $this->getPrompt(), true);
     }
 
-    /**
-     * @return bool
-     */
     public function isAuthorized(): bool
     {
         return $this->authorized;
@@ -416,21 +341,11 @@ class Authorization
         return $this;
     }
 
-    /**
-     * @param string $key
-     *
-     * @return bool
-     */
     public function hasData(string $key): bool
     {
         return \array_key_exists($key, $this->data);
     }
 
-    /**
-     * @param string $key
-     *
-     * @return mixed
-     */
     public function getData(string $key)
     {
         if (!$this->hasData($key)) {
@@ -441,9 +356,6 @@ class Authorization
     }
 
     /**
-     * @param string $key
-     * @param mixed  $data
-     *
      * @return Authorization
      */
     public function withData(string $key, $data): self
@@ -462,8 +374,6 @@ class Authorization
     }
 
     /**
-     * @param ResourceServer $resourceServer
-     *
      * @return Authorization
      */
     public function withResourceServer(ResourceServer $resourceServer): self
@@ -474,9 +384,6 @@ class Authorization
     }
 
     /**
-     * @param string $option
-     * @param mixed  $value
-     *
      * @return Authorization
      */
     public function withConsentScreenOption(string $option, $value): self
@@ -487,8 +394,6 @@ class Authorization
     }
 
     /**
-     * @param string $option
-     *
      * @return Authorization
      */
     public function withoutConsentScreenOption(string $option): self
@@ -507,9 +412,6 @@ class Authorization
         return $this->hasQueryParam('scope');
     }
 
-    /**
-     * @return string
-     */
     public function getScope(): string
     {
         return $this->getQueryParam('scope');

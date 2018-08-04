@@ -30,9 +30,6 @@ final class TwigFormPostResponseRenderer implements FormPostResponseRenderer
 
     /**
      * FormPostResponseMode constructor.
-     *
-     * @param EngineInterface $templateEngine
-     * @param string          $template
      */
     public function __construct(EngineInterface $templateEngine, string $template)
     {

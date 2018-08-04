@@ -30,9 +30,6 @@ class AuthenticationMethodManager
      */
     private $names = [];
 
-    /**
-     * @param AuthenticationMethod $method
-     */
     public function add(AuthenticationMethod $method): void
     {
         $class = \get_class($method);
@@ -50,23 +47,11 @@ class AuthenticationMethodManager
         return \array_keys($this->names);
     }
 
-    /**
-     * @param string $name
-     *
-     * @return bool
-     */
     public function has(string $name): bool
     {
         return \array_key_exists($name, $this->names);
     }
 
-    /**
-     * @param string $name
-     *
-     * @throws \InvalidArgumentException
-     *
-     * @return AuthenticationMethod
-     */
     public function get(string $name): AuthenticationMethod
     {
         if (!$this->has($name)) {
@@ -86,9 +71,8 @@ class AuthenticationMethodManager
     }
 
     /**
-     * @param ServerRequestInterface $request
-     * @param AuthenticationMethod   $authenticationMethod
-     * @param mixed                  $clientCredentials    The client credentials found in the request
+     * @param AuthenticationMethod $authenticationMethod
+     * @param mixed                $clientCredentials    The client credentials found in the request
      *
      * @throws OAuth2Message
      *
@@ -120,14 +104,6 @@ class AuthenticationMethodManager
         return $clientId;
     }
 
-    /**
-     * @param ServerRequestInterface $request
-     * @param Client                 $client
-     * @param AuthenticationMethod   $authenticationMethod
-     * @param mixed                  $clientCredentials
-     *
-     * @return bool
-     */
     public function isClientAuthenticated(ServerRequestInterface $request, Client $client, AuthenticationMethod $authenticationMethod, $clientCredentials): bool
     {
         if (\in_array($client->get('token_endpoint_auth_method'), $authenticationMethod->getSupportedMethods(), true)) {
@@ -155,11 +131,6 @@ class AuthenticationMethodManager
         return $schemes;
     }
 
-    /**
-     * @param array $additionalAuthenticationParameters
-     *
-     * @return array
-     */
     public function getSchemes(array $additionalAuthenticationParameters = []): array
     {
         $schemes = [];
@@ -176,12 +147,6 @@ class AuthenticationMethodManager
         return $schemes;
     }
 
-    /**
-     * @param string $scheme
-     * @param array  $parameters
-     *
-     * @return string
-     */
     private function appendParameters(string $scheme, array $parameters): string
     {
         $position = \mb_strpos($scheme, ' ', 0, 'utf-8');

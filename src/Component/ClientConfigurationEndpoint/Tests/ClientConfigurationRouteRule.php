@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\ClientConfigurationEndpoint\Tests;
 
-use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\ClientConfigurationEndpoint\Rule\ClientConfigurationRouteRule as Base;
+use OAuth2Framework\Component\Core\Client\ClientId;
 
 class ClientConfigurationRouteRule extends Base
 {

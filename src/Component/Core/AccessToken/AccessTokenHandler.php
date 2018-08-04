@@ -16,8 +16,6 @@ namespace OAuth2Framework\Component\Core\AccessToken;
 interface AccessTokenHandler
 {
     /**
-     * @param AccessTokenId $token
-     *
      * @return null|AccessToken
      */
     public function find(AccessTokenId $token): ?AccessToken;

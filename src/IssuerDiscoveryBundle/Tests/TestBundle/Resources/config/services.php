@@ -11,10 +11,10 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use OAuth2Framework\IssuerDiscoveryBundle\Tests\TestBundle\Entity\ResourceRepository;
 use OAuth2Framework\IssuerDiscoveryBundle\Tests\TestBundle\Service\ResponseFactory;
 use OAuth2Framework\IssuerDiscoveryBundle\Tests\TestBundle\Service\UriPathResolver;
+use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 return function (ContainerConfigurator $container) {
     $container = $container->services()->defaults()

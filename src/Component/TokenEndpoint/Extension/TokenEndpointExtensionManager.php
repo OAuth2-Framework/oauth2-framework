@@ -15,8 +15,8 @@ namespace OAuth2Framework\Component\TokenEndpoint\Extension;
 
 use OAuth2Framework\Component\Core\AccessToken\AccessToken;
 use OAuth2Framework\Component\Core\Client\Client;
-use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwner;
 use OAuth2Framework\Component\Core\Message\OAuth2Message;
+use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwner;
 use OAuth2Framework\Component\TokenEndpoint\GrantType;
 use OAuth2Framework\Component\TokenEndpoint\GrantTypeData;
 use Psr\Http\Message\ServerRequestInterface;
@@ -29,8 +29,6 @@ class TokenEndpointExtensionManager
     private $extensions = [];
 
     /**
-     * @param TokenEndpointExtension $tokenEndpointExtension
-     *
      * @return TokenEndpointExtensionManager
      */
     public function add(TokenEndpointExtension $tokenEndpointExtension): self
@@ -41,12 +39,6 @@ class TokenEndpointExtensionManager
     }
 
     /**
-     * @param ServerRequestInterface $request
-     * @param GrantTypeData          $grantTypeData
-     * @param GrantType              $grantType
-     *
-     * @return GrantTypeData
-     *
      * @throws OAuth2Message
      */
     public function handleBeforeAccessTokenIssuance(ServerRequestInterface $request, GrantTypeData $grantTypeData, GrantType $grantType): GrantTypeData
@@ -55,12 +47,6 @@ class TokenEndpointExtensionManager
     }
 
     /**
-     * @param Client        $client
-     * @param ResourceOwner $resourceOwner
-     * @param AccessToken   $accessToken
-     *
-     * @return array
-     *
      * @throws OAuth2Message
      */
     public function handleAfterAccessTokenIssuance(Client $client, ResourceOwner $resourceOwner, AccessToken $accessToken): array
@@ -69,10 +55,6 @@ class TokenEndpointExtensionManager
     }
 
     /**
-     * @param int $index
-     *
-     * @return callable
-     *
      * @throws OAuth2Message
      */
     private function getCallableBeforeAccessTokenIssuance(int $index): callable
@@ -90,10 +72,6 @@ class TokenEndpointExtensionManager
     }
 
     /**
-     * @param int $index
-     *
-     * @return callable
-     *
      * @throws OAuth2Message
      */
     private function getCallableAfterAccessTokenIssuance(int $index): callable

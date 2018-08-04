@@ -33,9 +33,6 @@ final class IdTokenAlgorithmsRule implements Rule
 
     /**
      * IdTokenAlgorithmsRule constructor.
-     *
-     * @param JWSBuilder      $jwsBuilder
-     * @param JWEBuilder|null $jweBuilder
      */
     public function __construct(JWSBuilder $jwsBuilder, ?JWEBuilder $jweBuilder)
     {
@@ -63,11 +60,6 @@ final class IdTokenAlgorithmsRule implements Rule
         return $next($clientId, $commandParameters, $validatedParameters);
     }
 
-    /**
-     * @param string  $parameter
-     * @param DataBag $commandParameters
-     * @param array   $allowedAlgorithms
-     */
     private function checkAlgorithms(string $parameter, DataBag $commandParameters, array $allowedAlgorithms)
     {
         $algorithm = $commandParameters->get($parameter);

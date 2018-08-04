@@ -11,19 +11,19 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Security\Core\Authentication\AuthenticationManagerInterface;
-use OAuth2Framework\Component\Core\AccessToken\AccessTokenHandlerManager;
 use Doctrine\Common\Annotations\Reader;
-use OAuth2Framework\SecurityBundle\Security\Authentication\Provider\OAuth2Provider;
-use OAuth2Framework\SecurityBundle\Security\Firewall\OAuth2Listener;
-use OAuth2Framework\SecurityBundle\Security\EntryPoint\OAuth2EntryPoint;
-use OAuth2Framework\SecurityBundle\Service\MessageFactory;
-use OAuth2Framework\SecurityBundle\Annotation;
-use OAuth2Framework\Component\Core\TokenType\TokenTypeManager;
+use OAuth2Framework\Component\Core\AccessToken\AccessTokenHandlerManager;
 use OAuth2Framework\Component\Core\Message;
+use OAuth2Framework\Component\Core\TokenType\TokenTypeManager;
+use OAuth2Framework\SecurityBundle\Annotation;
 use OAuth2Framework\SecurityBundle\Resolver\AccessTokenResolver;
+use OAuth2Framework\SecurityBundle\Security\Authentication\Provider\OAuth2Provider;
+use OAuth2Framework\SecurityBundle\Security\EntryPoint\OAuth2EntryPoint;
+use OAuth2Framework\SecurityBundle\Security\Firewall\OAuth2Listener;
+use OAuth2Framework\SecurityBundle\Service\MessageFactory;
+use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use Symfony\Component\Security\Core\Authentication\AuthenticationManagerInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
 return function (ContainerConfigurator $container) {

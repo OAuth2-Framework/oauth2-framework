@@ -30,9 +30,6 @@ class IdToken
 
     /**
      * IdToken constructor.
-     *
-     * @param IdTokenId $idTokenId
-     * @param array     $claims
      */
     private function __construct(IdTokenId $idTokenId, array $claims)
     {
@@ -41,9 +38,6 @@ class IdToken
     }
 
     /**
-     * @param IdTokenId $idTokenId
-     * @param array     $claims
-     *
      * @return IdToken
      */
     public static function create(IdTokenId $idTokenId, array $claims): self
@@ -51,9 +45,6 @@ class IdToken
         return new self($idTokenId, $claims);
     }
 
-    /**
-     * @return IdTokenId
-     */
     public function getId(): IdTokenId
     {
         return $this->idTokenId;
@@ -83,33 +74,24 @@ class IdToken
         return \array_key_exists('c_hash', $this->claims) ? $this->claims['c_hash'] : null;
     }
 
-    /**
-     * @return ClientId
-     */
     public function getClientId(): ClientId
     {
         if (!\array_key_exists('aud', $this->claims)) {
             throw new \InvalidArgumentException('Invalid ID Token.');
         }
 
-        return ClientId::create($this->claims['aud']);
+        return new ClientId($this->claims['aud']);
     }
 
-    /**
-     * @return UserAccountId
-     */
     public function getUserAccountId(): UserAccountId
     {
         if (!\array_key_exists('sub', $this->claims)) {
             throw new \InvalidArgumentException('Invalid ID Token.');
         }
 
-        return UserAccountId::create($this->claims['sub']);
+        return new UserAccountId($this->claims['sub']);
     }
 
-    /**
-     * @return \DateTimeImmutable
-     */
     public function getExpiresAt(): \DateTimeImmutable
     {
         if (!\array_key_exists('exp', $this->claims)) {
@@ -119,9 +101,6 @@ class IdToken
         return new \DateTimeImmutable((string) $this->claims['exp']);
     }
 
-    /**
-     * @return bool
-     */
     public function hasExpired(): bool
     {
         return $this->getExpiresAt()->getTimestamp() < \time();
@@ -132,9 +111,6 @@ class IdToken
         return $this->getExpiresAt()->getTimestamp() - \time() < 0 ? 0 : $this->getExpiresAt()->getTimestamp() - \time();
     }
 
-    /**
-     * @return array
-     */
     public function getClaims(): array
     {
         return $this->claims;

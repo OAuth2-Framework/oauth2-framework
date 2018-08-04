@@ -28,11 +28,6 @@ final class OAuth2MessageFactoryCompilerClass implements CompilerPassInterface
         $this->processForTaggedServices($container, 'oauth2_server.message_factory_manager.for_token_authentication', 'oauth2_server_message_factory_for_token_authentication');
     }
 
-    /**
-     * @param ContainerBuilder $container
-     * @param string           $definition
-     * @param string           $tag
-     */
     private function processForTaggedServices(ContainerBuilder $container, string $definition, string $tag): void
     {
         if (!$container->hasDefinition($definition)) {

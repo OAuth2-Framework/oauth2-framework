@@ -15,15 +15,6 @@ namespace OAuth2Framework\Component\Core\UserAccount;
 
 use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwnerId;
 
-class UserAccountId extends ResourceOwnerId
+final class UserAccountId extends ResourceOwnerId
 {
-    /**
-     * @param string $value
-     *
-     * @return UserAccountId
-     */
-    public static function create(string $value): self
-    {
-        return new self($value);
-    }
 }

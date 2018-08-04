@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\ClientRule\Tests;
 
-use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\ClientRule;
+use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use PHPUnit\Framework\TestCase;
 
@@ -28,14 +28,14 @@ final class RedirectionUriRuleTest extends TestCase
      */
     public function noResponseTypeIsUsed()
     {
-        $clientId = ClientId::create('CLIENT_ID');
-        $commandParameters = DataBag::create([
+        $clientId = new ClientId('CLIENT_ID');
+        $commandParameters = new DataBag([
             'redirect_uris' => ['http://foo.com/callback'],
         ]);
         $rule = new ClientRule\RedirectionUriRule();
-        $validatedParameters = $rule->handle($clientId, $commandParameters, DataBag::create([]), $this->getCallable());
-        self::assertTrue($validatedParameters->has('redirect_uris'));
-        self::assertEquals([], $validatedParameters->get('redirect_uris'));
+        $validatedParameters = $rule->handle($clientId, $commandParameters, new DataBag([]), $this->getCallable());
+        static::assertTrue($validatedParameters->has('redirect_uris'));
+        static::assertEquals([], $validatedParameters->get('redirect_uris'));
     }
 
     /**
@@ -45,10 +45,10 @@ final class RedirectionUriRuleTest extends TestCase
      */
     public function aLeastOneRedirectUriMustBeSetForNonConfidentialClients()
     {
-        $clientId = ClientId::create('CLIENT_ID');
-        $commandParameters = DataBag::create([
+        $clientId = new ClientId('CLIENT_ID');
+        $commandParameters = new DataBag([
         ]);
-        $validatedParameters = DataBag::create([
+        $validatedParameters = new DataBag([
             'response_types' => ['token', 'code'],
             'token_endpoint_auth_method' => 'none',
         ]);
@@ -63,10 +63,10 @@ final class RedirectionUriRuleTest extends TestCase
      */
     public function confidentialClientsUsingTokenResponseTypeMustRegisterAtLeastOneRedirectUri()
     {
-        $clientId = ClientId::create('CLIENT_ID');
-        $commandParameters = DataBag::create([
+        $clientId = new ClientId('CLIENT_ID');
+        $commandParameters = new DataBag([
         ]);
-        $validatedParameters = DataBag::create([
+        $validatedParameters = new DataBag([
             'response_types' => ['token', 'code'],
             'token_endpoint_auth_method' => 'private_key_jwt',
         ]);
@@ -81,11 +81,11 @@ final class RedirectionUriRuleTest extends TestCase
      */
     public function theRedirectUrisParameterMustBeAnArray()
     {
-        $clientId = ClientId::create('CLIENT_ID');
-        $commandParameters = DataBag::create([
+        $clientId = new ClientId('CLIENT_ID');
+        $commandParameters = new DataBag([
             'redirect_uris' => 'hello',
         ]);
-        $validatedParameters = DataBag::create([
+        $validatedParameters = new DataBag([
             'response_types' => ['token', 'code'],
             'token_endpoint_auth_method' => 'none',
         ]);
@@ -100,11 +100,11 @@ final class RedirectionUriRuleTest extends TestCase
      */
     public function theRedirectUrisParameterMustBeAnArrayOfString()
     {
-        $clientId = ClientId::create('CLIENT_ID');
-        $commandParameters = DataBag::create([
+        $clientId = new ClientId('CLIENT_ID');
+        $commandParameters = new DataBag([
             'redirect_uris' => [123],
         ]);
-        $validatedParameters = DataBag::create([
+        $validatedParameters = new DataBag([
             'response_types' => ['token', 'code'],
             'token_endpoint_auth_method' => 'none',
         ]);
@@ -119,11 +119,11 @@ final class RedirectionUriRuleTest extends TestCase
      */
     public function theRedirectUrisParameterMustBeAnArrayOfUris()
     {
-        $clientId = ClientId::create('CLIENT_ID');
-        $commandParameters = DataBag::create([
+        $clientId = new ClientId('CLIENT_ID');
+        $commandParameters = new DataBag([
             'redirect_uris' => ['hello'],
         ]);
-        $validatedParameters = DataBag::create([
+        $validatedParameters = new DataBag([
             'response_types' => ['token', 'code'],
             'token_endpoint_auth_method' => 'none',
         ]);
@@ -138,11 +138,11 @@ final class RedirectionUriRuleTest extends TestCase
      */
     public function theRedirectUrisMustNotContainAnyFragmentParameter()
     {
-        $clientId = ClientId::create('CLIENT_ID');
-        $commandParameters = DataBag::create([
+        $clientId = new ClientId('CLIENT_ID');
+        $commandParameters = new DataBag([
             'redirect_uris' => ['http://foo.com/#test=bad'],
         ]);
-        $validatedParameters = DataBag::create([
+        $validatedParameters = new DataBag([
             'response_types' => ['token', 'code'],
             'token_endpoint_auth_method' => 'none',
         ]);
@@ -157,11 +157,11 @@ final class RedirectionUriRuleTest extends TestCase
      */
     public function theLocalhostHostIsNotAllowedWhenTheImplicitGrantTypeIsUsed()
     {
-        $clientId = ClientId::create('CLIENT_ID');
-        $commandParameters = DataBag::create([
+        $clientId = new ClientId('CLIENT_ID');
+        $commandParameters = new DataBag([
             'redirect_uris' => ['http://localhost/'],
         ]);
-        $validatedParameters = DataBag::create([
+        $validatedParameters = new DataBag([
             'response_types' => ['token', 'code'],
             'token_endpoint_auth_method' => 'none',
         ]);
@@ -176,11 +176,11 @@ final class RedirectionUriRuleTest extends TestCase
      */
     public function theSchemeMustBeHttpsWhenTheImplicitGrantTypeIsUsed()
     {
-        $clientId = ClientId::create('CLIENT_ID');
-        $commandParameters = DataBag::create([
+        $clientId = new ClientId('CLIENT_ID');
+        $commandParameters = new DataBag([
             'redirect_uris' => ['http://foo.com/'],
         ]);
-        $validatedParameters = DataBag::create([
+        $validatedParameters = new DataBag([
             'response_types' => ['token', 'code'],
             'token_endpoint_auth_method' => 'none',
         ]);
@@ -195,11 +195,11 @@ final class RedirectionUriRuleTest extends TestCase
      */
     public function theRedirectUrisMustNotHavePathTraversal()
     {
-        $clientId = ClientId::create('CLIENT_ID');
-        $commandParameters = DataBag::create([
+        $clientId = new ClientId('CLIENT_ID');
+        $commandParameters = new DataBag([
             'redirect_uris' => ['https://foo.com/bar/../bad'],
         ]);
-        $validatedParameters = DataBag::create([
+        $validatedParameters = new DataBag([
             'response_types' => ['token', 'code'],
             'token_endpoint_auth_method' => 'none',
         ]);
@@ -212,18 +212,18 @@ final class RedirectionUriRuleTest extends TestCase
      */
     public function theUrisAreValidatedWithTheImplicitGrantType()
     {
-        $clientId = ClientId::create('CLIENT_ID');
-        $commandParameters = DataBag::create([
+        $clientId = new ClientId('CLIENT_ID');
+        $commandParameters = new DataBag([
             'redirect_uris' => ['https://foo.com/'],
         ]);
-        $validatedParameters = DataBag::create([
+        $validatedParameters = new DataBag([
             'response_types' => ['token', 'code'],
             'token_endpoint_auth_method' => 'none',
         ]);
         $rule = new ClientRule\RedirectionUriRule();
         $validatedParameters = $rule->handle($clientId, $commandParameters, $validatedParameters, $this->getCallable());
-        self::assertTrue($validatedParameters->has('redirect_uris'));
-        self::assertEquals(['https://foo.com/'], $validatedParameters->get('redirect_uris'));
+        static::assertTrue($validatedParameters->has('redirect_uris'));
+        static::assertEquals(['https://foo.com/'], $validatedParameters->get('redirect_uris'));
     }
 
     /**
@@ -231,18 +231,18 @@ final class RedirectionUriRuleTest extends TestCase
      */
     public function theUrisAreValidatedWithOtherGrantTypes()
     {
-        $clientId = ClientId::create('CLIENT_ID');
-        $commandParameters = DataBag::create([
+        $clientId = new ClientId('CLIENT_ID');
+        $commandParameters = new DataBag([
             'redirect_uris' => ['http://localhost/'],
         ]);
-        $validatedParameters = DataBag::create([
+        $validatedParameters = new DataBag([
             'response_types' => ['id_token', 'code'],
             'token_endpoint_auth_method' => 'none',
         ]);
         $rule = new ClientRule\RedirectionUriRule();
         $validatedParameters = $rule->handle($clientId, $commandParameters, $validatedParameters, $this->getCallable());
-        self::assertTrue($validatedParameters->has('redirect_uris'));
-        self::assertEquals(['http://localhost/'], $validatedParameters->get('redirect_uris'));
+        static::assertTrue($validatedParameters->has('redirect_uris'));
+        static::assertEquals(['http://localhost/'], $validatedParameters->get('redirect_uris'));
     }
 
     /**
@@ -250,18 +250,18 @@ final class RedirectionUriRuleTest extends TestCase
      */
     public function theUrnsAreAllowed()
     {
-        $clientId = ClientId::create('CLIENT_ID');
-        $commandParameters = DataBag::create([
+        $clientId = new ClientId('CLIENT_ID');
+        $commandParameters = new DataBag([
             'redirect_uris' => ['urn:ietf:wg:oauth:2.0:oob', 'urn:ietf:wg:oauth:2.0:oob:auto'],
         ]);
-        $validatedParameters = DataBag::create([
+        $validatedParameters = new DataBag([
             'response_types' => ['id_token', 'code'],
             'token_endpoint_auth_method' => 'none',
         ]);
         $rule = new ClientRule\RedirectionUriRule();
         $validatedParameters = $rule->handle($clientId, $commandParameters, $validatedParameters, $this->getCallable());
-        self::assertTrue($validatedParameters->has('redirect_uris'));
-        self::assertEquals(['urn:ietf:wg:oauth:2.0:oob', 'urn:ietf:wg:oauth:2.0:oob:auto'], $validatedParameters->get('redirect_uris'));
+        static::assertTrue($validatedParameters->has('redirect_uris'));
+        static::assertEquals(['urn:ietf:wg:oauth:2.0:oob', 'urn:ietf:wg:oauth:2.0:oob:auto'], $validatedParameters->get('redirect_uris'));
     }
 
     /**
@@ -271,11 +271,11 @@ final class RedirectionUriRuleTest extends TestCase
      */
     public function theUrnsAreNotValid()
     {
-        $clientId = ClientId::create('CLIENT_ID');
-        $commandParameters = DataBag::create([
+        $clientId = new ClientId('CLIENT_ID');
+        $commandParameters = new DataBag([
             'redirect_uris' => ['urn:---------------'],
         ]);
-        $validatedParameters = DataBag::create([
+        $validatedParameters = new DataBag([
             'response_types' => ['id_token', 'code'],
             'token_endpoint_auth_method' => 'none',
         ]);
@@ -283,9 +283,6 @@ final class RedirectionUriRuleTest extends TestCase
         $rule->handle($clientId, $commandParameters, $validatedParameters, $this->getCallable());
     }
 
-    /**
-     * @return callable
-     */
     private function getCallable(): callable
     {
         return function (ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters): DataBag {

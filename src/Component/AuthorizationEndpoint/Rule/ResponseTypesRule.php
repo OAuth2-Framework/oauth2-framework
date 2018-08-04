@@ -27,8 +27,6 @@ final class ResponseTypesRule implements Rule
 
     /**
      * ResponseTypesRule constructor.
-     *
-     * @param ResponseTypeManager $responseTypeManager
      */
     public function __construct(ResponseTypeManager $responseTypeManager)
     {
@@ -53,8 +51,6 @@ final class ResponseTypesRule implements Rule
     }
 
     /**
-     * @param DataBag $parameters
-     *
      * @throws \InvalidArgumentException
      */
     private function checkResponseTypes(DataBag $parameters)
@@ -70,8 +66,6 @@ final class ResponseTypesRule implements Rule
     }
 
     /**
-     * @param DataBag $parameters
-     *
      * @throws \InvalidArgumentException
      */
     private function checkGrantTypes(DataBag $parameters)

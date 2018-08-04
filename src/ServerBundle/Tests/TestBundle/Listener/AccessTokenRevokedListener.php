@@ -22,9 +22,6 @@ class AccessTokenRevokedListener
      */
     private $events = [];
 
-    /**
-     * @param AccessTokenRevokedEvent $event
-     */
     public function handle(AccessTokenRevokedEvent $event)
     {
         $this->events[] = $event;

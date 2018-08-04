@@ -15,22 +15,9 @@ namespace OAuth2Framework\Component\Core\ResourceOwner;
 
 interface ResourceOwner
 {
-    /**
-     * @return ResourceOwnerId
-     */
     public function getPublicId(): ResourceOwnerId;
 
-    /**
-     * @param string $key
-     *
-     * @return bool
-     */
     public function has(string $key): bool;
 
-    /**
-     * @param string $key
-     *
-     * @return mixed
-     */
     public function get(string $key);
 }

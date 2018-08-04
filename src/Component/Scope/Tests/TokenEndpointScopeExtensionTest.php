@@ -18,8 +18,8 @@ use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
-use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwner;
 use OAuth2Framework\Component\Core\Message\OAuth2Message;
+use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwner;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use OAuth2Framework\Component\Scope\Policy\NoScopePolicy;
 use OAuth2Framework\Component\Scope\Policy\ScopePolicyManager;
@@ -45,7 +45,7 @@ final class TokenEndpointScopeExtensionTest extends TestCase
     protected function setUp()
     {
         if (!\class_exists(TokenEndpoint::class)) {
-            $this->markTestSkipped('The component "oauth2-framework/token-endpoint" is not installed.');
+            static::markTestSkipped('The component "oauth2-framework/token-endpoint" is not installed.');
         }
     }
 
@@ -56,9 +56,9 @@ final class TokenEndpointScopeExtensionTest extends TestCase
     {
         $client = Client::createEmpty();
         $client = $client->create(
-            ClientId::create('CLIENT_ID'),
-            DataBag::create([]),
-            UserAccountId::create('USER_ACCOUNT_ID')
+            new ClientId('CLIENT_ID'),
+            new DataBag([]),
+            new UserAccountId('USER_ACCOUNT_ID')
         );
 
         $request = $this->buildRequest([]);
@@ -69,7 +69,7 @@ final class TokenEndpointScopeExtensionTest extends TestCase
         };
 
         $result = $this->getExtension()->beforeAccessTokenIssuance($request->reveal(), $grantTypeData, $grantType->reveal(), $next);
-        self::assertSame($grantTypeData, $result);
+        static::assertSame($grantTypeData, $result);
     }
 
     /**
@@ -79,9 +79,9 @@ final class TokenEndpointScopeExtensionTest extends TestCase
     {
         $client = Client::createEmpty();
         $client = $client->create(
-            ClientId::create('CLIENT_ID'),
-            DataBag::create([]),
-            UserAccountId::create('USER_ACCOUNT_ID')
+            new ClientId('CLIENT_ID'),
+            new DataBag([]),
+            new UserAccountId('USER_ACCOUNT_ID')
         );
 
         $request = $this->buildRequest([
@@ -96,8 +96,8 @@ final class TokenEndpointScopeExtensionTest extends TestCase
         try {
             $this->getExtension()->beforeAccessTokenIssuance($request->reveal(), $grantTypeData, $grantType->reveal(), $next);
         } catch (OAuth2Message $e) {
-            self::assertEquals(400, $e->getCode());
-            self::assertEquals([
+            static::assertEquals(400, $e->getCode());
+            static::assertEquals([
                 'error' => 'invalid_scope',
                 'error_description' => 'An unsupported scope was requested. Available scope is/are: scope1, scope2.',
             ], $e->getData());
@@ -111,9 +111,9 @@ final class TokenEndpointScopeExtensionTest extends TestCase
     {
         $client = Client::createEmpty();
         $client = $client->create(
-            ClientId::create('CLIENT_ID'),
-            DataBag::create([]),
-            UserAccountId::create('USER_ACCOUNT_ID')
+            new ClientId('CLIENT_ID'),
+            new DataBag([]),
+            new UserAccountId('USER_ACCOUNT_ID')
         );
 
         $request = $this->buildRequest([
@@ -126,8 +126,8 @@ final class TokenEndpointScopeExtensionTest extends TestCase
         };
 
         $result = $this->getExtension()->beforeAccessTokenIssuance($request->reveal(), $grantTypeData, $grantType->reveal(), $next);
-        self::assertTrue($result->getParameter()->has('scope'));
-        self::assertEquals('scope2 scope1', $result->getParameter()->get('scope'));
+        static::assertTrue($result->getParameter()->has('scope'));
+        static::assertEquals('scope2 scope1', $result->getParameter()->get('scope'));
     }
 
     /**
@@ -137,18 +137,17 @@ final class TokenEndpointScopeExtensionTest extends TestCase
     {
         $client = Client::createEmpty();
         $client = $client->create(
-            ClientId::create('CLIENT_ID'),
-            DataBag::create([]),
-            UserAccountId::create('USER_ACCOUNT_ID')
+            new ClientId('CLIENT_ID'),
+            new DataBag([]),
+            new UserAccountId('USER_ACCOUNT_ID')
         );
-        $accessToken = AccessToken::createEmpty();
-        $accessToken = $accessToken->create(
-            AccessTokenId::create('ACCESS_TOKEN_ID'),
+        $accessToken = new AccessToken(
+            new AccessTokenId('ACCESS_TOKEN_ID'),
             $client->getPublicId(),
             $client->getPublicId(),
-            DataBag::create([]),
-            DataBag::create([]),
             new \DateTimeImmutable('now +1 hour'),
+            new DataBag([]),
+            new DataBag([]),
             null
         );
 
@@ -157,7 +156,7 @@ final class TokenEndpointScopeExtensionTest extends TestCase
         };
 
         $result = $this->getExtension()->afterAccessTokenIssuance($client, $client, $accessToken, $next);
-        self::assertEquals(2, \count($result));
+        static::assertEquals(2, \count($result));
     }
 
     /**
@@ -165,9 +164,6 @@ final class TokenEndpointScopeExtensionTest extends TestCase
      */
     private $extension = null;
 
-    /**
-     * @return TokenEndpointScopeExtension
-     */
     private function getExtension(): TokenEndpointScopeExtension
     {
         if (null === $this->extension) {

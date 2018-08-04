@@ -14,12 +14,12 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\TokenRevocationEndpoint;
 
 use Http\Message\ResponseFactory;
-use Psr\Http\Server\RequestHandlerInterface;
-use Psr\Http\Server\MiddlewareInterface;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Message\OAuth2Message;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 abstract class TokenRevocationEndpoint implements MiddlewareInterface
 {
@@ -35,9 +35,6 @@ abstract class TokenRevocationEndpoint implements MiddlewareInterface
 
     /**
      * TokenRevocationEndpoint constructor.
-     *
-     * @param TokenTypeHintManager $tokenTypeHintManager
-     * @param ResponseFactory      $responseFactory
      */
     public function __construct(TokenTypeHintManager $tokenTypeHintManager, ResponseFactory $responseFactory)
     {
@@ -77,11 +74,7 @@ abstract class TokenRevocationEndpoint implements MiddlewareInterface
     }
 
     /**
-     * @param int         $code
-     * @param string      $data
      * @param null|string $callback
-     *
-     * @return ResponseInterface
      */
     private function getResponse(int $code, string $data, ?string $callback): ResponseInterface
     {
@@ -100,11 +93,7 @@ abstract class TokenRevocationEndpoint implements MiddlewareInterface
     }
 
     /**
-     * @param ServerRequestInterface $request
-     *
      * @throws OAuth2Message
-     *
-     * @return Client
      */
     private function getClient(ServerRequestInterface $request): Client
     {
@@ -117,11 +106,7 @@ abstract class TokenRevocationEndpoint implements MiddlewareInterface
     }
 
     /**
-     * @param ServerRequestInterface $request
-     *
      * @throws OAuth2Message
-     *
-     * @return string
      */
     protected function getToken(ServerRequestInterface $request): string
     {
@@ -134,8 +119,6 @@ abstract class TokenRevocationEndpoint implements MiddlewareInterface
     }
 
     /**
-     * @param ServerRequestInterface $request
-     *
      * @throws OAuth2Message
      *
      * @return TokenTypeHint[]
@@ -160,8 +143,6 @@ abstract class TokenRevocationEndpoint implements MiddlewareInterface
     }
 
     /**
-     * @param ServerRequestInterface $request
-     *
      * @return null|string
      */
     protected function getCallback(ServerRequestInterface $request): ?string
@@ -174,10 +155,5 @@ abstract class TokenRevocationEndpoint implements MiddlewareInterface
         return null;
     }
 
-    /**
-     * @param ServerRequestInterface $request
-     *
-     * @return array
-     */
     abstract protected function getRequestParameters(ServerRequestInterface $request): array;
 }

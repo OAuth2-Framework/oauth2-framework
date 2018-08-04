@@ -41,12 +41,12 @@ use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\Client\ClientRepository;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\Message\OAuth2Message;
+use OAuth2Framework\Component\Core\TrustedIssuer\TrustedIssuer;
+use OAuth2Framework\Component\Core\TrustedIssuer\TrustedIssuerRepository;
 use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountRepository;
 use OAuth2Framework\Component\JwtBearerGrant\JwtBearerGrantType;
-use OAuth2Framework\Component\Core\TrustedIssuer\TrustedIssuer;
-use OAuth2Framework\Component\Core\TrustedIssuer\TrustedIssuerRepository;
 use OAuth2Framework\Component\TokenEndpoint\GrantTypeData;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
@@ -65,8 +65,8 @@ final class JwtBearerGrantTypeTest extends TestCase
      */
     public function genericInformation()
     {
-        self::assertEquals([], $this->getGrantType()->associatedResponseTypes());
-        self::assertEquals('urn:ietf:params:oauth:grant-type:jwt-bearer', $this->getGrantType()->name());
+        static::assertEquals([], $this->getGrantType()->associatedResponseTypes());
+        static::assertEquals('urn:ietf:params:oauth:grant-type:jwt-bearer', $this->getGrantType()->name());
     }
 
     /**
@@ -78,10 +78,10 @@ final class JwtBearerGrantTypeTest extends TestCase
 
         try {
             $this->getGrantType()->checkRequest($request->reveal());
-            $this->fail('An OAuth2 exception should be thrown.');
+            static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2Message $e) {
-            self::assertEquals(400, $e->getCode());
-            self::assertEquals([
+            static::assertEquals(400, $e->getCode());
+            static::assertEquals([
                 'error' => 'invalid_request',
                 'error_description' => 'Missing grant type parameter(s): assertion.',
             ], $e->getData());
@@ -96,7 +96,7 @@ final class JwtBearerGrantTypeTest extends TestCase
         $request = $this->buildRequest(['assertion' => 'FOO']);
 
         $this->getGrantType()->checkRequest($request->reveal());
-        self::assertTrue(true);
+        static::assertTrue(true);
     }
 
     /**
@@ -105,14 +105,14 @@ final class JwtBearerGrantTypeTest extends TestCase
     public function theTokenResponseIsCorrectlyPreparedWithAssertionFromClient()
     {
         if (!\class_exists(JWEBuilder::class)) {
-            $this->markTestSkipped('The component "web-token/jwt-encryption" is not installed.');
+            static::markTestSkipped('The component "web-token/jwt-encryption" is not installed.');
         }
         $request = $this->buildRequest(['assertion' => $this->createValidEncryptedAssertionFromClient()]);
         $grantTypeData = GrantTypeData::create(null);
 
         $receivedGrantTypeData = $this->getGrantType()->prepareResponse($request->reveal(), $grantTypeData);
-        self::assertTrue($receivedGrantTypeData->getMetadata()->has('jwt'));
-        self::assertTrue($receivedGrantTypeData->getMetadata()->has('claims'));
+        static::assertTrue($receivedGrantTypeData->getMetadata()->has('jwt'));
+        static::assertTrue($receivedGrantTypeData->getMetadata()->has('claims'));
     }
 
     /**
@@ -124,8 +124,8 @@ final class JwtBearerGrantTypeTest extends TestCase
         $grantTypeData = GrantTypeData::create(null);
 
         $receivedGrantTypeData = $this->getGrantType()->prepareResponse($request->reveal(), $grantTypeData);
-        self::assertTrue($receivedGrantTypeData->getMetadata()->has('jwt'));
-        self::assertTrue($receivedGrantTypeData->getMetadata()->has('claims'));
+        static::assertTrue($receivedGrantTypeData->getMetadata()->has('jwt'));
+        static::assertTrue($receivedGrantTypeData->getMetadata()->has('claims'));
     }
 
     /**
@@ -139,8 +139,8 @@ final class JwtBearerGrantTypeTest extends TestCase
         try {
             $this->getGrantType()->prepareResponse($request->reveal(), $grantTypeData);
         } catch (OAuth2Message $e) {
-            self::assertEquals(400, $e->getCode());
-            self::assertEquals([
+            static::assertEquals(400, $e->getCode());
+            static::assertEquals([
                 'error' => 'invalid_request',
                 'error_description' => 'Unable to find the issuer of the assertion.',
             ], $e->getData());
@@ -154,19 +154,19 @@ final class JwtBearerGrantTypeTest extends TestCase
     {
         $client = Client::createEmpty();
         $client = $client->create(
-            ClientId::create('CLIENT_ID'),
-            DataBag::create([]),
-            UserAccountId::create('USER_ACCOUNT_ID')
+            new ClientId('CLIENT_ID'),
+            new DataBag([]),
+            new UserAccountId('USER_ACCOUNT_ID')
         );
         $request = $this->buildRequest(['assertion' => $this->createValidAssertionFromIssuer()]);
         $request->getAttribute('client')->willReturn($client);
         $grantTypeData = GrantTypeData::create($client);
-        $grantTypeData->withResourceOwnerId(UserAccountId::create('USER_ACCOUNT_ID'));
+        $grantTypeData->withResourceOwnerId(new UserAccountId('USER_ACCOUNT_ID'));
 
         $receivedGrantTypeData = $this->getGrantType()->grant($request->reveal(), $grantTypeData);
-        self::assertSame($receivedGrantTypeData, $grantTypeData);
-        self::assertEquals('USER_ACCOUNT_ID', $receivedGrantTypeData->getResourceOwnerId()->getValue());
-        self::assertEquals('CLIENT_ID', $receivedGrantTypeData->getClient()->getPublicId()->getValue());
+        static::assertSame($receivedGrantTypeData, $grantTypeData);
+        static::assertEquals('USER_ACCOUNT_ID', $receivedGrantTypeData->getResourceOwnerId()->getValue());
+        static::assertEquals('CLIENT_ID', $receivedGrantTypeData->getClient()->getPublicId()->getValue());
     }
 
     /**
@@ -175,23 +175,23 @@ final class JwtBearerGrantTypeTest extends TestCase
     public function theGrantTypeCanGrantTheClientUsingTheTokenIssuedByTheClient()
     {
         if (!\class_exists(JWEBuilder::class)) {
-            $this->markTestSkipped('The component "web-token/jwt-encryption" is not installed.');
+            static::markTestSkipped('The component "web-token/jwt-encryption" is not installed.');
         }
         $client = Client::createEmpty();
         $client = $client->create(
-            ClientId::create('CLIENT_ID'),
-            DataBag::create([]),
-            UserAccountId::create('USER_ACCOUNT_ID')
+            new ClientId('CLIENT_ID'),
+            new DataBag([]),
+            new UserAccountId('USER_ACCOUNT_ID')
         );
         $request = $this->buildRequest(['assertion' => $this->createValidEncryptedAssertionFromClient()]);
         $request->getAttribute('client')->willReturn($client);
         $grantTypeData = GrantTypeData::create($client);
-        $grantTypeData->withResourceOwnerId(UserAccountId::create('CLIENT_ID'));
+        $grantTypeData->withResourceOwnerId(new UserAccountId('CLIENT_ID'));
 
         $receivedGrantTypeData = $this->getGrantType()->grant($request->reveal(), $grantTypeData);
-        self::assertSame($receivedGrantTypeData, $grantTypeData);
-        self::assertEquals('CLIENT_ID', $receivedGrantTypeData->getResourceOwnerId()->getValue());
-        self::assertEquals('CLIENT_ID', $receivedGrantTypeData->getClient()->getPublicId()->getValue());
+        static::assertSame($receivedGrantTypeData, $grantTypeData);
+        static::assertEquals('CLIENT_ID', $receivedGrantTypeData->getResourceOwnerId()->getValue());
+        static::assertEquals('CLIENT_ID', $receivedGrantTypeData->getClient()->getPublicId()->getValue());
     }
 
     /**
@@ -227,29 +227,23 @@ final class JwtBearerGrantTypeTest extends TestCase
         return $this->grantType;
     }
 
-    /**
-     * @return UserAccountRepository
-     */
     private function getUserAccountRepository(): UserAccountRepository
     {
         $userAccount = $this->prophesize(UserAccount::class);
-        $userAccount->getPublicId()->willReturn(UserAccountId::create('USER_ACCOUNT_ID'));
-        $userAccount->getUserAccountId()->willReturn(UserAccountId::create('USER_ACCOUNT_ID'));
+        $userAccount->getPublicId()->willReturn(new UserAccountId('USER_ACCOUNT_ID'));
+        $userAccount->getUserAccountId()->willReturn(new UserAccountId('USER_ACCOUNT_ID'));
         $userAccountRepository = $this->prophesize(UserAccountRepository::class);
         $userAccountRepository->find(Argument::type(UserAccountId::class))->will(function ($args) use ($userAccount) {
             if ('USER_ACCOUNT_ID' === ($args[0])->getValue()) {
                 return $userAccount->reveal();
             }
 
-            return null;
+            return;
         });
 
         return $userAccountRepository->reveal();
     }
 
-    /**
-     * @return ClientRepository
-     */
     private function getClientRepository(): ClientRepository
     {
         $keyset = $this->getPublicEcKeySet();
@@ -258,26 +252,23 @@ final class JwtBearerGrantTypeTest extends TestCase
             if ('CLIENT_ID' === ($args[0])->getValue()) {
                 $client = Client::createEmpty();
                 $client = $client->create(
-                    ClientId::create('CLIENT_ID'),
-                    DataBag::create([
+                    new ClientId('CLIENT_ID'),
+                    new DataBag([
                         'jwks' => \json_encode($keyset),
                         'token_endpoint_auth_method' => 'private_key_jwt',
                     ]),
-                    UserAccountId::create('USER_ACCOUNT_ID')
+                    new UserAccountId('USER_ACCOUNT_ID')
                 );
 
                 return $client;
             }
 
-            return null;
+            return;
         });
 
         return $clientRepository->reveal();
     }
 
-    /**
-     * @return JWSVerifier
-     */
     private function getJwsVerifier(): JWSVerifier
     {
         return new JWSVerifier(AlgorithmManager::create([
@@ -286,9 +277,6 @@ final class JwtBearerGrantTypeTest extends TestCase
         ]));
     }
 
-    /**
-     * @return JWEDecrypter
-     */
     private function getJweDecrypter(): JWEDecrypter
     {
         return new JWEDecrypter(
@@ -298,9 +286,6 @@ final class JwtBearerGrantTypeTest extends TestCase
         );
     }
 
-    /**
-     * @return JWSBuilder
-     */
     private function getJwsBuilder(): JWSBuilder
     {
         return new JWSBuilder(
@@ -312,9 +297,6 @@ final class JwtBearerGrantTypeTest extends TestCase
         );
     }
 
-    /**
-     * @return JWEBuilder
-     */
     private function getJweBuilder(): JWEBuilder
     {
         return new JWEBuilder(
@@ -325,17 +307,11 @@ final class JwtBearerGrantTypeTest extends TestCase
         );
     }
 
-    /**
-     * @return HeaderCheckerManager
-     */
     private function getHeaderCheckerManager(): HeaderCheckerManager
     {
         return HeaderCheckerManager::create([], [new JWSTokenSupport()]);
     }
 
-    /**
-     * @return ClaimCheckerManager
-     */
     private function getClaimCheckerManager(): ClaimCheckerManager
     {
         return ClaimCheckerManager::create([
@@ -346,9 +322,6 @@ final class JwtBearerGrantTypeTest extends TestCase
         ]);
     }
 
-    /**
-     * @return TrustedIssuerRepository
-     */
     private function getTrustedIssuerManager(): TrustedIssuerRepository
     {
         $issuer = $this->prophesize(TrustedIssuer::class);
@@ -364,9 +337,6 @@ final class JwtBearerGrantTypeTest extends TestCase
         return $manager->reveal();
     }
 
-    /**
-     * @return string
-     */
     private function createAssertionFromUnknownIssuer(): string
     {
         $jsonConverter = new StandardConverter();
@@ -390,9 +360,6 @@ final class JwtBearerGrantTypeTest extends TestCase
         return $serializer->serialize($jws, 0);
     }
 
-    /**
-     * @return string
-     */
     private function createValidAssertionFromIssuer(): string
     {
         $jsonConverter = new StandardConverter();
@@ -416,9 +383,6 @@ final class JwtBearerGrantTypeTest extends TestCase
         return $serializer->serialize($jws, 0);
     }
 
-    /**
-     * @return string
-     */
     private function createValidEncryptedAssertionFromClient(): string
     {
         $jsonConverter = new StandardConverter();
@@ -452,49 +416,31 @@ final class JwtBearerGrantTypeTest extends TestCase
         return $jwt;
     }
 
-    /**
-     * @return JWKSet
-     */
     private function getPublicEcKeySet(): JWKSet
     {
         return JWKSet::createFromJson('{"keys":[{"kty":"EC","crv":"P-256","x":"VlZO9X_B43HFSUK8aeQn88UO2_VfeBtVU1Usl3rYq90","y":"oAHPRNZEUpe-T2-Q_rThJ4lGsNYLXomSYW69RZ9jzNQ"},{"kty":"EC","crv":"P-256","x":"w0qQe7oa_aI3G6irjTbdtMqc4e0vNveQgRoRCyvpIBE","y":"7DyqhillL89iM6fMK216ov1EixmJGda76ugNuE-fsic"}]}');
     }
 
-    /**
-     * @return JWKSet
-     */
     private function getPublicRsaKeySet(): JWKSet
     {
         return JWKSet::createFromJson('{"keys":[{"kty":"RSA","n":"sLjaCStJYRr_y7_3GLlDb4bnGJ8XirSdFboYmvA38NXJ6PhIIjr-sFzfwlcpxZxz6zzjXkDFs3AcUOvC3_KRT5tn4XBOHcR6ABrT65dZTe_qalEpYeQG4oxevc01vmD_dD6Ho2O69amT4gscus2pvszFPdraMYybH24aQFztVtc","e":"AQAB"},{"kty":"RSA","n":"um8f5neOmoGMsQ-BJMOgehsSOzQiYOk4W7AJL97q-V_8VojXJKHUqvTqiDeVfcgxPz1kNseIkm4PivKYQ1_Yh1j5RxL30V8Pc3VR7ReLMvEsQUbedkJKqhXy7gOYyc4IrYTux1I2dI5I8r_lvtDtTgWB5UrWfwj9ddVhk22z6jc","e":"AQAB"}]}');
     }
 
-    /**
-     * @return JWK
-     */
     private function getEncryptionKey(): JWK
     {
         return JWK::createFromJson('{"kty":"oct","k":"bJzb8RaN7TzPz001PeF0lw0ZoUJqbazGxMvBd_xzfms"}');
     }
 
-    /**
-     * @return JWKSet
-     */
     private function getEncryptionKeySet(): JWKSet
     {
         return JWKSet::createFromJson('{"keys":[{"kty":"oct","k":"bJzb8RaN7TzPz001PeF0lw0ZoUJqbazGxMvBd_xzfms"},{"kty":"oct","k":"dIx5cdLn-dAgNkvfZSiroJuy5oykHO4hDnYpmwlMq6A"}]}');
     }
 
-    /**
-     * @return JWK
-     */
     private function getPrivateEcKey(): JWK
     {
         return JWK::createFromJson('{"kty":"EC","crv":"P-256","d":"zudFvuFy_HbN4cZO5kEdN33Zz-VR48YrVV23mCzAwqA","x":"VlZO9X_B43HFSUK8aeQn88UO2_VfeBtVU1Usl3rYq90","y":"oAHPRNZEUpe-T2-Q_rThJ4lGsNYLXomSYW69RZ9jzNQ"}');
     }
 
-    /**
-     * @return JWK
-     */
     private function getPrivateRsaKey(): JWK
     {
         return JWK::createFromJson('{"kty":"RSA","n":"sLjaCStJYRr_y7_3GLlDb4bnGJ8XirSdFboYmvA38NXJ6PhIIjr-sFzfwlcpxZxz6zzjXkDFs3AcUOvC3_KRT5tn4XBOHcR6ABrT65dZTe_qalEpYeQG4oxevc01vmD_dD6Ho2O69amT4gscus2pvszFPdraMYybH24aQFztVtc","e":"AQAB","d":"By-tJhxNgpZfeoCW4rl95YYd1aF6iphnnt-PapWEINYAvOmDvWiavL86FiQHPdLr38_9CvMlVvOjIyNDLGonwHynPxAzUsT7M891N9D0cSCv9DlV3uqRVtdqF4MtWtpU5JWJ9q6auL1UPx2tJhOygu9tJ7w0bTGFwrUdb8PSnlE","p":"3p-6HWbX9YcSkeksJXW3_Y2cfZgRCUXH2or1dIidmscb4VVtTUwb-8gGzUDEq4iS_5pgLARl3O4lOHK0n6Qbrw","q":"yzdrGWwgaWqK6e9VFv3NXGeq1TEKHLkXjF7J24XWKm9lSmlssPRv0NwMPVp_CJ39BrLfFtpFr_fh0oG1sVZ5WQ","dp":"UQ6rP0VQ4G77zfCuSD1ibol_LyONIGkt6V6rHHEZoV9ZwWPPVlOd5MDh6R3p_eLOUw6scZpwVE7JcpIhPfcMtQ","dq":"Jg8g_cfkYhnUHm_2bbHm7jF0Ky1eCXcY0-9Eutpb--KVA9SuyI1fC6zKlgsG06RTKRgC9BK5DnXMU1J7ptTdMQ","qi":"17kC87NLUV6z-c-wtmbNqAkDbKmwpb2RMsGUQmhEPJwnWuwEKZpSQz776SUVwoc0xiQ8DpvU_FypflIlm6fq9w"}');

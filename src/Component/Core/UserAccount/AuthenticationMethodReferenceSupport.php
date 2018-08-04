@@ -16,8 +16,6 @@ namespace OAuth2Framework\Component\Core\UserAccount;
 interface AuthenticationMethodReferenceSupport extends UserAccountManager
 {
     /**
-     * @param UserAccount $user
-     *
      * @return string[]|null
      */
     public function getAuthenticationMethodReferenceFor(UserAccount $user): ?array;

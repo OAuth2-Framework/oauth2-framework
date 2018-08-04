@@ -44,9 +44,9 @@ final class ClientRegistrationEndpointTest extends TestCase
 
         $response = $this->getClientRegistrationEndpoint()->process($request->reveal());
 
-        self::assertEquals(201, $response->getStatusCode());
+        static::assertEquals(201, $response->getStatusCode());
         $response->getBody()->rewind();
-        self::assertEquals('{"client_id":"CLIENT_ID"}', $response->getBody()->getContents());
+        static::assertEquals('{"client_id":"CLIENT_ID"}', $response->getBody()->getContents());
     }
 
     /**
@@ -54,21 +54,18 @@ final class ClientRegistrationEndpointTest extends TestCase
      */
     private $clientRegistrationEndpoint = null;
 
-    /**
-     * @return ClientRegistrationEndpoint
-     */
     private function getClientRegistrationEndpoint(): ClientRegistrationEndpoint
     {
         if (null === $this->clientRegistrationEndpoint) {
             $client = Client::createEmpty();
             $client = $client->create(
-                ClientId::create('CLIENT_ID'),
-                DataBag::create([]),
+                new ClientId('CLIENT_ID'),
+                new DataBag([]),
                 null
             );
             $clientIdGenerator = $this->prophesize(ClientIdGenerator::class);
             $clientIdGenerator->createClientId()->willReturn(
-                ClientId::create('CLIENT_ID')
+                new ClientId('CLIENT_ID')
             );
 
             $clientRepository = $this->prophesize(ClientRepository::class);
@@ -92,9 +89,6 @@ final class ClientRegistrationEndpointTest extends TestCase
      */
     private $responseFactory = null;
 
-    /**
-     * @return ResponseFactory
-     */
     private function getResponseFactory(): ResponseFactory
     {
         if (null === $this->responseFactory) {

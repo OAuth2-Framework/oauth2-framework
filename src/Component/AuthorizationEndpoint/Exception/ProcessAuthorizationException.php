@@ -24,8 +24,6 @@ class ProcessAuthorizationException extends \Exception
 
     /**
      * CreateRedirectionException constructor.
-     *
-     * @param Authorization $authorization
      */
     public function __construct(Authorization $authorization)
     {
@@ -33,9 +31,6 @@ class ProcessAuthorizationException extends \Exception
         $this->authorization = $authorization;
     }
 
-    /**
-     * @return Authorization
-     */
     public function getAuthorization(): Authorization
     {
         return $this->authorization;

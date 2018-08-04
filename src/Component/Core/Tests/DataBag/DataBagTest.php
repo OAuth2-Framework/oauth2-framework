@@ -26,16 +26,16 @@ final class DataBagTest extends TestCase
      */
     public function iCanCreateADataBag()
     {
-        $data = DataBag::create([
+        $data = new DataBag([
             'foo' => 'bar',
         ]);
         $data->with('foo', 'BAR');
         $data = $data->without('bar');
         $data = $data->without('foo');
 
-        self::assertInstanceOf(DataBag::class, $data);
-        self::assertFalse($data->has('foo'));
-        self::assertFalse($data->has('---'));
-        self::assertEquals('[]', \json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
+        static::assertInstanceOf(DataBag::class, $data);
+        static::assertFalse($data->has('foo'));
+        static::assertFalse($data->has('---'));
+        static::assertEquals('[]', \json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
     }
 }

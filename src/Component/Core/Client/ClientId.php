@@ -18,15 +18,6 @@ use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwnerId;
 /**
  * Class ClientId.
  */
-class ClientId extends ResourceOwnerId
+final class ClientId extends ResourceOwnerId
 {
-    /**
-     * @param string $value
-     *
-     * @return ClientId
-     */
-    public static function create(string $value): self
-    {
-        return new self($value);
-    }
 }

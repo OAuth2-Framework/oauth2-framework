@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Component\ClientRule;
 
-use OAuth2Framework\ServerBundle\Component\Component;
 use OAuth2Framework\Component\ClientRule\Rule;
+use OAuth2Framework\ServerBundle\Component\Component;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -22,9 +22,6 @@ use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
 class ClientRuleSource implements Component
 {
-    /**
-     * @return string
-     */
     public function name(): string
     {
         return 'client_rule';

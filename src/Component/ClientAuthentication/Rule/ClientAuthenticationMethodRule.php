@@ -27,8 +27,6 @@ final class ClientAuthenticationMethodRule implements Rule
 
     /**
      * ClientAuthenticationMethodEndpointRule constructor.
-     *
-     * @param AuthenticationMethodManager $clientAuthenticationMethodManager
      */
     public function __construct(AuthenticationMethodManager $clientAuthenticationMethodManager)
     {

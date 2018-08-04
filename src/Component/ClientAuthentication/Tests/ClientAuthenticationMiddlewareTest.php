@@ -13,20 +13,20 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\ClientAuthentication\Tests;
 
-use Psr\Http\Server\RequestHandlerInterface;
+use OAuth2Framework\Component\ClientAuthentication\AuthenticationMethod;
+use OAuth2Framework\Component\ClientAuthentication\AuthenticationMethodManager;
+use OAuth2Framework\Component\ClientAuthentication\ClientAuthenticationMiddleware;
+use OAuth2Framework\Component\ClientAuthentication\ClientSecretBasic;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\Client\ClientRepository;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\Message\OAuth2Message;
-use OAuth2Framework\Component\ClientAuthentication\AuthenticationMethod;
-use OAuth2Framework\Component\ClientAuthentication\AuthenticationMethodManager;
-use OAuth2Framework\Component\ClientAuthentication\ClientSecretBasic;
-use OAuth2Framework\Component\ClientAuthentication\ClientAuthenticationMiddleware;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 /**
  * @group TokenEndpoint
@@ -72,10 +72,10 @@ final class ClientAuthenticationMiddlewareTest extends TestCase
 
         try {
             $this->getClientAuthenticationMiddleware($clientRepository->reveal())->process($request->reveal(), $handler->reveal());
-            $this->fail('An OAuth2 exception should be thrown.');
+            static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2Message $e) {
-            self::assertEquals(401, $e->getCode());
-            self::assertEquals([
+            static::assertEquals(401, $e->getCode());
+            static::assertEquals([
                 'error' => 'invalid_client',
                 'error_description' => 'Client authentication failed.',
             ], $e->getData());
@@ -89,8 +89,8 @@ final class ClientAuthenticationMiddlewareTest extends TestCase
     {
         $client = Client::createEmpty();
         $client = $client->create(
-            ClientId::create('FOO'),
-            DataBag::create([]),
+            new ClientId('FOO'),
+            new DataBag([]),
             null
         );
         $client = $client->markAsDeleted();
@@ -110,10 +110,10 @@ final class ClientAuthenticationMiddlewareTest extends TestCase
 
         try {
             $this->getClientAuthenticationMiddleware($clientRepository->reveal())->process($request->reveal(), $handler->reveal());
-            $this->fail('An OAuth2 exception should be thrown.');
+            static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2Message $e) {
-            self::assertEquals(401, $e->getCode());
-            self::assertEquals([
+            static::assertEquals(401, $e->getCode());
+            static::assertEquals([
                 'error' => 'invalid_client',
                 'error_description' => 'Client authentication failed.',
             ], $e->getData());
@@ -127,8 +127,8 @@ final class ClientAuthenticationMiddlewareTest extends TestCase
     {
         $client = Client::createEmpty();
         $client = $client->create(
-            ClientId::create('FOO'),
-            DataBag::create([
+            new ClientId('FOO'),
+            new DataBag([
                 'token_endpoint_auth_method' => 'client_secret_basic',
                 'client_secret' => 'BAR',
                 'client_secret_expires_at' => \time() - 1,
@@ -151,10 +151,10 @@ final class ClientAuthenticationMiddlewareTest extends TestCase
 
         try {
             $this->getClientAuthenticationMiddleware($clientRepository->reveal())->process($request->reveal(), $handler->reveal());
-            $this->fail('An OAuth2 exception should be thrown.');
+            static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2Message $e) {
-            self::assertEquals(401, $e->getCode());
-            self::assertEquals([
+            static::assertEquals(401, $e->getCode());
+            static::assertEquals([
                 'error' => 'invalid_client',
                 'error_description' => 'Client credentials expired.',
             ], $e->getData());
@@ -168,8 +168,8 @@ final class ClientAuthenticationMiddlewareTest extends TestCase
     {
         $client = Client::createEmpty();
         $client = $client->create(
-            ClientId::create('FOO'),
-            DataBag::create([
+            new ClientId('FOO'),
+            new DataBag([
                 'token_endpoint_auth_method' => 'none',
             ]),
             null
@@ -190,10 +190,10 @@ final class ClientAuthenticationMiddlewareTest extends TestCase
 
         try {
             $this->getClientAuthenticationMiddleware($clientRepository->reveal())->process($request->reveal(), $handler->reveal());
-            $this->fail('An OAuth2 exception should be thrown.');
+            static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2Message $e) {
-            self::assertEquals(401, $e->getCode());
-            self::assertEquals([
+            static::assertEquals(401, $e->getCode());
+            static::assertEquals([
                 'error' => 'invalid_client',
                 'error_description' => 'Client authentication failed.',
             ], $e->getData());
@@ -207,8 +207,8 @@ final class ClientAuthenticationMiddlewareTest extends TestCase
     {
         $client = Client::createEmpty();
         $client = $client->create(
-            ClientId::create('FOO'),
-            DataBag::create([
+            new ClientId('FOO'),
+            new DataBag([
                 'token_endpoint_auth_method' => 'client_secret_basic',
                 'client_secret' => 'BAR',
             ]),
@@ -230,10 +230,10 @@ final class ClientAuthenticationMiddlewareTest extends TestCase
 
         try {
             $this->getClientAuthenticationMiddleware($clientRepository->reveal())->process($request->reveal(), $handler->reveal());
-            $this->fail('An OAuth2 exception should be thrown.');
+            static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2Message $e) {
-            self::assertEquals(401, $e->getCode());
-            self::assertEquals([
+            static::assertEquals(401, $e->getCode());
+            static::assertEquals([
                 'error' => 'invalid_client',
                 'error_description' => 'Client authentication failed.',
             ], $e->getData());
@@ -247,8 +247,8 @@ final class ClientAuthenticationMiddlewareTest extends TestCase
     {
         $client = Client::createEmpty();
         $client = $client->create(
-            ClientId::create('FOO'),
-            DataBag::create([
+            new ClientId('FOO'),
+            new DataBag([
                 'token_endpoint_auth_method' => 'client_secret_basic',
                 'client_secret' => 'BAR',
             ]),
@@ -276,11 +276,6 @@ final class ClientAuthenticationMiddlewareTest extends TestCase
         $this->getClientAuthenticationMiddleware($clientRepository->reveal())->process($request->reveal(), $handler->reveal());
     }
 
-    /**
-     * @param ClientRepository $clientRepository
-     *
-     * @return ClientAuthenticationMiddleware
-     */
     private function getClientAuthenticationMiddleware(ClientRepository $clientRepository): ClientAuthenticationMiddleware
     {
         $authenticationMethodManager = new AuthenticationMethodManager();

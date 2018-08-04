@@ -30,7 +30,7 @@ final class ScopeRuleTest extends TestCase
     protected function setUp()
     {
         if (!\interface_exists(Rule::class)) {
-            $this->markTestSkipped('The component "oauth2-framework/client" is not installed.');
+            static::markTestSkipped('The component "oauth2-framework/client" is not installed.');
         }
     }
 
@@ -41,12 +41,12 @@ final class ScopeRuleTest extends TestCase
      */
     public function theParameterMustBeAString()
     {
-        $clientId = ClientId::create('CLIENT_ID');
-        $commandParameters = DataBag::create([
+        $clientId = new ClientId('CLIENT_ID');
+        $commandParameters = new DataBag([
             'scope' => ['foo'],
         ]);
         $rule = new ScopeRule();
-        $rule->handle($clientId, $commandParameters, DataBag::create([]), $this->getCallable());
+        $rule->handle($clientId, $commandParameters, new DataBag([]), $this->getCallable());
     }
 
     /**
@@ -56,12 +56,12 @@ final class ScopeRuleTest extends TestCase
      */
     public function theParameterContainsForbiddenCharacters()
     {
-        $clientId = ClientId::create('CLIENT_ID');
-        $commandParameters = DataBag::create([
+        $clientId = new ClientId('CLIENT_ID');
+        $commandParameters = new DataBag([
             'scope' => 'coffee, café',
         ]);
         $rule = new ScopeRule();
-        $rule->handle($clientId, $commandParameters, DataBag::create([]), $this->getCallable());
+        $rule->handle($clientId, $commandParameters, new DataBag([]), $this->getCallable());
     }
 
     /**
@@ -69,19 +69,16 @@ final class ScopeRuleTest extends TestCase
      */
     public function theParameterIsValid()
     {
-        $clientId = ClientId::create('CLIENT_ID');
-        $commandParameters = DataBag::create([
+        $clientId = new ClientId('CLIENT_ID');
+        $commandParameters = new DataBag([
             'scope' => 'coffee cream',
         ]);
         $rule = new ScopeRule();
-        $validatedParameters = $rule->handle($clientId, $commandParameters, DataBag::create([]), $this->getCallable());
-        self::assertTrue($validatedParameters->has('scope'));
-        self::assertEquals('coffee cream', $validatedParameters->get('scope'));
+        $validatedParameters = $rule->handle($clientId, $commandParameters, new DataBag([]), $this->getCallable());
+        static::assertTrue($validatedParameters->has('scope'));
+        static::assertEquals('coffee cream', $validatedParameters->get('scope'));
     }
 
-    /**
-     * @return callable
-     */
     private function getCallable(): callable
     {
         return function (ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters): DataBag {

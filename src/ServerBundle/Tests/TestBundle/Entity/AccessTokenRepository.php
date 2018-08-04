@@ -24,9 +24,6 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
      */
     private $accessTokens = [];
 
-    /**
-     * @param AccessToken $accessToken
-     */
     public function save(AccessToken $accessToken): void
     {
         $this->accessTokens[$accessToken->getTokenId()->getValue()] = $accessToken;

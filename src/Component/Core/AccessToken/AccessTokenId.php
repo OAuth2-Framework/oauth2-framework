@@ -18,8 +18,6 @@ use OAuth2Framework\Component\Core\Token\TokenId;
 class AccessTokenId extends TokenId
 {
     /**
-     * @param string $value
-     *
      * @return AccessTokenId
      */
     public static function create(string $value): self

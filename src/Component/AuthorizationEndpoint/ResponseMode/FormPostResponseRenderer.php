@@ -15,11 +15,5 @@ namespace OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode;
 
 interface FormPostResponseRenderer
 {
-    /**
-     * @param string $redirectUri
-     * @param array  $data
-     *
-     * @return string
-     */
     public function render(string $redirectUri, array $data): string;
 }

@@ -23,9 +23,6 @@ class UserAccountCheckerManager
      */
     private $checkers = [];
 
-    /**
-     * @param UserAccountChecker $checker
-     */
     public function add(UserAccountChecker $checker)
     {
         $this->checkers[] = $checker;

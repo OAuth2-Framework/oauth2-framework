@@ -13,8 +13,11 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\AuthorizationCodeGrant\Tests;
 
+use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCode;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeId;
+use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeIdGenerator;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeRepository;
+use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeResponseType;
 use OAuth2Framework\Component\AuthorizationCodeGrant\PKCEMethod\PKCEMethodManager;
 use OAuth2Framework\Component\AuthorizationCodeGrant\PKCEMethod\Plain;
 use OAuth2Framework\Component\AuthorizationCodeGrant\PKCEMethod\S256;
@@ -22,9 +25,6 @@ use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
-use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCode;
-use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeResponseType;
-use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeIdGenerator;
 use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use PHPUnit\Framework\TestCase;
@@ -41,9 +41,9 @@ final class AuthorizationCodeResponseTypeTest extends TestCase
      */
     public function genericInformation()
     {
-        self::assertEquals(['authorization_code'], $this->getResponseType()->associatedGrantTypes());
-        self::assertEquals('code', $this->getResponseType()->name());
-        self::assertEquals('query', $this->getResponseType()->getResponseMode());
+        static::assertEquals(['authorization_code'], $this->getResponseType()->associatedGrantTypes());
+        static::assertEquals('code', $this->getResponseType()->name());
+        static::assertEquals('query', $this->getResponseType()->getResponseMode());
     }
 
     /**
@@ -53,13 +53,13 @@ final class AuthorizationCodeResponseTypeTest extends TestCase
     {
         $client = Client::createEmpty();
         $client = $client->create(
-            ClientId::create('CLIENT_ID'),
-            DataBag::create([]),
-            UserAccountId::create('USER_ACCOUNT_ID')
+            new ClientId('CLIENT_ID'),
+            new DataBag([]),
+            new UserAccountId('USER_ACCOUNT_ID')
         );
         $userAccount = $this->prophesize(UserAccount::class);
-        $userAccount->getPublicId()->willReturn(UserAccountId::create('USER_ACCOUNT_ID'));
-        $userAccount->getUserAccountId()->willReturn(UserAccountId::create('USER_ACCOUNT_ID'));
+        $userAccount->getPublicId()->willReturn(new UserAccountId('USER_ACCOUNT_ID'));
+        $userAccount->getUserAccountId()->willReturn(new UserAccountId('USER_ACCOUNT_ID'));
         $authorization = Authorization::create(
             $client,
             [
@@ -71,7 +71,7 @@ final class AuthorizationCodeResponseTypeTest extends TestCase
         $authorization = $authorization->withRedirectUri('http://localhost:8000/');
         $authorization = $this->getResponseType()->preProcess($authorization);
         $authorization = $this->getResponseType()->process($authorization);
-        self::assertTrue($authorization->hasResponseParameter('code'));
+        static::assertTrue($authorization->hasResponseParameter('code'));
     }
 
     /**
@@ -84,7 +84,7 @@ final class AuthorizationCodeResponseTypeTest extends TestCase
         if (null === $this->grantType) {
             $authorizationCodeIdGenerator = $this->prophesize(AuthorizationCodeIdGenerator::class);
             $authorizationCodeIdGenerator->createAuthorizationCodeId()->willReturn(
-                AuthorizationCodeId::create(\bin2hex(\random_bytes(32)))
+                new AuthorizationCodeId(\bin2hex(\random_bytes(32)))
             );
             $authorizationCodeRepository = $this->prophesize(AuthorizationCodeRepository::class);
             $authorizationCodeRepository->save(Argument::type(AuthorizationCode::class))->will(function (array $args) {

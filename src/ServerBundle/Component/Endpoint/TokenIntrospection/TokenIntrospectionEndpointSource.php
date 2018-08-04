@@ -14,10 +14,10 @@ declare(strict_types=1);
 namespace OAuth2Framework\ServerBundle\Component\Endpoint\TokenIntrospection;
 
 use OAuth2Framework\Component\TokenIntrospectionEndpoint\TokenIntrospectionEndpoint;
+use OAuth2Framework\Component\TokenIntrospectionEndpoint\TokenTypeHint;
 use OAuth2Framework\ServerBundle\Component\Component;
 use OAuth2Framework\ServerBundle\Component\Endpoint\TokenIntrospection\Compiler\TokenIntrospectionRouteCompilerPass;
 use OAuth2Framework\ServerBundle\Component\Endpoint\TokenIntrospection\Compiler\TokenTypeHintCompilerPass;
-use OAuth2Framework\Component\TokenIntrospectionEndpoint\TokenTypeHint;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -25,9 +25,6 @@ use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
 class TokenIntrospectionEndpointSource implements Component
 {
-    /**
-     * @return string
-     */
     public function name(): string
     {
         return 'token_introspection';

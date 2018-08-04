@@ -21,10 +21,10 @@ use OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
+use OAuth2Framework\Component\Core\TokenType\TokenType;
 use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use OAuth2Framework\Component\ImplicitGrant\TokenResponseType;
-use OAuth2Framework\Component\Core\TokenType\TokenType;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 
@@ -39,9 +39,9 @@ final class TokenResponseTypeTest extends TestCase
      */
     public function genericInformation()
     {
-        self::assertEquals(['implicit'], $this->getResponseType()->associatedGrantTypes());
-        self::assertEquals('token', $this->getResponseType()->name());
-        self::assertEquals('fragment', $this->getResponseType()->getResponseMode());
+        static::assertEquals(['implicit'], $this->getResponseType()->associatedGrantTypes());
+        static::assertEquals('token', $this->getResponseType()->name());
+        static::assertEquals('fragment', $this->getResponseType()->getResponseMode());
     }
 
     /**
@@ -51,13 +51,13 @@ final class TokenResponseTypeTest extends TestCase
     {
         $client = Client::createEmpty();
         $client = $client->create(
-            ClientId::create('CLIENT_ID'),
-            DataBag::create([]),
-            UserAccountId::create('USER_ACCOUNT_ID')
+            new ClientId('CLIENT_ID'),
+            new DataBag([]),
+            new UserAccountId('USER_ACCOUNT_ID')
         );
         $userAccount = $this->prophesize(UserAccount::class);
-        $userAccount->getPublicId()->willReturn(UserAccountId::create('USER_ACCOUNT_ID'));
-        $userAccount->getUserAccountId()->willReturn(UserAccountId::create('USER_ACCOUNT_ID'));
+        $userAccount->getPublicId()->willReturn(new UserAccountId('USER_ACCOUNT_ID'));
+        $userAccount->getUserAccountId()->willReturn(new UserAccountId('USER_ACCOUNT_ID'));
         $tokenType = $this->prophesize(TokenType::class);
         $tokenType->getAdditionalInformation()->willReturn(['token_type' => 'FOO']);
 
@@ -72,9 +72,9 @@ final class TokenResponseTypeTest extends TestCase
             return $authorization;
         });
 
-        self::assertEquals('CLIENT_ID', $authorization->getClient()->getPublicId()->getValue());
-        self::assertTrue($authorization->hasResponseParameter('access_token'));
-        self::assertEquals('ACCESS_TOKEN_ID', $authorization->getResponseParameter('access_token'));
+        static::assertEquals('CLIENT_ID', $authorization->getClient()->getPublicId()->getValue());
+        static::assertTrue($authorization->hasResponseParameter('access_token'));
+        static::assertEquals('ACCESS_TOKEN_ID', $authorization->getResponseParameter('access_token'));
     }
 
     /**
@@ -86,7 +86,7 @@ final class TokenResponseTypeTest extends TestCase
     {
         if (null === $this->grantType) {
             $accessTokenIdGenerator = $this->prophesize(AccessTokenIdGenerator::class);
-            $accessTokenIdGenerator->createAccessTokenId(Argument::any(), Argument::any(), Argument::any(), Argument::any(), Argument::any(), Argument::any(), Argument::any())->willReturn(AccessTokenId::create('ACCESS_TOKEN_ID'));
+            $accessTokenIdGenerator->createAccessTokenId(Argument::any(), Argument::any(), Argument::any(), Argument::any(), Argument::any(), Argument::any(), Argument::any())->willReturn(new AccessTokenId('ACCESS_TOKEN_ID'));
 
             $accessTokenRepository = $this->prophesize(AccessTokenRepository::class);
             $accessTokenRepository->save(Argument::type(AccessToken::class))->will(function (array $args) {

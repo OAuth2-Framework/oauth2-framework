@@ -18,14 +18,14 @@ use Http\Message\ResponseFactory;
 use OAuth2Framework\Component\IssuerDiscoveryEndpoint\IdentifierResolver\Identifier;
 use OAuth2Framework\Component\IssuerDiscoveryEndpoint\IdentifierResolver\IdentifierResolver;
 use OAuth2Framework\Component\IssuerDiscoveryEndpoint\IdentifierResolver\IdentifierResolverManager;
-use Psr\Http\Server\RequestHandlerInterface;
 use OAuth2Framework\Component\IssuerDiscoveryEndpoint\IssuerDiscoveryEndpoint;
-use OAuth2Framework\Component\IssuerDiscoveryEndpoint\ResourceObject;
 use OAuth2Framework\Component\IssuerDiscoveryEndpoint\ResourceId;
+use OAuth2Framework\Component\IssuerDiscoveryEndpoint\ResourceObject;
 use OAuth2Framework\Component\IssuerDiscoveryEndpoint\ResourceRepository;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 /**
  * @group IssuerDiscoveryEndpoint
@@ -52,8 +52,8 @@ final class IssuerDiscoveryEndpointTest extends TestCase
         $response = $endpoint->process($request->reveal(), $handler->reveal());
 
         $response->getBody()->rewind();
-        self::assertEquals('{"error":"invalid_request","error_description":"The parameter \"rel\" is mandatory."}', $response->getBody()->getContents());
-        self::assertEquals(400, $response->getStatusCode());
+        static::assertEquals('{"error":"invalid_request","error_description":"The parameter \"rel\" is mandatory."}', $response->getBody()->getContents());
+        static::assertEquals(400, $response->getStatusCode());
     }
 
     /**
@@ -79,8 +79,8 @@ final class IssuerDiscoveryEndpointTest extends TestCase
         $response = $endpoint->process($request->reveal(), $handler->reveal());
 
         $response->getBody()->rewind();
-        self::assertEquals('{"error":"invalid_request","error_description":"Unsupported \"rel\" parameter value."}', $response->getBody()->getContents());
-        self::assertEquals(400, $response->getStatusCode());
+        static::assertEquals('{"error":"invalid_request","error_description":"Unsupported \"rel\" parameter value."}', $response->getBody()->getContents());
+        static::assertEquals(400, $response->getStatusCode());
     }
 
     /**
@@ -107,8 +107,8 @@ final class IssuerDiscoveryEndpointTest extends TestCase
         $response = $endpoint->process($request->reveal(), $handler->reveal());
 
         $response->getBody()->rewind();
-        self::assertEquals('{"error":"invalid_request","error_description":"The resource identified with \"=Foo.Bar\" does not exist or is not supported by this server."}', $response->getBody()->getContents());
-        self::assertEquals(400, $response->getStatusCode());
+        static::assertEquals('{"error":"invalid_request","error_description":"The resource identified with \"=Foo.Bar\" does not exist or is not supported by this server."}', $response->getBody()->getContents());
+        static::assertEquals(400, $response->getStatusCode());
     }
 
     /**
@@ -135,8 +135,8 @@ final class IssuerDiscoveryEndpointTest extends TestCase
         $response = $endpoint->process($request->reveal(), $handler->reveal());
 
         $response->getBody()->rewind();
-        self::assertEquals('{"error":"invalid_request","error_description":"The resource identified with \"@foo\" does not exist or is not supported by this server."}', $response->getBody()->getContents());
-        self::assertEquals(400, $response->getStatusCode());
+        static::assertEquals('{"error":"invalid_request","error_description":"The resource identified with \"@foo\" does not exist or is not supported by this server."}', $response->getBody()->getContents());
+        static::assertEquals(400, $response->getStatusCode());
     }
 
     /**
@@ -163,8 +163,8 @@ final class IssuerDiscoveryEndpointTest extends TestCase
         $response = $endpoint->process($request->reveal(), $handler->reveal());
 
         $response->getBody()->rewind();
-        self::assertEquals('{"error":"invalid_request","error_description":"The resource identified with \"hello@me.com\" does not exist or is not supported by this server."}', $response->getBody()->getContents());
-        self::assertEquals(400, $response->getStatusCode());
+        static::assertEquals('{"error":"invalid_request","error_description":"The resource identified with \"hello@me.com\" does not exist or is not supported by this server."}', $response->getBody()->getContents());
+        static::assertEquals(400, $response->getStatusCode());
     }
 
     /**
@@ -191,8 +191,8 @@ final class IssuerDiscoveryEndpointTest extends TestCase
         $response = $endpoint->process($request->reveal(), $handler->reveal());
 
         $response->getBody()->rewind();
-        self::assertEquals('{"error":"invalid_request","error_description":"The resource identified with \"bad@www.foo.bar:8000\" does not exist or is not supported by this server."}', $response->getBody()->getContents());
-        self::assertEquals(400, $response->getStatusCode());
+        static::assertEquals('{"error":"invalid_request","error_description":"The resource identified with \"bad@www.foo.bar:8000\" does not exist or is not supported by this server."}', $response->getBody()->getContents());
+        static::assertEquals(400, $response->getStatusCode());
     }
 
     /**
@@ -226,8 +226,8 @@ final class IssuerDiscoveryEndpointTest extends TestCase
         $response = $endpoint->process($request->reveal(), $handler->reveal());
 
         $response->getBody()->rewind();
-        self::assertEquals('{"subject":"hello@www.foo.bar:8000","links":[{"rel":"http://openid.net/specs/connect/1.0/issuer","href":"https://my.server.com/hello"}]}', $response->getBody()->getContents());
-        self::assertEquals(200, $response->getStatusCode());
+        static::assertEquals('{"subject":"hello@www.foo.bar:8000","links":[{"rel":"http://openid.net/specs/connect/1.0/issuer","href":"https://my.server.com/hello"}]}', $response->getBody()->getContents());
+        static::assertEquals(200, $response->getStatusCode());
     }
 
     /**
@@ -261,8 +261,8 @@ final class IssuerDiscoveryEndpointTest extends TestCase
         $response = $endpoint->process($request->reveal(), $handler->reveal());
 
         $response->getBody()->rewind();
-        self::assertEquals('{"subject":"acct:hello%40you@www.foo.bar:8000","links":[{"rel":"http://openid.net/specs/connect/1.0/issuer","href":"https://my.server.com/hello"}]}', $response->getBody()->getContents());
-        self::assertEquals(200, $response->getStatusCode());
+        static::assertEquals('{"subject":"acct:hello%40you@www.foo.bar:8000","links":[{"rel":"http://openid.net/specs/connect/1.0/issuer","href":"https://my.server.com/hello"}]}', $response->getBody()->getContents());
+        static::assertEquals(200, $response->getStatusCode());
     }
 
     /**
@@ -296,13 +296,10 @@ final class IssuerDiscoveryEndpointTest extends TestCase
         $response = $endpoint->process($request->reveal(), $handler->reveal());
 
         $response->getBody()->rewind();
-        self::assertEquals('{"subject":"https://www.foo.bar:8000/+hello","links":[{"rel":"http://openid.net/specs/connect/1.0/issuer","href":"https://my.server.com/hello"}]}', $response->getBody()->getContents());
-        self::assertEquals(200, $response->getStatusCode());
+        static::assertEquals('{"subject":"https://www.foo.bar:8000/+hello","links":[{"rel":"http://openid.net/specs/connect/1.0/issuer","href":"https://my.server.com/hello"}]}', $response->getBody()->getContents());
+        static::assertEquals(200, $response->getStatusCode());
     }
 
-    /**
-     * @return ResponseFactory
-     */
     private function getResponseFactory(): ResponseFactory
     {
         return new DiactorosMessageFactory();

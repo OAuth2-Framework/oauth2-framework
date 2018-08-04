@@ -22,9 +22,6 @@ class AccessTokenCreatedListener
      */
     private $events = [];
 
-    /**
-     * @param AccessTokenCreatedEvent $event
-     */
     public function handle(AccessTokenCreatedEvent $event)
     {
         $this->events[] = $event;

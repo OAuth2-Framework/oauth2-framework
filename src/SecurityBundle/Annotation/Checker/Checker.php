@@ -19,9 +19,6 @@ use OAuth2Framework\SecurityBundle\Security\Authentication\Token\OAuth2Token;
 interface Checker
 {
     /**
-     * @param OAuth2Token $token
-     * @param OAuth2      $configuration
-     *
      * @throws \Exception
      */
     public function check(OAuth2Token $token, OAuth2 $configuration): void;

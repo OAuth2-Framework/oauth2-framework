@@ -14,14 +14,14 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\MetadataEndpoint;
 
 use Http\Message\ResponseFactory;
-use Psr\Http\Server\RequestHandlerInterface;
-use Psr\Http\Server\MiddlewareInterface;
 use Jose\Component\Core\Converter\StandardConverter;
 use Jose\Component\Core\JWK;
 use Jose\Component\Signature\JWSBuilder;
 use Jose\Component\Signature\Serializer\CompactSerializer;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 class MetadataEndpoint implements MiddlewareInterface
 {
@@ -52,9 +52,6 @@ class MetadataEndpoint implements MiddlewareInterface
 
     /**
      * MetadataEndpoint constructor.
-     *
-     * @param ResponseFactory $responseFactory
-     * @param Metadata        $metadata
      */
     public function __construct(ResponseFactory $responseFactory, Metadata $metadata)
     {
@@ -62,11 +59,6 @@ class MetadataEndpoint implements MiddlewareInterface
         $this->metadata = $metadata;
     }
 
-    /**
-     * @param JWSBuilder $jwsBuilder
-     * @param JWK        $signatureKey
-     * @param string     $signatureAlgorithm
-     */
     public function enableSignature(JWSBuilder $jwsBuilder, string $signatureAlgorithm, JWK $signatureKey)
     {
         $this->jwsBuilder = $jwsBuilder;
@@ -90,11 +82,6 @@ class MetadataEndpoint implements MiddlewareInterface
         return $response;
     }
 
-    /**
-     * @param array $metadata
-     *
-     * @return string
-     */
     private function sign(array $metadata): string
     {
         $jsonConverter = new StandardConverter();

@@ -22,9 +22,6 @@ class AuthCodeCreatedListener
      */
     private $events = [];
 
-    /**
-     * @param AuthorizationCodeCreatedEvent $event
-     */
     public function handle(AuthorizationCodeCreatedEvent $event)
     {
         $this->events[] = $event;

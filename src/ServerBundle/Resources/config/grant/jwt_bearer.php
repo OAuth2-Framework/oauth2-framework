@@ -12,9 +12,9 @@ declare(strict_types=1);
  */
 
 use Jose\Component\Core\Converter\JsonConverter;
+use OAuth2Framework\Component\Core\UserAccount\UserAccountRepository;
 use OAuth2Framework\Component\JwtBearerGrant\JwtBearerGrantType;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use OAuth2Framework\Component\Core\UserAccount\UserAccountRepository;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
 return function (ContainerConfigurator $container) {

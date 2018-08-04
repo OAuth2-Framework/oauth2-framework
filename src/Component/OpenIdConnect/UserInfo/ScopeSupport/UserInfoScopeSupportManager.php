@@ -29,8 +29,6 @@ class UserInfoScopeSupportManager
     }
 
     /**
-     * @param UserInfoScopeSupport $userinfoScopeSupport
-     *
      * @return UserInfoScopeSupportManager
      */
     public function add(UserInfoScopeSupport $userinfoScopeSupport): self
@@ -40,22 +38,13 @@ class UserInfoScopeSupportManager
         return $this;
     }
 
-    /**
-     * @param string $scope
-     *
-     * @return bool
-     */
     public function has(string $scope): bool
     {
         return \array_key_exists($scope, $this->userinfoScopeSupports);
     }
 
     /**
-     * @param string $scope
-     *
      * @throws \InvalidArgumentException
-     *
-     * @return UserInfoScopeSupport
      */
     public function get(string $scope): UserInfoScopeSupport
     {

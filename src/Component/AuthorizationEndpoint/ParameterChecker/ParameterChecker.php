@@ -20,12 +20,8 @@ use OAuth2Framework\Component\Core\Message\OAuth2Message;
 interface ParameterChecker
 {
     /**
-     * @param Authorization $authorization
-     *
      * @throws OAuth2Message
      * @throws OAuth2AuthorizationException
-     *
-     * @return Authorization
      */
     public function check(Authorization $authorization): Authorization;
 }

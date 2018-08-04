@@ -25,10 +25,6 @@ final class TokenRevocationGetEndpoint extends TokenRevocationEndpoint
 
     /**
      * TokenRevocationGetEndpoint constructor.
-     *
-     * @param TokenTypeHintManager $tokenTypeHintManager
-     * @param ResponseFactory      $responseFactory
-     * @param bool                 $allowJson
      */
     public function __construct(TokenTypeHintManager $tokenTypeHintManager, ResponseFactory $responseFactory, bool $allowJson)
     {

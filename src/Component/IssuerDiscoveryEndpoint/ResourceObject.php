@@ -15,8 +15,5 @@ namespace OAuth2Framework\Component\IssuerDiscoveryEndpoint;
 
 interface ResourceObject
 {
-    /**
-     * @return string
-     */
     public function getIssuer(): string;
 }

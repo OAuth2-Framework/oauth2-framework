@@ -43,8 +43,8 @@ final class ParameterCheckerManagerTest extends TestCase
     {
         $client = Client::createEmpty();
         $client = $client->create(
-            ClientId::create('CLIENT_ID'),
-            DataBag::create([]),
+            new ClientId('CLIENT_ID'),
+            new DataBag([]),
             null
         );
         $authorization = Authorization::create($client, [
@@ -53,11 +53,11 @@ final class ParameterCheckerManagerTest extends TestCase
 
         try {
             $this->getParameterCheckerManager()->process($authorization);
-            $this->fail('An OAuth2 exception should be thrown.');
+            static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2AuthorizationException $e) {
-            self::assertEquals(400, $e->getCode());
-            self::assertEquals('invalid_request', $e->getMessage());
-            self::assertEquals('Invalid parameter "display". Allowed values are page, popup, touch, wap', $e->getErrorDescription());
+            static::assertEquals(400, $e->getCode());
+            static::assertEquals('invalid_request', $e->getMessage());
+            static::assertEquals('Invalid parameter "display". Allowed values are page, popup, touch, wap', $e->getErrorDescription());
         }
     }
 
@@ -68,8 +68,8 @@ final class ParameterCheckerManagerTest extends TestCase
     {
         $client = Client::createEmpty();
         $client = $client->create(
-            ClientId::create('CLIENT_ID'),
-            DataBag::create([]),
+            new ClientId('CLIENT_ID'),
+            new DataBag([]),
             null
         );
         $authorization = Authorization::create($client, [
@@ -78,11 +78,11 @@ final class ParameterCheckerManagerTest extends TestCase
 
         try {
             $this->getParameterCheckerManager()->process($authorization);
-            $this->fail('An OAuth2 exception should be thrown.');
+            static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2AuthorizationException $e) {
-            self::assertEquals(400, $e->getCode());
-            self::assertEquals('invalid_request', $e->getMessage());
-            self::assertEquals('Invalid parameter "prompt". Allowed values are none, login, consent, select_account', $e->getErrorDescription());
+            static::assertEquals(400, $e->getCode());
+            static::assertEquals('invalid_request', $e->getMessage());
+            static::assertEquals('Invalid parameter "prompt". Allowed values are none, login, consent, select_account', $e->getErrorDescription());
         }
     }
 
@@ -93,8 +93,8 @@ final class ParameterCheckerManagerTest extends TestCase
     {
         $client = Client::createEmpty();
         $client = $client->create(
-            ClientId::create('CLIENT_ID'),
-            DataBag::create([]),
+            new ClientId('CLIENT_ID'),
+            new DataBag([]),
             null
         );
         $authorization = Authorization::create($client, [
@@ -103,11 +103,11 @@ final class ParameterCheckerManagerTest extends TestCase
 
         try {
             $this->getParameterCheckerManager()->process($authorization);
-            $this->fail('An OAuth2 exception should be thrown.');
+            static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2AuthorizationException $e) {
-            self::assertEquals(400, $e->getCode());
-            self::assertEquals('invalid_request', $e->getMessage());
-            self::assertEquals('Invalid parameter "prompt". Prompt value "none" must be used alone.', $e->getErrorDescription());
+            static::assertEquals(400, $e->getCode());
+            static::assertEquals('invalid_request', $e->getMessage());
+            static::assertEquals('Invalid parameter "prompt". Prompt value "none" must be used alone.', $e->getErrorDescription());
         }
     }
 
@@ -118,19 +118,19 @@ final class ParameterCheckerManagerTest extends TestCase
     {
         $client = Client::createEmpty();
         $client = $client->create(
-            ClientId::create('CLIENT_ID'),
-            DataBag::create([]),
+            new ClientId('CLIENT_ID'),
+            new DataBag([]),
             null
         );
         $authorization = Authorization::create($client, []);
 
         try {
             $this->getParameterCheckerManager()->process($authorization);
-            $this->fail('An OAuth2 exception should be thrown.');
+            static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2AuthorizationException $e) {
-            self::assertEquals(400, $e->getCode());
-            self::assertEquals('invalid_request', $e->getMessage());
-            self::assertEquals('The parameter "redirect_uri" is mandatory.', $e->getErrorDescription());
+            static::assertEquals(400, $e->getCode());
+            static::assertEquals('invalid_request', $e->getMessage());
+            static::assertEquals('The parameter "redirect_uri" is mandatory.', $e->getErrorDescription());
         }
     }
 
@@ -141,8 +141,8 @@ final class ParameterCheckerManagerTest extends TestCase
     {
         $client = Client::createEmpty();
         $client = $client->create(
-            ClientId::create('CLIENT_ID'),
-            DataBag::create([]),
+            new ClientId('CLIENT_ID'),
+            new DataBag([]),
             null
         );
         $authorization = Authorization::create($client, [
@@ -151,11 +151,11 @@ final class ParameterCheckerManagerTest extends TestCase
 
         try {
             $this->getParameterCheckerManager()->process($authorization);
-            $this->fail('An OAuth2 exception should be thrown.');
+            static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2AuthorizationException $e) {
-            self::assertEquals(400, $e->getCode());
-            self::assertEquals('invalid_request', $e->getMessage());
-            self::assertEquals('The parameter "response_type" is mandatory.', $e->getErrorDescription());
+            static::assertEquals(400, $e->getCode());
+            static::assertEquals('invalid_request', $e->getMessage());
+            static::assertEquals('The parameter "response_type" is mandatory.', $e->getErrorDescription());
         }
     }
 
@@ -166,8 +166,8 @@ final class ParameterCheckerManagerTest extends TestCase
     {
         $client = Client::createEmpty();
         $client = $client->create(
-            ClientId::create('CLIENT_ID'),
-            DataBag::create([
+            new ClientId('CLIENT_ID'),
+            new DataBag([
                 'response_types' => ['foo'],
             ]),
             null
@@ -180,11 +180,11 @@ final class ParameterCheckerManagerTest extends TestCase
 
         try {
             $this->getParameterCheckerManager()->process($authorization);
-            $this->fail('An OAuth2 exception should be thrown.');
+            static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2AuthorizationException $e) {
-            self::assertEquals(400, $e->getCode());
-            self::assertEquals('invalid_request', $e->getMessage());
-            self::assertEquals('The response mode "foo" is not supported. Please use one of the following values: query, fragment.', $e->getErrorDescription());
+            static::assertEquals(400, $e->getCode());
+            static::assertEquals('invalid_request', $e->getMessage());
+            static::assertEquals('The response mode "foo" is not supported. Please use one of the following values: query, fragment.', $e->getErrorDescription());
         }
     }
 
@@ -195,8 +195,8 @@ final class ParameterCheckerManagerTest extends TestCase
     {
         $client = Client::createEmpty();
         $client = $client->create(
-            ClientId::create('CLIENT_ID'),
-            DataBag::create([]),
+            new ClientId('CLIENT_ID'),
+            new DataBag([]),
             null
         );
         $authorization = Authorization::create($client, [
@@ -206,11 +206,11 @@ final class ParameterCheckerManagerTest extends TestCase
 
         try {
             $this->getParameterCheckerManager()->process($authorization);
-            $this->fail('An OAuth2 exception should be thrown.');
+            static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2AuthorizationException $e) {
-            self::assertEquals(400, $e->getCode());
-            self::assertEquals('invalid_request', $e->getMessage());
-            self::assertEquals('The response type "bar" is not supported by this server', $e->getErrorDescription());
+            static::assertEquals(400, $e->getCode());
+            static::assertEquals('invalid_request', $e->getMessage());
+            static::assertEquals('The response type "bar" is not supported by this server', $e->getErrorDescription());
         }
     }
 
@@ -221,8 +221,8 @@ final class ParameterCheckerManagerTest extends TestCase
     {
         $client = Client::createEmpty();
         $client = $client->create(
-            ClientId::create('CLIENT_ID'),
-            DataBag::create([]),
+            new ClientId('CLIENT_ID'),
+            new DataBag([]),
             null
         );
         $authorization = Authorization::create($client, [
@@ -232,11 +232,11 @@ final class ParameterCheckerManagerTest extends TestCase
 
         try {
             $this->getParameterCheckerManager()->process($authorization);
-            $this->fail('An OAuth2 exception should be thrown.');
+            static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2AuthorizationException $e) {
-            self::assertEquals(400, $e->getCode());
-            self::assertEquals('invalid_request', $e->getMessage());
-            self::assertEquals('The response type "foo" is not allowed for this client.', $e->getErrorDescription());
+            static::assertEquals(400, $e->getCode());
+            static::assertEquals('invalid_request', $e->getMessage());
+            static::assertEquals('The response type "foo" is not allowed for this client.', $e->getErrorDescription());
         }
     }
 
@@ -247,8 +247,8 @@ final class ParameterCheckerManagerTest extends TestCase
     {
         $client = Client::createEmpty();
         $client = $client->create(
-            ClientId::create('CLIENT_ID'),
-            DataBag::create([
+            new ClientId('CLIENT_ID'),
+            new DataBag([
                 'response_types' => ['foo'],
             ]),
             null
@@ -264,10 +264,10 @@ final class ParameterCheckerManagerTest extends TestCase
 
         $authorization = $this->getParameterCheckerManager()->process($authorization);
 
-        self::assertInstanceOf(FragmentResponseMode::class, $authorization->getResponseMode());
-        self::assertInstanceOf(ResponseType::class, $authorization->getResponseType());
-        self::assertEquals(['login', 'consent'], $authorization->getPrompt());
-        self::assertFalse($authorization->hasPrompt('none'));
+        static::assertInstanceOf(FragmentResponseMode::class, $authorization->getResponseMode());
+        static::assertInstanceOf(ResponseType::class, $authorization->getResponseType());
+        static::assertEquals(['login', 'consent'], $authorization->getPrompt());
+        static::assertFalse($authorization->hasPrompt('none'));
     }
 
     /**
@@ -275,9 +275,6 @@ final class ParameterCheckerManagerTest extends TestCase
      */
     private $extensionManager = null;
 
-    /**
-     * @return ParameterCheckerManager
-     */
     private function getParameterCheckerManager(): ParameterCheckerManager
     {
         if (null === $this->extensionManager) {

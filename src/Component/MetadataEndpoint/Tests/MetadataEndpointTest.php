@@ -15,7 +15,6 @@ namespace OAuth2Framework\Component\MetadataEndpoint\Tests;
 
 use Http\Message\MessageFactory\DiactorosMessageFactory;
 use Http\Message\ResponseFactory;
-use Psr\Http\Server\RequestHandlerInterface;
 use Jose\Component\Core\AlgorithmManager;
 use Jose\Component\Core\Converter\StandardConverter;
 use Jose\Component\Core\JWK;
@@ -25,6 +24,7 @@ use OAuth2Framework\Component\MetadataEndpoint\Metadata;
 use OAuth2Framework\Component\MetadataEndpoint\MetadataEndpoint;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 /**
  * @group MetadataEndpoint
@@ -44,12 +44,12 @@ final class MetadataEndpointTest extends TestCase
         $body = $response->getBody()->getContents();
 
         if (\class_exists(JWSBuilder::class)) {
-            self::assertEquals('{"foo":"bar","signed_metadata":"eyJhbGciOiJub25lIn0.eyJmb28iOiJiYXIifQ."}', $body);
+            static::assertEquals('{"foo":"bar","signed_metadata":"eyJhbGciOiJub25lIn0.eyJmb28iOiJiYXIifQ."}', $body);
         } else {
-            self::assertEquals('{"foo":"bar"}', $body);
+            static::assertEquals('{"foo":"bar"}', $body);
         }
-        self::assertEquals(200, $response->getStatusCode());
-        self::assertEquals(['application/json; charset=UTF-8'], $response->getHeader('content-type'));
+        static::assertEquals(200, $response->getStatusCode());
+        static::assertEquals(['application/json; charset=UTF-8'], $response->getHeader('content-type'));
     }
 
     /**
@@ -57,9 +57,6 @@ final class MetadataEndpointTest extends TestCase
      */
     private $metadataEndpoint = null;
 
-    /**
-     * @return MetadataEndpoint
-     */
     private function getMetadataEndpoint(): MetadataEndpoint
     {
         if (null === $this->metadataEndpoint) {
@@ -88,9 +85,6 @@ final class MetadataEndpointTest extends TestCase
      */
     private $responseFactory = null;
 
-    /**
-     * @return ResponseFactory
-     */
     private function getResponseFactory(): ResponseFactory
     {
         if (null === $this->responseFactory) {

@@ -25,8 +25,6 @@ final class AccessTokenRevocationTypeHint implements TokenTypeHint
 
     /**
      * AccessToken constructor.
-     *
-     * @param AccessTokenRepository $accessTokenRepository
      */
     public function __construct(AccessTokenRepository $accessTokenRepository)
     {
@@ -46,7 +44,7 @@ final class AccessTokenRevocationTypeHint implements TokenTypeHint
      */
     public function find(string $token): ?Token
     {
-        $id = AccessTokenId::create($token);
+        $id = new AccessTokenId($token);
 
         return $this->accessTokenRepository->find($id);
     }
@@ -59,7 +57,7 @@ final class AccessTokenRevocationTypeHint implements TokenTypeHint
         if (!$token instanceof AccessToken || true === $token->isRevoked()) {
             return;
         }
-        $token = $token->markAsRevoked();
+        $token->markAsRevoked();
         $this->accessTokenRepository->save($token);
     }
 }

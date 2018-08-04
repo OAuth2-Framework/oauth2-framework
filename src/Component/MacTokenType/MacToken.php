@@ -32,9 +32,6 @@ abstract class MacToken implements TokenType
 
     /**
      * MacToken constructor.
-     *
-     * @param string $macAlgorithm
-     * @param int    $timestampLifetime
      */
     public function __construct(string $macAlgorithm, int $timestampLifetime)
     {
@@ -75,9 +72,6 @@ abstract class MacToken implements TokenType
         ];
     }
 
-    /**
-     * @return int
-     */
     public function getTimestampLifetime(): int
     {
         return $this->timestampLifetime;
@@ -145,13 +139,6 @@ abstract class MacToken implements TokenType
         ];
     }
 
-    /**
-     * @param ServerRequestInterface $request
-     * @param AccessToken            $token
-     * @param array                  $values
-     *
-     * @return string
-     */
     private function generateMac(ServerRequestInterface $request, AccessToken $token, array $values): string
     {
         $timestamp = $values['ts'];
@@ -184,9 +171,6 @@ abstract class MacToken implements TokenType
         ));
     }
 
-    /**
-     * @return array
-     */
     protected function getAlgorithmMap(): array
     {
         return [
@@ -195,13 +179,6 @@ abstract class MacToken implements TokenType
         ];
     }
 
-    /**
-     * @param string      $header
-     * @param array       $additionalCredentialValues
-     * @param string|null $token
-     *
-     * @return bool
-     */
     private function isHeaderValid(string $header, array &$additionalCredentialValues, string &$token = null): bool
     {
         if (1 === \preg_match('/(\w+)=("((?:[^"\\\\]|\\\\.)+)"|([^\s,$]+))/', $header, $matches)) {
@@ -228,8 +205,5 @@ abstract class MacToken implements TokenType
         return false;
     }
 
-    /**
-     * @return string
-     */
     abstract protected function generateMacKey(): string;
 }

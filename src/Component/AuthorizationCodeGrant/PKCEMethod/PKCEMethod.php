@@ -15,16 +15,7 @@ namespace OAuth2Framework\Component\AuthorizationCodeGrant\PKCEMethod;
 
 interface PKCEMethod
 {
-    /**
-     * @return string
-     */
     public function name(): string;
 
-    /**
-     * @param string $codeVerifier
-     * @param string $codeChallenge
-     *
-     * @return bool
-     */
     public function isChallengeVerified(string $codeVerifier, string $codeChallenge): bool;
 }

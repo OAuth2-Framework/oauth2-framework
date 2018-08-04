@@ -39,10 +39,6 @@ final class ResponseTypeAndResponseModeParameterChecker implements ParameterChec
 
     /**
      * ResponseTypeAndResponseModeParameterChecker constructor.
-     *
-     * @param ResponseTypeManager $responseTypeManager
-     * @param ResponseModeManager $responseModeManager
-     * @param bool                $responseModeParameterInAuthorizationRequestAllowed
      */
     public function __construct(ResponseTypeManager $responseTypeManager, ResponseModeManager $responseModeManager, bool $responseModeParameterInAuthorizationRequestAllowed)
     {
@@ -87,11 +83,7 @@ final class ResponseTypeAndResponseModeParameterChecker implements ParameterChec
     }
 
     /**
-     * @param string $responseType
-     *
      * @throws \InvalidArgumentException
-     *
-     * @return ResponseType
      */
     private function getResponseType(string $responseType): ResponseType
     {
@@ -102,9 +94,6 @@ final class ResponseTypeAndResponseModeParameterChecker implements ParameterChec
         return $this->responseTypeManager->get($responseType);
     }
 
-    /**
-     * @return bool
-     */
     public function isResponseModeParameterInAuthorizationRequestAllowed(): bool
     {
         return $this->responseModeParameterInAuthorizationRequestAllowed;

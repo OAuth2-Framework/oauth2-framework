@@ -14,16 +14,16 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\ClientConfigurationEndpoint;
 
 use Http\Message\ResponseFactory;
-use OAuth2Framework\Component\Core\Util\RequestBodyParser;
-use Psr\Http\Server\RequestHandlerInterface;
-use Psr\Http\Server\MiddlewareInterface;
 use OAuth2Framework\Component\ClientRule\RuleManager;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientRepository;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\Message\OAuth2Message;
+use OAuth2Framework\Component\Core\Util\RequestBodyParser;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 final class ClientConfigurationPutEndpoint implements MiddlewareInterface
 {
@@ -44,10 +44,6 @@ final class ClientConfigurationPutEndpoint implements MiddlewareInterface
 
     /**
      * ClientConfigurationPutEndpoint constructor.
-     *
-     * @param ClientRepository $clientRepository
-     * @param ResponseFactory  $responseFactory
-     * @param RuleManager      $ruleManager
      */
     public function __construct(ClientRepository $clientRepository, ResponseFactory $responseFactory, RuleManager $ruleManager)
     {
@@ -65,7 +61,7 @@ final class ClientConfigurationPutEndpoint implements MiddlewareInterface
         $client = $request->getAttribute('client');
         $parameters = RequestBodyParser::parseJson($request);
 
-        $command_parameters = DataBag::create($parameters);
+        $command_parameters = new DataBag($parameters);
         $validated_parameters = $this->ruleManager->handle($client->getClientId(), $command_parameters);
         $client = $client->withParameters($validated_parameters);
 

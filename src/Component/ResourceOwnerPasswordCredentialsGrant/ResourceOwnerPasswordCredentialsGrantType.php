@@ -13,12 +13,12 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\ResourceOwnerPasswordCredentialsGrant;
 
+use OAuth2Framework\Component\Core\Message\OAuth2Message;
+use OAuth2Framework\Component\Core\UserAccount\UserAccountManager;
+use OAuth2Framework\Component\Core\UserAccount\UserAccountRepository;
 use OAuth2Framework\Component\Core\Util\RequestBodyParser;
 use OAuth2Framework\Component\TokenEndpoint\GrantType;
 use OAuth2Framework\Component\TokenEndpoint\GrantTypeData;
-use OAuth2Framework\Component\Core\UserAccount\UserAccountManager;
-use OAuth2Framework\Component\Core\UserAccount\UserAccountRepository;
-use OAuth2Framework\Component\Core\Message\OAuth2Message;
 use Psr\Http\Message\ServerRequestInterface;
 
 final class ResourceOwnerPasswordCredentialsGrantType implements GrantType
@@ -35,9 +35,6 @@ final class ResourceOwnerPasswordCredentialsGrantType implements GrantType
 
     /**
      * ResourceOwnerPasswordCredentialsGrantType constructor.
-     *
-     * @param UserAccountManager    $userAccountManager
-     * @param UserAccountRepository $userAccountRepository
      */
     public function __construct(UserAccountManager $userAccountManager, UserAccountRepository $userAccountRepository)
     {

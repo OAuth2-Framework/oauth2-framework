@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\ImplicitGrant;
 
-use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType;
 use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
+use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType;
 use OAuth2Framework\Component\Core\AccessToken\AccessToken;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenIdGenerator;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository;
@@ -39,10 +39,6 @@ final class TokenResponseType implements ResponseType
 
     /**
      * TokenResponseType constructor.
-     *
-     * @param AccessTokenIdGenerator $accessTokenIdGenerator
-     * @param AccessTokenRepository  $accessTokenRepository
-     * @param int                    $accessTokenLifetime
      */
     public function __construct(AccessTokenIdGenerator $accessTokenIdGenerator, AccessTokenRepository $accessTokenRepository, int $accessTokenLifetime)
     {
@@ -92,18 +88,17 @@ final class TokenResponseType implements ResponseType
         $accessTokenId = $this->accessTokenIdGenerator->createAccessTokenId(
             $authorization->getUserAccount()->getUserAccountId(),
             $authorization->getClient()->getClientId(),
-            DataBag::create($authorization->getTokenType()->getAdditionalInformation()),
+            new DataBag($authorization->getTokenType()->getAdditionalInformation()),
             $authorization->getMetadata(),
             null
         );
-        $accessToken = AccessToken::createEmpty();
-        $accessToken = $accessToken->create(
+        $accessToken = new AccessToken(
             $accessTokenId,
-            $authorization->getUserAccount()->getUserAccountId(),
             $authorization->getClient()->getClientId(),
-            DataBag::create($additionalInformation),
-            $authorization->getMetadata(),
+            $authorization->getUserAccount()->getUserAccountId(),
             new \DateTimeImmutable(\sprintf('now +%d seconds', $this->accessTokenLifetime)),
+            new DataBag($additionalInformation),
+            $authorization->getMetadata(),
             null
         );
         $this->accessTokenRepository->save($accessToken);

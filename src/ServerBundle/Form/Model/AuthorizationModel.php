@@ -33,9 +33,6 @@ class AuthorizationModel
         return $this->saveConfiguration;
     }
 
-    /**
-     * @param bool $saveConfiguration
-     */
     public function setSaveConfiguration(bool $saveConfiguration)
     {
         $this->saveConfiguration = $saveConfiguration;

@@ -22,9 +22,6 @@ class AuthCodeRevokedListener
      */
     private $events = [];
 
-    /**
-     * @param AuthorizationCodeRevokedEvent $event
-     */
     public function handle(AuthorizationCodeRevokedEvent $event)
     {
         $this->events[] = $event;

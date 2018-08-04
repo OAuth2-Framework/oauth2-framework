@@ -28,9 +28,6 @@ class TokenTypeManager
     private $defaultTokenType = null;
 
     /**
-     * @param TokenType $tokenType
-     * @param bool      $default
-     *
      * @return TokenTypeManager
      */
     public function add(TokenType $tokenType, bool $default = false): self
@@ -43,21 +40,11 @@ class TokenTypeManager
         return $this;
     }
 
-    /**
-     * @param string $tokenTypeName
-     *
-     * @return bool
-     */
     public function has(string $tokenTypeName): bool
     {
         return \array_key_exists($tokenTypeName, $this->tokenTypes);
     }
 
-    /**
-     * @param string $tokenTypeName
-     *
-     * @return TokenType
-     */
     public function get(string $tokenTypeName): TokenType
     {
         if (!$this->has($tokenTypeName)) {
@@ -75,9 +62,6 @@ class TokenTypeManager
         return $this->tokenTypes;
     }
 
-    /**
-     * @return TokenType
-     */
     public function getDefault(): TokenType
     {
         if (null === $this->defaultTokenType) {
@@ -87,13 +71,6 @@ class TokenTypeManager
         return $this->get($this->defaultTokenType);
     }
 
-    /**
-     * @param ServerRequestInterface $request
-     * @param array                  $additionalCredentialValues
-     * @param TokenType|null         $type
-     *
-     * @return string|null
-     */
     public function findToken(ServerRequestInterface $request, array &$additionalCredentialValues, ?TokenType &$type = null): ?string
     {
         foreach ($this->all() as $tmp_type) {
@@ -111,11 +88,6 @@ class TokenTypeManager
         return null;
     }
 
-    /**
-     * @param array $additionalAuthenticationParameters
-     *
-     * @return array
-     */
     public function getSchemes(array $additionalAuthenticationParameters = []): array
     {
         $schemes = [];
@@ -126,12 +98,6 @@ class TokenTypeManager
         return $schemes;
     }
 
-    /**
-     * @param string $scheme
-     * @param array  $parameters
-     *
-     * @return string
-     */
     private function appendParameters(string $scheme, array $parameters): string
     {
         $position = \mb_strpos($scheme, ' ', 0, 'utf-8');

@@ -15,87 +15,116 @@ namespace OAuth2Framework\Component\Core\Token;
 
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
+use OAuth2Framework\Component\Core\Domain\DomainObject;
 use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwnerId;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
-use OAuth2Framework\Component\Core\Domain\DomainObject;
-use SimpleBus\Message\Recorder\ContainsRecordedMessages;
-use SimpleBus\Message\Recorder\PrivateMessageRecorderCapabilities;
 
-abstract class Token implements \JsonSerializable, ContainsRecordedMessages, DomainObject
+abstract class Token implements \JsonSerializable, DomainObject
 {
-    use PrivateMessageRecorderCapabilities;
+    private $tokenId;
+    private $expiresAt;
+    private $resourceOwnerId;
+    private $clientId;
+    private $parameter;
+    private $metadata;
+    private $revoked;
+    private $resourceServerId;
 
-    /**
-     * @var \DateTimeImmutable|null
-     */
-    protected $expiresAt = null;
-
-    /**
-     * @var ResourceOwnerId|null
-     */
-    protected $resourceOwnerId = null;
-
-    /**
-     * @var ClientId|null
-     */
-    protected $clientId = null;
-
-    /**
-     * @var DataBag
-     */
-    protected $parameters;
-
-    /**
-     * @var DataBag
-     */
-    protected $metadatas;
-
-    /**
-     * @var bool
-     */
-    protected $revoked = false;
-
-    /**
-     * @var null|ResourceServerId
-     */
-    protected $resourceServerId = null;
-
-    /**
-     * Token constructor.
-     */
-    protected function __construct()
+    public function __construct(TokenId $tokenId, ClientId $clientId, ResourceOwnerId $resourceOwnerId, DataBag $parameter, DataBag $metadata, \DateTimeImmutable $expiresAt, ?ResourceServerId $resourceServerId)
     {
-        $this->parameters = DataBag::create([]);
-        $this->metadatas = DataBag::create([]);
+        $this->tokenId = $tokenId;
+        $this->resourceOwnerId = $resourceOwnerId;
+        $this->clientId = $clientId;
+        $this->parameter = $parameter;
+        $this->metadata = $metadata;
+        $this->expiresAt = $expiresAt;
+        $this->resourceServerId = $resourceServerId;
+        $this->revoked = false;
     }
 
-    /**
-     * @return TokenId
-     */
-    abstract public function getTokenId(): TokenId;
-
-    /**
-     * @return ResourceOwnerId
-     */
-    public function getResourceOwnerId(): ResourceOwnerId
+    public function getTokenId(): TokenId
     {
-        return $this->resourceOwnerId;
+        return $this->tokenId;
     }
 
-    /**
-     * @return \DateTimeImmutable
-     */
+    public function setTokenId(TokenId $tokenId): void
+    {
+        $this->tokenId = $tokenId;
+    }
+
     public function getExpiresAt(): \DateTimeImmutable
     {
         return $this->expiresAt;
     }
 
-    /**
-     * @return bool
-     */
+    public function setExpiresAt(\DateTimeImmutable $expiresAt): void
+    {
+        $this->expiresAt = $expiresAt;
+    }
+
     public function hasExpired(): bool
     {
         return $this->expiresAt->getTimestamp() < \time();
+    }
+
+    public function getResourceOwnerId(): ResourceOwnerId
+    {
+        return $this->resourceOwnerId;
+    }
+
+    public function setResourceOwnerId(ResourceOwnerId $resourceOwnerId): void
+    {
+        $this->resourceOwnerId = $resourceOwnerId;
+    }
+
+    public function getClientId(): ClientId
+    {
+        return $this->clientId;
+    }
+
+    public function setClientId(ClientId $clientId): void
+    {
+        $this->clientId = $clientId;
+    }
+
+    public function getParameter(): DataBag
+    {
+        return $this->parameter;
+    }
+
+    public function setParameter(DataBag $parameter): void
+    {
+        $this->parameter = $parameter;
+    }
+
+    public function getMetadata(): DataBag
+    {
+        return $this->metadata;
+    }
+
+    public function setMetadata(DataBag $metadata): void
+    {
+        $this->metadata = $metadata;
+    }
+
+    public function isRevoked(): bool
+    {
+        return $this->revoked;
+    }
+
+    public function markAsRevoked(): void
+    {
+        $this->revoked = true;
+    }
+
+    public function getResourceServerId(): ?ResourceServerId
+    {
+        return $this->resourceServerId;
+    }
+
+    public function setResourceServerId(?ResourceServerId $resourceServerId): void
+    {
+        $this->resourceServerId = $resourceServerId;
     }
 
     /**
@@ -109,46 +138,6 @@ abstract class Token implements \JsonSerializable, ContainsRecordedMessages, Dom
         }
 
         return $this->expiresAt->getTimestamp() - \time() < 0 ? 0 : $this->expiresAt->getTimestamp() - \time();
-    }
-
-    /**
-     * @return ClientId
-     */
-    public function getClientId(): ClientId
-    {
-        return $this->clientId;
-    }
-
-    /**
-     * @return DataBag
-     */
-    public function getParameter(): DataBag
-    {
-        return $this->parameters;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isRevoked(): bool
-    {
-        return $this->revoked;
-    }
-
-    /**
-     * @return DataBag
-     */
-    public function getMetadata(): DataBag
-    {
-        return $this->metadatas;
-    }
-
-    /**
-     * @return null|ResourceServerId
-     */
-    public function getResourceServerId(): ?ResourceServerId
-    {
-        return $this->resourceServerId;
     }
 
     /**

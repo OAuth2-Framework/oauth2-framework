@@ -15,8 +15,5 @@ namespace OAuth2Framework\Component\AuthorizationCodeGrant;
 
 interface AuthorizationCodeIdGenerator
 {
-    /**
-     * @return AuthorizationCodeId
-     */
     public function createAuthorizationCodeId(): AuthorizationCodeId;
 }

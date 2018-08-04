@@ -25,8 +25,6 @@ class ParameterCheckerManager
     private $parameterCheckers = [];
 
     /**
-     * @param ParameterChecker $parameterChecker
-     *
      * @return ParameterCheckerManager
      */
     public function add(ParameterChecker $parameterChecker): self
@@ -37,10 +35,6 @@ class ParameterCheckerManager
     }
 
     /**
-     * @param Authorization $authorization
-     *
-     * @return Authorization
-     *
      * @throws OAuth2Message
      * @throws OAuth2AuthorizationException
      */

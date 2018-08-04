@@ -22,7 +22,6 @@ interface Claim
     public function isAvailableForUserAccount(UserAccount $userAccount, ?string $claimLocale): bool;
 
     /**
-     * @param UserAccount $userAccount
      * @param null|string $claimLocale
      *
      * @return null|mixed

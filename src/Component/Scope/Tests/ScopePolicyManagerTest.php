@@ -16,12 +16,12 @@ namespace OAuth2Framework\Component\Scope\Tests;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
+use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use OAuth2Framework\Component\Scope\Checker;
 use OAuth2Framework\Component\Scope\Policy\DefaultScopePolicy;
 use OAuth2Framework\Component\Scope\Policy\ErrorScopePolicy;
 use OAuth2Framework\Component\Scope\Policy\NoScopePolicy;
 use OAuth2Framework\Component\Scope\Policy\ScopePolicyManager;
-use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -34,9 +34,9 @@ final class ScopePolicyManagerTest extends TestCase
      */
     public function genericCalls()
     {
-        self::assertTrue($this->getScopePolicyManager()->has('error'));
-        self::assertFalse($this->getScopePolicyManager()->has('foo'));
-        self::assertEquals(['none', 'default', 'error'], $this->getScopePolicyManager()->all());
+        static::assertTrue($this->getScopePolicyManager()->has('error'));
+        static::assertFalse($this->getScopePolicyManager()->has('foo'));
+        static::assertEquals(['none', 'default', 'error'], $this->getScopePolicyManager()->all());
     }
 
     /**
@@ -46,13 +46,13 @@ final class ScopePolicyManagerTest extends TestCase
     {
         $client = Client::createEmpty();
         $client = $client->create(
-            ClientId::create('CLIENT_ID'),
-            DataBag::create([]),
-            UserAccountId::create('USER_ACCOUNT_ID')
+            new ClientId('CLIENT_ID'),
+            new DataBag([]),
+            new UserAccountId('USER_ACCOUNT_ID')
         );
 
         $result = $this->getScopePolicyManager()->apply('foo', $client);
-        self::assertEquals('foo', $result);
+        static::assertEquals('foo', $result);
     }
 
     /**
@@ -62,68 +62,68 @@ final class ScopePolicyManagerTest extends TestCase
     {
         $client = Client::createEmpty();
         $client = $client->create(
-            ClientId::create('CLIENT_ID'),
-            DataBag::create([]),
-            UserAccountId::create('USER_ACCOUNT_ID')
+            new ClientId('CLIENT_ID'),
+            new DataBag([]),
+            new UserAccountId('USER_ACCOUNT_ID')
         );
 
         $result = $this->getScopePolicyManager()->apply('', $client);
-        self::assertEquals('', $result);
+        static::assertEquals('', $result);
     }
 
     /**
      * @test
      */
-    public function testUsingTheNonePolicy()
+    public function usingTheNonePolicy()
     {
         $client = Client::createEmpty();
         $client = $client->create(
-            ClientId::create('CLIENT_ID'),
-            DataBag::create([
+            new ClientId('CLIENT_ID'),
+            new DataBag([
                 'scope_policy' => 'none',
             ]),
-            UserAccountId::create('USER_ACCOUNT_ID')
+            new UserAccountId('USER_ACCOUNT_ID')
         );
 
         $result = $this->getScopePolicyManager()->apply('', $client);
-        self::assertEquals('', $result);
+        static::assertEquals('', $result);
     }
 
     /**
      * @test
      */
-    public function testUsingTheDefaultPolicyWithCustomDefaultScope()
+    public function usingTheDefaultPolicyWithCustomDefaultScope()
     {
         $client = Client::createEmpty();
         $client = $client->create(
-            ClientId::create('CLIENT_ID'),
-            DataBag::create([
+            new ClientId('CLIENT_ID'),
+            new DataBag([
                 'scope_policy' => 'default',
                 'default_scope' => 'openid profile',
             ]),
-            UserAccountId::create('USER_ACCOUNT_ID')
+            new UserAccountId('USER_ACCOUNT_ID')
         );
 
         $result = $this->getScopePolicyManager()->apply('', $client);
-        self::assertEquals('openid profile', $result);
+        static::assertEquals('openid profile', $result);
     }
 
     /**
      * @test
      */
-    public function testUsingTheDefaultPolicy()
+    public function usingTheDefaultPolicy()
     {
         $client = Client::createEmpty();
         $client = $client->create(
-            ClientId::create('CLIENT_ID'),
-            DataBag::create([
+            new ClientId('CLIENT_ID'),
+            new DataBag([
                 'scope_policy' => 'default',
             ]),
-            UserAccountId::create('USER_ACCOUNT_ID')
+            new UserAccountId('USER_ACCOUNT_ID')
         );
 
         $result = $this->getScopePolicyManager()->apply('', $client);
-        self::assertEquals('scope1 scope2', $result);
+        static::assertEquals('scope1 scope2', $result);
     }
 
     /**
@@ -131,15 +131,15 @@ final class ScopePolicyManagerTest extends TestCase
      * @expectedException \RuntimeException
      * @expectedExceptionMessage No scope was requested.
      */
-    public function testUsingTheErrorPolicy()
+    public function usingTheErrorPolicy()
     {
         $client = Client::createEmpty();
         $client = $client->create(
-            ClientId::create('CLIENT_ID'),
-            DataBag::create([
+            new ClientId('CLIENT_ID'),
+            new DataBag([
                 'scope_policy' => 'error',
             ]),
-            UserAccountId::create('USER_ACCOUNT_ID')
+            new UserAccountId('USER_ACCOUNT_ID')
         );
 
         $this->getScopePolicyManager()->apply('', $client);
@@ -150,7 +150,7 @@ final class ScopePolicyManagerTest extends TestCase
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage Scope "foo" appears more than once.
      */
-    public function testScopeIsUsedOnlyOnce()
+    public function scopeIsUsedOnlyOnce()
     {
         Checker::checkUsedOnce('foo', 'foo bar');
         Checker::checkUsedOnce('foo', 'foo foo');
@@ -161,7 +161,7 @@ final class ScopePolicyManagerTest extends TestCase
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage Scope contains illegal characters.
      */
-    public function testScopeCharsetIsNotValid()
+    public function scopeCharsetIsNotValid()
     {
         Checker::checkCharset('foo bar');
         Checker::checkCharset('cookie café');
@@ -172,9 +172,6 @@ final class ScopePolicyManagerTest extends TestCase
      */
     private $scopePolicyManager = null;
 
-    /**
-     * @return ScopePolicyManager
-     */
     private function getScopePolicyManager(): ScopePolicyManager
     {
         if (null === $this->scopePolicyManager) {

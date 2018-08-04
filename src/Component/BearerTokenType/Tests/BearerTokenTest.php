@@ -36,9 +36,9 @@ final class BearerTokenTest extends TestCase
     {
         $bearerToken = new BearerToken('TEST', true, false, false);
 
-        self::assertEquals('Bearer', $bearerToken->name());
-        self::assertEquals('Bearer realm="TEST"', $bearerToken->getScheme());
-        self::assertEquals([], $bearerToken->getAdditionalInformation());
+        static::assertEquals('Bearer', $bearerToken->name());
+        static::assertEquals('Bearer realm="TEST"', $bearerToken->getScheme());
+        static::assertEquals([], $bearerToken->getAdditionalInformation());
     }
 
     /**
@@ -51,7 +51,7 @@ final class BearerTokenTest extends TestCase
         $request->getHeader('AUTHORIZATION')->willReturn(['Bearer ACCESS_TOKEN_ID']);
 
         $additionalCredentialValues = [];
-        self::assertEquals('ACCESS_TOKEN_ID', $bearerToken->find($request->reveal(), $additionalCredentialValues));
+        static::assertEquals('ACCESS_TOKEN_ID', $bearerToken->find($request->reveal(), $additionalCredentialValues));
     }
 
     /**
@@ -64,7 +64,7 @@ final class BearerTokenTest extends TestCase
         $request->getHeader('AUTHORIZATION')->willReturn(['MAC FOO_MAC_TOKEN']);
 
         $additionalCredentialValues = [];
-        self::assertNull($bearerToken->find($request->reveal(), $additionalCredentialValues));
+        static::assertNull($bearerToken->find($request->reveal(), $additionalCredentialValues));
     }
 
     /**
@@ -77,7 +77,7 @@ final class BearerTokenTest extends TestCase
         $request->getQueryParams()->willReturn(['access_token' => 'ACCESS_TOKEN_ID']);
 
         $additionalCredentialValues = [];
-        self::assertEquals('ACCESS_TOKEN_ID', $bearerToken->find($request->reveal(), $additionalCredentialValues));
+        static::assertEquals('ACCESS_TOKEN_ID', $bearerToken->find($request->reveal(), $additionalCredentialValues));
     }
 
     /**
@@ -90,7 +90,7 @@ final class BearerTokenTest extends TestCase
         $request->getParsedBody()->willReturn(['access_token' => 'ACCESS_TOKEN_ID']);
 
         $additionalCredentialValues = [];
-        self::assertEquals('ACCESS_TOKEN_ID', $bearerToken->find($request->reveal(), $additionalCredentialValues));
+        static::assertEquals('ACCESS_TOKEN_ID', $bearerToken->find($request->reveal(), $additionalCredentialValues));
     }
 
     /**
@@ -100,19 +100,18 @@ final class BearerTokenTest extends TestCase
     {
         $bearerToken = new BearerToken('TEST', true, false, false);
         $additionalCredentialValues = [];
-        $accessToken = AccessToken::createEmpty();
-        $accessToken = $accessToken->create(
-            AccessTokenId::create('ACCESS_TOKEN_ID'),
-            ClientId::create('CLIENT_ID'),
-            ClientId::create('CLIENT_ID'),
-            DataBag::create(['token_type' => 'Bearer']),
-            DataBag::create([]),
+        $accessToken = new AccessToken(
+            new AccessTokenId('ACCESS_TOKEN_ID'),
+            new ClientId('CLIENT_ID'),
+            new ClientId('CLIENT_ID'),
             new \DateTimeImmutable('now'),
-            ResourceServerId::create('RESOURCE_SERVER_ID')
+            new DataBag(['token_type' => 'Bearer']),
+            new DataBag([]),
+            new ResourceServerId('RESOURCE_SERVER_ID')
         );
         $request = $this->buildRequest([]);
 
-        self::assertTrue($bearerToken->isRequestValid($accessToken, $request->reveal(), $additionalCredentialValues));
+        static::assertTrue($bearerToken->isRequestValid($accessToken, $request->reveal(), $additionalCredentialValues));
     }
 
     /**
@@ -122,19 +121,18 @@ final class BearerTokenTest extends TestCase
     {
         $bearerToken = new BearerToken('TEST', true, false, false);
         $additionalCredentialValues = [];
-        $accessToken = AccessToken::createEmpty();
-        $accessToken = $accessToken->create(
-            AccessTokenId::create('ACCESS_TOKEN_ID'),
-            ClientId::create('CLIENT_ID'),
-            ClientId::create('CLIENT_ID'),
-            DataBag::create(['token_type' => 'MAC']),
-            DataBag::create([]),
+        $accessToken = new AccessToken(
+            new AccessTokenId('ACCESS_TOKEN_ID'),
+            new ClientId('CLIENT_ID'),
+            new ClientId('CLIENT_ID'),
             new \DateTimeImmutable('now'),
-            ResourceServerId::create('RESOURCE_SERVER_ID')
+            new DataBag(['token_type' => 'MAC']),
+            new DataBag([]),
+            new ResourceServerId('RESOURCE_SERVER_ID')
         );
         $request = $this->prophesize(ServerRequestInterface::class);
 
-        self::assertFalse($bearerToken->isRequestValid($accessToken, $request->reveal(), $additionalCredentialValues));
+        static::assertFalse($bearerToken->isRequestValid($accessToken, $request->reveal(), $additionalCredentialValues));
     }
 
     private function buildRequest(array $data): ObjectProphecy

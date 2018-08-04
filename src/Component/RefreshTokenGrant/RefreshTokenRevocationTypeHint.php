@@ -25,8 +25,6 @@ final class RefreshTokenRevocationTypeHint implements TokenTypeHint
 
     /**
      * RefreshTokenRevocationTypeHint constructor.
-     *
-     * @param RefreshTokenRepository $refreshTokenRepository
      */
     public function __construct(RefreshTokenRepository $refreshTokenRepository)
     {
@@ -46,7 +44,7 @@ final class RefreshTokenRevocationTypeHint implements TokenTypeHint
      */
     public function find(string $token): ?Token
     {
-        $id = RefreshTokenId::create($token);
+        $id = new RefreshTokenId($token);
 
         return $this->refreshTokenRepository->find($id);
     }
@@ -60,7 +58,7 @@ final class RefreshTokenRevocationTypeHint implements TokenTypeHint
             return;
         }
 
-        $token = $token->markAsRevoked();
+        $token->markAsRevoked();
         $this->refreshTokenRepository->save($token);
     }
 }

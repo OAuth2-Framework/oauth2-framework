@@ -30,7 +30,7 @@ final class ScopePolicyDefaultRuleTest extends TestCase
     protected function setUp()
     {
         if (!\interface_exists(Rule::class)) {
-            $this->markTestSkipped('The component "oauth2-framework/client" is not installed.');
+            static::markTestSkipped('The component "oauth2-framework/client" is not installed.');
         }
     }
 
@@ -41,12 +41,12 @@ final class ScopePolicyDefaultRuleTest extends TestCase
      */
     public function theParameterMustBeAString()
     {
-        $clientId = ClientId::create('CLIENT_ID');
-        $commandParameters = DataBag::create([
+        $clientId = new ClientId('CLIENT_ID');
+        $commandParameters = new DataBag([
             'default_scope' => ['foo'],
         ]);
         $rule = new ScopePolicyDefaultRule();
-        $rule->handle($clientId, $commandParameters, DataBag::create([]), $this->getCallable());
+        $rule->handle($clientId, $commandParameters, new DataBag([]), $this->getCallable());
     }
 
     /**
@@ -56,12 +56,12 @@ final class ScopePolicyDefaultRuleTest extends TestCase
      */
     public function theParameterContainsForbiddenCharacters()
     {
-        $clientId = ClientId::create('CLIENT_ID');
-        $commandParameters = DataBag::create([
+        $clientId = new ClientId('CLIENT_ID');
+        $commandParameters = new DataBag([
             'default_scope' => 'coffee, café',
         ]);
         $rule = new ScopePolicyDefaultRule();
-        $rule->handle($clientId, $commandParameters, DataBag::create([]), $this->getCallable());
+        $rule->handle($clientId, $commandParameters, new DataBag([]), $this->getCallable());
     }
 
     /**
@@ -69,19 +69,16 @@ final class ScopePolicyDefaultRuleTest extends TestCase
      */
     public function theParameterIsValid()
     {
-        $clientId = ClientId::create('CLIENT_ID');
-        $commandParameters = DataBag::create([
+        $clientId = new ClientId('CLIENT_ID');
+        $commandParameters = new DataBag([
             'default_scope' => 'coffee cream',
         ]);
         $rule = new ScopePolicyDefaultRule();
-        $validatedParameters = $rule->handle($clientId, $commandParameters, DataBag::create([]), $this->getCallable());
-        self::assertTrue($validatedParameters->has('default_scope'));
-        self::assertEquals('coffee cream', $validatedParameters->get('default_scope'));
+        $validatedParameters = $rule->handle($clientId, $commandParameters, new DataBag([]), $this->getCallable());
+        static::assertTrue($validatedParameters->has('default_scope'));
+        static::assertEquals('coffee cream', $validatedParameters->get('default_scope'));
     }
 
-    /**
-     * @return callable
-     */
     private function getCallable(): callable
     {
         return function (ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters): DataBag {

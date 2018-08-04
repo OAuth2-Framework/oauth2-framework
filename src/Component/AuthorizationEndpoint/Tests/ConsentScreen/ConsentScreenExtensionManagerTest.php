@@ -36,14 +36,14 @@ final class ConsentScreenExtensionManagerTest extends TestCase
         $request = $this->prophesize(ServerRequestInterface::class);
         $client = Client::createEmpty();
         $client = $client->create(
-            ClientId::create('CLIENT_ID'),
-            DataBag::create([]),
+            new ClientId('CLIENT_ID'),
+            new DataBag([]),
             null
         );
         $authorization = Authorization::create($client, []);
         $authorization = $this->getExtensionManager()->processBefore($request->reveal(), $authorization);
-        self::assertTrue($authorization->hasData('Before Consent'));
-        self::assertTrue($authorization->getData('Before Consent'));
+        static::assertTrue($authorization->hasData('Before Consent'));
+        static::assertTrue($authorization->getData('Before Consent'));
     }
 
     /**
@@ -54,14 +54,14 @@ final class ConsentScreenExtensionManagerTest extends TestCase
         $request = $this->prophesize(ServerRequestInterface::class);
         $client = Client::createEmpty();
         $client = $client->create(
-            ClientId::create('CLIENT_ID'),
-            DataBag::create([]),
+            new ClientId('CLIENT_ID'),
+            new DataBag([]),
             null
         );
         $authorization = Authorization::create($client, []);
         $authorization = $this->getExtensionManager()->processAfter($request->reveal(), $authorization);
-        self::assertTrue($authorization->hasData('After Consent'));
-        self::assertTrue($authorization->getData('After Consent'));
+        static::assertTrue($authorization->hasData('After Consent'));
+        static::assertTrue($authorization->getData('After Consent'));
     }
 
     /**
@@ -69,9 +69,6 @@ final class ConsentScreenExtensionManagerTest extends TestCase
      */
     private $extensionManager = null;
 
-    /**
-     * @return ExtensionManager
-     */
     private function getExtensionManager(): ExtensionManager
     {
         if (null === $this->extensionManager) {

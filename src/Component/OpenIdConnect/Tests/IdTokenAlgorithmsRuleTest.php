@@ -34,8 +34,8 @@ final class IdTokenAlgorithmsRuleTest extends TestCase
      */
     public function theIdTokenAlgorithmsAreSupported()
     {
-        $clientId = ClientId::create('CLIENT_ID');
-        $commandParameters = DataBag::create([
+        $clientId = new ClientId('CLIENT_ID');
+        $commandParameters = new DataBag([
             'id_token_signed_response_alg' => 'XS512',
             'id_token_encrypted_response_alg' => 'RSA_2_5',
             'id_token_encrypted_response_enc' => 'A512ECE+XS512',
@@ -44,11 +44,11 @@ final class IdTokenAlgorithmsRuleTest extends TestCase
             $this->getJWSBuilder(),
             $this->getJWEBuilder()
         );
-        $validatedParameters = $rule->handle($clientId, $commandParameters, DataBag::create([]), $this->getCallable());
+        $validatedParameters = $rule->handle($clientId, $commandParameters, new DataBag([]), $this->getCallable());
 
-        self::assertTrue($validatedParameters->has('id_token_signed_response_alg'));
-        self::assertTrue($validatedParameters->has('id_token_encrypted_response_alg'));
-        self::assertTrue($validatedParameters->has('id_token_encrypted_response_enc'));
+        static::assertTrue($validatedParameters->has('id_token_signed_response_alg'));
+        static::assertTrue($validatedParameters->has('id_token_encrypted_response_alg'));
+        static::assertTrue($validatedParameters->has('id_token_encrypted_response_enc'));
     }
 
     /**
@@ -58,15 +58,15 @@ final class IdTokenAlgorithmsRuleTest extends TestCase
      */
     public function theIdTokenSignatureAlgorithmIsNotSupported()
     {
-        $clientId = ClientId::create('CLIENT_ID');
-        $commandParameters = DataBag::create([
+        $clientId = new ClientId('CLIENT_ID');
+        $commandParameters = new DataBag([
             'id_token_signed_response_alg' => 'foo',
         ]);
         $rule = new IdTokenAlgorithmsRule(
             $this->getJWSBuilder(),
             $this->getJWEBuilder()
         );
-        $rule->handle($clientId, $commandParameters, DataBag::create([]), $this->getCallable());
+        $rule->handle($clientId, $commandParameters, new DataBag([]), $this->getCallable());
     }
 
     /**
@@ -76,8 +76,8 @@ final class IdTokenAlgorithmsRuleTest extends TestCase
      */
     public function theIdTokenKeyEncryptionAlgorithmsIsNotSupported()
     {
-        $clientId = ClientId::create('CLIENT_ID');
-        $commandParameters = DataBag::create([
+        $clientId = new ClientId('CLIENT_ID');
+        $commandParameters = new DataBag([
             'id_token_encrypted_response_alg' => 'foo',
             'id_token_encrypted_response_enc' => 'foo',
         ]);
@@ -85,7 +85,7 @@ final class IdTokenAlgorithmsRuleTest extends TestCase
             $this->getJWSBuilder(),
             $this->getJWEBuilder()
         );
-        $rule->handle($clientId, $commandParameters, DataBag::create([]), $this->getCallable());
+        $rule->handle($clientId, $commandParameters, new DataBag([]), $this->getCallable());
     }
 
     /**
@@ -95,8 +95,8 @@ final class IdTokenAlgorithmsRuleTest extends TestCase
      */
     public function theIdTokenContentEncryptionAlgorithmsIsNotSupported()
     {
-        $clientId = ClientId::create('CLIENT_ID');
-        $commandParameters = DataBag::create([
+        $clientId = new ClientId('CLIENT_ID');
+        $commandParameters = new DataBag([
             'id_token_encrypted_response_alg' => 'RSA_2_5',
             'id_token_encrypted_response_enc' => 'foo',
         ]);
@@ -104,12 +104,9 @@ final class IdTokenAlgorithmsRuleTest extends TestCase
             $this->getJWSBuilder(),
             $this->getJWEBuilder()
         );
-        $rule->handle($clientId, $commandParameters, DataBag::create([]), $this->getCallable());
+        $rule->handle($clientId, $commandParameters, new DataBag([]), $this->getCallable());
     }
 
-    /**
-     * @return JWSBuilder
-     */
     private function getJWSBuilder(): JWSBuilder
     {
         $algorithm = $this->prophesize(Algorithm::class);
@@ -121,9 +118,6 @@ final class IdTokenAlgorithmsRuleTest extends TestCase
         );
     }
 
-    /**
-     * @return JWEBuilder
-     */
     private function getJWEBuilder(): JWEBuilder
     {
         $algorithm1 = $this->prophesize(Algorithm::class);
@@ -139,9 +133,6 @@ final class IdTokenAlgorithmsRuleTest extends TestCase
         );
     }
 
-    /**
-     * @return callable
-     */
     private function getCallable(): callable
     {
         return function (ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters): DataBag {

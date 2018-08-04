@@ -44,22 +44,14 @@ interface GrantType
     /**
      * This function checks the request and returns information to issue an access token.
      *
-     * @param ServerRequestInterface $request       The request
-     * @param GrantTypeData          $grantTypeData
+     * @param ServerRequestInterface $request The request
      *
      * @throws OAuth2Message
-     *
-     * @return GrantTypeData
      */
     public function prepareResponse(ServerRequestInterface $request, GrantTypeData $grantTypeData): GrantTypeData;
 
     /**
-     * @param ServerRequestInterface $request
-     * @param GrantTypeData          $grantTypeData
-     *
      * @throws OAuth2Message
-     *
-     * @return GrantTypeData
      */
     public function grant(ServerRequestInterface $request, GrantTypeData $grantTypeData): GrantTypeData;
 }

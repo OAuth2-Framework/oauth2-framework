@@ -15,10 +15,10 @@ namespace OAuth2Framework\Component\IssuerDiscoveryEndpoint;
 
 use Http\Message\ResponseFactory;
 use OAuth2Framework\Component\IssuerDiscoveryEndpoint\IdentifierResolver\IdentifierResolverManager;
-use Psr\Http\Server\RequestHandlerInterface;
-use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 final class IssuerDiscoveryEndpoint implements MiddlewareInterface
 {
@@ -51,12 +51,6 @@ final class IssuerDiscoveryEndpoint implements MiddlewareInterface
 
     /**
      * IssuerDiscoveryEndpoint constructor.
-     *
-     * @param ResourceRepository        $resourceManager
-     * @param ResponseFactory           $responseFactory
-     * @param IdentifierResolverManager $identifierResolverManager
-     * @param string                    $domain
-     * @param int                       $port
      */
     public function __construct(ResourceRepository $resourceManager, ResponseFactory $responseFactory, IdentifierResolverManager $identifierResolverManager, string $domain, int $port)
     {
@@ -102,12 +96,6 @@ final class IssuerDiscoveryEndpoint implements MiddlewareInterface
         return $response;
     }
 
-    /**
-     * @param string         $resourceName
-     * @param ResourceObject $resource
-     *
-     * @return array
-     */
     private function getResourceData(string $resourceName, ResourceObject $resource): array
     {
         return [
@@ -122,8 +110,6 @@ final class IssuerDiscoveryEndpoint implements MiddlewareInterface
     }
 
     /**
-     * @param ServerRequestInterface $request
-     *
      * @throws \InvalidArgumentException
      */
     private function checkRel(ServerRequestInterface $request)
@@ -138,11 +124,7 @@ final class IssuerDiscoveryEndpoint implements MiddlewareInterface
     }
 
     /**
-     * @param string $resourceName
-     *
      * @throws \InvalidArgumentException
-     *
-     * @return ResourceId
      */
     private function getResourceId(string $resourceName): ResourceId
     {
@@ -162,11 +144,7 @@ final class IssuerDiscoveryEndpoint implements MiddlewareInterface
     }
 
     /**
-     * @param ServerRequestInterface $request
-     *
      * @throws \InvalidArgumentException
-     *
-     * @return string
      */
     private function getResourceName(ServerRequestInterface $request): string
     {

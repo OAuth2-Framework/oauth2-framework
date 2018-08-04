@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\ClientRegistrationEndpoint;
 
-use OAuth2Framework\Component\Core\Domain\DomainObject;
 use OAuth2Framework\Component\ClientRegistrationEndpoint\Event as InitialAccessTokenEvent;
+use OAuth2Framework\Component\Core\Domain\DomainObject;
 use OAuth2Framework\Component\Core\Event\Event;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use SimpleBus\Message\Recorder\ContainsRecordedMessages;
@@ -53,10 +53,6 @@ class InitialAccessToken implements ContainsRecordedMessages, DomainObject
     }
 
     /**
-     * @param InitialAccessTokenId    $initialAccessTokenId
-     * @param UserAccountId           $userAccountId
-     * @param \DateTimeImmutable|null $expiresAt
-     *
      * @return InitialAccessToken
      */
     public function create(InitialAccessTokenId $initialAccessTokenId, UserAccountId $userAccountId, ?\DateTimeImmutable $expiresAt): self
@@ -72,9 +68,6 @@ class InitialAccessToken implements ContainsRecordedMessages, DomainObject
         return $clone;
     }
 
-    /**
-     * @return InitialAccessTokenId
-     */
     public function getTokenId(): InitialAccessTokenId
     {
         if (null === $this->initialAccessTokenId) {
@@ -84,9 +77,6 @@ class InitialAccessToken implements ContainsRecordedMessages, DomainObject
         return $this->initialAccessTokenId;
     }
 
-    /**
-     * @return UserAccountId
-     */
     public function getUserAccountId(): UserAccountId
     {
         if (null === $this->userAccountId) {
@@ -96,25 +86,16 @@ class InitialAccessToken implements ContainsRecordedMessages, DomainObject
         return $this->userAccountId;
     }
 
-    /**
-     * @return \DateTimeImmutable|null
-     */
     public function getExpiresAt(): ?\DateTimeImmutable
     {
         return $this->expiresAt;
     }
 
-    /**
-     * @return bool
-     */
     public function hasExpired(): bool
     {
         return $this->expiresAt->getTimestamp() < \time();
     }
 
-    /**
-     * @return bool
-     */
     public function isRevoked(): bool
     {
         return $this->revoked;
@@ -146,9 +127,9 @@ class InitialAccessToken implements ContainsRecordedMessages, DomainObject
      */
     public static function createFromJson(\stdClass $json): DomainObject
     {
-        $initialAccessTokenId = InitialAccessTokenId::create($json->initial_access_token_id);
+        $initialAccessTokenId = new InitialAccessTokenId($json->initial_access_token_id);
         $expiresAt = $json->expires_at ? \DateTimeImmutable::createFromFormat('U', (string) $json->expires_at) : null;
-        $userAccountId = $json->user_account_id ? UserAccountId::create($json->user_account_id) : null;
+        $userAccountId = $json->user_account_id ? new UserAccountId($json->user_account_id) : null;
         $revoked = $json->is_revoked;
 
         $initialAccessToken = new self();
@@ -178,8 +159,6 @@ class InitialAccessToken implements ContainsRecordedMessages, DomainObject
     }
 
     /**
-     * @param Event $event
-     *
      * @return InitialAccessToken
      */
     public function apply(Event $event): self
@@ -196,9 +175,6 @@ class InitialAccessToken implements ContainsRecordedMessages, DomainObject
         return $this->$method($event);
     }
 
-    /**
-     * @return array
-     */
     private function getEventMap(): array
     {
         return [
@@ -208,8 +184,6 @@ class InitialAccessToken implements ContainsRecordedMessages, DomainObject
     }
 
     /**
-     * @param InitialAccessTokenEvent\InitialAccessTokenCreatedEvent $event
-     *
      * @return InitialAccessToken
      */
     protected function applyInitialAccessTokenCreatedEvent(InitialAccessTokenEvent\InitialAccessTokenCreatedEvent $event): self
@@ -223,8 +197,6 @@ class InitialAccessToken implements ContainsRecordedMessages, DomainObject
     }
 
     /**
-     * @param InitialAccessTokenEvent\InitialAccessTokenRevokedEvent $event
-     *
      * @return InitialAccessToken
      */
     protected function applyInitialAccessTokenRevokedEvent(InitialAccessTokenEvent\InitialAccessTokenRevokedEvent $event): self

@@ -17,8 +17,8 @@ use OAuth2Framework\Component\ClientRule\Rule;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Scope\Policy\NoScopePolicy;
-use OAuth2Framework\Component\Scope\Rule\ScopePolicyRule;
 use OAuth2Framework\Component\Scope\Policy\ScopePolicyManager;
+use OAuth2Framework\Component\Scope\Rule\ScopePolicyRule;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -32,7 +32,7 @@ final class ScopePolicyRuleTest extends TestCase
     protected function setUp()
     {
         if (!\interface_exists(Rule::class)) {
-            $this->markTestSkipped('The component "oauth2-framework/client" is not installed.');
+            static::markTestSkipped('The component "oauth2-framework/client" is not installed.');
         }
     }
 
@@ -43,12 +43,12 @@ final class ScopePolicyRuleTest extends TestCase
      */
     public function theParameterMustBeAString()
     {
-        $clientId = ClientId::create('CLIENT_ID');
-        $commandParameters = DataBag::create([
+        $clientId = new ClientId('CLIENT_ID');
+        $commandParameters = new DataBag([
             'scope_policy' => ['foo'],
         ]);
         $rule = $this->getScopePolicyRule();
-        $rule->handle($clientId, $commandParameters, DataBag::create([]), $this->getCallable());
+        $rule->handle($clientId, $commandParameters, new DataBag([]), $this->getCallable());
     }
 
     /**
@@ -58,12 +58,12 @@ final class ScopePolicyRuleTest extends TestCase
      */
     public function theScopePolicyIsNotSupported()
     {
-        $clientId = ClientId::create('CLIENT_ID');
-        $commandParameters = DataBag::create([
+        $clientId = new ClientId('CLIENT_ID');
+        $commandParameters = new DataBag([
             'scope_policy' => 'foo',
         ]);
         $rule = $this->getScopePolicyRule();
-        $rule->handle($clientId, $commandParameters, DataBag::create([]), $this->getCallable());
+        $rule->handle($clientId, $commandParameters, new DataBag([]), $this->getCallable());
     }
 
     /**
@@ -71,19 +71,16 @@ final class ScopePolicyRuleTest extends TestCase
      */
     public function theParameterIsValid()
     {
-        $clientId = ClientId::create('CLIENT_ID');
-        $commandParameters = DataBag::create([
+        $clientId = new ClientId('CLIENT_ID');
+        $commandParameters = new DataBag([
             'scope_policy' => 'none',
         ]);
         $rule = $this->getScopePolicyRule();
-        $validatedParameters = $rule->handle($clientId, $commandParameters, DataBag::create([]), $this->getCallable());
-        self::assertTrue($validatedParameters->has('scope_policy'));
-        self::assertEquals('none', $validatedParameters->get('scope_policy'));
+        $validatedParameters = $rule->handle($clientId, $commandParameters, new DataBag([]), $this->getCallable());
+        static::assertTrue($validatedParameters->has('scope_policy'));
+        static::assertEquals('none', $validatedParameters->get('scope_policy'));
     }
 
-    /**
-     * @return callable
-     */
     private function getCallable(): callable
     {
         return function (ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters): DataBag {
@@ -91,9 +88,6 @@ final class ScopePolicyRuleTest extends TestCase
         };
     }
 
-    /**
-     * @return ScopePolicyRule
-     */
     private function getScopePolicyRule(): ScopePolicyRule
     {
         $scopePolicyManager = new ScopePolicyManager();

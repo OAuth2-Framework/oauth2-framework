@@ -13,12 +13,12 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Core\Middleware;
 
-use Psr\Http\Server\RequestHandlerInterface;
-use Psr\Http\Server\MiddlewareInterface;
 use OAuth2Framework\Component\Core\Message\OAuth2Message;
 use OAuth2Framework\Component\Core\Message\OAuth2MessageFactoryManager;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 final class OAuth2MessageMiddleware implements MiddlewareInterface
 {
@@ -29,8 +29,6 @@ final class OAuth2MessageMiddleware implements MiddlewareInterface
 
     /**
      * OAuth2ResponseMiddleware constructor.
-     *
-     * @param OAuth2MessageFactoryManager $auth2messageFactoryManager
      */
     public function __construct(OAuth2MessageFactoryManager $auth2messageFactoryManager)
     {

@@ -12,20 +12,20 @@ declare(strict_types=1);
  */
 
 use Http\Factory\Diactoros\UriFactory;
-use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\ClientRepository;
-use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\UserAccountManager;
-use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\UserAccountRepository;
-use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\RefreshTokenRepository;
-use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\ResourceServerRepository;
+use OAuth2Framework\Component\OpenIdConnect\UserInfo\Pairwise\EncryptedSubjectIdentifier;
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\AccessTokenIdGenerator;
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\AccessTokenRepository;
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\AuthorizationCodeIdGenerator;
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\AuthorizationCodeRepository;
-use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\ScopeRepository;
+use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\ClientRepository;
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\InitialAccessTokenRepository;
+use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\RefreshTokenRepository;
+use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\ResourceServerRepository;
+use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\ScopeRepository;
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\TrustedIssuerRepository;
+use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\UserAccountManager;
+use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\UserAccountRepository;
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Service\UserProvider;
-use OAuth2Framework\Component\OpenIdConnect\UserInfo\Pairwise\EncryptedSubjectIdentifier;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 return function (ContainerConfigurator $container) {

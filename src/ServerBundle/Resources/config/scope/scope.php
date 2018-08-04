@@ -11,13 +11,13 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use OAuth2Framework\Component\Scope\Rule\ScopeRule;
-use OAuth2Framework\Component\Scope\ScopeParameterChecker;
-use OAuth2Framework\Component\Scope\TokenEndpointScopeExtension;
 use OAuth2Framework\Component\Scope\Policy\NoScopePolicy;
 use OAuth2Framework\Component\Scope\Policy\ScopePolicyManager;
+use OAuth2Framework\Component\Scope\Rule\ScopeRule;
+use OAuth2Framework\Component\Scope\ScopeParameterChecker;
 use OAuth2Framework\Component\Scope\ScopeRepository;
+use OAuth2Framework\Component\Scope\TokenEndpointScopeExtension;
+use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
 return function (ContainerConfigurator $container) {

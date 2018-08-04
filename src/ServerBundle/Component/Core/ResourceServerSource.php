@@ -14,9 +14,9 @@ declare(strict_types=1);
 namespace OAuth2Framework\ServerBundle\Component\Core;
 
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerRepository;
+use OAuth2Framework\Component\ResourceServerAuthentication\AuthenticationMethodManager;
 use OAuth2Framework\ServerBundle\Component\Component;
 use OAuth2Framework\ServerBundle\Component\Core\Compiler\ResourceServerAuthenticationMethodCompilerPass;
-use OAuth2Framework\Component\ResourceServerAuthentication\AuthenticationMethodManager;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;

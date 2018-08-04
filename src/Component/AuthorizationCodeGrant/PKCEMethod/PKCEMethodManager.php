@@ -20,35 +20,16 @@ class PKCEMethodManager
      */
     private $pkceMethods = [];
 
-    /**
-     * @param PKCEMethod $method
-     *
-     * @return PKCEMethodManager
-     */
-    public function add(PKCEMethod $method): self
+    public function add(PKCEMethod $method): void
     {
         $this->pkceMethods[$method->name()] = $method;
-
-        return $this;
     }
 
-    /**
-     * @param string $method
-     *
-     * @return bool
-     */
     public function has(string $method): bool
     {
         return \array_key_exists($method, $this->pkceMethods);
     }
 
-    /**
-     * @param string $method
-     *
-     * @throws \InvalidArgumentException
-     *
-     * @return PKCEMethod
-     */
     public function get(string $method): PKCEMethod
     {
         return $this->pkceMethods[$method];

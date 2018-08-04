@@ -13,10 +13,10 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Core\Middleware;
 
-use Psr\Http\Server\RequestHandlerInterface;
-use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 class Pipe implements MiddlewareInterface
 {
@@ -37,8 +37,6 @@ class Pipe implements MiddlewareInterface
 
     /**
      * Appends new middleware for this message bus. Should only be used at configuration time.
-     *
-     * @param MiddlewareInterface $middleware
      */
     public function appendMiddleware(MiddlewareInterface $middleware)
     {
@@ -47,17 +45,12 @@ class Pipe implements MiddlewareInterface
 
     /**
      * Prepends new middleware for this message bus. Should only be used at configuration time.
-     *
-     * @param MiddlewareInterface $middleware
      */
     public function prependMiddleware(MiddlewareInterface $middleware)
     {
         \array_unshift($this->middlewares, $middleware);
     }
 
-    /**
-     * @param MiddlewareInterface $middleware
-     */
     public function addMiddlewareAfterFirstOne(MiddlewareInterface $middleware)
     {
         $count = \count($this->middlewares);
@@ -67,9 +60,6 @@ class Pipe implements MiddlewareInterface
         $this->middlewares = $temp;
     }
 
-    /**
-     * @param MiddlewareInterface $middleware
-     */
     public function addMiddlewareBeforeLastOne(MiddlewareInterface $middleware)
     {
         $count = \count($this->middlewares);
@@ -98,8 +88,6 @@ class Pipe implements MiddlewareInterface
     /**
      * Dispatches the middleware and returns the resulting `ResponseInterface`.
      *
-     * @param ServerRequestInterface $request
-     *
      * @throws \LogicException on unexpected result from any middleware on the middlewares
      *
      * @return ResponseInterface
@@ -113,8 +101,6 @@ class Pipe implements MiddlewareInterface
 
     /**
      * @param int $index Middleware index
-     *
-     * @return RequestHandlerInterface
      */
     private function resolve(int $index): RequestHandlerInterface
     {

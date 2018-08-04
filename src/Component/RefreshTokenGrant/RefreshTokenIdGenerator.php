@@ -19,8 +19,5 @@ namespace OAuth2Framework\Component\RefreshTokenGrant;
  */
 interface RefreshTokenIdGenerator
 {
-    /**
-     * @return RefreshTokenId
-     */
     public function createRefreshTokenId(): RefreshTokenId;
 }

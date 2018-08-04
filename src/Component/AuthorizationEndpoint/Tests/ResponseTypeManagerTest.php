@@ -37,11 +37,11 @@ final class ResponseTypeManagerTest extends TestCase
 
         $manager->add($type->reveal());
 
-        self::assertTrue($manager->has('foo'));
-        self::assertFalse($manager->has('bar'));
-        self::assertInstanceOf(ResponseType::class, $manager->get('foo'));
-        self::assertEquals(['foo'], $manager->list());
-        self::assertEquals(1, \count($manager->all()));
+        static::assertTrue($manager->has('foo'));
+        static::assertFalse($manager->has('bar'));
+        static::assertInstanceOf(ResponseType::class, $manager->get('foo'));
+        static::assertEquals(['foo'], $manager->list());
+        static::assertEquals(1, \count($manager->all()));
 
         $manager->get('bar');
     }

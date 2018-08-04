@@ -58,15 +58,12 @@ class UserAccountRepository implements UserAccountRepositoryInterface
         return \array_key_exists($publicId->getValue(), $this->usersByPublicId) ? $this->usersByPublicId[$publicId->getValue()] : null;
     }
 
-    /**
-     * @return array
-     */
     private function getUsers(): array
     {
         return [
             [
                 'id' => 'john.1',
-                'public_id' => UserAccountId::create('john.1'),
+                'public_id' => new UserAccountId('john.1'),
                 'username' => 'john.1',
                 'password' => 'secret',
                 'salt' => null,
@@ -110,7 +107,7 @@ class UserAccountRepository implements UserAccountRepositoryInterface
             ],
             [
                 'id' => 'john.2',
-                'public_id' => UserAccountId::create('john.2'),
+                'public_id' => new UserAccountId('john.2'),
                 'username' => 'john.2',
                 'password' => 'secret',
                 'salt' => null,

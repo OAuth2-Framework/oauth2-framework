@@ -17,18 +17,7 @@ use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 
 interface PairwiseSubjectIdentifierAlgorithm
 {
-    /**
-     * @param UserAccount $user
-     * @param string      $sectorIdentifierUri
-     *
-     * @return string
-     */
     public function calculateSubjectIdentifier(UserAccount $user, string $sectorIdentifierUri): string;
 
-    /**
-     * @param string $subjectIdentifier
-     *
-     * @return string|null
-     */
     public function getPublicIdFromSubjectIdentifier(string $subjectIdentifier): ?string;
 }

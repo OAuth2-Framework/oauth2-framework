@@ -51,9 +51,6 @@ class EndpointSource implements Component
         ];
     }
 
-    /**
-     * @return string
-     */
     public function name(): string
     {
         return 'endpoint';

@@ -49,16 +49,16 @@ class InitialAccessTokenRepository implements \OAuth2Framework\Component\ClientR
     {
         $iat = InitialAccessToken::createEmpty();
         $iat = $iat->create(
-            InitialAccessTokenId::create('VALID_INITIAL_ACCESS_TOKEN_ID'),
-            UserAccountId::create('john.1'),
+            new InitialAccessTokenId('VALID_INITIAL_ACCESS_TOKEN_ID'),
+            new UserAccountId('john.1'),
             new \DateTimeImmutable('now +1 day')
         );
         $this->save($iat);
 
         $iat = InitialAccessToken::createEmpty();
         $iat = $iat->create(
-            InitialAccessTokenId::create('EXPIRED_INITIAL_ACCESS_TOKEN_ID'),
-            UserAccountId::create('john.1'),
+            new InitialAccessTokenId('EXPIRED_INITIAL_ACCESS_TOKEN_ID'),
+            new UserAccountId('john.1'),
             new \DateTimeImmutable('now -1 day')
         );
         $this->save($iat);

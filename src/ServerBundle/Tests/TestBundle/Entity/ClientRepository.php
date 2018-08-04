@@ -53,59 +53,59 @@ class ClientRepository implements \OAuth2Framework\Component\Core\Client\ClientR
     {
         $client = Client::createEmpty();
         $client = $client->create(
-            ClientId::create('CLIENT_ID_1'),
-            DataBag::create([
+            new ClientId('CLIENT_ID_1'),
+            new DataBag([
                 'token_endpoint_auth_method' => 'none',
                 'grant_types' => [],
             ]),
-            UserAccountId::create('USER_ACCOUNT_1')
+            new UserAccountId('USER_ACCOUNT_1')
         );
         $this->save($client);
 
         $client = Client::createEmpty();
         $client = $client->create(
-            ClientId::create('CLIENT_ID_2'),
-            DataBag::create([
+            new ClientId('CLIENT_ID_2'),
+            new DataBag([
                 'token_endpoint_auth_method' => 'none',
                 'grant_types' => ['client_credentials', 'refresh_token', 'authorization_code', 'password', 'implicit'],
             ]),
-            UserAccountId::create('USER_ACCOUNT_1')
+            new UserAccountId('USER_ACCOUNT_1')
         );
         $this->save($client);
 
         $client = Client::createEmpty();
         $client = $client->create(
-            ClientId::create('CLIENT_ID_3'),
-            DataBag::create([
+            new ClientId('CLIENT_ID_3'),
+            new DataBag([
                 'token_endpoint_auth_method' => 'client_secret_post',
                 'grant_types' => ['client_credentials', 'refresh_token', 'authorization_code', 'password', 'implicit'],
                 'client_secret' => 'secret',
             ]),
-            UserAccountId::create('USER_ACCOUNT_1')
+            new UserAccountId('USER_ACCOUNT_1')
         );
         $this->save($client);
 
         $client = Client::createEmpty();
         $client = $client->create(
-            ClientId::create('CLIENT_ID_4'),
-            DataBag::create([
+            new ClientId('CLIENT_ID_4'),
+            new DataBag([
                 'token_endpoint_auth_method' => 'client_secret_jwt',
                 'grant_types' => ['urn:ietf:params:oauth:grant-type:jwt-bearer'],
                 'client_secret' => 'secret',
             ]),
-            UserAccountId::create('USER_ACCOUNT_1')
+            new UserAccountId('USER_ACCOUNT_1')
         );
         $this->save($client);
 
         $client = Client::createEmpty();
         $client = $client->create(
-            ClientId::create('CLIENT_ID_5'),
-            DataBag::create([
+            new ClientId('CLIENT_ID_5'),
+            new DataBag([
                 'token_endpoint_auth_method' => 'client_secret_basic',
                 'grant_types' => ['client_credentials', 'refresh_token', 'authorization_code', 'password', 'implicit'],
                 'client_secret' => 'secret',
             ]),
-            UserAccountId::create('USER_ACCOUNT_1')
+            new UserAccountId('USER_ACCOUNT_1')
         );
         $this->save($client);
     }

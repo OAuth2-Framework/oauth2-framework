@@ -16,9 +16,9 @@ namespace OAuth2Framework\Component\AuthorizationEndpoint\Tests\Rule;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseTypeManager;
 use OAuth2Framework\Component\AuthorizationEndpoint\Rule\ResponseTypesRule;
+use OAuth2Framework\Component\ClientRule\Rule;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
-use OAuth2Framework\Component\ClientRule\Rule;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -32,39 +32,39 @@ final class ResponseTypesRuleTest extends TestCase
     protected function setUp()
     {
         if (!\interface_exists(Rule::class)) {
-            $this->markTestSkipped('The component "oauth2-framework/client-rule" is not installed.');
+            static::markTestSkipped('The component "oauth2-framework/client-rule" is not installed.');
         }
     }
 
     /**
      * @test
      */
-    public function testResponseTypesSetAsAnEmptyArray()
+    public function responseTypesSetAsAnEmptyArray()
     {
-        $clientId = ClientId::create('CLIENT_ID');
-        $commandParameters = DataBag::create([]);
+        $clientId = new ClientId('CLIENT_ID');
+        $commandParameters = new DataBag([]);
         $rule = $this->getResponseTypesRule();
-        $validatedParameters = $rule->handle($clientId, $commandParameters, DataBag::create([]), $this->getCallable());
+        $validatedParameters = $rule->handle($clientId, $commandParameters, new DataBag([]), $this->getCallable());
 
-        self::assertTrue($validatedParameters->has('response_types'));
-        self::assertEquals([], $validatedParameters->get('response_types'));
+        static::assertTrue($validatedParameters->has('response_types'));
+        static::assertEquals([], $validatedParameters->get('response_types'));
     }
 
     /**
      * @test
      */
-    public function testResponseTypesCorrectlyDefined()
+    public function responseTypesCorrectlyDefined()
     {
-        $clientId = ClientId::create('CLIENT_ID');
-        $commandParameters = DataBag::create([
+        $clientId = new ClientId('CLIENT_ID');
+        $commandParameters = new DataBag([
             'response_types' => ['code', 'id_token'],
         ]);
-        $validatedParameters = DataBag::create(['grant_types' => ['authorization_code']]);
+        $validatedParameters = new DataBag(['grant_types' => ['authorization_code']]);
         $rule = $this->getResponseTypesRule();
         $validatedParameters = $rule->handle($clientId, $commandParameters, $validatedParameters, $this->getCallable());
 
-        self::assertTrue($validatedParameters->has('response_types'));
-        self::assertEquals(['code', 'id_token'], $validatedParameters->get('response_types'));
+        static::assertTrue($validatedParameters->has('response_types'));
+        static::assertEquals(['code', 'id_token'], $validatedParameters->get('response_types'));
     }
 
     /**
@@ -74,12 +74,12 @@ final class ResponseTypesRuleTest extends TestCase
      */
     public function theResponseTypeParameterMustBeAnArray()
     {
-        $clientId = ClientId::create('CLIENT_ID');
-        $commandParameters = DataBag::create([
+        $clientId = new ClientId('CLIENT_ID');
+        $commandParameters = new DataBag([
             'response_types' => 'hello',
         ]);
         $rule = $this->getResponseTypesRule();
-        $rule->handle($clientId, $commandParameters, DataBag::create([]), $this->getCallable());
+        $rule->handle($clientId, $commandParameters, new DataBag([]), $this->getCallable());
     }
 
     /**
@@ -89,17 +89,14 @@ final class ResponseTypesRuleTest extends TestCase
      */
     public function theResponseTypeParameterMustBeAnArrayOfStrings()
     {
-        $clientId = ClientId::create('CLIENT_ID');
-        $commandParameters = DataBag::create([
+        $clientId = new ClientId('CLIENT_ID');
+        $commandParameters = new DataBag([
             'response_types' => [123],
         ]);
         $rule = $this->getResponseTypesRule();
-        $rule->handle($clientId, $commandParameters, DataBag::create([]), $this->getCallable());
+        $rule->handle($clientId, $commandParameters, new DataBag([]), $this->getCallable());
     }
 
-    /**
-     * @return callable
-     */
     private function getCallable(): callable
     {
         return function (ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters): DataBag {
@@ -112,12 +109,9 @@ final class ResponseTypesRuleTest extends TestCase
      */
     private $responseTypesRule = null;
 
-    /**
-     * @return ResponseTypesRule
-     */
     private function getResponseTypesRule(): ResponseTypesRule
     {
-        if (null == $this->responseTypesRule) {
+        if (null === $this->responseTypesRule) {
             $codeResponseType = $this->prophesize(ResponseType::class);
             $codeResponseType->name()->willReturn('code');
             $codeResponseType->associatedGrantTypes()->willReturn(['authorization_code']);

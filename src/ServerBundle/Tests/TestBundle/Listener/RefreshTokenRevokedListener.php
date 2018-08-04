@@ -22,9 +22,6 @@ class RefreshTokenRevokedListener
      */
     private $events = [];
 
-    /**
-     * @param RefreshTokenRevokedEvent $event
-     */
     public function handle(RefreshTokenRevokedEvent $event)
     {
         $this->events[] = $event;

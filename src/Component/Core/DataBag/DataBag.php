@@ -22,39 +22,19 @@ class DataBag implements \JsonSerializable, \IteratorAggregate, \Countable
 
     /**
      * DataBag constructor.
-     *
-     * @param array $parameters
      */
-    private function __construct(array $parameters)
+    public function __construct(array $parameters)
     {
         $this->parameters = $parameters;
     }
 
-    /**
-     * @param array $parameters
-     *
-     * @return DataBag
-     */
-    public static function create(array $parameters): self
-    {
-        return new self($parameters);
-    }
-
-    /**
-     * @param string $key
-     *
-     * @return bool
-     */
     public function has(string $key): bool
     {
         return \array_key_exists($key, $this->parameters);
     }
 
     /**
-     * @param string     $key
      * @param mixed|null $default
-     *
-     * @return mixed
      */
     public function get(string $key, $default = null)
     {
@@ -66,7 +46,6 @@ class DataBag implements \JsonSerializable, \IteratorAggregate, \Countable
     }
 
     /**
-     * @param string     $key
      * @param null|mixed $value
      *
      * @return DataBag
@@ -79,8 +58,6 @@ class DataBag implements \JsonSerializable, \IteratorAggregate, \Countable
     }
 
     /**
-     * @param string $key
-     *
      * @return DataBag
      */
     public function without(string $key): self
@@ -93,9 +70,6 @@ class DataBag implements \JsonSerializable, \IteratorAggregate, \Countable
         return $this;
     }
 
-    /**
-     * @return array
-     */
     public function all(): array
     {
         return $this->parameters;

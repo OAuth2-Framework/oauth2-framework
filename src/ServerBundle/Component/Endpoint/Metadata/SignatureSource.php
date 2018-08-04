@@ -21,9 +21,6 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class SignatureSource implements Component
 {
-    /**
-     * @return string
-     */
     public function name(): string
     {
         return 'signature';
@@ -56,24 +53,24 @@ class SignatureSource implements Component
             ->ifTrue(function ($config) {
                 return true === $config['enabled'] && empty($config['algorithm']);
             })
-                    ->thenInvalid('The signature algorithm must be set.')
-                    ->end()
-                    ->validate()
-                    ->ifTrue(function ($config) {
-                        return true === $config['enabled'] && empty($config['key']);
-                    })
-                    ->thenInvalid('The signature key must be set.')
-                    ->end()
-                    ->children()
-                    ->scalarNode('algorithm')
-                    ->info('Signature algorithm used to sign the metadata.')
-                    ->end()
-                    ->scalarNode('key')
-                    ->info('Signature key.')
-                    ->end()
-                    ->end()
-                    ->end()
-                    ->end();
+            ->thenInvalid('The signature algorithm must be set.')
+            ->end()
+            ->validate()
+            ->ifTrue(function ($config) {
+                return true === $config['enabled'] && empty($config['key']);
+            })
+            ->thenInvalid('The signature key must be set.')
+            ->end()
+            ->children()
+            ->scalarNode('algorithm')
+            ->info('Signature algorithm used to sign the metadata.')
+            ->end()
+            ->scalarNode('key')
+            ->info('Signature key.')
+            ->end()
+            ->end()
+            ->end()
+            ->end();
     }
 
     /**

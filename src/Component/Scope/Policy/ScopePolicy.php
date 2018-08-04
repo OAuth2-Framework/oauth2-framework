@@ -17,9 +17,6 @@ use OAuth2Framework\Component\Core\Client\Client;
 
 interface ScopePolicy
 {
-    /**
-     * @return string
-     */
     public function name(): string;
 
     /**
@@ -29,8 +26,6 @@ interface ScopePolicy
      * @param Client $client The client
      *
      * @throws \InvalidArgumentException
-     *
-     * @return string
      */
     public function applyScopePolicy(string $scope, Client $client): string;
 }

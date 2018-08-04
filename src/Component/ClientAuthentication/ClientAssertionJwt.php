@@ -36,9 +36,6 @@ class ClientAssertionJwt implements AuthenticationMethod
 {
     private const CLIENT_ASSERTION_TYPE = 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer';
 
-    /**
-     * @var JWSVerifier
-     */
     private $jwsVerifier;
 
     /**
@@ -61,40 +58,16 @@ class ClientAssertionJwt implements AuthenticationMethod
      */
     private $keyEncryptionKeySet = null;
 
-    /**
-     * @var bool
-     */
     private $encryptionRequired = false;
 
-    /**
-     * @var int
-     */
     private $secretLifetime;
 
-    /**
-     * @var HeaderCheckerManager
-     */
     private $headerCheckerManager;
 
-    /**
-     * @var ClaimCheckerManager
-     */
     private $claimCheckerManager;
 
-    /**
-     * @var JsonConverter
-     */
     private $jsonConverter;
 
-    /**
-     * ClientAssertionJwt constructor.
-     *
-     * @param JsonConverter        $jsonConverter
-     * @param JWSVerifier          $jwsVerifier
-     * @param HeaderCheckerManager $headerCheckerManager
-     * @param ClaimCheckerManager  $claimCheckerManager
-     * @param int                  $secretLifetime
-     */
     public function __construct(JsonConverter $jsonConverter, JWSVerifier $jwsVerifier, HeaderCheckerManager $headerCheckerManager, ClaimCheckerManager $claimCheckerManager, int $secretLifetime = 0)
     {
         if ($secretLifetime < 0) {
@@ -107,28 +80,17 @@ class ClientAssertionJwt implements AuthenticationMethod
         $this->secretLifetime = $secretLifetime;
     }
 
-    /**
-     * @param TrustedIssuerRepository $trustedIssuerRepository
-     */
-    public function enableTrustedIssuerSupport(TrustedIssuerRepository $trustedIssuerRepository)
+    public function enableTrustedIssuerSupport(TrustedIssuerRepository $trustedIssuerRepository): void
     {
         $this->trustedIssuerRepository = $trustedIssuerRepository;
     }
 
-    /**
-     * @param JKUFactory $jkuFactory
-     */
-    public function enableJkuSupport(JKUFactory $jkuFactory)
+    public function enableJkuSupport(JKUFactory $jkuFactory): void
     {
         $this->jkuFactory = $jkuFactory;
     }
 
-    /**
-     * @param JWELoader $jweLoader
-     * @param JWKSet    $keyEncryptionKeySet
-     * @param bool      $encryptionRequired
-     */
-    public function enableEncryptedAssertions(JWELoader $jweLoader, JWKSet $keyEncryptionKeySet, bool $encryptionRequired)
+    public function enableEncryptedAssertions(JWELoader $jweLoader, JWKSet $keyEncryptionKeySet, bool $encryptionRequired): void
     {
         $this->jweLoader = $jweLoader;
         $this->encryptionRequired = $encryptionRequired;
@@ -207,14 +169,10 @@ class ClientAssertionJwt implements AuthenticationMethod
 
         $clientCredentials = $jws;
 
-        return ClientId::create($claims['sub']);
+        return new ClientId($claims['sub']);
     }
 
     /**
-     * @param string $assertion
-     *
-     * @return string
-     *
      * @throws OAuth2Message
      */
     private function tryToDecryptClientAssertion(string $assertion): string
@@ -281,12 +239,6 @@ class ClientAssertionJwt implements AuthenticationMethod
         }
     }
 
-    /**
-     * @param DataBag $commandParameters
-     * @param DataBag $validatedParameters
-     *
-     * @return DataBag
-     */
     private function checkClientSecretJwtConfiguration(DataBag $commandParameters, DataBag $validatedParameters): DataBag
     {
         $validatedParameters->with('token_endpoint_auth_method', $commandParameters->get('token_endpoint_auth_method'));
@@ -296,12 +248,6 @@ class ClientAssertionJwt implements AuthenticationMethod
         return $validatedParameters;
     }
 
-    /**
-     * @param DataBag $commandParameters
-     * @param DataBag $validatedParameters
-     *
-     * @return DataBag
-     */
     private function checkPrivateKeyJwtConfiguration(DataBag $commandParameters, DataBag $validatedParameters): DataBag
     {
         switch (true) {
@@ -324,21 +270,11 @@ class ClientAssertionJwt implements AuthenticationMethod
         return $validatedParameters;
     }
 
-    /**
-     * @return string
-     */
     private function createClientSecret(): string
     {
         return \bin2hex(\random_bytes(32));
     }
 
-    /**
-     * @param Client $client
-     * @param JWS    $jws
-     * @param array  $claims
-     *
-     * @return JWKSet
-     */
     private function retrieveIssuerKeySet(Client $client, JWS $jws, array $claims): JWKSet
     {
         if ($claims['sub'] === $claims['iss']) { // The client is the issuer
@@ -361,11 +297,6 @@ class ClientAssertionJwt implements AuthenticationMethod
         return $trustedIssuer->getJWKSet();
     }
 
-    /**
-     * @param Client $client
-     *
-     * @return JWKSet
-     */
     private function getClientKeySet(Client $client): JWKSet
     {
         switch (true) {

@@ -15,18 +15,8 @@ namespace OAuth2Framework\Component\Scope;
 
 interface ScopeRepository
 {
-    /**
-     * @param string $scope
-     *
-     * @return bool
-     */
     public function has(string $scope): bool;
 
-    /**
-     * @param string $scope
-     *
-     * @return Scope
-     */
     public function get(string $scope): Scope;
 
     /**

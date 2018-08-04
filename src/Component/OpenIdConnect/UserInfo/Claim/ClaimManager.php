@@ -23,8 +23,6 @@ class ClaimManager
     private $claims = [];
 
     /**
-     * @param Claim $claim
-     *
      * @return ClaimManager
      */
     public function add(Claim $claim): self

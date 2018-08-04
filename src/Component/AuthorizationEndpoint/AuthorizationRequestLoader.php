@@ -90,33 +90,22 @@ class AuthorizationRequestLoader
 
     /**
      * AuthorizationRequestLoader constructor.
-     *
-     * @param ClientRepository $clientRepository
      */
     public function __construct(ClientRepository $clientRepository)
     {
         $this->clientRepository = $clientRepository;
     }
 
-    /**
-     * @return bool
-     */
     public function isRequestUriRegistrationRequired(): bool
     {
         return $this->requireRequestUriRegistration;
     }
 
-    /**
-     * @return bool
-     */
     public function isRequestObjectSupportEnabled(): bool
     {
         return $this->requestObjectAllowed;
     }
 
-    /**
-     * @return bool
-     */
     public function isRequestObjectReferenceSupportEnabled(): bool
     {
         return $this->requestObjectReferenceAllowed;
@@ -146,10 +135,6 @@ class AuthorizationRequestLoader
         return null === $this->jweLoader ? [] : $this->jweLoader->getJweDecrypter()->getContentEncryptionAlgorithmManager()->list();
     }
 
-    /**
-     * @param JWSVerifier         $jwsVerifier
-     * @param ClaimCheckerManager $claimCheckerManager
-     */
     public function enableSignedRequestObjectSupport(JWSVerifier $jwsVerifier, ClaimCheckerManager $claimCheckerManager)
     {
         $this->jwsVerifier = $jwsVerifier;
@@ -157,10 +142,6 @@ class AuthorizationRequestLoader
         $this->requestObjectAllowed = true;
     }
 
-    /**
-     * @param HttpClient $client
-     * @param bool       $requireRequestUriRegistration
-     */
     public function enableRequestObjectReferenceSupport(HttpClient $client, bool $requireRequestUriRegistration)
     {
         if (!$this->isRequestObjectSupportEnabled()) {
@@ -172,10 +153,6 @@ class AuthorizationRequestLoader
     }
 
     /**
-     * @param JWELoader $jweLoader
-     * @param JWKSet    $keyEncryptionKeySet
-     * @param bool      $requireEncryption
-     *
      * @throws \InvalidArgumentException
      */
     public function enableEncryptedRequestObjectSupport(JWELoader $jweLoader, JWKSet $keyEncryptionKeySet, bool $requireEncryption)
@@ -191,27 +168,17 @@ class AuthorizationRequestLoader
         $this->keyEncryptionKeySet = $keyEncryptionKeySet;
     }
 
-    /**
-     * @param JKUFactory $jkuFactory
-     */
     public function enableJkuSupport(JKUFactory $jkuFactory)
     {
         $this->jkuFactory = $jkuFactory;
     }
 
-    /**
-     * @return bool
-     */
     public function isEncryptedRequestSupportEnabled(): bool
     {
         return null !== $this->keyEncryptionKeySet;
     }
 
     /**
-     * @param ServerRequestInterface $request
-     *
-     * @return Authorization
-     *
      * @throws OAuth2Message
      * @throws \Exception
      * @throws \Http\Client\Exception
@@ -232,12 +199,9 @@ class AuthorizationRequestLoader
     }
 
     /**
-     * @param array  $params
      * @param Client $client
      *
      * @throws OAuth2Message
-     *
-     * @return array
      */
     private function createFromRequestParameter(array $params, Client &$client = null): array
     {
@@ -256,10 +220,7 @@ class AuthorizationRequestLoader
     }
 
     /**
-     * @param array  $params
      * @param Client $client
-     *
-     * @return array
      *
      * @throws OAuth2Message
      * @throws \Exception
@@ -283,8 +244,6 @@ class AuthorizationRequestLoader
     }
 
     /**
-     * @param array $params
-     *
      * @throws \InvalidArgumentException
      */
     private function checkIssuerAndClientId(array $params)
@@ -297,7 +256,6 @@ class AuthorizationRequestLoader
     }
 
     /**
-     * @param Client $client
      * @param string $requestUri
      *
      * @throws OAuth2Message
@@ -323,13 +281,7 @@ class AuthorizationRequestLoader
     }
 
     /**
-     * @param array       $params
-     * @param string      $request
-     * @param Client|null $client
-     *
      * @throws OAuth2Message
-     *
-     * @return array
      */
     private function loadRequestObject(array $params, string $request, Client &$client = null): array
     {
@@ -369,10 +321,6 @@ class AuthorizationRequestLoader
     }
 
     /**
-     * @param string $request
-     *
-     * @return string
-     *
      * @throws OAuth2Message
      */
     private function tryToLoadEncryptedRequest(string $request): string
@@ -398,9 +346,6 @@ class AuthorizationRequestLoader
     }
 
     /**
-     * @param JWS    $jws
-     * @param Client $client
-     *
      * @throws \InvalidArgumentException
      */
     private function checkAlgorithms(JWS $jws, Client $client)
@@ -422,10 +367,6 @@ class AuthorizationRequestLoader
     }
 
     /**
-     * @param string $url
-     *
-     * @return string
-     *
      * @throws OAuth2Message
      * @throws \Exception
      * @throws \Http\Client\Exception
@@ -447,15 +388,11 @@ class AuthorizationRequestLoader
     }
 
     /**
-     * @param array $params
-     *
      * @throws OAuth2Message
-     *
-     * @return Client
      */
     private function getClient(array $params): Client
     {
-        $client = \array_key_exists('client_id', $params) ? $this->clientRepository->find(ClientId::create($params['client_id'])) : null;
+        $client = \array_key_exists('client_id', $params) ? $this->clientRepository->find(new ClientId($params['client_id'])) : null;
         if (!$client instanceof Client || true === $client->isDeleted()) {
             throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, 'Parameter "client_id" missing or invalid.');
         }
@@ -463,11 +400,6 @@ class AuthorizationRequestLoader
         return $client;
     }
 
-    /**
-     * @param Client $client
-     *
-     * @return JWKSet
-     */
     private function getClientKeySet(Client $client): JWKSet
     {
         $keyset = JWKSet::createFromKeys([]);

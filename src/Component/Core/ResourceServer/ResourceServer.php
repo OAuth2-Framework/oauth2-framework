@@ -15,13 +15,7 @@ namespace OAuth2Framework\Component\Core\ResourceServer;
 
 interface ResourceServer
 {
-    /**
-     * @return ResourceServerId
-     */
     public function getResourceServerId(): ResourceServerId;
 
-    /**
-     * @return string
-     */
     public function getAuthenticationMethod(): string;
 }

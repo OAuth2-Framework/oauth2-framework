@@ -39,8 +39,8 @@ final class ResourceOwnerPasswordCredentialsGrantTypeTest extends TestCase
      */
     public function genericInformation()
     {
-        self::assertEquals([], $this->getGrantType()->associatedResponseTypes());
-        self::assertEquals('password', $this->getGrantType()->name());
+        static::assertEquals([], $this->getGrantType()->associatedResponseTypes());
+        static::assertEquals('password', $this->getGrantType()->name());
     }
 
     /**
@@ -52,10 +52,10 @@ final class ResourceOwnerPasswordCredentialsGrantTypeTest extends TestCase
 
         try {
             $this->getGrantType()->checkRequest($request->reveal());
-            $this->fail('An OAuth2 exception should be thrown.');
+            static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2Message $e) {
-            self::assertEquals(400, $e->getCode());
-            self::assertEquals([
+            static::assertEquals(400, $e->getCode());
+            static::assertEquals([
                 'error' => 'invalid_request',
                 'error_description' => 'Missing grant type parameter(s): username.',
             ], $e->getData());
@@ -70,7 +70,7 @@ final class ResourceOwnerPasswordCredentialsGrantTypeTest extends TestCase
         $request = $this->buildRequest(['password' => 'PASSWORD', 'username' => 'USERNAME']);
 
         $this->getGrantType()->checkRequest($request->reveal());
-        self::assertTrue(true);
+        static::assertTrue(true);
     }
 
     /**
@@ -80,15 +80,15 @@ final class ResourceOwnerPasswordCredentialsGrantTypeTest extends TestCase
     {
         $client = Client::createEmpty();
         $client = $client->create(
-            ClientId::create('CLIENT_ID'),
-            DataBag::create([]),
-            UserAccountId::create('USER_ACCOUNT_ID')
+            new ClientId('CLIENT_ID'),
+            new DataBag([]),
+            new UserAccountId('USER_ACCOUNT_ID')
         );
         $request = $this->buildRequest(['password' => 'PASSWORD', 'username' => 'USERNAME']);
         $grantTypeData = GrantTypeData::create($client);
 
         $receivedGrantTypeData = $this->getGrantType()->prepareResponse($request->reveal(), $grantTypeData);
-        self::assertSame($receivedGrantTypeData, $grantTypeData);
+        static::assertSame($receivedGrantTypeData, $grantTypeData);
     }
 
     /**
@@ -98,16 +98,16 @@ final class ResourceOwnerPasswordCredentialsGrantTypeTest extends TestCase
     {
         $client = Client::createEmpty();
         $client = $client->create(
-            ClientId::create('CLIENT_ID'),
-            DataBag::create([]),
-            UserAccountId::create('USER_ACCOUNT_ID')
+            new ClientId('CLIENT_ID'),
+            new DataBag([]),
+            new UserAccountId('USER_ACCOUNT_ID')
         );
         $request = $this->buildRequest(['password' => 'PASSWORD', 'username' => 'USERNAME']);
         $grantTypeData = GrantTypeData::create($client);
 
         $receivedGrantTypeData = $this->getGrantType()->grant($request->reveal(), $grantTypeData);
-        self::assertEquals('USERNAME', $receivedGrantTypeData->getResourceOwnerId()->getValue());
-        self::assertEquals('CLIENT_ID', $receivedGrantTypeData->getClient()->getPublicId()->getValue());
+        static::assertEquals('USERNAME', $receivedGrantTypeData->getResourceOwnerId()->getValue());
+        static::assertEquals('CLIENT_ID', $receivedGrantTypeData->getClient()->getPublicId()->getValue());
     }
 
     /**
@@ -119,14 +119,14 @@ final class ResourceOwnerPasswordCredentialsGrantTypeTest extends TestCase
     {
         if (null === $this->grantType) {
             $userAccount = $this->prophesize(UserAccount::class);
-            $userAccount->getPublicId()->willReturn(UserAccountId::create('USERNAME'));
-            $userAccount->getUserAccountId()->willReturn(UserAccountId::create('USERNAME'));
+            $userAccount->getPublicId()->willReturn(new UserAccountId('USERNAME'));
+            $userAccount->getUserAccountId()->willReturn(new UserAccountId('USERNAME'));
 
             $userAccountManager = $this->prophesize(UserAccountManager::class);
             $userAccountManager->isPasswordCredentialValid($userAccount->reveal(), 'PASSWORD')->willReturn(true);
 
             $userAccountRepository = $this->prophesize(UserAccountRepository::class);
-            $userAccountRepository->findOneByUsername(UserAccountId::create('USERNAME'))->willReturn($userAccount->reveal());
+            $userAccountRepository->findOneByUsername(new UserAccountId('USERNAME'))->willReturn($userAccount->reveal());
 
             $this->grantType = new ResourceOwnerPasswordCredentialsGrantType(
                 $userAccountManager->reveal(),

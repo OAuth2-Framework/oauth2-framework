@@ -29,6 +29,6 @@ final class RandomAccessTokenIdGenerator implements AccessTokenIdGenerator
     {
         $value = \bin2hex(\random_bytes(32));
 
-        return AccessTokenId::create($value);
+        return new AccessTokenId($value);
     }
 }

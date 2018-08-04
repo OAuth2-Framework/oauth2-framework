@@ -22,9 +22,6 @@ class RefreshTokenCreatedListener
      */
     private $events = [];
 
-    /**
-     * @param RefreshTokenCreatedEvent $event
-     */
     public function handle(RefreshTokenCreatedEvent $event)
     {
         $this->events[] = $event;

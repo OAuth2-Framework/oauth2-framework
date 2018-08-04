@@ -40,9 +40,6 @@ class AuthorizationCodeRepository implements AuthorizationCodeRepositoryInterfac
         return \array_key_exists($authCodeId->getValue(), $this->authorizationCodes) ? $this->authorizationCodes[$authCodeId->getValue()] : null;
     }
 
-    /**
-     * @param AuthorizationCode $authCode
-     */
     public function save(AuthorizationCode $authCode): void
     {
         $this->authorizationCodes[$authCode->getTokenId()->getValue()] = $authCode;
@@ -50,59 +47,55 @@ class AuthorizationCodeRepository implements AuthorizationCodeRepositoryInterfac
 
     private function initAuthorizationCodes()
     {
-        $authorizationCode = AuthorizationCode::createEmpty();
-        $authorizationCode = $authorizationCode->create(
-            AuthorizationCodeId::create('VALID_AUTHORIZATION_CODE'),
-            ClientId::create('CLIENT_ID_3'),
-            UserAccountId::create('john.1'),
+        $authorizationCode = new AuthorizationCode(
+            new AuthorizationCodeId('VALID_AUTHORIZATION_CODE'),
+            new ClientId('CLIENT_ID_3'),
+            new UserAccountId('john.1'),
             [],
             'http://localhost/callback',
             new \DateTimeImmutable('now +1 day'),
-            DataBag::create([]),
-            DataBag::create([]),
+            new DataBag([]),
+            new DataBag([]),
             null
         );
         $this->save($authorizationCode);
 
-        $authorizationCode = AuthorizationCode::createEmpty();
-        $authorizationCode = $authorizationCode->create(
-            AuthorizationCodeId::create('VALID_AUTHORIZATION_CODE_FOR_CONFIDENTIAL_CLIENT'),
-            ClientId::create('CLIENT_ID_5'),
-            UserAccountId::create('john.1'),
+        $authorizationCode = new AuthorizationCode(
+            new AuthorizationCodeId('VALID_AUTHORIZATION_CODE_FOR_CONFIDENTIAL_CLIENT'),
+            new ClientId('CLIENT_ID_5'),
+            new UserAccountId('john.1'),
             [],
             'http://localhost/callback',
             new \DateTimeImmutable('now +1 day'),
-            DataBag::create([]),
-            DataBag::create([]),
+            new DataBag([]),
+            new DataBag([]),
             null
         );
         $this->save($authorizationCode);
 
-        $authorizationCode = AuthorizationCode::createEmpty();
-        $authorizationCode = $authorizationCode->create(
-            AuthorizationCodeId::create('REVOKED_AUTHORIZATION_CODE'),
-            ClientId::create('CLIENT_ID_3'),
-            UserAccountId::create('john.1'),
+        $authorizationCode = new AuthorizationCode(
+            new AuthorizationCodeId('REVOKED_AUTHORIZATION_CODE'),
+            new ClientId('CLIENT_ID_3'),
+            new UserAccountId('john.1'),
             [],
             'http://localhost/callback',
             new \DateTimeImmutable('now +1 day'),
-            DataBag::create([]),
-            DataBag::create([]),
+            new DataBag([]),
+            new DataBag([]),
             null
         );
-        $authorizationCode = $authorizationCode->markAsRevoked();
+        $authorizationCode->markAsRevoked();
         $this->save($authorizationCode);
 
-        $authorizationCode = AuthorizationCode::createEmpty();
-        $authorizationCode = $authorizationCode->create(
-            AuthorizationCodeId::create('EXPIRED_AUTHORIZATION_CODE'),
-            ClientId::create('CLIENT_ID_3'),
-            UserAccountId::create('john.1'),
+        $authorizationCode = new AuthorizationCode(
+            new AuthorizationCodeId('EXPIRED_AUTHORIZATION_CODE'),
+            new ClientId('CLIENT_ID_3'),
+            new UserAccountId('john.1'),
             [],
             'http://localhost/callback',
             new \DateTimeImmutable('now -1 day'),
-            DataBag::create([]),
-            DataBag::create([]),
+            new DataBag([]),
+            new DataBag([]),
             null
         );
         $this->save($authorizationCode);

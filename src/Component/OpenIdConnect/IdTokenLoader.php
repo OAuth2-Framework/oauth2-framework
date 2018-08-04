@@ -35,10 +35,6 @@ class IdTokenLoader
 
     /**
      * IdTokenLoader constructor.
-     *
-     * @param JWSLoader $jwsLoader
-     * @param JWKSet    $signatureKeySet
-     * @param array     $signatureAlgorithms
      */
     public function __construct(JWSLoader $jwsLoader, JWKSet $signatureKeySet, array $signatureAlgorithms)
     {
@@ -55,11 +51,6 @@ class IdTokenLoader
         return $this->jwsLoader->getJwsVerifier()->getSignatureAlgorithmManager()->list();
     }
 
-    /**
-     * @param IdTokenId $idTokenId
-     *
-     * @return IdToken|null
-     */
     public function load(IdTokenId $idTokenId): ?IdToken
     {
         $value = $idTokenId->getValue();

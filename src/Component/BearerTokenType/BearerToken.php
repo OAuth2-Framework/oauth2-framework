@@ -21,34 +21,14 @@ use Psr\Http\Message\ServerRequestInterface;
 
 final class BearerToken implements TokenType
 {
-    /**
-     * @var string
-     */
     private $realm;
 
-    /**
-     * @var bool
-     */
     private $tokenFromAuthorizationHeaderAllowed;
 
-    /**
-     * @var bool
-     */
     private $tokenFromRequestBodyAllowed;
 
-    /**
-     * @var bool
-     */
     private $tokenFromQueryStringAllowed;
 
-    /**
-     * BearerToken constructor.
-     *
-     * @param string $realm
-     * @param bool   $tokenFromAuthorizationHeaderAllowed
-     * @param bool   $tokenFromRequestBodyAllowed
-     * @param bool   $tokenFromQueryStringAllowed
-     */
     public function __construct(string $realm, bool $tokenFromAuthorizationHeaderAllowed, bool $tokenFromRequestBodyAllowed, bool $tokenFromQueryStringAllowed)
     {
         $this->realm = $realm;
@@ -65,25 +45,16 @@ final class BearerToken implements TokenType
         return 'Bearer';
     }
 
-    /**
-     * @return bool
-     */
     private function isTokenFromAuthorizationHeaderAllowed(): bool
     {
         return $this->tokenFromAuthorizationHeaderAllowed;
     }
 
-    /**
-     * @return bool
-     */
     private function isTokenFromRequestBodyAllowed(): bool
     {
         return $this->tokenFromRequestBodyAllowed;
     }
 
-    /**
-     * @return bool
-     */
     private function isTokenFromQueryStringAllowed(): bool
     {
         return $this->tokenFromQueryStringAllowed;
@@ -139,10 +110,6 @@ final class BearerToken implements TokenType
 
     /**
      * Get the token from the authorization header.
-     *
-     * @param ServerRequestInterface $request
-     *
-     * @return string|null
      */
     private function getTokenFromAuthorizationHeaders(ServerRequestInterface $request): ?string
     {
@@ -159,10 +126,6 @@ final class BearerToken implements TokenType
 
     /**
      * Get the token from the request body.
-     *
-     * @param ServerRequestInterface $request
-     *
-     * @return string|null
      */
     private function getTokenFromRequestBody(ServerRequestInterface $request): ?string
     {
@@ -177,10 +140,6 @@ final class BearerToken implements TokenType
 
     /**
      * Get the token from the query string.
-     *
-     * @param ServerRequestInterface $request
-     *
-     * @return string|null
      */
     private function getTokenFromQuery(ServerRequestInterface $request): ?string
     {
@@ -189,11 +148,6 @@ final class BearerToken implements TokenType
         return $this->getAccessTokenFromParameters($query_params);
     }
 
-    /**
-     * @param array $params
-     *
-     * @return string|null
-     */
     private function getAccessTokenFromParameters(array $params): ?string
     {
         return \array_key_exists('access_token', $params) ? $params['access_token'] : null;

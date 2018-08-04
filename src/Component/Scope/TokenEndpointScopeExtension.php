@@ -15,13 +15,13 @@ namespace OAuth2Framework\Component\Scope;
 
 use OAuth2Framework\Component\Core\AccessToken\AccessToken;
 use OAuth2Framework\Component\Core\Client\Client;
+use OAuth2Framework\Component\Core\Message\OAuth2Message;
 use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwner;
 use OAuth2Framework\Component\Core\Util\RequestBodyParser;
-use OAuth2Framework\Component\TokenEndpoint\Extension\TokenEndpointExtension;
-use OAuth2Framework\Component\TokenEndpoint\GrantTypeData;
-use OAuth2Framework\Component\TokenEndpoint\GrantType;
 use OAuth2Framework\Component\Scope\Policy\ScopePolicyManager;
-use OAuth2Framework\Component\Core\Message\OAuth2Message;
+use OAuth2Framework\Component\TokenEndpoint\Extension\TokenEndpointExtension;
+use OAuth2Framework\Component\TokenEndpoint\GrantType;
+use OAuth2Framework\Component\TokenEndpoint\GrantTypeData;
 use Psr\Http\Message\ServerRequestInterface;
 
 final class TokenEndpointScopeExtension implements TokenEndpointExtension
@@ -38,9 +38,6 @@ final class TokenEndpointScopeExtension implements TokenEndpointExtension
 
     /**
      * ScopeProcessor constructor.
-     *
-     * @param ScopeRepository    $scopeRepository
-     * @param ScopePolicyManager $scopePolicyManager
      */
     public function __construct(ScopeRepository $scopeRepository, ScopePolicyManager $scopePolicyManager)
     {
@@ -78,12 +75,6 @@ final class TokenEndpointScopeExtension implements TokenEndpointExtension
         return $result;
     }
 
-    /**
-     * @param ServerRequestInterface $request
-     * @param GrantTypeData          $grantTypeData
-     *
-     * @return string
-     */
     private function getScope(ServerRequestInterface $request, GrantTypeData $grantTypeData): string
     {
         $parameters = RequestBodyParser::parseFormUrlEncoded($request);
@@ -101,11 +92,6 @@ final class TokenEndpointScopeExtension implements TokenEndpointExtension
     }
 
     /**
-     * @param string $scope
-     * @param Client $client
-     *
-     * @return string
-     *
      * @throws OAuth2Message
      */
     private function applyScopePolicy(string $scope, Client $client): string
@@ -118,9 +104,6 @@ final class TokenEndpointScopeExtension implements TokenEndpointExtension
     }
 
     /**
-     * @param string        $scope
-     * @param GrantTypeData $grantTypeData
-     *
      * @throws OAuth2Message
      */
     private function checkRequestedScopeIsAvailable(string $scope, GrantTypeData $grantTypeData)
@@ -138,11 +121,6 @@ final class TokenEndpointScopeExtension implements TokenEndpointExtension
         }
     }
 
-    /**
-     * @param Client $client
-     *
-     * @return string
-     */
     private function getAvailableScopesForClient(Client $client): string
     {
         return ($client->has('scope')) ? $client->get('scope') : \implode(' ', $this->scopeRepository->all());

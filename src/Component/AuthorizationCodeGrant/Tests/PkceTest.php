@@ -28,29 +28,22 @@ final class PkceTest extends TestCase
      */
     public function thePkceMethodManagerCanHandleSeveralMethods()
     {
-        self::assertTrue($this->getPkceMethodManager()->has('S256'));
-        self::assertTrue($this->getPkceMethodManager()->has('plain'));
-        self::assertEquals(['plain', 'S256'], $this->getPkceMethodManager()->names());
+        static::assertTrue($this->getPkceMethodManager()->has('S256'));
+        static::assertTrue($this->getPkceMethodManager()->has('plain'));
+        static::assertEquals(['plain', 'S256'], $this->getPkceMethodManager()->names());
     }
 
     /**
      * @test
      * @dataProvider challengeData
-     *
-     * @param string $name
-     * @param string $codeVerifier
-     * @param string $codeChallenge
      */
     public function aChallengeCanBeVerified(string $name, string $codeChallenge, string $codeVerifier)
     {
         $method = $this->getPkceMethodManager()->get($name);
 
-        self::assertTrue($method->isChallengeVerified($codeVerifier, $codeChallenge));
+        static::assertTrue($method->isChallengeVerified($codeVerifier, $codeChallenge));
     }
 
-    /**
-     * @return array
-     */
     public function challengeData(): array
     {
         return [
