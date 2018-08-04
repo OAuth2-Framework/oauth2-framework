@@ -20,5 +20,6 @@ namespace OAuth2Framework\Component\RefreshTokenGrant;
 interface RefreshTokenRepository
 {
     public function save(RefreshToken $refreshToken): void;
+
     public function find(RefreshTokenId $refreshTokenId): ?RefreshToken;
 }

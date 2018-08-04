@@ -260,7 +260,7 @@ final class JwtBearerGrantTypeTest extends TestCase
                 return $client;
             }
 
-            return null;
+            return;
         });
 
         return $clientRepository->reveal();
