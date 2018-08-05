@@ -20,9 +20,6 @@ use OAuth2Framework\Component\Core\UserAccount\UserAccountManager as UserAccount
 
 class UserAccountManager implements UserAccountManagerInterface, AuthenticationMethodReferenceSupport, AuthenticationContextClassReferenceSupport
 {
-    /**
-     * {@inheritdoc}
-     */
     public function isPasswordCredentialValid(UserAccount $user, string $password): bool
     {
         if (!$user instanceof User) {

@@ -17,17 +17,11 @@ use Base64Url\Base64Url;
 
 final class S256 implements PKCEMethod
 {
-    /**
-     * {@inheritdoc}
-     */
     public function name(): string
     {
         return 'S256';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function isChallengeVerified(string $codeVerifier, string $codeChallenge): bool
     {
         return \hash_equals($codeChallenge, Base64Url::encode(\hash('sha256', $codeVerifier, true)));

@@ -34,9 +34,6 @@ final class ClientConfigurationGetEndpoint implements MiddlewareInterface
         $this->responseFactory = $responseFactory;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $next): ResponseInterface
     {
         $client = $request->getAttribute('client');

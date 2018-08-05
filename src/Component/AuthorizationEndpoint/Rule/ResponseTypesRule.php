@@ -33,9 +33,6 @@ final class ResponseTypesRule implements Rule
         $this->responseTypeManager = $responseTypeManager;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function handle(ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters, callable $next): DataBag
     {
         if (!$commandParameters->has('response_types')) {

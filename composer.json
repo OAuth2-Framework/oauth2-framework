@@ -17,6 +17,7 @@
     ],
     "require": {
         "php": "^7.1",
+        "ext-json": "*",
         "doctrine/annotations": "^1.2",
         "league/uri": "^5.3",
         "php-coveralls/php-coveralls": "^2.0",
@@ -41,7 +42,7 @@
         "zendframework/zend-diactoros": "^1.7"
     },
     "require-dev": {
-        "http-interop/http-factory-diactoros": "^0.3.0",
+        "http-interop/http-factory-diactoros": "^1.0.0",
         "php-http/mock-client": "^1.1",
         "phpunit/phpcov": "^5.0",
         "phpunit/phpunit": "^6.5|^7.0",

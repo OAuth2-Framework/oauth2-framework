@@ -26,9 +26,6 @@ class SignatureSource implements Component
         return 'signature';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function load(array $configs, ContainerBuilder $container)
     {
         $config = $configs['endpoint']['metadata']['signature'];
@@ -41,9 +38,6 @@ class SignatureSource implements Component
         $container->setParameter('oauth2_server.endpoint.metadata.signature.key', $config['key']);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
         $node->children()
@@ -73,17 +67,11 @@ class SignatureSource implements Component
             ->end();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function build(ContainerBuilder $container)
     {
         $container->addCompilerPass(new SignedMetadataCompilerPass());
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function prepend(ContainerBuilder $container, array $configs): array
     {
         $config = $configs['endpoint']['metadata']['signature'];

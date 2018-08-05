@@ -42,17 +42,11 @@ class OpenIdConnectSource implements Component
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function name(): string
     {
         return 'openid_connect';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function load(array $configs, ContainerBuilder $container)
     {
         if (!\class_exists(IdToken::class) || !$configs['openid_connect']['enabled']) {
@@ -72,9 +66,6 @@ class OpenIdConnectSource implements Component
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
         if (!\class_exists(IdToken::class)) {
@@ -89,9 +80,6 @@ class OpenIdConnectSource implements Component
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function prepend(ContainerBuilder $container, array $config): array
     {
         if (!\class_exists(IdToken::class)) {
@@ -108,9 +96,6 @@ class OpenIdConnectSource implements Component
         return $updatedConfig;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function build(ContainerBuilder $container)
     {
         if (!\class_exists(IdToken::class)) {

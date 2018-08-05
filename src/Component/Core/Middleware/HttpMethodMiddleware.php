@@ -34,9 +34,6 @@ class HttpMethodMiddleware implements MiddlewareInterface
         $this->methodMap[$method] = $middleware;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $method = $request->getMethod();

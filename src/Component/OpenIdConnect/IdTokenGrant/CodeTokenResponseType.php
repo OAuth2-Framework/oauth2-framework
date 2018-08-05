@@ -39,9 +39,6 @@ final class CodeTokenResponseType implements ResponseType
         $this->tokenResponseType = $tokenResponseType;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function associatedGrantTypes(): array
     {
         return \array_merge(
@@ -50,25 +47,16 @@ final class CodeTokenResponseType implements ResponseType
         );
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function name(): string
     {
         return 'code token';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getResponseMode(): string
     {
         return self::RESPONSE_TYPE_MODE_FRAGMENT;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function preProcess(Authorization $authorization): Authorization
     {
         $authorization = $this->codeResponseType->preProcess($authorization);
@@ -77,9 +65,6 @@ final class CodeTokenResponseType implements ResponseType
         return $authorization;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function process(Authorization $authorization): Authorization
     {
         $authorization = $this->codeResponseType->process($authorization);

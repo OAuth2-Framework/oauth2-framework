@@ -61,9 +61,6 @@ final class IssuerDiscoveryEndpoint implements MiddlewareInterface
         $this->port = $port;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         try {
@@ -140,7 +137,7 @@ final class IssuerDiscoveryEndpoint implements MiddlewareInterface
             throw new \InvalidArgumentException(\sprintf('The resource identified with "%s" does not exist or is not supported by this server.', $resourceName), 400);
         }
 
-        return ResourceId::create($identifier->getUsername());
+        return new ResourceId($identifier->getUsername());
     }
 
     /**

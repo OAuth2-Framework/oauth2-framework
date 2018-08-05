@@ -24,9 +24,6 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
  */
 class ResourceOwnerPasswordCredentialsGrantTest extends WebTestCase
 {
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp()
     {
         if (!\class_exists(ResourceOwnerPasswordCredentialsGrantType::class)) {

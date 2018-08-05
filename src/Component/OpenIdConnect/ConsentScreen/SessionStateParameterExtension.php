@@ -19,9 +19,6 @@ use Psr\Http\Message\ServerRequestInterface;
 
 abstract class SessionStateParameterExtension implements Extension
 {
-    /**
-     * {@inheritdoc}
-     */
     public function processAfter(ServerRequestInterface $request, Authorization $authorization): Authorization
     {
         if ($this->hasOpenIdScope($authorization)) {

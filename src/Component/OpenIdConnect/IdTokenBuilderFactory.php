@@ -21,19 +21,8 @@ use OAuth2Framework\Component\OpenIdConnect\UserInfo\UserInfo;
 
 class IdTokenBuilderFactory
 {
-    /**
-     * @var string
-     */
     private $issuer;
-
-    /**
-     * @var UserInfo
-     */
     private $userinfo;
-
-    /**
-     * @var int
-     */
     private $lifetime;
 
     /**
@@ -46,9 +35,6 @@ class IdTokenBuilderFactory
      */
     private $authorizationCodeRepository = null;
 
-    /**
-     * IdTokenBuilder constructor.
-     */
     public function __construct(string $issuer, UserInfo $userinfo, int $lifetime)
     {
         $this->issuer = $issuer;
@@ -56,12 +42,9 @@ class IdTokenBuilderFactory
         $this->lifetime = $lifetime;
     }
 
-    /**
-     * @return IdTokenBuilder
-     */
     public function createBuilder(Client $client, UserAccount $userAccount, string $redirectUri)
     {
-        return IdTokenBuilder::create($this->issuer, $this->userinfo, $this->lifetime, $client, $userAccount, $redirectUri, $this->jkuFactory, $this->authorizationCodeRepository);
+        return new IdTokenBuilder($this->issuer, $this->userinfo, $this->lifetime, $client, $userAccount, $redirectUri, $this->jkuFactory, $this->authorizationCodeRepository);
     }
 
     public function enableJkuSupport(JKUFactory $jkuFactory): void

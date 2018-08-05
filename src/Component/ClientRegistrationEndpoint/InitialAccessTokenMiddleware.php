@@ -47,9 +47,6 @@ final class InitialAccessTokenMiddleware implements MiddlewareInterface
         $this->isRequired = $isRequired;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         try {

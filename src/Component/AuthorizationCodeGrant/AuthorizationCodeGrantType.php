@@ -33,25 +33,16 @@ final class AuthorizationCodeGrantType implements GrantType
         $this->pkceMethodManager = $pkceMethodManager;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function associatedResponseTypes(): array
     {
         return ['code'];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function name(): string
     {
         return 'authorization_code';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function checkRequest(ServerRequestInterface $request)
     {
         $parameters = RequestBodyParser::parseFormUrlEncoded($request);
@@ -63,17 +54,11 @@ final class AuthorizationCodeGrantType implements GrantType
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function prepareResponse(ServerRequestInterface $request, GrantTypeData $grantTypeData): GrantTypeData
     {
         return $grantTypeData;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function grant(ServerRequestInterface $request, GrantTypeData $grantTypeData): GrantTypeData
     {
         $parameters = RequestBodyParser::parseFormUrlEncoded($request);

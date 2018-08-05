@@ -20,9 +20,6 @@ use OAuth2Framework\Component\Core\Message\OAuth2Message;
 
 final class ClaimsParameterChecker implements ParameterChecker
 {
-    /**
-     * {@inheritdoc}
-     */
     public function check(Authorization $authorization): Authorization
     {
         try {

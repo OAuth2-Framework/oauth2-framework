@@ -27,9 +27,6 @@ class ClientRuleSource implements Component
         return 'client_rule';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function load(array $configs, ContainerBuilder $container)
     {
         if (!\interface_exists(Rule::class)) {
@@ -40,24 +37,15 @@ class ClientRuleSource implements Component
         $loader->load('client_rule.php');
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function prepend(ContainerBuilder $container, array $config): array
     {
         return [];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function build(ContainerBuilder $container)
     {
         if (!\interface_exists(Rule::class)) {

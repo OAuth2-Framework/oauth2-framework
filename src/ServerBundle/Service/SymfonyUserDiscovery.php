@@ -39,9 +39,6 @@ final class SymfonyUserDiscovery implements UserAccountDiscovery
         $this->authorizationChecker = $authorizationChecker;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function find(?bool &$isFullyAuthenticated = null): ?UserAccount
     {
         if (null === $token = $this->tokenStorage->getToken()) {

@@ -21,17 +21,11 @@ use Psr\Http\Message\ServerRequestInterface;
 
 final class None implements AuthenticationMethod
 {
-    /**
-     * {@inheritdoc}
-     */
     public function getSchemesParameters(): array
     {
         return [];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function findClientIdAndCredentials(ServerRequestInterface $request, &$clientCredentials = null): ?ClientId
     {
         $parameters = RequestBodyParser::parseFormUrlEncoded($request);
@@ -42,25 +36,16 @@ final class None implements AuthenticationMethod
         return null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function checkClientConfiguration(DataBag $command_parameters, DataBag $validated_parameters): DataBag
     {
         return $validated_parameters;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function isClientAuthenticated(Client $client, $clientCredentials, ServerRequestInterface $request): bool
     {
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getSupportedMethods(): array
     {
         return ['none'];

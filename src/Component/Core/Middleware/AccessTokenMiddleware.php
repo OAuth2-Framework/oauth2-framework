@@ -43,9 +43,6 @@ final class AccessTokenMiddleware implements MiddlewareInterface
         $this->accessTokenRepository = $accessTokenRepository;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $additional_credential_values = [];

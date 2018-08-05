@@ -19,17 +19,11 @@ final class Nickname implements Claim
 {
     private const CLAIM_NAME = 'nickname';
 
-    /**
-     * {@inheritdoc}
-     */
     public function name(): string
     {
         return self::CLAIM_NAME;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function isAvailableForUserAccount(UserAccount $userAccount, ?string $claimLocale): bool
     {
         return $userAccount->has(
@@ -37,9 +31,6 @@ final class Nickname implements Claim
         );
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getForUserAccount(UserAccount $userAccount, ?string $claimLocale)
     {
         return $userAccount->get(

@@ -31,9 +31,6 @@ use Prophecy\Argument;
  */
 final class AuthorizationCodeRevocationTypeHintTest extends TestCase
 {
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp()
     {
         if (!\interface_exists(TokenTypeHint::class)) {

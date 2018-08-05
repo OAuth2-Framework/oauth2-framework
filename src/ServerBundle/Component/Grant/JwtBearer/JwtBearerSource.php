@@ -25,17 +25,11 @@ use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
 class JwtBearerSource implements Component
 {
-    /**
-     * {@inheritdoc}
-     */
     public function name(): string
     {
         return 'jwt_bearer';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function load(array $configs, ContainerBuilder $container)
     {
         if (!\class_exists(JwtBearerGrantType::class) || !$configs['grant']['jwt_bearer']['enabled']) {
@@ -51,9 +45,6 @@ class JwtBearerSource implements Component
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
         if (!\class_exists(JwtBearerGrantType::class)) {
@@ -116,9 +107,6 @@ class JwtBearerSource implements Component
             ->end();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function build(ContainerBuilder $container)
     {
         if (!\class_exists(JwtBearerGrantType::class)) {
@@ -128,9 +116,6 @@ class JwtBearerSource implements Component
         $container->addCompilerPass(new EncryptedAssertionCompilerPass());
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function prepend(ContainerBuilder $container, array $configs): array
     {
         if (!\class_exists(JwtBearerGrantType::class) || !$configs['grant']['jwt_bearer']['enabled']) {

@@ -18,14 +18,8 @@ use OAuth2Framework\Component\AuthorizationEndpoint\Exception\OAuth2Authorizatio
 use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\ParameterChecker;
 use OAuth2Framework\Component\Core\Message\OAuth2Message;
 
-/**
- * Class NonceParameterChecker.
- */
 final class NonceParameterChecker implements ParameterChecker
 {
-    /**
-     * {@inheritdoc}
-     */
     public function check(Authorization $authorization): Authorization
     {
         try {

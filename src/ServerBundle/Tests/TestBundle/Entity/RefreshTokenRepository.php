@@ -35,17 +35,11 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
         $this->initRefreshTokens();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function find(RefreshTokenId $refreshTokenId): ?RefreshToken
     {
         return \array_key_exists($refreshTokenId->getValue(), $this->refreshTokens) ? $this->refreshTokens[$refreshTokenId->getValue()] : null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function save(RefreshToken $refreshToken): void
     {
         $this->refreshTokens[$refreshToken->getTokenId()->getValue()] = $refreshToken;

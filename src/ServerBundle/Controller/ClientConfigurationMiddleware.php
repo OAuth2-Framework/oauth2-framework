@@ -36,9 +36,6 @@ final class ClientConfigurationMiddleware implements MiddlewareInterface
         $this->clientRepository = $clientRepository;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $routeParameters = $request->getAttribute('_route_params');

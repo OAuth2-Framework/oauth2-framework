@@ -20,9 +20,6 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class TokenTypeCompilerPass implements CompilerPassInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     public function process(ContainerBuilder $container)
     {
         if (!$container->hasDefinition(TokenTypeManager::class)) {

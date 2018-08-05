@@ -18,9 +18,6 @@ use OAuth2Framework\SecurityBundle\Security\Authentication\Token\OAuth2Token;
 
 final class ResourceOwnerIdChecker implements Checker
 {
-    /**
-     * {@inheritdoc}
-     */
     public function check(OAuth2Token $token, OAuth2 $configuration): void
     {
         if (null === $configuration->getResourceOwnerId()) {

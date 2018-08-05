@@ -113,17 +113,11 @@ class User implements UserInterface, UserAccount, EquatableInterface
         return $this->lastUpdateAt ? $this->lastUpdateAt->getTimestamp() : null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function has(string $key): bool
     {
         return \array_key_exists($key, $this->parameters);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function get(string $key)
     {
         if (!$this->has($key)) {
@@ -133,48 +127,30 @@ class User implements UserInterface, UserAccount, EquatableInterface
         return $this->parameters[$key];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getRoles(): array
     {
         return $this->roles;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getSalt()
     {
         return $this->salt;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getUsername(): string
     {
         return $this->username;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getPassword(): string
     {
         return $this->password;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function eraseCredentials()
     {
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function isEqualTo(UserInterface $user)
     {
         if (!$user instanceof self) {

@@ -41,41 +41,26 @@ final class NoneResponseType implements ResponseType
         $this->authorizationStorage = $authorizationStorage;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function associatedGrantTypes(): array
     {
         return [];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function name(): string
     {
         return 'none';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getResponseMode(): string
     {
         return self::RESPONSE_TYPE_MODE_QUERY;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function preProcess(Authorization $authorization): Authorization
     {
         return $authorization;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function process(Authorization $authorization): Authorization
     {
         $this->authorizationStorage->save($authorization);

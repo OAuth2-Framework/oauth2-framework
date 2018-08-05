@@ -33,17 +33,11 @@ class ClientRepository implements \OAuth2Framework\Component\Core\Client\ClientR
         $this->populateClients();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function find(ClientId $clientId): ?Client
     {
         return \array_key_exists($clientId->getValue(), $this->clients) ? $this->clients[$clientId->getValue()] : null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function save(Client $client)
     {
         $this->clients[$client->getPublicId()->getValue()] = $client;

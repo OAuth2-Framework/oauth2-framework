@@ -34,9 +34,6 @@ final class IFrameEndpoint implements MiddlewareInterface
         $this->responseFactory = $responseFactory;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $content = $this->renderTemplate();

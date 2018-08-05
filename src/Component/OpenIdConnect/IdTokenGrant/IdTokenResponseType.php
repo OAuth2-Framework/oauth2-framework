@@ -65,41 +65,26 @@ final class IdTokenResponseType implements ResponseType
         $this->jweBuilder = $jweBuilder;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function associatedGrantTypes(): array
     {
         return [];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function name(): string
     {
         return 'id_token';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getResponseMode(): string
     {
         return self::RESPONSE_TYPE_MODE_FRAGMENT;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function preProcess(Authorization $authorization): Authorization
     {
         return $authorization;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function process(Authorization $authorization): Authorization
     {
         if ($authorization->hasQueryParam('scope') && \in_array('openid', \explode(' ', $authorization->getQueryParam('scope')), true)) {

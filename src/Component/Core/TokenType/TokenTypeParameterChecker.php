@@ -44,9 +44,6 @@ final class TokenTypeParameterChecker implements ParameterChecker
         $this->tokenTypeParameterAllowed = $tokenTypeParameterAllowed;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function check(Authorization $authorization): Authorization
     {
         try {

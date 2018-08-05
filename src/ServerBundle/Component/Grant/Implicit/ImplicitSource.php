@@ -22,17 +22,11 @@ use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
 class ImplicitSource implements Component
 {
-    /**
-     * {@inheritdoc}
-     */
     public function name(): string
     {
         return 'implicit';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function load(array $configs, ContainerBuilder $container)
     {
         if (!\class_exists(ImplicitGrantType::class) || !$configs['grant']['implicit']['enabled']) {
@@ -43,9 +37,6 @@ class ImplicitSource implements Component
         $loader->load('implicit.php');
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
         if (!\class_exists(ImplicitGrantType::class)) {
@@ -59,16 +50,10 @@ class ImplicitSource implements Component
             ->end();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function build(ContainerBuilder $container)
     {
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function prepend(ContainerBuilder $container, array $config): array
     {
         return [];

@@ -17,9 +17,6 @@ use OAuth2Framework\Component\MacTokenType\MacToken;
 
 final class FooMacToken extends MacToken
 {
-    /**
-     * {@inheritdoc}
-     */
     protected function generateMacKey(): string
     {
         return 'MAC_KEY_FOO_BAR';

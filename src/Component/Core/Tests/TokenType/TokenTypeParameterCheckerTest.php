@@ -26,9 +26,6 @@ use Prophecy\Argument;
  */
 final class TokenTypeParameterCheckerTest extends TestCase
 {
-    /**
-     * @inheritdoc}
-     */
     protected function setUp()
     {
         if (!\class_exists(Authorization::class)) {

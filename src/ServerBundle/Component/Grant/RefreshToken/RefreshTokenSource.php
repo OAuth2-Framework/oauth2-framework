@@ -25,17 +25,11 @@ use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
 class RefreshTokenSource implements Component
 {
-    /**
-     * {@inheritdoc}
-     */
     public function name(): string
     {
         return 'refresh_token';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function load(array $configs, ContainerBuilder $container)
     {
         if (!\class_exists(RefreshTokenGrantType::class) || !$configs['grant']['refresh_token']['enabled']) {
@@ -48,9 +42,6 @@ class RefreshTokenSource implements Component
         $loader->load('refresh_token.php');
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
         if (!\class_exists(RefreshTokenGrantType::class)) {
@@ -78,16 +69,10 @@ class RefreshTokenSource implements Component
             ->end();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function build(ContainerBuilder $container)
     {
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function prepend(ContainerBuilder $container, array $config): array
     {
         return [];

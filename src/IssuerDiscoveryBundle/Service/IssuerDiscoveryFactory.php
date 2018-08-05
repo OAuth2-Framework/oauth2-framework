@@ -20,19 +20,9 @@ use OAuth2Framework\Component\IssuerDiscoveryEndpoint\ResourceRepository;
 
 class IssuerDiscoveryFactory
 {
-    /**
-     * @var ResponseFactory
-     */
     private $responseFactory;
-
-    /**
-     * @var IdentifierResolverManager
-     */
     private $identifierResolverManager;
 
-    /**
-     * IssuerDiscoveryFactory constructor.
-     */
     public function __construct(ResponseFactory $responseFactory, IdentifierResolverManager $identifierResolverManager)
     {
         $this->responseFactory = $responseFactory;

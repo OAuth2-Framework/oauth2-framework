@@ -21,9 +21,6 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class ResponseTypeCompilerPass implements CompilerPassInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     public function process(ContainerBuilder $container)
     {
         if (!$container->hasDefinition(ResponseTypeManager::class)) {

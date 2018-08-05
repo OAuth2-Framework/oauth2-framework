@@ -57,9 +57,6 @@ final class ClientConfigurationEndpoint implements MiddlewareInterface
         $this->ruleManager = $ruleManager;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $next): ResponseInterface
     {
         $this->checkClient($request);

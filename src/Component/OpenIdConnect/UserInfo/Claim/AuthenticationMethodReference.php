@@ -31,17 +31,11 @@ final class AuthenticationMethodReference implements Claim
         $this->userAccountManager = $userAccountManager;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function name(): string
     {
         return self::CLAIM_NAME;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function isAvailableForUserAccount(UserAccount $userAccount, ?string $claimLocale): bool
     {
         if (null === $this->userAccountManager || !$this->userAccountManager instanceof AuthenticationMethodReferenceSupport) {
@@ -51,9 +45,6 @@ final class AuthenticationMethodReference implements Claim
         return null !== $this->userAccountManager->getAuthenticationMethodReferenceFor($userAccount);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getForUserAccount(UserAccount $userAccount, ?string $claimLocale)
     {
         return $this->userAccountManager->getAuthenticationMethodReferenceFor($userAccount);

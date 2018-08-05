@@ -19,9 +19,6 @@ use OAuth2Framework\Component\Core\DataBag\DataBag;
 
 final class RequestUriRule implements Rule
 {
-    /**
-     * {@inheritdoc}
-     */
     public function handle(ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters, callable $next): DataBag
     {
         $validatedParameters = $next($clientId, $commandParameters, $validatedParameters);
@@ -36,7 +33,7 @@ final class RequestUriRule implements Rule
         return $validatedParameters;
     }
 
-    private function checkAllUris($value)
+    private function checkAllUris($value): void
     {
         if (!\is_array($value)) {
             throw new \InvalidArgumentException('The parameter "request_uris" must be a list of URI.');

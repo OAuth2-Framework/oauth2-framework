@@ -20,9 +20,6 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class EncryptedAssertionCompilerPass implements CompilerPassInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     public function process(ContainerBuilder $container)
     {
         if (!$container->hasDefinition(JwtBearerGrantType::class) || !$container->getParameter('oauth2_server.grant.jwt_bearer.encryption.enabled')) {

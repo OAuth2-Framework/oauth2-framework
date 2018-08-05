@@ -40,9 +40,6 @@ final class Configuration implements ConfigurationInterface
         $this->components = $components;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();

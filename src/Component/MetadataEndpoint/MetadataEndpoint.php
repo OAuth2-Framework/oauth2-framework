@@ -66,9 +66,6 @@ class MetadataEndpoint implements MiddlewareInterface
         $this->signatureAlgorithm = $signatureAlgorithm;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $data = $this->metadata->jsonSerialize();

@@ -22,17 +22,11 @@ use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
 class ClientCredentialsSource implements Component
 {
-    /**
-     * {@inheritdoc}
-     */
     public function name(): string
     {
         return 'client_credentials';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function load(array $configs, ContainerBuilder $container)
     {
         if (!\class_exists(ClientCredentialsGrantType::class) || !$configs['grant']['client_credentials']['enabled']) {
@@ -42,9 +36,6 @@ class ClientCredentialsSource implements Component
         $loader->load('client_credentials.php');
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
         if (!\class_exists(ClientCredentialsGrantType::class)) {
@@ -58,16 +49,10 @@ class ClientCredentialsSource implements Component
             ->end();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function build(ContainerBuilder $container)
     {
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function prepend(ContainerBuilder $container, array $config): array
     {
         return [];

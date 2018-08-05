@@ -22,9 +22,6 @@ use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
  */
 final class StateParameterChecker implements ParameterChecker
 {
-    /**
-     * {@inheritdoc}
-     */
     public function check(Authorization $authorization): Authorization
     {
         if (true === $authorization->hasQueryParam('state')) {

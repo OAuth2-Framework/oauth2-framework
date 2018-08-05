@@ -33,9 +33,6 @@ final class ClientAuthenticationMethodRule implements Rule
         $this->clientAuthenticationMethodManager = $clientAuthenticationMethodManager;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function handle(ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters, callable $next): DataBag
     {
         if (!$commandParameters->has('token_endpoint_auth_method')) {

@@ -18,31 +18,13 @@ use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 
 class IdToken
 {
-    /**
-     * @var IdTokenId
-     */
     private $idTokenId;
-
-    /**
-     * @var array
-     */
     private $claims;
 
-    /**
-     * IdToken constructor.
-     */
-    private function __construct(IdTokenId $idTokenId, array $claims)
+    public function __construct(IdTokenId $idTokenId, array $claims)
     {
         $this->idTokenId = $idTokenId;
         $this->claims = $claims;
-    }
-
-    /**
-     * @return IdToken
-     */
-    public static function create(IdTokenId $idTokenId, array $claims): self
-    {
-        return new self($idTokenId, $claims);
     }
 
     public function getId(): IdTokenId
@@ -50,26 +32,17 @@ class IdToken
         return $this->idTokenId;
     }
 
-    /**
-     * @return null|string
-     */
-    public function getNonce()
+    public function getNonce(): ?string
     {
         return \array_key_exists('nonce', $this->claims) ? $this->claims['nonce'] : null;
     }
 
-    /**
-     * @return null|string
-     */
-    public function getAccessTokenHash()
+    public function getAccessTokenHash(): ?string
     {
         return \array_key_exists('at_hash', $this->claims) ? $this->claims['at_hash'] : null;
     }
 
-    /**
-     * @return null|string
-     */
-    public function getAuthorizationCodeHash()
+    public function getAuthorizationCodeHash(): ?string
     {
         return \array_key_exists('c_hash', $this->claims) ? $this->claims['c_hash'] : null;
     }

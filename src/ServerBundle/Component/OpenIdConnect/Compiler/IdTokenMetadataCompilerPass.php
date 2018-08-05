@@ -21,9 +21,6 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class IdTokenMetadataCompilerPass implements CompilerPassInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     public function process(ContainerBuilder $container)
     {
         if (!$container->hasDefinition(MetadataBuilder::class) || !$container->hasDefinition(UserInfo::class)) {

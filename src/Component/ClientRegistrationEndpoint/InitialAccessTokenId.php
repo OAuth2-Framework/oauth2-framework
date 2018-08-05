@@ -15,13 +15,6 @@ namespace OAuth2Framework\Component\ClientRegistrationEndpoint;
 
 use OAuth2Framework\Component\Core\Token\TokenId;
 
-class InitialAccessTokenId extends TokenId
+final class InitialAccessTokenId extends TokenId
 {
-    /**
-     * @return InitialAccessTokenId
-     */
-    public static function create(string $value): self
-    {
-        return new self($value);
-    }
 }

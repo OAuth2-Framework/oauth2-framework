@@ -21,9 +21,6 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class PKCEMethodCompilerPass implements CompilerPassInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     public function process(ContainerBuilder $container)
     {
         if (!$container->hasDefinition(PKCEMethodManager::class)) {

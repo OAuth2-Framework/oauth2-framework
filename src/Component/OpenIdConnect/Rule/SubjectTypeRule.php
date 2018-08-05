@@ -33,9 +33,6 @@ final class SubjectTypeRule implements Rule
         $this->userinfo = $userinfo;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function handle(ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters, callable $next): DataBag
     {
         if ($commandParameters->has('subject_type')) {

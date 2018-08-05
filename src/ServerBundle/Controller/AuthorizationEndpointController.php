@@ -101,9 +101,6 @@ final class AuthorizationEndpointController extends AuthorizationEndpoint
         //$this->allowScopeSelection = $allowScopeSelection;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function redirectToLoginPage(ServerRequestInterface $request, Authorization $authorization): ResponseInterface
     {
         $session_data = [

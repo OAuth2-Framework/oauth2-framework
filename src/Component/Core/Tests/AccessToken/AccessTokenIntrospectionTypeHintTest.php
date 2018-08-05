@@ -31,9 +31,6 @@ use Prophecy\Argument;
  */
 final class AccessTokenIntrospectionTypeHintTest extends TestCase
 {
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp()
     {
         if (!\interface_exists(TokenTypeHint::class)) {

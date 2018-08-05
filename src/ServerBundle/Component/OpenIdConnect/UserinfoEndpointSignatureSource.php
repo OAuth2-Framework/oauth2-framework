@@ -21,17 +21,11 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class UserinfoEndpointSignatureSource implements Component
 {
-    /**
-     * {@inheritdoc}
-     */
     public function name(): string
     {
         return 'signature';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function load(array $configs, ContainerBuilder $container)
     {
         $config = $configs['openid_connect']['userinfo_endpoint']['signature'];
@@ -43,9 +37,6 @@ class UserinfoEndpointSignatureSource implements Component
         $container->setParameter('oauth2_server.openid_connect.userinfo_endpoint.signature.signature_algorithms', $config['signature_algorithms']);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
         $node->children()
@@ -70,17 +61,11 @@ class UserinfoEndpointSignatureSource implements Component
             ->end();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function build(ContainerBuilder $container)
     {
         $container->addCompilerPass(new UserinfoEndpointSignatureCompilerPass());
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function prepend(ContainerBuilder $container, array $config): array
     {
         $sourceConfig = $config['openid_connect']['userinfo_endpoint'][$this->name()];

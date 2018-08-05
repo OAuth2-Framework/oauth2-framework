@@ -18,9 +18,6 @@ use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenIdGenerator;
 
 final class RandomRefreshTokenIdGenerator implements RefreshTokenIdGenerator
 {
-    /**
-     * {@inheritdoc}
-     */
     public function createRefreshTokenId(): RefreshTokenId
     {
         $value = \bin2hex(\random_bytes(32));

@@ -21,9 +21,6 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class TrustedIssuerSupportCompilerPass implements CompilerPassInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     public function process(ContainerBuilder $container)
     {
         if (!$container->hasDefinition(JwtBearerGrantType::class) || !$container->hasAlias(TrustedIssuerRepository::class)) {

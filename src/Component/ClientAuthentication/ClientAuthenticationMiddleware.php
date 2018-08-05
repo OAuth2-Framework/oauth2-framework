@@ -33,9 +33,6 @@ class ClientAuthenticationMiddleware implements MiddlewareInterface
         $this->authenticationMethodManager = $authenticationMethodManager;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         try {

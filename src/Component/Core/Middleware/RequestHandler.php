@@ -22,9 +22,6 @@ use Psr\Http\Server\RequestHandlerInterface;
  */
 final class RequestHandler implements RequestHandlerInterface
 {
-    /**
-     * @var callable
-     */
     private $callback;
 
     /**
@@ -35,9 +32,6 @@ final class RequestHandler implements RequestHandlerInterface
         $this->callback = $callback;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         return \call_user_func($this->callback, $request);

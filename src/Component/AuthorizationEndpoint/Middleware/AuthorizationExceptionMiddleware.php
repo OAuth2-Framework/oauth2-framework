@@ -24,8 +24,6 @@ use Psr\Http\Server\RequestHandlerInterface;
 final class AuthorizationExceptionMiddleware implements MiddlewareInterface
 {
     /**
-     * {@inheritdoc}
-     *
      * @throws OAuth2Message
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface

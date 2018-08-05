@@ -21,17 +21,11 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class UserAccountSource implements Component
 {
-    /**
-     * {@inheritdoc}
-     */
     public function name(): string
     {
         return 'user_account';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function load(array $configs, ContainerBuilder $container)
     {
         $config = $configs[$this->name()];
@@ -42,9 +36,6 @@ class UserAccountSource implements Component
         $container->setAlias(UserAccountManager::class, $configs['user_account']['manager']);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
         $node->children()
@@ -65,16 +56,10 @@ class UserAccountSource implements Component
             ->end();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function build(ContainerBuilder $container)
     {
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function prepend(ContainerBuilder $container, array $config): array
     {
         return [];

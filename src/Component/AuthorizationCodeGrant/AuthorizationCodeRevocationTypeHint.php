@@ -25,17 +25,11 @@ final class AuthorizationCodeRevocationTypeHint implements TokenTypeHint
         $this->authorizationCodeRepository = $authorizationCodeRepository;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function hint(): string
     {
         return 'auth_code';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function find(string $token): ?Token
     {
         $id = new AuthorizationCodeId($token);
@@ -43,9 +37,6 @@ final class AuthorizationCodeRevocationTypeHint implements TokenTypeHint
         return $this->authorizationCodeRepository->find($id);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function revoke(Token $token)
     {
         if (!$token instanceof AuthorizationCode) {

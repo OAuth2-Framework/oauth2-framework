@@ -22,17 +22,11 @@ use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
 class NoneSource implements Component
 {
-    /**
-     * {@inheritdoc}
-     */
     public function name(): string
     {
         return 'none';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function load(array $configs, ContainerBuilder $container)
     {
         if (!\class_exists(NoneResponseType::class) || !$configs['grant']['none']['enabled']) {
@@ -42,9 +36,6 @@ class NoneSource implements Component
         $loader->load('none.php');
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
         if (!\class_exists(NoneResponseType::class)) {
@@ -57,16 +48,10 @@ class NoneSource implements Component
             ->end();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function build(ContainerBuilder $container)
     {
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function prepend(ContainerBuilder $container, array $config): array
     {
         return [];

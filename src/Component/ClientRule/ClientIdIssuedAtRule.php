@@ -18,9 +18,6 @@ use OAuth2Framework\Component\Core\DataBag\DataBag;
 
 final class ClientIdIssuedAtRule implements Rule
 {
-    /**
-     * {@inheritdoc}
-     */
     public function handle(ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters, callable $next): DataBag
     {
         if ($commandParameters->has('client_id_issued_at')) {

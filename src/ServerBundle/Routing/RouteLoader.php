@@ -53,32 +53,20 @@ class RouteLoader implements LoaderInterface
         $this->routes->add(\sprintf('oauth2_server_%s', $name), $route);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function load($resource, $type = null)
     {
         return $this->routes;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function supports($resource, $type = null)
     {
         return 'oauth2_server' === $type;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getResolver()
     {
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setResolver(LoaderResolverInterface $resolver)
     {
     }

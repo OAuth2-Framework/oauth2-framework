@@ -35,9 +35,6 @@ final class OAuth2EntryPoint implements AuthenticationEntryPointInterface
         $this->oauth2ResponseFactoryManager = $oauth2ResponseFactoryManager;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function start(Request $request, AuthenticationException $authException = null)
     {
         $psr7Response = $this->oauth2ResponseFactoryManager->getResponse(

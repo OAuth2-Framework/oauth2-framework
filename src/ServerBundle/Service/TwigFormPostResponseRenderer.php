@@ -37,9 +37,6 @@ final class TwigFormPostResponseRenderer implements FormPostResponseRenderer
         $this->template = $template;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function render(string $redirect_uri, array $data): string
     {
         return $this->templateEngine->render(

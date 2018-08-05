@@ -27,9 +27,6 @@ class SoftwareStatementSource implements Component
         return 'software_statement';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function load(array $configs, ContainerBuilder $container)
     {
         $config = $configs['endpoint']['client_registration']['software_statement'];
@@ -45,9 +42,6 @@ class SoftwareStatementSource implements Component
         $loader->load('software_statement.php');
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
         $node->children()
@@ -84,16 +78,10 @@ class SoftwareStatementSource implements Component
             ->end();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function build(ContainerBuilder $container)
     {
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function prepend(ContainerBuilder $container, array $config): array
     {
         $sourceConfig = $config['endpoint']['client_registration']['software_statement'];

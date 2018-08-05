@@ -19,9 +19,6 @@ use OAuth2Framework\Component\Core\DataBag\DataBag;
 
 final class UserParametersRule implements Rule
 {
-    /**
-     * {@inheritdoc}
-     */
     public function handle(ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters, callable $next): DataBag
     {
         if ($commandParameters->has('require_auth_time')) {

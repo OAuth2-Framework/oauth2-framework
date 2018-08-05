@@ -18,17 +18,11 @@ use OAuth2Framework\Component\Core\Client\ClientId;
 
 class ClientConfigurationRouteRule extends Base
 {
-    /**
-     * {@inheritdoc}
-     */
     protected function getRegistrationClientUri(ClientId $clientId): string
     {
         return \sprintf('https://www.example.com/client/%s', $clientId->getValue());
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function generateRegistrationAccessToken(): string
     {
         return \base64_encode(\random_bytes(16));

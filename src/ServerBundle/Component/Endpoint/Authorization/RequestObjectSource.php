@@ -37,17 +37,11 @@ class RequestObjectSource implements Component
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function name(): string
     {
         return 'request_object';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function load(array $configs, ContainerBuilder $container)
     {
         $config = $configs['endpoint']['authorization']['request_object'];
@@ -62,9 +56,6 @@ class RequestObjectSource implements Component
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
         $childNode = $node->children()
@@ -86,9 +77,6 @@ class RequestObjectSource implements Component
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function prepend(ContainerBuilder $container, array $config): array
     {
         $sourceConfig = $config['endpoint']['authorization']['request_object'];
@@ -111,9 +99,6 @@ class RequestObjectSource implements Component
         return $updatedConfig;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function build(ContainerBuilder $container)
     {
         $container->addCompilerPass(new RequestObjectCompilerPass());

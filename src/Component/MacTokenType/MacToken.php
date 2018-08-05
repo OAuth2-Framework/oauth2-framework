@@ -45,25 +45,16 @@ abstract class MacToken implements TokenType
         $this->timestampLifetime = $timestampLifetime;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function name(): string
     {
         return 'MAC';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getScheme(): string
     {
         return $this->name();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getAdditionalInformation(): array
     {
         return [
@@ -85,9 +76,6 @@ abstract class MacToken implements TokenType
         return $this->macAlgorithm;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function find(ServerRequestInterface $request, array &$additionalCredentialValues): ?string
     {
         $authorization_headers = $request->getHeader('AUTHORIZATION');
@@ -104,9 +92,6 @@ abstract class MacToken implements TokenType
         return null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function isRequestValid(Token $token, ServerRequestInterface $request, array $additionalCredentialValues): bool
     {
         if (!$token instanceof AccessToken || $token->getParameter()->get('token_type') !== $this->name()) {

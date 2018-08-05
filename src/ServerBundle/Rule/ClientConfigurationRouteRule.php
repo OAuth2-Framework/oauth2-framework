@@ -34,17 +34,11 @@ final class ClientConfigurationRouteRule extends Base
         $this->router = $router;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function getRegistrationClientUri(ClientId $clientId): string
     {
         return $this->router->generate('oauth2_server_client_configuration', ['client_id' => $clientId->getValue()], UrlGeneratorInterface::ABSOLUTE_URL);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function generateRegistrationAccessToken(): string
     {
         $length = \random_int(62, 64);

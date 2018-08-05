@@ -27,9 +27,6 @@ class SessionManagementEndpointSource implements Component
         return 'session_management';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function load(array $configs, ContainerBuilder $container)
     {
         if (!true) { //FIXME
@@ -49,9 +46,6 @@ class SessionManagementEndpointSource implements Component
         $loader->load('session_management.php');
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
         if (!true) {
@@ -100,17 +94,11 @@ class SessionManagementEndpointSource implements Component
             ->end();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function build(ContainerBuilder $container)
     {
         $container->addCompilerPass(new SessionManagementRouteCompilerPass());
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function prepend(ContainerBuilder $container, array $config): array
     {
         return [];

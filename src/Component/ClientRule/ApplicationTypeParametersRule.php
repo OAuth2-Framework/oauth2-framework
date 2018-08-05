@@ -18,9 +18,6 @@ use OAuth2Framework\Component\Core\DataBag\DataBag;
 
 final class ApplicationTypeParametersRule implements Rule
 {
-    /**
-     * {@inheritdoc}
-     */
     public function handle(ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters, callable $next): DataBag
     {
         if ($commandParameters->has('application_type')) {

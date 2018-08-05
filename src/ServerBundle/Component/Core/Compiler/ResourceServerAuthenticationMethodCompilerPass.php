@@ -20,9 +20,6 @@ use Symfony\Component\DependencyInjection\Reference;
 
 final class ResourceServerAuthenticationMethodCompilerPass implements CompilerPassInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     public function process(ContainerBuilder $container)
     {
         if (!$container->hasDefinition(AuthenticationMethodManager::class)) {

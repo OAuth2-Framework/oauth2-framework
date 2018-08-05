@@ -21,9 +21,6 @@ use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
 class FormPostResponseModeSource implements Component
 {
-    /**
-     * {@inheritdoc}
-     */
     public function load(array $configs, ContainerBuilder $container)
     {
         $config = $configs['endpoint']['authorization']['response_mode']['form_post'];
@@ -36,17 +33,11 @@ class FormPostResponseModeSource implements Component
         $loader->load('form_post_response_mode.php');
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function name(): string
     {
         return 'form_post';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
         $node->children()
@@ -62,17 +53,11 @@ class FormPostResponseModeSource implements Component
             ->end();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function prepend(ContainerBuilder $container, array $config): array
     {
         return [];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function build(ContainerBuilder $container)
     {
     }

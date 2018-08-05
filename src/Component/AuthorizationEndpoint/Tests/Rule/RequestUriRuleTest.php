@@ -24,9 +24,6 @@ use PHPUnit\Framework\TestCase;
  */
 final class RequestUriRuleTest extends TestCase
 {
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp()
     {
         if (!\interface_exists(Rule::class)) {

@@ -31,17 +31,11 @@ final class AccessTokenIntrospectionTypeHint implements TokenTypeHint
         $this->accessTokenRepository = $accessTokenRepository;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function hint(): string
     {
         return 'access_token';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function find(string $token): ?Token
     {
         $id = new AccessTokenId($token);
@@ -49,9 +43,6 @@ final class AccessTokenIntrospectionTypeHint implements TokenTypeHint
         return $this->accessTokenRepository->find($id);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function introspect(Token $token): array
     {
         if (!$token instanceof AccessToken || true === $token->isRevoked()) {

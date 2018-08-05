@@ -45,9 +45,6 @@ class SessionStateParameterExtension extends \OAuth2Framework\Component\OpenIdCo
         return $authorization;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function getBrowserState(ServerRequestInterface $request, Authorization &$authorization): string
     {
         if ($this->session->has($this->storageName)) {
@@ -62,9 +59,6 @@ class SessionStateParameterExtension extends \OAuth2Framework\Component\OpenIdCo
         return $browserState;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function calculateSessionState(ServerRequestInterface $request, Authorization $authorization, string $browserState): string
     {
         $origin = $this->getOriginUri($authorization->getRedirectUri());

@@ -38,9 +38,6 @@ final class IdTokenTokenResponseType implements ResponseType
         $this->tokenResponseType = $tokenResponseType;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function associatedGrantTypes(): array
     {
         return \array_merge(
@@ -49,25 +46,16 @@ final class IdTokenTokenResponseType implements ResponseType
         );
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function name(): string
     {
         return 'id_token token';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getResponseMode(): string
     {
         return self::RESPONSE_TYPE_MODE_FRAGMENT;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function preProcess(Authorization $authorization): Authorization
     {
         $authorization = $this->tokenResponseType->preProcess($authorization);
@@ -76,9 +64,6 @@ final class IdTokenTokenResponseType implements ResponseType
         return $authorization;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function process(Authorization $authorization): Authorization
     {
         $authorization = $this->tokenResponseType->process($authorization);

@@ -168,8 +168,7 @@ final class InitialAccessTokenMiddlewareTest extends TestCase
             $repository->find(Argument::type(InitialAccessTokenId::class))->will(function ($args) {
                 switch ($args[0]->getValue()) {
                     case 'INITIAL_ACCESS_TOKEN_ID':
-                        $initialAccessToken = InitialAccessToken::createEmpty();
-                        $initialAccessToken = $initialAccessToken->create(
+                        $initialAccessToken = new InitialAccessToken(
                             $args[0],
                             new UserAccountId('USER_ACCOUNT_ID'),
                             new \DateTimeImmutable('now +1 day')
@@ -177,8 +176,7 @@ final class InitialAccessTokenMiddlewareTest extends TestCase
 
                         return $initialAccessToken;
                     case 'REVOKED_INITIAL_ACCESS_TOKEN_ID':
-                        $initialAccessToken = InitialAccessToken::createEmpty();
-                        $initialAccessToken = $initialAccessToken->create(
+                        $initialAccessToken = new InitialAccessToken(
                             $args[0],
                             new UserAccountId('USER_ACCOUNT_ID'),
                             new \DateTimeImmutable('now +1 day')
@@ -187,8 +185,7 @@ final class InitialAccessTokenMiddlewareTest extends TestCase
 
                         return $initialAccessToken;
                     case 'EXPIRED_INITIAL_ACCESS_TOKEN_ID':
-                        $initialAccessToken = InitialAccessToken::createEmpty();
-                        $initialAccessToken = $initialAccessToken->create(
+                        $initialAccessToken = new InitialAccessToken(
                             $args[0],
                             new UserAccountId('USER_ACCOUNT_ID'),
                             new \DateTimeImmutable('now -1 day')

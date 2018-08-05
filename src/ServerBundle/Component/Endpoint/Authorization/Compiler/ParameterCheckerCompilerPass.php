@@ -20,9 +20,6 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class ParameterCheckerCompilerPass implements CompilerPassInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     public function process(ContainerBuilder $container)
     {
         if (!$container->hasDefinition(ParameterCheckerManager::class)) {

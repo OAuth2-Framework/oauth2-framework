@@ -15,13 +15,6 @@ namespace OAuth2Framework\Component\OpenIdConnect;
 
 use OAuth2Framework\Component\Core\Token\TokenId;
 
-class IdTokenId extends TokenId
+final class IdTokenId extends TokenId
 {
-    /**
-     * @return IdTokenId
-     */
-    public static function create(string $value): self
-    {
-        return new self($value);
-    }
 }

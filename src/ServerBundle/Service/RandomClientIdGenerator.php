@@ -18,9 +18,6 @@ use OAuth2Framework\Component\Core\Client\ClientIdGenerator;
 
 final class RandomClientIdGenerator implements ClientIdGenerator
 {
-    /**
-     * {@inheritdoc}
-     */
     public function createClientId(): ClientId
     {
         $value = \bin2hex(\random_bytes(32));

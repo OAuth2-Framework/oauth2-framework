@@ -39,9 +39,6 @@ class Metadata implements \JsonSerializable
         $this->values[$key] = $value;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function jsonSerialize()
     {
         return $this->values;

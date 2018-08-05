@@ -22,9 +22,6 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 
 final class OAuth2SecurityFactory implements SecurityFactoryInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     public function create(ContainerBuilder $container, $id, $config, $userProvider, $defaultEntryPoint)
     {
         $providerId = 'security.authentication.provider.oauth2.'.$id;
@@ -47,25 +44,16 @@ final class OAuth2SecurityFactory implements SecurityFactoryInterface
         return [$providerId, $listenerId, 'oauth2_security.entry_point'];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getPosition()
     {
         return 'pre_auth';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getKey()
     {
         return 'oauth2';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function addConfiguration(NodeDefinition $node)
     {
     }

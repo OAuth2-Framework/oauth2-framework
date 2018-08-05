@@ -74,9 +74,6 @@ abstract class AuthorizationEndpoint implements MiddlewareInterface
 
     abstract protected function processConsentScreen(ServerRequestInterface $request, Authorization $authorization): ResponseInterface;
 
-    /**
-     * {@inheritdoc}
-     */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         try {

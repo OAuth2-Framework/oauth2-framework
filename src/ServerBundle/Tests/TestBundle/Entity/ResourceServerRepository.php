@@ -20,9 +20,6 @@ use OAuth2Framework\Component\IssuerDiscoveryEndpoint\ResourceId;
 
 class ResourceServerRepository implements ResourceServerRepositoryInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     public function find(ResourceServerId $resourceServerId): ?ResourceServerInterface
     {
         if ('http://foo.com' === $resourceServerId->getValue()) {
@@ -32,9 +29,6 @@ class ResourceServerRepository implements ResourceServerRepositoryInterface
         return null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function supports(ResourceId $resourceId): bool
     {
         return 'http://foo.com' === \mb_substr($resourceId->getValue(), 0, 14);

@@ -38,9 +38,6 @@ final class MacToken extends Base
         $this->maxLength = $maxLength;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function generateMacKey(): string
     {
         return Base64Url::encode(\random_bytes($this->getMacKeyLength()));

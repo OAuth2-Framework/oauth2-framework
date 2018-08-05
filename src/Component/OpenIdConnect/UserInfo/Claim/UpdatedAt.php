@@ -19,25 +19,16 @@ final class UpdatedAt implements Claim
 {
     private const CLAIM_NAME = 'updated_at';
 
-    /**
-     * {@inheritdoc}
-     */
     public function name(): string
     {
         return self::CLAIM_NAME;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function isAvailableForUserAccount(UserAccount $userAccount, ?string $claimLocale): bool
     {
         return null !== $userAccount->getLastUpdateAt();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getForUserAccount(UserAccount $userAccount, ?string $claimLocale)
     {
         return $userAccount->getLastUpdateAt();

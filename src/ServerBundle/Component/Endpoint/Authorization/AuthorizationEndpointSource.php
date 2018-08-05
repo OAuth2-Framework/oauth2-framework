@@ -54,17 +54,11 @@ class AuthorizationEndpointSource implements Component
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function name(): string
     {
         return 'authorization';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function load(array $configs, ContainerBuilder $container)
     {
         if (!\class_exists(AuthorizationEndpoint::class)) {
@@ -104,9 +98,6 @@ class AuthorizationEndpointSource implements Component
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
         if (!\class_exists(AuthorizationEndpoint::class)) {
@@ -163,9 +154,6 @@ class AuthorizationEndpointSource implements Component
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function prepend(ContainerBuilder $container, array $config): array
     {
         if (!\class_exists(AuthorizationEndpoint::class)) {
@@ -186,9 +174,6 @@ class AuthorizationEndpointSource implements Component
         return $updatedConfig;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function build(ContainerBuilder $container)
     {
         if (!\class_exists(AuthorizationEndpoint::class)) {

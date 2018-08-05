@@ -28,9 +28,6 @@ class ClientConfigurationSource implements Component
         return 'client_configuration';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function load(array $configs, ContainerBuilder $container)
     {
         if (!\class_exists(ClientConfigurationEndpoint::class)) {
@@ -49,9 +46,6 @@ class ClientConfigurationSource implements Component
         $loader->load('client_configuration.php');
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
         if (!\class_exists(ClientConfigurationEndpoint::class)) {
@@ -84,9 +78,6 @@ class ClientConfigurationSource implements Component
             ->end();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function build(ContainerBuilder $container)
     {
         if (!\class_exists(ClientConfigurationEndpoint::class)) {
@@ -95,9 +86,6 @@ class ClientConfigurationSource implements Component
         $container->addCompilerPass(new ClientConfigurationEndpointRouteCompilerPass());
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function prepend(ContainerBuilder $container, array $config): array
     {
         if (!\class_exists(ClientConfigurationEndpoint::class)) {

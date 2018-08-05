@@ -30,9 +30,6 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
  */
 class RevocationEndpointTest extends WebTestCase
 {
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp()
     {
         if (!\class_exists(TokenRevocationEndpoint::class)) {

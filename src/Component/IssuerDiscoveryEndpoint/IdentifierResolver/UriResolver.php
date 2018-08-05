@@ -24,9 +24,6 @@ final class UriResolver implements IdentifierResolver
         return 'https' === $uri['scheme'] && null !== $uri['user'];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function resolve(string $resource_name): Identifier
     {
         $uri = parse($resource_name);

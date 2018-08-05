@@ -27,17 +27,11 @@ abstract class Id implements \JsonSerializable
         return $this->value;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function __toString(): string
     {
         return $this->getValue();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function jsonSerialize()
     {
         return $this->__toString();

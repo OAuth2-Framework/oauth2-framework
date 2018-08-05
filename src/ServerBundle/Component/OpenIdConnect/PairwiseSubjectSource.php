@@ -20,17 +20,11 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class PairwiseSubjectSource implements Component
 {
-    /**
-     * {@inheritdoc}
-     */
     public function name(): string
     {
         return 'pairwise_subject';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function load(array $configs, ContainerBuilder $container)
     {
         $config = $configs['openid_connect']['pairwise_subject'];
@@ -41,9 +35,6 @@ class PairwiseSubjectSource implements Component
         $container->setAlias('oauth2_server.openid_connect.pairwise.service', $config['service']);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
         $node->children()
@@ -63,17 +54,11 @@ class PairwiseSubjectSource implements Component
             ->end();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function build(ContainerBuilder $container)
     {
         $container->addCompilerPass(new UserInfoPairwiseSubjectCompilerPass());
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function prepend(ContainerBuilder $container, array $config): array
     {
         return [];

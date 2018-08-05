@@ -18,9 +18,6 @@ use OAuth2Framework\Component\Core\TrustedIssuer\TrustedIssuerRepository as Trus
 
 class TrustedIssuerRepository implements TrustedIssuerRepositoryInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     public function find(string $trustedIssuer): ?TrustedIssuer
     {
         return null;

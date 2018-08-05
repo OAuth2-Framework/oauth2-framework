@@ -27,9 +27,6 @@ final class PromptParameterChecker implements ParameterChecker
 
     public const PROMPT_SELECT_ACCOUNT = 'select_account';
 
-    /**
-     * {@inheritdoc}
-     */
     public function check(Authorization $authorization): Authorization
     {
         try {

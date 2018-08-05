@@ -20,9 +20,6 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class RequestObjectReferenceCompilerPass implements CompilerPassInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     public function process(ContainerBuilder $container)
     {
         if (!$container->hasAlias('oauth2_server.http_client') || !$container->getParameter('oauth2_server.endpoint.authorization.request_object.reference.enabled') || !$container->hasDefinition(AuthorizationRequestLoader::class)) {

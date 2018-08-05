@@ -37,9 +37,6 @@ final class BearerToken implements TokenType
         $this->tokenFromQueryStringAllowed = $tokenFromQueryStringAllowed;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function name(): string
     {
         return 'Bearer';
@@ -60,25 +57,16 @@ final class BearerToken implements TokenType
         return $this->tokenFromQueryStringAllowed;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getScheme(): string
     {
         return \sprintf('%s realm="%s"', $this->name(), $this->realm);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getAdditionalInformation(): array
     {
         return [];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function find(ServerRequestInterface $request, array &$additionalCredentialValues): ?string
     {
         $methods = [
@@ -96,9 +84,6 @@ final class BearerToken implements TokenType
         return null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function isRequestValid(Token $token, ServerRequestInterface $request, array $additionalCredentialValues): bool
     {
         if (!$token instanceof AccessToken || !$token->getParameter()->has('token_type')) {

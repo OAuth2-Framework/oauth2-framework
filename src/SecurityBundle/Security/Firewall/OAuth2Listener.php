@@ -71,9 +71,6 @@ final class OAuth2Listener implements ListenerInterface
         $this->oauth2ResponseFactoryManager = $oauth2ResponseFactoryManager;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function handle(GetResponseEvent $event)
     {
         $factory = new DiactorosFactory();

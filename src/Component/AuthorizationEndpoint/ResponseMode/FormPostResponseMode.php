@@ -32,17 +32,11 @@ final class FormPostResponseMode implements ResponseMode
         $this->renderer = $renderer;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function name(): string
     {
         return ResponseType::RESPONSE_TYPE_MODE_FORM_POST;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function buildResponse(ResponseInterface $response, string $redirectUri, array $data): ResponseInterface
     {
         $uri = Uri\parse($redirectUri);

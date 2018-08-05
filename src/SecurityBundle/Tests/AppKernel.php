@@ -27,18 +27,12 @@ use Symfony\Component\HttpKernel\Kernel;
  */
 final class AppKernel extends Kernel
 {
-    /**
-     * {@inheritdoc}
-     */
     public function __construct(string $environment, bool $debug)
     {
         $debug = false;
         parent::__construct($environment, $debug);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function registerBundles()
     {
         $bundles = [
@@ -54,9 +48,6 @@ final class AppKernel extends Kernel
         return $bundles;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
         $loader->load(__DIR__.'/config/config_test.yml');

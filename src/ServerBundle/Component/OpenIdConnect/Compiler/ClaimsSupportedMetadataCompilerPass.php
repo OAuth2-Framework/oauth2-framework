@@ -21,9 +21,6 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class ClaimsSupportedMetadataCompilerPass implements CompilerPassInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     public function process(ContainerBuilder $container)
     {
         if (!$container->hasDefinition(MetadataBuilder::class) || !$container->hasDefinition(ClaimManager::class)) {

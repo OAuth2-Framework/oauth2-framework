@@ -15,9 +15,6 @@ namespace OAuth2Framework\Component\Core\Message\Factory;
 
 final class BadRequestResponseFactory extends OAuth2ResponseFactory
 {
-    /**
-     * {@inheritdoc}
-     */
     public function getSupportedCode(): int
     {
         return 400;

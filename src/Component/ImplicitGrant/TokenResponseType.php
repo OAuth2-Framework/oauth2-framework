@@ -47,41 +47,26 @@ final class TokenResponseType implements ResponseType
         $this->accessTokenLifetime = $accessTokenLifetime;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function associatedGrantTypes(): array
     {
         return ['implicit'];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function name(): string
     {
         return 'token';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getResponseMode(): string
     {
         return self::RESPONSE_TYPE_MODE_FRAGMENT;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function preProcess(Authorization $authorization): Authorization
     {
         return $authorization;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function process(Authorization $authorization): Authorization
     {
         $additionalInformation = $authorization->getTokenType()->getAdditionalInformation();

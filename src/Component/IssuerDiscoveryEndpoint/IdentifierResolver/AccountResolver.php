@@ -24,9 +24,6 @@ final class AccountResolver implements IdentifierResolver
         return 'acct' === $uri['scheme'];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function resolve(string $resource_name): Identifier
     {
         $uri = parse($resource_name);

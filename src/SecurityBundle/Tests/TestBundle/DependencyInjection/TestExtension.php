@@ -20,9 +20,6 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 class TestExtension extends Extension
 {
-    /**
-     * {@inheritdoc}
-     */
     public function load(array $configs, ContainerBuilder $container)
     {
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));

@@ -32,9 +32,6 @@ class ClientAssertionJwtSource implements Component
         return 'client_assertion_jwt';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function load(array $configs, ContainerBuilder $container)
     {
         if (!\class_exists(JWK::class)) {
@@ -67,9 +64,6 @@ class ClientAssertionJwtSource implements Component
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
         if (!\class_exists(JWK::class)) {
@@ -155,9 +149,6 @@ class ClientAssertionJwtSource implements Component
             ->end();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function prepend(ContainerBuilder $container, array $configs): array
     {
         if (!\class_exists(JWK::class)) {
@@ -178,9 +169,6 @@ class ClientAssertionJwtSource implements Component
         return [];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function build(ContainerBuilder $container)
     {
         if (!\class_exists(JWK::class)) {

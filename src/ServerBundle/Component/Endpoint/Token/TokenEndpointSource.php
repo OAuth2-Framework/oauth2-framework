@@ -32,9 +32,6 @@ class TokenEndpointSource implements Component
         return 'token';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function load(array $configs, ContainerBuilder $container)
     {
         if (!\class_exists(TokenEndpoint::class)) {
@@ -55,9 +52,6 @@ class TokenEndpointSource implements Component
         $loader->load('token.php');
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
         if (!\class_exists(TokenEndpoint::class)) {
@@ -82,9 +76,6 @@ class TokenEndpointSource implements Component
             ->end();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function build(ContainerBuilder $container)
     {
         if (!\class_exists(TokenEndpoint::class)) {
@@ -95,9 +86,6 @@ class TokenEndpointSource implements Component
         $container->addCompilerPass(new TokenEndpointExtensionCompilerPass());
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function prepend(ContainerBuilder $container, array $config): array
     {
         return [];

@@ -30,9 +30,6 @@ class TokenIntrospectionEndpointSource implements Component
         return 'token_introspection';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function load(array $configs, ContainerBuilder $container)
     {
         if (!\class_exists(TokenIntrospectionEndpoint::class)) {
@@ -51,9 +48,6 @@ class TokenIntrospectionEndpointSource implements Component
         $loader->load('introspection.php');
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
         if (!\class_exists(TokenIntrospectionEndpoint::class)) {
@@ -85,9 +79,6 @@ class TokenIntrospectionEndpointSource implements Component
             ->end();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function build(ContainerBuilder $container)
     {
         if (!\class_exists(TokenIntrospectionEndpoint::class)) {
@@ -97,9 +88,6 @@ class TokenIntrospectionEndpointSource implements Component
         $container->addCompilerPass(new TokenIntrospectionRouteCompilerPass());
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function prepend(ContainerBuilder $container, array $config): array
     {
         return [];

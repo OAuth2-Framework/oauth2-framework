@@ -19,41 +19,26 @@ use Psr\Http\Message\ServerRequestInterface;
 
 final class FooGrantType implements GrantType
 {
-    /**
-     * {@inheritdoc}
-     */
     public function associatedResponseTypes(): array
     {
         return [];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function name(): string
     {
         return 'foo';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function checkRequest(ServerRequestInterface $request)
     {
         //Nothing to do
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function prepareResponse(ServerRequestInterface $request, GrantTypeData $grantTypeData): GrantTypeData
     {
         return $grantTypeData;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function grant(ServerRequestInterface $request, GrantTypeData $grantTypeData): GrantTypeData
     {
         $grantTypeData->setResourceOwnerId($grantTypeData->getClient()->getPublicId());

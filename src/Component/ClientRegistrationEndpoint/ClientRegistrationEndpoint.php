@@ -59,9 +59,6 @@ final class ClientRegistrationEndpoint implements MiddlewareInterface
         $this->ruleManager = $ruleManager;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler = null): ResponseInterface
     {
         $this->checkRequest($request);

@@ -18,17 +18,11 @@ use Psr\Http\Message\ResponseInterface;
 
 final class RedirectResponseFactory implements ResponseFactory
 {
-    /**
-     * {@inheritdoc}
-     */
     public function getSupportedCode(): int
     {
         return 302;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function createResponse(array $data, ResponseInterface $response): ResponseInterface
     {
         if (!\array_key_exists('response_mode', $data) || !$data['response_mode'] instanceof ResponseMode) {

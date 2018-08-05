@@ -42,14 +42,11 @@ final class ClientConfigurationDeleteEndpoint implements MiddlewareInterface
         $this->responseFactory = $responseFactory;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $next): ResponseInterface
     {
         /** @var Client $client */
         $client = $request->getAttribute('client');
-        $client = $client->markAsDeleted();
+        $client->markAsDeleted();
         $this->clientRepository->save($client);
 
         $response = $this->responseFactory->createResponse(204);

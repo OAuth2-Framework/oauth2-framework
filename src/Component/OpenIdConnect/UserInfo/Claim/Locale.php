@@ -19,25 +19,16 @@ final class Locale implements Claim
 {
     private const CLAIM_NAME = 'locale';
 
-    /**
-     * {@inheritdoc}
-     */
     public function name(): string
     {
         return self::CLAIM_NAME;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function isAvailableForUserAccount(UserAccount $userAccount, ?string $claimLocale): bool
     {
         return $userAccount->has(self::CLAIM_NAME);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getForUserAccount(UserAccount $userAccount, ?string $claimLocale)
     {
         return $userAccount->get(self::CLAIM_NAME);

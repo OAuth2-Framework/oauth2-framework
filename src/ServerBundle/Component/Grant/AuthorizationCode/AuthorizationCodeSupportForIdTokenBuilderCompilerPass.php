@@ -21,9 +21,6 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class AuthorizationCodeSupportForIdTokenBuilderCompilerPass implements CompilerPassInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     public function process(ContainerBuilder $container)
     {
         if (!$container->hasDefinition(IdTokenBuilderFactory::class) || $container->hasAlias(AuthorizationCodeRepository::class)) {

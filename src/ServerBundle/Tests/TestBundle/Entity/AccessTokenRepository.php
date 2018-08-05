@@ -29,9 +29,6 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
         $this->accessTokens[$accessToken->getTokenId()->getValue()] = $accessToken;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function find(AccessTokenId $accessTokenId): ?AccessToken
     {
         return \array_key_exists($accessTokenId->getValue(), $this->accessTokens) ? $this->accessTokens[$accessTokenId->getValue()] : null;

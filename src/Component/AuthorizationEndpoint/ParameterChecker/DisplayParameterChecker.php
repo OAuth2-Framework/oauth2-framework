@@ -27,9 +27,6 @@ final class DisplayParameterChecker implements ParameterChecker
 
     public const DISPLAY_WAP = 'wap';
 
-    /**
-     * {@inheritdoc}
-     */
     public function check(Authorization $authorization): Authorization
     {
         try {

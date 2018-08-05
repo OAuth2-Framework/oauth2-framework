@@ -24,9 +24,6 @@ final class EmailResolver implements IdentifierResolver
         return 'http' === $uri['scheme'] && null !== $uri['user'] && null !== $uri['host'] && '' === $uri['path'] && null === $uri['query'] && null === $uri['fragment'];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function resolve(string $resource_name): Identifier
     {
         $uri = parse('http://'.$resource_name);

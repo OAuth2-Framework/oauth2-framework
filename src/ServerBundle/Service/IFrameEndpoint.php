@@ -53,9 +53,6 @@ final class IFrameEndpoint implements MiddlewareInterface
         $this->storageName = $storageName;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $content = $this->templateEngine->render($this->template, ['storage_name' => $this->storageName]);

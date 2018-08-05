@@ -75,25 +75,16 @@ class DataBag implements \JsonSerializable, \IteratorAggregate, \Countable
         return $this->parameters;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function jsonSerialize()
     {
         return $this->all();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function count()
     {
         return \count($this->parameters);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getIterator()
     {
         return new \ArrayIterator($this->parameters);

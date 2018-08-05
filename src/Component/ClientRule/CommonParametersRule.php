@@ -18,9 +18,6 @@ use OAuth2Framework\Component\Core\DataBag\DataBag;
 
 final class CommonParametersRule extends AbstractInternationalizedRule
 {
-    /**
-     * {@inheritdoc}
-     */
     public function handle(ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters, callable $next): DataBag
     {
         foreach ($this->getSupportedParameters() as $parameter => $closure) {

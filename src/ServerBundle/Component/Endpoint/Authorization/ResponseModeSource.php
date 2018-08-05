@@ -36,9 +36,6 @@ class ResponseModeSource implements Component
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function load(array $configs, ContainerBuilder $container)
     {
         $config = $configs['endpoint']['authorization']['response_mode'];
@@ -51,17 +48,11 @@ class ResponseModeSource implements Component
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function name(): string
     {
         return 'response_mode';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
         $childNode = $node->children()
@@ -81,9 +72,6 @@ class ResponseModeSource implements Component
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function prepend(ContainerBuilder $container, array $config): array
     {
         $updatedConfig = [];
@@ -97,9 +85,6 @@ class ResponseModeSource implements Component
         return $updatedConfig;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function build(ContainerBuilder $container)
     {
         foreach ($this->subComponents as $component) {

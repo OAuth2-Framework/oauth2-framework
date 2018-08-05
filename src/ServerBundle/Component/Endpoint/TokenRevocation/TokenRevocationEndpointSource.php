@@ -30,9 +30,6 @@ class TokenRevocationEndpointSource implements Component
         return 'token_revocation';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function load(array $configs, ContainerBuilder $container)
     {
         if (!\class_exists(TokenRevocationEndpoint::class)) {
@@ -52,9 +49,6 @@ class TokenRevocationEndpointSource implements Component
         $loader->load('revocation.php');
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
         if (!\class_exists(TokenRevocationEndpoint::class)) {
@@ -83,9 +77,6 @@ class TokenRevocationEndpointSource implements Component
             ->end();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function build(ContainerBuilder $container)
     {
         if (!\class_exists(TokenRevocationEndpoint::class)) {
@@ -95,9 +86,6 @@ class TokenRevocationEndpointSource implements Component
         $container->addCompilerPass(new TokenRevocationRouteCompilerPass());
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function prepend(ContainerBuilder $container, array $config): array
     {
         return [];

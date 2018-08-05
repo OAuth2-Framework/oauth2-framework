@@ -24,17 +24,11 @@ use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
 class ScopeSource implements Component
 {
-    /**
-     * {@inheritdoc}
-     */
     public function name(): string
     {
         return 'scope';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function load(array $configs, ContainerBuilder $container)
     {
         if (!\interface_exists(ScopeRepository::class) || !$configs['scope']['enabled']) {
@@ -63,9 +57,6 @@ class ScopeSource implements Component
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
         if (!\interface_exists(ScopeRepository::class)) {
@@ -106,18 +97,12 @@ class ScopeSource implements Component
             ->end();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function build(ContainerBuilder $container)
     {
         $container->addCompilerPass(new ScopePolicyCompilerPass());
         $container->addCompilerPass(new ScopeMetadataCompilerPass());
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function prepend(ContainerBuilder $container, array $config): array
     {
         //Nothing to do

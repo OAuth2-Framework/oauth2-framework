@@ -35,9 +35,6 @@ final class AccessTokenResolver implements ArgumentValueResolverInterface
         $this->tokenStorage = $tokenStorage;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function supports(Request $request, ArgumentMetadata $argument)
     {
         if (AccessToken::class !== $argument->getType()) {
@@ -47,9 +44,6 @@ final class AccessTokenResolver implements ArgumentValueResolverInterface
         return $this->tokenStorage->getToken() instanceof OAuth2Token;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function resolve(Request $request, ArgumentMetadata $argument)
     {
         $token = $this->tokenStorage->getToken();

@@ -35,9 +35,6 @@ final class ClientSecretBasic implements AuthenticationMethod
         $this->secretLifetime = $secretLifetime;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getSchemesParameters(): array
     {
         return [
@@ -45,9 +42,6 @@ final class ClientSecretBasic implements AuthenticationMethod
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function findClientIdAndCredentials(ServerRequestInterface $request, &$client_credentials = null): ?ClientId
     {
         $authorization_headers = $request->getHeader('Authorization');
@@ -77,9 +71,6 @@ final class ClientSecretBasic implements AuthenticationMethod
         return null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function checkClientConfiguration(DataBag $command_parameters, DataBag $validated_parameters): DataBag
     {
         $validated_parameters = $validated_parameters->with('client_secret', $this->createClientSecret());
@@ -88,17 +79,11 @@ final class ClientSecretBasic implements AuthenticationMethod
         return $validated_parameters;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function isClientAuthenticated(Client $client, $client_credentials, ServerRequestInterface $request): bool
     {
         return \hash_equals($client->get('client_secret'), $client_credentials);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getSupportedMethods(): array
     {
         return ['client_secret_basic'];

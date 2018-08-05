@@ -29,17 +29,11 @@ class InitialAccessTokenRepository implements \OAuth2Framework\Component\ClientR
         $this->createInitialAccessTokens();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function find(InitialAccessTokenId $initialAccessTokenId): ?InitialAccessToken
     {
         return \array_key_exists($initialAccessTokenId->getValue(), $this->initialAccessTokens) ? $this->initialAccessTokens[$initialAccessTokenId->getValue()] : null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function save(InitialAccessToken $initialAccessToken)
     {
         $this->initialAccessTokens[$initialAccessToken->getTokenId()->getValue()] = $initialAccessToken;
@@ -47,16 +41,14 @@ class InitialAccessTokenRepository implements \OAuth2Framework\Component\ClientR
 
     private function createInitialAccessTokens()
     {
-        $iat = InitialAccessToken::createEmpty();
-        $iat = $iat->create(
+        $iat = new InitialAccessToken(
             new InitialAccessTokenId('VALID_INITIAL_ACCESS_TOKEN_ID'),
             new UserAccountId('john.1'),
             new \DateTimeImmutable('now +1 day')
         );
         $this->save($iat);
 
-        $iat = InitialAccessToken::createEmpty();
-        $iat = $iat->create(
+        $iat = new InitialAccessToken(
             new InitialAccessTokenId('EXPIRED_INITIAL_ACCESS_TOKEN_ID'),
             new UserAccountId('john.1'),
             new \DateTimeImmutable('now -1 day')

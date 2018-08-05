@@ -19,9 +19,6 @@ use OAuth2Framework\Component\Core\Message\OAuth2Message;
 
 final class RedirectUriParameterChecker implements ParameterChecker
 {
-    /**
-     * {@inheritdoc}
-     */
     public function check(Authorization $authorization): Authorization
     {
         try {

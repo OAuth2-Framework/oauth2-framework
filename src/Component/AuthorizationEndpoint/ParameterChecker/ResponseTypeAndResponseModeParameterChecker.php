@@ -47,9 +47,6 @@ final class ResponseTypeAndResponseModeParameterChecker implements ParameterChec
         $this->responseModeParameterInAuthorizationRequestAllowed = $responseModeParameterInAuthorizationRequestAllowed;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function check(Authorization $authorization): Authorization
     {
         try {

@@ -15,15 +15,9 @@ namespace OAuth2Framework\Component\IssuerDiscoveryEndpoint;
 
 class ResourceId
 {
-    /**
-     * @var string
-     */
     private $value;
 
-    /**
-     * TokenId constructor.
-     */
-    protected function __construct(string $value)
+    public function __construct(string $value)
     {
         $this->value = $value;
     }
@@ -31,13 +25,5 @@ class ResourceId
     public function getValue(): string
     {
         return $this->value;
-    }
-
-    /**
-     * @return ResourceId
-     */
-    public static function create(string $value): self
-    {
-        return new self($value);
     }
 }

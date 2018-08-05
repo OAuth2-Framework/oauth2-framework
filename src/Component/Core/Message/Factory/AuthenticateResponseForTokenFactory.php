@@ -31,17 +31,11 @@ final class AuthenticateResponseForTokenFactory extends OAuth2ResponseFactory
         $this->tokenTypeManager = $tokenTypeManager;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getSupportedCode(): int
     {
         return 401;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function createResponse(array $data, ResponseInterface $response): ResponseInterface
     {
         $response = $response->withStatus(

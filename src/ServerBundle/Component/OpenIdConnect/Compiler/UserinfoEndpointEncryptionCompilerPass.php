@@ -21,9 +21,6 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class UserinfoEndpointEncryptionCompilerPass implements CompilerPassInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     public function process(ContainerBuilder $container)
     {
         if (!$container->hasDefinition(UserInfoEndpoint::class) || !$container->hasDefinition('jose.jwe_builder.oauth2_server.openid_connect.id_token_from_userinfo')) {

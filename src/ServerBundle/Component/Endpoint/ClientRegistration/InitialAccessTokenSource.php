@@ -28,9 +28,6 @@ class InitialAccessTokenSource implements Component
         return 'initial_access_token';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function load(array $configs, ContainerBuilder $container)
     {
         $config = $configs['endpoint']['client_registration']['initial_access_token'];
@@ -47,9 +44,6 @@ class InitialAccessTokenSource implements Component
         $loader->load('initial_access_token.php');
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
         $node->children()
@@ -94,17 +88,11 @@ class InitialAccessTokenSource implements Component
             ->end();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function build(ContainerBuilder $container)
     {
         $container->addCompilerPass(new InitialAccessTokenCompilerPass());
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function prepend(ContainerBuilder $container, array $config): array
     {
         return [];

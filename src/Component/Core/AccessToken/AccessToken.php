@@ -29,9 +29,6 @@ class AccessToken extends Token
         parent::__construct($accessTokenId, $clientId, $resourceOwnerId, $parameter, $metadata, $expiresAt, $resourceServerId);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public static function getSchema(): string
     {
         return 'https://oauth2-framework.spomky-labs.com/schemas/model/access-token/1.0/schema';
@@ -45,9 +42,6 @@ class AccessToken extends Token
         parent::setTokenId($tokenId);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function jsonSerialize()
     {
         $data = parent::jsonSerialize() + [

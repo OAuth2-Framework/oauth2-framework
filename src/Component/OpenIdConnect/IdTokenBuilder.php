@@ -33,117 +33,30 @@ use OAuth2Framework\Component\OpenIdConnect\UserInfo\UserInfo;
 
 class IdTokenBuilder
 {
-    /**
-     * @var string
-     */
     private $issuer;
-
-    /**
-     * @var Client
-     */
     private $client;
-
-    /**
-     * @var UserAccount
-     */
     private $userAccount;
-
-    /**
-     * @var string
-     */
     private $redirectUri;
-
-    /**
-     * @var UserInfo
-     */
     private $userinfo;
-
-    /**
-     * @var JWKSet
-     */
     private $signatureKeys;
-
-    /**
-     * @var int
-     */
     private $lifetime;
-
-    /**
-     * @var string|null
-     */
     private $scope = null;
-
-    /**
-     * @var array
-     */
     private $requestedClaims = [];
-
-    /**
-     * @var string|null
-     */
     private $claimsLocales = null;
-
-    /**
-     * @var TokenId|null
-     */
     private $accessTokenId = null;
-
-    /**
-     * @var TokenId|null
-     */
     private $authorizationCodeId = null;
-
-    /**
-     * @var string|null
-     */
     private $nonce = null;
-
-    /**
-     * @var bool
-     */
     private $withAuthenticationTime = false;
-
-    /**
-     * @var JWSBuilder|null
-     */
     private $jwsBuilder = null;
-
-    /**
-     * @var string|null
-     */
     private $signatureAlgorithm = null;
-
-    /**
-     * @var JWEBuilder|null
-     */
     private $jweBuilder;
-
-    /**
-     * @var string|null
-     */
     private $keyEncryptionAlgorithm = null;
-
-    /**
-     * @var string|null
-     */
     private $contentEncryptionAlgorithm = null;
-
-    /**
-     * @var \DateTimeImmutable|null
-     */
     private $expiresAt = null;
-
-    /**
-     * @var null|JKUFactory
-     */
     private $jkuFactory = null;
-
-    /**
-     * @var null|AuthorizationCodeRepository
-     */
     private $authorizationCodeRepository = null;
 
-    private function __construct(string $issuer, UserInfo $userinfo, int $lifetime, Client $client, UserAccount $userAccount, string $redirectUri, ?JKUFactory $jkuFactory, ?AuthorizationCodeRepository $authorizationCodeRepository)
+    public function __construct(string $issuer, UserInfo $userinfo, int $lifetime, Client $client, UserAccount $userAccount, string $redirectUri, ?JKUFactory $jkuFactory, ?AuthorizationCodeRepository $authorizationCodeRepository)
     {
         $this->issuer = $issuer;
         $this->userinfo = $userinfo;
@@ -155,15 +68,7 @@ class IdTokenBuilder
         $this->authorizationCodeRepository = $authorizationCodeRepository;
     }
 
-    public static function create(string $issuer, UserInfo $userinfo, int $lifetime, Client $client, UserAccount $userAccount, string $redirectUri, ?JKUFactory $jkuFactory, ?AuthorizationCodeRepository $authorizationCodeRepository): self
-    {
-        return new self($issuer, $userinfo, $lifetime, $client, $userAccount, $redirectUri, $jkuFactory, $authorizationCodeRepository);
-    }
-
-    /**
-     * @return IdTokenBuilder
-     */
-    public function withAccessToken(AccessToken $accessToken): self
+    public function setAccessToken(AccessToken $accessToken): void
     {
         $this->accessTokenId = $accessToken->getTokenId();
         $this->expiresAt = $accessToken->getExpiresAt();
@@ -173,7 +78,7 @@ class IdTokenBuilder
             $authorizationCodeId = new AuthorizationCodeId($accessToken->getMetadata()->get('authorization_code_id'));
             $authorizationCode = $this->authorizationCodeRepository->find($authorizationCodeId);
             if (null === $authorizationCode) {
-                return $this;
+                return;
             }
             $this->authorizationCodeId = $authorizationCodeId;
             $queryParams = $authorizationCode->getQueryParams();
@@ -184,104 +89,54 @@ class IdTokenBuilder
             }
             $this->withAuthenticationTime = \array_key_exists('max_age', $authorizationCode->getQueryParams());
         }
-
-        return $this;
     }
 
-    /**
-     * @return IdTokenBuilder
-     */
-    public function withAccessTokenId(AccessTokenId $accessTokenId): self
+    public function withAccessTokenId(AccessTokenId $accessTokenId): void
     {
         $this->accessTokenId = $accessTokenId;
-
-        return $this;
     }
 
-    /**
-     * @return IdTokenBuilder
-     */
-    public function withAuthorizationCodeId(AuthorizationCodeId $authorizationCodeId): self
+    public function withAuthorizationCodeId(AuthorizationCodeId $authorizationCodeId): void
     {
         $this->authorizationCodeId = $authorizationCodeId;
-
-        return $this;
     }
 
-    /**
-     * @return IdTokenBuilder
-     */
-    public function withClaimsLocales(string $claimsLocales): self
+    public function withClaimsLocales(string $claimsLocales): void
     {
         $this->claimsLocales = $claimsLocales;
-
-        return $this;
     }
 
-    /**
-     * @return IdTokenBuilder
-     */
-    public function withAuthenticationTime(): self
+    public function withAuthenticationTime(): void
     {
         $this->withAuthenticationTime = true;
-
-        return $this;
     }
 
-    /**
-     * @return IdTokenBuilder
-     */
-    public function withScope(string $scope): self
+    public function withScope(string $scope): void
     {
         $this->scope = $scope;
-
-        return $this;
     }
 
-    /**
-     * @return IdTokenBuilder
-     */
-    public function withRequestedClaims(array $requestedClaims): self
+    public function withRequestedClaims(array $requestedClaims): void
     {
         $this->requestedClaims = $requestedClaims;
-
-        return $this;
     }
 
-    /**
-     * @return IdTokenBuilder
-     */
-    public function withNonce(string $nonce): self
+    public function withNonce(string $nonce): void
     {
         $this->nonce = $nonce;
-
-        return $this;
     }
 
-    /**
-     * @return IdTokenBuilder
-     */
-    public function withExpirationAt(\DateTimeImmutable $expiresAt): self
+    public function withExpirationAt(\DateTimeImmutable $expiresAt): void
     {
         $this->expiresAt = $expiresAt;
-
-        return $this;
     }
 
-    /**
-     * @return IdTokenBuilder
-     */
-    public function withoutAuthenticationTime(): self
+    public function withoutAuthenticationTime(): void
     {
         $this->withAuthenticationTime = false;
-
-        return $this;
     }
 
-    /**
-     * @return IdTokenBuilder
-     */
-    public function withSignature(JWSBuilder $jwsBuilder, JWKSet $signatureKeys, string $signatureAlgorithm): self
+    public function withSignature(JWSBuilder $jwsBuilder, JWKSet $signatureKeys, string $signatureAlgorithm): void
     {
         if (!\in_array($signatureAlgorithm, $jwsBuilder->getSignatureAlgorithmManager()->list(), true)) {
             throw new \InvalidArgumentException(\sprintf('Unsupported signature algorithm "%s". Please use one of the following one: %s', $signatureAlgorithm, \implode(', ', $jwsBuilder->getSignatureAlgorithmManager()->list())));
@@ -292,14 +147,9 @@ class IdTokenBuilder
         $this->jwsBuilder = $jwsBuilder;
         $this->signatureKeys = $signatureKeys;
         $this->signatureAlgorithm = $signatureAlgorithm;
-
-        return $this;
     }
 
-    /**
-     * @return IdTokenBuilder
-     */
-    public function withEncryption(JWEBuilder $jweBuilder, string $keyEncryptionAlgorithm, string $contentEncryptionAlgorithm): self
+    public function withEncryption(JWEBuilder $jweBuilder, string $keyEncryptionAlgorithm, string $contentEncryptionAlgorithm): void
     {
         if (!\in_array($keyEncryptionAlgorithm, $jweBuilder->getKeyEncryptionAlgorithmManager()->list(), true)) {
             throw new \InvalidArgumentException(\sprintf('Unsupported key encryption algorithm "%s". Please use one of the following one: %s', $keyEncryptionAlgorithm, \implode(', ', $jweBuilder->getKeyEncryptionAlgorithmManager()->list())));
@@ -310,8 +160,6 @@ class IdTokenBuilder
         $this->jweBuilder = $jweBuilder;
         $this->keyEncryptionAlgorithm = $keyEncryptionAlgorithm;
         $this->contentEncryptionAlgorithm = $contentEncryptionAlgorithm;
-
-        return $this;
     }
 
     public function build(): string

@@ -108,9 +108,6 @@ class JwtBearerGrantType implements GrantType
         $this->userAccountRepository = $userAccountRepository;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function associatedResponseTypes(): array
     {
         return [];
@@ -133,17 +130,11 @@ class JwtBearerGrantType implements GrantType
         $this->jkuFactory = $jkuFactory;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function name(): string
     {
         return 'urn:ietf:params:oauth:grant-type:jwt-bearer';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function checkRequest(ServerRequestInterface $request)
     {
         $parameters = RequestBodyParser::parseFormUrlEncoded($request);
@@ -155,9 +146,6 @@ class JwtBearerGrantType implements GrantType
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function prepareResponse(ServerRequestInterface $request, GrantTypeData $grantTypeData): GrantTypeData
     {
         $parameters = RequestBodyParser::parseFormUrlEncoded($request);
@@ -215,9 +203,6 @@ class JwtBearerGrantType implements GrantType
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function grant(ServerRequestInterface $request, GrantTypeData $grantTypeData): GrantTypeData
     {
         //Nothing to do

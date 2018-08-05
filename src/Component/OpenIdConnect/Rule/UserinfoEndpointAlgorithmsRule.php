@@ -40,9 +40,6 @@ final class UserinfoEndpointAlgorithmsRule implements Rule
         $this->jweBuilder = $jweBuilder;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function handle(ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters, callable $next): DataBag
     {
         if ($commandParameters->has('userinfo_signed_response_alg') && null !== $this->jwsBuilder) {

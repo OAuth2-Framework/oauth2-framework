@@ -46,9 +46,6 @@ class AuthorizationCodeCreatedEvent extends Event
         $this->resourceServerId = $resourceServerId;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public static function getSchema(): string
     {
         return 'https://oauth2-framework.spomky-labs.com/schemas/events/authorization-code/created/1.0/schema';
@@ -99,20 +96,14 @@ class AuthorizationCodeCreatedEvent extends Event
         return $this->resourceServerId;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getDomainId(): Id
     {
         return $this->getAuthorizationCodeId();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getPayload()
     {
-        return (object) [
+        return [
             'user_account_id' => $this->userAccountId->getValue(),
             'client_id' => $this->clientId->getValue(),
             'expires_at' => $this->expiresAt->getTimestamp(),

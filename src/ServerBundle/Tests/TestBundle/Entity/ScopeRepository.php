@@ -32,17 +32,11 @@ class ScopeRepository implements ScopeRepositoryInterface
         $this->scopes['scope1'] = new Scope('scope1');
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function has(string $scope): bool
     {
         return \array_key_exists($scope, $this->scopes);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function get(string $scope): ScopeInterface
     {
         if (!$this->has($scope)) {
@@ -52,9 +46,6 @@ class ScopeRepository implements ScopeRepositoryInterface
         return $this->scopes[$scope];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function all(): array
     {
         return \array_values($this->scopes);

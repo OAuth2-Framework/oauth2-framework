@@ -41,9 +41,6 @@ final class SectorIdentifierUriRule implements Rule
         $this->client = $client;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function handle(ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters, callable $next): DataBag
     {
         $validatedParameters = $next($clientId, $commandParameters, $validatedParameters);
@@ -57,7 +54,7 @@ final class SectorIdentifierUriRule implements Rule
         return $validatedParameters;
     }
 
-    private function checkSectorIdentifierUri(string $url, array $redirectUris)
+    private function checkSectorIdentifierUri(string $url, array $redirectUris): void
     {
         $data = parse($url);
 

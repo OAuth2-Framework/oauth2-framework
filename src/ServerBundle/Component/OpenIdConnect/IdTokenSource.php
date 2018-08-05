@@ -24,17 +24,11 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class IdTokenSource implements Component
 {
-    /**
-     * {@inheritdoc}
-     */
     public function name(): string
     {
         return 'id_token';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function load(array $configs, ContainerBuilder $container)
     {
         $config = $configs['openid_connect'][$this->name()];
@@ -51,9 +45,6 @@ class IdTokenSource implements Component
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
         $node->children()
@@ -132,9 +123,6 @@ class IdTokenSource implements Component
             ->end();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function build(ContainerBuilder $container)
     {
         $container->addCompilerPass(new ClaimCompilerPass());
@@ -143,9 +131,6 @@ class IdTokenSource implements Component
         $container->addCompilerPass(new ClaimsSupportedMetadataCompilerPass());
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function prepend(ContainerBuilder $container, array $config): array
     {
         $sourceConfig = $config['openid_connect'][$this->name()];

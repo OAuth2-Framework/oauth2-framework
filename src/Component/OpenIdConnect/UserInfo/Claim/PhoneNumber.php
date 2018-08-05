@@ -19,17 +19,11 @@ final class PhoneNumber implements Claim
 {
     private const CLAIM_NAME = 'phone_number';
 
-    /**
-     * {@inheritdoc}
-     */
     public function name(): string
     {
         return self::CLAIM_NAME;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function isAvailableForUserAccount(UserAccount $userAccount, ?string $claimLocale): bool
     {
         return $userAccount->has(
@@ -37,9 +31,6 @@ final class PhoneNumber implements Claim
         );
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getForUserAccount(UserAccount $userAccount, ?string $claimLocale)
     {
         return $userAccount->get(

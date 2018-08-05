@@ -40,9 +40,6 @@ final class IdTokenAlgorithmsRule implements Rule
         $this->jweBuilder = $jweBuilder;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function handle(ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters, callable $next): DataBag
     {
         if ($commandParameters->has('id_token_signed_response_alg')) {

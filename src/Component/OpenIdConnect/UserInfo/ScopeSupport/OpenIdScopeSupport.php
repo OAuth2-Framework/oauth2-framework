@@ -15,41 +15,26 @@ namespace OAuth2Framework\Component\OpenIdConnect\UserInfo\ScopeSupport;
 
 class OpenIdScopeSupport implements UserInfoScopeSupport
 {
-    /**
-     * {@inheritdoc}
-     */
     public function name(): string
     {
         return 'openid';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function parent(): ?string
     {
         return null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function isParentMandatory(): bool
     {
         return false;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function __toString(): string
     {
         return $this->name();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getAssociatedClaims(): array
     {
         return [
@@ -57,9 +42,6 @@ class OpenIdScopeSupport implements UserInfoScopeSupport
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function jsonSerialize()
     {
         return $this->name();

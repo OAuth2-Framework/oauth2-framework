@@ -24,17 +24,11 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 final class OAuth2FrameworkSecurityBundle extends Bundle
 {
-    /**
-     * {@inheritdoc}
-     */
     public function getContainerExtension()
     {
         return new OAuth2FrameworkSecurityExtension('oauth2_security');
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function build(ContainerBuilder $container)
     {
         if (!$container->hasExtension('security')) {

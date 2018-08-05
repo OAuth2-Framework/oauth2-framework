@@ -29,9 +29,6 @@ class ResourceRepository implements ResourceRepositoryInterface
         $this->resources['john'] = new ResourceObject('https://server.example.com');
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function find(ResourceId $resourceId): ?ResourceObjectInterface
     {
         return \array_key_exists($resourceId->getValue(), $this->resources) ? $this->resources[$resourceId->getValue()] : null;

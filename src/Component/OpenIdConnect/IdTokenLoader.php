@@ -64,7 +64,7 @@ class IdTokenLoader
             if (!\is_array($claims)) {
                 throw new \InvalidArgumentException('Invalid ID Token.');
             }
-            $idToken = IdToken::create($idTokenId, $claims);
+            $idToken = new IdToken($idTokenId, $claims);
 
             return $idToken;
         } catch (\Exception $e) {

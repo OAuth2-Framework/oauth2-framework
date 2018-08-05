@@ -44,9 +44,6 @@ class MetadataController implements MiddlewareInterface
         $this->metadataEndpoint->enableSignature($jwsBuilder, $signatureAlgorithm, $signatureKey);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         return $this->metadataEndpoint->process($request, $handler);

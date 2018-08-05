@@ -37,17 +37,11 @@ class AccessTokenIdGenerator implements AccessTokenIdGeneratorInterface
         $this->repository = $repository;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function createAccessTokenId(ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, ?ResourceServerId $resourceServerId): AccessTokenId
     {
         return new AccessTokenId(Base64Url::encode(\random_bytes(32)));
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function save(AccessToken $accessToken): void
     {
         // TODO: Implement save() method.

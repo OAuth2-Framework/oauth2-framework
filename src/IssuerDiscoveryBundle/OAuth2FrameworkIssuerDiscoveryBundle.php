@@ -21,9 +21,6 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class OAuth2FrameworkIssuerDiscoveryBundle extends Bundle
 {
-    /**
-     * {@inheritdoc}
-     */
     public function getContainerExtension()
     {
         return new OAuth2FrameworkIssuerDiscoveryExtension('issuer_discovery');

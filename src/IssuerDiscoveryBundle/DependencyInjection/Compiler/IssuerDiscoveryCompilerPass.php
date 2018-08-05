@@ -24,9 +24,6 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class IssuerDiscoveryCompilerPass implements CompilerPassInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     public function process(ContainerBuilder $container)
     {
         if (!$container->hasDefinition(IssuerDiscoveryFactory::class)) {

@@ -121,17 +121,11 @@ class ClientAssertionJwt implements AuthenticationMethod
         return null === $this->jweLoader ? [] : $this->jweLoader->getJweDecrypter()->getKeyEncryptionAlgorithmManager()->list();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getSchemesParameters(): array
     {
         return [];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function findClientIdAndCredentials(ServerRequestInterface $request, &$clientCredentials = null): ?ClientId
     {
         $parameters = RequestBodyParser::parseFormUrlEncoded($request);
@@ -197,9 +191,6 @@ class ClientAssertionJwt implements AuthenticationMethod
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function isClientAuthenticated(Client $client, $clientCredentials, ServerRequestInterface $request): bool
     {
         try {
@@ -216,17 +207,11 @@ class ClientAssertionJwt implements AuthenticationMethod
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getSupportedMethods(): array
     {
         return ['client_secret_jwt', 'private_key_jwt'];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function checkClientConfiguration(DataBag $commandParameters, DataBag $validatedParameters): DataBag
     {
         switch ($commandParameters->get('token_endpoint_auth_method')) {

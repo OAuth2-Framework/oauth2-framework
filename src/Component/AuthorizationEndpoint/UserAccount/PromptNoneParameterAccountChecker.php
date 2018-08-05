@@ -20,9 +20,6 @@ use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 
 final class PromptNoneParameterAccountChecker implements UserAccountChecker
 {
-    /**
-     * {@inheritdoc}
-     */
     public function check(Authorization $authorization, ?UserAccount $userAccount, bool $isFullyAuthenticated): void
     {
         if (null === $userAccount && $authorization->hasPrompt('none')) {

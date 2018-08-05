@@ -18,9 +18,6 @@ use Http\Message\ResponseFactory as Base;
 
 class ResponseFactory implements Base
 {
-    /**
-     * {@inheritdoc}
-     */
     public function createResponse($statusCode = 200, $reasonPhrase = null, array $header = [], $body = null, $protocolVersion = '1.1')
     {
         return new Response($statusCode, $header, $body, $protocolVersion, $reasonPhrase);

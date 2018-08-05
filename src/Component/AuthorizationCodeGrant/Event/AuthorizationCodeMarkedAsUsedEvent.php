@@ -26,9 +26,6 @@ class AuthorizationCodeMarkedAsUsedEvent extends Event
         $this->authorizationCodeId = $authorizationCodeId;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public static function getSchema(): string
     {
         return 'https://oauth2-framework.spomky-labs.com/schemas/events/authorization-code/marked-as-used/1.0/schema';
@@ -39,17 +36,11 @@ class AuthorizationCodeMarkedAsUsedEvent extends Event
         return $this->authorizationCodeId;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getDomainId(): Id
     {
         return $this->getAuthorizationCodeId();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getPayload()
     {
     }

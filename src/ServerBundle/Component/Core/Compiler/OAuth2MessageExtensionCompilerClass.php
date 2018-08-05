@@ -20,9 +20,6 @@ use Symfony\Component\DependencyInjection\Reference;
 
 final class OAuth2MessageExtensionCompilerClass implements CompilerPassInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     public function process(ContainerBuilder $container)
     {
         if (!$container->hasDefinition(OAuth2MessageFactoryManager::class)) {

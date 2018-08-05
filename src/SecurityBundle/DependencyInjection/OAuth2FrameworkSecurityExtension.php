@@ -38,17 +38,11 @@ final class OAuth2FrameworkSecurityExtension extends Extension
         $this->alias = $alias;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getAlias()
     {
         return $this->alias;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function load(array $configs, ContainerBuilder $container)
     {
         $processor = new Processor();
@@ -78,9 +72,6 @@ final class OAuth2FrameworkSecurityExtension extends Extension
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getConfiguration(array $configs, ContainerBuilder $container): Configuration
     {
         return new Configuration($this->getAlias());

@@ -17,9 +17,6 @@ use Psr\Http\Message\ResponseInterface;
 
 abstract class OAuth2ResponseFactory implements ResponseFactory
 {
-    /**
-     * {@inheritdoc}
-     */
     public function createResponse(array $data, ResponseInterface $response): ResponseInterface
     {
         $response = $response->withStatus(
@@ -40,9 +37,6 @@ abstract class OAuth2ResponseFactory implements ResponseFactory
         ));
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function updateHeaders(array $headers, ResponseInterface $response): ResponseInterface
     {
         foreach ($headers as $header => $value) {

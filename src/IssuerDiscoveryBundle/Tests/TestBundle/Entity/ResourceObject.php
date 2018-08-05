@@ -30,9 +30,6 @@ class ResourceObject implements ResourceObjectInterface
         $this->issuer = $issuer;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getIssuer(): string
     {
         return $this->issuer;

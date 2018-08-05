@@ -54,9 +54,6 @@ class OAuth2Token extends AbstractToken
         return $this->accessToken->getResourceOwnerId()->getValue();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getCredentials()
     {
         return $this->getToken();

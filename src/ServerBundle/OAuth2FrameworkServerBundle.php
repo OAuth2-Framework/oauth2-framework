@@ -34,17 +34,11 @@ class OAuth2FrameworkServerBundle extends Bundle
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getContainerExtension()
     {
         return new OAuth2FrameworkExtension('oauth2_server', $this->components);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function build(ContainerBuilder $container)
     {
         parent::build($container);

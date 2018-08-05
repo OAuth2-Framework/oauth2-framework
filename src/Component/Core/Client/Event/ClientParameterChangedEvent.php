@@ -29,9 +29,6 @@ class ClientParameterChangedEvent extends Event
         $this->parameter = $parameter;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public static function getSchema(): string
     {
         return 'https://oauth2-framework.spomky-labs.com/schemas/events/client/parameter-changed/1.0/schema';
@@ -47,17 +44,11 @@ class ClientParameterChangedEvent extends Event
         return $this->parameter;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getDomainId(): Id
     {
         return $this->getClientId();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getPayload()
     {
         return [

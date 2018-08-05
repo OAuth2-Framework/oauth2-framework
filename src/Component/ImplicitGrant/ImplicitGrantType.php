@@ -20,41 +20,26 @@ use Psr\Http\Message\ServerRequestInterface;
 
 final class ImplicitGrantType implements GrantType
 {
-    /**
-     * {@inheritdoc}
-     */
     public function associatedResponseTypes(): array
     {
         return ['token'];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function name(): string
     {
         return 'implicit';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function checkRequest(ServerRequestInterface $request)
     {
         throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_GRANT, 'The implicit grant type cannot be called from the token endpoint.');
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function prepareResponse(ServerRequestInterface $request, GrantTypeData $grantTypeData): GrantTypeData
     {
         throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_GRANT, 'The implicit grant type cannot be called from the token endpoint.');
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function grant(ServerRequestInterface $request, GrantTypeData $grantTypeData): GrantTypeData
     {
         throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_GRANT, 'The implicit grant type cannot be called from the token endpoint.');

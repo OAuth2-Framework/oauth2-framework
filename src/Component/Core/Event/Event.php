@@ -27,9 +27,6 @@ abstract class Event implements DomainEvent
         return \get_class($this);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function jsonSerialize()
     {
         $data = [

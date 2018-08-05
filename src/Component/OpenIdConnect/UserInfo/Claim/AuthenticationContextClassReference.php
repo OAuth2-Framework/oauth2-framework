@@ -31,17 +31,11 @@ final class AuthenticationContextClassReference implements Claim
         $this->userAccountManager = $userAccountManager;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function name(): string
     {
         return self::CLAIM_NAME;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function isAvailableForUserAccount(UserAccount $userAccount, ?string $claimLocale): bool
     {
         if (null === $this->userAccountManager || !$this->userAccountManager instanceof AuthenticationContextClassReferenceSupport) {
@@ -51,9 +45,6 @@ final class AuthenticationContextClassReference implements Claim
         return null !== $this->userAccountManager->getAuthenticationContextClassReferenceFor($userAccount);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getForUserAccount(UserAccount $userAccount, ?string $claimLocale)
     {
         return $this->userAccountManager->getAuthenticationContextClassReferenceFor($userAccount);

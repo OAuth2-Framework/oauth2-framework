@@ -20,9 +20,6 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class InitialAccessTokenCompilerPass implements CompilerPassInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     public function process(ContainerBuilder $container)
     {
         if (!$container->hasDefinition(InitialAccessTokenMiddleware::class) || !$container->hasDefinition('client_registration_endpoint_pipe')) {

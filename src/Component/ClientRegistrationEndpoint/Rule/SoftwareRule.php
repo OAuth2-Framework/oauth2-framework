@@ -54,9 +54,6 @@ final class SoftwareRule implements Rule
         return $this->isSoftwareStatementRequired;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function handle(ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters, callable $next): DataBag
     {
         if ($this->isSoftwareStatementRequired() && !$commandParameters->has('software_statement')) {

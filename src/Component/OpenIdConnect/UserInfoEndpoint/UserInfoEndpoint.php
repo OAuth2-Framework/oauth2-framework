@@ -89,9 +89,6 @@ class UserInfoEndpoint implements MiddlewareInterface
         $this->jweBuilder = $jweBuilder;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         /**
@@ -137,7 +134,7 @@ class UserInfoEndpoint implements MiddlewareInterface
             $contentEncryptionAlgorithm = $client->get('userinfo_encrypted_response_enc');
             $idTokenBuilder = $idTokenBuilder->withEncryption($this->jweBuilder, $keyEncryptionAlgorithm, $contentEncryptionAlgorithm);
         }
-        $idTokenBuilder = $idTokenBuilder->withAccessToken($accessToken);
+        $idTokenBuilder = $idTokenBuilder->setAccessToken($accessToken);
         $idTokenBuilder = $idTokenBuilder->withRequestedClaims($requestedClaims);
         if ($client->has('require_auth_time') || $client->has('default_max_age')) {
             $idTokenBuilder->withAuthenticationTime();

@@ -20,17 +20,11 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class TrustedIssuerSource implements Component
 {
-    /**
-     * {@inheritdoc}
-     */
     public function name(): string
     {
         return 'trusted_issuer';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function load(array $configs, ContainerBuilder $container)
     {
         if (!\interface_exists(TrustedIssuerRepository::class)) {
@@ -42,9 +36,6 @@ class TrustedIssuerSource implements Component
         $container->setAlias(TrustedIssuerRepository::class, $configs['trusted_issuer']['repository']);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
         if (!\interface_exists(TrustedIssuerRepository::class)) {
@@ -63,16 +54,10 @@ class TrustedIssuerSource implements Component
             ->end();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function build(ContainerBuilder $container)
     {
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function prepend(ContainerBuilder $container, array $config): array
     {
         return [];

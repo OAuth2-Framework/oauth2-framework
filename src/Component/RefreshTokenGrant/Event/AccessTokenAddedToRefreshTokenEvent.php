@@ -51,7 +51,7 @@ class AccessTokenAddedToRefreshTokenEvent extends Event
 
     public function getPayload()
     {
-        return (object) [
+        return [
             'access_token_id' => $this->accessTokenId->getValue(),
         ];
     }

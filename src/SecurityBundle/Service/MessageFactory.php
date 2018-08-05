@@ -21,9 +21,6 @@ use Zend\Diactoros\Response;
  */
 final class MessageFactory implements ResponseFactory
 {
-    /**
-     * {@inheritdoc}
-     */
     public function createResponse($statusCode = 200, $reasonPhrase = null, array $header = [], $body = null, $protocolVersion = '1.1')
     {
         $body = null === $body ? 'php://memory' : $body;

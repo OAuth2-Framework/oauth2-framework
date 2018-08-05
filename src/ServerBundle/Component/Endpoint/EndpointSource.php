@@ -56,9 +56,6 @@ class EndpointSource implements Component
         return 'endpoint';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function load(array $configs, ContainerBuilder $container)
     {
         foreach ($this->subComponents as $subComponent) {
@@ -66,9 +63,6 @@ class EndpointSource implements Component
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
         $childNode = $node->children()
@@ -80,9 +74,6 @@ class EndpointSource implements Component
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function prepend(ContainerBuilder $container, array $config): array
     {
         $updatedConfig = [];
@@ -96,9 +87,6 @@ class EndpointSource implements Component
         return $updatedConfig;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function build(ContainerBuilder $container)
     {
         foreach ($this->subComponents as $component) {

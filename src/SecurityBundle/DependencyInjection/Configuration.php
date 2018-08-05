@@ -33,9 +33,6 @@ final class Configuration implements ConfigurationInterface
         $this->alias = $alias;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();

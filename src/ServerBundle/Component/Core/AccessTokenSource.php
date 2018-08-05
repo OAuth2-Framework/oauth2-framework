@@ -24,17 +24,11 @@ use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
 class AccessTokenSource implements Component
 {
-    /**
-     * {@inheritdoc}
-     */
     public function name(): string
     {
         return 'access_token';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function load(array $configs, ContainerBuilder $container)
     {
         $container->setAlias(AccessTokenRepository::class, $configs['access_token']['repository']);
@@ -45,9 +39,6 @@ class AccessTokenSource implements Component
         $loader->load('access_token.php');
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
         $node->children()
@@ -71,16 +62,10 @@ class AccessTokenSource implements Component
             ->end();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function build(ContainerBuilder $container)
     {
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function prepend(ContainerBuilder $container, array $config): array
     {
         return [];

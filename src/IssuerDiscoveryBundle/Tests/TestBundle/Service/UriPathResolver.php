@@ -30,9 +30,6 @@ class UriPathResolver implements IdentifierResolver
             ;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function resolve(string $resource_name): Identifier
     {
         $uri = parse($resource_name);

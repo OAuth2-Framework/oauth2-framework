@@ -32,17 +32,11 @@ class AuthorizationCodeIdGenerator implements AuthorizationCodeManagerInterface
         $this->repository = $repository;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function createAuthorizationCodeId(): AuthorizationCodeId
     {
         return new AuthorizationCodeId(\bin2hex(\random_bytes(32)));
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function save(AuthorizationCode $authCode): void
     {
         $this->repository->save($authCode);

@@ -42,41 +42,26 @@ class Scope implements ScopeInterface
         $this->isParentMandatory = $isParentMandatory;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function parent(): ?string
     {
         return $this->parent;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function isParentMandatory(): bool
     {
         return $this->isParentMandatory;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function name(): string
     {
         return $this->name;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function __toString(): string
     {
         return $this->name();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function jsonSerialize()
     {
         return $this->name();

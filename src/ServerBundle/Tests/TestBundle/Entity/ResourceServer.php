@@ -25,9 +25,6 @@ class ResourceServer implements ResourceServerInterface
         $this->resourceServerId = $resourceServerId;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getResourceServerId(): ResourceServerId
     {
         return $this->resourceServerId;

@@ -17,72 +17,29 @@ use OAuth2Framework\Component\ClientRegistrationEndpoint\Event as InitialAccessT
 use OAuth2Framework\Component\Core\Domain\DomainObject;
 use OAuth2Framework\Component\Core\Event\Event;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
-use SimpleBus\Message\Recorder\ContainsRecordedMessages;
-use SimpleBus\Message\Recorder\PrivateMessageRecorderCapabilities;
 
-class InitialAccessToken implements ContainsRecordedMessages, DomainObject
+class InitialAccessToken implements DomainObject
 {
-    use PrivateMessageRecorderCapabilities;
+    private $revoked;
+    private $initialAccessTokenId;
+    private $expiresAt;
+    private $userAccountId;
 
-    /**
-     * @var bool
-     */
-    private $revoked = false;
-
-    /**
-     * @var InitialAccessTokenId|null
-     */
-    private $initialAccessTokenId = null;
-
-    /**
-     * @var \DateTimeImmutable|null
-     */
-    private $expiresAt = null;
-
-    /**
-     * @var UserAccountId|null
-     */
-    private $userAccountId = null;
-
-    /**
-     * @return InitialAccessToken
-     */
-    public static function createEmpty(): self
+    public function __construct(InitialAccessTokenId $initialAccessTokenId, UserAccountId $userAccountId, ?\DateTimeImmutable $expiresAt)
     {
-        return new self();
-    }
-
-    /**
-     * @return InitialAccessToken
-     */
-    public function create(InitialAccessTokenId $initialAccessTokenId, UserAccountId $userAccountId, ?\DateTimeImmutable $expiresAt): self
-    {
-        $clone = clone $this;
-        $clone->initialAccessTokenId = $initialAccessTokenId;
-        $clone->expiresAt = $expiresAt;
-        $clone->userAccountId = $userAccountId;
-
-        $event = InitialAccessTokenEvent\InitialAccessTokenCreatedEvent::create($initialAccessTokenId, $userAccountId, $expiresAt);
-        $clone->record($event);
-
-        return $clone;
+        $this->initialAccessTokenId = $initialAccessTokenId;
+        $this->expiresAt = $expiresAt;
+        $this->userAccountId = $userAccountId;
+        $this->revoked = false;
     }
 
     public function getTokenId(): InitialAccessTokenId
     {
-        if (null === $this->initialAccessTokenId) {
-            throw new \LogicException('Initial Access Token not initialized.');
-        }
-
         return $this->initialAccessTokenId;
     }
 
     public function getUserAccountId(): UserAccountId
     {
-        if (null === $this->userAccountId) {
-            throw new \LogicException('Initial Access Token not initialized.');
-        }
-
         return $this->userAccountId;
     }
 
@@ -101,49 +58,16 @@ class InitialAccessToken implements ContainsRecordedMessages, DomainObject
         return $this->revoked;
     }
 
-    /**
-     * @return InitialAccessToken
-     */
-    public function markAsRevoked(): self
+    public function markAsRevoked(): void
     {
-        $clone = clone $this;
-        $clone->revoked = true;
-        $event = InitialAccessTokenEvent\InitialAccessTokenRevokedEvent::create($clone->getTokenId());
-        $clone->record($event);
-
-        return $clone;
+        $this->revoked = true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public static function getSchema(): string
     {
         return 'https://oauth2-framework.spomky-labs.com/schemas/model/initial-access-token/1.0/schema';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public static function createFromJson(\stdClass $json): DomainObject
-    {
-        $initialAccessTokenId = new InitialAccessTokenId($json->initial_access_token_id);
-        $expiresAt = $json->expires_at ? \DateTimeImmutable::createFromFormat('U', (string) $json->expires_at) : null;
-        $userAccountId = $json->user_account_id ? new UserAccountId($json->user_account_id) : null;
-        $revoked = $json->is_revoked;
-
-        $initialAccessToken = new self();
-        $initialAccessToken->initialAccessTokenId = $initialAccessTokenId;
-        $initialAccessToken->userAccountId = $userAccountId;
-        $initialAccessToken->expiresAt = $expiresAt;
-        $initialAccessToken->revoked = $revoked;
-
-        return $initialAccessToken;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function jsonSerialize()
     {
         $data = [
@@ -158,21 +82,17 @@ class InitialAccessToken implements ContainsRecordedMessages, DomainObject
         return $data;
     }
 
-    /**
-     * @return InitialAccessToken
-     */
-    public function apply(Event $event): self
+    public function apply(Event $event): void
     {
         $map = $this->getEventMap();
         if (!\array_key_exists($event->getType(), $map)) {
             throw new \InvalidArgumentException('Unsupported event.');
         }
-        if (null !== $this->initialAccessTokenId && $this->initialAccessTokenId->getValue() !== $event->getDomainId()->getValue()) {
+        if ($this->initialAccessTokenId->getValue() !== $event->getDomainId()->getValue()) {
             throw new \InvalidArgumentException('Event not applicable for this initial access token.');
         }
         $method = $map[$event->getType()];
-
-        return $this->$method($event);
+        $this->$method($event);
     }
 
     private function getEventMap(): array
@@ -183,27 +103,15 @@ class InitialAccessToken implements ContainsRecordedMessages, DomainObject
         ];
     }
 
-    /**
-     * @return InitialAccessToken
-     */
-    protected function applyInitialAccessTokenCreatedEvent(InitialAccessTokenEvent\InitialAccessTokenCreatedEvent $event): self
+    protected function applyInitialAccessTokenCreatedEvent(InitialAccessTokenEvent\InitialAccessTokenCreatedEvent $event): void
     {
-        $clone = clone $this;
-        $clone->initialAccessTokenId = $event->getInitialAccessTokenId();
-        $clone->expiresAt = $event->getExpiresAt();
-        $clone->userAccountId = $event->getUserAccountId();
-
-        return $clone;
+        $this->initialAccessTokenId = $event->getInitialAccessTokenId();
+        $this->expiresAt = $event->getExpiresAt();
+        $this->userAccountId = $event->getUserAccountId();
     }
 
-    /**
-     * @return InitialAccessToken
-     */
-    protected function applyInitialAccessTokenRevokedEvent(InitialAccessTokenEvent\InitialAccessTokenRevokedEvent $event): self
+    protected function applyInitialAccessTokenRevokedEvent(InitialAccessTokenEvent\InitialAccessTokenRevokedEvent $event): void
     {
-        $clone = clone $this;
-        $clone->revoked = true;
-
-        return $clone;
+        $this->revoked = true;
     }
 }

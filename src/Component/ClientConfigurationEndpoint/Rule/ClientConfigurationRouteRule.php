@@ -19,9 +19,6 @@ use OAuth2Framework\Component\Core\DataBag\DataBag;
 
 abstract class ClientConfigurationRouteRule implements Rule
 {
-    /**
-     * {@inheritdoc}
-     */
     public function handle(ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters, callable $next): DataBag
     {
         $validatedParameters->with('registration_access_token', $this->generateRegistrationAccessToken());

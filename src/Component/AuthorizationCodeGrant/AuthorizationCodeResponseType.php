@@ -40,33 +40,21 @@ final class AuthorizationCodeResponseType implements ResponseType
         $this->pkceForPublicClientsEnforced = $pkceForPublicClientsEnforced;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function associatedGrantTypes(): array
     {
         return ['authorization_code'];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function name(): string
     {
         return 'code';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getResponseMode(): string
     {
         return self::RESPONSE_TYPE_MODE_QUERY;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function preProcess(Authorization $authorization): Authorization
     {
         $queryParams = $authorization->getQueryParams();
@@ -100,9 +88,6 @@ final class AuthorizationCodeResponseType implements ResponseType
         return $authorization;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function process(Authorization $authorization): Authorization
     {
         return $authorization;

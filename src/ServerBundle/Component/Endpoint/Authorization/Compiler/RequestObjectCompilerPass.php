@@ -21,9 +21,6 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class RequestObjectCompilerPass implements CompilerPassInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     public function process(ContainerBuilder $container)
     {
         if (!$container->hasDefinition('jose.jws_verifier.oauth2_server.endpoint.authorization.request_object') || !$container->hasDefinition(AuthorizationRequestLoader::class)) {

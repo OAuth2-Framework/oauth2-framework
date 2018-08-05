@@ -25,17 +25,11 @@ use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
 class AuthorizationCodeSource implements Component
 {
-    /**
-     * {@inheritdoc}
-     */
     public function name(): string
     {
         return 'authorization_code';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function load(array $configs, ContainerBuilder $container)
     {
         if (!\class_exists(AuthorizationCode::class) || !$configs['grant']['authorization_code']['enabled']) {
@@ -50,9 +44,6 @@ class AuthorizationCodeSource implements Component
         $loader->load('authorization_code.php');
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
         if (!\class_exists(AuthorizationCode::class)) {
@@ -84,9 +75,6 @@ class AuthorizationCodeSource implements Component
             ->end();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function build(ContainerBuilder $container)
     {
         if (!\class_exists(AuthorizationCode::class)) {
@@ -96,9 +84,6 @@ class AuthorizationCodeSource implements Component
         $container->addCompilerPass(new AuthorizationCodeSupportForIdTokenBuilderCompilerPass());
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function prepend(ContainerBuilder $container, array $config): array
     {
         return [];

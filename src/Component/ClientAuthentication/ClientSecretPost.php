@@ -33,17 +33,11 @@ final class ClientSecretPost implements AuthenticationMethod
         $this->secretLifetime = $secretLifetime;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getSchemesParameters(): array
     {
         return [];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function findClientIdAndCredentials(ServerRequestInterface $request, &$clientCredentials = null): ?ClientId
     {
         $parameters = RequestBodyParser::parseFormUrlEncoded($request);
@@ -56,9 +50,6 @@ final class ClientSecretPost implements AuthenticationMethod
         return null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function checkClientConfiguration(DataBag $command_parameters, DataBag $validatedParameters): DataBag
     {
         $validatedParameters->with('client_secret', $this->createClientSecret());
@@ -67,17 +58,11 @@ final class ClientSecretPost implements AuthenticationMethod
         return $validatedParameters;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function isClientAuthenticated(Client $client, $clientCredentials, ServerRequestInterface $request): bool
     {
         return \hash_equals($client->get('client_secret'), $clientCredentials);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getSupportedMethods(): array
     {
         return ['client_secret_post'];

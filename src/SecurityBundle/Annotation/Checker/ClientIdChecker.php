@@ -18,9 +18,6 @@ use OAuth2Framework\SecurityBundle\Security\Authentication\Token\OAuth2Token;
 
 final class ClientIdChecker implements Checker
 {
-    /**
-     * {@inheritdoc}
-     */
     public function check(OAuth2Token $token, OAuth2 $configuration): void
     {
         if (null === $configuration->getClientId()) {

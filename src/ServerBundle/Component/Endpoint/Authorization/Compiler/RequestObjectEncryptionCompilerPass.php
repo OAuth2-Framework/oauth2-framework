@@ -20,9 +20,6 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class RequestObjectEncryptionCompilerPass implements CompilerPassInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     public function process(ContainerBuilder $container)
     {
         if (!$container->hasDefinition('jose.jwe_loader.oauth2_server.endpoint.authorization.request_object') || !$container->hasDefinition(AuthorizationRequestLoader::class)) {

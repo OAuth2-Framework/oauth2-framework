@@ -15,17 +15,11 @@ namespace OAuth2Framework\Component\AuthorizationCodeGrant\PKCEMethod;
 
 final class Plain implements PKCEMethod
 {
-    /**
-     * {@inheritdoc}
-     */
     public function name(): string
     {
         return 'plain';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function isChallengeVerified(string $codeVerifier, string $codeChallenge): bool
     {
         return \hash_equals($codeChallenge, $codeVerifier);

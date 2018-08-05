@@ -42,17 +42,11 @@ class UserAccountRepository implements UserAccountRepositoryInterface
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function findOneByUsername(string $username): ?UserAccount
     {
         return \array_key_exists($username, $this->usersByUsername) ? $this->usersByUsername[$username] : null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function find(UserAccountId $publicId): ?UserAccount
     {
         return \array_key_exists($publicId->getValue(), $this->usersByPublicId) ? $this->usersByPublicId[$publicId->getValue()] : null;

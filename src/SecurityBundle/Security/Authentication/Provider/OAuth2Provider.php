@@ -21,9 +21,6 @@ use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 
 final class OAuth2Provider implements AuthenticationProviderInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     public function authenticate(TokenInterface $token)
     {
         if (!$token instanceof OAuth2Token) {
@@ -44,9 +41,6 @@ final class OAuth2Provider implements AuthenticationProviderInterface
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function supports(TokenInterface $token)
     {
         return $token instanceof OAuth2Token;

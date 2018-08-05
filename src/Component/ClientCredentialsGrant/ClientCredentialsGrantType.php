@@ -20,42 +20,27 @@ use Psr\Http\Message\ServerRequestInterface;
 
 final class ClientCredentialsGrantType implements GrantType
 {
-    /**
-     * {@inheritdoc}
-     */
     public function associatedResponseTypes(): array
     {
         return [];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function name(): string
     {
         return 'client_credentials';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function checkRequest(ServerRequestInterface $request)
     {
         // Nothing to do
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function prepareResponse(ServerRequestInterface $request, GrantTypeData $grantTypeData): GrantTypeData
     {
         // Nothing to do
         return $grantTypeData;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function grant(ServerRequestInterface $request, GrantTypeData $grantTypeData): GrantTypeData
     {
         $client = $grantTypeData->getClient();

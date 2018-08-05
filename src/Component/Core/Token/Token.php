@@ -127,9 +127,6 @@ abstract class Token implements \JsonSerializable, DomainObject
         $this->resourceServerId = $resourceServerId;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getExpiresIn(): int
     {
         $expiresAt = $this->expiresAt;
@@ -140,9 +137,6 @@ abstract class Token implements \JsonSerializable, DomainObject
         return $this->expiresAt->getTimestamp() - \time() < 0 ? 0 : $this->expiresAt->getTimestamp() - \time();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function jsonSerialize()
     {
         $data = [

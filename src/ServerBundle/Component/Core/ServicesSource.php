@@ -24,17 +24,11 @@ use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
 class ServicesSource implements Component
 {
-    /**
-     * {@inheritdoc}
-     */
     public function name(): string
     {
         return 'route_loader';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function load(array $configs, ContainerBuilder $container)
     {
         $container->setParameter('oauth2_server.server_uri', $configs['server_uri']);
@@ -49,9 +43,6 @@ class ServicesSource implements Component
         $loader->load('message.php');
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
         $node->children()
@@ -66,18 +57,12 @@ class ServicesSource implements Component
             ->end();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function build(ContainerBuilder $container)
     {
         $container->addCompilerPass(new OAuth2MessageExtensionCompilerClass());
         $container->addCompilerPass(new OAuth2MessageFactoryCompilerClass());
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function prepend(ContainerBuilder $container, array $config): array
     {
         return [];

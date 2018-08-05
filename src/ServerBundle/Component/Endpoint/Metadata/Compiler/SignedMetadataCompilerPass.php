@@ -20,9 +20,6 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class SignedMetadataCompilerPass implements CompilerPassInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     public function process(ContainerBuilder $container)
     {
         if (!$container->hasDefinition(MetadataController::class) || false === $container->getParameter('oauth2_server.endpoint.metadata.signature.enabled')) {

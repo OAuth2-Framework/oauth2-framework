@@ -35,17 +35,11 @@ class OAuth2FrameworkIssuerDiscoveryExtension extends Extension
         $this->alias = $alias;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getAlias()
     {
         return $this->alias;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function load(array $configs, ContainerBuilder $container)
     {
         $processor = new Processor();
@@ -59,9 +53,6 @@ class OAuth2FrameworkIssuerDiscoveryExtension extends Extension
         $loader->load('services.php');
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getConfiguration(array $config, ContainerBuilder $container)
     {
         return new Configuration($this->alias);

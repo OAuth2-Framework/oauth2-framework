@@ -22,9 +22,6 @@ use function League\Uri\parse;
  */
 final class RedirectionUriRule implements Rule
 {
-    /**
-     * {@inheritdoc}
-     */
     public function handle(ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters, callable $next): DataBag
     {
         /** @var DataBag $validatedParameters */

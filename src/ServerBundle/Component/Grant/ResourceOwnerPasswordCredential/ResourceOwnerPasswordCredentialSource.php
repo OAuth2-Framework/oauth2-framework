@@ -22,17 +22,11 @@ use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
 class ResourceOwnerPasswordCredentialSource implements Component
 {
-    /**
-     * {@inheritdoc}
-     */
     public function name(): string
     {
         return 'resource_owner_password_credential';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function load(array $configs, ContainerBuilder $container)
     {
         if (!\class_exists(ResourceOwnerPasswordCredentialsGrantType::class) || !$configs['grant']['resource_owner_password_credential']['enabled']) {
@@ -42,9 +36,6 @@ class ResourceOwnerPasswordCredentialSource implements Component
         $loader->load('resource_owner_password_credential.php');
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
         if (!\class_exists(ResourceOwnerPasswordCredentialsGrantType::class)) {
@@ -57,16 +48,10 @@ class ResourceOwnerPasswordCredentialSource implements Component
             ->end();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function build(ContainerBuilder $container)
     {
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function prepend(ContainerBuilder $container, array $config): array
     {
         return [];

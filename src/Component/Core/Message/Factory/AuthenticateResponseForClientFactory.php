@@ -31,17 +31,11 @@ final class AuthenticateResponseForClientFactory extends OAuth2ResponseFactory
         $this->authenticationMethodManager = $authenticationMethodManager;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getSupportedCode(): int
     {
         return 401;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function createResponse(array $data, ResponseInterface $response): ResponseInterface
     {
         $response = $response->withStatus(

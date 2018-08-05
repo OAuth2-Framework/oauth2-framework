@@ -35,9 +35,6 @@ class UserProvider implements UserProviderInterface
         $this->userRepository = $userRepository;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function loadUserByUsername($username)
     {
         $user = $this->userRepository->findOneByUsername($username);
@@ -49,9 +46,6 @@ class UserProvider implements UserProviderInterface
         throw new UsernameNotFoundException(\sprintf('Username "%s" does not exist.', $username));
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function refreshUser(UserInterface $user)
     {
         if (!$user instanceof User) {
@@ -61,9 +55,6 @@ class UserProvider implements UserProviderInterface
         return $this->loadUserByUsername($user->getUsername());
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function supportsClass($class)
     {
         return User::class === $class;

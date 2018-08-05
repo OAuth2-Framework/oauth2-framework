@@ -42,17 +42,11 @@ final class OAuth2FrameworkExtension extends Extension implements PrependExtensi
         $this->components = $components;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getAlias()
     {
         return $this->alias;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function load(array $configs, ContainerBuilder $container)
     {
         $processor = new Processor();
@@ -68,9 +62,6 @@ final class OAuth2FrameworkExtension extends Extension implements PrependExtensi
         return new Configuration($this->getAlias(), $this->components);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function prepend(ContainerBuilder $container)
     {
         $configs = $container->getExtensionConfig($this->getAlias());

@@ -40,9 +40,6 @@ final class EncryptedSubjectIdentifier implements PairwiseSubjectIdentifierAlgor
         $this->algorithm = $algorithm;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function calculateSubjectIdentifier(UserAccount $userAccount, string $sectorIdentifierHost): string
     {
         $prepared = \sprintf(
@@ -57,9 +54,6 @@ final class EncryptedSubjectIdentifier implements PairwiseSubjectIdentifierAlgor
         return Base64Url::encode($iv).':'.Base64Url::encode(\openssl_encrypt($prepared, $this->algorithm, $this->pairwiseEncryptionKey, OPENSSL_RAW_DATA, $iv));
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getPublicIdFromSubjectIdentifier(string $subjectIdentifier): ?string
     {
         $data = \explode(':', $subjectIdentifier);

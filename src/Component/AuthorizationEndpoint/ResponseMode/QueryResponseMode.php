@@ -19,17 +19,11 @@ use Psr\Http\Message\ResponseInterface;
 
 final class QueryResponseMode implements ResponseMode
 {
-    /**
-     * {@inheritdoc}
-     */
     public function name(): string
     {
         return ResponseType::RESPONSE_TYPE_MODE_QUERY;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function buildResponse(ResponseInterface $response, string $redirectUri, array $data): ResponseInterface
     {
         $uri = Uri\parse($redirectUri);

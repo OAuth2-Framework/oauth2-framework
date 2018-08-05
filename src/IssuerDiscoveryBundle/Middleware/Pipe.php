@@ -35,9 +35,6 @@ class Pipe implements MiddlewareInterface
         $this->middlewares = $middlewares;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $this->middlewares[] = new RequestHandler(function (ServerRequestInterface $request) use ($handler) {

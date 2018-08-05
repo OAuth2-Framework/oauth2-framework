@@ -21,17 +21,11 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class UserinfoEndpointEncryptionSource implements Component
 {
-    /**
-     * {@inheritdoc}
-     */
     public function name(): string
     {
         return 'encryption';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function load(array $configs, ContainerBuilder $container)
     {
         $config = $configs['openid_connect']['userinfo_endpoint']['encryption'];
@@ -44,9 +38,6 @@ class UserinfoEndpointEncryptionSource implements Component
         $container->setParameter('oauth2_server.openid_connect.userinfo_endpoint.encryption.content_encryption_algorithms', $config['content_encryption_algorithms']);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
     {
         $node->children()
@@ -84,17 +75,11 @@ class UserinfoEndpointEncryptionSource implements Component
             ->end();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function build(ContainerBuilder $container)
     {
         $container->addCompilerPass(new UserinfoEndpointEncryptionCompilerPass());
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function prepend(ContainerBuilder $container, array $config): array
     {
         $sourceConfig = $config['openid_connect']['userinfo_endpoint'][$this->name()];

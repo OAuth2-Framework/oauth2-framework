@@ -18,9 +18,6 @@ use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeIdGenerato
 
 final class RandomAuthorizationCodeIdGenerator implements AuthorizationCodeIdGenerator
 {
-    /**
-     * {@inheritdoc}
-     */
     public function createAuthorizationCodeId(): AuthorizationCodeId
     {
         $value = \bin2hex(\random_bytes(32));

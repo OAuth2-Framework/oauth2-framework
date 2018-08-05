@@ -14,7 +14,6 @@ Help me out for a couple of :beers:!
 [![Requirements Status](https://requires.io/github/OAuth2-Framework/oauth2-framework/requirements.svg?branch=master)](https://requires.io/github/OAuth2-Framework/oauth2-framework/requirements/?branch=master)
 
 [![Build Status](https://travis-ci.org/OAuth2-Framework/oauth2-framework.svg?branch=master)](https://travis-ci.org/OAuth2-Framework/oauth2-framework)
-[![PHP 7 ready](http://php7ready.timesplinter.ch/OAuth2-Framework/oauth2-framework/master/badge.svg)](https://travis-ci.org/OAuth2-Framework/oauth2-framework)
 
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/d4172a6f-b7ac-4123-87d3-86baf36cf9a9/big.png)](https://insight.sensiolabs.com/projects/d4172a6f-b7ac-4123-87d3-86baf36cf9a9)
 
