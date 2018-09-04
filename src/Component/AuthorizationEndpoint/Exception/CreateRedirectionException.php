@@ -29,8 +29,6 @@ class CreateRedirectionException extends \Exception
 
     /**
      * CreateRedirectionException constructor.
-     *
-     * @param null|string $description
      */
     public function __construct(Authorization $authorization, string $message, ?string $description)
     {
@@ -44,9 +42,6 @@ class CreateRedirectionException extends \Exception
         return $this->authorization;
     }
 
-    /**
-     * @return null|string
-     */
     public function getDescription(): ?string
     {
         return $this->description;

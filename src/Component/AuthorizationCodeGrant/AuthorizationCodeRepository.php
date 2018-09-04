@@ -20,8 +20,6 @@ interface AuthorizationCodeRepository
      *
      * @param AuthorizationCodeId $authorizationCodeId the authorization code string for which to fetch data
      *
-     * @return null|AuthorizationCode
-     *
      * @see     http://tools.ietf.org/html/rfc6749#section-4.1
      */
     public function find(AuthorizationCodeId $authorizationCodeId): ?AuthorizationCode;

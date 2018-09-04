@@ -25,9 +25,6 @@ class AccessTokenHandlerManager
         $this->accessTokenHandlers[] = $accessTokenHandler;
     }
 
-    /**
-     * @return null|AccessToken
-     */
     public function find(AccessTokenId $tokenId): ?AccessToken
     {
         foreach ($this->accessTokenHandlers as $accessTokenHandler) {

@@ -56,33 +56,21 @@ class OAuth2
         }
     }
 
-    /**
-     * @return null|string
-     */
     public function getClientId(): ?string
     {
         return $this->client_id;
     }
 
-    /**
-     * @return null|string
-     */
     public function getResourceOwnerId(): ?string
     {
         return $this->resource_owner_id;
     }
 
-    /**
-     * @return null|string
-     */
     public function getScope(): ?string
     {
         return $this->scope;
     }
 
-    /**
-     * @return null|string
-     */
     public function getTokenType(): ?string
     {
         return $this->token_type;

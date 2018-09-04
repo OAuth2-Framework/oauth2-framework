@@ -32,8 +32,6 @@ class Identifier
 
     /**
      * Identifier constructor.
-     *
-     * @param null|int $port
      */
     public function __construct(string $username, string $domain, ?int $port)
     {

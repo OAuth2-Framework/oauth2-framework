@@ -29,8 +29,6 @@ class OAuth2AuthorizationException extends \Exception
 
     /**
      * OAuth2AuthorizationException constructor.
-     *
-     * @param null|string $errorDescription
      */
     public function __construct(int $code, string $error, ?string $errorDescription, Authorization $authorization, ?\Exception $previous = null)
     {
@@ -45,9 +43,6 @@ class OAuth2AuthorizationException extends \Exception
         return $this->authorization;
     }
 
-    /**
-     * @return null|string
-     */
     public function getErrorDescription(): ?string
     {
         return $this->errorDescription;

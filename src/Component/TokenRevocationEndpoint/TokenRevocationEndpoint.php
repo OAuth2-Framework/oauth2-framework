@@ -60,9 +60,6 @@ abstract class TokenRevocationEndpoint implements MiddlewareInterface
         }
     }
 
-    /**
-     * @param null|string $callback
-     */
     private function getResponse(int $code, string $data, ?string $callback): ResponseInterface
     {
         if (null !== $callback) {
@@ -129,9 +126,6 @@ abstract class TokenRevocationEndpoint implements MiddlewareInterface
         return $tokenTypeHints;
     }
 
-    /**
-     * @return null|string
-     */
     protected function getCallback(ServerRequestInterface $request): ?string
     {
         $params = $this->getRequestParameters($request);

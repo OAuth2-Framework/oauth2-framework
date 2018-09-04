@@ -19,8 +19,6 @@ interface UserAccountDiscovery
 {
     /**
      * @param bool $isFullyAuthenticated
-     *
-     * @return null|UserAccount
      */
     public function find(?bool &$isFullyAuthenticated = null): ?UserAccount;
 }

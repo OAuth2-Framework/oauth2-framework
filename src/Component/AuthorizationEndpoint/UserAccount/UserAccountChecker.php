@@ -20,8 +20,6 @@ use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 interface UserAccountChecker
 {
     /**
-     * @param null|UserAccount $userAccount
-     *
      * @throws Exception\CreateRedirectionException
      * @throws Exception\ProcessAuthorizationException
      * @throws Exception\RedirectToLoginPageException

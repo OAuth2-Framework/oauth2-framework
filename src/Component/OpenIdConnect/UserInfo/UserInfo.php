@@ -109,8 +109,6 @@ class UserInfo
     }
 
     /**
-     * @param null|array $config
-     *
      * @return null|mixed
      */
     private function getUserClaim(UserAccount $userAccount, string $claimName, ?array $config)

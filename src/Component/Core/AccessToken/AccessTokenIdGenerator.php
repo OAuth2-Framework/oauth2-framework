@@ -20,8 +20,5 @@ use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
 
 interface AccessTokenIdGenerator
 {
-    /**
-     * @param null|ResourceServerId $resourceServerId
-     */
     public function createAccessTokenId(ResourceOwnerId $resourceOwnerId, ClientId $clientId, DataBag $parameters, DataBag $metadatas, ?ResourceServerId $resourceServerId): AccessTokenId;
 }

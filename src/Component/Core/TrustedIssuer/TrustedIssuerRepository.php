@@ -15,8 +15,5 @@ namespace OAuth2Framework\Component\Core\TrustedIssuer;
 
 interface TrustedIssuerRepository
 {
-    /**
-     * @return null|TrustedIssuer
-     */
     public function find(string $trustedIssuer): ?TrustedIssuer;
 }

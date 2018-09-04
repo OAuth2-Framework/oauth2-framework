@@ -78,8 +78,6 @@ class OAuth2Message extends \Exception
 
     /**
      * oauth2Message constructor.
-     *
-     * @param null|string $errorDescription
      */
     public function __construct(int $code, string $error, ?string $errorDescription, array $data = [], ?\Exception $previous = null)
     {
@@ -99,9 +97,6 @@ class OAuth2Message extends \Exception
         return $data;
     }
 
-    /**
-     * @return null|string
-     */
     public function getErrorDescription(): ?string
     {
         return $this->errorDescription;

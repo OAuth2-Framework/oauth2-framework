@@ -91,9 +91,6 @@ final class MacTokenTest extends TestCase
         static::assertTrue($macToken->isRequestValid($accessToken, $request->reveal(), $additionalCredentialValues));
     }
 
-    /**
-     * @param null|string $ext
-     */
     private function generateMac(string $algorithm, string $key, int $timestamp, string $nonce, string $method, string $requestUri, string $host, int $port, ?string $ext): string
     {
         $basestr = \sprintf("%d\n%s\n%s\n%s\n%s\n%s\n%s\n", $timestamp, $nonce, $method, $requestUri, $host, $port, $ext);

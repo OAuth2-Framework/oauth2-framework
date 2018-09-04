@@ -23,9 +23,6 @@ final class AccessTokenHandler implements \OAuth2Framework\Component\Core\Access
      */
     private $accessTokens = [];
 
-    /**
-     * @return null|AccessToken
-     */
     public function find(AccessTokenId $tokenId): ?AccessToken
     {
         return \array_key_exists($tokenId->getValue(), $this->accessTokens) ? $this->accessTokens[$tokenId->getValue()] : null;
