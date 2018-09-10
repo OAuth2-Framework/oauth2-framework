@@ -23,7 +23,7 @@ final class CommonParametersRule extends AbstractInternationalizedRule
         foreach ($this->getSupportedParameters() as $parameter => $closure) {
             $id = $this->getInternationalizedParameters($commandParameters, $parameter, $closure);
             foreach ($id as $k => $v) {
-                $validatedParameters->with($k, $v);
+                $validatedParameters->set($k, $v);
             }
         }
 

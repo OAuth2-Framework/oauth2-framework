@@ -160,7 +160,7 @@ class TokenEndpoint implements MiddlewareInterface
         $info = $tokenType->getAdditionalInformation();
         $info['token_type'] = $tokenType->name();
         foreach ($info as $k => $v) {
-            $grantTypeData->getParameter()->with($k, $v);
+            $grantTypeData->getParameter()->set($k, $v);
         }
 
         return $grantTypeData;

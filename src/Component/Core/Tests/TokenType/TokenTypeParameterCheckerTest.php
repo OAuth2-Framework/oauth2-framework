@@ -41,9 +41,9 @@ final class TokenTypeParameterCheckerTest extends TestCase
         $authorization = $this->prophesize(Authorization::class);
         $authorization->hasQueryParam('token_type')->willReturn(false)->shouldBeCalled();
         $authorization
-            ->withTokenType(Argument::type(TokenType::class))
+            ->setTokenType(Argument::type(TokenType::class))
             ->shouldBeCalled()
-            ->willReturn($authorization);
+            ->will(function(){});
         $this->getTokenTypeParameterChecker(true)->check(
             $authorization->reveal()
         );
@@ -58,9 +58,9 @@ final class TokenTypeParameterCheckerTest extends TestCase
         $authorization->hasQueryParam('token_type')->willReturn(true)->shouldBeCalled();
         $authorization->getQueryParam('token_type')->willReturn('KnownTokenType')->shouldBeCalled();
         $authorization
-            ->withTokenType(Argument::type(TokenType::class))
+            ->setTokenType(Argument::type(TokenType::class))
             ->shouldBeCalled()
-            ->willReturn($authorization);
+            ->will(function(){});
         $this->getTokenTypeParameterChecker(true)->check(
             $authorization->reveal()
         );

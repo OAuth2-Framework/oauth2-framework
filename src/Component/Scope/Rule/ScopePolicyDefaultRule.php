@@ -29,7 +29,7 @@ final class ScopePolicyDefaultRule implements Rule
             if (1 !== \preg_match('/^[\x20\x23-\x5B\x5D-\x7E]+$/', $defaultScope)) {
                 throw new \InvalidArgumentException('Invalid characters found in the "default_scope" parameter.');
             }
-            $validatedParameters->with('default_scope', $commandParameters->get('default_scope'));
+            $validatedParameters->set('default_scope', $commandParameters->get('default_scope'));
         }
 
         return $next($clientId, $commandParameters, $validatedParameters);

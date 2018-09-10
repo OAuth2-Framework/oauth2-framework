@@ -45,7 +45,7 @@ class JwksRule implements Rule
             if (0 === \count($keyset)) {
                 throw new \InvalidArgumentException('The parameter "jwks" must not be empty.');
             }
-            $validatedParameters->with('jwks', $commandParameters->get('jwks'));
+            $validatedParameters->set('jwks', $commandParameters->get('jwks'));
         }
         if ($commandParameters->has('jwks_uri')) {
             if (null === $this->jkuFactory) {
@@ -60,7 +60,7 @@ class JwksRule implements Rule
             if (0 === $jwks->count()) {
                 throw new \InvalidArgumentException('The distant key set is empty.');
             }
-            $validatedParameters->with('jwks_uri', $commandParameters->get('jwks_uri'));
+            $validatedParameters->set('jwks_uri', $commandParameters->get('jwks_uri'));
         }
 
         return $next($clientId, $commandParameters, $validatedParameters);

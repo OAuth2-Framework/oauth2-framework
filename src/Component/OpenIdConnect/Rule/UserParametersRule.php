@@ -26,14 +26,14 @@ final class UserParametersRule implements Rule
             if (!\is_bool($require_auth_time)) {
                 throw new \InvalidArgumentException('The parameter "require_auth_time" must be a boolean.');
             }
-            $validatedParameters->with('require_auth_time', $require_auth_time);
+            $validatedParameters->set('require_auth_time', $require_auth_time);
         }
         if ($commandParameters->has('default_max_age')) {
             $default_max_age = $commandParameters->get('default_max_age');
             if (!\is_int($default_max_age) || $default_max_age < 0) {
                 throw new \InvalidArgumentException('The parameter "default_max_age" must be a positive integer.');
             }
-            $validatedParameters->with('default_max_age', $default_max_age);
+            $validatedParameters->set('default_max_age', $default_max_age);
         }
         if ($commandParameters->has('default_acr_values')) {
             $default_acr_values = $commandParameters->get('default_acr_values');
@@ -45,7 +45,7 @@ final class UserParametersRule implements Rule
                     throw new \InvalidArgumentException('The parameter "default_acr_values" must be an array of strings.');
                 }
             }, $default_acr_values);
-            $validatedParameters->with('default_acr_values', $default_acr_values);
+            $validatedParameters->set('default_acr_values', $default_acr_values);
         }
 
         return $next($clientId, $commandParameters, $validatedParameters);

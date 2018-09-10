@@ -36,7 +36,7 @@ final class ClientAuthenticationMethodRule implements Rule
     public function handle(ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters, callable $next): DataBag
     {
         if (!$commandParameters->has('token_endpoint_auth_method')) {
-            $commandParameters = $commandParameters->with('token_endpoint_auth_method', 'client_secret_basic');
+            $commandParameters->set('token_endpoint_auth_method', 'client_secret_basic');
         }
 
         if (!\is_string($commandParameters->get('token_endpoint_auth_method'))) {
@@ -49,7 +49,7 @@ final class ClientAuthenticationMethodRule implements Rule
         $clientAuthenticationMethod = $this->clientAuthenticationMethodManager->get($commandParameters->get('token_endpoint_auth_method'));
         $validatedParameters = $next($clientId, $commandParameters, $validatedParameters);
         $validatedParameters = $clientAuthenticationMethod->checkClientConfiguration($commandParameters, $validatedParameters);
-        $validatedParameters->with('token_endpoint_auth_method', $commandParameters->get('token_endpoint_auth_method'));
+        $validatedParameters->set('token_endpoint_auth_method', $commandParameters->get('token_endpoint_auth_method'));
 
         return $validatedParameters;
     }

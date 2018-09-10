@@ -54,7 +54,7 @@ class SessionStateParameterExtension extends \OAuth2Framework\Component\OpenIdCo
         $browserState = Base64Url::encode(\random_bytes(64));
         $this->session->set($this->storageName, $browserState);
         $cookie = new Cookie($this->storageName, $browserState);
-        $authorization = $authorization->withResponseHeader('Set-Cookie', (string) $cookie);
+        $authorization = $authorization->setResponseHeader('Set-Cookie', (string) $cookie);
 
         return $browserState;
     }

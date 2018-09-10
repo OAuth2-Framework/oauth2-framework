@@ -20,9 +20,6 @@ class DataBag implements \JsonSerializable, \IteratorAggregate, \Countable
      */
     private $parameters = [];
 
-    /**
-     * DataBag constructor.
-     */
     public function __construct(array $parameters)
     {
         $this->parameters = $parameters;
@@ -47,27 +44,10 @@ class DataBag implements \JsonSerializable, \IteratorAggregate, \Countable
 
     /**
      * @param null|mixed $value
-     *
-     * @return DataBag
      */
-    public function with(string $key, $value): self
+    public function set(string $key, $value): void
     {
         $this->parameters[$key] = $value;
-
-        return $this;
-    }
-
-    /**
-     * @return DataBag
-     */
-    public function without(string $key): self
-    {
-        if (!$this->has($key)) {
-            return $this;
-        }
-        unset($this->parameters[$key]);
-
-        return $this;
     }
 
     public function all(): array

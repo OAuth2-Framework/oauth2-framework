@@ -46,7 +46,7 @@ final class ParameterCheckerManagerTest extends TestCase
             new DataBag([]),
             null
         );
-        $authorization = Authorization::create($client, [
+        $authorization = new Authorization($client, [
             'display' => 'foo',
         ]);
 
@@ -70,7 +70,7 @@ final class ParameterCheckerManagerTest extends TestCase
             new DataBag([]),
             null
         );
-        $authorization = Authorization::create($client, [
+        $authorization = new Authorization($client, [
             'prompt' => 'foo',
         ]);
 
@@ -94,7 +94,7 @@ final class ParameterCheckerManagerTest extends TestCase
             new DataBag([]),
             null
         );
-        $authorization = Authorization::create($client, [
+        $authorization = new Authorization($client, [
             'prompt' => 'none login',
         ]);
 
@@ -118,7 +118,7 @@ final class ParameterCheckerManagerTest extends TestCase
             new DataBag([]),
             null
         );
-        $authorization = Authorization::create($client, []);
+        $authorization = new Authorization($client, []);
 
         try {
             $this->getParameterCheckerManager()->process($authorization);
@@ -140,7 +140,7 @@ final class ParameterCheckerManagerTest extends TestCase
             new DataBag([]),
             null
         );
-        $authorization = Authorization::create($client, [
+        $authorization = new Authorization($client, [
             'redirect_uri' => 'https://www.foo.bar/callback',
         ]);
 
@@ -166,7 +166,7 @@ final class ParameterCheckerManagerTest extends TestCase
             ]),
             null
         );
-        $authorization = Authorization::create($client, [
+        $authorization = new Authorization($client, [
             'redirect_uri' => 'https://www.foo.bar/callback',
             'response_type' => 'foo',
             'response_mode' => 'foo',
@@ -192,7 +192,7 @@ final class ParameterCheckerManagerTest extends TestCase
             new DataBag([]),
             null
         );
-        $authorization = Authorization::create($client, [
+        $authorization = new Authorization($client, [
             'redirect_uri' => 'https://www.foo.bar/callback',
             'response_type' => 'bar',
         ]);
@@ -217,7 +217,7 @@ final class ParameterCheckerManagerTest extends TestCase
             new DataBag([]),
             null
         );
-        $authorization = Authorization::create($client, [
+        $authorization = new Authorization($client, [
             'redirect_uri' => 'https://www.foo.bar/callback',
             'response_type' => 'foo',
         ]);
@@ -244,7 +244,7 @@ final class ParameterCheckerManagerTest extends TestCase
             ]),
             null
         );
-        $authorization = Authorization::create($client, [
+        $authorization = new Authorization($client, [
             'redirect_uri' => 'https://www.foo.bar/callback',
             'response_type' => 'foo',
             'state' => '0123456789',

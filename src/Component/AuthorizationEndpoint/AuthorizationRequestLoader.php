@@ -195,7 +195,7 @@ class AuthorizationRequestLoader
             $client = $this->getClient($params);
         }
 
-        return Authorization::create($client, $params);
+        return new Authorization($client, $params);
     }
 
     /**

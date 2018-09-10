@@ -21,9 +21,9 @@ final class ClientIdIssuedAtRule implements Rule
     public function handle(ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters, callable $next): DataBag
     {
         if ($commandParameters->has('client_id_issued_at')) {
-            $validatedParameters->with('client_id_issued_at', $commandParameters->get('client_id_issued_at'));
+            $validatedParameters->set('client_id_issued_at', $commandParameters->get('client_id_issued_at'));
         } else {
-            $validatedParameters->with('client_id_issued_at', \time());
+            $validatedParameters->set('client_id_issued_at', \time());
         }
 
         return $next($clientId, $commandParameters, $validatedParameters);

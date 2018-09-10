@@ -30,10 +30,10 @@ final class GrantTypesRule implements Rule
     public function handle(ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters, callable $next): DataBag
     {
         if (!$commandParameters->has('grant_types')) {
-            $commandParameters = $commandParameters->with('grant_types', []);
+            $commandParameters->set('grant_types', []);
         }
         $this->checkGrantTypes($commandParameters);
-        $validatedParameters->with('grant_types', $commandParameters->get('grant_types'));
+        $validatedParameters->set('grant_types', $commandParameters->get('grant_types'));
         $validatedParameters = $next($clientId, $commandParameters, $validatedParameters);
         //$this->checkResponseTypes($validatedParameters);
 

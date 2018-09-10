@@ -76,14 +76,14 @@ final class AuthorizationCodeGrantType implements GrantType
         $this->checkRedirectUri($authorizationCode, $redirectUri);
 
         foreach ($authorizationCode->getParameter() as $key => $parameter) {
-            $grantTypeData->getParameter()->with($key, $parameter);
+            $grantTypeData->getParameter()->set($key, $parameter);
         }
         foreach ($authorizationCode->getMetadata() as $key => $parameter) {
-            $grantTypeData->getMetadata()->with($key, $parameter);
+            $grantTypeData->getMetadata()->set($key, $parameter);
         }
 
-        $grantTypeData->getMetadata()->with('redirect_uri', $redirectUri);
-        $grantTypeData->getMetadata()->with('authorization_code_id', $authorizationCode->getTokenId()->getValue());
+        $grantTypeData->getMetadata()->set('redirect_uri', $redirectUri);
+        $grantTypeData->getMetadata()->set('authorization_code_id', $authorizationCode->getTokenId()->getValue());
         $grantTypeData->setResourceOwnerId($authorizationCode->getResourceOwnerId());
         $authorizationCode->markAsUsed();
         $this->authorizationCodeRepository->save($authorizationCode);

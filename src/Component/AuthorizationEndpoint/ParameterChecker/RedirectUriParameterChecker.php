@@ -31,7 +31,7 @@ final class RedirectUriParameterChecker implements ParameterChecker
                 throw new \InvalidArgumentException(\sprintf('The redirect URI "%s" is not registered.', $redirectUri));
             }
 
-            $authorization = $authorization->withRedirectUri($redirectUri);
+            $authorization->setRedirectUri($redirectUri);
 
             return $authorization;
         } catch (\InvalidArgumentException $e) {

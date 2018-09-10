@@ -61,7 +61,7 @@ final class ResponseTypeAndResponseModeParameterChecker implements ParameterChec
             if (!$authorization->getClient()->isResponseTypeAllowed($responseTypeName)) {
                 throw new \InvalidArgumentException(\sprintf('The response type "%s" is not allowed for this client.', $responseTypeName)); // Should try to find the response mode before exception
             }
-            $authorization = $authorization->withResponseType($responseType);
+            $authorization->setResponseType($responseType);
 
             if (true === $authorization->hasQueryParam('response_mode') && $this->isResponseModeParameterInAuthorizationRequestAllowed()) {
                 $responseMode = $authorization->getQueryParam('response_mode');
@@ -71,7 +71,7 @@ final class ResponseTypeAndResponseModeParameterChecker implements ParameterChec
             if (!$this->responseModeManager->has($responseMode)) {
                 throw new \InvalidArgumentException(\sprintf('The response mode "%s" is not supported. Please use one of the following values: %s.', $responseMode, \implode(', ', $this->responseModeManager->list())));
             }
-            $authorization = $authorization->withResponseMode($this->responseModeManager->get($responseMode));
+            $authorization->setResponseMode($this->responseModeManager->get($responseMode));
 
             return $authorization;
         } catch (\InvalidArgumentException $e) {

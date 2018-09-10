@@ -71,10 +71,10 @@ final class RefreshTokenGrantType implements GrantType
 
         $grantTypeData->setResourceOwnerId($token->getResourceOwnerId());
         foreach ($token->getMetadata() as $k => $v) {
-            $grantTypeData->getMetadata()->with($k, $v);
+            $grantTypeData->getMetadata()->set($k, $v);
         }
         foreach ($token->getParameter() as $k => $v) {
-            $grantTypeData->getParameter()->with($k, $v);
+            $grantTypeData->getParameter()->set($k, $v);
         }
 
         return $grantTypeData;

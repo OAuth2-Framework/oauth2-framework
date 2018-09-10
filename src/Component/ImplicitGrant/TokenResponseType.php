@@ -89,7 +89,7 @@ final class TokenResponseType implements ResponseType
         $this->accessTokenRepository->save($accessToken);
 
         foreach ($accessToken->getResponseData() as $k => $v) {
-            $authorization = $authorization->withResponseParameter($k, $v);
+            $authorization->setResponseParameter($k, $v);
         }
 
         return $authorization;

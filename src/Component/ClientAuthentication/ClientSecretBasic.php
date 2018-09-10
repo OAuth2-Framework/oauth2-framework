@@ -73,8 +73,8 @@ final class ClientSecretBasic implements AuthenticationMethod
 
     public function checkClientConfiguration(DataBag $command_parameters, DataBag $validated_parameters): DataBag
     {
-        $validated_parameters = $validated_parameters->with('client_secret', $this->createClientSecret());
-        $validated_parameters = $validated_parameters->with('client_secret_expires_at', (0 === $this->secretLifetime ? 0 : \time() + $this->secretLifetime));
+        $validated_parameters->set('client_secret', $this->createClientSecret());
+        $validated_parameters->set('client_secret_expires_at', (0 === $this->secretLifetime ? 0 : \time() + $this->secretLifetime));
 
         return $validated_parameters;
     }

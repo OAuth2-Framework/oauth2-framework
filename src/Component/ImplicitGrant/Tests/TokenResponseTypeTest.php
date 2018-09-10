@@ -60,12 +60,12 @@ final class TokenResponseTypeTest extends TestCase
         $tokenType = $this->prophesize(TokenType::class);
         $tokenType->getAdditionalInformation()->willReturn(['token_type' => 'FOO']);
 
-        $authorization = Authorization::create(
+        $authorization = new Authorization(
             $client,
             []
         );
-        $authorization->withUserAccount($userAccount->reveal(), true);
-        $authorization->withTokenType($tokenType->reveal());
+        $authorization->setUserAccount($userAccount->reveal(), true);
+        $authorization->setTokenType($tokenType->reveal());
 
         $authorization = $this->getResponseType()->process($authorization, function (Authorization $authorization) {
             return $authorization;

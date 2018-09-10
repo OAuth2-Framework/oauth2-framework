@@ -97,22 +97,11 @@ class Authorization
      */
     private $resourceServer = null;
 
-    /**
-     * Authorization constructor.
-     */
-    private function __construct(Client $client, array $queryParameters)
+    public function __construct(Client $client, array $queryParameters)
     {
         $this->client = $client;
         $this->queryParameters = $queryParameters;
         $this->metadata = new DataBag([]);
-    }
-
-    /**
-     * @return Authorization
-     */
-    public static function create(Client $client, array $queryParameters): self
-    {
-        return new self($client, $queryParameters);
     }
 
     public function getQueryParams(): array
@@ -139,14 +128,9 @@ class Authorization
         return $this->client;
     }
 
-    /**
-     * @return Authorization
-     */
-    public function withTokenType(TokenType $tokenType): self
+    public function setTokenType(TokenType $tokenType): void
     {
         $this->tokenType = $tokenType;
-
-        return $this;
     }
 
     public function getTokenType(): ?TokenType
@@ -154,14 +138,9 @@ class Authorization
         return $this->tokenType;
     }
 
-    /**
-     * @return Authorization
-     */
-    public function withResponseType(ResponseType $responseType): self
+    public function setResponseType(ResponseType $responseType): void
     {
         $this->responseType = $responseType;
-
-        return $this;
     }
 
     public function getResponseType(): ResponseType
@@ -169,14 +148,9 @@ class Authorization
         return $this->responseType;
     }
 
-    /**
-     * @return Authorization
-     */
-    public function withResponseMode(ResponseMode $responseMode): self
+    public function setResponseMode(ResponseMode $responseMode): void
     {
         $this->responseMode = $responseMode;
-
-        return $this;
     }
 
     public function getResponseMode(): ?ResponseMode
@@ -184,15 +158,10 @@ class Authorization
         return $this->responseMode;
     }
 
-    /**
-     * @return Authorization
-     */
-    public function withRedirectUri(string $redirectUri): self
+    public function setRedirectUri(string $redirectUri): void
     {
         $this->redirectUri = $redirectUri;
-        $this->metadata->with('redirect_uri', $redirectUri);
-
-        return $this;
+        $this->metadata->set('redirect_uri', $redirectUri);
     }
 
     public function getClaims(): ?array
@@ -209,15 +178,10 @@ class Authorization
         return $this->redirectUri;
     }
 
-    /**
-     * @return Authorization
-     */
-    public function withUserAccount(UserAccount $userAccount, bool $isFullyAuthenticated): self
+    public function setUserAccount(UserAccount $userAccount, bool $isFullyAuthenticated): void
     {
         $this->userAccount = $userAccount;
         $this->userAccountFullyAuthenticated = $isFullyAuthenticated;
-
-        return $this;
     }
 
     public function getUserAccount(): ?UserAccount
@@ -225,14 +189,9 @@ class Authorization
         return $this->userAccount;
     }
 
-    /**
-     * @return Authorization
-     */
-    public function withResponseParameter(string $responseParameter, $value): self
+    public function setResponseParameter(string $responseParameter, $value): void
     {
         $this->responseParameters[$responseParameter] = $value;
-
-        return $this;
     }
 
     public function getResponseParameters(): array
@@ -254,14 +213,9 @@ class Authorization
         return \array_key_exists($param, $this->getResponseParameters());
     }
 
-    /**
-     * @return Authorization
-     */
-    public function withResponseHeader(string $responseHeader, $value): self
+    public function setResponseHeader(string $responseHeader, $value): void
     {
         $this->responseHeaders[$responseHeader] = $value;
-
-        return $this;
     }
 
     public function getResponseHeaders(): array
@@ -309,24 +263,14 @@ class Authorization
         return $this->authorized;
     }
 
-    /**
-     * @return Authorization
-     */
-    public function allow(): self
+    public function allow(): void
     {
         $this->authorized = true;
-
-        return $this;
     }
 
-    /**
-     * @return Authorization
-     */
-    public function deny(): self
+    public function deny(): void
     {
         $this->authorized = false;
-
-        return $this;
     }
 
     public function hasData(string $key): bool
@@ -343,14 +287,9 @@ class Authorization
         return $this->data[$key];
     }
 
-    /**
-     * @return Authorization
-     */
-    public function withData(string $key, $data): self
+    public function setData(string $key, $data): void
     {
         $this->data[$key] = $data;
-
-        return $this;
     }
 
     public function getResourceServer(): ?ResourceServer
@@ -358,38 +297,23 @@ class Authorization
         return $this->resourceServer;
     }
 
-    /**
-     * @return Authorization
-     */
-    public function withResourceServer(ResourceServer $resourceServer): self
+    public function setResourceServer(ResourceServer $resourceServer): void
     {
         $this->resourceServer = $resourceServer;
-
-        return $this;
     }
 
-    /**
-     * @return Authorization
-     */
-    public function withConsentScreenOption(string $option, $value): self
+    public function setConsentScreenOption(string $option, $value): void
     {
         $this->consentScreenOptions[$option] = $value;
-
-        return $this;
     }
 
-    /**
-     * @return Authorization
-     */
-    public function withoutConsentScreenOption(string $option): self
+    public function unsetConsentScreenOption(string $option): void
     {
         if (!\array_key_exists($option, $this->consentScreenOptions)) {
-            return $this;
+            return;
         }
 
         unset($this->consentScreenOptions[$option]);
-
-        return $this;
     }
 
     public function hasScope(): bool

@@ -29,7 +29,9 @@ final class RedirectionUriRule implements Rule
 
         // No need for redirect URIs as no response type to is used.
         if (!$validatedParameters->has('response_types') || empty($validatedParameters->get('response_types'))) {
-            return $validatedParameters->with('redirect_uris', []);
+            $validatedParameters->set('redirect_uris', []);
+
+            return $validatedParameters;
         }
 
         if (!$validatedParameters->has('token_endpoint_auth_method')) {
@@ -65,7 +67,7 @@ final class RedirectionUriRule implements Rule
         }
 
         $this->checkAllUris($redirectUris, $applicationType, $usesImplicitGrantType, $isClientPublic);
-        $validatedParameters->with('redirect_uris', $redirectUris);
+        $validatedParameters->set('redirect_uris', $redirectUris);
 
         return $validatedParameters;
     }

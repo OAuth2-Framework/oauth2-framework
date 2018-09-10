@@ -47,7 +47,7 @@ final class ScopeParameterCheckerTest extends TestCase
         $authorization = $this->prophesize(Authorization::class);
         $authorization->getClient()->willReturn($client->reveal());
         $authorization->hasQueryParam('scope')->willReturn(false)->shouldBeCalled();
-        $authorization->withResponseParameter('scope', Argument::any())->shouldNotBeCalled();
+        $authorization->setResponseParameter('scope', Argument::any())->shouldNotBeCalled();
         $this->getScopeParameterChecker()->check(
             $authorization->reveal()
         );
@@ -64,7 +64,10 @@ final class ScopeParameterCheckerTest extends TestCase
         $authorization->hasQueryParam('scope')->willReturn(true)->shouldBeCalled();
         $authorization->getQueryParam('scope')->willReturn('scope1')->shouldBeCalled();
         $authorization->getMetadata()->willReturn(new DataBag([]))->shouldBeCalled();
-        $authorization->withResponseParameter('scope', Argument::any())->willReturn($authorization)->shouldBeCalled();
+        $authorization
+            ->setResponseParameter('scope', Argument::any())
+            ->shouldBeCalled()
+            ->will(function(){});
         $this->getScopeParameterChecker()->check(
             $authorization->reveal()
         );
@@ -80,7 +83,7 @@ final class ScopeParameterCheckerTest extends TestCase
         $authorization->getClient()->willReturn($client->reveal());
         $authorization->hasQueryParam('scope')->willReturn(true)->shouldBeCalled();
         $authorization->getQueryParam('scope')->willReturn('invalid_scope')->shouldBeCalled();
-        $authorization->withResponseParameter('scope', Argument::any())->shouldNotBeCalled();
+        $authorization->setResponseParameter('scope', Argument::any())->shouldNotBeCalled();
 
         try {
             $this->getScopeParameterChecker()->check(

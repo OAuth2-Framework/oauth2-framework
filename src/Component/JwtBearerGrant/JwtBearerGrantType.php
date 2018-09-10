@@ -252,8 +252,8 @@ class JwtBearerGrantType implements GrantType
         }
 
         $this->jwsVerifier->verifyWithKeySet($jws, $signatureKeys, 0);
-        $grantTypeData->getMetadata()->with('jwt', $jws);
-        $grantTypeData->getMetadata()->with('claims', $claims);
+        $grantTypeData->getMetadata()->set('jwt', $jws);
+        $grantTypeData->getMetadata()->set('claims', $claims);
 
         return $grantTypeData;
     }

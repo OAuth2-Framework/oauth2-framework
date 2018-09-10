@@ -226,9 +226,9 @@ class ClientAssertionJwt implements AuthenticationMethod
 
     private function checkClientSecretJwtConfiguration(DataBag $commandParameters, DataBag $validatedParameters): DataBag
     {
-        $validatedParameters->with('token_endpoint_auth_method', $commandParameters->get('token_endpoint_auth_method'));
-        $validatedParameters->with('client_secret', $this->createClientSecret());
-        $validatedParameters->with('client_secret_expires_at', (0 === $this->secretLifetime ? 0 : \time() + $this->secretLifetime));
+        $validatedParameters->set('token_endpoint_auth_method', $commandParameters->get('token_endpoint_auth_method'));
+        $validatedParameters->set('client_secret', $this->createClientSecret());
+        $validatedParameters->set('client_secret_expires_at', (0 === $this->secretLifetime ? 0 : \time() + $this->secretLifetime));
 
         return $validatedParameters;
     }
@@ -243,11 +243,11 @@ class ClientAssertionJwt implements AuthenticationMethod
 
                 break;
             case $commandParameters->has('jwks'):
-                $validatedParameters->with('jwks', $commandParameters->get('jwks'));
+                $validatedParameters->set('jwks', $commandParameters->get('jwks'));
 
                 break;
             case $commandParameters->has('jwks_uri'):
-                $validatedParameters->with('jwks_uri', $commandParameters->get('jwks_uri'));
+                $validatedParameters->set('jwks_uri', $commandParameters->get('jwks_uri'));
 
                 break;
         }

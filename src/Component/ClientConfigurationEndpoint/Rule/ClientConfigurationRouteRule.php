@@ -21,8 +21,8 @@ abstract class ClientConfigurationRouteRule implements Rule
 {
     public function handle(ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters, callable $next): DataBag
     {
-        $validatedParameters->with('registration_access_token', $this->generateRegistrationAccessToken());
-        $validatedParameters->with('registration_client_uri', $this->getRegistrationClientUri($clientId));
+        $validatedParameters->set('registration_access_token', $this->generateRegistrationAccessToken());
+        $validatedParameters->set('registration_client_uri', $this->getRegistrationClientUri($clientId));
 
         return $next($clientId, $commandParameters, $validatedParameters);
     }

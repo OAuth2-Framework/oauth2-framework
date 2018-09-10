@@ -48,7 +48,7 @@ final class TokenTypeParameterChecker implements ParameterChecker
     {
         try {
             $tokenType = $this->getTokenType($authorization);
-            $authorization = $authorization->withTokenType($tokenType);
+            $authorization->setTokenType($tokenType);
 
             return $authorization;
         } catch (\InvalidArgumentException $e) {

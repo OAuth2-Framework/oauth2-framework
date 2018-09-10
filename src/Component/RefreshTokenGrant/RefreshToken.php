@@ -58,10 +58,10 @@ class RefreshToken extends Token
     public function getResponseData(): array
     {
         $data = $this->getParameter();
-        $data->with('access_token', $this->getTokenId()->getValue());
-        $data->with('expires_in', $this->getExpiresIn());
+        $data->set('access_token', $this->getTokenId()->getValue());
+        $data->set('expires_in', $this->getExpiresIn());
         if (!empty($this->getTokenId())) {
-            $data = $data->with('refresh_token', $this->getTokenId());
+            $data = $data->set('refresh_token', $this->getTokenId());
         }
 
         return $data->all();

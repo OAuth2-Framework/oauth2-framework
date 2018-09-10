@@ -48,7 +48,7 @@ final class SubjectTypeRule implements Rule
             if (!\in_array($subjectType, $supported_types, true)) {
                 throw new \InvalidArgumentException(\sprintf('The subject type "%s" is not supported. Please use one of the following value(s): %s', $subjectType, \implode(', ', $supported_types)));
             }
-            $validatedParameters->with('subject_type', $subjectType);
+            $validatedParameters->set('subject_type', $subjectType);
         }
 
         return $next($clientId, $commandParameters, $validatedParameters);

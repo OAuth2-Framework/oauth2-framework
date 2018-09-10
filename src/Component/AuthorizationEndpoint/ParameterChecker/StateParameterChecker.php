@@ -25,7 +25,7 @@ final class StateParameterChecker implements ParameterChecker
     public function check(Authorization $authorization): Authorization
     {
         if (true === $authorization->hasQueryParam('state')) {
-            $authorization = $authorization->withResponseParameter('state', $authorization->getQueryParam('state'));
+            $authorization->setResponseParameter('state', $authorization->getQueryParam('state'));
         }
 
         return $authorization;

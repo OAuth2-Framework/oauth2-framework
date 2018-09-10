@@ -24,7 +24,7 @@ abstract class SessionStateParameterExtension implements Extension
         if ($this->hasOpenIdScope($authorization)) {
             $browserState = $this->getBrowserState($request, $authorization);
             $sessionState = $this->calculateSessionState($request, $authorization, $browserState);
-            $authorization = $authorization->withResponseParameter('session_state', $sessionState);
+            $authorization->setResponseParameter('session_state', $sessionState);
         }
 
         return $authorization;

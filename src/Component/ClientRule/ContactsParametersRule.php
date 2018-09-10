@@ -30,7 +30,7 @@ final class ContactsParametersRule implements Rule
                     throw new \InvalidArgumentException('The parameter "contacts" must be a list of e-mail addresses.');
                 }
             }, $contacts);
-            $validatedParameters->with('contacts', $contacts);
+            $validatedParameters->set('contacts', $contacts);
         }
 
         return $next($clientId, $commandParameters, $validatedParameters);

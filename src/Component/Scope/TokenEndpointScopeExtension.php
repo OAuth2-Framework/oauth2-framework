@@ -43,7 +43,7 @@ final class TokenEndpointScopeExtension implements TokenEndpointExtension
         $scope = $this->applyScopePolicy($scope, $grantTypeData->getClient());
         $this->checkRequestedScopeIsAvailable($scope, $grantTypeData);
         if (!empty($scope)) {
-            $grantTypeData->getParameter()->with('scope', $scope);
+            $grantTypeData->getParameter()->set('scope', $scope);
         }
 
         return $grantTypeData;

@@ -39,7 +39,7 @@ final class ConsentScreenExtensionManagerTest extends TestCase
             new DataBag([]),
             null
         );
-        $authorization = Authorization::create($client, []);
+        $authorization = new Authorization($client, []);
         $authorization = $this->getExtensionManager()->processBefore($request->reveal(), $authorization);
         static::assertTrue($authorization->hasData('Before Consent'));
         static::assertTrue($authorization->getData('Before Consent'));
@@ -56,7 +56,7 @@ final class ConsentScreenExtensionManagerTest extends TestCase
             new DataBag([]),
             null
         );
-        $authorization = Authorization::create($client, []);
+        $authorization = new Authorization($client, []);
         $authorization = $this->getExtensionManager()->processAfter($request->reveal(), $authorization);
         static::assertTrue($authorization->hasData('After Consent'));
         static::assertTrue($authorization->getData('After Consent'));
@@ -76,7 +76,7 @@ final class ConsentScreenExtensionManagerTest extends TestCase
                 ->will(function ($args) {
                     /** @var Authorization $authorization */
                     $authorization = $args[1];
-                    $authorization = $authorization->withData('Before Consent', true);
+                    $authorization->setData('Before Consent', true);
 
                     return $authorization;
                 });
@@ -85,7 +85,7 @@ final class ConsentScreenExtensionManagerTest extends TestCase
                 ->will(function ($args) {
                     /** @var Authorization $authorization */
                     $authorization = $args[1];
-                    $authorization = $authorization->withData('After Consent', true);
+                    $authorization->setData('After Consent', true);
 
                     return $authorization;
                 });

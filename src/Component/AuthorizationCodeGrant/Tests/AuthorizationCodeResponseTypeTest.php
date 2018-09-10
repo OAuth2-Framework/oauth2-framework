@@ -59,15 +59,15 @@ final class AuthorizationCodeResponseTypeTest extends TestCase
         $userAccount = $this->prophesize(UserAccount::class);
         $userAccount->getPublicId()->willReturn(new UserAccountId('USER_ACCOUNT_ID'));
         $userAccount->getUserAccountId()->willReturn(new UserAccountId('USER_ACCOUNT_ID'));
-        $authorization = Authorization::create(
+        $authorization = new Authorization(
             $client,
             [
                 'code_challenge' => 'ABCDEFGH',
                 'code_challenge_method' => 'S256',
             ]
         );
-        $authorization = $authorization->withUserAccount($userAccount->reveal(), true);
-        $authorization = $authorization->withRedirectUri('http://localhost:8000/');
+        $authorization->setUserAccount($userAccount->reveal(), true);
+        $authorization->setRedirectUri('http://localhost:8000/');
         $authorization = $this->getResponseType()->preProcess($authorization);
         $authorization = $this->getResponseType()->process($authorization);
         static::assertTrue($authorization->hasResponseParameter('code'));

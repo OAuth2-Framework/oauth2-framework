@@ -29,13 +29,11 @@ final class DataBagTest extends TestCase
         $data = new DataBag([
             'foo' => 'bar',
         ]);
-        $data->with('foo', 'BAR');
-        $data = $data->without('bar');
-        $data = $data->without('foo');
+        $data->set('foo', 'BAR');
 
         static::assertInstanceOf(DataBag::class, $data);
-        static::assertFalse($data->has('foo'));
+        static::assertTrue($data->has('foo'));
         static::assertFalse($data->has('---'));
-        static::assertEquals('[]', \json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
+        static::assertEquals('{"foo":"BAR"}', \json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
     }
 }

@@ -52,8 +52,8 @@ class ScopeParameterChecker implements ParameterChecker
             if (0 !== \count(\array_diff($scopes, $availableScopes))) {
                 throw new \InvalidArgumentException(\sprintf('An unsupported scope was requested. Available scopes for the client are %s.', \implode(', ', $availableScopes)));
             }
-            $authorization->getMetadata()->with('scope', \implode(' ', $scopes));
-            $authorization = $authorization->withResponseParameter('scope', \implode(' ', $scopes));
+            $authorization->getMetadata()->set('scope', \implode(' ', $scopes));
+            $authorization->setResponseParameter('scope', \implode(' ', $scopes));
 
             return $authorization;
         } catch (\InvalidArgumentException $e) {
