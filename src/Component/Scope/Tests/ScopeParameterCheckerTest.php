@@ -67,7 +67,7 @@ final class ScopeParameterCheckerTest extends TestCase
         $authorization
             ->setResponseParameter('scope', Argument::any())
             ->shouldBeCalled()
-            ->will(function(){});
+            ->will(function () {});
         $this->getScopeParameterChecker()->check(
             $authorization->reveal()
         );

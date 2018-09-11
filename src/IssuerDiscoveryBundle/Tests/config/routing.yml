@@ -1,3 +1,0 @@
-# OAuth2FrameworkIssuerDiscoveryBundle Routes
-issuer_discovery:
-    resource: '@OAuth2FrameworkIssuerDiscoveryBundle/Resources/config/routing/routing.php'

@@ -43,7 +43,7 @@ final class TokenTypeParameterCheckerTest extends TestCase
         $authorization
             ->setTokenType(Argument::type(TokenType::class))
             ->shouldBeCalled()
-            ->will(function(){});
+            ->will(function () {});
         $this->getTokenTypeParameterChecker(true)->check(
             $authorization->reveal()
         );
@@ -60,7 +60,7 @@ final class TokenTypeParameterCheckerTest extends TestCase
         $authorization
             ->setTokenType(Argument::type(TokenType::class))
             ->shouldBeCalled()
-            ->will(function(){});
+            ->will(function () {});
         $this->getTokenTypeParameterChecker(true)->check(
             $authorization->reveal()
         );
