@@ -37,7 +37,7 @@ final class AuthorizationCodeRevocationTypeHint implements TokenTypeHint
         return $this->authorizationCodeRepository->find($id);
     }
 
-    public function revoke(Token $token)
+    public function revoke(Token $token): void
     {
         if (!$token instanceof AuthorizationCode) {
             throw new \InvalidArgumentException('The token is not a valid authorization code.');

@@ -80,7 +80,7 @@ return function (ContainerConfigurator $container) {
         ->tag('oauth2_server_message_factory_for_token_authentication')
         ->tag('oauth2_server_message_factory_for_client_authentication');
 
-    $container->set('oauth2_server.message_factory.302')
+    $container->set('oauth2_server.message_factory.303')
         ->class(Message\Factory\RedirectResponseFactory::class)
         ->tag('oauth2_server_message_factory_for_token_authentication')
         ->tag('oauth2_server_message_factory_for_client_authentication');

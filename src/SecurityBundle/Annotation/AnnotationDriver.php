@@ -55,14 +55,9 @@ class AnnotationDriver
         $this->oauth2ResponseFactoryManager = $oauth2ResponseFactoryManager;
     }
 
-    /**
-     * @return AnnotationDriver
-     */
-    public function add(Checker $checker): self
+    public function add(Checker $checker): void
     {
         $this->checkers[] = $checker;
-
-        return $this;
     }
 
     /**

@@ -22,14 +22,9 @@ class ClaimSourceManager
      */
     private $claimSources = [];
 
-    /**
-     * @return ClaimSourceManager
-     */
-    public function add(ClaimSource $claimSource): self
+    public function add(ClaimSource $claimSource): void
     {
         $this->claimSources[] = $claimSource;
-
-        return $this;
     }
 
     /**

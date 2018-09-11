@@ -37,7 +37,7 @@ final class RefreshTokenRevocationTypeHint implements TokenTypeHint
         return $this->refreshTokenRepository->find($id);
     }
 
-    public function revoke(Token $token)
+    public function revoke(Token $token): void
     {
         if (!$token instanceof RefreshToken || true === $token->isRevoked()) {
             return;

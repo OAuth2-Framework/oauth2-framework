@@ -28,29 +28,14 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 final class ClientRegistrationEndpoint implements MiddlewareInterface
 {
-    /**
-     * @var ResponseFactory
-     */
     private $responseFactory;
 
-    /**
-     * @var ClientRepository
-     */
     private $clientRepository;
 
-    /**
-     * @var ClientIdGenerator
-     */
     private $clientIdGenerator;
 
-    /**
-     * @var RuleManager
-     */
     private $ruleManager;
 
-    /**
-     * ClientRegistrationEndpoint constructor.
-     */
     public function __construct(ClientIdGenerator $clientIdGenerator, ClientRepository $clientRepository, ResponseFactory $responseFactory, RuleManager $ruleManager)
     {
         $this->clientIdGenerator = $clientIdGenerator;
@@ -90,7 +75,7 @@ final class ClientRegistrationEndpoint implements MiddlewareInterface
     /**
      * @throws OAuth2Message
      */
-    private function checkRequest(ServerRequestInterface $request)
+    private function checkRequest(ServerRequestInterface $request): void
     {
         if ('POST' !== $request->getMethod()) {
             throw new OAuth2Message(405, OAuth2Message::ERROR_INVALID_REQUEST, 'Unsupported method.');

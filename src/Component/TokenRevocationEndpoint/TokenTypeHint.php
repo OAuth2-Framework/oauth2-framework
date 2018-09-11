@@ -21,5 +21,5 @@ interface TokenTypeHint
 
     public function find(string $token): ?Token;
 
-    public function revoke(Token $token);
+    public function revoke(Token $token): void;
 }

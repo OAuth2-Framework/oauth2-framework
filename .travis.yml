@@ -18,6 +18,9 @@ before_script:
     - composer self-update
     - mkdir -p build/logs
     - mkdir -p build/cov
+    - composer require --dev php-coveralls/php-coveralls --no-interaction --no-update
+    - composer require --dev phpunit/phpcov --no-interaction --no-update
+    - composer require --dev phpunit/phpunit --no-interaction --no-update
     - if [[ $deps = low ]]; then composer update --no-interaction --prefer-lowest ; fi
     - if [[ !$deps ]]; then composer install --no-interaction ; fi
 

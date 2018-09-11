@@ -11,14 +11,14 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Component\AuthorizationEndpoint\ConsentScreen;
+namespace OAuth2Framework\Component\AuthorizationEndpoint\Extension;
 
 use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
 use Psr\Http\Message\ServerRequestInterface;
 
 interface Extension
 {
-    public function processAfter(ServerRequestInterface $request, Authorization $authorization): Authorization;
+    public function processAfter(ServerRequestInterface $request, Authorization $authorization): void;
 
-    public function processBefore(ServerRequestInterface $request, Authorization $authorization): Authorization;
+    public function processBefore(ServerRequestInterface $request, Authorization $authorization): void;
 }

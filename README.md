@@ -8,6 +8,7 @@ Help me out for a couple of :beers:!
 
 ----
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/cea9f260d4844b1cbd5bf252dad50f10)](https://www.codacy.com/app/Spomky/oauth2-framework?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=OAuth2-Framework/oauth2-framework&amp;utm_campaign=Badge_Grade)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/OAuth2-Framework/oauth2-framework/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/OAuth2-Framework/oauth2-framework/?branch=master)
 [![Coverage Status](https://coveralls.io/repos/github/OAuth2-Framework/oauth2-framework/badge.svg?branch=master)](https://coveralls.io/github/OAuth2-Framework/oauth2-framework?branch=master)
 

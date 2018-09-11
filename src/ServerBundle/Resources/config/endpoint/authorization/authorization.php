@@ -52,7 +52,7 @@ return function (ContainerConfigurator $container) {
             ref(AuthorizationEndpoint\ParameterChecker\ParameterCheckerManager::class),
             ref(AuthorizationEndpoint\UserAccount\UserAccountDiscovery::class),
             ref(AuthorizationEndpoint\UserAccount\UserAccountCheckerManager::class),
-            ref(AuthorizationEndpoint\ConsentScreen\ExtensionManager::class),
+            ref(AuthorizationEndpoint\Extension\ExtensionManager::class),
         ]);
 
     $container->set(AuthorizationEndpoint\UserAccount\UserAccountCheckerManager::class)
@@ -80,7 +80,7 @@ return function (ContainerConfigurator $container) {
         ]);
 
     // Consent Screen Extension
-    $container->set(AuthorizationEndpoint\ConsentScreen\ExtensionManager::class);
+    $container->set(AuthorizationEndpoint\Extension\ExtensionManager::class);
 
     // Parameter Checker
     $container->set(ParameterChecker\ParameterCheckerManager::class);
@@ -115,7 +115,7 @@ return function (ContainerConfigurator $container) {
         ->args([
             ref(\Http\Message\ResponseFactory::class),
         ])
-        ->call('addFactory', [ref('oauth2_server.message_factory.302')])
+        ->call('addFactory', [ref('oauth2_server.message_factory.303')])
         ->call('addFactory', [ref('oauth2_server.message_factory.400')])
         ->call('addFactory', [ref('oauth2_server.message_factory.403')])
         ->call('addFactory', [ref('oauth2_server.message_factory.405')])

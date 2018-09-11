@@ -24,14 +24,9 @@ class ParameterCheckerManager
      */
     private $parameterCheckers = [];
 
-    /**
-     * @return ParameterCheckerManager
-     */
-    public function add(ParameterChecker $parameterChecker): self
+    public function add(ParameterChecker $parameterChecker): void
     {
         $this->parameterCheckers[] = $parameterChecker;
-
-        return $this;
     }
 
     /**

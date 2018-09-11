@@ -17,14 +17,8 @@ use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
 
 class ShowConsentScreenException extends \Exception
 {
-    /**
-     * @var Authorization
-     */
     private $authorization;
 
-    /**
-     * ShowConsentScreenException constructor.
-     */
     public function __construct(Authorization $authorization)
     {
         parent::__construct();

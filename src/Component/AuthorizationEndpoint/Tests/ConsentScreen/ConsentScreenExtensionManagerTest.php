@@ -14,8 +14,8 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\AuthorizationEndpoint\Tests\ConsentScreen;
 
 use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
-use OAuth2Framework\Component\AuthorizationEndpoint\ConsentScreen\Extension;
-use OAuth2Framework\Component\AuthorizationEndpoint\ConsentScreen\ExtensionManager;
+use OAuth2Framework\Component\AuthorizationEndpoint\Extension\Extension;
+use OAuth2Framework\Component\AuthorizationEndpoint\Extension\ExtensionManager;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
@@ -77,8 +77,6 @@ final class ConsentScreenExtensionManagerTest extends TestCase
                     /** @var Authorization $authorization */
                     $authorization = $args[1];
                     $authorization->setData('Before Consent', true);
-
-                    return $authorization;
                 });
             $extension
                 ->processAfter(Argument::type(ServerRequestInterface::class), Argument::type(Authorization::class))
@@ -86,8 +84,6 @@ final class ConsentScreenExtensionManagerTest extends TestCase
                     /** @var Authorization $authorization */
                     $authorization = $args[1];
                     $authorization->setData('After Consent', true);
-
-                    return $authorization;
                 });
 
             $this->extensionManager = new ExtensionManager();

@@ -20,7 +20,7 @@ final class RedirectResponseFactory implements ResponseFactory
 {
     public function getSupportedCode(): int
     {
-        return 302;
+        return 303;
     }
 
     public function createResponse(array $data, ResponseInterface $response): ResponseInterface

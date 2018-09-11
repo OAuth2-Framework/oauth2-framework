@@ -26,7 +26,7 @@ class HttpMethodMiddleware implements MiddlewareInterface
      */
     private $methodMap = [];
 
-    public function add(string $method, MiddlewareInterface $middleware)
+    public function add(string $method, MiddlewareInterface $middleware): void
     {
         if (\array_key_exists($method, $this->methodMap)) {
             throw new \InvalidArgumentException(\sprintf('The method "%s" is already defined.', $method));

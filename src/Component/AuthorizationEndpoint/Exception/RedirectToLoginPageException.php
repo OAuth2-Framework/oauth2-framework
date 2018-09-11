@@ -17,14 +17,8 @@ use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
 
 class RedirectToLoginPageException extends \Exception
 {
-    /**
-     * @var Authorization
-     */
     private $authorization;
 
-    /**
-     * RedirectToLoginPageException constructor.
-     */
     public function __construct(Authorization $authorization)
     {
         parent::__construct();

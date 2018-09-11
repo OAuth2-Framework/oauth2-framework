@@ -22,19 +22,10 @@ use function League\Uri\parse;
 
 final class SectorIdentifierUriRule implements Rule
 {
-    /**
-     * @var HttpClient
-     */
     private $client;
 
-    /**
-     * @var RequestFactory
-     */
     private $requestFactory;
 
-    /**
-     * SectorIdentifierUriRule constructor.
-     */
     public function __construct(RequestFactory $requestFactory, HttpClient $client)
     {
         $this->requestFactory = $requestFactory;

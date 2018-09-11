@@ -17,14 +17,8 @@ use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
 
 class ProcessAuthorizationException extends \Exception
 {
-    /**
-     * @var Authorization
-     */
     private $authorization;
 
-    /**
-     * CreateRedirectionException constructor.
-     */
     public function __construct(Authorization $authorization)
     {
         parent::__construct();

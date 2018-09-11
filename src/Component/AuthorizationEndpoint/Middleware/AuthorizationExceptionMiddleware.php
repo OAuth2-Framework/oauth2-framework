@@ -35,7 +35,7 @@ final class AuthorizationExceptionMiddleware implements MiddlewareInterface
             $responseMode = $e->getAuthorization()->getResponseMode();
             if (null !== $redirectUri && null !== $responseMode) {
                 throw new OAuth2Message(
-                    302,
+                    303,
                     $e->getMessage(),
                     $e->getErrorDescription(),
                     [
@@ -47,7 +47,7 @@ final class AuthorizationExceptionMiddleware implements MiddlewareInterface
             }
             if (null !== $redirectUri) {
                 throw new OAuth2Message(
-                    302,
+                    303,
                     $e->getMessage(),
                     $e->getErrorDescription(),
                     [

@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Component\Endpoint\Authorization\Compiler;
 
-use OAuth2Framework\Component\AuthorizationEndpoint\ConsentScreen\ExtensionManager;
+use OAuth2Framework\Component\AuthorizationEndpoint\Extension\ExtensionManager;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;

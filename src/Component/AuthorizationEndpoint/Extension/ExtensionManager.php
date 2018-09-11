@@ -11,7 +11,7 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Component\AuthorizationEndpoint\ConsentScreen;
+namespace OAuth2Framework\Component\AuthorizationEndpoint\Extension;
 
 use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
 use Psr\Http\Message\ServerRequestInterface;
@@ -23,7 +23,7 @@ class ExtensionManager
      */
     private $extensions = [];
 
-    public function add(Extension $extension)
+    public function add(Extension $extension): void
     {
         $this->extensions[] = $extension;
     }
@@ -31,7 +31,7 @@ class ExtensionManager
     public function processBefore(ServerRequestInterface $request, Authorization $authorization): Authorization
     {
         foreach ($this->extensions as $extension) {
-            $authorization = $extension->processBefore($request, $authorization);
+            $extension->processBefore($request, $authorization);
         }
 
         return $authorization;
@@ -40,7 +40,7 @@ class ExtensionManager
     public function processAfter(ServerRequestInterface $request, Authorization $authorization): Authorization
     {
         foreach ($this->extensions as $extension) {
-            $authorization = $extension->processAfter($request, $authorization);
+            $extension->processAfter($request, $authorization);
         }
 
         return $authorization;

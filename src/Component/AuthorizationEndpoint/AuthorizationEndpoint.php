@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\AuthorizationEndpoint;
 
 use Http\Message\MessageFactory;
-use OAuth2Framework\Component\AuthorizationEndpoint\ConsentScreen\ExtensionManager;
+use OAuth2Framework\Component\AuthorizationEndpoint\Extension\ExtensionManager;
 use OAuth2Framework\Component\AuthorizationEndpoint\Exception\OAuth2AuthorizationException;
 use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\ParameterCheckerManager;
 use OAuth2Framework\Component\AuthorizationEndpoint\UserAccount\UserAccountCheckerManager;
@@ -27,47 +27,26 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 abstract class AuthorizationEndpoint implements MiddlewareInterface
 {
-    /**
-     * @var UserAccountDiscovery
-     */
-    protected $userAccountDiscovery;
-
-    /**
-     * @var UserAccountCheckerManager
-     */
-    protected $userAccountCheckerManager;
-
-    /**
-     * @var ExtensionManager
-     */
-    protected $consentScreenExtensionManager;
-
-    /**
-     * @var AuthorizationRequestLoader
-     */
-    protected $authorizationRequestLoader;
-
-    /**
-     * @var ParameterCheckerManager
-     */
-    protected $parameterCheckerManager;
-
-    /**
-     * @var MessageFactory
-     */
     protected $messageFactory;
 
-    /**
-     * AuthorizationEndpoint constructor.
-     */
-    public function __construct(MessageFactory $messageFactory, AuthorizationRequestLoader $authorizationRequestLoader, ParameterCheckerManager $parameterCheckerManager, UserAccountDiscovery $userAccountDiscovery, UserAccountCheckerManager $userAccountCheckerManager, ExtensionManager $consentScreenExtensionManager)
+    protected $authorizationRequestLoader;
+
+    protected $parameterCheckerManager;
+
+    protected $userAccountDiscovery;
+
+    protected $userAccountCheckerManager;
+
+    protected $extensionManager;
+
+    public function __construct(MessageFactory $messageFactory, AuthorizationRequestLoader $authorizationRequestLoader, ParameterCheckerManager $parameterCheckerManager, UserAccountDiscovery $userAccountDiscovery, UserAccountCheckerManager $userAccountCheckerManager, ExtensionManager $extensionManager)
     {
         $this->messageFactory = $messageFactory;
         $this->authorizationRequestLoader = $authorizationRequestLoader;
         $this->parameterCheckerManager = $parameterCheckerManager;
         $this->userAccountDiscovery = $userAccountDiscovery;
         $this->userAccountCheckerManager = $userAccountCheckerManager;
-        $this->consentScreenExtensionManager = $consentScreenExtensionManager;
+        $this->extensionManager = $extensionManager;
     }
 
     abstract protected function redirectToLoginPage(ServerRequestInterface $request, Authorization $authorization): ResponseInterface;
@@ -90,14 +69,14 @@ abstract class AuthorizationEndpoint implements MiddlewareInterface
             if (null === $userAccount) {
                 return $this->redirectToLoginPage($request, $authorization);
             }
-            $authorization = $this->consentScreenExtensionManager->processBefore($request, $authorization);
+            $authorization = $this->extensionManager->processBefore($request, $authorization);
 
             return $this->processConsentScreen($request, $authorization);
         } catch (OAuth2AuthorizationException $e) {
             throw $e;
         } catch (Exception\ProcessAuthorizationException $e) {
             $authorization = $e->getAuthorization();
-            $authorization = $this->consentScreenExtensionManager->processAfter($request, $authorization);
+            $authorization = $this->extensionManager->processAfter($request, $authorization);
             if (false === $authorization->isAuthorized()) {
                 $this->throwRedirectionException($authorization, OAuth2Message::ERROR_ACCESS_DENIED, 'The resource owner denied access to your client.');
             }
@@ -146,7 +125,7 @@ abstract class AuthorizationEndpoint implements MiddlewareInterface
             'redirect_uri' => $authorization->getRedirectUri(),
         ];
 
-        throw new OAuth2Message(302, $error, $errorDescription, $params);
+        throw new OAuth2Message(303, $error, $errorDescription, $params);
     }
 
     public function createAuthorizationFromRequest(ServerRequestInterface $request): Authorization

@@ -20,14 +20,8 @@ use OAuth2Framework\Component\Core\DataBag\DataBag;
 
 final class ClientAuthenticationMethodRule implements Rule
 {
-    /**
-     * @var AuthenticationMethodManager
-     */
     private $clientAuthenticationMethodManager;
 
-    /**
-     * ClientAuthenticationMethodEndpointRule constructor.
-     */
     public function __construct(AuthenticationMethodManager $clientAuthenticationMethodManager)
     {
         $this->clientAuthenticationMethodManager = $clientAuthenticationMethodManager;

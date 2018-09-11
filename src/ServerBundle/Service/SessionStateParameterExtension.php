@@ -21,31 +21,21 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class SessionStateParameterExtension extends \OAuth2Framework\Component\OpenIdConnect\ConsentScreen\SessionStateParameterExtension
 {
-    /**
-     * @var string
-     */
     private $storageName;
 
-    /**
-     * @var SessionInterface
-     */
     private $session;
 
-    /**
-     * SessionStateParameterExtension constructor.
-     */
     public function __construct(SessionInterface $session, string $storageName)
     {
         $this->session = $session;
         $this->storageName = $storageName;
     }
 
-    public function processBefore(ServerRequestInterface $request, Authorization $authorization): Authorization
+    public function processBefore(ServerRequestInterface $request, Authorization $authorization): void
     {
-        return $authorization;
     }
 
-    protected function getBrowserState(ServerRequestInterface $request, Authorization &$authorization): string
+    protected function getBrowserState(ServerRequestInterface $request, Authorization $authorization): string
     {
         if ($this->session->has($this->storageName)) {
             return $this->session->get($this->storageName);
@@ -54,7 +44,7 @@ class SessionStateParameterExtension extends \OAuth2Framework\Component\OpenIdCo
         $browserState = Base64Url::encode(\random_bytes(64));
         $this->session->set($this->storageName, $browserState);
         $cookie = new Cookie($this->storageName, $browserState);
-        $authorization = $authorization->setResponseHeader('Set-Cookie', (string) $cookie);
+        $authorization->setResponseHeader('Set-Cookie', (string) $cookie);
 
         return $browserState;
     }

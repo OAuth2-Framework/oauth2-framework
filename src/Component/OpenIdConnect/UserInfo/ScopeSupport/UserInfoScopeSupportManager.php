@@ -28,14 +28,9 @@ class UserInfoScopeSupportManager
         $this->userinfoScopeSupports['openid'] = new OpenIdScopeSupport();
     }
 
-    /**
-     * @return UserInfoScopeSupportManager
-     */
-    public function add(UserInfoScopeSupport $userinfoScopeSupport): self
+    public function add(UserInfoScopeSupport $userinfoScopeSupport): void
     {
         $this->userinfoScopeSupports[$userinfoScopeSupport->name()] = $userinfoScopeSupport;
-
-        return $this;
     }
 
     public function has(string $scope): bool

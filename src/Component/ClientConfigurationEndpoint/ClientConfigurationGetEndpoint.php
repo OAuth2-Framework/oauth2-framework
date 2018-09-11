@@ -21,14 +21,8 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 final class ClientConfigurationGetEndpoint implements MiddlewareInterface
 {
-    /**
-     * @var ResponseFactory
-     */
     private $responseFactory;
 
-    /**
-     * ClientConfigurationGetEndpoint constructor.
-     */
     public function __construct(ResponseFactory $responseFactory)
     {
         $this->responseFactory = $responseFactory;

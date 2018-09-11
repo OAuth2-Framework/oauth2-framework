@@ -17,19 +17,10 @@ use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
 
 class CreateRedirectionException extends \Exception
 {
-    /**
-     * @var Authorization
-     */
     private $authorization;
 
-    /**
-     * @var string
-     */
-    private $description = null;
+    private $description;
 
-    /**
-     * CreateRedirectionException constructor.
-     */
     public function __construct(Authorization $authorization, string $message, ?string $description)
     {
         parent::__construct($message);

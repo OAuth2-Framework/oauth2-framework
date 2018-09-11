@@ -22,14 +22,9 @@ class ClaimManager
      */
     private $claims = [];
 
-    /**
-     * @return ClaimManager
-     */
-    public function add(Claim $claim): self
+    public function add(Claim $claim): void
     {
         $this->claims[$claim->name()] = $claim;
-
-        return $this;
     }
 
     /**

@@ -17,19 +17,10 @@ use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
 
 class OAuth2AuthorizationException extends \Exception
 {
-    /**
-     * @var Authorization
-     */
     private $authorization;
 
-    /**
-     * @var null|string
-     */
     private $errorDescription;
 
-    /**
-     * OAuth2AuthorizationException constructor.
-     */
     public function __construct(int $code, string $error, ?string $errorDescription, Authorization $authorization, ?\Exception $previous = null)
     {
         $this->authorization = $authorization;

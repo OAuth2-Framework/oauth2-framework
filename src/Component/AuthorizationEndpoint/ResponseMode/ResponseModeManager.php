@@ -36,14 +36,9 @@ class ResponseModeManager
         return \array_values($this->responseModes);
     }
 
-    /**
-     * @return ResponseModeManager
-     */
-    public function add(ResponseMode $responseMode)
+    public function add(ResponseMode $responseMode): void
     {
         $this->responseModes[$responseMode->name()] = $responseMode;
-
-        return $this;
     }
 
     public function has(string $name): bool

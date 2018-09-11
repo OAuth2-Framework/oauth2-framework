@@ -35,7 +35,7 @@ final class QueryResponseMode implements ResponseMode
         $uri['fragment'] = '_=_'; //A redirect Uri is not supposed to have fragment so we override it.
         $uri = Uri\build($uri);
 
-        $response = $response->withStatus(302);
+        $response = $response->withStatus(303);
         $response = $response->withHeader('Location', $uri);
 
         return $response;

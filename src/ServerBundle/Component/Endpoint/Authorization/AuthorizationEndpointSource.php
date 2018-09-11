@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\ServerBundle\Component\Endpoint\Authorization;
 
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationEndpoint;
-use OAuth2Framework\Component\AuthorizationEndpoint\ConsentScreen\Extension;
+use OAuth2Framework\Component\AuthorizationEndpoint\Extension\Extension;
 use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\ParameterChecker;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\ResponseMode;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType;

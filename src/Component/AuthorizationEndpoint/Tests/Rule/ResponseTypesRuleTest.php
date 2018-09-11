@@ -118,9 +118,8 @@ final class ResponseTypesRuleTest extends TestCase
             $idTokenResponseType->associatedGrantTypes()->willReturn([]);
 
             $responseTypeManager = new ResponseTypeManager();
-            $responseTypeManager
-                ->add($codeResponseType->reveal())
-                ->add($idTokenResponseType->reveal());
+            $responseTypeManager->add($codeResponseType->reveal());
+            $responseTypeManager->add($idTokenResponseType->reveal());
             $this->responseTypesRule = new ResponseTypesRule($responseTypeManager);
         }
 

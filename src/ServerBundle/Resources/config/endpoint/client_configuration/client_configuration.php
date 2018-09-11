@@ -73,7 +73,7 @@ return function (ContainerConfigurator $container) {
         ->args([
             ref(\Http\Message\ResponseFactory::class),
         ])
-        ->call('addFactory', [ref('oauth2_server.message_factory.302')])
+        ->call('addFactory', [ref('oauth2_server.message_factory.303')])
         ->call('addFactory', [ref('oauth2_server.message_factory.400')])
         ->call('addFactory', [ref('oauth2_server.message_factory.403')])
         ->call('addFactory', [ref('oauth2_server.message_factory.405')])

@@ -22,24 +22,12 @@ use OAuth2Framework\Component\Core\Message\OAuth2Message;
 
 final class ResponseTypeAndResponseModeParameterChecker implements ParameterChecker
 {
-    /**
-     * @var ResponseModeManager
-     */
     private $responseModeManager;
 
-    /**
-     * @var bool
-     */
     private $responseModeParameterInAuthorizationRequestAllowed;
 
-    /**
-     * @var ResponseTypeManager
-     */
     private $responseTypeManager;
 
-    /**
-     * ResponseTypeAndResponseModeParameterChecker constructor.
-     */
     public function __construct(ResponseTypeManager $responseTypeManager, ResponseModeManager $responseModeManager, bool $responseModeParameterInAuthorizationRequestAllowed)
     {
         $this->responseTypeManager = $responseTypeManager;

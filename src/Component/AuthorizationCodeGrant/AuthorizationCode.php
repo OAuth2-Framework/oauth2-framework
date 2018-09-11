@@ -13,10 +13,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\AuthorizationCodeGrant;
 
-use OAuth2Framework\Component\AuthorizationCodeGrant\Event as AuthorizationCodeEvent;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
-use OAuth2Framework\Component\Core\Event\Event;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
 use OAuth2Framework\Component\Core\Token\Token;
 use OAuth2Framework\Component\Core\Token\TokenId;
@@ -115,53 +113,5 @@ class AuthorizationCode extends Token
         ];
 
         return $data;
-    }
-
-    public function apply(Event $event): void
-    {
-        $map = $this->getEventMap();
-        if (!\array_key_exists($event->getType(), $map)) {
-            throw new \RuntimeException('Unsupported event.');
-        }
-        if ($this->getTokenId()->getValue() !== $event->getDomainId()->getValue()) {
-            throw new \RuntimeException('Event not applicable for this authorization code.');
-        }
-        $method = $map[$event->getType()];
-
-        $this->$method($event);
-    }
-
-    private function getEventMap(): array
-    {
-        return [
-            AuthorizationCodeEvent\AuthorizationCodeCreatedEvent::class => 'applyAuthorizationCodeCreatedEvent',
-            AuthorizationCodeEvent\AuthorizationCodeMarkedAsUsedEvent::class => 'applyAuthorizationCodeMarkedAsUsedEvent',
-            AuthorizationCodeEvent\AuthorizationCodeRevokedEvent::class => 'applyAuthorizationCodeRevokedEvent',
-        ];
-    }
-
-    protected function applyAuthorizationCodeCreatedEvent(AuthorizationCodeEvent\AuthorizationCodeCreatedEvent $event): void
-    {
-        $this->setTokenId($event->getAuthorizationCodeId());
-        $this->setClientId($event->getClientId());
-        $this->setResourceOwnerId($event->getUserAccountId());
-        $this->setQueryParameters($event->getQueryParameters());
-        $this->setRedirectUri($event->getRedirectUri());
-        $this->setExpiresAt($event->getExpiresAt());
-        $this->setParameter($event->getParameter());
-        $this->setMetadata($event->getMetadata());
-        $this->setExpiresAt($event->getExpiresAt());
-        $this->setResourceServerId($event->getResourceServerId());
-        $this->used = false;
-    }
-
-    protected function applyAuthorizationCodeMarkedAsUsedEvent(AuthorizationCodeEvent\AuthorizationCodeMarkedAsUsedEvent $event): void
-    {
-        $this->markAsUsed();
-    }
-
-    protected function applyAuthorizationCodeRevokedEvent(AuthorizationCodeEvent\AuthorizationCodeRevokedEvent $event): void
-    {
-        $this->markAsRevoked();
     }
 }

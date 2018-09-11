@@ -20,7 +20,7 @@ class IdentifierResolverManager
      */
     private $resolvers = [];
 
-    public function add(IdentifierResolver $resolver)
+    public function add(IdentifierResolver $resolver): void
     {
         $this->resolvers[] = $resolver;
     }

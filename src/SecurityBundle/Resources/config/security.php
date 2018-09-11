@@ -46,7 +46,7 @@ return function (ContainerConfigurator $container) {
         ->args([
             ref('oauth2_security.psr7_message_factory'),
         ])
-        ->call('addFactory', [ref('oauth2_security.message_factory.302')])
+        ->call('addFactory', [ref('oauth2_security.message_factory.303')])
         ->call('addFactory', [ref('oauth2_security.message_factory.400')])
         ->call('addFactory', [ref('oauth2_security.message_factory.401')])
         ->call('addFactory', [ref('oauth2_security.message_factory.403')])
@@ -108,7 +108,7 @@ return function (ContainerConfigurator $container) {
         ->class(Message\Factory\NotImplementedResponseFactory::class)
         ->tag('oauth2_security_message_factory');
 
-    $container->set('oauth2_security.message_factory.302')
+    $container->set('oauth2_security.message_factory.303')
         ->class(Message\Factory\RedirectResponseFactory::class)
         ->tag('oauth2_security_message_factory');
 

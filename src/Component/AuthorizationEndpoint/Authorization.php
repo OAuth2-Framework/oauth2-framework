@@ -164,15 +164,6 @@ class Authorization
         $this->metadata->set('redirect_uri', $redirectUri);
     }
 
-    public function getClaims(): ?array
-    {
-        if ($this->metadata->has('claims')) {
-            return \json_decode($this->metadata->get('claims'), true);
-        }
-
-        return null;
-    }
-
     public function getRedirectUri(): ?string
     {
         return $this->redirectUri;

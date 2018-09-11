@@ -23,7 +23,7 @@ class UserAccountCheckerManager
      */
     private $checkers = [];
 
-    public function add(UserAccountChecker $checker)
+    public function add(UserAccountChecker $checker): void
     {
         $this->checkers[] = $checker;
     }
