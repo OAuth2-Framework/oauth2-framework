@@ -114,7 +114,7 @@ final class TokenRevocationPostEndpointTest extends TestCase
             $tokenType->find('VALID_TOKEN')->willReturn($token->reveal());
             $tokenType->find('BAD_TOKEN')->willReturn(null);
             $tokenType->hint()->willReturn('foo');
-            $tokenType->revoke($token)->will(function(){});
+            $tokenType->revoke($token)->will(function () {});
 
             $this->tokenTypeHintManager = new TokenTypeHintManager();
             $this->tokenTypeHintManager->add($tokenType->reveal());

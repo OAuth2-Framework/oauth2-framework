@@ -179,7 +179,7 @@ final class TokenRevocationGetEndpointTest extends TestCase
             $tokenType->find('TOKEN_FOR_ANOTHER_CLIENT')->willReturn($token2->reveal());
             $tokenType->find('UNKNOWN_TOKEN')->willReturn(null);
             $tokenType->hint()->willReturn('foo');
-            $tokenType->revoke($token1)->will(function (){});
+            $tokenType->revoke($token1)->will(function () {});
 
             $this->tokenTypeHintManager = new TokenTypeHintManager();
             $this->tokenTypeHintManager->add($tokenType->reveal());
