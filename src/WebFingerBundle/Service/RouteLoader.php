@@ -20,14 +20,8 @@ use Symfony\Component\Routing\RouteCollection;
 
 class RouteLoader implements LoaderInterface
 {
-    /**
-     * @var RouteCollection
-     */
     private $routes;
 
-    /**
-     * RouteLoader constructor.
-     */
     public function __construct()
     {
         $this->routes = new RouteCollection();
@@ -46,7 +40,7 @@ class RouteLoader implements LoaderInterface
      * @param string|array $methods      A required HTTP method or an array of restricted methods
      * @param string       $condition    A condition that should evaluate to true for the route to match
      */
-    public function addRoute($name, $controllerId, $methodName, $path, array $defaults = [], array $requirements = [], array $options = [], $host = '', $schemes = [], $methods = [], $condition = '')
+    public function addRoute($name, $controllerId, $methodName, $path, array $defaults = [], array $requirements = [], array $options = [], ?string $host = '', $schemes = [], $methods = [], $condition = '')
     {
         $defaults['_controller'] = \sprintf('%s:%s', $controllerId, $methodName);
         $route = new Route($path, $defaults, $requirements, $options, $host, $schemes, $methods, $condition);

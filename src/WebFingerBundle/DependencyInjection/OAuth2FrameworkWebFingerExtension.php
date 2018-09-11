@@ -42,7 +42,6 @@ class OAuth2FrameworkWebFingerExtension extends Extension
         $container->registerForAutoconfiguration(IdentifierResolver::class)->addTag('webfinger_identifier_resolver');
         $container->setAlias('webfinger.response_factory', $config['response_factory']);
         $container->setAlias('webfinger.resource_repository', $config['resource_repository']);
-        $container->setParameter('webfinger.host', $config['host']);
         $container->setParameter('webfinger.path', $config['path']);
 
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../Resources/config/'));

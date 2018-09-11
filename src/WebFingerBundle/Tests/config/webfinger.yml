@@ -1,5 +1,4 @@
 webfinger:
     response_factory: 'OAuth2Framework\WebFingerBundle\Tests\TestBundle\Service\ResponseFactory'
-    host: 'my-service.com'
     path: '/.well-known/webfinger'
     resource_repository: 'OAuth2Framework\WebFingerBundle\Tests\TestBundle\Entity\ResourceRepository'

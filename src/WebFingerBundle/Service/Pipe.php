@@ -26,47 +26,11 @@ class Pipe implements MiddlewareInterface
     private $middlewares;
 
     /**
-     * Dispatcher constructor.
-     *
      * @param MiddlewareInterface[] $middlewares
      */
     public function __construct(array $middlewares = [])
     {
         $this->middlewares = $middlewares;
-    }
-
-    /**
-     * Appends new middleware for this message bus. Should only be used at configuration time.
-     */
-    public function appendMiddleware(MiddlewareInterface $middleware)
-    {
-        $this->middlewares[] = $middleware;
-    }
-
-    /**
-     * Prepends new middleware for this message bus. Should only be used at configuration time.
-     */
-    public function prependMiddleware(MiddlewareInterface $middleware)
-    {
-        \array_unshift($this->middlewares, $middleware);
-    }
-
-    public function addMiddlewareAfterFirstOne(MiddlewareInterface $middleware)
-    {
-        $count = \count($this->middlewares);
-        $temp = \array_slice($this->middlewares, 1, $count);
-        \array_unshift($temp, $middleware);
-        \array_unshift($temp, $this->middlewares[0]);
-        $this->middlewares = $temp;
-    }
-
-    public function addMiddlewareBeforeLastOne(MiddlewareInterface $middleware)
-    {
-        $count = \count($this->middlewares);
-        $temp = \array_slice($this->middlewares, 0, $count - 1);
-        $temp[] = $middleware;
-        $temp[] = $this->middlewares[$count - 1];
-        $this->middlewares = $temp;
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
@@ -86,19 +50,14 @@ class Pipe implements MiddlewareInterface
      * Dispatches the middleware and returns the resulting `ResponseInterface`.
      *
      * @throws \LogicException on unexpected result from any middleware on the middlewares
-     *
-     * @return ResponseInterface
      */
-    public function dispatch(ServerRequestInterface $request)
+    public function dispatch(ServerRequestInterface $request): ResponseInterface
     {
         $resolved = $this->resolve(0);
 
         return $resolved->handle($request);
     }
 
-    /**
-     * @param int $index Middleware index
-     */
     private function resolve(int $index): RequestHandlerInterface
     {
         if (isset($this->middlewares[$index])) {

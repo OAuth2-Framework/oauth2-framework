@@ -33,7 +33,7 @@ return function (ContainerConfigurator $container) {
             [], // defaults
             [], // requirements
             [], // options
-            '%webfinger.host%', // host
+            null, // host
             ['https'], // schemes
             ['GET'], // methods
             '', // condition
