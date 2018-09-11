@@ -56,7 +56,7 @@
     },
     "replace": {
         "oauth2-framework/authorization-server-bundle": "self.version",
-        "oauth2-framework/issuer-discovery-bundle": "self.version",
+        "oauth2-framework/webfinger-bundle": "self.version",
         "oauth2-framework/authorization-code-grant": "self.version",
         "oauth2-framework/authorization-endpoint": "self.version",
         "oauth2-framework/bearer-token-type": "self.version",
@@ -67,7 +67,7 @@
         "oauth2-framework/client-rule": "self.version",
         "oauth2-framework/core": "self.version",
         "oauth2-framework/implicit-grant": "self.version",
-        "oauth2-framework/issuer-discovery-endpoint": "self.version",
+        "oauth2-framework/webfinger-endpoint": "self.version",
         "oauth2-framework/jwt-bearer-grant": "self.version",
         "oauth2-framework/mac-token-type": "self.version",
         "oauth2-framework/metadata-endpoint": "self.version",

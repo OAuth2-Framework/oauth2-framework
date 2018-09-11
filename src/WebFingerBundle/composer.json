@@ -17,6 +17,7 @@
     ],
     "require": {
         "php": "^7.1",
+        "ext-json": "*",
         "oauth2-framework/webfinger-endpoint": "^0.0@dev",
         "sensio/framework-extra-bundle": "^5.0",
         "symfony/config": "^3.4|^4.0",

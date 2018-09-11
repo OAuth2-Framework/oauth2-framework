@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 use OAuth2Framework\Component\WebFingerEndpoint\IdentifierResolver;
 use OAuth2Framework\Component\WebFingerEndpoint\WebFingerEndpoint;
-use OAuth2Framework\WebFingerBundle\Middleware\Pipe;
+use OAuth2Framework\WebFingerBundle\Service\Pipe;
 use OAuth2Framework\WebFingerBundle\Service\RouteLoader;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
