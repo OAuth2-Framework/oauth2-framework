@@ -146,7 +146,7 @@ final class WebFingerEndpointTest extends TestCase
             'resource' => 'hello@www.foo.bar:8000',
         ]);
         $repository = $this->prophesize(ResourceRepository::class);
-        $repository->find(Argument::type(Identifier::class))->willReturn(new ResourceDescriptor(
+        $repository->find(Argument::type('string'), Argument::type(Identifier::class))->willReturn(new ResourceDescriptor(
             'hello@www.foo.bar:8000',
             [],
             [],
@@ -182,7 +182,7 @@ final class WebFingerEndpointTest extends TestCase
             'resource' => 'acct:hello%40you@www.foo.bar:8000',
         ]);
         $repository = $this->prophesize(ResourceRepository::class);
-        $repository->find(Argument::type(Identifier::class))->willReturn(new ResourceDescriptor(
+        $repository->find(Argument::type('string'), Argument::type(Identifier::class))->willReturn(new ResourceDescriptor(
             'acct:hello%40you@www.foo.bar:8000',
             [],
             [],
@@ -218,7 +218,7 @@ final class WebFingerEndpointTest extends TestCase
             'resource' => 'https://www.foo.bar:8000/+hello',
         ]);
         $repository = $this->prophesize(ResourceRepository::class);
-        $repository->find(Argument::type(Identifier::class))->willReturn(new ResourceDescriptor(
+        $repository->find(Argument::type('string'), Argument::type(Identifier::class))->willReturn(new ResourceDescriptor(
             'https://www.foo.bar:8000/+hello',
             [],
             [],
