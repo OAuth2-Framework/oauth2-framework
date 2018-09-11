@@ -92,7 +92,7 @@ class WebFingerEndpointTest extends WebTestCase
         $client->request('GET', '/.well-known/webfinger', ['rel' => 'http://openid.net/specs/connect/1.0/issuer', 'resource' => 'acct:john@my-service.com:443'], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
         static::assertEquals(200, $response->getStatusCode());
-        static::assertEquals('{"subject":"john","aliases":["acct:john@my-service.com:443","https://my-service.com:443/+john"],"links":[{"rel":"http://openid.net/specs/connect/1.0/issuer","href":"https://server.example.com"}]}', $response->getContent());
+        static::assertEquals('{"subject":"acct:john@my-service.com:443","aliases":["https://my-service.com:443/+john"],"links":[{"rel":"http://openid.net/specs/connect/1.0/issuer","href":"https://server.example.com"}]}', $response->getContent());
     }
 
     /**
@@ -104,6 +104,6 @@ class WebFingerEndpointTest extends WebTestCase
         $client->request('GET', '/.well-known/webfinger', ['rel' => 'http://openid.net/specs/connect/1.0/issuer', 'resource' => 'https://my-service.com:443/+john'], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
         static::assertEquals(200, $response->getStatusCode());
-        static::assertEquals('{"subject":"john","aliases":["acct:john@my-service.com:443","https://my-service.com:443/+john"],"links":[{"rel":"http://openid.net/specs/connect/1.0/issuer","href":"https://server.example.com"}]}', $response->getContent());
+        static::assertEquals('{"subject":"acct:john@my-service.com:443","aliases":["https://my-service.com:443/+john"],"links":[{"rel":"http://openid.net/specs/connect/1.0/issuer","href":"https://server.example.com"}]}', $response->getContent());
     }
 }

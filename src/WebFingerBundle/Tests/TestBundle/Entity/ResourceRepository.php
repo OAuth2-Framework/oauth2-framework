@@ -28,9 +28,8 @@ class ResourceRepository implements ResourceRepositoryInterface
     public function __construct()
     {
         $this->resources['john'] = new ResourceDescriptor(
-            'john',
+            'acct:john@my-service.com:443',
             [
-                'acct:john@my-service.com:443',
                 'https://my-service.com:443/+john',
             ],
             [],
@@ -47,7 +46,7 @@ class ResourceRepository implements ResourceRepositoryInterface
             return null;
         }
 
-        if (!\in_array($resource, $resourceDescriptor->getAliases(), true)) {
+        if ($resource !== $resourceDescriptor->getSubject() && !\in_array($resource, $resourceDescriptor->getAliases(), true)) {
             return null;
         }
 
