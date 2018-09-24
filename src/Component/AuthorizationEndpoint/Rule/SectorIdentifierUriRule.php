@@ -16,6 +16,7 @@ namespace OAuth2Framework\Component\AuthorizationEndpoint\Rule;
 use Http\Client\HttpClient;
 use Http\Message\RequestFactory;
 use OAuth2Framework\Component\ClientRule\Rule;
+use OAuth2Framework\Component\ClientRule\RuleHandler;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use function League\Uri\parse;
@@ -32,14 +33,14 @@ final class SectorIdentifierUriRule implements Rule
         $this->client = $client;
     }
 
-    public function handle(ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters, callable $next): DataBag
+    public function handle(ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters, RuleHandler $next): DataBag
     {
-        $validatedParameters = $next($clientId, $commandParameters, $validatedParameters);
+        $validatedParameters = $next->handle($clientId, $commandParameters, $validatedParameters);
 
         if ($commandParameters->has('sector_identifier_uri')) {
             $redirectUris = $validatedParameters->has('redirect_uris') ? $validatedParameters->get('redirect_uris') : [];
             $this->checkSectorIdentifierUri($commandParameters->get('sector_identifier_uri'), $redirectUris);
-            $validatedParameters->with('sector_identifier_uri', $commandParameters->get('sector_identifier_uri'));
+            $validatedParameters->set('sector_identifier_uri', $commandParameters->get('sector_identifier_uri'));
         }
 
         return $validatedParameters;

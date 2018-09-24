@@ -14,14 +14,15 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\AuthorizationEndpoint\Rule;
 
 use OAuth2Framework\Component\ClientRule\Rule;
+use OAuth2Framework\Component\ClientRule\RuleHandler;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 
 final class RequestUriRule implements Rule
 {
-    public function handle(ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters, callable $next): DataBag
+    public function handle(ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters, RuleHandler $next): DataBag
     {
-        $validatedParameters = $next($clientId, $commandParameters, $validatedParameters);
+        $validatedParameters = $next->handle($clientId, $commandParameters, $validatedParameters);
         if (!$validatedParameters->has('response_types') || empty($validatedParameters->get('response_types'))) {
             return $validatedParameters;
         }

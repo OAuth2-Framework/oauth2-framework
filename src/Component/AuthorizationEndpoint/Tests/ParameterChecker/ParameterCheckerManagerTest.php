@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\AuthorizationEndpoint\Tests\ParameterChecker;
 
-use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
+use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
 use OAuth2Framework\Component\AuthorizationEndpoint\Exception\OAuth2AuthorizationException;
 use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\DisplayParameterChecker;
 use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\ParameterCheckerManager;
@@ -24,8 +24,8 @@ use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\StateParame
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\FragmentResponseMode;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\QueryResponseMode;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\ResponseModeManager;
-use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType;
-use OAuth2Framework\Component\AuthorizationEndpoint\ResponseTypeManager;
+use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType\ResponseType;
+use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType\ResponseTypeManager;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
@@ -46,7 +46,7 @@ final class ParameterCheckerManagerTest extends TestCase
             new DataBag([]),
             null
         );
-        $authorization = new Authorization($client, [
+        $authorization = new AuthorizationRequest($client, [
             'display' => 'foo',
         ]);
 
@@ -70,7 +70,7 @@ final class ParameterCheckerManagerTest extends TestCase
             new DataBag([]),
             null
         );
-        $authorization = new Authorization($client, [
+        $authorization = new AuthorizationRequest($client, [
             'prompt' => 'foo',
         ]);
 
@@ -94,7 +94,7 @@ final class ParameterCheckerManagerTest extends TestCase
             new DataBag([]),
             null
         );
-        $authorization = new Authorization($client, [
+        $authorization = new AuthorizationRequest($client, [
             'prompt' => 'none login',
         ]);
 
@@ -118,7 +118,7 @@ final class ParameterCheckerManagerTest extends TestCase
             new DataBag([]),
             null
         );
-        $authorization = new Authorization($client, []);
+        $authorization = new AuthorizationRequest($client, []);
 
         try {
             $this->getParameterCheckerManager()->process($authorization);
@@ -140,7 +140,7 @@ final class ParameterCheckerManagerTest extends TestCase
             new DataBag([]),
             null
         );
-        $authorization = new Authorization($client, [
+        $authorization = new AuthorizationRequest($client, [
             'redirect_uri' => 'https://www.foo.bar/callback',
         ]);
 
@@ -166,7 +166,7 @@ final class ParameterCheckerManagerTest extends TestCase
             ]),
             null
         );
-        $authorization = new Authorization($client, [
+        $authorization = new AuthorizationRequest($client, [
             'redirect_uri' => 'https://www.foo.bar/callback',
             'response_type' => 'foo',
             'response_mode' => 'foo',
@@ -192,7 +192,7 @@ final class ParameterCheckerManagerTest extends TestCase
             new DataBag([]),
             null
         );
-        $authorization = new Authorization($client, [
+        $authorization = new AuthorizationRequest($client, [
             'redirect_uri' => 'https://www.foo.bar/callback',
             'response_type' => 'bar',
         ]);
@@ -217,7 +217,7 @@ final class ParameterCheckerManagerTest extends TestCase
             new DataBag([]),
             null
         );
-        $authorization = new Authorization($client, [
+        $authorization = new AuthorizationRequest($client, [
             'redirect_uri' => 'https://www.foo.bar/callback',
             'response_type' => 'foo',
         ]);
@@ -244,7 +244,7 @@ final class ParameterCheckerManagerTest extends TestCase
             ]),
             null
         );
-        $authorization = new Authorization($client, [
+        $authorization = new AuthorizationRequest($client, [
             'redirect_uri' => 'https://www.foo.bar/callback',
             'response_type' => 'foo',
             'state' => '0123456789',

@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\ClientConfigurationEndpoint\Tests;
 
+use OAuth2Framework\Component\ClientRule\RuleHandler;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use PHPUnit\Framework\TestCase;
@@ -37,10 +38,10 @@ final class ClientRegistrationManagementRuleTest extends TestCase
         static::assertEquals('https://www.example.com/client/CLIENT_ID', $validatedParameters->get('registration_client_uri'));
     }
 
-    private function getCallable(): callable
+    private function getCallable(): RuleHandler
     {
-        return function (ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters): DataBag {
+        return new RuleHandler(function (ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters): DataBag {
             return $validatedParameters;
-        };
+        });
     }
 }

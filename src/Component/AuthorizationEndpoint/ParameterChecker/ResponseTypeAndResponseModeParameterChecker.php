@@ -13,11 +13,11 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker;
 
-use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
+use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
 use OAuth2Framework\Component\AuthorizationEndpoint\Exception\OAuth2AuthorizationException;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\ResponseModeManager;
-use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType;
-use OAuth2Framework\Component\AuthorizationEndpoint\ResponseTypeManager;
+use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType\ResponseType;
+use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType\ResponseTypeManager;
 use OAuth2Framework\Component\Core\Message\OAuth2Message;
 
 final class ResponseTypeAndResponseModeParameterChecker implements ParameterChecker
@@ -35,7 +35,7 @@ final class ResponseTypeAndResponseModeParameterChecker implements ParameterChec
         $this->responseModeParameterInAuthorizationRequestAllowed = $responseModeParameterInAuthorizationRequestAllowed;
     }
 
-    public function check(Authorization $authorization): Authorization
+    public function check(AuthorizationRequest $authorization)
     {
         try {
             /*
@@ -60,16 +60,11 @@ final class ResponseTypeAndResponseModeParameterChecker implements ParameterChec
                 throw new \InvalidArgumentException(\sprintf('The response mode "%s" is not supported. Please use one of the following values: %s.', $responseMode, \implode(', ', $this->responseModeManager->list())));
             }
             $authorization->setResponseMode($this->responseModeManager->get($responseMode));
-
-            return $authorization;
         } catch (\InvalidArgumentException $e) {
             throw new OAuth2AuthorizationException(400, OAuth2Message::ERROR_INVALID_REQUEST, $e->getMessage(), $authorization, $e);
         }
     }
 
-    /**
-     * @throws \InvalidArgumentException
-     */
     private function getResponseType(string $responseType): ResponseType
     {
         if (!$this->responseTypeManager->has($responseType)) {

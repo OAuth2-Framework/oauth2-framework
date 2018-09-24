@@ -38,9 +38,6 @@ class UserInfoScopeSupportManager
         return \array_key_exists($scope, $this->userinfoScopeSupports);
     }
 
-    /**
-     * @throws \InvalidArgumentException
-     */
     public function get(string $scope): UserInfoScopeSupport
     {
         if (!$this->has($scope)) {

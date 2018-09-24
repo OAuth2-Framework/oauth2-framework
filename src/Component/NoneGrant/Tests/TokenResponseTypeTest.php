@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\NoneGrant\Tests;
 
-use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
+use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
@@ -49,7 +49,7 @@ final class TokenResponseTypeTest extends TestCase
     public function theAuthorizationIsSaved()
     {
         $authorizationStorage = $this->prophesize(AuthorizationStorage::class);
-        $authorizationStorage->save(Argument::type(Authorization::class))->shouldBeCalled();
+        $authorizationStorage->save(Argument::type(AuthorizationRequest::class))->shouldBeCalled();
         $responseType = new NoneResponseType($authorizationStorage->reveal());
 
         $client = new Client(
@@ -60,7 +60,7 @@ final class TokenResponseTypeTest extends TestCase
         $tokenType = $this->prophesize(TokenType::class);
         $tokenType->getAdditionalInformation()->willReturn(['token_type' => 'FOO']);
 
-        $authorization = new Authorization($client, []);
+        $authorization = new AuthorizationRequest($client, []);
         $authorization->setResponseType($responseType);
 
         $authorization = $responseType->process($authorization);

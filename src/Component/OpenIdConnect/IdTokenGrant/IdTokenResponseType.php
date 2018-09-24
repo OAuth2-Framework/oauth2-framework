@@ -17,8 +17,8 @@ use Jose\Component\Core\JWKSet;
 use Jose\Component\Encryption\JWEBuilder;
 use Jose\Component\Signature\JWSBuilder;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeId;
-use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
-use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType;
+use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
+use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType\ResponseType;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
 use OAuth2Framework\Component\Core\Message\OAuth2Message;
 use OAuth2Framework\Component\OpenIdConnect\IdTokenBuilderFactory;
@@ -80,12 +80,12 @@ final class IdTokenResponseType implements ResponseType
         return self::RESPONSE_TYPE_MODE_FRAGMENT;
     }
 
-    public function preProcess(Authorization $authorization): Authorization
+    public function preProcess(AuthorizationRequest $authorization): AuthorizationRequest
     {
         return $authorization;
     }
 
-    public function process(Authorization $authorization): Authorization
+    public function process(AuthorizationRequest $authorization): AuthorizationRequest
     {
         if ($authorization->hasQueryParam('scope') && \in_array('openid', \explode(' ', $authorization->getQueryParam('scope')), true)) {
             if (!\array_key_exists('nonce', $authorization->getQueryParams())) {
@@ -98,10 +98,7 @@ final class IdTokenResponseType implements ResponseType
         return $authorization;
     }
 
-    /**
-     * @throws OAuth2Message
-     */
-    private function populateWithIdToken(Authorization $authorization): Authorization
+    private function populateWithIdToken(AuthorizationRequest $authorization): AuthorizationRequest
     {
         $params = $authorization->getQueryParams();
         $requestedClaims = $this->getIdTokenClaims($authorization);
@@ -114,28 +111,28 @@ final class IdTokenResponseType implements ResponseType
             $authorization->getUserAccount(),
             $authorization->getRedirectUri()
         );
-        $idTokenBuilder = $idTokenBuilder->withRequestedClaims($requestedClaims);
-        $idTokenBuilder = $idTokenBuilder->withScope($authorization->getQueryParam('scope'));
-        $idTokenBuilder = $idTokenBuilder->withNonce($params['nonce']);
+        $idTokenBuilder->withRequestedClaims($requestedClaims);
+        $idTokenBuilder->withScope($authorization->getQueryParam('scope'));
+        $idTokenBuilder->withNonce($params['nonce']);
 
         if ($authorization->hasResponseParameter('code')) {
-            $idTokenBuilder = $idTokenBuilder->withAuthorizationCodeId(new AuthorizationCodeId($authorization->getResponseParameter('code')));
+            $idTokenBuilder->withAuthorizationCodeId(new AuthorizationCodeId($authorization->getResponseParameter('code')));
         }
 
         if ($authorization->hasResponseParameter('access_token')) {
-            $idTokenBuilder = $idTokenBuilder->withAccessTokenId(new AccessTokenId($authorization->getResponseParameter('access_token')));
+            $idTokenBuilder->withAccessTokenId(new AccessTokenId($authorization->getResponseParameter('access_token')));
         }
 
         if ($authorization->hasQueryParam('claims_locales')) {
-            $idTokenBuilder = $idTokenBuilder->withClaimsLocales($authorization->getQueryParam('claims_locales'));
+            $idTokenBuilder->withClaimsLocales($authorization->getQueryParam('claims_locales'));
         }
 
         if ($authorization->hasResponseParameter('expires_in')) {
-            $idTokenBuilder = $idTokenBuilder->withExpirationAt(new \DateTimeImmutable(\sprintf('now +%s sec', $authorization->getResponseParameter('expires_in'))));
+            $idTokenBuilder->withExpirationAt(new \DateTimeImmutable(\sprintf('now +%s sec', $authorization->getResponseParameter('expires_in'))));
         }
 
         if ($authorization->hasQueryParam('max_age')) {
-            $idTokenBuilder = $idTokenBuilder->withAuthenticationTime();
+            $idTokenBuilder->withAuthenticationTime();
         }
 
         if ($authorization->getClient()->has('id_token_signed_response_alg')) {
@@ -143,22 +140,23 @@ final class IdTokenResponseType implements ResponseType
             if ('none' === $signatureAlgorithm) {
                 throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_CLIENT, 'The ID Token signature algorithm set for the client (parameter "id_token_signed_response_alg") is "none" but this algorithm is not allowed for ID Tokens issued through the authorization endpoint.');
             }
-            $idTokenBuilder = $idTokenBuilder->withSignature($this->jwsBuilder, $this->signatureKeys, $signatureAlgorithm);
+            $idTokenBuilder->withSignature($this->jwsBuilder, $this->signatureKeys, $signatureAlgorithm);
         } else {
-            $idTokenBuilder = $idTokenBuilder->withSignature($this->jwsBuilder, $this->signatureKeys, $this->defaultSignatureAlgorithm);
+            $idTokenBuilder->withSignature($this->jwsBuilder, $this->signatureKeys, $this->defaultSignatureAlgorithm);
         }
         if ($authorization->getClient()->has('id_token_encrypted_response_alg') && $authorization->getClient()->has('id_token_encrypted_response_enc') && null !== $this->jweBuilder) {
             $keyEncryptionAlgorithm = $authorization->getClient()->get('id_token_encrypted_response_alg');
             $contentEncryptionAlgorithm = $authorization->getClient()->get('id_token_encrypted_response_enc');
-            $idTokenBuilder = $idTokenBuilder->withEncryption($this->jweBuilder, $keyEncryptionAlgorithm, $contentEncryptionAlgorithm);
+            $idTokenBuilder->withEncryption($this->jweBuilder, $keyEncryptionAlgorithm, $contentEncryptionAlgorithm);
         }
 
         $idToken = $idTokenBuilder->build();
+        $authorization->setResponseParameter('id_token', $idToken);
 
-        return $authorization->setResponseParameter('id_token', $idToken);
+        return $authorization;
     }
 
-    private function getIdTokenClaims(Authorization $authorization): array
+    private function getIdTokenClaims(AuthorizationRequest $authorization): array
     {
         if (!$authorization->hasQueryParam('claims')) {
             return [];

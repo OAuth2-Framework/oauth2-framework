@@ -13,10 +13,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Core\AccessToken;
 
-use OAuth2Framework\Component\Core\AccessToken\Event as AccessTokenEvent;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
-use OAuth2Framework\Component\Core\Event\Event;
 use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwnerId;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
 use OAuth2Framework\Component\Core\Token\Token;
@@ -58,42 +56,5 @@ class AccessToken extends Token
         $data['expires_in'] = $this->getExpiresIn();
 
         return $data;
-    }
-
-    public function apply(Event $event): void
-    {
-        $map = $this->getEventMap();
-        if (!\array_key_exists($event->getType(), $map)) {
-            throw new \InvalidArgumentException('Unsupported event.');
-        }
-        if ($this->getTokenId()->getValue() !== $event->getDomainId()->getValue()) {
-            throw new \InvalidArgumentException('Event not applicable for this access token.');
-        }
-        $method = $map[$event->getType()];
-        $this->$method($event);
-    }
-
-    private function getEventMap(): array
-    {
-        return [
-            AccessTokenEvent\AccessTokenCreatedEvent::class => 'applyAccessTokenCreatedEvent',
-            AccessTokenEvent\AccessTokenRevokedEvent::class => 'applyAccessTokenRevokedEvent',
-        ];
-    }
-
-    protected function applyAccessTokenCreatedEvent(AccessTokenEvent\AccessTokenCreatedEvent $event): void
-    {
-        $this->setTokenId($event->getAccessTokenId());
-        $this->setResourceOwnerId($event->getResourceOwnerId());
-        $this->setClientId($event->getClientId());
-        $this->setParameter($event->getParameter());
-        $this->setMetadata($event->getMetadata());
-        $this->setExpiresAt($event->getExpiresAt());
-        $this->setResourceServerId($event->getResourceServerId());
-    }
-
-    protected function applyAccessTokenRevokedEvent(): void
-    {
-        $this->markAsRevoked();
     }
 }

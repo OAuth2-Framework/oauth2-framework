@@ -16,6 +16,7 @@ namespace OAuth2Framework\Component\ClientRegistrationEndpoint\Rule;
 use Jose\Component\Core\JWKSet;
 use Jose\Component\Signature\JWSLoader;
 use OAuth2Framework\Component\ClientRule\Rule;
+use OAuth2Framework\Component\ClientRule\RuleHandler;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 
@@ -45,7 +46,7 @@ final class SoftwareRule implements Rule
         return $this->isSoftwareStatementRequired;
     }
 
-    public function handle(ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters, callable $next): DataBag
+    public function handle(ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters, RuleHandler $next): DataBag
     {
         if ($this->isSoftwareStatementRequired() && !$commandParameters->has('software_statement')) {
             throw new \InvalidArgumentException('The parameter "software_statement" is mandatory.');
@@ -67,9 +68,9 @@ final class SoftwareRule implements Rule
             }
         }
 
-        $validatedParameters = $next($clientId, $commandParameters, $validatedParameters);
+        $validatedParameters = $next->handle($clientId, $commandParameters, $validatedParameters);
         foreach ($software_statement as $k => $v) {
-            $validatedParameters->with($k, $v);
+            $validatedParameters->set($k, $v);
         }
 
         return $validatedParameters;
@@ -78,6 +79,7 @@ final class SoftwareRule implements Rule
     private function loadSoftwareStatement(string $software_statement): array
     {
         try {
+            $signatureVerified = null;
             $jws = $this->jwsLoader->loadAndVerifyWithKeySet($software_statement, $this->softwareStatementSignatureKeySet, $signatureVerified);
             if (!\in_array($jws->getSignature($signatureVerified)->getProtectedHeaderParameter('alg'), $this->allowedSignatureAlgorithms, true)) {
                 throw new \InvalidArgumentException('Invalid Software Statement.');

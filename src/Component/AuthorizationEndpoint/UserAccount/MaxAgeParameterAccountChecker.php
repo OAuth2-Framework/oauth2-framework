@@ -13,18 +13,13 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\AuthorizationEndpoint\UserAccount;
 
-use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
+use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
 use OAuth2Framework\Component\AuthorizationEndpoint\Exception\RedirectToLoginPageException;
-use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 
 final class MaxAgeParameterAccountChecker implements UserAccountChecker
 {
-    public function check(Authorization $authorization, ?UserAccount $userAccount, bool $isFullyAuthenticated): void
+    public function check(AuthorizationRequest $authorization): void
     {
-        if (null === $userAccount) {
-            throw new RedirectToLoginPageException($authorization);
-        }
-
         switch (true) {
             case $authorization->hasQueryParam('max_age'):
                 $max_age = (int) $authorization->getQueryParam('max_age');
@@ -42,7 +37,7 @@ final class MaxAgeParameterAccountChecker implements UserAccountChecker
             return;
         }
 
-        if (null === $userAccount->getLastLoginAt() || \time() - $userAccount->getLastLoginAt() > $max_age) {
+        if (null === $authorization->getUserAccount()->getLastLoginAt() || \time() - $authorization->getUserAccount()->getLastLoginAt() > $max_age) {
             throw new RedirectToLoginPageException($authorization);
         }
     }

@@ -72,10 +72,10 @@ final class ContactsParametersRuleTest extends TestCase
         static::assertEquals(['foo@bar.com', 'hello@you.com'], $validatedParameters->get('contacts'));
     }
 
-    private function getCallable(): callable
+    private function getCallable(): ClientRule\RuleHandler
     {
-        return function (ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters): DataBag {
+        return new ClientRule\RuleHandler(function (ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters): DataBag {
             return $validatedParameters;
-        };
+        });
     }
 }

@@ -84,21 +84,14 @@ class Pipe implements MiddlewareInterface
 
     /**
      * Dispatches the middleware and returns the resulting `ResponseInterface`.
-     *
-     * @throws \LogicException on unexpected result from any middleware on the middlewares
-     *
-     * @return ResponseInterface
      */
-    public function dispatch(ServerRequestInterface $request)
+    public function dispatch(ServerRequestInterface $request): ResponseInterface
     {
         $resolved = $this->resolve(0);
 
         return $resolved->handle($request);
     }
 
-    /**
-     * @param int $index Middleware index
-     */
     private function resolve(int $index): RequestHandlerInterface
     {
         if (isset($this->middlewares[$index])) {

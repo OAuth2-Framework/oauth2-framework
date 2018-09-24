@@ -17,9 +17,6 @@ interface UserAccountManager
 {
     /**
      * Check if the user account password is valid.
-     *
-     * @param UserAccount $user     The user account
-     * @param string      $password Password
      */
     public function isPasswordCredentialValid(UserAccount $user, string $password): bool;
 }

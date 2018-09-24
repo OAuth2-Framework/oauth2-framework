@@ -50,8 +50,11 @@ final class SymfonyUserDiscovery implements UserAccountDiscovery
             return null;
         }
 
-        $isFullyAuthenticated = $this->authorizationChecker->isGranted('IS_AUTHENTICATED_FULLY');
-
         return $userAccount;
+    }
+
+    public function isFullyAuthenticated(): bool
+    {
+        return $this->authorizationChecker->isGranted('IS_AUTHENTICATED_FULLY');
     }
 }

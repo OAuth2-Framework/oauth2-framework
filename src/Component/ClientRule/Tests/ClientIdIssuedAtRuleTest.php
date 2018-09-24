@@ -53,10 +53,10 @@ final class ClientIdIssuedAtRuleTest extends TestCase
         static::assertInternalType('integer', $validatedParameters->get('client_id_issued_at'));
     }
 
-    private function getCallable(): callable
+    private function getCallable(): ClientRule\RuleHandler
     {
-        return function (ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters): DataBag {
+        return new ClientRule\RuleHandler(function (ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters): DataBag {
             return $validatedParameters;
-        };
+        });
     }
 }

@@ -30,7 +30,7 @@ final class ImplicitGrantType implements GrantType
         return 'implicit';
     }
 
-    public function checkRequest(ServerRequestInterface $request)
+    public function checkRequest(ServerRequestInterface $request): void
     {
         throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_GRANT, 'The implicit grant type cannot be called from the token endpoint.');
     }

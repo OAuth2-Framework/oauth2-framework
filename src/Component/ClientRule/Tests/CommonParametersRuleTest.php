@@ -68,10 +68,10 @@ final class CommonParametersRuleTest extends TestCase
         static::assertEquals('http://localhost/policy', $validatedParameters->get('policy_uri'));
     }
 
-    private function getCallable(): callable
+    private function getCallable(): ClientRule\RuleHandler
     {
-        return function (ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters): DataBag {
+        return new ClientRule\RuleHandler(function (ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters): DataBag {
             return $validatedParameters;
-        };
+        });
     }
 }

@@ -29,7 +29,7 @@ class ResponseModeManager
     }
 
     /**
-     * @return string[]
+     * @return ResponseMode[]
      */
     public function all(): array
     {
@@ -46,9 +46,6 @@ class ResponseModeManager
         return \array_key_exists($name, $this->responseModes);
     }
 
-    /**
-     * @throws \InvalidArgumentException
-     */
     public function get(string $name): ResponseMode
     {
         if (!$this->has($name)) {

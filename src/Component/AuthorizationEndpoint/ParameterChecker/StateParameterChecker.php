@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker;
 
-use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
+use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
 
 /**
  * Class StateParameterChecker.
@@ -22,12 +22,10 @@ use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
  */
 final class StateParameterChecker implements ParameterChecker
 {
-    public function check(Authorization $authorization): Authorization
+    public function check(AuthorizationRequest $authorization)
     {
         if (true === $authorization->hasQueryParam('state')) {
             $authorization->setResponseParameter('state', $authorization->getQueryParam('state'));
         }
-
-        return $authorization;
     }
 }

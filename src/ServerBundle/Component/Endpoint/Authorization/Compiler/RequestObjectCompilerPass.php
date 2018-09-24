@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\ServerBundle\Component\Endpoint\Authorization\Compiler;
 
 use Jose\Component\KeyManagement\JKUFactory;
-use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequestLoader;
+use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequestLoader;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;

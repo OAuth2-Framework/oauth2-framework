@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\ImplicitGrant\Tests;
 
-use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
+use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
 use OAuth2Framework\Component\Core\AccessToken\AccessToken;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenIdGenerator;
@@ -60,14 +60,14 @@ final class TokenResponseTypeTest extends TestCase
         $tokenType = $this->prophesize(TokenType::class);
         $tokenType->getAdditionalInformation()->willReturn(['token_type' => 'FOO']);
 
-        $authorization = new Authorization(
+        $authorization = new AuthorizationRequest(
             $client,
             []
         );
         $authorization->setUserAccount($userAccount->reveal(), true);
         $authorization->setTokenType($tokenType->reveal());
 
-        $authorization = $this->getResponseType()->process($authorization, function (Authorization $authorization) {
+        $authorization = $this->getResponseType()->process($authorization, function (AuthorizationRequest $authorization) {
             return $authorization;
         });
 

@@ -13,13 +13,13 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\OpenIdConnect\ConsentScreen;
 
-use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
+use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
 use OAuth2Framework\Component\AuthorizationEndpoint\Extension\Extension;
 use Psr\Http\Message\ServerRequestInterface;
 
 abstract class SessionStateParameterExtension implements Extension
 {
-    public function processAfter(ServerRequestInterface $request, Authorization $authorization): void
+    public function processAfter(ServerRequestInterface $request, AuthorizationRequest $authorization): void
     {
         if ($this->hasOpenIdScope($authorization)) {
             $browserState = $this->getBrowserState($request, $authorization);
@@ -28,7 +28,7 @@ abstract class SessionStateParameterExtension implements Extension
         }
     }
 
-    private function hasOpenIdScope(Authorization $authorization): bool
+    private function hasOpenIdScope(AuthorizationRequest $authorization): bool
     {
         if (!$authorization->hasQueryParam('scope')) {
             return false;
@@ -40,7 +40,7 @@ abstract class SessionStateParameterExtension implements Extension
         return \in_array('openid', $scopes, true);
     }
 
-    abstract protected function getBrowserState(ServerRequestInterface $request, Authorization $authorization): string;
+    abstract protected function getBrowserState(ServerRequestInterface $request, AuthorizationRequest $authorization): string;
 
-    abstract protected function calculateSessionState(ServerRequestInterface $request, Authorization $authorization, string $browserState): string;
+    abstract protected function calculateSessionState(ServerRequestInterface $request, AuthorizationRequest $authorization, string $browserState): string;
 }

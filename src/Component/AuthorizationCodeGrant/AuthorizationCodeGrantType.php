@@ -43,7 +43,7 @@ final class AuthorizationCodeGrantType implements GrantType
         return 'authorization_code';
     }
 
-    public function checkRequest(ServerRequestInterface $request)
+    public function checkRequest(ServerRequestInterface $request): void
     {
         $parameters = RequestBodyParser::parseFormUrlEncoded($request);
         $requiredParameters = ['code', 'redirect_uri'];

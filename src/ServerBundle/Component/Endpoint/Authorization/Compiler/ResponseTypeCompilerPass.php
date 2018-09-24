@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Component\Endpoint\Authorization\Compiler;
 
-use OAuth2Framework\Component\AuthorizationEndpoint\ResponseTypeManager;
+use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType\ResponseTypeManager;
 use OAuth2Framework\ServerBundle\Service\MetadataBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;

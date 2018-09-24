@@ -13,8 +13,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Core\ResourceServer;
 
-use OAuth2Framework\Component\IssuerDiscoveryEndpoint\ResourceId;
-
 interface ResourceServerRepository
 {
     /**
@@ -23,6 +21,4 @@ interface ResourceServerRepository
      * @return ResourceServer|null Return the resource server or null if the argument is not a valid resource server ID
      */
     public function find(ResourceServerId $resourceServerId): ?ResourceServer;
-
-    public function supports(ResourceId $resourceId): bool;
 }

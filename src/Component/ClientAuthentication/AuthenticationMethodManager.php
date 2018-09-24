@@ -71,14 +71,9 @@ class AuthenticationMethodManager
     }
 
     /**
-     * @param AuthenticationMethod $authenticationMethod
-     * @param mixed                $clientCredentials    The client credentials found in the request
-     *
-     * @throws OAuth2Message
-     *
-     * @return null|ClientId
+     * @param mixed $clientCredentials The client credentials found in the request
      */
-    public function findClientIdAndCredentials(ServerRequestInterface $request, AuthenticationMethod &$authenticationMethod = null, &$clientCredentials = null)
+    public function findClientIdAndCredentials(ServerRequestInterface $request, AuthenticationMethod &$authenticationMethod = null, &$clientCredentials = null): ?ClientId
     {
         $clientId = null;
         $clientCredentials = null;

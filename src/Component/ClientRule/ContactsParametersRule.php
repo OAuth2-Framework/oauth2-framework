@@ -18,7 +18,7 @@ use OAuth2Framework\Component\Core\DataBag\DataBag;
 
 final class ContactsParametersRule implements Rule
 {
-    public function handle(ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters, callable $next): DataBag
+    public function handle(ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters, RuleHandler $next): DataBag
     {
         if ($commandParameters->has('contacts')) {
             $contacts = $commandParameters->get('contacts');
@@ -33,6 +33,6 @@ final class ContactsParametersRule implements Rule
             $validatedParameters->set('contacts', $contacts);
         }
 
-        return $next($clientId, $commandParameters, $validatedParameters);
+        return $next->handle($clientId, $commandParameters, $validatedParameters);
     }
 }

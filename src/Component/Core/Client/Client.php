@@ -13,10 +13,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Core\Client;
 
-use OAuth2Framework\Component\Core\Client\Event as ClientEvent;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\Domain\DomainObject;
-use OAuth2Framework\Component\Core\Event\Event;
 use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwner;
 use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwnerId;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
@@ -178,50 +176,5 @@ class Client implements ResourceOwner, DomainObject
         ];
 
         return $data;
-    }
-
-    public function apply(Event $event): void
-    {
-        $map = $this->getEventMap();
-        if (!\array_key_exists($event->getType(), $map)) {
-            throw new \InvalidArgumentException('Unsupported event.');
-        }
-        if (null !== $this->clientId && $this->clientId->getValue() !== $event->getDomainId()->getValue()) {
-            throw new \InvalidArgumentException('Event not applicable for this client.');
-        }
-        $method = $map[$event->getType()];
-        $this->$method($event);
-    }
-
-    private function getEventMap(): array
-    {
-        return [
-            ClientEvent\ClientCreatedEvent::class => 'applyClientCreatedEvent',
-            ClientEvent\ClientOwnerChangedEvent::class => 'applyClientOwnerChangedEvent',
-            ClientEvent\ClientDeletedEvent::class => 'applyClientDeletedEvent',
-            ClientEvent\ClientParametersUpdatedEvent::class => 'applyClientParametersUpdatedEvent',
-        ];
-    }
-
-    protected function applyClientCreatedEvent(ClientEvent\ClientCreatedEvent $event): void
-    {
-        $this->clientId = $event->getClientId();
-        $this->ownerId = $event->getOwnerId();
-        $this->parameter = $event->getParameters();
-    }
-
-    protected function applyClientOwnerChangedEvent(ClientEvent\ClientOwnerChangedEvent $event): void
-    {
-        $this->ownerId = $event->getNewOwnerId();
-    }
-
-    protected function applyClientDeletedEvent(ClientEvent\ClientDeletedEvent $event): void
-    {
-        $this->deleted = true;
-    }
-
-    protected function applyClientParametersUpdatedEvent(ClientEvent\ClientParametersUpdatedEvent $event): void
-    {
-        $this->parameter = $event->getParameters();
     }
 }

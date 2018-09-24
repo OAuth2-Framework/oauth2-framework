@@ -25,14 +25,8 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 
 class AnnotationDriver
 {
-    /**
-     * @var Reader
-     */
     private $reader;
 
-    /**
-     * @var TokenStorageInterface
-     */
     private $tokenStorage;
 
     /**
@@ -40,14 +34,8 @@ class AnnotationDriver
      */
     private $checkers = [];
 
-    /**
-     * @var OAuth2MessageFactoryManager
-     */
     private $oauth2ResponseFactoryManager;
 
-    /**
-     * AnnotationDriver constructor.
-     */
     public function __construct(Reader $reader, TokenStorageInterface $tokenStorage, OAuth2MessageFactoryManager $oauth2ResponseFactoryManager)
     {
         $this->reader = $reader;

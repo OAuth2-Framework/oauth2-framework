@@ -158,9 +158,6 @@ class UserInfoEndpoint implements MiddlewareInterface
         return [];
     }
 
-    /**
-     * @throws OAuth2Message
-     */
     private function getClient(AccessToken $accessToken): Client
     {
         $clientId = $accessToken->getClientId();
@@ -171,9 +168,6 @@ class UserInfoEndpoint implements MiddlewareInterface
         return $client;
     }
 
-    /**
-     * @throws OAuth2Message
-     */
     private function getUserAccount(AccessToken $accessToken): UserAccount
     {
         $userAccountId = $accessToken->getResourceOwnerId();
@@ -184,9 +178,6 @@ class UserInfoEndpoint implements MiddlewareInterface
         return $userAccount;
     }
 
-    /**
-     * @throws OAuth2Message
-     */
     private function checkRedirectUri(AccessToken $accessToken)
     {
         if (!$accessToken->getMetadata()->has('redirect_uri')) {
@@ -194,9 +185,6 @@ class UserInfoEndpoint implements MiddlewareInterface
         }
     }
 
-    /**
-     * @throws OAuth2Message
-     */
     private function checkScope(AccessToken $accessToken)
     {
         if (!$accessToken->getParameter()->has('scope') || !\in_array('openid', \explode(' ', $accessToken->getParameter()->get('scope')), true)) {

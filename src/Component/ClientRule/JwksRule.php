@@ -30,7 +30,7 @@ class JwksRule implements Rule
         $this->jkuFactory = $jkuFactory;
     }
 
-    public function handle(ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters, callable $next): DataBag
+    public function handle(ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters, RuleHandler $next): DataBag
     {
         if ($commandParameters->has('jwks') && $commandParameters->has('jwks_uri')) {
             throw new \InvalidArgumentException('The parameters "jwks" and "jwks_uri" cannot be set together.');
@@ -63,6 +63,6 @@ class JwksRule implements Rule
             $validatedParameters->set('jwks_uri', $commandParameters->get('jwks_uri'));
         }
 
-        return $next($clientId, $commandParameters, $validatedParameters);
+        return $next->handle($clientId, $commandParameters, $validatedParameters);
     }
 }

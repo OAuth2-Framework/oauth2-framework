@@ -21,7 +21,7 @@ use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeResponseTy
 use OAuth2Framework\Component\AuthorizationCodeGrant\PKCEMethod\PKCEMethodManager;
 use OAuth2Framework\Component\AuthorizationCodeGrant\PKCEMethod\Plain;
 use OAuth2Framework\Component\AuthorizationCodeGrant\PKCEMethod\S256;
-use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
+use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
@@ -59,7 +59,7 @@ final class AuthorizationCodeResponseTypeTest extends TestCase
         $userAccount = $this->prophesize(UserAccount::class);
         $userAccount->getPublicId()->willReturn(new UserAccountId('USER_ACCOUNT_ID'));
         $userAccount->getUserAccountId()->willReturn(new UserAccountId('USER_ACCOUNT_ID'));
-        $authorization = new Authorization(
+        $authorization = new AuthorizationRequest(
             $client,
             [
                 'code_challenge' => 'ABCDEFGH',

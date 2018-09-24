@@ -15,7 +15,6 @@ namespace OAuth2Framework\Component\TokenEndpoint\Extension;
 
 use OAuth2Framework\Component\Core\AccessToken\AccessToken;
 use OAuth2Framework\Component\Core\Client\Client;
-use OAuth2Framework\Component\Core\Message\OAuth2Message;
 use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwner;
 use OAuth2Framework\Component\TokenEndpoint\GrantType;
 use OAuth2Framework\Component\TokenEndpoint\GrantTypeData;
@@ -33,25 +32,16 @@ class TokenEndpointExtensionManager
         $this->extensions[] = $tokenEndpointExtension;
     }
 
-    /**
-     * @throws OAuth2Message
-     */
     public function handleBeforeAccessTokenIssuance(ServerRequestInterface $request, GrantTypeData $grantTypeData, GrantType $grantType): GrantTypeData
     {
         return \call_user_func($this->getCallableBeforeAccessTokenIssuance(0), $request, $grantTypeData, $grantType);
     }
 
-    /**
-     * @throws OAuth2Message
-     */
     public function handleAfterAccessTokenIssuance(Client $client, ResourceOwner $resourceOwner, AccessToken $accessToken): array
     {
         return \call_user_func($this->getCallableAfterAccessTokenIssuance(0), $client, $resourceOwner, $accessToken);
     }
 
-    /**
-     * @throws OAuth2Message
-     */
     private function getCallableBeforeAccessTokenIssuance(int $index): callable
     {
         if (!isset($this->extensions[$index])) {
@@ -66,9 +56,6 @@ class TokenEndpointExtensionManager
         };
     }
 
-    /**
-     * @throws OAuth2Message
-     */
     private function getCallableAfterAccessTokenIssuance(int $index): callable
     {
         if (!\array_key_exists($index, $this->extensions)) {

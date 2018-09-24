@@ -18,7 +18,7 @@ use OAuth2Framework\Component\Core\DataBag\DataBag;
 
 final class ClientIdIssuedAtRule implements Rule
 {
-    public function handle(ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters, callable $next): DataBag
+    public function handle(ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters, RuleHandler $next): DataBag
     {
         if ($commandParameters->has('client_id_issued_at')) {
             $validatedParameters->set('client_id_issued_at', $commandParameters->get('client_id_issued_at'));
@@ -26,6 +26,6 @@ final class ClientIdIssuedAtRule implements Rule
             $validatedParameters->set('client_id_issued_at', \time());
         }
 
-        return $next($clientId, $commandParameters, $validatedParameters);
+        return $next->handle($clientId, $commandParameters, $validatedParameters);
     }
 }

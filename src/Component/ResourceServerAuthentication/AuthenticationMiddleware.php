@@ -35,8 +35,10 @@ final class AuthenticationMiddleware implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         try {
+            $authentication_method = null;
+            $resourceServer_credentials = null;
             $resourceServerId = $this->authenticationMethodManager->findResourceServerIdAndCredentials($request, $authentication_method, $resourceServer_credentials);
-            if (null !== $resourceServerId) {
+            if (null !== $resourceServerId && $authentication_method instanceof AuthenticationMethod) {
                 $resourceServer = $this->resourceServerRepository->find($resourceServerId);
                 $this->checkResourceServer($resourceServer);
                 $this->checkAuthenticationMethod($request, $resourceServer, $authentication_method, $resourceServer_credentials);

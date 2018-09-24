@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\ImplicitGrant;
 
-use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
-use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType;
+use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
+use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType\ResponseType;
 use OAuth2Framework\Component\Core\AccessToken\AccessToken;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenIdGenerator;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository;
@@ -62,12 +62,12 @@ final class TokenResponseType implements ResponseType
         return self::RESPONSE_TYPE_MODE_FRAGMENT;
     }
 
-    public function preProcess(Authorization $authorization): Authorization
+    public function preProcess(AuthorizationRequest $authorization): AuthorizationRequest
     {
         return $authorization;
     }
 
-    public function process(Authorization $authorization): Authorization
+    public function process(AuthorizationRequest $authorization): AuthorizationRequest
     {
         $additionalInformation = $authorization->getTokenType()->getAdditionalInformation();
         $accessTokenId = $this->accessTokenIdGenerator->createAccessTokenId(

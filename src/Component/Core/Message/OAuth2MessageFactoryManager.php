@@ -69,9 +69,6 @@ class OAuth2MessageFactoryManager
         return $factory->createResponse($data, $response);
     }
 
-    /**
-     * @throws \InvalidArgumentException
-     */
     private function getFactory(int $code): ResponseFactory
     {
         if (!\array_key_exists($code, $this->responseFactories)) {

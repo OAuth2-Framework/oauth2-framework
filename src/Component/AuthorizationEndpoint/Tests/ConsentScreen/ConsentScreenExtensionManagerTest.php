@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\AuthorizationEndpoint\Tests\ConsentScreen;
 
-use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
+use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
 use OAuth2Framework\Component\AuthorizationEndpoint\Extension\Extension;
 use OAuth2Framework\Component\AuthorizationEndpoint\Extension\ExtensionManager;
 use OAuth2Framework\Component\Core\Client\Client;
@@ -39,7 +39,7 @@ final class ConsentScreenExtensionManagerTest extends TestCase
             new DataBag([]),
             null
         );
-        $authorization = new Authorization($client, []);
+        $authorization = new AuthorizationRequest($client, []);
         $authorization = $this->getExtensionManager()->processBefore($request->reveal(), $authorization);
         static::assertTrue($authorization->hasData('Before Consent'));
         static::assertTrue($authorization->getData('Before Consent'));
@@ -56,7 +56,7 @@ final class ConsentScreenExtensionManagerTest extends TestCase
             new DataBag([]),
             null
         );
-        $authorization = new Authorization($client, []);
+        $authorization = new AuthorizationRequest($client, []);
         $authorization = $this->getExtensionManager()->processAfter($request->reveal(), $authorization);
         static::assertTrue($authorization->hasData('After Consent'));
         static::assertTrue($authorization->getData('After Consent'));
@@ -72,16 +72,16 @@ final class ConsentScreenExtensionManagerTest extends TestCase
         if (null === $this->extensionManager) {
             $extension = $this->prophesize(Extension::class);
             $extension
-                ->processBefore(Argument::type(ServerRequestInterface::class), Argument::type(Authorization::class))
+                ->processBefore(Argument::type(ServerRequestInterface::class), Argument::type(AuthorizationRequest::class))
                 ->will(function ($args) {
-                    /** @var Authorization $authorization */
+                    /** @var AuthorizationRequest $authorization */
                     $authorization = $args[1];
                     $authorization->setData('Before Consent', true);
                 });
             $extension
-                ->processAfter(Argument::type(ServerRequestInterface::class), Argument::type(Authorization::class))
+                ->processAfter(Argument::type(ServerRequestInterface::class), Argument::type(AuthorizationRequest::class))
                 ->will(function ($args) {
-                    /** @var Authorization $authorization */
+                    /** @var AuthorizationRequest $authorization */
                     $authorization = $args[1];
                     $authorization->setData('After Consent', true);
                 });

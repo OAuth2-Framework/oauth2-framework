@@ -283,10 +283,10 @@ final class RedirectionUriRuleTest extends TestCase
         $rule->handle($clientId, $commandParameters, $validatedParameters, $this->getCallable());
     }
 
-    private function getCallable(): callable
+    private function getCallable(): ClientRule\RuleHandler
     {
-        return function (ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters): DataBag {
+        return new ClientRule\RuleHandler(function (ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters): DataBag {
             return $validatedParameters;
-        };
+        });
     }
 }

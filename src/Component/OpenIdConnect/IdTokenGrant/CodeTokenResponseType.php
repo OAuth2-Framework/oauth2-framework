@@ -14,8 +14,8 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\OpenIdConnect\IdTokenGrant;
 
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeResponseType;
-use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
-use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType;
+use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
+use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType\ResponseType;
 use OAuth2Framework\Component\ImplicitGrant\TokenResponseType;
 
 final class CodeTokenResponseType implements ResponseType
@@ -57,7 +57,7 @@ final class CodeTokenResponseType implements ResponseType
         return self::RESPONSE_TYPE_MODE_FRAGMENT;
     }
 
-    public function preProcess(Authorization $authorization): Authorization
+    public function preProcess(AuthorizationRequest $authorization): AuthorizationRequest
     {
         $authorization = $this->codeResponseType->preProcess($authorization);
         $authorization = $this->tokenResponseType->preProcess($authorization);
@@ -65,7 +65,7 @@ final class CodeTokenResponseType implements ResponseType
         return $authorization;
     }
 
-    public function process(Authorization $authorization): Authorization
+    public function process(AuthorizationRequest $authorization): AuthorizationRequest
     {
         $authorization = $this->codeResponseType->process($authorization);
         $authorization = $this->tokenResponseType->process($authorization);

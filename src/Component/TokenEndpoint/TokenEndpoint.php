@@ -135,9 +135,6 @@ class TokenEndpoint implements MiddlewareInterface
         return $accessToken;
     }
 
-    /**
-     * @throws OAuth2Message
-     */
     private function getResourceOwner(ResourceOwnerId $resourceOwnerId): ResourceOwner
     {
         $resourceOwner = $this->clientRepository->find(new ClientId($resourceOwnerId->getValue()));

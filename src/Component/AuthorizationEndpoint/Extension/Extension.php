@@ -13,12 +13,12 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\AuthorizationEndpoint\Extension;
 
-use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
+use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
 use Psr\Http\Message\ServerRequestInterface;
 
 interface Extension
 {
-    public function processAfter(ServerRequestInterface $request, Authorization $authorization): void;
+    public function processAfter(ServerRequestInterface $request, AuthorizationRequest $authorization): void;
 
-    public function processBefore(ServerRequestInterface $request, Authorization $authorization): void;
+    public function processBefore(ServerRequestInterface $request, AuthorizationRequest $authorization): void;
 }

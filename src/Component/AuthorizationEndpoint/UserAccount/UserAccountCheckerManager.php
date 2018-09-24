@@ -13,8 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\AuthorizationEndpoint\UserAccount;
 
-use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
-use OAuth2Framework\Component\Core\UserAccount\UserAccount;
+use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
 
 class UserAccountCheckerManager
 {
@@ -28,10 +27,10 @@ class UserAccountCheckerManager
         $this->checkers[] = $checker;
     }
 
-    public function check(Authorization $authorization, ?UserAccount $userAccount, bool $isFullyAuthenticated)
+    public function check(AuthorizationRequest $authorization)
     {
         foreach ($this->checkers as $checker) {
-            $checker->check($authorization, $userAccount, $isFullyAuthenticated);
+            $checker->check($authorization);
         }
     }
 }

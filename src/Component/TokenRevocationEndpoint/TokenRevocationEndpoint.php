@@ -76,9 +76,6 @@ abstract class TokenRevocationEndpoint implements MiddlewareInterface
         return $response;
     }
 
-    /**
-     * @throws OAuth2Message
-     */
     private function getClient(ServerRequestInterface $request): Client
     {
         $client = $request->getAttribute('client');
@@ -89,9 +86,6 @@ abstract class TokenRevocationEndpoint implements MiddlewareInterface
         return $client;
     }
 
-    /**
-     * @throws OAuth2Message
-     */
     protected function getToken(ServerRequestInterface $request): string
     {
         $params = $this->getRequestParameters($request);
@@ -103,8 +97,6 @@ abstract class TokenRevocationEndpoint implements MiddlewareInterface
     }
 
     /**
-     * @throws OAuth2Message
-     *
      * @return TokenTypeHint[]
      */
     protected function getTokenTypeHints(ServerRequestInterface $request): array

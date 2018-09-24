@@ -39,7 +39,7 @@ final class RefreshTokenGrantType implements GrantType
         return 'refresh_token';
     }
 
-    public function checkRequest(ServerRequestInterface $request)
+    public function checkRequest(ServerRequestInterface $request): void
     {
         $parameters = RequestBodyParser::parseFormUrlEncoded($request);
         $requiredParameters = ['refresh_token'];

@@ -13,13 +13,13 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker;
 
-use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
+use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
 use OAuth2Framework\Component\AuthorizationEndpoint\Exception\OAuth2AuthorizationException;
 use OAuth2Framework\Component\Core\Message\OAuth2Message;
 
 final class RedirectUriParameterChecker implements ParameterChecker
 {
-    public function check(Authorization $authorization): Authorization
+    public function check(AuthorizationRequest $authorization)
     {
         try {
             if (!$authorization->hasQueryParam('redirect_uri')) {
@@ -32,8 +32,6 @@ final class RedirectUriParameterChecker implements ParameterChecker
             }
 
             $authorization->setRedirectUri($redirectUri);
-
-            return $authorization;
         } catch (\InvalidArgumentException $e) {
             throw new OAuth2AuthorizationException(400, OAuth2Message::ERROR_INVALID_REQUEST, $e->getMessage(), $authorization, $e);
         }
@@ -42,7 +40,7 @@ final class RedirectUriParameterChecker implements ParameterChecker
     /**
      * @return string[]
      */
-    private function getRedirectUris(Authorization $authorization): array
+    private function getRedirectUris(AuthorizationRequest $authorization): array
     {
         return $authorization->getClient()->has('redirect_uris') ? $authorization->getClient()->get('redirect_uris') : [];
     }

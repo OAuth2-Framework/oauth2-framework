@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Form\Handler;
 
-use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
+use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
 use OAuth2Framework\Component\Core\Message\OAuth2Message;
 use OAuth2Framework\ServerBundle\Form\Model\AuthorizationModel;
 use Psr\Http\Message\ServerRequestInterface;
@@ -24,7 +24,7 @@ use Symfony\Component\Form\FormInterface;
 
 class AuthorizationFormHandler
 {
-    public function handle(FormInterface $form, ServerRequestInterface $request, Authorization $authorization, AuthorizationModel $authorization_model): Authorization
+    public function handle(FormInterface $form, ServerRequestInterface $request, AuthorizationRequest $authorization, AuthorizationModel $authorization_model): AuthorizationRequest
     {
         if ('POST' !== $request->getMethod()) {
             throw new OAuth2Message(

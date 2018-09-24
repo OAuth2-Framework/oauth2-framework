@@ -18,7 +18,7 @@ use OAuth2Framework\Component\Core\DataBag\DataBag;
 
 final class ApplicationTypeParametersRule implements Rule
 {
-    public function handle(ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters, callable $next): DataBag
+    public function handle(ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters, RuleHandler $next): DataBag
     {
         if ($commandParameters->has('application_type')) {
             $application_type = $commandParameters->get('application_type');
@@ -30,6 +30,6 @@ final class ApplicationTypeParametersRule implements Rule
             $validatedParameters->set('application_type', 'web');
         }
 
-        return $next($clientId, $commandParameters, $validatedParameters);
+        return $next->handle($clientId, $commandParameters, $validatedParameters);
     }
 }

@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\Scope\Rule;
 
 use OAuth2Framework\Component\ClientRule\Rule;
+use OAuth2Framework\Component\ClientRule\RuleHandler;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Scope\Policy\ScopePolicyManager;
@@ -27,7 +28,7 @@ final class ScopePolicyRule implements Rule
         $this->scopePolicyManager = $scopePolicyManager;
     }
 
-    public function handle(ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters, callable $next): DataBag
+    public function handle(ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters, RuleHandler $next): DataBag
     {
         if ($commandParameters->has('scope_policy')) {
             $policy = $commandParameters->get('scope_policy');
@@ -40,6 +41,6 @@ final class ScopePolicyRule implements Rule
             $validatedParameters->set('scope_policy', $commandParameters->get('scope_policy'));
         }
 
-        return $next($clientId, $commandParameters, $validatedParameters);
+        return $next->handle($clientId, $commandParameters, $validatedParameters);
     }
 }

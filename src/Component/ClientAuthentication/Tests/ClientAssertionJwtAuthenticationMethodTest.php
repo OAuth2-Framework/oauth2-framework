@@ -598,9 +598,6 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
         );
     }
 
-    /**
-     * @throws \Exception
-     */
     private function serializeJWS(JWS $jws): string
     {
         $jsonConverter = new StandardConverter();
@@ -669,9 +666,6 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
             ->build();
     }
 
-    /**
-     * @throws \Exception
-     */
     private function createInvalidClientAssertionSignedByTheClient(): JWS
     {
         $jsonConverter = new StandardConverter();
@@ -723,9 +717,6 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
             ->build();
     }
 
-    /**
-     * @throws \Exception
-     */
     private function encryptAssertion(string $assertion): string
     {
         $jsonConverter = new StandardConverter();

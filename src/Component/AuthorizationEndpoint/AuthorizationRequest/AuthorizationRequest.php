@@ -11,16 +11,17 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Component\AuthorizationEndpoint;
+namespace OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest;
 
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\ResponseMode;
+use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType\ResponseType;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServer;
 use OAuth2Framework\Component\Core\TokenType\TokenType;
 use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 
-class Authorization
+class AuthorizationRequest
 {
     /**
      * @var bool

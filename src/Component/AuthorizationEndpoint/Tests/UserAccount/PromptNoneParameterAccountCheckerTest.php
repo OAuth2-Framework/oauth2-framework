@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\AuthorizationEndpoint\Tests\UserAccount;
 
-use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
+use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
 use OAuth2Framework\Component\AuthorizationEndpoint\Exception\CreateRedirectionException;
 use OAuth2Framework\Component\AuthorizationEndpoint\UserAccount\PromptNoneParameterAccountChecker;
 use OAuth2Framework\Component\Core\Client\Client;
@@ -33,7 +33,7 @@ final class PromptNoneParameterAccountCheckerTest extends TestCase
     {
         $client = $this->prophesize(Client::class);
 
-        $authorization = $this->prophesize(Authorization::class);
+        $authorization = $this->prophesize(AuthorizationRequest::class);
         $authorization->hasPrompt('none')->willReturn(true);
         $authorization->getUserAccount()->willReturn(null);
         $authorization->getClient()->willReturn($client->reveal());
@@ -56,7 +56,7 @@ final class PromptNoneParameterAccountCheckerTest extends TestCase
 
         $client = $this->prophesize(Client::class);
 
-        $authorization = $this->prophesize(Authorization::class);
+        $authorization = $this->prophesize(AuthorizationRequest::class);
         $authorization->hasPrompt('none')->willReturn(true);
         $authorization->getUserAccount()->willReturn($userAccount->reveal());
         $authorization->getClient()->willReturn($client->reveal());
@@ -75,7 +75,7 @@ final class PromptNoneParameterAccountCheckerTest extends TestCase
 
         $client = $this->prophesize(Client::class);
 
-        $authorization = $this->prophesize(Authorization::class);
+        $authorization = $this->prophesize(AuthorizationRequest::class);
         $authorization->hasPrompt('none')->willReturn(false);
         $authorization->getUserAccount()->willReturn($userAccount->reveal());
         $authorization->getClient()->willReturn($client->reveal());

@@ -15,9 +15,6 @@ namespace OAuth2Framework\Component\Scope;
 
 class Checker
 {
-    /**
-     * @throws \InvalidArgumentException
-     */
     public static function checkUsedOnce(string $scope, string $scopes): void
     {
         $scopes = \explode(' ', $scopes);
@@ -26,9 +23,6 @@ class Checker
         }
     }
 
-    /**
-     * @throws \InvalidArgumentException
-     */
     public static function checkCharset(string $scope): void
     {
         if (1 !== \preg_match('/^[\x20\x23-\x5B\x5D-\x7E]+$/', $scope)) {

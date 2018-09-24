@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Core\Tests\TokenType;
 
-use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
+use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
 use OAuth2Framework\Component\AuthorizationEndpoint\Exception\OAuth2AuthorizationException;
 use OAuth2Framework\Component\Core\TokenType\TokenType;
 use OAuth2Framework\Component\Core\TokenType\TokenTypeManager;
@@ -28,7 +28,7 @@ final class TokenTypeParameterCheckerTest extends TestCase
 {
     protected function setUp()
     {
-        if (!\class_exists(Authorization::class)) {
+        if (!\class_exists(AuthorizationRequest::class)) {
             static::markTestSkipped('Authorization Endpoint not available');
         }
     }
@@ -38,7 +38,7 @@ final class TokenTypeParameterCheckerTest extends TestCase
      */
     public function anAuthorizationRequestWithNoTokenTypeParameterIsChecked()
     {
-        $authorization = $this->prophesize(Authorization::class);
+        $authorization = $this->prophesize(AuthorizationRequest::class);
         $authorization->hasQueryParam('token_type')->willReturn(false)->shouldBeCalled();
         $authorization
             ->setTokenType(Argument::type(TokenType::class))
@@ -54,7 +54,7 @@ final class TokenTypeParameterCheckerTest extends TestCase
      */
     public function anAuthorizationRequestWithTokenTypeParameterIsCheckedAndTheTokenTypeIsKnown()
     {
-        $authorization = $this->prophesize(Authorization::class);
+        $authorization = $this->prophesize(AuthorizationRequest::class);
         $authorization->hasQueryParam('token_type')->willReturn(true)->shouldBeCalled();
         $authorization->getQueryParam('token_type')->willReturn('KnownTokenType')->shouldBeCalled();
         $authorization
@@ -71,7 +71,7 @@ final class TokenTypeParameterCheckerTest extends TestCase
      */
     public function anAuthorizationRequestWithTokenTypeParameterIsCheckedButTheTokenTypeIsUnknown()
     {
-        $authorization = $this->prophesize(Authorization::class);
+        $authorization = $this->prophesize(AuthorizationRequest::class);
         $authorization->hasQueryParam('token_type')->willReturn(true)->shouldBeCalled();
         $authorization->getQueryParam('token_type')->willReturn('UnknownTokenType')->shouldBeCalled();
 

@@ -14,7 +14,8 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\AuthorizationEndpoint;
 
 use Http\Message\MessageFactory;
-use OAuth2Framework\Component\AuthorizationEndpoint\Exception\OAuth2AuthorizationException;
+use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
+use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequestLoader;
 use OAuth2Framework\Component\AuthorizationEndpoint\Extension\ExtensionManager;
 use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\ParameterCheckerManager;
 use OAuth2Framework\Component\AuthorizationEndpoint\UserAccount\UserAccountCheckerManager;
@@ -49,32 +50,44 @@ abstract class AuthorizationEndpoint implements MiddlewareInterface
         $this->extensionManager = $extensionManager;
     }
 
-    abstract protected function redirectToLoginPage(ServerRequestInterface $request, Authorization $authorization): ResponseInterface;
+    abstract protected function redirectToLoginPage(ServerRequestInterface $request, AuthorizationRequest $authorization): ResponseInterface;
 
-    abstract protected function processConsentScreen(ServerRequestInterface $request, Authorization $authorization): ResponseInterface;
+    abstract protected function processConsentScreen(ServerRequestInterface $request, AuthorizationRequest $authorization): ResponseInterface;
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         try {
-            $authorization = $this->createAuthorizationFromRequest($request);
-            $isFullyAuthenticated = null;
-            $userAccount = $this->userAccountDiscovery->find($isFullyAuthenticated);
-            if (!\is_bool($isFullyAuthenticated)) {
-                $isFullyAuthenticated = false;
-            }
-            if (null !== $userAccount) {
-                $authorization->setUserAccount($userAccount, $isFullyAuthenticated);
-            }
-            $this->userAccountCheckerManager->check($authorization, $userAccount, $isFullyAuthenticated);
-            if (null === $userAccount) {
-                return $this->redirectToLoginPage($request, $authorization);
-            }
-            $authorization = $this->extensionManager->processBefore($request, $authorization);
+            // Loads the request and check the parameters
+            $authorization = $this->authorizationRequestLoader->load($request);
+            $authorization = $this->parameterCheckerManager->process($authorization);
 
-            return $this->processConsentScreen($request, $authorization);
-        } catch (OAuth2AuthorizationException $e) {
+            //Retrieve the end user
+            $userAccount = $this->userAccountDiscovery->find();
+            if (null !== $userAccount) {
+                // Process with authenticated user
+                $isFullyAuthenticated = $this->userAccountDiscovery->isFullyAuthenticated();
+                $authorization->setUserAccount($userAccount, $isFullyAuthenticated);
+
+                //Check the user against the available rules
+                $this->userAccountCheckerManager->check($authorization);
+
+                //Ask for consent
+                $authorization = $this->extensionManager->processBefore($request, $authorization);
+
+                return $this->processConsentScreen($request, $authorization);
+            } else {
+                // Process with unauthenticated user
+                $isFullyAuthenticated = false;
+
+                // If prompt = none => no interaction
+                // Else => user authentication required
+                if (null === $userAccount) {
+                    return $this->redirectToLoginPage($request, $authorization);
+                }
+            }
+        } catch (\Exception $e) {
             throw $e;
-        } catch (Exception\ProcessAuthorizationException $e) {
+        }/* catch (Exception\ProcessAuthorizationException $e) {
             $authorization = $e->getAuthorization();
             $authorization = $this->extensionManager->processAfter($request, $authorization);
             if (false === $authorization->isAuthorized()) {
@@ -97,10 +110,10 @@ abstract class AuthorizationEndpoint implements MiddlewareInterface
             return $this->processConsentScreen($request, $e->getAuthorization());
         } catch (Exception\RedirectToLoginPageException $e) {
             return $this->redirectToLoginPage($request, $e->getAuthorization());
-        }
+        }*/
     }
 
-    protected function buildResponse(Authorization $authorization): ResponseInterface
+    protected function buildResponse(AuthorizationRequest $authorization): ResponseInterface
     {
         $response = $authorization->getResponseMode()->buildResponse(
             $this->messageFactory->createResponse(),
@@ -114,7 +127,7 @@ abstract class AuthorizationEndpoint implements MiddlewareInterface
         return $response;
     }
 
-    protected function throwRedirectionException(Authorization $authorization, string $error, string $errorDescription)
+    protected function throwRedirectionException(AuthorizationRequest $authorization, string $error, string $errorDescription)
     {
         $params = $authorization->getResponseParameters();
         if (null === $authorization->getResponseMode() || null === $authorization->getRedirectUri()) {
@@ -126,13 +139,5 @@ abstract class AuthorizationEndpoint implements MiddlewareInterface
         ];
 
         throw new OAuth2Message(303, $error, $errorDescription, $params);
-    }
-
-    public function createAuthorizationFromRequest(ServerRequestInterface $request): Authorization
-    {
-        $authorization = $this->authorizationRequestLoader->load($request);
-        $authorization = $this->parameterCheckerManager->process($authorization);
-
-        return $authorization;
     }
 }

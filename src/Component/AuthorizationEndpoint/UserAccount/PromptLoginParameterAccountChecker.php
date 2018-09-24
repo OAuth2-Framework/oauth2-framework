@@ -13,15 +13,14 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\AuthorizationEndpoint\UserAccount;
 
-use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
+use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
 use OAuth2Framework\Component\AuthorizationEndpoint\Exception\RedirectToLoginPageException;
-use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 
 final class PromptLoginParameterAccountChecker implements UserAccountChecker
 {
-    public function check(Authorization $authorization, ?UserAccount $userAccount, bool $isFullyAuthenticated): void
+    public function check(AuthorizationRequest $authorization): void
     {
-        if ($authorization->hasPrompt('login') && !$isFullyAuthenticated) {
+        if ($authorization->hasPrompt('login') && !$authorization->isUserAccountFullyAuthenticated()) {
             throw new RedirectToLoginPageException($authorization);
         }
     }

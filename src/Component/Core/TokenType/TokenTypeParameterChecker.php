@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Core\TokenType;
 
-use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
+use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
 use OAuth2Framework\Component\AuthorizationEndpoint\Exception\OAuth2AuthorizationException;
 use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\ParameterChecker;
 use OAuth2Framework\Component\Core\Message\OAuth2Message;
@@ -44,19 +44,17 @@ final class TokenTypeParameterChecker implements ParameterChecker
         $this->tokenTypeParameterAllowed = $tokenTypeParameterAllowed;
     }
 
-    public function check(Authorization $authorization): Authorization
+    public function check(AuthorizationRequest $authorization)
     {
         try {
             $tokenType = $this->getTokenType($authorization);
             $authorization->setTokenType($tokenType);
-
-            return $authorization;
         } catch (\InvalidArgumentException $e) {
             throw new OAuth2AuthorizationException(400, OAuth2Message::ERROR_INVALID_REQUEST, $e->getMessage(), $authorization, $e);
         }
     }
 
-    private function getTokenType(Authorization $authorization): TokenType
+    private function getTokenType(AuthorizationRequest $authorization): TokenType
     {
         if (true === $this->tokenTypeParameterAllowed && $authorization->hasQueryParam('token_type')) {
             return $this->tokenTypeManager->get($authorization->getQueryParam('token_type'));

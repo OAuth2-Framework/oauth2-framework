@@ -18,8 +18,5 @@ use OAuth2Framework\SecurityBundle\Security\Authentication\Token\OAuth2Token;
 
 interface Checker
 {
-    /**
-     * @throws \Exception
-     */
     public function check(OAuth2Token $token, OAuth2 $configuration): void;
 }

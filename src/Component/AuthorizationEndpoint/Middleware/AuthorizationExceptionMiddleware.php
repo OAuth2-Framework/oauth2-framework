@@ -23,9 +23,6 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 final class AuthorizationExceptionMiddleware implements MiddlewareInterface
 {
-    /**
-     * @throws OAuth2Message
-     */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         try {

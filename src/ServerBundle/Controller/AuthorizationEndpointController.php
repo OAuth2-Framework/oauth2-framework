@@ -14,9 +14,9 @@ declare(strict_types=1);
 namespace OAuth2Framework\ServerBundle\Controller;
 
 use Http\Message\MessageFactory;
-use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationEndpoint;
-use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequestLoader;
+use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
+use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequestLoader;
 use OAuth2Framework\Component\AuthorizationEndpoint\Exception\ProcessAuthorizationException;
 use OAuth2Framework\Component\AuthorizationEndpoint\Extension\ExtensionManager;
 use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\ParameterCheckerManager;
@@ -101,7 +101,7 @@ final class AuthorizationEndpointController extends AuthorizationEndpoint
         //$this->allowScopeSelection = $allowScopeSelection;
     }
 
-    protected function redirectToLoginPage(ServerRequestInterface $request, Authorization $authorization): ResponseInterface
+    protected function redirectToLoginPage(ServerRequestInterface $request, AuthorizationRequest $authorization): ResponseInterface
     {
         $session_data = [
             'uri' => $request->getUri()->__toString(),
@@ -120,7 +120,7 @@ final class AuthorizationEndpointController extends AuthorizationEndpoint
         return $response;
     }
 
-    protected function processConsentScreen(ServerRequestInterface $request, Authorization $authorization): ResponseInterface
+    protected function processConsentScreen(ServerRequestInterface $request, AuthorizationRequest $authorization): ResponseInterface
     {
         //FIXME: $options = $this->processConsentScreenOptions($authorization);
         if ($locale = $this->getUiLocale($authorization)) {
@@ -153,7 +153,7 @@ final class AuthorizationEndpointController extends AuthorizationEndpoint
         return $this->prepareResponse($authorization, $form);
     }
 
-    private function prepareResponse(Authorization $authorization, FormInterface $form): ResponseInterface
+    private function prepareResponse(AuthorizationRequest $authorization, FormInterface $form): ResponseInterface
     {
         $content = $this->templateEngine->render(
             $this->template,
@@ -170,7 +170,7 @@ final class AuthorizationEndpointController extends AuthorizationEndpoint
         return $response;
     }
 
-    private function getUiLocale(Authorization $authorization): ?string
+    private function getUiLocale(AuthorizationRequest $authorization): ?string
     {
         if (!\method_exists($this->translator, 'getCatalogue') || !$authorization->hasQueryParam('ui_locales')) {
             return null;

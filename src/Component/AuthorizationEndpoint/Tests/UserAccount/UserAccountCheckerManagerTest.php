@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\AuthorizationEndpoint\Tests\UserAccount;
 
-use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
+use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
 use OAuth2Framework\Component\AuthorizationEndpoint\UserAccount\UserAccountChecker;
 use OAuth2Framework\Component\AuthorizationEndpoint\UserAccount\UserAccountCheckerManager;
 use PHPUnit\Framework\TestCase;
@@ -38,12 +38,12 @@ final class UserAccountCheckerManagerTest extends TestCase
         $checker2->check(Argument::any(), Argument::any(), Argument::any())
             ->shouldBeCalled();
 
-        $authorization = $this->prophesize(Authorization::class);
+        $authorization = $this->prophesize(AuthorizationRequest::class);
 
         $manager = new UserAccountCheckerManager();
         $manager->add($checker1->reveal());
         $manager->add($checker2->reveal());
 
-        $manager->check($authorization->reveal(), null, false);
+        $manager->check($authorization->reveal());
     }
 }

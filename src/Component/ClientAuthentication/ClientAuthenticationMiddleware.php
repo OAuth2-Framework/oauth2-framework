@@ -36,8 +36,10 @@ class ClientAuthenticationMiddleware implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         try {
+            $authentication_method = null;
+            $client_credentials = null;
             $clientId = $this->authenticationMethodManager->findClientIdAndCredentials($request, $authentication_method, $client_credentials);
-            if (null !== $clientId) {
+            if (null !== $clientId && $authentication_method instanceof AuthenticationMethod) {
                 $client = $this->clientRepository->find($clientId);
                 $this->checkClient($client);
                 $this->checkAuthenticationMethod($request, $client, $authentication_method, $client_credentials);

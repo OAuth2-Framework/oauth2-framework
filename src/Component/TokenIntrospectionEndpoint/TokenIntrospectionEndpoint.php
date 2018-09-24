@@ -73,9 +73,6 @@ final class TokenIntrospectionEndpoint implements MiddlewareInterface
         return $response;
     }
 
-    /**
-     * @throws OAuth2Message
-     */
     private function getResourceServer(ServerRequestInterface $request): ResourceServer
     {
         $resourceServer = $request->getAttribute('resource_server');
@@ -86,9 +83,6 @@ final class TokenIntrospectionEndpoint implements MiddlewareInterface
         return $resourceServer;
     }
 
-    /**
-     * @throws OAuth2Message
-     */
     private function getToken(ServerRequestInterface $request): string
     {
         $params = $this->getRequestParameters($request);
@@ -100,8 +94,6 @@ final class TokenIntrospectionEndpoint implements MiddlewareInterface
     }
 
     /**
-     * @throws OAuth2Message
-     *
      * @return TokenTypeHint[]
      */
     private function getTokenTypeHints(ServerRequestInterface $request): array

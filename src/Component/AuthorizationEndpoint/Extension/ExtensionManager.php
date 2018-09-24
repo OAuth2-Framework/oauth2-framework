@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\AuthorizationEndpoint\Extension;
 
-use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
+use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
 use Psr\Http\Message\ServerRequestInterface;
 
 class ExtensionManager
@@ -28,7 +28,7 @@ class ExtensionManager
         $this->extensions[] = $extension;
     }
 
-    public function processBefore(ServerRequestInterface $request, Authorization $authorization): Authorization
+    public function processBefore(ServerRequestInterface $request, AuthorizationRequest $authorization): AuthorizationRequest
     {
         foreach ($this->extensions as $extension) {
             $extension->processBefore($request, $authorization);
@@ -37,7 +37,7 @@ class ExtensionManager
         return $authorization;
     }
 
-    public function processAfter(ServerRequestInterface $request, Authorization $authorization): Authorization
+    public function processAfter(ServerRequestInterface $request, AuthorizationRequest $authorization): AuthorizationRequest
     {
         foreach ($this->extensions as $extension) {
             $extension->processAfter($request, $authorization);

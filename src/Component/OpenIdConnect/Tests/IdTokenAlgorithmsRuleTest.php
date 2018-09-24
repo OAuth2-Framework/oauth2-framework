@@ -19,6 +19,7 @@ use Jose\Component\Core\Converter\StandardConverter;
 use Jose\Component\Encryption\Compression\CompressionMethodManager;
 use Jose\Component\Encryption\JWEBuilder;
 use Jose\Component\Signature\JWSBuilder;
+use OAuth2Framework\Component\ClientRule\RuleHandler;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\OpenIdConnect\Rule\IdTokenAlgorithmsRule;
@@ -133,10 +134,10 @@ final class IdTokenAlgorithmsRuleTest extends TestCase
         );
     }
 
-    private function getCallable(): callable
+    private function getCallable(): RuleHandler
     {
-        return function (ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters): DataBag {
+        return new RuleHandler(function (ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters): DataBag {
             return $validatedParameters;
-        };
+        });
     }
 }

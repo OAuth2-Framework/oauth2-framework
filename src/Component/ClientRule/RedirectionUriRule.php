@@ -22,10 +22,10 @@ use function League\Uri\parse;
  */
 final class RedirectionUriRule implements Rule
 {
-    public function handle(ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters, callable $next): DataBag
+    public function handle(ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters, RuleHandler $next): DataBag
     {
         /** @var DataBag $validatedParameters */
-        $validatedParameters = $next($clientId, $commandParameters, $validatedParameters);
+        $validatedParameters = $next->handle($clientId, $commandParameters, $validatedParameters);
 
         // No need for redirect URIs as no response type to is used.
         if (!$validatedParameters->has('response_types') || empty($validatedParameters->get('response_types'))) {

@@ -72,9 +72,6 @@ final class ClientRegistrationEndpoint implements MiddlewareInterface
         }
     }
 
-    /**
-     * @throws OAuth2Message
-     */
     private function checkRequest(ServerRequestInterface $request): void
     {
         if ('POST' !== $request->getMethod()) {

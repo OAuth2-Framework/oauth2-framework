@@ -13,14 +13,14 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\OpenIdConnect\ParameterChecker;
 
-use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
+use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
 use OAuth2Framework\Component\AuthorizationEndpoint\Exception\OAuth2AuthorizationException;
 use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\ParameterChecker;
 use OAuth2Framework\Component\Core\Message\OAuth2Message;
 
 final class ClaimsParameterChecker implements ParameterChecker
 {
-    public function check(Authorization $authorization): Authorization
+    public function check(AuthorizationRequest $authorization)
     {
         try {
             if ($authorization->hasQueryParam('claims')) {
@@ -31,8 +31,6 @@ final class ClaimsParameterChecker implements ParameterChecker
 
                 $authorization->getMetadata()->set('claims', $authorization->getQueryParam('claims'));
             }
-
-            return $authorization;
         } catch (\InvalidArgumentException $e) {
             throw new OAuth2AuthorizationException(400, OAuth2Message::ERROR_INVALID_REQUEST, $e->getMessage(), $authorization, $e);
         }

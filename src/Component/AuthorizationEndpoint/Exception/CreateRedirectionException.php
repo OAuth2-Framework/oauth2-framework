@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\AuthorizationEndpoint\Exception;
 
-use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
+use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
 
 class CreateRedirectionException extends \Exception
 {
@@ -21,14 +21,14 @@ class CreateRedirectionException extends \Exception
 
     private $description;
 
-    public function __construct(Authorization $authorization, string $message, ?string $description)
+    public function __construct(AuthorizationRequest $authorization, string $message, ?string $description)
     {
         parent::__construct($message);
         $this->authorization = $authorization;
         $this->description = $description;
     }
 
-    public function getAuthorization(): Authorization
+    public function getAuthorization(): AuthorizationRequest
     {
         return $this->authorization;
     }

@@ -13,19 +13,19 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\AuthorizationEndpoint\Exception;
 
-use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
+use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
 
 class ProcessAuthorizationException extends \Exception
 {
     private $authorization;
 
-    public function __construct(Authorization $authorization)
+    public function __construct(AuthorizationRequest $authorization)
     {
         parent::__construct();
         $this->authorization = $authorization;
     }
 
-    public function getAuthorization(): Authorization
+    public function getAuthorization(): AuthorizationRequest
     {
         return $this->authorization;
     }

@@ -63,9 +63,6 @@ final class ClientConfigurationEndpoint implements MiddlewareInterface
         }
     }
 
-    /**
-     * @throws OAuth2Message
-     */
     private function checkClient(ServerRequestInterface $request)
     {
         try {

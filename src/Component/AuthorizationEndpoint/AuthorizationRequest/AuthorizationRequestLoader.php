@@ -11,7 +11,7 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Component\AuthorizationEndpoint;
+namespace OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest;
 
 use Base64Url\Base64Url;
 use Http\Client\HttpClient;
@@ -152,9 +152,6 @@ class AuthorizationRequestLoader
         $this->client = $client;
     }
 
-    /**
-     * @throws \InvalidArgumentException
-     */
     public function enableEncryptedRequestObjectSupport(JWELoader $jweLoader, JWKSet $keyEncryptionKeySet, bool $requireEncryption)
     {
         if (!$this->isRequestObjectSupportEnabled()) {
@@ -178,12 +175,7 @@ class AuthorizationRequestLoader
         return null !== $this->keyEncryptionKeySet;
     }
 
-    /**
-     * @throws OAuth2Message
-     * @throws \Exception
-     * @throws \Http\Client\Exception
-     */
-    public function load(ServerRequestInterface $request): Authorization
+    public function load(ServerRequestInterface $request): AuthorizationRequest
     {
         $client = null;
         $params = $request->getQueryParams();
@@ -195,14 +187,9 @@ class AuthorizationRequestLoader
             $client = $this->getClient($params);
         }
 
-        return new Authorization($client, $params);
+        return new AuthorizationRequest($client, $params);
     }
 
-    /**
-     * @param Client $client
-     *
-     * @throws OAuth2Message
-     */
     private function createFromRequestParameter(array $params, Client &$client = null): array
     {
         if (false === $this->isRequestObjectSupportEnabled()) {
@@ -219,13 +206,6 @@ class AuthorizationRequestLoader
         return $params;
     }
 
-    /**
-     * @param Client $client
-     *
-     * @throws OAuth2Message
-     * @throws \Exception
-     * @throws \Http\Client\Exception
-     */
     private function createFromRequestUriParameter(array $params, Client &$client = null): array
     {
         if (false === $this->isRequestObjectReferenceSupportEnabled()) {
@@ -243,9 +223,6 @@ class AuthorizationRequestLoader
         return $params;
     }
 
-    /**
-     * @throws \InvalidArgumentException
-     */
     private function checkIssuerAndClientId(array $params)
     {
         if (\array_key_exists('iss', $params) && \array_key_exists('client_id', $params)) {
@@ -255,11 +232,6 @@ class AuthorizationRequestLoader
         }
     }
 
-    /**
-     * @param string $requestUri
-     *
-     * @throws OAuth2Message
-     */
     private function checkRequestUri(Client $client, $requestUri)
     {
         $storedRequestUris = $client->has('request_uris') ? $client->get('request_uris') : [];
@@ -280,9 +252,6 @@ class AuthorizationRequestLoader
         throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST_URI, 'The request Uri is not allowed.');
     }
 
-    /**
-     * @throws OAuth2Message
-     */
     private function loadRequestObject(array $params, string $request, Client &$client = null): array
     {
         // FIXME Can be
@@ -320,9 +289,6 @@ class AuthorizationRequestLoader
         }
     }
 
-    /**
-     * @throws OAuth2Message
-     */
     private function tryToLoadEncryptedRequest(string $request): string
     {
         if (null === $this->jweLoader) {
@@ -345,9 +311,6 @@ class AuthorizationRequestLoader
         }
     }
 
-    /**
-     * @throws \InvalidArgumentException
-     */
     private function checkAlgorithms(JWS $jws, Client $client)
     {
         $signatureAlgorithm = $jws->getSignature(0)->getProtectedHeaderParameter('alg');
@@ -366,11 +329,6 @@ class AuthorizationRequestLoader
         }
     }
 
-    /**
-     * @throws OAuth2Message
-     * @throws \Exception
-     * @throws \Http\Client\Exception
-     */
     private function downloadContent(string $url): string
     {
         $request = new Request($url, 'GET');
@@ -387,9 +345,6 @@ class AuthorizationRequestLoader
         return $content;
     }
 
-    /**
-     * @throws OAuth2Message
-     */
     private function getClient(array $params): Client
     {
         $client = \array_key_exists('client_id', $params) ? $this->clientRepository->find(new ClientId($params['client_id'])) : null;

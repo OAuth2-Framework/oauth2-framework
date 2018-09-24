@@ -43,8 +43,6 @@ class OAuth2
 
     /**
      * @param array $data an array of key/value parameters
-     *
-     * @throws \BadMethodCallException
      */
     public function __construct(array $data)
     {

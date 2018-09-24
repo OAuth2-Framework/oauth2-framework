@@ -17,8 +17,7 @@ use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 
 interface UserAccountDiscovery
 {
-    /**
-     * @param bool $isFullyAuthenticated
-     */
-    public function find(?bool &$isFullyAuthenticated = null): ?UserAccount;
+    public function find(): ?UserAccount;
+
+    public function isFullyAuthenticated(): bool;
 }

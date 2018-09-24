@@ -42,7 +42,7 @@ final class ResourceOwnerPasswordCredentialsGrantType implements GrantType
         return 'password';
     }
 
-    public function checkRequest(ServerRequestInterface $request)
+    public function checkRequest(ServerRequestInterface $request): void
     {
         $parameters = RequestBodyParser::parseFormUrlEncoded($request);
         $requiredParameters = ['username', 'password'];

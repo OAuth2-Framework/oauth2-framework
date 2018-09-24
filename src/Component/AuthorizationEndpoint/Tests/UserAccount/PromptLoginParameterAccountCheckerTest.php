@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\AuthorizationEndpoint\Tests\UserAccount;
 
-use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
+use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
 use OAuth2Framework\Component\AuthorizationEndpoint\Exception\RedirectToLoginPageException;
 use OAuth2Framework\Component\AuthorizationEndpoint\UserAccount\PromptLoginParameterAccountChecker;
 use PHPUnit\Framework\TestCase;
@@ -29,7 +29,7 @@ final class PromptLoginParameterAccountCheckerTest extends TestCase
      */
     public function whenTheLoginParameterIsSetAndTheUserNotFullyAuthenticatedARedirectionToTheLoginPageIsThrown()
     {
-        $authorization = $this->prophesize(Authorization::class);
+        $authorization = $this->prophesize(AuthorizationRequest::class);
         $authorization->hasPrompt('login')->willReturn(true);
         $authorization->isUserAccountFullyAuthenticated()->willReturn(false);
         $checker = new PromptLoginParameterAccountChecker();
@@ -47,7 +47,7 @@ final class PromptLoginParameterAccountCheckerTest extends TestCase
      */
     public function whenTheLoginParameterIsSetAndTheUserFullyAuthenticatedThenCheckSucceeded()
     {
-        $authorization = $this->prophesize(Authorization::class);
+        $authorization = $this->prophesize(AuthorizationRequest::class);
         $authorization->hasPrompt('login')->willReturn(true);
         $authorization->isUserAccountFullyAuthenticated()->willReturn(true);
         $checker = new PromptLoginParameterAccountChecker();

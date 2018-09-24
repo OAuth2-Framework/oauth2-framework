@@ -14,12 +14,13 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\OpenIdConnect\Rule;
 
 use OAuth2Framework\Component\ClientRule\Rule;
+use OAuth2Framework\Component\ClientRule\RuleHandler;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 
 final class UserParametersRule implements Rule
 {
-    public function handle(ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters, callable $next): DataBag
+    public function handle(ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters, RuleHandler $next): DataBag
     {
         if ($commandParameters->has('require_auth_time')) {
             $require_auth_time = $commandParameters->get('require_auth_time');
@@ -48,6 +49,6 @@ final class UserParametersRule implements Rule
             $validatedParameters->set('default_acr_values', $default_acr_values);
         }
 
-        return $next($clientId, $commandParameters, $validatedParameters);
+        return $next->handle($clientId, $commandParameters, $validatedParameters);
     }
 }

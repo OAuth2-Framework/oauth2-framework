@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\TokenEndpoint\Rule;
 
 use OAuth2Framework\Component\ClientRule\Rule;
+use OAuth2Framework\Component\ClientRule\RuleHandler;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\TokenEndpoint\GrantTypeManager;
@@ -27,22 +28,19 @@ final class GrantTypesRule implements Rule
         $this->grantTypeManager = $grantTypeManager;
     }
 
-    public function handle(ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters, callable $next): DataBag
+    public function handle(ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters, RuleHandler $next): DataBag
     {
         if (!$commandParameters->has('grant_types')) {
             $commandParameters->set('grant_types', []);
         }
         $this->checkGrantTypes($commandParameters);
         $validatedParameters->set('grant_types', $commandParameters->get('grant_types'));
-        $validatedParameters = $next($clientId, $commandParameters, $validatedParameters);
+        $validatedParameters = $next->handle($clientId, $commandParameters, $validatedParameters);
         //$this->checkResponseTypes($validatedParameters);
 
         return $validatedParameters;
     }
 
-    /**
-     * @throws \InvalidArgumentException
-     */
     private function checkGrantTypes(DataBag $parameters): void
     {
         if (!\is_array($parameters->get('grant_types'))) {
@@ -58,9 +56,6 @@ final class GrantTypesRule implements Rule
         }
     }
 
-    /**
-     * @throws \InvalidArgumentException
-     */
     private function checkResponseTypes(DataBag $parameters): void
     {
         $responseTypes = $parameters->has('response_types') ? $parameters->get('response_types') : [];

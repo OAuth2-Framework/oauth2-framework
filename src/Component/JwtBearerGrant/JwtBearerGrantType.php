@@ -135,7 +135,7 @@ class JwtBearerGrantType implements GrantType
         return 'urn:ietf:params:oauth:grant-type:jwt-bearer';
     }
 
-    public function checkRequest(ServerRequestInterface $request)
+    public function checkRequest(ServerRequestInterface $request): void
     {
         $parameters = RequestBodyParser::parseFormUrlEncoded($request);
         $requiredParameters = ['assertion'];
@@ -174,9 +174,6 @@ class JwtBearerGrantType implements GrantType
         return $grantTypeData;
     }
 
-    /**
-     * @throws OAuth2Message
-     */
     private function tryToDecryptTheAssertion(string $assertion): string
     {
         if (null === $this->jweDecrypter) {
@@ -209,9 +206,6 @@ class JwtBearerGrantType implements GrantType
         return $grantTypeData;
     }
 
-    /**
-     * @throws OAuth2Message
-     */
     private function checkJWTSignature(GrantTypeData $grantTypeData, JWS $jws, array $claims): GrantTypeData
     {
         $iss = $claims['iss'];

@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\TokenEndpoint;
 
-use OAuth2Framework\Component\Core\Message\OAuth2Message;
 use Psr\Http\Message\ServerRequestInterface;
 
 interface GrantType
@@ -27,31 +26,18 @@ interface GrantType
 
     /**
      * This function returns the supported grant type.
-     *
-     * @return string The grant type
      */
     public function name(): string;
 
     /**
      * This function checks the request.
-     *
-     * @param ServerRequestInterface $request The request
-     *
-     * @throws OAuth2Message
      */
-    public function checkRequest(ServerRequestInterface $request);
+    public function checkRequest(ServerRequestInterface $request): void;
 
     /**
      * This function checks the request and returns information to issue an access token.
-     *
-     * @param ServerRequestInterface $request The request
-     *
-     * @throws OAuth2Message
      */
     public function prepareResponse(ServerRequestInterface $request, GrantTypeData $grantTypeData): GrantTypeData;
 
-    /**
-     * @throws OAuth2Message
-     */
     public function grant(ServerRequestInterface $request, GrantTypeData $grantTypeData): GrantTypeData;
 }

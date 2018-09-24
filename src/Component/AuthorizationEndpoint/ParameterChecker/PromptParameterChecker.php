@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker;
 
-use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
+use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
 use OAuth2Framework\Component\AuthorizationEndpoint\Exception\OAuth2AuthorizationException;
 use OAuth2Framework\Component\Core\Message\OAuth2Message;
 
@@ -27,7 +27,7 @@ final class PromptParameterChecker implements ParameterChecker
 
     public const PROMPT_SELECT_ACCOUNT = 'select_account';
 
-    public function check(Authorization $authorization): Authorization
+    public function check(AuthorizationRequest $authorization)
     {
         try {
             if ($authorization->hasQueryParam('prompt')) {
@@ -40,8 +40,6 @@ final class PromptParameterChecker implements ParameterChecker
                     throw new \InvalidArgumentException('Invalid parameter "prompt". Prompt value "none" must be used alone.');
                 }
             }
-
-            return $authorization;
         } catch (\InvalidArgumentException $e) {
             throw new OAuth2AuthorizationException(400, OAuth2Message::ERROR_INVALID_REQUEST, $e->getMessage(), $authorization, $e);
         }

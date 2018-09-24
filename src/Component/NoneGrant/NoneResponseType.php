@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\NoneGrant;
 
-use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
-use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType;
+use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
+use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType\ResponseType;
 
 /**
  * This response type has been introduced by OpenID Connect
@@ -56,12 +56,12 @@ final class NoneResponseType implements ResponseType
         return self::RESPONSE_TYPE_MODE_QUERY;
     }
 
-    public function preProcess(Authorization $authorization): Authorization
+    public function preProcess(AuthorizationRequest $authorization): AuthorizationRequest
     {
         return $authorization;
     }
 
-    public function process(Authorization $authorization): Authorization
+    public function process(AuthorizationRequest $authorization): AuthorizationRequest
     {
         $this->authorizationStorage->save($authorization);
 

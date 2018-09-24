@@ -11,7 +11,7 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Component\AuthorizationEndpoint;
+namespace OAuth2Framework\Component\AuthorizationEndpoint\ResponseType;
 
 class ResponseTypeManager
 {
@@ -30,9 +30,6 @@ class ResponseTypeManager
         return \array_key_exists($responseType, $this->responseTypes);
     }
 
-    /**
-     * @throws \InvalidArgumentException
-     */
     public function get(string $responseType): ResponseType
     {
         if (!$this->has($responseType)) {
@@ -51,7 +48,7 @@ class ResponseTypeManager
     }
 
     /**
-     * @return string[]
+     * @return ResponseType[]
      */
     public function all(): array
     {

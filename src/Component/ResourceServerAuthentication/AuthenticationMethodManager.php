@@ -52,9 +52,6 @@ class AuthenticationMethodManager
         return \array_key_exists($name, $this->names);
     }
 
-    /**
-     * @throws \InvalidArgumentException
-     */
     public function get(string $name): AuthenticationMethod
     {
         if (!$this->has($name)) {
@@ -75,8 +72,6 @@ class AuthenticationMethodManager
 
     /**
      * @param mixed $resourceServerCredentials The resource server credentials found in the request
-     *
-     * @throws OAuth2Message
      */
     public function findResourceServerIdAndCredentials(ServerRequestInterface $request, AuthenticationMethod &$authenticationMethod = null, &$resourceServerCredentials = null): ?ResourceServerId
     {

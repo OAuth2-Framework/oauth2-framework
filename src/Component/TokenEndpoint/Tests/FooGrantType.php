@@ -29,7 +29,7 @@ final class FooGrantType implements GrantType
         return 'foo';
     }
 
-    public function checkRequest(ServerRequestInterface $request)
+    public function checkRequest(ServerRequestInterface $request): void
     {
         //Nothing to do
     }

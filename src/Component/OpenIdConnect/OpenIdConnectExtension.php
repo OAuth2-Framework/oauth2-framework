@@ -90,25 +90,24 @@ class OpenIdConnectExtension implements TokenEndpointExtension
         $idTokenBuilder = $this->idTokenBuilderFactory->createBuilder($client, $userAccount, $redirectUri);
 
         $requestedClaims = $this->getIdTokenClaims($accessToken);
-        $idTokenBuilder = $idTokenBuilder->withRequestedClaims($requestedClaims);
-
-        $idTokenBuilder = $idTokenBuilder->withAccessTokenId($accessToken->getAccessTokenId());
+        $idTokenBuilder->withRequestedClaims($requestedClaims);
+        $idTokenBuilder->withAccessTokenId($accessToken->getTokenId());
 
         if ($client->has('id_token_signed_response_alg')) {
             $signatureAlgorithm = $client->get('id_token_signed_response_alg');
-            $idTokenBuilder = $idTokenBuilder->withSignature($this->jwsBuilder, $this->signatureKeys, $signatureAlgorithm);
+            $idTokenBuilder->withSignature($this->jwsBuilder, $this->signatureKeys, $signatureAlgorithm);
         } else {
-            $idTokenBuilder = $idTokenBuilder->withSignature($this->jwsBuilder, $this->signatureKeys, $this->defaultSignatureAlgorithm);
+            $idTokenBuilder->withSignature($this->jwsBuilder, $this->signatureKeys, $this->defaultSignatureAlgorithm);
         }
         if ($client->has('userinfo_encrypted_response_alg') && $client->has('userinfo_encrypted_response_enc') && null !== $this->jweBuilder) {
             $keyEncryptionAlgorithm = $client->get('userinfo_encrypted_response_alg');
             $contentEncryptionAlgorithm = $client->get('userinfo_encrypted_response_enc');
-            $idTokenBuilder = $idTokenBuilder->withEncryption($this->jweBuilder, $keyEncryptionAlgorithm, $contentEncryptionAlgorithm);
+            $idTokenBuilder->withEncryption($this->jweBuilder, $keyEncryptionAlgorithm, $contentEncryptionAlgorithm);
         }
         if ($client->has('require_auth_time')) {
             $idTokenBuilder->withAuthenticationTime();
         }
-        $idTokenBuilder = $idTokenBuilder->withAccessToken($accessToken);
+        $idTokenBuilder->setAccessToken($accessToken);
 
         return $idTokenBuilder->build();
     }

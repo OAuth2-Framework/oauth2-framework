@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
 </head>
 <body>
-    <p>{{ 'authorization.form.message'|trans({'%client_id%': authorization.getClient().getPublicId()}, 'OAuth2FrameworkServer') }}<br /></p>
+    <p>{{ 'authorization.form.message'|trans({'%client_id%': AuthorizationRequest.getClient().getPublicId()}, 'OAuth2FrameworkServer') }}<br /></p>
     {{ form_start(form, {'action':app.request.uri }) }}
     {% if authorization.hasScope() %}
         {{ 'authorization.form.scope'|trans({}, 'OAuth2FrameworkServer') }}

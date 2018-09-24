@@ -25,14 +25,8 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 final class OAuth2FrameworkSecurityExtension extends Extension
 {
-    /**
-     * @var string
-     */
     private $alias;
 
-    /**
-     * OAuth2FrameworkSecurityExtension constructor.
-     */
     public function __construct(string $alias)
     {
         $this->alias = $alias;

@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Scope\Tests;
 
-use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
+use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
 use OAuth2Framework\Component\AuthorizationEndpoint\Exception\OAuth2AuthorizationException;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
@@ -33,7 +33,7 @@ final class ScopeParameterCheckerTest extends TestCase
      */
     protected function setUp()
     {
-        if (!\class_exists(Authorization::class)) {
+        if (!\class_exists(AuthorizationRequest::class)) {
             static::markTestSkipped('The component "oauth2-framework/authorization-endpoint" is not installed.');
         }
     }
@@ -44,7 +44,7 @@ final class ScopeParameterCheckerTest extends TestCase
     public function anAuthorizationRequestWithNoScopeParameterIsChecked()
     {
         $client = $this->prophesize(Client::class);
-        $authorization = $this->prophesize(Authorization::class);
+        $authorization = $this->prophesize(AuthorizationRequest::class);
         $authorization->getClient()->willReturn($client->reveal());
         $authorization->hasQueryParam('scope')->willReturn(false)->shouldBeCalled();
         $authorization->setResponseParameter('scope', Argument::any())->shouldNotBeCalled();
@@ -59,7 +59,7 @@ final class ScopeParameterCheckerTest extends TestCase
     public function anAuthorizationRequestWithScopeParameterIsChecked()
     {
         $client = $this->prophesize(Client::class);
-        $authorization = $this->prophesize(Authorization::class);
+        $authorization = $this->prophesize(AuthorizationRequest::class);
         $authorization->getClient()->willReturn($client->reveal());
         $authorization->hasQueryParam('scope')->willReturn(true)->shouldBeCalled();
         $authorization->getQueryParam('scope')->willReturn('scope1')->shouldBeCalled();
@@ -79,7 +79,7 @@ final class ScopeParameterCheckerTest extends TestCase
     public function anAuthorizationRequestWithAnUnsupportedScopeParameterIsChecked()
     {
         $client = $this->prophesize(Client::class);
-        $authorization = $this->prophesize(Authorization::class);
+        $authorization = $this->prophesize(AuthorizationRequest::class);
         $authorization->getClient()->willReturn($client->reveal());
         $authorization->hasQueryParam('scope')->willReturn(true)->shouldBeCalled();
         $authorization->getQueryParam('scope')->willReturn('invalid_scope')->shouldBeCalled();

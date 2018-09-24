@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\ServerBundle\Service;
 
 use Base64Url\Base64Url;
-use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
+use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -31,11 +31,11 @@ class SessionStateParameterExtension extends \OAuth2Framework\Component\OpenIdCo
         $this->storageName = $storageName;
     }
 
-    public function processBefore(ServerRequestInterface $request, Authorization $authorization): void
+    public function processBefore(ServerRequestInterface $request, AuthorizationRequest $authorization): void
     {
     }
 
-    protected function getBrowserState(ServerRequestInterface $request, Authorization $authorization): string
+    protected function getBrowserState(ServerRequestInterface $request, AuthorizationRequest $authorization): string
     {
         if ($this->session->has($this->storageName)) {
             return $this->session->get($this->storageName);
@@ -49,7 +49,7 @@ class SessionStateParameterExtension extends \OAuth2Framework\Component\OpenIdCo
         return $browserState;
     }
 
-    protected function calculateSessionState(ServerRequestInterface $request, Authorization $authorization, string $browserState): string
+    protected function calculateSessionState(ServerRequestInterface $request, AuthorizationRequest $authorization, string $browserState): string
     {
         $origin = $this->getOriginUri($authorization->getRedirectUri());
         $salt = Base64Url::encode(\random_bytes(16));

@@ -30,7 +30,7 @@ final class ClientCredentialsGrantType implements GrantType
         return 'client_credentials';
     }
 
-    public function checkRequest(ServerRequestInterface $request)
+    public function checkRequest(ServerRequestInterface $request): void
     {
         // Nothing to do
     }

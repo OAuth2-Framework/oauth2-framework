@@ -166,9 +166,6 @@ class ClientAssertionJwt implements AuthenticationMethod
         return new ClientId($claims['sub']);
     }
 
-    /**
-     * @throws OAuth2Message
-     */
     private function tryToDecryptClientAssertion(string $assertion): string
     {
         if (null === $this->jweLoader) {

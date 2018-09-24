@@ -13,17 +13,9 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\AuthorizationEndpoint\UserAccount;
 
-use OAuth2Framework\Component\AuthorizationEndpoint\Authorization;
-use OAuth2Framework\Component\AuthorizationEndpoint\Exception;
-use OAuth2Framework\Component\Core\UserAccount\UserAccount;
+use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
 
 interface UserAccountChecker
 {
-    /**
-     * @throws Exception\CreateRedirectionException
-     * @throws Exception\ProcessAuthorizationException
-     * @throws Exception\RedirectToLoginPageException
-     * @throws Exception\ShowConsentScreenException
-     */
-    public function check(Authorization $authorization, ?UserAccount $userAccount, bool $isFullyAuthenticated): void;
+    public function check(AuthorizationRequest $authorization): void;
 }

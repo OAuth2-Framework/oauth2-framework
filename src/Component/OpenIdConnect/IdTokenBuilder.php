@@ -330,9 +330,6 @@ class IdTokenBuilder
         return Base64Url::encode(\mb_substr(\hash($this->getHashMethod(), $tokenId->getValue(), true), 0, $this->getHashSize(), '8bit'));
     }
 
-    /**
-     * @throws \InvalidArgumentException
-     */
     private function getHashMethod(): string
     {
         $map = [
@@ -357,9 +354,6 @@ class IdTokenBuilder
         return $map[$this->signatureAlgorithm];
     }
 
-    /**
-     * @throws \InvalidArgumentException
-     */
     private function getHashSize(): int
     {
         $map = [

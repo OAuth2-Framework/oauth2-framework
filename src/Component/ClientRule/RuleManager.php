@@ -41,20 +41,20 @@ class RuleManager
 
     public function handle(ClientId $clientId, DataBag $commandParameters): DataBag
     {
-        return \call_user_func($this->callableForNextRule(0), $clientId, $commandParameters, new DataBag([]));
+        return $this->callableForNextRule(0)->handle($clientId, $commandParameters, new DataBag([]));
     }
 
-    private function callableForNextRule(int $index): \Closure
+    private function callableForNextRule(int $index): RuleHandler
     {
         if (!isset($this->rules[$index])) {
-            return function (ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters): DataBag {
+            return new RuleHandler(function (ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters): DataBag {
                 return $validatedParameters;
-            };
+            });
         }
         $rule = $this->rules[$index];
 
-        return function (ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters) use ($rule, $index): DataBag {
+        return new RuleHandler(function (ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters) use ($rule, $index): DataBag {
             return $rule->handle($clientId, $commandParameters, $validatedParameters, $this->callableForNextRule($index + 1));
-        };
+        });
     }
 }

@@ -16,6 +16,7 @@ namespace OAuth2Framework\Component\OpenIdConnect\Rule;
 use Jose\Component\Encryption\JWEBuilder;
 use Jose\Component\Signature\JWSBuilder;
 use OAuth2Framework\Component\ClientRule\Rule;
+use OAuth2Framework\Component\ClientRule\RuleHandler;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 
@@ -40,7 +41,7 @@ final class UserinfoEndpointAlgorithmsRule implements Rule
         $this->jweBuilder = $jweBuilder;
     }
 
-    public function handle(ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters, callable $next): DataBag
+    public function handle(ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters, RuleHandler $next): DataBag
     {
         if ($commandParameters->has('userinfo_signed_response_alg') && null !== $this->jwsBuilder) {
             $this->checkAlgorithms('userinfo_signed_response_alg', $commandParameters, $this->jwsBuilder->getSignatureAlgorithmManager()->list());
@@ -54,7 +55,7 @@ final class UserinfoEndpointAlgorithmsRule implements Rule
             $validatedParameters->set('userinfo_encrypted_response_enc', $commandParameters->get('userinfo_encrypted_response_enc'));
         }
 
-        return $next($clientId, $commandParameters, $validatedParameters);
+        return $next->handle($clientId, $commandParameters, $validatedParameters);
     }
 
     private function checkAlgorithms(string $parameter, DataBag $commandParameters, array $allowedAlgorithms)

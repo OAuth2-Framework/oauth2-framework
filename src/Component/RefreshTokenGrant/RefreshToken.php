@@ -14,10 +14,8 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\RefreshTokenGrant;
 
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
-use OAuth2Framework\Component\Core\Event\Event;
 use OAuth2Framework\Component\Core\Token\Token;
 use OAuth2Framework\Component\Core\Token\TokenId;
-use OAuth2Framework\Component\RefreshTokenGrant\Event as RefreshTokenEvent;
 
 class RefreshToken extends Token
 {
@@ -61,7 +59,7 @@ class RefreshToken extends Token
         $data->set('access_token', $this->getTokenId()->getValue());
         $data->set('expires_in', $this->getExpiresIn());
         if (!empty($this->getTokenId())) {
-            $data = $data->set('refresh_token', $this->getTokenId());
+            $data->set('refresh_token', $this->getTokenId());
         }
 
         return $data->all();
@@ -76,48 +74,5 @@ class RefreshToken extends Token
         ];
 
         return $data;
-    }
-
-    public function apply(Event $event): void
-    {
-        $map = $this->getEventMap();
-        if (!\array_key_exists($event->getType(), $map)) {
-            throw new \InvalidArgumentException('Unsupported event.');
-        }
-        if ($this->getTokenId()->getValue() !== $event->getDomainId()->getValue()) {
-            throw new \RuntimeException('Event not applicable for this refresh token.');
-        }
-        $method = $map[$event->getType()];
-        $this->$method($event);
-    }
-
-    private function getEventMap(): array
-    {
-        return [
-            RefreshTokenEvent\RefreshTokenCreatedEvent::class => 'applyRefreshTokenCreatedEvent',
-            RefreshTokenEvent\AccessTokenAddedToRefreshTokenEvent::class => 'applyAccessTokenAddedToRefreshTokenEvent',
-            RefreshTokenEvent\RefreshTokenRevokedEvent::class => 'applyRefreshTokenRevokedEvent',
-        ];
-    }
-
-    protected function applyRefreshTokenCreatedEvent(RefreshTokenEvent\RefreshTokenCreatedEvent $event): void
-    {
-        $this->setTokenId($event->getRefreshTokenId());
-        $this->setResourceOwnerId($event->getResourceOwnerId());
-        $this->setClientId($event->getClientId());
-        $this->setParameter($event->getParameter());
-        $this->setMetadata($event->getMetadata());
-        $this->setExpiresAt($event->getExpiresAt());
-        $this->setResourceServerId($event->getResourceServerId());
-    }
-
-    protected function applyAccessTokenAddedToRefreshTokenEvent(RefreshTokenEvent\AccessTokenAddedToRefreshTokenEvent $event): void
-    {
-        $this->accessTokenIds[$event->getAccessTokenId()->getValue()] = $event->getAccessTokenId();
-    }
-
-    protected function applyRefreshTokenRevokedEvent(RefreshTokenEvent\RefreshTokenRevokedEvent $event): void
-    {
-        $this->markAsRevoked();
     }
 }

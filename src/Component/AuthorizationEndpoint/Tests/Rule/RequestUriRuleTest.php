@@ -15,6 +15,7 @@ namespace OAuth2Framework\Component\AuthorizationEndpoint\Tests\Rule;
 
 use OAuth2Framework\Component\AuthorizationEndpoint\Rule\RequestUriRule;
 use OAuth2Framework\Component\ClientRule\Rule;
+use OAuth2Framework\Component\ClientRule\RuleHandler;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use PHPUnit\Framework\TestCase;
@@ -115,10 +116,10 @@ final class RequestUriRuleTest extends TestCase
         static::assertEquals(['https://foo.com/bar'], $validatedParameters->get('request_uris'));
     }
 
-    private function getCallable(): callable
+    private function getCallable(): RuleHandler
     {
-        return function (ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters): DataBag {
+        return new RuleHandler(function (ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters): DataBag {
             return $validatedParameters;
-        };
+        });
     }
 }

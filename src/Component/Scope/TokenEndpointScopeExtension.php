@@ -75,9 +75,6 @@ final class TokenEndpointScopeExtension implements TokenEndpointExtension
         }
     }
 
-    /**
-     * @throws OAuth2Message
-     */
     private function applyScopePolicy(string $scope, Client $client): string
     {
         try {
@@ -87,9 +84,6 @@ final class TokenEndpointScopeExtension implements TokenEndpointExtension
         }
     }
 
-    /**
-     * @throws OAuth2Message
-     */
     private function checkRequestedScopeIsAvailable(string $scope, GrantTypeData $grantTypeData): void
     {
         // The available scope can be limited by (in this order):

@@ -15,6 +15,7 @@ namespace OAuth2Framework\Component\ClientAuthentication\Rule;
 
 use OAuth2Framework\Component\ClientAuthentication\AuthenticationMethodManager;
 use OAuth2Framework\Component\ClientRule\Rule;
+use OAuth2Framework\Component\ClientRule\RuleHandler;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 
@@ -27,7 +28,7 @@ final class ClientAuthenticationMethodRule implements Rule
         $this->clientAuthenticationMethodManager = $clientAuthenticationMethodManager;
     }
 
-    public function handle(ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters, callable $next): DataBag
+    public function handle(ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters, RuleHandler $next): DataBag
     {
         if (!$commandParameters->has('token_endpoint_auth_method')) {
             $commandParameters->set('token_endpoint_auth_method', 'client_secret_basic');
@@ -41,7 +42,7 @@ final class ClientAuthenticationMethodRule implements Rule
         }
 
         $clientAuthenticationMethod = $this->clientAuthenticationMethodManager->get($commandParameters->get('token_endpoint_auth_method'));
-        $validatedParameters = $next($clientId, $commandParameters, $validatedParameters);
+        $validatedParameters = $next->handle($clientId, $commandParameters, $validatedParameters);
         $validatedParameters = $clientAuthenticationMethod->checkClientConfiguration($commandParameters, $validatedParameters);
         $validatedParameters->set('token_endpoint_auth_method', $commandParameters->get('token_endpoint_auth_method'));
 

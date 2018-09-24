@@ -66,9 +66,6 @@ final class WebFingerEndpoint implements MiddlewareInterface
         return $response;
     }
 
-    /**
-     * @throws \InvalidArgumentException
-     */
     private function getIdentifier(string $resource): Identifier
     {
         try {
@@ -78,9 +75,6 @@ final class WebFingerEndpoint implements MiddlewareInterface
         }
     }
 
-    /**
-     * @throws \InvalidArgumentException
-     */
     private function getResource(ServerRequestInterface $request): string
     {
         $query_params = $request->getQueryParams() ?? [];
@@ -91,9 +85,6 @@ final class WebFingerEndpoint implements MiddlewareInterface
         return $query_params['resource'];
     }
 
-    /**
-     * @throws \InvalidArgumentException
-     */
     private function filterLinks(ServerRequestInterface $request, ResourceDescriptor $resourceDescriptor): array
     {
         $data = $resourceDescriptor->jsonSerialize();

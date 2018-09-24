@@ -11,9 +11,9 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Component\AuthorizationEndpoint;
+namespace OAuth2Framework\Component\AuthorizationEndpoint\ResponseType;
 
-use OAuth2Framework\Component\Core\Message\OAuth2Message;
+use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
 
 interface ResponseType
 {
@@ -41,13 +41,7 @@ interface ResponseType
      */
     public function getResponseMode(): string;
 
-    /**
-     * @throws OAuth2Message
-     */
-    public function preProcess(Authorization $authorization): Authorization;
+    public function preProcess(AuthorizationRequest $authorization): AuthorizationRequest;
 
-    /**
-     * @throws OAuth2Message
-     */
-    public function process(Authorization $authorization): Authorization;
+    public function process(AuthorizationRequest $authorization): AuthorizationRequest;
 }
