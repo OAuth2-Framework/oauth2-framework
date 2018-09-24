@@ -18,7 +18,7 @@ use OAuth2Framework\Component\ClientRegistrationEndpoint\InitialAccessToken;
 use OAuth2Framework\Component\ClientRegistrationEndpoint\InitialAccessTokenId;
 use OAuth2Framework\Component\ClientRegistrationEndpoint\InitialAccessTokenMiddleware;
 use OAuth2Framework\Component\ClientRegistrationEndpoint\InitialAccessTokenRepository;
-use OAuth2Framework\Component\Core\Message\OAuth2Message;
+use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
@@ -44,7 +44,7 @@ final class InitialAccessTokenMiddlewareTest extends TestCase
 
         try {
             $this->getMiddleware()->process($request->reveal(), $handler->reveal());
-        } catch (OAuth2Message $e) {
+        } catch (OAuth2Error $e) {
             static::assertEquals(400, $e->getCode());
             static::assertEquals([
                 'error' => 'invalid_request',
@@ -68,7 +68,7 @@ final class InitialAccessTokenMiddlewareTest extends TestCase
 
         try {
             $this->getMiddleware()->process($request->reveal(), $handler->reveal());
-        } catch (OAuth2Message $e) {
+        } catch (OAuth2Error $e) {
             static::assertEquals(400, $e->getCode());
             static::assertEquals([
                 'error' => 'invalid_request',
@@ -90,7 +90,7 @@ final class InitialAccessTokenMiddlewareTest extends TestCase
 
         try {
             $this->getMiddleware()->process($request->reveal(), $handler->reveal());
-        } catch (OAuth2Message $e) {
+        } catch (OAuth2Error $e) {
             static::assertEquals(400, $e->getCode());
             static::assertEquals([
                 'error' => 'invalid_request',
@@ -112,7 +112,7 @@ final class InitialAccessTokenMiddlewareTest extends TestCase
 
         try {
             $this->getMiddleware()->process($request->reveal(), $handler->reveal());
-        } catch (OAuth2Message $e) {
+        } catch (OAuth2Error $e) {
             static::assertEquals(400, $e->getCode());
             static::assertEquals([
                 'error' => 'invalid_request',

@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\ClientRegistrationEndpoint;
 
 use OAuth2Framework\Component\BearerTokenType\BearerToken;
-use OAuth2Framework\Component\Core\Message\OAuth2Message;
+use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -71,7 +71,7 @@ final class InitialAccessTokenMiddleware implements MiddlewareInterface
 
             $request = $request->withAttribute('initial_access_token', $initialAccessToken);
         } catch (\InvalidArgumentException $e) {
-            throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, $e->getMessage(), [], $e);
+            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST, $e->getMessage(), [], $e);
         }
 
         return $handler->handle($request);

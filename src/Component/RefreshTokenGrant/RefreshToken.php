@@ -24,11 +24,6 @@ class RefreshToken extends Token
      */
     private $accessTokenIds = [];
 
-    public static function getSchema(): string
-    {
-        return 'https://oauth2-framework.spomky-labs.com/schemas/model/refresh-token/1.0/schema';
-    }
-
     public function setTokenId(TokenId $tokenId): void
     {
         if (!$tokenId instanceof RefreshTokenId) {

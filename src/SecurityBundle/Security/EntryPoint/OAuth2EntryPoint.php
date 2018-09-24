@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\SecurityBundle\Security\EntryPoint;
 
-use OAuth2Framework\Component\Core\Message\OAuth2Message;
+use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use OAuth2Framework\Component\Core\Message\OAuth2MessageFactoryManager;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Component\HttpFoundation\Request;
@@ -38,9 +38,9 @@ final class OAuth2EntryPoint implements AuthenticationEntryPointInterface
     public function start(Request $request, AuthenticationException $authException = null)
     {
         $psr7Response = $this->oauth2ResponseFactoryManager->getResponse(
-            new OAuth2Message(
+            new OAuth2Error(
                 401,
-                OAuth2Message::ERROR_ACCESS_DENIED,
+                OAuth2Error::ERROR_ACCESS_DENIED,
                 'OAuth2 authentication required'
             )
         );

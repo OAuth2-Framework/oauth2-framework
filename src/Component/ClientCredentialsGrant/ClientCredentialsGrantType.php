@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\ClientCredentialsGrant;
 
-use OAuth2Framework\Component\Core\Message\OAuth2Message;
+use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use OAuth2Framework\Component\TokenEndpoint\GrantType;
 use OAuth2Framework\Component\TokenEndpoint\GrantTypeData;
 use Psr\Http\Message\ServerRequestInterface;
@@ -45,7 +45,7 @@ final class ClientCredentialsGrantType implements GrantType
     {
         $client = $grantTypeData->getClient();
         if ($client->isPublic()) {
-            throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_CLIENT, 'The client is not a confidential client.');
+            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_CLIENT, 'The client is not a confidential client.');
         }
 
         $grantTypeData->setResourceOwnerId($grantTypeData->getClient()->getPublicId());

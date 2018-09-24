@@ -61,16 +61,9 @@ class InitialAccessToken implements DomainObject
         $this->revoked = true;
     }
 
-    public static function getSchema(): string
-    {
-        return 'https://oauth2-framework.spomky-labs.com/schemas/model/initial-access-token/1.0/schema';
-    }
-
     public function jsonSerialize()
     {
         $data = [
-            '$schema' => $this->getSchema(),
-            'type' => \get_class($this),
             'initial_access_token_id' => $this->getTokenId()->getValue(),
             'user_account_id' => $this->getUserAccountId() ? $this->getUserAccountId()->getValue() : null,
             'expires_at' => $this->getExpiresAt() ? $this->getExpiresAt()->getTimestamp() : null,

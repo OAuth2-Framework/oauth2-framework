@@ -140,8 +140,6 @@ abstract class Token implements \JsonSerializable, DomainObject
     public function jsonSerialize()
     {
         $data = [
-            '$schema' => $this->getSchema(),
-            'type' => \get_class($this),
             'expires_at' => $this->getExpiresAt()->getTimestamp(),
             'client_id' => $this->getClientId()->getValue(),
             'parameters' => (object) $this->getParameter()->all(),

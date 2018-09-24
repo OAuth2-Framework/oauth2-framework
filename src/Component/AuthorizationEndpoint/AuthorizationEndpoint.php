@@ -20,7 +20,7 @@ use OAuth2Framework\Component\AuthorizationEndpoint\Extension\ExtensionManager;
 use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\ParameterCheckerManager;
 use OAuth2Framework\Component\AuthorizationEndpoint\UserAccount\UserAccountCheckerManager;
 use OAuth2Framework\Component\AuthorizationEndpoint\UserAccount\UserAccountDiscovery;
-use OAuth2Framework\Component\Core\Message\OAuth2Message;
+use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -61,37 +61,50 @@ abstract class AuthorizationEndpoint implements MiddlewareInterface
             $authorization = $this->authorizationRequestLoader->load($request);
             $authorization = $this->parameterCheckerManager->process($authorization);
 
-            //Retrieve the end user
+            //Retrieve the end user account
             $userAccount = $this->userAccountDiscovery->find();
             if (null !== $userAccount) {
                 // Process with authenticated user
                 $isFullyAuthenticated = $this->userAccountDiscovery->isFullyAuthenticated();
                 $authorization->setUserAccount($userAccount, $isFullyAuthenticated);
 
-                //Check the user against the available rules
-                $this->userAccountCheckerManager->check($authorization);
+                //Check the user against the available rules e.g.:
+                // * prompt login => redirect to login page
+                // * max_age/default_max_age => redirect to login page
+                if (!$isFullyAuthenticated) {
+                    $this->userAccountCheckerManager->check($authorization);
+                }
 
-                //Ask for consent
-                $authorization = $this->extensionManager->processBefore($request, $authorization);
+                if ($authorization->hasPrompt('none')) {
+                    //TODO: No interaction. Should verified if the authorization has previously been given
+                    $this->throwOAuth2Error($authorization, OAuth2Error::ERROR_INTERACTION_REQUIRED, 'The resource owner consent is required.');
+                } else {
+                    //Ask for consent
+                    $authorization = $this->extensionManager->processBefore($request, $authorization);
+                }
 
                 return $this->processConsentScreen($request, $authorization);
             } else {
                 // Process with unauthenticated user
-                $isFullyAuthenticated = false;
 
                 // If prompt = none => no interaction
-                // Else => user authentication required
-                if (null === $userAccount) {
-                    return $this->redirectToLoginPage($request, $authorization);
+                if ($authorization->hasPrompt('none')) {
+                    //throw error login required
+                    $this->throwOAuth2Error($authorization, OAuth2Error::ERROR_LOGIN_REQUIRED, 'The resource owner is not logged in.');
                 }
+
+                // Else => user authentication required
+                return $this->redirectToLoginPage($request, $authorization);
             }
+        } catch (OAuth2Error $e) {
+            throw $e;
         } catch (\Exception $e) {
             throw $e;
         }/* catch (Exception\ProcessAuthorizationException $e) {
             $authorization = $e->getAuthorization();
             $authorization = $this->extensionManager->processAfter($request, $authorization);
             if (false === $authorization->isAuthorized()) {
-                $this->throwRedirectionException($authorization, OAuth2Message::ERROR_ACCESS_DENIED, 'The resource owner denied access to your client.');
+                $this->throwOAuth2Error($authorization, OAuth2Message::ERROR_ACCESS_DENIED, 'The resource owner denied access to your client.');
             }
 
             $responseType = $authorization->getResponseType();
@@ -100,12 +113,12 @@ abstract class AuthorizationEndpoint implements MiddlewareInterface
                 $authorization = $responseType->preProcess($authorization);
                 $authorization = $responseType->process($authorization);
             } catch (OAuth2Message $e) {
-                $this->throwRedirectionException($authorization, $e->getMessage(), $e->getErrorDescription());
+                $this->throwOAuth2Error($authorization, $e->getMessage(), $e->getErrorDescription());
             }
 
             return $this->buildResponse($authorization);
         } catch (Exception\CreateRedirectionException $e) {
-            $this->throwRedirectionException($e->getAuthorization(), $e->getMessage(), $e->getDescription());
+            $this->throwOAuth2Error($e->getAuthorization(), $e->getMessage(), $e->getDescription());
         } catch (Exception\ShowConsentScreenException $e) {
             return $this->processConsentScreen($request, $e->getAuthorization());
         } catch (Exception\RedirectToLoginPageException $e) {
@@ -127,17 +140,17 @@ abstract class AuthorizationEndpoint implements MiddlewareInterface
         return $response;
     }
 
-    protected function throwRedirectionException(AuthorizationRequest $authorization, string $error, string $errorDescription)
+    protected function throwOAuth2Error(AuthorizationRequest $authorization, string $error, string $errorDescription)
     {
         $params = $authorization->getResponseParameters();
         if (null === $authorization->getResponseMode() || null === $authorization->getRedirectUri()) {
-            throw new OAuth2Message(400, $error, $errorDescription);
+            throw new OAuth2Error(400, $error, $errorDescription);
         }
         $params += [
             'response_mode' => $authorization->getResponseMode(),
             'redirect_uri' => $authorization->getRedirectUri(),
         ];
 
-        throw new OAuth2Message(303, $error, $errorDescription, $params);
+        throw new OAuth2Error(303, $error, $errorDescription, $params);
     }
 }

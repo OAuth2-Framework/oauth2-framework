@@ -41,11 +41,6 @@ class Client implements ResourceOwner, DomainObject
         $this->deleted = false;
     }
 
-    public static function getSchema(): string
-    {
-        return 'https://oauth2-framework.spomky-labs.com/schemas/model/client/1.0/schema';
-    }
-
     public function getClientId(): ClientId
     {
         $id = $this->getPublicId();
@@ -167,8 +162,6 @@ class Client implements ResourceOwner, DomainObject
     public function jsonSerialize()
     {
         $data = [
-            '$schema' => $this->getSchema(),
-            'type' => \get_class($this),
             'client_id' => $this->getPublicId()->getValue(),
             'owner_id' => $this->getOwnerId() ? $this->getOwnerId()->getValue() : null,
             'parameters' => (object) $this->all(),

@@ -28,7 +28,7 @@ use Jose\Component\Signature\Serializer\CompactSerializer as JwsCompactSerialize
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\Client\ClientRepository;
-use OAuth2Framework\Component\Core\Message\OAuth2Message;
+use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwnerId;
 use OAuth2Framework\Component\Core\TrustedIssuer\TrustedIssuerRepository;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
@@ -142,7 +142,7 @@ class JwtBearerGrantType implements GrantType
 
         $diff = \array_diff($requiredParameters, \array_keys($parameters));
         if (!empty($diff)) {
-            throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, \sprintf('Missing grant type parameter(s): %s.', \implode(', ', $diff)));
+            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST, \sprintf('Missing grant type parameter(s): %s.', \implode(', ', $diff)));
         }
     }
 
@@ -165,10 +165,10 @@ class JwtBearerGrantType implements GrantType
                 throw new \InvalidArgumentException(\sprintf('The following claim(s) is/are mandatory: "%s".', \implode(', ', \array_values($diff))));
             }
             $grantTypeData = $this->checkJWTSignature($grantTypeData, $jws, $claims);
-        } catch (OAuth2Message $e) {
+        } catch (OAuth2Error $e) {
             throw $e;
         } catch (\Exception $e) {
-            throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, $e->getMessage(), [], $e);
+            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST, $e->getMessage(), [], $e);
         }
 
         return $grantTypeData;
@@ -193,7 +193,7 @@ class JwtBearerGrantType implements GrantType
             throw new \InvalidArgumentException('Unable to decrypt the assertion.');
         } catch (\Exception $e) {
             if (true === $this->encryptionRequired) {
-                throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, $e->getMessage(), [], $e);
+                throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST, $e->getMessage(), [], $e);
             }
 
             return $assertion;
@@ -215,12 +215,12 @@ class JwtBearerGrantType implements GrantType
             $client = $this->clientRepository->find(new ClientId($iss));
 
             if (null === $client || true === $client->isDeleted()) {
-                throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_GRANT, 'Unable to find the issuer of the assertion.');
+                throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_GRANT, 'Unable to find the issuer of the assertion.');
             }
             if (null === $grantTypeData->getClient()) {
                 $grantTypeData->setClient($client);
             } elseif ($grantTypeData->getClient()->getPublicId()->getValue() !== $client->getPublicId()->getValue()) {
-                throw new OAuth2Message(401, OAuth2Message::ERROR_INVALID_CLIENT, 'Client authentication failed.');
+                throw new OAuth2Error(401, OAuth2Error::ERROR_INVALID_CLIENT, 'Client authentication failed.');
             }
             $grantTypeData->setResourceOwnerId($client->getPublicId());
             $allowedSignatureAlgorithms = $this->jwsVerifier->getSignatureAlgorithmManager()->list();

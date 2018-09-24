@@ -21,7 +21,7 @@ use Jose\Component\Signature\JWS;
 use Jose\Component\Signature\JWSVerifier;
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequestLoader;
 use OAuth2Framework\Component\Core\Client\ClientRepository;
-use OAuth2Framework\Component\Core\Message\OAuth2Message;
+use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Psr\Http\Message\RequestInterface;
@@ -71,7 +71,7 @@ final class AuthorizationRequestLoaderTest extends TestCase
                 $request->reveal()
             );
             static::fail('The expected exception has not been thrown.');
-        } catch (OAuth2Message $e) {
+        } catch (OAuth2Error $e) {
             static::assertEquals(400, $e->getCode());
             static::assertEquals('invalid_request', $e->getMessage());
             static::assertEquals('Parameter "client_id" missing or invalid.', $e->getErrorDescription());
@@ -97,7 +97,7 @@ final class AuthorizationRequestLoaderTest extends TestCase
                 $request->reveal()
             );
             static::fail('The expected exception has not been thrown.');
-        } catch (OAuth2Message $e) {
+        } catch (OAuth2Error $e) {
             static::assertEquals(400, $e->getCode());
             static::assertEquals('invalid_request', $e->getMessage());
             static::assertEquals('Parameter "client_id" missing or invalid.', $e->getErrorDescription());
@@ -126,7 +126,7 @@ final class AuthorizationRequestLoaderTest extends TestCase
                 $request->reveal()
             );
             static::fail('The expected exception has not been thrown.');
-        } catch (OAuth2Message $e) {
+        } catch (OAuth2Error $e) {
             static::assertEquals(400, $e->getCode());
             static::assertEquals('invalid_request', $e->getMessage());
             static::assertEquals('Parameter "client_id" missing or invalid.', $e->getErrorDescription());
@@ -177,7 +177,7 @@ final class AuthorizationRequestLoaderTest extends TestCase
                 $request->reveal()
             );
             static::fail('The expected exception has not been thrown.');
-        } catch (OAuth2Message $e) {
+        } catch (OAuth2Error $e) {
             static::assertEquals(400, $e->getCode());
             static::assertEquals('invalid_request_object', $e->getMessage());
             static::assertEquals('Unsupported input', $e->getErrorDescription());
@@ -202,7 +202,7 @@ final class AuthorizationRequestLoaderTest extends TestCase
                 $request->reveal()
             );
             static::fail('The expected exception has not been thrown.');
-        } catch (OAuth2Message $e) {
+        } catch (OAuth2Error $e) {
             static::assertEquals(400, $e->getCode());
             static::assertEquals('invalid_request_object', $e->getMessage());
             static::assertEquals('Invalid assertion. The payload must contain claims.', $e->getErrorDescription());
@@ -227,7 +227,7 @@ final class AuthorizationRequestLoaderTest extends TestCase
                 $request->reveal()
             );
             static::fail('The expected exception has not been thrown.');
-        } catch (OAuth2Message $e) {
+        } catch (OAuth2Error $e) {
             static::assertEquals(400, $e->getCode());
             static::assertEquals('invalid_request', $e->getMessage());
             static::assertEquals('Parameter "client_id" missing or invalid.', $e->getErrorDescription());
@@ -260,7 +260,7 @@ final class AuthorizationRequestLoaderTest extends TestCase
                 $request->reveal()
             );
             static::fail('The expected exception has not been thrown.');
-        } catch (OAuth2Message $e) {
+        } catch (OAuth2Error $e) {
             static::assertEquals(400, $e->getCode());
             static::assertEquals('invalid_request_object', $e->getMessage());
             static::assertEquals('The client has no key or key set.', $e->getErrorDescription());
@@ -295,7 +295,7 @@ final class AuthorizationRequestLoaderTest extends TestCase
                 $request->reveal()
             );
             static::fail('The expected exception has not been thrown.');
-        } catch (OAuth2Message $e) {
+        } catch (OAuth2Error $e) {
             static::assertEquals(400, $e->getCode());
             static::assertEquals('invalid_request_object', $e->getMessage());
             static::assertEquals('The algorithm "none" is not allowed for request object signatures. Please use one of the following algorithm(s): RS256', $e->getErrorDescription());
@@ -331,7 +331,7 @@ final class AuthorizationRequestLoaderTest extends TestCase
                 $request->reveal()
             );
             static::fail('The expected exception has not been thrown.');
-        } catch (OAuth2Message $e) {
+        } catch (OAuth2Error $e) {
             static::assertEquals(400, $e->getCode());
             static::assertEquals('invalid_request_object', $e->getMessage());
             static::assertEquals('Request Object signature algorithm not allowed for the client.', $e->getErrorDescription());
@@ -367,7 +367,7 @@ final class AuthorizationRequestLoaderTest extends TestCase
                 $request->reveal()
             );
             static::fail('The expected exception has not been thrown.');
-        } catch (OAuth2Message $e) {
+        } catch (OAuth2Error $e) {
             static::assertEquals(400, $e->getCode());
             static::assertEquals('invalid_request_object', $e->getMessage());
             static::assertEquals('The verification of the request object failed.', $e->getErrorDescription());
@@ -477,7 +477,7 @@ final class AuthorizationRequestLoaderTest extends TestCase
                 $request->reveal()
             );
             static::fail('The expected exception has not been thrown.');
-        } catch (OAuth2Message $e) {
+        } catch (OAuth2Error $e) {
             static::assertEquals(400, $e->getCode());
             static::assertEquals('invalid_request_uri', $e->getMessage());
             static::assertEquals('The request Uri is not allowed.', $e->getErrorDescription());
@@ -502,7 +502,7 @@ final class AuthorizationRequestLoaderTest extends TestCase
                 $request->reveal()
             );
             static::fail('The expected exception has not been thrown.');
-        } catch (OAuth2Message $e) {
+        } catch (OAuth2Error $e) {
             static::assertEquals(400, $e->getCode());
             static::assertEquals('invalid_request_uri', $e->getMessage());
             static::assertEquals('The request Uri is not allowed.', $e->getErrorDescription());

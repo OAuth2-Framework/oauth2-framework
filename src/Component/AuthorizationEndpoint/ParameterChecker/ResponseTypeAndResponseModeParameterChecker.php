@@ -18,7 +18,7 @@ use OAuth2Framework\Component\AuthorizationEndpoint\Exception\OAuth2Authorizatio
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\ResponseModeManager;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType\ResponseType;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType\ResponseTypeManager;
-use OAuth2Framework\Component\Core\Message\OAuth2Message;
+use OAuth2Framework\Component\Core\Message\OAuth2Error;
 
 final class ResponseTypeAndResponseModeParameterChecker implements ParameterChecker
 {
@@ -61,7 +61,7 @@ final class ResponseTypeAndResponseModeParameterChecker implements ParameterChec
             }
             $authorization->setResponseMode($this->responseModeManager->get($responseMode));
         } catch (\InvalidArgumentException $e) {
-            throw new OAuth2AuthorizationException(400, OAuth2Message::ERROR_INVALID_REQUEST, $e->getMessage(), $authorization, $e);
+            throw new OAuth2AuthorizationException(400, OAuth2Error::ERROR_INVALID_REQUEST, $e->getMessage(), $authorization, $e);
         }
     }
 

@@ -34,11 +34,6 @@ class AuthorizationCode extends Token
         $this->used = false;
     }
 
-    public static function getSchema(): string
-    {
-        return 'https://oauth2-framework.spomky-labs.com/schemas/model/authorization-code/1.0/schema';
-    }
-
     public function setTokenId(TokenId $tokenId): void
     {
         if (!$tokenId instanceof AuthorizationCodeId) {

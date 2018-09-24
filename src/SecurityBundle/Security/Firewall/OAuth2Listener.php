@@ -15,7 +15,7 @@ namespace OAuth2Framework\SecurityBundle\Security\Firewall;
 
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenHandlerManager;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
-use OAuth2Framework\Component\Core\Message\OAuth2Message;
+use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use OAuth2Framework\Component\Core\Message\OAuth2MessageFactoryManager;
 use OAuth2Framework\Component\Core\TokenType\TokenType;
 use OAuth2Framework\Component\Core\TokenType\TokenTypeManager;
@@ -105,9 +105,9 @@ final class OAuth2Listener implements ListenerInterface
             $this->tokenStorage->setToken($result);
         } catch (AuthenticationException $e) {
             $psr7Response = $this->oauth2ResponseFactoryManager->getResponse(
-                new OAuth2Message(
+                new OAuth2Error(
                     401,
-                    OAuth2Message::ERROR_ACCESS_DENIED,
+                    OAuth2Error::ERROR_ACCESS_DENIED,
                     'OAuth2 authentication required. '.$e->getMessage(),
                     [],
                     $e

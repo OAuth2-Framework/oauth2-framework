@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\ServerBundle\Form\Handler;
 
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
-use OAuth2Framework\Component\Core\Message\OAuth2Message;
+use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use OAuth2Framework\ServerBundle\Form\Model\AuthorizationModel;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
@@ -27,9 +27,9 @@ class AuthorizationFormHandler
     public function handle(FormInterface $form, ServerRequestInterface $request, AuthorizationRequest $authorization, AuthorizationModel $authorization_model): AuthorizationRequest
     {
         if ('POST' !== $request->getMethod()) {
-            throw new OAuth2Message(
+            throw new OAuth2Error(
                 405,
-                OAuth2Message::ERROR_INVALID_REQUEST,
+                OAuth2Error::ERROR_INVALID_REQUEST,
                 \sprintf('The method "%s" is not supported.', $request->getMethod())
             );
         }

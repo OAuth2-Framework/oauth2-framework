@@ -15,7 +15,7 @@ namespace OAuth2Framework\Component\Core\Middleware;
 
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository;
-use OAuth2Framework\Component\Core\Message\OAuth2Message;
+use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use OAuth2Framework\Component\Core\TokenType\TokenTypeManager;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -51,7 +51,7 @@ final class AccessTokenMiddleware implements MiddlewareInterface
             $tokenId = new AccessTokenId($token);
             $accessToken = $this->accessTokenRepository->find($tokenId);
             if (null === $accessToken || false === $type->isRequestValid($accessToken, $request, $additional_credential_values)) {
-                throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_TOKEN, 'Invalid access token.');
+                throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_TOKEN, 'Invalid access token.');
             }
             $request = $request->withAttribute('access_token', $accessToken);
         }

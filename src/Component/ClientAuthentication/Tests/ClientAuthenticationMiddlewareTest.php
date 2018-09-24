@@ -21,7 +21,7 @@ use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\Client\ClientRepository;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
-use OAuth2Framework\Component\Core\Message\OAuth2Message;
+use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Psr\Http\Message\ResponseInterface;
@@ -73,7 +73,7 @@ final class ClientAuthenticationMiddlewareTest extends TestCase
         try {
             $this->getClientAuthenticationMiddleware($clientRepository->reveal())->process($request->reveal(), $handler->reveal());
             static::fail('An OAuth2 exception should be thrown.');
-        } catch (OAuth2Message $e) {
+        } catch (OAuth2Error $e) {
             static::assertEquals(401, $e->getCode());
             static::assertEquals([
                 'error' => 'invalid_client',
@@ -110,7 +110,7 @@ final class ClientAuthenticationMiddlewareTest extends TestCase
         try {
             $this->getClientAuthenticationMiddleware($clientRepository->reveal())->process($request->reveal(), $handler->reveal());
             static::fail('An OAuth2 exception should be thrown.');
-        } catch (OAuth2Message $e) {
+        } catch (OAuth2Error $e) {
             static::assertEquals(401, $e->getCode());
             static::assertEquals([
                 'error' => 'invalid_client',
@@ -150,7 +150,7 @@ final class ClientAuthenticationMiddlewareTest extends TestCase
         try {
             $this->getClientAuthenticationMiddleware($clientRepository->reveal())->process($request->reveal(), $handler->reveal());
             static::fail('An OAuth2 exception should be thrown.');
-        } catch (OAuth2Message $e) {
+        } catch (OAuth2Error $e) {
             static::assertEquals(401, $e->getCode());
             static::assertEquals([
                 'error' => 'invalid_client',
@@ -188,7 +188,7 @@ final class ClientAuthenticationMiddlewareTest extends TestCase
         try {
             $this->getClientAuthenticationMiddleware($clientRepository->reveal())->process($request->reveal(), $handler->reveal());
             static::fail('An OAuth2 exception should be thrown.');
-        } catch (OAuth2Message $e) {
+        } catch (OAuth2Error $e) {
             static::assertEquals(401, $e->getCode());
             static::assertEquals([
                 'error' => 'invalid_client',
@@ -227,7 +227,7 @@ final class ClientAuthenticationMiddlewareTest extends TestCase
         try {
             $this->getClientAuthenticationMiddleware($clientRepository->reveal())->process($request->reveal(), $handler->reveal());
             static::fail('An OAuth2 exception should be thrown.');
-        } catch (OAuth2Message $e) {
+        } catch (OAuth2Error $e) {
             static::assertEquals(401, $e->getCode());
             static::assertEquals([
                 'error' => 'invalid_client',

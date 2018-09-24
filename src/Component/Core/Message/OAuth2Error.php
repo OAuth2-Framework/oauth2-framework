@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Core\Message;
 
-class OAuth2Message extends \Exception
+class OAuth2Error extends \Exception
 {
     //Error messages from the RFC5749
     public const ERROR_INVALID_REQUEST = 'invalid_request';
@@ -76,9 +76,6 @@ class OAuth2Message extends \Exception
      */
     private $data;
 
-    /**
-     * oauth2Message constructor.
-     */
     public function __construct(int $code, string $error, ?string $errorDescription, array $data = [], ?\Exception $previous = null)
     {
         $this->errorDescription = $errorDescription;

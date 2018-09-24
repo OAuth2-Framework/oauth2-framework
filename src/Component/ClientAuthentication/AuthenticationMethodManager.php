@@ -15,7 +15,7 @@ namespace OAuth2Framework\Component\ClientAuthentication;
 
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
-use OAuth2Framework\Component\Core\Message\OAuth2Message;
+use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use Psr\Http\Message\ServerRequestInterface;
 
 class AuthenticationMethodManager
@@ -89,7 +89,7 @@ class AuthenticationMethodManager
                 continue;
             }
             if (!$method instanceof None && !$authenticationMethod instanceof None) {
-                throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, 'Only one authentication method may be used to authenticate the client.');
+                throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST, 'Only one authentication method may be used to authenticate the client.');
             }
             if (!$method instanceof None) {
                 $authenticationMethod = $method;

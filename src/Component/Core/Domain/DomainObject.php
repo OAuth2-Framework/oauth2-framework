@@ -15,5 +15,4 @@ namespace OAuth2Framework\Component\Core\Domain;
 
 interface DomainObject extends \JsonSerializable
 {
-    public static function getSchema(): string;
 }

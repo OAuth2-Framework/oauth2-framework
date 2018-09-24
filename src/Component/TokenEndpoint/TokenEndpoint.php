@@ -20,7 +20,7 @@ use OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\Client\ClientRepository;
-use OAuth2Framework\Component\Core\Message\OAuth2Message;
+use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwner;
 use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwnerId;
 use OAuth2Framework\Component\Core\TokenType\TokenType;
@@ -63,7 +63,7 @@ class TokenEndpoint implements MiddlewareInterface
         // This middleware must be behind the GrantTypeMiddleware
         $grantType = $request->getAttribute('grant_type');
         if (!$grantType instanceof GrantType) {
-            throw new OAuth2Message(500, OAuth2Message::ERROR_INTERNAL, null);
+            throw new OAuth2Error(500, OAuth2Error::ERROR_INTERNAL, null);
         }
 
         // We check that the request has all parameters needed for the selected grant type
@@ -76,12 +76,12 @@ class TokenEndpoint implements MiddlewareInterface
         // At this stage, the client should be authenticated
         // If not, we stop the authorization grant
         if (null === $grantTypeData->getClient() || $grantTypeData->getClient()->isDeleted()) {
-            throw new OAuth2Message(401, OAuth2Message::ERROR_INVALID_CLIENT, 'Client authentication failed.');
+            throw new OAuth2Error(401, OAuth2Error::ERROR_INVALID_CLIENT, 'Client authentication failed.');
         }
 
         // We check the client is allowed to use the selected grant type
         if (!$grantTypeData->getClient()->isGrantTypeAllowed($grantType->name())) {
-            throw new OAuth2Message(400, OAuth2Message::ERROR_UNAUTHORIZED_CLIENT, \sprintf('The grant type "%s" is unauthorized for this client.', $grantType->name()));
+            throw new OAuth2Error(400, OAuth2Error::ERROR_UNAUTHORIZED_CLIENT, \sprintf('The grant type "%s" is unauthorized for this client.', $grantType->name()));
         }
 
         // We populate the token type parameters
@@ -143,7 +143,7 @@ class TokenEndpoint implements MiddlewareInterface
         }
 
         if (null === $resourceOwner) {
-            throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, 'Unable to find the associated resource owner.');
+            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST, 'Unable to find the associated resource owner.');
         }
 
         return $resourceOwner;

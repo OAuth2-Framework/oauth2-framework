@@ -114,7 +114,7 @@ final class AuthorizationEndpointController extends AuthorizationEndpoint
             $this->session->set('_locale', $locale);
         }
         $this->session->set('oauth2_authorization_request_data', $session_data);
-        $response = $this->messageFactory->createResponse(302);
+        $response = $this->messageFactory->createResponse(303);
         $response = $response->withHeader('Location', $this->router->generate($this->loginRoute, $this->loginRouteParams, UrlGeneratorInterface::ABSOLUTE_URL));
 
         return $response;

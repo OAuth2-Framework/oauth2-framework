@@ -27,11 +27,6 @@ class AccessToken extends Token
         parent::__construct($accessTokenId, $clientId, $resourceOwnerId, $parameter, $metadata, $expiresAt, $resourceServerId);
     }
 
-    public static function getSchema(): string
-    {
-        return 'https://oauth2-framework.spomky-labs.com/schemas/model/access-token/1.0/schema';
-    }
-
     public function setTokenId(TokenId $tokenId): void
     {
         if (!$tokenId instanceof AccessTokenId) {

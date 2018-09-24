@@ -15,7 +15,7 @@ namespace OAuth2Framework\Component\AuthorizationCodeGrant;
 
 use OAuth2Framework\Component\AuthorizationCodeGrant\PKCEMethod\PKCEMethodManager;
 use OAuth2Framework\Component\Core\Client\Client;
-use OAuth2Framework\Component\Core\Message\OAuth2Message;
+use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use OAuth2Framework\Component\Core\Util\RequestBodyParser;
 use OAuth2Framework\Component\TokenEndpoint\GrantType;
 use OAuth2Framework\Component\TokenEndpoint\GrantTypeData;
@@ -50,7 +50,7 @@ final class AuthorizationCodeGrantType implements GrantType
 
         $diff = \array_diff($requiredParameters, \array_keys($parameters));
         if (!empty($diff)) {
-            throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, \sprintf('Missing grant type parameter(s): %s.', \implode(', ', $diff)));
+            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST, \sprintf('Missing grant type parameter(s): %s.', \implode(', ', $diff)));
         }
     }
 
@@ -65,7 +65,7 @@ final class AuthorizationCodeGrantType implements GrantType
         $authorizationCode = $this->getAuthorizationCode($parameters['code']);
 
         if (true === $authorizationCode->isUsed() || true === $authorizationCode->isRevoked()) {
-            throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_GRANT, 'The parameter "code" is invalid.');
+            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_GRANT, 'The parameter "code" is invalid.');
         }
 
         $this->checkClient($grantTypeData->getClient(), $parameters);
@@ -96,7 +96,7 @@ final class AuthorizationCodeGrantType implements GrantType
         $authorizationCode = $this->authorizationCodeRepository->find(new AuthorizationCodeId($code));
 
         if (!$authorizationCode instanceof AuthorizationCode) {
-            throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_GRANT, 'The parameter "code" is invalid.');
+            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_GRANT, 'The parameter "code" is invalid.');
         }
 
         return $authorizationCode;
@@ -106,7 +106,7 @@ final class AuthorizationCodeGrantType implements GrantType
     {
         if (true === $client->isPublic()) {
             if (!\array_key_exists('client_id', $parameters) || $client->getPublicId()->getValue() !== $parameters['client_id']) {
-                throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, 'The "client_id" parameter is required for non-confidential clients.');
+                throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST, 'The "client_id" parameter is required for non-confidential clients.');
             }
         }
     }
@@ -123,34 +123,34 @@ final class AuthorizationCodeGrantType implements GrantType
 
         try {
             if (!\array_key_exists('code_verifier', $parameters)) {
-                throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_GRANT, 'The parameter "code_verifier" is missing or invalid.');
+                throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_GRANT, 'The parameter "code_verifier" is missing or invalid.');
             }
             $code_verifier = $parameters['code_verifier'];
             $method = $this->pkceMethodManager->get($codeChallengeMethod);
         } catch (\InvalidArgumentException $e) {
-            throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, $e->getMessage(), [], $e);
+            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST, $e->getMessage(), [], $e);
         }
 
         if (false === $method->isChallengeVerified($code_verifier, $codeChallenge)) {
-            throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_GRANT, 'The parameter "code_verifier" is invalid or invalid.');
+            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_GRANT, 'The parameter "code_verifier" is invalid or invalid.');
         }
     }
 
     private function checkRedirectUri(AuthorizationCode $authorizationCode, string $redirectUri): void
     {
         if ($redirectUri !== $authorizationCode->getRedirectUri()) {
-            throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, 'The parameter "redirect_uri" is invalid.');
+            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST, 'The parameter "redirect_uri" is invalid.');
         }
     }
 
     private function checkAuthorizationCode(AuthorizationCode $authorizationCode, Client $client): void
     {
         if ($client->getPublicId()->getValue() !== $authorizationCode->getClientId()->getValue()) {
-            throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_GRANT, 'The parameter "code" is invalid.');
+            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_GRANT, 'The parameter "code" is invalid.');
         }
 
         if ($authorizationCode->hasExpired()) {
-            throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_GRANT, 'The authorization code expired.');
+            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_GRANT, 'The authorization code expired.');
         }
     }
 }

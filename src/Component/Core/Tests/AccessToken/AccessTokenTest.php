@@ -56,7 +56,7 @@ final class AccessTokenTest extends TestCase
         $accessToken->markAsRevoked();
 
         static::assertInstanceOf(AccessToken::class, $accessToken);
-        static::assertEquals('{"$schema":"https://oauth2-framework.spomky-labs.com/schemas/model/access-token/1.0/schema","type":"OAuth2Framework\\\\Component\\\\Core\\\\AccessToken\\\\AccessToken","expires_at":1264683600,"client_id":"CLIENT_ID","parameters":{"refresh_token_id":"REFRESH_TOKEN_ID"},"metadatas":{},"is_revoked":true,"resource_owner_id":"CLIENT_ID","resource_owner_class":"OAuth2Framework\\\\Component\\\\Core\\\\Client\\\\ClientId","resource_server_id":"RESOURCE_SERVER_ID","access_token_id":"ACCESS_TOKEN_ID"}', \json_encode($accessToken, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+        static::assertEquals('{"expires_at":1264683600,"client_id":"CLIENT_ID","parameters":{"refresh_token_id":"REFRESH_TOKEN_ID"},"metadatas":{},"is_revoked":true,"resource_owner_id":"CLIENT_ID","resource_owner_class":"OAuth2Framework\\\\Component\\\\Core\\\\Client\\\\ClientId","resource_server_id":"RESOURCE_SERVER_ID","access_token_id":"ACCESS_TOKEN_ID"}', \json_encode($accessToken, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
         static::assertEquals('ACCESS_TOKEN_ID', $accessToken->getTokenId()->getValue());
     }
 }

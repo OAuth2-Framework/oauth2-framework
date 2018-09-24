@@ -15,7 +15,7 @@ namespace OAuth2Framework\Component\ClientAuthentication;
 
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientRepository;
-use OAuth2Framework\Component\Core\Message\OAuth2Message;
+use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -48,7 +48,7 @@ class ClientAuthenticationMiddleware implements MiddlewareInterface
                 $request = $request->withAttribute('client_credentials', $client_credentials);
             }
         } catch (\Exception $e) {
-            throw new OAuth2Message(401, OAuth2Message::ERROR_INVALID_CLIENT, $e->getMessage(), [], $e);
+            throw new OAuth2Error(401, OAuth2Error::ERROR_INVALID_CLIENT, $e->getMessage(), [], $e);
         }
 
         return $handler->handle($request);

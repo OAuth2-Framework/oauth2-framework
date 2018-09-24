@@ -27,7 +27,7 @@ use Jose\Component\Signature\Serializer\CompactSerializer;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
-use OAuth2Framework\Component\Core\Message\OAuth2Message;
+use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use OAuth2Framework\Component\Core\TrustedIssuer\TrustedIssuerRepository;
 use OAuth2Framework\Component\Core\Util\RequestBodyParser;
 use Psr\Http\Message\ServerRequestInterface;
@@ -138,7 +138,7 @@ class ClientAssertionJwt implements AuthenticationMethod
             return null;
         }
         if (!\array_key_exists('client_assertion', $parameters)) {
-            throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, 'Parameter "client_assertion" is missing.');
+            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST, 'Parameter "client_assertion" is missing.');
         }
 
         try {
@@ -149,16 +149,16 @@ class ClientAssertionJwt implements AuthenticationMethod
             $this->headerCheckerManager->check($jws, 0);
             $claims = $this->jsonConverter->decode($jws->getPayload());
             $this->claimCheckerManager->check($claims);
-        } catch (OAuth2Message $e) {
+        } catch (OAuth2Error $e) {
             throw $e;
         } catch (\Exception $e) {
-            throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, 'Unable to load, decrypt or verify the client assertion.', [], $e);
+            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST, 'Unable to load, decrypt or verify the client assertion.', [], $e);
         }
 
         // FIXME: Other claims can be considered as mandatory by the server
         $diff = \array_diff(['iss', 'sub', 'aud', 'exp'], \array_keys($claims));
         if (!empty($diff)) {
-            throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, \sprintf('The following claim(s) is/are mandatory: "%s".', \implode(', ', \array_values($diff))));
+            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST, \sprintf('The following claim(s) is/are mandatory: "%s".', \implode(', ', \array_values($diff))));
         }
 
         $clientCredentials = $jws;
@@ -181,7 +181,7 @@ class ClientAssertionJwt implements AuthenticationMethod
             return $jwe->getPayload();
         } catch (\Exception $e) {
             if (true === $this->encryptionRequired) {
-                throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, 'The encryption of the assertion is mandatory but the decryption of the assertion failed.', [], $e);
+                throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST, 'The encryption of the assertion is mandatory but the decryption of the assertion failed.', [], $e);
             }
 
             return $assertion;

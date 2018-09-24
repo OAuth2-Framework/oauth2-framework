@@ -16,7 +16,7 @@ namespace OAuth2Framework\Component\OpenIdConnect\ParameterChecker;
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
 use OAuth2Framework\Component\AuthorizationEndpoint\Exception\OAuth2AuthorizationException;
 use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\ParameterChecker;
-use OAuth2Framework\Component\Core\Message\OAuth2Message;
+use OAuth2Framework\Component\Core\Message\OAuth2Error;
 
 final class NonceParameterChecker implements ParameterChecker
 {
@@ -27,7 +27,7 @@ final class NonceParameterChecker implements ParameterChecker
                 throw new \InvalidArgumentException('The parameter "nonce" is mandatory when the response type "id_token" is used.');
             }
         } catch (\InvalidArgumentException $e) {
-            throw new OAuth2AuthorizationException(400, OAuth2Message::ERROR_INVALID_REQUEST, $e->getMessage(), $authorization, $e);
+            throw new OAuth2AuthorizationException(400, OAuth2Error::ERROR_INVALID_REQUEST, $e->getMessage(), $authorization, $e);
         }
     }
 }

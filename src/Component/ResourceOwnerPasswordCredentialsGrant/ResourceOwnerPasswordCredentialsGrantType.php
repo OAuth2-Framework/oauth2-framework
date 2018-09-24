@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\ResourceOwnerPasswordCredentialsGrant;
 
-use OAuth2Framework\Component\Core\Message\OAuth2Message;
+use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountManager;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountRepository;
 use OAuth2Framework\Component\Core\Util\RequestBodyParser;
@@ -49,7 +49,7 @@ final class ResourceOwnerPasswordCredentialsGrantType implements GrantType
 
         $diff = \array_diff($requiredParameters, \array_keys($parameters));
         if (!empty($diff)) {
-            throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, \sprintf('Missing grant type parameter(s): %s.', \implode(', ', $diff)));
+            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST, \sprintf('Missing grant type parameter(s): %s.', \implode(', ', $diff)));
         }
     }
 
@@ -67,7 +67,7 @@ final class ResourceOwnerPasswordCredentialsGrantType implements GrantType
 
         $userAccount = $this->userAccountRepository->findOneByUsername($username);
         if (null === $userAccount || !$this->userAccountManager->isPasswordCredentialValid($userAccount, $password)) {
-            throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_GRANT, 'Invalid username and password combination.');
+            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_GRANT, 'Invalid username and password combination.');
         }
 
         $grantTypeData->setResourceOwnerId($userAccount->getUserAccountId());

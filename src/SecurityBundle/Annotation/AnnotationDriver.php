@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\SecurityBundle\Annotation;
 
 use Doctrine\Common\Annotations\Reader;
-use OAuth2Framework\Component\Core\Message\OAuth2Message;
+use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use OAuth2Framework\Component\Core\Message\OAuth2MessageFactoryManager;
 use OAuth2Framework\SecurityBundle\Annotation\Checker\Checker;
 use OAuth2Framework\SecurityBundle\Security\Authentication\Token\OAuth2Token;
@@ -97,9 +97,9 @@ class AnnotationDriver
     {
         $additionalData = $configuration->getScope() ? ['scope' => $configuration->getScope()] : [];
         $response = $this->oauth2ResponseFactoryManager->getResponse(
-            new OAuth2Message(
+            new OAuth2Error(
                 401,
-                OAuth2Message::ERROR_ACCESS_DENIED,
+                OAuth2Error::ERROR_ACCESS_DENIED,
                 $message
             ),
             $additionalData
@@ -112,9 +112,9 @@ class AnnotationDriver
     {
         $additionalData = $configuration->getScope() ? ['scope' => $configuration->getScope()] : [];
         $response = $this->oauth2ResponseFactoryManager->getResponse(
-            new OAuth2Message(
+            new OAuth2Error(
             403,
-            OAuth2Message::ERROR_ACCESS_DENIED,
+            OAuth2Error::ERROR_ACCESS_DENIED,
                 $message,
                 [],
                 $previous

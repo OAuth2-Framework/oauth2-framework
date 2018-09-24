@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Core\Middleware;
 
-use OAuth2Framework\Component\Core\Message\OAuth2Message;
+use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -39,7 +39,7 @@ class HttpMethodMiddleware implements MiddlewareInterface
         $method = $request->getMethod();
 
         if (!\array_key_exists($method, $this->methodMap)) {
-            throw new OAuth2Message(
+            throw new OAuth2Error(
                 405,
                 'not_implemented',
                 \sprintf('The method "%s" is not supported.', $method)

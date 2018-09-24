@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\ImplicitGrant;
 
-use OAuth2Framework\Component\Core\Message\OAuth2Message;
+use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use OAuth2Framework\Component\TokenEndpoint\GrantType;
 use OAuth2Framework\Component\TokenEndpoint\GrantTypeData;
 use Psr\Http\Message\ServerRequestInterface;
@@ -32,16 +32,16 @@ final class ImplicitGrantType implements GrantType
 
     public function checkRequest(ServerRequestInterface $request): void
     {
-        throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_GRANT, 'The implicit grant type cannot be called from the token endpoint.');
+        throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_GRANT, 'The implicit grant type cannot be called from the token endpoint.');
     }
 
     public function prepareResponse(ServerRequestInterface $request, GrantTypeData $grantTypeData): GrantTypeData
     {
-        throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_GRANT, 'The implicit grant type cannot be called from the token endpoint.');
+        throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_GRANT, 'The implicit grant type cannot be called from the token endpoint.');
     }
 
     public function grant(ServerRequestInterface $request, GrantTypeData $grantTypeData): GrantTypeData
     {
-        throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_GRANT, 'The implicit grant type cannot be called from the token endpoint.');
+        throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_GRANT, 'The implicit grant type cannot be called from the token endpoint.');
     }
 }

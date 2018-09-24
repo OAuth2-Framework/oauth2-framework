@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\TokenIntrospectionEndpoint;
 
 use Http\Message\ResponseFactory;
-use OAuth2Framework\Component\Core\Message\OAuth2Message;
+use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServer;
 use OAuth2Framework\Component\Core\Util\RequestBodyParser;
 use Psr\Http\Message\ResponseInterface;
@@ -58,7 +58,7 @@ final class TokenIntrospectionEndpoint implements MiddlewareInterface
             }
             $responseContent = ['active' => false];
             $responseStatucCode = 200;
-        } catch (OAuth2Message $e) {
+        } catch (OAuth2Error $e) {
             $responseContent = $e->getData();
             $responseStatucCode = $e->getCode();
         }
@@ -77,7 +77,7 @@ final class TokenIntrospectionEndpoint implements MiddlewareInterface
     {
         $resourceServer = $request->getAttribute('resource_server');
         if (null === $resourceServer) {
-            throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_RESOURCE_SERVER, 'Resource Server authentication failed.');
+            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_RESOURCE_SERVER, 'Resource Server authentication failed.');
         }
 
         return $resourceServer;
@@ -87,7 +87,7 @@ final class TokenIntrospectionEndpoint implements MiddlewareInterface
     {
         $params = $this->getRequestParameters($request);
         if (!\array_key_exists('token', $params)) {
-            throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, 'The parameter "token" is missing.');
+            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST, 'The parameter "token" is missing.');
         }
 
         return $params['token'];
@@ -104,7 +104,7 @@ final class TokenIntrospectionEndpoint implements MiddlewareInterface
         if (\array_key_exists('token_type_hint', $params)) {
             $tokenTypeHint = $params['token_type_hint'];
             if (!\array_key_exists($params['token_type_hint'], $tokenTypeHints)) {
-                throw new OAuth2Message(400, 'unsupported_token_type', \sprintf('The token type hint "%s" is not supported. Please use one of the following values: %s.', $params['token_type_hint'], \implode(', ', \array_keys($tokenTypeHints))));
+                throw new OAuth2Error(400, 'unsupported_token_type', \sprintf('The token type hint "%s" is not supported. Please use one of the following values: %s.', $params['token_type_hint'], \implode(', ', \array_keys($tokenTypeHints))));
             }
 
             $hint = $tokenTypeHints[$tokenTypeHint];

@@ -19,7 +19,7 @@ use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientIdGenerator;
 use OAuth2Framework\Component\Core\Client\ClientRepository;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
-use OAuth2Framework\Component\Core\Message\OAuth2Message;
+use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use OAuth2Framework\Component\Core\Util\RequestBodyParser;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -68,14 +68,14 @@ final class ClientRegistrationEndpoint implements MiddlewareInterface
 
             return $this->createResponse($client);
         } catch (\Exception $e) {
-            throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, $e->getMessage(), [], $e);
+            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST, $e->getMessage(), [], $e);
         }
     }
 
     private function checkRequest(ServerRequestInterface $request): void
     {
         if ('POST' !== $request->getMethod()) {
-            throw new OAuth2Message(405, OAuth2Message::ERROR_INVALID_REQUEST, 'Unsupported method.');
+            throw new OAuth2Error(405, OAuth2Error::ERROR_INVALID_REQUEST, 'Unsupported method.');
         }
     }
 

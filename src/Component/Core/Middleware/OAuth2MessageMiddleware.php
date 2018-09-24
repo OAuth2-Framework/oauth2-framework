@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Core\Middleware;
 
-use OAuth2Framework\Component\Core\Message\OAuth2Message;
+use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use OAuth2Framework\Component\Core\Message\OAuth2MessageFactoryManager;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -33,7 +33,7 @@ final class OAuth2MessageMiddleware implements MiddlewareInterface
     {
         try {
             return $handler->handle($request);
-        } catch (OAuth2Message $e) {
+        } catch (OAuth2Error $e) {
             return $oauth2Response = $this->auth2messageFactoryManager->getResponse($e);
         }
     }

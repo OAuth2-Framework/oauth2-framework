@@ -19,7 +19,7 @@ use OAuth2Framework\Component\ClientAuthentication\ClientSecretBasic;
 use OAuth2Framework\Component\ClientAuthentication\ClientSecretPost;
 use OAuth2Framework\Component\ClientAuthentication\None;
 use OAuth2Framework\Component\Core\Client\ClientId;
-use OAuth2Framework\Component\Core\Message\OAuth2Message;
+use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ServerRequestInterface;
@@ -63,7 +63,7 @@ final class AuthenticationMethodManagerTest extends TestCase
         try {
             $manager->findClientIdAndCredentials($request->reveal(), $method, $credentials);
             static::fail('An OAuth2 exception should be thrown.');
-        } catch (OAuth2Message $e) {
+        } catch (OAuth2Error $e) {
             static::assertEquals(400, $e->getCode());
             static::assertEquals([
                 'error' => 'invalid_request',

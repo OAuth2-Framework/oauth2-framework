@@ -52,7 +52,7 @@ class OAuth2MessageFactoryManager
         $this->extensions[] = $extension;
     }
 
-    public function getResponse(OAuth2Message $message, array $additionalData = []): ResponseInterface
+    public function getResponse(OAuth2Error $message, array $additionalData = []): ResponseInterface
     {
         $code = $message->getCode();
         $data = \array_merge(

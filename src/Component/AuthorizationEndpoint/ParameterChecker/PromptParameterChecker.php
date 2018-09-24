@@ -15,7 +15,7 @@ namespace OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker;
 
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
 use OAuth2Framework\Component\AuthorizationEndpoint\Exception\OAuth2AuthorizationException;
-use OAuth2Framework\Component\Core\Message\OAuth2Message;
+use OAuth2Framework\Component\Core\Message\OAuth2Error;
 
 final class PromptParameterChecker implements ParameterChecker
 {
@@ -41,7 +41,7 @@ final class PromptParameterChecker implements ParameterChecker
                 }
             }
         } catch (\InvalidArgumentException $e) {
-            throw new OAuth2AuthorizationException(400, OAuth2Message::ERROR_INVALID_REQUEST, $e->getMessage(), $authorization, $e);
+            throw new OAuth2AuthorizationException(400, OAuth2Error::ERROR_INVALID_REQUEST, $e->getMessage(), $authorization, $e);
         }
     }
 

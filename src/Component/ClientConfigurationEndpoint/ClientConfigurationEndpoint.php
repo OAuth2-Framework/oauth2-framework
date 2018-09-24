@@ -18,7 +18,7 @@ use OAuth2Framework\Component\BearerTokenType\BearerToken;
 use OAuth2Framework\Component\ClientRule\RuleManager;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientRepository;
-use OAuth2Framework\Component\Core\Message\OAuth2Message;
+use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -59,7 +59,7 @@ final class ClientConfigurationEndpoint implements MiddlewareInterface
 
                 return $delete->process($request, $next);
             default:
-                throw new OAuth2Message(405, OAuth2Message::ERROR_INVALID_REQUEST, 'Unsupported method.');
+                throw new OAuth2Error(405, OAuth2Error::ERROR_INVALID_REQUEST, 'Unsupported method.');
         }
     }
 
@@ -82,7 +82,7 @@ final class ClientConfigurationEndpoint implements MiddlewareInterface
                 throw new \InvalidArgumentException('Invalid client or invalid registration access token.');
             }
         } catch (\InvalidArgumentException $e) {
-            throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, $e->getMessage(), [], $e);
+            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST, $e->getMessage(), [], $e);
         }
     }
 }

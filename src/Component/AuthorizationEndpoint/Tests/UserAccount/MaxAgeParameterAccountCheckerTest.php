@@ -29,8 +29,11 @@ final class MaxAgeParameterAccountCheckerTest extends TestCase
     /**
      * @test
      */
-    public function theUserAccountIsNotAvailableThenAnExceptionIsThrown()
+    public function theUserHasNeverBeenConnected()
     {
+        $userAccount = $this->prophesize(UserAccount::class);
+        $userAccount->getLastLoginAt()->willReturn(null);
+
         $client = $this->prophesize(Client::class);
 
         $authorization = $this->prophesize(AuthorizationRequest::class);
@@ -39,6 +42,7 @@ final class MaxAgeParameterAccountCheckerTest extends TestCase
         $authorization->getUserAccount()->willReturn(null);
         $authorization->isUserAccountFullyAuthenticated()->willReturn(false);
         $authorization->getClient()->willReturn($client->reveal());
+        $authorization->getUserAccount()->willReturn($userAccount->reveal());
         $checker = new MaxAgeParameterAccountChecker();
 
         try {

@@ -16,7 +16,7 @@ namespace OAuth2Framework\Component\ImplicitGrant\Tests;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
-use OAuth2Framework\Component\Core\Message\OAuth2Message;
+use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use OAuth2Framework\Component\ImplicitGrant\ImplicitGrantType;
 use OAuth2Framework\Component\TokenEndpoint\GrantTypeData;
@@ -48,7 +48,7 @@ final class ImplicitGrantTypeTest extends TestCase
         try {
             $this->getGrantType()->checkRequest($request->reveal());
             static::fail('An OAuth2 exception should be thrown.');
-        } catch (OAuth2Message $e) {
+        } catch (OAuth2Error $e) {
             static::assertEquals(400, $e->getCode());
             static::assertEquals([
                 'error' => 'invalid_grant',
@@ -73,7 +73,7 @@ final class ImplicitGrantTypeTest extends TestCase
 
         try {
             $this->getGrantType()->prepareResponse($request->reveal(), $grantTypeData);
-        } catch (OAuth2Message $e) {
+        } catch (OAuth2Error $e) {
             static::assertEquals(400, $e->getCode());
             static::assertEquals([
                 'error' => 'invalid_grant',
@@ -99,7 +99,7 @@ final class ImplicitGrantTypeTest extends TestCase
 
         try {
             $this->getGrantType()->grant($request->reveal(), $grantTypeData);
-        } catch (OAuth2Message $e) {
+        } catch (OAuth2Error $e) {
             static::assertEquals(400, $e->getCode());
             static::assertEquals([
                 'error' => 'invalid_grant',

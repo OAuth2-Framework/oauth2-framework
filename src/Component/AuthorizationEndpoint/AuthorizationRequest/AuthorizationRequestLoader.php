@@ -27,7 +27,7 @@ use Jose\Component\Signature\Serializer\CompactSerializer;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\Client\ClientRepository;
-use OAuth2Framework\Component\Core\Message\OAuth2Message;
+use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Request;
 
@@ -193,11 +193,11 @@ class AuthorizationRequestLoader
     private function createFromRequestParameter(array $params, Client &$client = null): array
     {
         if (false === $this->isRequestObjectSupportEnabled()) {
-            throw new OAuth2Message(400, OAuth2Message::ERROR_REQUEST_NOT_SUPPORTED, 'The parameter "request" is not supported.');
+            throw new OAuth2Error(400, OAuth2Error::ERROR_REQUEST_NOT_SUPPORTED, 'The parameter "request" is not supported.');
         }
         $request = $params['request'];
         if (!\is_string($request)) {
-            throw new OAuth2Message(400, OAuth2Message::ERROR_REQUEST_NOT_SUPPORTED, 'The parameter "request" must be an assertion.');
+            throw new OAuth2Error(400, OAuth2Error::ERROR_REQUEST_NOT_SUPPORTED, 'The parameter "request" must be an assertion.');
         }
 
         $params = $this->loadRequestObject($params, $request, $client);
@@ -209,11 +209,11 @@ class AuthorizationRequestLoader
     private function createFromRequestUriParameter(array $params, Client &$client = null): array
     {
         if (false === $this->isRequestObjectReferenceSupportEnabled()) {
-            throw new OAuth2Message(400, OAuth2Message::ERROR_REQUEST_URI_NOT_SUPPORTED, 'The parameter "request_uri" is not supported.');
+            throw new OAuth2Error(400, OAuth2Error::ERROR_REQUEST_URI_NOT_SUPPORTED, 'The parameter "request_uri" is not supported.');
         }
         $requestUri = $params['request_uri'];
         if (\preg_match('#/\.\.?(/|$)#', $requestUri)) {
-            throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST_URI, 'The request Uri is not allowed.');
+            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST_URI, 'The request Uri is not allowed.');
         }
         $content = $this->downloadContent($requestUri);
         $params = $this->loadRequestObject($params, $content, $client);
@@ -237,7 +237,7 @@ class AuthorizationRequestLoader
         $storedRequestUris = $client->has('request_uris') ? $client->get('request_uris') : [];
         if (empty($storedRequestUris)) {
             if ($this->isRequestUriRegistrationRequired()) {
-                throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST_URI, 'The clients shall register at least one request object uri.');
+                throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST_URI, 'The clients shall register at least one request object uri.');
             }
 
             return;
@@ -249,7 +249,7 @@ class AuthorizationRequestLoader
             }
         }
 
-        throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST_URI, 'The request Uri is not allowed.');
+        throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST_URI, 'The request Uri is not allowed.');
     }
 
     private function loadRequestObject(array $params, string $request, Client &$client = null): array
@@ -282,10 +282,10 @@ class AuthorizationRequestLoader
             }
 
             return $parameters;
-        } catch (OAuth2Message $e) {
+        } catch (OAuth2Error $e) {
             throw $e;
         } catch (\Exception $e) {
-            throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST_OBJECT, $e->getMessage(), [], $e);
+            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST_OBJECT, $e->getMessage(), [], $e);
         }
     }
 
@@ -304,7 +304,7 @@ class AuthorizationRequestLoader
             return $jwe->getPayload();
         } catch (\Exception $e) {
             if (true === $this->requireEncryption) {
-                throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST_OBJECT, $e->getMessage(), [], $e);
+                throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST_OBJECT, $e->getMessage(), [], $e);
             }
 
             return $request;
@@ -339,7 +339,7 @@ class AuthorizationRequestLoader
 
         $content = $response->getBody()->getContents();
         if (!\is_string($content)) {
-            throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST_URI, 'Unable to get content.');
+            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST_URI, 'Unable to get content.');
         }
 
         return $content;
@@ -349,7 +349,7 @@ class AuthorizationRequestLoader
     {
         $client = \array_key_exists('client_id', $params) ? $this->clientRepository->find(new ClientId($params['client_id'])) : null;
         if (!$client instanceof Client || true === $client->isDeleted()) {
-            throw new OAuth2Message(400, OAuth2Message::ERROR_INVALID_REQUEST, 'Parameter "client_id" missing or invalid.');
+            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST, 'Parameter "client_id" missing or invalid.');
         }
 
         return $client;

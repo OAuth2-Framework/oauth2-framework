@@ -16,7 +16,7 @@ namespace OAuth2Framework\Component\Scope;
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
 use OAuth2Framework\Component\AuthorizationEndpoint\Exception\OAuth2AuthorizationException;
 use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\ParameterChecker;
-use OAuth2Framework\Component\Core\Message\OAuth2Message;
+use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use OAuth2Framework\Component\Scope\Policy\ScopePolicyManager;
 
 class ScopeParameterChecker implements ParameterChecker
@@ -55,7 +55,7 @@ class ScopeParameterChecker implements ParameterChecker
             $authorization->getMetadata()->set('scope', \implode(' ', $scopes));
             $authorization->setResponseParameter('scope', \implode(' ', $scopes));
         } catch (\InvalidArgumentException $e) {
-            throw new OAuth2AuthorizationException(400, OAuth2Message::ERROR_INVALID_SCOPE, $e->getMessage(), $authorization, $e);
+            throw new OAuth2AuthorizationException(400, OAuth2Error::ERROR_INVALID_SCOPE, $e->getMessage(), $authorization, $e);
         }
     }
 }
