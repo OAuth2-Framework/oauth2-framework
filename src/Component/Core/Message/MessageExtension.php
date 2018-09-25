@@ -17,7 +17,7 @@ interface MessageExtension
 {
     /**
      * @param OAuth2Error $code The code of the response
-     * @param array         $data Data that will be sent
+     * @param array       $data Data that will be sent
      */
     public function process(OAuth2Error $code, array $data): array;
 }

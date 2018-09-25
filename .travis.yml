@@ -1,5 +1,16 @@
 language: php
 
+sudo: required
+
+services:
+    - docker
+
+addons:
+    hosts:
+        - op_test
+        - rp_test
+        - op
+
 cache:
     directories:
         - "$HOME/.composer/cache"
@@ -13,6 +24,13 @@ matrix:
         - php: 7.1
         - php: 7.2
         - php: nightly
+
+before_install:
+    - git clone https://github.com/openid-certification/oidctest.git
+    - cd oidctest
+    - git checkout stable-release-1.1.x
+    - docker-compose -f docker/docker-compose.yml up -d
+    - cd -
 
 before_script:
     - composer self-update
