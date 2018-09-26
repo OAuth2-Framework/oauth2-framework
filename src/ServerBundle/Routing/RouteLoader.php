@@ -20,14 +20,8 @@ use Symfony\Component\Routing\RouteCollection;
 
 class RouteLoader implements LoaderInterface
 {
-    /**
-     * @var RouteCollection
-     */
     private $routes;
 
-    /**
-     * RouteLoader constructor.
-     */
     public function __construct()
     {
         $this->routes = new RouteCollection();

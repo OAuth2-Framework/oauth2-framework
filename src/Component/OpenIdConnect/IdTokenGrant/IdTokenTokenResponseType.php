@@ -56,19 +56,15 @@ final class IdTokenTokenResponseType implements ResponseType
         return self::RESPONSE_TYPE_MODE_FRAGMENT;
     }
 
-    public function preProcess(AuthorizationRequest $authorization): AuthorizationRequest
+    public function preProcess(AuthorizationRequest $authorization): void
     {
-        $authorization = $this->tokenResponseType->preProcess($authorization);
-        $authorization = $this->idTokenResponseType->preProcess($authorization);
-
-        return $authorization;
+        $this->tokenResponseType->preProcess($authorization);
+        $this->idTokenResponseType->preProcess($authorization);
     }
 
-    public function process(AuthorizationRequest $authorization): AuthorizationRequest
+    public function process(AuthorizationRequest $authorization): void
     {
-        $authorization = $this->tokenResponseType->process($authorization);
-        $authorization = $this->idTokenResponseType->process($authorization);
-
-        return $authorization;
+        $this->tokenResponseType->process($authorization);
+        $this->idTokenResponseType->process($authorization);
     }
 }

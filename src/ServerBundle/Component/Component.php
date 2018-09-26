@@ -24,9 +24,6 @@ interface Component
 
     public function build(ContainerBuilder $container);
 
-    /**
-     * @param NodeDefinition $node
-     */
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode);
 
     public function prepend(ContainerBuilder $container, array $config): array;

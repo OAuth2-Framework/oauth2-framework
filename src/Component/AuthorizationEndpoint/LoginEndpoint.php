@@ -13,23 +13,21 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\AuthorizationEndpoint;
 
-use Http\Message\MessageFactory;
-use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
+use Http\Message\ResponseFactory;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\Routing\RouterInterface;
 
 abstract class LoginEndpoint extends AbstractEndpoint
 {
-    private $router;
+    private $loginHandler;
 
-    public function __construct(MessageFactory $messageFactory, SessionInterface $session, RouterInterface $router)
+    public function __construct(ResponseFactory $responseFactory, SessionInterface $session, LoginHandler $loginHandler)
     {
-        parent::__construct($messageFactory, $session);
-        $this->router = $router;
+        parent::__construct($responseFactory, $session);
+        $this->loginHandler = $loginHandler;
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
@@ -37,7 +35,12 @@ abstract class LoginEndpoint extends AbstractEndpoint
         try {
             $authorizationId = $this->getAuthorizationId($request);
             $authorization = $this->getAuthorization($authorizationId);
-            if ($this->processLogin($authorization)) {
+            $this->loginHandler->prepare($request, $authorizationId, $authorization);
+            if (!$this->loginHandler->hasBeenProcessed($request, $authorizationId, $authorization)) {
+                if (!$this->loginHandler->isValid($request, $authorizationId, $authorization)) {
+                    throw $this->buildOAuth2Error($authorization, OAuth2Error::ERROR_LOGIN_REQUIRED, 'The resource owner is not logged in.');
+                }
+
                 switch (true) {
                     case $authorization->hasPrompt('select_account'):
                         $routeName = 'authorization_select_account_endpoint';
@@ -47,12 +50,12 @@ abstract class LoginEndpoint extends AbstractEndpoint
                         $routeName = 'authorization_consent_endpoint';
                         break;
                 }
-                $redirectTo = $this->router->generate($routeName, ['authorization_id' => $authorizationId]);
+                $redirectTo = $this->getRouteFor($routeName, $authorizationId);
 
                 return $this->createRedirectResponse($redirectTo);
             }
 
-            throw $this->buildOAuth2Error($authorization, OAuth2Error::ERROR_LOGIN_REQUIRED, 'The resource owner is not logged in.');
+            return $this->loginHandler->process($request, $authorizationId, $authorization);
         } catch (OAuth2Error $e) {
             throw $e;
         } catch (\Exception $e) {
@@ -60,15 +63,5 @@ abstract class LoginEndpoint extends AbstractEndpoint
         }
     }
 
-    private function getAuthorizationId(ServerRequestInterface $request): string
-    {
-        $authorizationId = $request->getAttribute('authorization_id');
-        if (null === $authorizationId) {
-            throw new \InvalidArgumentException('Invalid authorization ID.');
-        }
-
-        return $authorizationId;
-    }
-
-    abstract protected function processLogin(AuthorizationRequest $authorizationRequest): bool;
+    abstract protected function getRouteFor(string $action, string $authorizationId): string;
 }

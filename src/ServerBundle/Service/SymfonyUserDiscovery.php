@@ -20,19 +20,10 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 final class SymfonyUserDiscovery implements UserAccountDiscovery
 {
-    /**
-     * @var TokenStorageInterface
-     */
     private $tokenStorage;
 
-    /**
-     * @var AuthorizationCheckerInterface
-     */
     private $authorizationChecker;
 
-    /**
-     * SymfonyUserDiscovery constructor.
-     */
     public function __construct(TokenStorageInterface $tokenStorage, AuthorizationCheckerInterface $authorizationChecker)
     {
         $this->tokenStorage = $tokenStorage;

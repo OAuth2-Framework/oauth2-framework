@@ -56,15 +56,13 @@ final class NoneResponseType implements ResponseType
         return self::RESPONSE_TYPE_MODE_QUERY;
     }
 
-    public function preProcess(AuthorizationRequest $authorization): AuthorizationRequest
+    public function preProcess(AuthorizationRequest $authorization): void
     {
-        return $authorization;
+        // Nothing to do
     }
 
-    public function process(AuthorizationRequest $authorization): AuthorizationRequest
+    public function process(AuthorizationRequest $authorization): void
     {
         $this->authorizationStorage->save($authorization);
-
-        return $authorization;
     }
 }

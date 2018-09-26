@@ -41,7 +41,7 @@ interface ResponseType
      */
     public function getResponseMode(): string;
 
-    public function preProcess(AuthorizationRequest $authorization): AuthorizationRequest;
+    public function preProcess(AuthorizationRequest $authorization): void;
 
-    public function process(AuthorizationRequest $authorization): AuthorizationRequest;
+    public function process(AuthorizationRequest $authorization): void;
 }

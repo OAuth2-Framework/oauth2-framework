@@ -18,24 +18,12 @@ use Symfony\Component\Form\FormInterface;
 
 class FormFactory
 {
-    /**
-     * @var FormFactoryInterface
-     */
     private $formFactory;
 
-    /**
-     * @var string
-     */
     private $name;
 
-    /**
-     * @var string
-     */
     private $type;
 
-    /**
-     * FormFactory constructor.
-     */
     public function __construct(FormFactoryInterface $formFactory, string $name, string $type)
     {
         $this->formFactory = $formFactory;
@@ -43,9 +31,6 @@ class FormFactory
         $this->type = $type;
     }
 
-    /**
-     * @param Model\AuthorizationModel $data
-     */
     public function createForm(array $options = [], $data = null): FormInterface
     {
         $form = $this->formFactory->createNamed($this->name, $this->type, null, $options);

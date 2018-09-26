@@ -28,9 +28,6 @@ class ClientRegistrationSource implements Component
      */
     private $subComponents = [];
 
-    /**
-     * EndpointSource constructor.
-     */
     public function __construct()
     {
         $this->subComponents = [

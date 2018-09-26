@@ -18,19 +18,10 @@ use OAuth2Framework\Component\MacTokenType\MacToken as Base;
 
 final class MacToken extends Base
 {
-    /**
-     * @var int
-     */
     private $minLength;
 
-    /**
-     * @var int
-     */
     private $maxLength;
 
-    /**
-     * MacToken constructor.
-     */
     public function __construct(string $macAlgorithm, int $timestampLifetime, int $minLength, int $maxLength)
     {
         parent::__construct($macAlgorithm, $timestampLifetime);

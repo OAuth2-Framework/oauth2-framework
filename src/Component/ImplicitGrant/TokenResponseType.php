@@ -62,12 +62,12 @@ final class TokenResponseType implements ResponseType
         return self::RESPONSE_TYPE_MODE_FRAGMENT;
     }
 
-    public function preProcess(AuthorizationRequest $authorization): AuthorizationRequest
+    public function preProcess(AuthorizationRequest $authorization): void
     {
-        return $authorization;
+        // Nothing to do
     }
 
-    public function process(AuthorizationRequest $authorization): AuthorizationRequest
+    public function process(AuthorizationRequest $authorization): void
     {
         $additionalInformation = $authorization->getTokenType()->getAdditionalInformation();
         $accessTokenId = $this->accessTokenIdGenerator->createAccessTokenId(
@@ -91,7 +91,5 @@ final class TokenResponseType implements ResponseType
         foreach ($accessToken->getResponseData() as $k => $v) {
             $authorization->setResponseParameter($k, $v);
         }
-
-        return $authorization;
     }
 }

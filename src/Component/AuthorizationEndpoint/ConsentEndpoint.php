@@ -13,23 +13,21 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\AuthorizationEndpoint;
 
-use Http\Message\MessageFactory;
-use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
+use Http\Message\ResponseFactory;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\Routing\RouterInterface;
 
 abstract class ConsentEndpoint extends AbstractEndpoint
 {
-    private $router;
+    private $consentHandler;
 
-    public function __construct(MessageFactory $messageFactory, SessionInterface $session, RouterInterface $router)
+    public function __construct(ResponseFactory $responseFactory, SessionInterface $session, ConsentHandler $consentHandler)
     {
-        parent::__construct($messageFactory, $session);
-        $this->router = $router;
+        parent::__construct($responseFactory, $session);
+        $this->consentHandler = $consentHandler;
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
@@ -37,29 +35,18 @@ abstract class ConsentEndpoint extends AbstractEndpoint
         try {
             $authorizationId = $this->getAuthorizationId($request);
             $authorization = $this->getAuthorization($authorizationId);
-            if ($this->processConsent($authorization)) {
-                $redirectTo = $this->router->generate('authorization_process_endpoint', ['authorization_id' => $authorizationId]);
+            $this->consentHandler->prepare($request, $authorizationId, $authorization);
+            if (!$this->consentHandler->hasBeenProcessed($request, $authorizationId, $authorization)) {
+                $redirectTo = $this->getRouteFor('authorization_process_endpoint', $authorizationId);
 
                 return $this->createRedirectResponse($redirectTo);
             }
 
-            throw $this->buildOAuth2Error($authorization, OAuth2Error::ERROR_LOGIN_REQUIRED, 'The resource owner is not logged in.');
-        } catch (OAuth2Error $e) {
-            throw $e;
+            return $this->consentHandler->process($request, $authorizationId, $authorization);
         } catch (\Exception $e) {
             throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST, null);
         }
     }
 
-    private function getAuthorizationId(ServerRequestInterface $request): string
-    {
-        $authorizationId = $request->getAttribute('authorization_id');
-        if (null === $authorizationId) {
-            throw new \InvalidArgumentException('Invalid authorization ID.');
-        }
-
-        return $authorizationId;
-    }
-
-    abstract protected function processConsent(AuthorizationRequest $authorizationRequest): bool;
+    abstract protected function getRouteFor(string $action, string $authorizationId): string;
 }

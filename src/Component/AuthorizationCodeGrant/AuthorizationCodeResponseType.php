@@ -55,7 +55,7 @@ final class AuthorizationCodeResponseType implements ResponseType
         return self::RESPONSE_TYPE_MODE_QUERY;
     }
 
-    public function preProcess(AuthorizationRequest $authorization): AuthorizationRequest
+    public function preProcess(AuthorizationRequest $authorization): void
     {
         $queryParams = $authorization->getQueryParams();
 
@@ -84,12 +84,10 @@ final class AuthorizationCodeResponseType implements ResponseType
         );
         $this->authorizationCodeRepository->save($authorizationCode);
         $authorization->setResponseParameter('code', $authorizationCodeId->getValue());
-
-        return $authorization;
     }
 
-    public function process(AuthorizationRequest $authorization): AuthorizationRequest
+    public function process(AuthorizationRequest $authorization): void
     {
-        return $authorization;
+        //Nothing to do
     }
 }

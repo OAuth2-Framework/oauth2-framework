@@ -29,9 +29,6 @@ class MetadataEndpointSource implements Component
      */
     private $subComponents = [];
 
-    /**
-     * MetadataEndpointSource constructor.
-     */
     public function __construct()
     {
         $this->subComponents = [

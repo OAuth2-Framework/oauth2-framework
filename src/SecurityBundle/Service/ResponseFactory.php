@@ -13,13 +13,10 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\SecurityBundle\Service;
 
-use Http\Message\ResponseFactory;
+use Http\Message\ResponseFactory as ResponseFactoryInterface;
 use Zend\Diactoros\Response;
 
-/**
- * Class MessageFactory.
- */
-final class MessageFactory implements ResponseFactory
+final class ResponseFactory implements ResponseFactoryInterface
 {
     public function createResponse($statusCode = 200, $reasonPhrase = null, array $header = [], $body = null, $protocolVersion = '1.1')
     {

@@ -23,14 +23,8 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 final class ClientConfigurationMiddleware implements MiddlewareInterface
 {
-    /**
-     * @var ClientRepository
-     */
     private $clientRepository;
 
-    /**
-     * ClientConfigurationMiddleware constructor.
-     */
     public function __construct(ClientRepository $clientRepository)
     {
         $this->clientRepository = $clientRepository;

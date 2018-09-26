@@ -18,7 +18,5 @@ use Psr\Http\Message\ServerRequestInterface;
 
 interface Extension
 {
-    public function processAfter(ServerRequestInterface $request, AuthorizationRequest $authorization): void;
-
-    public function processBefore(ServerRequestInterface $request, AuthorizationRequest $authorization): void;
+    public function process(ServerRequestInterface $request, AuthorizationRequest $authorization): void;
 }

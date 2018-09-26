@@ -68,8 +68,8 @@ final class AuthorizationCodeResponseTypeTest extends TestCase
         );
         $authorization->setUserAccount($userAccount->reveal(), true);
         $authorization->setRedirectUri('http://localhost:8000/');
-        $authorization = $this->getResponseType()->preProcess($authorization);
-        $authorization = $this->getResponseType()->process($authorization);
+        $this->getResponseType()->preProcess($authorization);
+        $this->getResponseType()->process($authorization);
         static::assertTrue($authorization->hasResponseParameter('code'));
     }
 

@@ -80,12 +80,12 @@ final class IdTokenResponseType implements ResponseType
         return self::RESPONSE_TYPE_MODE_FRAGMENT;
     }
 
-    public function preProcess(AuthorizationRequest $authorization): AuthorizationRequest
+    public function preProcess(AuthorizationRequest $authorization): void
     {
-        return $authorization;
+        // Nothing to do
     }
 
-    public function process(AuthorizationRequest $authorization): AuthorizationRequest
+    public function process(AuthorizationRequest $authorization): void
     {
         if ($authorization->hasQueryParam('scope') && \in_array('openid', \explode(' ', $authorization->getQueryParam('scope')), true)) {
             if (!\array_key_exists('nonce', $authorization->getQueryParams())) {
@@ -94,8 +94,6 @@ final class IdTokenResponseType implements ResponseType
 
             $authorization = $this->populateWithIdToken($authorization);
         }
-
-        return $authorization;
     }
 
     private function populateWithIdToken(AuthorizationRequest $authorization): AuthorizationRequest

@@ -24,14 +24,9 @@ final class Configuration implements ConfigurationInterface
      */
     private $components;
 
-    /**
-     * @var string
-     */
     private $alias;
 
     /**
-     * Configuration constructor.
-     *
      * @param Component[] $components
      */
     public function __construct(string $alias, array $components)

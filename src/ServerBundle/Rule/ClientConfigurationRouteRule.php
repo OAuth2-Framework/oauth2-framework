@@ -21,14 +21,8 @@ use Symfony\Component\Routing\RouterInterface;
 
 final class ClientConfigurationRouteRule extends Base
 {
-    /**
-     * @var RouterInterface
-     */
     private $router;
 
-    /**
-     * ClientRegistrationManagementRule constructor.
-     */
     public function __construct(RouterInterface $router)
     {
         $this->router = $router;

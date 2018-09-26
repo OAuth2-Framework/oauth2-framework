@@ -24,9 +24,6 @@ class OAuth2FrameworkServerBundle extends Bundle
      */
     private $components = [];
 
-    /**
-     * JoseFrameworkBundle constructor.
-     */
     public function __construct()
     {
         foreach ($this->getComponents() as $component) {

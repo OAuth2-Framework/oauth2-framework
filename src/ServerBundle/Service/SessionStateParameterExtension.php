@@ -31,10 +31,6 @@ class SessionStateParameterExtension extends \OAuth2Framework\Component\OpenIdCo
         $this->storageName = $storageName;
     }
 
-    public function processBefore(ServerRequestInterface $request, AuthorizationRequest $authorization): void
-    {
-    }
-
     protected function getBrowserState(ServerRequestInterface $request, AuthorizationRequest $authorization): string
     {
         if ($this->session->has($this->storageName)) {

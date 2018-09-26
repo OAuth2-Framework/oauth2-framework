@@ -13,23 +13,34 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\AuthorizationEndpoint;
 
-use Http\Message\MessageFactory;
+use Http\Message\ResponseFactory;
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 abstract class AbstractEndpoint implements MiddlewareInterface
 {
-    private $session;
+    protected $session;
 
-    private $messageFactory;
+    protected $responseFactory;
 
-    public function __construct(MessageFactory $messageFactory, SessionInterface $session)
+    public function __construct(ResponseFactory $responseFactory, SessionInterface $session)
     {
-        $this->messageFactory = $messageFactory;
+        $this->responseFactory = $responseFactory;
         $this->session = $session;
+    }
+
+    protected function getAuthorizationId(ServerRequestInterface $request): string
+    {
+        $authorizationId = $request->getAttribute('authorization_id');
+        if (null === $authorizationId) {
+            throw new \InvalidArgumentException('Invalid authorization ID.');
+        }
+
+        return $authorizationId;
     }
 
     protected function saveAuthorization(string $authorizationId, AuthorizationRequest $authorization)
@@ -63,7 +74,7 @@ abstract class AbstractEndpoint implements MiddlewareInterface
 
     protected function createRedirectResponse(string $redirectTo): ResponseInterface
     {
-        $response = $this->messageFactory->createResponse(303);
+        $response = $this->responseFactory->createResponse(303);
         $response->withHeader('location', $redirectTo);
 
         return $response;

@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Service;
 
-use Http\Message\MessageFactory;
+use Http\Message\ResponseFactory;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -22,33 +22,18 @@ use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 
 final class IFrameEndpoint implements MiddlewareInterface
 {
-    /**
-     * @var EngineInterface
-     */
     private $templateEngine;
 
-    /**
-     * @var MessageFactory
-     */
-    private $messageFactory;
+    private $responseFactory;
 
-    /**
-     * @var string
-     */
     private $template;
 
-    /**
-     * @var string
-     */
     private $storageName;
 
-    /**
-     * IFrameEndpoint constructor.
-     */
-    public function __construct(EngineInterface $templateEngine, MessageFactory $messageFactory, string $template, string $storageName)
+    public function __construct(EngineInterface $templateEngine, ResponseFactory $responseFactory, string $template, string $storageName)
     {
         $this->templateEngine = $templateEngine;
-        $this->messageFactory = $messageFactory;
+        $this->responseFactory = $responseFactory;
         $this->template = $template;
         $this->storageName = $storageName;
     }
@@ -56,7 +41,7 @@ final class IFrameEndpoint implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $content = $this->templateEngine->render($this->template, ['storage_name' => $this->storageName]);
-        $response = $this->messageFactory->createResponse();
+        $response = $this->responseFactory->createResponse();
         $headers = ['Content-Type' => 'text/html; charset=UTF-8', 'Cache-Control' => 'no-cache, no-store, max-age=0, must-revalidate, private', 'Pragma' => 'no-cache'];
         foreach ($headers as $k => $v) {
             $response = $response->withHeader($k, $v);

@@ -13,23 +13,21 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\AuthorizationEndpoint;
 
-use Http\Message\MessageFactory;
-use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
+use Http\Message\ResponseFactory;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\Routing\RouterInterface;
 
 abstract class SelectAccountEndpoint extends AbstractEndpoint
 {
-    private $router;
+    private $selectAccountHandler;
 
-    public function __construct(MessageFactory $messageFactory, SessionInterface $session, RouterInterface $router)
+    public function __construct(ResponseFactory $responseFactory, SessionInterface $session, SelectAccountHandler $selectAccountHandler)
     {
-        parent::__construct($messageFactory, $session);
-        $this->router = $router;
+        parent::__construct($responseFactory, $session);
+        $this->selectAccountHandler = $selectAccountHandler;
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
@@ -37,19 +35,24 @@ abstract class SelectAccountEndpoint extends AbstractEndpoint
         try {
             $authorizationId = $this->getAuthorizationId($request);
             $authorization = $this->getAuthorization($authorizationId);
-            if ($this->processAccountSelection($authorization)) {
+            $this->selectAccountHandler->prepare($request, $authorizationId, $authorization);
+            if ($this->selectAccountHandler->hasBeenProcessed($request, $authorizationId, $authorization)) {
+                if (!$this->selectAccountHandler->isValid($request, $authorizationId, $authorization)) {
+                    throw $this->buildOAuth2Error($authorization, OAuth2Error::ERROR_ACCOUNT_SELECTION_REQUIRED, 'The resource owner account selection failed.');
+                }
+
                 switch (true) {
                     case $authorization->hasPrompt('consent'):
                     default:
                         $routeName = 'authorization_consent_endpoint';
                         break;
                 }
-                $redirectTo = $this->router->generate($routeName, ['authorization_id' => $authorizationId]);
+                $redirectTo = $this->getRouteFor($routeName, $authorizationId);
 
                 return $this->createRedirectResponse($redirectTo);
             }
 
-            throw $this->buildOAuth2Error($authorization, OAuth2Error::ERROR_ACCOUNT_SELECTION_REQUIRED, 'The resource owner account selection failed.');
+            return $this->selectAccountHandler->process($request, $authorizationId, $authorization);
         } catch (OAuth2Error $e) {
             throw $e;
         } catch (\Exception $e) {
@@ -57,15 +60,5 @@ abstract class SelectAccountEndpoint extends AbstractEndpoint
         }
     }
 
-    private function getAuthorizationId(ServerRequestInterface $request): string
-    {
-        $authorizationId = $request->getAttribute('authorization_id');
-        if (null === $authorizationId) {
-            throw new \InvalidArgumentException('Invalid authorization ID.');
-        }
-
-        return $authorizationId;
-    }
-
-    abstract protected function processAccountSelection(AuthorizationRequest $authorizationRequest): bool;
+    abstract protected function getRouteFor(string $action, string $authorizationId): string;
 }

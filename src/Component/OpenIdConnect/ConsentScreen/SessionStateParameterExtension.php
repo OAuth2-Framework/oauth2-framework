@@ -19,7 +19,7 @@ use Psr\Http\Message\ServerRequestInterface;
 
 abstract class SessionStateParameterExtension implements Extension
 {
-    public function processAfter(ServerRequestInterface $request, AuthorizationRequest $authorization): void
+    public function process(ServerRequestInterface $request, AuthorizationRequest $authorization): void
     {
         if ($this->hasOpenIdScope($authorization)) {
             $browserState = $this->getBrowserState($request, $authorization);

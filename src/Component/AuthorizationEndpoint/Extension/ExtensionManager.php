@@ -28,21 +28,10 @@ class ExtensionManager
         $this->extensions[] = $extension;
     }
 
-    public function processBefore(ServerRequestInterface $request, AuthorizationRequest $authorization): AuthorizationRequest
+    public function process(ServerRequestInterface $request, AuthorizationRequest $authorization): void
     {
         foreach ($this->extensions as $extension) {
-            $extension->processBefore($request, $authorization);
+            $extension->process($request, $authorization);
         }
-
-        return $authorization;
-    }
-
-    public function processAfter(ServerRequestInterface $request, AuthorizationRequest $authorization): AuthorizationRequest
-    {
-        foreach ($this->extensions as $extension) {
-            $extension->processAfter($request, $authorization);
-        }
-
-        return $authorization;
     }
 }

@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\AuthorizationEndpoint;
 
 use Base64Url\Base64Url;
-use Http\Message\MessageFactory;
+use Http\Message\ResponseFactory;
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequestLoader;
 use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\ParameterCheckerManager;
 use OAuth2Framework\Component\AuthorizationEndpoint\UserAccount\UserAccountCheckerManager;
@@ -24,7 +24,6 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\Routing\RouterInterface;
 
 abstract class AuthorizationEndpoint extends AbstractEndpoint
 {
@@ -36,18 +35,15 @@ abstract class AuthorizationEndpoint extends AbstractEndpoint
 
     private $userAccountCheckerManager;
 
-    private $router;
-
     private $consentRepository;
 
-    public function __construct(MessageFactory $messageFactory, AuthorizationRequestLoader $authorizationRequestLoader, ParameterCheckerManager $parameterCheckerManager, UserAccountDiscovery $userAccountDiscovery, UserAccountCheckerManager $userAccountCheckerManager, SessionInterface $session, RouterInterface $router, ConsentRepository $consentRepository)
+    public function __construct(ResponseFactory $responseFactory, AuthorizationRequestLoader $authorizationRequestLoader, ParameterCheckerManager $parameterCheckerManager, UserAccountDiscovery $userAccountDiscovery, UserAccountCheckerManager $userAccountCheckerManager, SessionInterface $session, ConsentRepository $consentRepository)
     {
-        parent::__construct($messageFactory, $session);
+        parent::__construct($responseFactory, $session);
         $this->authorizationRequestLoader = $authorizationRequestLoader;
         $this->parameterCheckerManager = $parameterCheckerManager;
         $this->userAccountDiscovery = $userAccountDiscovery;
         $this->userAccountCheckerManager = $userAccountCheckerManager;
-        $this->router = $router;
         $this->consentRepository = $consentRepository;
     }
 
@@ -84,8 +80,8 @@ abstract class AuthorizationEndpoint extends AbstractEndpoint
                 }
 
                 $authorizationId = Base64Url::encode(random_bytes(64));
-                $authorizationId = $this->saveAuthorization($authorizationId, $authorization);
-                $redirectTo = $this->router->generate($routeName, ['authorization_id' => $authorizationId]);
+                $this->saveAuthorization($authorizationId, $authorization);
+                $redirectTo = $this->getRouteFor($routeName, $authorizationId);
 
                 return $this->createRedirectResponse($redirectTo);
             } else {
@@ -100,8 +96,8 @@ abstract class AuthorizationEndpoint extends AbstractEndpoint
                 }
 
                 $authorizationId = Base64Url::encode(random_bytes(64));
-                $authorizationId = $this->saveAuthorization($authorizationId, $authorization);
-                $redirectTo = $this->router->generate($routeName, ['authorization_id' => $authorizationId]);
+                $this->saveAuthorization($authorizationId, $authorization);
+                $redirectTo = $this->getRouteFor($routeName, $authorizationId);
 
                 return $this->createRedirectResponse($redirectTo);
             }
@@ -111,4 +107,6 @@ abstract class AuthorizationEndpoint extends AbstractEndpoint
             throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST, null);
         }
     }
+
+    abstract protected function getRouteFor(string $action, string $authorizationId): string;
 }

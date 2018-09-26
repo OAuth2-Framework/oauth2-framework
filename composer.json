@@ -31,6 +31,7 @@
         "symfony/psr-http-message-bridge": "^1.0",
         "symfony/security-bundle": "^3.4|^4.0",
         "symfony/translation": "^3.4|^4.0",
+        "thecodingmachine/safe": "^0.1.5",
         "web-token/jwt-bundle": "^1.1",
         "web-token/jwt-checker": "^1.1",
         "web-token/jwt-core": "^1.1",

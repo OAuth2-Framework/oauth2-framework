@@ -28,19 +28,10 @@ use Symfony\Component\Routing\RouterInterface;
 
 class MetadataBuilder
 {
-    /**
-     * @var RouterInterface
-     */
     private $router;
 
-    /**
-     * @var Metadata
-     */
     private $metadata;
 
-    /**
-     * MetadataBuilder constructor.
-     */
     public function __construct(RouterInterface $router)
     {
         $this->router = $router;

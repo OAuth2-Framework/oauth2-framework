@@ -31,23 +31,6 @@ final class ConsentScreenExtensionManagerTest extends TestCase
     /**
      * @test
      */
-    public function theManagerCanCallExtensionsBeforeConsentScreenExtension()
-    {
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $client = new Client(
-            new ClientId('CLIENT_ID'),
-            new DataBag([]),
-            null
-        );
-        $authorization = new AuthorizationRequest($client, []);
-        $authorization = $this->getExtensionManager()->processBefore($request->reveal(), $authorization);
-        static::assertTrue($authorization->hasData('Before Consent'));
-        static::assertTrue($authorization->getData('Before Consent'));
-    }
-
-    /**
-     * @test
-     */
     public function theManagerCanCallExtensionsAfterConsentScreenExtension()
     {
         $request = $this->prophesize(ServerRequestInterface::class);
@@ -57,7 +40,7 @@ final class ConsentScreenExtensionManagerTest extends TestCase
             null
         );
         $authorization = new AuthorizationRequest($client, []);
-        $authorization = $this->getExtensionManager()->processAfter($request->reveal(), $authorization);
+        $this->getExtensionManager()->process($request->reveal(), $authorization);
         static::assertTrue($authorization->hasData('After Consent'));
         static::assertTrue($authorization->getData('After Consent'));
     }
@@ -72,14 +55,7 @@ final class ConsentScreenExtensionManagerTest extends TestCase
         if (null === $this->extensionManager) {
             $extension = $this->prophesize(Extension::class);
             $extension
-                ->processBefore(Argument::type(ServerRequestInterface::class), Argument::type(AuthorizationRequest::class))
-                ->will(function ($args) {
-                    /** @var AuthorizationRequest $authorization */
-                    $authorization = $args[1];
-                    $authorization->setData('Before Consent', true);
-                });
-            $extension
-                ->processAfter(Argument::type(ServerRequestInterface::class), Argument::type(AuthorizationRequest::class))
+                ->process(Argument::type(ServerRequestInterface::class), Argument::type(AuthorizationRequest::class))
                 ->will(function ($args) {
                     /** @var AuthorizationRequest $authorization */
                     $authorization = $args[1];

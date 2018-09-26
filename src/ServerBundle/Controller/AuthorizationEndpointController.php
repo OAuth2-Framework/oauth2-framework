@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Controller;
 
-use Http\Message\MessageFactory;
+use Http\Message\responseFactory;
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationEndpoint;
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequestLoader;
@@ -84,12 +84,12 @@ final class AuthorizationEndpointController extends AuthorizationEndpoint
     /**
      * AuthorizationEndpointController constructor.
      */
-    public function __construct(EngineInterface $templateEngine, string $template, FormFactory $formFactory, AuthorizationFormHandler $formHandler, TranslatorInterface $translator, RouterInterface $router, string $loginRoute, array $loginRouteParams, MessageFactory $messageFactory, SessionInterface $session, AuthorizationRequestLoader $authorizationRequestLoader, ParameterCheckerManager $parameterCheckerManager, UserAccountDiscovery $userAccountDiscovery, UserAccountCheckerManager $userAccountCheckerManager, ExtensionManager $consentScreenExtensionManager)
+    public function __construct(EngineInterface $templateEngine, string $template, FormFactory $formFactory, AuthorizationFormHandler $formHandler, TranslatorInterface $translator, RouterInterface $router, string $loginRoute, array $loginRouteParams, responseFactory $messageFactory, SessionInterface $session, AuthorizationRequestLoader $authorizationRequestLoader, ParameterCheckerManager $parameterCheckerManager, UserAccountDiscovery $userAccountDiscovery, UserAccountCheckerManager $userAccountCheckerManager, ExtensionManager $consentScreenExtensionManager)
     {
-        parent::__construct($messageFactory, $authorizationRequestLoader, $parameterCheckerManager, $userAccountDiscovery, $userAccountCheckerManager, $consentScreenExtensionManager);
+        parent::__construct($responseFactory, $authorizationRequestLoader, $parameterCheckerManager, $userAccountDiscovery, $userAccountCheckerManager, $consentScreenExtensionManager);
 
         $this->session = $session;
-        $this->messageFactory = $messageFactory;
+        $this->responseFactory = $responseFactory;
         $this->router = $router;
         $this->loginRoute = $loginRoute;
         $this->loginRouteParams = $loginRouteParams;
@@ -114,7 +114,7 @@ final class AuthorizationEndpointController extends AuthorizationEndpoint
             $this->session->set('_locale', $locale);
         }
         $this->session->set('oauth2_authorization_request_data', $session_data);
-        $response = $this->messageFactory->createResponse(303);
+        $response = $this->responseFactory->createResponse(303);
         $response = $response->withHeader('Location', $this->router->generate($this->loginRoute, $this->loginRouteParams, UrlGeneratorInterface::ABSOLUTE_URL));
 
         return $response;
@@ -164,7 +164,7 @@ final class AuthorizationEndpointController extends AuthorizationEndpoint
             ]
         );
 
-        $response = $this->messageFactory->createResponse(200);
+        $response = $this->responseFactory->createResponse(200);
         $response->getBody()->write($content);
 
         return $response;

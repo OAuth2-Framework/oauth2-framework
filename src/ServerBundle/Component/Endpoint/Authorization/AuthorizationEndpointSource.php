@@ -43,9 +43,6 @@ class AuthorizationEndpointSource implements Component
      */
     private $subComponents = [];
 
-    /**
-     * AuthorizationEndpointSource constructor.
-     */
     public function __construct()
     {
         $this->subComponents = [

@@ -57,19 +57,15 @@ final class CodeTokenResponseType implements ResponseType
         return self::RESPONSE_TYPE_MODE_FRAGMENT;
     }
 
-    public function preProcess(AuthorizationRequest $authorization): AuthorizationRequest
+    public function preProcess(AuthorizationRequest $authorization): void
     {
-        $authorization = $this->codeResponseType->preProcess($authorization);
-        $authorization = $this->tokenResponseType->preProcess($authorization);
-
-        return $authorization;
+        $this->codeResponseType->preProcess($authorization);
+        $this->tokenResponseType->preProcess($authorization);
     }
 
-    public function process(AuthorizationRequest $authorization): AuthorizationRequest
+    public function process(AuthorizationRequest $authorization): void
     {
-        $authorization = $this->codeResponseType->process($authorization);
-        $authorization = $this->tokenResponseType->process($authorization);
-
-        return $authorization;
+        $this->codeResponseType->process($authorization);
+        $this->tokenResponseType->process($authorization);
     }
 }

@@ -1,6 +1,6 @@
 authorization:
     form:
-        save: "Authoriser les futures requêtes de ce client avec les mêmes paramètres."
+        save: "Autoriser les futures requêtes de ce client avec les mêmes paramètres."
         accept: "Accepter"
         reject: "Rejeter"
         message: "Un client, avec l'ID publique « %client_id% », a besoin de votre autorisation pour accéder à vos resources."

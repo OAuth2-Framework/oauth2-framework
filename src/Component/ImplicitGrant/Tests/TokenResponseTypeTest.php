@@ -67,9 +67,7 @@ final class TokenResponseTypeTest extends TestCase
         $authorization->setUserAccount($userAccount->reveal(), true);
         $authorization->setTokenType($tokenType->reveal());
 
-        $authorization = $this->getResponseType()->process($authorization, function (AuthorizationRequest $authorization) {
-            return $authorization;
-        });
+        $this->getResponseType()->process($authorization, function (AuthorizationRequest $authorization) {});
 
         static::assertEquals('CLIENT_ID', $authorization->getClient()->getPublicId()->getValue());
         static::assertTrue($authorization->hasResponseParameter('access_token'));

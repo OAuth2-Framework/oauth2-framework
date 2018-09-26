@@ -26,9 +26,6 @@ class ResponseModeSource implements Component
      */
     private $subComponents = [];
 
-    /**
-     * AuthorizationEndpointResponseModeSource constructor.
-     */
     public function __construct()
     {
         $this->subComponents = [

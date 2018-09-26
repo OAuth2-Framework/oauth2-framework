@@ -20,7 +20,7 @@ use OAuth2Framework\SecurityBundle\Resolver\AccessTokenResolver;
 use OAuth2Framework\SecurityBundle\Security\Authentication\Provider\OAuth2Provider;
 use OAuth2Framework\SecurityBundle\Security\EntryPoint\OAuth2EntryPoint;
 use OAuth2Framework\SecurityBundle\Security\Firewall\OAuth2Listener;
-use OAuth2Framework\SecurityBundle\Service\MessageFactory;
+use OAuth2Framework\SecurityBundle\Service\ResponseFactory;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\Security\Core\Authentication\AuthenticationManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -113,7 +113,7 @@ return function (ContainerConfigurator $container) {
         ->tag('oauth2_security_message_factory');
 
     $container->set('oauth2_security.psr7_message_factory.default')
-        ->class(MessageFactory::class);
+        ->class(ResponseFactory::class);
 
     $container->set(AccessTokenResolver::class);
 };
