@@ -33,7 +33,7 @@ final class ClientTest extends TestCase
 
         static::assertInstanceOf(ClientId::class, $clientId);
         static::assertEquals('CLIENT_ID', $clientId->getValue());
-        static::assertEquals('"CLIENT_ID"', \json_encode($clientId, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
+        static::assertEquals('"CLIENT_ID"', \Safe\json_encode($clientId, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
     }
 
     /**
@@ -56,6 +56,6 @@ final class ClientTest extends TestCase
         static::assertInstanceOf(Client::class, $client);
         static::assertTrue($client->isPublic());
         static::assertTrue($client->isDeleted());
-        static::assertEquals('{"client_id":"CLIENT_ID","owner_id":"NEW_USER_ACCOUNT_ID","parameters":{"token_endpoint_auth_method":"none","client_id":"CLIENT_ID"},"is_deleted":true}', \json_encode($client, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+        static::assertEquals('{"client_id":"CLIENT_ID","owner_id":"NEW_USER_ACCOUNT_ID","parameters":{"token_endpoint_auth_method":"none","client_id":"CLIENT_ID"},"is_deleted":true}', \Safe\json_encode($client, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
     }
 }

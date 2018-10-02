@@ -66,7 +66,7 @@ final class AuthorizationCodeResponseType implements ResponseType
         } else {
             $codeChallengeMethod = \array_key_exists('code_challenge_method', $queryParams) ? $queryParams['code_challenge_method'] : 'plain';
             if (!$this->pkceMethodManager->has($codeChallengeMethod)) {
-                throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST, \sprintf('The challenge method "%s" is not supported.', $codeChallengeMethod));
+                throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST, \Safe\sprintf('The challenge method "%s" is not supported.', $codeChallengeMethod));
             }
         }
 

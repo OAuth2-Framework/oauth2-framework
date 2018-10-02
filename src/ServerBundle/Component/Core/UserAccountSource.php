@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Component\Core;
 
-use OAuth2Framework\Component\Core\UserAccount\UserAccountManager;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountRepository;
 use OAuth2Framework\ServerBundle\Component\Component;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
@@ -33,7 +32,6 @@ class UserAccountSource implements Component
             return;
         }
         $container->setAlias(UserAccountRepository::class, $configs['user_account']['repository']);
-        $container->setAlias(UserAccountManager::class, $configs['user_account']['manager']);
     }
 
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
@@ -45,10 +43,6 @@ class UserAccountSource implements Component
             ->children()
             ->scalarNode('repository')
             ->info('The user account repository service')
-            ->isRequired()
-            ->end()
-            ->scalarNode('manager')
-            ->info('The user account manager service')
             ->isRequired()
             ->end()
             ->end()

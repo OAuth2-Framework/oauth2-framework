@@ -126,7 +126,7 @@ final class IdTokenResponseType implements ResponseType
         }
 
         if ($authorization->hasResponseParameter('expires_in')) {
-            $idTokenBuilder->withExpirationAt(new \DateTimeImmutable(\sprintf('now +%s sec', $authorization->getResponseParameter('expires_in'))));
+            $idTokenBuilder->withExpirationAt(new \DateTimeImmutable(\Safe\sprintf('now +%s sec', $authorization->getResponseParameter('expires_in'))));
         }
 
         if ($authorization->hasQueryParam('max_age')) {
@@ -161,7 +161,7 @@ final class IdTokenResponseType implements ResponseType
         }
 
         $requestedClaims = $authorization->getQueryParam('claims');
-        $requestedClaims = \json_decode($requestedClaims, true);
+        $requestedClaims = \Safe\json_decode($requestedClaims, true);
         if (!\is_array($requestedClaims)) {
             throw new \InvalidArgumentException('Invalid claim request');
         }

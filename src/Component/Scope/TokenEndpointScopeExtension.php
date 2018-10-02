@@ -95,7 +95,7 @@ final class TokenEndpointScopeExtension implements TokenEndpointExtension
         $requestedScopes = empty($scope) ? [] : \explode(' ', $scope);
         $diff = \array_diff($requestedScopes, $availableScopes);
         if (0 !== \count($diff)) {
-            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_SCOPE, \sprintf('An unsupported scope was requested. Available scope is/are: %s.', \implode(', ', $availableScopes)));
+            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_SCOPE, \Safe\sprintf('An unsupported scope was requested. Available scope is/are: %s.', \implode(', ', $availableScopes)));
         }
     }
 

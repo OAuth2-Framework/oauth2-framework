@@ -119,7 +119,7 @@ class OpenIdConnectExtension implements TokenEndpointExtension
         }
 
         $requestedClaims = $accessToken->getMetadata()->get('requested_claims');
-        $requestedClaims = \json_decode($requestedClaims, true);
+        $requestedClaims = \Safe\json_decode($requestedClaims, true);
         if (!\is_array($requestedClaims)) {
             throw new \InvalidArgumentException('Invalid claim request');
         }

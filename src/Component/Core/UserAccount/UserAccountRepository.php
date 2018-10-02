@@ -15,17 +15,5 @@ namespace OAuth2Framework\Component\Core\UserAccount;
 
 interface UserAccountRepository
 {
-    /**
-     * Get the user account with the specified User Account Name.
-     *
-     * @param string $username User Account Name
-     */
-    public function findOneByUsername(string $username): ?UserAccount;
-
-    /**
-     * Get the user account with the specified public ID.
-     *
-     * @param UserAccountId $publicId Public ID
-     */
     public function find(UserAccountId $publicId): ?UserAccount;
 }

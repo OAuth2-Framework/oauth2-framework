@@ -66,7 +66,7 @@ class ScopePolicyManager
     private function get(string $scopePolicyName): ScopePolicy
     {
         if (!$this->has($scopePolicyName)) {
-            throw new \InvalidArgumentException(\sprintf('The scope policy with name "%s" is not supported', $scopePolicyName));
+            throw new \InvalidArgumentException(\Safe\sprintf('The scope policy with name "%s" is not supported', $scopePolicyName));
         }
 
         return $this->scopePolicies[$scopePolicyName];

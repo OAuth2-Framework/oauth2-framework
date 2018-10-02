@@ -46,7 +46,7 @@ final class CommonParametersRule extends AbstractInternationalizedRule
     {
         return function ($k, $v) {
             if (!\filter_var($v, FILTER_VALIDATE_URL)) {
-                throw new \InvalidArgumentException(\sprintf('The parameter with key "%s" is not a valid URL.', $k));
+                throw new \InvalidArgumentException(\Safe\sprintf('The parameter with key "%s" is not a valid URL.', $k));
             }
         };
     }

@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\AuthorizationEndpoint;
 
 use Http\Message\ResponseFactory;
+use OAuth2Framework\Component\AuthorizationEndpoint\Exception\OAuth2AuthorizationException;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -32,13 +33,13 @@ abstract class LoginEndpoint extends AbstractEndpoint
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
+        $authorizationId = $this->getAuthorizationId($request);
+        $authorization = $this->getAuthorization($authorizationId);
         try {
-            $authorizationId = $this->getAuthorizationId($request);
-            $authorization = $this->getAuthorization($authorizationId);
             $this->loginHandler->prepare($request, $authorizationId, $authorization);
             if (!$this->loginHandler->hasBeenProcessed($request, $authorizationId, $authorization)) {
                 if (!$this->loginHandler->isValid($request, $authorizationId, $authorization)) {
-                    throw $this->buildOAuth2Error($authorization, OAuth2Error::ERROR_LOGIN_REQUIRED, 'The resource owner is not logged in.');
+                    throw new OAuth2AuthorizationException(OAuth2Error::ERROR_LOGIN_REQUIRED, 'The resource owner is not logged in.', $authorization);
                 }
 
                 switch (true) {
@@ -57,9 +58,9 @@ abstract class LoginEndpoint extends AbstractEndpoint
 
             return $this->loginHandler->process($request, $authorizationId, $authorization);
         } catch (OAuth2Error $e) {
-            throw $e;
+            throw new OAuth2AuthorizationException($e->getMessage(), $e->getErrorDescription(), $authorization);
         } catch (\Exception $e) {
-            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST, null);
+            throw new OAuth2AuthorizationException(OAuth2Error::ERROR_INVALID_REQUEST, $e->getMessage(), $authorization);
         }
     }
 

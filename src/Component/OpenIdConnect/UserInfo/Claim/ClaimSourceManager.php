@@ -48,7 +48,7 @@ class ClaimSourceManager
             $result = $claimSource->getUserInfo($userAccount, $scopes, $previousClaims);
             if (null !== $result) {
                 ++$i;
-                $src = \sprintf('src%d', $i);
+                $src = \Safe\sprintf('src%d', $i);
                 $_claim_names = [];
                 foreach ($result->getAvailableClaims() as $claim) {
                     if ('sub' !== $claim) {

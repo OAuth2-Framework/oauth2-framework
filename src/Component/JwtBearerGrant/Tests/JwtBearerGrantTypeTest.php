@@ -251,7 +251,7 @@ final class JwtBearerGrantTypeTest extends TestCase
                 $client = new Client(
                     new ClientId('CLIENT_ID'),
                     new DataBag([
-                        'jwks' => \json_encode($keyset),
+                        'jwks' => \Safe\json_encode($keyset),
                         'token_endpoint_auth_method' => 'private_key_jwt',
                     ]),
                     new UserAccountId('USER_ACCOUNT_ID')

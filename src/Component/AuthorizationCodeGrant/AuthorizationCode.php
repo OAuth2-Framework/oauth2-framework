@@ -70,7 +70,7 @@ class AuthorizationCode extends Token
     public function getQueryParam(string $key)
     {
         if (!$this->hasQueryParam($key)) {
-            throw new \RuntimeException(\sprintf('Query parameter with key "%s" does not exist.', $key));
+            throw new \RuntimeException(\Safe\sprintf('Query parameter with key "%s" does not exist.', $key));
         }
 
         return $this->queryParameters[$key];

@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\Scope\Tests;
 
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
-use OAuth2Framework\Component\AuthorizationEndpoint\Exception\OAuth2AuthorizationException;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Scope\Policy\ScopePolicyManager;
@@ -90,10 +89,8 @@ final class ScopeParameterCheckerTest extends TestCase
                 $authorization->reveal()
             );
             static::fail('Expected exception nt thrown.');
-        } catch (OAuth2AuthorizationException $e) {
-            static::assertEquals('invalid_scope', $e->getMessage());
-            static::assertEquals('An unsupported scope was requested. Available scopes for the client are scope1, scope2.', $e->getErrorDescription());
-            static::assertEquals(400, $e->getCode());
+        } catch (\InvalidArgumentException $e) {
+            static::assertEquals('An unsupported scope was requested. Available scopes are scope1, scope2.', $e->getMessage());
         }
     }
 

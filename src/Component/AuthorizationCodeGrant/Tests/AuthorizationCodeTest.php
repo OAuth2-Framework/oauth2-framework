@@ -35,7 +35,7 @@ final class AuthorizationCodeTest extends TestCase
 
         static::assertInstanceOf(AuthorizationCodeId::class, $authorizationCodeId);
         static::assertEquals('AUTHORIZATION_CODE_ID', $authorizationCodeId->getValue());
-        static::assertEquals('"AUTHORIZATION_CODE_ID"', \json_encode($authorizationCodeId, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
+        static::assertEquals('"AUTHORIZATION_CODE_ID"', \Safe\json_encode($authorizationCodeId, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
     }
 
     /**
@@ -58,7 +58,7 @@ final class AuthorizationCodeTest extends TestCase
         $authorizationCode->markAsRevoked();
 
         static::assertInstanceOf(AuthorizationCode::class, $authorizationCode);
-        static::assertEquals('{"expires_at":1264683600,"client_id":"CLIENT_ID","parameters":{},"metadatas":{},"is_revoked":true,"resource_owner_id":"USER_ACCOUNT_ID","resource_owner_class":"OAuth2Framework\\\\Component\\\\Core\\\\UserAccount\\\\UserAccountId","resource_server_id":"RESOURCE_SERVER_ID","auth_code_id":"AUTHORIZATION_CODE_ID","query_parameters":{},"redirect_uri":"http://localhost","is_used":true}', \json_encode($authorizationCode, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+        static::assertEquals('{"expires_at":1264683600,"client_id":"CLIENT_ID","parameters":{},"metadatas":{},"is_revoked":true,"resource_owner_id":"USER_ACCOUNT_ID","resource_owner_class":"OAuth2Framework\\\\Component\\\\Core\\\\UserAccount\\\\UserAccountId","resource_server_id":"RESOURCE_SERVER_ID","auth_code_id":"AUTHORIZATION_CODE_ID","query_parameters":{},"redirect_uri":"http://localhost","is_used":true}', \Safe\json_encode($authorizationCode, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
         static::assertEquals('AUTHORIZATION_CODE_ID', $authorizationCode->getTokenId()->getValue());
     }
 }

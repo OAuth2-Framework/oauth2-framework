@@ -55,7 +55,7 @@ class AuthenticationMethodManager
     public function get(string $name): AuthenticationMethod
     {
         if (!$this->has($name)) {
-            throw new \InvalidArgumentException(\sprintf('The resource server authentication method "%s" is not supported. Please use one of the following values: %s', $name, \implode(', ', $this->list())));
+            throw new \InvalidArgumentException(\Safe\sprintf('The resource server authentication method "%s" is not supported. Please use one of the following values: %s', $name, \implode(', ', $this->list())));
         }
         $class = $this->names[$name];
 

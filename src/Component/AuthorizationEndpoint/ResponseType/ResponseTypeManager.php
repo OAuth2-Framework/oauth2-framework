@@ -33,7 +33,7 @@ class ResponseTypeManager
     public function get(string $responseType): ResponseType
     {
         if (!$this->has($responseType)) {
-            throw new \InvalidArgumentException(\sprintf('The response type "%s" is not supported.', $responseType));
+            throw new \InvalidArgumentException(\Safe\sprintf('The response type "%s" is not supported.', $responseType));
         }
 
         return $this->responseTypes[$responseType];

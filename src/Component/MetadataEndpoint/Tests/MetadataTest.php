@@ -31,7 +31,7 @@ final class MetadataTest extends TestCase
         $metadata->set('foo', 'bar');
         static::assertTrue($metadata->has('foo'));
         static::assertEquals('bar', $metadata->get('foo'));
-        static::assertEquals('{"foo":"bar"}', \json_encode($metadata));
+        static::assertEquals('{"foo":"bar"}', \Safe\json_encode($metadata));
 
         try {
             $metadata->get('bar');

@@ -142,7 +142,7 @@ class JwtBearerGrantType implements GrantType
 
         $diff = \array_diff($requiredParameters, \array_keys($parameters));
         if (!empty($diff)) {
-            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST, \sprintf('Missing grant type parameter(s): %s.', \implode(', ', $diff)));
+            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST, \Safe\sprintf('Missing grant type parameter(s): %s.', \implode(', ', $diff)));
         }
     }
 
@@ -158,11 +158,11 @@ class JwtBearerGrantType implements GrantType
             if (1 !== $jws->countSignatures()) {
                 throw new \InvalidArgumentException('The assertion must have only one signature.');
             }
-            $claims = \json_decode($jws->getPayload(), true);
+            $claims = \Safe\json_decode($jws->getPayload(), true);
             $this->claimCheckerManager->check($claims);
             $diff = \array_diff(['iss', 'sub', 'aud', 'exp'], \array_keys($claims));
             if (!empty($diff)) {
-                throw new \InvalidArgumentException(\sprintf('The following claim(s) is/are mandatory: "%s".', \implode(', ', \array_values($diff))));
+                throw new \InvalidArgumentException(\Safe\sprintf('The following claim(s) is/are mandatory: "%s".', \implode(', ', \array_values($diff))));
             }
             $grantTypeData = $this->checkJWTSignature($grantTypeData, $jws, $claims);
         } catch (OAuth2Error $e) {
@@ -234,7 +234,7 @@ class JwtBearerGrantType implements GrantType
             $signatureKeys = $issuer->getJWKSet();
             $resourceOwnerId = $this->findResourceOwner($sub);
             if (null === $resourceOwnerId) {
-                throw new \InvalidArgumentException(\sprintf('Unknown resource owner with ID "%s"', $sub));
+                throw new \InvalidArgumentException(\Safe\sprintf('Unknown resource owner with ID "%s"', $sub));
             }
             $grantTypeData->setResourceOwnerId($resourceOwnerId);
         } else {
@@ -242,7 +242,7 @@ class JwtBearerGrantType implements GrantType
         }
 
         if (!$jws->getSignature(0)->hasProtectedHeaderParameter('alg') || !\in_array($jws->getSignature(0)->getProtectedHeaderParameter('alg'), $allowedSignatureAlgorithms, true)) {
-            throw new \InvalidArgumentException(\sprintf('The signature algorithm "%s" is not allowed.', $jws->getSignature(0)->getProtectedHeaderParameter('alg')));
+            throw new \InvalidArgumentException(\Safe\sprintf('The signature algorithm "%s" is not allowed.', $jws->getSignature(0)->getProtectedHeaderParameter('alg')));
         }
 
         $this->jwsVerifier->verifyWithKeySet($jws, $signatureKeys, 0);

@@ -59,7 +59,7 @@ final class BearerToken implements TokenType
 
     public function getScheme(): string
     {
-        return \sprintf('%s realm="%s"', $this->name(), $this->realm);
+        return \Safe\sprintf('%s realm="%s"', $this->name(), $this->realm);
     }
 
     public function getAdditionalInformation(): array
@@ -101,7 +101,7 @@ final class BearerToken implements TokenType
         $authorization_headers = $request->getHeader('AUTHORIZATION');
 
         foreach ($authorization_headers as $authorization_header) {
-            if (1 === \preg_match('/'.\preg_quote('Bearer', '/').'\s([a-zA-Z0-9\-_\+~\/\.]+)/', $authorization_header, $matches)) {
+            if (1 === \Safe\preg_match('/'.\preg_quote('Bearer', '/').'\s([a-zA-Z0-9\-_\+~\/\.]+)/', $authorization_header, $matches)) {
                 return $matches[1];
             }
         }

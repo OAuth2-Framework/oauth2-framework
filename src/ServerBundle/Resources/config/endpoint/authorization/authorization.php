@@ -11,13 +11,12 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
+use Http\Message\ResponseFactory;
 use OAuth2Framework\Component\AuthorizationEndpoint;
 use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker;
 use OAuth2Framework\Component\Core\Message;
 use OAuth2Framework\Component\Core\Middleware;
-use OAuth2Framework\ServerBundle\Controller\AuthorizationEndpointController;
-use OAuth2Framework\ServerBundle\Form\FormFactory;
-use OAuth2Framework\ServerBundle\Form\Handler\AuthorizationFormHandler;
+use OAuth2Framework\ServerBundle\Controller;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
@@ -26,55 +25,63 @@ return function (ContainerConfigurator $container) {
         ->private()
         ->autoconfigure();
 
-    $container->set(FormFactory::class)
-        ->args([
-            ref('form.factory'),
-            '%oauth2_server.endpoint.authorization.form%',
-            '%oauth2_server.endpoint.authorization.type%',
-        ]);
-
-    $container->set(AuthorizationFormHandler::class);
     $container->set(AuthorizationEndpoint\Middleware\AuthorizationExceptionMiddleware::class);
 
-    $container->set(AuthorizationEndpointController::class)
-        ->args([
-            ref('templating'),
-            '%oauth2_server.endpoint.authorization.template%',
-            ref(FormFactory::class),
-            ref(AuthorizationFormHandler::class),
-            ref('translator'),
-            ref('router'),
-            '%oauth2_server.endpoint.authorization.login_route_name%',
-            '%oauth2_server.endpoint.authorization.login_route_parameters%',
-            ref(\Http\Message\ResponseFactory::class),
-            ref('session'),
-            ref(AuthorizationEndpoint\AuthorizationRequestLoader::class),
-            ref(AuthorizationEndpoint\ParameterChecker\ParameterCheckerManager::class),
-            ref(AuthorizationEndpoint\UserAccount\UserAccountDiscovery::class),
-            ref(AuthorizationEndpoint\UserAccount\UserAccountCheckerManager::class),
-            ref(AuthorizationEndpoint\Extension\ExtensionManager::class),
-        ]);
-
-    $container->set(AuthorizationEndpoint\UserAccount\UserAccountCheckerManager::class)
-        ->args([
-        ]);
-
-    $container->set(\OAuth2Framework\ServerBundle\Service\SymfonyUserDiscovery::class)
-        ->args([
-            ref('security.token_storage'),
-            ref('security.authorization_checker'),
-        ]);
-
+    // Controllers and pipes
+    $container->set(Controller\AuthorizationEndpointController::class);
     $container->set('authorization_endpoint_pipe')
         ->class(Middleware\Pipe::class)
         ->args([[
             ref('oauth2_server.message_middleware.for_authorization_endpoint'),
             ref(AuthorizationEndpoint\Middleware\AuthorizationExceptionMiddleware::class),
-            ref(AuthorizationEndpointController::class),
+            ref(Controller\AuthorizationEndpointController::class),
         ]])
         ->tag('controller.service_arguments');
 
-    $container->set(AuthorizationEndpoint\AuthorizationRequestLoader::class)
+    $container->set(Controller\ConsentEndpointController::class);
+    $container->set('consent_endpoint_pipe')
+        ->class(Middleware\Pipe::class)
+        ->args([[
+            ref('oauth2_server.message_middleware.for_authorization_endpoint'),
+            ref(AuthorizationEndpoint\Middleware\AuthorizationExceptionMiddleware::class),
+            ref(Controller\ConsentEndpointController::class),
+        ]])
+        ->tag('controller.service_arguments');
+
+    $container->set(Controller\LoginEndpointController::class);
+    $container->set('login_endpoint_pipe')
+        ->class(Middleware\Pipe::class)
+        ->args([[
+            ref('oauth2_server.message_middleware.for_authorization_endpoint'),
+            ref(AuthorizationEndpoint\Middleware\AuthorizationExceptionMiddleware::class),
+            ref(Controller\LoginEndpointController::class),
+        ]])
+        ->tag('controller.service_arguments');
+
+    $container->set(Controller\ProcessEndpointController::class);
+    $container->set('process_endpoint_pipe')
+        ->class(Middleware\Pipe::class)
+        ->args([[
+            ref('oauth2_server.message_middleware.for_authorization_endpoint'),
+            ref(AuthorizationEndpoint\Middleware\AuthorizationExceptionMiddleware::class),
+            ref(Controller\ProcessEndpointController::class),
+        ]])
+        ->tag('controller.service_arguments');
+
+    $container->set(Controller\SelectAccountEndpointController::class);
+    $container->set('select_accourt_endpoint_pipe')
+        ->class(Middleware\Pipe::class)
+        ->args([[
+            ref('oauth2_server.message_middleware.for_authorization_endpoint'),
+            ref(AuthorizationEndpoint\Middleware\AuthorizationExceptionMiddleware::class),
+            ref(Controller\SelectAccountEndpointController::class),
+        ]])
+        ->tag('controller.service_arguments');
+
+    $container->set(AuthorizationEndpoint\User\UserAuthenticationCheckerManager::class);
+
+    //Authorization Request Loader
+    $container->set(AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequestLoader::class)
         ->args([
             ref(\OAuth2Framework\Component\Core\Client\ClientRepository::class),
         ]);
@@ -93,15 +100,12 @@ return function (ContainerConfigurator $container) {
         ->args([
             '%oauth2_server.endpoint.authorization.enforce_state%',
         ]);
-    $container->set(AuthorizationEndpoint\UserAccount\PromptLoginParameterAccountChecker::class);
-    $container->set(AuthorizationEndpoint\UserAccount\MaxAgeParameterAccountChecker::class);
-    $container->set(AuthorizationEndpoint\UserAccount\PromptNoneParameterAccountChecker::class);
 
     // Rules
     $container->set(AuthorizationEndpoint\Rule\RequestUriRule::class);
     $container->set(AuthorizationEndpoint\Rule\ResponseTypesRule::class)
         ->args([
-            ref(AuthorizationEndpoint\ResponseTypeManager::class),
+            ref(AuthorizationEndpoint\ResponseType\ResponseTypeManager::class),
         ]);
 
     $container->set('oauth2_server.message_middleware.for_authorization_endpoint')
@@ -113,7 +117,7 @@ return function (ContainerConfigurator $container) {
     $container->set('oauth2_server.message_factory_manager.for_authorization_endpoint')
         ->class(Message\OAuth2MessageFactoryManager::class)
         ->args([
-            ref(\Http\Message\ResponseFactory::class),
+            ref(ResponseFactory::class),
         ])
         ->call('addFactory', [ref('oauth2_server.message_factory.303')])
         ->call('addFactory', [ref('oauth2_server.message_factory.400')])

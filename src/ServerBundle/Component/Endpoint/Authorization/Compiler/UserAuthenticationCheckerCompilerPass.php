@@ -13,22 +13,22 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Component\Endpoint\Authorization\Compiler;
 
-use OAuth2Framework\Component\AuthorizationEndpoint\UserAccount\UserAccountCheckerManager;
+use OAuth2Framework\Component\AuthorizationEndpoint\User\UserAuthenticationCheckerManager;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
-class UserAccountCheckerCompilerPass implements CompilerPassInterface
+class UserAuthenticationCheckerCompilerPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-        if (!$container->hasDefinition(UserAccountCheckerManager::class)) {
+        if (!$container->hasDefinition(UserAuthenticationCheckerManager::class)) {
             return;
         }
 
-        $definition = $container->getDefinition(UserAccountCheckerManager::class);
+        $definition = $container->getDefinition(UserAuthenticationCheckerManager::class);
 
-        $taggedServices = $container->findTaggedServiceIds('oauth2_server_user_account_checker');
+        $taggedServices = $container->findTaggedServiceIds('oauth2_server_user_authentication_checker');
         foreach ($taggedServices as $id => $attributes) {
             $definition->addMethodCall('add', [new Reference($id)]);
         }

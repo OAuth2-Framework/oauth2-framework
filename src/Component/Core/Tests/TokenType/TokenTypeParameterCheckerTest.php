@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\Core\Tests\TokenType;
 
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
-use OAuth2Framework\Component\AuthorizationEndpoint\Exception\OAuth2AuthorizationException;
 use OAuth2Framework\Component\Core\TokenType\TokenType;
 use OAuth2Framework\Component\Core\TokenType\TokenTypeManager;
 use OAuth2Framework\Component\Core\TokenType\TokenTypeParameterChecker;
@@ -80,10 +79,8 @@ final class TokenTypeParameterCheckerTest extends TestCase
                 $authorization->reveal()
             );
             static::fail('Expected exception nt thrown.');
-        } catch (OAuth2AuthorizationException $e) {
-            static::assertEquals('invalid_request', $e->getMessage());
-            static::assertEquals('Unsupported token type "UnknownTokenType".', $e->getErrorDescription());
-            static::assertEquals(400, $e->getCode());
+        } catch (\InvalidArgumentException $e) {
+            static::assertEquals('Unsupported token type "UnknownTokenType".', $e->getMessage());
         }
     }
 

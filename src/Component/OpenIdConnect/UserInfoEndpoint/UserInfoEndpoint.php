@@ -109,7 +109,7 @@ class UserInfoEndpoint implements MiddlewareInterface
 
         $response = $this->responseFactory->createResponse();
         $response->getBody()->write($idToken);
-        $headers = ['Content-Type' => \sprintf('application/%s; charset=UTF-8', $isJwt ? 'jwt' : 'json'), 'Cache-Control' => 'no-cache, no-store, max-age=0, must-revalidate, private', 'Pragma' => 'no-cache'];
+        $headers = ['Content-Type' => \Safe\sprintf('application/%s; charset=UTF-8', $isJwt ? 'jwt' : 'json'), 'Cache-Control' => 'no-cache, no-store, max-age=0, must-revalidate, private', 'Pragma' => 'no-cache'];
         foreach ($headers as $k => $v) {
             $response = $response->withHeader($k, $v);
         }

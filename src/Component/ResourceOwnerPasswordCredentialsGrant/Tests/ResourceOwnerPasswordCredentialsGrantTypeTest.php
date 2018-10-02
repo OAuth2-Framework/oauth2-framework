@@ -17,12 +17,10 @@ use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
-use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
-use OAuth2Framework\Component\Core\UserAccount\UserAccountManager;
-use OAuth2Framework\Component\Core\UserAccount\UserAccountRepository;
 use OAuth2Framework\Component\ResourceOwnerPasswordCredentialsGrant\ResourceOwnerPasswordCredentialsGrantType;
 use OAuth2Framework\Component\TokenEndpoint\GrantTypeData;
+use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\ResourceOwnerPasswordCredentialManager;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ServerRequestInterface;
@@ -116,19 +114,11 @@ final class ResourceOwnerPasswordCredentialsGrantTypeTest extends TestCase
     private function getGrantType(): ResourceOwnerPasswordCredentialsGrantType
     {
         if (null === $this->grantType) {
-            $userAccount = $this->prophesize(UserAccount::class);
-            $userAccount->getPublicId()->willReturn(new UserAccountId('USERNAME'));
-            $userAccount->getUserAccountId()->willReturn(new UserAccountId('USERNAME'));
-
-            $userAccountManager = $this->prophesize(UserAccountManager::class);
-            $userAccountManager->isPasswordCredentialValid($userAccount->reveal(), 'PASSWORD')->willReturn(true);
-
-            $userAccountRepository = $this->prophesize(UserAccountRepository::class);
-            $userAccountRepository->findOneByUsername(new UserAccountId('USERNAME'))->willReturn($userAccount->reveal());
+            $resourcOwnerPasswordCredentialManager = $this->prophesize(ResourceOwnerPasswordCredentialManager::class);
+            $resourcOwnerPasswordCredentialManager->findResourceOwnerIdWithUsernameAndPassword('USERNAME', 'PASSWORD')->willReturn(new UserAccountId('USERNAME'));
 
             $this->grantType = new ResourceOwnerPasswordCredentialsGrantType(
-                $userAccountManager->reveal(),
-                $userAccountRepository->reveal()
+                $resourcOwnerPasswordCredentialManager->reveal()
             );
         }
 

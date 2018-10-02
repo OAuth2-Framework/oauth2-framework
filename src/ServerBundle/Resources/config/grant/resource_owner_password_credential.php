@@ -11,6 +11,9 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
+use OAuth2Framework\Component\Core\Client\ClientRepository;
+use OAuth2Framework\Component\Core\UserAccount\UserAccountRepository;
+use OAuth2Framework\Component\ResourceOwnerPasswordCredentialsGrant\ResourceOwnerPasswordCredentialManager;
 use OAuth2Framework\Component\ResourceOwnerPasswordCredentialsGrant\ResourceOwnerPasswordCredentialsGrantType;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
@@ -22,7 +25,8 @@ return function (ContainerConfigurator $container) {
 
     $container->set(ResourceOwnerPasswordCredentialsGrantType::class)
         ->args([
-            ref(\OAuth2Framework\Component\Core\UserAccount\UserAccountManager::class),
-            ref(\OAuth2Framework\Component\Core\UserAccount\UserAccountRepository::class),
+            ref(ResourceOwnerPasswordCredentialManager::class),
+            ref(UserAccountRepository::class),
+            ref(ClientRepository::class),
         ]);
 };

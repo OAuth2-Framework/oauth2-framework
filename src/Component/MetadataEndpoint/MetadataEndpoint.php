@@ -73,7 +73,7 @@ class MetadataEndpoint implements MiddlewareInterface
             $data['signed_metadata'] = $this->sign($data);
         }
         $response = $this->responseFactory->createResponse();
-        $response->getBody()->write(\json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+        $response->getBody()->write(\Safe\json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
         $response = $response->withHeader('Content-Type', 'application/json; charset=UTF-8');
 
         return $response;

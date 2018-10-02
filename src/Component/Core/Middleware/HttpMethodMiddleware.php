@@ -29,7 +29,7 @@ class HttpMethodMiddleware implements MiddlewareInterface
     public function add(string $method, MiddlewareInterface $middleware): void
     {
         if (\array_key_exists($method, $this->methodMap)) {
-            throw new \InvalidArgumentException(\sprintf('The method "%s" is already defined.', $method));
+            throw new \InvalidArgumentException(\Safe\sprintf('The method "%s" is already defined.', $method));
         }
         $this->methodMap[$method] = $middleware;
     }
@@ -42,7 +42,7 @@ class HttpMethodMiddleware implements MiddlewareInterface
             throw new OAuth2Error(
                 405,
                 'not_implemented',
-                \sprintf('The method "%s" is not supported.', $method)
+                \Safe\sprintf('The method "%s" is not supported.', $method)
             );
         }
 

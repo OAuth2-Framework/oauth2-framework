@@ -56,14 +56,14 @@ abstract class TokenRevocationEndpoint implements MiddlewareInterface
 
             return $this->getResponse(200, '', $callback);
         } catch (OAuth2Error $e) {
-            return $this->getResponse($e->getCode(), \json_encode($e->getData(), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), $callback);
+            return $this->getResponse($e->getCode(), \Safe\json_encode($e->getData(), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), $callback);
         }
     }
 
     private function getResponse(int $code, string $data, ?string $callback): ResponseInterface
     {
         if (null !== $callback) {
-            $data = \sprintf('%s(%s)', $callback, $data);
+            $data = \Safe\sprintf('%s(%s)', $callback, $data);
         }
 
         $response = $this->responseFactory->createResponse($code);
@@ -107,7 +107,7 @@ abstract class TokenRevocationEndpoint implements MiddlewareInterface
         if (\array_key_exists('token_type_hint', $params)) {
             $tokenTypeHint = $params['token_type_hint'];
             if (!\array_key_exists($params['token_type_hint'], $tokenTypeHints)) {
-                throw new OAuth2Error(400, 'unsupported_token_type', \sprintf('The token type hint "%s" is not supported. Please use one of the following values: %s.', $params['token_type_hint'], \implode(', ', \array_keys($tokenTypeHints))));
+                throw new OAuth2Error(400, 'unsupported_token_type', \Safe\sprintf('The token type hint "%s" is not supported. Please use one of the following values: %s.', $params['token_type_hint'], \implode(', ', \array_keys($tokenTypeHints))));
             }
 
             $hint = $tokenTypeHints[$tokenTypeHint];

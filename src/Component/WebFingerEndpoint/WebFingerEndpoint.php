@@ -43,7 +43,7 @@ final class WebFingerEndpoint implements MiddlewareInterface
             $identifier = $this->getIdentifier($resource);
             $resourceDescriptor = $this->resourceRepository->find($resource, $identifier);
             if (null === $resourceDescriptor) {
-                throw new \InvalidArgumentException(\sprintf('The resource identified with "%s" does not exist or is not supported by this server.', $resource), 400);
+                throw new \InvalidArgumentException(\Safe\sprintf('The resource identified with "%s" does not exist or is not supported by this server.', $resource), 400);
             }
 
             $filteredResourceDescriptor = $this->filterLinks($request, $resourceDescriptor);
@@ -51,13 +51,13 @@ final class WebFingerEndpoint implements MiddlewareInterface
             $headers = [
                 'Content-Type' => 'application/jrd+json; charset=UTF-8',
             ];
-            $response->getBody()->write(\json_encode($filteredResourceDescriptor, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+            $response->getBody()->write(\Safe\json_encode($filteredResourceDescriptor, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
         } catch (\InvalidArgumentException $e) {
             $response = $this->responseFactory->createResponse($e->getCode());
             $headers = [
                 'Content-Type' => 'application/json; charset=UTF-8',
             ];
-            $response->getBody()->write(\json_encode(['error' => 'invalid_request', 'error_description' => $e->getMessage()], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+            $response->getBody()->write(\Safe\json_encode(['error' => 'invalid_request', 'error_description' => $e->getMessage()], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
         }
         foreach ($headers as $k => $v) {
             $response = $response->withHeader($k, $v);
@@ -71,7 +71,7 @@ final class WebFingerEndpoint implements MiddlewareInterface
         try {
             return $this->identifierResolverManager->resolve($resource);
         } catch (\Exception $e) {
-            throw new \InvalidArgumentException(\sprintf('The resource identified with "%s" does not exist or is not supported by this server.', $resource), 400, $e);
+            throw new \InvalidArgumentException(\Safe\sprintf('The resource identified with "%s" does not exist or is not supported by this server.', $resource), 400, $e);
         }
     }
 

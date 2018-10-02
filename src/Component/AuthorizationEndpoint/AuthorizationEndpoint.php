@@ -15,10 +15,13 @@ namespace OAuth2Framework\Component\AuthorizationEndpoint;
 
 use Base64Url\Base64Url;
 use Http\Message\ResponseFactory;
+use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequestLoader;
+use OAuth2Framework\Component\AuthorizationEndpoint\Consent\ConsentRepository;
+use OAuth2Framework\Component\AuthorizationEndpoint\Exception\OAuth2AuthorizationException;
 use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\ParameterCheckerManager;
-use OAuth2Framework\Component\AuthorizationEndpoint\UserAccount\UserAccountCheckerManager;
-use OAuth2Framework\Component\AuthorizationEndpoint\UserAccount\UserAccountDiscovery;
+use OAuth2Framework\Component\AuthorizationEndpoint\User\UserAuthenticationCheckerManager;
+use OAuth2Framework\Component\AuthorizationEndpoint\User\UserDiscovery;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -31,43 +34,44 @@ abstract class AuthorizationEndpoint extends AbstractEndpoint
 
     private $parameterCheckerManager;
 
-    private $userAccountDiscovery;
+    private $userManager;
 
-    private $userAccountCheckerManager;
+    private $userCheckerManager;
 
     private $consentRepository;
 
-    public function __construct(ResponseFactory $responseFactory, AuthorizationRequestLoader $authorizationRequestLoader, ParameterCheckerManager $parameterCheckerManager, UserAccountDiscovery $userAccountDiscovery, UserAccountCheckerManager $userAccountCheckerManager, SessionInterface $session, ConsentRepository $consentRepository)
+    public function __construct(ResponseFactory $responseFactory, AuthorizationRequestLoader $authorizationRequestLoader, ParameterCheckerManager $parameterCheckerManager, UserDiscovery $userManager, UserAuthenticationCheckerManager $userCheckerManager, SessionInterface $session, ?ConsentRepository $consentRepository)
     {
         parent::__construct($responseFactory, $session);
         $this->authorizationRequestLoader = $authorizationRequestLoader;
         $this->parameterCheckerManager = $parameterCheckerManager;
-        $this->userAccountDiscovery = $userAccountDiscovery;
-        $this->userAccountCheckerManager = $userAccountCheckerManager;
+        $this->userManager = $userManager;
+        $this->userCheckerManager = $userCheckerManager;
         $this->consentRepository = $consentRepository;
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        try {
-            $authorization = $this->authorizationRequestLoader->load($request);
-            $authorization = $this->parameterCheckerManager->process($authorization);
-            $userAccount = $this->userAccountDiscovery->find();
+        $authorization = $this->loadAuthorization($request);
 
-            if (null !== $userAccount) {
-                $isFullyAuthenticated = $this->userAccountDiscovery->isFullyAuthenticated();
-                $authorization->setUserAccount($userAccount, $isFullyAuthenticated);
-                $this->userAccountCheckerManager->check($authorization);
+        try {
+            $user = $this->userManager->getCurrentUser();
+
+            if (null !== $user) {
+                $authorization->setUser($user);
+                $userAccount = $this->userManager->getCurrentAccount();
+                $authorization->setUserAccount($userAccount);
+                $isAuthenticationNeeded = $this->userCheckerManager->isAuthenticationNeeded($authorization);
 
                 switch (true) {
                     case $authorization->hasPrompt('none'):
-                        if (!$this->consentRepository->hasConsentBeenGiven($authorization)) {
-                            throw $this->buildOAuth2Error($authorization, OAuth2Error::ERROR_INTERACTION_REQUIRED, 'The resource owner consent is required.');
+                        if (!$this->consentRepository || !$this->consentRepository->hasConsentBeenGiven($authorization)) {
+                            throw new OAuth2AuthorizationException(OAuth2Error::ERROR_INTERACTION_REQUIRED, 'The resource owner consent is required.', $authorization);
                         }
                         $authorization->allow();
                         $routeName = 'authorization_process_endpoint';
                         break;
-                    case $authorization->hasPrompt('login'):
+                    case $authorization->hasPrompt('login') || $isAuthenticationNeeded:
                         $routeName = 'authorization_login_endpoint';
                         break;
                     case $authorization->hasPrompt('select_account'):
@@ -86,8 +90,8 @@ abstract class AuthorizationEndpoint extends AbstractEndpoint
                 return $this->createRedirectResponse($redirectTo);
             } else {
                 if ($authorization->hasPrompt('none')) {
-                    if (!$this->consentRepository->hasConsentBeenGiven($authorization)) {
-                        throw $this->buildOAuth2Error($authorization, OAuth2Error::ERROR_LOGIN_REQUIRED, 'The resource owner is not logged in.');
+                    if (!$this->consentRepository || !$this->consentRepository->hasConsentBeenGiven($authorization)) {
+                        throw new OAuth2AuthorizationException(OAuth2Error::ERROR_LOGIN_REQUIRED, 'The resource owner is not logged in.', $authorization);
                     }
                     $authorization->allow();
                     $routeName = 'authorization_process_endpoint';
@@ -101,10 +105,24 @@ abstract class AuthorizationEndpoint extends AbstractEndpoint
 
                 return $this->createRedirectResponse($redirectTo);
             }
-        } catch (OAuth2Error $e) {
+        } catch (OAuth2AuthorizationException $e) {
             throw $e;
+        } catch (OAuth2Error $e) {
+            throw new OAuth2AuthorizationException($e->getMessage(), $e->getErrorDescription(), $authorization);
         } catch (\Exception $e) {
-            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST, null);
+            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST, $e->getMessage());
+        }
+    }
+
+    private function loadAuthorization(ServerRequestInterface $request): AuthorizationRequest
+    {
+        try {
+            $authorization = $this->authorizationRequestLoader->load($request);
+            $this->parameterCheckerManager->check($authorization);
+
+            return $authorization;
+        } catch (\Exception $e) {
+            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST, $e->getMessage());
         }
     }
 

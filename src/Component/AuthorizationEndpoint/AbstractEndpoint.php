@@ -15,7 +15,6 @@ namespace OAuth2Framework\Component\AuthorizationEndpoint;
 
 use Http\Message\ResponseFactory;
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
-use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -35,41 +34,27 @@ abstract class AbstractEndpoint implements MiddlewareInterface
 
     protected function getAuthorizationId(ServerRequestInterface $request): string
     {
-        $authorizationId = $request->getAttribute('authorization_id');
-        if (null === $authorizationId) {
+        $queryParams = $request->getQueryParams();
+        if (!array_key_exists('authorization_id', $queryParams) || !\is_string($queryParams['authorization_id'])) {
             throw new \InvalidArgumentException('Invalid authorization ID.');
         }
 
-        return $authorizationId;
+        return $queryParams['authorization_id'];
     }
 
     protected function saveAuthorization(string $authorizationId, AuthorizationRequest $authorization)
     {
-        $this->session->set(sprintf('/authorization/%s', $authorizationId), $authorization);
+        $this->session->set(\Safe\sprintf('/authorization/%s', $authorizationId), $authorization);
     }
 
     protected function getAuthorization(string $authorizationId): AuthorizationRequest
     {
-        $authorization = $this->session->get(sprintf('/authorization/%s', $authorizationId));
+        $authorization = $this->session->get(\Safe\sprintf('/authorization/%s', $authorizationId));
         if (null === $authorization) {
             throw new \InvalidArgumentException('Invalid authorization ID.');
         }
 
         return $authorization;
-    }
-
-    protected function buildOAuth2Error(AuthorizationRequest $authorization, string $error, string $errorDescription): OAuth2Error
-    {
-        $params = $authorization->getResponseParameters();
-        if (null === $authorization->getResponseMode() || null === $authorization->getRedirectUri()) {
-            throw new OAuth2Error(400, $error, $errorDescription);
-        }
-        $params += [
-            'response_mode' => $authorization->getResponseMode(),
-            'redirect_uri' => $authorization->getRedirectUri(),
-        ];
-
-        return new OAuth2Error(303, $error, $errorDescription, $params);
     }
 
     protected function createRedirectResponse(string $redirectTo): ResponseInterface

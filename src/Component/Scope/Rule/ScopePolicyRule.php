@@ -36,7 +36,7 @@ final class ScopePolicyRule implements Rule
                 throw new \InvalidArgumentException('The parameter "scope_policy" must be a string.');
             }
             if (!$this->scopePolicyManager->has($policy)) {
-                throw new \InvalidArgumentException(\sprintf('The scope policy "%s" is not supported.', $policy));
+                throw new \InvalidArgumentException(\Safe\sprintf('The scope policy "%s" is not supported.', $policy));
             }
             $validatedParameters->set('scope_policy', $commandParameters->get('scope_policy'));
         }

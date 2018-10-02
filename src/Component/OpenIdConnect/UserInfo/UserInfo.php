@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\OpenIdConnect\UserInfo;
 
 use OAuth2Framework\Component\Core\Client\Client;
+use OAuth2Framework\Component\Core\User\User;
 use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 use OAuth2Framework\Component\OpenIdConnect\UserInfo\Claim\ClaimManager;
 use OAuth2Framework\Component\OpenIdConnect\UserInfo\Claim\ClaimSourceManager;
@@ -52,13 +53,13 @@ class UserInfo
         $this->claimSourceManager = $claimSourceManager;
     }
 
-    public function getUserinfo(Client $client, UserAccount $userAccount, string $redirectUri, array $requestedClaims, string $scope, ?string $claimsLocales): array
+    public function getUserinfo(Client $client, User $user, UserAccount $userAccount, string $redirectUri, array $requestedClaims, ?string $scope, ?string $claimsLocales): array
     {
         $requestedClaims = \array_merge(
             $this->getClaimsFromClaimScope($scope),
             $requestedClaims
         );
-        $claims = $this->getClaimValues($userAccount, $requestedClaims, $claimsLocales);
+        $claims = $this->getClaimValues($user, $userAccount, $requestedClaims, $claimsLocales);
         /*$claims = array_merge(
             $claims,
             $this->claimSourceManager->getUserInfo($userAccount, $scope, [])
@@ -68,9 +69,10 @@ class UserInfo
         return $claims;
     }
 
-    private function getClaimsFromClaimScope(string $scope): array
+    private function getClaimsFromClaimScope(?string $scope): array
     {
         $result = [];
+        $scope = $scope ?? '';
 
         foreach (\explode(' ', $scope) as $scp) {
             if ($this->userinfoScopeSupportManager->has($scp)) {
@@ -84,7 +86,7 @@ class UserInfo
         return $result;
     }
 
-    private function getClaimValues(UserAccount $userAccount, array $requestedClaims, ?string $claimsLocales): array
+    private function getClaimValues(User $user, UserAccount $userAccount, array $requestedClaims, ?string $claimsLocales): array
     {
         $result = [];
         if (null === $claimsLocales) {
@@ -92,7 +94,7 @@ class UserInfo
         } elseif (true === \is_string($claimsLocales)) {
             $claimsLocales = \array_unique(\explode(' ', $claimsLocales));
         }
-        $result = $this->claimManager->getUserInfo($userAccount, $requestedClaims, $claimsLocales);
+        $result = $this->claimManager->getUserInfo($user, $userAccount, $requestedClaims, $claimsLocales);
         /*foreach ($requestedClaims as $claim => $config) {
             foreach ($claimsLocales as $claims_locale) {
                 $claim_locale = $this->computeClaimWithLocale($claim, $claims_locale);
@@ -180,7 +182,7 @@ class UserInfo
 
         $data = \parse_url($uri);
         if (!\is_array($data) || !\array_key_exists('host', $data)) {
-            throw new \InvalidArgumentException(\sprintf('Invalid Sector Identifier Uri "%s".', $uri));
+            throw new \InvalidArgumentException(\Safe\sprintf('Invalid Sector Identifier Uri "%s".', $uri));
         }
 
         return $data['host'];

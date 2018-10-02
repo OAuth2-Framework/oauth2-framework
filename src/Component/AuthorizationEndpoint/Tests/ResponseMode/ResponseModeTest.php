@@ -195,7 +195,7 @@ final class ResponseModeTest extends TestCase
             ));
             $formPostResponseRenderer = $this->prophesize(FormPostResponseRenderer::class);
             $formPostResponseRenderer->render(Argument::type('string'), ['access_token' => 'ACCESS_TOKEN'])->will(function ($args) {
-                return \json_encode($args);
+                return \Safe\json_encode($args);
             });
             $this->responseModeManager->add(new FormPostResponseMode(
                 $formPostResponseRenderer->reveal()

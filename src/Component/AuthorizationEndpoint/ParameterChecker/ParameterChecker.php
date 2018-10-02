@@ -17,5 +17,5 @@ use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\Authori
 
 interface ParameterChecker
 {
-    public function check(AuthorizationRequest $authorization);
+    public function check(AuthorizationRequest $authorization): void;
 }

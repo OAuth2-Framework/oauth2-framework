@@ -81,7 +81,7 @@ final class TokenResponseType implements ResponseType
             $accessTokenId,
             $authorization->getClient()->getClientId(),
             $authorization->getUserAccount()->getUserAccountId(),
-            new \DateTimeImmutable(\sprintf('now +%d seconds', $this->accessTokenLifetime)),
+            new \DateTimeImmutable(\Safe\sprintf('now +%d seconds', $this->accessTokenLifetime)),
             new DataBag($additionalInformation),
             $authorization->getMetadata(),
             null

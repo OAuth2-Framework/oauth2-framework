@@ -28,7 +28,7 @@ class RequestBodyParser
         }
 
         $body = $request->getBody()->getContents();
-        $json = \json_decode($body, true);
+        $json = \Safe\json_decode($body, true);
 
         if (!\is_array($json)) {
             throw new \InvalidArgumentException('Invalid body');

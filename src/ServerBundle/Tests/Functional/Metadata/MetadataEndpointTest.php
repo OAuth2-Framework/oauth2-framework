@@ -41,7 +41,7 @@ class MetadataEndpointTest extends WebTestCase
         $response = $client->getResponse();
         static::assertEquals(200, $response->getStatusCode());
         static::assertEquals('application/json; charset=UTF-8', $response->headers->get('content-type'));
-        $content = \json_decode($response->getContent(), true);
+        $content = \Safe\json_decode($response->getContent(), true);
         static::assertInternalType('array', $content);
     }
 }

@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\OpenIdConnect\UserInfo\Claim;
 
+use OAuth2Framework\Component\Core\User\User;
 use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 
 class ClaimManager
@@ -51,13 +52,13 @@ class ClaimManager
     public function get(string $claim): Claim
     {
         if (!$this->has($claim)) {
-            throw new \InvalidArgumentException(\sprintf('Unsupported claim "%s".', $claim));
+            throw new \InvalidArgumentException(\Safe\sprintf('Unsupported claim "%s".', $claim));
         }
 
         return $this->claims[$claim];
     }
 
-    public function getUserInfo(UserAccount $userAccount, array $claims, array $claimLocales): array
+    public function getUserInfo(User $user, UserAccount $userAccount, array $claims, array $claimLocales): array
     {
         $result = [];
         $claimLocales[] = null;
@@ -65,8 +66,8 @@ class ClaimManager
             if ($this->has($claimName)) {
                 $claim = $this->get($claimName);
                 foreach ($claimLocales as $claimLocale) {
-                    if ($claim->isAvailableForUserAccount($userAccount, $claimLocale)) {
-                        $value = $claim->getForUserAccount($userAccount, $claimLocale);
+                    if ($claim->isAvailableForUserAccount($user, $userAccount, $claimLocale)) {
+                        $value = $claim->getForUserAccount($user, $userAccount, $claimLocale);
                         switch (true) {
                             case \is_array($config) && \array_key_exists('value', $config):
                                 if ($claim === $config['value']) {

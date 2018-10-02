@@ -14,6 +14,8 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker;
 
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
+use OAuth2Framework\Component\AuthorizationEndpoint\Exception\OAuth2AuthorizationException;
+use OAuth2Framework\Component\Core\Message\OAuth2Error;
 
 class ParameterCheckerManager
 {
@@ -27,12 +29,16 @@ class ParameterCheckerManager
         $this->parameterCheckers[] = $parameterChecker;
     }
 
-    public function process(AuthorizationRequest $authorization): AuthorizationRequest
+    public function check(AuthorizationRequest $authorization): void
     {
         foreach ($this->parameterCheckers as $parameterChecker) {
-            $parameterChecker->check($authorization);
+            try {
+                $parameterChecker->check($authorization);
+            } catch (OAuth2AuthorizationException $e) {
+                throw $e;
+            } catch (\Exception $e) {
+                throw new OAuth2AuthorizationException(OAuth2Error::ERROR_INVALID_REQUEST, $e->getMessage(), $authorization, $e);
+            }
         }
-
-        return $authorization;
     }
 }

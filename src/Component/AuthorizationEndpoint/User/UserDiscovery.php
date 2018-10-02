@@ -11,13 +11,14 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Component\AuthorizationEndpoint\UserAccount;
+namespace OAuth2Framework\Component\AuthorizationEndpoint\User;
 
+use OAuth2Framework\Component\Core\User\User;
 use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 
-interface UserAccountDiscovery
+interface UserDiscovery
 {
-    public function find(): ?UserAccount;
+    public function getCurrentUser(): ?User;
 
-    public function isFullyAuthenticated(): bool;
+    public function getCurrentAccount(): UserAccount;
 }

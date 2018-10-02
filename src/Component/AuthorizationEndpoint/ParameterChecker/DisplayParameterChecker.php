@@ -14,8 +14,6 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker;
 
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
-use OAuth2Framework\Component\AuthorizationEndpoint\Exception\OAuth2AuthorizationException;
-use OAuth2Framework\Component\Core\Message\OAuth2Error;
 
 final class DisplayParameterChecker implements ParameterChecker
 {
@@ -27,16 +25,10 @@ final class DisplayParameterChecker implements ParameterChecker
 
     public const DISPLAY_WAP = 'wap';
 
-    public function check(AuthorizationRequest $authorization)
+    public function check(AuthorizationRequest $authorization): void
     {
-        try {
-            if ($authorization->hasQueryParam('display') && !\in_array($authorization->getQueryParam('display'), $this->getAllowedDisplayValues(), true)) {
-                throw new OAuth2AuthorizationException(400, OAuth2Error::ERROR_INVALID_REQUEST, \sprintf('Invalid parameter "display". Allowed values are %s', \implode(', ', $this->getAllowedDisplayValues())), $authorization);
-            }
-
-            return $authorization;
-        } catch (\InvalidArgumentException $e) {
-            throw new OAuth2AuthorizationException(400, OAuth2Error::ERROR_INVALID_REQUEST, $e->getMessage(), $authorization, $e);
+        if ($authorization->hasQueryParam('display') && !\in_array($authorization->getQueryParam('display'), $this->getAllowedDisplayValues(), true)) {
+            throw new \InvalidArgumentException(\Safe\sprintf('Invalid parameter "display". Allowed values are %s', \implode(', ', $this->getAllowedDisplayValues())));
         }
     }
 

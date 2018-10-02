@@ -38,7 +38,7 @@ final class ClientAuthenticationMethodRule implements Rule
             throw new \InvalidArgumentException('The parameter "token_endpoint_auth_method" must be a string.');
         }
         if (!$this->clientAuthenticationMethodManager->has($commandParameters->get('token_endpoint_auth_method'))) {
-            throw new \InvalidArgumentException(\sprintf('The token endpoint authentication method "%s" is not supported. Please use one of the following values: %s', $commandParameters->get('token_endpoint_auth_method'), \implode(', ', $this->clientAuthenticationMethodManager->list())));
+            throw new \InvalidArgumentException(\Safe\sprintf('The token endpoint authentication method "%s" is not supported. Please use one of the following values: %s', $commandParameters->get('token_endpoint_auth_method'), \implode(', ', $this->clientAuthenticationMethodManager->list())));
         }
 
         $clientAuthenticationMethod = $this->clientAuthenticationMethodManager->get($commandParameters->get('token_endpoint_auth_method'));

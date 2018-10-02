@@ -50,7 +50,8 @@
         "symfony/templating": "^3.4|^4.0",
         "symfony/twig-bundle": "^3.4|^4.0",
         "symfony/validator": "^3.4|^4.0",
-        "symfony/var-dumper": "^3.4|^4.0"
+        "symfony/var-dumper": "^3.4|^4.0",
+        "thecodingmachine/phpstan-safe-rule": "^0.1.0"
     },
     "replace": {
         "oauth2-framework/authorization-server-bundle": "self.version",

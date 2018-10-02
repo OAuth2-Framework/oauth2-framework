@@ -46,7 +46,7 @@ final class TokenIntrospectionEndpoint implements MiddlewareInterface
                     if (null === $result->getResourceServerId() || $result->getResourceServerId()->getValue() === $resourceServer->getResourceServerId()->getValue()) {
                         $data = $hint->introspect($result);
                         $response = $this->responseFactory->createResponse();
-                        $response->getBody()->write(\json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+                        $response->getBody()->write(\Safe\json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
                         $headers = ['Content-Type' => 'application/json; charset=UTF-8', 'Cache-Control' => 'no-cache, no-store, max-age=0, must-revalidate, private', 'Pragma' => 'no-cache'];
                         foreach ($headers as $k => $v) {
                             $response = $response->withHeader($k, $v);
@@ -64,7 +64,7 @@ final class TokenIntrospectionEndpoint implements MiddlewareInterface
         }
 
         $response = $this->responseFactory->createResponse($responseStatucCode);
-        $response->getBody()->write(\json_encode($responseContent, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+        $response->getBody()->write(\Safe\json_encode($responseContent, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
         $headers = ['Content-Type' => 'application/json; charset=UTF-8', 'Cache-Control' => 'no-cache, no-store, max-age=0, must-revalidate, private', 'Pragma' => 'no-cache'];
         foreach ($headers as $k => $v) {
             $response = $response->withHeader($k, $v);
@@ -104,7 +104,7 @@ final class TokenIntrospectionEndpoint implements MiddlewareInterface
         if (\array_key_exists('token_type_hint', $params)) {
             $tokenTypeHint = $params['token_type_hint'];
             if (!\array_key_exists($params['token_type_hint'], $tokenTypeHints)) {
-                throw new OAuth2Error(400, 'unsupported_token_type', \sprintf('The token type hint "%s" is not supported. Please use one of the following values: %s.', $params['token_type_hint'], \implode(', ', \array_keys($tokenTypeHints))));
+                throw new OAuth2Error(400, 'unsupported_token_type', \Safe\sprintf('The token type hint "%s" is not supported. Please use one of the following values: %s.', $params['token_type_hint'], \implode(', ', \array_keys($tokenTypeHints))));
             }
 
             $hint = $tokenTypeHints[$tokenTypeHint];

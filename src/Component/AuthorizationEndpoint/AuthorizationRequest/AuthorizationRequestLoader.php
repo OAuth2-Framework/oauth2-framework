@@ -212,7 +212,7 @@ class AuthorizationRequestLoader
             throw new OAuth2Error(400, OAuth2Error::ERROR_REQUEST_URI_NOT_SUPPORTED, 'The parameter "request_uri" is not supported.');
         }
         $requestUri = $params['request_uri'];
-        if (\preg_match('#/\.\.?(/|$)#', $requestUri)) {
+        if (\Safe\preg_match('#/\.\.?(/|$)#', $requestUri)) {
             throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST_URI, 'The request Uri is not allowed.');
         }
         $content = $this->downloadContent($requestUri);
@@ -325,7 +325,7 @@ class AuthorizationRequestLoader
     {
         $supportedAlgorithms = $this->getSupportedSignatureAlgorithms();
         if (!\in_array($algorithm, $supportedAlgorithms, true)) {
-            throw new \InvalidArgumentException(\sprintf('The algorithm "%s" is not allowed for request object signatures. Please use one of the following algorithm(s): %s', $algorithm, \implode(', ', $supportedAlgorithms)));
+            throw new \InvalidArgumentException(\Safe\sprintf('The algorithm "%s" is not allowed for request object signatures. Please use one of the following algorithm(s): %s', $algorithm, \implode(', ', $supportedAlgorithms)));
         }
     }
 

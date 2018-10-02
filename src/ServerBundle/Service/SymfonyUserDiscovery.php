@@ -13,39 +13,31 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Service;
 
-use OAuth2Framework\Component\AuthorizationEndpoint\UserAccount\UserAccountDiscovery;
-use OAuth2Framework\Component\Core\UserAccount\UserAccount;
+use OAuth2Framework\Component\AuthorizationEndpoint\User\UserDiscovery;
+use OAuth2Framework\Component\Core\User\User;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
-final class SymfonyUserDiscovery implements UserAccountDiscovery
+abstract class SymfonyUserDiscovery implements UserDiscovery
 {
     private $tokenStorage;
 
-    private $authorizationChecker;
-
-    public function __construct(TokenStorageInterface $tokenStorage, AuthorizationCheckerInterface $authorizationChecker)
+    public function __construct(TokenStorageInterface $tokenStorage)
     {
         $this->tokenStorage = $tokenStorage;
-        $this->authorizationChecker = $authorizationChecker;
     }
 
-    public function find(?bool &$isFullyAuthenticated = null): ?UserAccount
+    public function getCurrentUser(): ?User
     {
-        if (null === $token = $this->tokenStorage->getToken()) {
-            return null;
+        $token = $this->tokenStorage->getToken();
+        if (null === $token) {
+            throw new \InvalidArgumentException('Unable to retrieve the current user.');
         }
 
         $userAccount = $token->getUser();
-        if (!$userAccount instanceof UserAccount) {
-            return null;
+        if (!$userAccount instanceof User) {
+            throw new \InvalidArgumentException('Unable to retrieve the current user.');
         }
 
         return $userAccount;
-    }
-
-    public function isFullyAuthenticated(): bool
-    {
-        return $this->authorizationChecker->isGranted('IS_AUTHENTICATED_FULLY');
     }
 }

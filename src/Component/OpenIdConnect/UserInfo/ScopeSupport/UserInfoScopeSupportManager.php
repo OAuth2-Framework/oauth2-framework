@@ -41,7 +41,7 @@ class UserInfoScopeSupportManager
     public function get(string $scope): UserInfoScopeSupport
     {
         if (!$this->has($scope)) {
-            throw new \InvalidArgumentException(\sprintf('The userinfo scope "%s" is not supported.', $scope));
+            throw new \InvalidArgumentException(\Safe\sprintf('The userinfo scope "%s" is not supported.', $scope));
         }
 
         return $this->userinfoScopeSupports[$scope];

@@ -40,7 +40,7 @@ final class RequestUriRule implements Rule
             throw new \InvalidArgumentException('The parameter "request_uris" must be a list of URI.');
         }
         foreach ($value as $redirectUri) {
-            if (!\is_string($redirectUri) || !\filter_var($redirectUri, FILTER_VALIDATE_URL)) {
+            if (!\is_string($redirectUri) || !\filter_var($redirectUri, FILTER_VALIDATE_URL)) { //TODO: URN should be allowed
                 throw new \InvalidArgumentException('The parameter "request_uris" must be a list of URI.');
             }
         }

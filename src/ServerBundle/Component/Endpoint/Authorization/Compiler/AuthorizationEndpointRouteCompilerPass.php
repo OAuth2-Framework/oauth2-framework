@@ -26,22 +26,23 @@ class AuthorizationEndpointRouteCompilerPass implements CompilerPassInterface
             return;
         }
 
-        $path = $container->getParameter('oauth2_server.endpoint.authorization.path');
         $host = $container->getParameter('oauth2_server.endpoint.authorization.host');
         $route_loader = $container->getDefinition(RouteLoader::class);
-        $route_loader->addMethodCall('addRoute', [
-            'authorization_endpoint',
-            'authorization_endpoint_pipe',
-            'dispatch',
-            $path, // path
-            [], // defaults
-            [], // requirements
-            [], // options
-            $host, // host
-            ['https'], // schemes
-            ['GET', 'POST'], // methods
-            '', // condition
-        ]);
+
+        $path = $container->getParameter('oauth2_server.endpoint.authorization.authorization_endpoint_path');
+        $route_loader->addMethodCall('addRoute', ['authorization_endpoint', 'authorization_endpoint_pipe', 'dispatch', $path, [], [], [], $host, ['https'], ['GET'], '']);
+
+        $path = $container->getParameter('oauth2_server.endpoint.authorization.consent_endpoint_path');
+        $route_loader->addMethodCall('addRoute', ['consent_endpoint', 'consent_endpoint_pipe', 'dispatch', $path, [], [], [], $host, ['https'], ['GET', 'POST'], '']);
+
+        $path = $container->getParameter('oauth2_server.endpoint.authorization.select_account_endpoint_path');
+        $route_loader->addMethodCall('addRoute', ['select_account_endpoint', 'select_account_endpoint_pipe', 'dispatch', $path, [], [], [], $host, ['https'], ['GET', 'POST'], '']);
+
+        $path = $container->getParameter('oauth2_server.endpoint.authorization.consent_endpoint_path');
+        $route_loader->addMethodCall('addRoute', ['consent_endpoint', 'consent_endpoint_pipe', 'dispatch', $path, [], [], [], $host, ['https'], ['GET', 'POST'], '']);
+
+        $path = $container->getParameter('oauth2_server.endpoint.authorization.process_endpoint_path');
+        $route_loader->addMethodCall('addRoute', ['process_endpoint', 'process_endpoint_pipe', 'dispatch', $path, [], [], [], $host, ['https'], ['GET', 'POST'], '']);
 
         if (!$container->hasDefinition(MetadataBuilder::class)) {
             return;

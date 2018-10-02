@@ -158,7 +158,7 @@ class ClientAssertionJwt implements AuthenticationMethod
         // FIXME: Other claims can be considered as mandatory by the server
         $diff = \array_diff(['iss', 'sub', 'aud', 'exp'], \array_keys($claims));
         if (!empty($diff)) {
-            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST, \sprintf('The following claim(s) is/are mandatory: "%s".', \implode(', ', \array_values($diff))));
+            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST, \Safe\sprintf('The following claim(s) is/are mandatory: "%s".', \implode(', ', \array_values($diff))));
         }
 
         $clientCredentials = $jws;
@@ -268,12 +268,12 @@ class ClientAssertionJwt implements AuthenticationMethod
         }
 
         if (!\in_array(self::CLIENT_ASSERTION_TYPE, $trustedIssuer->getAllowedAssertionTypes(), true)) {
-            throw new \InvalidArgumentException(\sprintf('The assertion type "%s" is not allowed for that issuer.', self::CLIENT_ASSERTION_TYPE));
+            throw new \InvalidArgumentException(\Safe\sprintf('The assertion type "%s" is not allowed for that issuer.', self::CLIENT_ASSERTION_TYPE));
         }
 
         $signatureAlgorithm = $jws->getSignature(0)->getProtectedHeaderParameter('alg');
         if (!\in_array($signatureAlgorithm, $trustedIssuer->getAllowedSignatureAlgorithms(), true)) {
-            throw new \InvalidArgumentException(\sprintf('The signature algorithm "%s" is not allowed for that issuer.', $signatureAlgorithm));
+            throw new \InvalidArgumentException(\Safe\sprintf('The signature algorithm "%s" is not allowed for that issuer.', $signatureAlgorithm));
         }
 
         return $trustedIssuer->getJWKSet();
@@ -283,7 +283,7 @@ class ClientAssertionJwt implements AuthenticationMethod
     {
         switch (true) {
             case $client->has('jwks') && 'private_key_jwt' === $client->getTokenEndpointAuthenticationMethod():
-                $jwks = \json_decode(\json_encode($client->get('jwks'), JSON_FORCE_OBJECT), true);
+                $jwks = \Safe\json_decode(\Safe\json_encode($client->get('jwks'), JSON_FORCE_OBJECT), true);
 
                 return JWKSet::createFromKeyData($jwks);
             case $client->has('client_secret') && 'client_secret_jwt' === $client->getTokenEndpointAuthenticationMethod():

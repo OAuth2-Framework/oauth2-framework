@@ -38,7 +38,7 @@ final class ClientSecretBasic implements AuthenticationMethod
     public function getSchemesParameters(): array
     {
         return [
-            \sprintf('Basic realm="%s",charset="UTF-8"', $this->realm),
+            \Safe\sprintf('Basic realm="%s",charset="UTF-8"', $this->realm),
         ];
     }
 
@@ -60,7 +60,7 @@ final class ClientSecretBasic implements AuthenticationMethod
     private function findClientIdAndCredentialsInAuthorizationHeader(string $authorization_header, ?string &$client_credentials = null): ?ClientId
     {
         if ('basic ' === \mb_strtolower(\mb_substr($authorization_header, 0, 6, '8bit'), '8bit')) {
-            list($client_id, $client_secret) = \explode(':', \base64_decode(\mb_substr($authorization_header, 6, \mb_strlen($authorization_header, '8bit') - 6, '8bit'), true));
+            list($client_id, $client_secret) = \explode(':', \Safe\base64_decode(\mb_substr($authorization_header, 6, \mb_strlen($authorization_header, '8bit') - 6, '8bit'), true));
             if (!empty($client_id) && !empty($client_secret)) {
                 $client_credentials = $client_secret;
 

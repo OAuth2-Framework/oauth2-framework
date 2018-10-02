@@ -11,27 +11,26 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Component\AuthorizationEndpoint\Tests\UserAccount;
+namespace OAuth2Framework\Component\AuthorizationEndpoint\Tests\User;
 
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
-use OAuth2Framework\Component\AuthorizationEndpoint\Exception\RedirectToLoginPageException;
-use OAuth2Framework\Component\AuthorizationEndpoint\UserAccount\MaxAgeParameterAccountChecker;
+use OAuth2Framework\Component\AuthorizationEndpoint\User\MaxAgeParameterAuthenticationChecker;
 use OAuth2Framework\Component\Core\Client\Client;
-use OAuth2Framework\Component\Core\UserAccount\UserAccount;
+use OAuth2Framework\Component\Core\User\User;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @group UserAccountChecker
+ * @group UserChecker
  * @group MaxAgeParameterCheckerAccountChecker
  */
-final class MaxAgeParameterAccountCheckerTest extends TestCase
+final class MaxAgeParameterCheckerTest extends TestCase
 {
     /**
      * @test
      */
     public function theUserHasNeverBeenConnected()
     {
-        $userAccount = $this->prophesize(UserAccount::class);
+        $userAccount = $this->prophesize(User::class);
         $userAccount->getLastLoginAt()->willReturn(null);
 
         $client = $this->prophesize(Client::class);
@@ -39,18 +38,12 @@ final class MaxAgeParameterAccountCheckerTest extends TestCase
         $authorization = $this->prophesize(AuthorizationRequest::class);
         $authorization->hasQueryParam('max_age')->willReturn(true);
         $authorization->getQueryParam('max_age')->willReturn(3600);
-        $authorization->getUserAccount()->willReturn(null);
-        $authorization->isUserAccountFullyAuthenticated()->willReturn(false);
+        $authorization->getUser()->willReturn(null);
         $authorization->getClient()->willReturn($client->reveal());
-        $authorization->getUserAccount()->willReturn($userAccount->reveal());
-        $checker = new MaxAgeParameterAccountChecker();
+        $authorization->getUser()->willReturn($userAccount->reveal());
+        $checker = new MaxAgeParameterAuthenticationChecker();
 
-        try {
-            $checker->check($authorization->reveal());
-            static::fail('The expected exception has not been thrown.');
-        } catch (RedirectToLoginPageException $e) {
-            static::assertTrue(true);
-        }
+        static::assertTrue($checker->isAuthenticationNeeded($authorization->reveal()));
     }
 
     /**
@@ -61,15 +54,15 @@ final class MaxAgeParameterAccountCheckerTest extends TestCase
         $client = $this->prophesize(Client::class);
         $client->has('default_max_age')->willReturn(false);
 
-        $userAccount = $this->prophesize(UserAccount::class);
+        $userAccount = $this->prophesize(User::class);
 
         $authorization = $this->prophesize(AuthorizationRequest::class);
         $authorization->hasQueryParam('max_age')->willReturn(false);
-        $authorization->getUserAccount()->willReturn($userAccount->reveal());
+        $authorization->getUser()->willReturn($userAccount->reveal());
         $authorization->getClient()->willReturn($client->reveal());
-        $checker = new MaxAgeParameterAccountChecker();
+        $checker = new MaxAgeParameterAuthenticationChecker();
 
-        $checker->check($authorization->reveal(), $userAccount->reveal(), false);
+        $checker->isAuthenticationNeeded($authorization->reveal(), $userAccount->reveal(), false);
         static::assertTrue(true);
     }
 
@@ -82,17 +75,16 @@ final class MaxAgeParameterAccountCheckerTest extends TestCase
         $client->has('default_max_age')->willReturn(true);
         $client->get('default_max_age')->willReturn(3600);
 
-        $userAccount = $this->prophesize(UserAccount::class);
+        $userAccount = $this->prophesize(User::class);
         $userAccount->getLastLoginAt()->willReturn(\time() - 100);
 
         $authorization = $this->prophesize(AuthorizationRequest::class);
-        $authorization->isUserAccountFullyAuthenticated()->willReturn(false);
         $authorization->hasQueryParam('max_age')->willReturn(false);
-        $authorization->getUserAccount()->willReturn($userAccount->reveal());
+        $authorization->getUser()->willReturn($userAccount->reveal());
         $authorization->getClient()->willReturn($client->reveal());
-        $checker = new MaxAgeParameterAccountChecker();
+        $checker = new MaxAgeParameterAuthenticationChecker();
 
-        $checker->check($authorization->reveal(), $userAccount->reveal(), false);
+        $checker->isAuthenticationNeeded($authorization->reveal(), $userAccount->reveal(), false);
         static::assertTrue(true);
     }
 
@@ -104,18 +96,17 @@ final class MaxAgeParameterAccountCheckerTest extends TestCase
         $client = $this->prophesize(Client::class);
         $client->has('default_max_age')->willReturn(false);
 
-        $userAccount = $this->prophesize(UserAccount::class);
+        $userAccount = $this->prophesize(User::class);
         $userAccount->getLastLoginAt()->willReturn(\time() - 100);
 
         $authorization = $this->prophesize(AuthorizationRequest::class);
         $authorization->hasQueryParam('max_age')->willReturn(true);
         $authorization->getQueryParam('max_age')->willReturn(3600);
-        $authorization->getUserAccount()->willReturn($userAccount->reveal());
+        $authorization->getUser()->willReturn($userAccount->reveal());
         $authorization->getClient()->willReturn($client->reveal());
-        $authorization->isUserAccountFullyAuthenticated()->willReturn(false);
-        $checker = new MaxAgeParameterAccountChecker();
+        $checker = new MaxAgeParameterAuthenticationChecker();
 
-        $checker->check($authorization->reveal(), $userAccount->reveal(), false);
+        $checker->isAuthenticationNeeded($authorization->reveal(), $userAccount->reveal(), false);
         static::assertTrue(true);
     }
 
@@ -127,23 +118,17 @@ final class MaxAgeParameterAccountCheckerTest extends TestCase
         $client = $this->prophesize(Client::class);
         $client->has('default_max_age')->willReturn(false);
 
-        $userAccount = $this->prophesize(UserAccount::class);
+        $userAccount = $this->prophesize(User::class);
         $userAccount->getLastLoginAt()->willReturn(null);
 
         $authorization = $this->prophesize(AuthorizationRequest::class);
-        $authorization->isUserAccountFullyAuthenticated()->willReturn(false);
         $authorization->hasQueryParam('max_age')->willReturn(true);
         $authorization->getQueryParam('max_age')->willReturn(3600);
-        $authorization->getUserAccount()->willReturn($userAccount->reveal());
+        $authorization->getUser()->willReturn($userAccount->reveal());
         $authorization->getClient()->willReturn($client->reveal());
-        $checker = new MaxAgeParameterAccountChecker();
+        $checker = new MaxAgeParameterAuthenticationChecker();
 
-        try {
-            $checker->check($authorization->reveal(), $userAccount->reveal(), false);
-            static::fail('The expected exception has not been thrown.');
-        } catch (RedirectToLoginPageException $e) {
-            static::assertTrue(true);
-        }
+        static::assertTrue($checker->isAuthenticationNeeded($authorization->reveal()));
     }
 
     /**
@@ -154,22 +139,16 @@ final class MaxAgeParameterAccountCheckerTest extends TestCase
         $client = $this->prophesize(Client::class);
         $client->has('default_max_age')->willReturn(false);
 
-        $userAccount = $this->prophesize(UserAccount::class);
+        $userAccount = $this->prophesize(User::class);
         $userAccount->getLastLoginAt()->willReturn(\time() - 10000);
 
         $authorization = $this->prophesize(AuthorizationRequest::class);
-        $authorization->isUserAccountFullyAuthenticated()->willReturn(false);
         $authorization->hasQueryParam('max_age')->willReturn(true);
         $authorization->getQueryParam('max_age')->willReturn(3600);
-        $authorization->getUserAccount()->willReturn($userAccount->reveal());
+        $authorization->getUser()->willReturn($userAccount->reveal());
         $authorization->getClient()->willReturn($client->reveal());
-        $checker = new MaxAgeParameterAccountChecker();
+        $checker = new MaxAgeParameterAuthenticationChecker();
 
-        try {
-            $checker->check($authorization->reveal(), $userAccount->reveal(), false);
-            static::fail('The expected exception has not been thrown.');
-        } catch (RedirectToLoginPageException $e) {
-            static::assertTrue(true);
-        }
+        static::assertTrue($checker->isAuthenticationNeeded($authorization->reveal()));
     }
 }

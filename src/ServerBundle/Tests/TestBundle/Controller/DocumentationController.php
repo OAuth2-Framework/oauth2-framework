@@ -27,7 +27,7 @@ class DocumentationController extends Controller
      */
     public function serviceAction(string $hello)
     {
-        return new Response(\sprintf('Hello %s, you are on the documentation service page', $hello));
+        return new Response(\Safe\sprintf('Hello %s, you are on the documentation service page', $hello));
     }
 
     /**

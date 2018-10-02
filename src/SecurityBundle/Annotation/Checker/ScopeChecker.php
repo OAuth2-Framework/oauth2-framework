@@ -30,7 +30,7 @@ final class ScopeChecker implements Checker
         $diff = \array_diff($scopes, $tokenScope);
 
         if (!empty($diff)) {
-            throw new \Exception(\sprintf('Insufficient scope. The required scope is "%s"', $configuration->getScope()));
+            throw new \Exception(\Safe\sprintf('Insufficient scope. The required scope is "%s"', $configuration->getScope()));
         }
     }
 }

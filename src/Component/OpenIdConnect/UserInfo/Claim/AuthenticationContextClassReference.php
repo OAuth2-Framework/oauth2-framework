@@ -13,22 +13,19 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\OpenIdConnect\UserInfo\Claim;
 
-use OAuth2Framework\Component\Core\UserAccount\AuthenticationContextClassReferenceSupport;
+use OAuth2Framework\Component\AuthorizationEndpoint\User\AuthenticationContextClassReferenceSupport;
+use OAuth2Framework\Component\Core\User\User;
 use OAuth2Framework\Component\Core\UserAccount\UserAccount;
-use OAuth2Framework\Component\Core\UserAccount\UserAccountManager;
 
 final class AuthenticationContextClassReference implements Claim
 {
     private const CLAIM_NAME = 'acr';
 
-    /**
-     * @var UserAccountManager|AuthenticationContextClassReferenceSupport
-     */
-    private $userAccountManager;
+    private $authenticationContextClassReferenceSupport;
 
-    public function __construct(UserAccountManager $userAccountManager)
+    public function __construct(AuthenticationContextClassReferenceSupport $authenticationContextClassReferenceSupport)
     {
-        $this->userAccountManager = $userAccountManager;
+        $this->authenticationContextClassReferenceSupport = $authenticationContextClassReferenceSupport;
     }
 
     public function name(): string
@@ -36,17 +33,13 @@ final class AuthenticationContextClassReference implements Claim
         return self::CLAIM_NAME;
     }
 
-    public function isAvailableForUserAccount(UserAccount $userAccount, ?string $claimLocale): bool
+    public function isAvailableForUserAccount(User $user, UserAccount $userAccount, ?string $claimLocale): bool
     {
-        if (null === $this->userAccountManager || !$this->userAccountManager instanceof AuthenticationContextClassReferenceSupport) {
-            return false;
-        }
-
-        return null !== $this->userAccountManager->getAuthenticationContextClassReferenceFor($userAccount);
+        return null !== $this->authenticationContextClassReferenceSupport->getAuthenticationContextClassReferenceFor($user);
     }
 
-    public function getForUserAccount(UserAccount $userAccount, ?string $claimLocale)
+    public function getForUserAccount(User $user, UserAccount $userAccount, ?string $claimLocale)
     {
-        return $this->userAccountManager->getAuthenticationContextClassReferenceFor($userAccount);
+        return $this->authenticationContextClassReferenceSupport->getAuthenticationContextClassReferenceFor($user);
     }
 }

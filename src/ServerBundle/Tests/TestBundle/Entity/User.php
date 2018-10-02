@@ -13,13 +13,12 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Tests\TestBundle\Entity;
 
-use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwnerId;
-use OAuth2Framework\Component\Core\UserAccount\UserAccount;
+use OAuth2Framework\Component\Core\User\User as OAuth2UserInterface;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use Symfony\Component\Security\Core\User\EquatableInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\UserInterface as SymfonyUserInterface;
 
-class User implements UserInterface, UserAccount, EquatableInterface
+class User implements SymfonyUserInterface, OAuth2UserInterface, EquatableInterface
 {
     /**
      * @var string
@@ -27,29 +26,9 @@ class User implements UserInterface, UserAccount, EquatableInterface
     private $username;
 
     /**
-     * @var string
-     */
-    private $password;
-
-    /**
-     * @var null|string
-     */
-    private $salt;
-
-    /**
      * @var string[]
      */
     private $roles;
-
-    /**
-     * @var string[]
-     */
-    private $oauth2Passwords = [];
-
-    /**
-     * @var UserAccountId
-     */
-    private $publicId;
 
     /**
      * @var \DateTimeImmutable|null
@@ -62,45 +41,21 @@ class User implements UserInterface, UserAccount, EquatableInterface
     private $lastUpdateAt;
 
     /**
-     * @var array
+     * @var string[]
      */
-    private $parameters = [];
+    private $user_account_ids;
 
     /**
      * @param string[] $roles
-     * @param string[] $oauth2Passwords
+     * @param string[] $user_account_ids
      */
-    public function __construct(string $username, string $password, string $salt = null, array $roles, array $oauth2Passwords, UserAccountId $publicId, ?\DateTimeImmutable $lastLoginAt = null, ?\DateTimeImmutable $lastUpdateAt = null, array $parameters = [])
+    public function __construct(string $username, array $roles, array $user_account_ids, ?\DateTimeImmutable $lastLoginAt, ?\DateTimeImmutable $lastUpdateAt)
     {
         $this->username = $username;
-        $this->password = $password;
-        $this->salt = $salt;
         $this->roles = $roles;
-        $this->oauth2Passwords = $oauth2Passwords;
-        $this->publicId = $publicId;
         $this->lastLoginAt = $lastLoginAt;
         $this->lastUpdateAt = $lastUpdateAt;
-        $this->parameters = $parameters;
-    }
-
-    public function getOAuth2Passwords(): array
-    {
-        return $this->oauth2Passwords;
-    }
-
-    public function getPublicId(): ResourceOwnerId
-    {
-        return $this->publicId;
-    }
-
-    public function getUserAccountId(): UserAccountId
-    {
-        $publicId = $this->getPublicId();
-        if (!$publicId instanceof UserAccountId) {
-            throw new \RuntimeException();
-        }
-
-        return $publicId;
+        $this->user_account_ids = $user_account_ids;
     }
 
     public function getLastLoginAt(): ?int
@@ -113,20 +68,6 @@ class User implements UserInterface, UserAccount, EquatableInterface
         return $this->lastUpdateAt ? $this->lastUpdateAt->getTimestamp() : null;
     }
 
-    public function has(string $key): bool
-    {
-        return \array_key_exists($key, $this->parameters);
-    }
-
-    public function get(string $key)
-    {
-        if (!$this->has($key)) {
-            throw new \InvalidArgumentException(\sprintf('Configuration value with key "%s" does not exist.', $key));
-        }
-
-        return $this->parameters[$key];
-    }
-
     public function getRoles(): array
     {
         return $this->roles;
@@ -134,7 +75,7 @@ class User implements UserInterface, UserAccount, EquatableInterface
 
     public function getSalt()
     {
-        return $this->salt;
+        return;
     }
 
     public function getUsername(): string
@@ -144,24 +85,26 @@ class User implements UserInterface, UserAccount, EquatableInterface
 
     public function getPassword(): string
     {
-        return $this->password;
+        return '';
     }
 
     public function eraseCredentials()
     {
     }
 
-    public function isEqualTo(UserInterface $user)
+    public function getAccountIds(UserAccountId $userAccountId): array
+    {
+        return $this->user_account_ids;
+    }
+
+    public function hasAccountId(UserAccountId $userAccountId): bool
+    {
+        return \in_array($userAccountId->getValue(), $this->user_account_ids, true);
+    }
+
+    public function isEqualTo(SymfonyUserInterface $user)
     {
         if (!$user instanceof self) {
-            return false;
-        }
-
-        if ($this->password !== $user->getPassword()) {
-            return false;
-        }
-
-        if ($this->getSalt() !== $user->getSalt()) {
             return false;
         }
 

@@ -11,14 +11,13 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Component\AuthorizationEndpoint\UserAccount;
+namespace OAuth2Framework\Component\AuthorizationEndpoint\User;
 
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
-use OAuth2Framework\Component\AuthorizationEndpoint\Exception\RedirectToLoginPageException;
 
-final class MaxAgeParameterAccountChecker implements UserAccountChecker
+final class MaxAgeParameterAuthenticationChecker implements UserAuthenticationChecker
 {
-    public function check(AuthorizationRequest $authorization): void
+    public function isAuthenticationNeeded(AuthorizationRequest $authorization): bool
     {
         switch (true) {
             case $authorization->hasQueryParam('max_age'):
@@ -30,11 +29,9 @@ final class MaxAgeParameterAccountChecker implements UserAccountChecker
 
                 break;
             default:
-                return;
+                return false;
         }
 
-        if (null === $authorization->getUserAccount()->getLastLoginAt() || \time() - $authorization->getUserAccount()->getLastLoginAt() > $max_age) {
-            throw new RedirectToLoginPageException($authorization);
-        }
+        return null === $authorization->getUser()->getLastLoginAt() || \time() - $authorization->getUser()->getLastLoginAt() > $max_age;
     }
 }

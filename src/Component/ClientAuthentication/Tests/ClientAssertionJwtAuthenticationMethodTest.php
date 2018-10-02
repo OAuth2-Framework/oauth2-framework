@@ -324,7 +324,7 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
             new ClientId('CLIENT_ID'),
             new DataBag([
                 'token_endpoint_auth_method' => 'private_key_jwt',
-                'jwks' => \json_decode('{"keys":[{"kty":"oct","k":"U0VDUkVU"}]}', true),
+                'jwks' => \Safe\json_decode('{"keys":[{"kty":"oct","k":"U0VDUkVU"}]}', true),
             ]),
             new UserAccountId('USER_ACCOUNT_ID')
         );
@@ -481,12 +481,12 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
         $method = $this->getMethod();
         $commandParameters = new DataBag([
             'token_endpoint_auth_method' => 'private_key_jwt',
-            'jwks' => \json_decode('{"keys":[{"kty":"oct","k":"U0VDUkVU"}]}', true),
+            'jwks' => \Safe\json_decode('{"keys":[{"kty":"oct","k":"U0VDUkVU"}]}', true),
         ]);
         $validatedParameters = $method->checkClientConfiguration($commandParameters, new DataBag([]));
 
         static::assertTrue($validatedParameters->has('jwks'));
-        static::assertEquals(\json_decode('{"keys":[{"kty":"oct","k":"U0VDUkVU"}]}', true), $validatedParameters->get('jwks'));
+        static::assertEquals(\Safe\json_decode('{"keys":[{"kty":"oct","k":"U0VDUkVU"}]}', true), $validatedParameters->get('jwks'));
     }
 
     /**

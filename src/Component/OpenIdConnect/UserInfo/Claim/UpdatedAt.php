@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\OpenIdConnect\UserInfo\Claim;
 
+use OAuth2Framework\Component\Core\User\User;
 use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 
 final class UpdatedAt implements Claim
@@ -24,12 +25,12 @@ final class UpdatedAt implements Claim
         return self::CLAIM_NAME;
     }
 
-    public function isAvailableForUserAccount(UserAccount $userAccount, ?string $claimLocale): bool
+    public function isAvailableForUserAccount(User $user, UserAccount $userAccount, ?string $claimLocale): bool
     {
         return null !== $userAccount->getLastUpdateAt();
     }
 
-    public function getForUserAccount(UserAccount $userAccount, ?string $claimLocale)
+    public function getForUserAccount(User $user, UserAccount $userAccount, ?string $claimLocale)
     {
         return $userAccount->getLastUpdateAt();
     }

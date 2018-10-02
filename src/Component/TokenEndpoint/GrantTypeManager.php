@@ -33,7 +33,7 @@ class GrantTypeManager
     public function get(string $name): GrantType
     {
         if (!$this->has($name)) {
-            throw new \InvalidArgumentException(\sprintf('The grant type "%s" is not supported.', $name));
+            throw new \InvalidArgumentException(\Safe\sprintf('The grant type "%s" is not supported.', $name));
         }
 
         return $this->grantTypes[$name];

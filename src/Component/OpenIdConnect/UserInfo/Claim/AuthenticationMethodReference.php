@@ -13,22 +13,19 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\OpenIdConnect\UserInfo\Claim;
 
-use OAuth2Framework\Component\Core\UserAccount\AuthenticationMethodReferenceSupport;
+use OAuth2Framework\Component\AuthorizationEndpoint\User\AuthenticationMethodReferenceSupport;
+use OAuth2Framework\Component\Core\User\User;
 use OAuth2Framework\Component\Core\UserAccount\UserAccount;
-use OAuth2Framework\Component\Core\UserAccount\UserAccountManager;
 
 final class AuthenticationMethodReference implements Claim
 {
     private const CLAIM_NAME = 'amr';
 
-    /**
-     * @var UserAccountManager|AuthenticationMethodReferenceSupport
-     */
-    private $userAccountManager;
+    private $authenticationMethodReferenceSupport;
 
-    public function __construct(UserAccountManager $userAccountManager)
+    public function __construct(AuthenticationMethodReferenceSupport $authenticationMethodReferenceSupport)
     {
-        $this->userAccountManager = $userAccountManager;
+        $this->authenticationMethodReferenceSupport = $authenticationMethodReferenceSupport;
     }
 
     public function name(): string
@@ -36,17 +33,13 @@ final class AuthenticationMethodReference implements Claim
         return self::CLAIM_NAME;
     }
 
-    public function isAvailableForUserAccount(UserAccount $userAccount, ?string $claimLocale): bool
+    public function isAvailableForUserAccount(User $user, UserAccount $userAccount, ?string $claimLocale): bool
     {
-        if (null === $this->userAccountManager || !$this->userAccountManager instanceof AuthenticationMethodReferenceSupport) {
-            return false;
-        }
-
-        return null !== $this->userAccountManager->getAuthenticationMethodReferenceFor($userAccount);
+        return null !== $this->authenticationMethodReferenceSupport->getAuthenticationMethodReferenceFor($user);
     }
 
-    public function getForUserAccount(UserAccount $userAccount, ?string $claimLocale)
+    public function getForUserAccount(User $user, UserAccount $userAccount, ?string $claimLocale)
     {
-        return $this->userAccountManager->getAuthenticationMethodReferenceFor($userAccount);
+        return $this->authenticationMethodReferenceSupport->getAuthenticationMethodReferenceFor($user);
     }
 }

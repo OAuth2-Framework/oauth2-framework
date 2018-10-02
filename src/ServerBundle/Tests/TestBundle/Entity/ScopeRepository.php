@@ -40,7 +40,7 @@ class ScopeRepository implements ScopeRepositoryInterface
     public function get(string $scope): ScopeInterface
     {
         if (!$this->has($scope)) {
-            throw new \InvalidArgumentException(\sprintf('The scope "%s" is not supported.', $scope));
+            throw new \InvalidArgumentException(\Safe\sprintf('The scope "%s" is not supported.', $scope));
         }
 
         return $this->scopes[$scope];

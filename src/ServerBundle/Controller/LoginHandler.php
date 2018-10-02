@@ -17,6 +17,7 @@ use Http\Message\ResponseFactory;
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
 use OAuth2Framework\Component\AuthorizationEndpoint\LoginHandler as LoginHandlerInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * This feature is not yet supported so always continue the process.
@@ -30,17 +31,21 @@ final class LoginHandler implements LoginHandlerInterface
         $this->responseFactory = $responseFactory;
     }
 
-    public function hasBeenProcessed(string $authorizationId, AuthorizationRequest $authorizationRequest): bool
+    public function prepare(ServerRequestInterface $serverRequest, string $authorizationId, AuthorizationRequest $authorizationRequest): void
+    {
+    }
+
+    public function hasBeenProcessed(ServerRequestInterface $serverRequest, string $authorizationId, AuthorizationRequest $authorizationRequest): bool
     {
         return true;
     }
 
-    public function isValid(string $authorizationId, AuthorizationRequest $authorizationRequest): bool
+    public function isValid(ServerRequestInterface $serverRequest, string $authorizationId, AuthorizationRequest $authorizationRequest): bool
     {
         return true;
     }
 
-    public function process(string $authorizationId, AuthorizationRequest $authorizationRequest): ResponseInterface
+    public function process(ServerRequestInterface $serverRequest, string $authorizationId, AuthorizationRequest $authorizationRequest): ResponseInterface
     {
         return $this->responseFactory->createResponse(200);
     }

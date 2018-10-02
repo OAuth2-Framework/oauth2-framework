@@ -11,26 +11,30 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Component\AuthorizationEndpoint\UserAccount;
+namespace OAuth2Framework\Component\AuthorizationEndpoint\User;
 
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
 
-class UserAccountCheckerManager
+class UserAuthenticationCheckerManager
 {
     /**
-     * @var UserAccountChecker[]
+     * @var UserAuthenticationChecker[]
      */
     private $checkers = [];
 
-    public function add(UserAccountChecker $checker): void
+    public function add(UserAuthenticationChecker $checker): void
     {
         $this->checkers[] = $checker;
     }
 
-    public function check(AuthorizationRequest $authorization)
+    public function isAuthenticationNeeded(AuthorizationRequest $authorization): bool
     {
         foreach ($this->checkers as $checker) {
-            $checker->check($authorization);
+            if ($checker->isAuthenticationNeeded($authorization)) {
+                return true;
+            }
         }
+
+        return false;
     }
 }

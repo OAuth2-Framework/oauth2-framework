@@ -5,7 +5,6 @@ oauth2_server:
     client:
         repository: 'OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\ClientRepository'
     user_account:
-        manager: 'OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\UserAccountManager'
         repository: 'OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\UserAccountRepository'
     access_token:
         repository: 'OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\AccessTokenRepository'
@@ -120,9 +119,10 @@ oauth2_server:
             path: '/session/manager/iframe'
         authorization:
             enabled: true
-            path: '/authorize'
-            login_route_name: 'app_login'
-            user_account_discovery: 'OAuth2Framework\ServerBundle\Service\SymfonyUserDiscovery'
+            user_discovery: 'OAuth2Framework\ServerBundle\Tests\TestBundle\Service\SymfonyUserDiscovery'
+            login_handler: 'OAuth2Framework\ServerBundle\Tests\TestBundle\Handler\LoginHandler'
+            consent_handler: 'OAuth2Framework\ServerBundle\Tests\TestBundle\Handler\ConsentHandler'
+            select_account_handler: 'OAuth2Framework\ServerBundle\Tests\TestBundle\Handler\SelectAccountHandler'
             enforce_state: false
             response_mode:
                 allow_response_mode_parameter: true
@@ -158,6 +158,7 @@ oauth2_server:
             enabled: true
         resource_owner_password_credential:
             enabled: true
+            password_credential_manager: 'OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\ResourceOwnerPasswordCredentialManager'
         jwt_bearer:
             enabled: true
             signature_algorithms: ['RS256', 'RS512', 'HS256', 'HS512', 'ES256', 'ES512']

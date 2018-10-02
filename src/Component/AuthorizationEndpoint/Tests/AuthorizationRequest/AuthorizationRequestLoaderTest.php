@@ -11,7 +11,7 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Component\AuthorizationEndpoint\Tests;
+namespace OAuth2Framework\Component\AuthorizationEndpoint\Tests\AuthorizationRequest;
 
 use Http\Mock\Client;
 use Jose\Component\Checker\ClaimCheckerManager;
@@ -31,7 +31,7 @@ use Zend\Diactoros\Uri;
 
 /**
  * @group AuthorizationEndpoint
- * @group AuthorizationRequestLoader
+ * @group AuthorizationRequest
  */
 final class AuthorizationRequestLoaderTest extends TestCase
 {

@@ -51,7 +51,7 @@ final class GrantTypesRule implements Rule
                 throw new \InvalidArgumentException('The parameter "grant_types" must be an array of strings.');
             }
             if (!$this->grantTypeManager->has($grant_type)) {
-                throw new \InvalidArgumentException(\sprintf('The grant_type "%s" is not supported by this server.', $grant_type));
+                throw new \InvalidArgumentException(\Safe\sprintf('The grant_type "%s" is not supported by this server.', $grant_type));
             }
         }
     }
@@ -70,7 +70,7 @@ final class GrantTypesRule implements Rule
             $type = $this->grantTypeManager->get($grantType);
             $diff = \array_diff($type->associatedResponseTypes(), $list);
             if (!empty($diff)) {
-                throw new \InvalidArgumentException(\sprintf('The grant type "%s" requires the following response type(s): %s.', $grantType, \implode(', ', $diff)));
+                throw new \InvalidArgumentException(\Safe\sprintf('The grant type "%s" requires the following response type(s): %s.', $grantType, \implode(', ', $diff)));
             }
         }
     }

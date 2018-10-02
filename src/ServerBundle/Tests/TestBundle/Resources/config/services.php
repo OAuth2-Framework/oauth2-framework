@@ -20,11 +20,15 @@ use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\AuthorizationCodeReposi
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\ClientRepository;
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\InitialAccessTokenRepository;
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\RefreshTokenRepository;
+use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\ResourceOwnerPasswordCredentialManager;
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\ResourceServerRepository;
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\ScopeRepository;
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\TrustedIssuerRepository;
-use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\UserAccountManager;
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\UserAccountRepository;
+use OAuth2Framework\ServerBundle\Tests\TestBundle\Handler\ConsentHandler;
+use OAuth2Framework\ServerBundle\Tests\TestBundle\Handler\LoginHandler;
+use OAuth2Framework\ServerBundle\Tests\TestBundle\Handler\SelectAccountHandler;
+use OAuth2Framework\ServerBundle\Tests\TestBundle\Service\SymfonyUserDiscovery;
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Service\UserProvider;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
@@ -38,7 +42,7 @@ return function (ContainerConfigurator $container) {
 
     $container->set(RefreshTokenRepository::class);
 
-    $container->set(UserAccountManager::class);
+    $container->set(ResourceOwnerPasswordCredentialManager::class);
 
     $container->set(UserAccountRepository::class);
 
@@ -46,10 +50,9 @@ return function (ContainerConfigurator $container) {
 
     $container->set(TrustedIssuerRepository::class);
 
-    $container->set(UserProvider::class)/*
-        ->args([
-            ref(UserRepository::class),
-        ])*/;
+    $container->set(UserProvider::class);
+
+    $container->set(SymfonyUserDiscovery::class);
 
     $container->set(AccessTokenIdGenerator::class);
 
@@ -74,4 +77,8 @@ return function (ContainerConfigurator $container) {
 
     /*$container->set(ResourceServerAuthMethodByIpAddress::class)
         ->tag('token_introspection_endpoint_auth_method');*/
+
+    $container->set(ConsentHandler::class);
+    $container->set(LoginHandler::class);
+    $container->set(SelectAccountHandler::class);
 };

@@ -37,7 +37,6 @@ final class ResponseTypesRule implements Rule
 
         $validatedParameters->set('response_types', $commandParameters->get('response_types'));
         $validatedParameters = $next->handle($clientId, $commandParameters, $validatedParameters);
-        //$this->checkGrantTypes($validatedParameters);
 
         return $validatedParameters;
     }
@@ -50,18 +49,6 @@ final class ResponseTypesRule implements Rule
         foreach ($parameters->get('response_types') as $grant_type) {
             if (!\is_string($grant_type)) {
                 throw new \InvalidArgumentException('The parameter "response_types" must be an array of strings.');
-            }
-        }
-    }
-
-    private function checkGrantTypes(DataBag $parameters)
-    {
-        $grantTypes = $parameters->has('grant_types') ? $parameters->get('grant_types') : [];
-        foreach ($parameters->get('response_types') as $responseType) {
-            $type = $this->responseTypeManager->get($responseType);
-            $diff = \array_diff($type->associatedGrantTypes(), $grantTypes);
-            if (!empty($diff)) {
-                throw new \InvalidArgumentException(\sprintf('The response type "%s" requires the following grant type(s): %s.', $responseType, \implode(', ', $diff)));
             }
         }
     }

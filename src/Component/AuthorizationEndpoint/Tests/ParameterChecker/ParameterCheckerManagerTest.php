@@ -51,10 +51,9 @@ final class ParameterCheckerManagerTest extends TestCase
         ]);
 
         try {
-            $this->getParameterCheckerManager()->process($authorization);
+            $this->getParameterCheckerManager()->check($authorization);
             static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2AuthorizationException $e) {
-            static::assertEquals(400, $e->getCode());
             static::assertEquals('invalid_request', $e->getMessage());
             static::assertEquals('Invalid parameter "display". Allowed values are page, popup, touch, wap', $e->getErrorDescription());
         }
@@ -75,10 +74,9 @@ final class ParameterCheckerManagerTest extends TestCase
         ]);
 
         try {
-            $this->getParameterCheckerManager()->process($authorization);
+            $this->getParameterCheckerManager()->check($authorization);
             static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2AuthorizationException $e) {
-            static::assertEquals(400, $e->getCode());
             static::assertEquals('invalid_request', $e->getMessage());
             static::assertEquals('Invalid parameter "prompt". Allowed values are none, login, consent, select_account', $e->getErrorDescription());
         }
@@ -99,10 +97,9 @@ final class ParameterCheckerManagerTest extends TestCase
         ]);
 
         try {
-            $this->getParameterCheckerManager()->process($authorization);
+            $this->getParameterCheckerManager()->check($authorization);
             static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2AuthorizationException $e) {
-            static::assertEquals(400, $e->getCode());
             static::assertEquals('invalid_request', $e->getMessage());
             static::assertEquals('Invalid parameter "prompt". Prompt value "none" must be used alone.', $e->getErrorDescription());
         }
@@ -121,10 +118,9 @@ final class ParameterCheckerManagerTest extends TestCase
         $authorization = new AuthorizationRequest($client, []);
 
         try {
-            $this->getParameterCheckerManager()->process($authorization);
+            $this->getParameterCheckerManager()->check($authorization);
             static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2AuthorizationException $e) {
-            static::assertEquals(400, $e->getCode());
             static::assertEquals('invalid_request', $e->getMessage());
             static::assertEquals('The parameter "redirect_uri" is mandatory.', $e->getErrorDescription());
         }
@@ -145,10 +141,9 @@ final class ParameterCheckerManagerTest extends TestCase
         ]);
 
         try {
-            $this->getParameterCheckerManager()->process($authorization);
+            $this->getParameterCheckerManager()->check($authorization);
             static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2AuthorizationException $e) {
-            static::assertEquals(400, $e->getCode());
             static::assertEquals('invalid_request', $e->getMessage());
             static::assertEquals('The parameter "response_type" is mandatory.', $e->getErrorDescription());
         }
@@ -173,10 +168,9 @@ final class ParameterCheckerManagerTest extends TestCase
         ]);
 
         try {
-            $this->getParameterCheckerManager()->process($authorization);
+            $this->getParameterCheckerManager()->check($authorization);
             static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2AuthorizationException $e) {
-            static::assertEquals(400, $e->getCode());
             static::assertEquals('invalid_request', $e->getMessage());
             static::assertEquals('The response mode "foo" is not supported. Please use one of the following values: query, fragment.', $e->getErrorDescription());
         }
@@ -198,10 +192,9 @@ final class ParameterCheckerManagerTest extends TestCase
         ]);
 
         try {
-            $this->getParameterCheckerManager()->process($authorization);
+            $this->getParameterCheckerManager()->check($authorization);
             static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2AuthorizationException $e) {
-            static::assertEquals(400, $e->getCode());
             static::assertEquals('invalid_request', $e->getMessage());
             static::assertEquals('The response type "bar" is not supported by this server', $e->getErrorDescription());
         }
@@ -223,10 +216,9 @@ final class ParameterCheckerManagerTest extends TestCase
         ]);
 
         try {
-            $this->getParameterCheckerManager()->process($authorization);
+            $this->getParameterCheckerManager()->check($authorization);
             static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2AuthorizationException $e) {
-            static::assertEquals(400, $e->getCode());
             static::assertEquals('invalid_request', $e->getMessage());
             static::assertEquals('The response type "foo" is not allowed for this client.', $e->getErrorDescription());
         }
@@ -253,7 +245,7 @@ final class ParameterCheckerManagerTest extends TestCase
             'response_mode' => 'fragment',
         ]);
 
-        $authorization = $this->getParameterCheckerManager()->process($authorization);
+        $this->getParameterCheckerManager()->check($authorization);
 
         static::assertInstanceOf(FragmentResponseMode::class, $authorization->getResponseMode());
         static::assertInstanceOf(ResponseType::class, $authorization->getResponseType());

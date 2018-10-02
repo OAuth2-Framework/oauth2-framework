@@ -14,8 +14,6 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker;
 
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
-use OAuth2Framework\Component\AuthorizationEndpoint\Exception\OAuth2AuthorizationException;
-use OAuth2Framework\Component\Core\Message\OAuth2Error;
 
 final class PromptParameterChecker implements ParameterChecker
 {
@@ -27,21 +25,18 @@ final class PromptParameterChecker implements ParameterChecker
 
     public const PROMPT_SELECT_ACCOUNT = 'select_account';
 
-    public function check(AuthorizationRequest $authorization)
+    public function check(AuthorizationRequest $authorization): void
     {
-        try {
-            if ($authorization->hasQueryParam('prompt')) {
-                $prompt = $authorization->getPrompt();
-                $diff = \array_diff($prompt, $this->getAllowedPromptValues());
-                if (!empty($diff)) {
-                    throw new \InvalidArgumentException(\sprintf('Invalid parameter "prompt". Allowed values are %s', \implode(', ', $this->getAllowedPromptValues())));
-                }
-                if (\in_array('none', $prompt, true) && 1 !== \count($prompt)) {
-                    throw new \InvalidArgumentException('Invalid parameter "prompt". Prompt value "none" must be used alone.');
-                }
-            }
-        } catch (\InvalidArgumentException $e) {
-            throw new OAuth2AuthorizationException(400, OAuth2Error::ERROR_INVALID_REQUEST, $e->getMessage(), $authorization, $e);
+        if (!$authorization->hasQueryParam('prompt')) {
+            return;
+        }
+        $prompt = $authorization->getPrompt();
+        $diff = \array_diff($prompt, $this->getAllowedPromptValues());
+        if (!empty($diff)) {
+            throw new \InvalidArgumentException(\Safe\sprintf('Invalid parameter "prompt". Allowed values are %s', \implode(', ', $this->getAllowedPromptValues())));
+        }
+        if (\in_array('none', $prompt, true) && 1 !== \count($prompt)) {
+            throw new \InvalidArgumentException('Invalid parameter "prompt". Prompt value "none" must be used alone.');
         }
     }
 

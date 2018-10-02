@@ -30,37 +30,13 @@ final class AuthorizationExceptionMiddleware implements MiddlewareInterface
         } catch (OAuth2AuthorizationException $e) {
             $redirectUri = $e->getAuthorization()->getRedirectUri();
             $responseMode = $e->getAuthorization()->getResponseMode();
-            if (null !== $redirectUri && null !== $responseMode) {
-                throw new OAuth2Error(
-                    303,
-                    $e->getMessage(),
-                    $e->getErrorDescription(),
-                    [
-                        'response_mode' => $responseMode,
-                        'redirect_uri' => $redirectUri,
-                    ],
-                    $e
-                );
-            }
-            if (null !== $redirectUri) {
-                throw new OAuth2Error(
-                    303,
-                    $e->getMessage(),
-                    $e->getErrorDescription(),
-                    [
-                        'response_mode' => new QueryResponseMode(),
-                        'redirect_uri' => $redirectUri,
-                    ],
-                    $e
-                );
-            } else {
-                throw new OAuth2Error(
-                    400,
-                    $e->getMessage(),
-                    $e->getErrorDescription(),
-                    [],
-                    $e
-                );
+            switch (true) {
+                case null !== $redirectUri && null !== $responseMode:
+                    throw new OAuth2Error(303, $e->getMessage(), $e->getErrorDescription(), ['response_mode' => $responseMode, 'redirect_uri' => $redirectUri], $e);
+                case null !== $redirectUri:
+                    throw new OAuth2Error(303, $e->getMessage(), $e->getErrorDescription(), ['response_mode' => new QueryResponseMode(), 'redirect_uri' => $redirectUri], $e);
+                default:
+                    throw new OAuth2Error(400, $e->getMessage(), $e->getErrorDescription(), [], $e);
             }
         }
     }

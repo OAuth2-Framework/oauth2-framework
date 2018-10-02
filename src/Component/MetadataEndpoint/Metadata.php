@@ -28,7 +28,7 @@ class Metadata implements \JsonSerializable
     public function get(string $key)
     {
         if (!$this->has($key)) {
-            throw new \InvalidArgumentException(\sprintf('The value with key "%s" does not exist.', $key));
+            throw new \InvalidArgumentException(\Safe\sprintf('The value with key "%s" does not exist.', $key));
         }
 
         return $this->values[$key];

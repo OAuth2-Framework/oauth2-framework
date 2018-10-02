@@ -19,6 +19,7 @@ use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServer;
 use OAuth2Framework\Component\Core\TokenType\TokenType;
+use OAuth2Framework\Component\Core\User\User;
 use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 
 class AuthorizationRequest
@@ -34,6 +35,11 @@ class AuthorizationRequest
     private $client;
 
     /**
+     * @var User|null
+     */
+    private $user = null;
+
+    /**
      * @var UserAccount|null
      */
     private $userAccount = null;
@@ -42,16 +48,6 @@ class AuthorizationRequest
      * @var DataBag
      */
     private $metadata;
-
-    /**
-     * @var null|bool
-     */
-    private $userAccountFullyAuthenticated = null;
-
-    /**
-     * @var array
-     */
-    private $data = [];
 
     /**
      * @var TokenType|null
@@ -118,7 +114,7 @@ class AuthorizationRequest
     public function getQueryParam(string $param)
     {
         if (!$this->hasQueryParam($param)) {
-            throw new \InvalidArgumentException(\sprintf('Invalid parameter "%s".', $param));
+            throw new \InvalidArgumentException(\Safe\sprintf('Invalid parameter "%s".', $param));
         }
 
         return $this->queryParameters[$param];
@@ -162,7 +158,6 @@ class AuthorizationRequest
     public function setRedirectUri(string $redirectUri): void
     {
         $this->redirectUri = $redirectUri;
-        $this->metadata->set('redirect_uri', $redirectUri);
     }
 
     public function getRedirectUri(): ?string
@@ -170,10 +165,19 @@ class AuthorizationRequest
         return $this->redirectUri;
     }
 
-    public function setUserAccount(UserAccount $userAccount, bool $isFullyAuthenticated): void
+    public function setUser(User $user): void
+    {
+        $this->user = $user;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUserAccount(UserAccount $userAccount): void
     {
         $this->userAccount = $userAccount;
-        $this->userAccountFullyAuthenticated = $isFullyAuthenticated;
     }
 
     public function getUserAccount(): ?UserAccount
@@ -194,7 +198,7 @@ class AuthorizationRequest
     public function getResponseParameter(string $param)
     {
         if (!$this->hasResponseParameter($param)) {
-            throw new \InvalidArgumentException(\sprintf('Invalid response parameter "%s".', $param));
+            throw new \InvalidArgumentException(\Safe\sprintf('Invalid response parameter "%s".', $param));
         }
 
         return $this->getResponseParameters()[$param];
@@ -213,11 +217,6 @@ class AuthorizationRequest
     public function getResponseHeaders(): array
     {
         return $this->responseHeaders;
-    }
-
-    public function isUserAccountFullyAuthenticated(): ?bool
-    {
-        return $this->userAccountFullyAuthenticated;
     }
 
     /**
@@ -265,25 +264,6 @@ class AuthorizationRequest
         $this->authorized = false;
     }
 
-    public function hasData(string $key): bool
-    {
-        return \array_key_exists($key, $this->data);
-    }
-
-    public function getData(string $key)
-    {
-        if (!$this->hasData($key)) {
-            throw new \InvalidArgumentException(\sprintf('Invalid data "%s".', $key));
-        }
-
-        return $this->data[$key];
-    }
-
-    public function setData(string $key, $data): void
-    {
-        $this->data[$key] = $data;
-    }
-
     public function getResourceServer(): ?ResourceServer
     {
         return $this->resourceServer;
@@ -297,15 +277,6 @@ class AuthorizationRequest
     public function setConsentScreenOption(string $option, $value): void
     {
         $this->consentScreenOptions[$option] = $value;
-    }
-
-    public function unsetConsentScreenOption(string $option): void
-    {
-        if (!\array_key_exists($option, $this->consentScreenOptions)) {
-            return;
-        }
-
-        unset($this->consentScreenOptions[$option]);
     }
 
     public function hasScope(): bool

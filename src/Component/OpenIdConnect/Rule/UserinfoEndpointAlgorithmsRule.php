@@ -62,7 +62,7 @@ final class UserinfoEndpointAlgorithmsRule implements Rule
     {
         $algorithm = $commandParameters->get($parameter);
         if (!\is_string($algorithm) || !\in_array($algorithm, $allowedAlgorithms, true)) {
-            throw new \InvalidArgumentException(\sprintf('The parameter "%s" must be an algorithm supported by this server. Please choose one of the following value(s): %s', $parameter, \implode(', ', $allowedAlgorithms)));
+            throw new \InvalidArgumentException(\Safe\sprintf('The parameter "%s" must be an algorithm supported by this server. Please choose one of the following value(s): %s', $parameter, \implode(', ', $allowedAlgorithms)));
         }
     }
 }

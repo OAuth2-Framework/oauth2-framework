@@ -72,7 +72,7 @@ class OAuth2MessageFactoryManager
     private function getFactory(int $code): ResponseFactory
     {
         if (!\array_key_exists($code, $this->responseFactories)) {
-            throw new \InvalidArgumentException(\sprintf('The response code "%d" is not supported', $code));
+            throw new \InvalidArgumentException(\Safe\sprintf('The response code "%d" is not supported', $code));
         }
 
         return $this->responseFactories[$code];

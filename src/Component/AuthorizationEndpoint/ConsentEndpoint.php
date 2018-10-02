@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\AuthorizationEndpoint;
 
 use Http\Message\ResponseFactory;
+use OAuth2Framework\Component\AuthorizationEndpoint\Exception\OAuth2AuthorizationException;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -32,9 +33,9 @@ abstract class ConsentEndpoint extends AbstractEndpoint
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
+        $authorizationId = $this->getAuthorizationId($request);
+        $authorization = $this->getAuthorization($authorizationId);
         try {
-            $authorizationId = $this->getAuthorizationId($request);
-            $authorization = $this->getAuthorization($authorizationId);
             $this->consentHandler->prepare($request, $authorizationId, $authorization);
             if (!$this->consentHandler->hasBeenProcessed($request, $authorizationId, $authorization)) {
                 $redirectTo = $this->getRouteFor('authorization_process_endpoint', $authorizationId);
@@ -43,8 +44,10 @@ abstract class ConsentEndpoint extends AbstractEndpoint
             }
 
             return $this->consentHandler->process($request, $authorizationId, $authorization);
+        } catch (OAuth2Error $e) {
+            throw new OAuth2AuthorizationException($e->getMessage(), $e->getErrorDescription(), $authorization);
         } catch (\Exception $e) {
-            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST, null);
+            throw new OAuth2AuthorizationException(OAuth2Error::ERROR_INVALID_REQUEST, $e->getMessage(), $authorization);
         }
     }
 

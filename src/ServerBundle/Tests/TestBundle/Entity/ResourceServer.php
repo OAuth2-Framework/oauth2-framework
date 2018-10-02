@@ -29,4 +29,9 @@ class ResourceServer implements ResourceServerInterface
     {
         return $this->resourceServerId;
     }
+
+    public function getAuthenticationMethod(): string
+    {
+        return 'none';
+    }
 }

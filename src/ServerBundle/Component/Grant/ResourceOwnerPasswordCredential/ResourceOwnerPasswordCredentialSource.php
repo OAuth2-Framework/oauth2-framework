@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Component\Grant\ResourceOwnerPasswordCredential;
 
+use OAuth2Framework\Component\ResourceOwnerPasswordCredentialsGrant\ResourceOwnerPasswordCredentialManager;
 use OAuth2Framework\Component\ResourceOwnerPasswordCredentialsGrant\ResourceOwnerPasswordCredentialsGrantType;
 use OAuth2Framework\ServerBundle\Component\Component;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
@@ -34,6 +35,8 @@ class ResourceOwnerPasswordCredentialSource implements Component
         }
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/grant'));
         $loader->load('resource_owner_password_credential.php');
+
+        $container->setAlias(ResourceOwnerPasswordCredentialManager::class, $configs['grant']['resource_owner_password_credential']['password_credential_manager']);
     }
 
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
@@ -44,6 +47,12 @@ class ResourceOwnerPasswordCredentialSource implements Component
         $node->children()
             ->arrayNode('resource_owner_password_credential')
             ->canBeEnabled()
+            ->children()
+            ->scalarNode('password_credential_manager')
+            ->info('The password credential manager.')
+            ->isRequired()
+            ->end()
+            ->end()
             ->end()
             ->end();
     }

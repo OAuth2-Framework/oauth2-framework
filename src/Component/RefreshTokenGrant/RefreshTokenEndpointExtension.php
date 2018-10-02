@@ -44,7 +44,7 @@ final class RefreshTokenEndpointExtension implements TokenEndpointExtension
         $result = $next($client, $resourceOwner, $accessToken);
         $scope = $accessToken->getParameter()->has('scope') ? \explode(' ', $accessToken->getParameter()->get('scope')) : [];
         if (\in_array('offline_access', $scope, true)) {
-            $expiresAt = new \DateTimeImmutable(\sprintf('now +%u seconds', $this->lifetime));
+            $expiresAt = new \DateTimeImmutable(\Safe\sprintf('now +%u seconds', $this->lifetime));
             $refreshTokenId = $this->refreshTokenIdGenerator->createRefreshTokenId();
             $refreshToken = new RefreshToken(
                 $refreshTokenId,

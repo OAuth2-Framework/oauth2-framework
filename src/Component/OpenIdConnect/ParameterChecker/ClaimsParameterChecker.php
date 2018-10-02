@@ -14,25 +14,20 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\OpenIdConnect\ParameterChecker;
 
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
-use OAuth2Framework\Component\AuthorizationEndpoint\Exception\OAuth2AuthorizationException;
 use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\ParameterChecker;
-use OAuth2Framework\Component\Core\Message\OAuth2Error;
 
 final class ClaimsParameterChecker implements ParameterChecker
 {
-    public function check(AuthorizationRequest $authorization)
+    public function check(AuthorizationRequest $authorization): void
     {
-        try {
-            if ($authorization->hasQueryParam('claims')) {
-                $decoded = \json_decode($authorization->getQueryParam('claims'), true);
-                if (!\is_array($decoded)) {
-                    throw new \InvalidArgumentException('Invalid "claims" parameter.');
-                }
-
-                $authorization->getMetadata()->set('claims', $authorization->getQueryParam('claims'));
-            }
-        } catch (\InvalidArgumentException $e) {
-            throw new OAuth2AuthorizationException(400, OAuth2Error::ERROR_INVALID_REQUEST, $e->getMessage(), $authorization, $e);
+        if (!$authorization->hasQueryParam('claims')) {
+            return;
         }
+        $decoded = \Safe\json_decode($authorization->getQueryParam('claims'), true);
+        if (!\is_array($decoded)) {
+            throw new \InvalidArgumentException('Invalid "claims" parameter.');
+        }
+
+        $authorization->getMetadata()->set('claims', $authorization->getQueryParam('claims'));
     }
 }

@@ -34,7 +34,7 @@ class TokenTypeCompilerPass implements CompilerPassInterface
         foreach ($taggedServices as $id => $tags) {
             foreach ($tags as $attributes) {
                 if (!\array_key_exists('scheme', $attributes)) {
-                    throw new \InvalidArgumentException(\sprintf('The token type "%s" does not have any "scheme" attribute.', $id));
+                    throw new \InvalidArgumentException(\Safe\sprintf('The token type "%s" does not have any "scheme" attribute.', $id));
                 }
                 $is_default = $default === $attributes['scheme'];
                 $token_type_names[] = $attributes['scheme'];
@@ -46,7 +46,7 @@ class TokenTypeCompilerPass implements CompilerPassInterface
         }
 
         if (!$default_found) {
-            throw new \InvalidArgumentException(\sprintf('Unable to find the token type "%s". Available token types are: %s.', $default, \implode(', ', $token_type_names)));
+            throw new \InvalidArgumentException(\Safe\sprintf('Unable to find the token type "%s". Available token types are: %s.', $default, \implode(', ', $token_type_names)));
         }
     }
 }

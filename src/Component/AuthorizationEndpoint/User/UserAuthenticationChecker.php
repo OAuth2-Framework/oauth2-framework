@@ -11,11 +11,11 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Component\AuthorizationEndpoint\UserAccount;
+namespace OAuth2Framework\Component\AuthorizationEndpoint\User;
 
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
 
-interface UserAccountChecker
+interface UserAuthenticationChecker
 {
-    public function check(AuthorizationRequest $authorization): void;
+    public function isAuthenticationNeeded(AuthorizationRequest $authorization): bool;
 }

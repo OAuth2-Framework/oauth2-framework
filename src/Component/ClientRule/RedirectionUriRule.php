@@ -91,7 +91,7 @@ final class RedirectionUriRule implements Rule
             if (null === $parsed['scheme'] || null === $parsed['path']) {
                 throw new \InvalidArgumentException('The parameter "redirect_uris" must be a list of URI or URN.');
             }
-            if (1 === \preg_match('#/\.\.?(/|$)#', $parsed['path'])) {
+            if (1 === \Safe\preg_match('#/\.\.?(/|$)#', $parsed['path'])) {
                 throw new \InvalidArgumentException('The URI listed in the "redirect_uris" parameter must not contain any path traversal.');
             }
             if (null !== $parsed['fragment']) {
@@ -110,7 +110,7 @@ final class RedirectionUriRule implements Rule
 
     private function checkUrn(string $urn)
     {
-        if (1 !== \preg_match('/^urn:[a-z0-9][a-z0-9-]{0,31}:([a-z0-9()+,-.:=@;$_!*\']|%(0[1-9a-f]|[1-9a-f][0-9a-f]))+$/i', $urn)) {
+        if (1 !== \Safe\preg_match('/^urn:[a-z0-9][a-z0-9-]{0,31}:([a-z0-9()+,-.:=@;$_!*\']|%(0[1-9a-f]|[1-9a-f][0-9a-f]))+$/i', $urn)) {
             throw new \InvalidArgumentException('The parameter "redirect_uris" must be a list of URI or URN.');
         }
     }

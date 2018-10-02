@@ -16,16 +16,16 @@ namespace OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker;
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
 
 /**
- * Class StateParameterChecker.
- *
  * @see http://tools.ietf.org/html/rfc6749#section-3.1.2
  */
 final class StateParameterChecker implements ParameterChecker
 {
-    public function check(AuthorizationRequest $authorization)
+    public function check(AuthorizationRequest $authorization): void
     {
-        if (true === $authorization->hasQueryParam('state')) {
-            $authorization->setResponseParameter('state', $authorization->getQueryParam('state'));
+        if (!$authorization->hasQueryParam('state')) {
+            return;
         }
+
+        $authorization->setResponseParameter('state', $authorization->getQueryParam('state'));
     }
 }

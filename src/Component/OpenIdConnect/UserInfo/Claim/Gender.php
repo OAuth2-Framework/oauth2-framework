@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\OpenIdConnect\UserInfo\Claim;
 
+use OAuth2Framework\Component\Core\User\User;
 use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 
 final class Gender implements Claim
@@ -24,14 +25,14 @@ final class Gender implements Claim
         return self::CLAIM_NAME;
     }
 
-    public function isAvailableForUserAccount(UserAccount $userAccount, ?string $claimLocale): bool
+    public function isAvailableForUserAccount(User $user, UserAccount $userAccount, ?string $claimLocale): bool
     {
         return $userAccount->has(
             $this->getComputedClaimName($claimLocale)
         );
     }
 
-    public function getForUserAccount(UserAccount $userAccount, ?string $claimLocale)
+    public function getForUserAccount(User $user, UserAccount $userAccount, ?string $claimLocale)
     {
         return $userAccount->get(
             $this->getComputedClaimName($claimLocale)
@@ -40,6 +41,6 @@ final class Gender implements Claim
 
     private function getComputedClaimName(?string $claimLocale): string
     {
-        return $claimLocale ? \sprintf('%s#%s', self::CLAIM_NAME, $claimLocale) : self::CLAIM_NAME;
+        return $claimLocale ? \Safe\sprintf('%s#%s', self::CLAIM_NAME, $claimLocale) : self::CLAIM_NAME;
     }
 }

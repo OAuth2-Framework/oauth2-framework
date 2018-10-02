@@ -27,7 +27,7 @@ class TestExtension extends Extension
             'services',
         ];
         foreach ($files as $basename) {
-            $loader->load(\sprintf('%s.php', $basename));
+            $loader->load(\Safe\sprintf('%s.php', $basename));
         }
     }
 }

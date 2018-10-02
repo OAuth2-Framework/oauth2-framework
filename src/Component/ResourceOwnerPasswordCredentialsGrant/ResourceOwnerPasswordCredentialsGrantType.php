@@ -14,8 +14,6 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\ResourceOwnerPasswordCredentialsGrant;
 
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
-use OAuth2Framework\Component\Core\UserAccount\UserAccountManager;
-use OAuth2Framework\Component\Core\UserAccount\UserAccountRepository;
 use OAuth2Framework\Component\Core\Util\RequestBodyParser;
 use OAuth2Framework\Component\TokenEndpoint\GrantType;
 use OAuth2Framework\Component\TokenEndpoint\GrantTypeData;
@@ -23,13 +21,11 @@ use Psr\Http\Message\ServerRequestInterface;
 
 final class ResourceOwnerPasswordCredentialsGrantType implements GrantType
 {
-    private $userAccountManager;
-    private $userAccountRepository;
+    private $resourceOwnerPasswordCredentialManager;
 
-    public function __construct(UserAccountManager $userAccountManager, UserAccountRepository $userAccountRepository)
+    public function __construct(ResourceOwnerPasswordCredentialManager $resourceOwnerPasswordCredentialManager)
     {
-        $this->userAccountManager = $userAccountManager;
-        $this->userAccountRepository = $userAccountRepository;
+        $this->resourceOwnerPasswordCredentialManager = $resourceOwnerPasswordCredentialManager;
     }
 
     public function associatedResponseTypes(): array
@@ -49,7 +45,7 @@ final class ResourceOwnerPasswordCredentialsGrantType implements GrantType
 
         $diff = \array_diff($requiredParameters, \array_keys($parameters));
         if (!empty($diff)) {
-            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST, \sprintf('Missing grant type parameter(s): %s.', \implode(', ', $diff)));
+            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST, \Safe\sprintf('Missing grant type parameter(s): %s.', \implode(', ', $diff)));
         }
     }
 
@@ -65,12 +61,12 @@ final class ResourceOwnerPasswordCredentialsGrantType implements GrantType
         $username = $parameters['username'];
         $password = $parameters['password'];
 
-        $userAccount = $this->userAccountRepository->findOneByUsername($username);
-        if (null === $userAccount || !$this->userAccountManager->isPasswordCredentialValid($userAccount, $password)) {
+        $resourceOwnerId = $this->resourceOwnerPasswordCredentialManager->findResourceOwnerIdWithUsernameAndPassword($username, $password);
+        if (!$resourceOwnerId) {
             throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_GRANT, 'Invalid username and password combination.');
         }
 
-        $grantTypeData->setResourceOwnerId($userAccount->getUserAccountId());
+        $grantTypeData->setResourceOwnerId($resourceOwnerId);
 
         return $grantTypeData;
     }

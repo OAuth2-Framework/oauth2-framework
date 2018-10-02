@@ -13,43 +13,31 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Tests\TestBundle\Entity;
 
-use OAuth2Framework\Component\Core\UserAccount\UserAccount;
+use OAuth2Framework\Component\Core\UserAccount\UserAccount as BaseUserAccount;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountRepository as UserAccountRepositoryInterface;
 
 class UserAccountRepository implements UserAccountRepositoryInterface
 {
-    private $usersByUsername = [];
-
-    private $usersByPublicId = [];
+    /**
+     * @var UserAccount[]
+     */
+    private $userAccounts = [];
 
     public function __construct()
     {
-        foreach ($this->getUsers() as $userInformation) {
-            $user = new User(
-                $userInformation['username'],
-                $userInformation['password'],
-                $userInformation['salt'],
-                $userInformation['roles'],
-                $userInformation['oauth2Passwords'],
-                $userInformation['public_id'],
-                $userInformation['last_login_at'],
-                $userInformation['last_update_at'],
-                $userInformation['parameters']
+        foreach ($this->getUsers() as $data) {
+            $userAccount = new UserAccount(
+                new UserAccountId($data['public_id']),
+                $data['parameters']
             );
-            $this->usersByUsername[$userInformation['username']] = $user;
-            $this->usersByPublicId[$userInformation['public_id']->getValue()] = $user;
+            $this->userAccounts[$data['public_id']] = $userAccount;
         }
     }
 
-    public function findOneByUsername(string $username): ?UserAccount
+    public function find(UserAccountId $publicId): ?BaseUserAccount
     {
-        return \array_key_exists($username, $this->usersByUsername) ? $this->usersByUsername[$username] : null;
-    }
-
-    public function find(UserAccountId $publicId): ?UserAccount
-    {
-        return \array_key_exists($publicId->getValue(), $this->usersByPublicId) ? $this->usersByPublicId[$publicId->getValue()] : null;
+        return \array_key_exists($publicId->getValue(), $this->userAccounts) ? $this->userAccounts[$publicId->getValue()] : null;
     }
 
     private function getUsers(): array
@@ -57,18 +45,7 @@ class UserAccountRepository implements UserAccountRepositoryInterface
         return [
             [
                 'id' => 'john.1',
-                'public_id' => new UserAccountId('john.1'),
-                'username' => 'john.1',
-                'password' => 'secret',
-                'salt' => null,
-                'roles' => ['ROLE_USER'],
-                'last_login_at' => new \DateTimeImmutable('now -100 seconds'),
-                'last_update_at' => new \DateTimeImmutable('now -2 hours'),
-                'amr' => ['password' => 'otp'],
-                'acr' => 0,
                 'parameters' => [
-                    'password' => 'doe',
-                    'user' => 'john',
                     'address', [
                         'street_address' => '5 rue Sainte Anne',
                         'region' => 'Île de France',
@@ -97,22 +74,6 @@ class UserAccountRepository implements UserAccountRepositoryInterface
                     'website#fr' => 'https://john.doe.fr',
                     'picture#de' => 'https://john.doe.de/picture',
                 ],
-                'oauth2Passwords' => ['password.1'],
-            ],
-            [
-                'id' => 'john.2',
-                'public_id' => new UserAccountId('john.2'),
-                'username' => 'john.2',
-                'password' => 'secret',
-                'salt' => null,
-                'roles' => ['ROLE_USER'],
-                'last_login_at' => new \DateTimeImmutable('now -100 seconds'),
-                'last_update_at' => null,
-                'parameters' => [
-                    'password' => 'doe',
-                    'user' => 'john',
-                ],
-                'oauth2Passwords' => ['doe'],
             ],
         ];
     }

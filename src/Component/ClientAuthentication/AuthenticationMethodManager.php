@@ -55,7 +55,7 @@ class AuthenticationMethodManager
     public function get(string $name): AuthenticationMethod
     {
         if (!$this->has($name)) {
-            throw new \InvalidArgumentException(\sprintf('The token endpoint authentication method "%s" is not supported. Please use one of the following values: %s', $name, \implode(', ', $this->list())));
+            throw new \InvalidArgumentException(\Safe\sprintf('The token endpoint authentication method "%s" is not supported. Please use one of the following values: %s', $name, \implode(', ', $this->list())));
         }
         $class = $this->names[$name];
 
@@ -148,12 +148,12 @@ class AuthenticationMethodManager
         $add_comma = false === $position ? false : true;
 
         foreach ($parameters as $key => $value) {
-            $value = \is_string($value) ? \sprintf('"%s"', $value) : $value;
+            $value = \is_string($value) ? \Safe\sprintf('"%s"', $value) : $value;
             if (false === $add_comma) {
                 $add_comma = true;
-                $scheme = \sprintf('%s %s=%s', $scheme, $key, $value);
+                $scheme = \Safe\sprintf('%s %s=%s', $scheme, $key, $value);
             } else {
-                $scheme = \sprintf('%s,%s=%s', $scheme, $key, $value);
+                $scheme = \Safe\sprintf('%s,%s=%s', $scheme, $key, $value);
             }
         }
 

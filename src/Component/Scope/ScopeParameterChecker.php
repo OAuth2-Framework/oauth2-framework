@@ -14,9 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\Scope;
 
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
-use OAuth2Framework\Component\AuthorizationEndpoint\Exception\OAuth2AuthorizationException;
 use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\ParameterChecker;
-use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use OAuth2Framework\Component\Scope\Policy\ScopePolicyManager;
 
 class ScopeParameterChecker implements ParameterChecker
@@ -31,31 +29,34 @@ class ScopeParameterChecker implements ParameterChecker
         $this->scopePolicyManager = $scopePolicyManager;
     }
 
-    public function check(AuthorizationRequest $authorization)
+    public function check(AuthorizationRequest $authorization): void
     {
-        try {
-            if ($authorization->hasQueryParam('scope')) {
-                $requestedScope = $authorization->getQueryParam('scope');
-                if (1 !== \preg_match('/^[\x20\x23-\x5B\x5D-\x7E]+$/', $requestedScope)) {
-                    throw new \InvalidArgumentException('Invalid characters found in the "scope" parameter.');
-                }
-            } else {
-                $requestedScope = '';
-            }
-            $requestedScope = $this->scopePolicyManager->apply($requestedScope, $authorization->getClient());
-            if (empty($requestedScope)) {
-                return $authorization;
-            }
-            $scopes = \explode(' ', $requestedScope);
-
-            $availableScopes = $this->scopeRepository->all();
-            if (0 !== \count(\array_diff($scopes, $availableScopes))) {
-                throw new \InvalidArgumentException(\sprintf('An unsupported scope was requested. Available scopes for the client are %s.', \implode(', ', $availableScopes)));
-            }
-            $authorization->getMetadata()->set('scope', \implode(' ', $scopes));
-            $authorization->setResponseParameter('scope', \implode(' ', $scopes));
-        } catch (\InvalidArgumentException $e) {
-            throw new OAuth2AuthorizationException(400, OAuth2Error::ERROR_INVALID_SCOPE, $e->getMessage(), $authorization, $e);
+        $requestedScope = $this->getRequestedScope($authorization);
+        $requestedScope = $this->scopePolicyManager->apply($requestedScope, $authorization->getClient());
+        if (empty($requestedScope)) {
+            return;
         }
+        $scopes = \explode(' ', $requestedScope);
+
+        $availableScopes = $this->scopeRepository->all();
+        if (0 !== \count(\array_diff($scopes, $availableScopes))) {
+            throw new \InvalidArgumentException(\Safe\sprintf('An unsupported scope was requested. Available scopes are %s.', \implode(', ', $availableScopes)));
+        }
+        $authorization->getMetadata()->set('scope', \implode(' ', $scopes));
+        $authorization->setResponseParameter('scope', \implode(' ', $scopes)); //TODO: should be done after consent depending on approved scope
+    }
+
+    private function getRequestedScope(AuthorizationRequest $authorization): string
+    {
+        if ($authorization->hasQueryParam('scope')) {
+            $requestedScope = $authorization->getQueryParam('scope');
+            if (1 !== \Safe\preg_match('/^[\x20\x23-\x5B\x5D-\x7E]+$/', $requestedScope)) {
+                throw new \InvalidArgumentException('Invalid characters found in the "scope" parameter.');
+            }
+        } else {
+            $requestedScope = '';
+        }
+
+        return $requestedScope;
     }
 }

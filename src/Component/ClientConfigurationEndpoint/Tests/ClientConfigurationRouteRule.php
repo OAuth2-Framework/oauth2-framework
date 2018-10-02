@@ -20,7 +20,7 @@ class ClientConfigurationRouteRule extends Base
 {
     protected function getRegistrationClientUri(ClientId $clientId): string
     {
-        return \sprintf('https://www.example.com/client/%s', $clientId->getValue());
+        return \Safe\sprintf('https://www.example.com/client/%s', $clientId->getValue());
     }
 
     protected function generateRegistrationAccessToken(): string

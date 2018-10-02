@@ -84,7 +84,7 @@ final class SoftwareRule implements Rule
             if (!\in_array($jws->getSignature($signatureVerified)->getProtectedHeaderParameter('alg'), $this->allowedSignatureAlgorithms, true)) {
                 throw new \InvalidArgumentException('Invalid Software Statement.');
             }
-            $claims = \json_decode($jws->getPayload(), true);
+            $claims = \Safe\json_decode($jws->getPayload(), true);
             if (!\is_array($claims)) {
                 throw new \InvalidArgumentException('Invalid Software Statement.');
             }

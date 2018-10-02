@@ -34,6 +34,6 @@ final class DataBagTest extends TestCase
         static::assertInstanceOf(DataBag::class, $data);
         static::assertTrue($data->has('foo'));
         static::assertFalse($data->has('---'));
-        static::assertEquals('{"foo":"BAR"}', \json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
+        static::assertEquals('{"foo":"BAR"}', \Safe\json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
     }
 }

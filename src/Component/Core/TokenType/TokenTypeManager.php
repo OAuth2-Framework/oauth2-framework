@@ -43,7 +43,7 @@ class TokenTypeManager
     public function get(string $tokenTypeName): TokenType
     {
         if (!$this->has($tokenTypeName)) {
-            throw new \InvalidArgumentException(\sprintf('Unsupported token type "%s".', $tokenTypeName));
+            throw new \InvalidArgumentException(\Safe\sprintf('Unsupported token type "%s".', $tokenTypeName));
         }
 
         return $this->tokenTypes[$tokenTypeName];
@@ -99,12 +99,12 @@ class TokenTypeManager
         $add_comma = false === $position ? false : true;
 
         foreach ($parameters as $key => $value) {
-            $value = \is_string($value) ? \sprintf('"%s"', $value) : $value;
+            $value = \is_string($value) ? \Safe\sprintf('"%s"', $value) : $value;
             if (false === $add_comma) {
                 $add_comma = true;
-                $scheme = \sprintf('%s %s=%s', $scheme, $key, $value);
+                $scheme = \Safe\sprintf('%s %s=%s', $scheme, $key, $value);
             } else {
-                $scheme = \sprintf('%s,%s=%s', $scheme, $key, $value);
+                $scheme = \Safe\sprintf('%s,%s=%s', $scheme, $key, $value);
             }
         }
 

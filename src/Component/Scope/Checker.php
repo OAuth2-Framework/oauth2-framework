@@ -19,13 +19,13 @@ class Checker
     {
         $scopes = \explode(' ', $scopes);
         if (1 < \count(\array_keys($scopes, $scope, true))) {
-            throw new \InvalidArgumentException(\sprintf('Scope "%s" appears more than once.', $scope));
+            throw new \InvalidArgumentException(\Safe\sprintf('Scope "%s" appears more than once.', $scope));
         }
     }
 
     public static function checkCharset(string $scope): void
     {
-        if (1 !== \preg_match('/^[\x20\x23-\x5B\x5D-\x7E]+$/', $scope)) {
+        if (1 !== \Safe\preg_match('/^[\x20\x23-\x5B\x5D-\x7E]+$/', $scope)) {
             throw new \InvalidArgumentException('Scope contains illegal characters.');
         }
     }

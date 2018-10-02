@@ -6,3 +6,4 @@ parameters:
         - %rootDir%/../phpstan-phpunit/extension.neon
         - %rootDir%/../phpstan-phpunit/rules.neon
         - %rootDir%/../phpstan-symfony/extension.neon
+        - %rootDir%/../thecodingmachine/phpstan-safe-rule/phpstan-safe-rule.neon

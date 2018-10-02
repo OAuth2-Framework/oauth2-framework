@@ -146,6 +146,6 @@ class SecurityBundleTest extends WebTestCase
         $client->request('GET', '/api/hello-resolver', [], [], ['HTTPS' => 'on', 'HTTP_AUTHORIZATION' => 'Bearer VALID_ACCESS_TOKEN']);
         $response = $client->getResponse();
         static::assertEquals(200, $response->getStatusCode());
-        static::assertEquals(\json_encode($accessToken), $response->getContent());
+        static::assertEquals(\Safe\json_encode($accessToken), $response->getContent());
     }
 }

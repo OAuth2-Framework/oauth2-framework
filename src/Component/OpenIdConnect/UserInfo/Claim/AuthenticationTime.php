@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\OpenIdConnect\UserInfo\Claim;
 
+use OAuth2Framework\Component\Core\User\User;
 use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 
 final class AuthenticationTime implements Claim
@@ -24,13 +25,13 @@ final class AuthenticationTime implements Claim
         return self::CLAIM_NAME;
     }
 
-    public function isAvailableForUserAccount(UserAccount $userAccount, ?string $claimLocale): bool
+    public function isAvailableForUserAccount(User $user, UserAccount $userAccount, ?string $claimLocale): bool
     {
-        return null !== $userAccount->getLastLoginAt();
+        return null !== $user->getLastLoginAt();
     }
 
-    public function getForUserAccount(UserAccount $userAccount, ?string $claimLocale)
+    public function getForUserAccount(User $user, UserAccount $userAccount, ?string $claimLocale)
     {
-        return $userAccount->getLastLoginAt();
+        return $user->getLastLoginAt();
     }
 }

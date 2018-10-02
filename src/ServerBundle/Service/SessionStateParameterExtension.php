@@ -49,15 +49,15 @@ class SessionStateParameterExtension extends \OAuth2Framework\Component\OpenIdCo
     {
         $origin = $this->getOriginUri($authorization->getRedirectUri());
         $salt = Base64Url::encode(\random_bytes(16));
-        $hash = \hash('sha256', \sprintf('%s%s%s%s', $authorization->getClient()->getPublicId(), $origin, $browserState, $salt));
+        $hash = \hash('sha256', \Safe\sprintf('%s%s%s%s', $authorization->getClient()->getPublicId(), $origin, $browserState, $salt));
 
-        return \sprintf('%s.%s', $hash, $salt);
+        return \Safe\sprintf('%s.%s', $hash, $salt);
     }
 
     private function getOriginUri(string $redirectUri): string
     {
         $url_parts = \parse_url($redirectUri);
 
-        return \sprintf('%s://%s%s', $url_parts['scheme'], $url_parts['host'], isset($url_parts['port']) ? ':'.$url_parts['port'] : '');
+        return \Safe\sprintf('%s://%s%s', $url_parts['scheme'], $url_parts['host'], isset($url_parts['port']) ? ':'.$url_parts['port'] : '');
     }
 }

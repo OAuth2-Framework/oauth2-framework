@@ -15,6 +15,7 @@ namespace OAuth2Framework\Component\AuthorizationEndpoint;
 
 use Http\Message\ResponseFactory;
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
+use OAuth2Framework\Component\AuthorizationEndpoint\Exception\OAuth2AuthorizationException;
 use OAuth2Framework\Component\AuthorizationEndpoint\Extension\ExtensionManager;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use Psr\Http\Message\ResponseInterface;
@@ -34,26 +35,22 @@ abstract class ProcessEndpoint extends AbstractEndpoint
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
+        $authorizationId = $this->getAuthorizationId($request);
+        $authorization = $this->getAuthorization($authorizationId);
         try {
-            $authorizationId = $this->getAuthorizationId($request);
-            $authorization = $this->getAuthorization($authorizationId);
             $this->extensionManager->process($request, $authorization);
             if (!$authorization->isAuthorized()) {
-                throw $this->buildOAuth2Error($authorization, OAuth2Error::ERROR_ACCESS_DENIED, 'The resource owner denied access to your client.');
+                throw new OAuth2AuthorizationException(OAuth2Error::ERROR_ACCESS_DENIED, 'The resource owner denied access to your client.', $authorization);
             }
             $responseType = $authorization->getResponseType();
-            try {
-                $authorization = $responseType->preProcess($authorization);
-                $authorization = $responseType->process($authorization);
-            } catch (OAuth2Error $e) {
-                throw $this->buildOAuth2Error($authorization, $e->getMessage(), $e->getErrorDescription());
-            }
+            $responseType->preProcess($authorization);
+            $responseType->process($authorization);
 
             return $this->buildResponse($authorization);
         } catch (OAuth2Error $e) {
-            throw $e;
+            throw new OAuth2AuthorizationException($e->getMessage(), $e->getErrorDescription(), $authorization);
         } catch (\Exception $e) {
-            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST, null);
+            throw new OAuth2AuthorizationException(OAuth2Error::ERROR_INVALID_REQUEST, $e->getMessage(), $authorization);
         }
     }
 

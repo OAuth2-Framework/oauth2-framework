@@ -14,27 +14,21 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker;
 
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
-use OAuth2Framework\Component\AuthorizationEndpoint\Exception\OAuth2AuthorizationException;
-use OAuth2Framework\Component\Core\Message\OAuth2Error;
 
 final class RedirectUriParameterChecker implements ParameterChecker
 {
-    public function check(AuthorizationRequest $authorization)
+    public function check(AuthorizationRequest $authorization): void
     {
-        try {
-            if (!$authorization->hasQueryParam('redirect_uri')) {
-                throw new \InvalidArgumentException('The parameter "redirect_uri" is mandatory.');
-            }
-            $redirectUri = $authorization->getQueryParam('redirect_uri');
-            $availableRedirectUris = $this->getRedirectUris($authorization);
-            if (!empty($availableRedirectUris) && !\in_array($redirectUri, $availableRedirectUris, true)) {
-                throw new \InvalidArgumentException(\sprintf('The redirect URI "%s" is not registered.', $redirectUri));
-            }
-
-            $authorization->setRedirectUri($redirectUri);
-        } catch (\InvalidArgumentException $e) {
-            throw new OAuth2AuthorizationException(400, OAuth2Error::ERROR_INVALID_REQUEST, $e->getMessage(), $authorization, $e);
+        if (!$authorization->hasQueryParam('redirect_uri')) {
+            throw new \InvalidArgumentException('The parameter "redirect_uri" is mandatory.');
         }
+        $redirectUri = $authorization->getQueryParam('redirect_uri');
+        $availableRedirectUris = $this->getRedirectUris($authorization);
+        if (!empty($availableRedirectUris) && !\in_array($redirectUri, $availableRedirectUris, true)) {
+            throw new \InvalidArgumentException(\Safe\sprintf('The redirect URI "%s" is not registered.', $redirectUri));
+        }
+
+        $authorization->setRedirectUri($redirectUri);
     }
 
     /**
