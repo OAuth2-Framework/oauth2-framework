@@ -60,7 +60,7 @@ abstract class AbstractEndpoint implements MiddlewareInterface
     protected function createRedirectResponse(string $redirectTo): ResponseInterface
     {
         $response = $this->responseFactory->createResponse(303);
-        $response->withHeader('location', $redirectTo);
+        $response = $response->withHeader('location', $redirectTo);
 
         return $response;
     }

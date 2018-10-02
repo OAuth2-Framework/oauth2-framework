@@ -28,7 +28,8 @@ class SymfonyUserDiscovery extends BaseSymfonyUserDiscovery
         $this->session = $session;
     }
 
-    public function getCurrentAccount(): UserAccount
+    public function getCurrentAccount(): ?UserAccount
     {
+        return $this->session->get('user_account');
     }
 }

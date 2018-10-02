@@ -60,6 +60,10 @@ class ClientRepository implements \OAuth2Framework\Component\Core\Client\ClientR
             new DataBag([
                 'token_endpoint_auth_method' => 'none',
                 'grant_types' => ['client_credentials', 'refresh_token', 'authorization_code', 'password', 'implicit'],
+                'response_types' => ['code'],
+                'redinect_uris' => [
+                    'https://exxample.com/cb/?foo=bar',
+                ],
             ]),
             new UserAccountId('USER_ACCOUNT_1')
         );

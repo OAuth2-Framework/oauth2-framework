@@ -16,7 +16,7 @@ namespace OAuth2Framework\ServerBundle\Controller;
 use Http\Message\ResponseFactory;
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationEndpoint;
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequestLoader;
-use OAuth2Framework\Component\AuthorizationEndpoint\ConsentRepository;
+use OAuth2Framework\Component\AuthorizationEndpoint\Consent\ConsentRepository;
 use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\ParameterCheckerManager;
 use OAuth2Framework\Component\AuthorizationEndpoint\User\UserAuthenticationCheckerManager;
 use OAuth2Framework\Component\AuthorizationEndpoint\User\UserDiscovery;

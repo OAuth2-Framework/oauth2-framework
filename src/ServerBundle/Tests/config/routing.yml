@@ -2,7 +2,6 @@
 jwkset_endpoint:
     resource: "@JoseFrameworkBundle/Resources/config/routing/jwkset_controller.yml"
     prefix: '/keys'
-    host: 'another-server.com'
 
 # OAuth2FrameworkServerBundle Routes
 oauth2:

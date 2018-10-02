@@ -28,7 +28,18 @@ return function (ContainerConfigurator $container) {
     $container->set(AuthorizationEndpoint\Middleware\AuthorizationExceptionMiddleware::class);
 
     // Controllers and pipes
-    $container->set(Controller\AuthorizationEndpointController::class);
+    $container->set(Controller\AuthorizationEndpointController::class)
+        ->args([
+            ref(ResponseFactory::class),
+            ref(AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequestLoader::class),
+            ref(ParameterChecker\ParameterCheckerManager::class),
+            ref(AuthorizationEndpoint\User\UserDiscovery::class),
+            ref(AuthorizationEndpoint\User\UserAuthenticationCheckerManager::class),
+            ref(\Symfony\Component\HttpFoundation\Session\SessionInterface::class),
+            ref(AuthorizationEndpoint\Consent\ConsentRepository::class)->nullOnInvalid(),
+            ref(\Symfony\Component\Routing\RouterInterface::class),
+        ]);
+
     $container->set('authorization_endpoint_pipe')
         ->class(Middleware\Pipe::class)
         ->args([[

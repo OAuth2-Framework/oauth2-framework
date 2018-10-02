@@ -44,11 +44,11 @@ abstract class LoginEndpoint extends AbstractEndpoint
 
                 switch (true) {
                     case $authorization->hasPrompt('select_account'):
-                        $routeName = 'authorization_select_account_endpoint';
+                        $routeName = 'oauth2_server_select_account_endpoint';
                         break;
                     case $authorization->hasPrompt('consent'):
                     default:
-                        $routeName = 'authorization_consent_endpoint';
+                        $routeName = 'oauth2_server_consent_endpoint';
                         break;
                 }
                 $redirectTo = $this->getRouteFor($routeName, $authorizationId);

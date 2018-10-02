@@ -302,6 +302,8 @@ class AuthorizationRequestLoader
             }
 
             return $jwe->getPayload();
+        } catch (OAuth2Error $e) {
+            throw $e;
         } catch (\Exception $e) {
             if (true === $this->requireEncryption) {
                 throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST_OBJECT, $e->getMessage(), [], $e);

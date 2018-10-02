@@ -28,10 +28,10 @@ class UserAccountRepository implements UserAccountRepositoryInterface
     {
         foreach ($this->getUsers() as $data) {
             $userAccount = new UserAccount(
-                new UserAccountId($data['public_id']),
+                new UserAccountId($data['id']),
                 $data['parameters']
             );
-            $this->userAccounts[$data['public_id']] = $userAccount;
+            $this->userAccounts[$data['id']] = $userAccount;
         }
     }
 

@@ -23,7 +23,6 @@ class LoginHandler implements LoginHandlerInterface
 {
     public function prepare(ServerRequestInterface $serverRequest, string $authorizationId, AuthorizationRequest $authorizationRequest): void
     {
-        // TODO: Implement prepare() method.
     }
 
     public function hasBeenProcessed(ServerRequestInterface $serverRequest, string $authorizationId, AuthorizationRequest $authorizationRequest): bool
@@ -33,11 +32,11 @@ class LoginHandler implements LoginHandlerInterface
 
     public function isValid(ServerRequestInterface $serverRequest, string $authorizationId, AuthorizationRequest $authorizationRequest): bool
     {
-        return false;
+        return true;
     }
 
     public function process(ServerRequestInterface $serverRequest, string $authorizationId, AuthorizationRequest $authorizationRequest): ResponseInterface
     {
-        return new Response();
+        return new Response('You are on the login page');
     }
 }

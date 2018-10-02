@@ -13,5 +13,3 @@ security:
         main:
             pattern: '^/'
             anonymous: ~
-            http_basic:
-                realm: "My security system"

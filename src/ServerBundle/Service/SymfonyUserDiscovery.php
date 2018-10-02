@@ -33,11 +33,11 @@ abstract class SymfonyUserDiscovery implements UserDiscovery
             throw new \InvalidArgumentException('Unable to retrieve the current user.');
         }
 
-        $userAccount = $token->getUser();
-        if (!$userAccount instanceof User) {
+        $user = $token->getUser();
+        if (!$user instanceof User) {
             throw new \InvalidArgumentException('Unable to retrieve the current user.');
         }
 
-        return $userAccount;
+        return $user;
     }
 }

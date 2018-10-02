@@ -43,6 +43,13 @@ class UserRepository
     private function getUsers(): array
     {
         return [
+            [
+                'username' => 'admin',
+                'roles' => ['ROLE_ADMIN', 'ROLE_USER'],
+                'account_ids' => ['john.1'],
+                'last_login_at' => new \DateTimeImmutable('now -25 hours'),
+                'last_update_at' => new \DateTimeImmutable('now -15 days'),
+            ],
         ];
     }
 }

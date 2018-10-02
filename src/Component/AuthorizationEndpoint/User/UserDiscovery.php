@@ -20,5 +20,5 @@ interface UserDiscovery
 {
     public function getCurrentUser(): ?User;
 
-    public function getCurrentAccount(): UserAccount;
+    public function getCurrentAccount(): ?UserAccount;
 }

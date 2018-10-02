@@ -60,26 +60,32 @@ abstract class AuthorizationEndpoint extends AbstractEndpoint
             if (null !== $user) {
                 $authorization->setUser($user);
                 $userAccount = $this->userManager->getCurrentAccount();
-                $authorization->setUserAccount($userAccount);
+                if ($userAccount) {
+                    $authorization->setUserAccount($userAccount);
+                    $isAccountSelectionNeeded = false;
+                } else {
+                    $isAccountSelectionNeeded = true;
+                }
                 $isAuthenticationNeeded = $this->userCheckerManager->isAuthenticationNeeded($authorization);
+                $isConsentNeeded = !$this->consentRepository || !$this->consentRepository->hasConsentBeenGiven($authorization);
 
                 switch (true) {
                     case $authorization->hasPrompt('none'):
-                        if (!$this->consentRepository || !$this->consentRepository->hasConsentBeenGiven($authorization)) {
+                        if ($isConsentNeeded) {
                             throw new OAuth2AuthorizationException(OAuth2Error::ERROR_INTERACTION_REQUIRED, 'The resource owner consent is required.', $authorization);
                         }
                         $authorization->allow();
-                        $routeName = 'authorization_process_endpoint';
+                        $routeName = 'oauth2_server_process_endpoint';
                         break;
                     case $authorization->hasPrompt('login') || $isAuthenticationNeeded:
-                        $routeName = 'authorization_login_endpoint';
+                        $routeName = 'oauth2_server_login_endpoint';
                         break;
-                    case $authorization->hasPrompt('select_account'):
-                        $routeName = 'authorization_select_account_endpoint';
+                    case $authorization->hasPrompt('select_account') || $isAccountSelectionNeeded:
+                        $routeName = 'oauth2_server_select_account_endpoint';
                         break;
-                    case $authorization->hasPrompt('consent'):
+                    case $authorization->hasPrompt('consent') || $isConsentNeeded:
                     default:
-                        $routeName = 'authorization_consent_endpoint';
+                        $routeName = 'oauth2_server_consent_endpoint';
                         break;
                 }
 
@@ -94,9 +100,9 @@ abstract class AuthorizationEndpoint extends AbstractEndpoint
                         throw new OAuth2AuthorizationException(OAuth2Error::ERROR_LOGIN_REQUIRED, 'The resource owner is not logged in.', $authorization);
                     }
                     $authorization->allow();
-                    $routeName = 'authorization_process_endpoint';
+                    $routeName = 'oauth2_server_process_endpoint';
                 } else {
-                    $routeName = 'authorization_login_endpoint';
+                    $routeName = 'oauth2_server_login_endpoint';
                 }
 
                 $authorizationId = Base64Url::encode(random_bytes(64));
@@ -108,9 +114,9 @@ abstract class AuthorizationEndpoint extends AbstractEndpoint
         } catch (OAuth2AuthorizationException $e) {
             throw $e;
         } catch (OAuth2Error $e) {
-            throw new OAuth2AuthorizationException($e->getMessage(), $e->getErrorDescription(), $authorization);
+            throw new OAuth2AuthorizationException($e->getMessage(), $e->getErrorDescription(), $authorization, $e);
         } catch (\Exception $e) {
-            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST, $e->getMessage());
+            throw new OAuth2AuthorizationException(OAuth2Error::ERROR_INVALID_REQUEST, $e->getMessage(), $authorization, $e);
         }
     }
 
@@ -121,6 +127,10 @@ abstract class AuthorizationEndpoint extends AbstractEndpoint
             $this->parameterCheckerManager->check($authorization);
 
             return $authorization;
+        } catch (OAuth2AuthorizationException $e) {
+            throw $e;
+        } catch (OAuth2Error $e) {
+            throw $e;
         } catch (\Exception $e) {
             throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST, $e->getMessage());
         }

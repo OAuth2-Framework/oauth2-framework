@@ -25,6 +25,7 @@ use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\ResourceServerRepositor
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\ScopeRepository;
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\TrustedIssuerRepository;
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\UserAccountRepository;
+use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\UserRepository;
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Handler\ConsentHandler;
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Handler\LoginHandler;
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Handler\SelectAccountHandler;
@@ -44,6 +45,7 @@ return function (ContainerConfigurator $container) {
 
     $container->set(ResourceOwnerPasswordCredentialManager::class);
 
+    $container->set(UserRepository::class);
     $container->set(UserAccountRepository::class);
 
     $container->set(ResourceServerRepository::class);
