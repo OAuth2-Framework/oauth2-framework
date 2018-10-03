@@ -12,7 +12,9 @@ declare(strict_types=1);
  */
 
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository;
+use OAuth2Framework\Component\Core\Client\ClientRepository;
 use OAuth2Framework\Component\Core\Middleware\Pipe;
+use OAuth2Framework\Component\Core\User\UserRepository;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountRepository;
 use OAuth2Framework\Component\OpenIdConnect\IdTokenBuilderFactory;
 use OAuth2Framework\Component\OpenIdConnect\Rule\UserinfoEndpointAlgorithmsRule;
@@ -28,7 +30,8 @@ return function (ContainerConfigurator $container) {
     $container->set(UserInfoEndpoint::class)
         ->args([
             ref(IdTokenBuilderFactory::class),
-            ref(\OAuth2Framework\Component\Core\Client\ClientRepository::class),
+            ref(ClientRepository::class),
+            ref(UserRepository::class),
             ref(UserAccountRepository::class),
             ref('httplug.message_factory'),
         ]);

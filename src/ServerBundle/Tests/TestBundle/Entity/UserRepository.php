@@ -13,12 +13,16 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Tests\TestBundle\Entity;
 
-class UserRepository
+use OAuth2Framework\Component\Core\User\UserRepository as UserRepositoryInterface;
+use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
+
+class UserRepository implements UserRepositoryInterface
 {
     /**
      * @var User[]
      */
     private $users = [];
+    private $accountIds = [];
 
     public function __construct()
     {
@@ -32,6 +36,9 @@ class UserRepository
             );
 
             $this->users[$data['username']] = $user;
+            foreach ($data['account_ids'] as $account_id) {
+                $this->accountIds[$account_id] = $user;
+            }
         }
     }
 
@@ -51,5 +58,10 @@ class UserRepository
                 'last_update_at' => new \DateTimeImmutable('now -15 days'),
             ],
         ];
+    }
+
+    public function findUserWithAccount(UserAccountId $userAccountId): ?\OAuth2Framework\Component\Core\User\User
+    {
+        return $this->accountIds[$userAccountId->getValue()] ?? null;
     }
 }

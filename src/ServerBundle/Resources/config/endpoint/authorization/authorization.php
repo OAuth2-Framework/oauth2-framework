@@ -69,7 +69,14 @@ return function (ContainerConfigurator $container) {
         ]])
         ->tag('controller.service_arguments');
 
-    $container->set(Controller\ProcessEndpointController::class);
+    $container->set(Controller\ProcessEndpointController::class)
+        ->args([
+            ref(ResponseFactory::class),
+            ref(\Symfony\Component\HttpFoundation\Session\SessionInterface::class),
+            ref(AuthorizationEndpoint\Extension\ExtensionManager::class),
+            ref(\Symfony\Component\Routing\RouterInterface::class),
+        ]);
+
     $container->set('process_endpoint_pipe')
         ->class(Middleware\Pipe::class)
         ->args([[

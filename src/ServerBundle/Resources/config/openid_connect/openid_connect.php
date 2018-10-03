@@ -11,6 +11,7 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
+use OAuth2Framework\Component\Core\User\UserRepository;
 use OAuth2Framework\Component\OpenIdConnect\IdTokenBuilderFactory;
 use OAuth2Framework\Component\OpenIdConnect\OpenIdConnectExtension;
 use OAuth2Framework\Component\OpenIdConnect\ParameterChecker;
@@ -65,7 +66,7 @@ return function (ContainerConfigurator $container) {
             '%oauth2_server.openid_connect.id_token.default_signature_algorithm%',
             ref('jose.jws_builder.oauth2_server.openid_connect.id_token'),
             ref('jose.key_set.oauth2_server.openid_connect.id_token'),
-            ref('jose.encrypter.oauth2_server.openid_connect.id_token')->nullOnInvalid(),
+            ref(UserRepository::class),
         ]);
 
     $container->set(IdTokenBuilderFactory::class)

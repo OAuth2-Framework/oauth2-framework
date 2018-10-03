@@ -84,6 +84,12 @@ abstract class AuthorizationEndpoint extends AbstractEndpoint
                         $routeName = 'oauth2_server_select_account_endpoint';
                         break;
                     case $authorization->hasPrompt('consent') || $isConsentNeeded:
+                        $routeName = 'oauth2_server_consent_endpoint';
+                        // no break
+                    case !$authorization->hasPrompt('consent') && !$isConsentNeeded:
+                        $authorization->allow();
+                        $routeName = 'oauth2_server_process_endpoint';
+                        break;
                     default:
                         $routeName = 'oauth2_server_consent_endpoint';
                         break;
@@ -96,7 +102,8 @@ abstract class AuthorizationEndpoint extends AbstractEndpoint
                 return $this->createRedirectResponse($redirectTo);
             } else {
                 if ($authorization->hasPrompt('none')) {
-                    if (!$this->consentRepository || !$this->consentRepository->hasConsentBeenGiven($authorization)) {
+                    $isConsentNeeded = !$this->consentRepository || !$this->consentRepository->hasConsentBeenGiven($authorization);
+                    if ($isConsentNeeded) {
                         throw new OAuth2AuthorizationException(OAuth2Error::ERROR_LOGIN_REQUIRED, 'The resource owner is not logged in.', $authorization);
                     }
                     $authorization->allow();

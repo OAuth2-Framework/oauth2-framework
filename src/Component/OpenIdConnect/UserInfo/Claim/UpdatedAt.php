@@ -27,11 +27,11 @@ final class UpdatedAt implements Claim
 
     public function isAvailableForUserAccount(User $user, UserAccount $userAccount, ?string $claimLocale): bool
     {
-        return null !== $userAccount->getLastUpdateAt();
+        return null !== $user->getLastUpdateAt();
     }
 
     public function getForUserAccount(User $user, UserAccount $userAccount, ?string $claimLocale)
     {
-        return $userAccount->getLastUpdateAt();
+        return $user->getLastUpdateAt();
     }
 }

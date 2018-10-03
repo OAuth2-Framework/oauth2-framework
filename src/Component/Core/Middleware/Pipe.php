@@ -71,13 +71,13 @@ class Pipe implements MiddlewareInterface
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $this->middlewares[] = new RequestHandler(function (ServerRequestInterface $request) use ($handler) {
+        /*$this->middlewares[] = new RequestHandler(function (ServerRequestInterface $request) use ($handler) {
             return $handler->handle($request);
-        });
+        });*/
 
         $response = $this->dispatch($request);
 
-        \array_pop($this->middlewares);
+        //\array_pop($this->middlewares);
 
         return $response;
     }

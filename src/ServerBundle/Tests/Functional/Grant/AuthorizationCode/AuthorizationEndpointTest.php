@@ -95,10 +95,10 @@ class AuthorizationEndpointTest extends WebTestCase
 
         static::assertEquals(303, $response->getStatusCode());
         static::assertTrue($response->headers->has('location'));
-        $location = $response->headers->get('location');
-        dump(explode('/', $location));
-        $session = $client->getContainer()->get('session');
-        dump($session->all());
+
+        $client->followRedirect();
+        $response = $client->getResponse();
+        dump($response->headers->get('location'));
     }
 
     private function buildUri(array $query): string

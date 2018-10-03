@@ -18,6 +18,7 @@ use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\AccessTokenRepository;
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\AuthorizationCodeIdGenerator;
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\AuthorizationCodeRepository;
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\ClientRepository;
+use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\ConsentRepository;
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\InitialAccessTokenRepository;
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\RefreshTokenRepository;
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\ResourceOwnerPasswordCredentialManager;
@@ -52,6 +53,7 @@ return function (ContainerConfigurator $container) {
 
     $container->set(TrustedIssuerRepository::class);
 
+    $container->set(ConsentRepository::class);
     $container->set(UserProvider::class);
 
     $container->set(SymfonyUserDiscovery::class);

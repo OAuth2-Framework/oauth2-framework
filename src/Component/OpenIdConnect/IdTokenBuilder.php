@@ -172,7 +172,7 @@ class IdTokenBuilder
         }
         $data = $this->userinfo->getUserinfo($this->client, $this->user, $this->userAccount, $this->redirectUri, $this->requestedClaims, $this->scope, $this->claimsLocales);
         //$data = $this->updateClaimsWithAmrAndAcrInfo($data, $this->userAccount);
-        //$data = $this->updateClaimsWithAuthenticationTime($data, $this->userAccount, $this->requestedClaims);
+        $data = $this->updateClaimsWithAuthenticationTime($data, $this->user, $this->requestedClaims);
         $data = $this->updateClaimsWithNonce($data);
         if (null !== $this->signatureAlgorithm) {
             $data = $this->updateClaimsWithJwtClaims($data);
@@ -206,10 +206,10 @@ class IdTokenBuilder
         return $claims;
     }
 
-    private function updateClaimsWithAuthenticationTime(array $claims, UserAccount $userAccount, array $requestedClaims): array
+    private function updateClaimsWithAuthenticationTime(array $claims, User $user, array $requestedClaims): array
     {
-        if ((true === $this->withAuthenticationTime || \array_key_exists('auth_time', $requestedClaims)) && null !== $userAccount->getLastLoginAt()) {
-            $claims['auth_time'] = $userAccount->getLastLoginAt();
+        if ((true === $this->withAuthenticationTime || \array_key_exists('auth_time', $requestedClaims)) && null !== $user->getLastLoginAt()) {
+            $claims['auth_time'] = $user->getLastLoginAt();
         }
 
         return $claims;

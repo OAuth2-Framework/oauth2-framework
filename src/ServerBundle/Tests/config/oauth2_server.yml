@@ -120,6 +120,8 @@ oauth2_server:
         authorization:
             enabled: true
             user_discovery: 'OAuth2Framework\ServerBundle\Tests\TestBundle\Service\SymfonyUserDiscovery'
+            user_repository: 'OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\UserRepository'
+            consent_repository: 'OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\ConsentRepository'
             login_handler: 'OAuth2Framework\ServerBundle\Tests\TestBundle\Handler\LoginHandler'
             consent_handler: 'OAuth2Framework\ServerBundle\Tests\TestBundle\Handler\ConsentHandler'
             select_account_handler: 'OAuth2Framework\ServerBundle\Tests\TestBundle\Handler\SelectAccountHandler'

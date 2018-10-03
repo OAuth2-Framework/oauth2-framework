@@ -34,12 +34,12 @@ abstract class AbstractEndpoint implements MiddlewareInterface
 
     protected function getAuthorizationId(ServerRequestInterface $request): string
     {
-        $queryParams = $request->getQueryParams();
-        if (!array_key_exists('authorization_id', $queryParams) || !\is_string($queryParams['authorization_id'])) {
+        $authorizationId = $request->getAttribute('authorization_id');
+        if (empty($authorizationId)) {
             throw new \InvalidArgumentException('Invalid authorization ID.');
         }
 
-        return $queryParams['authorization_id'];
+        return $authorizationId;
     }
 
     protected function saveAuthorization(string $authorizationId, AuthorizationRequest $authorization)

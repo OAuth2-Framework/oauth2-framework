@@ -14,12 +14,14 @@ declare(strict_types=1);
 namespace OAuth2Framework\ServerBundle\Component\Endpoint\Authorization;
 
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationEndpoint;
+use OAuth2Framework\Component\AuthorizationEndpoint\Consent\ConsentRepository;
 use OAuth2Framework\Component\AuthorizationEndpoint\Extension\Extension;
 use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\ParameterChecker;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\ResponseMode;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType\ResponseType;
 use OAuth2Framework\Component\AuthorizationEndpoint\User\UserAuthenticationChecker;
 use OAuth2Framework\Component\AuthorizationEndpoint\User\UserDiscovery;
+use OAuth2Framework\Component\Core\User\UserRepository;
 use OAuth2Framework\ServerBundle\Component\Component;
 use OAuth2Framework\ServerBundle\Component\Endpoint\Authorization\Compiler\AuthorizationEndpointRouteCompilerPass;
 use OAuth2Framework\ServerBundle\Component\Endpoint\Authorization\Compiler\AuthorizationRequestMetadataCompilerPass;
@@ -75,6 +77,10 @@ class AuthorizationEndpointSource implements Component
         $loader->load('authorization.php');
 
         $container->setAlias(UserDiscovery::class, $config['user_discovery']);
+        $container->setAlias(UserRepository::class, $config['user_repository']);
+        if (!empty($config['consent_repository'])) {
+            $container->setAlias(ConsentRepository::class, $config['consent_repository']);
+        }
 
         $container->setParameter('oauth2_server.endpoint.authorization.authorization_endpoint_path', $config['authorization_endpoint_path']);
         $container->setParameter('oauth2_server.endpoint.authorization.login_endpoint_path', $config['login_endpoint_path']);
@@ -134,6 +140,14 @@ class AuthorizationEndpointSource implements Component
             ->scalarNode('user_discovery')
             ->info('The user discovery service.')
             ->isRequired()
+            ->end()
+            ->scalarNode('user_repository')
+            ->info('The user repository service.')
+            ->isRequired()
+            ->end()
+            ->scalarNode('consent_repository')
+            ->info('The pre-configured consent repository service.')
+            ->defaultNull()
             ->end()
             ->scalarNode('enforce_state')
             ->info('If true the "state" parameter is mandatory (recommended).')

@@ -134,7 +134,7 @@ abstract class Token implements \JsonSerializable, DomainObject
             return 0;
         }
 
-        return $this->expiresAt->getTimestamp() - \time() < 0 ? 0 : $this->expiresAt->getTimestamp() - \time();
+        return (int) ($this->expiresAt->getTimestamp() - \time() < 0 ? 0 : $this->expiresAt->getTimestamp() - \time());
     }
 
     public function jsonSerialize()
