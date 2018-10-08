@@ -20,8 +20,8 @@ use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\Authori
 use OAuth2Framework\Component\AuthorizationEndpoint\Consent\ConsentRepository;
 use OAuth2Framework\Component\AuthorizationEndpoint\Exception\OAuth2AuthorizationException;
 use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\ParameterCheckerManager;
+use OAuth2Framework\Component\AuthorizationEndpoint\User\UserAccountDiscovery;
 use OAuth2Framework\Component\AuthorizationEndpoint\User\UserAuthenticationCheckerManager;
-use OAuth2Framework\Component\AuthorizationEndpoint\User\UserDiscovery;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -40,7 +40,7 @@ abstract class AuthorizationEndpoint extends AbstractEndpoint
 
     private $consentRepository;
 
-    public function __construct(ResponseFactory $responseFactory, AuthorizationRequestLoader $authorizationRequestLoader, ParameterCheckerManager $parameterCheckerManager, UserDiscovery $userManager, UserAuthenticationCheckerManager $userCheckerManager, SessionInterface $session, ?ConsentRepository $consentRepository)
+    public function __construct(ResponseFactory $responseFactory, AuthorizationRequestLoader $authorizationRequestLoader, ParameterCheckerManager $parameterCheckerManager, UserAccountDiscovery $userManager, UserAuthenticationCheckerManager $userCheckerManager, SessionInterface $session, ?ConsentRepository $consentRepository)
     {
         parent::__construct($responseFactory, $session);
         $this->authorizationRequestLoader = $authorizationRequestLoader;
@@ -55,17 +55,10 @@ abstract class AuthorizationEndpoint extends AbstractEndpoint
         $authorization = $this->loadAuthorization($request);
 
         try {
-            $user = $this->userManager->getCurrentUser();
+            $userAccount = $this->userManager->getCurrentAccount();
 
-            if (null !== $user) {
-                $authorization->setUser($user);
-                $userAccount = $this->userManager->getCurrentAccount();
-                if ($userAccount) {
-                    $authorization->setUserAccount($userAccount);
-                    $isAccountSelectionNeeded = false;
-                } else {
-                    $isAccountSelectionNeeded = true;
-                }
+            if (null !== $userAccount) {
+                $authorization->setUserAccount($userAccount);
                 $isAuthenticationNeeded = $this->userCheckerManager->isAuthenticationNeeded($authorization);
                 $isConsentNeeded = !$this->consentRepository || !$this->consentRepository->hasConsentBeenGiven($authorization);
 
@@ -77,18 +70,14 @@ abstract class AuthorizationEndpoint extends AbstractEndpoint
                         $authorization->allow();
                         $routeName = 'oauth2_server_process_endpoint';
                         break;
+                    case $authorization->hasPrompt('select_account'):
+                        $routeName = 'oauth2_server_select_account_endpoint';
+                        break;
                     case $authorization->hasPrompt('login') || $isAuthenticationNeeded:
                         $routeName = 'oauth2_server_login_endpoint';
                         break;
-                    case $authorization->hasPrompt('select_account') || $isAccountSelectionNeeded:
-                        $routeName = 'oauth2_server_select_account_endpoint';
-                        break;
                     case $authorization->hasPrompt('consent') || $isConsentNeeded:
                         $routeName = 'oauth2_server_consent_endpoint';
-                        // no break
-                    case !$authorization->hasPrompt('consent') && !$isConsentNeeded:
-                        $authorization->allow();
-                        $routeName = 'oauth2_server_process_endpoint';
                         break;
                     default:
                         $routeName = 'oauth2_server_consent_endpoint';

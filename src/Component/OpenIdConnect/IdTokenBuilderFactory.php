@@ -16,7 +16,6 @@ namespace OAuth2Framework\Component\OpenIdConnect;
 use Jose\Component\KeyManagement\JKUFactory;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeRepository;
 use OAuth2Framework\Component\Core\Client\Client;
-use OAuth2Framework\Component\Core\User\User;
 use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 use OAuth2Framework\Component\OpenIdConnect\UserInfo\UserInfo;
 
@@ -43,9 +42,9 @@ class IdTokenBuilderFactory
         $this->lifetime = $lifetime;
     }
 
-    public function createBuilder(Client $client, User $user, UserAccount $userAccount, string $redirectUri)
+    public function createBuilder(Client $client, UserAccount $userAccount, string $redirectUri)
     {
-        return new IdTokenBuilder($this->issuer, $this->userinfo, $this->lifetime, $client, $user, $userAccount, $redirectUri, $this->jkuFactory, $this->authorizationCodeRepository);
+        return new IdTokenBuilder($this->issuer, $this->userinfo, $this->lifetime, $client, $userAccount, $redirectUri, $this->jkuFactory, $this->authorizationCodeRepository);
     }
 
     public function enableJkuSupport(JKUFactory $jkuFactory): void

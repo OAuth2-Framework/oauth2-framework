@@ -106,7 +106,6 @@ final class IdTokenResponseType implements ResponseType
 
         $idTokenBuilder = $this->idTokenBuilderFactory->createBuilder(
             $authorization->getClient(),
-            $authorization->getUser(),
             $authorization->getUserAccount(),
             $authorization->getRedirectUri()
         );

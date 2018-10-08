@@ -19,7 +19,6 @@ use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServer;
 use OAuth2Framework\Component\Core\TokenType\TokenType;
-use OAuth2Framework\Component\Core\User\User;
 use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 
 class AuthorizationRequest
@@ -33,11 +32,6 @@ class AuthorizationRequest
      * @var Client
      */
     private $client;
-
-    /**
-     * @var User|null
-     */
-    private $user = null;
 
     /**
      * @var UserAccount|null
@@ -163,16 +157,6 @@ class AuthorizationRequest
     public function getRedirectUri(): ?string
     {
         return $this->redirectUri;
-    }
-
-    public function setUser(User $user): void
-    {
-        $this->user = $user;
-    }
-
-    public function getUser(): ?User
-    {
-        return $this->user;
     }
 
     public function setUserAccount(UserAccount $userAccount): void

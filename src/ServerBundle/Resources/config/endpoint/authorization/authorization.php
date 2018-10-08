@@ -33,7 +33,7 @@ return function (ContainerConfigurator $container) {
             ref(ResponseFactory::class),
             ref(AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequestLoader::class),
             ref(ParameterChecker\ParameterCheckerManager::class),
-            ref(AuthorizationEndpoint\User\UserDiscovery::class),
+            ref(AuthorizationEndpoint\User\UserAccountDiscovery::class),
             ref(AuthorizationEndpoint\User\UserAuthenticationCheckerManager::class),
             ref(\Symfony\Component\HttpFoundation\Session\SessionInterface::class),
             ref(AuthorizationEndpoint\Consent\ConsentRepository::class)->nullOnInvalid(),
@@ -49,7 +49,13 @@ return function (ContainerConfigurator $container) {
         ]])
         ->tag('controller.service_arguments');
 
-    $container->set(Controller\ConsentEndpointController::class);
+    $container->set(Controller\ConsentEndpointController::class)
+        ->args([
+            ref(ResponseFactory::class),
+            ref(\Symfony\Component\HttpFoundation\Session\SessionInterface::class),
+            ref('oauth2_server.endpoint.authorization.handler.consent'),
+            ref(\Symfony\Component\Routing\RouterInterface::class),
+        ]);
     $container->set('consent_endpoint_pipe')
         ->class(Middleware\Pipe::class)
         ->args([[
@@ -59,7 +65,13 @@ return function (ContainerConfigurator $container) {
         ]])
         ->tag('controller.service_arguments');
 
-    $container->set(Controller\LoginEndpointController::class);
+    $container->set(Controller\LoginEndpointController::class)
+        ->args([
+            ref(ResponseFactory::class),
+            ref(\Symfony\Component\HttpFoundation\Session\SessionInterface::class),
+            ref('oauth2_server.endpoint.authorization.handler.login'),
+            ref(\Symfony\Component\Routing\RouterInterface::class),
+        ]);
     $container->set('login_endpoint_pipe')
         ->class(Middleware\Pipe::class)
         ->args([[
@@ -86,7 +98,13 @@ return function (ContainerConfigurator $container) {
         ]])
         ->tag('controller.service_arguments');
 
-    $container->set(Controller\SelectAccountEndpointController::class);
+    $container->set(Controller\SelectAccountEndpointController::class)
+        ->args([
+            ref(ResponseFactory::class),
+            ref(\Symfony\Component\HttpFoundation\Session\SessionInterface::class),
+            ref('oauth2_server.endpoint.authorization.handler.select_account'),
+            ref(\Symfony\Component\Routing\RouterInterface::class),
+        ]);
     $container->set('select_accourt_endpoint_pipe')
         ->class(Middleware\Pipe::class)
         ->args([[

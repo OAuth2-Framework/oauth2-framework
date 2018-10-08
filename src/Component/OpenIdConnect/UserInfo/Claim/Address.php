@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\OpenIdConnect\UserInfo\Claim;
 
-use OAuth2Framework\Component\Core\User\User;
 use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 
 final class Address implements Claim
@@ -25,14 +24,14 @@ final class Address implements Claim
         return self::CLAIM_NAME;
     }
 
-    public function isAvailableForUserAccount(User $user, UserAccount $userAccount, ?string $claimLocale): bool
+    public function isAvailableForUserAccount(UserAccount $userAccount, ?string $claimLocale): bool
     {
         return $userAccount->has(
             $this->getComputedClaimName($claimLocale)
         );
     }
 
-    public function getForUserAccount(User $user, UserAccount $userAccount, ?string $claimLocale)
+    public function getForUserAccount(UserAccount $userAccount, ?string $claimLocale)
     {
         return $userAccount->get(
             $this->getComputedClaimName($claimLocale)

@@ -24,14 +24,24 @@ class UserAccountRepository implements UserAccountRepositoryInterface
      */
     private $userAccounts = [];
 
+    /**
+     * @var UserAccount[]
+     */
+    private $usernames = [];
+
     public function __construct()
     {
         foreach ($this->getUsers() as $data) {
             $userAccount = new UserAccount(
                 new UserAccountId($data['id']),
+                $data['username'],
+                $data['roles'],
+                $data['last_login_at'],
+                $data['last_update_at'],
                 $data['parameters']
             );
             $this->userAccounts[$data['id']] = $userAccount;
+            $this->usernames[$data['username']] = $userAccount;
         }
     }
 
@@ -40,10 +50,19 @@ class UserAccountRepository implements UserAccountRepositoryInterface
         return \array_key_exists($publicId->getValue(), $this->userAccounts) ? $this->userAccounts[$publicId->getValue()] : null;
     }
 
+    public function findOneByUsername(string $username): ?BaseUserAccount
+    {
+        return \array_key_exists($username, $this->usernames) ? $this->usernames[$username] : null;
+    }
+
     private function getUsers(): array
     {
         return [
             [
+                'username' => 'admin',
+                'roles' => ['ROLE_ADMIN', 'ROLE_USER'],
+                'last_login_at' => new \DateTimeImmutable('now -25 hours'),
+                'last_update_at' => new \DateTimeImmutable('now -15 days'),
                 'id' => 'john.1',
                 'parameters' => [
                     'address', [

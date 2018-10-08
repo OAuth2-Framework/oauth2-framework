@@ -15,7 +15,6 @@ namespace OAuth2Framework\ServerBundle\Tests\Functional\Grant\AuthorizationCode;
 
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeGrantType;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
-use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\User;
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\UserAccount;
 use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -50,15 +49,12 @@ class AuthorizationEndpointTest extends WebTestCase
         $client = static::createClient();
         $this->logIn(
             $client,
-            new User(
-                'admin',
-                ['ROLE_ADMIN', 'ROLE_USER'],
-                ['john.1'],
-                new \DateTimeImmutable('now -25 hours'),
-                new \DateTimeImmutable('now -15 days')
-            ),
             new UserAccount(
                 new UserAccountId('john.1'),
+                'admin',
+                ['ROLE_ADMIN', 'ROLE_USER'],
+                new \DateTimeImmutable('now -25 hours'),
+                new \DateTimeImmutable('now -15 days'),
                 [
                     'address', [
                         'street_address' => '5 rue Sainte Anne',
@@ -108,16 +104,15 @@ class AuthorizationEndpointTest extends WebTestCase
         return empty($query) ? '/authorize' : \Safe\sprintf('/authorize?%s', $query);
     }
 
-    private function logIn(Client $client, User $user, ?UserAccount $userAccount): void
+    private function logIn(Client $client, UserAccount $userAccount): void
     {
         $session = $client->getContainer()->get('session');
 
         $firewallName = 'main';
         $firewallContext = 'main';
 
-        $token = new UsernamePasswordToken($user, null, $firewallName, ['ROLE_ADMIN']);
+        $token = new UsernamePasswordToken($userAccount, null, $firewallName, ['ROLE_ADMIN']);
         $session->set('_security_'.$firewallContext, serialize($token));
-        $session->set('user_account', $userAccount);
         $session->save();
 
         $cookie = new Cookie($session->getName(), $session->getId());

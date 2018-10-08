@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\OpenIdConnect\UserInfo\Claim;
 
 use OAuth2Framework\Component\AuthorizationEndpoint\User\AuthenticationMethodReferenceSupport;
-use OAuth2Framework\Component\Core\User\User;
 use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 
 final class AuthenticationMethodReference implements Claim
@@ -33,12 +32,12 @@ final class AuthenticationMethodReference implements Claim
         return self::CLAIM_NAME;
     }
 
-    public function isAvailableForUserAccount(User $user, UserAccount $userAccount, ?string $claimLocale): bool
+    public function isAvailableForUserAccount(UserAccount $userAccount, ?string $claimLocale): bool
     {
         return null !== $this->authenticationMethodReferenceSupport->getAuthenticationMethodReferenceFor($user);
     }
 
-    public function getForUserAccount(User $user, UserAccount $userAccount, ?string $claimLocale)
+    public function getForUserAccount(UserAccount $userAccount, ?string $claimLocale)
     {
         return $this->authenticationMethodReferenceSupport->getAuthenticationMethodReferenceFor($user);
     }

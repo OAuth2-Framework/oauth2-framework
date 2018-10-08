@@ -21,8 +21,6 @@ use OAuth2Framework\Component\Core\AccessToken\AccessToken;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientRepository;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
-use OAuth2Framework\Component\Core\User\User;
-use OAuth2Framework\Component\Core\User\UserRepository;
 use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountRepository;
@@ -53,18 +51,16 @@ class UserInfoEndpoint implements MiddlewareInterface
     private $userAccountRepository;
     private $responseFactory;
     private $idTokenBuilderFactory;
-    private $userRepository;
 
     /**
      * UserInfoEndpoint constructor.
      */
-    public function __construct(IdTokenBuilderFactory $idTokenBuilderFactory, ClientRepository $clientRepository, UserRepository $userRepository, UserAccountRepository $userAccountRepository, ResponseFactory $responseFactory)
+    public function __construct(IdTokenBuilderFactory $idTokenBuilderFactory, ClientRepository $clientRepository, UserAccountRepository $userAccountRepository, ResponseFactory $responseFactory)
     {
         $this->idTokenBuilderFactory = $idTokenBuilderFactory;
         $this->clientRepository = $clientRepository;
         $this->userAccountRepository = $userAccountRepository;
         $this->responseFactory = $responseFactory;
-        $this->userRepository = $userRepository;
     }
 
     public function enableSignature(JWSBuilder $jwsBuilder, JWKSet $signatureKeys)
@@ -93,12 +89,7 @@ class UserInfoEndpoint implements MiddlewareInterface
 
         $client = $this->getClient($accessToken);
         $userAccount = $this->getUserAccount($accessToken);
-        $user = $this->userRepository->findUserWithAccount($userAccount->getUserAccountId());
-        if (!$user instanceof User) {
-            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_TOKEN, 'The access token is missing or invalid.');
-        }
-
-        $idToken = $this->buildUserinfoContent($client, $user, $userAccount, $accessToken, $isJwt);
+        $idToken = $this->buildUserinfoContent($client, $userAccount, $accessToken, $isJwt);
 
         $response = $this->responseFactory->createResponse();
         $response->getBody()->write($idToken);
@@ -110,11 +101,11 @@ class UserInfoEndpoint implements MiddlewareInterface
         return $response;
     }
 
-    private function buildUserinfoContent(Client $client, User $user, UserAccount $userAccount, AccessToken $accessToken, ?bool &$isJwt): string
+    private function buildUserinfoContent(Client $client, UserAccount $userAccount, AccessToken $accessToken, ?bool &$isJwt): string
     {
         $isJwt = false;
         $requestedClaims = $this->getEndpointClaims($accessToken);
-        $idTokenBuilder = $this->idTokenBuilderFactory->createBuilder($client, $user, $userAccount, $accessToken->getMetadata()->get('redirect_uri'));
+        $idTokenBuilder = $this->idTokenBuilderFactory->createBuilder($client, $userAccount, $accessToken->getMetadata()->get('redirect_uri'));
 
         if ($client->has('userinfo_signed_response_alg') && null !== $this->jwsBuilder) {
             $isJwt = true;

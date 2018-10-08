@@ -16,15 +16,33 @@ namespace OAuth2Framework\ServerBundle\Tests\TestBundle\Entity;
 use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwnerId;
 use OAuth2Framework\Component\Core\UserAccount\UserAccount as UserAccountInterface;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
+use Symfony\Component\Security\Core\User\EquatableInterface;
+use Symfony\Component\Security\Core\User\UserInterface as SymfonyUserInterface;
 
-class UserAccount implements UserAccountInterface
+class UserAccount implements UserAccountInterface, SymfonyUserInterface, EquatableInterface
 {
+    private $username;
+
+    /**
+     * @var string[]
+     */
+    private $roles;
+
+    private $lastLoginAt;
+
+    private $lastUpdateAt;
+
     private $userAccountId;
+
     private $data = [];
 
-    public function __construct(UserAccountId $userAccountId, array $data)
+    public function __construct(UserAccountId $userAccountId, string $username, array $roles, ?\DateTimeImmutable $lastLoginAt, ?\DateTimeImmutable $lastUpdateAt, array $data)
     {
         $this->userAccountId = $userAccountId;
+        $this->username = $username;
+        $this->roles = $roles;
+        $this->lastLoginAt = $lastLoginAt;
+        $this->lastUpdateAt = $lastUpdateAt;
         $this->data = $data;
     }
 
@@ -50,5 +68,52 @@ class UserAccount implements UserAccountInterface
         }
 
         return $this->data[$key];
+    }
+
+    public function getLastLoginAt(): ?int
+    {
+        return $this->lastLoginAt ? $this->lastLoginAt->getTimestamp() : null;
+    }
+
+    public function getLastUpdateAt(): ?int
+    {
+        return $this->lastUpdateAt ? $this->lastUpdateAt->getTimestamp() : null;
+    }
+
+    public function getRoles(): array
+    {
+        return $this->roles;
+    }
+
+    public function getSalt()
+    {
+        return;
+    }
+
+    public function getUsername(): string
+    {
+        return $this->username;
+    }
+
+    public function getPassword(): string
+    {
+        return '';
+    }
+
+    public function eraseCredentials()
+    {
+    }
+
+    public function isEqualTo(SymfonyUserInterface $user)
+    {
+        if (!$user instanceof self) {
+            return false;
+        }
+
+        if ($this->username !== $user->getUsername()) {
+            return false;
+        }
+
+        return true;
     }
 }

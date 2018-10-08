@@ -19,8 +19,6 @@ use Jose\Component\Signature\JWSBuilder;
 use OAuth2Framework\Component\Core\AccessToken\AccessToken;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwner;
-use OAuth2Framework\Component\Core\User\User;
-use OAuth2Framework\Component\Core\User\UserRepository;
 use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 use OAuth2Framework\Component\TokenEndpoint\Extension\TokenEndpointExtension;
 use OAuth2Framework\Component\TokenEndpoint\GrantType;
@@ -48,15 +46,12 @@ class OpenIdConnectExtension implements TokenEndpointExtension
 
     private $defaultSignatureAlgorithm;
 
-    private $userRepository;
-
-    public function __construct(IdTokenBuilderFactory $idTokenBuilderFactory, string $defaultSignatureAlgorithm, JWSBuilder $jwsBuilder, JWKSet $signatureKeys, UserRepository $userRepository)
+    public function __construct(IdTokenBuilderFactory $idTokenBuilderFactory, string $defaultSignatureAlgorithm, JWSBuilder $jwsBuilder, JWKSet $signatureKeys)
     {
         $this->jwsBuilder = $jwsBuilder;
         $this->signatureKeys = $signatureKeys;
         $this->idTokenBuilderFactory = $idTokenBuilderFactory;
         $this->defaultSignatureAlgorithm = $defaultSignatureAlgorithm;
-        $this->userRepository = $userRepository;
     }
 
     public function enableEncryption(JWEBuilder $jweBuilder)
@@ -73,20 +68,17 @@ class OpenIdConnectExtension implements TokenEndpointExtension
     {
         $data = $next($client, $resourceOwner, $accessToken);
         if ($resourceOwner instanceof UserAccount && $this->hasOpenIdScope($accessToken) && $accessToken->getMetadata()->has('redirect_uri')) {
-            $user = $this->userRepository->findUserWithAccount($resourceOwner->getUserAccountId());
-            if ($user) {
-                $idToken = $this->issueIdToken($client, $user, $resourceOwner, $accessToken);
-                $data['id_token'] = $idToken;
-            }
+            $idToken = $this->issueIdToken($client, $resourceOwner, $accessToken);
+            $data['id_token'] = $idToken;
         }
 
         return $data;
     }
 
-    private function issueIdToken(Client $client, User $user, UserAccount $userAccount, AccessToken $accessToken): string
+    private function issueIdToken(Client $client, UserAccount $userAccount, AccessToken $accessToken): string
     {
         $redirectUri = $accessToken->getMetadata()->get('redirect_uri');
-        $idTokenBuilder = $this->idTokenBuilderFactory->createBuilder($client, $user, $userAccount, $redirectUri);
+        $idTokenBuilder = $this->idTokenBuilderFactory->createBuilder($client, $userAccount, $redirectUri);
 
         $requestedClaims = $this->getIdTokenClaims($accessToken);
         $idTokenBuilder->withRequestedClaims($requestedClaims);

@@ -13,17 +13,16 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\OpenIdConnect\UserInfo\Claim;
 
-use OAuth2Framework\Component\Core\User\User;
 use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 
 interface Claim
 {
     public function name(): string;
 
-    public function isAvailableForUserAccount(User $user, UserAccount $userAccount, ?string $claimLocale): bool;
+    public function isAvailableForUserAccount(UserAccount $userAccount, ?string $claimLocale): bool;
 
     /**
      * @return null|mixed
      */
-    public function getForUserAccount(User $user, UserAccount $userAccount, ?string $claimLocale);
+    public function getForUserAccount(UserAccount $userAccount, ?string $claimLocale);
 }

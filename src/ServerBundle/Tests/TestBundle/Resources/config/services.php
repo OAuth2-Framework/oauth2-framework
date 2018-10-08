@@ -26,11 +26,10 @@ use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\ResourceServerRepositor
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\ScopeRepository;
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\TrustedIssuerRepository;
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\UserAccountRepository;
-use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\UserRepository;
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Handler\ConsentHandler;
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Handler\LoginHandler;
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Handler\SelectAccountHandler;
-use OAuth2Framework\ServerBundle\Tests\TestBundle\Service\SymfonyUserDiscovery;
+use OAuth2Framework\ServerBundle\Tests\TestBundle\Service\SymfonyUserAccountDiscovery;
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Service\UserProvider;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
@@ -46,7 +45,6 @@ return function (ContainerConfigurator $container) {
 
     $container->set(ResourceOwnerPasswordCredentialManager::class);
 
-    $container->set(UserRepository::class);
     $container->set(UserAccountRepository::class);
 
     $container->set(ResourceServerRepository::class);
@@ -56,7 +54,7 @@ return function (ContainerConfigurator $container) {
     $container->set(ConsentRepository::class);
     $container->set(UserProvider::class);
 
-    $container->set(SymfonyUserDiscovery::class);
+    $container->set(SymfonyUserAccountDiscovery::class);
 
     $container->set(AccessTokenIdGenerator::class);
 

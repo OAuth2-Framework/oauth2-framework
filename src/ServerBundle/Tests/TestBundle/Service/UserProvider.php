@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Tests\TestBundle\Service;
 
-use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\User;
-use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\UserRepository;
+use OAuth2Framework\Component\Core\UserAccount\UserAccount;
+use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\UserAccountRepository;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -22,16 +22,16 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 
 class UserProvider implements UserProviderInterface
 {
-    private $userRepository;
+    private $userAccountRepository;
 
-    public function __construct(UserRepository $userRepository)
+    public function __construct(UserAccountRepository $userAccountRepository)
     {
-        $this->userRepository = $userRepository;
+        $this->userAccountRepository = $userAccountRepository;
     }
 
     public function loadUserByUsername($username)
     {
-        $user = $this->userRepository->findOneByUsername($username);
+        $user = $this->userAccountRepository->findOneByUsername($username);
 
         if ($user) {
             return $user;
@@ -42,7 +42,7 @@ class UserProvider implements UserProviderInterface
 
     public function refreshUser(UserInterface $user)
     {
-        if (!$user instanceof User) {
+        if (!$user instanceof UserAccount) {
             throw new UnsupportedUserException(\Safe\sprintf('Instances of "%s" are not supported.', \get_class($user)));
         }
 
@@ -51,6 +51,6 @@ class UserProvider implements UserProviderInterface
 
     public function supportsClass($class)
     {
-        return User::class === $class;
+        return UserAccount::class === $class;
     }
 }

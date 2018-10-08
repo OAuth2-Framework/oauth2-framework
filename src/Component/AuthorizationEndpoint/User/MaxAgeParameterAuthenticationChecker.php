@@ -19,6 +19,10 @@ final class MaxAgeParameterAuthenticationChecker implements UserAuthenticationCh
 {
     public function isAuthenticationNeeded(AuthorizationRequest $authorization): bool
     {
+        if (null === $authorization->getUserAccount()) {
+            return true;
+        }
+
         switch (true) {
             case $authorization->hasQueryParam('max_age'):
                 $max_age = (int) $authorization->getQueryParam('max_age');
@@ -32,6 +36,6 @@ final class MaxAgeParameterAuthenticationChecker implements UserAuthenticationCh
                 return false;
         }
 
-        return null === $authorization->getUser()->getLastLoginAt() || \time() - $authorization->getUser()->getLastLoginAt() > $max_age;
+        return null === $authorization->getUserAccount()->getLastLoginAt() || \time() - $authorization->getUserAccount()->getLastLoginAt() > $max_age;
     }
 }

@@ -20,7 +20,6 @@ use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServer;
 use OAuth2Framework\Component\Core\TokenType\TokenType;
-use OAuth2Framework\Component\Core\User\User;
 use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 use PHPUnit\Framework\TestCase;
 
@@ -39,7 +38,6 @@ final class AuthorizationRequestTest extends TestCase
         $tokenType = $this->prophesize(TokenType::class);
         $responseType = $this->prophesize(ResponseType::class);
         $responseMode = $this->prophesize(ResponseMode::class);
-        $user = $this->prophesize(User::class);
         $userAccount = $this->prophesize(UserAccount::class);
         $resourceServer = $this->prophesize(ResourceServer::class);
         $params = [
@@ -53,7 +51,6 @@ final class AuthorizationRequestTest extends TestCase
         $authorizationRequest->setResponseType($responseType->reveal());
         $authorizationRequest->setResponseMode($responseMode->reveal());
         $authorizationRequest->setRedirectUri('https://localhost');
-        $authorizationRequest->setUser($user->reveal());
         $authorizationRequest->setUserAccount($userAccount->reveal());
         $authorizationRequest->setResponseParameter('foo', 'bar');
         $authorizationRequest->setResponseHeader('X-FOO', 'bar');
@@ -69,7 +66,6 @@ final class AuthorizationRequestTest extends TestCase
         static::assertInstanceOf(ResponseType::class, $authorizationRequest->getResponseType());
         static::assertInstanceOf(ResponseMode::class, $authorizationRequest->getResponseMode());
         static::assertEquals('https://localhost', $authorizationRequest->getRedirectUri());
-        static::assertInstanceOf(User::class, $authorizationRequest->getUser());
         static::assertInstanceOf(UserAccount::class, $authorizationRequest->getUserAccount());
         static::assertEquals(['foo' => 'bar'], $authorizationRequest->getResponseParameters());
         static::assertFalse($authorizationRequest->hasResponseParameter('bar'));

@@ -19,9 +19,8 @@ use OAuth2Framework\Component\AuthorizationEndpoint\Extension\Extension;
 use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\ParameterChecker;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\ResponseMode;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType\ResponseType;
+use OAuth2Framework\Component\AuthorizationEndpoint\User\UserAccountDiscovery;
 use OAuth2Framework\Component\AuthorizationEndpoint\User\UserAuthenticationChecker;
-use OAuth2Framework\Component\AuthorizationEndpoint\User\UserDiscovery;
-use OAuth2Framework\Component\Core\User\UserRepository;
 use OAuth2Framework\ServerBundle\Component\Component;
 use OAuth2Framework\ServerBundle\Component\Endpoint\Authorization\Compiler\AuthorizationEndpointRouteCompilerPass;
 use OAuth2Framework\ServerBundle\Component\Endpoint\Authorization\Compiler\AuthorizationRequestMetadataCompilerPass;
@@ -76,8 +75,7 @@ class AuthorizationEndpointSource implements Component
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint/authorization'));
         $loader->load('authorization.php');
 
-        $container->setAlias(UserDiscovery::class, $config['user_discovery']);
-        $container->setAlias(UserRepository::class, $config['user_repository']);
+        $container->setAlias(UserAccountDiscovery::class, $config['user_discovery']);
         if (!empty($config['consent_repository'])) {
             $container->setAlias(ConsentRepository::class, $config['consent_repository']);
         }
@@ -89,9 +87,9 @@ class AuthorizationEndpointSource implements Component
         $container->setParameter('oauth2_server.endpoint.authorization.process_endpoint_path', $config['process_endpoint_path']);
         $container->setParameter('oauth2_server.endpoint.authorization.host', $config['host']);
         $container->setParameter('oauth2_server.endpoint.authorization.enforce_state', $config['enforce_state']);
-        $container->setParameter('oauth2_server.endpoint.authorization.handler.consent', $config['consent_handler']);
-        $container->setParameter('oauth2_server.endpoint.authorization.handler.login', $config['login_handler']);
-        $container->setParameter('oauth2_server.endpoint.authorization.handler.select_account', $config['select_account_handler']);
+        $container->setAlias('oauth2_server.endpoint.authorization.handler.consent', $config['consent_handler']);
+        $container->setAlias('oauth2_server.endpoint.authorization.handler.login', $config['login_handler']);
+        $container->setAlias('oauth2_server.endpoint.authorization.handler.select_account', $config['select_account_handler']);
 
         if ($container->hasAlias('oauth2_server.http_client')) {
             $loader->load('sector_identifier_uri.php');
@@ -139,10 +137,6 @@ class AuthorizationEndpointSource implements Component
             ->end()
             ->scalarNode('user_discovery')
             ->info('The user discovery service.')
-            ->isRequired()
-            ->end()
-            ->scalarNode('user_repository')
-            ->info('The user repository service.')
             ->isRequired()
             ->end()
             ->scalarNode('consent_repository')

@@ -28,7 +28,6 @@ use OAuth2Framework\Component\Core\AccessToken\AccessToken;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Token\TokenId;
-use OAuth2Framework\Component\Core\User\User;
 use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 use OAuth2Framework\Component\OpenIdConnect\UserInfo\UserInfo;
 
@@ -58,7 +57,7 @@ class IdTokenBuilder
     private $jkuFactory = null;
     private $authorizationCodeRepository = null;
 
-    public function __construct(string $issuer, UserInfo $userinfo, int $lifetime, Client $client, User $user, UserAccount $userAccount, string $redirectUri, ?JKUFactory $jkuFactory, ?AuthorizationCodeRepository $authorizationCodeRepository)
+    public function __construct(string $issuer, UserInfo $userinfo, int $lifetime, Client $client, UserAccount $userAccount, string $redirectUri, ?JKUFactory $jkuFactory, ?AuthorizationCodeRepository $authorizationCodeRepository)
     {
         $this->issuer = $issuer;
         $this->userinfo = $userinfo;
@@ -206,10 +205,10 @@ class IdTokenBuilder
         return $claims;
     }
 
-    private function updateClaimsWithAuthenticationTime(array $claims, User $user, array $requestedClaims): array
+    private function updateClaimsWithAuthenticationTime(array $claims, array $requestedClaims): array
     {
-        if ((true === $this->withAuthenticationTime || \array_key_exists('auth_time', $requestedClaims)) && null !== $user->getLastLoginAt()) {
-            $claims['auth_time'] = $user->getLastLoginAt();
+        if ((true === $this->withAuthenticationTime || \array_key_exists('auth_time', $requestedClaims)) && null !== $this->userAccount->getLastLoginAt()) {
+            $claims['auth_time'] = $this->userAccount->getLastLoginAt();
         }
 
         return $claims;
