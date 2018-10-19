@@ -21,7 +21,7 @@ Help me out for a couple of :beers:!
 [![Latest Stable Version](https://poser.pugx.org/oauth2-framework/oauth2-framework/v/stable.png)](https://packagist.org/packages/oauth2-framework/oauth2-framework)
 [![Total Downloads](https://poser.pugx.org/oauth2-framework/oauth2-framework/downloads.png)](https://packagist.org/packages/oauth2-framework/oauth2-framework)
 [![Latest Unstable Version](https://poser.pugx.org/oauth2-framework/oauth2-framework/v/unstable.png)](https://packagist.org/packages/oauth2-framework/oauth2-framework)
-[![License](https://poser.pugx.org/oauth2-framework/oauth2-framework/license.png)](https://packagist.org/packages/oauth2-framework/oauth2-framework)
+[![License](https://poser.pugx.org/oauth2-framework/oauth2-framework/license.png)](https://packagist.org/packages/oauth2-framework/oauth2-framework) [![GuardRails badge](https://badges.production.guardrails.io/OAuth2-Framework/oauth2-framework.svg)](https://www.guardrails.io)
 
 **OAuth2 Framework for PHP** is a **PHP framework** for web applications and a set of reusable
 **PHP components**. It is used to build an authorization server based on the
