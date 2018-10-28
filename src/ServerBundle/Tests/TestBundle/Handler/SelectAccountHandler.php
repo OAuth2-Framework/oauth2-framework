@@ -37,6 +37,9 @@ class SelectAccountHandler implements SelectAccountHandlerInterface
 
     public function process(ServerRequestInterface $serverRequest, string $authorizationId, AuthorizationRequest $authorizationRequest): ResponseInterface
     {
-        return new Response('You are on the account selection page');
+        $response = new Response();
+        $response->getBody()->write('You are on the account selection page');
+
+        return $response;
     }
 }

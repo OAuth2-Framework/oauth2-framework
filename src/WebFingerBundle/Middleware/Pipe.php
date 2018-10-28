@@ -26,8 +26,6 @@ class Pipe implements MiddlewareInterface
     private $middlewares;
 
     /**
-     * Dispatcher constructor.
-     *
      * @param MiddlewareInterface[] $middlewares
      */
     public function __construct(array $middlewares = [])
@@ -50,10 +48,8 @@ class Pipe implements MiddlewareInterface
 
     /**
      * Dispatches the middleware and returns the resulting `ResponseInterface`.
-     *
-     * @return ResponseInterface
      */
-    public function dispatch(ServerRequestInterface $request)
+    public function dispatch(ServerRequestInterface $request): ResponseInterface
     {
         $resolved = $this->resolve(0);
 

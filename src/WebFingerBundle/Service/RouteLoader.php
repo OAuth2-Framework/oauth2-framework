@@ -27,20 +27,7 @@ class RouteLoader implements LoaderInterface
         $this->routes = new RouteCollection();
     }
 
-    /**
-     * @param string $name         The name of the route
-     * @param string $controllerId The controller service ID
-     * @param string $methodName   The controller method name
-     * @param string $path         The path pattern to match
-     * @param array  $defaults     An array of default parameter values
-     * @param array  $requirements An array of requirements for parameters (regexes)
-     * @param array  $options      An array of options
-     * @param string $host         The host pattern to match
-     * @param array  $schemes      A required URI scheme or an array of restricted schemes
-     * @param array  $methods      A required HTTP method or an array of restricted methods
-     * @param string $condition    A condition that should evaluate to true for the route to match
-     */
-    public function addRoute(string $name, string $controllerId, string $methodName, string $path, array $defaults = [], array $requirements = [], array $options = [], ?string $host = '', array $schemes = [], array $methods = [], string $condition = '')
+    public function addRoute(string $name, string $controllerId, string $methodName, string $path, array $defaults = [], array $requirements = [], array $options = [], ?string $host = '', array $schemes = [], array $methods = [], string $condition = ''): void
     {
         $defaults['_controller'] = \Safe\sprintf('%s:%s', $controllerId, $methodName);
         $route = new Route($path, $defaults, $requirements, $options, $host, $schemes, $methods, $condition);

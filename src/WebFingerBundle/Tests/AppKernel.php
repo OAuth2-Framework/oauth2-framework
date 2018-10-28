@@ -20,9 +20,6 @@ use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\HttpKernel\Kernel;
 
-/**
- * Class AppKernel.
- */
 class AppKernel extends Kernel
 {
     public function __construct(string $environment, bool $debug)

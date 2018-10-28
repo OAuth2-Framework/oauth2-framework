@@ -22,14 +22,8 @@ use Psr\Http\Server\RequestHandlerInterface;
  */
 class RequestHandler implements RequestHandlerInterface
 {
-    /**
-     * @var callable
-     */
     private $callback;
 
-    /**
-     * @param callable $callback function (\Psr\Http\Message\RequestInterface $request) : \Psr\Http\Message\ResponseInterface
-     */
     public function __construct(callable $callback)
     {
         $this->callback = $callback;

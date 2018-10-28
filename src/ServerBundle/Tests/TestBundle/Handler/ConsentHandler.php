@@ -32,6 +32,9 @@ class ConsentHandler implements ConsentHandlerInterface
 
     public function process(ServerRequestInterface $serverRequest, string $authorizationId, AuthorizationRequest $authorizationRequest): ResponseInterface
     {
-        return new Response('You are on the consent page');
+        $response = new Response();
+        $response->getBody()->write('You are on the consent page');
+
+        return $response;
     }
 }

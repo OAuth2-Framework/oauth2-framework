@@ -18,14 +18,8 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 class Configuration implements ConfigurationInterface
 {
-    /**
-     * @var string
-     */
     private $alias;
 
-    /**
-     * Configuration constructor.
-     */
     public function __construct(string $alias)
     {
         $this->alias = $alias;
@@ -38,18 +32,18 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-            ->scalarNode('response_factory')
-            ->info('The response factory service')
-            ->isRequired()
-            ->end()
-            ->scalarNode('resource_repository')
-            ->info('The resource repository service')
-            ->isRequired()
-            ->end()
-            ->scalarNode('path')
-            ->info('The path to the issuer discovery endpoint. Should be "/.well-known/webfinger" for compliance with the RFC7033.')
-            ->defaultValue('/.well-known/webfinger')
-            ->end()
+                ->scalarNode('response_factory')
+                    ->info('The response factory service')
+                    ->isRequired()
+                ->end()
+                ->scalarNode('resource_repository')
+                    ->info('The resource repository service')
+                    ->isRequired()
+                ->end()
+                    ->scalarNode('path')
+                    ->info('The path to the issuer discovery endpoint. Should be "/.well-known/webfinger" for compliance with the RFC7033.')
+                    ->defaultValue('/.well-known/webfinger')
+                ->end()
             ->end();
 
         return $treeBuilder;

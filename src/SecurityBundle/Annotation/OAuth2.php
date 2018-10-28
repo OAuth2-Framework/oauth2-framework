@@ -14,8 +14,6 @@ declare(strict_types=1);
 namespace OAuth2Framework\SecurityBundle\Annotation;
 
 /**
- * Annotation class for @OAuth2.
- *
  * @Annotation
  * @Target({"CLASS", "METHOD"})
  */
@@ -41,9 +39,6 @@ class OAuth2
      */
     private $resource_owner_id = null;
 
-    /**
-     * @param array $data an array of key/value parameters
-     */
     public function __construct(array $data)
     {
         foreach ($data as $key => $value) {

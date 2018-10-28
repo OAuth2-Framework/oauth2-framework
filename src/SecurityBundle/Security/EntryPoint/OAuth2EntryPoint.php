@@ -22,14 +22,8 @@ use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface
 
 final class OAuth2EntryPoint implements AuthenticationEntryPointInterface
 {
-    /**
-     * @var OAuth2MessageFactoryManager
-     */
     private $oauth2ResponseFactoryManager;
 
-    /**
-     * OAuth2EntryPoint constructor.
-     */
     public function __construct(OAuth2MessageFactoryManager $oauth2ResponseFactoryManager)
     {
         $this->oauth2ResponseFactoryManager = $oauth2ResponseFactoryManager;

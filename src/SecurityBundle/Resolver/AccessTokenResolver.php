@@ -22,14 +22,8 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 
 final class AccessTokenResolver implements ArgumentValueResolverInterface
 {
-    /**
-     * @var TokenStorageInterface
-     */
     private $tokenStorage;
 
-    /**
-     * AccessTokenResolver constructor.
-     */
     public function __construct(TokenStorageInterface $tokenStorage)
     {
         $this->tokenStorage = $tokenStorage;

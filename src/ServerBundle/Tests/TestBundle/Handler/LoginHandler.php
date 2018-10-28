@@ -37,6 +37,9 @@ class LoginHandler implements LoginHandlerInterface
 
     public function process(ServerRequestInterface $serverRequest, string $authorizationId, AuthorizationRequest $authorizationRequest): ResponseInterface
     {
-        return new Response('You are on the login page');
+        $response = new Response();
+        $response->getBody()->write('You are on the login page');
+
+        return $response;
     }
 }

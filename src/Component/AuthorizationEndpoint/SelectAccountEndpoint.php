@@ -41,13 +41,19 @@ abstract class SelectAccountEndpoint extends AbstractEndpoint
                 if (!$this->selectAccountHandler->isValid($request, $authorizationId, $authorization)) {
                     throw new OAuth2AuthorizationException(OAuth2Error::ERROR_ACCOUNT_SELECTION_REQUIRED, 'The resource owner account selection failed.', $authorization);
                 }
+                //$isAuthenticationNeeded = $this->userCheckerManager->isAuthenticationNeeded($authorization);
+                //$isConsentNeeded = !$this->consentRepository || !$this->consentRepository->hasConsentBeenGiven($authorization);
 
                 switch (true) {
-                    case $authorization->hasPrompt('consent'):
+                    case $authorization->hasPrompt('login') || $isAuthenticationNeeded:
+                        $routeName = 'oauth2_server_login_endpoint';
+                        break;
+                    case $authorization->hasPrompt('consent') || $isConsentNeeded:
                     default:
-                        $routeName = 'authorization_consent_endpoint';
+                        $routeName = 'oauth2_server_consent_endpoint';
                         break;
                 }
+
                 $redirectTo = $this->getRouteFor($routeName, $authorizationId);
 
                 return $this->createRedirectResponse($redirectTo);

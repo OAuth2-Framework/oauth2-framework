@@ -23,6 +23,7 @@ use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\ParameterCh
 use OAuth2Framework\Component\AuthorizationEndpoint\User\UserAccountDiscovery;
 use OAuth2Framework\Component\AuthorizationEndpoint\User\UserAuthenticationCheckerManager;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
+use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\UserAccount;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -34,18 +35,18 @@ abstract class AuthorizationEndpoint extends AbstractEndpoint
 
     private $parameterCheckerManager;
 
-    private $userManager;
+    private $userAccountDiscovery;
 
     private $userCheckerManager;
 
     private $consentRepository;
 
-    public function __construct(ResponseFactory $responseFactory, AuthorizationRequestLoader $authorizationRequestLoader, ParameterCheckerManager $parameterCheckerManager, UserAccountDiscovery $userManager, UserAuthenticationCheckerManager $userCheckerManager, SessionInterface $session, ?ConsentRepository $consentRepository)
+    public function __construct(ResponseFactory $responseFactory, AuthorizationRequestLoader $authorizationRequestLoader, ParameterCheckerManager $parameterCheckerManager, UserAccountDiscovery $userAccountDiscovery, UserAuthenticationCheckerManager $userCheckerManager, SessionInterface $session, ?ConsentRepository $consentRepository)
     {
         parent::__construct($responseFactory, $session);
         $this->authorizationRequestLoader = $authorizationRequestLoader;
         $this->parameterCheckerManager = $parameterCheckerManager;
-        $this->userManager = $userManager;
+        $this->userAccountDiscovery = $userAccountDiscovery;
         $this->userCheckerManager = $userCheckerManager;
         $this->consentRepository = $consentRepository;
     }
@@ -55,57 +56,12 @@ abstract class AuthorizationEndpoint extends AbstractEndpoint
         $authorization = $this->loadAuthorization($request);
 
         try {
-            $userAccount = $this->userManager->getCurrentAccount();
+            $userAccount = $this->userAccountDiscovery->getCurrentAccount();
 
             if (null !== $userAccount) {
-                $authorization->setUserAccount($userAccount);
-                $isAuthenticationNeeded = $this->userCheckerManager->isAuthenticationNeeded($authorization);
-                $isConsentNeeded = !$this->consentRepository || !$this->consentRepository->hasConsentBeenGiven($authorization);
-
-                switch (true) {
-                    case $authorization->hasPrompt('none'):
-                        if ($isConsentNeeded) {
-                            throw new OAuth2AuthorizationException(OAuth2Error::ERROR_INTERACTION_REQUIRED, 'The resource owner consent is required.', $authorization);
-                        }
-                        $authorization->allow();
-                        $routeName = 'oauth2_server_process_endpoint';
-                        break;
-                    case $authorization->hasPrompt('select_account'):
-                        $routeName = 'oauth2_server_select_account_endpoint';
-                        break;
-                    case $authorization->hasPrompt('login') || $isAuthenticationNeeded:
-                        $routeName = 'oauth2_server_login_endpoint';
-                        break;
-                    case $authorization->hasPrompt('consent') || $isConsentNeeded:
-                        $routeName = 'oauth2_server_consent_endpoint';
-                        break;
-                    default:
-                        $routeName = 'oauth2_server_consent_endpoint';
-                        break;
-                }
-
-                $authorizationId = Base64Url::encode(random_bytes(64));
-                $this->saveAuthorization($authorizationId, $authorization);
-                $redirectTo = $this->getRouteFor($routeName, $authorizationId);
-
-                return $this->createRedirectResponse($redirectTo);
+                return $this->processWithAuthenticatedUser($authorization, $userAccount);
             } else {
-                if ($authorization->hasPrompt('none')) {
-                    $isConsentNeeded = !$this->consentRepository || !$this->consentRepository->hasConsentBeenGiven($authorization);
-                    if ($isConsentNeeded) {
-                        throw new OAuth2AuthorizationException(OAuth2Error::ERROR_LOGIN_REQUIRED, 'The resource owner is not logged in.', $authorization);
-                    }
-                    $authorization->allow();
-                    $routeName = 'oauth2_server_process_endpoint';
-                } else {
-                    $routeName = 'oauth2_server_login_endpoint';
-                }
-
-                $authorizationId = Base64Url::encode(random_bytes(64));
-                $this->saveAuthorization($authorizationId, $authorization);
-                $redirectTo = $this->getRouteFor($routeName, $authorizationId);
-
-                return $this->createRedirectResponse($redirectTo);
+                return $this->processWithUnauthenticatedUser($authorization);
             }
         } catch (OAuth2AuthorizationException $e) {
             throw $e;
@@ -114,6 +70,61 @@ abstract class AuthorizationEndpoint extends AbstractEndpoint
         } catch (\Exception $e) {
             throw new OAuth2AuthorizationException(OAuth2Error::ERROR_INVALID_REQUEST, $e->getMessage(), $authorization, $e);
         }
+    }
+
+    private function processWithAuthenticatedUser(AuthorizationRequest $authorization, UserAccount $userAccount): ResponseInterface
+    {
+        $authorization->setUserAccount($userAccount);
+        $isAuthenticationNeeded = $this->userCheckerManager->isAuthenticationNeeded($authorization);
+        $isConsentNeeded = !$this->consentRepository || !$this->consentRepository->hasConsentBeenGiven($authorization);
+
+        switch (true) {
+            case $authorization->hasPrompt('none'):
+                if ($isConsentNeeded) {
+                    throw new OAuth2AuthorizationException(OAuth2Error::ERROR_INTERACTION_REQUIRED, 'The resource owner consent is required.', $authorization);
+                }
+                $authorization->allow();
+                $routeName = 'oauth2_server_process_endpoint';
+                break;
+            case $authorization->hasPrompt('select_account'):
+                $routeName = 'oauth2_server_select_account_endpoint';
+                break;
+            case $authorization->hasPrompt('login') || $isAuthenticationNeeded:
+                $routeName = 'oauth2_server_login_endpoint';
+                break;
+            case $authorization->hasPrompt('consent') || $isConsentNeeded:
+                $routeName = 'oauth2_server_consent_endpoint';
+                break;
+            default:
+                $routeName = 'oauth2_server_consent_endpoint';
+                break;
+        }
+
+        $authorizationId = Base64Url::encode(random_bytes(64));
+        $this->saveAuthorization($authorizationId, $authorization);
+        $redirectTo = $this->getRouteFor($routeName, $authorizationId);
+
+        return $this->createRedirectResponse($redirectTo);
+    }
+
+    private function processWithUnauthenticatedUser(AuthorizationRequest $authorization): ResponseInterface
+    {
+        if ($authorization->hasPrompt('none')) {
+            $isConsentNeeded = !$this->consentRepository || !$this->consentRepository->hasConsentBeenGiven($authorization);
+            if ($isConsentNeeded) {
+                throw new OAuth2AuthorizationException(OAuth2Error::ERROR_LOGIN_REQUIRED, 'The resource owner is not logged in.', $authorization);
+            }
+            $authorization->allow();
+            $routeName = 'oauth2_server_process_endpoint';
+        } else {
+            $routeName = 'oauth2_server_login_endpoint';
+        }
+
+        $authorizationId = Base64Url::encode(random_bytes(64));
+        $this->saveAuthorization($authorizationId, $authorization);
+        $redirectTo = $this->getRouteFor($routeName, $authorizationId);
+
+        return $this->createRedirectResponse($redirectTo);
     }
 
     private function loadAuthorization(ServerRequestInterface $request): AuthorizationRequest

@@ -42,16 +42,7 @@ abstract class LoginEndpoint extends AbstractEndpoint
                     throw new OAuth2AuthorizationException(OAuth2Error::ERROR_LOGIN_REQUIRED, 'The resource owner is not logged in.', $authorization);
                 }
 
-                switch (true) {
-                    case $authorization->hasPrompt('select_account'):
-                        $routeName = 'oauth2_server_select_account_endpoint';
-                        break;
-                    case $authorization->hasPrompt('consent'):
-                    default:
-                        $routeName = 'oauth2_server_consent_endpoint';
-                        break;
-                }
-                $redirectTo = $this->getRouteFor($routeName, $authorizationId);
+                $redirectTo = $this->getRouteFor('oauth2_server_consent_endpoint', $authorizationId);
 
                 return $this->createRedirectResponse($redirectTo);
             }

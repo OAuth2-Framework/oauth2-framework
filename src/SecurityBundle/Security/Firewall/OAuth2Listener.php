@@ -30,34 +30,12 @@ use Symfony\Component\Security\Http\Firewall\ListenerInterface;
 
 final class OAuth2Listener implements ListenerInterface
 {
-    /**
-     * @var TokenStorageInterface
-     */
     private $tokenStorage;
-
-    /**
-     * @var AuthenticationManagerInterface
-     */
     private $authenticationManager;
-
-    /**
-     * @var TokenTypeManager
-     */
     private $tokenTypeManager;
-
-    /**
-     * @var AccessTokenHandlerManager
-     */
     private $accessTokenHandlerManager;
-
-    /**
-     * @var OAuth2MessageFactoryManager
-     */
     private $oauth2ResponseFactoryManager;
 
-    /**
-     * OAuth2Listener constructor.
-     */
     public function __construct(TokenStorageInterface $tokenStorage,
                                 AuthenticationManagerInterface $authenticationManager,
                                 TokenTypeManager $tokenTypeManager,
