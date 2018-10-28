@@ -20,7 +20,7 @@ use OAuth2Framework\Component\RefreshTokenGrant\RefreshToken;
 use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenId;
 use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenRepository as RefreshTokenRepositoryInterface;
 
-class RefreshTokenRepository implements RefreshTokenRepositoryInterface
+final class RefreshTokenRepository implements RefreshTokenRepositoryInterface
 {
     /**
      * @var RefreshToken[]

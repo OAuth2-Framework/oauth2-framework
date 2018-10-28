@@ -17,7 +17,7 @@ use OAuth2Framework\Component\ClientRegistrationEndpoint\InitialAccessToken;
 use OAuth2Framework\Component\ClientRegistrationEndpoint\InitialAccessTokenId;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 
-class InitialAccessTokenRepository implements \OAuth2Framework\Component\ClientRegistrationEndpoint\InitialAccessTokenRepository
+final class InitialAccessTokenRepository implements \OAuth2Framework\Component\ClientRegistrationEndpoint\InitialAccessTokenRepository
 {
     /**
      * @var InitialAccessToken[]

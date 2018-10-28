@@ -17,7 +17,7 @@ use OAuth2Framework\Component\WebFingerEndpoint\IdentifierResolver\Identifier;
 use OAuth2Framework\Component\WebFingerEndpoint\IdentifierResolver\IdentifierResolver;
 use function League\Uri\parse;
 
-class UriPathResolver implements IdentifierResolver
+final class UriPathResolver implements IdentifierResolver
 {
     public function supports(string $resource_name): bool
     {

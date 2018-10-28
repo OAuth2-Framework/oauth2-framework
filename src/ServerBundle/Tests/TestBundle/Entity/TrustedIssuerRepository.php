@@ -16,7 +16,7 @@ namespace OAuth2Framework\ServerBundle\Tests\TestBundle\Entity;
 use OAuth2Framework\Component\Core\TrustedIssuer\TrustedIssuer;
 use OAuth2Framework\Component\Core\TrustedIssuer\TrustedIssuerRepository as TrustedIssuerRepositoryInterface;
 
-class TrustedIssuerRepository implements TrustedIssuerRepositoryInterface
+final class TrustedIssuerRepository implements TrustedIssuerRepositoryInterface
 {
     public function find(string $trustedIssuer): ?TrustedIssuer
     {

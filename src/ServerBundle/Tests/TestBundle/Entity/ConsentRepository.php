@@ -16,7 +16,7 @@ namespace OAuth2Framework\ServerBundle\Tests\TestBundle\Entity;
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
 use OAuth2Framework\Component\AuthorizationEndpoint\Consent\ConsentRepository as ConsentRepositoryInterface;
 
-class ConsentRepository implements ConsentRepositoryInterface
+final class ConsentRepository implements ConsentRepositoryInterface
 {
     public function hasConsentBeenGiven(AuthorizationRequest $authorizationRequest): bool
     {

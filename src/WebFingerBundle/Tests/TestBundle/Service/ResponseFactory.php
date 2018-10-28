@@ -16,7 +16,7 @@ namespace OAuth2Framework\WebFingerBundle\Tests\TestBundle\Service;
 use GuzzleHttp\Psr7\Response;
 use Http\Message\ResponseFactory as Base;
 
-class ResponseFactory implements Base
+final class ResponseFactory implements Base
 {
     public function createResponse($statusCode = 200, $reasonPhrase = null, array $header = [], $body = null, $protocolVersion = '1.1')
     {

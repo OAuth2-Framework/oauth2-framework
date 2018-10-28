@@ -18,7 +18,7 @@ use OAuth2Framework\Component\WebFingerEndpoint\Link;
 use OAuth2Framework\Component\WebFingerEndpoint\ResourceDescriptor;
 use OAuth2Framework\Component\WebFingerEndpoint\ResourceRepository as ResourceRepositoryInterface;
 
-class ResourceRepository implements ResourceRepositoryInterface
+final class ResourceRepository implements ResourceRepositoryInterface
 {
     /**
      * @var ResourceDescriptor[]

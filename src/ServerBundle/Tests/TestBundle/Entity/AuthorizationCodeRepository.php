@@ -20,7 +20,7 @@ use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 
-class AuthorizationCodeRepository implements AuthorizationCodeRepositoryInterface
+final class AuthorizationCodeRepository implements AuthorizationCodeRepositoryInterface
 {
     /**
      * @var AuthorizationCode[]

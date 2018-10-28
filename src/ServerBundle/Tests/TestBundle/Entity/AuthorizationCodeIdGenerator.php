@@ -13,32 +13,13 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Tests\TestBundle\Entity;
 
-use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCode;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeId;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeIdGenerator as AuthorizationCodeManagerInterface;
 
-class AuthorizationCodeIdGenerator implements AuthorizationCodeManagerInterface
+final class AuthorizationCodeIdGenerator implements AuthorizationCodeManagerInterface
 {
-    /**
-     * @var AuthorizationCodeRepository
-     */
-    private $repository;
-
-    /**
-     * AuthorizationCodeManager constructor.
-     */
-    public function __construct(AuthorizationCodeRepository $repository)
-    {
-        $this->repository = $repository;
-    }
-
     public function createAuthorizationCodeId(): AuthorizationCodeId
     {
         return new AuthorizationCodeId(\bin2hex(\random_bytes(32)));
-    }
-
-    public function save(AuthorizationCode $authCode): void
-    {
-        $this->repository->save($authCode);
     }
 }

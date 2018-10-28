@@ -19,7 +19,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response;
 
-class ConsentHandler implements ConsentHandlerInterface
+final class ConsentHandler implements ConsentHandlerInterface
 {
     public function prepare(ServerRequestInterface $serverRequest, string $authorizationId, AuthorizationRequest $authorizationRequest): void
     {

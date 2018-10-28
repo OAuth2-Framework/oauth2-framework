@@ -17,7 +17,7 @@ use OAuth2Framework\Component\Core\AccessToken\AccessToken;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository as AccessTokenRepositoryInterface;
 
-class AccessTokenRepository implements AccessTokenRepositoryInterface
+final class AccessTokenRepository implements AccessTokenRepositoryInterface
 {
     /**
      * @var AccessToken[]

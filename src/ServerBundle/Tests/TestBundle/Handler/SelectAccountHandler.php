@@ -19,7 +19,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response;
 
-class SelectAccountHandler implements SelectAccountHandlerInterface
+final class SelectAccountHandler implements SelectAccountHandlerInterface
 {
     public function prepare(ServerRequestInterface $serverRequest, string $authorizationId, AuthorizationRequest $authorizationRequest): void
     {

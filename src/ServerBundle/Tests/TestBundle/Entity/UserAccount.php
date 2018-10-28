@@ -19,7 +19,7 @@ use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Security\Core\User\UserInterface as SymfonyUserInterface;
 
-class UserAccount implements UserAccountInterface, SymfonyUserInterface, EquatableInterface
+final class UserAccount implements UserAccountInterface, SymfonyUserInterface, EquatableInterface
 {
     private $username;
 

@@ -15,6 +15,6 @@ namespace OAuth2Framework\WebFingerBundle\Tests\TestBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class TestBundle extends Bundle
+final class TestBundle extends Bundle
 {
 }

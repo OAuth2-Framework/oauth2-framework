@@ -16,16 +16,13 @@ namespace OAuth2Framework\ServerBundle\Tests\TestBundle\Entity;
 use OAuth2Framework\Component\Scope\Scope as ScopeInterface;
 use OAuth2Framework\Component\Scope\ScopeRepository as ScopeRepositoryInterface;
 
-class ScopeRepository implements ScopeRepositoryInterface
+final class ScopeRepository implements ScopeRepositoryInterface
 {
     /**
      * @var ScopeInterface[]
      */
     private $scopes = [];
 
-    /**
-     * ScopeRepository constructor.
-     */
     public function __construct()
     {
         $this->scopes['openid'] = new Scope('openid');

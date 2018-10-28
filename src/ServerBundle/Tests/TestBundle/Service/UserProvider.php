@@ -20,7 +20,7 @@ use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 
-class UserProvider implements UserProviderInterface
+final class UserProvider implements UserProviderInterface
 {
     private $userAccountRepository;
 

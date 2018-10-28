@@ -16,9 +16,8 @@ namespace OAuth2Framework\ServerBundle\Tests\TestBundle\Entity;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServer as ResourceServerInterface;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerRepository as ResourceServerRepositoryInterface;
-use OAuth2Framework\Component\IssuerDiscoveryEndpoint\ResourceId;
 
-class ResourceServerRepository implements ResourceServerRepositoryInterface
+final class ResourceServerRepository implements ResourceServerRepositoryInterface
 {
     public function find(ResourceServerId $resourceServerId): ?ResourceServerInterface
     {
@@ -27,10 +26,5 @@ class ResourceServerRepository implements ResourceServerRepositoryInterface
         }
 
         return null;
-    }
-
-    public function supports(ResourceId $resourceId): bool
-    {
-        return 'http://foo.com' === \mb_substr($resourceId->getValue(), 0, 14);
     }
 }

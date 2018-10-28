@@ -23,46 +23,38 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * @Route("/api")
  */
-class ApiController extends Controller
+final class ApiController extends Controller
 {
     /**
-     * @return Response
-     *
      * @Route("/hello/{name}", name="api_hello")
      */
-    public function serviceAction(string $name)
+    public function serviceAction(string $name): Response
     {
         return new JsonResponse(['name' => $name, 'message' => \Safe\sprintf('Hello %s!', $name)]);
     }
 
     /**
-     * @return Response
-     *
      * @OAuth2(scope="profile openid")
      * @Route("/hello-profile", name="api_scope")
      */
-    public function scopeProtectionAction()
+    public function scopeProtectionAction(): Response
     {
         return new JsonResponse(['name' => 'I am protected by scope', 'message' => 'Hello!']);
     }
 
     /**
-     * @return Response
-     *
      * @OAuth2(token_type="MAC")
      * @Route("/hello-token", name="api_token")
      */
-    public function tokenTypeProtectionAction()
+    public function tokenTypeProtectionAction(): Response
     {
         return new JsonResponse(['name' => 'I am protected by scope', 'message' => 'Hello!']);
     }
 
     /**
      * @Route("/hello-resolver", name="api_resolver")
-     *
-     * @return Response
      */
-    public function accessTokenResolverAction(AccessToken $accessToken)
+    public function accessTokenResolverAction(AccessToken $accessToken): Response
     {
         return new JsonResponse($accessToken);
     }

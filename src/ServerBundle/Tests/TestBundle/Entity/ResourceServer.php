@@ -16,7 +16,7 @@ namespace OAuth2Framework\ServerBundle\Tests\TestBundle\Entity;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServer as ResourceServerInterface;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
 
-class ResourceServer implements ResourceServerInterface
+final class ResourceServer implements ResourceServerInterface
 {
     private $resourceServerId;
 

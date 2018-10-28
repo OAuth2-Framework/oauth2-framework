@@ -18,7 +18,7 @@ use GuzzleHttp\Psr7\Response;
 use Http\Message\RequestFactory;
 use Http\Message\ResponseFactory;
 
-class MessageFactory implements ResponseFactory, RequestFactory
+final class MessageFactory implements ResponseFactory, RequestFactory
 {
     public function createRequest($method, $uri, array $header = [], $body = null, $protocolVersion = '1.1')
     {

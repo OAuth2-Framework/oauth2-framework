@@ -17,7 +17,7 @@ use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwnerId;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use OAuth2Framework\Component\ResourceOwnerPasswordCredentialsGrant\ResourceOwnerPasswordCredentialManager as ResourceOwnerPasswordCredentialManagerInterface;
 
-class ResourceOwnerPasswordCredentialManager implements ResourceOwnerPasswordCredentialManagerInterface
+final class ResourceOwnerPasswordCredentialManager implements ResourceOwnerPasswordCredentialManagerInterface
 {
     /**
      * @var ResourceOwnerId[]

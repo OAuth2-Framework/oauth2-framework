@@ -95,7 +95,7 @@ class AuthorizationEndpointTest extends WebTestCase
         static::assertStringEndsWith('/consent', $response->headers->get('location'));
         $client->followRedirect();
         $response = $client->getResponse();
-        static::assertEquals('You are on the consent page',$response->getContent());
+        static::assertEquals('You are on the consent page', $response->getContent());
     }
 
     private function buildUri(array $query): string

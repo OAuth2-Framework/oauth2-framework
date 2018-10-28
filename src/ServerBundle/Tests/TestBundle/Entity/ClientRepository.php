@@ -18,7 +18,7 @@ use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 
-class ClientRepository implements \OAuth2Framework\Component\Core\Client\ClientRepository
+final class ClientRepository implements \OAuth2Framework\Component\Core\Client\ClientRepository
 {
     /**
      * @var Client[]

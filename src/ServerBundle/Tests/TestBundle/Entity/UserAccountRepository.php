@@ -17,7 +17,7 @@ use OAuth2Framework\Component\Core\UserAccount\UserAccount as BaseUserAccount;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountRepository as UserAccountRepositoryInterface;
 
-class UserAccountRepository implements UserAccountRepositoryInterface
+final class UserAccountRepository implements UserAccountRepositoryInterface
 {
     /**
      * @var UserAccount[]
