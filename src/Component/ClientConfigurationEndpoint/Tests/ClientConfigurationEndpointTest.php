@@ -39,18 +39,22 @@ final class ClientConfigurationEndpointTest extends TestCase
      */
     public function theClientConfigurationEndpointCanReceiveGetRequestsAndRetrieveClientInformation()
     {
-        $client = new Client(
-            new ClientId('CLIENT_ID'),
-            new DataBag([
-                'registration_access_token' => 'REGISTRATION_TOKEN',
-            ]),
-            null
-        );
+        $client = $this->prophesize(Client::class);
+        $client->isPublic()->willReturn(false);
+        $client->getPublicId()->willReturn(new ClientId('CLIENT_ID'));
+        $client->getClientId()->willReturn(new ClientId('CLIENT_ID'));
+        $client->has('registration_access_token')->willReturn(true);
+        $client->get('registration_access_token')->willReturn('REGISTRATION_TOKEN');
+        $client->all()->willReturn([
+            'registration_access_token' => 'REGISTRATION_TOKEN',
+            'client_id' => 'CLIENT_ID',
+        ]);
+
         $clientRepository = $this->prophesize(ClientRepository::class);
 
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getMethod()->willReturn('GET');
-        $request->getAttribute('client')->willReturn($client);
+        $request->getAttribute('client')->willReturn($client->reveal());
         $request->getHeader('AUTHORIZATION')->willReturn(['Bearer REGISTRATION_TOKEN']);
 
         $handler = $this->prophesize(RequestHandlerInterface::class);
@@ -66,19 +70,23 @@ final class ClientConfigurationEndpointTest extends TestCase
      */
     public function theClientConfigurationEndpointCanReceivePutRequestsAndUpdateTheClient()
     {
-        $client = new Client(
-            new ClientId('CLIENT_ID'),
-            new DataBag([
-                'registration_access_token' => 'REGISTRATION_TOKEN',
-            ]),
-            null
-        );
+        $client = $this->prophesize(Client::class);
+        $client->isPublic()->willReturn(false);
+        $client->getPublicId()->willReturn(new ClientId('CLIENT_ID'));
+        $client->getClientId()->willReturn(new ClientId('CLIENT_ID'));
+        $client->has('registration_access_token')->willReturn(true);
+        $client->get('registration_access_token')->willReturn('REGISTRATION_TOKEN');
+        $client->all()->willReturn([
+            'client_id' => 'CLIENT_ID',
+        ]);
+        $client->setParameter(Argument::type(DataBag::class))->will(function () {});
+
         $clientRepository = $this->prophesize(ClientRepository::class);
         $clientRepository->save(Argument::type(Client::class))->shouldBeCalled();
 
         $request = $this->buildRequest([]);
         $request->getMethod()->willReturn('PUT');
-        $request->getAttribute('client')->willReturn($client);
+        $request->getAttribute('client')->willReturn($client->reveal());
         $request->getHeader('AUTHORIZATION')->willReturn(['Bearer REGISTRATION_TOKEN']);
 
         $handler = $this->prophesize(RequestHandlerInterface::class);

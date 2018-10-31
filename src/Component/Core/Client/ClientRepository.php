@@ -13,6 +13,9 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Core\Client;
 
+use OAuth2Framework\Component\Core\DataBag\DataBag;
+use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
+
 interface ClientRepository
 {
     /**
@@ -26,4 +29,9 @@ interface ClientRepository
      * @return null|Client return the client object or null if no client is found
      */
     public function find(ClientId $clientId): ?Client;
+
+    /**
+     * Creates an empty client.
+     */
+    public function create(ClientId $clientId, DataBag $parameters, ?UserAccountId $ownerId): Client;
 }

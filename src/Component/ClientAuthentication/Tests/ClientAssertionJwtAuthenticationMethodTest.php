@@ -45,7 +45,6 @@ use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use OAuth2Framework\Component\Core\TrustedIssuer\TrustedIssuer;
 use OAuth2Framework\Component\Core\TrustedIssuer\TrustedIssuerRepository;
-use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ServerRequestInterface;
@@ -290,20 +289,19 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
         $method = $this->getMethodWithEncryptionSupport(false);
         $manager = new AuthenticationMethodManager();
         $manager->add($method);
-        $client = new Client(
-            new ClientId('CLIENT_ID'),
-            new DataBag([
-                'client_secret' => 'CLIENT_SECRET',
-                'token_endpoint_auth_method' => 'client_secret_post',
-            ]),
-            new UserAccountId('USER_ACCOUNT_ID')
-        );
+
+        $client = $this->prophesize(Client::class);
+        $client->isPublic()->willReturn(false);
+        $client->getPublicId()->willReturn(new ClientId('CLIENT_ID'));
+        $client->getClientId()->willReturn(new ClientId('CLIENT_ID'));
+        $client->get('token_endpoint_auth_method')->willReturn('client_secret_post');
+
         $request = $this->buildRequest([
             'client_assertion_type' => 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
             'client_assertion' => $assertion,
         ]);
 
-        static::assertFalse($manager->isClientAuthenticated($request->reveal(), $client, $method, $jws));
+        static::assertFalse($manager->isClientAuthenticated($request->reveal(), $client->reveal(), $method, $jws));
     }
 
     /**
@@ -320,20 +318,23 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
         $method = $this->getMethodWithEncryptionSupport(false);
         $manager = new AuthenticationMethodManager();
         $manager->add($method);
-        $client = new Client(
-            new ClientId('CLIENT_ID'),
-            new DataBag([
-                'token_endpoint_auth_method' => 'private_key_jwt',
-                'jwks' => \Safe\json_decode('{"keys":[{"kty":"oct","k":"U0VDUkVU"}]}', true),
-            ]),
-            new UserAccountId('USER_ACCOUNT_ID')
-        );
+
+        $client = $this->prophesize(Client::class);
+        $client->isPublic()->willReturn(false);
+        $client->getPublicId()->willReturn(new ClientId('CLIENT_ID'));
+        $client->getClientId()->willReturn(new ClientId('CLIENT_ID'));
+        $client->get('token_endpoint_auth_method')->willReturn('private_key_jwt');
+        $client->getTokenEndpointAuthenticationMethod()->willReturn('private_key_jwt');
+        $client->has('jwks')->willReturn(true);
+        $client->get('jwks')->willReturn(\Safe\json_decode('{"keys":[{"kty":"oct","k":"U0VDUkVU"}]}', true));
+        $client->areClientCredentialsExpired()->willReturn(false);
+
         $request = $this->buildRequest([
             'client_assertion_type' => 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
             'client_assertion' => $assertion,
         ]);
 
-        static::assertTrue($manager->isClientAuthenticated($request->reveal(), $client, $method, $jws));
+        static::assertTrue($manager->isClientAuthenticated($request->reveal(), $client->reveal(), $method, $jws));
     }
 
     /**
@@ -350,20 +351,24 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
         $method = $this->getMethodWithEncryptionSupport(false);
         $manager = new AuthenticationMethodManager();
         $manager->add($method);
-        $client = new Client(
-            new ClientId('CLIENT_ID'),
-            new DataBag([
-                'token_endpoint_auth_method' => 'client_secret_jwt',
-                'client_secret' => 'SECRET',
-            ]),
-            new UserAccountId('USER_ACCOUNT_ID')
-        );
+
+        $client = $this->prophesize(Client::class);
+        $client->isPublic()->willReturn(false);
+        $client->getPublicId()->willReturn(new ClientId('CLIENT_ID'));
+        $client->getClientId()->willReturn(new ClientId('CLIENT_ID'));
+        $client->get('token_endpoint_auth_method')->willReturn('client_secret_jwt');
+        $client->getTokenEndpointAuthenticationMethod()->willReturn('client_secret_jwt');
+        $client->has('jwks')->willReturn(false);
+        $client->has('client_secret')->willReturn(true);
+        $client->get('client_secret')->willReturn('SECRET');
+        $client->areClientCredentialsExpired()->willReturn(false);
+
         $request = $this->buildRequest([
             'client_assertion_type' => 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
             'client_assertion' => $assertion,
         ]);
 
-        static::assertTrue($manager->isClientAuthenticated($request->reveal(), $client, $method, $jws));
+        static::assertTrue($manager->isClientAuthenticated($request->reveal(), $client->reveal(), $method, $jws));
     }
 
     /**
@@ -378,19 +383,23 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
         $method = $this->getMethodWithTrustedIssuerSupport();
         $manager = new AuthenticationMethodManager();
         $manager->add($method);
-        $client = new Client(
-            new ClientId('CLIENT_ID'),
-            new DataBag([
-                'token_endpoint_auth_method' => 'client_secret_jwt',
-            ]),
-            new UserAccountId('USER_ACCOUNT_ID')
-        );
+
+        $client = $this->prophesize(Client::class);
+        $client->isPublic()->willReturn(false);
+        $client->getPublicId()->willReturn(new ClientId('CLIENT_ID'));
+        $client->getClientId()->willReturn(new ClientId('CLIENT_ID'));
+        $client->get('token_endpoint_auth_method')->willReturn('client_secret_jwt');
+        $client->getTokenEndpointAuthenticationMethod()->willReturn('client_secret_jwt');
+        $client->has('jwks')->willReturn(false);
+        $client->has('client_secret')->willReturn(false);
+        $client->areClientCredentialsExpired()->willReturn(false);
+
         $request = $this->buildRequest([
             'client_assertion_type' => 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
             'client_assertion' => $assertion,
         ]);
 
-        static::assertTrue($manager->isClientAuthenticated($request->reveal(), $client, $method, $jws));
+        static::assertTrue($manager->isClientAuthenticated($request->reveal(), $client->reveal(), $method, $jws));
     }
 
     /**

@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\ServerBundle\Tests\Functional\Grant\AuthorizationCode;
 
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeGrantType;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use OAuth2Framework\ServerBundle\Tests\Functional\DatabaseTestCase;
 
 /**
  * @group ServerBundle
@@ -22,13 +22,14 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
  * @group Grant
  * @group AuthorizationCode
  */
-class AuthorizationCodeGrantTest extends WebTestCase
+class AuthorizationCodeGrantTest extends DatabaseTestCase
 {
     protected function setUp()
     {
         if (!\class_exists(AuthorizationCodeGrantType::class)) {
             static::markTestSkipped('The component "oauth2-framework/authorization-code-grant" is not installed.');
         }
+        parent::setUp();
     }
 
     /**

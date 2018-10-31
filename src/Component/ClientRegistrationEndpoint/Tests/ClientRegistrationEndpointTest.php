@@ -57,19 +57,28 @@ final class ClientRegistrationEndpointTest extends TestCase
     private function getClientRegistrationEndpoint(): ClientRegistrationEndpoint
     {
         if (null === $this->clientRegistrationEndpoint) {
-            $client = new Client(
-                new ClientId('CLIENT_ID'),
-                new DataBag([]),
-                null
-            );
+            $client = $this->prophesize(Client::class);
+            $client->isPublic()->willReturn(false);
+            $client->getPublicId()->willReturn(new ClientId('CLIENT_ID'));
+            $client->getClientId()->willReturn(new ClientId('CLIENT_ID'));
+
             $clientIdGenerator = $this->prophesize(ClientIdGenerator::class);
             $clientIdGenerator->createClientId()->willReturn(
                 new ClientId('CLIENT_ID')
             );
 
             $clientRepository = $this->prophesize(ClientRepository::class);
-            $clientRepository->find(Argument::type(ClientId::class))->willReturn($client);
-            $clientRepository->save(Argument::type(Client::class))->will(function (array $args) {
+            $clientRepository->find(Argument::type(ClientId::class))->willReturn($client->reveal());
+            $clientRepository->save(Argument::type(Client::class))->will(function (array $args) {});
+            $client = $this->prophesize(Client::class);
+            $clientRepository->create(Argument::type(ClientId::class), Argument::type(DataBag::class), Argument::any())->will(function (array $args) use ($client) {
+                $client->isPublic()->willReturn(false);
+                $client->getPublicId()->willReturn($args[0]);
+                $client->getClientId()->willReturn($args[0]);
+                $client->getOwnerId()->willReturn($args[2]);
+                $client->all()->willReturn(($args[1])->all() + ['client_id' => (string) $args[0]]);
+
+                return $client->reveal();
             });
 
             $this->clientRegistrationEndpoint = new ClientRegistrationEndpoint(

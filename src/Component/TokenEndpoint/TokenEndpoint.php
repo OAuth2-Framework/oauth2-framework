@@ -71,7 +71,7 @@ class TokenEndpoint implements MiddlewareInterface
 
         // The grant type prepare the token response
         // The grant type data should be updated accordingly
-        $grantTypeData = $grantType->prepareResponse($request, $grantTypeData);
+        $grantType->prepareResponse($request, $grantTypeData);
 
         // At this stage, the client should be authenticated
         // If not, we stop the authorization grant
@@ -85,13 +85,13 @@ class TokenEndpoint implements MiddlewareInterface
         }
 
         // We populate the token type parameters
-        $grantTypeData = $this->updateWithTokenTypeParameters($request, $grantTypeData);
+        $this->updateWithTokenTypeParameters($request, $grantTypeData);
 
         // We call for extensions prior to the Access Token issuance
         $grantTypeData = $this->tokenEndpointExtensionManager->handleBeforeAccessTokenIssuance($request, $grantTypeData, $grantType);
 
         // We grant the client
-        $grantTypeData = $grantType->grant($request, $grantTypeData);
+        $grantType->grant($request, $grantTypeData);
 
         // Everything is fine so we can issue the access token
         $accessToken = $this->issueAccessToken($grantTypeData);
@@ -149,7 +149,7 @@ class TokenEndpoint implements MiddlewareInterface
         return $resourceOwner;
     }
 
-    private function updateWithTokenTypeParameters(ServerRequestInterface $request, GrantTypeData $grantTypeData): GrantTypeData
+    private function updateWithTokenTypeParameters(ServerRequestInterface $request, GrantTypeData $grantTypeData): void
     {
         /** @var TokenType $tokenType */
         $tokenType = $request->getAttribute('token_type');
@@ -159,8 +159,6 @@ class TokenEndpoint implements MiddlewareInterface
         foreach ($info as $k => $v) {
             $grantTypeData->getParameter()->set($k, $v);
         }
-
-        return $grantTypeData;
     }
 
     private function isGrantTypeAllowedForTheClient(Client $client, string $grant_type): bool

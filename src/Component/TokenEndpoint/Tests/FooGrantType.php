@@ -34,15 +34,12 @@ final class FooGrantType implements GrantType
         //Nothing to do
     }
 
-    public function prepareResponse(ServerRequestInterface $request, GrantTypeData $grantTypeData): GrantTypeData
+    public function prepareResponse(ServerRequestInterface $request, GrantTypeData $grantTypeData): void
     {
-        return $grantTypeData;
     }
 
-    public function grant(ServerRequestInterface $request, GrantTypeData $grantTypeData): GrantTypeData
+    public function grant(ServerRequestInterface $request, GrantTypeData $grantTypeData): void
     {
         $grantTypeData->setResourceOwnerId($grantTypeData->getClient()->getPublicId());
-
-        return $grantTypeData;
     }
 }

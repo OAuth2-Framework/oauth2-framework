@@ -20,7 +20,6 @@ use OAuth2Framework\Component\ClientAuthentication\ClientSecretBasic;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\Client\ClientRepository;
-use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
@@ -87,12 +86,11 @@ final class ClientAuthenticationMiddlewareTest extends TestCase
      */
     public function aClientIdIsSetButTheClientIsDeleted()
     {
-        $client = new Client(
-            new ClientId('FOO'),
-            new DataBag([]),
-            null
-        );
-        $client = $client->markAsDeleted();
+        $client = $this->prophesize(Client::class);
+        $client->isPublic()->willReturn(false);
+        $client->getPublicId()->willReturn(new ClientId('FOO'));
+        $client->getClientId()->willReturn(new ClientId('FOO'));
+        $client->isDeleted()->willReturn(true);
 
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getHeader('Authorization')
@@ -124,15 +122,16 @@ final class ClientAuthenticationMiddlewareTest extends TestCase
      */
     public function aClientIdIsSetButTheClientCredentialsExpired()
     {
-        $client = new Client(
-            new ClientId('FOO'),
-            new DataBag([
-                'token_endpoint_auth_method' => 'client_secret_basic',
-                'client_secret' => 'BAR',
-                'client_secret_expires_at' => \time() - 1,
-            ]),
-            null
-        );
+        $client = $this->prophesize(Client::class);
+        $client->isPublic()->willReturn(false);
+        $client->getPublicId()->willReturn(new ClientId('FOO'));
+        $client->getClientId()->willReturn(new ClientId('FOO'));
+        $client->get('token_endpoint_auth_method')->willReturn('client_secret_basic');
+        $client->getTokenEndpointAuthenticationMethod()->willReturn('client_secret_basic');
+        $client->isDeleted()->willReturn(false);
+        $client->has('client_secret')->willReturn(false);
+        $client->get('client_secret')->willReturn('BAR');
+        $client->areClientCredentialsExpired()->willReturn(true);
 
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getHeader('Authorization')
@@ -164,13 +163,15 @@ final class ClientAuthenticationMiddlewareTest extends TestCase
      */
     public function aClientIdIsSetButTheAuthenticationMethodIsNotSupportedByTheClient()
     {
-        $client = new Client(
-            new ClientId('FOO'),
-            new DataBag([
-                'token_endpoint_auth_method' => 'none',
-            ]),
-            null
-        );
+        $client = $this->prophesize(Client::class);
+        $client->isPublic()->willReturn(false);
+        $client->getPublicId()->willReturn(new ClientId('FOO'));
+        $client->getClientId()->willReturn(new ClientId('FOO'));
+        $client->has('token_endpoint_auth_method')->willReturn(true);
+        $client->get('token_endpoint_auth_method')->willReturn('none');
+        $client->getTokenEndpointAuthenticationMethod()->willReturn('none');
+        $client->isDeleted()->willReturn(false);
+        $client->areClientCredentialsExpired()->willReturn(false);
 
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getHeader('Authorization')
@@ -202,14 +203,17 @@ final class ClientAuthenticationMiddlewareTest extends TestCase
      */
     public function aClientIdIsSetButTheClientIsNotAuthenticated()
     {
-        $client = new Client(
-            new ClientId('FOO'),
-            new DataBag([
-                'token_endpoint_auth_method' => 'client_secret_basic',
-                'client_secret' => 'BAR',
-            ]),
-            null
-        );
+        $client = $this->prophesize(Client::class);
+        $client->isPublic()->willReturn(false);
+        $client->getPublicId()->willReturn(new ClientId('FOO'));
+        $client->getClientId()->willReturn(new ClientId('FOO'));
+        $client->has('token_endpoint_auth_method')->willReturn(true);
+        $client->get('token_endpoint_auth_method')->willReturn('client_secret_basic');
+        $client->getTokenEndpointAuthenticationMethod()->willReturn('client_secret_basic');
+        $client->has('client_secret')->willReturn(true);
+        $client->get('client_secret')->willReturn('BAR');
+        $client->isDeleted()->willReturn(false);
+        $client->areClientCredentialsExpired()->willReturn(false);
 
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getHeader('Authorization')
@@ -241,14 +245,17 @@ final class ClientAuthenticationMiddlewareTest extends TestCase
      */
     public function aClientIsFullyAuthenticated()
     {
-        $client = new Client(
-            new ClientId('FOO'),
-            new DataBag([
-                'token_endpoint_auth_method' => 'client_secret_basic',
-                'client_secret' => 'BAR',
-            ]),
-            null
-        );
+        $client = $this->prophesize(Client::class);
+        $client->isPublic()->willReturn(false);
+        $client->getPublicId()->willReturn(new ClientId('FOO'));
+        $client->getClientId()->willReturn(new ClientId('FOO'));
+        $client->has('token_endpoint_auth_method')->willReturn(true);
+        $client->get('token_endpoint_auth_method')->willReturn('client_secret_basic');
+        $client->getTokenEndpointAuthenticationMethod()->willReturn('client_secret_basic');
+        $client->has('client_secret')->willReturn(true);
+        $client->get('client_secret')->willReturn('BAR');
+        $client->isDeleted()->willReturn(false);
+        $client->areClientCredentialsExpired()->willReturn(false);
 
         $response = $this->prophesize(ResponseInterface::class);
         $request = $this->prophesize(ServerRequestInterface::class);

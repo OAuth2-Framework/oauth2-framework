@@ -73,13 +73,19 @@ final class NoneAuthenticationMethodTest extends TestCase
     {
         $method = new None();
         $request = $this->prophesize(ServerRequestInterface::class);
-        $client = new Client(
-            new ClientId('CLIENT_ID'),
-            new DataBag([]),
-            new UserAccountId('USER_ACCOUNT_ID')
-        );
 
-        static::assertTrue($method->isClientAuthenticated($client, null, $request->reveal()));
+        $client = $this->prophesize(Client::class);
+        $client->isPublic()->willReturn(false);
+        $client->getPublicId()->willReturn(new ClientId('CLIENT_ID'));
+        $client->getClientId()->willReturn(new ClientId('CLIENT_ID'));
+        $client->getOwnerId()->willReturn(new UserAccountId('USER_ACCOUNT_ID'));
+        $client->has('token_endpoint_auth_method')->willReturn(true);
+        $client->get('token_endpoint_auth_method')->willReturn('none');
+        $client->getTokenEndpointAuthenticationMethod()->willReturn('none');
+        $client->isDeleted()->willReturn(false);
+        $client->areClientCredentialsExpired()->willReturn(false);
+
+        static::assertTrue($method->isClientAuthenticated($client->reveal(), null, $request->reveal()));
     }
 
     /**

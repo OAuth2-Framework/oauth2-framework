@@ -39,6 +39,9 @@ return function (ContainerConfigurator $container) {
         ->autowire()
         ->autoconfigure();
 
+    $container->load('OAuth2Framework\\ServerBundle\\Tests\\TestBundle\\DataFixtures\\', __DIR__.'/../../DataFixtures')
+        ->tag('doctrine.fixture.orm');
+
     $container->set(ClientRepository::class);
 
     $container->set(RefreshTokenRepository::class);

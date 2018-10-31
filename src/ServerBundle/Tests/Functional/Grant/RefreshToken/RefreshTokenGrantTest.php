@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\ServerBundle\Tests\Functional\Grant\RefreshToken;
 
 use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenGrantType;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use OAuth2Framework\ServerBundle\Tests\Functional\DatabaseTestCase;
 
 /**
  * @group ServerBundle
@@ -22,13 +22,14 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
  * @group Grant
  * @group RefreshToken
  */
-class RefreshTokenGrantTest extends WebTestCase
+class RefreshTokenGrantTest extends DatabaseTestCase
 {
     protected function setUp()
     {
         if (!\class_exists(RefreshTokenGrantType::class)) {
             static::markTestSkipped('The component "oauth2-framework/refresh-token-grant" is not installed.');
         }
+        parent::setUp();
     }
 
     /**

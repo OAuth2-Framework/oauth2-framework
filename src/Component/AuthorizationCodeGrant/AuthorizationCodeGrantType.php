@@ -54,12 +54,11 @@ final class AuthorizationCodeGrantType implements GrantType
         }
     }
 
-    public function prepareResponse(ServerRequestInterface $request, GrantTypeData $grantTypeData): GrantTypeData
+    public function prepareResponse(ServerRequestInterface $request, GrantTypeData $grantTypeData): void
     {
-        return $grantTypeData;
     }
 
-    public function grant(ServerRequestInterface $request, GrantTypeData $grantTypeData): GrantTypeData
+    public function grant(ServerRequestInterface $request, GrantTypeData $grantTypeData): void
     {
         $parameters = RequestBodyParser::parseFormUrlEncoded($request);
         $authorizationCode = $this->getAuthorizationCode($parameters['code']);
@@ -87,8 +86,6 @@ final class AuthorizationCodeGrantType implements GrantType
         $grantTypeData->setResourceOwnerId($authorizationCode->getResourceOwnerId());
         $authorizationCode->markAsUsed();
         $this->authorizationCodeRepository->save($authorizationCode);
-
-        return $grantTypeData;
     }
 
     private function getAuthorizationCode(string $code): AuthorizationCode

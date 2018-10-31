@@ -50,13 +50,11 @@ final class RefreshTokenGrantType implements GrantType
         }
     }
 
-    public function prepareResponse(ServerRequestInterface $request, GrantTypeData $grantTypeData): GrantTypeData
+    public function prepareResponse(ServerRequestInterface $request, GrantTypeData $grantTypeData): void
     {
-        // Nothing to do
-        return $grantTypeData;
     }
 
-    public function grant(ServerRequestInterface $request, GrantTypeData $grantTypeData): GrantTypeData
+    public function grant(ServerRequestInterface $request, GrantTypeData $grantTypeData): void
     {
         $parameters = RequestBodyParser::parseFormUrlEncoded($request);
         $refreshToken = $parameters['refresh_token'];
@@ -76,11 +74,9 @@ final class RefreshTokenGrantType implements GrantType
         foreach ($token->getParameter() as $k => $v) {
             $grantTypeData->getParameter()->set($k, $v);
         }
-
-        return $grantTypeData;
     }
 
-    private function checkRefreshToken(RefreshToken $token, Client $client)
+    private function checkRefreshToken(RefreshToken $token, Client $client): void
     {
         if (true === $token->isRevoked() || $client->getPublicId()->getValue() !== $token->getClientId()->getValue()) {
             throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_GRANT, 'The parameter "refresh_token" is invalid.');

@@ -13,93 +13,41 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Tests\TestBundle\Entity;
 
-use OAuth2Framework\Component\Core\Client\Client;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface;
+use Doctrine\Common\Persistence\ManagerRegistry;
+use OAuth2Framework\Component\Core\Client\Client as ClientInterface;
 use OAuth2Framework\Component\Core\Client\ClientId;
+use OAuth2Framework\Component\Core\Client\ClientRepository as ClientRepositoryInterface;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 
-final class ClientRepository implements \OAuth2Framework\Component\Core\Client\ClientRepository
+final class ClientRepository implements ClientRepositoryInterface, ServiceEntityRepositoryInterface
 {
-    /**
-     * @var Client[]
-     */
-    private $clients = [];
+    private $entityRepository;
+    private $entityManager;
 
-    /**
-     * ClientRepository constructor.
-     */
-    public function __construct()
+    public function __construct(ManagerRegistry $managerRegistry)
     {
-        $this->populateClients();
+        $this->entityManager = $managerRegistry->getManagerForClass(Client::class);
+        $this->entityRepository = $this->entityManager->getRepository(Client::class);
     }
 
-    public function find(ClientId $clientId): ?Client
+    public function find(ClientId $clientId): ?ClientInterface
     {
-        return \array_key_exists($clientId->getValue(), $this->clients) ? $this->clients[$clientId->getValue()] : null;
+        return $this->entityRepository->find($clientId);
     }
 
-    public function save(Client $client)
+    public function save(ClientInterface $client)
     {
-        $this->clients[$client->getPublicId()->getValue()] = $client;
+        if (!$client instanceof Client) {
+            throw new \InvalidArgumentException('Unsupported client class');
+        }
+        $this->entityManager->persist($client);
+        $this->entityManager->flush();
     }
 
-    private function populateClients()
+    public function create(ClientId $clientId, DataBag $parameters, ?UserAccountId $ownerId): ClientInterface
     {
-        $client = new Client(
-            new ClientId('CLIENT_ID_1'),
-            new DataBag([
-                'token_endpoint_auth_method' => 'none',
-                'grant_types' => [],
-            ]),
-            new UserAccountId('USER_ACCOUNT_1')
-        );
-        $this->save($client);
-
-        $client = new Client(
-            new ClientId('CLIENT_ID_2'),
-            new DataBag([
-                'token_endpoint_auth_method' => 'none',
-                'grant_types' => ['client_credentials', 'refresh_token', 'authorization_code', 'password', 'implicit'],
-                'response_types' => ['code'],
-                'redinect_uris' => [
-                    'https://exxample.com/cb/?foo=bar',
-                ],
-            ]),
-            new UserAccountId('USER_ACCOUNT_1')
-        );
-        $this->save($client);
-
-        $client = new Client(
-            new ClientId('CLIENT_ID_3'),
-            new DataBag([
-                'token_endpoint_auth_method' => 'client_secret_post',
-                'grant_types' => ['client_credentials', 'refresh_token', 'authorization_code', 'password', 'implicit'],
-                'client_secret' => 'secret',
-            ]),
-            new UserAccountId('USER_ACCOUNT_1')
-        );
-        $this->save($client);
-
-        $client = new Client(
-            new ClientId('CLIENT_ID_4'),
-            new DataBag([
-                'token_endpoint_auth_method' => 'client_secret_jwt',
-                'grant_types' => ['urn:ietf:params:oauth:grant-type:jwt-bearer'],
-                'client_secret' => 'secret',
-            ]),
-            new UserAccountId('USER_ACCOUNT_1')
-        );
-        $this->save($client);
-
-        $client = new Client(
-            new ClientId('CLIENT_ID_5'),
-            new DataBag([
-                'token_endpoint_auth_method' => 'client_secret_basic',
-                'grant_types' => ['client_credentials', 'refresh_token', 'authorization_code', 'password', 'implicit'],
-                'client_secret' => 'secret',
-            ]),
-            new UserAccountId('USER_ACCOUNT_1')
-        );
-        $this->save($client);
+        return new Client($clientId, $parameters, $ownerId);
     }
 }

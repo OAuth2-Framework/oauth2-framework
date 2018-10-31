@@ -24,7 +24,6 @@ use OAuth2Framework\Component\AuthorizationCodeGrant\PKCEMethod\S256;
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
-use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use PHPUnit\Framework\TestCase;
@@ -51,16 +50,16 @@ final class AuthorizationCodeResponseTypeTest extends TestCase
      */
     public function theRequestHaveMissingParameters()
     {
-        $client = new Client(
-            new ClientId('CLIENT_ID'),
-            new DataBag([]),
-            new UserAccountId('USER_ACCOUNT_ID')
-        );
+        $client = $this->prophesize(Client::class);
+        $client->isPublic()->willReturn(false);
+        $client->getPublicId()->willReturn(new ClientId('CLIENT_ID'));
+        $client->getClientId()->willReturn(new ClientId('CLIENT_ID'));
+
         $userAccount = $this->prophesize(UserAccount::class);
         $userAccount->getPublicId()->willReturn(new UserAccountId('USER_ACCOUNT_ID'));
         $userAccount->getUserAccountId()->willReturn(new UserAccountId('USER_ACCOUNT_ID'));
         $authorization = new AuthorizationRequest(
-            $client,
+            $client->reveal(),
             [
                 'code_challenge' => 'ABCDEFGH',
                 'code_challenge_method' => 'S256',

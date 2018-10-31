@@ -17,7 +17,6 @@ use Http\Message\MessageFactory\DiactorosMessageFactory;
 use Http\Message\ResponseFactory;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
-use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\Token\Token;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use OAuth2Framework\Component\TokenRevocationEndpoint\TokenRevocationGetEndpoint;
@@ -228,11 +227,13 @@ final class TokenRevocationGetEndpointTest extends TestCase
     private function getClient(): Client
     {
         if (null === $this->client) {
-            $this->client = new Client(
-                new ClientId('CLIENT_ID'),
-                new DataBag([]),
-                new UserAccountId('USER_ACCOUNT')
-            );
+            $client = $this->prophesize(Client::class);
+            $client->isPublic()->willReturn(false);
+            $client->getOwnerId()->willReturn(new UserAccountId('USER_ACCOUNT'));
+            $client->getPublicId()->willReturn(new ClientId('CLIENT_ID'));
+            $client->getClientId()->willReturn(new ClientId('CLIENT_ID'));
+
+            $this->client = $client->reveal();
         }
 
         return $this->client;

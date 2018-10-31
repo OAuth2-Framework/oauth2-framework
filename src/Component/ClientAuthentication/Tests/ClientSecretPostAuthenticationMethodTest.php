@@ -92,15 +92,21 @@ final class ClientSecretPostAuthenticationMethodTest extends TestCase
             'client_id' => 'CLIENT_ID',
             'client_secret' => 'CLIENT_SECRET',
         ]);
-        $client = new Client(
-            new ClientId('CLIENT_ID'),
-            new DataBag([
-                'client_secret' => 'CLIENT_SECRET',
-            ]),
-            new UserAccountId('USER_ACCOUNT_ID')
-        );
 
-        static::assertTrue($method->isClientAuthenticated($client, 'CLIENT_SECRET', $request->reveal()));
+        $client = $this->prophesize(Client::class);
+        $client->isPublic()->willReturn(false);
+        $client->getPublicId()->willReturn(new ClientId('CLIENT_ID'));
+        $client->getClientId()->willReturn(new ClientId('CLIENT_ID'));
+        $client->getOwnerId()->willReturn(new UserAccountId('USER_ACCOUNT_ID'));
+        $client->has('token_endpoint_auth_method')->willReturn(true);
+        $client->get('token_endpoint_auth_method')->willReturn('client_secret_basic');
+        $client->getTokenEndpointAuthenticationMethod()->willReturn('client_secret_basic');
+        $client->has('client_secret')->willReturn(true);
+        $client->get('client_secret')->willReturn('CLIENT_SECRET');
+        $client->isDeleted()->willReturn(false);
+        $client->areClientCredentialsExpired()->willReturn(false);
+
+        static::assertTrue($method->isClientAuthenticated($client->reveal(), 'CLIENT_SECRET', $request->reveal()));
     }
 
     /**

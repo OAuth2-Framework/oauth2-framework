@@ -83,16 +83,12 @@ final class AuthorizationCodeGrantTypeTest extends TestCase
      */
     public function theTokenResponseIsCorrectlyPrepared()
     {
-        $client = new Client(
-            new ClientId('CLIENT_ID'),
-            new DataBag([]),
-            new UserAccountId('USER_ACCOUNT_ID')
-        );
+        $client = $this->prophesize(Client::class);
         $request = $this->buildRequest(['code' => 'AUTHORIZATION_CODE_ID', 'redirect_uri' => 'http://localhost:8000/']);
-        $grantTypeData = new GrantTypeData($client);
+        $grantTypeData = new GrantTypeData($client->reveal());
 
-        $receivedGrantTypeData = $this->getGrantType()->prepareResponse($request->reveal(), $grantTypeData);
-        static::assertSame($receivedGrantTypeData, $grantTypeData);
+        $this->getGrantType()->prepareResponse($request->reveal(), $grantTypeData);
+        static::assertSame($grantTypeData, $grantTypeData);
     }
 
     /**
@@ -100,14 +96,13 @@ final class AuthorizationCodeGrantTypeTest extends TestCase
      */
     public function theGrantTypeCannotGrantTheClientAsTheCodeVerifierIsMissing()
     {
-        $client = new Client(
-            new ClientId('CLIENT_ID'),
-            new DataBag([]),
-            new UserAccountId('USER_ACCOUNT_ID')
-        );
+        $client = $this->prophesize(Client::class);
+        $client->isPublic()->willReturn(false);
+        $client->getPublicId()->willReturn(new ClientId('CLIENT_ID'));
+
         $request = $this->buildRequest(['code' => 'AUTHORIZATION_CODE_ID', 'redirect_uri' => 'http://localhost:8000/']);
         $request->getAttribute('client')->willReturn($client);
-        $grantTypeData = new GrantTypeData($client);
+        $grantTypeData = new GrantTypeData($client->reveal());
 
         try {
             $this->getGrantType()->grant($request->reveal(), $grantTypeData);
@@ -125,18 +120,17 @@ final class AuthorizationCodeGrantTypeTest extends TestCase
      */
     public function theGrantTypeCanGrantTheClient()
     {
-        $client = new Client(
-            new ClientId('CLIENT_ID'),
-            new DataBag([]),
-            new UserAccountId('USER_ACCOUNT_ID')
-        );
+        $client = $this->prophesize(Client::class);
+        $client->isPublic()->willReturn(false);
+        $client->getPublicId()->willReturn(new ClientId('CLIENT_ID'));
+
         $request = $this->buildRequest(['code' => 'AUTHORIZATION_CODE_ID', 'redirect_uri' => 'http://localhost:8000/', 'code_verifier' => 'ABCDEFGH']);
         $request->getAttribute('client')->willReturn($client);
-        $grantTypeData = new GrantTypeData($client);
+        $grantTypeData = new GrantTypeData($client->reveal());
 
-        $receivedGrantTypeData = $this->getGrantType()->grant($request->reveal(), $grantTypeData);
-        static::assertEquals('USER_ACCOUNT_ID', $receivedGrantTypeData->getResourceOwnerId()->getValue());
-        static::assertEquals('CLIENT_ID', $receivedGrantTypeData->getClient()->getPublicId()->getValue());
+        $this->getGrantType()->grant($request->reveal(), $grantTypeData);
+        static::assertEquals('USER_ACCOUNT_ID', $grantTypeData->getResourceOwnerId()->getValue());
+        static::assertEquals('CLIENT_ID', $grantTypeData->getClient()->getPublicId()->getValue());
     }
 
     /**

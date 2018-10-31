@@ -72,11 +72,13 @@ final class TokenEndpointTest extends TestCase
      */
     public function theClientIsNotAllowedToUseTheGrantType()
     {
-        $client = new Client(
-            new ClientId('CLIENT_ID'),
-            new DataBag([]),
-            new UserAccountId('OWNER_ID')
-        );
+        $client = $this->prophesize(Client::class);
+        $client->isPublic()->willReturn(false);
+        $client->getPublicId()->willReturn(new ClientId('CLIENT_ID'));
+        $client->getClientId()->willReturn(new ClientId('CLIENT_ID'));
+        $client->getOwnerId()->willReturn(new UserAccountId('OWNER_ID'));
+        $client->isDeleted()->willReturn(false);
+        $client->isGrantTypeAllowed('foo')->willReturn(false);
 
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getAttribute('grant_type')
@@ -84,7 +86,7 @@ final class TokenEndpointTest extends TestCase
             ->shouldBeCalled()
         ;
         $request->getAttribute('client')
-            ->willReturn($client)
+            ->willReturn($client->reveal())
             ->shouldBeCalled()
         ;
 
@@ -106,13 +108,13 @@ final class TokenEndpointTest extends TestCase
      */
     public function theTokenRequestIsValidAndAnAccessTokenIsIssued()
     {
-        $client = new Client(
-            new ClientId('CLIENT_ID'),
-            new DataBag([
-                'grant_types' => ['foo'],
-            ]),
-            new UserAccountId('OWNER_ID')
-        );
+        $client = $this->prophesize(Client::class);
+        $client->isPublic()->willReturn(false);
+        $client->getPublicId()->willReturn(new ClientId('CLIENT_ID'));
+        $client->getClientId()->willReturn(new ClientId('CLIENT_ID'));
+        $client->getOwnerId()->willReturn(new UserAccountId('OWNER_ID'));
+        $client->isDeleted()->willReturn(false);
+        $client->isGrantTypeAllowed('foo')->willReturn(true);
 
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getAttribute('grant_type')
@@ -120,7 +122,7 @@ final class TokenEndpointTest extends TestCase
             ->shouldBeCalled()
         ;
         $request->getAttribute('client')
-            ->willReturn($client)
+            ->willReturn($client->reveal())
             ->shouldBeCalled()
         ;
 
@@ -174,16 +176,17 @@ final class TokenEndpointTest extends TestCase
     private function getClientRepository(): ClientRepository
     {
         if (null === $this->clientRepository) {
-            $client = new Client(
-                new ClientId('CLIENT_ID'),
-                new DataBag([
-                    'grant_types' => ['foo'],
-                ]),
-                new UserAccountId('OWNER_ID')
-            );
+            $client = $this->prophesize(Client::class);
+            $client->isPublic()->willReturn(false);
+            $client->getPublicId()->willReturn(new ClientId('CLIENT_ID'));
+            $client->getClientId()->willReturn(new ClientId('CLIENT_ID'));
+            $client->getOwnerId()->willReturn(new UserAccountId('OWNER_ID'));
+            $client->isDeleted()->willReturn(false);
+            $client->has('grant_types')->willReturn(true);
+            $client->get('grant_types')->willReturn(['foo']);
 
             $clientRepository = $this->prophesize(ClientRepository::class);
-            $clientRepository->find(Argument::type(ClientId::class))->willReturn($client);
+            $clientRepository->find(Argument::type(ClientId::class))->willReturn($client->reveal());
 
             $this->clientRepository = $clientRepository->reveal();
         }

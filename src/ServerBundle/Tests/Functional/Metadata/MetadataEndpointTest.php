@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\ServerBundle\Tests\Functional\Metadata;
 
 use OAuth2Framework\Component\MetadataEndpoint\MetadataEndpoint;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use OAuth2Framework\ServerBundle\Tests\Functional\DatabaseTestCase;
 
 /**
  * @group ServerBundle
@@ -22,13 +22,14 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
  * @group Grant
  * @group Compiler
  */
-class MetadataEndpointTest extends WebTestCase
+class MetadataEndpointTest extends DatabaseTestCase
 {
     protected function setUp()
     {
         if (!\class_exists(MetadataEndpoint::class)) {
             static::markTestSkipped('The component "oauth2-framework/metadata-endpoint" is not installed.');
         }
+        parent::setUp();
     }
 
     /**

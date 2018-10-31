@@ -17,22 +17,22 @@ use OAuth2Framework\Component\ClientRegistrationEndpoint\ClientRegistrationEndpo
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\Client\ClientRepository;
+use OAuth2Framework\ServerBundle\Tests\Functional\DatabaseTestCase;
 use Psr\Container\ContainerInterface;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
  * @group ServerBundle
  * @group Functional
- * @group Grant
  * @group ClientRegistration
  */
-class ClientRegistrationEndpointTest extends WebTestCase
+class ClientRegistrationEndpointTest extends DatabaseTestCase
 {
     protected function setUp()
     {
         if (!\class_exists(ClientRegistrationEndpoint::class)) {
             static::markTestSkipped('The component "oauth2-framework/client-registration-endpoint" is not installed.');
         }
+        parent::setUp();
     }
 
     /**

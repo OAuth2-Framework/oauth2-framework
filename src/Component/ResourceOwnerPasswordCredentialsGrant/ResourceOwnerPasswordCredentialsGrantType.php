@@ -49,13 +49,11 @@ final class ResourceOwnerPasswordCredentialsGrantType implements GrantType
         }
     }
 
-    public function prepareResponse(ServerRequestInterface $request, GrantTypeData $grantTypeData): GrantTypeData
+    public function prepareResponse(ServerRequestInterface $request, GrantTypeData $grantTypeData): void
     {
-        // Nothing to do
-        return $grantTypeData;
     }
 
-    public function grant(ServerRequestInterface $request, GrantTypeData $grantTypeData): GrantTypeData
+    public function grant(ServerRequestInterface $request, GrantTypeData $grantTypeData): void
     {
         $parameters = RequestBodyParser::parseFormUrlEncoded($request);
         $username = $parameters['username'];
@@ -67,7 +65,5 @@ final class ResourceOwnerPasswordCredentialsGrantType implements GrantType
         }
 
         $grantTypeData->setResourceOwnerId($resourceOwnerId);
-
-        return $grantTypeData;
     }
 }

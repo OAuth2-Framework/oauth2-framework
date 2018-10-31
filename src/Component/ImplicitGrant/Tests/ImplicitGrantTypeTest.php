@@ -15,7 +15,6 @@ namespace OAuth2Framework\Component\ImplicitGrant\Tests;
 
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
-use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use OAuth2Framework\Component\ImplicitGrant\ImplicitGrantType;
@@ -62,14 +61,15 @@ final class ImplicitGrantTypeTest extends TestCase
      */
     public function theTokenResponseIsCorrectlyPrepared()
     {
-        $client = new Client(
-            new ClientId('CLIENT_ID'),
-            new DataBag([]),
-            new UserAccountId('USER_ACCOUNT_ID')
-        );
+        $client = $this->prophesize(Client::class);
+        $client->isPublic()->willReturn(false);
+        $client->getPublicId()->willReturn(new ClientId('CLIENT_ID'));
+        $client->getClientId()->willReturn(new ClientId('CLIENT_ID'));
+        $client->getOwnerId()->willReturn(new UserAccountId('USER_ACCOUNT_ID'));
+
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getParsedBody()->willReturn(['implicit' => 'REFRESH_TOKEN_ID']);
-        $grantTypeData = new GrantTypeData($client);
+        $grantTypeData = new GrantTypeData($client->reveal());
 
         try {
             $this->getGrantType()->prepareResponse($request->reveal(), $grantTypeData);
@@ -87,15 +87,16 @@ final class ImplicitGrantTypeTest extends TestCase
      */
     public function theGrantTypeCanGrantTheClient()
     {
-        $client = new Client(
-            new ClientId('CLIENT_ID'),
-            new DataBag([]),
-            new UserAccountId('USER_ACCOUNT_ID')
-        );
+        $client = $this->prophesize(Client::class);
+        $client->isPublic()->willReturn(false);
+        $client->getPublicId()->willReturn(new ClientId('CLIENT_ID'));
+        $client->getClientId()->willReturn(new ClientId('CLIENT_ID'));
+        $client->getOwnerId()->willReturn(new UserAccountId('USER_ACCOUNT_ID'));
+
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getParsedBody()->willReturn(['implicit' => 'REFRESH_TOKEN_ID']);
         $request->getAttribute('client')->willReturn($client);
-        $grantTypeData = new GrantTypeData($client);
+        $grantTypeData = new GrantTypeData($client->reveal());
 
         try {
             $this->getGrantType()->grant($request->reveal(), $grantTypeData);

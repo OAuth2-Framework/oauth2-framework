@@ -79,12 +79,13 @@ final class RefreshTokenGrantTypeTest extends TestCase
      */
     public function theRefreshTokenDoesNotExist()
     {
-        $client = new Client(
-            new ClientId('CLIENT_ID'),
-            new DataBag([]),
-            new UserAccountId('USER_ACCOUNT_ID')
-        );
-        $grantTypeData = new GrantTypeData($client);
+        $client = $this->prophesize(Client::class);
+        $client->isPublic()->willReturn(false);
+        $client->getPublicId()->willReturn(new ClientId('CLIENT_ID'));
+        $client->getClientId()->willReturn(new ClientId('CLIENT_ID'));
+        $client->getOwnerId()->willReturn(new UserAccountId('USER_ACCOUNT_ID'));
+
+        $grantTypeData = new GrantTypeData($client->reveal());
         $request = $this->buildRequest(['refresh_token' => 'UNKNOWN_REFRESH_TOKEN_ID']);
 
         try {
@@ -104,16 +105,17 @@ final class RefreshTokenGrantTypeTest extends TestCase
      */
     public function theTokenResponseIsCorrectlyPrepared()
     {
-        $client = new Client(
-            new ClientId('CLIENT_ID'),
-            new DataBag([]),
-            new UserAccountId('USER_ACCOUNT_ID')
-        );
-        $request = $this->buildRequest(['refresh_token' => 'REFRESH_TOKEN_ID']);
-        $grantTypeData = new GrantTypeData($client);
+        $client = $this->prophesize(Client::class);
+        $client->isPublic()->willReturn(false);
+        $client->getPublicId()->willReturn(new ClientId('CLIENT_ID'));
+        $client->getClientId()->willReturn(new ClientId('CLIENT_ID'));
+        $client->getOwnerId()->willReturn(new UserAccountId('USER_ACCOUNT_ID'));
 
-        $receivedGrantTypeData = $this->getGrantType()->prepareResponse($request->reveal(), $grantTypeData);
-        static::assertSame($receivedGrantTypeData, $grantTypeData);
+        $request = $this->buildRequest(['refresh_token' => 'REFRESH_TOKEN_ID']);
+        $grantTypeData = new GrantTypeData($client->reveal());
+
+        $this->getGrantType()->prepareResponse($request->reveal(), $grantTypeData);
+        static::assertSame($grantTypeData, $grantTypeData);
     }
 
     /**
@@ -121,14 +123,15 @@ final class RefreshTokenGrantTypeTest extends TestCase
      */
     public function theRefreshTokenIsRevoked()
     {
-        $client = new Client(
-            new ClientId('CLIENT_ID'),
-            new DataBag([]),
-            new UserAccountId('USER_ACCOUNT_ID')
-        );
+        $client = $this->prophesize(Client::class);
+        $client->isPublic()->willReturn(false);
+        $client->getPublicId()->willReturn(new ClientId('CLIENT_ID'));
+        $client->getClientId()->willReturn(new ClientId('CLIENT_ID'));
+        $client->getOwnerId()->willReturn(new UserAccountId('USER_ACCOUNT_ID'));
+
         $request = $this->buildRequest(['refresh_token' => 'REVOKED_REFRESH_TOKEN_ID']);
         $request->getAttribute('client')->willReturn($client);
-        $grantTypeData = new GrantTypeData($client);
+        $grantTypeData = new GrantTypeData($client->reveal());
 
         try {
             $this->getGrantType()->grant($request->reveal(), $grantTypeData);
@@ -147,14 +150,15 @@ final class RefreshTokenGrantTypeTest extends TestCase
      */
     public function theRefreshTokenIsNotForThatClient()
     {
-        $client = new Client(
-            new ClientId('OTHER_CLIENT_ID'),
-            new DataBag([]),
-            new UserAccountId('USER_ACCOUNT_ID')
-        );
+        $client = $this->prophesize(Client::class);
+        $client->isPublic()->willReturn(false);
+        $client->getPublicId()->willReturn(new ClientId('OTHER_CLIENT_ID'));
+        $client->getClientId()->willReturn(new ClientId('OTHER_CLIENT_ID'));
+        $client->getOwnerId()->willReturn(new UserAccountId('USER_ACCOUNT_ID'));
+
         $request = $this->buildRequest(['refresh_token' => 'REFRESH_TOKEN_ID']);
-        $request->getAttribute('client')->willReturn($client);
-        $grantTypeData = new GrantTypeData($client);
+        $request->getAttribute('client')->willReturn($client->reveal());
+        $grantTypeData = new GrantTypeData($client->reveal());
 
         try {
             $this->getGrantType()->grant($request->reveal(), $grantTypeData);
@@ -173,14 +177,15 @@ final class RefreshTokenGrantTypeTest extends TestCase
      */
     public function theRefreshTokenExpired()
     {
-        $client = new Client(
-            new ClientId('CLIENT_ID'),
-            new DataBag([]),
-            new UserAccountId('USER_ACCOUNT_ID')
-        );
+        $client = $this->prophesize(Client::class);
+        $client->isPublic()->willReturn(false);
+        $client->getPublicId()->willReturn(new ClientId('CLIENT_ID'));
+        $client->getClientId()->willReturn(new ClientId('CLIENT_ID'));
+        $client->getOwnerId()->willReturn(new UserAccountId('USER_ACCOUNT_ID'));
+
         $request = $this->buildRequest(['refresh_token' => 'EXPIRED_REFRESH_TOKEN_ID']);
         $request->getAttribute('client')->willReturn($client);
-        $grantTypeData = new GrantTypeData($client);
+        $grantTypeData = new GrantTypeData($client->reveal());
 
         try {
             $this->getGrantType()->grant($request->reveal(), $grantTypeData);
@@ -199,18 +204,19 @@ final class RefreshTokenGrantTypeTest extends TestCase
      */
     public function theGrantTypeCanGrantTheClient()
     {
-        $client = new Client(
-            new ClientId('CLIENT_ID'),
-            new DataBag([]),
-            new UserAccountId('USER_ACCOUNT_ID')
-        );
+        $client = $this->prophesize(Client::class);
+        $client->isPublic()->willReturn(false);
+        $client->getPublicId()->willReturn(new ClientId('CLIENT_ID'));
+        $client->getClientId()->willReturn(new ClientId('CLIENT_ID'));
+        $client->getOwnerId()->willReturn(new UserAccountId('USER_ACCOUNT_ID'));
+
         $request = $this->buildRequest(['refresh_token' => 'REFRESH_TOKEN_ID']);
         $request->getAttribute('client')->willReturn($client);
-        $grantTypeData = new GrantTypeData($client);
+        $grantTypeData = new GrantTypeData($client->reveal());
 
-        $receivedGrantTypeData = $this->getGrantType()->grant($request->reveal(), $grantTypeData);
-        static::assertEquals('CLIENT_ID', $receivedGrantTypeData->getResourceOwnerId()->getValue());
-        static::assertEquals('CLIENT_ID', $receivedGrantTypeData->getClient()->getPublicId()->getValue());
+        $this->getGrantType()->grant($request->reveal(), $grantTypeData);
+        static::assertEquals('CLIENT_ID', $grantTypeData->getResourceOwnerId()->getValue());
+        static::assertEquals('CLIENT_ID', $grantTypeData->getClient()->getPublicId()->getValue());
     }
 
     /**

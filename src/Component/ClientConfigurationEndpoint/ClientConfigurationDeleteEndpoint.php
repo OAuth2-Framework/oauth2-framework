@@ -40,11 +40,14 @@ final class ClientConfigurationDeleteEndpoint implements MiddlewareInterface
         $client->markAsDeleted();
         $this->clientRepository->save($client);
 
-        $response = $this->responseFactory->createResponse(204);
-        $headers = ['Cache-Control' => 'no-cache, no-store, max-age=0, must-revalidate, private', 'Pragma' => 'no-cache'];
-        foreach ($headers as $k => $v) {
-            $response = $response->withHeader($k, $v);
-        }
+        $response = $this->responseFactory->createResponse(
+            204,
+            null,
+            [
+                'Cache-Control' => 'no-cache, no-store, max-age=0, must-revalidate, private',
+                'Pragma' => 'no-cache',
+            ]
+        );
 
         return $response;
     }

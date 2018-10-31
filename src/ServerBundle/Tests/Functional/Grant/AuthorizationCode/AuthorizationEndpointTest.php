@@ -15,9 +15,9 @@ namespace OAuth2Framework\ServerBundle\Tests\Functional\Grant\AuthorizationCode;
 
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeGrantType;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
+use OAuth2Framework\ServerBundle\Tests\Functional\DatabaseTestCase;
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\UserAccount;
 use Symfony\Bundle\FrameworkBundle\Client;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\BrowserKit\Cookie;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
@@ -27,13 +27,14 @@ use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
  * @group Grant
  * @group AuthorizationCode
  */
-class AuthorizationEndpointTest extends WebTestCase
+class AuthorizationEndpointTest extends DatabaseTestCase
 {
     protected function setUp()
     {
         if (!\class_exists(AuthorizationCodeGrantType::class)) {
             static::markTestSkipped('The component "oauth2-framework/authorization-code-grant" is not installed.');
         }
+        parent::setUp();
     }
 
     /**

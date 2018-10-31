@@ -146,7 +146,7 @@ class JwtBearerGrantType implements GrantType
         }
     }
 
-    public function prepareResponse(ServerRequestInterface $request, GrantTypeData $grantTypeData): GrantTypeData
+    public function prepareResponse(ServerRequestInterface $request, GrantTypeData $grantTypeData): void
     {
         $parameters = RequestBodyParser::parseFormUrlEncoded($request);
         $assertion = $parameters['assertion'];
@@ -164,14 +164,12 @@ class JwtBearerGrantType implements GrantType
             if (!empty($diff)) {
                 throw new \InvalidArgumentException(\Safe\sprintf('The following claim(s) is/are mandatory: "%s".', \implode(', ', \array_values($diff))));
             }
-            $grantTypeData = $this->checkJWTSignature($grantTypeData, $jws, $claims);
+            $this->checkJWTSignature($grantTypeData, $jws, $claims);
         } catch (OAuth2Error $e) {
             throw $e;
         } catch (\Exception $e) {
             throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST, $e->getMessage(), [], $e);
         }
-
-        return $grantTypeData;
     }
 
     private function tryToDecryptTheAssertion(string $assertion): string
@@ -200,13 +198,11 @@ class JwtBearerGrantType implements GrantType
         }
     }
 
-    public function grant(ServerRequestInterface $request, GrantTypeData $grantTypeData): GrantTypeData
+    public function grant(ServerRequestInterface $request, GrantTypeData $grantTypeData): void
     {
-        //Nothing to do
-        return $grantTypeData;
     }
 
-    private function checkJWTSignature(GrantTypeData $grantTypeData, JWS $jws, array $claims): GrantTypeData
+    private function checkJWTSignature(GrantTypeData $grantTypeData, JWS $jws, array $claims): void
     {
         $iss = $claims['iss'];
         $sub = $claims['sub'];
@@ -248,8 +244,6 @@ class JwtBearerGrantType implements GrantType
         $this->jwsVerifier->verifyWithKeySet($jws, $signatureKeys, 0);
         $grantTypeData->getMetadata()->set('jwt', $jws);
         $grantTypeData->getMetadata()->set('claims', $claims);
-
-        return $grantTypeData;
     }
 
     private function findResourceOwner(string $subject): ?ResourceOwnerId

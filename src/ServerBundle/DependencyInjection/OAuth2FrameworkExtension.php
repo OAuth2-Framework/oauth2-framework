@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\ServerBundle\DependencyInjection;
 
 use OAuth2Framework\ServerBundle\Component\Component;
+use OAuth2Framework\ServerBundle\Doctrine\Type as DbalType;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
@@ -59,6 +60,12 @@ final class OAuth2FrameworkExtension extends Extension implements PrependExtensi
 
     public function prepend(ContainerBuilder $container)
     {
+        $this->prependComponents($container);
+        $this->prependDoctrineTypes($container);
+    }
+
+    private function prependComponents(ContainerBuilder $container): void
+    {
         $configs = $container->getExtensionConfig($this->getAlias());
         $config = $this->processConfiguration($this->getConfiguration($configs, $container), $configs);
 
@@ -68,5 +75,34 @@ final class OAuth2FrameworkExtension extends Extension implements PrependExtensi
                 $container->prependExtensionConfig($this->getAlias(), $result);
             }
         }
+    }
+
+    private function prependDoctrineTypes(ContainerBuilder $container): void
+    {
+        $bundles = $container->getParameter('kernel.bundles');
+        if (!\is_array($bundles) || !array_key_exists('DoctrineBundle', $bundles)) {
+            return;
+        }
+        $configs = $container->getExtensionConfig('doctrine');
+        if (empty($configs)) {
+            return;
+        }
+
+        $config = current($configs);
+        if (!isset($config['dbal'])) {
+            $config['dbal'] = [];
+        }
+        if (!isset($config['dbal']['types'])) {
+            $config['dbal']['types'] = [];
+        }
+        $config['dbal']['types'] += [
+            'client_id' => DbalType\ClientIdType::class,
+            'access_token_id' => DbalType\AccessTokenIdType::class,
+            'user_account_id' => DbalType\UserAccountIdType::class,
+            'resourc_server_id' => DbalType\ResourceServerIdType::class,
+            'databag' => DbalType\DataBagType::class,
+        ];
+
+        $container->prependExtensionConfig('doctrine', $config);
     }
 }

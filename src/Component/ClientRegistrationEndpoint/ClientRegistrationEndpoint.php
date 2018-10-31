@@ -29,11 +29,8 @@ use Psr\Http\Server\RequestHandlerInterface;
 final class ClientRegistrationEndpoint implements MiddlewareInterface
 {
     private $responseFactory;
-
     private $clientRepository;
-
     private $clientIdGenerator;
-
     private $ruleManager;
 
     public function __construct(ClientIdGenerator $clientIdGenerator, ClientRepository $clientRepository, ResponseFactory $responseFactory, RuleManager $ruleManager)
@@ -59,7 +56,7 @@ final class ClientRegistrationEndpoint implements MiddlewareInterface
             $commandParameters = new DataBag($parameters);
             $clientId = $this->clientIdGenerator->createClientId();
             $validatedParameters = $this->ruleManager->handle($clientId, $commandParameters);
-            $client = new Client(
+            $client = $this->clientRepository->create(
                 $clientId,
                 $validatedParameters,
                 $userAccountId

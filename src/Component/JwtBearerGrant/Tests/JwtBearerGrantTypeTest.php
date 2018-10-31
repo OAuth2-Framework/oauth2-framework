@@ -39,7 +39,6 @@ use Jose\Component\Signature\Serializer\CompactSerializer as JwsCompactSerialize
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\Client\ClientRepository;
-use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use OAuth2Framework\Component\Core\TrustedIssuer\TrustedIssuer;
 use OAuth2Framework\Component\Core\TrustedIssuer\TrustedIssuerRepository;
@@ -110,9 +109,9 @@ final class JwtBearerGrantTypeTest extends TestCase
         $request = $this->buildRequest(['assertion' => $this->createValidEncryptedAssertionFromClient()]);
         $grantTypeData = new GrantTypeData(null);
 
-        $receivedGrantTypeData = $this->getGrantType()->prepareResponse($request->reveal(), $grantTypeData);
-        static::assertTrue($receivedGrantTypeData->getMetadata()->has('jwt'));
-        static::assertTrue($receivedGrantTypeData->getMetadata()->has('claims'));
+        $this->getGrantType()->prepareResponse($request->reveal(), $grantTypeData);
+        static::assertTrue($grantTypeData->getMetadata()->has('jwt'));
+        static::assertTrue($grantTypeData->getMetadata()->has('claims'));
     }
 
     /**
@@ -123,9 +122,9 @@ final class JwtBearerGrantTypeTest extends TestCase
         $request = $this->buildRequest(['assertion' => $this->createValidAssertionFromIssuer()]);
         $grantTypeData = new GrantTypeData(null);
 
-        $receivedGrantTypeData = $this->getGrantType()->prepareResponse($request->reveal(), $grantTypeData);
-        static::assertTrue($receivedGrantTypeData->getMetadata()->has('jwt'));
-        static::assertTrue($receivedGrantTypeData->getMetadata()->has('claims'));
+        $this->getGrantType()->prepareResponse($request->reveal(), $grantTypeData);
+        static::assertTrue($grantTypeData->getMetadata()->has('jwt'));
+        static::assertTrue($grantTypeData->getMetadata()->has('claims'));
     }
 
     /**
@@ -152,20 +151,21 @@ final class JwtBearerGrantTypeTest extends TestCase
      */
     public function theGrantTypeCanGrantTheClientUsingTheTokenIssuedByATrustedIssuer()
     {
-        $client = new Client(
-            new ClientId('CLIENT_ID'),
-            new DataBag([]),
-            new UserAccountId('USER_ACCOUNT_ID')
-        );
+        $client = $this->prophesize(Client::class);
+        $client->isPublic()->willReturn(false);
+        $client->getPublicId()->willReturn(new ClientId('CLIENT_ID'));
+        $client->getClientId()->willReturn(new ClientId('CLIENT_ID'));
+        $client->getOwnerId()->willReturn(new UserAccountId('USER_ACCOUNT_ID'));
+
         $request = $this->buildRequest(['assertion' => $this->createValidAssertionFromIssuer()]);
         $request->getAttribute('client')->willReturn($client);
-        $grantTypeData = new GrantTypeData($client);
+        $grantTypeData = new GrantTypeData($client->reveal());
         $grantTypeData->setResourceOwnerId(new UserAccountId('USER_ACCOUNT_ID'));
 
-        $receivedGrantTypeData = $this->getGrantType()->grant($request->reveal(), $grantTypeData);
-        static::assertSame($receivedGrantTypeData, $grantTypeData);
-        static::assertEquals('USER_ACCOUNT_ID', $receivedGrantTypeData->getResourceOwnerId()->getValue());
-        static::assertEquals('CLIENT_ID', $receivedGrantTypeData->getClient()->getPublicId()->getValue());
+        $this->getGrantType()->grant($request->reveal(), $grantTypeData);
+        static::assertSame($grantTypeData, $grantTypeData);
+        static::assertEquals('USER_ACCOUNT_ID', $grantTypeData->getResourceOwnerId()->getValue());
+        static::assertEquals('CLIENT_ID', $grantTypeData->getClient()->getPublicId()->getValue());
     }
 
     /**
@@ -176,20 +176,21 @@ final class JwtBearerGrantTypeTest extends TestCase
         if (!\class_exists(JWEBuilder::class)) {
             static::markTestSkipped('The component "web-token/jwt-encryption" is not installed.');
         }
-        $client = new Client(
-            new ClientId('CLIENT_ID'),
-            new DataBag([]),
-            new UserAccountId('USER_ACCOUNT_ID')
-        );
+        $client = $this->prophesize(Client::class);
+        $client->isPublic()->willReturn(false);
+        $client->getPublicId()->willReturn(new ClientId('CLIENT_ID'));
+        $client->getClientId()->willReturn(new ClientId('CLIENT_ID'));
+        $client->getOwnerId()->willReturn(new UserAccountId('USER_ACCOUNT_ID'));
+
         $request = $this->buildRequest(['assertion' => $this->createValidEncryptedAssertionFromClient()]);
         $request->getAttribute('client')->willReturn($client);
-        $grantTypeData = new GrantTypeData($client);
+        $grantTypeData = new GrantTypeData($client->reveal());
         $grantTypeData->setResourceOwnerId(new UserAccountId('CLIENT_ID'));
 
-        $receivedGrantTypeData = $this->getGrantType()->grant($request->reveal(), $grantTypeData);
-        static::assertSame($receivedGrantTypeData, $grantTypeData);
-        static::assertEquals('CLIENT_ID', $receivedGrantTypeData->getResourceOwnerId()->getValue());
-        static::assertEquals('CLIENT_ID', $receivedGrantTypeData->getClient()->getPublicId()->getValue());
+        $this->getGrantType()->grant($request->reveal(), $grantTypeData);
+        static::assertSame($grantTypeData, $grantTypeData);
+        static::assertEquals('CLIENT_ID', $grantTypeData->getResourceOwnerId()->getValue());
+        static::assertEquals('CLIENT_ID', $grantTypeData->getClient()->getPublicId()->getValue());
     }
 
     /**
@@ -245,19 +246,22 @@ final class JwtBearerGrantTypeTest extends TestCase
     private function getClientRepository(): ClientRepository
     {
         $keyset = $this->getPublicEcKeySet();
-        $clientRepository = $this->prophesize(ClientRepository::class);
-        $clientRepository->find(Argument::type(ClientId::class))->will(function ($args) use ($keyset) {
-            if ('CLIENT_ID' === ($args[0])->getValue()) {
-                $client = new Client(
-                    new ClientId('CLIENT_ID'),
-                    new DataBag([
-                        'jwks' => \Safe\json_encode($keyset),
-                        'token_endpoint_auth_method' => 'private_key_jwt',
-                    ]),
-                    new UserAccountId('USER_ACCOUNT_ID')
-                );
 
-                return $client;
+        $client = $this->prophesize(Client::class);
+        $client->isPublic()->willReturn(false);
+        $client->getPublicId()->willReturn(new ClientId('CLIENT_ID'));
+        $client->getClientId()->willReturn(new ClientId('CLIENT_ID'));
+        $client->has('token_endpoint_auth_method')->willReturn(true);
+        $client->get('token_endpoint_auth_method')->willReturn('private_key_jwt');
+        $client->getTokenEndpointAuthenticationMethod()->willReturn('private_key_jwt');
+        $client->has('jwks')->willReturn(true);
+        $client->get('jwks')->willReturn(\Safe\json_encode($keyset));
+        $client->isDeleted()->willReturn(false);
+
+        $clientRepository = $this->prophesize(ClientRepository::class);
+        $clientRepository->find(Argument::type(ClientId::class))->will(function ($args) use ($keyset, $client) {
+            if ('CLIENT_ID' === ($args[0])->getValue()) {
+                return $client->reveal();
             }
 
             return;

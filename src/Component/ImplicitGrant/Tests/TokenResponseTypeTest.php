@@ -20,7 +20,6 @@ use OAuth2Framework\Component\Core\AccessToken\AccessTokenIdGenerator;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
-use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\TokenType\TokenType;
 use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
@@ -49,11 +48,12 @@ final class TokenResponseTypeTest extends TestCase
      */
     public function anAccessTokenIsCreatedDuringTheAuthorizationProcess()
     {
-        $client = new Client(
-            new ClientId('CLIENT_ID'),
-            new DataBag([]),
-            new UserAccountId('USER_ACCOUNT_ID')
-        );
+        $client = $this->prophesize(Client::class);
+        $client->isPublic()->willReturn(false);
+        $client->getPublicId()->willReturn(new ClientId('CLIENT_ID'));
+        $client->getClientId()->willReturn(new ClientId('CLIENT_ID'));
+        $client->getOwnerId()->willReturn(new UserAccountId('USER_ACCOUNT_ID'));
+
         $userAccount = $this->prophesize(UserAccount::class);
         $userAccount->getPublicId()->willReturn(new UserAccountId('USER_ACCOUNT_ID'));
         $userAccount->getUserAccountId()->willReturn(new UserAccountId('USER_ACCOUNT_ID'));
@@ -61,7 +61,7 @@ final class TokenResponseTypeTest extends TestCase
         $tokenType->getAdditionalInformation()->willReturn(['token_type' => 'FOO']);
 
         $authorization = new AuthorizationRequest(
-            $client,
+            $client->reveal(),
             []
         );
         $authorization->setUserAccount($userAccount->reveal(), true);

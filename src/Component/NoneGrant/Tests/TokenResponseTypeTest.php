@@ -16,7 +16,6 @@ namespace OAuth2Framework\Component\NoneGrant\Tests;
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
-use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\TokenType\TokenType;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use OAuth2Framework\Component\NoneGrant\AuthorizationStorage;
@@ -52,15 +51,16 @@ final class TokenResponseTypeTest extends TestCase
         $authorizationStorage->save(Argument::type(AuthorizationRequest::class))->shouldBeCalled();
         $responseType = new NoneResponseType($authorizationStorage->reveal());
 
-        $client = new Client(
-            new ClientId('CLIENT_ID'),
-            new DataBag([]),
-            new UserAccountId('USER_ACCOUNT_ID')
-        );
+        $client = $this->prophesize(Client::class);
+        $client->isPublic()->willReturn(false);
+        $client->getPublicId()->willReturn(new ClientId('CLIENT_ID'));
+        $client->getClientId()->willReturn(new ClientId('CLIENT_ID'));
+        $client->getOwnerId()->willReturn(new UserAccountId('USER_ACCOUNT_ID'));
+
         $tokenType = $this->prophesize(TokenType::class);
         $tokenType->getAdditionalInformation()->willReturn(['token_type' => 'FOO']);
 
-        $authorization = new AuthorizationRequest($client, []);
+        $authorization = new AuthorizationRequest($client->reveal(), []);
         $authorization->setResponseType($responseType);
 
         $responseType->process($authorization);

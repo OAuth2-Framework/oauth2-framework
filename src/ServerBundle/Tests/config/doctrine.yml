@@ -1,0 +1,9 @@
+doctrine:
+    dbal:
+        default_connection: 'default'
+        connections:
+            default:
+                driver: 'pdo_mysql'
+                url: "sqlite:///%kernel.project_dir%/Tests/cache/data.db"
+    orm:
+        auto_mapping: true

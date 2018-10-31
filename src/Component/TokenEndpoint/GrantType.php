@@ -37,7 +37,7 @@ interface GrantType
     /**
      * This function checks the request and returns information to issue an access token.
      */
-    public function prepareResponse(ServerRequestInterface $request, GrantTypeData $grantTypeData): GrantTypeData;
+    public function prepareResponse(ServerRequestInterface $request, GrantTypeData $grantTypeData): void;
 
-    public function grant(ServerRequestInterface $request, GrantTypeData $grantTypeData): GrantTypeData;
+    public function grant(ServerRequestInterface $request, GrantTypeData $grantTypeData): void;
 }
