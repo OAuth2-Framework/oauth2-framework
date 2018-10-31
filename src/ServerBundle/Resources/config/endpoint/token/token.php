@@ -46,7 +46,6 @@ return function (ContainerConfigurator $container) {
             ref(\OAuth2Framework\Component\Core\UserAccount\UserAccountRepository::class)->nullOnInvalid(),
             ref(TokenEndpoint\Extension\TokenEndpointExtensionManager::class),
             ref(\Http\Message\ResponseFactory::class),
-            ref(\OAuth2Framework\Component\Core\AccessToken\AccessTokenIdGenerator::class),
             ref(\OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository::class),
             '%oauth2_server.access_token_lifetime%',
         ]);

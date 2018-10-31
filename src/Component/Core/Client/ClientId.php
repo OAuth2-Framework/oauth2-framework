@@ -15,6 +15,6 @@ namespace OAuth2Framework\Component\Core\Client;
 
 use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwnerId;
 
-final class ClientId extends ResourceOwnerId
+class ClientId extends ResourceOwnerId
 {
 }

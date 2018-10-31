@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\Core\Client;
 
 use OAuth2Framework\Component\Core\DataBag\DataBag;
-use OAuth2Framework\Component\Core\Domain\DomainObject;
 use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwner;
 use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwnerId;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
@@ -24,7 +23,7 @@ use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
  * A client is a resource owner with a set of allowed grant types and can perform requests against
  * available endpoints.
  */
-interface Client extends ResourceOwner, DomainObject
+interface Client extends ResourceOwner, \JsonSerializable
 {
     public function getClientId(): ClientId;
 

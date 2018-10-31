@@ -13,10 +13,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Component\Core;
 
-use OAuth2Framework\Component\Core\Client\ClientIdGenerator;
 use OAuth2Framework\Component\Core\Client\ClientRepository;
 use OAuth2Framework\ServerBundle\Component\Component;
-use OAuth2Framework\ServerBundle\Service\RandomClientIdGenerator;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -32,7 +30,6 @@ class ClientSource implements Component
     public function load(array $configs, ContainerBuilder $container)
     {
         $container->setAlias(ClientRepository::class, $configs['client']['repository']);
-        $container->setAlias(ClientIdGenerator::class, $configs['client']['id_generator']);
 
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../Resources/config/core'));
         $loader->load('client.php');
@@ -42,19 +39,15 @@ class ClientSource implements Component
     {
         $node->children()
             ->arrayNode($this->name())
-            ->addDefaultsIfNotSet()
-            ->children()
-            ->scalarNode('repository')
-            ->info('The client repository service')
-            ->isRequired()
+                ->addDefaultsIfNotSet()
+                ->children()
+                    ->scalarNode('repository')
+                        ->info('The client repository service')
+                        ->isRequired()
+                    ->end()
+                ->end()
             ->end()
-            ->scalarNode('id_generator')
-            ->info('The client ID generator service')
-            ->defaultValue(RandomClientIdGenerator::class)
-            ->end()
-            ->end()
-            ->end()
-            ->end();
+        ->end();
     }
 
     public function build(ContainerBuilder $container)

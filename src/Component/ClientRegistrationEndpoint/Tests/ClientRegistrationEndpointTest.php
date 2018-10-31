@@ -19,7 +19,6 @@ use OAuth2Framework\Component\ClientRegistrationEndpoint\ClientRegistrationEndpo
 use OAuth2Framework\Component\ClientRule\RuleManager;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
-use OAuth2Framework\Component\Core\Client\ClientIdGenerator;
 use OAuth2Framework\Component\Core\Client\ClientRepository;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use PHPUnit\Framework\TestCase;
@@ -62,14 +61,11 @@ final class ClientRegistrationEndpointTest extends TestCase
             $client->getPublicId()->willReturn(new ClientId('CLIENT_ID'));
             $client->getClientId()->willReturn(new ClientId('CLIENT_ID'));
 
-            $clientIdGenerator = $this->prophesize(ClientIdGenerator::class);
-            $clientIdGenerator->createClientId()->willReturn(
-                new ClientId('CLIENT_ID')
-            );
-
             $clientRepository = $this->prophesize(ClientRepository::class);
             $clientRepository->find(Argument::type(ClientId::class))->willReturn($client->reveal());
             $clientRepository->save(Argument::type(Client::class))->will(function (array $args) {});
+            $clientRepository->createClientId()->willReturn(new ClientId('CLIENT_ID'));
+
             $client = $this->prophesize(Client::class);
             $clientRepository->create(Argument::type(ClientId::class), Argument::type(DataBag::class), Argument::any())->will(function (array $args) use ($client) {
                 $client->isPublic()->willReturn(false);
@@ -82,7 +78,6 @@ final class ClientRegistrationEndpointTest extends TestCase
             });
 
             $this->clientRegistrationEndpoint = new ClientRegistrationEndpoint(
-                $clientIdGenerator->reveal(),
                 $clientRepository->reveal(),
                 $this->getResponseFactory(),
                 new RuleManager()

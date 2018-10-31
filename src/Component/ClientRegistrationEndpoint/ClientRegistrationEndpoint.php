@@ -16,7 +16,6 @@ namespace OAuth2Framework\Component\ClientRegistrationEndpoint;
 use Http\Message\ResponseFactory;
 use OAuth2Framework\Component\ClientRule\RuleManager;
 use OAuth2Framework\Component\Core\Client\Client;
-use OAuth2Framework\Component\Core\Client\ClientIdGenerator;
 use OAuth2Framework\Component\Core\Client\ClientRepository;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
@@ -30,12 +29,10 @@ final class ClientRegistrationEndpoint implements MiddlewareInterface
 {
     private $responseFactory;
     private $clientRepository;
-    private $clientIdGenerator;
     private $ruleManager;
 
-    public function __construct(ClientIdGenerator $clientIdGenerator, ClientRepository $clientRepository, ResponseFactory $responseFactory, RuleManager $ruleManager)
+    public function __construct(ClientRepository $clientRepository, ResponseFactory $responseFactory, RuleManager $ruleManager)
     {
-        $this->clientIdGenerator = $clientIdGenerator;
         $this->clientRepository = $clientRepository;
         $this->responseFactory = $responseFactory;
         $this->ruleManager = $ruleManager;
@@ -54,7 +51,7 @@ final class ClientRegistrationEndpoint implements MiddlewareInterface
             }
             $parameters = RequestBodyParser::parseJson($request);
             $commandParameters = new DataBag($parameters);
-            $clientId = $this->clientIdGenerator->createClientId();
+            $clientId = $this->clientRepository->createClientId();
             $validatedParameters = $this->ruleManager->handle($clientId, $commandParameters);
             $client = $this->clientRepository->create(
                 $clientId,

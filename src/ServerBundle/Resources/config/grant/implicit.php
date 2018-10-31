@@ -11,7 +11,6 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use OAuth2Framework\Component\Core\AccessToken\AccessTokenIdGenerator;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository;
 use OAuth2Framework\Component\ImplicitGrant\ImplicitGrantType;
 use OAuth2Framework\Component\ImplicitGrant\TokenResponseType;
@@ -27,7 +26,6 @@ return function (ContainerConfigurator $container) {
 
     $container->set(TokenResponseType::class)
         ->args([
-            ref(AccessTokenIdGenerator::class),
             ref(AccessTokenRepository::class),
             '%oauth2_server.access_token_lifetime%',
         ]);

@@ -15,13 +15,12 @@ namespace OAuth2Framework\Component\Core\Token;
 
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
-use OAuth2Framework\Component\Core\Domain\DomainObject;
 use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwnerId;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
 
-abstract class Token implements \JsonSerializable, DomainObject
+abstract class Token implements \JsonSerializable
 {
-    private $tokenId;
+    protected $tokenId;
     private $expiresAt;
     private $resourceOwnerId;
     private $clientId;

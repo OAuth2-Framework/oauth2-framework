@@ -50,4 +50,9 @@ final class ClientRepository implements ClientRepositoryInterface, ServiceEntity
     {
         return new Client($clientId, $parameters, $ownerId);
     }
+
+    public function createClientId(): ClientId
+    {
+        return new ClientId(\bin2hex(random_bytes(32)));
+    }
 }

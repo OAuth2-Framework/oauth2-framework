@@ -31,6 +31,11 @@ interface ClientRepository
     public function find(ClientId $clientId): ?Client;
 
     /**
+     * Creates an unique client ID.
+     */
+    public function createClientId(): ClientId;
+
+    /**
      * Creates an empty client.
      */
     public function create(ClientId $clientId, DataBag $parameters, ?UserAccountId $ownerId): Client;

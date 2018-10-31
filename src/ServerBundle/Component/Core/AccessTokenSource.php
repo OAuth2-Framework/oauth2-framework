@@ -13,10 +13,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Component\Core;
 
-use OAuth2Framework\Component\Core\AccessToken\AccessTokenIdGenerator;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository;
 use OAuth2Framework\ServerBundle\Component\Component;
-use OAuth2Framework\ServerBundle\Service\RandomAccessTokenIdGenerator;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -32,7 +30,6 @@ class AccessTokenSource implements Component
     public function load(array $configs, ContainerBuilder $container)
     {
         $container->setAlias(AccessTokenRepository::class, $configs['access_token']['repository']);
-        $container->setAlias(AccessTokenIdGenerator::class, $configs['access_token']['id_generator']);
         $container->setParameter('oauth2_server.access_token_lifetime', $configs['access_token']['lifetime']);
 
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../Resources/config/core'));
@@ -48,10 +45,6 @@ class AccessTokenSource implements Component
             ->scalarNode('repository')
             ->info('The access token repository service')
             ->isRequired()
-            ->end()
-            ->scalarNode('id_generator')
-            ->info('The access token ID generator service')
-            ->defaultValue(RandomAccessTokenIdGenerator::class)
             ->end()
             ->scalarNode('lifetime')
             ->info('The access token lifetime (in seconds)')

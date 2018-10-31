@@ -14,7 +14,6 @@ declare(strict_types=1);
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenIntrospectionTypeHint;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenRevocationTypeHint;
-use OAuth2Framework\ServerBundle\Service\RandomAccessTokenIdGenerator;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
@@ -32,6 +31,4 @@ return function (ContainerConfigurator $container) {
         ->args([
             ref(AccessTokenRepository::class),
         ]);
-
-    $container->set(RandomAccessTokenIdGenerator::class);
 };

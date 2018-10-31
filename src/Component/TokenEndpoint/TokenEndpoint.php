@@ -15,7 +15,6 @@ namespace OAuth2Framework\Component\TokenEndpoint;
 
 use Http\Message\ResponseFactory;
 use OAuth2Framework\Component\Core\AccessToken\AccessToken;
-use OAuth2Framework\Component\Core\AccessToken\AccessTokenIdGenerator;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
@@ -38,17 +37,15 @@ class TokenEndpoint implements MiddlewareInterface
     private $clientRepository;
     private $userAccountRepository;
     private $responseFactory;
-    private $accessTokenIdGenerator;
     private $accessTokenRepository;
     private $accessTokenLifetime;
 
-    public function __construct(ClientRepository $clientRepository, ?UserAccountRepository $userAccountRepository, TokenEndpointExtensionManager $tokenEndpointExtensionManager, ResponseFactory $responseFactory, AccessTokenIdGenerator $accessTokenIdGenerator, AccessTokenRepository $accessTokenRepository, int $accessLifetime)
+    public function __construct(ClientRepository $clientRepository, ?UserAccountRepository $userAccountRepository, TokenEndpointExtensionManager $tokenEndpointExtensionManager, ResponseFactory $responseFactory, AccessTokenRepository $accessTokenRepository, int $accessLifetime)
     {
         $this->clientRepository = $clientRepository;
         $this->userAccountRepository = $userAccountRepository;
         $this->tokenEndpointExtensionManager = $tokenEndpointExtensionManager;
         $this->responseFactory = $responseFactory;
-        $this->accessTokenIdGenerator = $accessTokenIdGenerator;
         $this->accessTokenRepository = $accessTokenRepository;
         $this->accessTokenLifetime = $accessLifetime;
     }
@@ -114,15 +111,7 @@ class TokenEndpoint implements MiddlewareInterface
 
     private function issueAccessToken(GrantTypeData $grantTypeData): AccessToken
     {
-        $accessTokenId = $this->accessTokenIdGenerator->createAccessTokenId(
-            $grantTypeData->getResourceOwnerId(),
-            $grantTypeData->getClient()->getClientId(),
-            $grantTypeData->getParameter(),
-            $grantTypeData->getMetadata(),
-            null
-        );
-        $accessToken = new AccessToken(
-            $accessTokenId,
+        $accessToken = $this->accessTokenRepository->create(
             $grantTypeData->getClient()->getClientId(),
             $grantTypeData->getResourceOwnerId(),
             new \DateTimeImmutable(\Safe\sprintf('now +%d seconds', $this->accessTokenLifetime)),

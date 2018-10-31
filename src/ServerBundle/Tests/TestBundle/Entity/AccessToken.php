@@ -11,9 +11,9 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Component\Core\Client;
+namespace OAuth2Framework\ServerBundle\Tests\TestBundle\Entity;
 
-interface ClientIdGenerator
+
+class AccessToken extends \OAuth2Framework\Component\Core\AccessToken\AccessToken
 {
-    public function createClientId(): ClientId;
 }

@@ -15,6 +15,6 @@ namespace OAuth2Framework\Component\Core\AccessToken;
 
 use OAuth2Framework\Component\Core\Token\TokenId;
 
-final class AccessTokenId extends TokenId
+class AccessTokenId extends TokenId
 {
 }

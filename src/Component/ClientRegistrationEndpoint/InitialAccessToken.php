@@ -13,10 +13,9 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\ClientRegistrationEndpoint;
 
-use OAuth2Framework\Component\Core\Domain\DomainObject;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 
-class InitialAccessToken implements DomainObject
+class InitialAccessToken implements \JsonSerializable
 {
     private $revoked;
     private $initialAccessTokenId;

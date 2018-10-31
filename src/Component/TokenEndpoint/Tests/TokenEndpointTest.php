@@ -16,7 +16,6 @@ namespace OAuth2Framework\Component\TokenEndpoint\Tests;
 use Http\Message\MessageFactory\GuzzleMessageFactory;
 use OAuth2Framework\Component\Core\AccessToken\AccessToken;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
-use OAuth2Framework\Component\Core\AccessToken\AccessTokenIdGenerator;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
@@ -143,7 +142,7 @@ final class TokenEndpointTest extends TestCase
         $body = $response->getBody()->getContents();
 
         static::assertEquals(200, $response->getStatusCode());
-        static::assertRegExp('/^\{"token_type_foo"\:"token_type_bar","token_type"\:"TOKEN_TYPE","access_token"\:"ACCESS_TOKEN_ID","expires_in"\:\d{4}\}$/', $body);
+        static::assertRegExp('/^\{"token_type_foo"\:"token_type_bar","token_type"\:"TOKEN_TYPE","access_token"\:"[a-f0-9]{64}","expires_in"\:\d{4}\}$/', $body);
     }
 
     /**
@@ -159,7 +158,6 @@ final class TokenEndpointTest extends TestCase
                 $this->getUserAccountRepository(),
                 new TokenEndpointExtensionManager(),
                 new GuzzleMessageFactory(),
-                $this->getAccessTokenIdTokenGenerator(),
                 $this->getAccessTokenRepository(),
                 1800
             );
@@ -211,26 +209,6 @@ final class TokenEndpointTest extends TestCase
     }
 
     /**
-     * @var null|AccessTokenIdGenerator
-     */
-    private $accessTokenIdGenerator = null;
-
-    private function getAccessTokenIdTokenGenerator(): AccessTokenIdGenerator
-    {
-        if (null === $this->accessTokenIdGenerator) {
-            $accessTokenIdGenerator = $this->prophesize(AccessTokenIdGenerator::class);
-            $accessTokenIdGenerator
-                ->createAccessTokenId(Argument::type(ResourceOwnerId::class), Argument::type(ClientId::class), Argument::type(DataBag::class), Argument::type(DataBag::class), null)
-                ->will(function () {
-                    return new AccessTokenId('ACCESS_TOKEN_ID');
-                });
-            $this->accessTokenIdGenerator = $accessTokenIdGenerator->reveal();
-        }
-
-        return $this->accessTokenIdGenerator;
-    }
-
-    /**
      * @var null|AccessTokenRepository
      */
     private $accessTokenRepository = null;
@@ -239,6 +217,10 @@ final class TokenEndpointTest extends TestCase
     {
         if (null === $this->accessTokenRepository) {
             $accessTokenRepository = $this->prophesize(AccessTokenRepository::class);
+            $accessTokenRepository->create(Argument::type(ClientId::class), Argument::type(ResourceOwnerId::class), Argument::type(\DateTimeImmutable::class), Argument::type(DataBag::class), Argument::type(DataBag::class), Argument::any())
+                ->will(function (array $args) {
+                    return new AccessToken(new AccessTokenId(\bin2hex(\random_bytes(32))), $args[0], $args[1], $args[2], $args[3], $args[4], $args[5]);
+                });
             $accessTokenRepository->save(Argument::type(AccessToken::class))->will(function (array $args) {
             });
             $this->accessTokenRepository = $accessTokenRepository->reveal();

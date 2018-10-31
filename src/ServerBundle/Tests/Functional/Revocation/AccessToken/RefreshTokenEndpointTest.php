@@ -13,8 +13,9 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Tests\Functional\Revocation\AccessToken;
 
+use Base64Url\Base64Url;
 use OAuth2Framework\Component\Core\AccessToken\AccessToken;
-use OAuth2Framework\Component\Core\AccessToken\AccessTokenIdGenerator;
+use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
@@ -82,18 +83,9 @@ class RevocationEndpointTest extends DatabaseTestCase
     {
         $client = static::createClient();
         $container = $client->getContainer();
-        /** @var AccessTokenIdGenerator $accessTokenIdGenerator */
-        $accessTokenIdGenerator = $container->get(\OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\AccessTokenIdGenerator::class);
-        $accessTokenId = $accessTokenIdGenerator->createAccessTokenId(
-            new UserAccountId('john.1'),
-            new ClientId('CLIENT_ID_3'),
-            new DataBag([]),
-            new DataBag([]),
-            null
-        );
 
         $accessToken = new AccessToken(
-            $accessTokenId,
+            new AccessTokenId(Base64Url::encode(\random_bytes(32))),
             new ClientId('CLIENT_ID_3'),
             new UserAccountId('john.1'),
             new \DateTimeImmutable('now +1 hour'),
@@ -123,20 +115,8 @@ class RevocationEndpointTest extends DatabaseTestCase
      */
     public function aAccessTokenThatOwnsToAnotherClientIsNotRevoked()
     {
-        $client = static::createClient();
-        $container = $client->getContainer();
-        /** @var AccessTokenIdGenerator $accessTokenIdGenerator */
-        $accessTokenIdGenerator = $container->get(\OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\AccessTokenIdGenerator::class);
-        $accessTokenId = $accessTokenIdGenerator->createAccessTokenId(
-            new UserAccountId('john.1'),
-            new ClientId('CLIENT_ID_2'),
-            new DataBag([]),
-            new DataBag([]),
-            null
-        );
-
         $accessToken = new AccessToken(
-            $accessTokenId,
+            new AccessTokenId(Base64Url::encode(\random_bytes(32))),
             new ClientId('CLIENT_ID_2'),
             new UserAccountId('john.1'),
             new \DateTimeImmutable('now +1 hour'),
