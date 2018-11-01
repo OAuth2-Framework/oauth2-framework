@@ -13,15 +13,13 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Tests\Functional\Revocation\AccessToken;
 
-use Base64Url\Base64Url;
-use OAuth2Framework\Component\Core\AccessToken\AccessToken;
-use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use OAuth2Framework\Component\TokenRevocationEndpoint\TokenRevocationEndpoint;
 use OAuth2Framework\ServerBundle\Tests\Functional\DatabaseTestCase;
+use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\AccessToken;
 
 /**
  * @group ServerBundle
@@ -84,8 +82,9 @@ class RevocationEndpointTest extends DatabaseTestCase
         $client = static::createClient();
         $container = $client->getContainer();
 
-        $accessToken = new AccessToken(
-            new AccessTokenId(Base64Url::encode(\random_bytes(32))),
+        /** @var AccessTokenRepository $accessTokenRepository */
+        $accessTokenRepository = $container->get(\OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\AccessTokenRepository::class);
+        $accessToken = $accessTokenRepository->create(
             new ClientId('CLIENT_ID_3'),
             new UserAccountId('john.1'),
             new \DateTimeImmutable('now +1 hour'),
@@ -93,30 +92,29 @@ class RevocationEndpointTest extends DatabaseTestCase
             new DataBag([]),
             null
         );
-
-        /** @var AccessTokenRepository $accessTokenRepository */
-        $accessTokenRepository = $container->get(\OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\AccessTokenRepository::class);
+        $accessTokenId = $accessToken->getTokenId();
         $accessTokenRepository->save($accessToken);
 
-        $client->request('POST', '/token/revoke', ['client_id' => 'CLIENT_ID_3', 'client_secret' => 'secret', 'token' => $accessToken->getTokenId()->getValue()], [], ['HTTPS' => 'on'], null);
+        $client->request('POST', '/token/revoke', ['client_id' => 'CLIENT_ID_3', 'client_secret' => 'secret', 'token' => $accessTokenId->getValue()], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
         static::assertEquals(200, $response->getStatusCode());
         static::assertEquals('', $response->getContent());
 
-        $newAccessToken = $accessTokenRepository->find($accessToken->getTokenId());
+        $newAccessToken = $accessTokenRepository->find($accessTokenId);
         static::assertInstanceOf(AccessToken::class, $newAccessToken);
         self::AssertTrue($newAccessToken->isRevoked());
     }
 
     /**
-     * @testK
-     *
      * @test
      */
     public function aAccessTokenThatOwnsToAnotherClientIsNotRevoked()
     {
-        $accessToken = new AccessToken(
-            new AccessTokenId(Base64Url::encode(\random_bytes(32))),
+        $client = static::createClient();
+        $container = $client->getContainer();
+        /** @var AccessTokenRepository $accessTokenRepository */
+        $accessTokenRepository = $container->get(\OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\AccessTokenRepository::class);
+        $accessToken = $accessTokenRepository->create(
             new ClientId('CLIENT_ID_2'),
             new UserAccountId('john.1'),
             new \DateTimeImmutable('now +1 hour'),
@@ -124,19 +122,15 @@ class RevocationEndpointTest extends DatabaseTestCase
             new DataBag([]),
             null
         );
-
-        $client = static::createClient();
-        $container = $client->getContainer();
-        /** @var AccessTokenRepository $accessTokenRepository */
-        $accessTokenRepository = $container->get(\OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\AccessTokenRepository::class);
+        $accessTokenId = $accessToken->getTokenId();
         $accessTokenRepository->save($accessToken);
 
-        $client->request('POST', '/token/revoke', ['client_id' => 'CLIENT_ID_3', 'client_secret' => 'secret', 'token' => $accessToken->getTokenId()->getValue()], [], ['HTTPS' => 'on'], null);
+        $client->request('POST', '/token/revoke', ['client_id' => 'CLIENT_ID_3', 'client_secret' => 'secret', 'token' => $accessTokenId->getValue()], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
         static::assertEquals(400, $response->getStatusCode());
         static::assertEquals('{"error":"invalid_request","error_description":"The parameter \"token\" is invalid."}', $response->getContent());
 
-        $newAccessToken = $accessTokenRepository->find($accessToken->getTokenId());
+        $newAccessToken = $accessTokenRepository->find($accessTokenId);
         static::assertInstanceOf(AccessToken::class, $newAccessToken);
         self::AssertFalse($newAccessToken->isRevoked());
     }

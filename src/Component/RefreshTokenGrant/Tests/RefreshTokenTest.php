@@ -47,11 +47,11 @@ final class RefreshTokenTest extends TestCase
             new RefreshTokenId('REFRESH_TOKEN_ID'),
             new ClientId('CLIENT_ID'),
             new ClientId('CLIENT_ID'),
+            new \DateTimeImmutable('2010-01-28T15:00:00+02:00'),
             new DataBag([
                 'refresh_token_id' => 'REFRESH_TOKEN_ID',
             ]),
             new DataBag([]),
-            new \DateTimeImmutable('2010-01-28T15:00:00+02:00'),
             new ResourceServerId('RESOURCE_SERVER_ID')
         );
         $refreshToken->addAccessToken(new AccessTokenId('ACCESS_TOKEN_ID'));

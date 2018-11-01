@@ -15,7 +15,6 @@ namespace OAuth2Framework\Component\AuthorizationCodeGrant\Tests;
 
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCode;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeId;
-use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeIdGenerator;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeRepository;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeResponseType;
 use OAuth2Framework\Component\AuthorizationCodeGrant\PKCEMethod\PKCEMethodManager;
@@ -24,6 +23,7 @@ use OAuth2Framework\Component\AuthorizationCodeGrant\PKCEMethod\S256;
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
+use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use PHPUnit\Framework\TestCase;
@@ -80,16 +80,24 @@ final class AuthorizationCodeResponseTypeTest extends TestCase
     private function getResponseType(): AuthorizationCodeResponseType
     {
         if (null === $this->grantType) {
-            $authorizationCodeIdGenerator = $this->prophesize(AuthorizationCodeIdGenerator::class);
-            $authorizationCodeIdGenerator->createAuthorizationCodeId()->willReturn(
-                new AuthorizationCodeId(\bin2hex(\random_bytes(32)))
-            );
             $authorizationCodeRepository = $this->prophesize(AuthorizationCodeRepository::class);
+            $authorizationCodeRepository->create(Argument::type(ClientId::class), Argument::type(UserAccountId::class), Argument::type('array'), Argument::type('string'), Argument::type(\DateTimeImmutable::class), Argument::type(DataBag::class), Argument::type(DataBag::class), Argument::any())->will(function (array $args) {
+                return new AuthorizationCode(
+                    new AuthorizationCodeId(\bin2hex(\random_bytes(32))),
+                    $args[0],
+                    $args[1],
+                    $args[2],
+                    $args[3],
+                    $args[4],
+                    $args[5],
+                    $args[6],
+                    $args[7]
+                );
+            });
             $authorizationCodeRepository->save(Argument::type(AuthorizationCode::class))->will(function (array $args) {
             });
 
             $this->grantType = new AuthorizationCodeResponseType(
-                $authorizationCodeIdGenerator->reveal(),
                 $authorizationCodeRepository->reveal(),
                 30,
                 $this->getPkceMethodManager(),

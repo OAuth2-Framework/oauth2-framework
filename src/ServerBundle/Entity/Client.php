@@ -41,22 +41,12 @@ class Client implements ClientInterface
 
     public function getClientId(): ClientId
     {
-        $id = $this->getPublicId();
-        if (!$id instanceof ClientId) {
-            throw new \RuntimeException('Client not initialized.');
-        }
-
-        return $id;
+        return $this->clientId;
     }
 
     public function getOwnerId(): ?UserAccountId
     {
         return $this->ownerId;
-    }
-
-    public function setOwnerId(UserAccountId $ownerId): void
-    {
-        $this->ownerId = $ownerId;
     }
 
     public function setParameter(DataBag $parameter): void

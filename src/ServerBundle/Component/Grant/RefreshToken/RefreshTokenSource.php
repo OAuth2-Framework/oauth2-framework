@@ -14,10 +14,8 @@ declare(strict_types=1);
 namespace OAuth2Framework\ServerBundle\Component\Grant\RefreshToken;
 
 use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenGrantType;
-use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenIdGenerator;
 use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenRepository;
 use OAuth2Framework\ServerBundle\Component\Component;
-use OAuth2Framework\ServerBundle\Service\RandomRefreshTokenIdGenerator;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -37,7 +35,6 @@ class RefreshTokenSource implements Component
         }
         $container->setParameter('oauth2_server.grant.refresh_token.lifetime', $configs['grant']['refresh_token']['lifetime']);
         $container->setAlias(RefreshTokenRepository::class, $configs['grant']['refresh_token']['repository']);
-        $container->setAlias(RefreshTokenIdGenerator::class, $configs['grant']['refresh_token']['id_generator']);
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/grant'));
         $loader->load('refresh_token.php');
     }
@@ -59,10 +56,6 @@ class RefreshTokenSource implements Component
             ->scalarNode('repository')
             ->isRequired()
             ->info('The refresh token repository')
-            ->end()
-            ->scalarNode('id_generator')
-            ->info('The refresh token ID generator service')
-            ->defaultValue(RandomRefreshTokenIdGenerator::class)
             ->end()
             ->end()
             ->end()

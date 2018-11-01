@@ -13,72 +13,51 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Tests\TestBundle\Entity;
 
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface;
+use Doctrine\Common\Persistence\ManagerRegistry;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
-use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
-use OAuth2Framework\Component\RefreshTokenGrant\RefreshToken;
+use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwnerId;
+use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
+use OAuth2Framework\Component\RefreshTokenGrant\RefreshToken as CoreRefreshToken;
 use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenId;
 use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenRepository as RefreshTokenRepositoryInterface;
 
-final class RefreshTokenRepository implements RefreshTokenRepositoryInterface
+final class RefreshTokenRepository implements RefreshTokenRepositoryInterface, ServiceEntityRepositoryInterface
 {
-    /**
-     * @var RefreshToken[]
-     */
-    private $refreshTokens = [];
+    private $entityRepository;
+    private $entityManager;
 
-    /**
-     * RefreshTokenRepository constructor.
-     */
-    public function __construct()
+    public function __construct(ManagerRegistry $managerRegistry)
     {
-        $this->initRefreshTokens();
+        $this->entityManager = $managerRegistry->getManagerForClass(RefreshToken::class);
+        $this->entityRepository = $this->entityManager->getRepository(RefreshToken::class);
     }
 
-    public function find(RefreshTokenId $refreshTokenId): ?RefreshToken
+    public function find(RefreshTokenId $refreshTokenId): ?CoreRefreshToken
     {
-        return \array_key_exists($refreshTokenId->getValue(), $this->refreshTokens) ? $this->refreshTokens[$refreshTokenId->getValue()] : null;
+        return $this->entityRepository->find($refreshTokenId);
     }
 
-    public function save(RefreshToken $refreshToken): void
+    public function save(CoreRefreshToken $refreshToken): void
     {
-        $this->refreshTokens[$refreshToken->getTokenId()->getValue()] = $refreshToken;
+        if (!$refreshToken instanceof RefreshToken) {
+            throw new \InvalidArgumentException('Unsupported refresh token class');
+        }
+        $this->entityManager->persist($refreshToken);
+        $this->entityManager->flush();
     }
 
-    private function initRefreshTokens()
+    public function create(ClientId $clientId, ResourceOwnerId $resourceOwnerId, \DateTimeImmutable $expiresAt, DataBag $parameter, DataBag $metadata, ?ResourceServerId $resourceServerId): CoreRefreshToken
     {
-        $refreshToken = new RefreshToken(
-            new RefreshTokenId('VALID_REFRESH_TOKEN'),
-            new ClientId('CLIENT_ID_3'),
-            new UserAccountId('john.1'),
-            new DataBag([]),
-            new DataBag([]),
-            new \DateTimeImmutable('now +1 day'),
-            null
+        return new RefreshToken(
+            new RefreshTokenId(\bin2hex(\random_bytes(32))),
+            $clientId,
+            $resourceOwnerId,
+            $expiresAt,
+            $parameter,
+            $metadata,
+            $resourceServerId
         );
-        $this->save($refreshToken);
-
-        $refreshToken = new RefreshToken(
-            new RefreshTokenId('REVOKED_REFRESH_TOKEN'),
-            new ClientId('CLIENT_ID_3'),
-            new UserAccountId('john.1'),
-            new DataBag([]),
-            new DataBag([]),
-            new \DateTimeImmutable('now +1 day'),
-            null
-        );
-        $refreshToken->markAsRevoked();
-        $this->save($refreshToken);
-
-        $refreshToken = new RefreshToken(
-            new RefreshTokenId('EXPIRED_REFRESH_TOKEN'),
-            new ClientId('CLIENT_ID_3'),
-            new UserAccountId('john.1'),
-            new DataBag([]),
-            new DataBag([]),
-            new \DateTimeImmutable('now -1 day'),
-            null
-        );
-        $this->save($refreshToken);
     }
 }

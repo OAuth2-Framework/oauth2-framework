@@ -25,13 +25,11 @@ final class RefreshTokenEndpointExtension implements TokenEndpointExtension
 {
     private $lifetime;
     private $refreshTokenRepository;
-    private $refreshTokenIdGenerator;
 
-    public function __construct(int $lifetime, RefreshTokenRepository $refreshTokenRepository, RefreshTokenIdGenerator $refreshTokenIdGenerator)
+    public function __construct(int $lifetime, RefreshTokenRepository $refreshTokenRepository)
     {
         $this->lifetime = $lifetime;
         $this->refreshTokenRepository = $refreshTokenRepository;
-        $this->refreshTokenIdGenerator = $refreshTokenIdGenerator;
     }
 
     public function beforeAccessTokenIssuance(ServerRequestInterface $request, GrantTypeData $grantTypeData, GrantType $grantType, callable $next): GrantTypeData
@@ -45,15 +43,14 @@ final class RefreshTokenEndpointExtension implements TokenEndpointExtension
         $scope = $accessToken->getParameter()->has('scope') ? \explode(' ', $accessToken->getParameter()->get('scope')) : [];
         if (\in_array('offline_access', $scope, true)) {
             $expiresAt = new \DateTimeImmutable(\Safe\sprintf('now +%u seconds', $this->lifetime));
-            $refreshTokenId = $this->refreshTokenIdGenerator->createRefreshTokenId();
-            $refreshToken = new RefreshToken(
-                $refreshTokenId,
+            $refreshToken = $this->refreshTokenRepository->create(
                 $accessToken->getClientId(),
                 $accessToken->getResourceOwnerId(),
                 $accessToken->getParameter(),
                 $accessToken->getMetadata(),
                 $expiresAt,
-                null);
+                null
+            );
             $refreshToken->addAccessToken($accessToken->getTokenId());
             $this->refreshTokenRepository->save($refreshToken);
             $result['refresh_token'] = $refreshToken->getTokenId()->getValue();

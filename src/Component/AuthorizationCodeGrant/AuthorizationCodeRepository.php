@@ -13,6 +13,11 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\AuthorizationCodeGrant;
 
+use OAuth2Framework\Component\Core\Client\ClientId;
+use OAuth2Framework\Component\Core\DataBag\DataBag;
+use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
+use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
+
 interface AuthorizationCodeRepository
 {
     /**
@@ -25,4 +30,6 @@ interface AuthorizationCodeRepository
     public function find(AuthorizationCodeId $authorizationCodeId): ?AuthorizationCode;
 
     public function save(AuthorizationCode $authorizationCode): void;
+
+    public function create(ClientId $clientId, UserAccountId $userAccountId, array $queryParameters, string $redirectUri, \DateTimeImmutable $expiresAt, DataBag $parameter, DataBag $metadata, ?ResourceServerId $resourceServerId): AuthorizationCode;
 }

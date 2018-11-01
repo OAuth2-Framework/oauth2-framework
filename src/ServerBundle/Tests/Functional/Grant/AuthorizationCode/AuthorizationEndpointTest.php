@@ -113,7 +113,7 @@ class AuthorizationEndpointTest extends DatabaseTestCase
         $firewallName = 'main';
         $firewallContext = 'main';
 
-        $token = new UsernamePasswordToken($userAccount, null, $firewallName, ['ROLE_ADMIN']);
+        $token = new UsernamePasswordToken($userAccount->getUsername(), null, $firewallName, ['ROLE_ADMIN']);
         $session->set('_security_'.$firewallContext, serialize($token));
         $session->save();
 

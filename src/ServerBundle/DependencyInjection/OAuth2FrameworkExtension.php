@@ -99,7 +99,10 @@ final class OAuth2FrameworkExtension extends Extension implements PrependExtensi
             'client_id' => DbalType\ClientIdType::class,
             'access_token_id' => DbalType\AccessTokenIdType::class,
             'user_account_id' => DbalType\UserAccountIdType::class,
-            'resourc_server_id' => DbalType\ResourceServerIdType::class,
+            'resource_owner_id' => DbalType\ResourceOwnerIdType::class,
+            'resource_server_id' => DbalType\ResourceServerIdType::class,
+            'refresh_token_id' => DbalType\RefreshTokenIdType::class,
+            'authorization_code_id' => DbalType\AuthorizationCodeIdType::class,
             'databag' => DbalType\DataBagType::class,
         ];
 

@@ -13,88 +13,53 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Tests\TestBundle\Entity;
 
-use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCode;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface;
+use Doctrine\Common\Persistence\ManagerRegistry;
+use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCode as CoreAuthorizationCode;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeId;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeRepository as AuthorizationCodeRepositoryInterface;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
+use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 
-final class AuthorizationCodeRepository implements AuthorizationCodeRepositoryInterface
+final class AuthorizationCodeRepository implements AuthorizationCodeRepositoryInterface, ServiceEntityRepositoryInterface
 {
-    /**
-     * @var AuthorizationCode[]
-     */
-    private $authorizationCodes = [];
+    private $entityRepository;
+    private $entityManager;
 
-    public function __construct()
+    public function __construct(ManagerRegistry $managerRegistry)
     {
-        $this->initAuthorizationCodes();
+        $this->entityManager = $managerRegistry->getManagerForClass(AuthorizationCode::class);
+        $this->entityRepository = $this->entityManager->getRepository(AuthorizationCode::class);
     }
 
-    public function find(AuthorizationCodeId $authCodeId): ?AuthorizationCode
+    public function find(AuthorizationCodeId $authorizationCodeId): ?CoreAuthorizationCode
     {
-        return \array_key_exists($authCodeId->getValue(), $this->authorizationCodes) ? $this->authorizationCodes[$authCodeId->getValue()] : null;
+        return $this->entityRepository->find($authorizationCodeId);
     }
 
-    public function save(AuthorizationCode $authCode): void
+    public function save(CoreAuthorizationCode $accessToken): void
     {
-        $this->authorizationCodes[$authCode->getTokenId()->getValue()] = $authCode;
+        if (!$accessToken instanceof AuthorizationCode) {
+            throw new \InvalidArgumentException('Unsupported authorization code class');
+        }
+        $this->entityManager->persist($accessToken);
+        $this->entityManager->flush();
     }
 
-    private function initAuthorizationCodes()
+    public function create(ClientId $clientId, UserAccountId $userAccountId, array $queryParameters, string $redirectUri, \DateTimeImmutable $expiresAt, DataBag $parameter, DataBag $metadata, ?ResourceServerId $resourceServerId): CoreAuthorizationCode
     {
-        $authorizationCode = new AuthorizationCode(
-            new AuthorizationCodeId('VALID_AUTHORIZATION_CODE'),
-            new ClientId('CLIENT_ID_3'),
-            new UserAccountId('john.1'),
-            [],
-            'http://localhost/callback',
-            new \DateTimeImmutable('now +1 day'),
-            new DataBag([]),
-            new DataBag([]),
-            null
+        return new AuthorizationCode(
+            new AuthorizationCodeId(\bin2hex(\random_bytes(32))),
+            $clientId,
+            $userAccountId,
+            $queryParameters,
+            $redirectUri,
+            $expiresAt,
+            $parameter,
+            $metadata,
+            $resourceServerId
         );
-        $this->save($authorizationCode);
-
-        $authorizationCode = new AuthorizationCode(
-            new AuthorizationCodeId('VALID_AUTHORIZATION_CODE_FOR_CONFIDENTIAL_CLIENT'),
-            new ClientId('CLIENT_ID_5'),
-            new UserAccountId('john.1'),
-            [],
-            'http://localhost/callback',
-            new \DateTimeImmutable('now +1 day'),
-            new DataBag([]),
-            new DataBag([]),
-            null
-        );
-        $this->save($authorizationCode);
-
-        $authorizationCode = new AuthorizationCode(
-            new AuthorizationCodeId('REVOKED_AUTHORIZATION_CODE'),
-            new ClientId('CLIENT_ID_3'),
-            new UserAccountId('john.1'),
-            [],
-            'http://localhost/callback',
-            new \DateTimeImmutable('now +1 day'),
-            new DataBag([]),
-            new DataBag([]),
-            null
-        );
-        $authorizationCode->markAsRevoked();
-        $this->save($authorizationCode);
-
-        $authorizationCode = new AuthorizationCode(
-            new AuthorizationCodeId('EXPIRED_AUTHORIZATION_CODE'),
-            new ClientId('CLIENT_ID_3'),
-            new UserAccountId('john.1'),
-            [],
-            'http://localhost/callback',
-            new \DateTimeImmutable('now -1 day'),
-            new DataBag([]),
-            new DataBag([]),
-            null
-        );
-        $this->save($authorizationCode);
     }
 }

@@ -11,9 +11,10 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\Component\AuthorizationCodeGrant;
+namespace OAuth2Framework\ServerBundle\Tests\TestBundle\Entity;
 
-interface AuthorizationCodeIdGenerator
+use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCode as BaseAuthorizationCode;
+
+class AuthorizationCode extends BaseAuthorizationCode
 {
-    public function createAuthorizationCodeId(): AuthorizationCodeId;
 }

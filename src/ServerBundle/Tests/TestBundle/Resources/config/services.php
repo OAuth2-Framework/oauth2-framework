@@ -13,9 +13,7 @@ declare(strict_types=1);
 
 use Http\Factory\Diactoros\UriFactory;
 use OAuth2Framework\Component\OpenIdConnect\UserInfo\Pairwise\EncryptedSubjectIdentifier;
-use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\AccessTokenIdGenerator;
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\AccessTokenRepository;
-use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\AuthorizationCodeIdGenerator;
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\AuthorizationCodeRepository;
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\ClientRepository;
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\ConsentRepository;
@@ -59,11 +57,7 @@ return function (ContainerConfigurator $container) {
 
     $container->set(SymfonyUserAccountDiscovery::class);
 
-    $container->set(AccessTokenIdGenerator::class);
-
     $container->set(AccessTokenRepository::class);
-
-    $container->set(AuthorizationCodeIdGenerator::class);
 
     $container->set(AuthorizationCodeRepository::class);
 

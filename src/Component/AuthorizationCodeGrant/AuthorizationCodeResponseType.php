@@ -25,15 +25,12 @@ final class AuthorizationCodeResponseType implements ResponseType
 
     private $pkceForPublicClientsEnforced;
 
-    private $authorizationCodeIdGenerator;
-
     private $authorizationCodeRepository;
 
     private $pkceMethodManager;
 
-    public function __construct(AuthorizationCodeIdGenerator $authorizationCodeIdGenerator, AuthorizationCodeRepository $authorizationCodeRepository, int $authorizationCodeLifetime, PKCEMethodManager $pkceMethodManager, bool $pkceForPublicClientsEnforced)
+    public function __construct(AuthorizationCodeRepository $authorizationCodeRepository, int $authorizationCodeLifetime, PKCEMethodManager $pkceMethodManager, bool $pkceForPublicClientsEnforced)
     {
-        $this->authorizationCodeIdGenerator = $authorizationCodeIdGenerator;
         $this->authorizationCodeRepository = $authorizationCodeRepository;
         $this->authorizationCodeLifetime = $authorizationCodeLifetime;
         $this->pkceMethodManager = $pkceMethodManager;
@@ -70,9 +67,7 @@ final class AuthorizationCodeResponseType implements ResponseType
             }
         }
 
-        $authorizationCodeId = $this->authorizationCodeIdGenerator->createAuthorizationCodeId();
-        $authorizationCode = new AuthorizationCode(
-            $authorizationCodeId,
+        $authorizationCode = $this->authorizationCodeRepository->create(
             $authorization->getClient()->getClientId(),
             $authorization->getUserAccount()->getUserAccountId(),
             $authorization->getQueryParams(),

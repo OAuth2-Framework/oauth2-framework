@@ -14,8 +14,11 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\RefreshTokenGrant;
 
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
+use OAuth2Framework\Component\Core\Client\ClientId;
+use OAuth2Framework\Component\Core\DataBag\DataBag;
+use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwnerId;
+use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
 use OAuth2Framework\Component\Core\Token\Token;
-use OAuth2Framework\Component\Core\Token\TokenId;
 
 class RefreshToken extends Token
 {
@@ -24,12 +27,9 @@ class RefreshToken extends Token
      */
     private $accessTokenIds = [];
 
-    public function setTokenId(TokenId $tokenId): void
+    public function __construct(RefreshTokenId $refreshTokenId, ClientId $clientId, ResourceOwnerId $resourceOwnerId, \DateTimeImmutable $expiresAt, DataBag $parameter, DataBag $metadata, ?ResourceServerId $resourceServerId)
     {
-        if (!$tokenId instanceof RefreshTokenId) {
-            throw new \RuntimeException('The token ID must be an Refresh Token ID.');
-        }
-        parent::setTokenId($tokenId);
+        parent::__construct($refreshTokenId, $clientId, $resourceOwnerId, $parameter, $metadata, $expiresAt, $resourceServerId);
     }
 
     public function addAccessToken(AccessTokenId $accessTokenId): void

@@ -231,13 +231,13 @@ final class RefreshTokenGrantTypeTest extends TestCase
                 new RefreshTokenId('REFRESH_TOKEN_ID'),
                 new ClientId('CLIENT_ID'),
                 new ClientId('CLIENT_ID'),
+                new \DateTimeImmutable('now +1 day'),
                 new DataBag([
                     'metadata' => 'foo',
                     'scope' => 'scope1 scope2',
                 ]),
                 new DataBag([
                     'parameter1' => 'bar', ]),
-                new \DateTimeImmutable('now +1 day'),
                 new ResourceServerId('RESOURCE_SERVER_ID')
             );
 
@@ -245,28 +245,28 @@ final class RefreshTokenGrantTypeTest extends TestCase
                 new RefreshTokenId('REVOKED_REFRESH_TOKEN_ID'),
                 new ClientId('CLIENT_ID'),
                 new ClientId('CLIENT_ID'),
+                new \DateTimeImmutable('now +1 day'),
                 new DataBag([
                     'metadata' => 'foo',
                     'scope' => 'scope1 scope2',
                 ]),
                 new DataBag([
                     'parameter1' => 'bar', ]),
-                new \DateTimeImmutable('now +1 day'),
                 new ResourceServerId('RESOURCE_SERVER_ID')
             );
-            $revokedRefreshToken = $revokedRefreshToken->markAsRevoked();
+            $revokedRefreshToken->markAsRevoked();
 
             $expiredRefreshToken = new RefreshToken(
                 new RefreshTokenId('EXPIRED_REFRESH_TOKEN_ID'),
                 new ClientId('CLIENT_ID'),
                 new ClientId('CLIENT_ID'),
+                new \DateTimeImmutable('now -1 day'),
                 new DataBag([
                     'metadata' => 'foo',
                     'scope' => 'scope1 scope2',
                 ]),
                 new DataBag([
                     'parameter1' => 'bar', ]),
-                new \DateTimeImmutable('now -1 day'),
                 new ResourceServerId('RESOURCE_SERVER_ID')
             );
 

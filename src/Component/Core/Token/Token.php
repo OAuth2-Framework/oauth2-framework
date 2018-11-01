@@ -46,19 +46,9 @@ abstract class Token implements \JsonSerializable
         return $this->tokenId;
     }
 
-    public function setTokenId(TokenId $tokenId): void
-    {
-        $this->tokenId = $tokenId;
-    }
-
     public function getExpiresAt(): \DateTimeImmutable
     {
         return $this->expiresAt;
-    }
-
-    public function setExpiresAt(\DateTimeImmutable $expiresAt): void
-    {
-        $this->expiresAt = $expiresAt;
     }
 
     public function hasExpired(): bool
@@ -71,19 +61,9 @@ abstract class Token implements \JsonSerializable
         return $this->resourceOwnerId;
     }
 
-    public function setResourceOwnerId(ResourceOwnerId $resourceOwnerId): void
-    {
-        $this->resourceOwnerId = $resourceOwnerId;
-    }
-
     public function getClientId(): ClientId
     {
         return $this->clientId;
-    }
-
-    public function setClientId(ClientId $clientId): void
-    {
-        $this->clientId = $clientId;
     }
 
     public function getParameter(): DataBag
@@ -91,19 +71,9 @@ abstract class Token implements \JsonSerializable
         return $this->parameter;
     }
 
-    public function setParameter(DataBag $parameter): void
-    {
-        $this->parameter = $parameter;
-    }
-
     public function getMetadata(): DataBag
     {
         return $this->metadata;
-    }
-
-    public function setMetadata(DataBag $metadata): void
-    {
-        $this->metadata = $metadata;
     }
 
     public function isRevoked(): bool
@@ -119,11 +89,6 @@ abstract class Token implements \JsonSerializable
     public function getResourceServerId(): ?ResourceServerId
     {
         return $this->resourceServerId;
-    }
-
-    public function setResourceServerId(?ResourceServerId $resourceServerId): void
-    {
-        $this->resourceServerId = $resourceServerId;
     }
 
     public function getExpiresIn(): int

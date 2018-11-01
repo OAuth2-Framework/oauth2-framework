@@ -35,7 +35,6 @@ return function (ContainerConfigurator $container) {
 
     $container->set(AuthorizationCodeResponseType::class)
         ->args([
-            ref(\OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeIdGenerator::class),
             ref(\OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeRepository::class),
             '%oauth2_server.grant.authorization_code.lifetime%',
             ref(PKCEMethod\PKCEMethodManager::class),

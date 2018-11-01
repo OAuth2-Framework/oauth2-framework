@@ -18,21 +18,12 @@ use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwnerId;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
 use OAuth2Framework\Component\Core\Token\Token;
-use OAuth2Framework\Component\Core\Token\TokenId;
 
 class AccessToken extends Token
 {
-    public function __construct(AccessTokenId $accessTokenId, ClientId $clientId, ResourceOwnerId $resourceOwnerId, \DateTimeImmutable $expiresAt, DataBag $parameter, DataBag $metadata, ?ResourceServerId $resourceServerId)
+    public function __construct(AccessTokenId $refreshTokenId, ClientId $clientId, ResourceOwnerId $resourceOwnerId, \DateTimeImmutable $expiresAt, DataBag $parameter, DataBag $metadata, ?ResourceServerId $resourceServerId)
     {
-        parent::__construct($accessTokenId, $clientId, $resourceOwnerId, $parameter, $metadata, $expiresAt, $resourceServerId);
-    }
-
-    public function setTokenId(TokenId $tokenId): void
-    {
-        if (!$tokenId instanceof AccessTokenId) {
-            throw new \RuntimeException('The token ID must be an Access Token ID.');
-        }
-        parent::setTokenId($tokenId);
+        parent::__construct($refreshTokenId, $clientId, $resourceOwnerId, $parameter, $metadata, $expiresAt, $resourceServerId);
     }
 
     public function jsonSerialize()

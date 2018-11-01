@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Tests\TestBundle\Entity;
 
-use OAuth2Framework\Component\Core\AccessToken\AccessToken as BaseAccessToken;
+use OAuth2Framework\Component\RefreshTokenGrant\RefreshToken as BaseRefreshToken;
 
-class AccessToken extends BaseAccessToken
+class RefreshToken extends BaseRefreshToken
 {
 }

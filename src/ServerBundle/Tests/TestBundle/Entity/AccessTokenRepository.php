@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Tests\TestBundle\Entity;
 
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface;
+use Doctrine\Common\Persistence\ManagerRegistry;
 use OAuth2Framework\Component\Core\AccessToken\AccessToken as CoreAccessToken;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository as AccessTokenRepositoryInterface;
@@ -21,21 +23,29 @@ use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwnerId;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
 
-final class AccessTokenRepository implements AccessTokenRepositoryInterface
+final class AccessTokenRepository implements AccessTokenRepositoryInterface, ServiceEntityRepositoryInterface
 {
-    /**
-     * @var AccessToken[]
-     */
-    private $accessTokens = [];
+    private $entityRepository;
+    private $entityManager;
 
-    public function save(CoreAccessToken $accessToken): void
+    public function __construct(ManagerRegistry $managerRegistry)
     {
-        $this->accessTokens[$accessToken->getTokenId()->getValue()] = $accessToken;
+        $this->entityManager = $managerRegistry->getManagerForClass(AccessToken::class);
+        $this->entityRepository = $this->entityManager->getRepository(AccessToken::class);
     }
 
     public function find(AccessTokenId $accessTokenId): ?CoreAccessToken
     {
-        return \array_key_exists($accessTokenId->getValue(), $this->accessTokens) ? $this->accessTokens[$accessTokenId->getValue()] : null;
+        return $this->entityRepository->find($accessTokenId);
+    }
+
+    public function save(CoreAccessToken $accessToken): void
+    {
+        if (!$accessToken instanceof AccessToken) {
+            throw new \InvalidArgumentException('Unsupported access token class');
+        }
+        $this->entityManager->persist($accessToken);
+        $this->entityManager->flush();
     }
 
     public function create(ClientId $clientId, ResourceOwnerId $resourceOwnerId, \DateTimeImmutable $expiresAt, DataBag $parameter, DataBag $metadata, ?ResourceServerId $resourceServerId): CoreAccessToken

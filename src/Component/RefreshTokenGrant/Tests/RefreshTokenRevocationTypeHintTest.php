@@ -79,22 +79,22 @@ final class RefreshTokenRevocationTypeHintTest extends TestCase
                 new RefreshTokenId('REFRESH_TOKEN_ID'),
                 new ClientId('CLIENT_ID'),
                 new UserAccountId('USER_ACCOUNT_ID'),
+                new \DateTimeImmutable('now +1hour'),
                 new DataBag([
                     'scope' => 'scope1 scope2',
                 ]),
                 new DataBag([]),
-                new \DateTimeImmutable('now +1hour'),
                 new ResourceServerId('RESOURCE_SERVER_ID')
             );
             $revokedRefreshToken = new RefreshToken(
                 new RefreshTokenId('REVOKED_REFRESH_TOKEN_ID'),
                 new ClientId('CLIENT_ID'),
                 new UserAccountId('USER_ACCOUNT_ID'),
+                new \DateTimeImmutable('now +1hour'),
                 new DataBag([
                     'scope' => 'scope1 scope2',
                 ]),
                 new DataBag([]),
-                new \DateTimeImmutable('now +1hour'),
                 new ResourceServerId('RESOURCE_SERVER_ID')
             );
             $revokedRefreshToken->markAsRevoked();
@@ -102,11 +102,11 @@ final class RefreshTokenRevocationTypeHintTest extends TestCase
                 new RefreshTokenId('EXPIRED_REFRESH_TOKEN_ID'),
                 new ClientId('CLIENT_ID'),
                 new UserAccountId('USER_ACCOUNT_ID'),
+                new \DateTimeImmutable('now -1hour'),
                 new DataBag([
                     'scope' => 'scope1 scope2',
                 ]),
                 new DataBag([]),
-                new \DateTimeImmutable('now -1hour'),
                 new ResourceServerId('RESOURCE_SERVER_ID')
             );
             $refreshTokenRepository = $this->prophesize(RefreshTokenRepository::class);

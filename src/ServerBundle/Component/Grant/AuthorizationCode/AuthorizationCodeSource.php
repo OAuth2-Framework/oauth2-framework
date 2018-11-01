@@ -14,10 +14,8 @@ declare(strict_types=1);
 namespace OAuth2Framework\ServerBundle\Component\Grant\AuthorizationCode;
 
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCode;
-use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeIdGenerator;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeRepository;
 use OAuth2Framework\ServerBundle\Component\Component;
-use OAuth2Framework\ServerBundle\Service\RandomAuthorizationCodeIdGenerator;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -38,7 +36,6 @@ class AuthorizationCodeSource implements Component
         $container->setParameter('oauth2_server.grant.authorization_code.lifetime', $configs['grant']['authorization_code']['lifetime']);
         $container->setParameter('oauth2_server.grant.authorization_code.enforce_pkce', $configs['grant']['authorization_code']['enforce_pkce']);
         $container->setAlias(AuthorizationCodeRepository::class, $configs['grant']['authorization_code']['repository']);
-        $container->setAlias(AuthorizationCodeIdGenerator::class, $configs['grant']['authorization_code']['id_generator']);
 
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/grant'));
         $loader->load('authorization_code.php');
@@ -61,10 +58,6 @@ class AuthorizationCodeSource implements Component
             ->scalarNode('repository')
             ->isRequired()
             ->info('The authorization code repository')
-            ->end()
-            ->scalarNode('id_generator')
-            ->info('The authorization code ID generator service')
-            ->defaultValue(RandomAuthorizationCodeIdGenerator::class)
             ->end()
             ->booleanNode('enforce_pkce')
             ->defaultFalse()

@@ -17,7 +17,6 @@ use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
 use OAuth2Framework\Component\Core\Token\Token;
-use OAuth2Framework\Component\Core\Token\TokenId;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 
 class AuthorizationCode extends Token
@@ -34,22 +33,9 @@ class AuthorizationCode extends Token
         $this->used = false;
     }
 
-    public function setTokenId(TokenId $tokenId): void
-    {
-        if (!$tokenId instanceof AuthorizationCodeId) {
-            throw new \RuntimeException('The token ID must be an Authorization Code ID.');
-        }
-        parent::setTokenId($tokenId);
-    }
-
     public function getQueryParameters(): array
     {
         return $this->queryParameters;
-    }
-
-    public function setQueryParameters(array $queryParameters): void
-    {
-        $this->queryParameters = $queryParameters;
     }
 
     public function isUsed(): bool
@@ -84,11 +70,6 @@ class AuthorizationCode extends Token
     public function getRedirectUri(): string
     {
         return $this->redirectUri;
-    }
-
-    public function setRedirectUri(string $redirectUri): void
-    {
-        $this->redirectUri = $redirectUri;
     }
 
     public function toArray(): array
