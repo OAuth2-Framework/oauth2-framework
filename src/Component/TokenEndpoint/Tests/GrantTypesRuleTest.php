@@ -122,7 +122,7 @@ final class GrantTypesRuleTest extends TestCase
     }
 
     /**
-     * @var null|GrantTypesRule
+     * @var GrantTypesRule|null
      */
     private $grantTypesRule = null;
 

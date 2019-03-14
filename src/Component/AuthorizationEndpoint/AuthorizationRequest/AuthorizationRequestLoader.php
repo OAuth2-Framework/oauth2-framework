@@ -64,7 +64,7 @@ class AuthorizationRequestLoader
     private $requireEncryption = false;
 
     /**
-     * @var null|HttpClient
+     * @var HttpClient|null
      */
     private $client = null;
 
@@ -84,7 +84,7 @@ class AuthorizationRequestLoader
     private $jweLoader = null;
 
     /**
-     * @var null|JKUFactory
+     * @var JKUFactory|null
      */
     private $jkuFactory = null;
 

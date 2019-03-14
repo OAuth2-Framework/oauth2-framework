@@ -26,12 +26,12 @@ class IdTokenBuilderFactory
     private $lifetime;
 
     /**
-     * @var null|JKUFactory
+     * @var JKUFactory|null
      */
     private $jkuFactory = null;
 
     /**
-     * @var null|AuthorizationCodeRepository
+     * @var AuthorizationCodeRepository|null
      */
     private $authorizationCodeRepository = null;
 

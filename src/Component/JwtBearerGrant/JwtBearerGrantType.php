@@ -86,12 +86,12 @@ class JwtBearerGrantType implements GrantType
     private $keyEncryptionKeySet = null;
 
     /**
-     * @var null|TrustedIssuerRepository
+     * @var TrustedIssuerRepository|null
      */
     private $trustedIssuerRepository = null;
 
     /**
-     * @var null|JKUFactory
+     * @var JKUFactory|null
      */
     private $jkuFactory = null;
 

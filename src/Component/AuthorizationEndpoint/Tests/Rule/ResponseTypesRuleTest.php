@@ -103,7 +103,7 @@ final class ResponseTypesRuleTest extends TestCase
     }
 
     /**
-     * @var null|ResponseTypesRule
+     * @var ResponseTypesRule|null
      */
     private $responseTypesRule = null;
 

@@ -49,7 +49,7 @@ final class ClientRegistrationEndpointTest extends TestCase
     }
 
     /**
-     * @var null|ClientRegistrationEndpoint
+     * @var ClientRegistrationEndpoint|null
      */
     private $clientRegistrationEndpoint = null;
 

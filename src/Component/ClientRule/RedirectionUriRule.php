@@ -13,9 +13,9 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\ClientRule;
 
+use function League\Uri\parse;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
-use function League\Uri\parse;
 
 /**
  * TODO: If there are multiple hostnames in the registered redirect_uris and pairwise ID is set, the client MUST register a sector_identifier_uri.

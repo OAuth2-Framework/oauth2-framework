@@ -164,7 +164,7 @@ final class ScopePolicyManagerTest extends TestCase
     }
 
     /**
-     * @var null|ScopePolicyManager
+     * @var ScopePolicyManager|null
      */
     private $scopePolicyManager = null;
 

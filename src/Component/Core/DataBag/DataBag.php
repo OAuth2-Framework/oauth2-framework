@@ -43,7 +43,7 @@ class DataBag implements \JsonSerializable, \IteratorAggregate, \Countable
     }
 
     /**
-     * @param null|mixed $value
+     * @param mixed|null $value
      */
     public function set(string $key, $value): void
     {

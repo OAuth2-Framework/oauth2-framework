@@ -146,7 +146,7 @@ final class TokenEndpointTest extends TestCase
     }
 
     /**
-     * @var null|TokenEndpoint
+     * @var TokenEndpoint|null
      */
     private $tokenEndpoint = null;
 
@@ -167,7 +167,7 @@ final class TokenEndpointTest extends TestCase
     }
 
     /**
-     * @var null|ClientRepository
+     * @var ClientRepository|null
      */
     private $clientRepository = null;
 
@@ -193,7 +193,7 @@ final class TokenEndpointTest extends TestCase
     }
 
     /**
-     * @var null|UserAccountRepository
+     * @var UserAccountRepository|null
      */
     private $userAccountRepository = null;
 
@@ -209,7 +209,7 @@ final class TokenEndpointTest extends TestCase
     }
 
     /**
-     * @var null|AccessTokenRepository
+     * @var AccessTokenRepository|null
      */
     private $accessTokenRepository = null;
 

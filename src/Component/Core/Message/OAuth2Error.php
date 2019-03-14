@@ -67,7 +67,7 @@ class OAuth2Error extends \Exception
     public const ERROR_INVALID_RESOURCE_SERVER = 'invalid_resource_server';
 
     /**
-     * @var null|string
+     * @var string|null
      */
     private $errorDescription;
 

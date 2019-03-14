@@ -22,9 +22,9 @@ use OAuth2Framework\SecurityBundle\Security\EntryPoint\OAuth2EntryPoint;
 use OAuth2Framework\SecurityBundle\Security\Firewall\OAuth2Listener;
 use OAuth2Framework\SecurityBundle\Service\ResponseFactory;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 use Symfony\Component\Security\Core\Authentication\AuthenticationManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
 return function (ContainerConfigurator $container) {
     $container = $container->services()->defaults()

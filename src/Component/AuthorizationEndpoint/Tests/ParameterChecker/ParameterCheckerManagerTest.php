@@ -254,7 +254,7 @@ final class ParameterCheckerManagerTest extends TestCase
     }
 
     /**
-     * @var null|ParameterCheckerManager
+     * @var ParameterCheckerManager|null
      */
     private $extensionManager = null;
 

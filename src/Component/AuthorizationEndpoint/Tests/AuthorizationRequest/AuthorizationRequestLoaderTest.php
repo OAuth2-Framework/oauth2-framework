@@ -510,7 +510,7 @@ final class AuthorizationRequestLoaderTest extends TestCase
     }
 
     /**
-     * @var null|AuthorizationRequestLoader
+     * @var AuthorizationRequestLoader|null
      */
     private $authorizationRequestLoader;
 

@@ -104,12 +104,12 @@ final class GrantTypeMiddlewareTest extends TestCase
     }
 
     /**
-     * @var null|GrantTypeManager
+     * @var GrantTypeManager|null
      */
     private $grantTypeManager = null;
 
     /**
-     * @var null|GrantTypeMiddleware
+     * @var GrantTypeMiddleware|null
      */
     private $grantTypeMiddleware = null;
 

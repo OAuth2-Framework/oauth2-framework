@@ -11,7 +11,7 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\ServerBundle\Tests\Functional\Grant\ResourceOwnerPasswordCredentials;
+namespace OAuth2Framework\ServerBundle\Tests\Functional\Grant\ResourceOwnerPasswordCredentialsGrant;
 
 use OAuth2Framework\Component\ResourceOwnerPasswordCredentialsGrant\ResourceOwnerPasswordCredentialsGrantType;
 use OAuth2Framework\ServerBundle\Tests\Functional\DatabaseTestCase;

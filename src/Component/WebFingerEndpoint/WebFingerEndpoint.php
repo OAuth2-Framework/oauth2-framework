@@ -90,7 +90,7 @@ final class WebFingerEndpoint implements MiddlewareInterface
         $data = $resourceDescriptor->jsonSerialize();
 
         $rels = $this->getRels($request);
-        if (empty($rels) || !array_key_exists('links', $data) || empty($data['links'])) {
+        if (empty($rels) || !\array_key_exists('links', $data) || empty($data['links'])) {
             return $data;
         }
 
@@ -114,7 +114,7 @@ final class WebFingerEndpoint implements MiddlewareInterface
     private function getRels(ServerRequestInterface $request): array
     {
         $queryParams = $request->getQueryParams();
-        if (!array_key_exists('rel', $queryParams)) {
+        if (!\array_key_exists('rel', $queryParams)) {
             return [];
         }
 

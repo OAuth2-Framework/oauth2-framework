@@ -84,7 +84,7 @@ class AuthorizationRequest
     private $responseHeaders = [];
 
     /**
-     * @var null|ResourceServer
+     * @var ResourceServer|null
      */
     private $resourceServer = null;
 

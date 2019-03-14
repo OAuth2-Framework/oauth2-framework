@@ -23,7 +23,7 @@ class TokenTypeManager
     private $tokenTypes = [];
 
     /**
-     * @var null|string
+     * @var string|null
      */
     private $defaultTokenType = null;
 

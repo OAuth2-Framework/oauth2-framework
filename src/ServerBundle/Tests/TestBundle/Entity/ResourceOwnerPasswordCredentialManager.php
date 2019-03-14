@@ -33,7 +33,7 @@ final class ResourceOwnerPasswordCredentialManager implements ResourceOwnerPassw
 
     public function findResourceOwnerIdWithUsernameAndPassword(string $username, string $password): ?ResourceOwnerId
     {
-        if (!array_key_exists($password, $this->usernameAndPasswords)) {
+        if (!\array_key_exists($password, $this->usernameAndPasswords)) {
             return null;
         }
         if ($this->usernameAndPasswords[$password]->getValue() !== $username) {

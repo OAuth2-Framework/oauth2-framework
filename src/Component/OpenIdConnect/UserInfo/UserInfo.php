@@ -23,7 +23,7 @@ use OAuth2Framework\Component\OpenIdConnect\UserInfo\ScopeSupport\UserInfoScopeS
 class UserInfo
 {
     /**
-     * @var null|PairwiseSubjectIdentifierAlgorithm
+     * @var PairwiseSubjectIdentifierAlgorithm|null
      */
     private $pairwiseAlgorithm = null;
 
@@ -110,7 +110,7 @@ class UserInfo
     }
 
     /**
-     * @return null|mixed
+     * @return mixed|null
      */
     private function getUserClaim(UserAccount $userAccount, string $claimName, ?array $config)
     {
@@ -179,7 +179,7 @@ class UserInfo
             $uri = $client->get('sector_identifier_uri');
         }
 
-        $data = \parse_url($uri);
+        $data = \Safe\parse_url($uri);
         if (!\is_array($data) || !\array_key_exists('host', $data)) {
             throw new \InvalidArgumentException(\Safe\sprintf('Invalid Sector Identifier Uri "%s".', $uri));
         }

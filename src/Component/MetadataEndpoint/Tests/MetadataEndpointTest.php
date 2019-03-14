@@ -53,7 +53,7 @@ final class MetadataEndpointTest extends TestCase
     }
 
     /**
-     * @var null|MetadataEndpoint
+     * @var MetadataEndpoint|null
      */
     private $metadataEndpoint = null;
 

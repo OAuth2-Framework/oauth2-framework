@@ -98,7 +98,7 @@ final class ClientConfigurationEndpointTest extends TestCase
     }
 
     /**
-     * @var null|ClientConfigurationEndpoint
+     * @var ClientConfigurationEndpoint|null
      */
     private $clientConfigurationEndpoint = null;
 

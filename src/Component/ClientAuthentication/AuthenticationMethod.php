@@ -32,7 +32,7 @@ interface AuthenticationMethod
      * @param ServerRequestInterface $request           The request
      * @param mixed                  $clientCredentials The client credentials found in the request
      *
-     * @return null|ClientId Return the client public ID if found else null. If credentials have are needed to authenticate the client, they are set to the variable $clientCredentials
+     * @return ClientId|null Return the client public ID if found else null. If credentials have are needed to authenticate the client, they are set to the variable $clientCredentials
      */
     public function findClientIdAndCredentials(ServerRequestInterface $request, &$clientCredentials = null): ?ClientId;
 

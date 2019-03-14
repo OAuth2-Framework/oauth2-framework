@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\WebFingerBundle\DependencyInjection;
 
 use OAuth2Framework\Component\WebFingerEndpoint\IdentifierResolver\IdentifierResolver;
+use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -22,6 +23,9 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 class OAuth2FrameworkWebFingerExtension extends Extension
 {
+    /**
+     * @var string
+     */
     private $alias;
 
     public function __construct(string $alias)
@@ -29,12 +33,12 @@ class OAuth2FrameworkWebFingerExtension extends Extension
         $this->alias = $alias;
     }
 
-    public function getAlias()
+    public function getAlias(): string
     {
         return $this->alias;
     }
 
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $processor = new Processor();
         $config = $processor->processConfiguration($this->getConfiguration($configs, $container), $configs);
@@ -48,7 +52,7 @@ class OAuth2FrameworkWebFingerExtension extends Extension
         $loader->load('services.php');
     }
 
-    public function getConfiguration(array $config, ContainerBuilder $container)
+    public function getConfiguration(array $config, ContainerBuilder $container): ConfigurationInterface
     {
         return new Configuration($this->alias);
     }

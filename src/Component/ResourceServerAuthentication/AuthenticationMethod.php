@@ -31,7 +31,7 @@ interface AuthenticationMethod
      * @param ServerRequestInterface $request                   The request
      * @param mixed                  $resourceServerCredentials The resource server credentials found in the request
      *
-     * @return null|ResourceServerId Return the  resource server public ID if found else null. If credentials have are needed to authenticate the ResourceServer, they are set to the variable $resourceServerCredentials
+     * @return ResourceServerId|null Return the  resource server public ID if found else null. If credentials have are needed to authenticate the ResourceServer, they are set to the variable $resourceServerCredentials
      */
     public function findResourceServerIdAndCredentials(ServerRequestInterface $request, &$resourceServerCredentials = null): ?ResourceServerId;
 

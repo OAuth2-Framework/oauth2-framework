@@ -56,7 +56,7 @@ class SessionStateParameterExtension extends \OAuth2Framework\Component\OpenIdCo
 
     private function getOriginUri(string $redirectUri): string
     {
-        $url_parts = \parse_url($redirectUri);
+        $url_parts = \Safe\parse_url($redirectUri);
 
         return \Safe\sprintf('%s://%s%s', $url_parts['scheme'], $url_parts['host'], isset($url_parts['port']) ? ':'.$url_parts['port'] : '');
     }

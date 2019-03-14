@@ -59,7 +59,7 @@ final class AuthorizationCodeRevocationTypeHintTest extends TestCase
     }
 
     /**
-     * @var null|AuthorizationCodeRevocationTypeHint
+     * @var AuthorizationCodeRevocationTypeHint|null
      */
     private $authorizationCodeRevocationTypeHint = null;
 

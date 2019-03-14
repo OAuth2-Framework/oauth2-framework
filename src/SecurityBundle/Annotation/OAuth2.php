@@ -20,22 +20,22 @@ namespace OAuth2Framework\SecurityBundle\Annotation;
 class OAuth2
 {
     /**
-     * @var null|string
+     * @var string|null
      */
     private $scope = null;
 
     /**
-     * @var null|string
+     * @var string|null
      */
     private $token_type = null;
 
     /**
-     * @var null|string
+     * @var string|null
      */
     private $client_id = null;
 
     /**
-     * @var null|string
+     * @var string|null
      */
     private $resource_owner_id = null;
 

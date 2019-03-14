@@ -47,7 +47,7 @@ class DatabaseTestCase extends WebTestCase
 
     protected static function runCommand(string $command, ?OutputInterface $output = null): void
     {
-        $command = sprintf('%s --quiet', $command);
+        $command = \Safe\sprintf('%s --quiet', $command);
 
         self::$application->run(new StringInput($command), $output);
     }

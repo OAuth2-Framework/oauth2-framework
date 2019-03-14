@@ -22,7 +22,7 @@ interface Claim
     public function isAvailableForUserAccount(UserAccount $userAccount, ?string $claimLocale): bool;
 
     /**
-     * @return null|mixed
+     * @return mixed|null
      */
     public function getForUserAccount(UserAccount $userAccount, ?string $claimLocale);
 }

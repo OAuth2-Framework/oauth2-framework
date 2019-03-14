@@ -80,7 +80,7 @@ final class OAuth2FrameworkExtension extends Extension implements PrependExtensi
     private function prependDoctrineTypes(ContainerBuilder $container): void
     {
         $bundles = $container->getParameter('kernel.bundles');
-        if (!\is_array($bundles) || !array_key_exists('DoctrineBundle', $bundles)) {
+        if (!\is_array($bundles) || !\array_key_exists('DoctrineBundle', $bundles)) {
             return;
         }
         $configs = $container->getExtensionConfig('doctrine');

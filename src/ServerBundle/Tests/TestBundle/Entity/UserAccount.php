@@ -58,7 +58,7 @@ final class UserAccount implements UserAccountInterface, SymfonyUserInterface, E
 
     public function has(string $key): bool
     {
-        return array_key_exists($key, $this->data);
+        return \array_key_exists($key, $this->data);
     }
 
     public function get(string $key)

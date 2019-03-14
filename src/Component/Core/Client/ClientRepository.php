@@ -26,7 +26,7 @@ interface ClientRepository
     /**
      * Get a client using its Id.
      *
-     * @return null|Client return the client object or null if no client is found
+     * @return Client|null return the client object or null if no client is found
      */
     public function find(ClientId $clientId): ?Client;
 

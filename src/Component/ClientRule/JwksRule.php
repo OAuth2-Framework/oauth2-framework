@@ -21,7 +21,7 @@ use OAuth2Framework\Component\Core\DataBag\DataBag;
 class JwksRule implements Rule
 {
     /**
-     * @var null|JKUFactory
+     * @var JKUFactory|null
      */
     private $jkuFactory;
 

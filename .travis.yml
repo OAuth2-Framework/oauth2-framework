@@ -1,5 +1,3 @@
-language: php
-
 sudo: required
 
 services:
@@ -11,21 +9,21 @@ addons:
         - rp_test
         - op
 
+language: php
+
+php:
+    - 7.1
+    - 7.2
+    - 7.3
+    - nightly
+
 cache:
     directories:
-        - "$HOME/.composer/cache"
-        - "vendor"
-
-matrix:
-    allow_failures:
-        - php: nightly
-    fast_finish: true
-    include:
-        - php: 7.1
-        - php: 7.2
-        - php: nightly
+        - $HOME/.composer/cache
+        - vendor
 
 before_install:
+    - mv ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini{,.disabled} || echo "xdebug not available"
     - git clone https://github.com/openid-certification/oidctest.git
     - cd oidctest
     - git checkout stable-release-1.1.x
@@ -33,14 +31,9 @@ before_install:
     - cd -
 
 before_script:
-    - composer self-update
     - mkdir -p build/logs
     - mkdir -p build/cov
-    - composer require --dev php-coveralls/php-coveralls --no-interaction --no-update
-    - composer require --dev phpunit/phpcov --no-interaction --no-update
-    - composer require --dev phpunit/phpunit --no-interaction --no-update
-    - if [[ $deps = low ]]; then composer update --no-interaction --prefer-lowest ; fi
-    - if [[ !$deps ]]; then composer update --no-interaction ; fi
+    - travis_retry composer update
 
 script:
     - ./vendor/bin/phpunit --coverage-php build/cov/coverage-framework.cov
@@ -51,3 +44,34 @@ script:
 after_success:
     - ./vendor/bin/phpcov merge --clover build/logs/clover.xml build/cov
     - ./vendor/bin/php-coveralls --no-interaction
+
+jobs:
+    allow_failures:
+        - php: nightly
+
+    include:
+        - stage: Metrics and quality
+          env: COVERAGE
+          before_script:
+              - mv ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini{.disabled,}
+              - if [[ ! $(php -m | grep -si xdebug) ]]; then echo "xdebug required for coverage"; exit 1; fi
+          script:
+              - ./vendor/bin/phpunit -c phpunit.xml.dist --coverage-php build/cov/coverage.cov
+              - ./vendor/bin/phpunit -c phpunit-symfony.xml.dist --coverage-php build/cov/coverage-symfony.cov
+              - ./vendor/bin/phpunit -c phpunit-symfony-security.xml.dist --coverage-php build/cov/coverage-symfony-security.cov
+          after_script:
+              - ./vendor/bin/phpcov merge --clover build/logs/clover.xml build/cov
+              - ./vendor/bin/php-coveralls --no-interaction
+
+        - stage: Metrics and quality
+          env: STATIC_ANALYSIS
+          script:
+              - ./vendor/bin/phpstan analyse
+
+        - stage: Security Check
+          env: SECURITY_CHECK
+          before_script:
+              - wget -c https://get.sensiolabs.org/security-checker.phar
+              - chmod +x security-checker.phar
+          script:
+              - ./security-checker.phar security:check

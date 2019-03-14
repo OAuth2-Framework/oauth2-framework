@@ -13,9 +13,9 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\WebFingerBundle\Tests\TestBundle\Service;
 
+use function League\Uri\parse;
 use OAuth2Framework\Component\WebFingerEndpoint\IdentifierResolver\Identifier;
 use OAuth2Framework\Component\WebFingerEndpoint\IdentifierResolver\IdentifierResolver;
-use function League\Uri\parse;
 
 final class UriPathResolver implements IdentifierResolver
 {
