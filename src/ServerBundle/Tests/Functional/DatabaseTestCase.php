@@ -33,6 +33,7 @@ class DatabaseTestCase extends WebTestCase
 
     protected function setUp()
     {
+        parent::setUp();
         self::bootKernel();
         self::$application = new Application(static::$kernel);
         self::$application->setAutoExit(false);
@@ -54,7 +55,7 @@ class DatabaseTestCase extends WebTestCase
 
     protected function tearDown()
     {
-        //self::runCommand('doctrine:database:drop --force');
+        self::runCommand('doctrine:database:drop --force');
         parent::tearDown();
     }
 }

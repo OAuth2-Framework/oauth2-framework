@@ -4,6 +4,6 @@ doctrine:
         connections:
             default:
                 driver: 'pdo_mysql'
-                url: "sqlite:///%kernel.project_dir%/Tests/cache/data.db"
+                url: "sqlite:///%kernel.project_dir%/data.db"
     orm:
         auto_mapping: true

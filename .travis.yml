@@ -56,9 +56,10 @@ jobs:
               - mv ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini{.disabled,}
               - if [[ ! $(php -m | grep -si xdebug) ]]; then echo "xdebug required for coverage"; exit 1; fi
           script:
-              - ./vendor/bin/phpunit -c phpunit.xml.dist --coverage-php build/cov/coverage.cov
-              - ./vendor/bin/phpunit -c phpunit-symfony.xml.dist --coverage-php build/cov/coverage-symfony.cov
-              - ./vendor/bin/phpunit -c phpunit-symfony-security.xml.dist --coverage-php build/cov/coverage-symfony-security.cov
+              - ./vendor/bin/phpunit --coverage-php build/cov/coverage-framework.cov
+              - ./vendor/bin/phpunit -c webfinger.phpunit.xml --coverage-php build/cov/coverage-webfinger.cov
+              - ./vendor/bin/phpunit -c oauth2_security.phpunit.xml --coverage-php build/cov/coverage-oauth2_security.cov
+              - ./vendor/bin/phpunit -c oauth2_server.phpunit.xml --coverage-php build/cov/coverage-oauth2_server.cov
           after_script:
               - ./vendor/bin/phpcov merge --clover build/logs/clover.xml build/cov
               - ./vendor/bin/php-coveralls --no-interaction
