@@ -22,7 +22,7 @@
         "spomky-labs/base64url": "^1.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^6.5"
+        "phpunit/phpunit": "^7.0"
     },
     "suggest": {
         "oauth2-framework/token-introspection-endpoint": "For refresh token introspection through the introspection endpoint.",

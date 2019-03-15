@@ -26,7 +26,7 @@
     },
     "require-dev": {
         "php-http/message": "^1.6",
-        "phpunit/phpunit": "^6.5",
+        "phpunit/phpunit": "^7.0",
         "zendframework/zend-diactoros": "^1.0"
     },
     "autoload": {

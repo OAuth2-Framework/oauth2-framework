@@ -21,7 +21,7 @@
         "oauth2-framework/authorization-endpoint": "^0.0@dev"
     },
     "require-dev": {
-        "phpunit/phpunit": "^6.5"
+        "phpunit/phpunit": "^7.0"
     },
     "autoload": {
         "psr-4": {
