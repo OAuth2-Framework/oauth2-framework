@@ -19,7 +19,7 @@ use Symfony\Component\DependencyInjection\Reference;
 
 final class AccessTokenHandlerCompilerPass implements CompilerPassInterface
 {
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         if (!$container->hasDefinition('oauth2_security.access_token_handler_manager')) {
             return;

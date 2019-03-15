@@ -66,31 +66,28 @@ class AuthorizationRequestLoader
     /**
      * @var HttpClient|null
      */
-    private $client = null;
+    private $client;
 
     /**
      * @var JWSVerifier
      */
-    private $jwsVerifier = null;
+    private $jwsVerifier;
 
     /**
      * @var ClaimCheckerManager
      */
-    private $claimCheckerManager = null;
+    private $claimCheckerManager;
 
     /**
      * @var JWELoader
      */
-    private $jweLoader = null;
+    private $jweLoader;
 
     /**
      * @var JKUFactory|null
      */
-    private $jkuFactory = null;
+    private $jkuFactory;
 
-    /**
-     * AuthorizationRequestLoader constructor.
-     */
     public function __construct(ClientRepository $clientRepository)
     {
         $this->clientRepository = $clientRepository;

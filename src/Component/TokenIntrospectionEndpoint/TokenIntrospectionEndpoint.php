@@ -24,7 +24,14 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 final class TokenIntrospectionEndpoint implements MiddlewareInterface
 {
+    /**
+     * @var TokenTypeHintManager
+     */
     private $tokenTypeHintManager;
+
+    /**
+     * @var ResponseFactory
+     */
     private $responseFactory;
 
     public function __construct(TokenTypeHintManager $tokenTypeHintManager, ResponseFactory $responseFactory)

@@ -18,6 +18,9 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 class Configuration implements ConfigurationInterface
 {
+    /**
+     * @var string
+     */
     private $alias;
 
     public function __construct(string $alias)
@@ -25,7 +28,7 @@ class Configuration implements ConfigurationInterface
         $this->alias = $alias;
     }
 
-    public function getConfigTreeBuilder()
+    public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root($this->alias);

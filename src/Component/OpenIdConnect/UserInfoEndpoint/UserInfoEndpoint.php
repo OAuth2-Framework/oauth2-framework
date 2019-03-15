@@ -47,9 +47,24 @@ class UserInfoEndpoint implements MiddlewareInterface
      */
     private $jweBuilder = null;
 
+    /**
+     * @var ClientRepository
+     */
     private $clientRepository;
+
+    /**
+     * @var UserAccountRepository
+     */
     private $userAccountRepository;
+
+    /**
+     * @var ResponseFactory
+     */
     private $responseFactory;
+
+    /**
+     * @var IdTokenBuilderFactory
+     */
     private $idTokenBuilderFactory;
 
     /**

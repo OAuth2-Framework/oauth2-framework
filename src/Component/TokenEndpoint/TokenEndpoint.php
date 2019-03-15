@@ -33,11 +33,34 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class TokenEndpoint implements MiddlewareInterface
 {
+    /**
+     * @var TokenEndpointExtensionManager
+     */
     private $tokenEndpointExtensionManager;
+
+    /**
+     * @var ClientRepository
+     */
     private $clientRepository;
+
+    /**
+     * @var UserAccountRepository|null
+     */
     private $userAccountRepository;
+
+    /**
+     * @var ResponseFactory
+     */
     private $responseFactory;
+
+    /**
+     * @var AccessTokenRepository
+     */
     private $accessTokenRepository;
+
+    /**
+     * @var int
+     */
     private $accessTokenLifetime;
 
     public function __construct(ClientRepository $clientRepository, ?UserAccountRepository $userAccountRepository, TokenEndpointExtensionManager $tokenEndpointExtensionManager, ResponseFactory $responseFactory, AccessTokenRepository $accessTokenRepository, int $accessLifetime)

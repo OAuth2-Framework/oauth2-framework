@@ -21,12 +21,24 @@ use OAuth2Framework\Component\Core\Message\OAuth2Error;
 
 final class AuthorizationCodeResponseType implements ResponseType
 {
+    /**
+     * @var int
+     */
     private $authorizationCodeLifetime;
 
+    /**
+     * @var bool
+     */
     private $pkceForPublicClientsEnforced;
 
+    /**
+     * @var AuthorizationCodeRepository
+     */
     private $authorizationCodeRepository;
 
+    /**
+     * @var PKCEMethodManager
+     */
     private $pkceMethodManager;
 
     public function __construct(AuthorizationCodeRepository $authorizationCodeRepository, int $authorizationCodeLifetime, PKCEMethodManager $pkceMethodManager, bool $pkceForPublicClientsEnforced)

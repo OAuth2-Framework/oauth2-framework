@@ -23,6 +23,9 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 abstract class SelectAccountEndpoint extends AbstractEndpoint
 {
+    /**
+     * @var SelectAccountHandler
+     */
     private $selectAccountHandler;
 
     public function __construct(ResponseFactory $responseFactory, SessionInterface $session, SelectAccountHandler $selectAccountHandler)

@@ -21,6 +21,9 @@ use OAuth2Framework\Component\Scope\Policy\ScopePolicyManager;
 
 final class ScopePolicyRule implements Rule
 {
+    /**
+     * @var ScopePolicyManager
+     */
     private $scopePolicyManager;
 
     public function __construct(ScopePolicyManager $scopePolicyManager)

@@ -21,6 +21,9 @@ use OAuth2Framework\Component\Core\DataBag\DataBag;
 
 final class ResponseTypesRule implements Rule
 {
+    /**
+     * @var ResponseTypeManager
+     */
     private $responseTypeManager;
 
     public function __construct(ResponseTypeManager $responseTypeManager)

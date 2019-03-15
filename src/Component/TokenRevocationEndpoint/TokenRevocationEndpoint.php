@@ -23,7 +23,14 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 abstract class TokenRevocationEndpoint implements MiddlewareInterface
 {
+    /**
+     * @var TokenTypeHintManager
+     */
     private $tokenTypeHintManager;
+
+    /**
+     * @var ResponseFactory
+     */
     private $responseFactory;
 
     public function __construct(TokenTypeHintManager $tokenTypeHintManager, ResponseFactory $responseFactory)

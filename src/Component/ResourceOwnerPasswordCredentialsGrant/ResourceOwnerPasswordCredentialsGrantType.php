@@ -21,6 +21,9 @@ use Psr\Http\Message\ServerRequestInterface;
 
 final class ResourceOwnerPasswordCredentialsGrantType implements GrantType
 {
+    /**
+     * @var ResourceOwnerPasswordCredentialManager
+     */
     private $resourceOwnerPasswordCredentialManager;
 
     public function __construct(ResourceOwnerPasswordCredentialManager $resourceOwnerPasswordCredentialManager)

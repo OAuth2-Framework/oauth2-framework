@@ -12,7 +12,9 @@ declare(strict_types=1);
  */
 
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeGrantType;
+use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeRepository;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeResponseType;
+use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeRevocationTypeHint;
 use OAuth2Framework\Component\AuthorizationCodeGrant\PKCEMethod;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
@@ -22,26 +24,24 @@ return function (ContainerConfigurator $container) {
         ->private()
         ->autoconfigure();
 
-    $container->set(\OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeRevocationTypeHint::class)
+    $container->set(AuthorizationCodeRevocationTypeHint::class)
         ->args([
-            ref(\OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeRepository::class),
+            ref(AuthorizationCodeRepository::class),
         ]);
 
     $container->set(AuthorizationCodeGrantType::class)
         ->args([
-            ref(\OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeRepository::class),
+            ref(AuthorizationCodeRepository::class),
             ref(PKCEMethod\PKCEMethodManager::class),
         ]);
 
     $container->set(AuthorizationCodeResponseType::class)
         ->args([
-            ref(\OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeRepository::class),
+            ref(AuthorizationCodeRepository::class),
             '%oauth2_server.grant.authorization_code.lifetime%',
             ref(PKCEMethod\PKCEMethodManager::class),
             '%oauth2_server.grant.authorization_code.enforce_pkce%',
         ]);
-
-    $container->set(\OAuth2Framework\ServerBundle\Service\RandomAuthorizationCodeIdGenerator::class);
 
     $container->set(PKCEMethod\PKCEMethodManager::class);
     $container->set(PKCEMethod\Plain::class)

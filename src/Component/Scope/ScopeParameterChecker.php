@@ -19,8 +19,14 @@ use OAuth2Framework\Component\Scope\Policy\ScopePolicyManager;
 
 class ScopeParameterChecker implements ParameterChecker
 {
+    /**
+     * @var ScopeRepository
+     */
     private $scopeRepository;
 
+    /**
+     * @var ScopePolicyManager
+     */
     private $scopePolicyManager;
 
     public function __construct(ScopeRepository $scopeRepository, ScopePolicyManager $scopePolicyManager)

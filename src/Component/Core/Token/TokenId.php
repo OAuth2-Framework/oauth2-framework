@@ -15,6 +15,6 @@ namespace OAuth2Framework\Component\Core\Token;
 
 use OAuth2Framework\Component\Core\Id\Id;
 
-abstract class TokenId extends Id implements \JsonSerializable
+abstract class TokenId extends Id
 {
 }

@@ -17,9 +17,24 @@ use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 
 class InitialAccessToken implements \JsonSerializable
 {
+    /**
+     * @var bool
+     */
     private $revoked;
+
+    /**
+     * @var InitialAccessTokenId
+     */
     private $initialAccessTokenId;
+
+    /**
+     * @var \DateTimeImmutable|null
+     */
     private $expiresAt;
+
+    /**
+     * @var UserAccountId|null
+     */
     private $userAccountId;
 
     public function __construct(InitialAccessTokenId $initialAccessTokenId, ?UserAccountId $userAccountId, ?\DateTimeImmutable $expiresAt)

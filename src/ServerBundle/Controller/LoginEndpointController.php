@@ -21,6 +21,9 @@ use Symfony\Component\Routing\RouterInterface;
 
 final class LoginEndpointController extends LoginEndpoint
 {
+    /**
+     * @var RouterInterface
+     */
     private $router;
 
     public function __construct(ResponseFactory $responseFactory, SessionInterface $session, LoginHandler $loginHandler, RouterInterface $router)

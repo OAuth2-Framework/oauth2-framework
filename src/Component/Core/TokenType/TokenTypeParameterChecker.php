@@ -18,8 +18,14 @@ use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\ParameterCh
 
 final class TokenTypeParameterChecker implements ParameterChecker
 {
+    /**
+     * @var bool
+     */
     private $tokenTypeParameterAllowed;
 
+    /**
+     * @var TokenTypeManager
+     */
     private $tokenTypeManager;
 
     public function __construct(TokenTypeManager $tokenTypeManager, bool $tokenTypeParameterAllowed)

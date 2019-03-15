@@ -26,12 +26,24 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 final class ClientConfigurationEndpoint implements MiddlewareInterface
 {
+    /**
+     * @var ClientRepository
+     */
     private $clientRepository;
 
+    /**
+     * @var BearerToken
+     */
     private $bearerToken;
 
+    /**
+     * @var ResponseFactory
+     */
     private $responseFactory;
 
+    /**
+     * @var RuleManager
+     */
     private $ruleManager;
 
     public function __construct(ClientRepository $clientRepository, BearerToken $bearerToken, ResponseFactory $responseFactory, RuleManager $ruleManager)

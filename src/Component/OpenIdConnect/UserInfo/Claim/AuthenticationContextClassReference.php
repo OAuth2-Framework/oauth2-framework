@@ -20,6 +20,9 @@ final class AuthenticationContextClassReference implements Claim
 {
     private const CLAIM_NAME = 'acr';
 
+    /**
+     * @var AuthenticationContextClassReferenceSupport
+     */
     private $authenticationContextClassReferenceSupport;
 
     public function __construct(AuthenticationContextClassReferenceSupport $authenticationContextClassReferenceSupport)

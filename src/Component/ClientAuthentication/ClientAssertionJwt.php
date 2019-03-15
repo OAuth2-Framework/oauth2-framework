@@ -58,14 +58,29 @@ class ClientAssertionJwt implements AuthenticationMethod
      */
     private $keyEncryptionKeySet = null;
 
+    /**
+     * @var bool
+     */
     private $encryptionRequired = false;
 
+    /**
+     * @var int
+     */
     private $secretLifetime;
 
+    /**
+     * @var HeaderCheckerManager
+     */
     private $headerCheckerManager;
 
+    /**
+     * @var ClaimCheckerManager
+     */
     private $claimCheckerManager;
 
+    /**
+     * @var JsonConverter
+     */
     private $jsonConverter;
 
     public function __construct(JsonConverter $jsonConverter, JWSVerifier $jwsVerifier, HeaderCheckerManager $headerCheckerManager, ClaimCheckerManager $claimCheckerManager, int $secretLifetime = 0)

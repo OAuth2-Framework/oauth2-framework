@@ -20,6 +20,9 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 final class Configuration implements ConfigurationInterface
 {
+    /**
+     * @var string
+     */
     private $alias;
 
     public function __construct(string $alias)

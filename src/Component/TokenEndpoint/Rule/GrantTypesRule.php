@@ -21,6 +21,9 @@ use OAuth2Framework\Component\TokenEndpoint\GrantTypeManager;
 
 final class GrantTypesRule implements Rule
 {
+    /**
+     * @var GrantTypeManager
+     */
     private $grantTypeManager;
 
     public function __construct(GrantTypeManager $grantTypeManager)

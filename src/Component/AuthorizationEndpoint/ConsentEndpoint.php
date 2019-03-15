@@ -23,6 +23,9 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 abstract class ConsentEndpoint extends AbstractEndpoint
 {
+    /**
+     * @var ConsentHandler
+     */
     private $consentHandler;
 
     public function __construct(ResponseFactory $responseFactory, SessionInterface $session, ConsentHandler $consentHandler)

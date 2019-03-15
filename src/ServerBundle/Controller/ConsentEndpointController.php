@@ -21,6 +21,9 @@ use Symfony\Component\Routing\RouterInterface;
 
 final class ConsentEndpointController extends ConsentEndpoint
 {
+    /**
+     * @var RouterInterface
+     */
     private $router;
 
     public function __construct(ResponseFactory $responseFactory, SessionInterface $session, ConsentHandler $consentHandler, RouterInterface $router)

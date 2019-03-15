@@ -20,8 +20,14 @@ use OAuth2Framework\Component\Core\DataBag\DataBag;
 
 final class TokenResponseType implements ResponseType
 {
+    /**
+     * @var AccessTokenRepository
+     */
     private $accessTokenRepository;
 
+    /**
+     * @var int
+     */
     private $accessTokenLifetime;
 
     public function __construct(AccessTokenRepository $accessTokenRepository, int $accessTokenLifetime)

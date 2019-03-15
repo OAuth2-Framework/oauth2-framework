@@ -22,6 +22,9 @@ use Psr\Http\Server\RequestHandlerInterface;
  */
 class RequestHandler implements RequestHandlerInterface
 {
+    /**
+     * @var callable
+     */
     private $callback;
 
     public function __construct(callable $callback)

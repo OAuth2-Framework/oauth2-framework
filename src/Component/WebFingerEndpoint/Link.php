@@ -15,10 +15,29 @@ namespace OAuth2Framework\Component\WebFingerEndpoint;
 
 class Link implements \JsonSerializable
 {
+    /**
+     * @var string
+     */
     private $rel;
+
+    /**
+     * @var string|null
+     */
     private $type;
+
+    /**
+     * @var string|null
+     */
     private $href;
+
+    /**
+     * @var array|string[]
+     */
     private $titles;
+
+    /**
+     * @var array|mixed[]
+     */
     private $properties;
 
     /**

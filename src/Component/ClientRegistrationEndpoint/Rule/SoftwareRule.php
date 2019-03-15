@@ -22,10 +22,19 @@ use OAuth2Framework\Component\Core\DataBag\DataBag;
 
 final class SoftwareRule implements Rule
 {
+    /**
+     * @var JWSLoader
+     */
     private $jwsLoader;
 
+    /**
+     * @var bool
+     */
     private $isSoftwareStatementRequired;
 
+    /**
+     * @var JWKSet
+     */
     private $softwareStatementSignatureKeySet;
 
     /**

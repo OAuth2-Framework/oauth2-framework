@@ -22,6 +22,9 @@ use Psr\Http\Message\ServerRequestInterface;
 
 final class RefreshTokenGrantType implements GrantType
 {
+    /**
+     * @var RefreshTokenRepository
+     */
     private $refreshTokenRepository;
 
     public function __construct(RefreshTokenRepository $refreshTokenRepository)

@@ -86,7 +86,7 @@ class AuthorizationRequest
     /**
      * @var ResourceServer|null
      */
-    private $resourceServer = null;
+    private $resourceServer;
 
     public function __construct(Client $client, array $queryParameters)
     {

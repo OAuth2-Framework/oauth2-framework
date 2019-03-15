@@ -24,6 +24,9 @@ final class Configuration implements ConfigurationInterface
      */
     private $components;
 
+    /**
+     * @var string
+     */
     private $alias;
 
     /**

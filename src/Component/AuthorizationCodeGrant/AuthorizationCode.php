@@ -21,8 +21,19 @@ use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 
 class AuthorizationCode extends Token
 {
+    /**
+     * @var array
+     */
     private $queryParameters;
+
+    /**
+     * @var string
+     */
     private $redirectUri;
+
+    /**
+     * @var bool
+     */
     private $used;
 
     public function __construct(AuthorizationCodeId $authorizationCodeId, ClientId $clientId, UserAccountId $userAccountId, array $queryParameters, string $redirectUri, \DateTimeImmutable $expiresAt, DataBag $parameter, DataBag $metadata, ?ResourceServerId $resourceServerId)

@@ -26,7 +26,14 @@ use Psr\Http\Message\ServerRequestInterface;
 
 final class TokenEndpointScopeExtension implements TokenEndpointExtension
 {
+    /**
+     * @var ScopeRepository
+     */
     private $scopeRepository;
+
+    /**
+     * @var ScopePolicyManager
+     */
     private $scopePolicyManager;
 
     public function __construct(ScopeRepository $scopeRepository, ScopePolicyManager $scopePolicyManager)

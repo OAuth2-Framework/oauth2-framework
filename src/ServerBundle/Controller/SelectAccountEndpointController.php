@@ -21,6 +21,9 @@ use Symfony\Component\Routing\RouterInterface;
 
 final class SelectAccountEndpointController extends SelectAccountEndpoint
 {
+    /*
+     *
+     */
     private $router;
 
     public function __construct(ResponseFactory $responseFactory, SessionInterface $session, SelectAccountHandler $selectAccountHandler, RouterInterface $router)

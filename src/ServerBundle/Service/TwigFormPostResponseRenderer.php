@@ -18,8 +18,14 @@ use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 
 final class TwigFormPostResponseRenderer implements FormPostResponseRenderer
 {
+    /**
+     * @var EngineInterface
+     */
     private $templateEngine;
 
+    /**
+     * @var string
+     */
     private $template;
 
     public function __construct(EngineInterface $templateEngine, string $template)

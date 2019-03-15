@@ -21,6 +21,9 @@ use Symfony\Component\Routing\RouterInterface;
 
 final class ClientConfigurationRouteRule extends Base
 {
+    /**
+     * @var RouterInterface
+     */
     private $router;
 
     public function __construct(RouterInterface $router)

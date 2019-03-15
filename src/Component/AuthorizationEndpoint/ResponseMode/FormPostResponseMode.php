@@ -19,6 +19,9 @@ use Psr\Http\Message\ResponseInterface;
 
 final class FormPostResponseMode implements ResponseMode
 {
+    /**
+     * @var FormPostResponseRenderer
+     */
     private $renderer;
 
     public function __construct(FormPostResponseRenderer $renderer)

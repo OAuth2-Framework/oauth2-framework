@@ -18,6 +18,9 @@ use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 
 class OAuth2Token extends AbstractToken
 {
+    /**
+     * @var AccessToken
+     */
     private $accessToken;
 
     public function __construct(AccessToken $accessToken)

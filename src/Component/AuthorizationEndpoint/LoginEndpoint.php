@@ -23,6 +23,9 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 abstract class LoginEndpoint extends AbstractEndpoint
 {
+    /**
+     * @var LoginHandler
+     */
     private $loginHandler;
 
     public function __construct(ResponseFactory $responseFactory, SessionInterface $session, LoginHandler $loginHandler)

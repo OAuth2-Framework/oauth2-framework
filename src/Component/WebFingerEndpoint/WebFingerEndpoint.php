@@ -23,10 +23,19 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 final class WebFingerEndpoint implements MiddlewareInterface
 {
+    /**
+     * @var ResponseFactory
+     */
     private $responseFactory;
 
+    /**
+     * @var IdentifierResolverManager
+     */
     private $identifierResolverManager;
 
+    /**
+     * @var ResourceRepository
+     */
     private $resourceRepository;
 
     public function __construct(ResponseFactory $responseFactory, ResourceRepository $resourceRepository, IdentifierResolverManager $identifierResolverManager)

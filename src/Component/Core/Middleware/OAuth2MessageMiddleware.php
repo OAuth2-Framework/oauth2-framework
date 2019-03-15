@@ -22,6 +22,9 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 final class OAuth2MessageMiddleware implements MiddlewareInterface
 {
+    /**
+     * @var OAuth2MessageFactoryManager
+     */
     private $auth2messageFactoryManager;
 
     public function __construct(OAuth2MessageFactoryManager $auth2messageFactoryManager)

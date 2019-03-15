@@ -21,6 +21,9 @@ use Symfony\Component\Routing\RouterInterface;
 
 final class ProcessEndpointController extends ProcessEndpoint
 {
+    /**
+     * @var RouterInterface
+     */
     private $router;
 
     public function __construct(ResponseFactory $responseFactory, SessionInterface $session, ExtensionManager $extensionManager, RouterInterface $router)

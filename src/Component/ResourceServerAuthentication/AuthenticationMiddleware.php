@@ -23,7 +23,14 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 final class AuthenticationMiddleware implements MiddlewareInterface
 {
+    /**
+     * @var AuthenticationMethodManager
+     */
     private $authenticationMethodManager;
+
+    /**
+     * @var ResourceServerRepository
+     */
     private $resourceServerRepository;
 
     public function __construct(ResourceServerRepository $resourceServerRepository, AuthenticationMethodManager $authenticationMethodManager)

@@ -25,6 +25,9 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 abstract class ProcessEndpoint extends AbstractEndpoint
 {
+    /**
+     * @var ExtensionManager
+     */
     private $extensionManager;
 
     public function __construct(ResponseFactory $responseFactory, SessionInterface $session, ExtensionManager $extensionManager)

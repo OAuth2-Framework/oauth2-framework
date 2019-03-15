@@ -22,12 +22,24 @@ use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 
 final class IFrameEndpoint implements MiddlewareInterface
 {
+    /**
+     * @var EngineInterface
+     */
     private $templateEngine;
 
+    /**
+     * @var ResponseFactory
+     */
     private $responseFactory;
 
+    /**
+     * @var string
+     */
     private $template;
 
+    /**
+     * @var string
+     */
     private $storageName;
 
     public function __construct(EngineInterface $templateEngine, ResponseFactory $responseFactory, string $template, string $storageName)

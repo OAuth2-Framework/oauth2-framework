@@ -18,6 +18,9 @@ use OAuth2Framework\Component\Core\DataBag\DataBag;
 
 class RuleHandler
 {
+    /**
+     * @var callable
+     */
     private $callback;
 
     public function __construct(callable $callback)

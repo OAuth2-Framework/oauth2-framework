@@ -19,7 +19,7 @@ use Symfony\Component\DependencyInjection\Reference;
 
 final class SecurityAnnotationCheckerCompilerPass implements CompilerPassInterface
 {
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         if (!$container->hasDefinition('oauth2_security.annotation_driver')) {
             return;

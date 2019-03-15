@@ -23,8 +23,14 @@ use Psr\Http\Message\ServerRequestInterface;
 
 final class AuthorizationCodeGrantType implements GrantType
 {
+    /**
+     * @var AuthorizationCodeRepository
+     */
     private $authorizationCodeRepository;
 
+    /**
+     * @var PKCEMethodManager
+     */
     private $pkceMethodManager;
 
     public function __construct(AuthorizationCodeRepository $authorizationCodeRepository, PKCEMethodManager $pkceMethodManager)

@@ -15,11 +15,34 @@ namespace OAuth2Framework\Component\AuthorizationEndpoint\Consent;
 
 class Consent
 {
+    /**
+     * @var string
+     */
     private $clientId;
+
+    /**
+     * @var string
+     */
     private $userAccountId;
+
+    /**
+     * @var string
+     */
     private $requestedScope;
+
+    /**
+     * @var
+     */
     private $grantedScope;
+
+    /**
+     * @var string
+     */
     private $requestedClaims;
+
+    /**
+     * @var string
+     */
     private $grantedClaims;
 
     public function __construct(string $clientId, string $userAccountId, string $scope, string $claims)

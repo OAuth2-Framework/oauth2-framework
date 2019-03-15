@@ -21,12 +21,24 @@ use Psr\Http\Message\ServerRequestInterface;
 
 final class BearerToken implements TokenType
 {
+    /*
+     * @var string
+     */
     private $realm;
 
+    /**
+     * @var bool
+     */
     private $tokenFromAuthorizationHeaderAllowed;
 
+    /**
+     * @var bool
+     */
     private $tokenFromRequestBodyAllowed;
 
+    /**
+     * @var bool
+     */
     private $tokenFromQueryStringAllowed;
 
     public function __construct(string $realm, bool $tokenFromAuthorizationHeaderAllowed, bool $tokenFromRequestBodyAllowed, bool $tokenFromQueryStringAllowed)

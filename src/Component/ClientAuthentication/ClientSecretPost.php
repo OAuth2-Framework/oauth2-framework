@@ -22,6 +22,9 @@ use Psr\Http\Message\ServerRequestInterface;
 
 final class ClientSecretPost implements AuthenticationMethod
 {
+    /**
+     * @var int
+     */
     private $secretLifetime;
 
     public function __construct(int $secretLifetime = 0)

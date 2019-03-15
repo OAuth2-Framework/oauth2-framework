@@ -21,8 +21,19 @@ use OAuth2Framework\Component\OpenIdConnect\UserInfo\UserInfo;
 
 class IdTokenBuilderFactory
 {
+    /**
+     * @var string
+     */
     private $issuer;
+
+    /**
+     * @var UserInfo
+     */
     private $userinfo;
+
+    /**
+     * @var int
+     */
     private $lifetime;
 
     /**

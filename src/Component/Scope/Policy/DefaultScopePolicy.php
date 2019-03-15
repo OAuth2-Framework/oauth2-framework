@@ -17,6 +17,9 @@ use OAuth2Framework\Component\Core\Client\Client;
 
 final class DefaultScopePolicy implements ScopePolicy
 {
+    /**
+     * @var string
+     */
     private $defaultScopes;
 
     public function __construct(string $defaultScopes)

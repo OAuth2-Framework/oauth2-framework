@@ -22,6 +22,9 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 final class GrantTypeMiddleware implements MiddlewareInterface
 {
+    /**
+     * @var GrantTypeManager
+     */
     private $grantTypeManager;
 
     public function __construct(GrantTypeManager $grantTypeManager)

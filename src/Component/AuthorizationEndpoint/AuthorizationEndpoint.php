@@ -31,14 +31,29 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 abstract class AuthorizationEndpoint extends AbstractEndpoint
 {
+    /**
+     * @var AuthorizationRequestLoader
+     */
     private $authorizationRequestLoader;
 
+    /**
+     * @var ParameterCheckerManager
+     */
     private $parameterCheckerManager;
 
+    /**
+     * @var UserAccountDiscovery
+     */
     private $userAccountDiscovery;
 
+    /**
+     * @var UserAuthenticationCheckerManager
+     */
     private $userCheckerManager;
 
+    /**
+     * @var ConsentRepository|null
+     */
     private $consentRepository;
 
     public function __construct(ResponseFactory $responseFactory, AuthorizationRequestLoader $authorizationRequestLoader, ParameterCheckerManager $parameterCheckerManager, UserAccountDiscovery $userAccountDiscovery, UserAuthenticationCheckerManager $userCheckerManager, SessionInterface $session, ?ConsentRepository $consentRepository)

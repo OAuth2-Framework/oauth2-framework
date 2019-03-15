@@ -46,15 +46,15 @@ class ResourceOwnerPasswordCredentialSource implements Component
         }
         $node->children()
             ->arrayNode('resource_owner_password_credential')
-            ->canBeEnabled()
-            ->children()
-            ->scalarNode('password_credential_manager')
-            ->info('The password credential manager.')
-            ->isRequired()
+                ->canBeEnabled()
+                ->children()
+                    ->scalarNode('password_credential_manager')
+                        ->info('The password credential manager.')
+                        ->isRequired()
+                    ->end()
+                ->end()
             ->end()
-            ->end()
-            ->end()
-            ->end();
+        ->end();
     }
 
     public function build(ContainerBuilder $container)

@@ -26,9 +26,24 @@ use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
  */
 class Client implements ClientInterface
 {
+    /**
+     * @var ClientId
+     */
     protected $clientId;
+
+    /**
+     * @var UserAccountId|null
+     */
     protected $ownerId;
+
+    /**
+     * @var DataBag
+     */
     protected $parameter;
+
+    /**
+     * @var bool
+     */
     protected $deleted;
 
     public function __construct(ClientId $clientId, DataBag $parameters, ?UserAccountId $ownerId)

@@ -18,6 +18,9 @@ use Psr\Http\Message\ServerRequestInterface;
 
 final class TokenRevocationGetEndpoint extends TokenRevocationEndpoint
 {
+    /**
+     * @var bool
+     */
     private $allowJson;
 
     public function __construct(TokenTypeHintManager $tokenTypeHintManager, ResponseFactory $responseFactory, bool $allowJson)

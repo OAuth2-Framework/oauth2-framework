@@ -24,6 +24,9 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 final class SelectAccountHandler implements SelectAccountHandlerInterface
 {
+    /**
+     * @var ResponseFactory
+     */
     private $responseFactory;
 
     public function __construct(ResponseFactory $responseFactory)

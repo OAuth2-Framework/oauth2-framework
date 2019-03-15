@@ -20,10 +20,19 @@ use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType\ResponseTypeMan
 
 final class ResponseTypeAndResponseModeParameterChecker implements ParameterChecker
 {
+    /**
+     * @var ResponseModeManager
+     */
     private $responseModeManager;
 
+    /**
+     * @var bool
+     */
     private $responseModeParameterInAuthorizationRequestAllowed;
 
+    /**
+     * @var ResponseTypeManager
+     */
     private $responseTypeManager;
 
     public function __construct(ResponseTypeManager $responseTypeManager, ResponseModeManager $responseModeManager, bool $responseModeParameterInAuthorizationRequestAllowed)

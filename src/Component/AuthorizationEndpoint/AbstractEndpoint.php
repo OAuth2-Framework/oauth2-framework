@@ -22,8 +22,14 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 abstract class AbstractEndpoint implements MiddlewareInterface
 {
+    /**
+     * @var SessionInterface
+     */
     protected $session;
 
+    /**
+     * @var ResponseFactory
+     */
     protected $responseFactory;
 
     public function __construct(ResponseFactory $responseFactory, SessionInterface $session)

@@ -23,7 +23,14 @@ use Psr\Http\Message\ServerRequestInterface;
 
 final class RefreshTokenEndpointExtension implements TokenEndpointExtension
 {
+    /**
+     * @var int
+     */
     private $lifetime;
+
+    /**
+     * @var RefreshTokenRepository
+     */
     private $refreshTokenRepository;
 
     public function __construct(int $lifetime, RefreshTokenRepository $refreshTokenRepository)

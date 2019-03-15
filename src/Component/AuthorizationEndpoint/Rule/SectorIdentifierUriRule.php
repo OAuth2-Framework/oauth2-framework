@@ -23,8 +23,14 @@ use OAuth2Framework\Component\Core\DataBag\DataBag;
 
 final class SectorIdentifierUriRule implements Rule
 {
+    /**
+     * @var HttpClient
+     */
     private $client;
 
+    /**
+     * @var RequestFactory
+     */
     private $requestFactory;
 
     public function __construct(RequestFactory $requestFactory, HttpClient $client)

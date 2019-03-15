@@ -25,6 +25,9 @@ use Symfony\Component\Routing\RouterInterface;
 
 final class AuthorizationEndpointController extends AuthorizationEndpoint
 {
+    /**
+     * @var RouterInterface
+     */
     private $router;
 
     public function __construct(ResponseFactory $responseFactory, AuthorizationRequestLoader $authorizationRequestLoader, ParameterCheckerManager $parameterCheckerManager, UserAccountDiscovery $userManager, UserAuthenticationCheckerManager $userCheckerManager, SessionInterface $session, ?ConsentRepository $consentRepository, RouterInterface $router)

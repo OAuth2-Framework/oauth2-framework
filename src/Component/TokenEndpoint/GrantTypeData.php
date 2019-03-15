@@ -19,13 +19,24 @@ use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwnerId;
 
 class GrantTypeData
 {
+    /**
+     * @var DataBag
+     */
     private $metadata;
+
+    /**
+     * @var DataBag
+     */
     private $parameter;
 
     /**
      * @var ResourceOwnerId|null
      */
     private $resourceOwnerId;
+
+    /**
+     * @var Client|null
+     */
     private $client;
 
     public function __construct(?Client $client)

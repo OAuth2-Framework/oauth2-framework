@@ -17,6 +17,7 @@ use OAuth2Framework\Component\BearerTokenType\BearerToken;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenHandler;
 use OAuth2Framework\Component\MacTokenType\MacToken;
 use OAuth2Framework\SecurityBundle\Annotation\Checker\Checker;
+use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -25,6 +26,9 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 final class OAuth2FrameworkSecurityExtension extends Extension
 {
+    /**
+     * @var string
+     */
     private $alias;
 
     public function __construct(string $alias)
@@ -32,12 +36,12 @@ final class OAuth2FrameworkSecurityExtension extends Extension
         $this->alias = $alias;
     }
 
-    public function getAlias()
+    public function getAlias(): string
     {
         return $this->alias;
     }
 
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $processor = new Processor();
         $config = $processor->processConfiguration($this->getConfiguration($configs, $container), $configs);
@@ -66,7 +70,7 @@ final class OAuth2FrameworkSecurityExtension extends Extension
         }
     }
 
-    public function getConfiguration(array $configs, ContainerBuilder $container): Configuration
+    public function getConfiguration(array $configs, ContainerBuilder $container): ConfigurationInterface
     {
         return new Configuration($this->getAlias());
     }

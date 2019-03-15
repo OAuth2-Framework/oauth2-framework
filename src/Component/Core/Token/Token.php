@@ -20,13 +20,44 @@ use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
 
 abstract class Token implements \JsonSerializable
 {
+    /**
+     * @var TokenId
+     */
     protected $tokenId;
+
+    /**
+     * @var \DateTimeImmutable
+     */
     private $expiresAt;
+
+    /**
+     * @var ResourceOwnerId
+     */
     private $resourceOwnerId;
+
+    /**
+     * @var ClientId
+     */
     private $clientId;
+
+    /**
+     * @var DataBag
+     */
     private $parameter;
+
+    /**
+     * @var DataBag
+     */
     private $metadata;
+
+    /**
+     * @var bool
+     */
     private $revoked;
+
+    /**
+     * @var ResourceServerId|null
+     */
     private $resourceServerId;
 
     public function __construct(TokenId $tokenId, ClientId $clientId, ResourceOwnerId $resourceOwnerId, DataBag $parameter, DataBag $metadata, \DateTimeImmutable $expiresAt, ?ResourceServerId $resourceServerId)

@@ -18,6 +18,9 @@ use OAuth2Framework\Component\TokenRevocationEndpoint\TokenTypeHint;
 
 final class AuthorizationCodeRevocationTypeHint implements TokenTypeHint
 {
+    /**
+     * @var AuthorizationCodeRepository
+     */
     private $authorizationCodeRepository;
 
     public function __construct(AuthorizationCodeRepository $authorizationCodeRepository)

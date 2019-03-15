@@ -21,8 +21,14 @@ use Psr\Http\Message\ServerRequestInterface;
 
 final class ClientSecretBasic implements AuthenticationMethod
 {
+    /**
+     * @var string
+     */
     private $realm;
 
+    /**
+     * @var int
+     */
     private $secretLifetime;
 
     public function __construct(string $realm, int $secretLifetime = 0)

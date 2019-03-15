@@ -33,29 +33,120 @@ use OAuth2Framework\Component\OpenIdConnect\UserInfo\UserInfo;
 
 class IdTokenBuilder
 {
+    /**
+     * @var string
+     */
     private $issuer;
+
+    /**
+     * @var Client
+     */
     private $client;
+
+    /**
+     * @var
+     */
     private $user;
+
+    /**
+     * @var UserAccount
+     */
     private $userAccount;
+
+    /**
+     * @var string
+     */
     private $redirectUri;
+
+    /**
+     * @var UserInfo
+     */
     private $userinfo;
+
+    /**
+     * @var
+     */
     private $signatureKeys;
+
+    /**
+     * @var int
+     */
     private $lifetime;
-    private $scope = null;
+
+    /**
+     * @var
+     */
+    private $scope;
+
+    /**
+     * @var array
+     */
     private $requestedClaims = [];
-    private $claimsLocales = null;
-    private $accessTokenId = null;
-    private $authorizationCodeId = null;
-    private $nonce = null;
+
+    /**
+     * @var
+     */
+    private $claimsLocales;
+
+    /**
+     * @var
+     */
+    private $accessTokenId;
+
+    /**
+     * @var
+     */
+    private $authorizationCodeId;
+
+    /**
+     * @var
+     */
+    private $nonce;
+
+    /**
+     * @var bool
+     */
     private $withAuthenticationTime = false;
-    private $jwsBuilder = null;
-    private $signatureAlgorithm = null;
+
+    /**
+     * @var
+     */
+    private $jwsBuilder;
+
+    /**
+     * @var
+     */
+    private $signatureAlgorithm;
+
+    /**
+     * @var
+     */
     private $jweBuilder;
-    private $keyEncryptionAlgorithm = null;
-    private $contentEncryptionAlgorithm = null;
-    private $expiresAt = null;
-    private $jkuFactory = null;
-    private $authorizationCodeRepository = null;
+
+    /**
+     * @var
+     */
+    private $keyEncryptionAlgorithm;
+
+    /**
+     * @var
+     */
+    private $contentEncryptionAlgorithm;
+
+    /**
+     * @var
+     */
+    private $expiresAt;
+
+    /**
+     * @var JKUFactory|null
+     */
+    private $jkuFactory;
+
+    /**
+     * @var AuthorizationCodeRepository|null
+     */
+    private $authorizationCodeRepository;
 
     public function __construct(string $issuer, UserInfo $userinfo, int $lifetime, Client $client, UserAccount $userAccount, string $redirectUri, ?JKUFactory $jkuFactory, ?AuthorizationCodeRepository $authorizationCodeRepository)
     {

@@ -27,8 +27,19 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 final class ClientRegistrationEndpoint implements MiddlewareInterface
 {
+    /**
+     * @var ResponseFactory
+     */
     private $responseFactory;
+
+    /**
+     * @var ClientRepository
+     */
     private $clientRepository;
+
+    /**
+     * @var RuleManager
+     */
     private $ruleManager;
 
     public function __construct(ClientRepository $clientRepository, ResponseFactory $responseFactory, RuleManager $ruleManager)

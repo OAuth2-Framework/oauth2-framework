@@ -20,6 +20,9 @@ use Symfony\Component\Routing\RouteCollection;
 
 class RouteLoader implements LoaderInterface
 {
+    /**
+     * @var RouteCollection
+     */
     private $routes;
 
     public function __construct()
@@ -27,6 +30,10 @@ class RouteLoader implements LoaderInterface
         $this->routes = new RouteCollection();
     }
 
+    /**
+     * @param string[] $schemes
+     * @param string[] $methods
+     */
     public function addRoute(string $name, string $controllerId, string $methodName, string $path, array $defaults = [], array $requirements = [], array $options = [], ?string $host = '', array $schemes = [], array $methods = [], string $condition = ''): void
     {
         $defaults['_controller'] = \Safe\sprintf('%s:%s', $controllerId, $methodName);
@@ -34,21 +41,21 @@ class RouteLoader implements LoaderInterface
         $this->routes->add(\Safe\sprintf('webfinger.%s', $name), $route);
     }
 
-    public function load($resource, $type = null)
+    public function load($resource, $type = null): RouteCollection
     {
         return $this->routes;
     }
 
-    public function supports($resource, $type = null)
+    public function supports($resource, $type = null): bool
     {
         return 'webfinger' === $type;
     }
 
-    public function getResolver()
+    public function getResolver(): ?LoaderResolverInterface
     {
     }
 
-    public function setResolver(LoaderResolverInterface $resolver)
+    public function setResolver(LoaderResolverInterface $resolver): void
     {
     }
 }
