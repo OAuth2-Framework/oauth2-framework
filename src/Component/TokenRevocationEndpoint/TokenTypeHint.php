@@ -19,7 +19,13 @@ interface TokenTypeHint
 {
     public function hint(): string;
 
-    public function find(string $token): ?Token;
+    /**
+     * @return mixed|null
+     */
+    public function find(string $token);
 
-    public function revoke(Token $token): void;
+    /**
+     * @param mixed $token
+     */
+    public function revoke($token): void;
 }

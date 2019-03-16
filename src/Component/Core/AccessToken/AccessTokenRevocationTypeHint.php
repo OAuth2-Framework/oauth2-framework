@@ -36,14 +36,14 @@ final class AccessTokenRevocationTypeHint implements TokenTypeHint
         return 'access_token';
     }
 
-    public function find(string $token): ?Token
+    public function find(string $token): ?AccessToken
     {
         $id = new AccessTokenId($token);
 
         return $this->accessTokenRepository->find($id);
     }
 
-    public function revoke(Token $token): void
+    public function revoke($token): void
     {
         if (!$token instanceof AccessToken || true === $token->isRevoked()) {
             return;
