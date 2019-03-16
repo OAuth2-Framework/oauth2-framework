@@ -85,11 +85,6 @@ abstract class AbstractAuthorizationCode implements AuthorizationCode
         $this->revoked = false;
     }
 
-    public function getQueryParameters(): array
-    {
-        return $this->queryParameters;
-    }
-
     public function isUsed(): bool
     {
         return $this->used;
@@ -100,23 +95,23 @@ abstract class AbstractAuthorizationCode implements AuthorizationCode
         $this->used = true;
     }
 
-    public function getQueryParams(): array
+    public function getQueryParameters(): array
     {
         return $this->queryParameters;
     }
 
-    public function getQueryParam(string $key)
+    public function getQueryParameter(string $key)
     {
-        if (!$this->hasQueryParam($key)) {
-            throw new \RuntimeException(\Safe\sprintf('Query parameter with key "%s" does not exist.', $key));
+        if (!$this->hasQueryParameter($key)) {
+            throw new \InvalidArgumentException(\Safe\sprintf('Query parameter with key "%s" does not exist.', $key));
         }
 
         return $this->queryParameters[$key];
     }
 
-    public function hasQueryParam(string $key): bool
+    public function hasQueryParameter(string $key): bool
     {
-        return \array_key_exists($key, $this->getQueryParams());
+        return \array_key_exists($key, $this->getQueryParameters());
     }
 
     public function getRedirectUri(): string

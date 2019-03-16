@@ -56,7 +56,7 @@ abstract class TokenRevocationEndpoint implements MiddlewareInterface
 
                         return $this->getResponse(200, '', $callback);
                     } else {
-                        throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST, 'The parameter "token" is invalid.');
+                        throw OAuth2Error::invalidRequest('The parameter "token" is invalid.');
                     }
                 }
             }
@@ -97,7 +97,7 @@ abstract class TokenRevocationEndpoint implements MiddlewareInterface
     {
         $params = $this->getRequestParameters($request);
         if (!\array_key_exists('token', $params)) {
-            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST, 'The parameter "token" is missing.');
+            throw OAuth2Error::invalidRequest('The parameter "token" is missing.');
         }
 
         return $params['token'];

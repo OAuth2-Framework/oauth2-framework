@@ -89,7 +89,7 @@ class AuthenticationMethodManager
                 continue;
             }
             if (!$method instanceof None && !$authenticationMethod instanceof None) {
-                throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST, 'Only one authentication method may be used to authenticate the client.');
+                throw OAuth2Error::invalidRequest('Only one authentication method may be used to authenticate the client.');
             }
             if (!$method instanceof None) {
                 $authenticationMethod = $method;

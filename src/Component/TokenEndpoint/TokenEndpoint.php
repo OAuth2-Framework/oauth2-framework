@@ -155,7 +155,7 @@ class TokenEndpoint implements MiddlewareInterface
         }
 
         if (null === $resourceOwner) {
-            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST, 'Unable to find the associated resource owner.');
+            throw OAuth2Error::invalidRequest('Unable to find the associated resource owner.');
         }
 
         return $resourceOwner;

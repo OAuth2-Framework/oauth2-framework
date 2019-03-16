@@ -142,7 +142,7 @@ class JwtBearerGrantType implements GrantType
 
         $diff = \array_diff($requiredParameters, \array_keys($parameters));
         if (!empty($diff)) {
-            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST, \Safe\sprintf('Missing grant type parameter(s): %s.', \implode(', ', $diff)));
+            throw OAuth2Error::invalidRequest(\Safe\sprintf('Missing grant type parameter(s): %s.', \implode(', ', $diff)));
         }
     }
 
@@ -168,7 +168,7 @@ class JwtBearerGrantType implements GrantType
         } catch (OAuth2Error $e) {
             throw $e;
         } catch (\Exception $e) {
-            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST, $e->getMessage(), [], $e);
+            throw OAuth2Error::invalidRequest($e->getMessage(), [], $e);
         }
     }
 
@@ -191,7 +191,7 @@ class JwtBearerGrantType implements GrantType
             throw new \InvalidArgumentException('Unable to decrypt the assertion.');
         } catch (\Exception $e) {
             if (true === $this->encryptionRequired) {
-                throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST, $e->getMessage(), [], $e);
+                throw OAuth2Error::invalidRequest($e->getMessage(), [], $e);
             }
 
             return $assertion;
@@ -211,7 +211,7 @@ class JwtBearerGrantType implements GrantType
             $client = $this->clientRepository->find(new ClientId($iss));
 
             if (null === $client || true === $client->isDeleted()) {
-                throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_GRANT, 'Unable to find the issuer of the assertion.');
+                throw OAuth2Error::invalidGrant('Unable to find the issuer of the assertion.');
             }
             if (null === $grantTypeData->getClient()) {
                 $grantTypeData->setClient($client);

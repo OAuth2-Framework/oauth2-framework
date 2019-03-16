@@ -94,7 +94,7 @@ final class ClientConfigurationEndpoint implements MiddlewareInterface
                 throw new \InvalidArgumentException('Invalid client or invalid registration access token.');
             }
         } catch (\InvalidArgumentException $e) {
-            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST, $e->getMessage(), [], $e);
+            throw OAuth2Error::invalidRequest($e->getMessage(), [], $e);
         }
     }
 }

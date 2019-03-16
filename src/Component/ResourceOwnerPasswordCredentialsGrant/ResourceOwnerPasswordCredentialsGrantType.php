@@ -48,7 +48,7 @@ final class ResourceOwnerPasswordCredentialsGrantType implements GrantType
 
         $diff = \array_diff($requiredParameters, \array_keys($parameters));
         if (!empty($diff)) {
-            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST, \Safe\sprintf('Missing grant type parameter(s): %s.', \implode(', ', $diff)));
+            throw OAuth2Error::invalidRequest(\Safe\sprintf('Missing grant type parameter(s): %s.', \implode(', ', $diff)));
         }
     }
 
@@ -64,7 +64,7 @@ final class ResourceOwnerPasswordCredentialsGrantType implements GrantType
 
         $resourceOwnerId = $this->resourceOwnerPasswordCredentialManager->findResourceOwnerIdWithUsernameAndPassword($username, $password);
         if (!$resourceOwnerId) {
-            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_GRANT, 'Invalid username and password combination.');
+            throw OAuth2Error::invalidGrant('Invalid username and password combination.');
         }
 
         $grantTypeData->setResourceOwnerId($resourceOwnerId);

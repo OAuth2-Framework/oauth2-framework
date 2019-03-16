@@ -20,17 +20,15 @@ use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 
 interface AuthorizationCode extends \JsonSerializable
 {
-    public function getQueryParameters(): array;
-
-    public function getQueryParams(): array;
-
     public function isUsed(): bool;
 
     public function markAsUsed(): void;
 
-    public function getQueryParam(string $key);
+    public function getQueryParameters(): array;
 
-    public function hasQueryParam(string $key): bool;
+    public function getQueryParameter(string $key);
+
+    public function hasQueryParameter(string $key): bool;
 
     public function getRedirectUri(): string;
 

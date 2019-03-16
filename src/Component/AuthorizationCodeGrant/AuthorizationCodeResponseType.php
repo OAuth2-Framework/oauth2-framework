@@ -70,12 +70,12 @@ final class AuthorizationCodeResponseType implements ResponseType
 
         if (!\array_key_exists('code_challenge', $queryParams)) {
             if (true === $this->pkceForPublicClientsEnforced && $authorization->getClient()->isPublic()) {
-                throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST, 'Non-confidential clients must set a proof key (PKCE) for code exchange.');
+                throw OAuth2Error::invalidRequest('Non-confidential clients must set a proof key (PKCE) for code exchange.');
             }
         } else {
             $codeChallengeMethod = \array_key_exists('code_challenge_method', $queryParams) ? $queryParams['code_challenge_method'] : 'plain';
             if (!$this->pkceMethodManager->has($codeChallengeMethod)) {
-                throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST, \Safe\sprintf('The challenge method "%s" is not supported.', $codeChallengeMethod));
+                throw OAuth2Error::invalidRequest(\Safe\sprintf('The challenge method "%s" is not supported.', $codeChallengeMethod));
             }
         }
 

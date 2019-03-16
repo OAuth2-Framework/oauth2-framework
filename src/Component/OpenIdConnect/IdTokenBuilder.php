@@ -174,13 +174,13 @@ class IdTokenBuilder
                 return;
             }
             $this->authorizationCodeId = $authorizationCodeId;
-            $queryParams = $authorizationCode->getQueryParams();
+            $queryParams = $authorizationCode->getQueryParameters();
             foreach (['nonce' => 'nonce', 'claims_locales' => 'claimsLocales'] as $k => $v) {
                 if (\array_key_exists($k, $queryParams)) {
                     $this->$v = $queryParams[$k];
                 }
             }
-            $this->withAuthenticationTime = \array_key_exists('max_age', $authorizationCode->getQueryParams());
+            $this->withAuthenticationTime = \array_key_exists('max_age', $authorizationCode->getQueryParameters());
         }
     }
 

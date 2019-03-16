@@ -348,7 +348,7 @@ class AuthorizationRequestLoader
     {
         $client = \array_key_exists('client_id', $params) ? $this->clientRepository->find(new ClientId($params['client_id'])) : null;
         if (!$client instanceof Client || true === $client->isDeleted()) {
-            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST, 'Parameter "client_id" missing or invalid.');
+            throw OAuth2Error::invalidRequest('Parameter "client_id" missing or invalid.');
         }
 
         return $client;

@@ -89,7 +89,7 @@ class AuthenticationMethodManager
                 continue;
             }
 
-            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST, 'Only one authentication method may be used to authenticate the resource server.');
+            throw OAuth2Error::invalidRequest('Only one authentication method may be used to authenticate the resource server.');
         }
 
         return $resourceServerId;

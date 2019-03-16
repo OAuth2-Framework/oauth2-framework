@@ -161,7 +161,7 @@ class UserInfoEndpoint implements MiddlewareInterface
     {
         $clientId = $accessToken->getClientId();
         if (null === $client = $this->clientRepository->find($clientId)) {
-            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST, 'Unable to find the client.');
+            throw OAuth2Error::invalidRequest('Unable to find the client.');
         }
 
         return $client;
@@ -171,7 +171,7 @@ class UserInfoEndpoint implements MiddlewareInterface
     {
         $userAccountId = $accessToken->getResourceOwnerId();
         if (!$userAccountId instanceof UserAccountId || null === $userAccount = $this->userAccountRepository->find($userAccountId)) {
-            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST, 'Unable to find the resource owner.');
+            throw OAuth2Error::invalidRequest('Unable to find the resource owner.');
         }
 
         return $userAccount;

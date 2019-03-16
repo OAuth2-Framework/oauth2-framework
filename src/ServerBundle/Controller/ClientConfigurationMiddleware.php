@@ -37,7 +37,7 @@ final class ClientConfigurationMiddleware implements MiddlewareInterface
     {
         $routeParameters = $request->getAttribute('_route_params');
         if (!\is_array($routeParameters) || !\array_key_exists('client_id', $routeParameters) || null === $client = $this->clientRepository->find(new ClientId($routeParameters['client_id']))) {
-            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST, 'Invalid client or invalid registration access token.');
+            throw OAuth2Error::invalidRequest('Invalid client or invalid registration access token.');
         }
         $request = $request->withAttribute('client', $client);
 

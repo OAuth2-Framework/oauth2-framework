@@ -154,7 +154,7 @@ abstract class AuthorizationEndpoint extends AbstractEndpoint
         } catch (OAuth2Error $e) {
             throw $e;
         } catch (\Exception $e) {
-            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST, $e->getMessage());
+            throw OAuth2Error::invalidRequest($e->getMessage());
         }
     }
 

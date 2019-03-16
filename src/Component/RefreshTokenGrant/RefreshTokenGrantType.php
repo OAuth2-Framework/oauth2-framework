@@ -49,7 +49,7 @@ final class RefreshTokenGrantType implements GrantType
 
         $diff = \array_diff($requiredParameters, \array_keys($parameters));
         if (!empty($diff)) {
-            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST, \Safe\sprintf('Missing grant type parameter(s): %s.', \implode(', ', $diff)));
+            throw OAuth2Error::invalidRequest(\Safe\sprintf('Missing grant type parameter(s): %s.', \implode(', ', $diff)));
         }
     }
 
@@ -64,7 +64,7 @@ final class RefreshTokenGrantType implements GrantType
         $token = $this->refreshTokenRepository->find(new RefreshTokenId($refreshToken));
 
         if (null === $token) {
-            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_GRANT, 'The parameter "refresh_token" is invalid.');
+            throw OAuth2Error::invalidGrant('The parameter "refresh_token" is invalid.');
         }
 
         $client = $request->getAttribute('client');
@@ -82,11 +82,11 @@ final class RefreshTokenGrantType implements GrantType
     private function checkRefreshToken(RefreshToken $token, Client $client): void
     {
         if (true === $token->isRevoked() || $client->getPublicId()->getValue() !== $token->getClientId()->getValue()) {
-            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_GRANT, 'The parameter "refresh_token" is invalid.');
+            throw OAuth2Error::invalidGrant('The parameter "refresh_token" is invalid.');
         }
 
         if ($token->hasExpired()) {
-            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_GRANT, 'The refresh token expired.');
+            throw OAuth2Error::invalidGrant('The refresh token expired.');
         }
     }
 }

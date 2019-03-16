@@ -71,7 +71,7 @@ final class InitialAccessTokenMiddleware implements MiddlewareInterface
 
             $request = $request->withAttribute('initial_access_token', $initialAccessToken);
         } catch (\InvalidArgumentException $e) {
-            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST, $e->getMessage(), [], $e);
+            throw OAuth2Error::invalidRequest($e->getMessage(), [], $e);
         }
 
         return $handler->handle($request);

@@ -83,6 +83,16 @@ class OAuth2Error extends \Exception
         parent::__construct($error, $code, $previous);
     }
 
+    public static function invalidGrant(?string $errorDescription, array $data = [], ?\Exception $previous = null): self
+    {
+        return new self(400, self::ERROR_INVALID_GRANT, $errorDescription, $data, $previous);
+    }
+
+    public static function invalidRequest(?string $errorDescription, array $data = [], ?\Exception $previous = null): self
+    {
+        return new self(400, self::ERROR_INVALID_REQUEST, $errorDescription, $data, $previous);
+    }
+
     public function getData(): array
     {
         $data = $this->data;

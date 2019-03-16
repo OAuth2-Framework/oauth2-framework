@@ -94,7 +94,7 @@ final class TokenIntrospectionEndpoint implements MiddlewareInterface
     {
         $params = $this->getRequestParameters($request);
         if (!\array_key_exists('token', $params)) {
-            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST, 'The parameter "token" is missing.');
+            throw OAuth2Error::invalidRequest('The parameter "token" is missing.');
         }
 
         return $params['token'];
