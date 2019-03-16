@@ -69,7 +69,7 @@ final class AuthorizationCodeGrantType implements GrantType
         $parameters = RequestBodyParser::parseFormUrlEncoded($request);
         $authorizationCode = $this->getAuthorizationCode($parameters['code']);
 
-        if (true === $authorizationCode->isUsed() || true === $authorizationCode->isRevoked()) {
+        if (true === $authorizationCode->isUsed()) {
             throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_GRANT, 'The parameter "code" is invalid.');
         }
 
@@ -88,8 +88,8 @@ final class AuthorizationCodeGrantType implements GrantType
         }
 
         $grantTypeData->getMetadata()->set('redirect_uri', $redirectUri);
-        $grantTypeData->getMetadata()->set('authorization_code_id', $authorizationCode->getTokenId()->getValue());
-        $grantTypeData->setResourceOwnerId($authorizationCode->getResourceOwnerId());
+        $grantTypeData->getMetadata()->set('authorization_code_id', $authorizationCode->getId()->getValue());
+        $grantTypeData->setResourceOwnerId($authorizationCode->getUserAccountId());
         $authorizationCode->markAsUsed();
         $this->authorizationCodeRepository->save($authorizationCode);
     }

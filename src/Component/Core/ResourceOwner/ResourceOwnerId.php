@@ -13,8 +13,30 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Core\ResourceOwner;
 
-use OAuth2Framework\Component\Core\Id\Id;
-
-abstract class ResourceOwnerId extends Id implements \JsonSerializable
+abstract class ResourceOwnerId implements \JsonSerializable
 {
+    /**
+     * @var string
+     */
+    private $value;
+
+    public function __construct(string $value)
+    {
+        $this->value = $value;
+    }
+
+    public function getValue(): string
+    {
+        return $this->value;
+    }
+
+    public function __toString(): string
+    {
+        return $this->getValue();
+    }
+
+    public function jsonSerialize()
+    {
+        return $this->__toString();
+    }
 }

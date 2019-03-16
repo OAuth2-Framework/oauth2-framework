@@ -15,206 +15,42 @@ namespace OAuth2Framework\Component\AuthorizationCodeGrant;
 
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
-use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwnerId;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
-use OAuth2Framework\Component\Core\Token\TokenId;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 
-class AuthorizationCode implements \JsonSerializable
+interface AuthorizationCode extends \JsonSerializable
 {
-    /**
-     * @var array
-     */
-    private $queryParameters;
+    public function getQueryParameters(): array;
 
-    /**
-     * @var string
-     */
-    private $redirectUri;
+    public function getQueryParams(): array;
 
-    /**
-     * @var bool
-     */
-    private $used;
+    public function isUsed(): bool;
 
-    /**
-     * @var TokenId
-     */
-    protected $tokenId;
+    public function markAsUsed(): void;
 
-    /**
-     * @var \DateTimeImmutable
-     */
-    private $expiresAt;
+    public function getQueryParam(string $key);
 
-    /**
-     * @var ResourceOwnerId
-     */
-    private $resourceOwnerId;
+    public function hasQueryParam(string $key): bool;
 
-    /**
-     * @var ClientId
-     */
-    private $clientId;
+    public function getRedirectUri(): string;
 
-    /**
-     * @var DataBag
-     */
-    private $parameter;
+    public function toArray(): array;
 
-    /**
-     * @var DataBag
-     */
-    private $metadata;
+    public function getId(): AuthorizationCodeId;
 
-    /**
-     * @var bool
-     */
-    private $revoked;
+    public function getExpiresAt(): \DateTimeImmutable;
 
-    /**
-     * @var ResourceServerId|null
-     */
-    private $resourceServerId;
+    public function hasExpired(): bool;
 
-    public function __construct(AuthorizationCodeId $authorizationCodeId, ClientId $clientId, UserAccountId $userAccountId, array $queryParameters, string $redirectUri, \DateTimeImmutable $expiresAt, DataBag $parameter, DataBag $metadata, ?ResourceServerId $resourceServerId)
-    {
-        $this->queryParameters = $queryParameters;
-        $this->redirectUri = $redirectUri;
-        $this->used = false;
-        $this->tokenId = $authorizationCodeId;
-        $this->resourceOwnerId = $userAccountId;
-        $this->clientId = $clientId;
-        $this->parameter = $parameter;
-        $this->metadata = $metadata;
-        $this->expiresAt = $expiresAt;
-        $this->resourceServerId = $resourceServerId;
-        $this->revoked = false;
-    }
+    public function getUserAccountId(): UserAccountId;
 
-    public function getQueryParameters(): array
-    {
-        return $this->queryParameters;
-    }
+    public function getClientId(): ClientId;
 
-    public function isUsed(): bool
-    {
-        return $this->used;
-    }
+    public function getParameter(): DataBag;
 
-    public function markAsUsed(): void
-    {
-        $this->used = true;
-    }
+    public function getMetadata(): DataBag;
 
-    public function getQueryParams(): array
-    {
-        return $this->queryParameters;
-    }
+    public function getResourceServerId(): ?ResourceServerId;
 
-    public function getQueryParam(string $key)
-    {
-        if (!$this->hasQueryParam($key)) {
-            throw new \RuntimeException(\Safe\sprintf('Query parameter with key "%s" does not exist.', $key));
-        }
-
-        return $this->queryParameters[$key];
-    }
-
-    public function hasQueryParam(string $key): bool
-    {
-        return \array_key_exists($key, $this->getQueryParams());
-    }
-
-    public function getRedirectUri(): string
-    {
-        return $this->redirectUri;
-    }
-
-    public function toArray(): array
-    {
-        return [
-            'code' => $this->getTokenId()->getValue(),
-        ];
-    }
-
-    public function getTokenId(): TokenId
-    {
-        return $this->tokenId;
-    }
-
-    public function getExpiresAt(): \DateTimeImmutable
-    {
-        return $this->expiresAt;
-    }
-
-    public function hasExpired(): bool
-    {
-        return $this->expiresAt->getTimestamp() < \time();
-    }
-
-    public function getResourceOwnerId(): ResourceOwnerId
-    {
-        return $this->resourceOwnerId;
-    }
-
-    public function getClientId(): ClientId
-    {
-        return $this->clientId;
-    }
-
-    public function getParameter(): DataBag
-    {
-        return $this->parameter;
-    }
-
-    public function getMetadata(): DataBag
-    {
-        return $this->metadata;
-    }
-
-    public function isRevoked(): bool
-    {
-        return $this->revoked;
-    }
-
-    public function markAsRevoked(): void
-    {
-        $this->revoked = true;
-    }
-
-    public function getResourceServerId(): ?ResourceServerId
-    {
-        return $this->resourceServerId;
-    }
-
-    public function getExpiresIn(): int
-    {
-        $expiresAt = $this->expiresAt;
-        if (null === $expiresAt) {
-            return 0;
-        }
-
-        return $this->expiresAt->getTimestamp() - \time() < 0 ? 0 : $this->expiresAt->getTimestamp() - \time();
-    }
-
-    public function jsonSerialize()
-    {
-        $data = [
-            'auth_code_id' => $this->getTokenId()->getValue(),
-            'query_parameters' => (object) $this->getQueryParameters(),
-            'redirect_uri' => $this->getRedirectUri(),
-            'is_used' => $this->isUsed(),
-            'expires_at' => $this->getExpiresAt()->getTimestamp(),
-            'client_id' => $this->getClientId()->getValue(),
-            'parameters' => (object) $this->getParameter()->all(),
-            'metadatas' => (object) $this->getMetadata()->all(),
-            'is_revoked' => $this->isRevoked(),
-            'resource_owner_id' => $this->getResourceOwnerId()->getValue(),
-            'resource_owner_class' => \get_class($this->getResourceOwnerId()),
-            'resource_server_id' => $this->getResourceServerId() ? $this->getResourceServerId()->getValue() : null,
-        ];
-
-        return $data;
-    }
+    public function getExpiresIn(): int;
 }

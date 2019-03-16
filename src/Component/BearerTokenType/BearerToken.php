@@ -96,9 +96,9 @@ final class BearerToken implements TokenType
         return null;
     }
 
-    public function isRequestValid(Token $token, ServerRequestInterface $request, array $additionalCredentialValues): bool
+    public function isRequestValid(AccessToken $token, ServerRequestInterface $request, array $additionalCredentialValues): bool
     {
-        if (!$token instanceof AccessToken || !$token->getParameter()->has('token_type')) {
+        if (!$token->getParameter()->has('token_type')) {
             return false;
         }
 

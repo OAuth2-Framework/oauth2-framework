@@ -15,9 +15,9 @@ namespace OAuth2Framework\Component\TokenRevocationEndpoint\Tests;
 
 use Http\Message\MessageFactory\DiactorosMessageFactory;
 use Http\Message\ResponseFactory;
+use OAuth2Framework\Component\Core\AccessToken\AccessToken;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
-use OAuth2Framework\Component\Core\Token\Token;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use OAuth2Framework\Component\TokenRevocationEndpoint\TokenRevocationGetEndpoint;
 use OAuth2Framework\Component\TokenRevocationEndpoint\TokenTypeHint;
@@ -167,10 +167,10 @@ final class TokenRevocationGetEndpointTest extends TestCase
     private function getTokenTypeHintManager(): TokenTypeHintManager
     {
         if (null === $this->tokenTypeHintManager) {
-            $token1 = $this->prophesize(Token::class);
+            $token1 = $this->prophesize(AccessToken::class);
             $token1->getClientId()->willReturn(new ClientId('CLIENT_ID'));
 
-            $token2 = $this->prophesize(Token::class);
+            $token2 = $this->prophesize(AccessToken::class);
             $token2->getClientId()->willReturn(new ClientId('OTHER_CLIENT_ID'));
 
             $tokenType = $this->prophesize(TokenTypeHint::class);

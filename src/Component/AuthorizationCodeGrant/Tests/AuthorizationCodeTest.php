@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\AuthorizationCodeGrant\Tests;
 
-use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCode;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeId;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
@@ -55,10 +54,9 @@ final class AuthorizationCodeTest extends TestCase
             new ResourceServerId('RESOURCE_SERVER_ID')
         );
         $authorizationCode->markAsUsed();
-        $authorizationCode->markAsRevoked();
 
         static::assertInstanceOf(AuthorizationCode::class, $authorizationCode);
-        static::assertEquals('{"auth_code_id":"AUTHORIZATION_CODE_ID","query_parameters":{},"redirect_uri":"http://localhost","is_used":true,"expires_at":1264683600,"client_id":"CLIENT_ID","parameters":{},"metadatas":{},"is_revoked":true,"resource_owner_id":"USER_ACCOUNT_ID","resource_owner_class":"OAuth2Framework\\\\Component\\\\Core\\\\UserAccount\\\\UserAccountId","resource_server_id":"RESOURCE_SERVER_ID"}', \Safe\json_encode($authorizationCode, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
-        static::assertEquals('AUTHORIZATION_CODE_ID', $authorizationCode->getTokenId()->getValue());
+        static::assertEquals('{"auth_code_id":"AUTHORIZATION_CODE_ID","query_parameters":{},"redirect_uri":"http://localhost","is_used":true,"expires_at":1264683600,"client_id":"CLIENT_ID","parameters":{},"metadatas":{},"resource_owner_id":"USER_ACCOUNT_ID","resource_owner_class":"OAuth2Framework\\\\Component\\\\Core\\\\UserAccount\\\\UserAccountId","resource_server_id":"RESOURCE_SERVER_ID"}', \Safe\json_encode($authorizationCode, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+        static::assertEquals('AUTHORIZATION_CODE_ID', $authorizationCode->getId()->getValue());
     }
 }

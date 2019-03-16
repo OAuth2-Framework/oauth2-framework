@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Core\TokenType;
 
+use OAuth2Framework\Component\Core\AccessToken\AccessToken;
 use OAuth2Framework\Component\Core\Token\Token;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -49,5 +50,5 @@ interface TokenType
     /**
      * This methods verifies the request is valid with the specified token.
      */
-    public function isRequestValid(Token $token, ServerRequestInterface $request, array $additionalCredentialValues): bool;
+    public function isRequestValid(AccessToken $token, ServerRequestInterface $request, array $additionalCredentialValues): bool;
 }

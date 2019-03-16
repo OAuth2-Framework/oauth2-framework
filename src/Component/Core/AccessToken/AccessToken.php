@@ -17,19 +17,133 @@ use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwnerId;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
-use OAuth2Framework\Component\Core\Token\Token;
 
-class AccessToken extends Token
+class AccessToken implements \JsonSerializable
 {
-    public function __construct(AccessTokenId $refreshTokenId, ClientId $clientId, ResourceOwnerId $resourceOwnerId, \DateTimeImmutable $expiresAt, DataBag $parameter, DataBag $metadata, ?ResourceServerId $resourceServerId)
+    /**
+     * @var AccessTokenId
+     */
+    protected $tokenId;
+
+    /**
+     * @var \DateTimeImmutable
+     */
+    private $expiresAt;
+
+    /**
+     * @var ResourceOwnerId
+     */
+    private $resourceOwnerId;
+
+    /**
+     * @var ClientId
+     */
+    private $clientId;
+
+    /**
+     * @var DataBag
+     */
+    private $parameter;
+
+    /**
+     * @var DataBag
+     */
+    private $metadata;
+
+    /**
+     * @var bool
+     */
+    private $revoked;
+
+    /**
+     * @var ResourceServerId|null
+     */
+    private $resourceServerId;
+
+    public function __construct(AccessTokenId $accessTokenId, ClientId $clientId, ResourceOwnerId $resourceOwnerId, \DateTimeImmutable $expiresAt, DataBag $parameter, DataBag $metadata, ?ResourceServerId $resourceServerId)
     {
-        parent::__construct($refreshTokenId, $clientId, $resourceOwnerId, $parameter, $metadata, $expiresAt, $resourceServerId);
+        $this->tokenId = $accessTokenId;
+        $this->resourceOwnerId = $resourceOwnerId;
+        $this->clientId = $clientId;
+        $this->parameter = $parameter;
+        $this->metadata = $metadata;
+        $this->expiresAt = $expiresAt;
+        $this->resourceServerId = $resourceServerId;
+        $this->revoked = false;
+    }
+
+    public function getTokenId(): AccessTokenId
+    {
+        return $this->tokenId;
+    }
+
+    public function getExpiresAt(): \DateTimeImmutable
+    {
+        return $this->expiresAt;
+    }
+
+    public function hasExpired(): bool
+    {
+        return $this->expiresAt->getTimestamp() < \time();
+    }
+
+    public function getResourceOwnerId(): ResourceOwnerId
+    {
+        return $this->resourceOwnerId;
+    }
+
+    public function getClientId(): ClientId
+    {
+        return $this->clientId;
+    }
+
+    public function getParameter(): DataBag
+    {
+        return $this->parameter;
+    }
+
+    public function getMetadata(): DataBag
+    {
+        return $this->metadata;
+    }
+
+    public function isRevoked(): bool
+    {
+        return $this->revoked;
+    }
+
+    public function markAsRevoked(): void
+    {
+        $this->revoked = true;
+    }
+
+    public function getResourceServerId(): ?ResourceServerId
+    {
+        return $this->resourceServerId;
+    }
+
+    public function getExpiresIn(): int
+    {
+        $expiresAt = $this->expiresAt;
+        if (null === $expiresAt) {
+            return 0;
+        }
+
+        return (int) ($this->expiresAt->getTimestamp() - \time() < 0 ? 0 : $this->expiresAt->getTimestamp() - \time());
     }
 
     public function jsonSerialize()
     {
-        $data = parent::jsonSerialize() + [
+        $data = [
             'access_token_id' => $this->getTokenId()->getValue(),
+            'expires_at' => $this->getExpiresAt()->getTimestamp(),
+            'client_id' => $this->getClientId()->getValue(),
+            'parameters' => (object) $this->getParameter()->all(),
+            'metadatas' => (object) $this->getMetadata()->all(),
+            'is_revoked' => $this->isRevoked(),
+            'resource_owner_id' => $this->getResourceOwnerId()->getValue(),
+            'resource_owner_class' => \get_class($this->getResourceOwnerId()),
+            'resource_server_id' => $this->getResourceServerId() ? $this->getResourceServerId()->getValue() : null,
         ];
 
         return $data;

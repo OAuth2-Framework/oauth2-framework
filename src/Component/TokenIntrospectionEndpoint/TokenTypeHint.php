@@ -13,13 +13,14 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\TokenIntrospectionEndpoint;
 
-use OAuth2Framework\Component\Core\Token\Token;
-
 interface TokenTypeHint
 {
     public function hint(): string;
 
-    public function find(string $token): ?Token;
+    /**
+     * @return mixed|null
+     */
+    public function find(string $token);
 
-    public function introspect(Token $token): array;
+    public function introspect($token): array;
 }

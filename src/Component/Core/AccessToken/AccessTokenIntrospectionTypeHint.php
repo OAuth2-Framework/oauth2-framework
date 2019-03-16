@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Core\AccessToken;
 
-use OAuth2Framework\Component\Core\Token\Token;
 use OAuth2Framework\Component\TokenIntrospectionEndpoint\TokenTypeHint;
 
 final class AccessTokenIntrospectionTypeHint implements TokenTypeHint
@@ -36,14 +35,14 @@ final class AccessTokenIntrospectionTypeHint implements TokenTypeHint
         return 'access_token';
     }
 
-    public function find(string $token): ?Token
+    public function find(string $token): ?AccessToken
     {
         $id = new AccessTokenId($token);
 
         return $this->accessTokenRepository->find($id);
     }
 
-    public function introspect(Token $token): array
+    public function introspect($token): array
     {
         if (!$token instanceof AccessToken || true === $token->isRevoked()) {
             return [

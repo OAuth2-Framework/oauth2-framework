@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\AuthorizationCodeGrant\Tests;
 
-use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCode;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeId;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeRepository;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeResponseType;

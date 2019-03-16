@@ -90,7 +90,7 @@ final class AuthorizationCodeResponseType implements ResponseType
             $authorization->getResourceServer() ? $authorization->getResourceServer()->getResourceServerId() : null
         );
         $this->authorizationCodeRepository->save($authorizationCode);
-        $authorization->setResponseParameter('code', $authorizationCode->getTokenId()->getValue());
+        $authorization->setResponseParameter('code', $authorizationCode->getId()->getValue());
     }
 
     public function process(AuthorizationRequest $authorization): void

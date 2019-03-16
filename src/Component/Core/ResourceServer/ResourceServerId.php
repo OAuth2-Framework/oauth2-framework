@@ -13,8 +13,30 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Core\ResourceServer;
 
-use OAuth2Framework\Component\Core\Id\Id;
-
-final class ResourceServerId extends Id
+final class ResourceServerId implements \JsonSerializable
 {
+    /**
+     * @var string
+     */
+    private $value;
+
+    public function __construct(string $value)
+    {
+        $this->value = $value;
+    }
+
+    public function getValue(): string
+    {
+        return $this->value;
+    }
+
+    public function __toString(): string
+    {
+        return $this->getValue();
+    }
+
+    public function jsonSerialize()
+    {
+        return $this->__toString();
+    }
 }

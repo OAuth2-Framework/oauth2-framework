@@ -18,7 +18,6 @@ use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwnerId;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
-use OAuth2Framework\Component\Core\Token\TokenId;
 
 class RefreshToken implements \JsonSerializable
 {
@@ -27,7 +26,7 @@ class RefreshToken implements \JsonSerializable
      */
     private $accessTokenIds = [];
     /**
-     * @var TokenId
+     * @var RefreshTokenId
      */
     protected $tokenId;
 
@@ -66,7 +65,7 @@ class RefreshToken implements \JsonSerializable
      */
     private $resourceServerId;
 
-    public function __construct(TokenId $tokenId, ClientId $clientId, ResourceOwnerId $resourceOwnerId, \DateTimeImmutable $expiresAt, DataBag $parameter, DataBag $metadata, ?ResourceServerId $resourceServerId)
+    public function __construct(RefreshTokenId $tokenId, ClientId $clientId, ResourceOwnerId $resourceOwnerId, \DateTimeImmutable $expiresAt, DataBag $parameter, DataBag $metadata, ?ResourceServerId $resourceServerId)
     {
         $this->tokenId = $tokenId;
         $this->resourceOwnerId = $resourceOwnerId;
@@ -106,7 +105,7 @@ class RefreshToken implements \JsonSerializable
         return $data->all();
     }
 
-    public function getTokenId(): TokenId
+    public function getTokenId(): RefreshTokenId
     {
         return $this->tokenId;
     }

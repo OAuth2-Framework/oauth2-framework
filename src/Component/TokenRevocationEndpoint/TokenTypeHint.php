@@ -13,8 +13,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\TokenRevocationEndpoint;
 
-use OAuth2Framework\Component\Core\Token\Token;
-
 interface TokenTypeHint
 {
     public function hint(): string;
@@ -24,8 +22,5 @@ interface TokenTypeHint
      */
     public function find(string $token);
 
-    /**
-     * @param mixed $token
-     */
     public function revoke($token): void;
 }

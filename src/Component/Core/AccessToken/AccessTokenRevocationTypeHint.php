@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Core\AccessToken;
 
-use OAuth2Framework\Component\Core\Token\Token;
 use OAuth2Framework\Component\TokenRevocationEndpoint\TokenTypeHint;
 
 final class AccessTokenRevocationTypeHint implements TokenTypeHint
