@@ -102,13 +102,7 @@ final class OAuth2Listener implements ListenerInterface
             $this->tokenStorage->setToken($result);
         } catch (AuthenticationException $e) {
             $psr7Response = $this->oauth2ResponseFactoryManager->getResponse(
-                new OAuth2Error(
-                    401,
-                    OAuth2Error::ERROR_ACCESS_DENIED,
-                    'OAuth2 authentication required. '.$e->getMessage(),
-                    [],
-                    $e
-                )
+                OAuth2Error::accessDenied('OAuth2 authentication required. '.$e->getMessage(), [], $e)
             );
             $factory = new HttpFoundationFactory();
             $event->setResponse($factory->createResponse($psr7Response));

@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\ClientRegistrationEndpoint\Tests;
 
-use OAuth2Framework\Component\ClientRegistrationEndpoint\InitialAccessToken;
 use OAuth2Framework\Component\ClientRegistrationEndpoint\InitialAccessTokenId;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use PHPUnit\Framework\TestCase;
@@ -49,6 +48,6 @@ final class InitialAccessTokenTest extends TestCase
 
         static::assertInstanceOf(InitialAccessToken::class, $initialAccessToken);
         static::assertEquals('{"initial_access_token_id":"INITIAL_ACCESS_TOKEN_ID","user_account_id":"USER_ACCOUNT_ID","expires_at":null,"is_revoked":true}', \Safe\json_encode($initialAccessToken, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
-        static::assertEquals('INITIAL_ACCESS_TOKEN_ID', $initialAccessToken->getTokenId()->getValue());
+        static::assertEquals('INITIAL_ACCESS_TOKEN_ID', $initialAccessToken->getId()->getValue());
     }
 }

@@ -35,11 +35,7 @@ final class OAuth2EntryPoint implements AuthenticationEntryPointInterface
     public function start(Request $request, AuthenticationException $authException = null)
     {
         $psr7Response = $this->oauth2ResponseFactoryManager->getResponse(
-            new OAuth2Error(
-                401,
-                OAuth2Error::ERROR_ACCESS_DENIED,
-                'OAuth2 authentication required'
-            )
+            OAuth2Error::accessDenied('OAuth2 authentication required')
         );
         $factory = new HttpFoundationFactory();
 

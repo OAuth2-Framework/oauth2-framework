@@ -37,11 +37,11 @@ final class AuthenticationContextClassReference implements Claim
 
     public function isAvailableForUserAccount(UserAccount $userAccount, ?string $claimLocale): bool
     {
-        return null !== $this->authenticationContextClassReferenceSupport->getAuthenticationContextClassReferenceFor($user);
+        return null !== $this->authenticationContextClassReferenceSupport->getAuthenticationContextClassReferenceFor($userAccount);
     }
 
     public function getForUserAccount(UserAccount $userAccount, ?string $claimLocale)
     {
-        return $this->authenticationContextClassReferenceSupport->getAuthenticationContextClassReferenceFor($user);
+        return $this->authenticationContextClassReferenceSupport->getAuthenticationContextClassReferenceFor($userAccount);
     }
 }

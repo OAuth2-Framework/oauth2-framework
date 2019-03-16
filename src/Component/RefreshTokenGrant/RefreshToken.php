@@ -19,167 +19,36 @@ use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwnerId;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
 
-class RefreshToken implements \JsonSerializable
+interface RefreshToken extends \JsonSerializable
 {
-    /**
-     * @var AccessTokenId[]
-     */
-    private $accessTokenIds = [];
-    /**
-     * @var RefreshTokenId
-     */
-    protected $tokenId;
-
-    /**
-     * @var \DateTimeImmutable
-     */
-    private $expiresAt;
-
-    /**
-     * @var ResourceOwnerId
-     */
-    private $resourceOwnerId;
-
-    /**
-     * @var ClientId
-     */
-    private $clientId;
-
-    /**
-     * @var DataBag
-     */
-    private $parameter;
-
-    /**
-     * @var DataBag
-     */
-    private $metadata;
-
-    /**
-     * @var bool
-     */
-    private $revoked;
-
-    /**
-     * @var ResourceServerId|null
-     */
-    private $resourceServerId;
-
-    public function __construct(RefreshTokenId $tokenId, ClientId $clientId, ResourceOwnerId $resourceOwnerId, \DateTimeImmutable $expiresAt, DataBag $parameter, DataBag $metadata, ?ResourceServerId $resourceServerId)
-    {
-        $this->tokenId = $tokenId;
-        $this->resourceOwnerId = $resourceOwnerId;
-        $this->clientId = $clientId;
-        $this->parameter = $parameter;
-        $this->metadata = $metadata;
-        $this->expiresAt = $expiresAt;
-        $this->resourceServerId = $resourceServerId;
-        $this->revoked = false;
-    }
-
-    public function addAccessToken(AccessTokenId $accessTokenId): void
-    {
-        $id = $accessTokenId->getValue();
-        if (!\array_key_exists($id, $this->accessTokenIds)) {
-            $this->accessTokenIds[$id] = $accessTokenId;
-        }
-    }
+    public function addAccessToken(AccessTokenId $accessTokenId): void;
 
     /**
      * @return AccessTokenId[]
      */
-    public function getAccessTokenIds(): array
-    {
-        return $this->accessTokenIds;
-    }
+    public function getAccessTokenIds(): iterable;
 
-    public function getResponseData(): array
-    {
-        $data = $this->getParameter();
-        $data->set('access_token', $this->getTokenId()->getValue());
-        $data->set('expires_in', $this->getExpiresIn());
-        if (!empty($this->getTokenId())) {
-            $data->set('refresh_token', $this->getTokenId());
-        }
+    public function getResponseData(): array;
 
-        return $data->all();
-    }
+    public function getId(): RefreshTokenId;
 
-    public function getTokenId(): RefreshTokenId
-    {
-        return $this->tokenId;
-    }
+    public function getExpiresAt(): \DateTimeImmutable;
 
-    public function getExpiresAt(): \DateTimeImmutable
-    {
-        return $this->expiresAt;
-    }
+    public function hasExpired(): bool;
 
-    public function hasExpired(): bool
-    {
-        return $this->expiresAt->getTimestamp() < \time();
-    }
+    public function getExpiresIn(): int;
 
-    public function getResourceOwnerId(): ResourceOwnerId
-    {
-        return $this->resourceOwnerId;
-    }
+    public function getResourceOwnerId(): ResourceOwnerId;
 
-    public function getClientId(): ClientId
-    {
-        return $this->clientId;
-    }
+    public function getClientId(): ClientId;
 
-    public function getParameter(): DataBag
-    {
-        return $this->parameter;
-    }
+    public function getParameter(): DataBag;
 
-    public function getMetadata(): DataBag
-    {
-        return $this->metadata;
-    }
+    public function getMetadata(): DataBag;
 
-    public function isRevoked(): bool
-    {
-        return $this->revoked;
-    }
+    public function isRevoked(): bool;
 
-    public function markAsRevoked(): void
-    {
-        $this->revoked = true;
-    }
+    public function markAsRevoked(): void;
 
-    public function getResourceServerId(): ?ResourceServerId
-    {
-        return $this->resourceServerId;
-    }
-
-    public function getExpiresIn(): int
-    {
-        $expiresAt = $this->expiresAt;
-        if (null === $expiresAt) {
-            return 0;
-        }
-
-        return $this->expiresAt->getTimestamp() - \time() < 0 ? 0 : $this->expiresAt->getTimestamp() - \time();
-    }
-
-    public function jsonSerialize()
-    {
-        $data = [
-            'refresh_token_id' => $this->getTokenId()->getValue(),
-            'access_token_ids' => \array_keys($this->getAccessTokenIds()),
-            'resource_server_id' => $this->getResourceServerId() ? $this->getResourceServerId()->getValue() : null,
-            'expires_at' => $this->getExpiresAt()->getTimestamp(),
-            'client_id' => $this->getClientId()->getValue(),
-            'parameters' => (object) $this->getParameter()->all(),
-            'metadatas' => (object) $this->getMetadata()->all(),
-            'is_revoked' => $this->isRevoked(),
-            'resource_owner_id' => $this->getResourceOwnerId()->getValue(),
-            'resource_owner_class' => \get_class($this->getResourceOwnerId()),
-        ];
-
-        return $data;
-    }
+    public function getResourceServerId(): ?ResourceServerId;
 }

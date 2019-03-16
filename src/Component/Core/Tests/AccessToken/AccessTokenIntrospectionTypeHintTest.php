@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Core\Tests\AccessToken;
 
-use OAuth2Framework\Component\Core\AccessToken\AccessToken;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenIntrospectionTypeHint;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository;

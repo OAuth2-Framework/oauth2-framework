@@ -156,10 +156,10 @@ class UserInfo
     private function calculateSubjectIdentifier(Client $client, UserAccount $userAccount, string $redirectUri): string
     {
         $sub = $userAccount->getUserAccountId()->getValue();
-        if (false === $this->isPairwiseSubjectIdentifierSupported()) {
+        if (null === $this->pairwiseAlgorithm) {
             return $sub;
         }
-        if (($client->has('subject_type') && ('pairwise' === $client->get('subject_type')))) {
+        if ($client->has('subject_type') && ('pairwise' === $client->get('subject_type'))) {
             $sectorIdentifierHost = $this->getSectorIdentifierHost($client, $redirectUri);
 
             return $this->pairwiseAlgorithm->calculateSubjectIdentifier(

@@ -190,11 +190,11 @@ class AuthorizationRequestLoader
     private function createFromRequestParameter(array $params, Client &$client = null): array
     {
         if (false === $this->isRequestObjectSupportEnabled()) {
-            throw new OAuth2Error(400, OAuth2Error::ERROR_REQUEST_NOT_SUPPORTED, 'The parameter "request" is not supported.');
+            throw OAuth2Error::requestNotSupported('The parameter "request" is not supported.');
         }
         $request = $params['request'];
         if (!\is_string($request)) {
-            throw new OAuth2Error(400, OAuth2Error::ERROR_REQUEST_NOT_SUPPORTED, 'The parameter "request" must be an assertion.');
+            throw OAuth2Error::requestNotSupported('The parameter "request" must be an assertion.');
         }
 
         $params = $this->loadRequestObject($params, $request, $client);
@@ -206,11 +206,11 @@ class AuthorizationRequestLoader
     private function createFromRequestUriParameter(array $params, Client &$client = null): array
     {
         if (false === $this->isRequestObjectReferenceSupportEnabled()) {
-            throw new OAuth2Error(400, OAuth2Error::ERROR_REQUEST_URI_NOT_SUPPORTED, 'The parameter "request_uri" is not supported.');
+            throw OAuth2Error::requestUriNotSupported('The parameter "request_uri" is not supported.');
         }
         $requestUri = $params['request_uri'];
         if (\Safe\preg_match('#/\.\.?(/|$)#', $requestUri)) {
-            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST_URI, 'The request Uri is not allowed.');
+            throw OAuth2Error::invalidRequestUri('The request Uri is not allowed.');
         }
         $content = $this->downloadContent($requestUri);
         $params = $this->loadRequestObject($params, $content, $client);
@@ -234,7 +234,7 @@ class AuthorizationRequestLoader
         $storedRequestUris = $client->has('request_uris') ? $client->get('request_uris') : [];
         if (empty($storedRequestUris)) {
             if ($this->isRequestUriRegistrationRequired()) {
-                throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST_URI, 'The clients shall register at least one request object uri.');
+                throw OAuth2Error::invalidRequestUri('The clients shall register at least one request object uri.');
             }
 
             return;
@@ -246,7 +246,7 @@ class AuthorizationRequestLoader
             }
         }
 
-        throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST_URI, 'The request Uri is not allowed.');
+        throw OAuth2Error::invalidRequestUri('The request Uri is not allowed.');
     }
 
     private function loadRequestObject(array $params, string $request, Client &$client = null): array
@@ -282,7 +282,7 @@ class AuthorizationRequestLoader
         } catch (OAuth2Error $e) {
             throw $e;
         } catch (\Exception $e) {
-            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST_OBJECT, $e->getMessage(), [], $e);
+            throw OAuth2Error::invalidRequestObject($e->getMessage(), [], $e);
         }
     }
 
@@ -303,7 +303,7 @@ class AuthorizationRequestLoader
             throw $e;
         } catch (\Exception $e) {
             if (true === $this->requireEncryption) {
-                throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST_OBJECT, $e->getMessage(), [], $e);
+                throw OAuth2Error::invalidRequestObject($e->getMessage(), [], $e);
             }
 
             return $request;
@@ -338,7 +338,7 @@ class AuthorizationRequestLoader
 
         $content = $response->getBody()->getContents();
         if (!\is_string($content)) {
-            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_REQUEST_URI, 'Unable to get content.');
+            throw OAuth2Error::invalidRequestUri('Unable to get content.');
         }
 
         return $content;

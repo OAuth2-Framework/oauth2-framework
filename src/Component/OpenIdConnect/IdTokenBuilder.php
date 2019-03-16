@@ -27,7 +27,6 @@ use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeRepository
 use OAuth2Framework\Component\Core\AccessToken\AccessToken;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
 use OAuth2Framework\Component\Core\Client\Client;
-use OAuth2Framework\Component\Core\Token\TokenId;
 use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 use OAuth2Framework\Component\OpenIdConnect\UserInfo\UserInfo;
 
@@ -42,11 +41,6 @@ class IdTokenBuilder
      * @var Client
      */
     private $client;
-
-    /**
-     * @var
-     */
-    private $user;
 
     /**
      * @var UserAccount
@@ -64,7 +58,7 @@ class IdTokenBuilder
     private $userinfo;
 
     /**
-     * @var
+     * @var JWKSet
      */
     private $signatureKeys;
 
@@ -74,7 +68,7 @@ class IdTokenBuilder
     private $lifetime;
 
     /**
-     * @var
+     * @var string
      */
     private $scope;
 
@@ -84,22 +78,22 @@ class IdTokenBuilder
     private $requestedClaims = [];
 
     /**
-     * @var
+     * @var string
      */
     private $claimsLocales;
 
     /**
-     * @var
+     * @var AccessTokenId|null
      */
     private $accessTokenId;
 
     /**
-     * @var
+     * @var AuthorizationCodeId|null
      */
     private $authorizationCodeId;
 
     /**
-     * @var
+     * @var string
      */
     private $nonce;
 
@@ -109,32 +103,32 @@ class IdTokenBuilder
     private $withAuthenticationTime = false;
 
     /**
-     * @var
+     * @var JWSBuilder
      */
     private $jwsBuilder;
 
     /**
-     * @var
+     * @var string
      */
     private $signatureAlgorithm;
 
     /**
-     * @var
+     * @var JWEBuilder
      */
     private $jweBuilder;
 
     /**
-     * @var
+     * @var string
      */
     private $keyEncryptionAlgorithm;
 
     /**
-     * @var
+     * @var string
      */
     private $contentEncryptionAlgorithm;
 
     /**
-     * @var
+     * @var \DateTimeImmutable
      */
     private $expiresAt;
 
@@ -154,7 +148,6 @@ class IdTokenBuilder
         $this->userinfo = $userinfo;
         $this->lifetime = $lifetime;
         $this->client = $client;
-        $this->user = $user;
         $this->userAccount = $userAccount;
         $this->redirectUri = $redirectUri;
         $this->jkuFactory = $jkuFactory;
@@ -163,7 +156,7 @@ class IdTokenBuilder
 
     public function setAccessToken(AccessToken $accessToken): void
     {
-        $this->accessTokenId = $accessToken->getTokenId();
+        $this->accessTokenId = $accessToken->getId();
         $this->expiresAt = $accessToken->getExpiresAt();
         $this->scope = $accessToken->getParameter()->has('scope') ? $accessToken->getParameter()->get('scope') : null;
 
@@ -260,9 +253,9 @@ class IdTokenBuilder
         if (null === $this->scope) {
             throw new \LogicException('It is mandatory to set the scope.');
         }
-        $data = $this->userinfo->getUserinfo($this->client, $this->user, $this->userAccount, $this->redirectUri, $this->requestedClaims, $this->scope, $this->claimsLocales);
+        $data = $this->userinfo->getUserinfo($this->client, $this->userAccount, $this->redirectUri, $this->requestedClaims, $this->scope, $this->claimsLocales);
         //$data = $this->updateClaimsWithAmrAndAcrInfo($data, $this->userAccount);
-        $data = $this->updateClaimsWithAuthenticationTime($data, $this->user, $this->requestedClaims);
+        $data = $this->updateClaimsWithAuthenticationTime($data, $this->requestedClaims);
         $data = $this->updateClaimsWithNonce($data);
         if (null !== $this->signatureAlgorithm) {
             $data = $this->updateClaimsWithJwtClaims($data);
@@ -409,18 +402,18 @@ class IdTokenBuilder
             return $claims;
         }
         if (null !== $this->accessTokenId) {
-            $claims['at_hash'] = $this->getHash($this->accessTokenId);
+            $claims['at_hash'] = $this->getHash($this->accessTokenId->getValue());
         }
         if (null !== $this->authorizationCodeId) {
-            $claims['c_hash'] = $this->getHash($this->authorizationCodeId);
+            $claims['c_hash'] = $this->getHash($this->authorizationCodeId->getValue());
         }
 
         return $claims;
     }
 
-    private function getHash(TokenId $tokenId): string
+    private function getHash(string $tokenId): string
     {
-        return Base64Url::encode(\mb_substr(\hash($this->getHashMethod(), $tokenId->getValue(), true), 0, $this->getHashSize(), '8bit'));
+        return Base64Url::encode(\mb_substr(\hash($this->getHashMethod(), $tokenId, true), 0, $this->getHashSize(), '8bit'));
     }
 
     private function getHashMethod(): string

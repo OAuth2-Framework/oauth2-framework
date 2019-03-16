@@ -103,11 +103,7 @@ class AnnotationDriver
     {
         $additionalData = $configuration->getScope() ? ['scope' => $configuration->getScope()] : [];
         $response = $this->oauth2ResponseFactoryManager->getResponse(
-            new OAuth2Error(
-                401,
-                OAuth2Error::ERROR_ACCESS_DENIED,
-                $message
-            ),
+            OAuth2Error::accessDenied($message),
             $additionalData
         );
 

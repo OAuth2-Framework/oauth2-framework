@@ -26,11 +26,11 @@ final class AuthenticationTime implements Claim
 
     public function isAvailableForUserAccount(UserAccount $userAccount, ?string $claimLocale): bool
     {
-        return null !== $user->getLastLoginAt();
+        return null !== $userAccount->getLastLoginAt();
     }
 
     public function getForUserAccount(UserAccount $userAccount, ?string $claimLocale)
     {
-        return $user->getLastLoginAt();
+        return $userAccount->getLastLoginAt();
     }
 }

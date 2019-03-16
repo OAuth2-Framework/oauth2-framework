@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\BearerTokenType\Tests;
 
 use OAuth2Framework\Component\BearerTokenType\BearerToken;
-use OAuth2Framework\Component\Core\AccessToken\AccessToken;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;

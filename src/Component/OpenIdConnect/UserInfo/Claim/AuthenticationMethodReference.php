@@ -37,11 +37,11 @@ final class AuthenticationMethodReference implements Claim
 
     public function isAvailableForUserAccount(UserAccount $userAccount, ?string $claimLocale): bool
     {
-        return null !== $this->authenticationMethodReferenceSupport->getAuthenticationMethodReferenceFor($user);
+        return null !== $this->authenticationMethodReferenceSupport->getAuthenticationMethodReferenceFor($userAccount);
     }
 
     public function getForUserAccount(UserAccount $userAccount, ?string $claimLocale)
     {
-        return $this->authenticationMethodReferenceSupport->getAuthenticationMethodReferenceFor($user);
+        return $this->authenticationMethodReferenceSupport->getAuthenticationMethodReferenceFor($userAccount);
     }
 }

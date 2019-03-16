@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\Core\TokenType;
 
 use OAuth2Framework\Component\Core\AccessToken\AccessToken;
-use OAuth2Framework\Component\Core\Token\Token;
 use Psr\Http\Message\ServerRequestInterface;
 
 interface TokenType

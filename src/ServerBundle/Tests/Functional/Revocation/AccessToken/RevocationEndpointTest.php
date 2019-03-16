@@ -92,7 +92,7 @@ class RevocationEndpointTest extends DatabaseTestCase
             new DataBag([]),
             null
         );
-        $accessTokenId = $accessToken->getTokenId();
+        $accessTokenId = $accessToken->getId();
         $accessTokenRepository->save($accessToken);
 
         $client->request('POST', '/token/revoke', ['client_id' => 'CLIENT_ID_3', 'client_secret' => 'secret', 'token' => $accessTokenId->getValue()], [], ['HTTPS' => 'on'], null);
@@ -122,7 +122,7 @@ class RevocationEndpointTest extends DatabaseTestCase
             new DataBag([]),
             null
         );
-        $accessTokenId = $accessToken->getTokenId();
+        $accessTokenId = $accessToken->getId();
         $accessTokenRepository->save($accessToken);
 
         $client->request('POST', '/token/revoke', ['client_id' => 'CLIENT_ID_3', 'client_secret' => 'secret', 'token' => $accessTokenId->getValue()], [], ['HTTPS' => 'on'], null);

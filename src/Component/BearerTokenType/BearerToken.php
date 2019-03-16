@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\BearerTokenType;
 
 use OAuth2Framework\Component\Core\AccessToken\AccessToken;
-use OAuth2Framework\Component\Core\Token\Token;
 use OAuth2Framework\Component\Core\TokenType\TokenType;
 use OAuth2Framework\Component\Core\Util\RequestBodyParser;
 use Psr\Http\Message\ServerRequestInterface;
@@ -129,7 +128,7 @@ final class BearerToken implements TokenType
         try {
             $parameters = RequestBodyParser::parseFormUrlEncoded($request);
 
-            return \is_array($parameters) ? $this->getAccessTokenFromParameters($parameters) : null;
+            return $this->getAccessTokenFromParameters($parameters);
         } catch (\Exception $e) {
             return null;
         }

@@ -30,6 +30,6 @@ final class AccessTokenHandler implements \OAuth2Framework\Component\Core\Access
 
     public function save(AccessToken $token): void
     {
-        $this->accessTokens[$token->getTokenId()->getValue()] = $token;
+        $this->accessTokens[$token->getId()->getValue()] = $token;
     }
 }

@@ -15,75 +15,17 @@ namespace OAuth2Framework\Component\ClientRegistrationEndpoint;
 
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 
-class InitialAccessToken implements \JsonSerializable
+interface InitialAccessToken extends \JsonSerializable
 {
-    /**
-     * @var bool
-     */
-    private $revoked;
+    public function getId(): InitialAccessTokenId;
 
-    /**
-     * @var InitialAccessTokenId
-     */
-    private $initialAccessTokenId;
+    public function getUserAccountId(): ?UserAccountId;
 
-    /**
-     * @var \DateTimeImmutable|null
-     */
-    private $expiresAt;
+    public function getExpiresAt(): ?\DateTimeImmutable;
 
-    /**
-     * @var UserAccountId|null
-     */
-    private $userAccountId;
+    public function hasExpired(): bool;
 
-    public function __construct(InitialAccessTokenId $initialAccessTokenId, ?UserAccountId $userAccountId, ?\DateTimeImmutable $expiresAt)
-    {
-        $this->initialAccessTokenId = $initialAccessTokenId;
-        $this->expiresAt = $expiresAt;
-        $this->userAccountId = $userAccountId;
-        $this->revoked = false;
-    }
+    public function isRevoked(): bool;
 
-    public function getTokenId(): InitialAccessTokenId
-    {
-        return $this->initialAccessTokenId;
-    }
-
-    public function getUserAccountId(): ?UserAccountId
-    {
-        return $this->userAccountId;
-    }
-
-    public function getExpiresAt(): ?\DateTimeImmutable
-    {
-        return $this->expiresAt;
-    }
-
-    public function hasExpired(): bool
-    {
-        return $this->expiresAt->getTimestamp() < \time();
-    }
-
-    public function isRevoked(): bool
-    {
-        return $this->revoked;
-    }
-
-    public function markAsRevoked(): void
-    {
-        $this->revoked = true;
-    }
-
-    public function jsonSerialize()
-    {
-        $data = [
-            'initial_access_token_id' => $this->getTokenId()->getValue(),
-            'user_account_id' => $this->getUserAccountId() ? $this->getUserAccountId()->getValue() : null,
-            'expires_at' => $this->getExpiresAt() ? $this->getExpiresAt()->getTimestamp() : null,
-            'is_revoked' => $this->isRevoked(),
-        ];
-
-        return $data;
-    }
+    public function markAsRevoked(): void;
 }

@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\ClientRegistrationEndpoint\Tests;
 
 use OAuth2Framework\Component\BearerTokenType\BearerToken;
-use OAuth2Framework\Component\ClientRegistrationEndpoint\InitialAccessToken;
 use OAuth2Framework\Component\ClientRegistrationEndpoint\InitialAccessTokenId;
 use OAuth2Framework\Component\ClientRegistrationEndpoint\InitialAccessTokenMiddleware;
 use OAuth2Framework\Component\ClientRegistrationEndpoint\InitialAccessTokenRepository;

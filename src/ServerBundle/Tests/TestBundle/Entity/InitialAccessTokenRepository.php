@@ -36,7 +36,7 @@ final class InitialAccessTokenRepository implements \OAuth2Framework\Component\C
 
     public function save(InitialAccessToken $initialAccessToken)
     {
-        $this->initialAccessTokens[$initialAccessToken->getTokenId()->getValue()] = $initialAccessToken;
+        $this->initialAccessTokens[$initialAccessToken->getId()->getValue()] = $initialAccessToken;
     }
 
     private function createInitialAccessTokens()

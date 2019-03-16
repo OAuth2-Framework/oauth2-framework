@@ -19,7 +19,6 @@ use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
-use OAuth2Framework\Component\RefreshTokenGrant\RefreshToken;
 use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenGrantType;
 use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenId;
 use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenRepository;

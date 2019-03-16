@@ -63,7 +63,7 @@ class Link implements \JsonSerializable
         return $this->type;
     }
 
-    public function getHref(): string
+    public function getHref(): ?string
     {
         return $this->href;
     }

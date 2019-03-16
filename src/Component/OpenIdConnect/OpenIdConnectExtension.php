@@ -88,7 +88,7 @@ class OpenIdConnectExtension implements TokenEndpointExtension
 
         $requestedClaims = $this->getIdTokenClaims($accessToken);
         $idTokenBuilder->withRequestedClaims($requestedClaims);
-        $idTokenBuilder->withAccessTokenId($accessToken->getTokenId());
+        $idTokenBuilder->withAccessTokenId($accessToken->getId());
 
         if ($client->has('id_token_signed_response_alg')) {
             $signatureAlgorithm = $client->get('id_token_signed_response_alg');

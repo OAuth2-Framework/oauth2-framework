@@ -112,7 +112,7 @@ abstract class MacToken implements TokenType
     {
         return [
             'id' => function ($value, AccessToken $token) {
-                return \hash_equals($token->getTokenId()->getValue(), $value);
+                return \hash_equals($token->getId()->getValue(), $value);
             },
             'ts' => function ($value) {
                 return \time() < $this->getTimestampLifetime() + (int) $value;

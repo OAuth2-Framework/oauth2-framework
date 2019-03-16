@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Core\Tests\AccessToken;
 
-use OAuth2Framework\Component\Core\AccessToken\AccessToken;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
@@ -57,6 +56,6 @@ final class AccessTokenTest extends TestCase
 
         static::assertInstanceOf(AccessToken::class, $accessToken);
         static::assertEquals('{"access_token_id":"ACCESS_TOKEN_ID","expires_at":1264683600,"client_id":"CLIENT_ID","parameters":{"refresh_token_id":"REFRESH_TOKEN_ID"},"metadatas":{},"is_revoked":true,"resource_owner_id":"CLIENT_ID","resource_owner_class":"OAuth2Framework\\\\Component\\\\Core\\\\Client\\\\ClientId","resource_server_id":"RESOURCE_SERVER_ID"}', \Safe\json_encode($accessToken, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
-        static::assertEquals('ACCESS_TOKEN_ID', $accessToken->getTokenId()->getValue());
+        static::assertEquals('ACCESS_TOKEN_ID', $accessToken->getId()->getValue());
     }
 }
