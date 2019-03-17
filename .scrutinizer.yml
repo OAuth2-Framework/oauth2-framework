@@ -5,6 +5,12 @@ checks:
     php:
         code_rating: true
         duplication: false
+build:
+  nodes:
+    analysis:
+      tests:
+        override:
+          - php-scrutinizer-run
 
 tools:
     php_sim: false
