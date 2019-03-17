@@ -50,7 +50,7 @@ class ClientRepositoryTest extends DatabaseTestCase
     protected function tearDown()
     {
         self::$entityManager->close();
-        self::$entityManager = null;
+        self::$entityManager;
         parent::tearDown();
     }
 }

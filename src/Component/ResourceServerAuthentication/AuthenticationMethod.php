@@ -38,6 +38,8 @@ interface AuthenticationMethod
     /**
      * This method verifies the ResourceServer credentials in the request.
      *
+     * @param mixed $resourceServerCredentials
+     *
      * @return bool Returns true if the  resource server is authenticated, else false
      */
     public function isResourceServerAuthenticated(ResourceServer $resourceServer, $resourceServerCredentials, ServerRequestInterface $request): bool;

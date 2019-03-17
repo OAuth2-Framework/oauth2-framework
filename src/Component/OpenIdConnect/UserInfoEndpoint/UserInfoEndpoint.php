@@ -35,17 +35,17 @@ class UserInfoEndpoint implements MiddlewareInterface
     /**
      * @var JWKSet|null
      */
-    private $signatureKeys = null;
+    private $signatureKeys;
 
     /**
      * @var JWSBuilder|null
      */
-    private $jwsBuilder = null;
+    private $jwsBuilder;
 
     /**
      * @var JWEBuilder|null
      */
-    private $jweBuilder = null;
+    private $jweBuilder;
 
     /**
      * @var ClientRepository
@@ -78,22 +78,19 @@ class UserInfoEndpoint implements MiddlewareInterface
         $this->responseFactory = $responseFactory;
     }
 
-    public function enableSignature(JWSBuilder $jwsBuilder, JWKSet $signatureKeys)
+    public function enableSignature(JWSBuilder $jwsBuilder, JWKSet $signatureKeys): void
     {
         $this->jwsBuilder = $jwsBuilder;
         $this->signatureKeys = $signatureKeys;
     }
 
-    public function enableEncryption(JWEBuilder $jweBuilder)
+    public function enableEncryption(JWEBuilder $jweBuilder): void
     {
         $this->jweBuilder = $jweBuilder;
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        /**
-         * @var AccessToken
-         */
         $accessToken = $request->getAttribute('access_token');
         if (!$accessToken instanceof AccessToken) {
             throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_TOKEN, 'The access token is missing or invalid.');
@@ -125,22 +122,21 @@ class UserInfoEndpoint implements MiddlewareInterface
         if ($client->has('userinfo_signed_response_alg') && null !== $this->jwsBuilder) {
             $isJwt = true;
             $signatureAlgorithm = $client->get('userinfo_signed_response_alg');
-            $idTokenBuilder = $idTokenBuilder->withSignature($this->jwsBuilder, $this->signatureKeys, $signatureAlgorithm);
+            $idTokenBuilder->withSignature($this->jwsBuilder, $this->signatureKeys, $signatureAlgorithm);
         }
         if ($client->has('userinfo_encrypted_response_alg') && $client->has('userinfo_encrypted_response_enc') && null !== $this->jweBuilder) {
             $isJwt = true;
             $keyEncryptionAlgorithm = $client->get('userinfo_encrypted_response_alg');
             $contentEncryptionAlgorithm = $client->get('userinfo_encrypted_response_enc');
-            $idTokenBuilder = $idTokenBuilder->withEncryption($this->jweBuilder, $keyEncryptionAlgorithm, $contentEncryptionAlgorithm);
+            $idTokenBuilder->withEncryption($this->jweBuilder, $keyEncryptionAlgorithm, $contentEncryptionAlgorithm);
         }
-        $idTokenBuilder = $idTokenBuilder->setAccessToken($accessToken);
-        $idTokenBuilder = $idTokenBuilder->withRequestedClaims($requestedClaims);
+        $idTokenBuilder->setAccessToken($accessToken);
+        $idTokenBuilder->withRequestedClaims($requestedClaims);
         if ($client->has('require_auth_time') || $client->has('default_max_age')) {
             $idTokenBuilder->withAuthenticationTime();
         }
-        $idToken = $idTokenBuilder->build();
 
-        return $idToken;
+        return $idTokenBuilder->build();
     }
 
     private function getEndpointClaims(AccessToken $accessToken): array
@@ -177,14 +173,14 @@ class UserInfoEndpoint implements MiddlewareInterface
         return $userAccount;
     }
 
-    private function checkRedirectUri(AccessToken $accessToken)
+    private function checkRedirectUri(AccessToken $accessToken): void
     {
         if (!$accessToken->getMetadata()->has('redirect_uri')) {
             throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_TOKEN, 'The access token has not been issued through the authorization endpoint and cannot be used.');
         }
     }
 
-    private function checkScope(AccessToken $accessToken)
+    private function checkScope(AccessToken $accessToken): void
     {
         if (!$accessToken->getParameter()->has('scope') || !\in_array('openid', \explode(' ', $accessToken->getParameter()->get('scope')), true)) {
             throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_TOKEN, 'The access token does not contain the "openid" scope.');

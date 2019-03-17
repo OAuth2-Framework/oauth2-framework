@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\ClientAuthentication;
 
+use Assert\Assertion;
 use Base64Url\Base64Url;
 use Jose\Component\Checker\ClaimCheckerManager;
 use Jose\Component\Checker\HeaderCheckerManager;
@@ -41,22 +42,22 @@ class ClientAssertionJwt implements AuthenticationMethod
     /**
      * @var TrustedIssuerRepository|null
      */
-    private $trustedIssuerRepository = null;
+    private $trustedIssuerRepository;
 
     /**
      * @var JKUFactory|null
      */
-    private $jkuFactory = null;
+    private $jkuFactory;
 
     /**
      * @var JWELoader|null
      */
-    private $jweLoader = null;
+    private $jweLoader;
 
     /**
      * @var JWKSet|null
      */
-    private $keyEncryptionKeySet = null;
+    private $keyEncryptionKeySet;
 
     /**
      * @var bool
@@ -85,9 +86,7 @@ class ClientAssertionJwt implements AuthenticationMethod
 
     public function __construct(JsonConverter $jsonConverter, JWSVerifier $jwsVerifier, HeaderCheckerManager $headerCheckerManager, ClaimCheckerManager $claimCheckerManager, int $secretLifetime = 0)
     {
-        if ($secretLifetime < 0) {
-            throw new \InvalidArgumentException('The secret lifetime must be at least 0 (= unlimited).');
-        }
+        Assertion::greaterOrEqualThan($secretLifetime, 0, 'The secret lifetime must be at least 0 (= unlimited).');
         $this->jsonConverter = $jsonConverter;
         $this->jwsVerifier = $jwsVerifier;
         $this->headerCheckerManager = $headerCheckerManager;
@@ -141,6 +140,9 @@ class ClientAssertionJwt implements AuthenticationMethod
         return [];
     }
 
+    /**
+     * @param mixed|null $clientCredentials
+     */
     public function findClientIdAndCredentials(ServerRequestInterface $request, &$clientCredentials = null): ?ClientId
     {
         $parameters = RequestBodyParser::parseFormUrlEncoded($request);
@@ -166,13 +168,13 @@ class ClientAssertionJwt implements AuthenticationMethod
             $this->claimCheckerManager->check($claims);
         } catch (OAuth2Error $e) {
             throw $e;
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             throw OAuth2Error::invalidRequest('Unable to load, decrypt or verify the client assertion.', [], $e);
         }
 
         // FIXME: Other claims can be considered as mandatory by the server
         $diff = \array_diff(['iss', 'sub', 'aud', 'exp'], \array_keys($claims));
-        if (!empty($diff)) {
+        if (0 !== \count($diff)) {
             throw OAuth2Error::invalidRequest(\Safe\sprintf('The following claim(s) is/are mandatory: "%s".', \implode(', ', \array_values($diff))));
         }
 
@@ -194,7 +196,7 @@ class ClientAssertionJwt implements AuthenticationMethod
             }
 
             return $jwe->getPayload();
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             if (true === $this->encryptionRequired) {
                 throw OAuth2Error::invalidRequest('The encryption of the assertion is mandatory but the decryption of the assertion failed.', [], $e);
             }
@@ -203,6 +205,9 @@ class ClientAssertionJwt implements AuthenticationMethod
         }
     }
 
+    /**
+     * @param mixed|null $clientCredentials
+     */
     public function isClientAuthenticated(Client $client, $clientCredentials, ServerRequestInterface $request): bool
     {
         try {
@@ -214,7 +219,7 @@ class ClientAssertionJwt implements AuthenticationMethod
             $jwkset = $this->retrieveIssuerKeySet($client, $clientCredentials, $claims);
 
             return $this->jwsVerifier->verifyWithKeySet($clientCredentials, $jwkset, 0);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return false;
         }
     }

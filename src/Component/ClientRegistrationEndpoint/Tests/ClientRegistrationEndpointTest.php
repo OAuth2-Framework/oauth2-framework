@@ -51,7 +51,7 @@ final class ClientRegistrationEndpointTest extends TestCase
     /**
      * @var ClientRegistrationEndpoint|null
      */
-    private $clientRegistrationEndpoint = null;
+    private $clientRegistrationEndpoint;
 
     private function getClientRegistrationEndpoint(): ClientRegistrationEndpoint
     {
@@ -90,7 +90,7 @@ final class ClientRegistrationEndpointTest extends TestCase
     /**
      * @var ResponseFactory|null
      */
-    private $responseFactory = null;
+    private $responseFactory;
 
     private function getResponseFactory(): ResponseFactory
     {

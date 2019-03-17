@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\AuthorizationEndpoint\ResponseType;
 
+use Assert\Assertion;
+
 class ResponseTypeManager
 {
     /**
@@ -32,9 +34,7 @@ class ResponseTypeManager
 
     public function get(string $responseType): ResponseType
     {
-        if (!$this->has($responseType)) {
-            throw new \InvalidArgumentException(\Safe\sprintf('The response type "%s" is not supported.', $responseType));
-        }
+        Assertion::true($this->has($responseType), \Safe\sprintf('The response type "%s" is not supported.', $responseType));
 
         return $this->responseTypes[$responseType];
     }

@@ -94,15 +94,19 @@ class Link implements \JsonSerializable
         $this->properties[$key] = $property;
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         $result = [
             'rel' => $this->rel,
+            'type' => $this->type,
+            'href' => $this->href,
+            'titles' => $this->titles,
+            'properties' => $this->properties,
         ];
 
-        foreach (['type', 'href', 'titles', 'properties'] as $property) {
-            if (!empty($this->$property)) {
-                $result[$property] = $this->$property;
+        foreach ($result as $k => $v) {
+            if (null === $v || (\is_array($v) && 0 === \count($v))) {
+                unset($result[$k]);
             }
         }
 

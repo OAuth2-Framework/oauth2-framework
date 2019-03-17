@@ -53,7 +53,7 @@ final class TokenTypeTest extends TestCase
     public function aTokenTypeManagerCanFindATokenInARequest()
     {
         $additionalCredentialValues = [];
-        $tokenType = null;
+        $tokenType;
         $request = $this->prophesize(ServerRequestInterface::class);
 
         static::assertEquals('__--TOKEN--__', $this->getTokenTypeManager()->findToken($request->reveal(), $additionalCredentialValues, $tokenType));
@@ -62,7 +62,7 @@ final class TokenTypeTest extends TestCase
     /**
      * @var TokenTypeManager|null
      */
-    private $tokenTypeManager = null;
+    private $tokenTypeManager;
 
     private function getTokenTypeManager(): TokenTypeManager
     {

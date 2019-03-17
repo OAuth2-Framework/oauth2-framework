@@ -25,7 +25,7 @@ class UserInfo
     /**
      * @var PairwiseSubjectIdentifierAlgorithm|null
      */
-    private $pairwiseAlgorithm = null;
+    private $pairwiseAlgorithm;
 
     /**
      * @var UserInfoScopeSupportManager
@@ -88,11 +88,7 @@ class UserInfo
     private function getClaimValues(UserAccount $userAccount, array $requestedClaims, ?string $claimsLocales): array
     {
         $result = [];
-        if (null === $claimsLocales) {
-            $claimsLocales = [];
-        } elseif (true === \is_string($claimsLocales)) {
-            $claimsLocales = \array_unique(\explode(' ', $claimsLocales));
-        }
+        $claimsLocales = null === $claimsLocales ? [] : \array_unique(\explode(' ', $claimsLocales));
         $result = $this->claimManager->getUserInfo($userAccount, $requestedClaims, $claimsLocales);
         /*foreach ($requestedClaims as $claim => $config) {
             foreach ($claimsLocales as $claims_locale) {
@@ -138,7 +134,7 @@ class UserInfo
         return null;
     }
 
-    public function enablePairwiseSubject(PairwiseSubjectIdentifierAlgorithm $pairwiseAlgorithm)
+    public function enablePairwiseSubject(PairwiseSubjectIdentifierAlgorithm $pairwiseAlgorithm): void
     {
         $this->pairwiseAlgorithm = $pairwiseAlgorithm;
     }

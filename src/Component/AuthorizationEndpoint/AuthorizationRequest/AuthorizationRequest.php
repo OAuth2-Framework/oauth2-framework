@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest;
 
+use Assert\Assertion;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\ResponseMode;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType\ResponseType;
 use OAuth2Framework\Component\Core\Client\Client;
@@ -36,7 +37,7 @@ class AuthorizationRequest
     /**
      * @var UserAccount|null
      */
-    private $userAccount = null;
+    private $userAccount;
 
     /**
      * @var DataBag
@@ -46,17 +47,17 @@ class AuthorizationRequest
     /**
      * @var TokenType|null
      */
-    private $tokenType = null;
+    private $tokenType;
 
     /**
      * @var ResponseType]
      */
-    private $responseType = null;
+    private $responseType;
 
     /**
      * @var ResponseMode|null
      */
-    private $responseMode = null;
+    private $responseMode;
 
     /**
      * @var array
@@ -66,7 +67,7 @@ class AuthorizationRequest
     /**
      * @var string|null
      */
-    private $redirectUri = null;
+    private $redirectUri;
 
     /**
      * @var array
@@ -105,11 +106,12 @@ class AuthorizationRequest
         return \array_key_exists($param, $this->queryParameters);
     }
 
+    /**
+     * @return mixed
+     */
     public function getQueryParam(string $param)
     {
-        if (!$this->hasQueryParam($param)) {
-            throw new \InvalidArgumentException(\Safe\sprintf('Invalid parameter "%s".', $param));
-        }
+        Assertion::true($this->hasQueryParam($param), \Safe\sprintf('Invalid parameter "%s".', $param));
 
         return $this->queryParameters[$param];
     }
@@ -144,8 +146,15 @@ class AuthorizationRequest
         $this->responseMode = $responseMode;
     }
 
-    public function getResponseMode(): ?ResponseMode
+    public function hasResponseMode(): bool
     {
+        return null === $this->responseMode;
+    }
+
+    public function getResponseMode(): ResponseMode
+    {
+        Assertion::notNull($this->responseMode, 'No response mode');
+
         return $this->responseMode;
     }
 
@@ -154,8 +163,15 @@ class AuthorizationRequest
         $this->redirectUri = $redirectUri;
     }
 
-    public function getRedirectUri(): ?string
+    public function hasRedirectUri(): bool
     {
+        return null !== $this->redirectUri;
+    }
+
+    public function getRedirectUri(): string
+    {
+        Assertion::notNull($this->redirectUri, 'internal_server_error');
+
         return $this->redirectUri;
     }
 
@@ -164,11 +180,21 @@ class AuthorizationRequest
         $this->userAccount = $userAccount;
     }
 
-    public function getUserAccount(): ?UserAccount
+    public function hasUserAccount(): bool
     {
+        return null !== $this->userAccount;
+    }
+
+    public function getUserAccount(): UserAccount
+    {
+        Assertion::notNull($this->userAccount, 'internal_server_error');
+
         return $this->userAccount;
     }
 
+    /**
+     * @param mixed $value
+     */
     public function setResponseParameter(string $responseParameter, $value): void
     {
         $this->responseParameters[$responseParameter] = $value;
@@ -179,11 +205,12 @@ class AuthorizationRequest
         return $this->responseParameters;
     }
 
+    /**
+     * @return mixed
+     */
     public function getResponseParameter(string $param)
     {
-        if (!$this->hasResponseParameter($param)) {
-            throw new \InvalidArgumentException(\Safe\sprintf('Invalid response parameter "%s".', $param));
-        }
+        Assertion::true($this->hasResponseParameter($param), \Safe\sprintf('Invalid response parameter "%s".', $param));
 
         return $this->getResponseParameters()[$param];
     }
@@ -193,6 +220,9 @@ class AuthorizationRequest
         return \array_key_exists($param, $this->getResponseParameters());
     }
 
+    /**
+     * @param mixed $value
+     */
     public function setResponseHeader(string $responseHeader, $value): void
     {
         $this->responseHeaders[$responseHeader] = $value;
@@ -258,6 +288,9 @@ class AuthorizationRequest
         $this->resourceServer = $resourceServer;
     }
 
+    /**
+     * @param mixed $value
+     */
     public function setConsentScreenOption(string $option, $value): void
     {
         $this->consentScreenOptions[$option] = $value;

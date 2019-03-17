@@ -95,6 +95,9 @@ class AuthenticationMethodManager
         return $resourceServerId;
     }
 
+    /**
+     * @param mixed $resourceServerCredentials
+     */
     public function isResourceServerAuthenticated(ServerRequestInterface $request, ResourceServer $resourceServer, AuthenticationMethod $authenticationMethod, $resourceServerCredentials): bool
     {
         if (\in_array($resourceServer->getAuthenticationMethod(), $authenticationMethod->getSupportedMethods(), true)) {

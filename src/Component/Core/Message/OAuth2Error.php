@@ -76,7 +76,7 @@ class OAuth2Error extends \Exception
      */
     private $data;
 
-    public function __construct(int $code, string $error, ?string $errorDescription, array $data = [], ?\Exception $previous = null)
+    public function __construct(int $code, string $error, ?string $errorDescription, array $data = [], ?\Throwable $previous = null)
     {
         $this->errorDescription = $errorDescription;
         $this->data = $data;

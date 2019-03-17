@@ -48,12 +48,15 @@ final class ClientSecretBasic implements AuthenticationMethod
         ];
     }
 
-    public function findClientIdAndCredentials(ServerRequestInterface $request, &$client_credentials = null): ?ClientId
+    /**
+     * @param mixed|null $clientCredentials
+     */
+    public function findClientIdAndCredentials(ServerRequestInterface $request, &$clientCredentials = null): ?ClientId
     {
         $authorization_headers = $request->getHeader('Authorization');
         if (0 < \count($authorization_headers)) {
             foreach ($authorization_headers as $authorization_header) {
-                $clientId = $this->findClientIdAndCredentialsInAuthorizationHeader($authorization_header, $client_credentials);
+                $clientId = $this->findClientIdAndCredentialsInAuthorizationHeader($authorization_header, $clientCredentials);
                 if (null !== $clientId) {
                     return $clientId;
                 }
@@ -63,12 +66,12 @@ final class ClientSecretBasic implements AuthenticationMethod
         return null;
     }
 
-    private function findClientIdAndCredentialsInAuthorizationHeader(string $authorization_header, ?string &$client_credentials = null): ?ClientId
+    private function findClientIdAndCredentialsInAuthorizationHeader(string $authorization_header, ?string &$clientCredentials = null): ?ClientId
     {
         if ('basic ' === \mb_strtolower(\mb_substr($authorization_header, 0, 6, '8bit'), '8bit')) {
             list($client_id, $client_secret) = \explode(':', \Safe\base64_decode(\mb_substr($authorization_header, 6, \mb_strlen($authorization_header, '8bit') - 6, '8bit'), true));
             if (!empty($client_id) && !empty($client_secret)) {
-                $client_credentials = $client_secret;
+                $clientCredentials = $client_secret;
 
                 return new ClientId($client_id);
             }
@@ -85,9 +88,12 @@ final class ClientSecretBasic implements AuthenticationMethod
         return $validated_parameters;
     }
 
-    public function isClientAuthenticated(Client $client, $client_credentials, ServerRequestInterface $request): bool
+    /**
+     * @param mixed|null $clientCredentials
+     */
+    public function isClientAuthenticated(Client $client, $clientCredentials, ServerRequestInterface $request): bool
     {
-        return \hash_equals($client->get('client_secret'), $client_credentials);
+        return \hash_equals($client->get('client_secret'), $clientCredentials);
     }
 
     public function getSupportedMethods(): array

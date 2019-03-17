@@ -51,7 +51,7 @@ abstract class AbstractInitialAccessToken implements InitialAccessToken
 
     public function hasExpired(): bool
     {
-        return null !== $this->getExpiresAt() ? $this->expiresAt->getTimestamp() < \time() : false;
+        return null !== $this->expiresAt ? $this->expiresAt->getTimestamp() < \time() : false;
     }
 
     public function isRevoked(): bool

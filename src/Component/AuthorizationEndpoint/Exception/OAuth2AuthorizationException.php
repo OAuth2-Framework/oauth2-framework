@@ -27,7 +27,7 @@ class OAuth2AuthorizationException extends \Exception
      */
     private $errorDescription;
 
-    public function __construct(string $error, ?string $errorDescription, AuthorizationRequest $authorization, ?\Exception $previous = null)
+    public function __construct(string $error, ?string $errorDescription, AuthorizationRequest $authorization, ?\Throwable $previous = null)
     {
         $this->authorization = $authorization;
         $this->errorDescription = $errorDescription;

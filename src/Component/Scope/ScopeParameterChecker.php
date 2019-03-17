@@ -39,7 +39,7 @@ class ScopeParameterChecker implements ParameterChecker
     {
         $requestedScope = $this->getRequestedScope($authorization);
         $requestedScope = $this->scopePolicyManager->apply($requestedScope, $authorization->getClient());
-        if (empty($requestedScope)) {
+        if ('' === $requestedScope) {
             return;
         }
         $scopes = \explode(' ', $requestedScope);

@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest;
 
+use Assert\Assertion;
 use Base64Url\Base64Url;
 use Http\Client\HttpClient;
 use Jose\Component\Checker\ClaimCheckerManager;
@@ -51,7 +52,7 @@ class AuthorizationRequestLoader
     /**
      * @var JWKSet
      */
-    private $keyEncryptionKeySet = null;
+    private $keyEncryptionKeySet;
 
     /**
      * @var bool
@@ -139,30 +140,24 @@ class AuthorizationRequestLoader
         $this->requestObjectAllowed = true;
     }
 
-    public function enableRequestObjectReferenceSupport(HttpClient $client, bool $requireRequestUriRegistration)
+    public function enableRequestObjectReferenceSupport(HttpClient $client, bool $requireRequestUriRegistration): void
     {
-        if (!$this->isRequestObjectSupportEnabled()) {
-            throw new \InvalidArgumentException('Request object support must be enabled first.');
-        }
+        Assertion::true($this->isRequestObjectSupportEnabled(), 'Request object support must be enabled first.');
         $this->requestObjectReferenceAllowed = true;
         $this->requireRequestUriRegistration = $requireRequestUriRegistration;
         $this->client = $client;
     }
 
-    public function enableEncryptedRequestObjectSupport(JWELoader $jweLoader, JWKSet $keyEncryptionKeySet, bool $requireEncryption)
+    public function enableEncryptedRequestObjectSupport(JWELoader $jweLoader, JWKSet $keyEncryptionKeySet, bool $requireEncryption): void
     {
-        if (!$this->isRequestObjectSupportEnabled()) {
-            throw new \InvalidArgumentException('Request object support must be enabled first.');
-        }
-        if (0 === $keyEncryptionKeySet->count()) {
-            throw new \InvalidArgumentException('The encryption key set must have at least one key.');
-        }
+        Assertion::true($this->isRequestObjectSupportEnabled(), 'Request object support must be enabled first.');
+        Assertion::greaterThan($keyEncryptionKeySet->count(), 0, 'The encryption key set must have at least one key.');
         $this->jweLoader = $jweLoader;
         $this->requireEncryption = $requireEncryption;
         $this->keyEncryptionKeySet = $keyEncryptionKeySet;
     }
 
-    public function enableJkuSupport(JKUFactory $jkuFactory)
+    public function enableJkuSupport(JKUFactory $jkuFactory): void
     {
         $this->jkuFactory = $jkuFactory;
     }
@@ -220,12 +215,10 @@ class AuthorizationRequestLoader
         return $params;
     }
 
-    private function checkIssuerAndClientId(array $params)
+    private function checkIssuerAndClientId(array $params): void
     {
         if (\array_key_exists('iss', $params) && \array_key_exists('client_id', $params)) {
-            if ($params['iss'] !== $params['client_id']) {
-                throw new \InvalidArgumentException('The issuer of the request object is not the client who requests the authorization.');
-            }
+            Assertion::eq($params['iss'], $params['client_id'], 'The issuer of the request object is not the client who requests the authorization.');
         }
     }
 
@@ -265,23 +258,19 @@ class AuthorizationRequestLoader
             $claims = $jsonConverter->decode(
                 $jwt->getPayload()
             );
-            if (!\is_array($claims)) {
-                throw new \InvalidArgumentException('Invalid assertion. The payload must contain claims.');
-            }
+            Assertion::isArray($claims, 'Invalid assertion. The payload must contain claims.');
             $this->claimCheckerManager->check($claims);
             $parameters = \array_merge($params, $claims);
             $client = $this->getClient($parameters);
 
             $public_key_set = $this->getClientKeySet($client);
             $this->checkAlgorithms($jwt, $client);
-            if (!$this->jwsVerifier->verifyWithKeySet($jwt, $public_key_set, 0)) { //FIXME: header checker should be used
-                throw new \InvalidArgumentException('The verification of the request object failed.');
-            }
+            Assertion::true($this->jwsVerifier->verifyWithKeySet($jwt, $public_key_set, 0), 'The verification of the request object failed.'); //FIXME: header checker should be used
 
             return $parameters;
         } catch (OAuth2Error $e) {
             throw $e;
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             throw OAuth2Error::invalidRequestObject($e->getMessage(), [], $e);
         }
     }
@@ -294,14 +283,12 @@ class AuthorizationRequestLoader
 
         try {
             $jwe = $this->jweLoader->loadAndDecryptWithKeySet($request, $this->keyEncryptionKeySet, $recipient);
-            if (1 !== $jwe->countRecipients()) {
-                throw new \InvalidArgumentException('The request must use the compact serialization mode.');
-            }
+            Assertion::eq(1, $jwe->countRecipients(), 'The request must use the compact serialization mode.');
 
             return $jwe->getPayload();
         } catch (OAuth2Error $e) {
             throw $e;
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             if (true === $this->requireEncryption) {
                 throw OAuth2Error::invalidRequestObject($e->getMessage(), [], $e);
             }
@@ -313,8 +300,9 @@ class AuthorizationRequestLoader
     private function checkAlgorithms(JWS $jws, Client $client)
     {
         $signatureAlgorithm = $jws->getSignature(0)->getProtectedHeaderParameter('alg');
-        if ($client->has('request_object_signing_alg') && $signatureAlgorithm !== $client->get('request_object_signing_alg')) {
-            throw new \InvalidArgumentException('Request Object signature algorithm not allowed for the client.');
+        Assertion::string($signatureAlgorithm, 'Invalid algorithm parameter in Request Object.');
+        if ($client->has('request_object_signing_alg')) {
+            Assertion::eq($signatureAlgorithm, $client->get('request_object_signing_alg'), 'Request Object signature algorithm not allowed for the client.');
         }
 
         $this->checkUsedAlgorithm($signatureAlgorithm);
@@ -323,25 +311,16 @@ class AuthorizationRequestLoader
     private function checkUsedAlgorithm(string $algorithm): void
     {
         $supportedAlgorithms = $this->getSupportedSignatureAlgorithms();
-        if (!\in_array($algorithm, $supportedAlgorithms, true)) {
-            throw new \InvalidArgumentException(\Safe\sprintf('The algorithm "%s" is not allowed for request object signatures. Please use one of the following algorithm(s): %s', $algorithm, \implode(', ', $supportedAlgorithms)));
-        }
+        Assertion::inArray($algorithm, $supportedAlgorithms, \Safe\sprintf('The algorithm "%s" is not allowed for request object signatures. Please use one of the following algorithm(s): %s', $algorithm, \implode(', ', $supportedAlgorithms)));
     }
 
     private function downloadContent(string $url): string
     {
         $request = new Request($url, 'GET');
         $response = $this->client->sendRequest($request);
-        if (200 !== $response->getStatusCode()) {
-            throw new \InvalidArgumentException();
-        }
+        Assertion::eq(200, $response->getStatusCode(), 'Unable to load the request object');
 
-        $content = $response->getBody()->getContents();
-        if (!\is_string($content)) {
-            throw OAuth2Error::invalidRequestUri('Unable to get content.');
-        }
-
-        return $content;
+        return $response->getBody()->getContents();
     }
 
     private function getClient(array $params): Client
@@ -385,9 +364,7 @@ class AuthorizationRequestLoader
             ]));
         }
 
-        if (0 === $keyset->count()) {
-            throw new \InvalidArgumentException('The client has no key or key set.');
-        }
+        Assertion::greaterThan($keyset->count(), 0, 'The client has no key or key set.');
 
         return $keyset;
     }

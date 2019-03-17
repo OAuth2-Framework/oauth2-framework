@@ -221,7 +221,7 @@ final class RefreshTokenGrantTypeTest extends TestCase
     /**
      * @var RefreshTokenGrantType|null
      */
-    private $grantType = null;
+    private $grantType;
 
     private function getGrantType(): RefreshTokenGrantType
     {

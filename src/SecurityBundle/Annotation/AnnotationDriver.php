@@ -93,7 +93,7 @@ class AnnotationDriver
         foreach ($this->all() as $checker) {
             try {
                 $checker->check($token, $configuration);
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 $this->createAccessDeniedException($event, $e->getMessage(), $configuration, $e);
             }
         }

@@ -72,7 +72,7 @@ final class GrantTypesRule implements Rule
         foreach ($parameters->get('grant_types') as $grantType) {
             $type = $this->grantTypeManager->get($grantType);
             $diff = \array_diff($type->associatedResponseTypes(), $list);
-            if (!empty($diff)) {
+            if (0 !== \count($diff)) {
                 throw new \InvalidArgumentException(\Safe\sprintf('The grant type "%s" requires the following response type(s): %s.', $grantType, \implode(', ', $diff)));
             }
         }

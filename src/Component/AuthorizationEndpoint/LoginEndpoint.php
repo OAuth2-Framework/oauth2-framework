@@ -53,7 +53,7 @@ abstract class LoginEndpoint extends AbstractEndpoint
             return $this->loginHandler->process($request, $authorizationId, $authorization);
         } catch (OAuth2Error $e) {
             throw new OAuth2AuthorizationException($e->getMessage(), $e->getErrorDescription(), $authorization);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             throw new OAuth2AuthorizationException(OAuth2Error::ERROR_INVALID_REQUEST, $e->getMessage(), $authorization);
         }
     }

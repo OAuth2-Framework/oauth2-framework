@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\ClientAuthentication;
 
+use Assert\Assertion;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
@@ -54,9 +55,7 @@ class AuthenticationMethodManager
 
     public function get(string $name): AuthenticationMethod
     {
-        if (!$this->has($name)) {
-            throw new \InvalidArgumentException(\Safe\sprintf('The token endpoint authentication method "%s" is not supported. Please use one of the following values: %s', $name, \implode(', ', $this->list())));
-        }
+        Assertion::true($this->has($name), \Safe\sprintf('The token endpoint authentication method "%s" is not supported. Please use one of the following values: %s', $name, \implode(', ', $this->list())));
         $class = $this->names[$name];
 
         return $this->methods[$class];

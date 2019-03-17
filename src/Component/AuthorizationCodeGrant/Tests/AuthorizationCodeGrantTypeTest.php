@@ -135,7 +135,7 @@ final class AuthorizationCodeGrantTypeTest extends TestCase
     /**
      * @var AuthorizationCodeGrantType|null
      */
-    private $grantType = null;
+    private $grantType;
 
     private function getGrantType(): AuthorizationCodeGrantType
     {
@@ -173,7 +173,7 @@ final class AuthorizationCodeGrantTypeTest extends TestCase
     /**
      * @var PKCEMethodManager|null
      */
-    private $pkceMethodManager = null;
+    private $pkceMethodManager;
 
     private function getPkceMethodManager(): PKCEMethodManager
     {

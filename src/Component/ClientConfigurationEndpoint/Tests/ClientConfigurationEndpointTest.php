@@ -100,7 +100,7 @@ final class ClientConfigurationEndpointTest extends TestCase
     /**
      * @var ClientConfigurationEndpoint|null
      */
-    private $clientConfigurationEndpoint = null;
+    private $clientConfigurationEndpoint;
 
     private function getClientConfigurationEndpoint(ClientRepository $clientRepository): ClientConfigurationEndpoint
     {
@@ -119,7 +119,7 @@ final class ClientConfigurationEndpointTest extends TestCase
     /**
      * @var ResponseFactory|null
      */
-    private $responseFactory = null;
+    private $responseFactory;
 
     private function getResponseFactory(): ResponseFactory
     {

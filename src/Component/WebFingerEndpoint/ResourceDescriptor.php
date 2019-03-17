@@ -92,13 +92,18 @@ class ResourceDescriptor implements \JsonSerializable
         $this->links[$key] = $link;
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
-        $result = [];
+        $result = [
+            'subject' => $this->subject,
+            'aliases' => $this->aliases,
+            'properties' => $this->properties,
+            'links' => $this->links,
+        ];
 
-        foreach (['subject', 'aliases', 'properties', 'links'] as $property) {
-            if (!empty($this->$property)) {
-                $result[$property] = $this->$property;
+        foreach ($result as $k => $v) {
+            if (null === $v || (\is_array($v) && 0 === \count($v))) {
+                unset($result[$k]);
             }
         }
 

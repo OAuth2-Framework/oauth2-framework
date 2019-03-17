@@ -36,7 +36,7 @@ final class OAuth2Provider implements AuthenticationProviderInterface
             $token->setAuthenticated(true);
 
             return $token;
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             throw new AuthenticationException($e->getMessage(), $e->getCode(), $e);
         }
     }

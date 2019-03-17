@@ -101,7 +101,7 @@ final class TokenRevocationPostEndpointTest extends TestCase
     /**
      * @var TokenTypeHintManager|null
      */
-    private $tokenTypeHintManager = null;
+    private $tokenTypeHintManager;
 
     private function getTokenTypeHintManager(): TokenTypeHintManager
     {
@@ -125,7 +125,7 @@ final class TokenRevocationPostEndpointTest extends TestCase
     /**
      * @var TokenRevocationPostEndpoint|null
      */
-    private $tokenRevocationEndpoint = null;
+    private $tokenRevocationEndpoint;
 
     private function getTokenRevocationPostEndpoint(): TokenRevocationPostEndpoint
     {
@@ -142,7 +142,7 @@ final class TokenRevocationPostEndpointTest extends TestCase
     /**
      * @var ResponseFactory|null
      */
-    private $responseFactory = null;
+    private $responseFactory;
 
     private function getResponseFactory(): ResponseFactory
     {
@@ -156,7 +156,7 @@ final class TokenRevocationPostEndpointTest extends TestCase
     /**
      * @var Client|null
      */
-    private $client = null;
+    private $client;
 
     private function getClient(): Client
     {

@@ -54,7 +54,7 @@ class JwksRule implements Rule
 
             try {
                 $jwks = $this->jkuFactory->loadFromUrl($commandParameters->get('jwks_uri'));
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 throw new \InvalidArgumentException('The parameter "jwks_uri" must be a valid uri to a JWKSet.', 0, $e);
             }
             if (0 === $jwks->count()) {

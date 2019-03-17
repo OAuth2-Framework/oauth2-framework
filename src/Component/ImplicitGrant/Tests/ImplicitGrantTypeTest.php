@@ -112,7 +112,7 @@ final class ImplicitGrantTypeTest extends TestCase
     /**
      * @var ImplicitGrantType|null
      */
-    private $grantType = null;
+    private $grantType;
 
     private function getGrantType(): ImplicitGrantType
     {

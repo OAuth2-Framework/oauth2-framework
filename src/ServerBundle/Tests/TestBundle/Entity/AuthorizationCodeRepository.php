@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Tests\TestBundle\Entity;
 
+use Assert\Assertion;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCode as CoreAuthorizationCode;
@@ -41,9 +42,7 @@ final class AuthorizationCodeRepository implements AuthorizationCodeRepositoryIn
 
     public function save(CoreAuthorizationCode $accessToken): void
     {
-        if (!$accessToken instanceof AuthorizationCode) {
-            throw new \InvalidArgumentException('Unsupported authorization code class');
-        }
+        Assertion::isInstanceOf($accessToken, AuthorizationCode::class, 'Unsupported authorization code class');
         $this->entityManager->persist($accessToken);
         $this->entityManager->flush();
     }

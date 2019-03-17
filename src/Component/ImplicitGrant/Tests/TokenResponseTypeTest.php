@@ -76,7 +76,7 @@ final class TokenResponseTypeTest extends TestCase
     /**
      * @var TokenResponseType|null
      */
-    private $grantType = null;
+    private $grantType;
 
     private function getResponseType(): TokenResponseType
     {

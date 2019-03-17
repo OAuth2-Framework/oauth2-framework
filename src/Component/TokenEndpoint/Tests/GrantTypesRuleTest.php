@@ -124,7 +124,7 @@ final class GrantTypesRuleTest extends TestCase
     /**
      * @var GrantTypesRule|null
      */
-    private $grantTypesRule = null;
+    private $grantTypesRule;
 
     private function getGrantTypesRule(): GrantTypesRule
     {

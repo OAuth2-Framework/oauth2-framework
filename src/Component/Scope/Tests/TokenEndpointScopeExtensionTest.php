@@ -166,7 +166,7 @@ final class TokenEndpointScopeExtensionTest extends TestCase
     /**
      * @var TokenEndpointScopeExtension|null
      */
-    private $extension = null;
+    private $extension;
 
     private function getExtension(): TokenEndpointScopeExtension
     {

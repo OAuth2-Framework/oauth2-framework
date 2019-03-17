@@ -69,7 +69,7 @@ final class RefreshTokenRevocationTypeHintTest extends TestCase
     /**
      * @var RefreshTokenRevocationTypeHint|null
      */
-    private $refreshTokenTypeHint = null;
+    private $refreshTokenTypeHint;
 
     public function getRefreshTokenTypeHint(): RefreshTokenRevocationTypeHint
     {

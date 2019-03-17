@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\TokenEndpoint;
 
+use Assert\Assertion;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwnerId;
@@ -61,8 +62,15 @@ class GrantTypeData
         $this->client = $client;
     }
 
-    public function getClient(): ?Client
+    public function hasClient(): bool
     {
+        return null !== $this->client;
+    }
+
+    public function getClient(): Client
+    {
+        Assertion::notNull($this->client, 'internal_server_error');
+
         return $this->client;
     }
 
@@ -71,8 +79,15 @@ class GrantTypeData
         $this->resourceOwnerId = $resourceOwnerId;
     }
 
-    public function getResourceOwnerId(): ?ResourceOwnerId
+    public function hasResourceOwnerId(): bool
     {
+        return null !== $this->resourceOwnerId;
+    }
+
+    public function getResourceOwnerId(): ResourceOwnerId
+    {
+        Assertion::notNull($this->resourceOwnerId, 'internal_server_error');
+
         return $this->resourceOwnerId;
     }
 }

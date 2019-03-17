@@ -88,7 +88,7 @@ final class SoftwareRule implements Rule
     private function loadSoftwareStatement(string $software_statement): array
     {
         try {
-            $signatureVerified = null;
+            $signatureVerified;
             $jws = $this->jwsLoader->loadAndVerifyWithKeySet($software_statement, $this->softwareStatementSignatureKeySet, $signatureVerified);
             if (!\in_array($jws->getSignature($signatureVerified)->getProtectedHeaderParameter('alg'), $this->allowedSignatureAlgorithms, true)) {
                 throw new \InvalidArgumentException('Invalid Software Statement.');
@@ -99,7 +99,7 @@ final class SoftwareRule implements Rule
             }
 
             return $claims;
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             throw new \InvalidArgumentException('Invalid Software Statement.', $e->getCode(), $e);
         }
     }

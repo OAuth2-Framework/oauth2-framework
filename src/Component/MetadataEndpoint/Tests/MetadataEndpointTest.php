@@ -55,7 +55,7 @@ final class MetadataEndpointTest extends TestCase
     /**
      * @var MetadataEndpoint|null
      */
-    private $metadataEndpoint = null;
+    private $metadataEndpoint;
 
     private function getMetadataEndpoint(): MetadataEndpoint
     {
@@ -83,7 +83,7 @@ final class MetadataEndpointTest extends TestCase
     /**
      * @var ResponseFactory|null
      */
-    private $responseFactory = null;
+    private $responseFactory;
 
     private function getResponseFactory(): ResponseFactory
     {

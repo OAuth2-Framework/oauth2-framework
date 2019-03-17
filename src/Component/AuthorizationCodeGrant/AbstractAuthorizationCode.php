@@ -13,9 +13,9 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\AuthorizationCodeGrant;
 
+use Assert\Assertion;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
-use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwnerId;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 
@@ -42,7 +42,7 @@ abstract class AbstractAuthorizationCode implements AuthorizationCode
     private $expiresAt;
 
     /**
-     * @var ResourceOwnerId
+     * @var UserAccountId
      */
     private $userAccountId;
 
@@ -102,9 +102,7 @@ abstract class AbstractAuthorizationCode implements AuthorizationCode
 
     public function getQueryParameter(string $key)
     {
-        if (!$this->hasQueryParameter($key)) {
-            throw new \InvalidArgumentException(\Safe\sprintf('Query parameter with key "%s" does not exist.', $key));
-        }
+        Assertion::true($this->hasQueryParameter($key), \Safe\sprintf('Query parameter with key "%s" does not exist.', $key));
 
         return $this->queryParameters[$key];
     }
@@ -163,15 +161,10 @@ abstract class AbstractAuthorizationCode implements AuthorizationCode
 
     public function getExpiresIn(): int
     {
-        $expiresAt = $this->expiresAt;
-        if (null === $expiresAt) {
-            return 0;
-        }
-
         return $this->expiresAt->getTimestamp() - \time() < 0 ? 0 : $this->expiresAt->getTimestamp() - \time();
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         $data = [
             'auth_code_id' => $this->getId()->getValue(),
@@ -184,7 +177,7 @@ abstract class AbstractAuthorizationCode implements AuthorizationCode
             'metadatas' => (object) $this->getMetadata()->all(),
             'resource_owner_id' => $this->getUserAccountId()->getValue(),
             'resource_owner_class' => \get_class($this->getUserAccountId()),
-            'resource_server_id' => $this->getResourceServerId() ? $this->getResourceServerId()->getValue() : null,
+            'resource_server_id' => null !== $this->getResourceServerId() ? $this->getResourceServerId()->getValue() : null,
         ];
 
         return $data;

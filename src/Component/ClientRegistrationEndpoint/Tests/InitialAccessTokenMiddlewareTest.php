@@ -140,7 +140,7 @@ final class InitialAccessTokenMiddlewareTest extends TestCase
     /**
      * @var InitialAccessTokenMiddleware|null
      */
-    private $middleware = null;
+    private $middleware;
 
     private function getMiddleware(): InitialAccessTokenMiddleware
     {
@@ -158,7 +158,7 @@ final class InitialAccessTokenMiddlewareTest extends TestCase
     /**
      * @var InitialAccessTokenRepository|null
      */
-    private $repository = null;
+    private $repository;
 
     private function getRepository(): InitialAccessTokenRepository
     {

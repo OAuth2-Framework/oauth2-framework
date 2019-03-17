@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\AuthorizationEndpoint\Rule;
 
+use Assert\Assertion;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType\ResponseTypeManager;
 use OAuth2Framework\Component\ClientRule\Rule;
 use OAuth2Framework\Component\ClientRule\RuleHandler;
@@ -44,15 +45,10 @@ final class ResponseTypesRule implements Rule
         return $validatedParameters;
     }
 
-    private function checkResponseTypes(DataBag $parameters)
+    private function checkResponseTypes(DataBag $parameters): void
     {
-        if (!\is_array($parameters->get('response_types'))) {
-            throw new \InvalidArgumentException('The parameter "response_types" must be an array of strings.');
-        }
-        foreach ($parameters->get('response_types') as $grant_type) {
-            if (!\is_string($grant_type)) {
-                throw new \InvalidArgumentException('The parameter "response_types" must be an array of strings.');
-            }
-        }
+        $responseTypes = $parameters->get('response_types');
+        Assertion::isArray($responseTypes, 'The parameter "response_types" must be an array of strings.');
+        Assertion::allString($responseTypes, 'The parameter "response_types" must be an array of strings.');
     }
 }

@@ -148,7 +148,7 @@ abstract class AbstractRefreshToken implements RefreshToken
         return $this->expiresAt->getTimestamp() - \time() < 0 ? 0 : $this->expiresAt->getTimestamp() - \time();
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         $data = [
             'refresh_token_id' => $this->getId()->getValue(),

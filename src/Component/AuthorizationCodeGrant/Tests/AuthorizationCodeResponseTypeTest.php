@@ -74,7 +74,7 @@ final class AuthorizationCodeResponseTypeTest extends TestCase
     /**
      * @var AuthorizationCodeResponseType|null
      */
-    private $grantType = null;
+    private $grantType;
 
     private function getResponseType(): AuthorizationCodeResponseType
     {
@@ -110,7 +110,7 @@ final class AuthorizationCodeResponseTypeTest extends TestCase
     /**
      * @var PKCEMethodManager|null
      */
-    private $pkceMethodManager = null;
+    private $pkceMethodManager;
 
     private function getPkceMethodManager(): PKCEMethodManager
     {

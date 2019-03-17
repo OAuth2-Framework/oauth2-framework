@@ -19,7 +19,7 @@ final class MaxAgeParameterAuthenticationChecker implements UserAuthenticationCh
 {
     public function isAuthenticationNeeded(AuthorizationRequest $authorization): bool
     {
-        if (null === $authorization->getUserAccount()) {
+        if (!$authorization->hasUserAccount()) {
             return true;
         }
 

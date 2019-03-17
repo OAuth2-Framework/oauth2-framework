@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\WebFingerEndpoint\IdentifierResolver;
 
+use Assert\Assertion;
 use function League\Uri\parse;
 
 final class UriResolver implements IdentifierResolver
@@ -27,9 +28,8 @@ final class UriResolver implements IdentifierResolver
     public function resolve(string $resource): Identifier
     {
         $uri = parse($resource);
-        if (!\is_string($uri['user']) || !\is_string($uri['host'])) {
-            throw new \InvalidArgumentException('Invalid resource.');
-        }
+        Assertion::string($uri['user'], 'Invalid resource.');
+        Assertion::string($uri['host'], 'Invalid resource.');
 
         return new Identifier($uri['user'], $uri['host'], $uri['port']);
     }

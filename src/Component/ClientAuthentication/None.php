@@ -26,6 +26,9 @@ final class None implements AuthenticationMethod
         return [];
     }
 
+    /**
+     * @param mixed|null $clientCredentials
+     */
     public function findClientIdAndCredentials(ServerRequestInterface $request, &$clientCredentials = null): ?ClientId
     {
         $parameters = RequestBodyParser::parseFormUrlEncoded($request);
@@ -41,6 +44,9 @@ final class None implements AuthenticationMethod
         return $validated_parameters;
     }
 
+    /**
+     * @param mixed|null $clientCredentials
+     */
     public function isClientAuthenticated(Client $client, $clientCredentials, ServerRequestInterface $request): bool
     {
         return true;

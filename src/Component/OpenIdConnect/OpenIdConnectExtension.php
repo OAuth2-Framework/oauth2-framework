@@ -30,17 +30,17 @@ class OpenIdConnectExtension implements TokenEndpointExtension
     /**
      * @var JWKSet|null
      */
-    private $signatureKeys = null;
+    private $signatureKeys;
 
     /**
      * @var JWSBuilder|null
      */
-    private $jwsBuilder = null;
+    private $jwsBuilder;
 
     /**
      * @var JWEBuilder|null
      */
-    private $jweBuilder = null;
+    private $jweBuilder;
 
     /**
      * @var IdTokenBuilderFactory
@@ -60,7 +60,7 @@ class OpenIdConnectExtension implements TokenEndpointExtension
         $this->defaultSignatureAlgorithm = $defaultSignatureAlgorithm;
     }
 
-    public function enableEncryption(JWEBuilder $jweBuilder)
+    public function enableEncryption(JWEBuilder $jweBuilder): void
     {
         $this->jweBuilder = $jweBuilder;
     }

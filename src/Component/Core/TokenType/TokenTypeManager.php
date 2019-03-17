@@ -25,7 +25,7 @@ class TokenTypeManager
     /**
      * @var string|null
      */
-    private $defaultTokenType = null;
+    private $defaultTokenType;
 
     public function add(TokenType $tokenType, bool $default = false): void
     {

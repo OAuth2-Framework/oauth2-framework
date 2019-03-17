@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\AuthorizationEndpoint;
 
+use Assert\Assertion;
 use Http\Message\ResponseFactory;
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
 use Psr\Http\Message\ResponseInterface;
@@ -41,14 +42,12 @@ abstract class AbstractEndpoint implements MiddlewareInterface
     protected function getAuthorizationId(ServerRequestInterface $request): string
     {
         $authorizationId = $request->getAttribute('authorization_id');
-        if (empty($authorizationId)) {
-            throw new \InvalidArgumentException('Invalid authorization ID.');
-        }
+        Assertion::notEmpty($authorizationId, 'Invalid authorization ID.');
 
         return $authorizationId;
     }
 
-    protected function saveAuthorization(string $authorizationId, AuthorizationRequest $authorization)
+    protected function saveAuthorization(string $authorizationId, AuthorizationRequest $authorization): void
     {
         $this->session->set(\Safe\sprintf('/authorization/%s', $authorizationId), $authorization);
     }
@@ -56,9 +55,7 @@ abstract class AbstractEndpoint implements MiddlewareInterface
     protected function getAuthorization(string $authorizationId): AuthorizationRequest
     {
         $authorization = $this->session->get(\Safe\sprintf('/authorization/%s', $authorizationId));
-        if (null === $authorization) {
-            throw new \InvalidArgumentException('Invalid authorization ID.');
-        }
+        Assertion::notNull($authorization, 'Invalid authorization ID.');
 
         return $authorization;
     }

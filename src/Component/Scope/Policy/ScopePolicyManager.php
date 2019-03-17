@@ -25,7 +25,7 @@ class ScopePolicyManager
     /**
      * @var string|null
      */
-    private $defaultScopePolicy = null;
+    private $defaultScopePolicy;
 
     public function add(ScopePolicy $scopePolicy, bool $isDefault = false): void
     {
@@ -39,7 +39,7 @@ class ScopePolicyManager
 
     public function apply(string $scope, Client $client): string
     {
-        if (empty($scope)) {
+        if ('' === $scope) {
             $policy = $this->getForClient($client);
 
             if (null !== $policy) {

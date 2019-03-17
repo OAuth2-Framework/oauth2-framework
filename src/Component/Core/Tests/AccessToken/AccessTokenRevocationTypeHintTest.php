@@ -60,7 +60,7 @@ final class AccessTokenRevocationTypeHintTest extends TestCase
     /**
      * @var AccessTokenRevocationTypeHint|null
      */
-    private $accessTokenTypeHint = null;
+    private $accessTokenTypeHint;
 
     public function getAccessTokenRevocationTypeHint(): AccessTokenRevocationTypeHint
     {

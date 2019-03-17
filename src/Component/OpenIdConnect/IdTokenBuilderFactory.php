@@ -39,12 +39,12 @@ class IdTokenBuilderFactory
     /**
      * @var JKUFactory|null
      */
-    private $jkuFactory = null;
+    private $jkuFactory;
 
     /**
      * @var AuthorizationCodeRepository|null
      */
-    private $authorizationCodeRepository = null;
+    private $authorizationCodeRepository;
 
     public function __construct(string $issuer, UserInfo $userinfo, int $lifetime)
     {
@@ -53,7 +53,7 @@ class IdTokenBuilderFactory
         $this->lifetime = $lifetime;
     }
 
-    public function createBuilder(Client $client, UserAccount $userAccount, string $redirectUri)
+    public function createBuilder(Client $client, UserAccount $userAccount, string $redirectUri): IdTokenBuilder
     {
         return new IdTokenBuilder($this->issuer, $this->userinfo, $this->lifetime, $client, $userAccount, $redirectUri, $this->jkuFactory, $this->authorizationCodeRepository);
     }

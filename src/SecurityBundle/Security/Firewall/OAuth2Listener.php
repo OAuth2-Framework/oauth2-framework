@@ -80,7 +80,7 @@ final class OAuth2Listener implements ListenerInterface
                 return;
             }
             /* @var TokenType $tokenType */
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return;
         }
 

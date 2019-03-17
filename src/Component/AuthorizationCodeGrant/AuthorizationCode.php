@@ -26,6 +26,9 @@ interface AuthorizationCode extends \JsonSerializable
 
     public function getQueryParameters(): array;
 
+    /**
+     * @return mixed
+     */
     public function getQueryParameter(string $key);
 
     public function hasQueryParameter(string $key): bool;

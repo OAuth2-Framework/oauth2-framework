@@ -31,7 +31,7 @@ class Consent
     private $requestedScope;
 
     /**
-     * @var
+     * @var string
      */
     private $grantedScope;
 

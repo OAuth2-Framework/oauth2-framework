@@ -55,11 +55,7 @@ final class ClientRegistrationEndpoint implements MiddlewareInterface
         $initialAccessToken = $request->getAttribute('initial_access_token');
 
         try {
-            if ($initialAccessToken instanceof InitialAccessToken) {
-                $userAccountId = $initialAccessToken->getUserAccountId();
-            } else {
-                $userAccountId = null;
-            }
+            $userAccountId = $initialAccessToken instanceof InitialAccessToken ? $initialAccessToken->getUserAccountId() : null;
             $parameters = RequestBodyParser::parseJson($request);
             $commandParameters = new DataBag($parameters);
             $clientId = $this->clientRepository->createClientId();
@@ -72,7 +68,7 @@ final class ClientRegistrationEndpoint implements MiddlewareInterface
             $this->clientRepository->save($client);
 
             return $this->createResponse($client);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             throw OAuth2Error::invalidRequest($e->getMessage(), [], $e);
         }
     }

@@ -23,7 +23,7 @@ use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\ParameterCh
 use OAuth2Framework\Component\AuthorizationEndpoint\User\UserAccountDiscovery;
 use OAuth2Framework\Component\AuthorizationEndpoint\User\UserAuthenticationCheckerManager;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
-use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\UserAccount;
+use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -82,7 +82,7 @@ abstract class AuthorizationEndpoint extends AbstractEndpoint
             throw $e;
         } catch (OAuth2Error $e) {
             throw new OAuth2AuthorizationException($e->getMessage(), $e->getErrorDescription(), $authorization, $e);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             throw new OAuth2AuthorizationException(OAuth2Error::ERROR_INVALID_REQUEST, $e->getMessage(), $authorization, $e);
         }
     }
@@ -91,7 +91,7 @@ abstract class AuthorizationEndpoint extends AbstractEndpoint
     {
         $authorization->setUserAccount($userAccount);
         $isAuthenticationNeeded = $this->userCheckerManager->isAuthenticationNeeded($authorization);
-        $isConsentNeeded = !$this->consentRepository || !$this->consentRepository->hasConsentBeenGiven($authorization);
+        $isConsentNeeded = null !== $this->consentRepository || !$this->consentRepository->hasConsentBeenGiven($authorization);
 
         switch (true) {
             case $authorization->hasPrompt('none'):
@@ -125,7 +125,7 @@ abstract class AuthorizationEndpoint extends AbstractEndpoint
     private function processWithUnauthenticatedUser(AuthorizationRequest $authorization): ResponseInterface
     {
         if ($authorization->hasPrompt('none')) {
-            $isConsentNeeded = !$this->consentRepository || !$this->consentRepository->hasConsentBeenGiven($authorization);
+            $isConsentNeeded = null !== $this->consentRepository || !$this->consentRepository->hasConsentBeenGiven($authorization);
             if ($isConsentNeeded) {
                 throw new OAuth2AuthorizationException(OAuth2Error::ERROR_LOGIN_REQUIRED, 'The resource owner is not logged in.', $authorization);
             }
@@ -153,7 +153,7 @@ abstract class AuthorizationEndpoint extends AbstractEndpoint
             throw $e;
         } catch (OAuth2Error $e) {
             throw $e;
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             throw OAuth2Error::invalidRequest($e->getMessage());
         }
     }

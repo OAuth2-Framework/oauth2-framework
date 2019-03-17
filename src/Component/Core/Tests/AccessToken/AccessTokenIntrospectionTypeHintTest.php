@@ -61,7 +61,7 @@ final class AccessTokenIntrospectionTypeHintTest extends TestCase
     /**
      * @var AccessTokenIntrospectionTypeHint|null
      */
-    private $accessTokenTypeHint = null;
+    private $accessTokenTypeHint;
 
     public function getAccessTokenIntrospectionTypeHint(): AccessTokenIntrospectionTypeHint
     {

@@ -58,7 +58,7 @@ final class UserinfoEndpointAlgorithmsRule implements Rule
         return $next->handle($clientId, $commandParameters, $validatedParameters);
     }
 
-    private function checkAlgorithms(string $parameter, DataBag $commandParameters, array $allowedAlgorithms)
+    private function checkAlgorithms(string $parameter, DataBag $commandParameters, array $allowedAlgorithms): void
     {
         $algorithm = $commandParameters->get($parameter);
         if (!\is_string($algorithm) || !\in_array($algorithm, $allowedAlgorithms, true)) {

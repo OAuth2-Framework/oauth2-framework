@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Tests\TestBundle\Entity;
 
+use Assert\Assertion;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use OAuth2Framework\Component\Core\AccessToken\AccessToken as CoreAccessToken;
@@ -41,9 +42,7 @@ final class AccessTokenRepository implements AccessTokenRepositoryInterface, Ser
 
     public function save(CoreAccessToken $accessToken): void
     {
-        if (!$accessToken instanceof AccessToken) {
-            throw new \InvalidArgumentException('Unsupported access token class');
-        }
+        Assertion::isInstanceOf($accessToken, AccessToken::class, 'Unsupported access token class');
         $this->entityManager->persist($accessToken);
         $this->entityManager->flush();
     }

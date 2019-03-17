@@ -35,7 +35,7 @@ final class AuthorizationCodeId implements \JsonSerializable
         return $this->getValue();
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): string
     {
         return $this->__toString();
     }

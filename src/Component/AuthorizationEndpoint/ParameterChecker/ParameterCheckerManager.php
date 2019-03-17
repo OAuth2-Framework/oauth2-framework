@@ -38,7 +38,7 @@ class ParameterCheckerManager
                 throw $e;
             } catch (OAuth2Error $e) {
                 throw new OAuth2AuthorizationException($e->getMessage(), $e->getErrorDescription(), $authorization, $e);
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 throw new OAuth2AuthorizationException(OAuth2Error::ERROR_INVALID_REQUEST, $e->getMessage(), $authorization, $e);
             }
         }

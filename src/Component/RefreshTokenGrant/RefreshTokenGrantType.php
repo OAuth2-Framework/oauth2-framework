@@ -48,7 +48,7 @@ final class RefreshTokenGrantType implements GrantType
         $requiredParameters = ['refresh_token'];
 
         $diff = \array_diff($requiredParameters, \array_keys($parameters));
-        if (!empty($diff)) {
+        if (0 !== \count($diff)) {
             throw OAuth2Error::invalidRequest(\Safe\sprintf('Missing grant type parameter(s): %s.', \implode(', ', $diff)));
         }
     }

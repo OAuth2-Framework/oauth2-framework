@@ -20,7 +20,7 @@ use Psr\Http\Message\ServerRequestInterface;
 
 final class BearerToken implements TokenType
 {
-    /*
+    /**
      * @var string
      */
     private $realm;
@@ -129,7 +129,7 @@ final class BearerToken implements TokenType
             $parameters = RequestBodyParser::parseFormUrlEncoded($request);
 
             return $this->getAccessTokenFromParameters($parameters);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return null;
         }
     }

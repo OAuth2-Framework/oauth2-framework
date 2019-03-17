@@ -38,17 +38,17 @@ class MetadataEndpoint implements MiddlewareInterface
     /**
      * @var JWK|null
      */
-    private $signatureKey = null;
+    private $signatureKey;
 
     /**
      * @var string|null
      */
-    private $signatureAlgorithm = null;
+    private $signatureAlgorithm;
 
     /**
      * @var JWSBuilder|null
      */
-    private $jwsBuilder = null;
+    private $jwsBuilder;
 
     /**
      * MetadataEndpoint constructor.

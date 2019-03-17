@@ -87,7 +87,7 @@ final class AuthorizationCodeResponseType implements ResponseType
             (new \DateTimeImmutable())->setTimestamp(\time() + $this->authorizationCodeLifetime),
             new DataBag([]),
             $authorization->getMetadata(),
-            $authorization->getResourceServer() ? $authorization->getResourceServer()->getResourceServerId() : null
+            null !== $authorization->getResourceServer() ? $authorization->getResourceServer()->getResourceServerId() : null
         );
         $this->authorizationCodeRepository->save($authorizationCode);
         $authorization->setResponseParameter('code', $authorizationCode->getId()->getValue());

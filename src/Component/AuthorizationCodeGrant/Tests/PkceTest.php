@@ -63,7 +63,7 @@ final class PkceTest extends TestCase
     /**
      * @var PKCEMethodManager|null
      */
-    private $pkceMethodManager = null;
+    private $pkceMethodManager;
 
     private function getPkceMethodManager(): PKCEMethodManager
     {

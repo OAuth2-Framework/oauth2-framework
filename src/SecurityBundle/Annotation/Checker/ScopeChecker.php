@@ -29,7 +29,7 @@ final class ScopeChecker implements Checker
         $tokenScope = $token->getAccessToken()->getParameter()->has('scope') ? \explode(' ', $token->getAccessToken()->getParameter()->get('scope')) : [];
         $diff = \array_diff($scopes, $tokenScope);
 
-        if (!empty($diff)) {
+        if (0 !== \count($diff)) {
             throw new \Exception(\Safe\sprintf('Insufficient scope. The required scope is "%s"', $configuration->getScope()));
         }
     }

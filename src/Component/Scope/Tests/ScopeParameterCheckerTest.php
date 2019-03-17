@@ -97,7 +97,7 @@ final class ScopeParameterCheckerTest extends TestCase
     /**
      * @var ScopeParameterChecker|null
      */
-    private $scopeParameterChecker = null;
+    private $scopeParameterChecker;
 
     private function getScopeParameterChecker(): ScopeParameterChecker
     {

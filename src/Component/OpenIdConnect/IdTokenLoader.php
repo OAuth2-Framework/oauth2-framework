@@ -65,7 +65,7 @@ class IdTokenLoader
             Assertion::isArray($claims, 'Invalid ID Token.');
 
             return new IdToken($idTokenId, $claims);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return null;
         }
     }

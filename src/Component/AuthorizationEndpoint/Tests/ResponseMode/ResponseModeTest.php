@@ -183,7 +183,7 @@ final class ResponseModeTest extends TestCase
     /**
      * @var ResponseModeManager|null
      */
-    private $responseModeManager = null;
+    private $responseModeManager;
 
     private function getResponseModeManager(): ResponseModeManager
     {

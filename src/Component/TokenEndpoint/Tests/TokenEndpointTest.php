@@ -147,7 +147,7 @@ final class TokenEndpointTest extends TestCase
     /**
      * @var TokenEndpoint|null
      */
-    private $tokenEndpoint = null;
+    private $tokenEndpoint;
 
     private function getTokenEndpoint(): TokenEndpoint
     {
@@ -168,7 +168,7 @@ final class TokenEndpointTest extends TestCase
     /**
      * @var ClientRepository|null
      */
-    private $clientRepository = null;
+    private $clientRepository;
 
     private function getClientRepository(): ClientRepository
     {
@@ -194,7 +194,7 @@ final class TokenEndpointTest extends TestCase
     /**
      * @var UserAccountRepository|null
      */
-    private $userAccountRepository = null;
+    private $userAccountRepository;
 
     private function getUserAccountRepository(): UserAccountRepository
     {
@@ -210,7 +210,7 @@ final class TokenEndpointTest extends TestCase
     /**
      * @var AccessTokenRepository|null
      */
-    private $accessTokenRepository = null;
+    private $accessTokenRepository;
 
     private function getAccessTokenRepository(): AccessTokenRepository
     {

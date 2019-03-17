@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\WebFingerBundle\Tests\TestBundle\Service;
 
+use Assert\Assertion;
 use function League\Uri\parse;
 use OAuth2Framework\Component\WebFingerEndpoint\IdentifierResolver\Identifier;
 use OAuth2Framework\Component\WebFingerEndpoint\IdentifierResolver\IdentifierResolver;
@@ -33,9 +34,8 @@ final class UriPathResolver implements IdentifierResolver
     public function resolve(string $resource_name): Identifier
     {
         $uri = parse($resource_name);
-        if (!\is_string($uri['path']) || !\is_string($uri['host'])) {
-            throw new \InvalidArgumentException('Invalid resource.');
-        }
+        Assertion::string($uri['path'], 'Invalid resource.');
+        Assertion::string($uri['host'], 'Invalid resource.');
 
         return new Identifier(\mb_substr($uri['path'], 2), $uri['host'], $uri['port']);
     }

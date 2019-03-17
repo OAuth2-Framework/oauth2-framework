@@ -13,9 +13,11 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Tests\TestBundle\Service;
 
+use Assert\Assertion;
 use OAuth2Framework\Component\AuthorizationEndpoint\User\UserAccountDiscovery;
 use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 final class SymfonyUserAccountDiscovery implements UserAccountDiscovery
 {
@@ -29,14 +31,10 @@ final class SymfonyUserAccountDiscovery implements UserAccountDiscovery
     public function getCurrentAccount(): ?UserAccount
     {
         $token = $this->tokenStorage->getToken();
-        if (null === $token) {
-            throw new \InvalidArgumentException('Unable to retrieve the current user.');
-        }
+        Assertion::isInstanceOf($token, TokenInterface::class, 'Unable to retrieve the current user.');
 
         $user = $token->getUser();
-        if (!$user instanceof UserAccount) {
-            throw new \InvalidArgumentException('Unable to retrieve the current user.');
-        }
+        Assertion::isInstanceOf($user, UserAccount::class, 'Unable to retrieve the current user.');
 
         return $user;
     }

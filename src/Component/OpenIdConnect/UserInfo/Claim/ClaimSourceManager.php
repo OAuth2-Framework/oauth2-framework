@@ -37,7 +37,7 @@ class ClaimSourceManager
 
     public function getUserInfo(UserAccount $userAccount, string $scope, array $previousClaims): array
     {
-        $scopes = empty($scope) ? [] : \explode(' ', $scope);
+        $scopes = '' === $scope ? [] : \explode(' ', $scope);
         $claims = [
             '_claim_names' => [],
             '_claim_sources' => [],
@@ -63,6 +63,6 @@ class ClaimSourceManager
             }
         }
 
-        return empty($claims['_claim_names']) ? [] : $previousClaims;
+        return 0 === \count($claims['_claim_names']) ? [] : $previousClaims;
     }
 }

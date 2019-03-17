@@ -41,6 +41,9 @@ final class ClientSecretPost implements AuthenticationMethod
         return [];
     }
 
+    /**
+     * @param mixed|null $clientCredentials
+     */
     public function findClientIdAndCredentials(ServerRequestInterface $request, &$clientCredentials = null): ?ClientId
     {
         $parameters = RequestBodyParser::parseFormUrlEncoded($request);
@@ -61,6 +64,9 @@ final class ClientSecretPost implements AuthenticationMethod
         return $validatedParameters;
     }
 
+    /**
+     * @param mixed|null $clientCredentials
+     */
     public function isClientAuthenticated(Client $client, $clientCredentials, ServerRequestInterface $request): bool
     {
         return \hash_equals($client->get('client_secret'), $clientCredentials);

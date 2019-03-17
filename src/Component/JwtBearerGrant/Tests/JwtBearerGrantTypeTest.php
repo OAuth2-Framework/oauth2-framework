@@ -196,7 +196,7 @@ final class JwtBearerGrantTypeTest extends TestCase
     /**
      * @var JwtBearerGrantType|null
      */
-    private $grantType = null;
+    private $grantType;
 
     private function getGrantType(): JwtBearerGrantType
     {

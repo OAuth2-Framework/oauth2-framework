@@ -100,7 +100,7 @@ final class TokenIntrospectionEndpointTest extends TestCase
     /**
      * @var TokenTypeHintManager|null
      */
-    private $tokenTypeHintManager = null;
+    private $tokenTypeHintManager;
 
     private function getTokenTypeHintManager(): TokenTypeHintManager
     {
@@ -124,7 +124,7 @@ final class TokenIntrospectionEndpointTest extends TestCase
     /**
      * @var TokenIntrospectionEndpoint|null
      */
-    private $tokenIntrospectionEndpoint = null;
+    private $tokenIntrospectionEndpoint;
 
     private function getTokenIntrospectionEndpoint(): TokenIntrospectionEndpoint
     {
@@ -141,7 +141,7 @@ final class TokenIntrospectionEndpointTest extends TestCase
     /**
      * @var ResponseFactory|null
      */
-    private $responseFactory = null;
+    private $responseFactory;
 
     private function getResponseFactory(): ResponseFactory
     {
@@ -155,7 +155,7 @@ final class TokenIntrospectionEndpointTest extends TestCase
     /**
      * @var ResourceServer|null
      */
-    private $resourceServer = null;
+    private $resourceServer;
 
     private function getResourceServer(): ResourceServer
     {

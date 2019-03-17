@@ -49,7 +49,7 @@ final class TokenEndpointScopeExtension implements TokenEndpointExtension
         $scope = $this->getScope($request, $grantTypeData);
         $scope = $this->applyScopePolicy($scope, $grantTypeData->getClient());
         $this->checkRequestedScopeIsAvailable($scope, $grantTypeData);
-        if (!empty($scope)) {
+        if ('' !== $scope) {
             $grantTypeData->getParameter()->set('scope', $scope);
         }
 
@@ -99,7 +99,7 @@ final class TokenEndpointScopeExtension implements TokenEndpointExtension
         // * the scope repository
         $availableScope = $grantTypeData->getParameter()->has('scope') ? $grantTypeData->getParameter()->get('scope') : $this->getAvailableScopesForClient($grantTypeData->getClient());
         $availableScopes = \explode(' ', $availableScope);
-        $requestedScopes = empty($scope) ? [] : \explode(' ', $scope);
+        $requestedScopes = '' === $scope ? [] : \explode(' ', $scope);
         $diff = \array_diff($requestedScopes, $availableScopes);
         if (0 !== \count($diff)) {
             throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_SCOPE, \Safe\sprintf('An unsupported scope was requested. Available scope is/are: %s.', \implode(', ', $availableScopes)));

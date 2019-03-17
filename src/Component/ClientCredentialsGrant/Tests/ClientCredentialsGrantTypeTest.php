@@ -86,7 +86,7 @@ final class ClientCredentialsGrantTypeTest extends TestCase
     /**
      * @var ClientCredentialsGrantType|null
      */
-    private $grantType = null;
+    private $grantType;
 
     private function getGrantType(): ClientCredentialsGrantType
     {

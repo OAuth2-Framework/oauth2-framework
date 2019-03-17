@@ -105,7 +105,7 @@ final class ResponseTypesRuleTest extends TestCase
     /**
      * @var ResponseTypesRule|null
      */
-    private $responseTypesRule = null;
+    private $responseTypesRule;
 
     private function getResponseTypesRule(): ResponseTypesRule
     {

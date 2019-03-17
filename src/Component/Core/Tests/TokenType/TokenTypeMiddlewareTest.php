@@ -85,7 +85,7 @@ final class TokenTypeMiddlewareTest extends TestCase
     /**
      * @var TokenTypeMiddleware|null
      */
-    private $tokenTypeMiddleware = null;
+    private $tokenTypeMiddleware;
 
     private function getTokenTypeMiddleware(): TokenTypeMiddleware
     {
@@ -102,7 +102,7 @@ final class TokenTypeMiddlewareTest extends TestCase
     /**
      * @var TokenTypeManager|null
      */
-    private $tokenTypeManager = null;
+    private $tokenTypeManager;
 
     private function getTokenTypeManager(): TokenTypeManager
     {

@@ -53,7 +53,7 @@ class JwtBearerGrantType implements GrantType
     /**
      * @var JWEDecrypter|null
      */
-    private $jweDecrypter = null;
+    private $jweDecrypter;
 
     /**
      * @var HeaderCheckerManager
@@ -83,17 +83,17 @@ class JwtBearerGrantType implements GrantType
     /**
      * @var JWKSet|null
      */
-    private $keyEncryptionKeySet = null;
+    private $keyEncryptionKeySet;
 
     /**
      * @var TrustedIssuerRepository|null
      */
-    private $trustedIssuerRepository = null;
+    private $trustedIssuerRepository;
 
     /**
      * @var JKUFactory|null
      */
-    private $jkuFactory = null;
+    private $jkuFactory;
 
     /**
      * JWTBearerGrantType constructor.
@@ -141,7 +141,7 @@ class JwtBearerGrantType implements GrantType
         $requiredParameters = ['assertion'];
 
         $diff = \array_diff($requiredParameters, \array_keys($parameters));
-        if (!empty($diff)) {
+        if (0 !== \count($diff)) {
             throw OAuth2Error::invalidRequest(\Safe\sprintf('Missing grant type parameter(s): %s.', \implode(', ', $diff)));
         }
     }
@@ -161,13 +161,13 @@ class JwtBearerGrantType implements GrantType
             $claims = \Safe\json_decode($jws->getPayload(), true);
             $this->claimCheckerManager->check($claims);
             $diff = \array_diff(['iss', 'sub', 'aud', 'exp'], \array_keys($claims));
-            if (!empty($diff)) {
+            if (0 !== \count($diff)) {
                 throw new \InvalidArgumentException(\Safe\sprintf('The following claim(s) is/are mandatory: "%s".', \implode(', ', \array_values($diff))));
             }
             $this->checkJWTSignature($grantTypeData, $jws, $claims);
         } catch (OAuth2Error $e) {
             throw $e;
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             throw OAuth2Error::invalidRequest($e->getMessage(), [], $e);
         }
     }
@@ -189,7 +189,7 @@ class JwtBearerGrantType implements GrantType
             }
 
             throw new \InvalidArgumentException('Unable to decrypt the assertion.');
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             if (true === $this->encryptionRequired) {
                 throw OAuth2Error::invalidRequest($e->getMessage(), [], $e);
             }
@@ -213,7 +213,7 @@ class JwtBearerGrantType implements GrantType
             if (null === $client || true === $client->isDeleted()) {
                 throw OAuth2Error::invalidGrant('Unable to find the issuer of the assertion.');
             }
-            if (null === $grantTypeData->getClient()) {
+            if (!$grantTypeData->hasClient()) {
                 $grantTypeData->setClient($client);
             } elseif ($grantTypeData->getClient()->getPublicId()->getValue() !== $client->getPublicId()->getValue()) {
                 throw new OAuth2Error(401, OAuth2Error::ERROR_INVALID_CLIENT, 'Client authentication failed.');

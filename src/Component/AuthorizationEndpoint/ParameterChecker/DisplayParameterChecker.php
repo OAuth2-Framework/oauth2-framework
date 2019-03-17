@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker;
 
+use Assert\Assertion;
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
 
 final class DisplayParameterChecker implements ParameterChecker
@@ -27,8 +28,8 @@ final class DisplayParameterChecker implements ParameterChecker
 
     public function check(AuthorizationRequest $authorization): void
     {
-        if ($authorization->hasQueryParam('display') && !\in_array($authorization->getQueryParam('display'), $this->getAllowedDisplayValues(), true)) {
-            throw new \InvalidArgumentException(\Safe\sprintf('Invalid parameter "display". Allowed values are %s', \implode(', ', $this->getAllowedDisplayValues())));
+        if ($authorization->hasQueryParam('display')) {
+            Assertion::inArray($authorization->getQueryParam('display'), $this->getAllowedDisplayValues(), \Safe\sprintf('Invalid parameter "display". Allowed values are %s', \implode(', ', $this->getAllowedDisplayValues())));
         }
     }
 

@@ -22,22 +22,22 @@ class OAuth2
     /**
      * @var string|null
      */
-    private $scope = null;
+    private $scope;
 
     /**
      * @var string|null
      */
-    private $token_type = null;
+    private $token_type;
 
     /**
      * @var string|null
      */
-    private $client_id = null;
+    private $client_id;
 
     /**
      * @var string|null
      */
-    private $resource_owner_id = null;
+    private $resource_owner_id;
 
     public function __construct(array $data)
     {

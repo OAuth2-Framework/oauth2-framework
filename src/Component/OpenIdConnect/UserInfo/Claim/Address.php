@@ -40,6 +40,6 @@ final class Address implements Claim
 
     private function getComputedClaimName(?string $claimLocale): string
     {
-        return $claimLocale ? \Safe\sprintf('%s#%s', self::CLAIM_NAME, $claimLocale) : self::CLAIM_NAME;
+        return null !== $claimLocale ? \Safe\sprintf('%s#%s', self::CLAIM_NAME, $claimLocale) : self::CLAIM_NAME;
     }
 }

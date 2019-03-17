@@ -13,19 +13,18 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker;
 
+use Assert\Assertion;
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
 
 final class RedirectUriParameterChecker implements ParameterChecker
 {
     public function check(AuthorizationRequest $authorization): void
     {
-        if (!$authorization->hasQueryParam('redirect_uri')) {
-            throw new \InvalidArgumentException('The parameter "redirect_uri" is mandatory.');
-        }
+        Assertion::true($authorization->hasQueryParam('redirect_uri'), 'The parameter "redirect_uri" is mandatory.');
         $redirectUri = $authorization->getQueryParam('redirect_uri');
         $availableRedirectUris = $this->getRedirectUris($authorization);
-        if (!empty($availableRedirectUris) && !\in_array($redirectUri, $availableRedirectUris, true)) {
-            throw new \InvalidArgumentException(\Safe\sprintf('The redirect URI "%s" is not registered.', $redirectUri));
+        if (0 < \count($availableRedirectUris)) {
+            Assertion::inArray($redirectUri, $availableRedirectUris, \Safe\sprintf('The redirect URI "%s" is not registered.', $redirectUri));
         }
 
         $authorization->setRedirectUri($redirectUri);

@@ -95,7 +95,7 @@ class TokenEndpoint implements MiddlewareInterface
 
         // At this stage, the client should be authenticated
         // If not, we stop the authorization grant
-        if (null === $grantTypeData->getClient() || $grantTypeData->getClient()->isDeleted()) {
+        if (!$grantTypeData->hasClient() || $grantTypeData->getClient()->isDeleted()) {
             throw new OAuth2Error(401, OAuth2Error::ERROR_INVALID_CLIENT, 'Client authentication failed.');
         }
 

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d4c4ac75ce9c245e737d10ecbde36d04",
+    "content-hash": "2f0b6904a1b0fb255e6703022803908f",
     "packages": [
         {
             "name": "beberlei/assert",
@@ -7084,111 +7084,6 @@
             "time": "2018-07-31T19:31:26+00:00"
         },
         {
-            "name": "illuminate/contracts",
-            "version": "v5.8.4",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/illuminate/contracts.git",
-                "reference": "3e3a9a654adbf798e05491a5dbf90112df1effde"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/illuminate/contracts/zipball/3e3a9a654adbf798e05491a5dbf90112df1effde",
-                "reference": "3e3a9a654adbf798e05491a5dbf90112df1effde",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^7.1.3",
-                "psr/container": "^1.0",
-                "psr/simple-cache": "^1.0"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "5.8-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Illuminate\\Contracts\\": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Taylor Otwell",
-                    "email": "taylor@laravel.com"
-                }
-            ],
-            "description": "The Illuminate Contracts package.",
-            "homepage": "https://laravel.com",
-            "time": "2019-02-18T18:37:54+00:00"
-        },
-        {
-            "name": "illuminate/support",
-            "version": "v5.8.4",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/illuminate/support.git",
-                "reference": "07062f5750872a31e086ff37a7c50ac18b8c417c"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/illuminate/support/zipball/07062f5750872a31e086ff37a7c50ac18b8c417c",
-                "reference": "07062f5750872a31e086ff37a7c50ac18b8c417c",
-                "shasum": ""
-            },
-            "require": {
-                "doctrine/inflector": "^1.1",
-                "ext-json": "*",
-                "ext-mbstring": "*",
-                "illuminate/contracts": "5.8.*",
-                "nesbot/carbon": "^1.26.3 || ^2.0",
-                "php": "^7.1.3"
-            },
-            "conflict": {
-                "tightenco/collect": "<5.5.33"
-            },
-            "suggest": {
-                "illuminate/filesystem": "Required to use the composer class (5.8.*).",
-                "moontoast/math": "Required to use ordered UUIDs (^1.1).",
-                "ramsey/uuid": "Required to use Str::uuid() (^3.7).",
-                "symfony/process": "Required to use the composer class (^4.2).",
-                "symfony/var-dumper": "Required to use the dd function (^4.2).",
-                "vlucas/phpdotenv": "Required to use the env helper (^3.3)."
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "5.8-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Illuminate\\Support\\": ""
-                },
-                "files": [
-                    "helpers.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Taylor Otwell",
-                    "email": "taylor@laravel.com"
-                }
-            ],
-            "description": "The Illuminate Support package.",
-            "homepage": "https://laravel.com",
-            "time": "2019-03-12T13:17:00+00:00"
-        },
-        {
             "name": "jdorn/sql-formatter",
             "version": "v1.2.17",
             "source": {
@@ -7336,66 +7231,6 @@
                 "object graph"
             ],
             "time": "2018-06-11T23:09:50+00:00"
-        },
-        {
-            "name": "nesbot/carbon",
-            "version": "2.16.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/briannesbitt/Carbon.git",
-                "reference": "dd16fedc022180ea4292a03aabe95e9895677911"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/dd16fedc022180ea4292a03aabe95e9895677911",
-                "reference": "dd16fedc022180ea4292a03aabe95e9895677911",
-                "shasum": ""
-            },
-            "require": {
-                "ext-json": "*",
-                "php": "^7.1.8 || ^8.0",
-                "symfony/translation": "^3.4 || ^4.0"
-            },
-            "require-dev": {
-                "friendsofphp/php-cs-fixer": "^2.14 || ^3.0",
-                "kylekatarnls/multi-tester": "^0.1",
-                "phpmd/phpmd": "^2.6",
-                "phpstan/phpstan": "^0.10.8",
-                "phpunit/phpunit": "^7.5 || ^8.0",
-                "squizlabs/php_codesniffer": "^3.4"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Carbon\\Laravel\\ServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Carbon\\": "src/Carbon/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Brian Nesbitt",
-                    "email": "brian@nesbot.com",
-                    "homepage": "http://nesbot.com"
-                }
-            ],
-            "description": "A simple API extension for DateTime.",
-            "homepage": "http://carbon.nesbot.com",
-            "keywords": [
-                "date",
-                "datetime",
-                "time"
-            ],
-            "time": "2019-03-12T09:31:40+00:00"
         },
         {
             "name": "nette/bootstrap",
@@ -8991,16 +8826,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "7.5.6",
+            "version": "7.5.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "09c85e14994df92e5ff1f5ec0b481bdb7d3d3df9"
+                "reference": "eb343b86753d26de07ecba7868fa983104361948"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/09c85e14994df92e5ff1f5ec0b481bdb7d3d3df9",
-                "reference": "09c85e14994df92e5ff1f5ec0b481bdb7d3d3df9",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/eb343b86753d26de07ecba7868fa983104361948",
+                "reference": "eb343b86753d26de07ecba7868fa983104361948",
                 "shasum": ""
             },
             "require": {
@@ -9018,7 +8853,7 @@
                 "phpunit/php-code-coverage": "^6.0.7",
                 "phpunit/php-file-iterator": "^2.0.1",
                 "phpunit/php-text-template": "^1.2.1",
-                "phpunit/php-timer": "^2.0",
+                "phpunit/php-timer": "^2.1",
                 "sebastian/comparator": "^3.0",
                 "sebastian/diff": "^3.0",
                 "sebastian/environment": "^4.0",
@@ -9071,7 +8906,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2019-02-18T09:24:50+00:00"
+            "time": "2019-03-16T07:31:17+00:00"
         },
         {
             "name": "psr/http-factory",
@@ -9164,96 +8999,6 @@
             ],
             "description": "A polyfill for getallheaders.",
             "time": "2016-02-11T07:05:27+00:00"
-        },
-        {
-            "name": "rector/rector",
-            "version": "v0.4.4",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/rectorphp/rector.git",
-                "reference": "1d8deff30a9ce13fa34a0724dd6c4e8c91939c9c"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/rectorphp/rector/zipball/1d8deff30a9ce13fa34a0724dd6c4e8c91939c9c",
-                "reference": "1d8deff30a9ce13fa34a0724dd6c4e8c91939c9c",
-                "shasum": ""
-            },
-            "require": {
-                "composer/xdebug-handler": "^1.3",
-                "jean85/pretty-package-versions": "^1.2",
-                "nette/robot-loader": "^3.1",
-                "nette/utils": "^2.5",
-                "nikic/php-parser": "^4.2.1",
-                "php": "^7.1",
-                "phpstan/phpstan": "^0.11",
-                "sebastian/diff": "^3.0",
-                "symfony/console": "^3.4|^4.2",
-                "symfony/dependency-injection": "^3.4|^4.2",
-                "symfony/finder": "^3.4|^4.2",
-                "symfony/process": "^3.4|^4.2",
-                "symplify/package-builder": "^5.4.6"
-            },
-            "require-dev": {
-                "friendsofphp/php-cs-fixer": "^2.14",
-                "ocramius/package-versions": "^1.3",
-                "phpunit/phpunit": "^7.5|^8.0",
-                "symplify/easy-coding-standard": "^5.4.6",
-                "symplify/monorepo-builder": "^5.4.6",
-                "symplify/phpstan-extensions": "^5.4.6",
-                "thecodingmachine/phpstan-strict-rules": "^0.11.0",
-                "tracy/tracy": "^2.5"
-            },
-            "suggest": {
-                "symplify/easy-coding-standard": "Required to enable '--with-style' option. Use in case you don't have PHP_CodeSniffer or PHP-CS-Fixer yet."
-            },
-            "bin": [
-                "bin/rector"
-            ],
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Rector\\": "src",
-                    "Rector\\Celebrity\\": "packages/Celebrity/src",
-                    "Rector\\BetterPhpDocParser\\": "packages/BetterPhpDocParser/src",
-                    "Rector\\ConsoleDiffer\\": "packages/ConsoleDiffer/src",
-                    "Rector\\CodingStyle\\": "packages/CodingStyle/src",
-                    "Rector\\DeadCode\\": "packages/DeadCode/src",
-                    "Rector\\Guzzle\\": "packages/Guzzle/src",
-                    "Rector\\CodeQuality\\": "packages/CodeQuality/src",
-                    "Rector\\NetteToSymfony\\": "packages/NetteToSymfony/src",
-                    "Rector\\DomainDrivenDesign\\": "packages/DomainDrivenDesign/src",
-                    "Rector\\NodeTypeResolver\\": "packages/NodeTypeResolver/src",
-                    "Rector\\Symfony\\": "packages/Symfony/src",
-                    "Rector\\CakePHP\\": "packages/CakePHP/src",
-                    "Rector\\Php\\": "packages/Php/src",
-                    "Rector\\Jms\\": "packages/Jms/src",
-                    "Rector\\Silverstripe\\": "packages/Silverstripe/src",
-                    "Rector\\Sensio\\": "packages/Sensio/src",
-                    "Rector\\Sylius\\": "packages/Sylius/src",
-                    "Rector\\PHPStan\\": "packages/PHPStan/src",
-                    "Rector\\PHPUnit\\": "packages/PHPUnit/src",
-                    "Rector\\Twig\\": "packages/Twig/src",
-                    "Rector\\MysqlToMysqli\\": "packages/MysqlToMysqli/src",
-                    "Rector\\PhpParser\\": "packages/PhpParser/src",
-                    "Rector\\Doctrine\\": "packages/Doctrine/src",
-                    "Rector\\FileSystemRector\\": "packages/FileSystemRector/src",
-                    "Rector\\ContributorTools\\": "packages/ContributorTools/src",
-                    "Rector\\Laravel\\": "packages/Laravel/src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "Instant upgrade and refactoring of your PHP code",
-            "keywords": [
-                "ast",
-                "automated refactoring",
-                "instant refactoring",
-                "instant upgrades"
-            ],
-            "time": "2019-03-04T10:35:02+00:00"
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",
@@ -10255,55 +10000,6 @@
             "time": "2018-09-21T13:07:52+00:00"
         },
         {
-            "name": "symfony/process",
-            "version": "v4.2.4",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/process.git",
-                "reference": "6c05edb11fbeff9e2b324b4270ecb17911a8b7ad"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/process/zipball/6c05edb11fbeff9e2b324b4270ecb17911a8b7ad",
-                "reference": "6c05edb11fbeff9e2b324b4270ecb17911a8b7ad",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^7.1.3"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "4.2-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Symfony\\Component\\Process\\": ""
-                },
-                "exclude-from-classmap": [
-                    "/Tests/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
-                },
-                {
-                    "name": "Symfony Community",
-                    "homepage": "https://symfony.com/contributors"
-                }
-            ],
-            "description": "Symfony Process Component",
-            "homepage": "https://symfony.com",
-            "time": "2019-01-24T22:05:03+00:00"
-        },
-        {
             "name": "symfony/templating",
             "version": "v4.2.4",
             "source": {
@@ -10750,54 +10446,6 @@
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
             "time": "2019-02-23T15:17:42+00:00"
-        },
-        {
-            "name": "symplify/package-builder",
-            "version": "v5.4.16",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Symplify/PackageBuilder.git",
-                "reference": "20e04ad9cd15a53527807a62c8b244d8a114f779"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Symplify/PackageBuilder/zipball/20e04ad9cd15a53527807a62c8b244d8a114f779",
-                "reference": "20e04ad9cd15a53527807a62c8b244d8a114f779",
-                "shasum": ""
-            },
-            "require": {
-                "illuminate/support": "^5.7",
-                "nette/finder": "^2.4",
-                "nette/utils": "^2.5",
-                "php": "^7.1",
-                "symfony/config": "^3.4|^4.1",
-                "symfony/console": "^3.4|^4.1",
-                "symfony/debug": "^3.4|^4.1",
-                "symfony/dependency-injection": "^3.4|^4.1",
-                "symfony/finder": "^3.4|^4.1",
-                "symfony/http-kernel": "^3.4|^4.1",
-                "symfony/yaml": "^3.4|^4.1"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^7.5|^8.0"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "5.5-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Symplify\\PackageBuilder\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "Dependency Injection, Console and Kernel toolkit for Symplify packages.",
-            "time": "2019-03-03T15:32:34+00:00"
         },
         {
             "name": "thecodingmachine/phpstan-safe-rule",

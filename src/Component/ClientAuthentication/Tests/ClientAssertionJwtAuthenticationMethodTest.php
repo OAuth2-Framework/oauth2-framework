@@ -516,7 +516,7 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
     /**
      * @var ClientAssertionJwt|null
      */
-    private $method = null;
+    private $method;
 
     private function getMethod(): ClientAssertionJwt
     {

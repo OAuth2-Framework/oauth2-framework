@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\AuthorizationEndpoint\Rule;
 
+use Assert\Assertion;
 use OAuth2Framework\Component\ClientRule\Rule;
 use OAuth2Framework\Component\ClientRule\RuleHandler;
 use OAuth2Framework\Component\Core\Client\ClientId;
@@ -23,7 +24,7 @@ final class RequestUriRule implements Rule
     public function handle(ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters, RuleHandler $next): DataBag
     {
         $validatedParameters = $next->handle($clientId, $commandParameters, $validatedParameters);
-        if (!$validatedParameters->has('response_types') || empty($validatedParameters->get('response_types'))) {
+        if (!$validatedParameters->has('response_types') || 0 === \count($validatedParameters->get('response_types'))) {
             return $validatedParameters;
         }
         if ($commandParameters->has('request_uris')) {
@@ -34,15 +35,15 @@ final class RequestUriRule implements Rule
         return $validatedParameters;
     }
 
+    /**
+     * @param mixed $value
+     */
     private function checkAllUris($value): void
     {
-        if (!\is_array($value)) {
-            throw new \InvalidArgumentException('The parameter "request_uris" must be a list of URI.');
-        }
+        Assertion::isArray($value, 'The parameter "request_uris" must be a list of URI.');
         foreach ($value as $redirectUri) {
-            if (!\is_string($redirectUri) || !\filter_var($redirectUri, FILTER_VALIDATE_URL)) { //TODO: URN should be allowed
-                throw new \InvalidArgumentException('The parameter "request_uris" must be a list of URI.');
-            }
+            Assertion::string($redirectUri, 'The parameter "request_uris" must be a list of URI.');
+            Assertion::true(false !== \filter_var($redirectUri, FILTER_VALIDATE_URL), 'The parameter "request_uris" must be a list of URI.'); //TODO: URN should be allowed
         }
     }
 }

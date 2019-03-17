@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\AuthorizationEndpoint\Rule;
 
+use Assert\Assertion;
 use Http\Client\HttpClient;
 use Http\Message\RequestFactory;
 use function League\Uri\parse;
@@ -55,26 +56,19 @@ final class SectorIdentifierUriRule implements Rule
     private function checkSectorIdentifierUri(string $url, array $redirectUris): void
     {
         $data = parse($url);
-
-        if ('https' !== $data['scheme'] || null === $data['host']) {
-            throw new \InvalidArgumentException(\Safe\sprintf('The sector identifier URI "%s" is not valid.', $url));
-        }
+        Assertion::eq('https', $data['scheme'], \Safe\sprintf('The sector identifier URI "%s" is not valid.', $url));
+        Assertion::notEmpty($data['host'], \Safe\sprintf('The sector identifier URI "%s" is not valid.', $url));
 
         $request = $this->requestFactory->createRequest('GET', $url);
         $response = $this->client->sendRequest($request);
-        if (200 !== $response->getStatusCode()) {
-            throw new \InvalidArgumentException(\Safe\sprintf('Unable to get Uris from the Sector Identifier Uri "%s".', $url));
-        }
+        Assertion::eq(200, $response->getStatusCode(), \Safe\sprintf('Unable to get Uris from the Sector Identifier Uri "%s".', $url));
 
         $body = $response->getBody()->getContents();
         $data = \Safe\json_decode($body, true);
-        if (!\is_array($data) || empty($data)) {
-            throw new \InvalidArgumentException('The provided sector identifier URI is not valid: it must contain at least one URI.');
-        }
+        Assertion::isArray($data, 'The provided sector identifier URI is not valid: it must contain at least one URI.');
+        Assertion::notEmpty($data, 'The provided sector identifier URI is not valid: it must contain at least one URI.');
 
         $diff = \array_diff($redirectUris, $data);
-        if (!empty($diff)) {
-            throw new \InvalidArgumentException('The provided sector identifier URI is not valid: it must contain at least the redirect URI(s) set in the registration request.');
-        }
+        Assertion::noContent($diff, 'The provided sector identifier URI is not valid: it must contain at least the redirect URI(s) set in the registration request.');
     }
 }

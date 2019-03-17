@@ -52,7 +52,7 @@ abstract class ProcessEndpoint extends AbstractEndpoint
             return $this->buildResponse($authorization);
         } catch (OAuth2Error $e) {
             throw new OAuth2AuthorizationException($e->getMessage(), $e->getErrorDescription(), $authorization);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             throw new OAuth2AuthorizationException(OAuth2Error::ERROR_INVALID_REQUEST, $e->getMessage(), $authorization);
         }
     }

@@ -110,7 +110,7 @@ final class ResourceOwnerPasswordCredentialsGrantTypeTest extends TestCase
     /**
      * @var ResourceOwnerPasswordCredentialsGrantType|null
      */
-    private $grantType = null;
+    private $grantType;
 
     private function getGrantType(): ResourceOwnerPasswordCredentialsGrantType
     {

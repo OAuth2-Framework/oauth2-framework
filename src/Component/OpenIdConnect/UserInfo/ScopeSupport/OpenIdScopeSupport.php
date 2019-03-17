@@ -42,7 +42,7 @@ class OpenIdScopeSupport implements UserInfoScopeSupport
         ];
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): string
     {
         return $this->name();
     }
