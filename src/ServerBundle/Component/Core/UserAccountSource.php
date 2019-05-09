@@ -25,7 +25,7 @@ class UserAccountSource implements Component
         return 'user_account';
     }
 
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $config = $configs[$this->name()];
         if (false === $config['enabled']) {
@@ -34,7 +34,7 @@ class UserAccountSource implements Component
         $container->setAlias(UserAccountRepository::class, $configs['user_account']['repository']);
     }
 
-    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
+    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
         $node->children()
             ->arrayNode($this->name())
@@ -50,7 +50,7 @@ class UserAccountSource implements Component
             ->end();
     }
 
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
     }
 

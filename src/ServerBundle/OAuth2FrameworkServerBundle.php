@@ -17,7 +17,9 @@ use Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\DoctrineOrmMappi
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCode;
 use OAuth2Framework\Component\RefreshTokenGrant\RefreshToken;
 use OAuth2Framework\ServerBundle\DependencyInjection\OAuth2FrameworkExtension;
+use function Safe\realpath;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class OAuth2FrameworkServerBundle extends Bundle
@@ -34,12 +36,12 @@ class OAuth2FrameworkServerBundle extends Bundle
         }
     }
 
-    public function getContainerExtension()
+    public function getContainerExtension(): ExtensionInterface
     {
         return new OAuth2FrameworkExtension('oauth2_server', $this->components);
     }
 
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
         parent::build($container);
         foreach ($this->components as $component) {
@@ -52,14 +54,14 @@ class OAuth2FrameworkServerBundle extends Bundle
     private function registerMappings(ContainerBuilder $container): void
     {
         $mappings = [
-            \Safe\realpath(__DIR__.'/Resources/config/doctrine-mapping/Token') => 'OAuth2Framework\Component\Core\Token',
-            \Safe\realpath(__DIR__.'/Resources/config/doctrine-mapping/AccessToken') => 'OAuth2Framework\Component\Core\AccessToken',
+            realpath(__DIR__.'/Resources/config/doctrine-mapping/Token') => 'OAuth2Framework\Component\Core\Token',
+            realpath(__DIR__.'/Resources/config/doctrine-mapping/AccessToken') => 'OAuth2Framework\Component\Core\AccessToken',
         ];
         if (class_exists(RefreshToken::class)) {
-            $mappings[\Safe\realpath(__DIR__.'/Resources/config/doctrine-mapping/RefreshToken')] = 'OAuth2Framework\Component\RefreshTokenGrant';
+            $mappings[realpath(__DIR__.'/Resources/config/doctrine-mapping/RefreshToken')] = 'OAuth2Framework\Component\RefreshTokenGrant';
         }
         if (class_exists(AuthorizationCode::class)) {
-            $mappings[\Safe\realpath(__DIR__.'/Resources/config/doctrine-mapping/AuthorizationCode')] = 'OAuth2Framework\Component\AuthorizationCodeGrant';
+            $mappings[realpath(__DIR__.'/Resources/config/doctrine-mapping/AuthorizationCode')] = 'OAuth2Framework\Component\AuthorizationCodeGrant';
         }
         if (class_exists('Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\DoctrineOrmMappingsPass')) {
             $container->addCompilerPass(DoctrineOrmMappingsPass::createXmlMappingDriver($mappings, []));

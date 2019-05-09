@@ -14,7 +14,6 @@ declare(strict_types=1);
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeGrantType;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeRepository;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeResponseType;
-use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeRevocationTypeHint;
 use OAuth2Framework\Component\AuthorizationCodeGrant\PKCEMethod;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
@@ -23,11 +22,6 @@ return function (ContainerConfigurator $container) {
     $container = $container->services()->defaults()
         ->private()
         ->autoconfigure();
-
-    $container->set(AuthorizationCodeRevocationTypeHint::class)
-        ->args([
-            ref(AuthorizationCodeRepository::class),
-        ]);
 
     $container->set(AuthorizationCodeGrantType::class)
         ->args([

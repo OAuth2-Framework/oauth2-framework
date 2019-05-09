@@ -26,7 +26,7 @@ class UserinfoEndpointEncryptionSource implements Component
         return 'encryption';
     }
 
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $config = $configs['openid_connect']['userinfo_endpoint']['encryption'];
         $container->setParameter('oauth2_server.openid_connect.userinfo_endpoint.encryption.enabled', $config['enabled']);
@@ -38,20 +38,20 @@ class UserinfoEndpointEncryptionSource implements Component
         $container->setParameter('oauth2_server.openid_connect.userinfo_endpoint.encryption.content_encryption_algorithms', $config['content_encryption_algorithms']);
     }
 
-    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
+    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
         $node->children()
             ->arrayNode($this->name())
             ->canBeEnabled()
             ->validate()
             ->ifTrue(function ($config) {
-                return true === $config['enabled'] && empty($config['key_encryption_algorithms']);
+                return true === $config['enabled'] && 0 === \count($config['key_encryption_algorithms']);
             })
             ->thenInvalid('You must set at least one key encryption algorithm.')
             ->end()
             ->validate()
             ->ifTrue(function ($config) {
-                return true === $config['enabled'] && empty($config['content_encryption_algorithms']);
+                return true === $config['enabled'] && 0 === \count($config['content_encryption_algorithms']);
             })
             ->thenInvalid('You must set at least one content encryption algorithm.')
             ->end()
@@ -75,7 +75,7 @@ class UserinfoEndpointEncryptionSource implements Component
             ->end();
     }
 
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
         $container->addCompilerPass(new UserinfoEndpointEncryptionCompilerPass());
     }

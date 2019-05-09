@@ -27,7 +27,7 @@ class NoneSource implements Component
         return 'none';
     }
 
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         if (!\class_exists(NoneResponseType::class) || !$configs['grant']['none']['enabled']) {
             return;
@@ -36,7 +36,7 @@ class NoneSource implements Component
         $loader->load('none.php');
     }
 
-    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
+    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
         if (!\class_exists(NoneResponseType::class)) {
             return;
@@ -48,7 +48,7 @@ class NoneSource implements Component
             ->end();
     }
 
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
     }
 

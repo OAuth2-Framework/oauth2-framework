@@ -28,7 +28,7 @@ class ResourceOwnerPasswordCredentialSource implements Component
         return 'resource_owner_password_credential';
     }
 
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         if (!\class_exists(ResourceOwnerPasswordCredentialsGrantType::class) || !$configs['grant']['resource_owner_password_credential']['enabled']) {
             return;
@@ -39,7 +39,7 @@ class ResourceOwnerPasswordCredentialSource implements Component
         $container->setAlias(ResourceOwnerPasswordCredentialManager::class, $configs['grant']['resource_owner_password_credential']['password_credential_manager']);
     }
 
-    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
+    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
         if (!\class_exists(ResourceOwnerPasswordCredentialsGrantType::class)) {
             return;
@@ -57,7 +57,7 @@ class ResourceOwnerPasswordCredentialSource implements Component
         ->end();
     }
 
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
     }
 

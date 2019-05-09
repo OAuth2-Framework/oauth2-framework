@@ -19,7 +19,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class JwksUriEndpointRouteCompilerPass implements CompilerPassInterface
 {
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         if (!$container->hasDefinition(MetadataBuilder::class) || !$container->has('jose.key_set.oauth2_server.endpoint.jwks_uri')) {
             return;

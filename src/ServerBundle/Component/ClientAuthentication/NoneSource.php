@@ -26,7 +26,7 @@ class NoneSource implements Component
         return 'none';
     }
 
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $container->setParameter('oauth2_server.client_authentication.none.enabled', $configs['client_authentication']['none']['enabled']);
         if ($configs['client_authentication']['none']['enabled']) {
@@ -35,7 +35,7 @@ class NoneSource implements Component
         }
     }
 
-    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
+    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
         $node->children()
             ->arrayNode($this->name())
@@ -45,7 +45,7 @@ class NoneSource implements Component
             ->end();
     }
 
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
     }
 

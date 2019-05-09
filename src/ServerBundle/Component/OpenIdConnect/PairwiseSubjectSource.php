@@ -25,7 +25,7 @@ class PairwiseSubjectSource implements Component
         return 'pairwise_subject';
     }
 
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $config = $configs['openid_connect']['pairwise_subject'];
         if (!$config['enabled']) {
@@ -35,14 +35,14 @@ class PairwiseSubjectSource implements Component
         $container->setAlias('oauth2_server.openid_connect.pairwise.service', $config['service']);
     }
 
-    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
+    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
         $node->children()
             ->arrayNode($this->name())
             ->canBeEnabled()
             ->validate()
             ->ifTrue(function ($config) {
-                return true === $config['enabled'] && empty($config['service']);
+                return true === $config['enabled'] && 0 === \count($config['service']);
             })
             ->thenInvalid('The pairwise subject service must be set.')
             ->end()
@@ -54,7 +54,7 @@ class PairwiseSubjectSource implements Component
             ->end();
     }
 
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
         $container->addCompilerPass(new UserInfoPairwiseSubjectCompilerPass());
     }

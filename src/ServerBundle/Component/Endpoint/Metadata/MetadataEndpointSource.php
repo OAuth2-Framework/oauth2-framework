@@ -43,7 +43,7 @@ class MetadataEndpointSource implements Component
         return 'metadata';
     }
 
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         if (!\class_exists(MetadataEndpoint::class)) {
             return;
@@ -64,7 +64,7 @@ class MetadataEndpointSource implements Component
         }
     }
 
-    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
+    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
         if (!\class_exists(MetadataEndpoint::class)) {
             return;
@@ -110,7 +110,7 @@ class MetadataEndpointSource implements Component
         return $updatedConfig;
     }
 
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
         if (!\class_exists(MetadataEndpoint::class)) {
             return;

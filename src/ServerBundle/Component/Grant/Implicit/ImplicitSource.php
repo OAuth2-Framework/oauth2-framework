@@ -27,7 +27,7 @@ class ImplicitSource implements Component
         return 'implicit';
     }
 
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         if (!\class_exists(ImplicitGrantType::class) || !$configs['grant']['implicit']['enabled']) {
             return;
@@ -37,7 +37,7 @@ class ImplicitSource implements Component
         $loader->load('implicit.php');
     }
 
-    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
+    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
         if (!\class_exists(ImplicitGrantType::class)) {
             return;
@@ -50,7 +50,7 @@ class ImplicitSource implements Component
             ->end();
     }
 
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
     }
 

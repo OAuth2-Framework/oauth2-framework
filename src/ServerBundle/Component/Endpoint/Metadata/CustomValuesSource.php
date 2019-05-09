@@ -25,12 +25,12 @@ class CustomValuesSource implements Component
         return 'custom_routes';
     }
 
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $container->setParameter('oauth2_server.endpoint.metadata.custom_values', $configs['endpoint']['metadata']['custom_values']);
     }
 
-    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
+    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
         $node->children()
             ->arrayNode('custom_values')
@@ -43,7 +43,7 @@ class CustomValuesSource implements Component
             ->end();
     }
 
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
         $container->addCompilerPass(new CustomValuesCompilerPass());
     }

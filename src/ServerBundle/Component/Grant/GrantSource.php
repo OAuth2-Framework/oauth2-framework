@@ -51,7 +51,7 @@ class GrantSource implements Component
         return 'grant';
     }
 
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../Resources/config/grant'));
         $loader->load('grant.php');
@@ -61,7 +61,7 @@ class GrantSource implements Component
         }
     }
 
-    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
+    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
         $childNode = $node->children()
             ->arrayNode($this->name())
@@ -85,7 +85,7 @@ class GrantSource implements Component
         return $updatedConfig;
     }
 
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
         foreach ($this->subComponents as $component) {
             $component->build($container);

@@ -55,7 +55,7 @@ class AuthorizationEndpointSource implements Component
         return 'authorization';
     }
 
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         if (!\class_exists(AuthorizationEndpoint::class)) {
             return;
@@ -76,7 +76,7 @@ class AuthorizationEndpointSource implements Component
         $loader->load('authorization.php');
 
         $container->setAlias(UserAccountDiscovery::class, $config['user_discovery']);
-        if (!empty($config['consent_repository'])) {
+        if (null !== ($config['consent_repository'])) {
             $container->setAlias(ConsentRepository::class, $config['consent_repository']);
         }
 
@@ -99,7 +99,7 @@ class AuthorizationEndpointSource implements Component
         }
     }
 
-    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
+    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
         if (!\class_exists(AuthorizationEndpoint::class)) {
             return;
@@ -186,7 +186,7 @@ class AuthorizationEndpointSource implements Component
         return $updatedConfig;
     }
 
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
         if (!\class_exists(AuthorizationEndpoint::class)) {
             return;

@@ -26,7 +26,7 @@ class ClientSecretBasicSource implements Component
         return 'client_secret_basic';
     }
 
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $container->setParameter('oauth2_server.client_authentication.client_secret_basic.realm', $configs['client_authentication']['client_secret_basic']['realm']);
         $container->setParameter('oauth2_server.client_authentication.client_secret_basic.secret_lifetime', $configs['client_authentication']['client_secret_basic']['secret_lifetime']);
@@ -34,7 +34,7 @@ class ClientSecretBasicSource implements Component
         $loader->load('client_secret_basic.php');
     }
 
-    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
+    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
         $node->children()
             ->arrayNode($this->name())
@@ -54,7 +54,7 @@ class ClientSecretBasicSource implements Component
             ->end();
     }
 
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
     }
 

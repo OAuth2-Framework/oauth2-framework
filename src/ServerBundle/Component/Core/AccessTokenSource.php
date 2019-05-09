@@ -27,7 +27,7 @@ class AccessTokenSource implements Component
         return 'access_token';
     }
 
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $container->setAlias(AccessTokenRepository::class, $configs['access_token']['repository']);
         $container->setParameter('oauth2_server.access_token_lifetime', $configs['access_token']['lifetime']);
@@ -36,7 +36,7 @@ class AccessTokenSource implements Component
         $loader->load('access_token.php');
     }
 
-    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
+    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
         $node->children()
             ->arrayNode($this->name())
@@ -55,7 +55,7 @@ class AccessTokenSource implements Component
             ->end();
     }
 
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
     }
 

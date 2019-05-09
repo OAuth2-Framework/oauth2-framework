@@ -30,7 +30,7 @@ class JwtBearerSource implements Component
         return 'jwt_bearer';
     }
 
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         if (!\class_exists(JwtBearerGrantType::class) || !$configs['grant']['jwt_bearer']['enabled']) {
             return;
@@ -45,7 +45,7 @@ class JwtBearerSource implements Component
         }
     }
 
-    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
+    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
         if (!\class_exists(JwtBearerGrantType::class)) {
             return;
@@ -55,7 +55,7 @@ class JwtBearerSource implements Component
             ->canBeEnabled()
             ->validate()
             ->ifTrue(function ($config) {
-                return true === $config['enabled'] && empty($config['signature_algorithms']);
+                return true === $config['enabled'] && 0 === \count($config['signature_algorithms']);
             })
             ->thenInvalid('The option "signature_algorithms" must contain at least one signature algorithm.')
             ->end()
@@ -107,7 +107,7 @@ class JwtBearerSource implements Component
             ->end();
     }
 
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
         if (!\class_exists(JwtBearerGrantType::class)) {
             return;
@@ -127,14 +127,14 @@ class JwtBearerSource implements Component
         return [];
     }
 
-    private function updateJoseBundleConfigurationForVerifier(ContainerBuilder $container, array $sourceConfig)
+    private function updateJoseBundleConfigurationForVerifier(ContainerBuilder $container, array $sourceConfig): void
     {
         ConfigurationHelper::addJWSVerifier($container, 'oauth2_server.grant.jwt_bearer', $sourceConfig['signature_algorithms'], false);
         ConfigurationHelper::addHeaderChecker($container, 'oauth2_server.grant.jwt_bearer', $sourceConfig['header_checkers'], false);
         ConfigurationHelper::addClaimChecker($container, 'oauth2_server.grant.jwt_bearer', [], false);
     }
 
-    private function updateJoseBundleConfigurationForDecrypter(ContainerBuilder $container, array $sourceConfig)
+    private function updateJoseBundleConfigurationForDecrypter(ContainerBuilder $container, array $sourceConfig): void
     {
         if (!$sourceConfig['enabled']) {
             return;

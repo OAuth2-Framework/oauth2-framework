@@ -20,7 +20,7 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class ParameterCheckerCompilerPass implements CompilerPassInterface
 {
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         if (!$container->hasDefinition(ParameterCheckerManager::class)) {
             return;

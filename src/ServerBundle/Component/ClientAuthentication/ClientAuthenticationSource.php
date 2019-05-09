@@ -44,7 +44,7 @@ class ClientAuthenticationSource implements Component
         return 'client_authentication';
     }
 
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         if (!\class_exists(AuthenticationMethodManager::class)) {
             return;
@@ -59,7 +59,7 @@ class ClientAuthenticationSource implements Component
         }
     }
 
-    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
+    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
         if (!\class_exists(AuthenticationMethodManager::class)) {
             return;
@@ -89,7 +89,7 @@ class ClientAuthenticationSource implements Component
         return $updatedConfig;
     }
 
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
         if (!\class_exists(AuthenticationMethodManager::class)) {
             return;

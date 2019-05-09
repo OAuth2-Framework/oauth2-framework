@@ -20,7 +20,7 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class UserInfoPairwiseSubjectCompilerPass implements CompilerPassInterface
 {
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         if (!$container->hasAlias('oauth2_server.openid_connect.pairwise.service')) {
             return;

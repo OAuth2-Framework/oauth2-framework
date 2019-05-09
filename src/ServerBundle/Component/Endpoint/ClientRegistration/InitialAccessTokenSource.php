@@ -28,7 +28,7 @@ class InitialAccessTokenSource implements Component
         return 'initial_access_token';
     }
 
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $config = $configs['endpoint']['client_registration']['initial_access_token'];
         if (!$config['enabled']) {
@@ -44,20 +44,20 @@ class InitialAccessTokenSource implements Component
         $loader->load('initial_access_token.php');
     }
 
-    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
+    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
         $node->children()
             ->arrayNode($this->name())
             ->canBeEnabled()
             ->validate()
             ->ifTrue(function ($config) {
-                return true === $config['enabled'] && empty($config['realm']);
+                return true === $config['enabled'] && null === $config['realm'];
             })
             ->thenInvalid('The option "realm" must be set.')
             ->end()
             ->validate()
             ->ifTrue(function ($config) {
-                return true === $config['enabled'] && empty($config['repository']);
+                return true === $config['enabled'] && null === $config['repository'];
             })
             ->thenInvalid('The option "repository" must be set.')
             ->end()
@@ -88,7 +88,7 @@ class InitialAccessTokenSource implements Component
             ->end();
     }
 
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
         $container->addCompilerPass(new InitialAccessTokenCompilerPass());
     }

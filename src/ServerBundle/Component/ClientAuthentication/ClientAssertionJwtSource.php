@@ -32,7 +32,7 @@ class ClientAssertionJwtSource implements Component
         return 'client_assertion_jwt';
     }
 
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         if (!\class_exists(JWK::class)) {
             return;
@@ -64,7 +64,7 @@ class ClientAssertionJwtSource implements Component
         }
     }
 
-    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
+    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
         if (!\class_exists(JWK::class)) {
             return;
@@ -75,7 +75,7 @@ class ClientAssertionJwtSource implements Component
             ->info('This method comprises the "client_secret_jwt" and the "private_key_jwt" authentication methods')
             ->validate()
             ->ifTrue(function ($config) {
-                return $config['enabled'] && empty($config['signature_algorithms']);
+                return $config['enabled'] && 0 === \count($config['signature_algorithms']);
             })
             ->thenInvalid('At least one signature algorithm must be set.')
             ->end()
@@ -111,13 +111,13 @@ class ClientAssertionJwtSource implements Component
             ->canBeEnabled()
             ->validate()
             ->ifTrue(function ($config) {
-                return true === $config['enabled'] && empty($config['key_encryption_algorithms']);
+                return true === $config['enabled'] && 0 === \count($config['key_encryption_algorithms']);
             })
             ->thenInvalid('At least one key encryption algorithm must be set.')
             ->end()
             ->validate()
             ->ifTrue(function ($config) {
-                return true === $config['enabled'] && empty($config['content_encryption_algorithms']);
+                return true === $config['enabled'] && 0 === \count($config['content_encryption_algorithms']);
             })
             ->thenInvalid('At least one content encryption algorithm must be set.')
             ->end()
@@ -169,7 +169,7 @@ class ClientAssertionJwtSource implements Component
         return [];
     }
 
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
         if (!\class_exists(JWK::class)) {
             return;

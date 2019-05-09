@@ -20,9 +20,9 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class SessionManagementRouteCompilerPass implements CompilerPassInterface
 {
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
-        if (!$container->hasDefinition('oauth2_server.endpoint.session_management_pipe') || !$container->getParameter('oauth2_server.endpoint.session_management.enabled')) {
+        if (!$container->hasDefinition('oauth2_server.endpoint.session_management_pipe') || true !== $container->getParameter('oauth2_server.endpoint.session_management.enabled')) {
             return;
         }
 

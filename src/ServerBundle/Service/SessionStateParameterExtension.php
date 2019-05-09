@@ -13,17 +13,23 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Service;
 
-use Assert\Assertion;
 use Base64Url\Base64Url;
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
+use OAuth2Framework\Component\OpenIdConnect\ConsentScreen\SessionStateParameterExtension as BaseSessionStateParameterExtension;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
-class SessionStateParameterExtension extends \OAuth2Framework\Component\OpenIdConnect\ConsentScreen\SessionStateParameterExtension
+class SessionStateParameterExtension extends BaseSessionStateParameterExtension
 {
+    /**
+     * @var string
+     */
     private $storageName;
 
+    /**
+     * @var SessionInterface
+     */
     private $session;
 
     public function __construct(SessionInterface $session, string $storageName)
@@ -49,7 +55,6 @@ class SessionStateParameterExtension extends \OAuth2Framework\Component\OpenIdCo
     protected function calculateSessionState(ServerRequestInterface $request, AuthorizationRequest $authorization, string $browserState): string
     {
         $redirectUri = $authorization->getRedirectUri();
-        Assertion::string($redirectUri);
         $origin = $this->getOriginUri($redirectUri);
         $salt = Base64Url::encode(\random_bytes(16));
         $hash = \hash('sha256', \Safe\sprintf('%s%s%s%s', $authorization->getClient()->getPublicId(), $origin, $browserState, $salt));

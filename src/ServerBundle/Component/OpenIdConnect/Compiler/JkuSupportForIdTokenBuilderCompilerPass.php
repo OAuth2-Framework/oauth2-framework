@@ -21,7 +21,7 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class JkuSupportForIdTokenBuilderCompilerPass implements CompilerPassInterface
 {
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         if (!$container->hasDefinition(JKUFactory::class) || !$container->hasDefinition(IdTokenBuilderFactory::class)) {
             return;

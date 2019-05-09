@@ -30,7 +30,7 @@ class TokenIntrospectionEndpointSource implements Component
         return 'token_introspection';
     }
 
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         if (!\class_exists(TokenIntrospectionEndpoint::class)) {
             return;
@@ -48,7 +48,7 @@ class TokenIntrospectionEndpointSource implements Component
         $loader->load('introspection.php');
     }
 
-    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
+    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
         if (!\class_exists(TokenIntrospectionEndpoint::class)) {
             return;
@@ -79,7 +79,7 @@ class TokenIntrospectionEndpointSource implements Component
             ->end();
     }
 
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
         if (!\class_exists(TokenIntrospectionEndpoint::class)) {
             return;

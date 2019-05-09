@@ -162,11 +162,11 @@ class Client implements ClientInterface
         return $all;
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         $data = [
             'client_id' => $this->getPublicId()->getValue(),
-            'owner_id' => $this->getOwnerId() ? $this->getOwnerId()->getValue() : null,
+            'owner_id' => null !== $this->getOwnerId() ? $this->getOwnerId()->getValue() : null,
             'parameters' => (object) $this->all(),
             'is_deleted' => $this->isDeleted(),
         ];

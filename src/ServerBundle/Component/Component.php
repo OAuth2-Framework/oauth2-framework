@@ -20,11 +20,11 @@ interface Component
 {
     public function name(): string;
 
-    public function load(array $configs, ContainerBuilder $container);
+    public function load(array $configs, ContainerBuilder $container): void;
 
-    public function build(ContainerBuilder $container);
+    public function build(ContainerBuilder $container): void;
 
-    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode);
+    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void;
 
     public function prepend(ContainerBuilder $container, array $config): array;
 }

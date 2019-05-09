@@ -26,7 +26,7 @@ class SignatureSource implements Component
         return 'signature';
     }
 
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $config = $configs['endpoint']['metadata']['signature'];
         $container->setParameter('oauth2_server.endpoint.metadata.signature.enabled', $config['enabled']);
@@ -38,20 +38,20 @@ class SignatureSource implements Component
         $container->setParameter('oauth2_server.endpoint.metadata.signature.key', $config['key']);
     }
 
-    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
+    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
         $node->children()
             ->arrayNode('signature')
             ->canBeEnabled()
             ->validate()
             ->ifTrue(function ($config) {
-                return true === $config['enabled'] && empty($config['algorithm']);
+                return true === $config['enabled'] && null === $config['algorithm'];
             })
             ->thenInvalid('The signature algorithm must be set.')
             ->end()
             ->validate()
             ->ifTrue(function ($config) {
-                return true === $config['enabled'] && empty($config['key']);
+                return true === $config['enabled'] && null === $config['key'];
             })
             ->thenInvalid('The signature key must be set.')
             ->end()
@@ -67,7 +67,7 @@ class SignatureSource implements Component
             ->end();
     }
 
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
         $container->addCompilerPass(new SignedMetadataCompilerPass());
     }

@@ -20,7 +20,7 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class UserInfoScopeSupportCompilerPass implements CompilerPassInterface
 {
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         if (!$container->hasDefinition(UserInfoScopeSupportManager::class)) {
             return;

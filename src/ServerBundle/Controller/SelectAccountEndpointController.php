@@ -21,8 +21,8 @@ use Symfony\Component\Routing\RouterInterface;
 
 final class SelectAccountEndpointController extends SelectAccountEndpoint
 {
-    /*
-     *
+    /**
+     * @var RouterInterface
      */
     private $router;
 

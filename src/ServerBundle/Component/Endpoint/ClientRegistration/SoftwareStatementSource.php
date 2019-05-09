@@ -27,7 +27,7 @@ class SoftwareStatementSource implements Component
         return 'software_statement';
     }
 
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $config = $configs['endpoint']['client_registration']['software_statement'];
         $container->setParameter('oauth2_server.endpoint.client_registration.software_statement.enabled', $config['enabled']);
@@ -42,20 +42,20 @@ class SoftwareStatementSource implements Component
         $loader->load('software_statement.php');
     }
 
-    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
+    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
         $node->children()
             ->arrayNode($this->name())
             ->canBeEnabled()
             ->validate()
             ->ifTrue(function ($config) {
-                return true === $config['enabled'] && empty($config['key_set']);
+                return true === $config['enabled'] && null === $config['key_set'];
             })
             ->thenInvalid('The option "key_set" must be set.')
             ->end()
             ->validate()
             ->ifTrue(function ($config) {
-                return true === $config['enabled'] && empty($config['allowed_signature_algorithms']);
+                return true === $config['enabled'] && 0 === \count($config['allowed_signature_algorithms']);
             })
             ->thenInvalid('At least one signature algorithm must be set.')
             ->end()
@@ -78,7 +78,7 @@ class SoftwareStatementSource implements Component
             ->end();
     }
 
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
     }
 

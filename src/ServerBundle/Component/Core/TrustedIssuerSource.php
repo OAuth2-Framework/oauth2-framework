@@ -25,7 +25,7 @@ class TrustedIssuerSource implements Component
         return 'trusted_issuer';
     }
 
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         if (!\interface_exists(TrustedIssuerRepository::class)) {
             return;
@@ -36,7 +36,7 @@ class TrustedIssuerSource implements Component
         $container->setAlias(TrustedIssuerRepository::class, $configs['trusted_issuer']['repository']);
     }
 
-    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
+    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
         if (!\interface_exists(TrustedIssuerRepository::class)) {
             return;
@@ -54,7 +54,7 @@ class TrustedIssuerSource implements Component
             ->end();
     }
 
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
     }
 

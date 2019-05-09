@@ -29,7 +29,7 @@ class ScopeSource implements Component
         return 'scope';
     }
 
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         if (!\interface_exists(ScopeRepository::class) || !$configs['scope']['enabled']) {
             return;
@@ -57,7 +57,7 @@ class ScopeSource implements Component
         }
     }
 
-    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
+    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
         if (!\interface_exists(ScopeRepository::class)) {
             return;
@@ -97,7 +97,7 @@ class ScopeSource implements Component
             ->end();
     }
 
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
         $container->addCompilerPass(new ScopePolicyCompilerPass());
         $container->addCompilerPass(new ScopeMetadataCompilerPass());

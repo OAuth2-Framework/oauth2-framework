@@ -20,9 +20,9 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class ClientAssertionEncryptedJwtCompilerPass implements CompilerPassInterface
 {
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
-        if (!$container->hasDefinition(ClientAssertionJwt::class) || !$container->getParameter('oauth2_server.client_authentication.client_assertion_jwt.encryption.enabled')) {
+        if (!$container->hasDefinition(ClientAssertionJwt::class) || true !== $container->getParameter('oauth2_server.client_authentication.client_assertion_jwt.encryption.enabled')) {
             return;
         }
 

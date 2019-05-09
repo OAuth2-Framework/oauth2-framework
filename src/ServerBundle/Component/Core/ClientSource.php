@@ -27,7 +27,7 @@ class ClientSource implements Component
         return 'client';
     }
 
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $container->setAlias(ClientRepository::class, $configs['client']['repository']);
 
@@ -35,7 +35,7 @@ class ClientSource implements Component
         $loader->load('client.php');
     }
 
-    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
+    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
         $node->children()
             ->arrayNode($this->name())
@@ -50,7 +50,7 @@ class ClientSource implements Component
         ->end();
     }
 
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
     }
 

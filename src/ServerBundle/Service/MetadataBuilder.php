@@ -49,65 +49,68 @@ class MetadataBuilder
         return $this->metadata;
     }
 
-    public function addRoute(string $name, string $routeName, array $routeParameters = [])
+    public function addRoute(string $name, string $routeName, array $routeParameters = []): void
     {
         $path = $this->router->generate($routeName, $routeParameters, RouterInterface::ABSOLUTE_URL);
         $this->metadata->set($name, $path);
     }
 
-    public function setCodeChallengeMethodsSupported(PKCEMethodManager $PKCEMethodManager)
+    public function setCodeChallengeMethodsSupported(PKCEMethodManager $PKCEMethodManager): void
     {
         $this->metadata->set('code_challenge_methods_supported', $PKCEMethodManager->names());
     }
 
-    public function setClientAssertionJwt(ClientAssertionJwt $clientAssertionJwt)
+    public function setClientAssertionJwt(ClientAssertionJwt $clientAssertionJwt): void
     {
         $this->metadata->set('token_endpoint_auth_signing_alg_values_supported', $clientAssertionJwt->getSupportedSignatureAlgorithms());
         $this->metadata->set('token_endpoint_auth_encryption_alg_values_supported', $clientAssertionJwt->getSupportedKeyEncryptionAlgorithms());
         $this->metadata->set('token_endpoint_auth_encryption_enc_values_supported', $clientAssertionJwt->getSupportedContentEncryptionAlgorithms());
     }
 
-    public function setGrantTypeManager(GrantTypeManager $grantTypeManager)
+    public function setGrantTypeManager(GrantTypeManager $grantTypeManager): void
     {
         $this->metadata->set('grant_types_supported', $grantTypeManager->list());
     }
 
-    public function setResponseTypeManager(ResponseTypeManager $responseTypeManager)
+    public function setResponseTypeManager(ResponseTypeManager $responseTypeManager): void
     {
         $this->metadata->set('response_types_supported', $responseTypeManager->list());
     }
 
-    public function setResponseModeManager(ResponseModeManager $responseModeManager)
+    public function setResponseModeManager(ResponseModeManager $responseModeManager): void
     {
         $this->metadata->set('response_modes_supported', $responseModeManager->list());
     }
 
-    public function setTokenEndpointAuthMethodManager(AuthenticationMethodManager $tokenEndpointAuthMethodManager)
+    public function setTokenEndpointAuthMethodManager(AuthenticationMethodManager $tokenEndpointAuthMethodManager): void
     {
         $this->metadata->set('token_endpoint_auth_methods_supported', $tokenEndpointAuthMethodManager->list());
     }
 
-    public function setScopeRepository(ScopeRepository $scopeRepository)
+    public function setScopeRepository(ScopeRepository $scopeRepository): void
     {
         $this->metadata->set('scopes_supported', $scopeRepository->all());
     }
 
-    public function setUserinfo(UserInfo $userInfo)
+    public function setUserinfo(UserInfo $userInfo): void
     {
         $this->metadata->set('subject_types_supported', $userInfo->isPairwiseSubjectIdentifierSupported() ? ['public', 'pairwise'] : ['public']);
     }
 
-    public function setClaimsSupported(ClaimManager $claimManager)
+    public function setClaimsSupported(ClaimManager $claimManager): void
     {
         $this->metadata->set('claims_supported', $claimManager->list());
     }
 
-    public function addKeyValuePair(string $name, $value)
+    /**
+     * @param mixed|null $value
+     */
+    public function addKeyValuePair(string $name, $value): void
     {
         $this->metadata->set($name, $value);
     }
 
-    public function setAuthorizationRequestLoader(AuthorizationRequestLoader $authorizationRequestLoader)
+    public function setAuthorizationRequestLoader(AuthorizationRequestLoader $authorizationRequestLoader): void
     {
         $requestObjectSupported = $authorizationRequestLoader->isRequestObjectSupportEnabled();
         $this->metadata->set('request_parameter_supported', $requestObjectSupported);

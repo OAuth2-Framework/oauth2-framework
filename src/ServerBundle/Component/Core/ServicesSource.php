@@ -29,7 +29,7 @@ class ServicesSource implements Component
         return 'route_loader';
     }
 
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $container->setParameter('oauth2_server.server_uri', $configs['server_uri']);
         if (null !== $configs['http_client']) {
@@ -43,7 +43,7 @@ class ServicesSource implements Component
         $loader->load('message.php');
     }
 
-    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
+    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
         $node->children()
             ->scalarNode('server_uri')
@@ -57,7 +57,7 @@ class ServicesSource implements Component
             ->end();
     }
 
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
         $container->addCompilerPass(new OAuth2MessageExtensionCompilerClass());
         $container->addCompilerPass(new OAuth2MessageFactoryCompilerClass());

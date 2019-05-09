@@ -20,7 +20,7 @@ use Symfony\Component\DependencyInjection\Reference;
 
 final class ResourceServerAuthenticationMethodCompilerPass implements CompilerPassInterface
 {
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         if (!$container->hasDefinition(AuthenticationMethodManager::class)) {
             return;

@@ -21,7 +21,7 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class GrantTypeCompilerPass implements CompilerPassInterface
 {
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         if (!$container->hasDefinition(GrantTypeManager::class)) {
             return;

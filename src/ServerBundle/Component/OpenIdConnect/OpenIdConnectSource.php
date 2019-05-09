@@ -47,7 +47,7 @@ class OpenIdConnectSource implements Component
         return 'openid_connect';
     }
 
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         if (!\class_exists(IdToken::class) || !$configs['openid_connect']['enabled']) {
             return;
@@ -66,7 +66,7 @@ class OpenIdConnectSource implements Component
         }
     }
 
-    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
+    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
         if (!\class_exists(IdToken::class)) {
             return;
@@ -96,7 +96,7 @@ class OpenIdConnectSource implements Component
         return $updatedConfig;
     }
 
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
         if (!\class_exists(IdToken::class)) {
             return;

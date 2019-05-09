@@ -24,12 +24,12 @@ class KeySet implements Component
         return 'key_set';
     }
 
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         // TODO: Implement load() method.
     }
 
-    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
+    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
         $node
             ->addDefaultsIfNotSet()
@@ -39,7 +39,7 @@ class KeySet implements Component
             ->end();
     }
 
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
         //Nothing to do
     }

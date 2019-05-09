@@ -26,7 +26,7 @@ class ResponseTypeSource implements Component
         return 'response_type';
     }
 
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $config = $configs['openid_connect']['response_type'];
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../Resources/config/openid_connect/response_type'));
@@ -37,7 +37,7 @@ class ResponseTypeSource implements Component
         }
     }
 
-    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
+    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
         $node->children()
             ->arrayNode($this->name())
@@ -68,7 +68,7 @@ class ResponseTypeSource implements Component
             ->end();
     }
 
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
         //Nothing to do
     }

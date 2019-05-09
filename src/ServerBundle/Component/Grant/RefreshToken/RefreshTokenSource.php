@@ -28,7 +28,7 @@ class RefreshTokenSource implements Component
         return 'refresh_token';
     }
 
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         if (!\class_exists(RefreshTokenGrantType::class) || !$configs['grant']['refresh_token']['enabled']) {
             return;
@@ -39,7 +39,7 @@ class RefreshTokenSource implements Component
         $loader->load('refresh_token.php');
     }
 
-    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
+    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
         if (!\class_exists(RefreshTokenGrantType::class)) {
             return;
@@ -62,7 +62,7 @@ class RefreshTokenSource implements Component
             ->end();
     }
 
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
     }
 

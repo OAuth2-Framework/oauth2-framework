@@ -20,7 +20,7 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class OpenIdConnectExtensionEncryptionCompilerPass implements CompilerPassInterface
 {
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         if (!$container->hasDefinition(OpenIdConnectExtension::class) || !$container->hasDefinition('jose.jwe_builder.oauth2_server.openid_connect.id_token')) {
             return;

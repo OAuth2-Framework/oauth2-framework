@@ -41,7 +41,7 @@ class UserinfoEndpointSource implements Component
         return 'userinfo_endpoint';
     }
 
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $config = $configs['openid_connect']['userinfo_endpoint'];
         if (!$config['enabled']) {
@@ -59,7 +59,7 @@ class UserinfoEndpointSource implements Component
         }
     }
 
-    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
+    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
         $childNode = $node->children()
             ->arrayNode($this->name())
@@ -93,7 +93,7 @@ class UserinfoEndpointSource implements Component
         return $updatedConfig;
     }
 
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
         $container->addCompilerPass(new UserinfoRouteCompilerPass());
         $container->addCompilerPass(new UserInfoScopeSupportCompilerPass());

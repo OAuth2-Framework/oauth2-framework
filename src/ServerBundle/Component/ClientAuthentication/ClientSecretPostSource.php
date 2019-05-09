@@ -26,7 +26,7 @@ class ClientSecretPostSource implements Component
         return 'client_secret_post';
     }
 
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $container->setParameter('oauth2_server.client_authentication.client_secret_post.enabled', $configs['client_authentication']['client_secret_post']['enabled']);
         if ($configs['client_authentication']['client_secret_post']['enabled']) {
@@ -36,7 +36,7 @@ class ClientSecretPostSource implements Component
         }
     }
 
-    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
+    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
         $node->children()
             ->arrayNode($this->name())
@@ -52,7 +52,7 @@ class ClientSecretPostSource implements Component
             ->end();
     }
 
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
     }
 

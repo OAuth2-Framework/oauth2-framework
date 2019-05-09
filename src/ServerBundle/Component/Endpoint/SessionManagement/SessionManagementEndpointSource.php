@@ -27,7 +27,7 @@ class SessionManagementEndpointSource implements Component
         return 'session_management';
     }
 
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $config = $configs['endpoint']['session_management'];
         $container->setParameter('oauth2_server.endpoint.session_management.enabled', $config['enabled']);
@@ -43,25 +43,25 @@ class SessionManagementEndpointSource implements Component
         $loader->load('session_management.php');
     }
 
-    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
+    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
         $node->children()
             ->arrayNode($this->name())
             ->canBeEnabled()
             ->validate()
             ->ifTrue(function ($config) {
-                return true === $config['enabled'] && empty($config['path']);
+                return true === $config['enabled'] && null === $config['path'];
             })
             ->thenInvalid('The route name must be set.')
             ->end()
             ->validate()
             ->ifTrue(function ($config) {
-                return true === $config['enabled'] && empty($config['storage_name']);
+                return true === $config['enabled'] && null === $config['storage_name'];
             })->thenInvalid('The option "storage_name" must be set.')
             ->end()
             ->validate()
             ->ifTrue(function ($config) {
-                return true === $config['enabled'] && empty($config['template']);
+                return true === $config['enabled'] && null === $config['template'];
             })->thenInvalid('The option "template" must be set.')
             ->end()
             ->children()
@@ -88,7 +88,7 @@ class SessionManagementEndpointSource implements Component
             ->end();
     }
 
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
         $container->addCompilerPass(new SessionManagementRouteCompilerPass());
     }

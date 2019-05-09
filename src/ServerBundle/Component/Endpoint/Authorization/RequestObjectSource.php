@@ -39,7 +39,7 @@ class RequestObjectSource implements Component
         return 'request_object';
     }
 
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $config = $configs['endpoint']['authorization']['request_object'];
         $container->setParameter('oauth2_server.endpoint.authorization.request_object.enabled', $config['enabled']);
@@ -53,7 +53,7 @@ class RequestObjectSource implements Component
         }
     }
 
-    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
+    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
         $childNode = $node->children()
             ->arrayNode($this->name())
@@ -96,7 +96,7 @@ class RequestObjectSource implements Component
         return $updatedConfig;
     }
 
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
         $container->addCompilerPass(new RequestObjectCompilerPass());
 

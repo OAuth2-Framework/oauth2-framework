@@ -25,14 +25,14 @@ class RequestObjectReferenceSource implements Component
         return 'reference';
     }
 
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $config = $configs['endpoint']['authorization']['request_object']['reference'];
         $container->setParameter('oauth2_server.endpoint.authorization.request_object.reference.enabled', $config['enabled']);
         $container->setParameter('oauth2_server.endpoint.authorization.request_object.reference.uris_registration_required', $config['uris_registration_required']);
     }
 
-    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
+    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
         $node->children()
             ->arrayNode($this->name())
@@ -52,7 +52,7 @@ class RequestObjectReferenceSource implements Component
         return [];
     }
 
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
         $container->addCompilerPass(new RequestObjectReferenceCompilerPass());
     }

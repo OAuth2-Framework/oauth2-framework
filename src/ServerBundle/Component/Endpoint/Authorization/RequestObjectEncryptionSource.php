@@ -21,7 +21,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class RequestObjectEncryptionSource implements Component
 {
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $config = $configs['endpoint']['authorization']['request_object']['encryption'];
         foreach (['required', 'key_set', 'key_encryption_algorithms', 'content_encryption_algorithms'] as $k) {
@@ -34,7 +34,7 @@ class RequestObjectEncryptionSource implements Component
         return 'encryption';
     }
 
-    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
+    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
         $node->children()
             ->arrayNode($this->name())
@@ -76,7 +76,7 @@ class RequestObjectEncryptionSource implements Component
         return [];
     }
 
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
         $container->addCompilerPass(new RequestObjectEncryptionCompilerPass());
     }

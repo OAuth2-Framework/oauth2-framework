@@ -21,7 +21,7 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class ScopeMetadataCompilerPass implements CompilerPassInterface
 {
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         if (!$container->hasDefinition(MetadataBuilder::class) || !$container->hasAlias(ScopeRepository::class)) {
             return;

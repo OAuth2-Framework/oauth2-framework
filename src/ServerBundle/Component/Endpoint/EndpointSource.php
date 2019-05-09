@@ -53,14 +53,14 @@ class EndpointSource implements Component
         return 'endpoint';
     }
 
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         foreach ($this->subComponents as $subComponent) {
             $subComponent->load($configs, $container);
         }
     }
 
-    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
+    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
         $childNode = $node->children()
             ->arrayNode($this->name())
@@ -84,7 +84,7 @@ class EndpointSource implements Component
         return $updatedConfig;
     }
 
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
         foreach ($this->subComponents as $component) {
             $component->build($container);

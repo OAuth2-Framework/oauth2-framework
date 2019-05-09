@@ -33,7 +33,7 @@ class ResponseModeSource implements Component
         ];
     }
 
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $config = $configs['endpoint']['authorization']['response_mode'];
         $container->setParameter('oauth2_server.endpoint.authorization.response_mode.allow_response_mode_parameter', $config['allow_response_mode_parameter']);
@@ -50,7 +50,7 @@ class ResponseModeSource implements Component
         return 'response_mode';
     }
 
-    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
+    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
         $childNode = $node->children()
             ->arrayNode($this->name())
@@ -82,7 +82,7 @@ class ResponseModeSource implements Component
         return $updatedConfig;
     }
 
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
         foreach ($this->subComponents as $component) {
             $component->build($container);

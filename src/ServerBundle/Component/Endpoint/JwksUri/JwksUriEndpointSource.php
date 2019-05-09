@@ -25,12 +25,12 @@ class JwksUriEndpointSource implements Component
         return 'jwks_uri';
     }
 
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $container->setParameter('oauth2_server.endpoint.jwks_uri.enabled', $configs['endpoint']['jwks_uri']['enabled']);
     }
 
-    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
+    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
         $node->children()
             ->arrayNode($this->name())
@@ -52,7 +52,7 @@ class JwksUriEndpointSource implements Component
             ->end();
     }
 
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
         $container->addCompilerPass(new JwksUriEndpointRouteCompilerPass());
     }

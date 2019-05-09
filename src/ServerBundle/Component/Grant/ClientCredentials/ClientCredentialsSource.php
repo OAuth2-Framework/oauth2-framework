@@ -27,7 +27,7 @@ class ClientCredentialsSource implements Component
         return 'client_credentials';
     }
 
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         if (!\class_exists(ClientCredentialsGrantType::class) || !$configs['grant']['client_credentials']['enabled']) {
             return;
@@ -36,7 +36,7 @@ class ClientCredentialsSource implements Component
         $loader->load('client_credentials.php');
     }
 
-    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
+    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
         if (!\class_exists(ClientCredentialsGrantType::class)) {
             return;
@@ -49,7 +49,7 @@ class ClientCredentialsSource implements Component
             ->end();
     }
 
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
     }
 

@@ -27,7 +27,7 @@ class ClientRuleSource implements Component
         return 'client_rule';
     }
 
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         if (!\interface_exists(Rule::class)) {
             return;
@@ -37,7 +37,7 @@ class ClientRuleSource implements Component
         $loader->load('client_rule.php');
     }
 
-    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
+    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
     }
 
@@ -46,7 +46,7 @@ class ClientRuleSource implements Component
         return [];
     }
 
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
         if (!\interface_exists(Rule::class)) {
             return;

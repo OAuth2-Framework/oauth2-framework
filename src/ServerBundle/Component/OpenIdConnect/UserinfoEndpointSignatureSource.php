@@ -26,7 +26,7 @@ class UserinfoEndpointSignatureSource implements Component
         return 'signature';
     }
 
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $config = $configs['openid_connect']['userinfo_endpoint']['signature'];
         $container->setParameter('oauth2_server.openid_connect.userinfo_endpoint.signature.enabled', $config['enabled']);
@@ -37,14 +37,14 @@ class UserinfoEndpointSignatureSource implements Component
         $container->setParameter('oauth2_server.openid_connect.userinfo_endpoint.signature.signature_algorithms', $config['signature_algorithms']);
     }
 
-    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
+    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
         $node->children()
             ->arrayNode($this->name())
             ->canBeEnabled()
             ->validate()
             ->ifTrue(function ($config) {
-                return true === $config['enabled'] && empty($config['signature_algorithms']);
+                return true === $config['enabled'] && 0 === \count($config['signature_algorithms']);
             })
             ->thenInvalid('You must set at least one signature algorithm.')
             ->end()
@@ -61,7 +61,7 @@ class UserinfoEndpointSignatureSource implements Component
             ->end();
     }
 
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
         $container->addCompilerPass(new UserinfoEndpointSignatureCompilerPass());
     }

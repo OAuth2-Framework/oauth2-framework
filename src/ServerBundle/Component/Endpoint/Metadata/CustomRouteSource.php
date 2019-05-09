@@ -25,12 +25,12 @@ class CustomRouteSource implements Component
         return 'custom_routes';
     }
 
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $container->setParameter('oauth2_server.endpoint.metadata.custom_routes', $configs['endpoint']['metadata']['custom_routes']);
     }
 
-    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
+    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
         $node->children()
             ->arrayNode('custom_routes')
@@ -56,7 +56,7 @@ class CustomRouteSource implements Component
             ->end();
     }
 
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
         $container->addCompilerPass(new CustomRoutesCompilerPass());
     }

@@ -19,7 +19,7 @@ use Symfony\Component\DependencyInjection\Reference;
 
 final class OAuth2MessageFactoryCompilerClass implements CompilerPassInterface
 {
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         $this->processForTaggedServices($container, 'oauth2_server.message_factory_manager.for_client_authentication', 'oauth2_server_message_factory_for_client_authentication');
         $this->processForTaggedServices($container, 'oauth2_server.message_factory_manager.for_token_authentication', 'oauth2_server_message_factory_for_token_authentication');

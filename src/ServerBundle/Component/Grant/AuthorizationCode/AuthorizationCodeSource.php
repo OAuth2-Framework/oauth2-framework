@@ -28,7 +28,7 @@ class AuthorizationCodeSource implements Component
         return 'authorization_code';
     }
 
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         if (!\class_exists(AuthorizationCode::class) || !$configs['grant']['authorization_code']['enabled']) {
             return;
@@ -41,7 +41,7 @@ class AuthorizationCodeSource implements Component
         $loader->load('authorization_code.php');
     }
 
-    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
+    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
         if (!\class_exists(AuthorizationCode::class)) {
             return;
@@ -68,7 +68,7 @@ class AuthorizationCodeSource implements Component
             ->end();
     }
 
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
         if (!\class_exists(AuthorizationCode::class)) {
             return;

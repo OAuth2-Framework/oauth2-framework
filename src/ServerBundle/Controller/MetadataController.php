@@ -36,7 +36,7 @@ class MetadataController implements MiddlewareInterface
         $this->metadataEndpoint = new MetadataEndpoint($responseFactory, $metadata);
     }
 
-    public function enableSignedMetadata(JWSBuilder $jwsBuilder, string $signatureAlgorithm, JWK $signatureKey)
+    public function enableSignedMetadata(JWSBuilder $jwsBuilder, string $signatureAlgorithm, JWK $signatureKey): void
     {
         $this->metadataEndpoint->enableSignature($jwsBuilder, $signatureAlgorithm, $signatureKey);
     }

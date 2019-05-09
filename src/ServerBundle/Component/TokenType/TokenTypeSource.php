@@ -28,7 +28,7 @@ class TokenTypeSource implements Component
         return 'token_type';
     }
 
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../Resources/config/token_type'));
         $loader->load('token_type.php');
@@ -48,7 +48,7 @@ class TokenTypeSource implements Component
         }
     }
 
-    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
+    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
         $child = $node->children()
             ->arrayNode($this->name())
@@ -116,7 +116,7 @@ class TokenTypeSource implements Component
         }
     }
 
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
         $container->addCompilerPass(new TokenTypeCompilerPass());
     }

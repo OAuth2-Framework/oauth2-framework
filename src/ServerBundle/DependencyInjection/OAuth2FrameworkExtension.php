@@ -46,7 +46,7 @@ final class OAuth2FrameworkExtension extends Extension implements PrependExtensi
         return $this->alias;
     }
 
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $processor = new Processor();
         $config = $processor->processConfiguration($this->getConfiguration($configs, $container), $configs);
@@ -61,7 +61,7 @@ final class OAuth2FrameworkExtension extends Extension implements PrependExtensi
         return new Configuration($this->getAlias(), $this->components);
     }
 
-    public function prepend(ContainerBuilder $container)
+    public function prepend(ContainerBuilder $container): void
     {
         $this->prependComponents($container);
         $this->prependDoctrineTypes($container);
@@ -74,7 +74,7 @@ final class OAuth2FrameworkExtension extends Extension implements PrependExtensi
 
         foreach ($this->components as $component) {
             $result = $component->prepend($container, $config);
-            if (!empty($result)) {
+            if (0 !== \count($result)) {
                 $container->prependExtensionConfig($this->getAlias(), $result);
             }
         }
@@ -87,7 +87,7 @@ final class OAuth2FrameworkExtension extends Extension implements PrependExtensi
             return;
         }
         $configs = $container->getExtensionConfig('doctrine');
-        if (empty($configs)) {
+        if (0 === \count($configs)) {
             return;
         }
 

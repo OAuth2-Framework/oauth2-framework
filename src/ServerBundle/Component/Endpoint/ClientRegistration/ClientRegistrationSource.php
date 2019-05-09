@@ -41,7 +41,7 @@ class ClientRegistrationSource implements Component
         return 'client_registration';
     }
 
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         if (!\class_exists(ClientRegistrationEndpoint::class)) {
             return;
@@ -62,7 +62,7 @@ class ClientRegistrationSource implements Component
         }
     }
 
-    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
+    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
         if (!\class_exists(ClientRegistrationEndpoint::class)) {
             return;
@@ -108,7 +108,7 @@ class ClientRegistrationSource implements Component
         return $updatedConfig;
     }
 
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
         if (!\class_exists(ClientRegistrationEndpoint::class)) {
             return;

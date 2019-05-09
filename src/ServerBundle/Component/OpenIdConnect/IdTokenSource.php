@@ -29,7 +29,7 @@ class IdTokenSource implements Component
         return 'id_token';
     }
 
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $config = $configs['openid_connect'][$this->name()];
         $container->setParameter('oauth2_server.openid_connect.id_token.lifetime', $config['lifetime']);
@@ -45,20 +45,20 @@ class IdTokenSource implements Component
         }
     }
 
-    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
+    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
         $node->children()
             ->arrayNode($this->name())
             ->addDefaultsIfNotSet()
             ->validate()
             ->ifTrue(function ($config) {
-                return empty($config['default_signature_algorithm']);
+                return null === $config['default_signature_algorithm'];
             })
             ->thenInvalid('The option "default_signature_algorithm" must be set.')
             ->end()
             ->validate()
             ->ifTrue(function ($config) {
-                return empty($config['signature_algorithms']);
+                return 0 === \count($config['signature_algorithms']);
             })
             ->thenInvalid('The option "signature_algorithm" must contain at least one signature algorithm.')
             ->end()
@@ -123,7 +123,7 @@ class IdTokenSource implements Component
             ->end();
     }
 
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
         $container->addCompilerPass(new ClaimCompilerPass());
         $container->addCompilerPass(new ClaimSourceCompilerPass());

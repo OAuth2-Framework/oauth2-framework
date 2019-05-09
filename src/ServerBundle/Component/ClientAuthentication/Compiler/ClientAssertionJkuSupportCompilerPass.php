@@ -21,9 +21,9 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class ClientAssertionJkuSupportCompilerPass implements CompilerPassInterface
 {
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
-        if (!$container->hasDefinition(ClientAssertionJwt::class) || !$container->getParameter('oauth2_server.client_authentication.client_assertion_jwt.jku_support') || !$container->hasDefinition(JKUFactory::class)) {
+        if (!$container->hasDefinition(ClientAssertionJwt::class) || true !== $container->getParameter('oauth2_server.client_authentication.client_assertion_jwt.jku_support') || !$container->hasDefinition(JKUFactory::class)) {
             return;
         }
 

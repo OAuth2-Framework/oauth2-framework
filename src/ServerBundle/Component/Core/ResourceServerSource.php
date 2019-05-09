@@ -29,7 +29,7 @@ class ResourceServerSource implements Component
         return 'resource_server';
     }
 
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $container->registerForAutoconfiguration(AuthenticationMethodManager::class)->addTag('resource_server_authentication_method');
 
@@ -43,7 +43,7 @@ class ResourceServerSource implements Component
         $loader->load('authentication_middleware.php');
     }
 
-    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode)
+    public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
         $node->children()
             ->arrayNode($this->name())
@@ -58,7 +58,7 @@ class ResourceServerSource implements Component
             ->end();
     }
 
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
         $container->addCompilerPass(new ResourceServerAuthenticationMethodCompilerPass());
     }
