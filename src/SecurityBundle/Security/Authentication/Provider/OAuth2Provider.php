@@ -18,13 +18,14 @@ use Symfony\Component\Security\Core\Authentication\Provider\AuthenticationProvid
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
+use Throwable;
 
 final class OAuth2Provider implements AuthenticationProviderInterface
 {
-    public function authenticate(TokenInterface $token)
+    public function authenticate(TokenInterface $token): TokenInterface
     {
         if (!$token instanceof OAuth2Token) {
-            return;
+            return $token;
         }
         $accessToken = $token->getAccessToken();
 
@@ -36,12 +37,12 @@ final class OAuth2Provider implements AuthenticationProviderInterface
             $token->setAuthenticated(true);
 
             return $token;
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             throw new AuthenticationException($e->getMessage(), $e->getCode(), $e);
         }
     }
 
-    public function supports(TokenInterface $token)
+    public function supports(TokenInterface $token): bool
     {
         return $token instanceof OAuth2Token;
     }

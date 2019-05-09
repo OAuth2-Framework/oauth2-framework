@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Core\Message;
 
+use Throwable;
+
 class OAuth2Error extends \Exception
 {
     //Error messages from the RFC5749
@@ -76,44 +78,44 @@ class OAuth2Error extends \Exception
      */
     private $data;
 
-    public function __construct(int $code, string $error, ?string $errorDescription, array $data = [], ?\Throwable $previous = null)
+    public function __construct(int $code, string $error, ?string $errorDescription, array $data = [], ?Throwable $previous = null)
     {
         $this->errorDescription = $errorDescription;
         $this->data = $data;
         parent::__construct($error, $code, $previous);
     }
 
-    public static function accessDenied(?string $errorDescription, array $data = [], ?\Throwable $previous = null): self
+    public static function accessDenied(?string $errorDescription, array $data = [], ?Throwable $previous = null): self
     {
         return new self(401, self::ERROR_ACCESS_DENIED, $errorDescription, $data, $previous);
     }
 
-    public static function invalidRequestObject(?string $errorDescription, array $data = [], ?\Throwable $previous = null): self
+    public static function invalidRequestObject(?string $errorDescription, array $data = [], ?Throwable $previous = null): self
     {
         return new self(400, self::ERROR_INVALID_REQUEST_OBJECT, $errorDescription, $data, $previous);
     }
 
-    public static function requestUriNotSupported(?string $errorDescription, array $data = [], ?\Throwable $previous = null): self
+    public static function requestUriNotSupported(?string $errorDescription, array $data = [], ?Throwable $previous = null): self
     {
         return new self(400, self::ERROR_REQUEST_URI_NOT_SUPPORTED, $errorDescription, $data, $previous);
     }
 
-    public static function invalidRequestUri(?string $errorDescription, array $data = [], ?\Throwable $previous = null): self
+    public static function invalidRequestUri(?string $errorDescription, array $data = [], ?Throwable $previous = null): self
     {
         return new self(400, self::ERROR_INVALID_REQUEST_URI, $errorDescription, $data, $previous);
     }
 
-    public static function requestNotSupported(?string $errorDescription, array $data = [], ?\Throwable $previous = null): self
+    public static function requestNotSupported(?string $errorDescription, array $data = [], ?Throwable $previous = null): self
     {
         return new self(400, self::ERROR_REQUEST_NOT_SUPPORTED, $errorDescription, $data, $previous);
     }
 
-    public static function invalidGrant(?string $errorDescription, array $data = [], ?\Throwable $previous = null): self
+    public static function invalidGrant(?string $errorDescription, array $data = [], ?Throwable $previous = null): self
     {
         return new self(400, self::ERROR_INVALID_GRANT, $errorDescription, $data, $previous);
     }
 
-    public static function invalidRequest(?string $errorDescription, array $data = [], ?\Throwable $previous = null): self
+    public static function invalidRequest(?string $errorDescription, array $data = [], ?Throwable $previous = null): self
     {
         return new self(400, self::ERROR_INVALID_REQUEST, $errorDescription, $data, $previous);
     }

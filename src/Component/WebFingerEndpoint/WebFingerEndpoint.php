@@ -21,6 +21,8 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use function Safe\json_encode;
+use function Safe\sprintf;
 
 final class WebFingerEndpoint implements MiddlewareInterface
 {
@@ -52,20 +54,20 @@ final class WebFingerEndpoint implements MiddlewareInterface
             $resource = $this->getResource($request);
             $identifier = $this->getIdentifier($resource);
             $resourceDescriptor = $this->resourceRepository->find($resource, $identifier);
-            Assertion::notNull($resourceDescriptor, \Safe\sprintf('The resource identified with "%s" does not exist or is not supported by this server.', $resource));
+            Assertion::notNull($resourceDescriptor, sprintf('The resource identified with "%s" does not exist or is not supported by this server.', $resource));
 
             $filteredResourceDescriptor = $this->filterLinks($request, $resourceDescriptor);
             $response = $this->responseFactory->createResponse(200);
             $headers = [
                 'Content-Type' => 'application/jrd+json; charset=UTF-8',
             ];
-            $response->getBody()->write(\Safe\json_encode($filteredResourceDescriptor, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+            $response->getBody()->write(json_encode($filteredResourceDescriptor, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
         } catch (\InvalidArgumentException $e) {
             $response = $this->responseFactory->createResponse(400);
             $headers = [
                 'Content-Type' => 'application/json; charset=UTF-8',
             ];
-            $response->getBody()->write(\Safe\json_encode(['error' => 'invalid_request', 'error_description' => $e->getMessage()], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+            $response->getBody()->write(json_encode(['error' => 'invalid_request', 'error_description' => $e->getMessage()], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
         }
         foreach ($headers as $k => $v) {
             $response = $response->withHeader($k, $v);
@@ -79,7 +81,7 @@ final class WebFingerEndpoint implements MiddlewareInterface
         try {
             return $this->identifierResolverManager->resolve($resource);
         } catch (\Throwable $e) {
-            throw new \InvalidArgumentException(\Safe\sprintf('The resource identified with "%s" does not exist or is not supported by this server.', $resource), 400, $e);
+            throw new \InvalidArgumentException(sprintf('The resource identified with "%s" does not exist or is not supported by this server.', $resource), 400, $e);
         }
     }
 
@@ -96,7 +98,7 @@ final class WebFingerEndpoint implements MiddlewareInterface
         $data = $resourceDescriptor->jsonSerialize();
 
         $rels = $this->getRels($request);
-        if (0 === \count($rels) || !\array_key_exists('links', $data) || 0 === \count($data['links'])) {
+        if (!\array_key_exists('links', $data) || 0 === \count($rels) || 0 === \count($data['links'])) {
             return $data;
         }
 
@@ -107,6 +109,7 @@ final class WebFingerEndpoint implements MiddlewareInterface
 
             return null;
         });
+
         if (0 === \count($data['links'])) {
             unset($data['links']);
         }

@@ -41,7 +41,7 @@ final class ResourceRepository implements ResourceRepositoryInterface
 
     public function find(string $resource, Identifier $identifier): ?ResourceDescriptor
     {
-        $resourceDescriptor = \array_key_exists($identifier->getId(), $this->resources) ? $this->resources[$identifier->getId()] : null;
+        $resourceDescriptor = $this->resources[$identifier->getId()] ?? null;
         if (null === $resourceDescriptor) {
             return null;
         }

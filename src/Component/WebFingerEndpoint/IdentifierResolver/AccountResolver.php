@@ -39,7 +39,7 @@ final class AccountResolver implements IdentifierResolver
         if (false === $pos) {
             $port = null;
         } else {
-            $port = \intval(\mb_substr($parts[1], $pos + 1));
+            $port = (int)\mb_substr($parts[1], $pos + 1);
             $parts[1] = \mb_substr($parts[1], 0, $pos);
         }
 
