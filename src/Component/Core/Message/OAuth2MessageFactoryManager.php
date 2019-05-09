@@ -42,12 +42,12 @@ class OAuth2MessageFactoryManager
         $this->psr7responseFactory = $psr7responseFactory;
     }
 
-    public function addFactory(ResponseFactory $responseFactory)
+    public function addFactory(ResponseFactory $responseFactory): void
     {
         $this->responseFactories[$responseFactory->getSupportedCode()] = $responseFactory;
     }
 
-    public function addExtension(MessageExtension $extension)
+    public function addExtension(MessageExtension $extension): void
     {
         $this->extensions[] = $extension;
     }

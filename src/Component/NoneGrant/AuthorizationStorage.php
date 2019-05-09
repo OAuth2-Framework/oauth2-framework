@@ -20,5 +20,5 @@ use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\Authori
  */
 interface AuthorizationStorage
 {
-    public function save(AuthorizationRequest $authorization);
+    public function save(AuthorizationRequest $authorization): void;
 }

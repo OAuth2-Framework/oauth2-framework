@@ -13,13 +13,12 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\ClientAuthentication\Tests;
 
-use Http\Message\MessageFactory\DiactorosMessageFactory;
 use Jose\Component\Checker\ClaimCheckerManager;
 use Jose\Component\Checker\HeaderCheckerManager;
 use Jose\Component\Core\AlgorithmManager;
-use Jose\Component\Core\Converter\StandardConverter;
 use Jose\Component\Core\JWK;
 use Jose\Component\Core\JWKSet;
+use Jose\Component\Core\Util\JsonConverter;
 use Jose\Component\Encryption\Algorithm\ContentEncryption\A256CBCHS512;
 use Jose\Component\Encryption\Algorithm\KeyEncryption\RSAOAEP256;
 use Jose\Component\Encryption\Compression\CompressionMethodManager;
@@ -37,6 +36,7 @@ use Jose\Component\Signature\JWSBuilder;
 use Jose\Component\Signature\JWSTokenSupport;
 use Jose\Component\Signature\JWSVerifier;
 use Jose\Component\Signature\Serializer\CompactSerializer;
+use Nyholm\Psr7\Factory\HttplugFactory;
 use OAuth2Framework\Component\ClientAuthentication\AuthenticationMethodManager;
 use OAuth2Framework\Component\ClientAuthentication\ClientAssertionJwt;
 use OAuth2Framework\Component\Core\Client\Client;
@@ -419,11 +419,11 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Either the parameter "jwks" or "jwks_uri" must be set.
      */
     public function theClientConfigurationCannotBeCheckedWithPrivateKeyJwtIfBothJwksAndJwksUriAreSet()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Either the parameter "jwks" or "jwks_uri" must be set.');
         $method = $this->getMethod();
         $commandParameters = new DataBag([
             'token_endpoint_auth_method' => 'private_key_jwt',
@@ -438,11 +438,11 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Either the parameter "jwks" or "jwks_uri" must be set.
      */
     public function theClientConfigurationCannotBeCheckedWithPrivateKeyJwtIfBothJwksAndJwksUriAreNotSetBecauseTrustedIssuerSupportIsDisabled()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Either the parameter "jwks" or "jwks_uri" must be set.');
         $method = $this->getMethod();
         $commandParameters = new DataBag([
             'token_endpoint_auth_method' => 'private_key_jwt',
@@ -522,7 +522,6 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
     {
         if (null === $this->method) {
             $this->method = new ClientAssertionJwt(
-                new StandardConverter(),
                 new JWSVerifier(AlgorithmManager::create([new HS256(), new RS256()])),
                 HeaderCheckerManager::create([], [new JWSTokenSupport()]),
                 ClaimCheckerManager::create([]),
@@ -539,7 +538,7 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
 
         $method->enableEncryptedAssertions(
             new JWELoader(
-                JWESerializerManager::create([new \Jose\Component\Encryption\Serializer\CompactSerializer(new StandardConverter())]),
+                JWESerializerManager::create([new \Jose\Component\Encryption\Serializer\CompactSerializer()]),
                 new JWEDecrypter(
                     AlgorithmManager::create([new RSAOAEP256()]),
                     AlgorithmManager::create([new A256CBCHS512()]),
@@ -547,7 +546,7 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
                 ),
                 HeaderCheckerManager::create([], [new JWETokenSupport()])
             ),
-            JWKSet::createFromKeys([JWK::create([
+            JWKSet::createFromKeys([new JWK([
                 'kty' => 'RSA',
                 'kid' => 'samwise.gamgee@hobbiton.example',
                 'use' => 'enc',
@@ -575,7 +574,7 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
         $trustedIssuer->name()->willReturn('TRUSTED_ISSUER');
         $trustedIssuer->getAllowedAssertionTypes()->willReturn(['urn:ietf:params:oauth:client-assertion-type:jwt-bearer']);
         $trustedIssuer->getAllowedSignatureAlgorithms()->willReturn(['RS256']);
-        $trustedIssuer->getJWKSet()->willReturn(JWKSet::createFromKeys([JWK::create([
+        $trustedIssuer->getJWKSet()->willReturn(JWKSet::createFromKeys([new JWK([
             'kty' => 'RSA',
             'n' => '33WRDEG5rN7daMgI2N5H8cPwTeQPOnz34uG2fe0yKyHjJDGE2XoESRpu5LelSPdYM_r4AWMFWoDWPd-7xaq7uFEkM8c6zaQIgj4uEiq-pBMvH-e805SFbYOKYqfQe4eeXAk4OrQwcUkSrlGskf6YUaw_3IwbPgzEDTgTZFVtQlE',
             'e' => 'AQAB',
@@ -594,32 +593,30 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
     private function getJkuFactory(\Http\Mock\Client $client): JKUFactory
     {
         return new JKUFactory(
-            new StandardConverter(),
+            null,
             $client,
-            new DiactorosMessageFactory()
+            new HttplugFactory()
         );
     }
 
     private function getHttpClient(): \Http\Mock\Client
     {
         return new \Http\Mock\Client(
-            new DiactorosMessageFactory()
+            new HttplugFactory()
         );
     }
 
     private function serializeJWS(JWS $jws): string
     {
-        $jsonConverter = new StandardConverter();
-        $serializer = new CompactSerializer($jsonConverter);
+        $serializer = new CompactSerializer();
 
         return $serializer->serialize($jws, 0);
     }
 
     private function createValidClientAssertionSignedByTheClient(): JWS
     {
-        $jsonConverter = new StandardConverter();
         $jwsBuilder = new JWSBuilder(
-            $jsonConverter,
+            null,
             AlgorithmManager::create([
                 new HS256(),
             ])
@@ -627,7 +624,7 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
 
         return $jwsBuilder
             ->create()
-            ->withPayload($jsonConverter->encode([
+            ->withPayload(JsonConverter::encode([
                 'iss' => 'ClientId',
                 'sub' => 'ClientId',
                 'aud' => 'My Server',
@@ -642,9 +639,8 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
 
     private function createValidClientAssertionSignedByATrustedIssuer(): JWS
     {
-        $jsonConverter = new StandardConverter();
         $jwsBuilder = new JWSBuilder(
-            $jsonConverter,
+            null,
             AlgorithmManager::create([
                 new RS256(),
             ])
@@ -652,14 +648,14 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
 
         return $jwsBuilder
             ->create()
-            ->withPayload($jsonConverter->encode([
+            ->withPayload(JsonConverter::encode([
                 'iss' => 'TRUSTED_ISSUER',
                 'sub' => 'ClientId',
                 'aud' => 'My Server',
                 'exp' => \time() + 3600,
             ]))
             ->addSignature(
-                JWK::create([
+                new JWK([
                     'kty' => 'RSA',
                     'n' => '33WRDEG5rN7daMgI2N5H8cPwTeQPOnz34uG2fe0yKyHjJDGE2XoESRpu5LelSPdYM_r4AWMFWoDWPd-7xaq7uFEkM8c6zaQIgj4uEiq-pBMvH-e805SFbYOKYqfQe4eeXAk4OrQwcUkSrlGskf6YUaw_3IwbPgzEDTgTZFVtQlE',
                     'e' => 'AQAB',
@@ -677,9 +673,8 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
 
     private function createInvalidClientAssertionSignedByTheClient(): JWS
     {
-        $jsonConverter = new StandardConverter();
         $jwsBuilder = new JWSBuilder(
-            $jsonConverter,
+            null,
             AlgorithmManager::create([
                 new HS256(),
             ])
@@ -687,7 +682,7 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
 
         return $jwsBuilder
             ->create()
-            ->withPayload($jsonConverter->encode([]))
+            ->withPayload(JsonConverter::encode([]))
             ->addSignature(
                 JWK::createFromJson('{"kty":"oct","k":"U0VDUkVU"}'),
                 ['alg' => 'HS256']
@@ -697,9 +692,8 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
 
     private function createInvalidClientAssertionSignedByATrustedIssuer(): JWS
     {
-        $jsonConverter = new StandardConverter();
         $jwsBuilder = new JWSBuilder(
-            $jsonConverter,
+            null,
             AlgorithmManager::create([
                 new RS256(),
             ])
@@ -707,10 +701,10 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
 
         return $jwsBuilder
             ->create()
-            ->withPayload($jsonConverter->encode([
+            ->withPayload(JsonConverter::encode([
             ]))
             ->addSignature(
-                JWK::create([
+                new JWK([
                     'kty' => 'RSA',
                     'n' => '33WRDEG5rN7daMgI2N5H8cPwTeQPOnz34uG2fe0yKyHjJDGE2XoESRpu5LelSPdYM_r4AWMFWoDWPd-7xaq7uFEkM8c6zaQIgj4uEiq-pBMvH-e805SFbYOKYqfQe4eeXAk4OrQwcUkSrlGskf6YUaw_3IwbPgzEDTgTZFVtQlE',
                     'e' => 'AQAB',
@@ -728,9 +722,8 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
 
     private function encryptAssertion(string $assertion): string
     {
-        $jsonConverter = new StandardConverter();
         $jweBuilder = new JWEBuilder(
-            $jsonConverter,
+            null,
             AlgorithmManager::create([new RSAOAEP256()]),
             AlgorithmManager::create([new A256CBCHS512()]),
             CompressionMethodManager::create([new Deflate()])
@@ -738,7 +731,7 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
         $jwe = $jweBuilder->create()
             ->withPayload($assertion)
             ->withSharedProtectedHeader(['alg' => 'RSA-OAEP-256', 'enc' => 'A256CBC-HS512'])
-            ->addRecipient(JWK::create([
+            ->addRecipient(new JWK([
                 'kty' => 'RSA',
                 'kid' => 'samwise.gamgee@hobbiton.example',
                 'use' => 'enc',
@@ -748,7 +741,7 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
             ]))
             ->build();
 
-        $serializer = new \Jose\Component\Encryption\Serializer\CompactSerializer($jsonConverter);
+        $serializer = new \Jose\Component\Encryption\Serializer\CompactSerializer(null);
 
         return $serializer->serialize($jwe, 0);
     }

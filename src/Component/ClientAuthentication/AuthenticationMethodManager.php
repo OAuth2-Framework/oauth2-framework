@@ -98,6 +98,9 @@ class AuthenticationMethodManager
         return $clientId;
     }
 
+    /**
+     * @param mixed $clientCredentials The client credentials found in the request
+     */
     public function isClientAuthenticated(ServerRequestInterface $request, Client $client, AuthenticationMethod $authenticationMethod, $clientCredentials): bool
     {
         if (\in_array($client->get('token_endpoint_auth_method'), $authenticationMethod->getSupportedMethods(), true)) {

@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Core\DataBag;
 
+use ArrayIterator;
+
 class DataBag implements \JsonSerializable, \IteratorAggregate, \Countable
 {
     /**
@@ -32,6 +34,8 @@ class DataBag implements \JsonSerializable, \IteratorAggregate, \Countable
 
     /**
      * @param mixed|null $default
+     *
+     * @return mixed|null
      */
     public function get(string $key, $default = null)
     {
@@ -55,18 +59,18 @@ class DataBag implements \JsonSerializable, \IteratorAggregate, \Countable
         return $this->parameters;
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return $this->all();
     }
 
-    public function count()
+    public function count(): int
     {
         return \count($this->parameters);
     }
 
-    public function getIterator()
+    public function getIterator(): ArrayIterator
     {
-        return new \ArrayIterator($this->parameters);
+        return new ArrayIterator($this->parameters);
     }
 }

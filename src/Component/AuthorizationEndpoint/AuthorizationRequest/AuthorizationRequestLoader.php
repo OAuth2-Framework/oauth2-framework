@@ -17,9 +17,9 @@ use Assert\Assertion;
 use Base64Url\Base64Url;
 use Http\Client\HttpClient;
 use Jose\Component\Checker\ClaimCheckerManager;
-use Jose\Component\Core\Converter\StandardConverter;
 use Jose\Component\Core\JWK;
 use Jose\Component\Core\JWKSet;
+use Jose\Component\Core\Util\JsonConverter;
 use Jose\Component\Encryption\JWELoader;
 use Jose\Component\KeyManagement\JKUFactory;
 use Jose\Component\Signature\JWS;
@@ -29,8 +29,8 @@ use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\Client\ClientRepository;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
+use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Request;
 
 class AuthorizationRequestLoader
 {
@@ -89,6 +89,11 @@ class AuthorizationRequestLoader
      */
     private $jkuFactory;
 
+    /**
+     * @var RequestFactoryInterface
+     */
+    private $requestFactory;
+
     public function __construct(ClientRepository $clientRepository)
     {
         $this->clientRepository = $clientRepository;
@@ -140,11 +145,12 @@ class AuthorizationRequestLoader
         $this->requestObjectAllowed = true;
     }
 
-    public function enableRequestObjectReferenceSupport(HttpClient $client, bool $requireRequestUriRegistration): void
+    public function enableRequestObjectReferenceSupport(HttpClient $client, RequestFactoryInterface $requestFactory, bool $requireRequestUriRegistration): void
     {
         Assertion::true($this->isRequestObjectSupportEnabled(), 'Request object support must be enabled first.');
         $this->requestObjectReferenceAllowed = true;
         $this->requireRequestUriRegistration = $requireRequestUriRegistration;
+        $this->requestFactory = $requestFactory;
         $this->client = $client;
     }
 
@@ -251,11 +257,10 @@ class AuthorizationRequestLoader
         $request = $this->tryToLoadEncryptedRequest($request);
 
         try {
-            $jsonConverter = new StandardConverter();
-            $serializer = new CompactSerializer($jsonConverter);
+            $serializer = new CompactSerializer();
             $jwt = $serializer->unserialize($request);
 
-            $claims = $jsonConverter->decode(
+            $claims = JsonConverter::decode(
                 $jwt->getPayload()
             );
             Assertion::isArray($claims, 'Invalid assertion. The payload must contain claims.');
@@ -297,7 +302,7 @@ class AuthorizationRequestLoader
         }
     }
 
-    private function checkAlgorithms(JWS $jws, Client $client)
+    private function checkAlgorithms(JWS $jws, Client $client): void
     {
         $signatureAlgorithm = $jws->getSignature(0)->getProtectedHeaderParameter('alg');
         Assertion::string($signatureAlgorithm, 'Invalid algorithm parameter in Request Object.');
@@ -316,7 +321,7 @@ class AuthorizationRequestLoader
 
     private function downloadContent(string $url): string
     {
-        $request = new Request($url, 'GET');
+        $request = $this->requestFactory->createRequest('GET', $url);
         $response = $this->client->sendRequest($request);
         Assertion::eq(200, $response->getStatusCode(), 'Unable to load the request object');
 
@@ -343,7 +348,7 @@ class AuthorizationRequestLoader
             }
         }
         if ($client->has('client_secret')) {
-            $jwk = JWK::create([
+            $jwk = new JWK([
                 'kty' => 'oct',
                 'use' => 'sig',
                 'k' => Base64Url::encode($client->get('client_secret')),
@@ -357,7 +362,7 @@ class AuthorizationRequestLoader
             }
         }
         if (\in_array('none', $this->getSupportedSignatureAlgorithms(), true)) {
-            $keyset = $keyset->with(JWK::create([
+            $keyset = $keyset->with(new JWK([
                 'kty' => 'none',
                 'alg' => 'none',
                 'use' => 'sig',

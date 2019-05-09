@@ -19,5 +19,8 @@ interface ResourceOwner
 
     public function has(string $key): bool;
 
+    /**
+     * @return mixed|null
+     */
     public function get(string $key);
 }

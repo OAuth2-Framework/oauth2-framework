@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Core\Util;
 
+use InvalidArgumentException;
 use League\Uri\QueryParser;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -21,17 +22,18 @@ class RequestBodyParser
     public static function parseJson(ServerRequestInterface $request): array
     {
         if (!$request->hasHeader('Content-Type') || !\in_array('application/json', $request->getHeader('Content-Type'), true)) {
-            throw new \InvalidArgumentException('Unsupported request body content type.');
+            throw new InvalidArgumentException('Unsupported request body content type.');
         }
-        if (\is_array($request->getParsedBody()) && !empty($request->getParsedBody())) {
-            return $request->getParsedBody();
+        $parsedBody = $request->getParsedBody();
+        if (\is_array($parsedBody) && 0 !== \count($parsedBody)) {
+            return $parsedBody;
         }
 
         $body = $request->getBody()->getContents();
         $json = \Safe\json_decode($body, true);
 
         if (!\is_array($json)) {
-            throw new \InvalidArgumentException('Invalid body');
+            throw new InvalidArgumentException('Invalid body');
         }
 
         return $json;
@@ -40,10 +42,11 @@ class RequestBodyParser
     public static function parseFormUrlEncoded(ServerRequestInterface $request): array
     {
         if (!$request->hasHeader('Content-Type') || !\in_array('application/x-www-form-urlencoded', $request->getHeader('Content-Type'), true)) {
-            throw new \InvalidArgumentException('Unsupported request body content type.');
+            throw new InvalidArgumentException('Unsupported request body content type.');
         }
-        if (\is_array($request->getParsedBody()) && !empty($request->getParsedBody())) {
-            return $request->getParsedBody();
+        $parsedBody = $request->getParsedBody();
+        if (\is_array($parsedBody) && 0 !== \count($parsedBody)) {
+            return $parsedBody;
         }
 
         $body = $request->getBody()->getContents();

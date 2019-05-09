@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\ClientRegistrationEndpoint\Rule;
 
+use Assert\Assertion;
 use Jose\Component\Core\JWKSet;
 use Jose\Component\Signature\JWSLoader;
 use OAuth2Framework\Component\ClientRule\Rule;
@@ -88,12 +89,14 @@ final class SoftwareRule implements Rule
     private function loadSoftwareStatement(string $software_statement): array
     {
         try {
-            $signatureVerified;
+            $signatureVerified = null;
             $jws = $this->jwsLoader->loadAndVerifyWithKeySet($software_statement, $this->softwareStatementSignatureKeySet, $signatureVerified);
             if (!\in_array($jws->getSignature($signatureVerified)->getProtectedHeaderParameter('alg'), $this->allowedSignatureAlgorithms, true)) {
                 throw new \InvalidArgumentException('Invalid Software Statement.');
             }
-            $claims = \Safe\json_decode($jws->getPayload(), true);
+            $payload = $jws->getPayload();
+            Assertion::string($payload, 'The JWS payload is not available');
+            $claims = \Safe\json_decode($payload, true);
             if (!\is_array($claims)) {
                 throw new \InvalidArgumentException('Invalid Software Statement.');
             }

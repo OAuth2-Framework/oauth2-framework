@@ -20,9 +20,9 @@ use Jose\Component\Checker\HeaderCheckerManager;
 use Jose\Component\Checker\IssuedAtChecker;
 use Jose\Component\Checker\NotBeforeChecker;
 use Jose\Component\Core\AlgorithmManager;
-use Jose\Component\Core\Converter\StandardConverter;
 use Jose\Component\Core\JWK;
 use Jose\Component\Core\JWKSet;
+use Jose\Component\Core\Util\JsonConverter;
 use Jose\Component\Encryption\Algorithm\ContentEncryption\A256GCM;
 use Jose\Component\Encryption\Algorithm\KeyEncryption\A256KW;
 use Jose\Component\Encryption\Compression\CompressionMethodManager;
@@ -202,7 +202,6 @@ final class JwtBearerGrantTypeTest extends TestCase
     {
         if (null === $this->grantType) {
             $this->grantType = new JwtBearerGrantType(
-                new StandardConverter(),
                 $this->getJwsVerifier(),
                 $this->getHeaderCheckerManager(),
                 $this->getClaimCheckerManager(),
@@ -290,7 +289,7 @@ final class JwtBearerGrantTypeTest extends TestCase
     private function getJwsBuilder(): JWSBuilder
     {
         return new JWSBuilder(
-            new StandardConverter(),
+            null,
             AlgorithmManager::create([
                 new RS256(),
                 new ES256(),
@@ -301,7 +300,7 @@ final class JwtBearerGrantTypeTest extends TestCase
     private function getJweBuilder(): JWEBuilder
     {
         return new JWEBuilder(
-            new StandardConverter(),
+            null,
             AlgorithmManager::create([new A256KW()]),
             AlgorithmManager::create([new A256GCM()]),
             CompressionMethodManager::create([new Deflate()])
@@ -340,7 +339,6 @@ final class JwtBearerGrantTypeTest extends TestCase
 
     private function createAssertionFromUnknownIssuer(): string
     {
-        $jsonConverter = new StandardConverter();
         $claims = [
             'iss' => 'Unknown Issuer',
             'sub' => 'USER_ACCOUNT_ID',
@@ -353,17 +351,16 @@ final class JwtBearerGrantTypeTest extends TestCase
 
         $jws = $this->getJwsBuilder()
             ->create()
-            ->withPayload($jsonConverter->encode($claims))
+            ->withPayload(JsonConverter::encode($claims))
             ->addSignature($this->getPrivateEcKey(), $header)
             ->build();
-        $serializer = new JwsCompactSerializer($jsonConverter);
+        $serializer = new JwsCompactSerializer();
 
         return $serializer->serialize($jws, 0);
     }
 
     private function createValidAssertionFromIssuer(): string
     {
-        $jsonConverter = new StandardConverter();
         $claims = [
             'iss' => 'Trusted Issuer #1',
             'sub' => 'USER_ACCOUNT_ID',
@@ -376,17 +373,16 @@ final class JwtBearerGrantTypeTest extends TestCase
 
         $jws = $this->getJwsBuilder()
             ->create()
-            ->withPayload($jsonConverter->encode($claims))
+            ->withPayload(JsonConverter::encode($claims))
             ->addSignature($this->getPrivateEcKey(), $header)
             ->build();
-        $serializer = new JwsCompactSerializer($jsonConverter);
+        $serializer = new JwsCompactSerializer();
 
         return $serializer->serialize($jws, 0);
     }
 
     private function createValidEncryptedAssertionFromClient(): string
     {
-        $jsonConverter = new StandardConverter();
         $claims = [
             'iss' => 'CLIENT_ID',
             'sub' => 'CLIENT_ID',
@@ -399,10 +395,10 @@ final class JwtBearerGrantTypeTest extends TestCase
 
         $jws = $this->getJwsBuilder()
             ->create()
-            ->withPayload($jsonConverter->encode($claims))
+            ->withPayload(JsonConverter::encode($claims))
             ->addSignature($this->getPrivateRsaKey(), $header)
             ->build();
-        $serializer = new JwsCompactSerializer($jsonConverter);
+        $serializer = new JwsCompactSerializer();
         $jwt = $serializer->serialize($jws, 0);
 
         $jwe = $this->getJweBuilder()
@@ -411,7 +407,7 @@ final class JwtBearerGrantTypeTest extends TestCase
             ->withSharedProtectedHeader(['alg' => 'A256KW', 'enc' => 'A256GCM'])
             ->addRecipient($this->getEncryptionKey())
             ->build();
-        $serializer = new JweCompactSerializer($jsonConverter);
+        $serializer = new JweCompactSerializer();
         $jwt = $serializer->serialize($jwe, 0);
 
         return $jwt;

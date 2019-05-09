@@ -55,11 +55,11 @@ final class ApplicationTypeParameterRuleTest extends TestCase
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The parameter "application_type" must be either "native" or "web".
      */
     public function applicationTypeParameterRule()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The parameter "application_type" must be either "native" or "web".');
         $clientId = new ClientId('CLIENT_ID');
         $commandParameters = new DataBag([
             'application_type' => 'foo',

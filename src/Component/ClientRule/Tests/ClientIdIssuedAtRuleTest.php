@@ -34,7 +34,7 @@ final class ClientIdIssuedAtRuleTest extends TestCase
         $validatedParameters = $rule->handle($clientId, $commandParameters, new DataBag([]), $this->getCallable());
 
         static::assertTrue($validatedParameters->has('client_id_issued_at'));
-        static::assertInternalType('integer', $validatedParameters->get('client_id_issued_at'));
+        static::assertIsInt($validatedParameters->get('client_id_issued_at'));
     }
 
     /**
@@ -50,7 +50,7 @@ final class ClientIdIssuedAtRuleTest extends TestCase
         $validatedParameters = $rule->handle($clientId, $commandParameters, new DataBag([]), $this->getCallable());
 
         static::assertTrue($validatedParameters->has('client_id_issued_at'));
-        static::assertInternalType('integer', $validatedParameters->get('client_id_issued_at'));
+        static::assertIsInt($validatedParameters->get('client_id_issued_at'));
     }
 
     private function getCallable(): ClientRule\RuleHandler

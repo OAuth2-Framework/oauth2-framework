@@ -21,7 +21,7 @@ interface ClientRepository
     /**
      * Save the client.
      */
-    public function save(Client $client);
+    public function save(Client $client): void;
 
     /**
      * Get a client using its Id.

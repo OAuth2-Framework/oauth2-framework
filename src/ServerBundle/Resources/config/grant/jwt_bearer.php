@@ -11,7 +11,6 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use Jose\Component\Core\Converter\JsonConverter;
 use OAuth2Framework\Component\Core\Client\ClientRepository;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountRepository;
 use OAuth2Framework\Component\JwtBearerGrant\JwtBearerGrantType;
@@ -25,7 +24,6 @@ return function (ContainerConfigurator $container) {
 
     $container->set(JwtBearerGrantType::class)
         ->args([
-            ref(JsonConverter::class),
             ref('jose.jws_verifier.oauth2_server.grant.jwt_bearer'),
             ref('jose.header_checker.oauth2_server.grant.jwt_bearer'),
             ref('jose.claim_checker.oauth2_server.grant.jwt_bearer'),

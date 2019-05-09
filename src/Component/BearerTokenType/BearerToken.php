@@ -15,37 +15,29 @@ namespace OAuth2Framework\Component\BearerTokenType;
 
 use OAuth2Framework\Component\Core\AccessToken\AccessToken;
 use OAuth2Framework\Component\Core\TokenType\TokenType;
-use OAuth2Framework\Component\Core\Util\RequestBodyParser;
 use Psr\Http\Message\ServerRequestInterface;
+use function Safe\sprintf;
 
 final class BearerToken implements TokenType
 {
+    /**
+     * @var TokenFinder[]
+     */
+    private $tokenFinders = [];
+
     /**
      * @var string
      */
     private $realm;
 
-    /**
-     * @var bool
-     */
-    private $tokenFromAuthorizationHeaderAllowed;
-
-    /**
-     * @var bool
-     */
-    private $tokenFromRequestBodyAllowed;
-
-    /**
-     * @var bool
-     */
-    private $tokenFromQueryStringAllowed;
-
-    public function __construct(string $realm, bool $tokenFromAuthorizationHeaderAllowed, bool $tokenFromRequestBodyAllowed, bool $tokenFromQueryStringAllowed)
+    public function __construct(string $realm)
     {
         $this->realm = $realm;
-        $this->tokenFromAuthorizationHeaderAllowed = $tokenFromAuthorizationHeaderAllowed;
-        $this->tokenFromRequestBodyAllowed = $tokenFromRequestBodyAllowed;
-        $this->tokenFromQueryStringAllowed = $tokenFromQueryStringAllowed;
+    }
+
+    public function addTokenFinder(TokenFinder $tokenFinder): void
+    {
+        $this->tokenFinders[] = $tokenFinder;
     }
 
     public function name(): string
@@ -53,24 +45,9 @@ final class BearerToken implements TokenType
         return 'Bearer';
     }
 
-    private function isTokenFromAuthorizationHeaderAllowed(): bool
-    {
-        return $this->tokenFromAuthorizationHeaderAllowed;
-    }
-
-    private function isTokenFromRequestBodyAllowed(): bool
-    {
-        return $this->tokenFromRequestBodyAllowed;
-    }
-
-    private function isTokenFromQueryStringAllowed(): bool
-    {
-        return $this->tokenFromQueryStringAllowed;
-    }
-
     public function getScheme(): string
     {
-        return \Safe\sprintf('%s realm="%s"', $this->name(), $this->realm);
+        return sprintf('%s realm="%s"', $this->name(), $this->realm);
     }
 
     public function getAdditionalInformation(): array
@@ -80,14 +57,9 @@ final class BearerToken implements TokenType
 
     public function find(ServerRequestInterface $request, array &$additionalCredentialValues): ?string
     {
-        $methods = [
-            'isTokenFromAuthorizationHeaderAllowed' => 'getTokenFromAuthorizationHeaders',
-            'isTokenFromQueryStringAllowed' => 'getTokenFromQuery',
-            'isTokenFromRequestBodyAllowed' => 'getTokenFromRequestBody',
-        ];
-
-        foreach ($methods as $test => $method) {
-            if (true === $this->$test() && null !== $token = $this->$method($request)) {
+        foreach ($this->tokenFinders as $finder) {
+            $token = $finder->find($request, $additionalCredentialValues);
+            if (null !== $token) {
                 return $token;
             }
         }
@@ -102,50 +74,5 @@ final class BearerToken implements TokenType
         }
 
         return $token->getParameter()->get('token_type') === $this->name();
-    }
-
-    /**
-     * Get the token from the authorization header.
-     */
-    private function getTokenFromAuthorizationHeaders(ServerRequestInterface $request): ?string
-    {
-        $authorization_headers = $request->getHeader('AUTHORIZATION');
-
-        foreach ($authorization_headers as $authorization_header) {
-            if (1 === \Safe\preg_match('/'.\preg_quote('Bearer', '/').'\s([a-zA-Z0-9\-_\+~\/\.]+)/', $authorization_header, $matches)) {
-                return $matches[1];
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Get the token from the request body.
-     */
-    private function getTokenFromRequestBody(ServerRequestInterface $request): ?string
-    {
-        try {
-            $parameters = RequestBodyParser::parseFormUrlEncoded($request);
-
-            return $this->getAccessTokenFromParameters($parameters);
-        } catch (\Throwable $e) {
-            return null;
-        }
-    }
-
-    /**
-     * Get the token from the query string.
-     */
-    private function getTokenFromQuery(ServerRequestInterface $request): ?string
-    {
-        $query_params = $request->getQueryParams();
-
-        return $this->getAccessTokenFromParameters($query_params);
-    }
-
-    private function getAccessTokenFromParameters(array $params): ?string
-    {
-        return \array_key_exists('access_token', $params) ? $params['access_token'] : null;
     }
 }

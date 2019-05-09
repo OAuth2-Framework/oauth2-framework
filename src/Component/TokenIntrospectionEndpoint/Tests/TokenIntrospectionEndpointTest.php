@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\TokenIntrospectionEndpoint\Tests;
 
-use Http\Message\MessageFactory\DiactorosMessageFactory;
 use Http\Message\ResponseFactory;
+use Nyholm\Psr7\Factory\HttplugFactory;
 use OAuth2Framework\Component\Core\AccessToken\AccessToken;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServer;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
@@ -146,7 +146,7 @@ final class TokenIntrospectionEndpointTest extends TestCase
     private function getResponseFactory(): ResponseFactory
     {
         if (null === $this->responseFactory) {
-            $this->responseFactory = new DiactorosMessageFactory();
+            $this->responseFactory = new HttplugFactory();
         }
 
         return $this->responseFactory;

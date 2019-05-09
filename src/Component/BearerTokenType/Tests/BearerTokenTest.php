@@ -13,7 +13,10 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\BearerTokenType\Tests;
 
+use OAuth2Framework\Component\BearerTokenType\AuthorizationHeaderTokenFinder;
 use OAuth2Framework\Component\BearerTokenType\BearerToken;
+use OAuth2Framework\Component\BearerTokenType\QueryStringTokenFinder;
+use OAuth2Framework\Component\BearerTokenType\RequestBodyTokenFinder;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
@@ -33,7 +36,8 @@ final class BearerTokenTest extends TestCase
      */
     public function genericCalls()
     {
-        $bearerToken = new BearerToken('TEST', true, false, false);
+        $bearerToken = new BearerToken('TEST');
+        $bearerToken->addTokenFinder(new AuthorizationHeaderTokenFinder());
 
         static::assertEquals('Bearer', $bearerToken->name());
         static::assertEquals('Bearer realm="TEST"', $bearerToken->getScheme());
@@ -45,7 +49,8 @@ final class BearerTokenTest extends TestCase
      */
     public function anAccessTokenInTheAuthorizationHeaderIsFound()
     {
-        $bearerToken = new BearerToken('TEST', true, false, false);
+        $bearerToken = new BearerToken('TEST');
+        $bearerToken->addTokenFinder(new AuthorizationHeaderTokenFinder());
         $request = $this->buildRequest([]);
         $request->getHeader('AUTHORIZATION')->willReturn(['Bearer ACCESS_TOKEN_ID']);
 
@@ -58,7 +63,8 @@ final class BearerTokenTest extends TestCase
      */
     public function noAccessTokenInTheAuthorizationHeaderIsFound()
     {
-        $bearerToken = new BearerToken('TEST', true, false, false);
+        $bearerToken = new BearerToken('TEST');
+        $bearerToken->addTokenFinder(new AuthorizationHeaderTokenFinder());
         $request = $this->buildRequest([]);
         $request->getHeader('AUTHORIZATION')->willReturn(['MAC FOO_MAC_TOKEN']);
 
@@ -71,7 +77,8 @@ final class BearerTokenTest extends TestCase
      */
     public function anAccessTokenInTheQueryStringIsFound()
     {
-        $bearerToken = new BearerToken('TEST', false, false, true);
+        $bearerToken = new BearerToken('TEST');
+        $bearerToken->addTokenFinder(new QueryStringTokenFinder());
         $request = $this->buildRequest([]);
         $request->getQueryParams()->willReturn(['access_token' => 'ACCESS_TOKEN_ID']);
 
@@ -84,7 +91,8 @@ final class BearerTokenTest extends TestCase
      */
     public function anAccessTokenInTheRequestBodyIsFound()
     {
-        $bearerToken = new BearerToken('TEST', false, true, false);
+        $bearerToken = new BearerToken('TEST');
+        $bearerToken->addTokenFinder(new RequestBodyTokenFinder());
         $request = $this->buildRequest([]);
         $request->getParsedBody()->willReturn(['access_token' => 'ACCESS_TOKEN_ID']);
 
@@ -97,7 +105,8 @@ final class BearerTokenTest extends TestCase
      */
     public function iFoundAValidAccessToken()
     {
-        $bearerToken = new BearerToken('TEST', true, false, false);
+        $bearerToken = new BearerToken('TEST');
+        $bearerToken->addTokenFinder(new AuthorizationHeaderTokenFinder());
         $additionalCredentialValues = [];
         $accessToken = new AccessToken(
             new AccessTokenId('ACCESS_TOKEN_ID'),
@@ -118,7 +127,8 @@ final class BearerTokenTest extends TestCase
      */
     public function iFoundAnInvalidAccessToken()
     {
-        $bearerToken = new BearerToken('TEST', true, false, false);
+        $bearerToken = new BearerToken('TEST');
+        $bearerToken->addTokenFinder(new AuthorizationHeaderTokenFinder());
         $additionalCredentialValues = [];
         $accessToken = new AccessToken(
             new AccessTokenId('ACCESS_TOKEN_ID'),

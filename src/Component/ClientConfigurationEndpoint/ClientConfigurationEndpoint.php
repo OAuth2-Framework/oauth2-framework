@@ -75,7 +75,7 @@ final class ClientConfigurationEndpoint implements MiddlewareInterface
         }
     }
 
-    private function checkClient(ServerRequestInterface $request)
+    private function checkClient(ServerRequestInterface $request): void
     {
         try {
             $client = $request->getAttribute('client');

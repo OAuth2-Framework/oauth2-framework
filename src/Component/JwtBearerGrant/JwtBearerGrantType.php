@@ -13,10 +13,11 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\JwtBearerGrant;
 
+use Assert\Assertion;
 use Base64Url\Base64Url;
+use InvalidArgumentException;
 use Jose\Component\Checker\ClaimCheckerManager;
 use Jose\Component\Checker\HeaderCheckerManager;
-use Jose\Component\Core\Converter\JsonConverter;
 use Jose\Component\Core\JWK;
 use Jose\Component\Core\JWKSet;
 use Jose\Component\Encryption\JWEDecrypter;
@@ -37,14 +38,11 @@ use OAuth2Framework\Component\Core\Util\RequestBodyParser;
 use OAuth2Framework\Component\TokenEndpoint\GrantType;
 use OAuth2Framework\Component\TokenEndpoint\GrantTypeData;
 use Psr\Http\Message\ServerRequestInterface;
+use function Safe\json_decode;
+use function Safe\sprintf;
 
 class JwtBearerGrantType implements GrantType
 {
-    /**
-     * @var JsonConverter
-     */
-    private $jsonConverter;
-
     /**
      * @var JWSVerifier
      */
@@ -98,9 +96,8 @@ class JwtBearerGrantType implements GrantType
     /**
      * JWTBearerGrantType constructor.
      */
-    public function __construct(JsonConverter $jsonConverter, JWSVerifier $jwsVerifier, HeaderCheckerManager $headerCheckerManager, ClaimCheckerManager $claimCheckerManager, ClientRepository $clientRepository, ?UserAccountRepository $userAccountRepository)
+    public function __construct(JWSVerifier $jwsVerifier, HeaderCheckerManager $headerCheckerManager, ClaimCheckerManager $claimCheckerManager, ClientRepository $clientRepository, ?UserAccountRepository $userAccountRepository)
     {
-        $this->jsonConverter = $jsonConverter;
         $this->jwsVerifier = $jwsVerifier;
         $this->headerCheckerManager = $headerCheckerManager;
         $this->claimCheckerManager = $claimCheckerManager;
@@ -113,19 +110,19 @@ class JwtBearerGrantType implements GrantType
         return [];
     }
 
-    public function enableEncryptedAssertions(JWEDecrypter $jweDecrypter, JWKSet $keyEncryptionKeySet, bool $encryptionRequired)
+    public function enableEncryptedAssertions(JWEDecrypter $jweDecrypter, JWKSet $keyEncryptionKeySet, bool $encryptionRequired): void
     {
         $this->jweDecrypter = $jweDecrypter;
         $this->encryptionRequired = $encryptionRequired;
         $this->keyEncryptionKeySet = $keyEncryptionKeySet;
     }
 
-    public function enableTrustedIssuerSupport(TrustedIssuerRepository $trustedIssuerRepository)
+    public function enableTrustedIssuerSupport(TrustedIssuerRepository $trustedIssuerRepository): void
     {
         $this->trustedIssuerRepository = $trustedIssuerRepository;
     }
 
-    public function enableJkuSupport(JKUFactory $jkuFactory)
+    public function enableJkuSupport(JKUFactory $jkuFactory): void
     {
         $this->jkuFactory = $jkuFactory;
     }
@@ -142,7 +139,7 @@ class JwtBearerGrantType implements GrantType
 
         $diff = \array_diff($requiredParameters, \array_keys($parameters));
         if (0 !== \count($diff)) {
-            throw OAuth2Error::invalidRequest(\Safe\sprintf('Missing grant type parameter(s): %s.', \implode(', ', $diff)));
+            throw OAuth2Error::invalidRequest(sprintf('Missing grant type parameter(s): %s.', \implode(', ', $diff)));
         }
     }
 
@@ -153,16 +150,18 @@ class JwtBearerGrantType implements GrantType
         $assertion = $this->tryToDecryptTheAssertion($assertion);
 
         try {
-            $jwsSerializer = new JwsCompactSerializer($this->jsonConverter);
+            $jwsSerializer = new JwsCompactSerializer();
             $jws = $jwsSerializer->unserialize($assertion);
             if (1 !== $jws->countSignatures()) {
-                throw new \InvalidArgumentException('The assertion must have only one signature.');
+                throw new InvalidArgumentException('The assertion must have only one signature.');
             }
-            $claims = \Safe\json_decode($jws->getPayload(), true);
+            $payload = $jws->getPayload();
+            Assertion::string($payload, 'The assertion is not valid. No payload available.');
+            $claims = json_decode($payload, true);
             $this->claimCheckerManager->check($claims);
             $diff = \array_diff(['iss', 'sub', 'aud', 'exp'], \array_keys($claims));
             if (0 !== \count($diff)) {
-                throw new \InvalidArgumentException(\Safe\sprintf('The following claim(s) is/are mandatory: "%s".', \implode(', ', \array_values($diff))));
+                throw new InvalidArgumentException(sprintf('The following claim(s) is/are mandatory: "%s".', \implode(', ', \array_values($diff))));
             }
             $this->checkJWTSignature($grantTypeData, $jws, $claims);
         } catch (OAuth2Error $e) {
@@ -179,16 +178,17 @@ class JwtBearerGrantType implements GrantType
         }
 
         try {
-            $jweSerializer = new JweCompactSerializer($this->jsonConverter);
+            $jweSerializer = new JweCompactSerializer();
             $jwe = $jweSerializer->unserialize($assertion);
             if (1 !== $jwe->countRecipients()) {
-                throw new \InvalidArgumentException('The assertion must have only one recipient.');
+                throw new InvalidArgumentException('The assertion must have only one recipient.');
             }
+            Assertion::notNull($this->keyEncryptionKeySet, 'The key encryption key set is not set.');
             if (true === $this->jweDecrypter->decryptUsingKeySet($jwe, $this->keyEncryptionKeySet, 0)) {
                 return $jwe->getPayload();
             }
 
-            throw new \InvalidArgumentException('Unable to decrypt the assertion.');
+            throw new InvalidArgumentException('Unable to decrypt the assertion.');
         } catch (\Throwable $e) {
             if (true === $this->encryptionRequired) {
                 throw OAuth2Error::invalidRequest($e->getMessage(), [], $e);
@@ -224,21 +224,21 @@ class JwtBearerGrantType implements GrantType
         } elseif (null !== $this->trustedIssuerRepository) { // Trusted issuer support
             $issuer = $this->trustedIssuerRepository->find($iss);
             if (null === $issuer) {
-                throw new \InvalidArgumentException('Unable to find the issuer of the assertion.');
+                throw new InvalidArgumentException('Unable to find the issuer of the assertion.');
             }
             $allowedSignatureAlgorithms = $issuer->getAllowedSignatureAlgorithms();
             $signatureKeys = $issuer->getJWKSet();
             $resourceOwnerId = $this->findResourceOwner($sub);
             if (null === $resourceOwnerId) {
-                throw new \InvalidArgumentException(\Safe\sprintf('Unknown resource owner with ID "%s"', $sub));
+                throw new InvalidArgumentException(sprintf('Unknown resource owner with ID "%s"', $sub));
             }
             $grantTypeData->setResourceOwnerId($resourceOwnerId);
         } else {
-            throw new \InvalidArgumentException('Unable to find the issuer of the assertion.');
+            throw new InvalidArgumentException('Unable to find the issuer of the assertion.');
         }
 
         if (!$jws->getSignature(0)->hasProtectedHeaderParameter('alg') || !\in_array($jws->getSignature(0)->getProtectedHeaderParameter('alg'), $allowedSignatureAlgorithms, true)) {
-            throw new \InvalidArgumentException(\Safe\sprintf('The signature algorithm "%s" is not allowed.', $jws->getSignature(0)->getProtectedHeaderParameter('alg')));
+            throw new InvalidArgumentException(sprintf('The signature algorithm "%s" is not allowed.', $jws->getSignature(0)->getProtectedHeaderParameter('alg')));
         }
 
         $this->jwsVerifier->verifyWithKeySet($jws, $signatureKeys, 0);
@@ -248,7 +248,7 @@ class JwtBearerGrantType implements GrantType
 
     private function findResourceOwner(string $subject): ?ResourceOwnerId
     {
-        $userAccount = $this->userAccountRepository ? $this->userAccountRepository->find(new UserAccountId($subject)) : null;
+        $userAccount = null !== $this->userAccountRepository ? $this->userAccountRepository->find(new UserAccountId($subject)) : null;
         if (null !== $userAccount) {
             return $userAccount->getUserAccountId();
         }
@@ -266,17 +266,17 @@ class JwtBearerGrantType implements GrantType
             case $client->has('jwks') && 'private_key_jwt' === $client->getTokenEndpointAuthenticationMethod():
                 return JWKSet::createFromJson($client->get('jwks'));
             case $client->has('client_secret') && 'client_secret_jwt' === $client->getTokenEndpointAuthenticationMethod():
-                $jwk = JWK::create([
+                $jwk = new JWK([
                     'kty' => 'oct',
                     'use' => 'sig',
                     'k' => Base64Url::encode($client->get('client_secret')),
                 ]);
 
-                return JWKSet::createFromKeys([$jwk]);
+                return new JWKSet([$jwk]);
             case $client->has('jwks_uri') && 'private_key_jwt' === $client->getTokenEndpointAuthenticationMethod() && null !== $this->jkuFactory:
                 return $this->jkuFactory->loadFromUrl($client->get('jwks_uri'));
             default:
-                throw new \InvalidArgumentException('The client has no key or key set.');
+                throw new InvalidArgumentException('The client has no key or key set.');
         }
     }
 }

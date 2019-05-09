@@ -40,7 +40,7 @@ final class Configuration implements ConfigurationInterface
             ->children()
                 ->scalarNode('psr7_message_factory')
                     ->cannotBeEmpty()
-                    ->defaultValue('oauth2_security.psr7_message_factory.default')
+                    ->defaultValue('sensio_framework_extra.psr7.http_message_factory')
                     ->info('PSR7 requests and responses factory')
                 ->end()
             ->end();

@@ -30,7 +30,7 @@ final class ScopePolicyRuleTest extends TestCase
     /**
      * @inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         if (!\interface_exists(Rule::class)) {
             static::markTestSkipped('The component "oauth2-framework/client" is not installed.');
@@ -39,11 +39,11 @@ final class ScopePolicyRuleTest extends TestCase
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The parameter "scope_policy" must be a string.
      */
     public function theParameterMustBeAString()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The parameter "scope_policy" must be a string.');
         $clientId = new ClientId('CLIENT_ID');
         $commandParameters = new DataBag([
             'scope_policy' => ['foo'],
@@ -54,11 +54,11 @@ final class ScopePolicyRuleTest extends TestCase
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The scope policy "foo" is not supported.
      */
     public function theScopePolicyIsNotSupported()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The scope policy "foo" is not supported.');
         $clientId = new ClientId('CLIENT_ID');
         $commandParameters = new DataBag([
             'scope_policy' => 'foo',

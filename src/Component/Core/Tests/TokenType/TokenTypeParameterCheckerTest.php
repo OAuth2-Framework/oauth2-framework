@@ -25,7 +25,7 @@ use Prophecy\Argument;
  */
 final class TokenTypeParameterCheckerTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         if (!\class_exists(AuthorizationRequest::class)) {
             static::markTestSkipped('Authorization Endpoint not available');

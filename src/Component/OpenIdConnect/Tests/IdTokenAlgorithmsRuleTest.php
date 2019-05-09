@@ -15,7 +15,6 @@ namespace OAuth2Framework\Component\OpenIdConnect\Tests;
 
 use Jose\Component\Core\Algorithm;
 use Jose\Component\Core\AlgorithmManager;
-use Jose\Component\Core\Converter\StandardConverter;
 use Jose\Component\Encryption\Compression\CompressionMethodManager;
 use Jose\Component\Encryption\JWEBuilder;
 use Jose\Component\Signature\JWSBuilder;
@@ -54,11 +53,11 @@ final class IdTokenAlgorithmsRuleTest extends TestCase
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The parameter "id_token_signed_response_alg" must be an algorithm supported by this server. Please choose one of the following value(s): XS512
      */
     public function theIdTokenSignatureAlgorithmIsNotSupported()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The parameter "id_token_signed_response_alg" must be an algorithm supported by this server. Please choose one of the following value(s): XS512');
         $clientId = new ClientId('CLIENT_ID');
         $commandParameters = new DataBag([
             'id_token_signed_response_alg' => 'foo',
@@ -72,11 +71,11 @@ final class IdTokenAlgorithmsRuleTest extends TestCase
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The parameter "id_token_encrypted_response_alg" must be an algorithm supported by this server. Please choose one of the following value(s): RSA_2_5
      */
     public function theIdTokenKeyEncryptionAlgorithmsIsNotSupported()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The parameter "id_token_encrypted_response_alg" must be an algorithm supported by this server. Please choose one of the following value(s): RSA_2_5');
         $clientId = new ClientId('CLIENT_ID');
         $commandParameters = new DataBag([
             'id_token_encrypted_response_alg' => 'foo',
@@ -91,11 +90,11 @@ final class IdTokenAlgorithmsRuleTest extends TestCase
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The parameter "id_token_encrypted_response_enc" must be an algorithm supported by this server. Please choose one of the following value(s): A512ECE+XS512
      */
     public function theIdTokenContentEncryptionAlgorithmsIsNotSupported()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The parameter "id_token_encrypted_response_enc" must be an algorithm supported by this server. Please choose one of the following value(s): A512ECE+XS512');
         $clientId = new ClientId('CLIENT_ID');
         $commandParameters = new DataBag([
             'id_token_encrypted_response_alg' => 'RSA_2_5',
@@ -114,7 +113,7 @@ final class IdTokenAlgorithmsRuleTest extends TestCase
         $algorithm->name()->willReturn('XS512');
 
         return new JWSBuilder(
-            new StandardConverter(),
+            null,
             AlgorithmManager::create([$algorithm->reveal()])
         );
     }
@@ -127,7 +126,7 @@ final class IdTokenAlgorithmsRuleTest extends TestCase
         $algorithm2->name()->willReturn('A512ECE+XS512');
 
         return new JWEBuilder(
-            new StandardConverter(),
+            null,
             AlgorithmManager::create([$algorithm1->reveal()]),
             AlgorithmManager::create([$algorithm2->reveal()]),
             CompressionMethodManager::create([])

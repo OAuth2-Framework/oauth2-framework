@@ -13,13 +13,12 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\MetadataEndpoint\Tests;
 
-use Http\Message\MessageFactory\DiactorosMessageFactory;
 use Http\Message\ResponseFactory;
 use Jose\Component\Core\AlgorithmManager;
-use Jose\Component\Core\Converter\StandardConverter;
 use Jose\Component\Core\JWK;
 use Jose\Component\Signature\Algorithm\None;
 use Jose\Component\Signature\JWSBuilder;
+use Nyholm\Psr7\Factory\HttplugFactory;
 use OAuth2Framework\Component\MetadataEndpoint\Metadata;
 use OAuth2Framework\Component\MetadataEndpoint\MetadataEndpoint;
 use PHPUnit\Framework\TestCase;
@@ -69,8 +68,8 @@ final class MetadataEndpointTest extends TestCase
             );
 
             if (\class_exists(JWSBuilder::class)) {
-                $jwsBuilder = new JWSBuilder(new StandardConverter(), AlgorithmManager::create([new None()]));
-                $key = JWK::create([
+                $jwsBuilder = new JWSBuilder(null, AlgorithmManager::create([new None()]));
+                $key = new JWK([
                     'kty' => 'none',
                 ]);
                 $this->metadataEndpoint->enableSignature($jwsBuilder, 'none', $key);
@@ -88,7 +87,7 @@ final class MetadataEndpointTest extends TestCase
     private function getResponseFactory(): ResponseFactory
     {
         if (null === $this->responseFactory) {
-            $this->responseFactory = new DiactorosMessageFactory();
+            $this->responseFactory = new HttplugFactory();
         }
 
         return $this->responseFactory;

@@ -19,6 +19,7 @@ use Jose\Component\Core\AlgorithmManager;
 use Jose\Component\Core\JWKSet;
 use Jose\Component\Signature\JWS;
 use Jose\Component\Signature\JWSVerifier;
+use Nyholm\Psr7\Factory\Psr17Factory;
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequestLoader;
 use OAuth2Framework\Component\Core\Client\ClientRepository;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
@@ -26,8 +27,6 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response;
-use Zend\Diactoros\Uri;
 
 /**
  * @group AuthorizationEndpoint
@@ -524,6 +523,7 @@ final class AuthorizationRequestLoaderTest extends TestCase
             );
             $this->authorizationRequestLoader->enableRequestObjectReferenceSupport(
                 $this->getHttpClient(),
+                new Psr17Factory(),
                 true
             );
         }
@@ -572,7 +572,7 @@ final class AuthorizationRequestLoaderTest extends TestCase
             $uri = ($args[0])->getUri();
             switch ($uri->getPath()) {
                 case '/eyJhbGciOiJSUzI1NiJ9.eyJjbGllbnRfaWQiOiJDTElFTlRfSUQifQ.R09PRF9TSUdOQVRVUkU':
-                    $response = new Response();
+                    $response = new \Nyholm\Psr7\Response();
                     $response->getBody()->write('eyJhbGciOiJSUzI1NiJ9.eyJjbGllbnRfaWQiOiJDTElFTlRfSUQifQ.R09PRF9TSUdOQVRVUkU');
                     $response->getBody()->rewind();
 

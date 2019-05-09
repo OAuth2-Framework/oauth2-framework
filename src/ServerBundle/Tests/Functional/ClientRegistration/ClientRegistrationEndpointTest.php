@@ -27,7 +27,7 @@ use Psr\Container\ContainerInterface;
  */
 class ClientRegistrationEndpointTest extends DatabaseTestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         if (!\class_exists(ClientRegistrationEndpoint::class)) {
             static::markTestSkipped('The component "oauth2-framework/client-registration-endpoint" is not installed.');
@@ -70,7 +70,7 @@ class ClientRegistrationEndpointTest extends DatabaseTestCase
         static::assertEquals(201, $response->getStatusCode());
         static::assertEquals('application/json; charset=UTF-8', $response->headers->get('content-type'));
         $content = \Safe\json_decode($response->getContent(), true);
-        static::assertInternalType('array', $content);
+        static::assertIsArray($content);
         static::assertArrayHasKey('client_id', $content);
         /** @var ContainerInterface $container */
         $container = $client->getContainer();

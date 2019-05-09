@@ -25,11 +25,11 @@ final class CommonParametersRuleTest extends TestCase
 {
     /**
      * @test
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The parameter with key "client_uri" is not a valid URL.
      */
     public function aParameterIsNotAValidUrl()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The parameter with key "client_uri" is not a valid URL.');
         $clientId = new ClientId('CLIENT_ID');
         $commandParameters = new DataBag([
             'client_name' => 'Client name',

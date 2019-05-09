@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\TokenRevocationEndpoint\Tests;
 
-use Http\Message\MessageFactory\DiactorosMessageFactory;
 use Http\Message\ResponseFactory;
+use Nyholm\Psr7\Factory\HttplugFactory;
 use OAuth2Framework\Component\Core\AccessToken\AccessToken;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
@@ -213,7 +213,7 @@ final class TokenRevocationGetEndpointTest extends TestCase
     private function getResponseFactory(): ResponseFactory
     {
         if (null === $this->responseFactory) {
-            $this->responseFactory = new DiactorosMessageFactory();
+            $this->responseFactory = new HttplugFactory();
         }
 
         return $this->responseFactory;

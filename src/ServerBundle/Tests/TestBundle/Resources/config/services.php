@@ -11,7 +11,7 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use Http\Factory\Diactoros\UriFactory;
+use Nyholm\Psr7\Factory\HttplugFactory;
 use OAuth2Framework\Component\OpenIdConnect\UserInfo\Pairwise\EncryptedSubjectIdentifier;
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\AccessTokenRepository;
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\AuthorizationCodeRepository;
@@ -65,7 +65,7 @@ return function (ContainerConfigurator $container) {
 
     $container->set(InitialAccessTokenRepository::class);
 
-    $container->set(UriFactory::class);
+    $container->set(HttplugFactory::class);
 
     $container->set('MyPairwiseSubjectIdentifier')
         ->class(EncryptedSubjectIdentifier::class)

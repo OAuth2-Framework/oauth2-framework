@@ -17,7 +17,6 @@ use Assert\Assertion;
 use Base64Url\Base64Url;
 use Jose\Component\Checker\ClaimCheckerManager;
 use Jose\Component\Checker\HeaderCheckerManager;
-use Jose\Component\Core\Converter\JsonConverter;
 use Jose\Component\Core\JWK;
 use Jose\Component\Core\JWKSet;
 use Jose\Component\Encryption\JWELoader;
@@ -37,6 +36,9 @@ class ClientAssertionJwt implements AuthenticationMethod
 {
     private const CLIENT_ASSERTION_TYPE = 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer';
 
+    /**
+     * @var JWSVerifier
+     */
     private $jwsVerifier;
 
     /**
@@ -79,15 +81,9 @@ class ClientAssertionJwt implements AuthenticationMethod
      */
     private $claimCheckerManager;
 
-    /**
-     * @var JsonConverter
-     */
-    private $jsonConverter;
-
-    public function __construct(JsonConverter $jsonConverter, JWSVerifier $jwsVerifier, HeaderCheckerManager $headerCheckerManager, ClaimCheckerManager $claimCheckerManager, int $secretLifetime = 0)
+    public function __construct(JWSVerifier $jwsVerifier, HeaderCheckerManager $headerCheckerManager, ClaimCheckerManager $claimCheckerManager, int $secretLifetime = 0)
     {
         Assertion::greaterOrEqualThan($secretLifetime, 0, 'The secret lifetime must be at least 0 (= unlimited).');
-        $this->jsonConverter = $jsonConverter;
         $this->jwsVerifier = $jwsVerifier;
         $this->headerCheckerManager = $headerCheckerManager;
         $this->claimCheckerManager = $claimCheckerManager;
@@ -161,10 +157,12 @@ class ClientAssertionJwt implements AuthenticationMethod
         try {
             $client_assertion = $parameters['client_assertion'];
             $client_assertion = $this->tryToDecryptClientAssertion($client_assertion);
-            $serializer = new CompactSerializer($this->jsonConverter);
+            $serializer = new CompactSerializer();
             $jws = $serializer->unserialize($client_assertion);
             $this->headerCheckerManager->check($jws, 0);
-            $claims = $this->jsonConverter->decode($jws->getPayload());
+            $payload = $jws->getPayload();
+            Assertion::string($payload, 'Unable to get the JWS payload');
+            $claims = \Jose\Component\Core\Util\JsonConverter::decode($payload);
             $this->claimCheckerManager->check($claims);
         } catch (OAuth2Error $e) {
             throw $e;
@@ -190,12 +188,15 @@ class ClientAssertionJwt implements AuthenticationMethod
         }
 
         try {
+            Assertion::notNull($this->keyEncryptionKeySet, 'The key encryption key set is not defined.');
             $jwe = $this->jweLoader->loadAndDecryptWithKeySet($assertion, $this->keyEncryptionKeySet, $recipient);
             if (1 !== $jwe->countRecipients()) {
                 throw new \InvalidArgumentException('The client assertion must have only one recipient.');
             }
+            $payload = $jwe->getPayload();
+            Assertion::string($payload, 'Unable to get the JWE payload');
 
-            return $jwe->getPayload();
+            return $payload;
         } catch (\Throwable $e) {
             if (true === $this->encryptionRequired) {
                 throw OAuth2Error::invalidRequest('The encryption of the assertion is mandatory but the decryption of the assertion failed.', [], $e);
@@ -214,8 +215,9 @@ class ClientAssertionJwt implements AuthenticationMethod
             if (!$clientCredentials instanceof JWS) {
                 return false;
             }
-
-            $claims = $this->jsonConverter->decode($clientCredentials->getPayload());
+            $payload = $clientCredentials->getPayload();
+            Assertion::string($payload, 'No payload available');
+            $claims = \Jose\Component\Core\Util\JsonConverter::decode($payload);
             $jwkset = $this->retrieveIssuerKeySet($client, $clientCredentials, $claims);
 
             return $this->jwsVerifier->verifyWithKeySet($clientCredentials, $jwkset, 0);
@@ -307,13 +309,13 @@ class ClientAssertionJwt implements AuthenticationMethod
 
                 return JWKSet::createFromKeyData($jwks);
             case $client->has('client_secret') && 'client_secret_jwt' === $client->getTokenEndpointAuthenticationMethod():
-                $jwk = JWK::create([
+                $jwk = new JWK([
                     'kty' => 'oct',
                     'use' => 'sig',
                     'k' => Base64Url::encode($client->get('client_secret')),
                 ]);
 
-                return JWKSet::createFromKeys([$jwk]);
+                return new JWKSet([$jwk]);
             case $client->has('jwks_uri') && 'private_key_jwt' === $client->getTokenEndpointAuthenticationMethod() && null !== $this->jkuFactory:
                 return $this->jkuFactory->loadFromUrl($client->get('jwks_uri'));
             default:

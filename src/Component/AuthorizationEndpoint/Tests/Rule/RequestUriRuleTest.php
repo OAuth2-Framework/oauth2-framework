@@ -25,7 +25,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class RequestUriRuleTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         if (!\interface_exists(Rule::class)) {
             static::markTestSkipped('The component "oauth2-framework/client-rule" is not installed.');
@@ -46,11 +46,11 @@ final class RequestUriRuleTest extends TestCase
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The parameter "request_uris" must be a list of URI.
      */
     public function theParameterMustBeAnArray()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The parameter "request_uris" must be a list of URI.');
         $clientId = new ClientId('CLIENT_ID');
         $commandParameters = new DataBag([
             'request_uris' => 'hello',
@@ -64,11 +64,11 @@ final class RequestUriRuleTest extends TestCase
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The parameter "request_uris" must be a list of URI.
      */
     public function theParameterMustBeAnArrayOfString()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The parameter "request_uris" must be a list of URI.');
         $clientId = new ClientId('CLIENT_ID');
         $commandParameters = new DataBag([
             'request_uris' => [123],
@@ -82,11 +82,11 @@ final class RequestUriRuleTest extends TestCase
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The parameter "request_uris" must be a list of URI.
      */
     public function theParameterMustBeAnArrayOfUris()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The parameter "request_uris" must be a list of URI.');
         $clientId = new ClientId('CLIENT_ID');
         $commandParameters = new DataBag([
             'request_uris' => ['hello'],

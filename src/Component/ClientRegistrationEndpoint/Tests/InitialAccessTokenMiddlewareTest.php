@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\ClientRegistrationEndpoint\Tests;
 
+use OAuth2Framework\Component\BearerTokenType\AuthorizationHeaderTokenFinder;
 use OAuth2Framework\Component\BearerTokenType\BearerToken;
 use OAuth2Framework\Component\ClientRegistrationEndpoint\InitialAccessTokenId;
 use OAuth2Framework\Component\ClientRegistrationEndpoint\InitialAccessTokenMiddleware;
@@ -145,8 +146,10 @@ final class InitialAccessTokenMiddlewareTest extends TestCase
     private function getMiddleware(): InitialAccessTokenMiddleware
     {
         if (null === $this->middleware) {
+            $bearerToken = new BearerToken('Realm');
+            $bearerToken->addTokenFinder(new AuthorizationHeaderTokenFinder());
             $this->middleware = new InitialAccessTokenMiddleware(
-                new BearerToken('Realm', true, false, false),
+                $bearerToken,
                 $this->getRepository(),
                 false
             );

@@ -14,9 +14,9 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\OpenIdConnect;
 
 use Base64Url\Base64Url;
-use Jose\Component\Core\Converter\StandardConverter;
 use Jose\Component\Core\JWK;
 use Jose\Component\Core\JWKSet;
+use Jose\Component\Core\Util\JsonConverter;
 use Jose\Component\Encryption\JWEBuilder;
 use Jose\Component\Encryption\Serializer\CompactSerializer as JweCompactSerializer;
 use Jose\Component\KeyManagement\JKUFactory;
@@ -322,14 +322,13 @@ class IdTokenBuilder
     {
         $signatureKey = $this->getSignatureKey($this->signatureAlgorithm);
         $header = $this->getHeaders($signatureKey, $this->signatureAlgorithm);
-        $jsonConverter = new StandardConverter();
-        $claims = $jsonConverter->encode($claims);
+        $claimsAsArray = JsonConverter::encode($claims);
         $jws = $this->jwsBuilder
             ->create()
-            ->withPayload($claims)
+            ->withPayload($claimsAsArray)
             ->addSignature($signatureKey, $header)
             ->build();
-        $serializer = new JwsCompactSerializer($jsonConverter);
+        $serializer = new JwsCompactSerializer();
 
         return $serializer->serialize($jws, 0);
     }
@@ -354,8 +353,7 @@ class IdTokenBuilder
             ->withSharedProtectedHeader($header)
             ->addRecipient($encryptionKey)
             ->build();
-        $jsonConverter = new StandardConverter();
-        $serializer = new JweCompactSerializer($jsonConverter);
+        $serializer = new JweCompactSerializer();
 
         return $serializer->serialize($jwe, 0);
     }
@@ -364,18 +362,18 @@ class IdTokenBuilder
     {
         $keys = $this->signatureKeys;
         if ($this->client->has('client_secret')) {
-            $jwk = JWK::create([
+            $jwk = new JWK([
                 'kty' => 'oct',
                 'use' => 'sig',
                 'k' => Base64Url::encode($this->client->get('client_secret')),
             ]);
             $keys = $keys->with($jwk);
         }
-        $signatureAlgorithm = $this->jwsBuilder->getSignatureAlgorithmManager()->get($signatureAlgorithm);
-        if ('none' === $signatureAlgorithm->name()) {
-            return JWK::create(['kty' => 'none', 'alg' => 'none', 'use' => 'sig']);
+        $algorithm = $this->jwsBuilder->getSignatureAlgorithmManager()->get($signatureAlgorithm);
+        if ('none' === $algorithm->name()) {
+            return new JWK(['kty' => 'none', 'alg' => 'none', 'use' => 'sig']);
         }
-        $signatureKey = $keys->selectKey('sig', $signatureAlgorithm);
+        $signatureKey = $keys->selectKey('sig', $algorithm);
         if (null === $signatureKey) {
             throw new \InvalidArgumentException('Unable to find a key to sign the ID Token. Please verify the selected key set contains suitable keys.');
         }
@@ -474,7 +472,7 @@ class IdTokenBuilder
             }
         }
         if ($client->has('client_secret')) {
-            $jwk = JWK::create([
+            $jwk = new JWK([
                 'kty' => 'oct',
                 'use' => 'enc',
                 'k' => Base64Url::encode($client->get('client_secret')),

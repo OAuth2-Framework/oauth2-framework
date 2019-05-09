@@ -41,7 +41,7 @@ final class TokenEndpointScopeExtensionTest extends TestCase
     /**
      * @inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         if (!\class_exists(TokenEndpoint::class)) {
             static::markTestSkipped('The component "oauth2-framework/token-endpoint" is not installed.');

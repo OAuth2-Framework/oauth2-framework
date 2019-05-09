@@ -15,8 +15,8 @@ namespace OAuth2Framework\ServerBundle\Tests\Functional\Grant\JwtBearer;
 
 use Base64Url\Base64Url;
 use Jose\Component\Core\AlgorithmManager;
-use Jose\Component\Core\Converter\StandardConverter;
 use Jose\Component\Core\JWK;
+use Jose\Component\Core\Util\JsonConverter;
 use Jose\Component\Signature\Algorithm\HS256;
 use Jose\Component\Signature\JWSBuilder;
 use Jose\Component\Signature\Serializer\CompactSerializer;
@@ -31,7 +31,7 @@ use OAuth2Framework\ServerBundle\Tests\Functional\DatabaseTestCase;
  */
 class JwtBearerGrantTest extends DatabaseTestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         if (!\class_exists(JwtBearerGrantType::class)) {
             static::markTestSkipped('The component "oauth2-framework/jwt-bearer-grant" is not installed.');
@@ -142,7 +142,7 @@ class JwtBearerGrantTest extends DatabaseTestCase
 
     private function createAnAssertionWithoutClaim(): string
     {
-        $jwk = JWK::create([
+        $jwk = new JWK([
             'kty' => 'oct',
             'use' => 'sig',
             'k' => Base64Url::encode('secret'),
@@ -155,7 +155,7 @@ class JwtBearerGrantTest extends DatabaseTestCase
 
     private function createAnAssertionWithoutSubject(): string
     {
-        $jwk = JWK::create([
+        $jwk = new JWK([
             'kty' => 'oct',
             'use' => 'sig',
             'k' => Base64Url::encode('secret'),
@@ -167,7 +167,7 @@ class JwtBearerGrantTest extends DatabaseTestCase
 
     private function createAnAssertionWithoutAudience(): string
     {
-        $jwk = JWK::create([
+        $jwk = new JWK([
             'kty' => 'oct',
             'use' => 'sig',
             'k' => Base64Url::encode('secret'),
@@ -179,7 +179,7 @@ class JwtBearerGrantTest extends DatabaseTestCase
 
     private function createAnAssertionWithoutExpirationTime(): string
     {
-        $jwk = JWK::create([
+        $jwk = new JWK([
             'kty' => 'oct',
             'use' => 'sig',
             'k' => Base64Url::encode('secret'),
@@ -195,7 +195,7 @@ class JwtBearerGrantTest extends DatabaseTestCase
 
     private function createAValidAssertion(): string
     {
-        $jwk = JWK::create([
+        $jwk = new JWK([
             'kty' => 'oct',
             'use' => 'sig',
             'k' => Base64Url::encode('secret'),
@@ -212,19 +212,14 @@ class JwtBearerGrantTest extends DatabaseTestCase
 
     private function sign(array $claims, JWK $jwk): string
     {
-        $jsonConverter = new StandardConverter();
-        $jwsBuilder = new JWSBuilder(
-            $jsonConverter,
-            AlgorithmManager::create([new HS256()])
-        );
-        $payload = $jsonConverter->encode($claims);
+        $jwsBuilder = new JWSBuilder(null, AlgorithmManager::create([new HS256()]));
+        $payload = JsonConverter::encode($claims);
         $jws = $jwsBuilder
             ->create()
             ->withPayload($payload)
             ->addSignature($jwk, ['alg' => 'HS256'])
             ->build();
-        $token = (new CompactSerializer($jsonConverter))->serialize($jws);
 
-        return $token;
+        return (new CompactSerializer())->serialize($jws);
     }
 }

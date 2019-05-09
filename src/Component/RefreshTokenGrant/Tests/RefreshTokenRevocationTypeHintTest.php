@@ -30,7 +30,7 @@ use Prophecy\Argument;
  */
 final class RefreshTokenRevocationTypeHintTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         if (!\interface_exists(TokenTypeHint::class)) {
             static::markTestSkipped('The component "oauth2-framework/token-revocation-endpoint" is not installed.');

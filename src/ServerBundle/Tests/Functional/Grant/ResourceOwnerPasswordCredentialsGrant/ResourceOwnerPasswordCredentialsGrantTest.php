@@ -24,7 +24,7 @@ use OAuth2Framework\ServerBundle\Tests\Functional\DatabaseTestCase;
  */
 class ResourceOwnerPasswordCredentialsGrantTest extends DatabaseTestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         if (!\class_exists(ResourceOwnerPasswordCredentialsGrantType::class)) {
             static::markTestSkipped('The component "oauth2-framework/resource-owner-password-credentials-grant" is not installed.');

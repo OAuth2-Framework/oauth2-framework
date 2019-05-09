@@ -24,7 +24,7 @@ use OAuth2Framework\ServerBundle\Tests\Functional\DatabaseTestCase;
  */
 class RefreshTokenGrantTest extends DatabaseTestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         if (!\class_exists(RefreshTokenGrantType::class)) {
             static::markTestSkipped('The component "oauth2-framework/refresh-token-grant" is not installed.');

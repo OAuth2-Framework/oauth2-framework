@@ -24,7 +24,7 @@ use OAuth2Framework\ServerBundle\Tests\Functional\DatabaseTestCase;
  */
 class ClientCredentialsGrantTest extends DatabaseTestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         if (!\class_exists(ClientCredentialsGrantType::class)) {
             static::markTestSkipped('The component "oauth2-framework/client-credentials-grant" is not installed.');

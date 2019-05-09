@@ -35,13 +35,12 @@
     },
     "require-dev": {
         "phpunit/phpunit": "^7.0",
-        "http-interop/http-factory-diactoros": "^0.3.0",
         "php-http/mock-client": "^1.1",
-        "web-token/jwt-core": "^1.1@beta",
-        "web-token/jwt-checker": "^1.1@beta",
-        "web-token/jwt-signature": "^1.1@beta",
-        "web-token/jwt-encryption": "^1.1@beta",
-        "web-token/jwt-key-mgmt": "^1.1@beta"
+        "web-token/jwt-core": "^1.3.7",
+        "web-token/jwt-checker": "^1.3.7",
+        "web-token/jwt-signature": "^1.3.7",
+        "web-token/jwt-encryption": "^1.3.7",
+        "web-token/jwt-key-mgmt": "^1.3.7"
     },
     "autoload": {
         "psr-4": {

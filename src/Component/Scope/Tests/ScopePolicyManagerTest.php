@@ -125,11 +125,11 @@ final class ScopePolicyManagerTest extends TestCase
 
     /**
      * @test
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessage No scope was requested.
      */
     public function usingTheErrorPolicy()
     {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('No scope was requested.');
         $client = $this->prophesize(Client::class);
         $client->isPublic()->willReturn(false);
         $client->getPublicId()->willReturn(new ClientId('CLIENT_ID'));
@@ -143,22 +143,22 @@ final class ScopePolicyManagerTest extends TestCase
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Scope "foo" appears more than once.
      */
     public function scopeIsUsedOnlyOnce()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Scope "foo" appears more than once.');
         Checker::checkUsedOnce('foo', 'foo bar');
         Checker::checkUsedOnce('foo', 'foo foo');
     }
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Scope contains illegal characters.
      */
     public function scopeCharsetIsNotValid()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Scope contains illegal characters.');
         Checker::checkCharset('foo bar');
         Checker::checkCharset('cookie café');
     }

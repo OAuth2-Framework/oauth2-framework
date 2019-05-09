@@ -25,11 +25,11 @@ final class ContactsParametersRuleTest extends TestCase
 {
     /**
      * @test
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The parameter "contacts" must be a list of e-mail addresses.
      */
     public function theContactsParameterIsNotAnArray()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The parameter "contacts" must be a list of e-mail addresses.');
         $clientId = new ClientId('CLIENT_ID');
         $commandParameters = new DataBag([
             'contacts' => 123,
@@ -40,11 +40,11 @@ final class ContactsParametersRuleTest extends TestCase
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The parameter "contacts" must be a list of e-mail addresses.
      */
     public function theContactsParameterIsNotAnArrayOfEmailAddresses()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The parameter "contacts" must be a list of e-mail addresses.');
         $clientId = new ClientId('CLIENT_ID');
         $commandParameters = new DataBag([
             'contacts' => [123],

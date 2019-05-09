@@ -38,6 +38,9 @@ interface AuthenticationMethod
 
     public function checkClientConfiguration(DataBag $command_parameters, DataBag $validated_parameters): DataBag;
 
+    /**
+     * @param mixed $clientCredentials The client credentials found in the request
+     */
     public function isClientAuthenticated(Client $client, $clientCredentials, ServerRequestInterface $request): bool;
 
     /**

@@ -28,7 +28,7 @@ final class ScopeRuleTest extends TestCase
     /**
      * @inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         if (!\interface_exists(Rule::class)) {
             static::markTestSkipped('The component "oauth2-framework/client" is not installed.');
@@ -37,11 +37,11 @@ final class ScopeRuleTest extends TestCase
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The "scope" parameter must be a string.
      */
     public function theParameterMustBeAString()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The "scope" parameter must be a string.');
         $clientId = new ClientId('CLIENT_ID');
         $commandParameters = new DataBag([
             'scope' => ['foo'],
@@ -52,11 +52,11 @@ final class ScopeRuleTest extends TestCase
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Invalid characters found in the "scope" parameter.
      */
     public function theParameterContainsForbiddenCharacters()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid characters found in the "scope" parameter.');
         $clientId = new ClientId('CLIENT_ID');
         $commandParameters = new DataBag([
             'scope' => 'coffee, café',

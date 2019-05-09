@@ -26,7 +26,7 @@ final class ContactsParametersRule implements Rule
                 throw new \InvalidArgumentException('The parameter "contacts" must be a list of e-mail addresses.');
             }
             \array_map(function ($contact) {
-                if (!\filter_var($contact, FILTER_VALIDATE_EMAIL)) {
+                if (false === \filter_var($contact, FILTER_VALIDATE_EMAIL)) {
                     throw new \InvalidArgumentException('The parameter "contacts" must be a list of e-mail addresses.');
                 }
             }, $contacts);

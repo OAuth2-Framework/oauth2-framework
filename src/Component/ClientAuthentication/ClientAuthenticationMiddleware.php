@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\ClientAuthentication;
 
+use Assert\Assertion;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientRepository;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
@@ -43,15 +44,16 @@ class ClientAuthenticationMiddleware implements MiddlewareInterface
     {
         try {
             $authentication_method = null;
-            $client_credentials = null;
-            $clientId = $this->authenticationMethodManager->findClientIdAndCredentials($request, $authentication_method, $client_credentials);
+            $clientCredentials = null;
+            $clientId = $this->authenticationMethodManager->findClientIdAndCredentials($request, $authentication_method, $clientCredentials);
             if (null !== $clientId && $authentication_method instanceof AuthenticationMethod) {
                 $client = $this->clientRepository->find($clientId);
+                Assertion::notNull($client, 'Client authentication failed.');
                 $this->checkClient($client);
-                $this->checkAuthenticationMethod($request, $client, $authentication_method, $client_credentials);
+                $this->checkAuthenticationMethod($request, $client, $authentication_method, $clientCredentials);
                 $request = $request->withAttribute('client', $client);
                 $request = $request->withAttribute('client_authentication_method', $authentication_method);
-                $request = $request->withAttribute('client_credentials', $client_credentials);
+                $request = $request->withAttribute('client_credentials', $clientCredentials);
             }
         } catch (\Throwable $e) {
             throw new OAuth2Error(401, OAuth2Error::ERROR_INVALID_CLIENT, $e->getMessage(), [], $e);
@@ -60,9 +62,9 @@ class ClientAuthenticationMiddleware implements MiddlewareInterface
         return $handler->handle($request);
     }
 
-    private function checkClient(?Client $client): void
+    private function checkClient(Client $client): void
     {
-        if (null === $client || $client->isDeleted()) {
+        if ($client->isDeleted()) {
             throw new \InvalidArgumentException('Client authentication failed.');
         }
         if ($client->areClientCredentialsExpired()) {
@@ -70,12 +72,15 @@ class ClientAuthenticationMiddleware implements MiddlewareInterface
         }
     }
 
-    private function checkAuthenticationMethod(ServerRequestInterface $request, Client $client, AuthenticationMethod $authenticationMethod, $client_credentials): void
+    /**
+     * @param mixed $clientCredentials
+     */
+    private function checkAuthenticationMethod(ServerRequestInterface $request, Client $client, AuthenticationMethod $authenticationMethod, $clientCredentials): void
     {
         if (!$client->has('token_endpoint_auth_method') || !\in_array($client->get('token_endpoint_auth_method'), $authenticationMethod->getSupportedMethods(), true)) {
             throw new \InvalidArgumentException('Client authentication failed.');
         }
-        if (!$authenticationMethod->isClientAuthenticated($client, $client_credentials, $request)) {
+        if (!$authenticationMethod->isClientAuthenticated($client, $clientCredentials, $request)) {
             throw new \InvalidArgumentException('Client authentication failed.');
         }
     }

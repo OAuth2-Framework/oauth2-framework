@@ -116,7 +116,7 @@ abstract class AbstractAccessToken implements AccessToken
         return $this->expiresAt->getTimestamp() - \time() < 0 ? 0 : $this->expiresAt->getTimestamp() - \time();
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         $data = [
             'access_token_id' => $this->getId()->getValue(),
@@ -127,7 +127,7 @@ abstract class AbstractAccessToken implements AccessToken
             'is_revoked' => $this->isRevoked(),
             'resource_owner_id' => $this->getResourceOwnerId()->getValue(),
             'resource_owner_class' => \get_class($this->getResourceOwnerId()),
-            'resource_server_id' => $this->getResourceServerId() ? $this->getResourceServerId()->getValue() : null,
+            'resource_server_id' => null !== $this->getResourceServerId() ? $this->getResourceServerId()->getValue() : null,
         ];
 
         return $data;

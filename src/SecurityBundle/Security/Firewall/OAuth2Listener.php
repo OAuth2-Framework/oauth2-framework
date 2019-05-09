@@ -20,8 +20,8 @@ use OAuth2Framework\Component\Core\Message\OAuth2MessageFactoryManager;
 use OAuth2Framework\Component\Core\TokenType\TokenType;
 use OAuth2Framework\Component\Core\TokenType\TokenTypeManager;
 use OAuth2Framework\SecurityBundle\Security\Authentication\Token\OAuth2Token;
-use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
+use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\Security\Core\Authentication\AuthenticationManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -55,7 +55,13 @@ final class OAuth2Listener implements ListenerInterface
      */
     private $oauth2ResponseFactoryManager;
 
-    public function __construct(TokenStorageInterface $tokenStorage,
+    /**
+     * @var HttpMessageFactoryInterface
+     */
+    private $httpMessageFactory;
+
+    public function __construct(HttpMessageFactoryInterface $httpMessageFactory,
+                                TokenStorageInterface $tokenStorage,
                                 AuthenticationManagerInterface $authenticationManager,
                                 TokenTypeManager $tokenTypeManager,
                                 AccessTokenHandlerManager $accessTokenHandlerManager,
@@ -66,12 +72,12 @@ final class OAuth2Listener implements ListenerInterface
         $this->tokenTypeManager = $tokenTypeManager;
         $this->accessTokenHandlerManager = $accessTokenHandlerManager;
         $this->oauth2ResponseFactoryManager = $oauth2ResponseFactoryManager;
+        $this->httpMessageFactory = $httpMessageFactory;
     }
 
     public function handle(GetResponseEvent $event)
     {
-        $factory = new DiactorosFactory();
-        $request = $factory->createRequest($event->getRequest());
+        $request = $this->httpMessageFactory->createRequest($event->getRequest());
 
         try {
             $additionalCredentialValues = [];

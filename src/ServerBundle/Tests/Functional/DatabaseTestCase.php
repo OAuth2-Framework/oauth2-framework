@@ -31,7 +31,7 @@ class DatabaseTestCase extends WebTestCase
      */
     protected static $registryManager;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         self::bootKernel();
@@ -53,7 +53,7 @@ class DatabaseTestCase extends WebTestCase
         self::$application->run(new StringInput($command), $output);
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         self::runCommand('doctrine:database:drop --force');
         parent::tearDown();

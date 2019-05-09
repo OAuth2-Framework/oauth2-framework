@@ -15,7 +15,7 @@ namespace OAuth2Framework\Component\ClientRegistrationEndpoint;
 
 interface InitialAccessTokenRepository
 {
-    public function save(InitialAccessToken $initialAccessToken);
+    public function save(InitialAccessToken $initialAccessToken): void;
 
     /**
      * This function verifies the request and validate or not the initial access token.

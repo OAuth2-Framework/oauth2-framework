@@ -30,7 +30,7 @@ final class ScopeParameterCheckerTest extends TestCase
     /**
      * @inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         if (!\class_exists(AuthorizationRequest::class)) {
             static::markTestSkipped('The component "oauth2-framework/authorization-endpoint" is not installed.');

@@ -30,7 +30,7 @@ use Prophecy\Argument;
  */
 final class AccessTokenIntrospectionTypeHintTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         if (!\interface_exists(TokenTypeHint::class)) {
             static::markTestSkipped('The component "oauth2-framework/token-type" is not installed.');

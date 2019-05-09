@@ -40,11 +40,11 @@ final class RedirectionUriRuleTest extends TestCase
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Non-confidential clients must register at least one redirect URI.
      */
     public function aLeastOneRedirectUriMustBeSetForNonConfidentialClients()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Non-confidential clients must register at least one redirect URI.');
         $clientId = new ClientId('CLIENT_ID');
         $commandParameters = new DataBag([
         ]);
@@ -58,11 +58,11 @@ final class RedirectionUriRuleTest extends TestCase
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Confidential clients must register at least one redirect URI when using the "token" response type.
      */
     public function confidentialClientsUsingTokenResponseTypeMustRegisterAtLeastOneRedirectUri()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Confidential clients must register at least one redirect URI when using the "token" response type.');
         $clientId = new ClientId('CLIENT_ID');
         $commandParameters = new DataBag([
         ]);
@@ -76,11 +76,11 @@ final class RedirectionUriRuleTest extends TestCase
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The parameter "redirect_uris" must be a list of URI or URN.
      */
     public function theRedirectUrisParameterMustBeAnArray()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The parameter "redirect_uris" must be a list of URI or URN.');
         $clientId = new ClientId('CLIENT_ID');
         $commandParameters = new DataBag([
             'redirect_uris' => 'hello',
@@ -95,11 +95,11 @@ final class RedirectionUriRuleTest extends TestCase
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The parameter "redirect_uris" must be a list of URI or URN.
      */
     public function theRedirectUrisParameterMustBeAnArrayOfString()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The parameter "redirect_uris" must be a list of URI or URN.');
         $clientId = new ClientId('CLIENT_ID');
         $commandParameters = new DataBag([
             'redirect_uris' => [123],
@@ -114,11 +114,11 @@ final class RedirectionUriRuleTest extends TestCase
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The parameter "redirect_uris" must be a list of URI or URN.
      */
     public function theRedirectUrisParameterMustBeAnArrayOfUris()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The parameter "redirect_uris" must be a list of URI or URN.');
         $clientId = new ClientId('CLIENT_ID');
         $commandParameters = new DataBag([
             'redirect_uris' => ['hello'],
@@ -133,11 +133,11 @@ final class RedirectionUriRuleTest extends TestCase
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The parameter "redirect_uris" must only contain URIs without fragment.
      */
     public function theRedirectUrisMustNotContainAnyFragmentParameter()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The parameter "redirect_uris" must only contain URIs without fragment.');
         $clientId = new ClientId('CLIENT_ID');
         $commandParameters = new DataBag([
             'redirect_uris' => ['http://foo.com/#test=bad'],
@@ -152,11 +152,11 @@ final class RedirectionUriRuleTest extends TestCase
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The host "localhost" is not allowed for web applications that use the Implicit Grant Type.
      */
     public function theLocalhostHostIsNotAllowedWhenTheImplicitGrantTypeIsUsed()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The host "localhost" is not allowed for web applications that use the Implicit Grant Type.');
         $clientId = new ClientId('CLIENT_ID');
         $commandParameters = new DataBag([
             'redirect_uris' => ['http://localhost/'],
@@ -171,11 +171,11 @@ final class RedirectionUriRuleTest extends TestCase
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The parameter "redirect_uris" must only contain URIs with the HTTPS scheme for web applications that use the Implicit Grant Type.
      */
     public function theSchemeMustBeHttpsWhenTheImplicitGrantTypeIsUsed()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The parameter "redirect_uris" must only contain URIs with the HTTPS scheme for web applications that use the Implicit Grant Type.');
         $clientId = new ClientId('CLIENT_ID');
         $commandParameters = new DataBag([
             'redirect_uris' => ['http://foo.com/'],
@@ -190,11 +190,11 @@ final class RedirectionUriRuleTest extends TestCase
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The URI listed in the "redirect_uris" parameter must not contain any path traversal.
      */
     public function theRedirectUrisMustNotHavePathTraversal()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The URI listed in the "redirect_uris" parameter must not contain any path traversal.');
         $clientId = new ClientId('CLIENT_ID');
         $commandParameters = new DataBag([
             'redirect_uris' => ['https://foo.com/bar/../bad'],
@@ -266,11 +266,11 @@ final class RedirectionUriRuleTest extends TestCase
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The parameter "redirect_uris" must be a list of URI or URN.
      */
     public function theUrnsAreNotValid()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The parameter "redirect_uris" must be a list of URI or URN.');
         $clientId = new ClientId('CLIENT_ID');
         $commandParameters = new DataBag([
             'redirect_uris' => ['urn:---------------'],

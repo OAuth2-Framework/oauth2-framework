@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\WebFingerEndpoint\Tests;
 
-use Http\Message\MessageFactory\DiactorosMessageFactory;
 use Http\Message\ResponseFactory;
+use Nyholm\Psr7\Factory\HttplugFactory;
 use OAuth2Framework\Component\WebFingerEndpoint\IdentifierResolver\Identifier;
 use OAuth2Framework\Component\WebFingerEndpoint\IdentifierResolver\IdentifierResolver;
 use OAuth2Framework\Component\WebFingerEndpoint\IdentifierResolver\IdentifierResolverManager;
@@ -245,6 +245,6 @@ final class WebFingerEndpointTest extends TestCase
 
     private function getResponseFactory(): ResponseFactory
     {
-        return new DiactorosMessageFactory();
+        return new HttplugFactory();
     }
 }

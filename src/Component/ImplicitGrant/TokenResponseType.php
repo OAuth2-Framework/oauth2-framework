@@ -13,10 +13,12 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\ImplicitGrant;
 
+use Assert\Assertion;
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType\ResponseType;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
+use function Safe\sprintf;
 
 final class TokenResponseType implements ResponseType
 {
@@ -58,11 +60,13 @@ final class TokenResponseType implements ResponseType
 
     public function process(AuthorizationRequest $authorization): void
     {
-        $additionalInformation = $authorization->getTokenType()->getAdditionalInformation();
+        $tokenType = $authorization->getTokenType();
+        Assertion::notNull($tokenType, 'Token type not available');
+        $additionalInformation = $tokenType->getAdditionalInformation();
         $accessToken = $this->accessTokenRepository->create(
             $authorization->getClient()->getClientId(),
             $authorization->getUserAccount()->getUserAccountId(),
-            new \DateTimeImmutable(\Safe\sprintf('now +%d seconds', $this->accessTokenLifetime)),
+            new \DateTimeImmutable(sprintf('now +%d seconds', $this->accessTokenLifetime)),
             new DataBag($additionalInformation),
             $authorization->getMetadata(),
             null

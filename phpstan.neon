@@ -1,7 +1,7 @@
 parameters:
     level: 7
     paths:
-        - src/Component/ClientAuthentication
+        - src/Component
     excludes_analyse:
         - %currentWorkingDirectory%/src/*Bundle/Tests/*
         - %currentWorkingDirectory%/src/Component/*/Tests/*

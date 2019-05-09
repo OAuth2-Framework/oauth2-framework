@@ -25,6 +25,9 @@ class Metadata implements \JsonSerializable
         return \array_key_exists($key, $this->values);
     }
 
+    /**
+     * @return mixed|null
+     */
     public function get(string $key)
     {
         if (!$this->has($key)) {
@@ -34,12 +37,15 @@ class Metadata implements \JsonSerializable
         return $this->values[$key];
     }
 
+    /**
+     * @param $value mixed|null
+     */
     public function set(string $key, $value)
     {
         $this->values[$key] = $value;
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return $this->values;
     }

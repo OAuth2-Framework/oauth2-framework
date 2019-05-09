@@ -28,7 +28,7 @@ class ClientRepositoryTest extends DatabaseTestCase
      */
     private static $entityManager;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         self::$entityManager = self::$registryManager->getManagerForClass(Client::class);
@@ -47,7 +47,7 @@ class ClientRepositoryTest extends DatabaseTestCase
         static::assertCount(5, $clients);
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         self::$entityManager->close();
         self::$entityManager;

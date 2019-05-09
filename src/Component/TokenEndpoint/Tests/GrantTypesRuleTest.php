@@ -27,7 +27,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class GrantTypesRuleTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         if (!\interface_exists(Rule::class)) {
             static::markTestSkipped('The component "oauth2-framework/client-rule" is not installed.');
@@ -67,11 +67,11 @@ final class GrantTypesRuleTest extends TestCase
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The parameter "grant_types" must be an array of strings.
      */
     public function theGrantTypeParameterMustBeAnArray()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The parameter "grant_types" must be an array of strings.');
         $clientId = new ClientId('CLIENT_ID');
         $commandParameters = new DataBag([
             'grant_types' => 'hello',
@@ -82,11 +82,11 @@ final class GrantTypesRuleTest extends TestCase
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The parameter "grant_types" must be an array of strings.
      */
     public function theGrantTypeParameterMustBeAnArrayOfStrings()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The parameter "grant_types" must be an array of strings.');
         $clientId = new ClientId('CLIENT_ID');
         $commandParameters = new DataBag([
             'grant_types' => [123],

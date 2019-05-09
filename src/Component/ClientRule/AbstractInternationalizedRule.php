@@ -17,7 +17,7 @@ use OAuth2Framework\Component\Core\DataBag\DataBag;
 
 abstract class AbstractInternationalizedRule implements Rule
 {
-    protected function getInternationalizedParameters(DataBag $requestedParameters, string $base, ?\Closure $closure): array
+    protected function getInternationalizedParameters(DataBag $requestedParameters, string $base, \Closure $closure): array
     {
         $result = [];
         foreach ($requestedParameters->all() as $k => $v) {
@@ -29,10 +29,8 @@ abstract class AbstractInternationalizedRule implements Rule
             }
 
             $sub = \mb_substr($k, 0, \mb_strlen($base, '8bit') + 1, '8bit');
-            if (\Safe\sprintf('%s#', $base) === $sub && !empty(\mb_substr($k, \mb_strlen($base, '8bit') + 1, null, '8bit'))) {
-                if (null !== $closure) {
-                    $closure($k, $v);
-                }
+            if (\Safe\sprintf('%s#', $base) === $sub && '' !== \mb_substr($k, \mb_strlen($base, '8bit') + 1, null, '8bit')) {
+                $closure($k, $v);
                 $result[$k] = $v;
 
                 continue;

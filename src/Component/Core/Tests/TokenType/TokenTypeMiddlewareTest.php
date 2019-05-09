@@ -65,11 +65,11 @@ final class TokenTypeMiddlewareTest extends TestCase
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Unsupported token type "bar".
      */
     public function aTokenTypeIsFoundInTheRequestButNotSupported()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Unsupported token type "bar".');
         $request = $this->buildRequest([
             'token_type' => 'bar',
         ]);

@@ -13,8 +13,9 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\ClientConfigurationEndpoint\Tests;
 
-use Http\Message\MessageFactory\DiactorosMessageFactory;
 use Http\Message\ResponseFactory;
+use Nyholm\Psr7\Factory\HttplugFactory;
+use OAuth2Framework\Component\BearerTokenType\AuthorizationHeaderTokenFinder;
 use OAuth2Framework\Component\BearerTokenType\BearerToken;
 use OAuth2Framework\Component\ClientConfigurationEndpoint\ClientConfigurationEndpoint;
 use OAuth2Framework\Component\ClientRule\RuleManager;
@@ -105,9 +106,11 @@ final class ClientConfigurationEndpointTest extends TestCase
     private function getClientConfigurationEndpoint(ClientRepository $clientRepository): ClientConfigurationEndpoint
     {
         if (null === $this->clientConfigurationEndpoint) {
+            $bearerToken = new BearerToken('Client Manager');
+            $bearerToken->addTokenFinder(new AuthorizationHeaderTokenFinder());
             $this->clientConfigurationEndpoint = new ClientConfigurationEndpoint(
                 $clientRepository,
-                new BearerToken('Client Manager', true, false, false),
+                $bearerToken,
                 $this->getResponseFactory(),
                 new RuleManager()
             );
@@ -124,7 +127,7 @@ final class ClientConfigurationEndpointTest extends TestCase
     private function getResponseFactory(): ResponseFactory
     {
         if (null === $this->responseFactory) {
-            $this->responseFactory = new DiactorosMessageFactory();
+            $this->responseFactory = new HttplugFactory();
         }
 
         return $this->responseFactory;

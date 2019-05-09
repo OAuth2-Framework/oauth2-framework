@@ -64,7 +64,7 @@ abstract class AbstractInitialAccessToken implements InitialAccessToken
         $this->revoked = true;
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         $data = [
             'initial_access_token_id' => $this->getId()->getValue(),

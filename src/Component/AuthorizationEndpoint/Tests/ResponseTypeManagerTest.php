@@ -25,11 +25,11 @@ final class ResponseTypeManagerTest extends TestCase
 {
     /**
      * @test
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The response type "bar" is not supported.
      */
     public function basicCalls()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The response type "bar" is not supported.');
         $manager = new ResponseTypeManager();
 
         $type = $this->prophesize(ResponseType::class);

@@ -27,7 +27,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class ResponseTypesRuleTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         if (!\interface_exists(Rule::class)) {
             static::markTestSkipped('The component "oauth2-framework/client-rule" is not installed.');
@@ -67,11 +67,11 @@ final class ResponseTypesRuleTest extends TestCase
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The parameter "response_types" must be an array of strings.
      */
     public function theResponseTypeParameterMustBeAnArray()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The parameter "response_types" must be an array of strings.');
         $clientId = new ClientId('CLIENT_ID');
         $commandParameters = new DataBag([
             'response_types' => 'hello',
@@ -82,11 +82,11 @@ final class ResponseTypesRuleTest extends TestCase
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The parameter "response_types" must be an array of strings.
      */
     public function theResponseTypeParameterMustBeAnArrayOfStrings()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The parameter "response_types" must be an array of strings.');
         $clientId = new ClientId('CLIENT_ID');
         $commandParameters = new DataBag([
             'response_types' => [123],

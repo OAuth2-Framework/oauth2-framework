@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\AuthorizationEndpoint\Tests\ResponseMode;
 
+use Nyholm\Psr7\Response;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\FormPostResponseMode;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\FormPostResponseRenderer;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\FragmentResponseMode;
@@ -21,7 +22,6 @@ use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\ResponseMode;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\ResponseModeManager;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
-use Zend\Diactoros\Response;
 
 /**
  * @group ResponseMode
@@ -30,11 +30,11 @@ final class ResponseModeTest extends TestCase
 {
     /**
      * @test
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The response mode with name "foo" is not supported.
      */
     public function genericCalls()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The response mode with name "foo" is not supported.');
         static::assertEquals(['query', 'fragment', 'form_post'], $this->getResponseModeManager()->list());
         static::assertTrue($this->getResponseModeManager()->has('query'));
         static::assertFalse($this->getResponseModeManager()->has('foo'));

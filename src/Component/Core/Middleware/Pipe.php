@@ -38,7 +38,7 @@ class Pipe implements MiddlewareInterface
     /**
      * Appends new middleware for this message bus. Should only be used at configuration time.
      */
-    public function appendMiddleware(MiddlewareInterface $middleware)
+    public function appendMiddleware(MiddlewareInterface $middleware): void
     {
         $this->middlewares[] = $middleware;
     }
@@ -46,12 +46,12 @@ class Pipe implements MiddlewareInterface
     /**
      * Prepends new middleware for this message bus. Should only be used at configuration time.
      */
-    public function prependMiddleware(MiddlewareInterface $middleware)
+    public function prependMiddleware(MiddlewareInterface $middleware): void
     {
         \array_unshift($this->middlewares, $middleware);
     }
 
-    public function addMiddlewareAfterFirstOne(MiddlewareInterface $middleware)
+    public function addMiddlewareAfterFirstOne(MiddlewareInterface $middleware): void
     {
         $count = \count($this->middlewares);
         $temp = \array_slice($this->middlewares, 1, $count);
@@ -60,7 +60,7 @@ class Pipe implements MiddlewareInterface
         $this->middlewares = $temp;
     }
 
-    public function addMiddlewareBeforeLastOne(MiddlewareInterface $middleware)
+    public function addMiddlewareBeforeLastOne(MiddlewareInterface $middleware): void
     {
         $count = \count($this->middlewares);
         $temp = \array_slice($this->middlewares, 0, $count - 1);

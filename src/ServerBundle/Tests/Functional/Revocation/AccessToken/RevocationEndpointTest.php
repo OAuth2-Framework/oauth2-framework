@@ -29,7 +29,7 @@ use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\AccessToken;
  */
 class RevocationEndpointTest extends DatabaseTestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         if (!\class_exists(TokenRevocationEndpoint::class)) {
             static::markTestSkipped('The component "oauth2-framework/token-revocation-endpoint" is not installed.');

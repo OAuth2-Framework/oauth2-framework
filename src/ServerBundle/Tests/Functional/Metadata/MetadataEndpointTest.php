@@ -24,7 +24,7 @@ use OAuth2Framework\ServerBundle\Tests\Functional\DatabaseTestCase;
  */
 class MetadataEndpointTest extends DatabaseTestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         if (!\class_exists(MetadataEndpoint::class)) {
             static::markTestSkipped('The component "oauth2-framework/metadata-endpoint" is not installed.');
@@ -43,6 +43,6 @@ class MetadataEndpointTest extends DatabaseTestCase
         static::assertEquals(200, $response->getStatusCode());
         static::assertEquals('application/json; charset=UTF-8', $response->headers->get('content-type'));
         $content = \Safe\json_decode($response->getContent(), true);
-        static::assertInternalType('array', $content);
+        static::assertIsArray($content);
     }
 }

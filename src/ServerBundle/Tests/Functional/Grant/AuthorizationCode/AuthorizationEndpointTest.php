@@ -29,7 +29,7 @@ use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
  */
 class AuthorizationEndpointTest extends DatabaseTestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         if (!\class_exists(AuthorizationCodeGrantType::class)) {
             static::markTestSkipped('The component "oauth2-framework/authorization-code-grant" is not installed.');

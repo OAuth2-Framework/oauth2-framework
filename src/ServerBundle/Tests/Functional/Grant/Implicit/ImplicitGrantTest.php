@@ -24,7 +24,7 @@ use OAuth2Framework\ServerBundle\Tests\Functional\DatabaseTestCase;
  */
 class ImplicitGrantTest extends DatabaseTestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         if (!\class_exists(ImplicitGrantType::class)) {
             static::markTestSkipped('The component "oauth2-framework/implicit-grant" is not installed.');
