@@ -13,12 +13,12 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\SecurityBundle\Tests\Functional\Security;
 
-use OAuth2Framework\Component\Core\AccessToken\AccessToken;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
+use OAuth2Framework\SecurityBundle\Tests\Functional\AccessToken;
 use OAuth2Framework\SecurityBundle\Tests\TestBundle\Service\AccessTokenHandler;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 

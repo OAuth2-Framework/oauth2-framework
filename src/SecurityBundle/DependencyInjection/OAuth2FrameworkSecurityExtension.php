@@ -54,12 +54,20 @@ final class OAuth2FrameworkSecurityExtension extends Extension
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../Resources/config/'));
         $loader->load('security.php');
 
-        if (\class_exists(BearerToken::class) && $config['bearer_token']['enabled']) {
+        if (\class_exists(BearerToken::class) && ['enabled']) {
             $container->setParameter('oauth2_security.token_type.bearer_token.realm', $config['bearer_token']['realm']);
-            $container->setParameter('oauth2_security.token_type.bearer_token.authorization_header', $config['bearer_token']['authorization_header']);
-            $container->setParameter('oauth2_security.token_type.bearer_token.request_body', $config['bearer_token']['request_body']);
-            $container->setParameter('oauth2_security.token_type.bearer_token.query_string', $config['bearer_token']['query_string']);
             $loader->load('bearer_token.php');
+
+            $bearerTokenConfig = $config['bearer_token'];
+            if (true === $bearerTokenConfig['authorization_header']) {
+                $loader->load('authorization_header_token_finder.php');
+            }
+            if (true === $bearerTokenConfig['query_string']) {
+                $loader->load('query_string_token_finder.php');
+            }
+            if (true === $bearerTokenConfig['request_body']) {
+                $loader->load('request_body_token_finder.php');
+            }
         }
         if (\class_exists(MacToken::class) && $config['mac_token']['enabled']) {
             $container->setParameter('oauth2_security.token_type.mac_token.min_length', $config['mac_token']['min_length']);

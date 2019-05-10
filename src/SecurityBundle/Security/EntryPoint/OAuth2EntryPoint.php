@@ -13,32 +13,28 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\SecurityBundle\Security\EntryPoint;
 
-use OAuth2Framework\Component\Core\Message\OAuth2Error;
-use OAuth2Framework\Component\Core\Message\OAuth2MessageFactoryManager;
-use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Symfony\Component\Security\Http\Authentication\AuthenticationFailureHandlerInterface;
 use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface;
 
 final class OAuth2EntryPoint implements AuthenticationEntryPointInterface
 {
     /**
-     * @var OAuth2MessageFactoryManager
+     * @var AuthenticationFailureHandlerInterface
      */
-    private $oauth2ResponseFactoryManager;
+    private $failureHandler;
 
-    public function __construct(OAuth2MessageFactoryManager $oauth2ResponseFactoryManager)
+    public function __construct(AuthenticationFailureHandlerInterface $failureHandler)
     {
-        $this->oauth2ResponseFactoryManager = $oauth2ResponseFactoryManager;
+        $this->failureHandler = $failureHandler;
     }
 
-    public function start(Request $request, AuthenticationException $authException = null)
+    public function start(Request $request, AuthenticationException $authException = null): Response
     {
-        $psr7Response = $this->oauth2ResponseFactoryManager->getResponse(
-            OAuth2Error::accessDenied('OAuth2 authentication required')
-        );
-        $factory = new HttpFoundationFactory();
+        $exception = $authException ?? new AuthenticationException('Authentication Required');
 
-        return $factory->createResponse($psr7Response);
+        return $this->failureHandler->onAuthenticationFailure($request, $exception);
     }
 }

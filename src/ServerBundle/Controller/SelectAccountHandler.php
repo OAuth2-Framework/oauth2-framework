@@ -13,9 +13,9 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Controller;
 
-use Http\Message\ResponseFactory;
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
 use OAuth2Framework\Component\AuthorizationEndpoint\SelectAccountHandler as SelectAccountHandlerInterface;
+use Psr\Http\Message\ResponseFactory;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 

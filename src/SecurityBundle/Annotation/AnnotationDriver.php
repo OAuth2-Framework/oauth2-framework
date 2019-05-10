@@ -14,14 +14,18 @@ declare(strict_types=1);
 namespace OAuth2Framework\SecurityBundle\Annotation;
 
 use Doctrine\Common\Annotations\Reader;
+use Exception;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use OAuth2Framework\Component\Core\Message\OAuth2MessageFactoryManager;
 use OAuth2Framework\SecurityBundle\Annotation\Checker\Checker;
 use OAuth2Framework\SecurityBundle\Security\Authentication\Token\OAuth2Token;
 use Psr\Http\Message\ResponseInterface;
+use ReflectionObject;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Throwable;
 
 class AnnotationDriver
 {
@@ -62,13 +66,13 @@ class AnnotationDriver
         return $this->checkers;
     }
 
-    public function onKernelController(FilterControllerEvent $event)
+    public function onKernelController(FilterControllerEvent $event): void
     {
         if (!\is_array($controller = $event->getController())) {
             return;
         }
 
-        $object = new \ReflectionObject($controller[0]);
+        $object = new ReflectionObject($controller[0]);
         $method = $object->getMethod($controller[1]);
         $classConfigurations = $this->reader->getClassAnnotations($object);
         $methodConfigurations = $this->reader->getMethodAnnotations($method);
@@ -93,13 +97,13 @@ class AnnotationDriver
         foreach ($this->all() as $checker) {
             try {
                 $checker->check($token, $configuration);
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 $this->createAccessDeniedException($event, $e->getMessage(), $configuration, $e);
             }
         }
     }
 
-    private function createAuthenticationException(FilterControllerEvent $event, string $message, OAuth2 $configuration)
+    private function createAuthenticationException(FilterControllerEvent $event, string $message, OAuth2 $configuration): void
     {
         $additionalData = $configuration->getScope() ? ['scope' => $configuration->getScope()] : [];
         $response = $this->oauth2ResponseFactoryManager->getResponse(
@@ -110,7 +114,7 @@ class AnnotationDriver
         $this->updateFilterControllerEvent($event, $response);
     }
 
-    private function createAccessDeniedException(FilterControllerEvent $event, string $message, OAuth2 $configuration, \Exception $previous)
+    private function createAccessDeniedException(FilterControllerEvent $event, string $message, OAuth2 $configuration, Exception $previous): void
     {
         $additionalData = $configuration->getScope() ? ['scope' => $configuration->getScope()] : [];
         $response = $this->oauth2ResponseFactoryManager->getResponse(
@@ -126,13 +130,12 @@ class AnnotationDriver
         $this->updateFilterControllerEvent($event, $response);
     }
 
-    private function updateFilterControllerEvent(FilterControllerEvent $event, ResponseInterface $psr7Response)
+    private function updateFilterControllerEvent(FilterControllerEvent $event, ResponseInterface $psr7Response): void
     {
-        $event->setController(function () use ($psr7Response) {
+        $event->setController(static function () use ($psr7Response): Response {
             $factory = new HttpFoundationFactory();
-            $symfonyResponse = $factory->createResponse($psr7Response);
 
-            return $symfonyResponse;
+            return $factory->createResponse($psr7Response);
         });
     }
 }

@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Core\Message;
 
-use Http\Message\ResponseFactory as Psr7ResponseFactory;
 use OAuth2Framework\Component\Core\Message\Factory\ResponseFactory;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 
 class OAuth2MessageFactoryManager
@@ -30,16 +30,13 @@ class OAuth2MessageFactoryManager
     private $responseFactories = [];
 
     /**
-     * @var Psr7ResponseFactory
+     * @var ResponseFactoryInterface
      */
-    private $psr7responseFactory;
+    private $responseFactory;
 
-    /**
-     * OAuth2ResponseFactoryManager constructor.
-     */
-    public function __construct(Psr7ResponseFactory $psr7responseFactory)
+    public function __construct(ResponseFactoryInterface $responseFactory)
     {
-        $this->psr7responseFactory = $psr7responseFactory;
+        $this->responseFactory = $responseFactory;
     }
 
     public function addFactory(ResponseFactory $responseFactory): void
@@ -64,7 +61,7 @@ class OAuth2MessageFactoryManager
         }
 
         $factory = $this->getFactory($code);
-        $response = $this->psr7responseFactory->createResponse($code);
+        $response = $this->responseFactory->createResponse($code);
 
         return $factory->createResponse($data, $response);
     }

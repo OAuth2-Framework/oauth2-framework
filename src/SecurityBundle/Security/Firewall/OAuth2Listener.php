@@ -27,6 +27,7 @@ use Symfony\Component\Security\Core\Authentication\AuthenticationManagerInterfac
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Http\Firewall\ListenerInterface;
+use Throwable;
 
 final class OAuth2Listener implements ListenerInterface
 {
@@ -86,7 +87,7 @@ final class OAuth2Listener implements ListenerInterface
                 return;
             }
             /* @var TokenType $tokenType */
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             return;
         }
 

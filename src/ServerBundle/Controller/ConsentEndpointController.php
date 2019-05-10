@@ -13,9 +13,9 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Controller;
 
-use Http\Message\ResponseFactory;
 use OAuth2Framework\Component\AuthorizationEndpoint\ConsentEndpoint;
 use OAuth2Framework\Component\AuthorizationEndpoint\ConsentHandler;
+use Psr\Http\Message\ResponseFactory;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\RouterInterface;
 

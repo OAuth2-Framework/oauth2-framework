@@ -11,15 +11,16 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use OAuth2Framework\WebFingerBundle\Tests\TestBundle\Entity\ResourceRepository;
-use OAuth2Framework\WebFingerBundle\Tests\TestBundle\Service\UriPathResolver;
+use OAuth2Framework\Component\BearerTokenType\AuthorizationHeaderTokenFinder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 return function (ContainerConfigurator $container) {
     $container = $container->services()->defaults()
-        ->public()
+        ->private()
+        ->autowire()
         ->autoconfigure();
 
-    $container->set(ResourceRepository::class);
-    $container->set(UriPathResolver::class);
+    $container->set('oauth2_security.bearer_token.authorization_header_token_finder')
+        ->class(AuthorizationHeaderTokenFinder::class)
+        ->tag('oauth2_security_bearer_token_finder');
 };

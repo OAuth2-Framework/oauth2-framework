@@ -13,13 +13,13 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Controller;
 
-use Http\Message\ResponseFactory;
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationEndpoint;
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequestLoader;
 use OAuth2Framework\Component\AuthorizationEndpoint\Consent\ConsentRepository;
 use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\ParameterCheckerManager;
 use OAuth2Framework\Component\AuthorizationEndpoint\User\UserAccountDiscovery;
 use OAuth2Framework\Component\AuthorizationEndpoint\User\UserAuthenticationCheckerManager;
+use Psr\Http\Message\ResponseFactory;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\RouterInterface;
 

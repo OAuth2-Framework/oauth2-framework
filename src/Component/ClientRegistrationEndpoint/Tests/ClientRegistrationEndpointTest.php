@@ -13,8 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\ClientRegistrationEndpoint\Tests;
 
-use Http\Message\ResponseFactory;
-use Nyholm\Psr7\Factory\HttplugFactory;
+use Nyholm\Psr7\Factory\Psr17Factory;
 use OAuth2Framework\Component\ClientRegistrationEndpoint\ClientRegistrationEndpoint;
 use OAuth2Framework\Component\ClientRule\RuleManager;
 use OAuth2Framework\Component\Core\Client\Client;
@@ -24,6 +23,7 @@ use OAuth2Framework\Component\Core\DataBag\DataBag;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 
@@ -88,14 +88,14 @@ final class ClientRegistrationEndpointTest extends TestCase
     }
 
     /**
-     * @var ResponseFactory|null
+     * @var ResponseFactoryInterface|null
      */
     private $responseFactory;
 
-    private function getResponseFactory(): ResponseFactory
+    private function getResponseFactory(): ResponseFactoryInterface
     {
         if (null === $this->responseFactory) {
-            $this->responseFactory = new HttplugFactory();
+            $this->responseFactory = new Psr17Factory();
         }
 
         return $this->responseFactory;

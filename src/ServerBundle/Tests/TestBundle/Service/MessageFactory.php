@@ -15,8 +15,8 @@ namespace OAuth2Framework\ServerBundle\Tests\TestBundle\Service;
 
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
-use Http\Message\RequestFactory;
-use Http\Message\ResponseFactory;
+use Psr\Http\Message\RequestFactory;
+use Psr\Http\Message\ResponseFactory;
 
 final class MessageFactory implements ResponseFactory, RequestFactory
 {

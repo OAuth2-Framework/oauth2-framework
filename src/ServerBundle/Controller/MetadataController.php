@@ -13,11 +13,11 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Controller;
 
-use Http\Message\ResponseFactory;
 use Jose\Component\Core\JWK;
 use Jose\Component\Signature\JWSBuilder;
 use OAuth2Framework\Component\MetadataEndpoint\MetadataEndpoint;
 use OAuth2Framework\ServerBundle\Service\MetadataBuilder;
+use Psr\Http\Message\ResponseFactory;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;

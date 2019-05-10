@@ -35,10 +35,6 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-                ->scalarNode('response_factory')
-                    ->info('The response factory service')
-                    ->isRequired()
-                ->end()
                 ->scalarNode('resource_repository')
                     ->info('The resource repository service')
                     ->isRequired()

@@ -13,8 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\TokenIntrospectionEndpoint\Tests;
 
-use Http\Message\ResponseFactory;
-use Nyholm\Psr7\Factory\HttplugFactory;
+use Nyholm\Psr7\Factory\Psr17Factory;
 use OAuth2Framework\Component\Core\AccessToken\AccessToken;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServer;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
@@ -23,6 +22,7 @@ use OAuth2Framework\Component\TokenIntrospectionEndpoint\TokenTypeHint;
 use OAuth2Framework\Component\TokenIntrospectionEndpoint\TokenTypeHintManager;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -139,14 +139,14 @@ final class TokenIntrospectionEndpointTest extends TestCase
     }
 
     /**
-     * @var ResponseFactory|null
+     * @var ResponseFactoryInterface|null
      */
     private $responseFactory;
 
-    private function getResponseFactory(): ResponseFactory
+    private function getResponseFactory(): ResponseFactoryInterface
     {
         if (null === $this->responseFactory) {
-            $this->responseFactory = new HttplugFactory();
+            $this->responseFactory = new Psr17Factory();
         }
 
         return $this->responseFactory;

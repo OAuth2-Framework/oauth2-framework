@@ -13,8 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\TokenRevocationEndpoint\Tests;
 
-use Http\Message\ResponseFactory;
-use Nyholm\Psr7\Factory\HttplugFactory;
+use Nyholm\Psr7\Factory\Psr17Factory;
 use OAuth2Framework\Component\Core\AccessToken\AccessToken;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
@@ -23,6 +22,7 @@ use OAuth2Framework\Component\TokenRevocationEndpoint\TokenRevocationGetEndpoint
 use OAuth2Framework\Component\TokenRevocationEndpoint\TokenTypeHint;
 use OAuth2Framework\Component\TokenRevocationEndpoint\TokenTypeHintManager;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
@@ -206,14 +206,14 @@ final class TokenRevocationGetEndpointTest extends TestCase
     }
 
     /**
-     * @var ResponseFactory|null
+     * @var ResponseFactoryInterface|null
      */
     private $responseFactory;
 
-    private function getResponseFactory(): ResponseFactory
+    private function getResponseFactory(): ResponseFactoryInterface
     {
         if (null === $this->responseFactory) {
-            $this->responseFactory = new HttplugFactory();
+            $this->responseFactory = new Psr17Factory();
         }
 
         return $this->responseFactory;

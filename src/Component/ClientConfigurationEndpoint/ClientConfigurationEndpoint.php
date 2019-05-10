@@ -13,12 +13,12 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\ClientConfigurationEndpoint;
 
-use Http\Message\ResponseFactory;
 use OAuth2Framework\Component\BearerTokenType\BearerToken;
 use OAuth2Framework\Component\ClientRule\RuleManager;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientRepository;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -37,7 +37,7 @@ final class ClientConfigurationEndpoint implements MiddlewareInterface
     private $bearerToken;
 
     /**
-     * @var ResponseFactory
+     * @var ResponseFactoryInterface
      */
     private $responseFactory;
 
@@ -46,7 +46,7 @@ final class ClientConfigurationEndpoint implements MiddlewareInterface
      */
     private $ruleManager;
 
-    public function __construct(ClientRepository $clientRepository, BearerToken $bearerToken, ResponseFactory $responseFactory, RuleManager $ruleManager)
+    public function __construct(ClientRepository $clientRepository, BearerToken $bearerToken, ResponseFactoryInterface $responseFactory, RuleManager $ruleManager)
     {
         $this->clientRepository = $clientRepository;
         $this->bearerToken = $bearerToken;

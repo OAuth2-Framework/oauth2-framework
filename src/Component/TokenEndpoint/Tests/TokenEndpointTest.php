@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\TokenEndpoint\Tests;
 
-use Http\Message\MessageFactory\GuzzleMessageFactory;
+use Nyholm\Psr7\Factory\Psr17Factory;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository;
 use OAuth2Framework\Component\Core\Client\Client;
@@ -156,7 +156,7 @@ final class TokenEndpointTest extends TestCase
                 $this->getClientRepository(),
                 $this->getUserAccountRepository(),
                 new TokenEndpointExtensionManager(),
-                new GuzzleMessageFactory(),
+                new Psr17Factory(),
                 $this->getAccessTokenRepository(),
                 1800
             );

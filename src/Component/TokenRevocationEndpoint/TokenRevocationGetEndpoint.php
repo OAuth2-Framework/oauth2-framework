@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\TokenRevocationEndpoint;
 
-use Http\Message\ResponseFactory;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 final class TokenRevocationGetEndpoint extends TokenRevocationEndpoint
@@ -23,7 +23,7 @@ final class TokenRevocationGetEndpoint extends TokenRevocationEndpoint
      */
     private $allowJson;
 
-    public function __construct(TokenTypeHintManager $tokenTypeHintManager, ResponseFactory $responseFactory, bool $allowJson)
+    public function __construct(TokenTypeHintManager $tokenTypeHintManager, ResponseFactoryInterface $responseFactory, bool $allowJson)
     {
         parent::__construct($tokenTypeHintManager, $responseFactory);
         $this->allowJson = $allowJson;

@@ -13,9 +13,9 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\ClientConfigurationEndpoint;
 
-use Http\Message\ResponseFactory;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientRepository;
+use Psr\Http\Message\ResponseFactory;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;

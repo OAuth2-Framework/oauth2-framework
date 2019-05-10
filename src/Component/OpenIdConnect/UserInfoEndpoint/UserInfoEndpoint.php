@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\OpenIdConnect\UserInfoEndpoint;
 
-use Http\Message\ResponseFactory;
 use Jose\Component\Core\JWKSet;
 use Jose\Component\Encryption\JWEBuilder;
 use Jose\Component\Signature\JWSBuilder;
@@ -25,6 +24,7 @@ use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountRepository;
 use OAuth2Framework\Component\OpenIdConnect\IdTokenBuilderFactory;
+use Psr\Http\Message\ResponseFactory;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;

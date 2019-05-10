@@ -13,8 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\WebFingerEndpoint\Tests;
 
-use Http\Message\ResponseFactory;
-use Nyholm\Psr7\Factory\HttplugFactory;
+use Nyholm\Psr7\Factory\Psr17Factory;
 use OAuth2Framework\Component\WebFingerEndpoint\IdentifierResolver\Identifier;
 use OAuth2Framework\Component\WebFingerEndpoint\IdentifierResolver\IdentifierResolver;
 use OAuth2Framework\Component\WebFingerEndpoint\IdentifierResolver\IdentifierResolverManager;
@@ -24,6 +23,7 @@ use OAuth2Framework\Component\WebFingerEndpoint\ResourceRepository;
 use OAuth2Framework\Component\WebFingerEndpoint\WebFingerEndpoint;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
@@ -243,8 +243,8 @@ final class WebFingerEndpointTest extends TestCase
         static::assertEquals(200, $response->getStatusCode());
     }
 
-    private function getResponseFactory(): ResponseFactory
+    private function getResponseFactory(): ResponseFactoryInterface
     {
-        return new HttplugFactory();
+        return new Psr17Factory();
     }
 }

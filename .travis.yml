@@ -1,18 +1,6 @@
-sudo: required
-
-services:
-    - docker
-
-addons:
-    hosts:
-        - op_test
-        - rp_test
-        - op
-
 language: php
 
 php:
-    - 7.1
     - 7.2
     - 7.3
     - nightly
@@ -24,11 +12,6 @@ cache:
 
 before_install:
     - mv ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini{,.disabled} || echo "xdebug not available"
-    - git clone https://github.com/openid-certification/oidctest.git
-    - cd oidctest
-    - git checkout stable-release-1.1.x
-    - docker-compose -f docker/docker-compose.yml up -d
-    - cd -
 
 before_script:
     - mkdir -p build/logs
@@ -68,6 +51,14 @@ jobs:
           env: STATIC_ANALYSIS
           script:
               - ./vendor/bin/phpstan analyse
+
+        - stage: Metrics and quality
+          env: CODING_STANDARDS
+          before_script:
+              - wget https://cs.symfony.com/download/php-cs-fixer-v2.phar -O php-cs-fixer
+              - chmod a+x php-cs-fixer
+          script:
+              - ./php-cs-fixer fix --dry-run --stop-on-violation --using-cache=no
 
         - stage: Security Check
           env: SECURITY_CHECK

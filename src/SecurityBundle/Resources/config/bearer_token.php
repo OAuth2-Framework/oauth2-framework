@@ -20,12 +20,10 @@ return function (ContainerConfigurator $container) {
         ->autoconfigure()
         ->autowire();
 
-    $container->set(BearerToken::class)
+    $container->set('oauth2_security.token_type.bearer_token')
+        ->class(BearerToken::class)
         ->args([
             '%oauth2_security.token_type.bearer_token.realm%',
-            '%oauth2_security.token_type.bearer_token.authorization_header%',
-            '%oauth2_security.token_type.bearer_token.request_body%',
-            '%oauth2_security.token_type.bearer_token.query_string%',
         ])
         ->tag('oauth2_security_token_type');
 };

@@ -13,11 +13,11 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\MetadataEndpoint;
 
-use Http\Message\ResponseFactory;
 use Jose\Component\Core\JWK;
 use Jose\Component\Core\Util\JsonConverter;
 use Jose\Component\Signature\JWSBuilder;
 use Jose\Component\Signature\Serializer\CompactSerializer;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -26,7 +26,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 class MetadataEndpoint implements MiddlewareInterface
 {
     /**
-     * @var ResponseFactory
+     * @var ResponseFactoryInterface
      */
     private $responseFactory;
 
@@ -53,7 +53,7 @@ class MetadataEndpoint implements MiddlewareInterface
     /**
      * MetadataEndpoint constructor.
      */
-    public function __construct(ResponseFactory $responseFactory, Metadata $metadata)
+    public function __construct(ResponseFactoryInterface $responseFactory, Metadata $metadata)
     {
         $this->responseFactory = $responseFactory;
         $this->metadata = $metadata;

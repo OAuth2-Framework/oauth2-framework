@@ -15,12 +15,12 @@ namespace OAuth2Framework\Component\AuthorizationEndpoint\Rule;
 
 use Assert\Assertion;
 use Http\Client\HttpClient;
-use Http\Message\RequestFactory;
 use function League\Uri\parse;
 use OAuth2Framework\Component\ClientRule\Rule;
 use OAuth2Framework\Component\ClientRule\RuleHandler;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
+use Psr\Http\Message\RequestFactory;
 
 final class SectorIdentifierUriRule implements Rule
 {

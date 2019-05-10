@@ -47,7 +47,7 @@ return function (ContainerConfigurator $container) {
         ->args([
             ref(\OAuth2Framework\Component\Core\Client\ClientRepository::class),
             ref('oauth2_server.client_configuration.bearer_token'),
-            ref(\Http\Message\ResponseFactory::class), //TODO: change the way the response factory is managed
+            ref(\Psr\Http\Message\ResponseFactoryInterface::class), //TODO: change the way the response factory is managed
             ref(RuleManager::class),
         ]);
 

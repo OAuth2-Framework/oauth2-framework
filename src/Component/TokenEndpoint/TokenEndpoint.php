@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\TokenEndpoint;
 
-use Http\Message\ResponseFactory;
 use OAuth2Framework\Component\Core\AccessToken\AccessToken;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository;
 use OAuth2Framework\Component\Core\Client\Client;
@@ -26,6 +25,7 @@ use OAuth2Framework\Component\Core\TokenType\TokenType;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountRepository;
 use OAuth2Framework\Component\TokenEndpoint\Extension\TokenEndpointExtensionManager;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -49,7 +49,7 @@ class TokenEndpoint implements MiddlewareInterface
     private $userAccountRepository;
 
     /**
-     * @var ResponseFactory
+     * @var ResponseFactoryInterface
      */
     private $responseFactory;
 
@@ -63,7 +63,7 @@ class TokenEndpoint implements MiddlewareInterface
      */
     private $accessTokenLifetime;
 
-    public function __construct(ClientRepository $clientRepository, ?UserAccountRepository $userAccountRepository, TokenEndpointExtensionManager $tokenEndpointExtensionManager, ResponseFactory $responseFactory, AccessTokenRepository $accessTokenRepository, int $accessLifetime)
+    public function __construct(ClientRepository $clientRepository, ?UserAccountRepository $userAccountRepository, TokenEndpointExtensionManager $tokenEndpointExtensionManager, ResponseFactoryInterface $responseFactory, AccessTokenRepository $accessTokenRepository, int $accessLifetime)
     {
         $this->clientRepository = $clientRepository;
         $this->userAccountRepository = $userAccountRepository;
@@ -126,7 +126,10 @@ class TokenEndpoint implements MiddlewareInterface
     private function createResponse(array $data): ResponseInterface
     {
         $headers = ['Content-Type' => 'application/json; charset=UTF-8', 'Cache-Control' => 'no-cache, no-store, max-age=0, must-revalidate, private', 'Pragma' => 'no-cache'];
-        $response = $this->responseFactory->createResponse(200, null, $headers);
+        $response = $this->responseFactory->createResponse(200);
+        foreach ($headers as $k => $v) {
+            $response = $response->withHeader($k, $v);
+        }
         $response->getBody()->write(\Safe\json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
 
         return $response;

@@ -13,23 +13,23 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\SecurityBundle\DependencyInjection\Compiler;
 
-use OAuth2Framework\SecurityBundle\Annotation\AnnotationDriver;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
-final class SecurityAnnotationCheckerCompilerPass implements CompilerPassInterface
+final class BearerTokenFinderHandlerCompilerPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container): void
     {
-        if (!$container->hasDefinition(AnnotationDriver::class)) {
+        if (!$container->hasDefinition('oauth2_security.token_type.bearer_token')) {
             return;
         }
 
-        $definition = $container->getDefinition(AnnotationDriver::class);
-        $taggedServices = $container->findTaggedServiceIds('oauth2_security_annotation_checker');
+        $client_manager = $container->getDefinition('oauth2_security.token_type.bearer_token');
+
+        $taggedServices = $container->findTaggedServiceIds('oauth2_security_bearer_token_finder');
         foreach ($taggedServices as $id => $attributes) {
-            $definition->addMethodCall('add', [new Reference($id)]);
+            $client_manager->addMethodCall('addTokenFinder', [new Reference($id)]);
         }
     }
 }

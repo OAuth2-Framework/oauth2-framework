@@ -20,7 +20,8 @@ return function (ContainerConfigurator $container) {
         ->autoconfigure()
         ->autowire();
 
-    $container->set(MacToken::class)
+    $container->set('oauth2_security.token_type.mac_token')
+        ->class(MacToken::class)
         ->args([
             '%oauth2_security.token_type.mac_token.algorithm%',
             '%oauth2_security.token_type.mac_token.timestamp_lifetime%',

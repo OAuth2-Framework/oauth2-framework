@@ -14,9 +14,9 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\WebFingerEndpoint;
 
 use Assert\Assertion;
-use Http\Message\ResponseFactory;
 use OAuth2Framework\Component\WebFingerEndpoint\IdentifierResolver\Identifier;
 use OAuth2Framework\Component\WebFingerEndpoint\IdentifierResolver\IdentifierResolverManager;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -27,7 +27,7 @@ use function Safe\sprintf;
 final class WebFingerEndpoint implements MiddlewareInterface
 {
     /**
-     * @var ResponseFactory
+     * @var ResponseFactoryInterface
      */
     private $responseFactory;
 
@@ -41,7 +41,7 @@ final class WebFingerEndpoint implements MiddlewareInterface
      */
     private $resourceRepository;
 
-    public function __construct(ResponseFactory $responseFactory, ResourceRepository $resourceRepository, IdentifierResolverManager $identifierResolverManager)
+    public function __construct(ResponseFactoryInterface $responseFactory, ResourceRepository $resourceRepository, IdentifierResolverManager $identifierResolverManager)
     {
         $this->resourceRepository = $resourceRepository;
         $this->responseFactory = $responseFactory;

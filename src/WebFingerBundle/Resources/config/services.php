@@ -15,6 +15,7 @@ use OAuth2Framework\Component\WebFingerEndpoint\IdentifierResolver;
 use OAuth2Framework\Component\WebFingerEndpoint\WebFingerEndpoint;
 use OAuth2Framework\WebFingerBundle\Middleware\Pipe;
 use OAuth2Framework\WebFingerBundle\Service\RouteLoader;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
@@ -42,7 +43,7 @@ return function (ContainerConfigurator $container) {
 
     $container->set(WebFingerEndpoint::class)
         ->args([
-            ref('webfinger.response_factory'),
+            ref(ResponseFactoryInterface::class),
             ref('webfinger.resource_repository'),
             ref(IdentifierResolver\IdentifierResolverManager::class),
         ])

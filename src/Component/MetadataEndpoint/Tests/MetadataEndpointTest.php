@@ -13,15 +13,15 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\MetadataEndpoint\Tests;
 
-use Http\Message\ResponseFactory;
 use Jose\Component\Core\AlgorithmManager;
 use Jose\Component\Core\JWK;
 use Jose\Component\Signature\Algorithm\None;
 use Jose\Component\Signature\JWSBuilder;
-use Nyholm\Psr7\Factory\HttplugFactory;
+use Nyholm\Psr7\Factory\Psr17Factory;
 use OAuth2Framework\Component\MetadataEndpoint\Metadata;
 use OAuth2Framework\Component\MetadataEndpoint\MetadataEndpoint;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
@@ -80,14 +80,14 @@ final class MetadataEndpointTest extends TestCase
     }
 
     /**
-     * @var ResponseFactory|null
+     * @var ResponseFactoryInterface|null
      */
     private $responseFactory;
 
-    private function getResponseFactory(): ResponseFactory
+    private function getResponseFactory(): ResponseFactoryInterface
     {
         if (null === $this->responseFactory) {
-            $this->responseFactory = new HttplugFactory();
+            $this->responseFactory = new Psr17Factory();
         }
 
         return $this->responseFactory;

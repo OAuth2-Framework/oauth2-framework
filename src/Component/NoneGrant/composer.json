@@ -16,7 +16,7 @@
         }
     ],
     "require": {
-        "php": "^7.1",
+        "php": "^7.2",
         "oauth2-framework/core": "^0.0@dev",
         "oauth2-framework/authorization-endpoint": "^0.0@dev"
     },

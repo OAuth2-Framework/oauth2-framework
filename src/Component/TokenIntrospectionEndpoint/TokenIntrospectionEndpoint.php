@@ -13,10 +13,10 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\TokenIntrospectionEndpoint;
 
-use Http\Message\ResponseFactory;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServer;
 use OAuth2Framework\Component\Core\Util\RequestBodyParser;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -30,11 +30,11 @@ final class TokenIntrospectionEndpoint implements MiddlewareInterface
     private $tokenTypeHintManager;
 
     /**
-     * @var ResponseFactory
+     * @var ResponseFactoryInterface
      */
     private $responseFactory;
 
-    public function __construct(TokenTypeHintManager $tokenTypeHintManager, ResponseFactory $responseFactory)
+    public function __construct(TokenTypeHintManager $tokenTypeHintManager, ResponseFactoryInterface $responseFactory)
     {
         $this->tokenTypeHintManager = $tokenTypeHintManager;
         $this->responseFactory = $responseFactory;

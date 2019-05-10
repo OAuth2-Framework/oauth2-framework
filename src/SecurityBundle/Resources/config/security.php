@@ -20,6 +20,8 @@ use OAuth2Framework\SecurityBundle\Resolver\AccessTokenResolver;
 use OAuth2Framework\SecurityBundle\Security\Authentication\Provider\OAuth2Provider;
 use OAuth2Framework\SecurityBundle\Security\EntryPoint\OAuth2EntryPoint;
 use OAuth2Framework\SecurityBundle\Security\Firewall\OAuth2Listener;
+use OAuth2Framework\SecurityBundle\Security\Handler\DefaultFailureHandler;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 use Symfony\Component\Security\Core\Authentication\AuthenticationManagerInterface;
@@ -34,8 +36,7 @@ return function (ContainerConfigurator $container) {
     $container->set('oauth2_security.access_token_handler_manager')
         ->class(AccessTokenHandlerManager::class);
 
-    $container->set('oauth2_security.provider')
-        ->class(OAuth2Provider::class);
+    $container->set(OAuth2Provider::class);
 
     $container->set('oauth2_security.token_type_manager')
         ->class(TokenTypeManager::class);
@@ -43,7 +44,7 @@ return function (ContainerConfigurator $container) {
     $container->set('oauth2_security.message_factory_manager')
         ->class(Message\OAuth2MessageFactoryManager::class)
         ->args([
-            ref('oauth2_security.psr7_message_factory'),
+            ref(ResponseFactoryInterface::class),
         ])
         ->call('addFactory', [ref('oauth2_security.message_factory.303')])
         ->call('addFactory', [ref('oauth2_security.message_factory.400')])
@@ -63,14 +64,17 @@ return function (ContainerConfigurator $container) {
             ref('oauth2_security.message_factory_manager'),
         ]);
 
-    $container->set('oauth2_security.entry_point')
-        ->class(OAuth2EntryPoint::class)
+    $container->set(DefaultFailureHandler::class)
         ->args([
             ref('oauth2_security.message_factory_manager'),
         ]);
 
-    $container->set('oauth2_security.annotation_driver')
-        ->class(Annotation\AnnotationDriver::class)
+    $container->set(OAuth2EntryPoint::class)
+        ->args([
+            ref('oauth2_security.message_factory_manager'),
+        ]);
+
+    $container->set(Annotation\AnnotationDriver::class)
         ->args([
             ref(Reader::class),
             ref(TokenStorageInterface::class),

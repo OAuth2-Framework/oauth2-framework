@@ -1,7 +1,7 @@
 parameters:
     level: 7
     paths:
-        - src/SecurityBundle
+        - src
     excludes_analyse:
         - %currentWorkingDirectory%/src/*Bundle/Tests/*
         - %currentWorkingDirectory%/src/Component/*/Tests/*
