@@ -15,7 +15,7 @@ namespace OAuth2Framework\Component\AuthorizationEndpoint;
 
 use OAuth2Framework\Component\AuthorizationEndpoint\Exception\OAuth2AuthorizationException;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
-use Psr\Http\Message\ResponseFactory;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -28,7 +28,7 @@ abstract class ConsentEndpoint extends AbstractEndpoint
      */
     private $consentHandler;
 
-    public function __construct(ResponseFactory $responseFactory, SessionInterface $session, ConsentHandler $consentHandler)
+    public function __construct(ResponseFactoryInterface $responseFactory, SessionInterface $session, ConsentHandler $consentHandler)
     {
         parent::__construct($responseFactory, $session);
         $this->consentHandler = $consentHandler;

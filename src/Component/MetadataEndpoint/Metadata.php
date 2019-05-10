@@ -38,9 +38,9 @@ class Metadata implements \JsonSerializable
     }
 
     /**
-     * @param $value mixed|null
+     * @param mixed|null $value
      */
-    public function set(string $key, $value)
+    public function set(string $key, $value): void
     {
         $this->values[$key] = $value;
     }

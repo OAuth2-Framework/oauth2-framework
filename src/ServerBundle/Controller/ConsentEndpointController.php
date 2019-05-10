@@ -15,7 +15,7 @@ namespace OAuth2Framework\ServerBundle\Controller;
 
 use OAuth2Framework\Component\AuthorizationEndpoint\ConsentEndpoint;
 use OAuth2Framework\Component\AuthorizationEndpoint\ConsentHandler;
-use Psr\Http\Message\ResponseFactory;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -26,7 +26,7 @@ final class ConsentEndpointController extends ConsentEndpoint
      */
     private $router;
 
-    public function __construct(ResponseFactory $responseFactory, SessionInterface $session, ConsentHandler $consentHandler, RouterInterface $router)
+    public function __construct(ResponseFactoryInterface $responseFactory, SessionInterface $session, ConsentHandler $consentHandler, RouterInterface $router)
     {
         parent::__construct($responseFactory, $session, $consentHandler);
         $this->router = $router;

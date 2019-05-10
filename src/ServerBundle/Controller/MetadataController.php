@@ -17,7 +17,7 @@ use Jose\Component\Core\JWK;
 use Jose\Component\Signature\JWSBuilder;
 use OAuth2Framework\Component\MetadataEndpoint\MetadataEndpoint;
 use OAuth2Framework\ServerBundle\Service\MetadataBuilder;
-use Psr\Http\Message\ResponseFactory;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -30,7 +30,7 @@ class MetadataController implements MiddlewareInterface
      */
     private $metadataEndpoint;
 
-    public function __construct(ResponseFactory $responseFactory, MetadataBuilder $metadataBuilder)
+    public function __construct(ResponseFactoryInterface $responseFactory, MetadataBuilder $metadataBuilder)
     {
         $metadata = $metadataBuilder->getMetadata();
         $this->metadataEndpoint = new MetadataEndpoint($responseFactory, $metadata);

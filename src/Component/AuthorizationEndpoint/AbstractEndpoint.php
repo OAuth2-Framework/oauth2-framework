@@ -15,7 +15,7 @@ namespace OAuth2Framework\Component\AuthorizationEndpoint;
 
 use Assert\Assertion;
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
-use Psr\Http\Message\ResponseFactory;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -29,11 +29,11 @@ abstract class AbstractEndpoint implements MiddlewareInterface
     protected $session;
 
     /**
-     * @var ResponseFactory
+     * @var ResponseFactoryInterface
      */
     protected $responseFactory;
 
-    public function __construct(ResponseFactory $responseFactory, SessionInterface $session)
+    public function __construct(ResponseFactoryInterface $responseFactory, SessionInterface $session)
     {
         $this->responseFactory = $responseFactory;
         $this->session = $session;

@@ -15,7 +15,7 @@ namespace OAuth2Framework\ServerBundle\Controller;
 
 use OAuth2Framework\Component\AuthorizationEndpoint\Extension\ExtensionManager;
 use OAuth2Framework\Component\AuthorizationEndpoint\ProcessEndpoint;
-use Psr\Http\Message\ResponseFactory;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -26,7 +26,7 @@ final class ProcessEndpointController extends ProcessEndpoint
      */
     private $router;
 
-    public function __construct(ResponseFactory $responseFactory, SessionInterface $session, ExtensionManager $extensionManager, RouterInterface $router)
+    public function __construct(ResponseFactoryInterface $responseFactory, SessionInterface $session, ExtensionManager $extensionManager, RouterInterface $router)
     {
         parent::__construct($responseFactory, $session, $extensionManager);
         $this->router = $router;

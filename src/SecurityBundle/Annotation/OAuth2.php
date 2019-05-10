@@ -13,6 +13,9 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\SecurityBundle\Annotation;
 
+use BadMethodCallException;
+use function Safe\sprintf;
+
 /**
  * @Annotation
  * @Target({"CLASS", "METHOD"})
@@ -43,7 +46,7 @@ class OAuth2
     {
         foreach ($data as $key => $value) {
             if (!\property_exists($this, $key)) {
-                throw new \BadMethodCallException(\Safe\sprintf('Unknown property "%s" on annotation "%s".', $key, \get_class($this)));
+                throw new BadMethodCallException(sprintf('Unknown property "%s" on annotation "%s".', $key, \get_class($this)));
             }
             $this->$key = $value;
         }

@@ -23,7 +23,7 @@ use OAuth2Framework\Component\AuthorizationEndpoint\User\UserAccountDiscovery;
 use OAuth2Framework\Component\AuthorizationEndpoint\User\UserAuthenticationCheckerManager;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use OAuth2Framework\Component\Core\UserAccount\UserAccount;
-use Psr\Http\Message\ResponseFactory;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -56,7 +56,7 @@ abstract class AuthorizationEndpoint extends AbstractEndpoint
      */
     private $consentRepository;
 
-    public function __construct(ResponseFactory $responseFactory, AuthorizationRequestLoader $authorizationRequestLoader, ParameterCheckerManager $parameterCheckerManager, UserAccountDiscovery $userAccountDiscovery, UserAuthenticationCheckerManager $userCheckerManager, SessionInterface $session, ?ConsentRepository $consentRepository)
+    public function __construct(ResponseFactoryInterface $responseFactory, AuthorizationRequestLoader $authorizationRequestLoader, ParameterCheckerManager $parameterCheckerManager, UserAccountDiscovery $userAccountDiscovery, UserAuthenticationCheckerManager $userCheckerManager, SessionInterface $session, ?ConsentRepository $consentRepository)
     {
         parent::__construct($responseFactory, $session);
         $this->authorizationRequestLoader = $authorizationRequestLoader;

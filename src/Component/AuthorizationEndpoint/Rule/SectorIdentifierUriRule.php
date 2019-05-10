@@ -20,7 +20,7 @@ use OAuth2Framework\Component\ClientRule\Rule;
 use OAuth2Framework\Component\ClientRule\RuleHandler;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
-use Psr\Http\Message\RequestFactory;
+use Psr\Http\Message\RequestFactoryInterface;
 
 final class SectorIdentifierUriRule implements Rule
 {
@@ -30,11 +30,11 @@ final class SectorIdentifierUriRule implements Rule
     private $client;
 
     /**
-     * @var RequestFactory
+     * @var RequestFactoryInterface
      */
     private $requestFactory;
 
-    public function __construct(RequestFactory $requestFactory, HttpClient $client)
+    public function __construct(RequestFactoryInterface $requestFactory, HttpClient $client)
     {
         $this->requestFactory = $requestFactory;
         $this->client = $client;

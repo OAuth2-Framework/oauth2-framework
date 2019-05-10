@@ -19,7 +19,7 @@ use OAuth2Framework\Component\AuthorizationEndpoint\Consent\ConsentRepository;
 use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\ParameterCheckerManager;
 use OAuth2Framework\Component\AuthorizationEndpoint\User\UserAccountDiscovery;
 use OAuth2Framework\Component\AuthorizationEndpoint\User\UserAuthenticationCheckerManager;
-use Psr\Http\Message\ResponseFactory;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -30,7 +30,7 @@ final class AuthorizationEndpointController extends AuthorizationEndpoint
      */
     private $router;
 
-    public function __construct(ResponseFactory $responseFactory, AuthorizationRequestLoader $authorizationRequestLoader, ParameterCheckerManager $parameterCheckerManager, UserAccountDiscovery $userManager, UserAuthenticationCheckerManager $userCheckerManager, SessionInterface $session, ?ConsentRepository $consentRepository, RouterInterface $router)
+    public function __construct(ResponseFactoryInterface $responseFactory, AuthorizationRequestLoader $authorizationRequestLoader, ParameterCheckerManager $parameterCheckerManager, UserAccountDiscovery $userManager, UserAuthenticationCheckerManager $userCheckerManager, SessionInterface $session, ?ConsentRepository $consentRepository, RouterInterface $router)
     {
         parent::__construct($responseFactory, $authorizationRequestLoader, $parameterCheckerManager, $userManager, $userCheckerManager, $session, $consentRepository);
         $this->router = $router;

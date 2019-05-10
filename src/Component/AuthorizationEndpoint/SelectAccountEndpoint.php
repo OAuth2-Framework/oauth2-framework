@@ -15,7 +15,7 @@ namespace OAuth2Framework\Component\AuthorizationEndpoint;
 
 use OAuth2Framework\Component\AuthorizationEndpoint\Exception\OAuth2AuthorizationException;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
-use Psr\Http\Message\ResponseFactory;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -28,7 +28,7 @@ abstract class SelectAccountEndpoint extends AbstractEndpoint
      */
     private $selectAccountHandler;
 
-    public function __construct(ResponseFactory $responseFactory, SessionInterface $session, SelectAccountHandler $selectAccountHandler)
+    public function __construct(ResponseFactoryInterface $responseFactory, SessionInterface $session, SelectAccountHandler $selectAccountHandler)
     {
         parent::__construct($responseFactory, $session);
         $this->selectAccountHandler = $selectAccountHandler;

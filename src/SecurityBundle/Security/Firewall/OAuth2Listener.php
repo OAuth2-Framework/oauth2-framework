@@ -76,7 +76,7 @@ final class OAuth2Listener implements ListenerInterface
         $this->httpMessageFactory = $httpMessageFactory;
     }
 
-    public function handle(GetResponseEvent $event)
+    public function handle(GetResponseEvent $event): void
     {
         $request = $this->httpMessageFactory->createRequest($event->getRequest());
 

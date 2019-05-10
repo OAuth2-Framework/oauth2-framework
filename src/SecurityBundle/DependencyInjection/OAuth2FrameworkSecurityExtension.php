@@ -54,7 +54,7 @@ final class OAuth2FrameworkSecurityExtension extends Extension
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../Resources/config/'));
         $loader->load('security.php');
 
-        if (\class_exists(BearerToken::class) && ['enabled']) {
+        if (true === $config['bearer_token']['enabled'] && \class_exists(BearerToken::class)) {
             $container->setParameter('oauth2_security.token_type.bearer_token.realm', $config['bearer_token']['realm']);
             $loader->load('bearer_token.php');
 

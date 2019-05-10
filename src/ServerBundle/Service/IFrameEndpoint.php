@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Service;
 
-use Psr\Http\Message\ResponseFactory;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -28,7 +28,7 @@ final class IFrameEndpoint implements MiddlewareInterface
     private $templateEngine;
 
     /**
-     * @var ResponseFactory
+     * @var ResponseFactoryInterface
      */
     private $responseFactory;
 
@@ -42,7 +42,7 @@ final class IFrameEndpoint implements MiddlewareInterface
      */
     private $storageName;
 
-    public function __construct(EngineInterface $templateEngine, ResponseFactory $responseFactory, string $template, string $storageName)
+    public function __construct(EngineInterface $templateEngine, ResponseFactoryInterface $responseFactory, string $template, string $storageName)
     {
         $this->templateEngine = $templateEngine;
         $this->responseFactory = $responseFactory;

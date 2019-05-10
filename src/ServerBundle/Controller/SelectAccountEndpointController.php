@@ -15,7 +15,7 @@ namespace OAuth2Framework\ServerBundle\Controller;
 
 use OAuth2Framework\Component\AuthorizationEndpoint\SelectAccountEndpoint;
 use OAuth2Framework\Component\AuthorizationEndpoint\SelectAccountHandler;
-use Psr\Http\Message\ResponseFactory;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -26,7 +26,7 @@ final class SelectAccountEndpointController extends SelectAccountEndpoint
      */
     private $router;
 
-    public function __construct(ResponseFactory $responseFactory, SessionInterface $session, SelectAccountHandler $selectAccountHandler, RouterInterface $router)
+    public function __construct(ResponseFactoryInterface $responseFactory, SessionInterface $session, SelectAccountHandler $selectAccountHandler, RouterInterface $router)
     {
         parent::__construct($responseFactory, $session, $selectAccountHandler);
         $this->router = $router;

@@ -17,7 +17,7 @@ use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\Authori
 use OAuth2Framework\Component\AuthorizationEndpoint\Exception\OAuth2AuthorizationException;
 use OAuth2Framework\Component\AuthorizationEndpoint\Extension\ExtensionManager;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
-use Psr\Http\Message\ResponseFactory;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -30,7 +30,7 @@ abstract class ProcessEndpoint extends AbstractEndpoint
      */
     private $extensionManager;
 
-    public function __construct(ResponseFactory $responseFactory, SessionInterface $session, ExtensionManager $extensionManager)
+    public function __construct(ResponseFactoryInterface $responseFactory, SessionInterface $session, ExtensionManager $extensionManager)
     {
         parent::__construct($responseFactory, $session);
         $this->extensionManager = $extensionManager;

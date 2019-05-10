@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\OpenIdConnect\IFrame;
 
-use Psr\Http\Message\ResponseFactory;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -22,14 +22,14 @@ use Psr\Http\Server\RequestHandlerInterface;
 final class IFrameEndpoint implements MiddlewareInterface
 {
     /**
-     * @var ResponseFactory
+     * @var ResponseFactoryInterface
      */
     private $responseFactory;
 
     /**
      * IFrameEndpoint constructor.
      */
-    public function __construct(ResponseFactory $responseFactory)
+    public function __construct(ResponseFactoryInterface $responseFactory)
     {
         $this->responseFactory = $responseFactory;
     }

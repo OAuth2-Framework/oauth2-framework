@@ -10,6 +10,7 @@ parameters:
         - '#Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition::(.*)\(\)#'
         - '#Return type .* of method .* should be covariant with return type .* of method .*#'
         - '#Cannot call method .* on Symfony\\Component\\Config\\Definition\\Builder\\NodeParentInterface|null\.#'
+        - '#Variable property access on \$this\(OAuth2Framework\\SecurityBundle\\Annotation\\OAuth2\)\.#'
 includes:
     - vendor/phpstan/phpstan-strict-rules/rules.neon
     - vendor/phpstan/phpstan-phpunit/extension.neon

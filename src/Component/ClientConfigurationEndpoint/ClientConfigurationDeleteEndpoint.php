@@ -15,7 +15,7 @@ namespace OAuth2Framework\Component\ClientConfigurationEndpoint;
 
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientRepository;
-use Psr\Http\Message\ResponseFactory;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -29,11 +29,11 @@ final class ClientConfigurationDeleteEndpoint implements MiddlewareInterface
     private $clientRepository;
 
     /**
-     * @var ResponseFactory
+     * @var ResponseFactoryInterface
      */
     private $responseFactory;
 
-    public function __construct(ClientRepository $clientRepository, ResponseFactory $responseFactory)
+    public function __construct(ClientRepository $clientRepository, ResponseFactoryInterface $responseFactory)
     {
         $this->clientRepository = $clientRepository;
         $this->responseFactory = $responseFactory;
@@ -46,14 +46,9 @@ final class ClientConfigurationDeleteEndpoint implements MiddlewareInterface
         $client->markAsDeleted();
         $this->clientRepository->save($client);
 
-        $response = $this->responseFactory->createResponse(
-            204,
-            null,
-            [
-                'Cache-Control' => 'no-cache, no-store, max-age=0, must-revalidate, private',
-                'Pragma' => 'no-cache',
-            ]
-        );
+        $response = $this->responseFactory->createResponse(204);
+        $response = $response->withHeader('Cache-Control', 'no-cache, no-store, max-age=0, must-revalidate, private');
+        $response = $response->withHeader('Pragma', 'no-cache, no-store');
 
         return $response;
     }

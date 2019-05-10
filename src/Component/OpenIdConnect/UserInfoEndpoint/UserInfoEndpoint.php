@@ -24,7 +24,7 @@ use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountRepository;
 use OAuth2Framework\Component\OpenIdConnect\IdTokenBuilderFactory;
-use Psr\Http\Message\ResponseFactory;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -58,7 +58,7 @@ class UserInfoEndpoint implements MiddlewareInterface
     private $userAccountRepository;
 
     /**
-     * @var ResponseFactory
+     * @var ResponseFactoryInterface
      */
     private $responseFactory;
 
@@ -70,7 +70,7 @@ class UserInfoEndpoint implements MiddlewareInterface
     /**
      * UserInfoEndpoint constructor.
      */
-    public function __construct(IdTokenBuilderFactory $idTokenBuilderFactory, ClientRepository $clientRepository, UserAccountRepository $userAccountRepository, ResponseFactory $responseFactory)
+    public function __construct(IdTokenBuilderFactory $idTokenBuilderFactory, ClientRepository $clientRepository, UserAccountRepository $userAccountRepository, ResponseFactoryInterface $responseFactory)
     {
         $this->idTokenBuilderFactory = $idTokenBuilderFactory;
         $this->clientRepository = $clientRepository;

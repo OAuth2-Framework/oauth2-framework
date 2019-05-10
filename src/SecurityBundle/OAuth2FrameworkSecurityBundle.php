@@ -22,16 +22,17 @@ use OAuth2Framework\SecurityBundle\Security\Factory\OAuth2SecurityFactory;
 use RuntimeException;
 use Symfony\Bundle\SecurityBundle\DependencyInjection\SecurityExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 final class OAuth2FrameworkSecurityBundle extends Bundle
 {
-    public function getContainerExtension()
+    public function getContainerExtension(): ExtensionInterface
     {
         return new OAuth2FrameworkSecurityExtension('oauth2_security');
     }
 
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
         if (!$container->hasExtension('security')) {
             throw new RuntimeException('The security extension is not available');

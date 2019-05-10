@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace OAuth2Framework\SecurityBundle\Annotation;
 
 use Doctrine\Common\Annotations\Reader;
-use Exception;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use OAuth2Framework\Component\Core\Message\OAuth2MessageFactoryManager;
 use OAuth2Framework\SecurityBundle\Annotation\Checker\Checker;
@@ -44,6 +43,9 @@ class AnnotationDriver
      */
     private $checkers = [];
 
+    /**
+     * @var OAuth2MessageFactoryManager
+     */
     private $oauth2ResponseFactoryManager;
 
     public function __construct(Reader $reader, TokenStorageInterface $tokenStorage, OAuth2MessageFactoryManager $oauth2ResponseFactoryManager)
@@ -68,7 +70,8 @@ class AnnotationDriver
 
     public function onKernelController(FilterControllerEvent $event): void
     {
-        if (!\is_array($controller = $event->getController())) {
+        $controller = $event->getController();
+        if (!\is_array($controller)) {
             return;
         }
 
@@ -105,7 +108,7 @@ class AnnotationDriver
 
     private function createAuthenticationException(FilterControllerEvent $event, string $message, OAuth2 $configuration): void
     {
-        $additionalData = $configuration->getScope() ? ['scope' => $configuration->getScope()] : [];
+        $additionalData = null !== $configuration->getScope() ? ['scope' => $configuration->getScope()] : [];
         $response = $this->oauth2ResponseFactoryManager->getResponse(
             OAuth2Error::accessDenied($message),
             $additionalData
@@ -114,9 +117,9 @@ class AnnotationDriver
         $this->updateFilterControllerEvent($event, $response);
     }
 
-    private function createAccessDeniedException(FilterControllerEvent $event, string $message, OAuth2 $configuration, Exception $previous): void
+    private function createAccessDeniedException(FilterControllerEvent $event, string $message, OAuth2 $configuration, Throwable $previous): void
     {
-        $additionalData = $configuration->getScope() ? ['scope' => $configuration->getScope()] : [];
+        $additionalData = null !== $configuration->getScope() ? ['scope' => $configuration->getScope()] : [];
         $response = $this->oauth2ResponseFactoryManager->getResponse(
             new OAuth2Error(
             403,

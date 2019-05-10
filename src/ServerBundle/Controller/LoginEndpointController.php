@@ -15,7 +15,7 @@ namespace OAuth2Framework\ServerBundle\Controller;
 
 use OAuth2Framework\Component\AuthorizationEndpoint\LoginEndpoint;
 use OAuth2Framework\Component\AuthorizationEndpoint\LoginHandler;
-use Psr\Http\Message\ResponseFactory;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -26,7 +26,7 @@ final class LoginEndpointController extends LoginEndpoint
      */
     private $router;
 
-    public function __construct(ResponseFactory $responseFactory, SessionInterface $session, LoginHandler $loginHandler, RouterInterface $router)
+    public function __construct(ResponseFactoryInterface $responseFactory, SessionInterface $session, LoginHandler $loginHandler, RouterInterface $router)
     {
         parent::__construct($responseFactory, $session, $loginHandler);
         $this->router = $router;
