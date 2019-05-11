@@ -11,7 +11,7 @@ declare(strict_types=1);
  * of the MIT license. See the LICENSE file for details.
  */
 
-use Nyholm\Psr7\Factory\HttplugFactory;
+use Nyholm\Psr7\Factory\Psr17Factory;
 use OAuth2Framework\Component\OpenIdConnect\UserInfo\Pairwise\EncryptedSubjectIdentifier;
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\AccessTokenRepository;
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\AuthorizationCodeRepository;
@@ -29,6 +29,8 @@ use OAuth2Framework\ServerBundle\Tests\TestBundle\Handler\LoginHandler;
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Handler\SelectAccountHandler;
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Service\SymfonyUserAccountDiscovery;
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Service\UserProvider;
+use Psr\Http\Message\RequestFactoryInterface;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 return function (ContainerConfigurator $container) {
@@ -65,7 +67,9 @@ return function (ContainerConfigurator $container) {
 
     $container->set(InitialAccessTokenRepository::class);
 
-    $container->set(HttplugFactory::class);
+    $container->set(Psr17Factory::class);
+    $container->alias(ResponseFactoryInterface::class, Psr17Factory::class);
+    $container->alias(RequestFactoryInterface::class, Psr17Factory::class);
 
     $container->set('MyPairwiseSubjectIdentifier')
         ->class(EncryptedSubjectIdentifier::class)

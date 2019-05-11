@@ -11,6 +11,7 @@ declare(strict_types=1);
  * of the MIT license. See the LICENSE file for details.
  */
 
+use OAuth2Framework\Component\BearerTokenType\AuthorizationHeaderTokenFinder;
 use OAuth2Framework\Component\BearerTokenType\BearerToken;
 use OAuth2Framework\Component\ClientRegistrationEndpoint\InitialAccessTokenMiddleware;
 use OAuth2Framework\Component\ClientRegistrationEndpoint\InitialAccessTokenRepository;
@@ -29,12 +30,14 @@ return function (ContainerConfigurator $container) {
             '%oauth2_server.endpoint.client_registration.initial_access_token.required%',
         ]);
 
+    $container->set('client_registration_bearer_token_finder')
+        ->class(AuthorizationHeaderTokenFinder::class);
+
     $container->set('client_registration_bearer_token')
         ->class(BearerToken::class)
         ->args([
             '%oauth2_server.endpoint.client_registration.initial_access_token.realm%',
-            true,
-            false,
-            false,
-        ]);
+        ])
+        ->call('addTokenFinder', [ref('client_registration_bearer_token_finder')])
+        ;
 };

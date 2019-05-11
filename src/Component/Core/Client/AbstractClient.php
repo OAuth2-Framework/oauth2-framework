@@ -11,10 +11,9 @@ declare(strict_types=1);
  * of the MIT license. See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\ServerBundle\Entity;
+namespace OAuth2Framework\Component\Core\Client;
 
 use OAuth2Framework\Component\Core\Client\Client as ClientInterface;
-use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwnerId;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
@@ -24,13 +23,8 @@ use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
  * A client is a resource owner with a set of allowed grant types and can perform requests against
  * available endpoints.
  */
-class Client implements ClientInterface
+abstract class AbstractClient implements ClientInterface
 {
-    /**
-     * @var ClientId
-     */
-    protected $clientId;
-
     /**
      * @var UserAccountId|null
      */
@@ -46,17 +40,16 @@ class Client implements ClientInterface
      */
     protected $deleted;
 
-    public function __construct(ClientId $clientId, DataBag $parameters, ?UserAccountId $ownerId)
+    public function __construct(DataBag $parameters, ?UserAccountId $ownerId)
     {
-        $this->clientId = $clientId;
         $this->parameter = $parameters;
         $this->ownerId = $ownerId;
         $this->deleted = false;
     }
 
-    public function getClientId(): ClientId
+    public function getPublicId(): ResourceOwnerId
     {
-        return $this->clientId;
+        return $this->getClientId();
     }
 
     public function getOwnerId(): ?UserAccountId
@@ -129,15 +122,6 @@ class Client implements ClientInterface
         }
 
         return \time() > $this->getClientCredentialsExpiresAt();
-    }
-
-    public function getPublicId(): ResourceOwnerId
-    {
-        if (null === $this->clientId) {
-            throw new \RuntimeException('Client not initialized.');
-        }
-
-        return $this->clientId;
     }
 
     public function has(string $key): bool

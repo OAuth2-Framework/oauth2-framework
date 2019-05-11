@@ -30,7 +30,7 @@ class AuthorizationCodeSource implements Component
 
     public function load(array $configs, ContainerBuilder $container): void
     {
-        if (!\class_exists(AuthorizationCode::class) || !$configs['grant']['authorization_code']['enabled']) {
+        if (!\interface_exists(AuthorizationCode::class) || true !== $configs['grant']['authorization_code']['enabled']) {
             return;
         }
         $container->setParameter('oauth2_server.grant.authorization_code.lifetime', $configs['grant']['authorization_code']['lifetime']);
@@ -43,7 +43,7 @@ class AuthorizationCodeSource implements Component
 
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
-        if (!\class_exists(AuthorizationCode::class)) {
+        if (!\interface_exists(AuthorizationCode::class)) {
             return;
         }
         $node->children()

@@ -12,6 +12,7 @@ declare(strict_types=1);
  */
 
 use OAuth2Framework\Component\AuthorizationEndpoint;
+use Psr\Http\Message\RequestFactoryInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
@@ -22,7 +23,7 @@ return function (ContainerConfigurator $container) {
 
     $container->set(AuthorizationEndpoint\Rule\SectorIdentifierUriRule::class)
         ->args([
-            ref('httplug.message_factory'),
+            ref(RequestFactoryInterface::class),
             ref('oauth2_server.http_client'),
         ]);
 };

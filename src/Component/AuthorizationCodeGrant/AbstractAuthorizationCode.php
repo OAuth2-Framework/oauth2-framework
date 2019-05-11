@@ -164,6 +164,16 @@ abstract class AbstractAuthorizationCode implements AuthorizationCode
         return $this->expiresAt->getTimestamp() - \time() < 0 ? 0 : $this->expiresAt->getTimestamp() - \time();
     }
 
+    public function isRevoked(): bool
+    {
+        return $this->revoked;
+    }
+
+    public function markAsRevoked(): void
+    {
+        $this->revoked = true;
+    }
+
     public function jsonSerialize(): array
     {
         $data = [
@@ -171,6 +181,7 @@ abstract class AbstractAuthorizationCode implements AuthorizationCode
             'query_parameters' => (object) $this->getQueryParameters(),
             'redirect_uri' => $this->getRedirectUri(),
             'is_used' => $this->isUsed(),
+            'is_revoked' => $this->isRevoked(),
             'expires_at' => $this->getExpiresAt()->getTimestamp(),
             'client_id' => $this->getClientId()->getValue(),
             'parameters' => (object) $this->getParameter()->all(),

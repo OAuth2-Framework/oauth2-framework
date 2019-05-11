@@ -19,23 +19,28 @@ use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
 
 final class ResourceServerIdType extends Type
 {
-    public function convertToDatabaseValue($value, AbstractPlatform $platform)
+    public function convertToDatabaseValue($value, AbstractPlatform $platform): string
     {
         return (string) $value;
     }
 
-    public function convertToPHPValue($value, AbstractPlatform $platform)
+    public function convertToPHPValue($value, AbstractPlatform $platform): ResourceServerId
     {
         return new ResourceServerId($value);
     }
 
-    public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
+    public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform): string
     {
         return $platform->getVarcharTypeDeclarationSQL($fieldDeclaration);
     }
 
-    public function getName()
+    public function getName(): string
     {
         return 'resource_server_id';
+    }
+
+    public function requiresSQLCommentHint(AbstractPlatform $platform): bool
+    {
+        return true;
     }
 }

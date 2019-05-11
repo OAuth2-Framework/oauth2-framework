@@ -15,26 +15,32 @@ namespace OAuth2Framework\ServerBundle\Doctrine\Type;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\Type;
+use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwnerId;
 
 final class ResourceOwnerIdType extends Type
 {
-    public function convertToDatabaseValue($value, AbstractPlatform $platform)
+    public function convertToDatabaseValue($value, AbstractPlatform $platform): string
     {
         return serialize($value);
     }
 
-    public function convertToPHPValue($value, AbstractPlatform $platform)
+    public function convertToPHPValue($value, AbstractPlatform $platform): ResourceOwnerId
     {
         return unserialize($value);
     }
 
-    public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
+    public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform): string
     {
         return $platform->getVarcharTypeDeclarationSQL($fieldDeclaration);
     }
 
-    public function getName()
+    public function getName(): string
     {
-        return 'access_token_id';
+        return 'resounce_owner_id';
+    }
+
+    public function requiresSQLCommentHint(AbstractPlatform $platform): bool
+    {
+        return true;
     }
 }

@@ -43,10 +43,6 @@ class JwksUriEndpointSource implements Component
             ->scalarNode('key_set')
             ->info('The public key set to share with third party applications.')
             ->end()
-            ->integerNode('max_age')
-            ->info('When share, this value indicates how many seconds the HTTP client should keep the key in cache. Default is 21600 = 6 hours.')
-            ->defaultValue(21600)
-            ->end()
             ->end()
             ->end()
             ->end();
@@ -64,7 +60,7 @@ class JwksUriEndpointSource implements Component
             return [];
         }
         ConfigurationHelper::addKeyset($container, 'oauth2_server.endpoint.jwks_uri', 'jwkset', ['value' => $config['key_set']]);
-        ConfigurationHelper::addKeyUri($container, 'oauth2_server.endpoint.jwks_uri', ['id' => 'jose.key_set.oauth2_server.endpoint.jwks_uri', 'path' => $config['path'], 'max_age' => $config['max_age']]);
+        ConfigurationHelper::addKeyUri($container, 'oauth2_server.endpoint.jwks_uri', ['id' => 'jose.key_set.oauth2_server.endpoint.jwks_uri', 'path' => $config['path']]);
 
         return [];
     }

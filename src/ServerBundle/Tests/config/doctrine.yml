@@ -6,4 +6,5 @@ doctrine:
                 driver: 'pdo_mysql'
                 url: "sqlite:///%kernel.project_dir%/data.db"
     orm:
+        auto_generate_proxy_classes: false
         auto_mapping: true

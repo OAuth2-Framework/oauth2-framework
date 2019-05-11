@@ -37,6 +37,6 @@ return function (ContainerConfigurator $container) {
     $container->set(TokenIntrospectionEndpoint::class)
         ->args([
             ref(TokenTypeHintManager::class),
-            ref(\Http\Message\ResponseFactory::class),
+            ref(\Psr\Http\Message\ResponseFactoryInterface::class),
         ]);
 };

@@ -19,23 +19,28 @@ use OAuth2Framework\Component\Core\Client\ClientId;
 
 final class ClientIdType extends Type
 {
-    public function convertToDatabaseValue($value, AbstractPlatform $platform)
+    public function convertToDatabaseValue($value, AbstractPlatform $platform): string
     {
         return (string) $value;
     }
 
-    public function convertToPHPValue($value, AbstractPlatform $platform)
+    public function convertToPHPValue($value, AbstractPlatform $platform): ClientId
     {
         return new ClientId($value);
     }
 
-    public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
+    public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform): string
     {
         return $platform->getVarcharTypeDeclarationSQL($fieldDeclaration);
     }
 
-    public function getName()
+    public function getName(): string
     {
         return 'client_id';
+    }
+
+    public function requiresSQLCommentHint(AbstractPlatform $platform): bool
+    {
+        return true;
     }
 }

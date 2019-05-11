@@ -13,42 +13,48 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Tests\TestBundle\Entity;
 
+use Assert\Assertion;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface;
-use Doctrine\Common\Persistence\ManagerRegistry;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwnerId;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
-use OAuth2Framework\Component\RefreshTokenGrant\RefreshToken as CoreRefreshToken;
+use OAuth2Framework\Component\RefreshTokenGrant\RefreshToken as RefreshTokenInterface;
 use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenId;
 use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenRepository as RefreshTokenRepositoryInterface;
+use Psr\Cache\CacheItemPoolInterface;
 
 final class RefreshTokenRepository implements RefreshTokenRepositoryInterface, ServiceEntityRepositoryInterface
 {
-    private $entityRepository;
-    private $entityManager;
+    /**
+     * @var CacheItemPoolInterface
+     */
+    private $cache;
 
-    public function __construct(ManagerRegistry $managerRegistry)
+    public function __construct(CacheItemPoolInterface $cache)
     {
-        $this->entityManager = $managerRegistry->getManagerForClass(RefreshToken::class);
-        $this->entityRepository = $this->entityManager->getRepository(RefreshToken::class);
+        $this->cache = $cache;
     }
 
-    public function find(RefreshTokenId $refreshTokenId): ?CoreRefreshToken
+    public function find(RefreshTokenId $refreshTokenId): ?RefreshTokenInterface
     {
-        return $this->entityRepository->find($refreshTokenId);
-    }
-
-    public function save(CoreRefreshToken $refreshToken): void
-    {
-        if (!$refreshToken instanceof RefreshToken) {
-            throw new \InvalidArgumentException('Unsupported refresh token class');
+        $item = $this->cache->getItem('RefreshToken-'.$refreshTokenId->getValue());
+        if ($item->isHit()) {
+            return $item->get();
         }
-        $this->entityManager->persist($refreshToken);
-        $this->entityManager->flush();
+
+        return null;
     }
 
-    public function create(ClientId $clientId, ResourceOwnerId $resourceOwnerId, \DateTimeImmutable $expiresAt, DataBag $parameter, DataBag $metadata, ?ResourceServerId $resourceServerId): CoreRefreshToken
+    public function save(RefreshTokenInterface $refreshToken): void
+    {
+        Assertion::isInstanceOf($refreshToken, RefreshToken::class, 'Unsupported refresh token class');
+        $item = $this->cache->getItem('RefreshToken-'.$refreshToken->getId()->getValue());
+        $item->set($refreshToken);
+        $this->cache->save($item);
+    }
+
+    public function create(ClientId $clientId, ResourceOwnerId $resourceOwnerId, \DateTimeImmutable $expiresAt, DataBag $parameter, DataBag $metadata, ?ResourceServerId $resourceServerId): RefreshTokenInterface
     {
         return new RefreshToken(
             new RefreshTokenId(\bin2hex(\random_bytes(32))),

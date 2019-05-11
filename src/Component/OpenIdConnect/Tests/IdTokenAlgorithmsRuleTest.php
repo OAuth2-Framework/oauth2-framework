@@ -114,7 +114,7 @@ final class IdTokenAlgorithmsRuleTest extends TestCase
 
         return new JWSBuilder(
             null,
-            AlgorithmManager::create([$algorithm->reveal()])
+            new AlgorithmManager([$algorithm->reveal()])
         );
     }
 
@@ -127,8 +127,8 @@ final class IdTokenAlgorithmsRuleTest extends TestCase
 
         return new JWEBuilder(
             null,
-            AlgorithmManager::create([$algorithm1->reveal()]),
-            AlgorithmManager::create([$algorithm2->reveal()]),
+            new AlgorithmManager([$algorithm1->reveal()]),
+            new AlgorithmManager([$algorithm2->reveal()]),
             CompressionMethodManager::create([])
         );
     }

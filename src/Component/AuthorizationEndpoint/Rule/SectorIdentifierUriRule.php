@@ -14,18 +14,18 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\AuthorizationEndpoint\Rule;
 
 use Assert\Assertion;
-use Http\Client\HttpClient;
 use function League\Uri\parse;
 use OAuth2Framework\Component\ClientRule\Rule;
 use OAuth2Framework\Component\ClientRule\RuleHandler;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
+use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 
 final class SectorIdentifierUriRule implements Rule
 {
     /**
-     * @var HttpClient
+     * @var ClientInterface
      */
     private $client;
 
@@ -34,7 +34,7 @@ final class SectorIdentifierUriRule implements Rule
      */
     private $requestFactory;
 
-    public function __construct(RequestFactoryInterface $requestFactory, HttpClient $client)
+    public function __construct(RequestFactoryInterface $requestFactory, ClientInterface $client)
     {
         $this->requestFactory = $requestFactory;
         $this->client = $client;

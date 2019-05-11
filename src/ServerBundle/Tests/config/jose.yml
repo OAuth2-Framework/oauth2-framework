@@ -2,4 +2,4 @@ jose:
     jku_factory:
         enabled: true
         client: 'httplug.client.mock'
-        request_factory: 'OAuth2Framework\ServerBundle\Tests\TestBundle\Service\MessageFactory'
+        request_factory: 'Nyholm\Psr7\Factory\Psr17Factory'

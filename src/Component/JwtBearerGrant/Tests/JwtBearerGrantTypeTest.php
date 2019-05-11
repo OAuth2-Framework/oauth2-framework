@@ -271,7 +271,7 @@ final class JwtBearerGrantTypeTest extends TestCase
 
     private function getJwsVerifier(): JWSVerifier
     {
-        return new JWSVerifier(AlgorithmManager::create([
+        return new JWSVerifier(new AlgorithmManager([
             new RS256(),
             new ES256(),
         ]));
@@ -280,8 +280,8 @@ final class JwtBearerGrantTypeTest extends TestCase
     private function getJweDecrypter(): JWEDecrypter
     {
         return new JWEDecrypter(
-            AlgorithmManager::create([new A256KW()]),
-            AlgorithmManager::create([new A256GCM()]),
+            new AlgorithmManager([new A256KW()]),
+            new AlgorithmManager([new A256GCM()]),
             CompressionMethodManager::create([new Deflate()])
         );
     }
@@ -290,7 +290,7 @@ final class JwtBearerGrantTypeTest extends TestCase
     {
         return new JWSBuilder(
             null,
-            AlgorithmManager::create([
+            new AlgorithmManager([
                 new RS256(),
                 new ES256(),
             ])
@@ -301,8 +301,8 @@ final class JwtBearerGrantTypeTest extends TestCase
     {
         return new JWEBuilder(
             null,
-            AlgorithmManager::create([new A256KW()]),
-            AlgorithmManager::create([new A256GCM()]),
+            new AlgorithmManager([new A256KW()]),
+            new AlgorithmManager([new A256GCM()]),
             CompressionMethodManager::create([new Deflate()])
         );
     }

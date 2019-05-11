@@ -42,7 +42,7 @@ class PairwiseSubjectSource implements Component
             ->canBeEnabled()
             ->validate()
             ->ifTrue(function ($config) {
-                return true === $config['enabled'] && 0 === \count($config['service']);
+                return true === $config['enabled'] && null === $config['service'];
             })
             ->thenInvalid('The pairwise subject service must be set.')
             ->end()

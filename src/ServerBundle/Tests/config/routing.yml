@@ -1,6 +1,6 @@
 # Jose Routes
 jwkset_endpoint:
-    resource: "@JoseFrameworkBundle/Resources/config/routing/jwkset_controller.yml"
+    resource: "@JoseFrameworkBundle/Resources/config/routing/jwkset_controller.php"
     prefix: '/keys'
 
 # OAuth2FrameworkServerBundle Routes

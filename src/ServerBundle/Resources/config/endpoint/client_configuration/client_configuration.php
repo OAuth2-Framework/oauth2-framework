@@ -18,6 +18,7 @@ use OAuth2Framework\Component\Core\Message;
 use OAuth2Framework\Component\Core\Middleware;
 use OAuth2Framework\ServerBundle\Controller\ClientConfigurationMiddleware;
 use OAuth2Framework\ServerBundle\Rule\ClientConfigurationRouteRule;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
@@ -47,7 +48,7 @@ return function (ContainerConfigurator $container) {
         ->args([
             ref(\OAuth2Framework\Component\Core\Client\ClientRepository::class),
             ref('oauth2_server.client_configuration.bearer_token'),
-            ref(\Psr\Http\Message\ResponseFactoryInterface::class), //TODO: change the way the response factory is managed
+            ref(ResponseFactoryInterface::class), //TODO: change the way the response factory is managed
             ref(RuleManager::class),
         ]);
 
@@ -71,7 +72,7 @@ return function (ContainerConfigurator $container) {
     $container->set('oauth2_server.message_factory_manager.for_client_configuration')
         ->class(Message\OAuth2MessageFactoryManager::class)
         ->args([
-            ref(\Http\Message\ResponseFactory::class),
+            ref(ResponseFactoryInterface::class),
         ])
         ->call('addFactory', [ref('oauth2_server.message_factory.303')])
         ->call('addFactory', [ref('oauth2_server.message_factory.400')])

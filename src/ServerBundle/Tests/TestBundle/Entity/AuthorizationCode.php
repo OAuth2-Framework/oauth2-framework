@@ -25,16 +25,16 @@ class AuthorizationCode extends AbstractAuthorizationCode
     /**
      * @var AuthorizationCodeId
      */
-    private $id;
+    private $authorizationCodeId;
 
-    public function __construct(AuthorizationCodeId $id, ClientId $clientId, UserAccountId $userAccountId, array $queryParameters, string $redirectUri, \DateTimeImmutable $expiresAt, DataBag $parameter, DataBag $metadata, ?ResourceServerId $resourceServerId)
+    public function __construct(AuthorizationCodeId $authorizationCodeId, ClientId $clientId, UserAccountId $userAccountId, array $queryParameters, string $redirectUri, \DateTimeImmutable $expiresAt, DataBag $parameter, DataBag $metadata, ?ResourceServerId $resourceServerId)
     {
         parent::__construct($clientId, $userAccountId, $queryParameters, $redirectUri, $expiresAt, $parameter, $metadata, $resourceServerId);
-        $this->id = $id;
+        $this->authorizationCodeId = $authorizationCodeId;
     }
 
     public function getId(): AuthorizationCodeId
     {
-        return $this->id;
+        return $this->authorizationCodeId;
     }
 }

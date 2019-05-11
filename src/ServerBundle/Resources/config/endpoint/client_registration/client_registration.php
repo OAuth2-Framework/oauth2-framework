@@ -13,8 +13,10 @@ declare(strict_types=1);
 
 use OAuth2Framework\Component\ClientRegistrationEndpoint\ClientRegistrationEndpoint;
 use OAuth2Framework\Component\ClientRule\RuleManager;
+use OAuth2Framework\Component\Core\Client\ClientRepository;
 use OAuth2Framework\Component\Core\Message;
 use OAuth2Framework\Component\Core\Middleware;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
@@ -34,8 +36,8 @@ return function (ContainerConfigurator $container) {
     $container->set('oauth2_server.client_registration.endpoint')
         ->class(ClientRegistrationEndpoint::class)
         ->args([
-            ref(\OAuth2Framework\Component\Core\Client\ClientRepository::class),
-            ref(\Http\Message\ResponseFactory::class), //TODO
+            ref(ClientRepository::class),
+            ref(ResponseFactoryInterface::class), //TODO
             ref(RuleManager::class),
         ]);
 
@@ -47,7 +49,7 @@ return function (ContainerConfigurator $container) {
     $container->set('oauth2_server.message_factory_manager.for_client_registration')
         ->class(Message\OAuth2MessageFactoryManager::class)
         ->args([
-            ref(\Http\Message\ResponseFactory::class),
+            ref(ResponseFactoryInterface::class),
         ])
         ->call('addFactory', [ref('oauth2_server.message_factory.303')])
         ->call('addFactory', [ref('oauth2_server.message_factory.400')])

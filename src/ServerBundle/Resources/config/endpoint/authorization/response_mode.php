@@ -26,11 +26,11 @@ return function (ContainerConfigurator $container) {
 
     $container->set(AuthorizationEndpoint\ResponseMode\QueryResponseMode::class)
         ->args([
-            ref(\Http\Message\ResponseFactory::class),
+            ref(\Psr\Http\Message\ResponseFactoryInterface::class),
         ]);
     $container->set(AuthorizationEndpoint\ResponseMode\FragmentResponseMode::class)
         ->args([
-            ref(\Http\Message\ResponseFactory::class),
+            ref(\Psr\Http\Message\ResponseFactoryInterface::class),
         ]);
 
     $container->set(ParameterChecker\ResponseTypeAndResponseModeParameterChecker::class)

@@ -42,13 +42,13 @@ return function (ContainerConfigurator $container) {
     $container->set(TokenRevocationPostEndpoint::class)
         ->args([
             ref(TokenTypeHintManager::class),
-            ref(\Http\Message\ResponseFactory::class),
+            ref(\Psr\Http\Message\ResponseFactoryInterface::class),
         ]);
 
     $container->set(TokenRevocationGetEndpoint::class)
         ->args([
             ref(TokenTypeHintManager::class),
-            ref(\Http\Message\ResponseFactory::class),
+            ref(\Psr\Http\Message\ResponseFactoryInterface::class),
             '%oauth2_server.endpoint.token_revocation.allow_callback%',
         ]);
 };

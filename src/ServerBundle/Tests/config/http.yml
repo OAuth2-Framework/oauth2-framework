@@ -9,7 +9,7 @@ services:
         public: true
     httplug.client.mock:
         class: 'Http\Mock\Client'
-        arguments:
-            - '@OAuth2Framework\ServerBundle\Tests\TestBundle\Service\MessageFactory'
     httplug.client.default: '@httplug.client.mock'
-    OAuth2Framework\ServerBundle\Tests\TestBundle\Service\MessageFactory: ~
+
+
+    Nyholm\Psr7\Factory\Psr17Factory: ~

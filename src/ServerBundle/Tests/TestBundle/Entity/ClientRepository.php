@@ -13,37 +13,43 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Tests\TestBundle\Entity;
 
+use Assert\Assertion;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface;
-use Doctrine\Common\Persistence\ManagerRegistry;
 use OAuth2Framework\Component\Core\Client\Client as ClientInterface;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\Client\ClientRepository as ClientRepositoryInterface;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
+use Psr\Cache\CacheItemPoolInterface;
 
 final class ClientRepository implements ClientRepositoryInterface, ServiceEntityRepositoryInterface
 {
-    private $entityRepository;
-    private $entityManager;
+    /**
+     * @var CacheItemPoolInterface
+     */
+    private $cache;
 
-    public function __construct(ManagerRegistry $managerRegistry)
+    public function __construct(CacheItemPoolInterface $cache)
     {
-        $this->entityManager = $managerRegistry->getManagerForClass(Client::class);
-        $this->entityRepository = $this->entityManager->getRepository(Client::class);
+        $this->cache = $cache;
     }
 
     public function find(ClientId $clientId): ?ClientInterface
     {
-        return $this->entityRepository->find($clientId);
+        $item = $this->cache->getItem('Client-'.$clientId->getValue());
+        if ($item->isHit()) {
+            return $item->get();
+        }
+
+        return null;
     }
 
-    public function save(ClientInterface $client)
+    public function save(ClientInterface $client): void
     {
-        if (!$client instanceof Client) {
-            throw new \InvalidArgumentException('Unsupported client class');
-        }
-        $this->entityManager->persist($client);
-        $this->entityManager->flush();
+        Assertion::isInstanceOf($client, Client::class, 'Unsupported client class');
+        $item = $this->cache->getItem('Client-'.$client->getClientId()->getValue());
+        $item->set($client);
+        $this->cache->save($item);
     }
 
     public function create(ClientId $clientId, DataBag $parameters, ?UserAccountId $ownerId): ClientInterface

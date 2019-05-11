@@ -3,9 +3,12 @@
                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                   xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
                    https://raw.github.com/doctrine/doctrine2/master/doctrine-mapping.xsd">
-    <mapped-superclass name="OAuth2Framework\Component\Core\Token\Token">
+    <mapped-superclass name="OAuth2Framework\Component\AuthorizationCodeGrant\AbstractAuthorizationCode">
+        <field name="queryParameters" type="array" />
+        <field name="redirectUri" />
+        <field name="used" type="boolean" />
         <field name="expiresAt" type="datetime" />
-        <field name="resourceOwnerId" type="resource_owner_id" />
+        <field name="userAccountId" type="user_account_id" />
         <field name="clientId" type="client_id" />
         <field name="parameter" type="databag" />
         <field name="metadata" type="databag" />

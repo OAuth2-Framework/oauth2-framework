@@ -145,7 +145,7 @@ class JwtBearerGrantTest extends DatabaseTestCase
         $jwk = new JWK([
             'kty' => 'oct',
             'use' => 'sig',
-            'k' => Base64Url::encode('secret'),
+            'k' => Base64Url::encode('secretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecret'),
         ]);
         $claims = [];
 
@@ -158,7 +158,7 @@ class JwtBearerGrantTest extends DatabaseTestCase
         $jwk = new JWK([
             'kty' => 'oct',
             'use' => 'sig',
-            'k' => Base64Url::encode('secret'),
+            'k' => Base64Url::encode('secretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecret'),
         ]);
         $claims = ['iss' => 'CLIENT_ID_4'];
 
@@ -170,7 +170,7 @@ class JwtBearerGrantTest extends DatabaseTestCase
         $jwk = new JWK([
             'kty' => 'oct',
             'use' => 'sig',
-            'k' => Base64Url::encode('secret'),
+            'k' => Base64Url::encode('secretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecret'),
         ]);
         $claims = ['iss' => 'CLIENT_ID_4', 'sub' => 'CLIENT_ID_4'];
 
@@ -182,7 +182,7 @@ class JwtBearerGrantTest extends DatabaseTestCase
         $jwk = new JWK([
             'kty' => 'oct',
             'use' => 'sig',
-            'k' => Base64Url::encode('secret'),
+            'k' => Base64Url::encode('secretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecret'),
         ]);
         $claims = [
             'iss' => 'CLIENT_ID_4',
@@ -198,7 +198,7 @@ class JwtBearerGrantTest extends DatabaseTestCase
         $jwk = new JWK([
             'kty' => 'oct',
             'use' => 'sig',
-            'k' => Base64Url::encode('secret'),
+            'k' => Base64Url::encode('secretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecret'),
         ]);
         $claims = [
             'iss' => 'CLIENT_ID_4',
@@ -212,7 +212,7 @@ class JwtBearerGrantTest extends DatabaseTestCase
 
     private function sign(array $claims, JWK $jwk): string
     {
-        $jwsBuilder = new JWSBuilder(null, AlgorithmManager::create([new HS256()]));
+        $jwsBuilder = new JWSBuilder(new AlgorithmManager([new HS256()]));
         $payload = JsonConverter::encode($claims);
         $jws = $jwsBuilder
             ->create()

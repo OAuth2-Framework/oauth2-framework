@@ -14,40 +14,46 @@ declare(strict_types=1);
 namespace OAuth2Framework\ServerBundle\Tests\TestBundle\Entity;
 
 use Assert\Assertion;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface;
-use Doctrine\Common\Persistence\ManagerRegistry;
-use OAuth2Framework\Component\Core\AccessToken\AccessToken as CoreAccessToken;
+use OAuth2Framework\Component\Core\AccessToken\AccessToken as AccessTokenInterface;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository as AccessTokenRepositoryInterface;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwnerId;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
+use Psr\Cache\CacheItemPoolInterface;
 
-final class AccessTokenRepository implements AccessTokenRepositoryInterface, ServiceEntityRepositoryInterface
+final class AccessTokenRepository implements AccessTokenRepositoryInterface
 {
-    private $entityRepository;
-    private $entityManager;
+    /**
+     * @var CacheItemPoolInterface
+     */
+    private $cache;
 
-    public function __construct(ManagerRegistry $managerRegistry)
+    public function __construct(CacheItemPoolInterface $cache)
     {
-        $this->entityManager = $managerRegistry->getManagerForClass(AccessToken::class);
-        $this->entityRepository = $this->entityManager->getRepository(AccessToken::class);
+        $this->cache = $cache;
     }
 
-    public function find(AccessTokenId $accessTokenId): ?CoreAccessToken
+    public function find(AccessTokenId $accessTokenId): ?AccessTokenInterface
     {
-        return $this->entityRepository->find($accessTokenId);
+        $item = $this->cache->getItem('AccessToken-'.$accessTokenId->getValue());
+        if ($item->isHit()) {
+            return $item->get();
+        }
+
+        return null;
     }
 
-    public function save(CoreAccessToken $accessToken): void
+    public function save(AccessTokenInterface $accessToken): void
     {
         Assertion::isInstanceOf($accessToken, AccessToken::class, 'Unsupported access token class');
-        $this->entityManager->persist($accessToken);
-        $this->entityManager->flush();
+        $item = $this->cache->getItem('AccessToken-'.$accessToken->getId()->getValue());
+        $item->set($accessToken);
+        $this->cache->save($item);
     }
 
-    public function create(ClientId $clientId, ResourceOwnerId $resourceOwnerId, \DateTimeImmutable $expiresAt, DataBag $parameter, DataBag $metadata, ?ResourceServerId $resourceServerId): CoreAccessToken
+    public function create(ClientId $clientId, ResourceOwnerId $resourceOwnerId, \DateTimeImmutable $expiresAt, DataBag $parameter, DataBag $metadata, ?ResourceServerId $resourceServerId): AccessTokenInterface
     {
         return new AccessToken(new AccessTokenId(\bin2hex(\random_bytes(32))), $clientId, $resourceOwnerId, $expiresAt, $parameter, $metadata, $resourceServerId);
     }

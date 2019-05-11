@@ -15,7 +15,6 @@ namespace OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest;
 
 use Assert\Assertion;
 use Base64Url\Base64Url;
-use Http\Client\HttpClient;
 use Jose\Component\Checker\ClaimCheckerManager;
 use Jose\Component\Core\JWK;
 use Jose\Component\Core\JWKSet;
@@ -29,6 +28,7 @@ use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\Client\ClientRepository;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
+use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -65,7 +65,7 @@ class AuthorizationRequestLoader
     private $requireEncryption = false;
 
     /**
-     * @var HttpClient|null
+     * @var ClientInterface|null
      */
     private $client;
 
@@ -145,7 +145,7 @@ class AuthorizationRequestLoader
         $this->requestObjectAllowed = true;
     }
 
-    public function enableRequestObjectReferenceSupport(HttpClient $client, RequestFactoryInterface $requestFactory, bool $requireRequestUriRegistration): void
+    public function enableRequestObjectReferenceSupport(ClientInterface $client, RequestFactoryInterface $requestFactory, bool $requireRequestUriRegistration): void
     {
         Assertion::true($this->isRequestObjectSupportEnabled(), 'Request object support must be enabled first.');
         $this->requestObjectReferenceAllowed = true;

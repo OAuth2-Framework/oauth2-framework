@@ -17,6 +17,7 @@ use InvalidArgumentException;
 use function League\Uri\parse;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
+use function Safe\preg_match;
 
 /**
  * TODO: If there are multiple hostnames in the registered redirect_uris and pairwise ID is set, the client MUST register a sector_identifier_uri.
@@ -28,7 +29,7 @@ final class RedirectionUriRule implements Rule
         /** @var DataBag $validatedParameters */
         $validatedParameters = $next->handle($clientId, $commandParameters, $validatedParameters);
 
-        // No need for redirect URIs as no response type to is used.
+        // No need for redirect URIs as no response type is used.
         if (!$validatedParameters->has('response_types') || 0 === \count($validatedParameters->get('response_types'))) {
             $validatedParameters->set('redirect_uris', []);
 
@@ -65,9 +66,9 @@ final class RedirectionUriRule implements Rule
             if (!\is_array($redirectUris)) {
                 throw new InvalidArgumentException('The parameter "redirect_uris" must be a list of URI or URN.');
             }
+            $this->checkAllUris($redirectUris, $applicationType, $usesImplicitGrantType, $isClientPublic);
         }
 
-        $this->checkAllUris($redirectUris, $applicationType, $usesImplicitGrantType, $isClientPublic);
         $validatedParameters->set('redirect_uris', $redirectUris);
 
         return $validatedParameters;
@@ -92,7 +93,7 @@ final class RedirectionUriRule implements Rule
             if (null === $parsed['scheme'] || null === $parsed['path']) {
                 throw new InvalidArgumentException('The parameter "redirect_uris" must be a list of URI or URN.');
             }
-            if (1 === \Safe\preg_match('#/\.\.?(/|$)#', $parsed['path'])) {
+            if (1 === preg_match('#/\.\.?(/|$)#', $parsed['path'])) {
                 throw new InvalidArgumentException('The URI listed in the "redirect_uris" parameter must not contain any path traversal.');
             }
             if (null !== $parsed['fragment']) {
@@ -111,7 +112,7 @@ final class RedirectionUriRule implements Rule
 
     private function checkUrn(string $urn): void
     {
-        if (1 !== \Safe\preg_match('/^urn:[a-z0-9][a-z0-9-]{0,31}:([a-z0-9()+,-.:=@;$_!*\']|%(0[1-9a-f]|[1-9a-f][0-9a-f]))+$/i', $urn)) {
+        if (1 !== preg_match('/^urn:[a-z0-9][a-z0-9-]{0,31}:([a-z0-9()+,-.:=@;$_!*\']|%(0[1-9a-f]|[1-9a-f][0-9a-f]))+$/i', $urn)) {
             throw new InvalidArgumentException('The parameter "redirect_uris" must be a list of URI or URN.');
         }
     }

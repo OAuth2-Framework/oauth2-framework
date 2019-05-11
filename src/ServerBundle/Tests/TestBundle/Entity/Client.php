@@ -13,8 +13,26 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Tests\TestBundle\Entity;
 
-use OAuth2Framework\ServerBundle\Entity\Client as BaseClient;
+use OAuth2Framework\Component\Core\Client\AbstractClient;
+use OAuth2Framework\Component\Core\Client\ClientId;
+use OAuth2Framework\Component\Core\DataBag\DataBag;
+use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 
-class Client extends BaseClient
+class Client extends AbstractClient
 {
+    /**
+     * @var ClientId
+     */
+    protected $clientId;
+
+    public function __construct(ClientId $clientId, DataBag $parameters, ?UserAccountId $ownerId)
+    {
+        $this->clientId = $clientId;
+        parent::__construct($parameters, $ownerId);
+    }
+
+    public function getClientId(): ClientId
+    {
+        return $this->clientId;
+    }
 }

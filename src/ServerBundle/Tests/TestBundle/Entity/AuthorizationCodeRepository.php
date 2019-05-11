@@ -15,39 +15,46 @@ namespace OAuth2Framework\ServerBundle\Tests\TestBundle\Entity;
 
 use Assert\Assertion;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface;
-use Doctrine\Common\Persistence\ManagerRegistry;
-use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCode as CoreAuthorizationCode;
+use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCode as AuthorizationCodeInterface;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeId;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeRepository as AuthorizationCodeRepositoryInterface;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
+use Psr\Cache\CacheItemPoolInterface;
 
 final class AuthorizationCodeRepository implements AuthorizationCodeRepositoryInterface, ServiceEntityRepositoryInterface
 {
-    private $entityRepository;
-    private $entityManager;
+    /**
+     * @var CacheItemPoolInterface
+     */
+    private $cache;
 
-    public function __construct(ManagerRegistry $managerRegistry)
+    public function __construct(CacheItemPoolInterface $cache)
     {
-        $this->entityManager = $managerRegistry->getManagerForClass(AuthorizationCode::class);
-        $this->entityRepository = $this->entityManager->getRepository(AuthorizationCode::class);
+        $this->cache = $cache;
     }
 
-    public function find(AuthorizationCodeId $authorizationCodeId): ?CoreAuthorizationCode
+    public function find(AuthorizationCodeId $authorizationCodeId): ?AuthorizationCodeInterface
     {
-        return $this->entityRepository->find($authorizationCodeId);
+        $item = $this->cache->getItem('AuthorizationCode-'.$authorizationCodeId->getValue());
+        if ($item->isHit()) {
+            return $item->get();
+        }
+
+        return null;
     }
 
-    public function save(CoreAuthorizationCode $accessToken): void
+    public function save(AuthorizationCodeInterface $authorizationCode): void
     {
-        Assertion::isInstanceOf($accessToken, AuthorizationCode::class, 'Unsupported authorization code class');
-        $this->entityManager->persist($accessToken);
-        $this->entityManager->flush();
+        Assertion::isInstanceOf($authorizationCode, AuthorizationCode::class, 'Unsupported authorization code class');
+        $item = $this->cache->getItem('AuthorizationCode-'.$authorizationCode->getId()->getValue());
+        $item->set($authorizationCode);
+        $this->cache->save($item);
     }
 
-    public function create(ClientId $clientId, UserAccountId $userAccountId, array $queryParameters, string $redirectUri, \DateTimeImmutable $expiresAt, DataBag $parameter, DataBag $metadata, ?ResourceServerId $resourceServerId): CoreAuthorizationCode
+    public function create(ClientId $clientId, UserAccountId $userAccountId, array $queryParameters, string $redirectUri, \DateTimeImmutable $expiresAt, DataBag $parameter, DataBag $metadata, ?ResourceServerId $resourceServerId): AuthorizationCodeInterface
     {
         return new AuthorizationCode(
             new AuthorizationCodeId(\bin2hex(\random_bytes(32))),

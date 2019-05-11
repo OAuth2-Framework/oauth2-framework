@@ -31,7 +31,7 @@ return function (ContainerConfigurator $container) {
 
     $container->set(MetadataController::class)
         ->args([
-            ref(\Http\Message\ResponseFactory::class),
+            ref(\Psr\Http\Message\ResponseFactoryInterface::class),
             ref(MetadataBuilder::class),
         ]);
 

@@ -13,30 +13,41 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Tests\TestBundle\Entity;
 
-use OAuth2Framework\Component\ClientRegistrationEndpoint\InitialAccessToken;
+use Assert\Assertion;
+use OAuth2Framework\Component\ClientRegistrationEndpoint\InitialAccessToken as InitialAccessTokenInterface;
 use OAuth2Framework\Component\ClientRegistrationEndpoint\InitialAccessTokenId;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
+use Psr\Cache\CacheItemPoolInterface;
 
 final class InitialAccessTokenRepository implements \OAuth2Framework\Component\ClientRegistrationEndpoint\InitialAccessTokenRepository
 {
     /**
-     * @var InitialAccessToken[]
+     * @var CacheItemPoolInterface
      */
-    private $initialAccessTokens = [];
+    private $cache;
 
-    public function __construct()
+    public function __construct(CacheItemPoolInterface $cache)
     {
+        $this->cache = $cache;
         $this->createInitialAccessTokens();
     }
 
-    public function find(InitialAccessTokenId $initialAccessTokenId): ?InitialAccessToken
+    public function find(InitialAccessTokenId $initialAccessTokenId): ?InitialAccessTokenInterface
     {
-        return \array_key_exists($initialAccessTokenId->getValue(), $this->initialAccessTokens) ? $this->initialAccessTokens[$initialAccessTokenId->getValue()] : null;
+        $item = $this->cache->getItem('InitialAccessToken-'.$initialAccessTokenId->getValue());
+        if ($item->isHit()) {
+            return $item->get();
+        }
+
+        return null;
     }
 
-    public function save(InitialAccessToken $initialAccessToken)
+    public function save(InitialAccessTokenInterface $initialAccessToken): void
     {
-        $this->initialAccessTokens[$initialAccessToken->getId()->getValue()] = $initialAccessToken;
+        Assertion::isInstanceOf($initialAccessToken, InitialAccessToken::class, 'Unsupported entity');
+        $item = $this->cache->getItem('InitialAccessToken-'.$initialAccessToken->getId()->getValue());
+        $item->set($initialAccessToken);
+        $this->cache->save($item);
     }
 
     private function createInitialAccessTokens()

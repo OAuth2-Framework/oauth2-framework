@@ -28,7 +28,6 @@ use Jose\Component\Encryption\JWEDecrypter;
 use Jose\Component\Encryption\JWELoader;
 use Jose\Component\Encryption\JWETokenSupport;
 use Jose\Component\Encryption\Serializer\JWESerializerManager;
-use Jose\Component\KeyManagement\JKUFactory;
 use Jose\Component\Signature\Algorithm\HS256;
 use Jose\Component\Signature\Algorithm\RS256;
 use Jose\Component\Signature\JWS;
@@ -36,7 +35,6 @@ use Jose\Component\Signature\JWSBuilder;
 use Jose\Component\Signature\JWSTokenSupport;
 use Jose\Component\Signature\JWSVerifier;
 use Jose\Component\Signature\Serializer\CompactSerializer;
-use Nyholm\Psr7\Factory\HttplugFactory;
 use OAuth2Framework\Component\ClientAuthentication\AuthenticationMethodManager;
 use OAuth2Framework\Component\ClientAuthentication\ClientAssertionJwt;
 use OAuth2Framework\Component\Core\Client\Client;
@@ -522,7 +520,7 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
     {
         if (null === $this->method) {
             $this->method = new ClientAssertionJwt(
-                new JWSVerifier(AlgorithmManager::create([new HS256(), new RS256()])),
+                new JWSVerifier(new AlgorithmManager([new HS256(), new RS256()])),
                 HeaderCheckerManager::create([], [new JWSTokenSupport()]),
                 ClaimCheckerManager::create([]),
                 3600
@@ -540,8 +538,8 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
             new JWELoader(
                 JWESerializerManager::create([new \Jose\Component\Encryption\Serializer\CompactSerializer()]),
                 new JWEDecrypter(
-                    AlgorithmManager::create([new RSAOAEP256()]),
-                    AlgorithmManager::create([new A256CBCHS512()]),
+                    new AlgorithmManager([new RSAOAEP256()]),
+                    new AlgorithmManager([new A256CBCHS512()]),
                     CompressionMethodManager::create([new Deflate()])
                 ),
                 HeaderCheckerManager::create([], [new JWETokenSupport()])
@@ -590,22 +588,6 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
         return $method;
     }
 
-    private function getJkuFactory(\Http\Mock\Client $client): JKUFactory
-    {
-        return new JKUFactory(
-            null,
-            $client,
-            new HttplugFactory()
-        );
-    }
-
-    private function getHttpClient(): \Http\Mock\Client
-    {
-        return new \Http\Mock\Client(
-            new HttplugFactory()
-        );
-    }
-
     private function serializeJWS(JWS $jws): string
     {
         $serializer = new CompactSerializer();
@@ -617,7 +599,7 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
     {
         $jwsBuilder = new JWSBuilder(
             null,
-            AlgorithmManager::create([
+            new AlgorithmManager([
                 new HS256(),
             ])
         );
@@ -641,7 +623,7 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
     {
         $jwsBuilder = new JWSBuilder(
             null,
-            AlgorithmManager::create([
+            new AlgorithmManager([
                 new RS256(),
             ])
         );
@@ -675,7 +657,7 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
     {
         $jwsBuilder = new JWSBuilder(
             null,
-            AlgorithmManager::create([
+            new AlgorithmManager([
                 new HS256(),
             ])
         );
@@ -694,7 +676,7 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
     {
         $jwsBuilder = new JWSBuilder(
             null,
-            AlgorithmManager::create([
+            new AlgorithmManager([
                 new RS256(),
             ])
         );
@@ -724,8 +706,8 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
     {
         $jweBuilder = new JWEBuilder(
             null,
-            AlgorithmManager::create([new RSAOAEP256()]),
-            AlgorithmManager::create([new A256CBCHS512()]),
+            new AlgorithmManager([new RSAOAEP256()]),
+            new AlgorithmManager([new A256CBCHS512()]),
             CompressionMethodManager::create([new Deflate()])
         );
         $jwe = $jweBuilder->create()

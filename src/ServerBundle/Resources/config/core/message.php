@@ -14,6 +14,7 @@ declare(strict_types=1);
 use OAuth2Framework\Component\ClientAuthentication\AuthenticationMethodManager;
 use OAuth2Framework\Component\Core\Message;
 use OAuth2Framework\Component\Core\Middleware;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
@@ -31,7 +32,7 @@ return function (ContainerConfigurator $container) {
     $container->set('oauth2_server.message_factory_manager.for_client_authentication')
         ->class(Message\OAuth2MessageFactoryManager::class)
         ->args([
-            ref(\Http\Message\ResponseFactory::class),
+            ref(ResponseFactoryInterface::class),
         ]);
 
     $container->set('oauth2_server.message_middleware.for_token_authentication')
@@ -42,7 +43,7 @@ return function (ContainerConfigurator $container) {
     $container->set('oauth2_server.message_factory_manager.for_token_authentication')
         ->class(Message\OAuth2MessageFactoryManager::class)
         ->args([
-            ref(\Http\Message\ResponseFactory::class),
+            ref(ResponseFactoryInterface::class),
         ]);
 
     //Factories
