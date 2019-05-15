@@ -21,7 +21,7 @@ use Jose\Component\Signature\Algorithm\HS256;
 use Jose\Component\Signature\JWSBuilder;
 use Jose\Component\Signature\Serializer\CompactSerializer;
 use OAuth2Framework\Component\JwtBearerGrant\JwtBearerGrantType;
-use OAuth2Framework\ServerBundle\Tests\Functional\DatabaseTestCase;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
  * @group ServerBundle
@@ -29,7 +29,7 @@ use OAuth2Framework\ServerBundle\Tests\Functional\DatabaseTestCase;
  * @group Grant
  * @group JwtBearer
  */
-class JwtBearerGrantTest extends DatabaseTestCase
+class JwtBearerGrantTest extends WebTestCase
 {
     protected function setUp(): void
     {

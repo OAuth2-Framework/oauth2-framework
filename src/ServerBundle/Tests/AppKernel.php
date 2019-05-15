@@ -13,8 +13,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Tests;
 
-use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
-use Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle;
 use Http\HttplugBundle\HttplugBundle;
 use Jose\Bundle\JoseFramework\JoseFrameworkBundle;
 use OAuth2Framework\ServerBundle\OAuth2FrameworkServerBundle;
@@ -41,8 +39,6 @@ final class AppKernel extends Kernel
             new TwigBundle(),
             new SensioFrameworkExtraBundle(),
             new HttplugBundle(),
-            new DoctrineBundle(),
-            new DoctrineFixturesBundle(),
 
             new OAuth2FrameworkServerBundle(),
             new TestBundle(),

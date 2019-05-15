@@ -24,6 +24,10 @@ interface AuthorizationCode extends \JsonSerializable
 
     public function markAsUsed(): void;
 
+    public function isRevoked(): bool;
+
+    public function markAsRevoked(): void;
+
     public function getQueryParameters(): array;
 
     /**

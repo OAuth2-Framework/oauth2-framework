@@ -17,15 +17,15 @@ use OAuth2Framework\Component\ClientRegistrationEndpoint\ClientRegistrationEndpo
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\Client\ClientRepository;
-use OAuth2Framework\ServerBundle\Tests\Functional\DatabaseTestCase;
 use Psr\Container\ContainerInterface;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
  * @group ServerBundle
  * @group Functional
  * @group ClientRegistration
  */
-class ClientRegistrationEndpointTest extends DatabaseTestCase
+class ClientRegistrationEndpointTest extends WebTestCase
 {
     protected function setUp(): void
     {

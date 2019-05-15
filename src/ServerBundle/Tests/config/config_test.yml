@@ -3,7 +3,6 @@ imports:
     - { resource: http.yml }
     - { resource: jose.yml }
     - { resource: oauth2_server.yml }
-    - { resource: doctrine.yml }
 
 framework:
     test: ~

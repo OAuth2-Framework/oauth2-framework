@@ -39,34 +39,19 @@ return function (ContainerConfigurator $container) {
         ->autowire()
         ->autoconfigure();
 
-    $container->load('OAuth2Framework\\ServerBundle\\Tests\\TestBundle\\DataFixtures\\', __DIR__.'/../../DataFixtures')
-        ->tag('doctrine.fixture.orm');
-
     $container->set(ClientRepository::class);
-
     $container->set(RefreshTokenRepository::class);
-
     $container->set(ResourceOwnerPasswordCredentialManager::class);
-
     $container->set(UserAccountRepository::class);
-
     $container->set(ResourceServerRepository::class);
-
     $container->set(TrustedIssuerRepository::class);
-
     $container->set(ConsentRepository::class);
     $container->set(UserProvider::class);
-
     $container->set(SymfonyUserAccountDiscovery::class);
-
     $container->set(AccessTokenRepository::class);
-
     $container->set(AuthorizationCodeRepository::class);
-
     $container->set(ScopeRepository::class);
-
     $container->set(InitialAccessTokenRepository::class);
-
     $container->set(Psr17Factory::class);
     $container->alias(ResponseFactoryInterface::class, Psr17Factory::class);
     $container->alias(RequestFactoryInterface::class, Psr17Factory::class);

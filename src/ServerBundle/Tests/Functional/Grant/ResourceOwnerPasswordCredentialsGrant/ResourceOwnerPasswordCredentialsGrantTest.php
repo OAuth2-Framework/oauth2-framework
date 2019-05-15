@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\ServerBundle\Tests\Functional\Grant\ResourceOwnerPasswordCredentialsGrant;
 
 use OAuth2Framework\Component\ResourceOwnerPasswordCredentialsGrant\ResourceOwnerPasswordCredentialsGrantType;
-use OAuth2Framework\ServerBundle\Tests\Functional\DatabaseTestCase;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
  * @group ServerBundle
@@ -22,7 +22,7 @@ use OAuth2Framework\ServerBundle\Tests\Functional\DatabaseTestCase;
  * @group Grant
  * @group ResourceOwnerPasswordCredentials
  */
-class ResourceOwnerPasswordCredentialsGrantTest extends DatabaseTestCase
+class ResourceOwnerPasswordCredentialsGrantTest extends WebTestCase
 {
     protected function setUp(): void
     {

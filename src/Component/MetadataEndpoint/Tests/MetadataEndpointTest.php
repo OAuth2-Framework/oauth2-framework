@@ -68,7 +68,7 @@ final class MetadataEndpointTest extends TestCase
             );
 
             if (\class_exists(JWSBuilder::class)) {
-                $jwsBuilder = new JWSBuilder(null, new AlgorithmManager([new None()]));
+                $jwsBuilder = new JWSBuilder(new AlgorithmManager([new None()]));
                 $key = new JWK([
                     'kty' => 'none',
                 ]);

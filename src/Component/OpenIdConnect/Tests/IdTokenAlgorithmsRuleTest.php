@@ -113,7 +113,6 @@ final class IdTokenAlgorithmsRuleTest extends TestCase
         $algorithm->name()->willReturn('XS512');
 
         return new JWSBuilder(
-            null,
             new AlgorithmManager([$algorithm->reveal()])
         );
     }
@@ -126,10 +125,9 @@ final class IdTokenAlgorithmsRuleTest extends TestCase
         $algorithm2->name()->willReturn('A512ECE+XS512');
 
         return new JWEBuilder(
-            null,
             new AlgorithmManager([$algorithm1->reveal()]),
             new AlgorithmManager([$algorithm2->reveal()]),
-            CompressionMethodManager::create([])
+            new CompressionMethodManager([])
         );
     }
 

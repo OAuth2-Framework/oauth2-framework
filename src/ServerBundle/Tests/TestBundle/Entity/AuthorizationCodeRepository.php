@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace OAuth2Framework\ServerBundle\Tests\TestBundle\Entity;
 
 use Assert\Assertion;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCode as AuthorizationCodeInterface;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeId;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeRepository as AuthorizationCodeRepositoryInterface;
@@ -24,7 +23,7 @@ use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use Psr\Cache\CacheItemPoolInterface;
 
-final class AuthorizationCodeRepository implements AuthorizationCodeRepositoryInterface, ServiceEntityRepositoryInterface
+final class AuthorizationCodeRepository implements AuthorizationCodeRepositoryInterface
 {
     /**
      * @var CacheItemPoolInterface
@@ -34,6 +33,7 @@ final class AuthorizationCodeRepository implements AuthorizationCodeRepositoryIn
     public function __construct(CacheItemPoolInterface $cache)
     {
         $this->cache = $cache;
+        $this->load();
     }
 
     public function find(AuthorizationCodeId $authorizationCodeId): ?AuthorizationCodeInterface
@@ -67,5 +67,100 @@ final class AuthorizationCodeRepository implements AuthorizationCodeRepositoryIn
             $metadata,
             $resourceServerId
         );
+    }
+
+    private function load(): void
+    {
+        foreach ($this->getData() as $datum) {
+            $authorizationCode = new AuthorizationCode(
+                new AuthorizationCodeId($datum['authorization_code_id']),
+                new ClientId($datum['client_id']),
+                new UserAccountId($datum['user_account_id']),
+                $datum['query_parameters'],
+                $datum['redirect_uri'],
+                $datum['expires_at'],
+                new DataBag($datum['parameter']),
+                new DataBag($datum['metadata']),
+                $datum['resource_server_id']
+            );
+            if ($datum['is_revoked']) {
+                $authorizationCode->markAsRevoked();
+            }
+            if ($datum['is_used']) {
+                $authorizationCode->markAsUsed();
+            }
+            $this->save($authorizationCode);
+        }
+    }
+
+    private function getData(): array
+    {
+        return [
+            [
+                'authorization_code_id' => 'VALID_AUTHORIZATION_CODE',
+                'client_id' => 'CLIENT_ID_3',
+                'user_account_id' => 'john.1',
+                'query_parameters' => [],
+                'redirect_uri' => 'http://localhost/callback',
+                'expires_at' => new \DateTimeImmutable('now +1 day'),
+                'parameter' => [],
+                'metadata' => [],
+                'resource_server_id' => null,
+                'is_revoked' => false,
+                'is_used' => false,
+            ],
+            [
+                'authorization_code_id' => 'VALID_AUTHORIZATION_CODE_FOR_CONFIDENTIAL_CLIENT',
+                'client_id' => 'CLIENT_ID_5',
+                'user_account_id' => 'john.1',
+                'query_parameters' => [],
+                'redirect_uri' => 'http://localhost/callback',
+                'expires_at' => new \DateTimeImmutable('now +1 day'),
+                'parameter' => [],
+                'metadata' => [],
+                'resource_server_id' => null,
+                'is_revoked' => false,
+                'is_used' => false,
+            ],
+            [
+                'authorization_code_id' => 'REVOKED_AUTHORIZATION_CODE',
+                'client_id' => 'CLIENT_ID_3',
+                'user_account_id' => 'john.1',
+                'query_parameters' => [],
+                'redirect_uri' => 'http://localhost/callback',
+                'expires_at' => new \DateTimeImmutable('now +1 day'),
+                'parameter' => [],
+                'metadata' => [],
+                'resource_server_id' => null,
+                'is_revoked' => true,
+                'is_used' => false,
+            ],
+            [
+                'authorization_code_id' => 'EXPIRED_AUTHORIZATION_CODE',
+                'client_id' => 'CLIENT_ID_3',
+                'user_account_id' => 'john.1',
+                'query_parameters' => [],
+                'redirect_uri' => 'http://localhost/callback',
+                'expires_at' => new \DateTimeImmutable('now -1 day'),
+                'parameter' => [],
+                'metadata' => [],
+                'resource_server_id' => null,
+                'is_revoked' => false,
+                'is_used' => false,
+            ],
+            [
+                'authorization_code_id' => 'USED_AUTHORIZATION_CODE',
+                'client_id' => 'CLIENT_ID_3',
+                'user_account_id' => 'john.1',
+                'query_parameters' => [],
+                'redirect_uri' => 'http://localhost/callback',
+                'expires_at' => new \DateTimeImmutable('now +1 day'),
+                'parameter' => [],
+                'metadata' => [],
+                'resource_server_id' => null,
+                'is_revoked' => false,
+                'is_used' => true,
+            ],
+        ];
     }
 }

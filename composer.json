@@ -19,7 +19,7 @@
         "php": "^7.2",
         "ext-json": "*",
         "beberlei/assert": "^3.2",
-        "doctrine/dbal": "^2.8",
+        "doctrine/common": "^2.8",
         "league/uri": "^5.3",
         "php-http/httplug-bundle": "^1.7",
         "psr/http-factory": "^1.0",
@@ -40,9 +40,6 @@
         "web-token/jwt-util-ecc": "^2.0@dev"
     },
     "require-dev": {
-        "doctrine/doctrine-bundle": "^1.9",
-        "doctrine/doctrine-fixtures-bundle": "^3.0",
-        "doctrine/orm": "^2.6",
         "nyholm/psr7": "^1.0",
         "php-coveralls/php-coveralls": "^2.0",
         "php-http/mock-client": "^1.1",
@@ -68,7 +65,9 @@
         "web-token/jwt-signature-algorithm-ecdsa": "^2.0@dev",
         "web-token/jwt-signature-algorithm-rsa": "^2.0@dev",
         "web-token/jwt-encryption-algorithm-rsa": "^2.0@dev",
-        "web-token/jwt-encryption-algorithm-aescbc": "^2.0@dev"
+        "web-token/jwt-encryption-algorithm-aescbc": "^2.0@dev",
+        "web-token/jwt-encryption-algorithm-aesgcm": "^2.0@dev",
+        "web-token/jwt-encryption-algorithm-aeskw": "^2.0@dev"
     },
     "replace": {
         "oauth2-framework/authorization-server-bundle": "self.version",

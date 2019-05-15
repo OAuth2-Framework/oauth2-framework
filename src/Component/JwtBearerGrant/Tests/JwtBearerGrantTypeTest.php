@@ -282,14 +282,13 @@ final class JwtBearerGrantTypeTest extends TestCase
         return new JWEDecrypter(
             new AlgorithmManager([new A256KW()]),
             new AlgorithmManager([new A256GCM()]),
-            CompressionMethodManager::create([new Deflate()])
+            new CompressionMethodManager([new Deflate()])
         );
     }
 
     private function getJwsBuilder(): JWSBuilder
     {
         return new JWSBuilder(
-            null,
             new AlgorithmManager([
                 new RS256(),
                 new ES256(),
@@ -300,21 +299,20 @@ final class JwtBearerGrantTypeTest extends TestCase
     private function getJweBuilder(): JWEBuilder
     {
         return new JWEBuilder(
-            null,
             new AlgorithmManager([new A256KW()]),
             new AlgorithmManager([new A256GCM()]),
-            CompressionMethodManager::create([new Deflate()])
+            new CompressionMethodManager([new Deflate()])
         );
     }
 
     private function getHeaderCheckerManager(): HeaderCheckerManager
     {
-        return HeaderCheckerManager::create([], [new JWSTokenSupport()]);
+        return new HeaderCheckerManager([], [new JWSTokenSupport()]);
     }
 
     private function getClaimCheckerManager(): ClaimCheckerManager
     {
-        return ClaimCheckerManager::create([
+        return new ClaimCheckerManager([
             new AudienceChecker('My OAuth2 Server', true),
             new IssuedAtChecker(),
             new NotBeforeChecker(),

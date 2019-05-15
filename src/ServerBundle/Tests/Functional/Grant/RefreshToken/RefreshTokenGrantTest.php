@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\ServerBundle\Tests\Functional\Grant\RefreshToken;
 
 use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenGrantType;
-use OAuth2Framework\ServerBundle\Tests\Functional\DatabaseTestCase;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
  * @group ServerBundle
@@ -22,7 +22,7 @@ use OAuth2Framework\ServerBundle\Tests\Functional\DatabaseTestCase;
  * @group Grant
  * @group RefreshToken
  */
-class RefreshTokenGrantTest extends DatabaseTestCase
+class RefreshTokenGrantTest extends WebTestCase
 {
     protected function setUp(): void
     {

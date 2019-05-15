@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\ServerBundle\Tests\Functional\Grant\Implicit;
 
 use OAuth2Framework\Component\ImplicitGrant\ImplicitGrantType;
-use OAuth2Framework\ServerBundle\Tests\Functional\DatabaseTestCase;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
  * @group ServerBundle
@@ -22,7 +22,7 @@ use OAuth2Framework\ServerBundle\Tests\Functional\DatabaseTestCase;
  * @group Grant
  * @group Implicit
  */
-class ImplicitGrantTest extends DatabaseTestCase
+class ImplicitGrantTest extends WebTestCase
 {
     protected function setUp(): void
     {

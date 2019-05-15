@@ -69,7 +69,7 @@ final class AuthorizationCodeGrantType implements GrantType
         $parameters = RequestBodyParser::parseFormUrlEncoded($request);
         $authorizationCode = $this->getAuthorizationCode($parameters['code']);
 
-        if (true === $authorizationCode->isUsed()) {
+        if (true === $authorizationCode->isUsed() || true === $authorizationCode->isRevoked()) {
             throw OAuth2Error::invalidGrant('The parameter "code" is invalid.');
         }
 

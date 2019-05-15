@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\ServerBundle\Tests\Functional\Grant\AuthorizationCode;
 
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeGrantType;
-use OAuth2Framework\ServerBundle\Tests\Functional\DatabaseTestCase;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
  * @group ServerBundle
@@ -22,7 +22,7 @@ use OAuth2Framework\ServerBundle\Tests\Functional\DatabaseTestCase;
  * @group Grant
  * @group AuthorizationCode
  */
-class AuthorizationCodeGrantTest extends DatabaseTestCase
+class AuthorizationCodeGrantTest extends WebTestCase
 {
     protected function setUp(): void
     {
@@ -122,6 +122,18 @@ class AuthorizationCodeGrantTest extends DatabaseTestCase
     {
         $client = static::createClient();
         $client->request('POST', '/token/get', ['grant_type' => 'authorization_code', 'redirect_uri' => 'http://localhost/callback', 'code' => 'REVOKED_AUTHORIZATION_CODE', 'client_id' => 'CLIENT_ID_3', 'client_secret' => 'secret'], [], ['HTTPS' => 'on'], null);
+        $response = $client->getResponse();
+        static::assertEquals(400, $response->getStatusCode());
+        static::assertEquals('{"error":"invalid_grant","error_description":"The parameter \"code\" is invalid."}', $response->getContent());
+    }
+
+    /**
+     * @test
+     */
+    public function theAuthorizationCodeHasAlreadyBeenUsed()
+    {
+        $client = static::createClient();
+        $client->request('POST', '/token/get', ['grant_type' => 'authorization_code', 'redirect_uri' => 'http://localhost/callback', 'code' => 'USED_AUTHORIZATION_CODE', 'client_id' => 'CLIENT_ID_3', 'client_secret' => 'secret'], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
         static::assertEquals(400, $response->getStatusCode());
         static::assertEquals('{"error":"invalid_grant","error_description":"The parameter \"code\" is invalid."}', $response->getContent());

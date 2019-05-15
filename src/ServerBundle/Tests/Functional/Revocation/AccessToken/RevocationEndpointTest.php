@@ -18,8 +18,8 @@ use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use OAuth2Framework\Component\TokenRevocationEndpoint\TokenRevocationEndpoint;
-use OAuth2Framework\ServerBundle\Tests\Functional\DatabaseTestCase;
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\AccessToken;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
  * @group ServerBundle
@@ -27,7 +27,7 @@ use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\AccessToken;
  * @group Grant
  * @group Revocation
  */
-class RevocationEndpointTest extends DatabaseTestCase
+class RevocationEndpointTest extends WebTestCase
 {
     protected function setUp(): void
     {

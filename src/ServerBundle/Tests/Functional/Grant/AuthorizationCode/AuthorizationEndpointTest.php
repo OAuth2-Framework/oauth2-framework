@@ -15,9 +15,9 @@ namespace OAuth2Framework\ServerBundle\Tests\Functional\Grant\AuthorizationCode;
 
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeGrantType;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
-use OAuth2Framework\ServerBundle\Tests\Functional\DatabaseTestCase;
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\UserAccount;
 use Symfony\Bundle\FrameworkBundle\Client;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\BrowserKit\Cookie;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
@@ -27,7 +27,7 @@ use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
  * @group Grant
  * @group AuthorizationCode
  */
-class AuthorizationEndpointTest extends DatabaseTestCase
+class AuthorizationEndpointTest extends WebTestCase
 {
     protected function setUp(): void
     {

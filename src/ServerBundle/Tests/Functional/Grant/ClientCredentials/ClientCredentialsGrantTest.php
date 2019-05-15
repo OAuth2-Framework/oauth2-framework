@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\ServerBundle\Tests\Functional\Grant\ClientCredentials;
 
 use OAuth2Framework\Component\ClientCredentialsGrant\ClientCredentialsGrantType;
-use OAuth2Framework\ServerBundle\Tests\Functional\DatabaseTestCase;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
  * @group ServerBundle
@@ -22,7 +22,7 @@ use OAuth2Framework\ServerBundle\Tests\Functional\DatabaseTestCase;
  * @group Grant
  * @group ClientCredentials
  */
-class ClientCredentialsGrantTest extends DatabaseTestCase
+class ClientCredentialsGrantTest extends WebTestCase
 {
     protected function setUp(): void
     {

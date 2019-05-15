@@ -340,7 +340,7 @@ class AuthorizationRequestLoader
 
     private function getClientKeySet(Client $client): JWKSet
     {
-        $keyset = JWKSet::createFromKeys([]);
+        $keyset = new JWKSet([]);
         if ($client->has('jwks')) {
             $jwks = JWKSet::createFromJson($client->get('jwks'));
             foreach ($jwks as $jwk) {

@@ -324,7 +324,7 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
         $client->get('token_endpoint_auth_method')->willReturn('private_key_jwt');
         $client->getTokenEndpointAuthenticationMethod()->willReturn('private_key_jwt');
         $client->has('jwks')->willReturn(true);
-        $client->get('jwks')->willReturn(\Safe\json_decode('{"keys":[{"kty":"oct","k":"U0VDUkVU"}]}', true));
+        $client->get('jwks')->willReturn(\Safe\json_decode('{"keys":[{"kty":"oct","k":"U0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVU"}]}', true));
         $client->areClientCredentialsExpired()->willReturn(false);
 
         $request = $this->buildRequest([
@@ -358,7 +358,7 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
         $client->getTokenEndpointAuthenticationMethod()->willReturn('client_secret_jwt');
         $client->has('jwks')->willReturn(false);
         $client->has('client_secret')->willReturn(true);
-        $client->get('client_secret')->willReturn('SECRET');
+        $client->get('client_secret')->willReturn('SECRETSECRETSECRETSECRETSECRETSECRETSECRETSECRETSECRETSECRETSECRETSECRETSECRETSECRETSECRETSECRETSECRETSECRET');
         $client->areClientCredentialsExpired()->willReturn(false);
 
         $request = $this->buildRequest([
@@ -488,12 +488,12 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
         $method = $this->getMethod();
         $commandParameters = new DataBag([
             'token_endpoint_auth_method' => 'private_key_jwt',
-            'jwks' => \Safe\json_decode('{"keys":[{"kty":"oct","k":"U0VDUkVU"}]}', true),
+            'jwks' => \Safe\json_decode('{"keys":[{"kty":"oct","k":"U0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVU"}]}', true),
         ]);
         $validatedParameters = $method->checkClientConfiguration($commandParameters, new DataBag([]));
 
         static::assertTrue($validatedParameters->has('jwks'));
-        static::assertEquals(\Safe\json_decode('{"keys":[{"kty":"oct","k":"U0VDUkVU"}]}', true), $validatedParameters->get('jwks'));
+        static::assertEquals(\Safe\json_decode('{"keys":[{"kty":"oct","k":"U0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVU"}]}', true), $validatedParameters->get('jwks'));
     }
 
     /**
@@ -521,8 +521,8 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
         if (null === $this->method) {
             $this->method = new ClientAssertionJwt(
                 new JWSVerifier(new AlgorithmManager([new HS256(), new RS256()])),
-                HeaderCheckerManager::create([], [new JWSTokenSupport()]),
-                ClaimCheckerManager::create([]),
+                new HeaderCheckerManager([], [new JWSTokenSupport()]),
+                new ClaimCheckerManager([]),
                 3600
             );
         }
@@ -536,15 +536,15 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
 
         $method->enableEncryptedAssertions(
             new JWELoader(
-                JWESerializerManager::create([new \Jose\Component\Encryption\Serializer\CompactSerializer()]),
+                new JWESerializerManager([new \Jose\Component\Encryption\Serializer\CompactSerializer()]),
                 new JWEDecrypter(
                     new AlgorithmManager([new RSAOAEP256()]),
                     new AlgorithmManager([new A256CBCHS512()]),
-                    CompressionMethodManager::create([new Deflate()])
+                    new CompressionMethodManager([new Deflate()])
                 ),
-                HeaderCheckerManager::create([], [new JWETokenSupport()])
+                new HeaderCheckerManager([], [new JWETokenSupport()])
             ),
-            JWKSet::createFromKeys([new JWK([
+            new JWKSet([new JWK([
                 'kty' => 'RSA',
                 'kid' => 'samwise.gamgee@hobbiton.example',
                 'use' => 'enc',
@@ -572,7 +572,7 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
         $trustedIssuer->name()->willReturn('TRUSTED_ISSUER');
         $trustedIssuer->getAllowedAssertionTypes()->willReturn(['urn:ietf:params:oauth:client-assertion-type:jwt-bearer']);
         $trustedIssuer->getAllowedSignatureAlgorithms()->willReturn(['RS256']);
-        $trustedIssuer->getJWKSet()->willReturn(JWKSet::createFromKeys([new JWK([
+        $trustedIssuer->getJWKSet()->willReturn(new JWKSet([new JWK([
             'kty' => 'RSA',
             'n' => '33WRDEG5rN7daMgI2N5H8cPwTeQPOnz34uG2fe0yKyHjJDGE2XoESRpu5LelSPdYM_r4AWMFWoDWPd-7xaq7uFEkM8c6zaQIgj4uEiq-pBMvH-e805SFbYOKYqfQe4eeXAk4OrQwcUkSrlGskf6YUaw_3IwbPgzEDTgTZFVtQlE',
             'e' => 'AQAB',
@@ -598,7 +598,6 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
     private function createValidClientAssertionSignedByTheClient(): JWS
     {
         $jwsBuilder = new JWSBuilder(
-            null,
             new AlgorithmManager([
                 new HS256(),
             ])
@@ -613,7 +612,7 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
                 'exp' => \time() + 3600,
             ]))
             ->addSignature(
-                JWK::createFromJson('{"kty":"oct","k":"U0VDUkVU"}'),
+                JWK::createFromJson('{"kty":"oct","k":"U0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVU"}'),
                 ['alg' => 'HS256']
             )
             ->build();
@@ -622,7 +621,6 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
     private function createValidClientAssertionSignedByATrustedIssuer(): JWS
     {
         $jwsBuilder = new JWSBuilder(
-            null,
             new AlgorithmManager([
                 new RS256(),
             ])
@@ -656,7 +654,6 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
     private function createInvalidClientAssertionSignedByTheClient(): JWS
     {
         $jwsBuilder = new JWSBuilder(
-            null,
             new AlgorithmManager([
                 new HS256(),
             ])
@@ -666,7 +663,7 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
             ->create()
             ->withPayload(JsonConverter::encode([]))
             ->addSignature(
-                JWK::createFromJson('{"kty":"oct","k":"U0VDUkVU"}'),
+                JWK::createFromJson('{"kty":"oct","k":"U0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVU"}'),
                 ['alg' => 'HS256']
             )
             ->build();
@@ -675,7 +672,6 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
     private function createInvalidClientAssertionSignedByATrustedIssuer(): JWS
     {
         $jwsBuilder = new JWSBuilder(
-            null,
             new AlgorithmManager([
                 new RS256(),
             ])
@@ -705,10 +701,9 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
     private function encryptAssertion(string $assertion): string
     {
         $jweBuilder = new JWEBuilder(
-            null,
             new AlgorithmManager([new RSAOAEP256()]),
             new AlgorithmManager([new A256CBCHS512()]),
-            CompressionMethodManager::create([new Deflate()])
+            new CompressionMethodManager([new Deflate()])
         );
         $jwe = $jweBuilder->create()
             ->withPayload($assertion)
@@ -723,7 +718,7 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
             ]))
             ->build();
 
-        $serializer = new \Jose\Component\Encryption\Serializer\CompactSerializer(null);
+        $serializer = new \Jose\Component\Encryption\Serializer\CompactSerializer();
 
         return $serializer->serialize($jwe, 0);
     }
