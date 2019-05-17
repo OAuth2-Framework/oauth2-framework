@@ -14,8 +14,10 @@ declare(strict_types=1);
 namespace OAuth2Framework\ServerBundle\Component\Endpoint\Authorization;
 
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationEndpoint;
+use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequestStorage;
 use OAuth2Framework\Component\AuthorizationEndpoint\Consent\ConsentRepository;
 use OAuth2Framework\Component\AuthorizationEndpoint\Extension\Extension;
+use OAuth2Framework\Component\AuthorizationEndpoint\Hook\AuthorizationEndpointHook;
 use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\ParameterChecker;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\ResponseMode;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType\ResponseType;
@@ -71,25 +73,23 @@ class AuthorizationEndpointSource implements Component
         $container->registerForAutoconfiguration(ParameterChecker::class)->addTag('oauth2_server_authorization_parameter_checker');
         $container->registerForAutoconfiguration(UserAuthenticationChecker::class)->addTag('oauth2_server_user_authentication_checker');
         $container->registerForAutoconfiguration(Extension::class)->addTag('oauth2_server_consent_screen_extension');
+        $container->registerForAutoconfiguration(AuthorizationEndpointHook::class)->addTag('oauth2_server_authorization_endpint_hook');
 
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint/authorization'));
         $loader->load('authorization.php');
 
+        $container->setAlias(AuthorizationRequestStorage::class, $config['authorization_request_storage']);
         $container->setAlias(UserAccountDiscovery::class, $config['user_discovery']);
         if (null !== ($config['consent_repository'])) {
             $container->setAlias(ConsentRepository::class, $config['consent_repository']);
         }
 
         $container->setParameter('oauth2_server.endpoint.authorization.authorization_endpoint_path', $config['authorization_endpoint_path']);
-        $container->setParameter('oauth2_server.endpoint.authorization.login_endpoint_path', $config['login_endpoint_path']);
-        $container->setParameter('oauth2_server.endpoint.authorization.consent_endpoint_path', $config['consent_endpoint_path']);
-        $container->setParameter('oauth2_server.endpoint.authorization.select_account_endpoint_path', $config['select_account_endpoint_path']);
-        $container->setParameter('oauth2_server.endpoint.authorization.process_endpoint_path', $config['process_endpoint_path']);
+        $container->setParameter('oauth2_server.endpoint.authorization.login_template', $config['login_template']);
+        $container->setParameter('oauth2_server.endpoint.authorization.consent_template', $config['consent_template']);
+        //$container->setParameter('oauth2_server.endpoint.authorization.select_account_template', $config['select_account_template']);
         $container->setParameter('oauth2_server.endpoint.authorization.host', $config['host']);
         $container->setParameter('oauth2_server.endpoint.authorization.enforce_state', $config['enforce_state']);
-        $container->setAlias('oauth2_server.endpoint.authorization.handler.consent', $config['consent_handler']);
-        $container->setAlias('oauth2_server.endpoint.authorization.handler.login', $config['login_handler']);
-        $container->setAlias('oauth2_server.endpoint.authorization.handler.select_account', $config['select_account_handler']);
 
         if ($container->hasAlias('oauth2_server.http_client')) {
             $loader->load('sector_identifier_uri.php');
@@ -113,22 +113,22 @@ class AuthorizationEndpointSource implements Component
             ->info('The path to the authorization endpoint.')
             ->defaultValue('/authorize')
             ->end()
-            ->scalarNode('login_endpoint_path')
+            ->scalarNode('authorization_request_storage')
+            ->info('The authorization request storage.')
+            ->isRequired()
+            ->end()
+            ->scalarNode('login_template')
             ->info('The path to the login endpoint.')
-            ->defaultValue('/authorize/{authorization_id}/login')
+            ->defaultValue('')
             ->end()
-            ->scalarNode('consent_endpoint_path')
+            ->scalarNode('consent_template')
             ->info('The path to the consent endpoint.')
-            ->defaultValue('/authorize/{authorization_id}/consent')
+            ->defaultValue('OAuth2FrameworkBundle/authorization/consent.html.twig')
             ->end()
-            ->scalarNode('select_account_endpoint_path')
+            /*->scalarNode('select_account_template')
             ->info('The path to the select account endpoint.')
-            ->defaultValue('/authorize/{authorization_id}/select_account')
-            ->end()
-            ->scalarNode('process_endpoint_path')
-            ->info('The path to the process endpoint.')
-            ->defaultValue('/authorize/{authorization_id}/process')
-            ->end()
+            ->defaultValue('@OAuth2FrameworkBundle/authorization/select_account.html.twig')
+            ->end()*/
             ->scalarNode('host')
             ->info('If set, the routes will be limited to that host')
             ->defaultValue('')
@@ -146,18 +146,6 @@ class AuthorizationEndpointSource implements Component
             ->scalarNode('enforce_state')
             ->info('If true the "state" parameter is mandatory (recommended).')
             ->defaultFalse()
-            ->end()
-            ->scalarNode('consent_handler')
-            ->info('The consent handler.')
-            ->isRequired()
-            ->end()
-            ->scalarNode('login_handler')
-            ->info('The login handler.')
-            ->isRequired()
-            ->end()
-            ->scalarNode('select_account_handler')
-            ->info('The account selection handler.')
-            ->isRequired()
             ->end()
             ->end();
 

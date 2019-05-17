@@ -13,23 +13,22 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\AuthorizationEndpoint;
 
-use Base64Url\Base64Url;
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequestLoader;
 use OAuth2Framework\Component\AuthorizationEndpoint\Consent\ConsentRepository;
 use OAuth2Framework\Component\AuthorizationEndpoint\Exception\OAuth2AuthorizationException;
+use OAuth2Framework\Component\AuthorizationEndpoint\Extension\ExtensionManager;
+use OAuth2Framework\Component\AuthorizationEndpoint\Hook\AuthorizationEndpointHook;
 use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\ParameterCheckerManager;
 use OAuth2Framework\Component\AuthorizationEndpoint\User\UserAccountDiscovery;
-use OAuth2Framework\Component\AuthorizationEndpoint\User\UserAuthenticationCheckerManager;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
-use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Throwable;
 
-abstract class AuthorizationEndpoint extends AbstractEndpoint
+abstract class AuthorizationEndpoint
 {
     /**
      * @var AuthorizationRequestLoader
@@ -47,116 +46,130 @@ abstract class AuthorizationEndpoint extends AbstractEndpoint
     private $userAccountDiscovery;
 
     /**
-     * @var UserAuthenticationCheckerManager
-     */
-    private $userCheckerManager;
-
-    /**
      * @var ConsentRepository|null
      */
     private $consentRepository;
 
-    public function __construct(ResponseFactoryInterface $responseFactory, AuthorizationRequestLoader $authorizationRequestLoader, ParameterCheckerManager $parameterCheckerManager, UserAccountDiscovery $userAccountDiscovery, UserAuthenticationCheckerManager $userCheckerManager, SessionInterface $session, ?ConsentRepository $consentRepository)
+    /**
+     * @var AuthorizationEndpointHook[]
+     */
+    private $hooks = [];
+    /**
+     * @var ResponseFactoryInterface
+     */
+    private $responseFactory;
+
+    /**
+     * @var ExtensionManager
+     */
+    private $extensionManager;
+    /**
+     * @var AuthorizationRequestStorage
+     */
+    private $authorizationRequestStorage;
+
+    public function __construct(ResponseFactoryInterface $responseFactory, AuthorizationRequestLoader $authorizationRequestLoader, ParameterCheckerManager $parameterCheckerManager, UserAccountDiscovery $userAccountDiscovery, ?ConsentRepository $consentRepository, ExtensionManager $extensionManager, AuthorizationRequestStorage $authorizationRequestStorage)
     {
-        parent::__construct($responseFactory, $session);
         $this->authorizationRequestLoader = $authorizationRequestLoader;
         $this->parameterCheckerManager = $parameterCheckerManager;
         $this->userAccountDiscovery = $userAccountDiscovery;
-        $this->userCheckerManager = $userCheckerManager;
         $this->consentRepository = $consentRepository;
+        $this->responseFactory = $responseFactory;
+        $this->extensionManager = $extensionManager;
+        $this->authorizationRequestStorage = $authorizationRequestStorage;
+    }
+
+    public function add(AuthorizationEndpointHook $hook): void
+    {
+        $this->hooks[] = $hook;
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $authorization = $this->loadAuthorization($request);
+        $authorizationRequestId = $this->getAuthorizationRequestId($request);
+        $authorizationRequest = $this->authorizationRequestStorage->remove($authorizationRequestId);
 
         try {
-            $userAccount = $this->userAccountDiscovery->getCurrentAccount();
-
-            if (null !== $userAccount) {
-                return $this->processWithAuthenticatedUser($authorization, $userAccount);
-            } else {
-                return $this->processWithUnauthenticatedUser($authorization);
+            if (null === $authorizationRequest) {
+                $authorizationRequest = $this->loadAuthorization($request);
+                $userAccount = $this->userAccountDiscovery->getCurrentAccount();
+                if (null !== $userAccount) {
+                    $authorizationRequest->setUserAccount($userAccount);
+                }
             }
+
+            foreach ($this->hooks as $hook) {
+                $response = $hook->handle($request, $authorizationRequest, $authorizationRequestId);
+                if (null !== $response) {
+                    $this->authorizationRequestStorage->set($authorizationRequestId, $authorizationRequest);
+
+                    return $response;
+                }
+            }
+            if ($authorizationRequest->hasUserAccount()) {
+                return $this->processWithAuthenticatedUser($request, $authorizationRequestId, $authorizationRequest);
+            }
+
+            return $this->processWithLoginResponse($request, $authorizationRequestId, $authorizationRequest);
         } catch (OAuth2AuthorizationException $e) {
             throw $e;
         } catch (OAuth2Error $e) {
-            throw new OAuth2AuthorizationException($e->getMessage(), $e->getErrorDescription(), $authorization, $e);
-        } catch (\Throwable $e) {
-            throw new OAuth2AuthorizationException(OAuth2Error::ERROR_INVALID_REQUEST, $e->getMessage(), $authorization, $e);
+            throw new OAuth2AuthorizationException($e->getMessage(), $e->getErrorDescription(), $authorizationRequest, $e);
+        } catch (Throwable $e) {
+            throw new OAuth2AuthorizationException(OAuth2Error::ERROR_INVALID_REQUEST, $e->getMessage(), $authorizationRequest, $e);
         }
     }
 
-    private function processWithAuthenticatedUser(AuthorizationRequest $authorization, UserAccount $userAccount): ResponseInterface
+    private function processWithAuthenticatedUser(ServerRequestInterface $request, string $authorizationRequestId, AuthorizationRequest $authorizationRequest): ResponseInterface
     {
-        $authorization->setUserAccount($userAccount);
-        $isAuthenticationNeeded = $this->userCheckerManager->isAuthenticationNeeded($authorization);
-        $isConsentNeeded = null !== $this->consentRepository || !$this->consentRepository->hasConsentBeenGiven($authorization);
-
-        switch (true) {
-            case $authorization->hasPrompt('none'):
-                if ($isConsentNeeded) {
-                    throw new OAuth2AuthorizationException(OAuth2Error::ERROR_INTERACTION_REQUIRED, 'The resource owner consent is required.', $authorization);
-                }
-                $authorization->allow();
-                $routeName = 'oauth2_server_process_endpoint';
-                break;
-            case $authorization->hasPrompt('select_account'):
-                $routeName = 'oauth2_server_select_account_endpoint';
-                break;
-            case $authorization->hasPrompt('login') || $isAuthenticationNeeded:
-                $routeName = 'oauth2_server_login_endpoint';
-                break;
-            case $authorization->hasPrompt('consent') || $isConsentNeeded:
-                $routeName = 'oauth2_server_consent_endpoint';
-                break;
-            default:
-                $routeName = 'oauth2_server_consent_endpoint';
-                break;
-        }
-
-        $authorizationId = Base64Url::encode(random_bytes(64));
-        $this->saveAuthorization($authorizationId, $authorization);
-        $redirectTo = $this->getRouteFor($routeName, $authorizationId);
-
-        return $this->createRedirectResponse($redirectTo);
-    }
-
-    private function processWithUnauthenticatedUser(AuthorizationRequest $authorization): ResponseInterface
-    {
-        if ($authorization->hasPrompt('none')) {
-            $isConsentNeeded = null !== $this->consentRepository || !$this->consentRepository->hasConsentBeenGiven($authorization);
+        if (!$authorizationRequest->hasConsentBeenGiven()) {
+            $isConsentNeeded = null !== $this->consentRepository || !$this->consentRepository->hasConsentBeenGiven($authorizationRequest);
             if ($isConsentNeeded) {
-                throw new OAuth2AuthorizationException(OAuth2Error::ERROR_LOGIN_REQUIRED, 'The resource owner is not logged in.', $authorization);
+                return $this->processWithConsentResponse($request, $authorizationRequestId, $authorizationRequest);
             }
-            $authorization->allow();
-            $routeName = 'oauth2_server_process_endpoint';
-        } else {
-            $routeName = 'oauth2_server_login_endpoint';
         }
 
-        $authorizationId = Base64Url::encode(random_bytes(64));
-        $this->saveAuthorization($authorizationId, $authorization);
-        $redirectTo = $this->getRouteFor($routeName, $authorizationId);
+        return $this->processWithAuthorization($request, $authorizationRequest);
+    }
 
-        return $this->createRedirectResponse($redirectTo);
+    private function processWithAuthorization(ServerRequestInterface $request, AuthorizationRequest $authorizationRequest): ResponseInterface
+    {
+        $this->extensionManager->process($request, $authorizationRequest);
+        if (!$authorizationRequest->isAuthorized()) {
+            throw new OAuth2AuthorizationException(OAuth2Error::ERROR_ACCESS_DENIED, 'The resource owner denied access to your client.', $authorizationRequest);
+        }
+        $responseType = $authorizationRequest->getResponseType();
+        $responseType->preProcess($authorizationRequest);
+        $responseType->process($authorizationRequest);
+
+        return $this->buildResponse($authorizationRequest);
     }
 
     private function loadAuthorization(ServerRequestInterface $request): AuthorizationRequest
     {
-        try {
-            $authorization = $this->authorizationRequestLoader->load($request);
-            $this->parameterCheckerManager->check($authorization);
+        $authorization = $this->authorizationRequestLoader->load($request);
+        $this->parameterCheckerManager->check($authorization);
 
-            return $authorization;
-        } catch (OAuth2AuthorizationException $e) {
-            throw $e;
-        } catch (OAuth2Error $e) {
-            throw $e;
-        } catch (\Throwable $e) {
-            throw OAuth2Error::invalidRequest($e->getMessage());
-        }
+        return $authorization;
     }
 
-    abstract protected function getRouteFor(string $action, string $authorizationId): string;
+    private function buildResponse(AuthorizationRequest $authorization): ResponseInterface
+    {
+        $response = $authorization->getResponseMode()->buildResponse(
+            $this->responseFactory->createResponse(),
+            $authorization->getRedirectUri(),
+            $authorization->getResponseParameters()
+        );
+        foreach ($authorization->getResponseHeaders() as $k => $v) {
+            $response = $response->withHeader($k, $v);
+        }
+
+        return $response;
+    }
+
+    abstract protected function processWithConsentResponse(ServerRequestInterface $request, string $authorizationRequestId, AuthorizationRequest $authorizationRequest): ResponseInterface;
+
+    abstract protected function processWithLoginResponse(ServerRequestInterface $request, string $authorizationRequestId, AuthorizationRequest $authorizationRequest): ResponseInterface;
+
+    abstract protected function getAuthorizationRequestId(ServerRequestInterface $request): string;
 }

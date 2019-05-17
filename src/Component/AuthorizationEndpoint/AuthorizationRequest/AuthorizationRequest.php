@@ -21,13 +21,17 @@ use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServer;
 use OAuth2Framework\Component\Core\TokenType\TokenType;
 use OAuth2Framework\Component\Core\UserAccount\UserAccount;
+use function Safe\sprintf;
 
 class AuthorizationRequest
 {
+    public const CONSENT_NOT_GIVEN = 'consent_not_given';
+    public const CONSENT_ALLOW = 'consent_allow';
+    public const CONSENT_DENY = 'consent_deny';
     /**
-     * @var bool
+     * @var string
      */
-    private $authorized;
+    private $authorized = self::CONSENT_NOT_GIVEN;
 
     /**
      * @var Client
@@ -89,6 +93,11 @@ class AuthorizationRequest
      */
     private $resourceServer;
 
+    /**
+     * @var array
+     */
+    private $attributes = [];
+
     public function __construct(Client $client, array $queryParameters)
     {
         $this->client = $client;
@@ -111,9 +120,29 @@ class AuthorizationRequest
      */
     public function getQueryParam(string $param)
     {
-        Assertion::true($this->hasQueryParam($param), \Safe\sprintf('Invalid parameter "%s".', $param));
+        Assertion::true($this->hasQueryParam($param), sprintf('Invalid parameter "%s".', $param));
 
         return $this->queryParameters[$param];
+    }
+
+    public function getAttributes(): array
+    {
+        return $this->attributes;
+    }
+
+    public function hasAttribute(string $param): bool
+    {
+        return \array_key_exists($param, $this->attributes);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAttribute(string $param)
+    {
+        Assertion::true($this->hasQueryParam($param), sprintf('Invalid attribute "%s".', $param));
+
+        return $this->attributes[$param];
     }
 
     public function getClient(): Client
@@ -210,7 +239,7 @@ class AuthorizationRequest
      */
     public function getResponseParameter(string $param)
     {
-        Assertion::true($this->hasResponseParameter($param), \Safe\sprintf('Invalid response parameter "%s".', $param));
+        Assertion::true($this->hasResponseParameter($param), sprintf('Invalid response parameter "%s".', $param));
 
         return $this->getResponseParameters()[$param];
     }
@@ -265,17 +294,22 @@ class AuthorizationRequest
 
     public function isAuthorized(): bool
     {
-        return $this->authorized;
+        return self::CONSENT_ALLOW === $this->authorized;
+    }
+
+    public function hasConsentBeenGiven(): bool
+    {
+        return self::CONSENT_NOT_GIVEN !== $this->authorized;
     }
 
     public function allow(): void
     {
-        $this->authorized = true;
+        $this->authorized = self::CONSENT_ALLOW;
     }
 
     public function deny(): void
     {
-        $this->authorized = false;
+        $this->authorized = self::CONSENT_DENY;
     }
 
     public function getResourceServer(): ?ResourceServer

@@ -46,6 +46,7 @@ class AuthorizationEndpointTest extends WebTestCase
             'client_id' => 'CLIENT_ID_2',
             'redirect_uri' => 'https://example.com/cb/?foo=bar',
             'response_type' => 'code',
+            'state' => '__STATE__',
         ]);
         $client = static::createClient();
         $this->logIn(
@@ -113,7 +114,7 @@ class AuthorizationEndpointTest extends WebTestCase
         $firewallName = 'main';
         $firewallContext = 'main';
 
-        $token = new UsernamePasswordToken($userAccount->getUsername(), null, $firewallName, ['ROLE_ADMIN']);
+        $token = new UsernamePasswordToken($userAccount, null, $firewallName, ['ROLE_ADMIN']);
         $session->set('_security_'.$firewallContext, serialize($token));
         $session->save();
 

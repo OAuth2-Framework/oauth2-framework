@@ -12,6 +12,8 @@ declare(strict_types=1);
  */
 
 use OAuth2Framework\Component\AuthorizationEndpoint;
+use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequestStorage;
+use OAuth2Framework\Component\AuthorizationEndpoint\Extension\ExtensionManager;
 use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker;
 use OAuth2Framework\Component\Core\Client\ClientRepository;
 use OAuth2Framework\Component\Core\Message;
@@ -21,7 +23,7 @@ use Psr\Http\Message\ResponseFactoryInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Templating\EngineInterface;
 
 return function (ContainerConfigurator $container) {
     $container = $container->services()->defaults()
@@ -37,10 +39,13 @@ return function (ContainerConfigurator $container) {
             ref(AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequestLoader::class),
             ref(ParameterChecker\ParameterCheckerManager::class),
             ref(AuthorizationEndpoint\User\UserAccountDiscovery::class),
-            ref(AuthorizationEndpoint\User\UserAuthenticationCheckerManager::class),
-            ref(SessionInterface::class),
             ref(AuthorizationEndpoint\Consent\ConsentRepository::class)->nullOnInvalid(),
-            ref(RouterInterface::class),
+            ref(ExtensionManager::class),
+            ref(AuthorizationRequestStorage::class),
+            ref(SessionInterface::class),
+            ref(EngineInterface::class),
+            '%oauth2_server.endpoint.authorization.login_template%',
+            '%oauth2_server.endpoint.authorization.consent_template%',
         ]);
 
     $container->set('authorization_endpoint_pipe')
@@ -49,71 +54,6 @@ return function (ContainerConfigurator $container) {
             ref('oauth2_server.message_middleware.for_authorization_endpoint'),
             ref(AuthorizationEndpoint\Middleware\AuthorizationExceptionMiddleware::class),
             ref(Controller\AuthorizationEndpointController::class),
-        ]])
-        ->tag('controller.service_arguments');
-
-    $container->set(Controller\ConsentEndpointController::class)
-        ->args([
-            ref(ResponseFactoryInterface::class),
-            ref(SessionInterface::class),
-            ref('oauth2_server.endpoint.authorization.handler.consent'),
-            ref(RouterInterface::class),
-        ]);
-    $container->set('consent_endpoint_pipe')
-        ->class(Middleware\Pipe::class)
-        ->args([[
-            ref('oauth2_server.message_middleware.for_authorization_endpoint'),
-            ref(AuthorizationEndpoint\Middleware\AuthorizationExceptionMiddleware::class),
-            ref(Controller\ConsentEndpointController::class),
-        ]])
-        ->tag('controller.service_arguments');
-
-    $container->set(Controller\LoginEndpointController::class)
-        ->args([
-            ref(ResponseFactoryInterface::class),
-            ref(SessionInterface::class),
-            ref('oauth2_server.endpoint.authorization.handler.login'),
-            ref(RouterInterface::class),
-        ]);
-    $container->set('login_endpoint_pipe')
-        ->class(Middleware\Pipe::class)
-        ->args([[
-            ref('oauth2_server.message_middleware.for_authorization_endpoint'),
-            ref(AuthorizationEndpoint\Middleware\AuthorizationExceptionMiddleware::class),
-            ref(Controller\LoginEndpointController::class),
-        ]])
-        ->tag('controller.service_arguments');
-
-    $container->set(Controller\ProcessEndpointController::class)
-        ->args([
-            ref(ResponseFactoryInterface::class),
-            ref(SessionInterface::class),
-            ref(AuthorizationEndpoint\Extension\ExtensionManager::class),
-            ref(RouterInterface::class),
-        ]);
-
-    $container->set('process_endpoint_pipe')
-        ->class(Middleware\Pipe::class)
-        ->args([[
-            ref('oauth2_server.message_middleware.for_authorization_endpoint'),
-            ref(AuthorizationEndpoint\Middleware\AuthorizationExceptionMiddleware::class),
-            ref(Controller\ProcessEndpointController::class),
-        ]])
-        ->tag('controller.service_arguments');
-
-    $container->set(Controller\SelectAccountEndpointController::class)
-        ->args([
-            ref(ResponseFactoryInterface::class),
-            ref(SessionInterface::class),
-            ref('oauth2_server.endpoint.authorization.handler.select_account'),
-            ref(RouterInterface::class),
-        ]);
-    $container->set('select_accourt_endpoint_pipe')
-        ->class(Middleware\Pipe::class)
-        ->args([[
-            ref('oauth2_server.message_middleware.for_authorization_endpoint'),
-            ref(AuthorizationEndpoint\Middleware\AuthorizationExceptionMiddleware::class),
-            ref(Controller\SelectAccountEndpointController::class),
         ]])
         ->tag('controller.service_arguments');
 
