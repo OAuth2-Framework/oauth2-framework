@@ -14,11 +14,22 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\AuthorizationEndpoint\Hook;
 
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
+use OAuth2Framework\Component\AuthorizationEndpoint\ConsentHandler;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-abstract class ConsentPrompt implements AuthorizationEndpointHook
+final class ConsentPrompt implements AuthorizationEndpointHook
 {
+    /**
+     * @var ConsentHandler
+     */
+    private $consentHandler;
+
+    public function __construct(ConsentHandler $consentHandler)
+    {
+        $this->consentHandler = $consentHandler;
+    }
+
     public function handle(ServerRequestInterface $request, AuthorizationRequest $authorizationRequest, string $authorizationRequestId): ?ResponseInterface
     {
         if (!$authorizationRequest->hasPrompt('consent')) {
@@ -29,8 +40,6 @@ abstract class ConsentPrompt implements AuthorizationEndpointHook
             return null;
         }
 
-        return $this->processWithConsentResponse($request, $authorizationRequestId, $authorizationRequest);
+        return $this->consentHandler->process($request, $authorizationRequestId, $authorizationRequest);
     }
-
-    abstract protected function processWithConsentResponse(ServerRequestInterface $request, string $authorizationRequestId, AuthorizationRequest $authorizationRequest): ?ResponseInterface;
 }

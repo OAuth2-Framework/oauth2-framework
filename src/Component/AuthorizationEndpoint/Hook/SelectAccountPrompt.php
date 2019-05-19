@@ -14,11 +14,22 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\AuthorizationEndpoint\Hook;
 
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
+use OAuth2Framework\Component\AuthorizationEndpoint\SelectAccountHandler;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-abstract class SelectAccountPrompt implements AuthorizationEndpointHook
+final class SelectAccountPrompt implements AuthorizationEndpointHook
 {
+    /**
+     * @var SelectAccountHandler
+     */
+    private $selectAccountHandler;
+
+    public function __construct(SelectAccountHandler $selectAccountHandler)
+    {
+        $this->selectAccountHandler = $selectAccountHandler;
+    }
+
     public function handle(ServerRequestInterface $request, AuthorizationRequest $authorizationRequest, string $authorizationRequestId): ?ResponseInterface
     {
         if (!$authorizationRequest->hasPrompt('select_account')) {
@@ -29,8 +40,6 @@ abstract class SelectAccountPrompt implements AuthorizationEndpointHook
             return null;
         }
 
-        return $this->processWithAccountSelectionResponse($request, $authorizationRequestId, $authorizationRequest);
+        return $this->selectAccountHandler->process($request, $authorizationRequestId, $authorizationRequest);
     }
-
-    abstract protected function processWithAccountSelectionResponse(ServerRequestInterface $request, string $authorizationRequestId, AuthorizationRequest $authorizationRequest): ?ResponseInterface;
 }

@@ -43,6 +43,8 @@ class RouteLoader implements LoaderInterface
      * @param string[] $schemes      A required URI scheme or an array of restricted schemes
      * @param string[] $methods      A required HTTP method or an array of restricted methods
      * @param string   $condition    A condition that should evaluate to true for the route to match
+     *
+     * @throws \Safe\Exceptions\StringsException
      */
     public function addRoute($name, $controllerId, $methodName, $path, array $defaults = [], array $requirements = [], array $options = [], $host = '', $schemes = [], $methods = [], $condition = ''): void
     {

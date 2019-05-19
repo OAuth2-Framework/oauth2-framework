@@ -11,90 +11,136 @@ declare(strict_types=1);
  * of the MIT license. See the LICENSE file for details.
  */
 
-use OAuth2Framework\Component\AuthorizationEndpoint;
+use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationEndpoint;
+use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequestLoader;
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequestStorage;
+use OAuth2Framework\Component\AuthorizationEndpoint\Consent\ConsentRepository;
+use OAuth2Framework\Component\AuthorizationEndpoint\ConsentHandler;
 use OAuth2Framework\Component\AuthorizationEndpoint\Extension\ExtensionManager;
-use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker;
+use OAuth2Framework\Component\AuthorizationEndpoint\Hook\ConsentPrompt;
+use OAuth2Framework\Component\AuthorizationEndpoint\Hook\LoginPrompt;
+use OAuth2Framework\Component\AuthorizationEndpoint\Hook\NonePrompt;
+use OAuth2Framework\Component\AuthorizationEndpoint\Hook\SelectAccountPrompt;
+use OAuth2Framework\Component\AuthorizationEndpoint\LoginHandler;
+use OAuth2Framework\Component\AuthorizationEndpoint\Middleware\AuthorizationExceptionMiddleware;
+use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\DisplayParameterChecker;
+use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\ParameterCheckerManager;
+use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\PromptParameterChecker;
+use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\RedirectUriParameterChecker;
+use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\StateParameterChecker;
+use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType\ResponseTypeManager;
+use OAuth2Framework\Component\AuthorizationEndpoint\Rule\RequestUriRule;
+use OAuth2Framework\Component\AuthorizationEndpoint\Rule\ResponseTypesRule;
+use OAuth2Framework\Component\AuthorizationEndpoint\SelectAccountHandler;
+use OAuth2Framework\Component\AuthorizationEndpoint\User\UserAccountDiscovery;
+use OAuth2Framework\Component\AuthorizationEndpoint\User\UserAuthenticationCheckerManager;
 use OAuth2Framework\Component\Core\Client\ClientRepository;
-use OAuth2Framework\Component\Core\Message;
+use OAuth2Framework\Component\Core\Message\OAuth2MessageFactoryManager;
 use OAuth2Framework\Component\Core\Middleware;
-use OAuth2Framework\ServerBundle\Controller;
+use OAuth2Framework\Component\Core\Middleware\OAuth2MessageMiddleware;
+use OAuth2Framework\ServerBundle\Service\AuthorizationRequestSessionStorage;
+use OAuth2Framework\ServerBundle\Service\IgnoreAccountSelectionHandler;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\Templating\EngineInterface;
 
 return function (ContainerConfigurator $container) {
     $container = $container->services()->defaults()
         ->private()
         ->autoconfigure();
 
-    $container->set(AuthorizationEndpoint\Middleware\AuthorizationExceptionMiddleware::class);
+    $container->set(AuthorizationExceptionMiddleware::class);
 
     // Controllers and pipes
-    $container->set(Controller\AuthorizationEndpointController::class)
+    $container->set(AuthorizationEndpoint::class)
         ->args([
             ref(ResponseFactoryInterface::class),
-            ref(AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequestLoader::class),
-            ref(ParameterChecker\ParameterCheckerManager::class),
-            ref(AuthorizationEndpoint\User\UserAccountDiscovery::class),
-            ref(AuthorizationEndpoint\Consent\ConsentRepository::class)->nullOnInvalid(),
+            ref(AuthorizationRequestLoader::class),
+            ref(ParameterCheckerManager::class),
+            ref(UserAccountDiscovery::class),
+            ref(ConsentRepository::class)->nullOnInvalid(),
             ref(ExtensionManager::class),
             ref(AuthorizationRequestStorage::class),
-            ref(SessionInterface::class),
-            ref(EngineInterface::class),
-            '%oauth2_server.endpoint.authorization.login_template%',
-            '%oauth2_server.endpoint.authorization.consent_template%',
+            ref(LoginHandler::class),
+            ref(ConsentHandler::class),
         ]);
 
     $container->set('authorization_endpoint_pipe')
         ->class(Middleware\Pipe::class)
         ->args([[
             ref('oauth2_server.message_middleware.for_authorization_endpoint'),
-            ref(AuthorizationEndpoint\Middleware\AuthorizationExceptionMiddleware::class),
-            ref(Controller\AuthorizationEndpointController::class),
+            ref(AuthorizationExceptionMiddleware::class),
+            ref(AuthorizationEndpoint::class),
         ]])
         ->tag('controller.service_arguments');
 
-    $container->set(AuthorizationEndpoint\User\UserAuthenticationCheckerManager::class);
+    $container->set(UserAuthenticationCheckerManager::class);
+
+    //Hooks
+    $container->set(ConsentPrompt::class)
+        ->args([
+            ref(ConsentHandler::class),
+        ]);
+
+    $container->set(LoginPrompt::class)
+        ->args([
+            ref(UserAuthenticationCheckerManager::class),
+            ref(LoginHandler::class),
+        ]);
+
+    $container->set(NonePrompt::class)
+        ->args([
+            ref(ConsentRepository::class)->nullOnInvalid(),
+        ]);
+
+    $container->set(SelectAccountPrompt::class)
+        ->args([
+            ref(SelectAccountHandler::class),
+        ]);
+
+    $container->set(AuthorizationRequestSessionStorage::class)
+        ->args([
+            ref(SessionInterface::class),
+        ]);
+    $container->set(IgnoreAccountSelectionHandler::class);
 
     //Authorization Request Loader
-    $container->set(AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequestLoader::class)
+    $container->set(AuthorizationRequestLoader::class)
         ->args([
             ref(ClientRepository::class),
         ]);
 
     // Consent Screen Extension
-    $container->set(AuthorizationEndpoint\Extension\ExtensionManager::class);
+    $container->set(ExtensionManager::class);
 
     // Parameter Checker
-    $container->set(ParameterChecker\ParameterCheckerManager::class);
+    $container->set(ParameterCheckerManager::class);
 
-    $container->set(ParameterChecker\RedirectUriParameterChecker::class)
+    $container->set(RedirectUriParameterChecker::class)
         ->tag('oauth2_server_authorization_parameter_checker');
-    $container->set(ParameterChecker\DisplayParameterChecker::class);
-    $container->set(ParameterChecker\PromptParameterChecker::class);
-    $container->set(ParameterChecker\StateParameterChecker::class)
+    $container->set(DisplayParameterChecker::class);
+    $container->set(PromptParameterChecker::class);
+    $container->set(StateParameterChecker::class)
         ->args([
             '%oauth2_server.endpoint.authorization.enforce_state%',
         ]);
 
     // Rules
-    $container->set(AuthorizationEndpoint\Rule\RequestUriRule::class);
-    $container->set(AuthorizationEndpoint\Rule\ResponseTypesRule::class)
+    $container->set(RequestUriRule::class);
+    $container->set(ResponseTypesRule::class)
         ->args([
-            ref(AuthorizationEndpoint\ResponseType\ResponseTypeManager::class),
+            ref(ResponseTypeManager::class),
         ]);
 
     $container->set('oauth2_server.message_middleware.for_authorization_endpoint')
-        ->class(Middleware\OAuth2MessageMiddleware::class)
+        ->class(OAuth2MessageMiddleware::class)
         ->args([
             ref('oauth2_server.message_factory_manager.for_authorization_endpoint'),
         ]);
 
     $container->set('oauth2_server.message_factory_manager.for_authorization_endpoint')
-        ->class(Message\OAuth2MessageFactoryManager::class)
+        ->class(OAuth2MessageFactoryManager::class)
         ->args([
             ref(ResponseFactoryInterface::class),
         ])

@@ -14,13 +14,10 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\AuthorizationEndpoint;
 
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-interface AuthorizationRequestStorage
+interface ConsentHandler
 {
-    public function getId(ServerRequestInterface $request): string;
-
-    public function set(string $authorizationId, AuthorizationRequest $authorization): void;
-
-    public function remove(string $authorizationId): ?AuthorizationRequest;
+    public function process(ServerRequestInterface $request, string $authorizationId, AuthorizationRequest $authorization): ?ResponseInterface;
 }

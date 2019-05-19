@@ -16,15 +16,19 @@ namespace OAuth2Framework\ServerBundle\Component\Endpoint\Authorization;
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationEndpoint;
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequestStorage;
 use OAuth2Framework\Component\AuthorizationEndpoint\Consent\ConsentRepository;
+use OAuth2Framework\Component\AuthorizationEndpoint\ConsentHandler;
 use OAuth2Framework\Component\AuthorizationEndpoint\Extension\Extension;
 use OAuth2Framework\Component\AuthorizationEndpoint\Hook\AuthorizationEndpointHook;
+use OAuth2Framework\Component\AuthorizationEndpoint\LoginHandler;
 use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\ParameterChecker;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\ResponseMode;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType\ResponseType;
+use OAuth2Framework\Component\AuthorizationEndpoint\SelectAccountHandler;
 use OAuth2Framework\Component\AuthorizationEndpoint\User\UserAccountDiscovery;
 use OAuth2Framework\Component\AuthorizationEndpoint\User\UserAuthenticationChecker;
 use OAuth2Framework\ServerBundle\Component\Component;
 use OAuth2Framework\ServerBundle\Component\Endpoint\Authorization\Compiler\AuthorizationEndpointRouteCompilerPass;
+use OAuth2Framework\ServerBundle\Component\Endpoint\Authorization\Compiler\AuthorizationRequestHookCompilerPass;
 use OAuth2Framework\ServerBundle\Component\Endpoint\Authorization\Compiler\AuthorizationRequestMetadataCompilerPass;
 use OAuth2Framework\ServerBundle\Component\Endpoint\Authorization\Compiler\ConsentScreenExtensionCompilerPass;
 use OAuth2Framework\ServerBundle\Component\Endpoint\Authorization\Compiler\ParameterCheckerCompilerPass;
@@ -32,6 +36,8 @@ use OAuth2Framework\ServerBundle\Component\Endpoint\Authorization\Compiler\Respo
 use OAuth2Framework\ServerBundle\Component\Endpoint\Authorization\Compiler\ResponseTypeCompilerPass;
 use OAuth2Framework\ServerBundle\Component\Endpoint\Authorization\Compiler\TemplatePathCompilerPass;
 use OAuth2Framework\ServerBundle\Component\Endpoint\Authorization\Compiler\UserAuthenticationCheckerCompilerPass;
+use OAuth2Framework\ServerBundle\Service\AuthorizationRequestSessionStorage;
+use OAuth2Framework\ServerBundle\Service\IgnoreAccountSelectionHandler;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -73,21 +79,21 @@ class AuthorizationEndpointSource implements Component
         $container->registerForAutoconfiguration(ParameterChecker::class)->addTag('oauth2_server_authorization_parameter_checker');
         $container->registerForAutoconfiguration(UserAuthenticationChecker::class)->addTag('oauth2_server_user_authentication_checker');
         $container->registerForAutoconfiguration(Extension::class)->addTag('oauth2_server_consent_screen_extension');
-        $container->registerForAutoconfiguration(AuthorizationEndpointHook::class)->addTag('oauth2_server_authorization_endpint_hook');
+        $container->registerForAutoconfiguration(AuthorizationEndpointHook::class)->addTag(AuthorizationRequestHookCompilerPass::TAG_NAME);
 
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint/authorization'));
         $loader->load('authorization.php');
 
         $container->setAlias(AuthorizationRequestStorage::class, $config['authorization_request_storage']);
         $container->setAlias(UserAccountDiscovery::class, $config['user_discovery']);
+        $container->setAlias(LoginHandler::class, $config['login_handler']);
+        $container->setAlias(ConsentHandler::class, $config['consent_handler']);
+        $container->setAlias(SelectAccountHandler::class, $config['select_account_handler']);
         if (null !== ($config['consent_repository'])) {
             $container->setAlias(ConsentRepository::class, $config['consent_repository']);
         }
 
         $container->setParameter('oauth2_server.endpoint.authorization.authorization_endpoint_path', $config['authorization_endpoint_path']);
-        $container->setParameter('oauth2_server.endpoint.authorization.login_template', $config['login_template']);
-        $container->setParameter('oauth2_server.endpoint.authorization.consent_template', $config['consent_template']);
-        //$container->setParameter('oauth2_server.endpoint.authorization.select_account_template', $config['select_account_template']);
         $container->setParameter('oauth2_server.endpoint.authorization.host', $config['host']);
         $container->setParameter('oauth2_server.endpoint.authorization.enforce_state', $config['enforce_state']);
 
@@ -108,45 +114,46 @@ class AuthorizationEndpointSource implements Component
             ->arrayNode($this->name())
             ->canBeEnabled();
 
-        $childNode->children()
-            ->scalarNode('authorization_endpoint_path')
-            ->info('The path to the authorization endpoint.')
-            ->defaultValue('/authorize')
-            ->end()
-            ->scalarNode('authorization_request_storage')
-            ->info('The authorization request storage.')
-            ->isRequired()
-            ->end()
-            ->scalarNode('login_template')
-            ->info('The path to the login endpoint.')
-            ->defaultValue('')
-            ->end()
-            ->scalarNode('consent_template')
-            ->info('The path to the consent endpoint.')
-            ->defaultValue('OAuth2FrameworkBundle/authorization/consent.html.twig')
-            ->end()
-            /*->scalarNode('select_account_template')
-            ->info('The path to the select account endpoint.')
-            ->defaultValue('@OAuth2FrameworkBundle/authorization/select_account.html.twig')
-            ->end()*/
-            ->scalarNode('host')
-            ->info('If set, the routes will be limited to that host')
-            ->defaultValue('')
-            ->treatFalseLike('')
-            ->treatNullLike('')
-            ->end()
-            ->scalarNode('user_discovery')
-            ->info('The user discovery service.')
-            ->isRequired()
-            ->end()
-            ->scalarNode('consent_repository')
-            ->info('The pre-configured consent repository service.')
-            ->defaultNull()
-            ->end()
-            ->scalarNode('enforce_state')
-            ->info('If true the "state" parameter is mandatory (recommended).')
-            ->defaultFalse()
-            ->end()
+        $childNode
+            ->children()
+                ->scalarNode('authorization_endpoint_path')
+                    ->info('The path to the authorization endpoint.')
+                    ->defaultValue('/authorize')
+                ->end()
+                ->scalarNode('authorization_request_storage')
+                    ->info('The authorization request storage.')
+                    ->defaultValue(AuthorizationRequestSessionStorage::class)
+                ->end()
+                ->scalarNode('login_handler')
+                    ->info('Service that handles user authentication during the authorization process.')
+                    ->isRequired()
+                ->end()
+                ->scalarNode('consent_handler')
+                    ->info('Service that handles user consent during the authorization process.')
+                    ->isRequired()
+                ->end()
+                ->scalarNode('select_account_handler')
+                    ->info('Service that handles user accunt selection during the authorization process.')
+                    ->defaultValue(IgnoreAccountSelectionHandler::class)
+                ->end()
+                ->scalarNode('host')
+                    ->info('If set, the routes will be limited to that host')
+                    ->defaultValue('')
+                    ->treatFalseLike('')
+                    ->treatNullLike('')
+                ->end()
+                ->scalarNode('user_discovery')
+                    ->info('The user discovery service.')
+                    ->isRequired()
+                ->end()
+                ->scalarNode('consent_repository')
+                    ->info('The pre-configured consent repository service.')
+                    ->defaultNull()
+                ->end()
+                ->scalarNode('enforce_state')
+                    ->info('If true the "state" parameter is mandatory (recommended).')
+                    ->defaultFalse()
+                ->end()
             ->end();
 
         foreach ($this->subComponents as $subComponent) {
@@ -179,6 +186,7 @@ class AuthorizationEndpointSource implements Component
         if (!\class_exists(AuthorizationEndpoint::class)) {
             return;
         }
+        $container->addCompilerPass(new AuthorizationRequestHookCompilerPass());
         $container->addCompilerPass(new AuthorizationEndpointRouteCompilerPass());
         $container->addCompilerPass(new AuthorizationRequestMetadataCompilerPass());
         $container->addCompilerPass(new ConsentScreenExtensionCompilerPass());

@@ -28,7 +28,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Throwable;
 
-abstract class AuthorizationEndpoint
+class AuthorizationEndpoint
 {
     /**
      * @var AuthorizationRequestLoader
@@ -67,8 +67,16 @@ abstract class AuthorizationEndpoint
      * @var AuthorizationRequestStorage
      */
     private $authorizationRequestStorage;
+    /**
+     * @var LoginHandler
+     */
+    private $loginHandler;
+    /**
+     * @var ConsentHandler
+     */
+    private $consentHandler;
 
-    public function __construct(ResponseFactoryInterface $responseFactory, AuthorizationRequestLoader $authorizationRequestLoader, ParameterCheckerManager $parameterCheckerManager, UserAccountDiscovery $userAccountDiscovery, ?ConsentRepository $consentRepository, ExtensionManager $extensionManager, AuthorizationRequestStorage $authorizationRequestStorage)
+    public function __construct(ResponseFactoryInterface $responseFactory, AuthorizationRequestLoader $authorizationRequestLoader, ParameterCheckerManager $parameterCheckerManager, UserAccountDiscovery $userAccountDiscovery, ?ConsentRepository $consentRepository, ExtensionManager $extensionManager, AuthorizationRequestStorage $authorizationRequestStorage, LoginHandler $loginHandler, ConsentHandler $consentHandler)
     {
         $this->authorizationRequestLoader = $authorizationRequestLoader;
         $this->parameterCheckerManager = $parameterCheckerManager;
@@ -77,6 +85,8 @@ abstract class AuthorizationEndpoint
         $this->responseFactory = $responseFactory;
         $this->extensionManager = $extensionManager;
         $this->authorizationRequestStorage = $authorizationRequestStorage;
+        $this->loginHandler = $loginHandler;
+        $this->consentHandler = $consentHandler;
     }
 
     public function add(AuthorizationEndpointHook $hook): void
@@ -86,7 +96,7 @@ abstract class AuthorizationEndpoint
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $authorizationRequestId = $this->getAuthorizationRequestId($request);
+        $authorizationRequestId = $this->authorizationRequestStorage->getId($request);
         $authorizationRequest = $this->authorizationRequestStorage->remove($authorizationRequestId);
 
         try {
@@ -101,6 +111,7 @@ abstract class AuthorizationEndpoint
             foreach ($this->hooks as $hook) {
                 $response = $hook->handle($request, $authorizationRequest, $authorizationRequestId);
                 if (null !== $response) {
+                    $authorizationRequestId = $this->authorizationRequestStorage->getId($request);
                     $this->authorizationRequestStorage->set($authorizationRequestId, $authorizationRequest);
 
                     return $response;
@@ -110,7 +121,7 @@ abstract class AuthorizationEndpoint
                 return $this->processWithAuthenticatedUser($request, $authorizationRequestId, $authorizationRequest);
             }
 
-            return $this->processWithLoginResponse($request, $authorizationRequestId, $authorizationRequest);
+            return $this->loginHandler->process($request, $authorizationRequestId, $authorizationRequest);
         } catch (OAuth2AuthorizationException $e) {
             throw $e;
         } catch (OAuth2Error $e) {
@@ -125,7 +136,7 @@ abstract class AuthorizationEndpoint
         if (!$authorizationRequest->hasConsentBeenGiven()) {
             $isConsentNeeded = null !== $this->consentRepository || !$this->consentRepository->hasConsentBeenGiven($authorizationRequest);
             if ($isConsentNeeded) {
-                return $this->processWithConsentResponse($request, $authorizationRequestId, $authorizationRequest);
+                return $this->consentHandler->process($request, $authorizationRequestId, $authorizationRequest);
             }
         }
 
@@ -166,10 +177,4 @@ abstract class AuthorizationEndpoint
 
         return $response;
     }
-
-    abstract protected function processWithConsentResponse(ServerRequestInterface $request, string $authorizationRequestId, AuthorizationRequest $authorizationRequest): ResponseInterface;
-
-    abstract protected function processWithLoginResponse(ServerRequestInterface $request, string $authorizationRequestId, AuthorizationRequest $authorizationRequest): ResponseInterface;
-
-    abstract protected function getAuthorizationRequestId(ServerRequestInterface $request): string;
 }

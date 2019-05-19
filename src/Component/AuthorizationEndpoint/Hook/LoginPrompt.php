@@ -14,11 +14,12 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\AuthorizationEndpoint\Hook;
 
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
+use OAuth2Framework\Component\AuthorizationEndpoint\LoginHandler;
 use OAuth2Framework\Component\AuthorizationEndpoint\User\UserAuthenticationCheckerManager;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-abstract class LoginPrompt implements AuthorizationEndpointHook
+final class LoginPrompt implements AuthorizationEndpointHook
 {
     /**
      * @var UserAuthenticationCheckerManager
@@ -26,11 +27,14 @@ abstract class LoginPrompt implements AuthorizationEndpointHook
     private $userAuthenticationCheckerManager;
 
     /**
-     * LoginPrompt constructor.
+     * @var LoginHandler
      */
-    public function __construct(UserAuthenticationCheckerManager $userAuthenticationCheckerManager)
+    private $loginHandler;
+
+    public function __construct(UserAuthenticationCheckerManager $userAuthenticationCheckerManager, LoginHandler $loginHandler)
     {
         $this->userAuthenticationCheckerManager = $userAuthenticationCheckerManager;
+        $this->loginHandler = $loginHandler;
     }
 
     public function handle(ServerRequestInterface $request, AuthorizationRequest $authorizationRequest, string $authorizationRequestId): ?ResponseInterface
@@ -44,8 +48,6 @@ abstract class LoginPrompt implements AuthorizationEndpointHook
             return null;
         }
 
-        return $this->processWithLoginResponse($request, $authorizationRequestId, $authorizationRequest);
+        return $this->loginHandler->process($request, $authorizationRequestId, $authorizationRequest);
     }
-
-    abstract protected function processWithLoginResponse(ServerRequestInterface $request, string $authorizationRequestId, AuthorizationRequest $authorizationRequest): ?ResponseInterface;
 }

@@ -119,9 +119,10 @@ oauth2_server:
             path: '/session/manager/iframe'
         authorization:
             enabled: true
-            authorization_request_storage: 'OAuth2Framework\ServerBundle\Tests\TestBundle\Service\SessionAuthorizationRequestStorage'
             user_discovery: 'OAuth2Framework\ServerBundle\Tests\TestBundle\Service\SymfonyUserAccountDiscovery'
             consent_repository: 'OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\ConsentRepository'
+            consent_handler: 'OAuth2Framework\ServerBundle\Tests\TestBundle\Service\ConsentHandler'
+            login_handler: 'OAuth2Framework\ServerBundle\Tests\TestBundle\Service\LoginHandler'
             enforce_state: false
             response_mode:
                 allow_response_mode_parameter: true

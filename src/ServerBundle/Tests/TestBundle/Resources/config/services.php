@@ -24,7 +24,8 @@ use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\ResourceServerRepositor
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\ScopeRepository;
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\TrustedIssuerRepository;
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\UserAccountRepository;
-use OAuth2Framework\ServerBundle\Tests\TestBundle\Service\SessionAuthorizationRequestStorage;
+use OAuth2Framework\ServerBundle\Tests\TestBundle\Service\ConsentHandler;
+use OAuth2Framework\ServerBundle\Tests\TestBundle\Service\LoginHandler;
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Service\SymfonyUserAccountDiscovery;
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Service\UserProvider;
 use Psr\Http\Message\RequestFactoryInterface;
@@ -37,6 +38,8 @@ return function (ContainerConfigurator $container) {
         ->autowire()
         ->autoconfigure();
 
+    $container->set(LoginHandler::class);
+    $container->set(ConsentHandler::class);
     $container->set(ClientRepository::class);
     $container->set(RefreshTokenRepository::class);
     $container->set(ResourceOwnerPasswordCredentialManager::class);
@@ -63,6 +66,4 @@ return function (ContainerConfigurator $container) {
 
     /*$container->set(ResourceServerAuthMethodByIpAddress::class)
         ->tag('token_introspection_endpoint_auth_method');*/
-
-    $container->set(SessionAuthorizationRequestStorage::class);
 };
