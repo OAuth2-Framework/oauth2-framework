@@ -11,6 +11,8 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
+use OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository;
+use OAuth2Framework\Component\Core\AccessToken\AccessTokenRevocationTypeHint;
 use OAuth2Framework\Component\Core\Middleware;
 use OAuth2Framework\Component\TokenRevocationEndpoint\TokenRevocationGetEndpoint;
 use OAuth2Framework\Component\TokenRevocationEndpoint\TokenRevocationPostEndpoint;
@@ -54,6 +56,12 @@ return function (ContainerConfigurator $container) {
             ref(TokenTypeHintManager::class),
             ref(\Psr\Http\Message\ResponseFactoryInterface::class),
             '%oauth2_server.endpoint.token_revocation.allow_callback%',
+        ])
+    ;
+
+    $container->set(AccessTokenRevocationTypeHint::class)
+        ->args([
+            ref(AccessTokenRepository::class),
         ])
     ;
 };

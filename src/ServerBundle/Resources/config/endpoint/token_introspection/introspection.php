@@ -11,6 +11,8 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
+use OAuth2Framework\Component\Core\AccessToken\AccessTokenIntrospectionTypeHint;
+use OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository;
 use OAuth2Framework\Component\Core\Middleware;
 use OAuth2Framework\Component\ResourceServerAuthentication\AuthenticationMiddleware;
 use OAuth2Framework\Component\TokenIntrospectionEndpoint\TokenIntrospectionEndpoint;
@@ -40,6 +42,12 @@ return function (ContainerConfigurator $container) {
         ->args([
             ref(TokenTypeHintManager::class),
             ref(\Psr\Http\Message\ResponseFactoryInterface::class),
+        ])
+    ;
+
+    $container->set(AccessTokenIntrospectionTypeHint::class)
+        ->args([
+            ref(AccessTokenRepository::class),
         ])
     ;
 };
