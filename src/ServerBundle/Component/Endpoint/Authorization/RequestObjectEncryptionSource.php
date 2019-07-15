@@ -24,6 +24,9 @@ class RequestObjectEncryptionSource implements Component
     public function load(array $configs, ContainerBuilder $container): void
     {
         $config = $configs['endpoint']['authorization']['request_object']['encryption'];
+        if (false === $config['enabled']) {
+            return;
+        }
         foreach (['required', 'key_set', 'key_encryption_algorithms', 'content_encryption_algorithms'] as $k) {
             $container->setParameter('oauth2_server.endpoint.authorization.request_object.encryption.'.$k, $config[$k]);
         }
