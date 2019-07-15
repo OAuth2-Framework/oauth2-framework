@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeGrantType;
@@ -21,13 +21,15 @@ use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 return function (ContainerConfigurator $container) {
     $container = $container->services()->defaults()
         ->private()
-        ->autoconfigure();
+        ->autoconfigure()
+    ;
 
     $container->set(AuthorizationCodeGrantType::class)
         ->args([
             ref(AuthorizationCodeRepository::class),
             ref(PKCEMethod\PKCEMethodManager::class),
-        ]);
+        ])
+    ;
 
     $container->set(AuthorizationCodeResponseType::class)
         ->args([
@@ -35,11 +37,14 @@ return function (ContainerConfigurator $container) {
             '%oauth2_server.grant.authorization_code.lifetime%',
             ref(PKCEMethod\PKCEMethodManager::class),
             '%oauth2_server.grant.authorization_code.enforce_pkce%',
-        ]);
+        ])
+    ;
 
     $container->set(PKCEMethod\PKCEMethodManager::class);
     $container->set(PKCEMethod\Plain::class)
-        ->tag('oauth2_server_pkce_method', ['alias' => 'plain']);
+        ->tag('oauth2_server_pkce_method', ['alias' => 'plain'])
+    ;
     $container->set(PKCEMethod\S256::class)
-        ->tag('oauth2_server_pkce_method', ['alias' => 'S256']);
+        ->tag('oauth2_server_pkce_method', ['alias' => 'S256'])
+    ;
 };

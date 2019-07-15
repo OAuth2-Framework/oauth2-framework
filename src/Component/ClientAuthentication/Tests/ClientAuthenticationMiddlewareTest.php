@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\ClientAuthentication\Tests;
@@ -30,6 +30,9 @@ use Psr\Http\Server\RequestHandlerInterface;
 /**
  * @group TokenEndpoint
  * @group ClientAuthenticationMiddleware
+ *
+ * @internal
+ * @coversNothing
  */
 final class ClientAuthenticationMiddlewareTest extends TestCase
 {
@@ -59,9 +62,10 @@ final class ClientAuthenticationMiddlewareTest extends TestCase
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getHeader('Authorization')
             ->willReturn([
-                'Basic '.\base64_encode('FOO:BAR'),
+                'Basic '.base64_encode('FOO:BAR'),
             ])
-            ->shouldBeCalled();
+            ->shouldBeCalled()
+        ;
         $handler = $this->prophesize(RequestHandlerInterface::class);
         $clientRepository = $this->prophesize(ClientRepository::class);
         $clientRepository->find(Argument::type(ClientId::class))->willReturn(null)->shouldBeCalled();
@@ -95,9 +99,10 @@ final class ClientAuthenticationMiddlewareTest extends TestCase
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getHeader('Authorization')
             ->willReturn([
-                'Basic '.\base64_encode('FOO:BAR'),
+                'Basic '.base64_encode('FOO:BAR'),
             ])
-            ->shouldBeCalled();
+            ->shouldBeCalled()
+        ;
         $handler = $this->prophesize(RequestHandlerInterface::class);
         $clientRepository = $this->prophesize(ClientRepository::class);
         $clientRepository->find(Argument::type(ClientId::class))->willReturn($client)->shouldBeCalled();
@@ -136,9 +141,10 @@ final class ClientAuthenticationMiddlewareTest extends TestCase
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getHeader('Authorization')
             ->willReturn([
-                'Basic '.\base64_encode('FOO:BAR'),
+                'Basic '.base64_encode('FOO:BAR'),
             ])
-            ->shouldBeCalled();
+            ->shouldBeCalled()
+        ;
         $handler = $this->prophesize(RequestHandlerInterface::class);
         $clientRepository = $this->prophesize(ClientRepository::class);
         $clientRepository->find(Argument::type(ClientId::class))->willReturn($client)->shouldBeCalled();
@@ -176,9 +182,10 @@ final class ClientAuthenticationMiddlewareTest extends TestCase
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getHeader('Authorization')
             ->willReturn([
-                'Basic '.\base64_encode('FOO:BAR'),
+                'Basic '.base64_encode('FOO:BAR'),
             ])
-            ->shouldBeCalled();
+            ->shouldBeCalled()
+        ;
         $handler = $this->prophesize(RequestHandlerInterface::class);
         $clientRepository = $this->prophesize(ClientRepository::class);
         $clientRepository->find(Argument::type(ClientId::class))->willReturn($client)->shouldBeCalled();
@@ -218,9 +225,10 @@ final class ClientAuthenticationMiddlewareTest extends TestCase
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getHeader('Authorization')
             ->willReturn([
-                'Basic '.\base64_encode('FOO:BAD_SECRET'),
+                'Basic '.base64_encode('FOO:BAD_SECRET'),
             ])
-            ->shouldBeCalled();
+            ->shouldBeCalled()
+        ;
         $handler = $this->prophesize(RequestHandlerInterface::class);
         $clientRepository = $this->prophesize(ClientRepository::class);
         $clientRepository->find(Argument::type(ClientId::class))->willReturn($client)->shouldBeCalled();
@@ -261,9 +269,10 @@ final class ClientAuthenticationMiddlewareTest extends TestCase
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getHeader('Authorization')
             ->willReturn([
-                'Basic '.\base64_encode('FOO:BAR'),
+                'Basic '.base64_encode('FOO:BAR'),
             ])
-            ->shouldBeCalled();
+            ->shouldBeCalled()
+        ;
         $request->withAttribute('client', $client)->shouldBeCalled()->willReturn($request->reveal());
         $request->withAttribute('client_authentication_method', Argument::type(AuthenticationMethod::class))->shouldBeCalled()->willReturn($request->reveal());
         $request->withAttribute('client_credentials', 'BAR')->shouldBeCalled()->willReturn($request->reveal());
@@ -283,11 +292,9 @@ final class ClientAuthenticationMiddlewareTest extends TestCase
         $authenticationMethodManager = new AuthenticationMethodManager();
         $authenticationMethodManager->add(new ClientSecretBasic('Real'));
 
-        $clientAuthenticationMiddleware = new ClientAuthenticationMiddleware(
+        return new ClientAuthenticationMiddleware(
             $clientRepository,
             $authenticationMethodManager
         );
-
-        return $clientAuthenticationMiddleware;
     }
 }

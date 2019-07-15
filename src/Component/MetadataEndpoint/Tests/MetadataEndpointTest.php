@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\MetadataEndpoint\Tests;
@@ -27,9 +27,22 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 /**
  * @group MetadataEndpoint
+ *
+ * @internal
+ * @coversNothing
  */
 final class MetadataEndpointTest extends TestCase
 {
+    /**
+     * @var null|MetadataEndpoint
+     */
+    private $metadataEndpoint;
+
+    /**
+     * @var null|ResponseFactoryInterface
+     */
+    private $responseFactory;
+
     /**
      * @test
      */
@@ -42,7 +55,7 @@ final class MetadataEndpointTest extends TestCase
         $response->getBody()->rewind();
         $body = $response->getBody()->getContents();
 
-        if (\class_exists(JWSBuilder::class)) {
+        if (class_exists(JWSBuilder::class)) {
             static::assertEquals('{"foo":"bar","signed_metadata":"eyJhbGciOiJub25lIn0.eyJmb28iOiJiYXIifQ."}', $body);
         } else {
             static::assertEquals('{"foo":"bar"}', $body);
@@ -50,11 +63,6 @@ final class MetadataEndpointTest extends TestCase
         static::assertEquals(200, $response->getStatusCode());
         static::assertEquals(['application/json; charset=UTF-8'], $response->getHeader('content-type'));
     }
-
-    /**
-     * @var MetadataEndpoint|null
-     */
-    private $metadataEndpoint;
 
     private function getMetadataEndpoint(): MetadataEndpoint
     {
@@ -67,7 +75,7 @@ final class MetadataEndpointTest extends TestCase
                 $metadata
             );
 
-            if (\class_exists(JWSBuilder::class)) {
+            if (class_exists(JWSBuilder::class)) {
                 $jwsBuilder = new JWSBuilder(new AlgorithmManager([new None()]));
                 $key = new JWK([
                     'kty' => 'none',
@@ -78,11 +86,6 @@ final class MetadataEndpointTest extends TestCase
 
         return $this->metadataEndpoint;
     }
-
-    /**
-     * @var ResponseFactoryInterface|null
-     */
-    private $responseFactory;
 
     private function getResponseFactory(): ResponseFactoryInterface
     {

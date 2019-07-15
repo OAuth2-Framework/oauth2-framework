@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\ServerBundle\Component\Endpoint\ClientRegistration;
@@ -43,7 +43,7 @@ class ClientRegistrationSource implements Component
 
     public function load(array $configs, ContainerBuilder $container): void
     {
-        if (!\class_exists(ClientRegistrationEndpoint::class)) {
+        if (!class_exists(ClientRegistrationEndpoint::class)) {
             return;
         }
         $config = $configs['endpoint']['client_registration'];
@@ -64,12 +64,13 @@ class ClientRegistrationSource implements Component
 
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
-        if (!\class_exists(ClientRegistrationEndpoint::class)) {
+        if (!class_exists(ClientRegistrationEndpoint::class)) {
             return;
         }
         $childNode = $node->children()
             ->arrayNode($this->name())
-            ->canBeEnabled();
+            ->canBeEnabled()
+        ;
 
         $childNode->children()
             ->scalarNode('path')
@@ -82,7 +83,8 @@ class ClientRegistrationSource implements Component
             ->treatFalseLike('')
             ->treatNullLike('')
             ->end()
-            ->end();
+            ->end()
+        ;
 
         foreach ($this->subComponents as $subComponent) {
             $subComponent->getNodeDefinition($childNode, $node);
@@ -91,7 +93,7 @@ class ClientRegistrationSource implements Component
 
     public function prepend(ContainerBuilder $container, array $config): array
     {
-        if (!\class_exists(ClientRegistrationEndpoint::class)) {
+        if (!class_exists(ClientRegistrationEndpoint::class)) {
             return [];
         }
         if (!$config['endpoint']['client_registration']['enabled']) {
@@ -99,7 +101,7 @@ class ClientRegistrationSource implements Component
         }
         $updatedConfig = [];
         foreach ($this->subComponents as $subComponent) {
-            $updatedConfig = \array_merge(
+            $updatedConfig = array_merge(
                 $updatedConfig,
                 $subComponent->prepend($container, $config)
             );
@@ -110,7 +112,7 @@ class ClientRegistrationSource implements Component
 
     public function build(ContainerBuilder $container): void
     {
-        if (!\class_exists(ClientRegistrationEndpoint::class)) {
+        if (!class_exists(ClientRegistrationEndpoint::class)) {
             return;
         }
         $container->addCompilerPass(new ClientRegistrationEndpointRouteCompilerPass());

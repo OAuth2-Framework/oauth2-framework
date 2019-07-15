@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\ClientRegistrationEndpoint\Tests;
@@ -19,6 +19,9 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @group InitialAccessToken
+ *
+ * @internal
+ * @coversNothing
  */
 final class InitialAccessTokenTest extends TestCase
 {
@@ -31,7 +34,6 @@ final class InitialAccessTokenTest extends TestCase
 
         static::assertInstanceOf(InitialAccessTokenId::class, $initialAccessTokenId);
         static::assertEquals('INITIAL_ACCESS_TOKEN_ID', $initialAccessTokenId->getValue());
-        static::assertEquals('"INITIAL_ACCESS_TOKEN_ID"', \Safe\json_encode($initialAccessTokenId, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
     }
 
     /**
@@ -47,7 +49,6 @@ final class InitialAccessTokenTest extends TestCase
         $initialAccessToken->markAsRevoked();
 
         static::assertInstanceOf(InitialAccessToken::class, $initialAccessToken);
-        static::assertEquals('{"initial_access_token_id":"INITIAL_ACCESS_TOKEN_ID","user_account_id":"USER_ACCOUNT_ID","expires_at":null,"is_revoked":true}', \Safe\json_encode($initialAccessToken, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
         static::assertEquals('INITIAL_ACCESS_TOKEN_ID', $initialAccessToken->getId()->getValue());
     }
 }

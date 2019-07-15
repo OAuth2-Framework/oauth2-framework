@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\ClientAuthentication\Tests;
@@ -26,6 +26,9 @@ use Psr\Http\Message\StreamInterface;
 /**
  * @group TokenEndpoint
  * @group ClientAuthentication
+ *
+ * @internal
+ * @coversNothing
  */
 final class ClientSecretPostAuthenticationMethodTest extends TestCase
 {
@@ -124,7 +127,7 @@ final class ClientSecretPostAuthenticationMethodTest extends TestCase
     private function buildRequest(array $data): ObjectProphecy
     {
         $body = $this->prophesize(StreamInterface::class);
-        $body->getContents()->willReturn(\http_build_query($data));
+        $body->getContents()->willReturn(http_build_query($data));
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->hasHeader('Content-Type')->willReturn(true);
         $request->getHeader('Content-Type')->willReturn(['application/x-www-form-urlencoded']);

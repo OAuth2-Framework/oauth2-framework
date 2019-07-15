@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\OpenIdConnect;
@@ -84,12 +84,12 @@ class IdTokenBuilder
     private $claimsLocales;
 
     /**
-     * @var AccessTokenId|null
+     * @var null|AccessTokenId
      */
     private $accessTokenId;
 
     /**
-     * @var AuthorizationCodeId|null
+     * @var null|AuthorizationCodeId
      */
     private $authorizationCodeId;
 
@@ -134,12 +134,12 @@ class IdTokenBuilder
     private $expiresAt;
 
     /**
-     * @var JKUFactory|null
+     * @var null|JKUFactory
      */
     private $jkuFactory;
 
     /**
-     * @var AuthorizationCodeRepository|null
+     * @var null|AuthorizationCodeRepository
      */
     private $authorizationCodeRepository;
 
@@ -171,7 +171,7 @@ class IdTokenBuilder
             $queryParams = $authorizationCode->getQueryParameters();
             foreach (['nonce' => 'nonce', 'claims_locales' => 'claimsLocales'] as $k => $v) {
                 if (\array_key_exists($k, $queryParams)) {
-                    $this->$v = $queryParams[$k];
+                    $this->{$v} = $queryParams[$k];
                 }
             }
             $this->withAuthenticationTime = \array_key_exists('max_age', $authorizationCode->getQueryParameters());
@@ -226,7 +226,7 @@ class IdTokenBuilder
     public function withSignature(JWSBuilder $jwsBuilder, JWKSet $signatureKeys, string $signatureAlgorithm): void
     {
         if (!\in_array($signatureAlgorithm, $jwsBuilder->getSignatureAlgorithmManager()->list(), true)) {
-            throw new InvalidArgumentException(\Safe\sprintf('Unsupported signature algorithm "%s". Please use one of the following one: %s', $signatureAlgorithm, \implode(', ', $jwsBuilder->getSignatureAlgorithmManager()->list())));
+            throw new InvalidArgumentException(\Safe\sprintf('Unsupported signature algorithm "%s". Please use one of the following one: %s', $signatureAlgorithm, implode(', ', $jwsBuilder->getSignatureAlgorithmManager()->list())));
         }
         if (0 === $signatureKeys->count()) {
             throw new InvalidArgumentException('The signature key set must contain at least one key.');
@@ -239,10 +239,10 @@ class IdTokenBuilder
     public function withEncryption(JWEBuilder $jweBuilder, string $keyEncryptionAlgorithm, string $contentEncryptionAlgorithm): void
     {
         if (!\in_array($keyEncryptionAlgorithm, $jweBuilder->getKeyEncryptionAlgorithmManager()->list(), true)) {
-            throw new InvalidArgumentException(\Safe\sprintf('Unsupported key encryption algorithm "%s". Please use one of the following one: %s', $keyEncryptionAlgorithm, \implode(', ', $jweBuilder->getKeyEncryptionAlgorithmManager()->list())));
+            throw new InvalidArgumentException(\Safe\sprintf('Unsupported key encryption algorithm "%s". Please use one of the following one: %s', $keyEncryptionAlgorithm, implode(', ', $jweBuilder->getKeyEncryptionAlgorithmManager()->list())));
         }
         if (!\in_array($contentEncryptionAlgorithm, $jweBuilder->getContentEncryptionAlgorithmManager()->list(), true)) {
-            throw new InvalidArgumentException(\Safe\sprintf('Unsupported content encryption algorithm "%s". Please use one of the following one: %s', $contentEncryptionAlgorithm, \implode(', ', $jweBuilder->getContentEncryptionAlgorithmManager()->list())));
+            throw new InvalidArgumentException(\Safe\sprintf('Unsupported content encryption algorithm "%s". Please use one of the following one: %s', $contentEncryptionAlgorithm, implode(', ', $jweBuilder->getContentEncryptionAlgorithmManager()->list())));
         }
         $this->jweBuilder = $jweBuilder;
         $this->keyEncryptionAlgorithm = $keyEncryptionAlgorithm;
@@ -277,13 +277,13 @@ class IdTokenBuilder
     private function updateClaimsWithJwtClaims(array $claims): array
     {
         if (null === $this->expiresAt) {
-            $this->expiresAt = (new \DateTimeImmutable())->setTimestamp(\time() + $this->lifetime);
+            $this->expiresAt = (new \DateTimeImmutable())->setTimestamp(time() + $this->lifetime);
         }
         $claims += [
-            'iat' => \time(),
-            'nbf' => \time(),
+            'iat' => time(),
+            'nbf' => time(),
             'exp' => $this->expiresAt->getTimestamp(),
-            'jti' => Base64Url::encode(\random_bytes(16)),
+            'jti' => Base64Url::encode(random_bytes(16)),
             'iss' => $this->issuer,
         ];
 
@@ -328,7 +328,8 @@ class IdTokenBuilder
             ->create()
             ->withPayload($claimsAsArray)
             ->addSignature($signatureKey, $header)
-            ->build();
+            ->build()
+        ;
         $serializer = new JwsCompactSerializer();
 
         return $serializer->serialize($jws, 0);
@@ -344,7 +345,7 @@ class IdTokenBuilder
         }
         $header = [
             'typ' => 'JWT',
-            'jti' => Base64Url::encode(\random_bytes(16)),
+            'jti' => Base64Url::encode(random_bytes(16)),
             'alg' => $this->keyEncryptionAlgorithm,
             'enc' => $this->contentEncryptionAlgorithm,
         ];
@@ -353,7 +354,8 @@ class IdTokenBuilder
             ->withPayload($jwt)
             ->withSharedProtectedHeader($header)
             ->addRecipient($encryptionKey)
-            ->build();
+            ->build()
+        ;
         $serializer = new JweCompactSerializer();
 
         return $serializer->serialize($jwe, 0);
@@ -412,7 +414,7 @@ class IdTokenBuilder
 
     private function getHash(string $tokenId): string
     {
-        return Base64Url::encode(\mb_substr(\hash($this->getHashMethod(), $tokenId, true), 0, $this->getHashSize(), '8bit'));
+        return Base64Url::encode(mb_substr(hash($this->getHashMethod(), $tokenId, true), 0, $this->getHashSize(), '8bit'));
     }
 
     private function getHashMethod(): string

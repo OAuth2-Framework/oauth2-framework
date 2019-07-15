@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\ServerBundle\Component\Grant\RefreshToken;
@@ -30,7 +30,7 @@ class RefreshTokenSource implements Component
 
     public function load(array $configs, ContainerBuilder $container): void
     {
-        if (!\class_exists(RefreshTokenGrantType::class) || !$configs['grant']['refresh_token']['enabled']) {
+        if (!class_exists(RefreshTokenGrantType::class) || !$configs['grant']['refresh_token']['enabled']) {
             return;
         }
         $container->setParameter('oauth2_server.grant.refresh_token.lifetime', $configs['grant']['refresh_token']['lifetime']);
@@ -41,7 +41,7 @@ class RefreshTokenSource implements Component
 
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
-        if (!\class_exists(RefreshTokenGrantType::class)) {
+        if (!class_exists(RefreshTokenGrantType::class)) {
             return;
         }
         $node->children()
@@ -59,7 +59,8 @@ class RefreshTokenSource implements Component
             ->end()
             ->end()
             ->end()
-            ->end();
+            ->end()
+        ;
     }
 
     public function build(ContainerBuilder $container): void

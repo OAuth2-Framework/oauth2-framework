@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\ServerBundle\Tests\TestBundle\Entity;
@@ -57,7 +57,7 @@ final class AuthorizationCodeRepository implements AuthorizationCodeRepositoryIn
     public function create(ClientId $clientId, UserAccountId $userAccountId, array $queryParameters, string $redirectUri, \DateTimeImmutable $expiresAt, DataBag $parameter, DataBag $metadata, ?ResourceServerId $resourceServerId): AuthorizationCodeInterface
     {
         return new AuthorizationCode(
-            new AuthorizationCodeId(\bin2hex(\random_bytes(32))),
+            new AuthorizationCodeId(bin2hex(random_bytes(32))),
             $clientId,
             $userAccountId,
             $queryParameters,

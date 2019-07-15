@@ -8,12 +8,13 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\AuthorizationEndpoint\ResponseType;
 
 use Assert\Assertion;
+use function Safe\sprintf;
 
 class ResponseTypeManager
 {
@@ -34,7 +35,7 @@ class ResponseTypeManager
 
     public function get(string $responseType): ResponseType
     {
-        Assertion::true($this->has($responseType), \Safe\sprintf('The response type "%s" is not supported.', $responseType));
+        Assertion::true($this->has($responseType), sprintf('The response type "%s" is not supported.', $responseType));
 
         return $this->responseTypes[$responseType];
     }
@@ -44,7 +45,7 @@ class ResponseTypeManager
      */
     public function list(): array
     {
-        return \array_keys($this->responseTypes);
+        return array_keys($this->responseTypes);
     }
 
     /**
@@ -52,6 +53,6 @@ class ResponseTypeManager
      */
     public function all(): array
     {
-        return \array_values($this->responseTypes);
+        return array_values($this->responseTypes);
     }
 }

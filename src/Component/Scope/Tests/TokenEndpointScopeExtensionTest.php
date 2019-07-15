@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\Scope\Tests;
@@ -35,15 +35,23 @@ use Psr\Http\Message\StreamInterface;
 
 /**
  * @group TokenEndpointScopeExtension
+ *
+ * @internal
+ * @coversNothing
  */
 final class TokenEndpointScopeExtensionTest extends TestCase
 {
+    /**
+     * @var null|TokenEndpointScopeExtension
+     */
+    private $extension;
+
     /**
      * @inheritdoc}
      */
     protected function setUp(): void
     {
-        if (!\class_exists(TokenEndpoint::class)) {
+        if (!class_exists(TokenEndpoint::class)) {
             static::markTestSkipped('The component "oauth2-framework/token-endpoint" is not installed.');
         }
     }
@@ -163,11 +171,6 @@ final class TokenEndpointScopeExtensionTest extends TestCase
         static::assertEquals(2, \count($result));
     }
 
-    /**
-     * @var TokenEndpointScopeExtension|null
-     */
-    private $extension;
-
     private function getExtension(): TokenEndpointScopeExtension
     {
         if (null === $this->extension) {
@@ -198,7 +201,7 @@ final class TokenEndpointScopeExtensionTest extends TestCase
     private function buildRequest(array $data): ObjectProphecy
     {
         $body = $this->prophesize(StreamInterface::class);
-        $body->getContents()->willReturn(\http_build_query($data));
+        $body->getContents()->willReturn(http_build_query($data));
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->hasHeader('Content-Type')->willReturn(true);
         $request->getHeader('Content-Type')->willReturn(['application/x-www-form-urlencoded']);

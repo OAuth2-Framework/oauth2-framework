@@ -4,6 +4,7 @@ parameters:
         - src
     excludes_analyse:
         - %currentWorkingDirectory%/src/*Bundle/Tests/*
+        - %currentWorkingDirectory%/src/*Bundle/var/*
         - %currentWorkingDirectory%/src/Component/*/Tests/*
     ignoreErrors:
         - '#Parameter .* of method .* expects Symfony\\Component\\Config\\Definition\\Builder\\ArrayNodeDefinition, Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition given.#'

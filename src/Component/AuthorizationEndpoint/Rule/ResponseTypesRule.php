@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\AuthorizationEndpoint\Rule;
@@ -40,9 +40,8 @@ final class ResponseTypesRule implements Rule
         $this->checkResponseTypes($commandParameters);
 
         $validatedParameters->set('response_types', $commandParameters->get('response_types'));
-        $validatedParameters = $next->handle($clientId, $commandParameters, $validatedParameters);
 
-        return $validatedParameters;
+        return $next->handle($clientId, $commandParameters, $validatedParameters);
     }
 
     private function checkResponseTypes(DataBag $parameters): void

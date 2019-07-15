@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\AuthorizationEndpoint\Tests\Rule;
@@ -24,12 +24,20 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @group Tests
+ *
+ * @internal
+ * @coversNothing
  */
 final class ResponseTypesRuleTest extends TestCase
 {
+    /**
+     * @var null|ResponseTypesRule
+     */
+    private $responseTypesRule;
+
     protected function setUp(): void
     {
-        if (!\interface_exists(Rule::class)) {
+        if (!interface_exists(Rule::class)) {
             static::markTestSkipped('The component "oauth2-framework/client-rule" is not installed.');
         }
     }
@@ -101,11 +109,6 @@ final class ResponseTypesRuleTest extends TestCase
             return $validatedParameters;
         });
     }
-
-    /**
-     * @var ResponseTypesRule|null
-     */
-    private $responseTypesRule;
 
     private function getResponseTypesRule(): ResponseTypesRule
     {

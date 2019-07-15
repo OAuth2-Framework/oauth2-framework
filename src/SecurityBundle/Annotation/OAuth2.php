@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\SecurityBundle\Annotation;
@@ -23,32 +23,32 @@ use function Safe\sprintf;
 class OAuth2
 {
     /**
-     * @var string|null
+     * @var null|string
      */
     private $scope;
 
     /**
-     * @var string|null
+     * @var null|string
      */
     private $token_type;
 
     /**
-     * @var string|null
+     * @var null|string
      */
     private $client_id;
 
     /**
-     * @var string|null
+     * @var null|string
      */
     private $resource_owner_id;
 
     public function __construct(array $data)
     {
         foreach ($data as $key => $value) {
-            if (!\property_exists($this, $key)) {
+            if (!property_exists($this, $key)) {
                 throw new BadMethodCallException(sprintf('Unknown property "%s" on annotation "%s".', $key, \get_class($this)));
             }
-            $this->$key = $value;
+            $this->{$key} = $value;
         }
     }
 

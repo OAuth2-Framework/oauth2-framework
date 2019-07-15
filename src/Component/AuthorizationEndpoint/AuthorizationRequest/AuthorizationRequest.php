@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest;
@@ -19,7 +19,6 @@ use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType\ResponseType;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServer;
-use OAuth2Framework\Component\Core\TokenType\TokenType;
 use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 use function Safe\sprintf;
 
@@ -28,6 +27,7 @@ class AuthorizationRequest
     public const CONSENT_NOT_GIVEN = 'consent_not_given';
     public const CONSENT_ALLOW = 'consent_allow';
     public const CONSENT_DENY = 'consent_deny';
+
     /**
      * @var string
      */
@@ -39,7 +39,7 @@ class AuthorizationRequest
     private $client;
 
     /**
-     * @var UserAccount|null
+     * @var null|UserAccount
      */
     private $userAccount;
 
@@ -49,17 +49,12 @@ class AuthorizationRequest
     private $metadata;
 
     /**
-     * @var TokenType|null
-     */
-    private $tokenType;
-
-    /**
      * @var ResponseType]
      */
     private $responseType;
 
     /**
-     * @var ResponseMode|null
+     * @var null|ResponseMode
      */
     private $responseMode;
 
@@ -67,16 +62,6 @@ class AuthorizationRequest
      * @var array
      */
     private $queryParameters = [];
-
-    /**
-     * @var string|null
-     */
-    private $redirectUri;
-
-    /**
-     * @var array
-     */
-    private $consentScreenOptions = [];
 
     /**
      * @var array
@@ -89,7 +74,7 @@ class AuthorizationRequest
     private $responseHeaders = [];
 
     /**
-     * @var ResourceServer|null
+     * @var null|ResourceServer
      */
     private $resourceServer;
 
@@ -120,59 +105,14 @@ class AuthorizationRequest
      */
     public function getQueryParam(string $param)
     {
-        Assertion::true($this->hasQueryParam($param), sprintf('Invalid parameter "%s".', $param));
+        Assertion::true($this->hasQueryParam($param), sprintf('The parameter "%s" is missing.', $param));
 
         return $this->queryParameters[$param];
-    }
-
-    public function getAttributes(): array
-    {
-        return $this->attributes;
-    }
-
-    public function hasAttribute(string $param): bool
-    {
-        return \array_key_exists($param, $this->attributes);
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getAttribute(string $param)
-    {
-        Assertion::true($this->hasQueryParam($param), sprintf('Invalid attribute "%s".', $param));
-
-        return $this->attributes[$param];
     }
 
     public function getClient(): Client
     {
         return $this->client;
-    }
-
-    public function setTokenType(TokenType $tokenType): void
-    {
-        $this->tokenType = $tokenType;
-    }
-
-    public function getTokenType(): ?TokenType
-    {
-        return $this->tokenType;
-    }
-
-    public function setResponseType(ResponseType $responseType): void
-    {
-        $this->responseType = $responseType;
-    }
-
-    public function getResponseType(): ResponseType
-    {
-        return $this->responseType;
-    }
-
-    public function setResponseMode(ResponseMode $responseMode): void
-    {
-        $this->responseMode = $responseMode;
     }
 
     public function hasResponseMode(): bool
@@ -187,21 +127,9 @@ class AuthorizationRequest
         return $this->responseMode;
     }
 
-    public function setRedirectUri(string $redirectUri): void
-    {
-        $this->redirectUri = $redirectUri;
-    }
-
-    public function hasRedirectUri(): bool
-    {
-        return null !== $this->redirectUri;
-    }
-
     public function getRedirectUri(): string
     {
-        Assertion::notNull($this->redirectUri, 'internal_server_error');
-
-        return $this->redirectUri;
+        return $this->getQueryParam('redirect_uri');
     }
 
     public function setUserAccount(UserAccount $userAccount): void
@@ -271,7 +199,7 @@ class AuthorizationRequest
             return [];
         }
 
-        return \explode(' ', $this->getQueryParam('prompt'));
+        return explode(' ', $this->getQueryParam('prompt'));
     }
 
     public function hasUiLocales(): bool
@@ -284,7 +212,7 @@ class AuthorizationRequest
      */
     public function getUiLocales(): array
     {
-        return $this->hasQueryParam('ui_locales') ? \explode(' ', $this->getQueryParam('ui_locales')) : [];
+        return $this->hasQueryParam('ui_locales') ? explode(' ', $this->getQueryParam('ui_locales')) : [];
     }
 
     public function hasPrompt(string $prompt): bool
@@ -322,14 +250,6 @@ class AuthorizationRequest
         $this->resourceServer = $resourceServer;
     }
 
-    /**
-     * @param mixed $value
-     */
-    public function setConsentScreenOption(string $option, $value): void
-    {
-        $this->consentScreenOptions[$option] = $value;
-    }
-
     public function hasScope(): bool
     {
         return $this->hasQueryParam('scope');
@@ -343,5 +263,28 @@ class AuthorizationRequest
     public function getMetadata(): DataBag
     {
         return $this->metadata;
+    }
+
+    public function hasAttribute(string $key): bool
+    {
+        return \array_key_exists($key, $this->attributes);
+    }
+
+    /**
+     * @param null|mixed$value
+     */
+    public function setAttribute(string $key, $value): void
+    {
+        $this->attributes[$key] = $value;
+    }
+
+    /**
+     * @return null|mixed $value
+     */
+    public function getAttribute(string $key)
+    {
+        Assertion::true($this->hasAttribute($key), sprintf('The attribute with key "%s" does not exist', $key));
+
+        return $this->attributes[$key];
     }
 }

@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\ServerBundle\Component\OpenIdConnect;
@@ -49,7 +49,7 @@ class OpenIdConnectSource implements Component
 
     public function load(array $configs, ContainerBuilder $container): void
     {
-        if (!\class_exists(IdToken::class) || !$configs['openid_connect']['enabled']) {
+        if (!class_exists(IdToken::class) || !$configs['openid_connect']['enabled']) {
             return;
         }
 
@@ -68,12 +68,13 @@ class OpenIdConnectSource implements Component
 
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
-        if (!\class_exists(IdToken::class)) {
+        if (!class_exists(IdToken::class)) {
             return;
         }
         $childNode = $node->children()
             ->arrayNode($this->name())
-            ->canBeEnabled();
+            ->canBeEnabled()
+        ;
 
         foreach ($this->subComponents as $subComponent) {
             $subComponent->getNodeDefinition($childNode, $node);
@@ -82,12 +83,12 @@ class OpenIdConnectSource implements Component
 
     public function prepend(ContainerBuilder $container, array $config): array
     {
-        if (!\class_exists(IdToken::class)) {
+        if (!class_exists(IdToken::class)) {
             return [];
         }
         $updatedConfig = [];
         foreach ($this->subComponents as $subComponent) {
-            $updatedConfig = \array_merge(
+            $updatedConfig = array_merge(
                 $updatedConfig,
                 $subComponent->prepend($container, $config)
             );
@@ -98,7 +99,7 @@ class OpenIdConnectSource implements Component
 
     public function build(ContainerBuilder $container): void
     {
-        if (!\class_exists(IdToken::class)) {
+        if (!class_exists(IdToken::class)) {
             return;
         }
         $container->addCompilerPass(new OpenIdConnectExtensionEncryptionCompilerPass());

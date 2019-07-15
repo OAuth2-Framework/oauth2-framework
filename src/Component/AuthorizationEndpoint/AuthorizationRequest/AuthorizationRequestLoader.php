@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest;
@@ -30,7 +30,9 @@ use OAuth2Framework\Component\Core\Client\ClientRepository;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
-use Psr\Http\Message\ServerRequestInterface;
+use Safe\Exceptions\PcreException;
+use function Safe\preg_match;
+use function Safe\sprintf;
 
 class AuthorizationRequestLoader
 {
@@ -65,7 +67,7 @@ class AuthorizationRequestLoader
     private $requireEncryption = false;
 
     /**
-     * @var ClientInterface|null
+     * @var null|ClientInterface
      */
     private $client;
 
@@ -85,7 +87,7 @@ class AuthorizationRequestLoader
     private $jweLoader;
 
     /**
-     * @var JKUFactory|null
+     * @var null|JKUFactory
      */
     private $jkuFactory;
 
@@ -138,7 +140,7 @@ class AuthorizationRequestLoader
         return null === $this->jweLoader ? [] : $this->jweLoader->getJweDecrypter()->getContentEncryptionAlgorithmManager()->list();
     }
 
-    public function enableSignedRequestObjectSupport(JWSVerifier $jwsVerifier, ClaimCheckerManager $claimCheckerManager)
+    public function enableSignedRequestObjectSupport(JWSVerifier $jwsVerifier, ClaimCheckerManager $claimCheckerManager): void
     {
         $this->jwsVerifier = $jwsVerifier;
         $this->claimCheckerManager = $claimCheckerManager;
@@ -173,21 +175,27 @@ class AuthorizationRequestLoader
         return null !== $this->keyEncryptionKeySet;
     }
 
-    public function load(ServerRequestInterface $request): AuthorizationRequest
+    /**
+     * @throws OAuth2Error
+     * @throws PcreException
+     */
+    public function load(array $queryParameters): AuthorizationRequest
     {
         $client = null;
-        $params = $request->getQueryParams();
-        if (\array_key_exists('request', $params)) {
-            $params = $this->createFromRequestParameter($params, $client);
-        } elseif (\array_key_exists('request_uri', $params)) {
-            $params = $this->createFromRequestUriParameter($params, $client);
+        if (\array_key_exists('request', $queryParameters)) {
+            $queryParameters = $this->createFromRequestParameter($queryParameters, $client);
+        } elseif (\array_key_exists('request_uri', $queryParameters)) {
+            $queryParameters = $this->createFromRequestUriParameter($queryParameters, $client);
         } else {
-            $client = $this->getClient($params);
+            $client = $this->getClient($queryParameters);
         }
 
-        return new AuthorizationRequest($client, $params);
+        return new AuthorizationRequest($client, $queryParameters);
     }
 
+    /**
+     * @throws OAuth2Error
+     */
     private function createFromRequestParameter(array $params, Client &$client = null): array
     {
         if (false === $this->isRequestObjectSupportEnabled()) {
@@ -204,13 +212,17 @@ class AuthorizationRequestLoader
         return $params;
     }
 
+    /**
+     * @throws OAuth2Error
+     * @throws PcreException
+     */
     private function createFromRequestUriParameter(array $params, Client &$client = null): array
     {
         if (false === $this->isRequestObjectReferenceSupportEnabled()) {
             throw OAuth2Error::requestUriNotSupported('The parameter "request_uri" is not supported.');
         }
         $requestUri = $params['request_uri'];
-        if (\Safe\preg_match('#/\.\.?(/|$)#', $requestUri)) {
+        if (1 === preg_match('#/\.\.?(/|$)#', $requestUri)) {
             throw OAuth2Error::invalidRequestUri('The request Uri is not allowed.');
         }
         $content = $this->downloadContent($requestUri);
@@ -221,6 +233,9 @@ class AuthorizationRequestLoader
         return $params;
     }
 
+    /**
+     * @param array $params
+     */
     private function checkIssuerAndClientId(array $params): void
     {
         if (\array_key_exists('iss', $params) && \array_key_exists('client_id', $params)) {
@@ -228,7 +243,10 @@ class AuthorizationRequestLoader
         }
     }
 
-    private function checkRequestUri(Client $client, $requestUri)
+    /**
+     * @throws OAuth2Error
+     */
+    private function checkRequestUri(Client $client, string $requestUri): void
     {
         $storedRequestUris = $client->has('request_uris') ? $client->get('request_uris') : [];
         if (empty($storedRequestUris)) {
@@ -240,7 +258,7 @@ class AuthorizationRequestLoader
         }
 
         foreach ($storedRequestUris as $storedRequestUri) {
-            if (0 === \strcasecmp(\mb_substr($requestUri, 0, \mb_strlen($storedRequestUri, '8bit'), '8bit'), $storedRequestUri)) {
+            if (0 === strcasecmp(mb_substr($requestUri, 0, mb_strlen($storedRequestUri, '8bit'), '8bit'), $storedRequestUri)) {
                 return;
             }
         }
@@ -248,6 +266,9 @@ class AuthorizationRequestLoader
         throw OAuth2Error::invalidRequestUri('The request Uri is not allowed.');
     }
 
+    /**
+     * @throws OAuth2Error
+     */
     private function loadRequestObject(array $params, string $request, Client &$client = null): array
     {
         // FIXME Can be
@@ -265,7 +286,7 @@ class AuthorizationRequestLoader
             );
             Assertion::isArray($claims, 'Invalid assertion. The payload must contain claims.');
             $this->claimCheckerManager->check($claims);
-            $parameters = \array_merge($params, $claims);
+            $parameters = array_merge($params, $claims);
             $client = $this->getClient($parameters);
 
             $public_key_set = $this->getClientKeySet($client);
@@ -280,6 +301,9 @@ class AuthorizationRequestLoader
         }
     }
 
+    /**
+     * @throws OAuth2Error
+     */
     private function tryToLoadEncryptedRequest(string $request): string
     {
         if (null === $this->jweLoader) {
@@ -316,7 +340,7 @@ class AuthorizationRequestLoader
     private function checkUsedAlgorithm(string $algorithm): void
     {
         $supportedAlgorithms = $this->getSupportedSignatureAlgorithms();
-        Assertion::inArray($algorithm, $supportedAlgorithms, \Safe\sprintf('The algorithm "%s" is not allowed for request object signatures. Please use one of the following algorithm(s): %s', $algorithm, \implode(', ', $supportedAlgorithms)));
+        Assertion::inArray($algorithm, $supportedAlgorithms, sprintf('The algorithm "%s" is not allowed for request object signatures. Please use one of the following algorithm(s): %s', $algorithm, implode(', ', $supportedAlgorithms)));
     }
 
     private function downloadContent(string $url): string
@@ -328,6 +352,9 @@ class AuthorizationRequestLoader
         return $response->getBody()->getContents();
     }
 
+    /**
+     * @throws OAuth2Error
+     */
     private function getClient(array $params): Client
     {
         $client = \array_key_exists('client_id', $params) ? $this->clientRepository->find(new ClientId($params['client_id'])) : null;

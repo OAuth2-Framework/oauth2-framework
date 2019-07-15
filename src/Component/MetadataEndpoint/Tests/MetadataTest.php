@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\MetadataEndpoint\Tests;
@@ -18,6 +18,9 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @group Compiler
+ *
+ * @internal
+ * @coversNothing
  */
 final class MetadataTest extends TestCase
 {
@@ -31,7 +34,6 @@ final class MetadataTest extends TestCase
         $metadata->set('foo', 'bar');
         static::assertTrue($metadata->has('foo'));
         static::assertEquals('bar', $metadata->get('foo'));
-        static::assertEquals('{"foo":"bar"}', \Safe\json_encode($metadata));
 
         try {
             $metadata->get('bar');

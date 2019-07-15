@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\AuthorizationEndpoint\Tests\ResponseMode;
@@ -22,12 +22,21 @@ use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\ResponseMode;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\ResponseModeManager;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use function Safe\json_encode;
 
 /**
  * @group ResponseMode
+ *
+ * @internal
+ * @coversNothing
  */
 final class ResponseModeTest extends TestCase
 {
+    /**
+     * @var null|ResponseModeManager
+     */
+    private $responseModeManager;
+
     /**
      * @test
      */
@@ -180,11 +189,6 @@ final class ResponseModeTest extends TestCase
         static::assertEquals('["urn:ietf:wg:oauth:2.0:oob#_=_",{"access_token":"ACCESS_TOKEN"}]', $body);
     }
 
-    /**
-     * @var ResponseModeManager|null
-     */
-    private $responseModeManager;
-
     private function getResponseModeManager(): ResponseModeManager
     {
         if (null === $this->responseModeManager) {
@@ -195,7 +199,7 @@ final class ResponseModeTest extends TestCase
             ));
             $formPostResponseRenderer = $this->prophesize(FormPostResponseRenderer::class);
             $formPostResponseRenderer->render(Argument::type('string'), ['access_token' => 'ACCESS_TOKEN'])->will(function ($args) {
-                return \Safe\json_encode($args);
+                return json_encode($args);
             });
             $this->responseModeManager->add(new FormPostResponseMode(
                 $formPostResponseRenderer->reveal()

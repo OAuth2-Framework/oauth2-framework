@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\AuthorizationCodeGrant\Tests;
@@ -35,9 +35,22 @@ use Psr\Http\Message\StreamInterface;
 /**
  * @group GrantType
  * @group AuthorizationCodeGrantType
+ *
+ * @internal
+ * @coversNothing
  */
 final class AuthorizationCodeGrantTypeTest extends TestCase
 {
+    /**
+     * @var null|AuthorizationCodeGrantType
+     */
+    private $grantType;
+
+    /**
+     * @var null|PKCEMethodManager
+     */
+    private $pkceMethodManager;
+
     /**
      * @test
      */
@@ -132,11 +145,6 @@ final class AuthorizationCodeGrantTypeTest extends TestCase
         static::assertEquals('CLIENT_ID', $grantTypeData->getClient()->getPublicId()->getValue());
     }
 
-    /**
-     * @var AuthorizationCodeGrantType|null
-     */
-    private $grantType;
-
     private function getGrantType(): AuthorizationCodeGrantType
     {
         if (null === $this->grantType) {
@@ -170,11 +178,6 @@ final class AuthorizationCodeGrantTypeTest extends TestCase
         return $this->grantType;
     }
 
-    /**
-     * @var PKCEMethodManager|null
-     */
-    private $pkceMethodManager;
-
     private function getPkceMethodManager(): PKCEMethodManager
     {
         if (null === $this->pkceMethodManager) {
@@ -189,7 +192,7 @@ final class AuthorizationCodeGrantTypeTest extends TestCase
     private function buildRequest(array $data): ObjectProphecy
     {
         $body = $this->prophesize(StreamInterface::class);
-        $body->getContents()->willReturn(\http_build_query($data));
+        $body->getContents()->willReturn(http_build_query($data));
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->hasHeader('Content-Type')->willReturn(true);
         $request->getHeader('Content-Type')->willReturn(['application/x-www-form-urlencoded']);

@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\TokenRevocationEndpoint;
@@ -55,9 +55,9 @@ abstract class TokenRevocationEndpoint implements MiddlewareInterface
                         $hint->revoke($result);
 
                         return $this->getResponse(200, '', $callback);
-                    } else {
-                        throw OAuth2Error::invalidRequest('The parameter "token" is invalid.');
                     }
+
+                    throw OAuth2Error::invalidRequest('The parameter "token" is invalid.');
                 }
             }
 
@@ -66,6 +66,50 @@ abstract class TokenRevocationEndpoint implements MiddlewareInterface
             return $this->getResponse($e->getCode(), \Safe\json_encode($e->getData(), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), $callback);
         }
     }
+
+    protected function getToken(ServerRequestInterface $request): string
+    {
+        $params = $this->getRequestParameters($request);
+        if (!\array_key_exists('token', $params)) {
+            throw OAuth2Error::invalidRequest('The parameter "token" is missing.');
+        }
+
+        return $params['token'];
+    }
+
+    /**
+     * @return TokenTypeHint[]
+     */
+    protected function getTokenTypeHints(ServerRequestInterface $request): array
+    {
+        $params = $this->getRequestParameters($request);
+        $tokenTypeHints = $this->tokenTypeHintManager->getTokenTypeHints();
+
+        if (\array_key_exists('token_type_hint', $params)) {
+            $tokenTypeHint = $params['token_type_hint'];
+            if (!\array_key_exists($params['token_type_hint'], $tokenTypeHints)) {
+                throw new OAuth2Error(400, 'unsupported_token_type', \Safe\sprintf('The token type hint "%s" is not supported. Please use one of the following values: %s.', $params['token_type_hint'], implode(', ', array_keys($tokenTypeHints))));
+            }
+
+            $hint = $tokenTypeHints[$tokenTypeHint];
+            unset($tokenTypeHints[$tokenTypeHint]);
+            $tokenTypeHints = [$tokenTypeHint => $hint] + $tokenTypeHints;
+        }
+
+        return $tokenTypeHints;
+    }
+
+    protected function getCallback(ServerRequestInterface $request): ?string
+    {
+        $params = $this->getRequestParameters($request);
+        if (\array_key_exists('callback', $params)) {
+            return $params['callback'];
+        }
+
+        return null;
+    }
+
+    abstract protected function getRequestParameters(ServerRequestInterface $request): array;
 
     private function getResponse(int $code, string $data, ?string $callback): ResponseInterface
     {
@@ -92,48 +136,4 @@ abstract class TokenRevocationEndpoint implements MiddlewareInterface
 
         return $client;
     }
-
-    protected function getToken(ServerRequestInterface $request): string
-    {
-        $params = $this->getRequestParameters($request);
-        if (!\array_key_exists('token', $params)) {
-            throw OAuth2Error::invalidRequest('The parameter "token" is missing.');
-        }
-
-        return $params['token'];
-    }
-
-    /**
-     * @return TokenTypeHint[]
-     */
-    protected function getTokenTypeHints(ServerRequestInterface $request): array
-    {
-        $params = $this->getRequestParameters($request);
-        $tokenTypeHints = $this->tokenTypeHintManager->getTokenTypeHints();
-
-        if (\array_key_exists('token_type_hint', $params)) {
-            $tokenTypeHint = $params['token_type_hint'];
-            if (!\array_key_exists($params['token_type_hint'], $tokenTypeHints)) {
-                throw new OAuth2Error(400, 'unsupported_token_type', \Safe\sprintf('The token type hint "%s" is not supported. Please use one of the following values: %s.', $params['token_type_hint'], \implode(', ', \array_keys($tokenTypeHints))));
-            }
-
-            $hint = $tokenTypeHints[$tokenTypeHint];
-            unset($tokenTypeHints[$tokenTypeHint]);
-            $tokenTypeHints = [$tokenTypeHint => $hint] + $tokenTypeHints;
-        }
-
-        return $tokenTypeHints;
-    }
-
-    protected function getCallback(ServerRequestInterface $request): ?string
-    {
-        $params = $this->getRequestParameters($request);
-        if (\array_key_exists('callback', $params)) {
-            return $params['callback'];
-        }
-
-        return null;
-    }
-
-    abstract protected function getRequestParameters(ServerRequestInterface $request): array;
 }

@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\Scope\Policy;
@@ -23,7 +23,7 @@ class ScopePolicyManager
     private $scopePolicies = [];
 
     /**
-     * @var string|null
+     * @var null|string
      */
     private $defaultScopePolicy;
 
@@ -55,7 +55,7 @@ class ScopePolicyManager
      */
     public function all(): array
     {
-        return \array_keys($this->scopePolicies);
+        return array_keys($this->scopePolicies);
     }
 
     public function has(string $scopePolicy): bool

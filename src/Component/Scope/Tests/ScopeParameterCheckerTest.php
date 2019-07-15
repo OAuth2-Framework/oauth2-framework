@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\Scope\Tests;
@@ -24,15 +24,23 @@ use Prophecy\Argument;
 
 /**
  * @group ScopeParameterChecker
+ *
+ * @internal
+ * @coversNothing
  */
 final class ScopeParameterCheckerTest extends TestCase
 {
+    /**
+     * @var null|ScopeParameterChecker
+     */
+    private $scopeParameterChecker;
+
     /**
      * @inheritdoc}
      */
     protected function setUp(): void
     {
-        if (!\class_exists(AuthorizationRequest::class)) {
+        if (!class_exists(AuthorizationRequest::class)) {
             static::markTestSkipped('The component "oauth2-framework/authorization-endpoint" is not installed.');
         }
     }
@@ -66,7 +74,8 @@ final class ScopeParameterCheckerTest extends TestCase
         $authorization
             ->setResponseParameter('scope', Argument::any())
             ->shouldBeCalled()
-            ->will(function () {});
+            ->will(function () {})
+        ;
         $this->getScopeParameterChecker()->check(
             $authorization->reveal()
         );
@@ -93,11 +102,6 @@ final class ScopeParameterCheckerTest extends TestCase
             static::assertEquals('An unsupported scope was requested. Available scopes are scope1, scope2.', $e->getMessage());
         }
     }
-
-    /**
-     * @var ScopeParameterChecker|null
-     */
-    private $scopeParameterChecker;
 
     private function getScopeParameterChecker(): ScopeParameterChecker
     {

@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\TokenEndpoint;
@@ -31,12 +31,12 @@ class GrantTypeData
     private $parameter;
 
     /**
-     * @var ResourceOwnerId|null
+     * @var null|ResourceOwnerId
      */
     private $resourceOwnerId;
 
     /**
-     * @var Client|null
+     * @var null|Client
      */
     private $client;
 

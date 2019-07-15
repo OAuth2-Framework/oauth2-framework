@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\OpenIdConnect\UserInfoEndpoint;
@@ -33,17 +33,17 @@ use Psr\Http\Server\RequestHandlerInterface;
 class UserInfoEndpoint implements MiddlewareInterface
 {
     /**
-     * @var JWKSet|null
+     * @var null|JWKSet
      */
     private $signatureKeys;
 
     /**
-     * @var JWSBuilder|null
+     * @var null|JWSBuilder
      */
     private $jwsBuilder;
 
     /**
-     * @var JWEBuilder|null
+     * @var null|JWEBuilder
      */
     private $jweBuilder;
 
@@ -182,7 +182,7 @@ class UserInfoEndpoint implements MiddlewareInterface
 
     private function checkScope(AccessToken $accessToken): void
     {
-        if (!$accessToken->getParameter()->has('scope') || !\in_array('openid', \explode(' ', $accessToken->getParameter()->get('scope')), true)) {
+        if (!$accessToken->getParameter()->has('scope') || !\in_array('openid', explode(' ', $accessToken->getParameter()->get('scope')), true)) {
             throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_TOKEN, 'The access token does not contain the "openid" scope.');
         }
     }

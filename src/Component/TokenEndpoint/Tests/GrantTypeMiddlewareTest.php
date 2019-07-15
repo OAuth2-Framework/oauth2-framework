@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\TokenEndpoint\Tests;
@@ -28,9 +28,22 @@ use Psr\Http\Server\RequestHandlerInterface;
 /**
  * @group TokenEndpoint
  * @group GrantTypeMiddleware
+ *
+ * @internal
+ * @coversNothing
  */
 final class GrantTypeMiddlewareTest extends TestCase
 {
+    /**
+     * @var null|GrantTypeManager
+     */
+    private $grantTypeManager;
+
+    /**
+     * @var null|GrantTypeMiddleware
+     */
+    private $grantTypeMiddleware;
+
     /**
      * @test
      */
@@ -98,20 +111,11 @@ final class GrantTypeMiddlewareTest extends TestCase
         $handler = $this->prophesize(RequestHandlerInterface::class);
         $handler->handle(Argument::type(ServerRequestInterface::class))
             ->shouldBeCalled()
-            ->willReturn($response->reveal());
+            ->willReturn($response->reveal())
+        ;
 
         $this->getGrantTypeMiddleware()->process($request->reveal(), $handler->reveal());
     }
-
-    /**
-     * @var GrantTypeManager|null
-     */
-    private $grantTypeManager;
-
-    /**
-     * @var GrantTypeMiddleware|null
-     */
-    private $grantTypeMiddleware;
 
     private function getGrantTypeManager(): GrantTypeManager
     {
@@ -140,7 +144,7 @@ final class GrantTypeMiddlewareTest extends TestCase
     private function buildRequest(array $data): ObjectProphecy
     {
         $body = $this->prophesize(StreamInterface::class);
-        $body->getContents()->willReturn(\http_build_query($data));
+        $body->getContents()->willReturn(http_build_query($data));
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->hasHeader('Content-Type')->willReturn(true);
         $request->getHeader('Content-Type')->willReturn(['application/x-www-form-urlencoded']);

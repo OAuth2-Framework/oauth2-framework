@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 use OAuth2Framework\Component\Core\Middleware;
@@ -21,7 +21,8 @@ use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 return function (ContainerConfigurator $container) {
     $container = $container->services()->defaults()
         ->private()
-        ->autoconfigure();
+        ->autoconfigure()
+    ;
 
     $container->set('token_revocation_pipe')
         ->class(Middleware\Pipe::class)
@@ -30,12 +31,14 @@ return function (ContainerConfigurator $container) {
             ref('oauth2_server.client_authentication.middleware'),
             ref('token_revocation_method_handler'),
         ]])
-        ->tag('controller.service_arguments');
+        ->tag('controller.service_arguments')
+    ;
 
     $container->set('token_revocation_method_handler')
         ->class(\OAuth2Framework\Component\Core\Middleware\HttpMethodMiddleware::class)
         ->call('add', ['POST', ref(TokenRevocationPostEndpoint::class)])
-        ->call('add', ['GET', ref(TokenRevocationGetEndpoint::class)]);
+        ->call('add', ['GET', ref(TokenRevocationGetEndpoint::class)])
+    ;
 
     $container->set(TokenTypeHintManager::class);
 
@@ -43,12 +46,14 @@ return function (ContainerConfigurator $container) {
         ->args([
             ref(TokenTypeHintManager::class),
             ref(\Psr\Http\Message\ResponseFactoryInterface::class),
-        ]);
+        ])
+    ;
 
     $container->set(TokenRevocationGetEndpoint::class)
         ->args([
             ref(TokenTypeHintManager::class),
             ref(\Psr\Http\Message\ResponseFactoryInterface::class),
             '%oauth2_server.endpoint.token_revocation.allow_callback%',
-        ]);
+        ])
+    ;
 };

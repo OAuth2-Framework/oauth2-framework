@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\ClientAuthentication;
@@ -31,6 +31,9 @@ use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use OAuth2Framework\Component\Core\TrustedIssuer\TrustedIssuerRepository;
 use OAuth2Framework\Component\Core\Util\RequestBodyParser;
 use Psr\Http\Message\ServerRequestInterface;
+use function Safe\json_decode;
+use function Safe\json_encode;
+use function Safe\sprintf;
 
 class ClientAssertionJwt implements AuthenticationMethod
 {
@@ -42,22 +45,22 @@ class ClientAssertionJwt implements AuthenticationMethod
     private $jwsVerifier;
 
     /**
-     * @var TrustedIssuerRepository|null
+     * @var null|TrustedIssuerRepository
      */
     private $trustedIssuerRepository;
 
     /**
-     * @var JKUFactory|null
+     * @var null|JKUFactory
      */
     private $jkuFactory;
 
     /**
-     * @var JWELoader|null
+     * @var null|JWELoader
      */
     private $jweLoader;
 
     /**
-     * @var JWKSet|null
+     * @var null|JWKSet
      */
     private $keyEncryptionKeySet;
 
@@ -137,7 +140,7 @@ class ClientAssertionJwt implements AuthenticationMethod
     }
 
     /**
-     * @param mixed|null $clientCredentials
+     * @param null|mixed $clientCredentials
      */
     public function findClientIdAndCredentials(ServerRequestInterface $request, &$clientCredentials = null): ?ClientId
     {
@@ -171,9 +174,9 @@ class ClientAssertionJwt implements AuthenticationMethod
         }
 
         // FIXME: Other claims can be considered as mandatory by the server
-        $diff = \array_diff(['iss', 'sub', 'aud', 'exp'], \array_keys($claims));
+        $diff = array_diff(['iss', 'sub', 'aud', 'exp'], array_keys($claims));
         if (0 !== \count($diff)) {
-            throw OAuth2Error::invalidRequest(\Safe\sprintf('The following claim(s) is/are mandatory: "%s".', \implode(', ', \array_values($diff))));
+            throw OAuth2Error::invalidRequest(sprintf('The following claim(s) is/are mandatory: "%s".', implode(', ', array_values($diff))));
         }
 
         $clientCredentials = $jws;
@@ -181,33 +184,8 @@ class ClientAssertionJwt implements AuthenticationMethod
         return new ClientId($claims['sub']);
     }
 
-    private function tryToDecryptClientAssertion(string $assertion): string
-    {
-        if (null === $this->jweLoader) {
-            return $assertion;
-        }
-
-        try {
-            Assertion::notNull($this->keyEncryptionKeySet, 'The key encryption key set is not defined.');
-            $jwe = $this->jweLoader->loadAndDecryptWithKeySet($assertion, $this->keyEncryptionKeySet, $recipient);
-            if (1 !== $jwe->countRecipients()) {
-                throw new \InvalidArgumentException('The client assertion must have only one recipient.');
-            }
-            $payload = $jwe->getPayload();
-            Assertion::string($payload, 'Unable to get the JWE payload');
-
-            return $payload;
-        } catch (\Throwable $e) {
-            if (true === $this->encryptionRequired) {
-                throw OAuth2Error::invalidRequest('The encryption of the assertion is mandatory but the decryption of the assertion failed.', [], $e);
-            }
-
-            return $assertion;
-        }
-    }
-
     /**
-     * @param mixed|null $clientCredentials
+     * @param null|mixed $clientCredentials
      */
     public function isClientAuthenticated(Client $client, $clientCredentials, ServerRequestInterface $request): bool
     {
@@ -243,11 +221,36 @@ class ClientAssertionJwt implements AuthenticationMethod
         }
     }
 
+    private function tryToDecryptClientAssertion(string $assertion): string
+    {
+        if (null === $this->jweLoader) {
+            return $assertion;
+        }
+
+        try {
+            Assertion::notNull($this->keyEncryptionKeySet, 'The key encryption key set is not defined.');
+            $jwe = $this->jweLoader->loadAndDecryptWithKeySet($assertion, $this->keyEncryptionKeySet, $recipient);
+            if (1 !== $jwe->countRecipients()) {
+                throw new \InvalidArgumentException('The client assertion must have only one recipient.');
+            }
+            $payload = $jwe->getPayload();
+            Assertion::string($payload, 'Unable to get the JWE payload');
+
+            return $payload;
+        } catch (\Throwable $e) {
+            if (true === $this->encryptionRequired) {
+                throw OAuth2Error::invalidRequest('The encryption of the assertion is mandatory but the decryption of the assertion failed.', [], $e);
+            }
+
+            return $assertion;
+        }
+    }
+
     private function checkClientSecretJwtConfiguration(DataBag $commandParameters, DataBag $validatedParameters): DataBag
     {
         $validatedParameters->set('token_endpoint_auth_method', $commandParameters->get('token_endpoint_auth_method'));
         $validatedParameters->set('client_secret', $this->createClientSecret());
-        $validatedParameters->set('client_secret_expires_at', (0 === $this->secretLifetime ? 0 : \time() + $this->secretLifetime));
+        $validatedParameters->set('client_secret_expires_at', (0 === $this->secretLifetime ? 0 : time() + $this->secretLifetime));
 
         return $validatedParameters;
     }
@@ -276,7 +279,7 @@ class ClientAssertionJwt implements AuthenticationMethod
 
     private function createClientSecret(): string
     {
-        return \bin2hex(\random_bytes(32));
+        return bin2hex(random_bytes(32));
     }
 
     private function retrieveIssuerKeySet(Client $client, JWS $jws, array $claims): JWKSet
@@ -290,12 +293,12 @@ class ClientAssertionJwt implements AuthenticationMethod
         }
 
         if (!\in_array(self::CLIENT_ASSERTION_TYPE, $trustedIssuer->getAllowedAssertionTypes(), true)) {
-            throw new \InvalidArgumentException(\Safe\sprintf('The assertion type "%s" is not allowed for that issuer.', self::CLIENT_ASSERTION_TYPE));
+            throw new \InvalidArgumentException(sprintf('The assertion type "%s" is not allowed for that issuer.', self::CLIENT_ASSERTION_TYPE));
         }
 
         $signatureAlgorithm = $jws->getSignature(0)->getProtectedHeaderParameter('alg');
         if (!\in_array($signatureAlgorithm, $trustedIssuer->getAllowedSignatureAlgorithms(), true)) {
-            throw new \InvalidArgumentException(\Safe\sprintf('The signature algorithm "%s" is not allowed for that issuer.', $signatureAlgorithm));
+            throw new \InvalidArgumentException(sprintf('The signature algorithm "%s" is not allowed for that issuer.', $signatureAlgorithm));
         }
 
         return $trustedIssuer->getJWKSet();
@@ -305,7 +308,7 @@ class ClientAssertionJwt implements AuthenticationMethod
     {
         switch (true) {
             case $client->has('jwks') && 'private_key_jwt' === $client->getTokenEndpointAuthenticationMethod():
-                $jwks = \Safe\json_decode(\Safe\json_encode($client->get('jwks'), JSON_FORCE_OBJECT), true);
+                $jwks = json_decode(json_encode($client->get('jwks'), JSON_FORCE_OBJECT), true);
 
                 return JWKSet::createFromKeyData($jwks);
             case $client->has('client_secret') && 'client_secret_jwt' === $client->getTokenEndpointAuthenticationMethod():

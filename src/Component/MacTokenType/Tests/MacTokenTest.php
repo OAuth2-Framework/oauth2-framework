@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\MacTokenType\Tests;
@@ -23,6 +23,9 @@ use Psr\Http\Message\UriInterface;
 
 /**
  * @group MacToken
+ *
+ * @internal
+ * @coversNothing
  */
 final class MacTokenTest extends TestCase
 {
@@ -61,7 +64,7 @@ final class MacTokenTest extends TestCase
         $mac = $this->generateMac(
             'sha256',
             'adijq39jdlaska9asud',
-            \time(),
+            time(),
             'dj83hs9s',
             'POST',
             '/request?b5=%3D%253D&a3=a&c%40=&a2=r%20b&c2&a3=2+q',
@@ -69,7 +72,7 @@ final class MacTokenTest extends TestCase
             80,
             null
         );
-        $additionalCredentialValues = ['id' => 'h480djs93hd8', 'ts' => \time(), 'nonce' => 'dj83hs9s', 'mac' => $mac];
+        $additionalCredentialValues = ['id' => 'h480djs93hd8', 'ts' => time(), 'nonce' => 'dj83hs9s', 'mac' => $mac];
         $accessToken = new AccessToken(
             new AccessTokenId('h480djs93hd8'),
             new ClientId('CLIENT_ID'),
@@ -94,6 +97,6 @@ final class MacTokenTest extends TestCase
     {
         $basestr = \Safe\sprintf("%d\n%s\n%s\n%s\n%s\n%s\n%s\n", $timestamp, $nonce, $method, $requestUri, $host, $port, $ext);
 
-        return \base64_encode(\hash_hmac($algorithm, $basestr, $key, true));
+        return base64_encode(hash_hmac($algorithm, $basestr, $key, true));
     }
 }

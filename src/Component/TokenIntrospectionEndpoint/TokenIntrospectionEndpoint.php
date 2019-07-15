@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\TokenIntrospectionEndpoint;
@@ -21,6 +21,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use function Safe\array_flip;
 
 final class TokenIntrospectionEndpoint implements MiddlewareInterface
 {
@@ -111,7 +112,7 @@ final class TokenIntrospectionEndpoint implements MiddlewareInterface
         if (\array_key_exists('token_type_hint', $params)) {
             $tokenTypeHint = $params['token_type_hint'];
             if (!\array_key_exists($params['token_type_hint'], $tokenTypeHints)) {
-                throw new OAuth2Error(400, 'unsupported_token_type', \Safe\sprintf('The token type hint "%s" is not supported. Please use one of the following values: %s.', $params['token_type_hint'], \implode(', ', \array_keys($tokenTypeHints))));
+                throw new OAuth2Error(400, 'unsupported_token_type', \Safe\sprintf('The token type hint "%s" is not supported. Please use one of the following values: %s.', $params['token_type_hint'], implode(', ', array_keys($tokenTypeHints))));
             }
 
             $hint = $tokenTypeHints[$tokenTypeHint];
@@ -126,6 +127,6 @@ final class TokenIntrospectionEndpoint implements MiddlewareInterface
     {
         $parameters = RequestBodyParser::parseFormUrlEncoded($request);
 
-        return \array_intersect_key($parameters, \array_flip(['token', 'token_type_hint']));
+        return array_intersect_key($parameters, array_flip(['token', 'token_type_hint']));
     }
 }

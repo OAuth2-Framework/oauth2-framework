@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\RefreshTokenGrant;
@@ -47,7 +47,7 @@ final class RefreshTokenEndpointExtension implements TokenEndpointExtension
     public function afterAccessTokenIssuance(Client $client, ResourceOwner $resourceOwner, AccessToken $accessToken, callable $next): array
     {
         $result = $next($client, $resourceOwner, $accessToken);
-        $scope = $accessToken->getParameter()->has('scope') ? \explode(' ', $accessToken->getParameter()->get('scope')) : [];
+        $scope = $accessToken->getParameter()->has('scope') ? explode(' ', $accessToken->getParameter()->get('scope')) : [];
         if (\in_array('offline_access', $scope, true)) {
             $expiresAt = new \DateTimeImmutable(\Safe\sprintf('now +%u seconds', $this->lifetime));
             $refreshToken = $this->refreshTokenRepository->create(

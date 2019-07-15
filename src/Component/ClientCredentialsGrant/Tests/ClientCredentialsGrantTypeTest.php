@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\ClientCredentialsGrant\Tests;
@@ -24,9 +24,17 @@ use Psr\Http\Message\ServerRequestInterface;
 /**
  * @group GrantType
  * @group ClientCredentials
+ *
+ * @internal
+ * @coversNothing
  */
 final class ClientCredentialsGrantTypeTest extends TestCase
 {
+    /**
+     * @var null|ClientCredentialsGrantType
+     */
+    private $grantType;
+
     /**
      * @test
      */
@@ -82,11 +90,6 @@ final class ClientCredentialsGrantTypeTest extends TestCase
         static::assertEquals('CLIENT_ID', $grantTypeData->getResourceOwnerId()->getValue());
         static::assertEquals('CLIENT_ID', $grantTypeData->getClient()->getPublicId()->getValue());
     }
-
-    /**
-     * @var ClientCredentialsGrantType|null
-     */
-    private $grantType;
 
     private function getGrantType(): ClientCredentialsGrantType
     {

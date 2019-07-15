@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\JwtBearerGrant\Tests;
@@ -56,9 +56,17 @@ use Psr\Http\Message\StreamInterface;
 /**
  * @group GrantType
  * @group JwtBearer
+ *
+ * @internal
+ * @coversNothing
  */
 final class JwtBearerGrantTypeTest extends TestCase
 {
+    /**
+     * @var null|JwtBearerGrantType
+     */
+    private $grantType;
+
     /**
      * @test
      */
@@ -103,7 +111,7 @@ final class JwtBearerGrantTypeTest extends TestCase
      */
     public function theTokenResponseIsCorrectlyPreparedWithAssertionFromClient()
     {
-        if (!\class_exists(JWEBuilder::class)) {
+        if (!class_exists(JWEBuilder::class)) {
             static::markTestSkipped('The component "web-token/jwt-encryption" is not installed.');
         }
         $request = $this->buildRequest(['assertion' => $this->createValidEncryptedAssertionFromClient()]);
@@ -173,7 +181,7 @@ final class JwtBearerGrantTypeTest extends TestCase
      */
     public function theGrantTypeCanGrantTheClientUsingTheTokenIssuedByTheClient()
     {
-        if (!\class_exists(JWEBuilder::class)) {
+        if (!class_exists(JWEBuilder::class)) {
             static::markTestSkipped('The component "web-token/jwt-encryption" is not installed.');
         }
         $client = $this->prophesize(Client::class);
@@ -193,11 +201,6 @@ final class JwtBearerGrantTypeTest extends TestCase
         static::assertEquals('CLIENT_ID', $grantTypeData->getClient()->getPublicId()->getValue());
     }
 
-    /**
-     * @var JwtBearerGrantType|null
-     */
-    private $grantType;
-
     private function getGrantType(): JwtBearerGrantType
     {
         if (null === $this->grantType) {
@@ -213,7 +216,7 @@ final class JwtBearerGrantTypeTest extends TestCase
                 $this->getTrustedIssuerManager()
             );
 
-            if (\class_exists(JWEBuilder::class)) {
+            if (class_exists(JWEBuilder::class)) {
                 $this->grantType->enableEncryptedAssertions(
                     $this->getJweDecrypter(),
                     $this->getEncryptionKeySet(),
@@ -235,8 +238,6 @@ final class JwtBearerGrantTypeTest extends TestCase
             if ('USER_ACCOUNT_ID' === ($args[0])->getValue()) {
                 return $userAccount->reveal();
             }
-
-            return;
         });
 
         return $userAccountRepository->reveal();
@@ -262,8 +263,6 @@ final class JwtBearerGrantTypeTest extends TestCase
             if ('CLIENT_ID' === ($args[0])->getValue()) {
                 return $client->reveal();
             }
-
-            return;
         });
 
         return $clientRepository->reveal();
@@ -341,7 +340,7 @@ final class JwtBearerGrantTypeTest extends TestCase
             'iss' => 'Unknown Issuer',
             'sub' => 'USER_ACCOUNT_ID',
             'aud' => 'My OAuth2 Server',
-            'exp' => \time() + 1000,
+            'exp' => time() + 1000,
         ];
         $header = [
             'alg' => 'ES256',
@@ -351,7 +350,8 @@ final class JwtBearerGrantTypeTest extends TestCase
             ->create()
             ->withPayload(JsonConverter::encode($claims))
             ->addSignature($this->getPrivateEcKey(), $header)
-            ->build();
+            ->build()
+        ;
         $serializer = new JwsCompactSerializer();
 
         return $serializer->serialize($jws, 0);
@@ -363,7 +363,7 @@ final class JwtBearerGrantTypeTest extends TestCase
             'iss' => 'Trusted Issuer #1',
             'sub' => 'USER_ACCOUNT_ID',
             'aud' => 'My OAuth2 Server',
-            'exp' => \time() + 1000,
+            'exp' => time() + 1000,
         ];
         $header = [
             'alg' => 'ES256',
@@ -373,7 +373,8 @@ final class JwtBearerGrantTypeTest extends TestCase
             ->create()
             ->withPayload(JsonConverter::encode($claims))
             ->addSignature($this->getPrivateEcKey(), $header)
-            ->build();
+            ->build()
+        ;
         $serializer = new JwsCompactSerializer();
 
         return $serializer->serialize($jws, 0);
@@ -385,7 +386,7 @@ final class JwtBearerGrantTypeTest extends TestCase
             'iss' => 'CLIENT_ID',
             'sub' => 'CLIENT_ID',
             'aud' => 'My OAuth2 Server',
-            'exp' => \time() + 1000,
+            'exp' => time() + 1000,
         ];
         $header = [
             'alg' => 'RS256',
@@ -395,7 +396,8 @@ final class JwtBearerGrantTypeTest extends TestCase
             ->create()
             ->withPayload(JsonConverter::encode($claims))
             ->addSignature($this->getPrivateRsaKey(), $header)
-            ->build();
+            ->build()
+        ;
         $serializer = new JwsCompactSerializer();
         $jwt = $serializer->serialize($jws, 0);
 
@@ -404,11 +406,11 @@ final class JwtBearerGrantTypeTest extends TestCase
             ->withPayload($jwt)
             ->withSharedProtectedHeader(['alg' => 'A256KW', 'enc' => 'A256GCM'])
             ->addRecipient($this->getEncryptionKey())
-            ->build();
+            ->build()
+        ;
         $serializer = new JweCompactSerializer();
-        $jwt = $serializer->serialize($jwe, 0);
 
-        return $jwt;
+        return $serializer->serialize($jwe, 0);
     }
 
     private function getPublicEcKeySet(): JWKSet
@@ -444,7 +446,7 @@ final class JwtBearerGrantTypeTest extends TestCase
     private function buildRequest(array $data): ObjectProphecy
     {
         $body = $this->prophesize(StreamInterface::class);
-        $body->getContents()->willReturn(\http_build_query($data));
+        $body->getContents()->willReturn(http_build_query($data));
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->hasHeader('Content-Type')->willReturn(true);
         $request->getHeader('Content-Type')->willReturn(['application/x-www-form-urlencoded']);

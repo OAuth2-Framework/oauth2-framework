@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\SecurityBundle\DependencyInjection;
@@ -54,7 +54,7 @@ final class OAuth2FrameworkSecurityExtension extends Extension
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../Resources/config/'));
         $loader->load('security.php');
 
-        if (true === $config['bearer_token']['enabled'] && \class_exists(BearerToken::class)) {
+        if (true === $config['bearer_token']['enabled'] && class_exists(BearerToken::class)) {
             $container->setParameter('oauth2_security.token_type.bearer_token.realm', $config['bearer_token']['realm']);
             $loader->load('bearer_token.php');
 
@@ -69,7 +69,7 @@ final class OAuth2FrameworkSecurityExtension extends Extension
                 $loader->load('request_body_token_finder.php');
             }
         }
-        if (\class_exists(MacToken::class) && $config['mac_token']['enabled']) {
+        if (class_exists(MacToken::class) && $config['mac_token']['enabled']) {
             $container->setParameter('oauth2_security.token_type.mac_token.min_length', $config['mac_token']['min_length']);
             $container->setParameter('oauth2_security.token_type.mac_token.max_length', $config['mac_token']['max_length']);
             $container->setParameter('oauth2_security.token_type.mac_token.algorithm', $config['mac_token']['algorithm']);

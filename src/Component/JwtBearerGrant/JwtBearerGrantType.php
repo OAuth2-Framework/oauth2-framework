@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\JwtBearerGrant;
@@ -49,7 +49,7 @@ class JwtBearerGrantType implements GrantType
     private $jwsVerifier;
 
     /**
-     * @var JWEDecrypter|null
+     * @var null|JWEDecrypter
      */
     private $jweDecrypter;
 
@@ -69,7 +69,7 @@ class JwtBearerGrantType implements GrantType
     private $clientRepository;
 
     /**
-     * @var UserAccountRepository|null
+     * @var null|UserAccountRepository
      */
     private $userAccountRepository;
 
@@ -79,17 +79,17 @@ class JwtBearerGrantType implements GrantType
     private $encryptionRequired = false;
 
     /**
-     * @var JWKSet|null
+     * @var null|JWKSet
      */
     private $keyEncryptionKeySet;
 
     /**
-     * @var TrustedIssuerRepository|null
+     * @var null|TrustedIssuerRepository
      */
     private $trustedIssuerRepository;
 
     /**
-     * @var JKUFactory|null
+     * @var null|JKUFactory
      */
     private $jkuFactory;
 
@@ -137,9 +137,9 @@ class JwtBearerGrantType implements GrantType
         $parameters = RequestBodyParser::parseFormUrlEncoded($request);
         $requiredParameters = ['assertion'];
 
-        $diff = \array_diff($requiredParameters, \array_keys($parameters));
+        $diff = array_diff($requiredParameters, array_keys($parameters));
         if (0 !== \count($diff)) {
-            throw OAuth2Error::invalidRequest(sprintf('Missing grant type parameter(s): %s.', \implode(', ', $diff)));
+            throw OAuth2Error::invalidRequest(sprintf('Missing grant type parameter(s): %s.', implode(', ', $diff)));
         }
     }
 
@@ -159,9 +159,9 @@ class JwtBearerGrantType implements GrantType
             Assertion::string($payload, 'The assertion is not valid. No payload available.');
             $claims = json_decode($payload, true);
             $this->claimCheckerManager->check($claims);
-            $diff = \array_diff(['iss', 'sub', 'aud', 'exp'], \array_keys($claims));
+            $diff = array_diff(['iss', 'sub', 'aud', 'exp'], array_keys($claims));
             if (0 !== \count($diff)) {
-                throw new InvalidArgumentException(sprintf('The following claim(s) is/are mandatory: "%s".', \implode(', ', \array_values($diff))));
+                throw new InvalidArgumentException(sprintf('The following claim(s) is/are mandatory: "%s".', implode(', ', array_values($diff))));
             }
             $this->checkJWTSignature($grantTypeData, $jws, $claims);
         } catch (OAuth2Error $e) {
@@ -169,6 +169,10 @@ class JwtBearerGrantType implements GrantType
         } catch (\Throwable $e) {
             throw OAuth2Error::invalidRequest($e->getMessage(), [], $e);
         }
+    }
+
+    public function grant(ServerRequestInterface $request, GrantTypeData $grantTypeData): void
+    {
     }
 
     private function tryToDecryptTheAssertion(string $assertion): string
@@ -196,10 +200,6 @@ class JwtBearerGrantType implements GrantType
 
             return $assertion;
         }
-    }
-
-    public function grant(ServerRequestInterface $request, GrantTypeData $grantTypeData): void
-    {
     }
 
     private function checkJWTSignature(GrantTypeData $grantTypeData, JWS $jws, array $claims): void

@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\OpenIdConnect\UserInfo;
@@ -23,7 +23,7 @@ use OAuth2Framework\Component\OpenIdConnect\UserInfo\ScopeSupport\UserInfoScopeS
 class UserInfo
 {
     /**
-     * @var PairwiseSubjectIdentifierAlgorithm|null
+     * @var null|PairwiseSubjectIdentifierAlgorithm
      */
     private $pairwiseAlgorithm;
 
@@ -54,7 +54,7 @@ class UserInfo
 
     public function getUserinfo(Client $client, UserAccount $userAccount, string $redirectUri, array $requestedClaims, ?string $scope, ?string $claimsLocales): array
     {
-        $requestedClaims = \array_merge(
+        $requestedClaims = array_merge(
             $this->getClaimsFromClaimScope($scope),
             $requestedClaims
         );
@@ -68,12 +68,27 @@ class UserInfo
         return $claims;
     }
 
+    public function enablePairwiseSubject(PairwiseSubjectIdentifierAlgorithm $pairwiseAlgorithm): void
+    {
+        $this->pairwiseAlgorithm = $pairwiseAlgorithm;
+    }
+
+    public function isPairwiseSubjectIdentifierSupported(): bool
+    {
+        return null !== $this->pairwiseAlgorithm;
+    }
+
+    public function getPairwiseSubjectIdentifierAlgorithm(): ?PairwiseSubjectIdentifierAlgorithm
+    {
+        return $this->pairwiseAlgorithm;
+    }
+
     private function getClaimsFromClaimScope(?string $scope): array
     {
         $result = [];
         $scope = $scope ?? '';
 
-        foreach (\explode(' ', $scope) as $scp) {
+        foreach (explode(' ', $scope) as $scp) {
             if ($this->userinfoScopeSupportManager->has($scp)) {
                 $scope_claims = $this->userinfoScopeSupportManager->get($scp)->getAssociatedClaims();
                 foreach ($scope_claims as $scope_claim) {
@@ -88,8 +103,9 @@ class UserInfo
     private function getClaimValues(UserAccount $userAccount, array $requestedClaims, ?string $claimsLocales): array
     {
         $result = [];
-        $claimsLocales = null === $claimsLocales ? [] : \array_unique(\explode(' ', $claimsLocales));
-        $result = $this->claimManager->getUserInfo($userAccount, $requestedClaims, $claimsLocales);
+        $claimsLocales = null === $claimsLocales ? [] : array_unique(explode(' ', $claimsLocales));
+
+        return $this->claimManager->getUserInfo($userAccount, $requestedClaims, $claimsLocales);
         /*foreach ($requestedClaims as $claim => $config) {
             foreach ($claimsLocales as $claims_locale) {
                 $claim_locale = $this->computeClaimWithLocale($claim, $claims_locale);
@@ -101,12 +117,10 @@ class UserInfo
                 }
             }
         }*/
-
-        return $result;
     }
 
     /**
-     * @return mixed|null
+     * @return null|mixed
      */
     private function getUserClaim(UserAccount $userAccount, string $claimName, ?array $config)
     {
@@ -132,21 +146,6 @@ class UserInfo
         }
 
         return null;
-    }
-
-    public function enablePairwiseSubject(PairwiseSubjectIdentifierAlgorithm $pairwiseAlgorithm): void
-    {
-        $this->pairwiseAlgorithm = $pairwiseAlgorithm;
-    }
-
-    public function isPairwiseSubjectIdentifierSupported(): bool
-    {
-        return null !== $this->pairwiseAlgorithm;
-    }
-
-    public function getPairwiseSubjectIdentifierAlgorithm(): ?PairwiseSubjectIdentifierAlgorithm
-    {
-        return $this->pairwiseAlgorithm;
     }
 
     private function calculateSubjectIdentifier(Client $client, UserAccount $userAccount, string $redirectUri): string

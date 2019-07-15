@@ -8,12 +8,12 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\MetadataEndpoint;
 
-class Metadata implements \JsonSerializable
+class Metadata
 {
     /**
      * @var array
@@ -26,7 +26,7 @@ class Metadata implements \JsonSerializable
     }
 
     /**
-     * @return mixed|null
+     * @return null|mixed
      */
     public function get(string $key)
     {
@@ -38,14 +38,17 @@ class Metadata implements \JsonSerializable
     }
 
     /**
-     * @param mixed|null $value
+     * @param null|mixed $value
      */
     public function set(string $key, $value): void
     {
         $this->values[$key] = $value;
     }
 
-    public function jsonSerialize(): array
+    /**
+     * @return array
+     */
+    public function all(): array
     {
         return $this->values;
     }

@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 use OAuth2Framework\Component\Core\Middleware;
@@ -20,23 +20,27 @@ use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 return function (ContainerConfigurator $container) {
     $container = $container->services()->defaults()
         ->private()
-        ->autoconfigure();
+        ->autoconfigure()
+    ;
 
     $container->set('metadata_endpoint_pipe')
         ->class(Middleware\Pipe::class)
         ->args([[
             ref(MetadataController::class),
         ]])
-        ->tag('controller.service_arguments');
+        ->tag('controller.service_arguments')
+    ;
 
     $container->set(MetadataController::class)
         ->args([
             ref(\Psr\Http\Message\ResponseFactoryInterface::class),
             ref(MetadataBuilder::class),
-        ]);
+        ])
+    ;
 
     $container->set(MetadataBuilder::class)
         ->args([
             ref('router'),
-        ]);
+        ])
+    ;
 };

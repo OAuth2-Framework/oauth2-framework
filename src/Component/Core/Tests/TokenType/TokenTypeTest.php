@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\Core\Tests\TokenType;
@@ -21,9 +21,17 @@ use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * @group TokenType
+ *
+ * @internal
+ * @coversNothing
  */
 final class TokenTypeTest extends TestCase
 {
+    /**
+     * @var null|TokenTypeManager
+     */
+    private $tokenTypeManager;
+
     /**
      * @test
      */
@@ -58,11 +66,6 @@ final class TokenTypeTest extends TestCase
 
         static::assertEquals('__--TOKEN--__', $this->getTokenTypeManager()->findToken($request->reveal(), $additionalCredentialValues, $tokenType));
     }
-
-    /**
-     * @var TokenTypeManager|null
-     */
-    private $tokenTypeManager;
 
     private function getTokenTypeManager(): TokenTypeManager
     {

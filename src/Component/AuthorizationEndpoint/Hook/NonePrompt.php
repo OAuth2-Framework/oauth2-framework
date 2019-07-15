@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\AuthorizationEndpoint\Hook;
@@ -23,7 +23,7 @@ use Psr\Http\Message\ServerRequestInterface;
 final class NonePrompt implements AuthorizationEndpointHook
 {
     /**
-     * @var ConsentRepository|null
+     * @var null|ConsentRepository
      */
     private $consentRepository;
 
@@ -32,13 +32,13 @@ final class NonePrompt implements AuthorizationEndpointHook
         $this->consentRepository = $consentRepository;
     }
 
-    public function handle(ServerRequestInterface $request, AuthorizationRequest $authorizationRequest, string $authorizationRequestId): ?ResponseInterface
+    public function handle(ServerRequestInterface $request, string $authorizationRequestId, AuthorizationRequest $authorizationRequest): ?ResponseInterface
     {
         if (!$authorizationRequest->hasPrompt('none')) {
             return null;
         }
 
-        $isConsentNeeded = null !== $this->consentRepository || !$this->consentRepository->hasConsentBeenGiven($authorizationRequest);
+        $isConsentNeeded = null === $this->consentRepository ? true : !$this->consentRepository->hasConsentBeenGiven($authorizationRequest);
         if ($authorizationRequest->hasUserAccount()) {
             $this->handleWithAuthenticatedUser($authorizationRequest, $isConsentNeeded);
 

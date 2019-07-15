@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\ServerBundle\Tests\Functional\Grant\AuthorizationCode;
@@ -21,12 +21,15 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
  * @group Functional
  * @group Grant
  * @group AuthorizationCode
+ *
+ * @internal
+ * @coversNothing
  */
 class AuthorizationCodeGrantTest extends WebTestCase
 {
     protected function setUp(): void
     {
-        if (!\class_exists(AuthorizationCodeGrantType::class)) {
+        if (!class_exists(AuthorizationCodeGrantType::class)) {
             static::markTestSkipped('The component "oauth2-framework/authorization-code-grant" is not installed.');
         }
         parent::setUp();
@@ -157,7 +160,7 @@ class AuthorizationCodeGrantTest extends WebTestCase
     public function theAccessTokenIsIssuedForConfidentialClient()
     {
         $client = static::createClient();
-        $client->request('POST', '/token/get', ['grant_type' => 'authorization_code', 'redirect_uri' => 'http://localhost/callback', 'code' => 'VALID_AUTHORIZATION_CODE_FOR_CONFIDENTIAL_CLIENT'], [], ['HTTPS' => 'on', 'HTTP_Authorization' => 'Basic '.\base64_encode('CLIENT_ID_5:secret')], null);
+        $client->request('POST', '/token/get', ['grant_type' => 'authorization_code', 'redirect_uri' => 'http://localhost/callback', 'code' => 'VALID_AUTHORIZATION_CODE_FOR_CONFIDENTIAL_CLIENT'], [], ['HTTPS' => 'on', 'HTTP_Authorization' => 'Basic '.base64_encode('CLIENT_ID_5:secret')], null);
         $response = $client->getResponse();
         static::assertEquals(200, $response->getStatusCode());
         self::assertRegexp('/\{"token_type"\:"Bearer","access_token"\:"[0-9a-zA-Z-_]+","expires_in":[0-9]{4}\}/', $response->getContent());

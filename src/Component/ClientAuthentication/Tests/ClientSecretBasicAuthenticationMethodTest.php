@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\ClientAuthentication\Tests;
@@ -25,6 +25,9 @@ use Psr\Http\Message\ServerRequestInterface;
 /**
  * @group TokenEndpoint
  * @group ClientAuthentication
+ *
+ * @internal
+ * @coversNothing
  */
 final class ClientSecretBasicAuthenticationMethodTest extends TestCase
 {
@@ -62,7 +65,7 @@ final class ClientSecretBasicAuthenticationMethodTest extends TestCase
         $manager = new AuthenticationMethodManager();
         $manager->add(new ClientSecretBasic('My Service'));
         $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getHeader('Authorization')->willReturn(['Basic '.\base64_encode('CLIENT_ID:CLIENT_SECRET')]);
+        $request->getHeader('Authorization')->willReturn(['Basic '.base64_encode('CLIENT_ID:CLIENT_SECRET')]);
 
         $clientId = $manager->findClientIdAndCredentials($request->reveal(), $method, $credentials);
         static::assertInstanceOf(ClientSecretBasic::class, $method);

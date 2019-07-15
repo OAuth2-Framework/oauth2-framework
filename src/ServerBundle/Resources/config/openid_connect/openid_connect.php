@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 use OAuth2Framework\Component\OpenIdConnect\IdTokenBuilderFactory;
@@ -24,7 +24,8 @@ use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 return function (ContainerConfigurator $container) {
     $container = $container->services()->defaults()
         ->private()
-        ->autoconfigure();
+        ->autoconfigure()
+    ;
 
     $container->set(UserInfoScopeSupportManager::class);
 
@@ -57,7 +58,8 @@ return function (ContainerConfigurator $container) {
             ref(UserInfoScopeSupportManager::class),
             ref(Claim\ClaimManager::class),
             ref(Claim\ClaimSourceManager::class),
-        ]);
+        ])
+    ;
 
     $container->set(OpenIdConnectExtension::class)
         ->args([
@@ -65,25 +67,29 @@ return function (ContainerConfigurator $container) {
             '%oauth2_server.openid_connect.id_token.default_signature_algorithm%',
             ref('jose.jws_builder.oauth2_server.openid_connect.id_token'),
             ref('jose.key_set.oauth2_server.openid_connect.id_token'),
-        ]);
+        ])
+    ;
 
     $container->set(IdTokenBuilderFactory::class)
         ->args([
             '%oauth2_server.server_uri%',
             ref(UserInfo::class),
             '%oauth2_server.openid_connect.id_token.lifetime%',
-        ]);
+        ])
+    ;
 
     $container->set(Rule\IdTokenAlgorithmsRule::class)
         ->args([
             ref('jose.jws_builder.oauth2_server.openid_connect.id_token'),
             ref('jose.jwe_builder.oauth2_server.openid_connect.id_token')->nullOnInvalid(),
-        ]);
+        ])
+    ;
 
     $container->set(Rule\SubjectTypeRule::class)
         ->args([
             ref(UserInfo::class),
-        ]);
+        ])
+    ;
 
     $container->set(ParameterChecker\NonceParameterChecker::class);
     $container->set(ParameterChecker\ClaimsParameterChecker::class);

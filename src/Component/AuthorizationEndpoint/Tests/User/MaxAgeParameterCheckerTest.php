@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\AuthorizationEndpoint\Tests\User;
@@ -22,6 +22,9 @@ use PHPUnit\Framework\TestCase;
 /**
  * @group UserChecker
  * @group MaxAgeParameterCheckerAccountChecker
+ *
+ * @internal
+ * @coversNothing
  */
 final class MaxAgeParameterCheckerTest extends TestCase
 {
@@ -73,7 +76,7 @@ final class MaxAgeParameterCheckerTest extends TestCase
         $client->get('default_max_age')->willReturn(3600);
 
         $userAccount = $this->prophesize(UserAccount::class);
-        $userAccount->getLastLoginAt()->willReturn(\time() - 100);
+        $userAccount->getLastLoginAt()->willReturn(time() - 100);
 
         $authorization = $this->prophesize(AuthorizationRequest::class);
         $authorization->hasQueryParam('max_age')->willReturn(false);
@@ -95,7 +98,7 @@ final class MaxAgeParameterCheckerTest extends TestCase
         $client->has('default_max_age')->willReturn(false);
 
         $userAccount = $this->prophesize(UserAccount::class);
-        $userAccount->getLastLoginAt()->willReturn(\time() - 100);
+        $userAccount->getLastLoginAt()->willReturn(time() - 100);
 
         $authorization = $this->prophesize(AuthorizationRequest::class);
         $authorization->hasQueryParam('max_age')->willReturn(true);
@@ -140,7 +143,7 @@ final class MaxAgeParameterCheckerTest extends TestCase
         $client->has('default_max_age')->willReturn(false);
 
         $userAccount = $this->prophesize(UserAccount::class);
-        $userAccount->getLastLoginAt()->willReturn(\time() - 10000);
+        $userAccount->getLastLoginAt()->willReturn(time() - 10000);
 
         $authorization = $this->prophesize(AuthorizationRequest::class);
         $authorization->hasQueryParam('max_age')->willReturn(true);

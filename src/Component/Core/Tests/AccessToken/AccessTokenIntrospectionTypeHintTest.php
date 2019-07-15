@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\Core\Tests\AccessToken;
@@ -27,12 +27,20 @@ use Prophecy\Argument;
 /**
  * @group TypeHint
  * @group AccessTokenIntrospectionTypeHint
+ *
+ * @internal
+ * @coversNothing
  */
 final class AccessTokenIntrospectionTypeHintTest extends TestCase
 {
+    /**
+     * @var null|AccessTokenIntrospectionTypeHint
+     */
+    private $accessTokenTypeHint;
+
     protected function setUp(): void
     {
-        if (!\interface_exists(TokenTypeHint::class)) {
+        if (!interface_exists(TokenTypeHint::class)) {
             static::markTestSkipped('The component "oauth2-framework/token-type" is not installed.');
         }
     }
@@ -58,11 +66,6 @@ final class AccessTokenIntrospectionTypeHintTest extends TestCase
         static::assertTrue($introspection['active']);
     }
 
-    /**
-     * @var AccessTokenIntrospectionTypeHint|null
-     */
-    private $accessTokenTypeHint;
-
     public function getAccessTokenIntrospectionTypeHint(): AccessTokenIntrospectionTypeHint
     {
         if (null === $this->accessTokenTypeHint) {
@@ -82,8 +85,6 @@ final class AccessTokenIntrospectionTypeHintTest extends TestCase
                 if ('ACCESS_TOKEN_ID' === $args[0]->getValue()) {
                     return $accessToken;
                 }
-
-                return;
             });
             $this->accessTokenTypeHint = new AccessTokenIntrospectionTypeHint(
                 $accessTokenRepository->reveal()

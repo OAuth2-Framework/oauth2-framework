@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\AuthorizationEndpoint\Tests\ParameterChecker;
@@ -19,7 +19,7 @@ use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\DisplayPara
 use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\ParameterCheckerManager;
 use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\PromptParameterChecker;
 use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\RedirectUriParameterChecker;
-use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\ResponseTypeAndResponseModeParameterChecker;
+use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\ResponseTypeParameterChecker;
 use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\StateParameterChecker;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\FragmentResponseMode;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\QueryResponseMode;
@@ -32,9 +32,17 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @group ParameterCheckerManager
+ *
+ * @internal
+ * @coversNothing
  */
 final class ParameterCheckerManagerTest extends TestCase
 {
+    /**
+     * @var null|ParameterCheckerManager
+     */
+    private $parameterCheckerManager;
+
     /**
      * @test
      */
@@ -117,7 +125,7 @@ final class ParameterCheckerManagerTest extends TestCase
             static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2AuthorizationException $e) {
             static::assertEquals('invalid_request', $e->getMessage());
-            static::assertEquals('The parameter "redirect_uri" is mandatory.', $e->getErrorDescription());
+            static::assertEquals('The parameter "redirect_uri" is missing.', $e->getErrorDescription());
         }
     }
 
@@ -142,33 +150,6 @@ final class ParameterCheckerManagerTest extends TestCase
         } catch (OAuth2AuthorizationException $e) {
             static::assertEquals('invalid_request', $e->getMessage());
             static::assertEquals('The parameter "response_type" is mandatory.', $e->getErrorDescription());
-        }
-    }
-
-    /**
-     * @test
-     */
-    public function anAuthorizationRequestIsReceivedButTheResponseModeIsNotSupported()
-    {
-        $client = $this->prophesize(Client::class);
-        $client->isPublic()->willReturn(false);
-        $client->getPublicId()->willReturn(new ClientId('CLIENT_ID'));
-        $client->getClientId()->willReturn(new ClientId('CLIENT_ID'));
-        $client->has('redirect_uris')->willReturn(true);
-        $client->get('redirect_uris')->willReturn(['https://www.foo.bar/callback']);
-        $client->isResponseTypeAllowed('foo')->willReturn(true);
-        $authorization = new AuthorizationRequest($client->reveal(), [
-            'redirect_uri' => 'https://www.foo.bar/callback',
-            'response_type' => 'foo',
-            'response_mode' => 'foo',
-        ]);
-
-        try {
-            $this->getParameterCheckerManager()->check($authorization);
-            static::fail('An OAuth2 exception should be thrown.');
-        } catch (OAuth2AuthorizationException $e) {
-            static::assertEquals('invalid_request', $e->getMessage());
-            static::assertEquals('The response mode "foo" is not supported. Please use one of the following values: query, fragment.', $e->getErrorDescription());
         }
     }
 
@@ -247,20 +228,13 @@ final class ParameterCheckerManagerTest extends TestCase
 
         $this->getParameterCheckerManager()->check($authorization);
 
-        static::assertInstanceOf(FragmentResponseMode::class, $authorization->getResponseMode());
-        static::assertInstanceOf(ResponseType::class, $authorization->getResponseType());
         static::assertEquals(['login', 'consent'], $authorization->getPrompt());
         static::assertFalse($authorization->hasPrompt('none'));
     }
 
-    /**
-     * @var ParameterCheckerManager|null
-     */
-    private $extensionManager;
-
     private function getParameterCheckerManager(): ParameterCheckerManager
     {
-        if (null === $this->extensionManager) {
+        if (null === $this->parameterCheckerManager) {
             $responseType = $this->prophesize(ResponseType::class);
             $responseType->name()->willReturn('foo');
             $responseType->getResponseMode()->willReturn('query');
@@ -271,14 +245,14 @@ final class ParameterCheckerManagerTest extends TestCase
             $responseModeManager->add(new QueryResponseMode());
             $responseModeManager->add(new FragmentResponseMode());
 
-            $this->extensionManager = new ParameterCheckerManager();
-            $this->extensionManager->add(new DisplayParameterChecker());
-            $this->extensionManager->add(new PromptParameterChecker());
-            $this->extensionManager->add(new RedirectUriParameterChecker());
-            $this->extensionManager->add(new ResponseTypeAndResponseModeParameterChecker($responseTypeManager, $responseModeManager, true));
-            $this->extensionManager->add(new StateParameterChecker());
+            $this->parameterCheckerManager = new ParameterCheckerManager();
+            $this->parameterCheckerManager->add(new DisplayParameterChecker());
+            $this->parameterCheckerManager->add(new PromptParameterChecker());
+            $this->parameterCheckerManager->add(new RedirectUriParameterChecker());
+            $this->parameterCheckerManager->add(new ResponseTypeParameterChecker($responseTypeManager));
+            $this->parameterCheckerManager->add(new StateParameterChecker());
         }
 
-        return $this->extensionManager;
+        return $this->parameterCheckerManager;
     }
 }

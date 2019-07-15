@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\WebFingerBundle\DependencyInjection;
@@ -30,20 +30,21 @@ class Configuration implements ConfigurationInterface
 
     public function getConfigTreeBuilder(): TreeBuilder
     {
-        $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root($this->alias);
+        $treeBuilder = new TreeBuilder($this->alias);
+        $rootNode = $treeBuilder->getRootNode();
 
         $rootNode
             ->children()
-                ->scalarNode('resource_repository')
-                    ->info('The resource repository service')
-                    ->isRequired()
-                ->end()
-                    ->scalarNode('path')
-                    ->info('The path to the issuer discovery endpoint. Should be "/.well-known/webfinger" for compliance with the RFC7033.')
-                    ->defaultValue('/.well-known/webfinger')
-                ->end()
-            ->end();
+            ->scalarNode('resource_repository')
+            ->info('The resource repository service')
+            ->isRequired()
+            ->end()
+            ->scalarNode('path')
+            ->info('The path to the issuer discovery endpoint. Should be "/.well-known/webfinger" for compliance with the RFC7033.')
+            ->defaultValue('/.well-known/webfinger')
+            ->end()
+            ->end()
+        ;
 
         return $treeBuilder;
     }

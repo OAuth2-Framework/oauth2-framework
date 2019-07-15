@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\SecurityBundle\Security\Factory;
@@ -59,13 +59,14 @@ final class OAuth2SecurityFactory implements SecurityFactoryInterface
      */
     public function addConfiguration(NodeDefinition $node): void
     {
-        /* @var ArrayNodeDefinition $node */
+        // @var ArrayNodeDefinition $node
         $node
             ->children()
             ->scalarNode('user_provider')->defaultNull()->end()
             ->scalarNode('failure_handler')->defaultValue(DefaultFailureHandler::class)->end()
             //->scalarNode('http_message_factory')->isRequired()->end()
-            ->end();
+            ->end()
+        ;
     }
 
     private function createAuthProvider(ContainerBuilder $container, string $id): string

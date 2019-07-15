@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\ResourceServerAuthentication;
@@ -44,7 +44,7 @@ class AuthenticationMethodManager
      */
     public function list(): array
     {
-        return \array_keys($this->names);
+        return array_keys($this->names);
     }
 
     public function has(string $name): bool
@@ -55,7 +55,7 @@ class AuthenticationMethodManager
     public function get(string $name): AuthenticationMethod
     {
         if (!$this->has($name)) {
-            throw new \InvalidArgumentException(\Safe\sprintf('The resource server authentication method "%s" is not supported. Please use one of the following values: %s', $name, \implode(', ', $this->list())));
+            throw new \InvalidArgumentException(\Safe\sprintf('The resource server authentication method "%s" is not supported. Please use one of the following values: %s', $name, implode(', ', $this->list())));
         }
         $class = $this->names[$name];
 
@@ -67,7 +67,7 @@ class AuthenticationMethodManager
      */
     public function all(): array
     {
-        return \array_values($this->methods);
+        return array_values($this->methods);
     }
 
     /**
@@ -114,7 +114,7 @@ class AuthenticationMethodManager
     {
         $schemes = [];
         foreach ($this->all() as $method) {
-            $schemes = \array_merge(
+            $schemes = array_merge(
                 $schemes,
                 $method->getSchemesParameters()
             );

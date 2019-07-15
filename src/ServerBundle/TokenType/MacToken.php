@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\ServerBundle\TokenType;
@@ -37,11 +37,11 @@ final class MacToken extends Base
 
     protected function generateMacKey(): string
     {
-        return Base64Url::encode(\random_bytes($this->getMacKeyLength()));
+        return Base64Url::encode(random_bytes($this->getMacKeyLength()));
     }
 
     private function getMacKeyLength(): int
     {
-        return \random_int($this->minLength, $this->maxLength);
+        return random_int($this->minLength, $this->maxLength);
     }
 }

@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\ClientRule;
@@ -45,7 +45,7 @@ final class RedirectionUriRule implements Rule
         $response_types = $validatedParameters->has('response_types') ? $validatedParameters->get('response_types') : [];
         $usesImplicitGrantType = false;
         foreach ($response_types as $response_type) {
-            $types = \explode(' ', $response_type);
+            $types = explode(' ', $response_type);
             if (\in_array('token', $types, true)) {
                 $usesImplicitGrantType = true;
 

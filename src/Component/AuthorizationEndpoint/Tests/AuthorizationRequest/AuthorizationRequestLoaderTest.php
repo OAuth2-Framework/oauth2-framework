@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\AuthorizationEndpoint\Tests\AuthorizationRequest;
@@ -26,14 +26,21 @@ use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * @group AuthorizationEndpoint
  * @group AuthorizationRequest
+ *
+ * @internal
+ * @coversNothing
  */
 final class AuthorizationRequestLoaderTest extends TestCase
 {
+    /**
+     * @var null|AuthorizationRequestLoader
+     */
+    private $authorizationRequestLoader;
+
     /**
      * @test
      */
@@ -60,15 +67,9 @@ final class AuthorizationRequestLoaderTest extends TestCase
     public function theAuthorizationRequestMustContainAClientId()
     {
         $clientRepository = $this->prophesize(ClientRepository::class);
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getQueryParams()
-            ->willReturn([])
-            ->shouldBeCalled();
 
         try {
-            $this->getAuthorizationRequestLoader($clientRepository->reveal())->load(
-                $request->reveal()
-            );
+            $this->getAuthorizationRequestLoader($clientRepository->reveal())->load([]);
             static::fail('The expected exception has not been thrown.');
         } catch (OAuth2Error $e) {
             static::assertEquals(400, $e->getCode());
@@ -84,17 +85,11 @@ final class AuthorizationRequestLoaderTest extends TestCase
     {
         $clientRepository = $this->prophesize(ClientRepository::class);
         $clientRepository->find(Argument::any())->willReturn(null)->shouldBeCalled();
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getQueryParams()
-            ->willReturn([
-                'client_id' => 'BAD_CLIENT_ID',
-            ])
-            ->shouldBeCalled();
 
         try {
-            $this->getAuthorizationRequestLoader($clientRepository->reveal())->load(
-                $request->reveal()
-            );
+            $this->getAuthorizationRequestLoader($clientRepository->reveal())->load([
+                'client_id' => 'BAD_CLIENT_ID',
+            ]);
             static::fail('The expected exception has not been thrown.');
         } catch (OAuth2Error $e) {
             static::assertEquals(400, $e->getCode());
@@ -113,17 +108,11 @@ final class AuthorizationRequestLoaderTest extends TestCase
 
         $clientRepository = $this->prophesize(ClientRepository::class);
         $clientRepository->find(Argument::any())->willReturn($client->reveal())->shouldBeCalled();
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getQueryParams()
-            ->willReturn([
-                'client_id' => 'DELETED_CLIENT_ID',
-            ])
-            ->shouldBeCalled();
 
         try {
-            $this->getAuthorizationRequestLoader($clientRepository->reveal())->load(
-                $request->reveal()
-            );
+            $this->getAuthorizationRequestLoader($clientRepository->reveal())->load([
+                'client_id' => 'DELETED_CLIENT_ID',
+            ]);
             static::fail('The expected exception has not been thrown.');
         } catch (OAuth2Error $e) {
             static::assertEquals(400, $e->getCode());
@@ -142,16 +131,10 @@ final class AuthorizationRequestLoaderTest extends TestCase
 
         $clientRepository = $this->prophesize(ClientRepository::class);
         $clientRepository->find(Argument::any())->willReturn($client->reveal())->shouldBeCalled();
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getQueryParams()
-            ->willReturn([
-                'client_id' => 'CLIENT_ID',
-            ])
-            ->shouldBeCalled();
 
-        $authorization = $this->getAuthorizationRequestLoader($clientRepository->reveal())->load(
-            $request->reveal()
-        );
+        $authorization = $this->getAuthorizationRequestLoader($clientRepository->reveal())->load([
+            'client_id' => 'CLIENT_ID',
+        ]);
 
         static::assertTrue($authorization->hasQueryParam('client_id'));
         static::assertEquals('CLIENT_ID', $authorization->getQueryParam('client_id'));
@@ -164,17 +147,11 @@ final class AuthorizationRequestLoaderTest extends TestCase
     public function theRequestObjectIsNotAValidAssertion()
     {
         $clientRepository = $this->prophesize(ClientRepository::class);
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getQueryParams()
-            ->willReturn([
-                'request' => 'INVALID_ASSERTION',
-            ])
-            ->shouldBeCalled();
 
         try {
-            $this->getAuthorizationRequestLoader($clientRepository->reveal())->load(
-                $request->reveal()
-            );
+            $this->getAuthorizationRequestLoader($clientRepository->reveal())->load([
+                'request' => 'INVALID_ASSERTION',
+            ]);
             static::fail('The expected exception has not been thrown.');
         } catch (OAuth2Error $e) {
             static::assertEquals(400, $e->getCode());
@@ -189,17 +166,11 @@ final class AuthorizationRequestLoaderTest extends TestCase
     public function theRequestObjectPayloadDoesNotContainClaims()
     {
         $clientRepository = $this->prophesize(ClientRepository::class);
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getQueryParams()
-            ->willReturn([
-                'request' => 'eyJhbGciOiJub25lIn0.SEVMTE8gV09STEQh.',
-            ])
-            ->shouldBeCalled();
 
         try {
-            $this->getAuthorizationRequestLoader($clientRepository->reveal())->load(
-                $request->reveal()
-            );
+            $this->getAuthorizationRequestLoader($clientRepository->reveal())->load([
+                'request' => 'eyJhbGciOiJub25lIn0.SEVMTE8gV09STEQh.',
+            ]);
             static::fail('The expected exception has not been thrown.');
         } catch (OAuth2Error $e) {
             static::assertEquals(400, $e->getCode());
@@ -214,17 +185,11 @@ final class AuthorizationRequestLoaderTest extends TestCase
     public function theRequestObjectParametersDoesNotContainAClientId()
     {
         $clientRepository = $this->prophesize(ClientRepository::class);
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getQueryParams()
-            ->willReturn([
-                'request' => 'eyJhbGciOiJub25lIn0.e30.',
-            ])
-            ->shouldBeCalled();
 
         try {
-            $this->getAuthorizationRequestLoader($clientRepository->reveal())->load(
-                $request->reveal()
-            );
+            $this->getAuthorizationRequestLoader($clientRepository->reveal())->load([
+                'request' => 'eyJhbGciOiJub25lIn0.e30.',
+            ]);
             static::fail('The expected exception has not been thrown.');
         } catch (OAuth2Error $e) {
             static::assertEquals(400, $e->getCode());
@@ -247,17 +212,11 @@ final class AuthorizationRequestLoaderTest extends TestCase
 
         $clientRepository = $this->prophesize(ClientRepository::class);
         $clientRepository->find(Argument::any())->willReturn($client->reveal())->shouldBeCalled();
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getQueryParams()
-            ->willReturn([
-                'request' => 'eyJhbGciOiJub25lIn0.eyJjbGllbnRfaWQiOiJOT19LRVlfQ0xJRU5UX0lEIn0.',
-            ])
-            ->shouldBeCalled();
 
         try {
-            $this->getAuthorizationRequestLoader($clientRepository->reveal())->load(
-                $request->reveal()
-            );
+            $this->getAuthorizationRequestLoader($clientRepository->reveal())->load([
+                'request' => 'eyJhbGciOiJub25lIn0.eyJjbGllbnRfaWQiOiJOT19LRVlfQ0xJRU5UX0lEIn0.',
+            ]);
             static::fail('The expected exception has not been thrown.');
         } catch (OAuth2Error $e) {
             static::assertEquals(400, $e->getCode());
@@ -282,17 +241,11 @@ final class AuthorizationRequestLoaderTest extends TestCase
 
         $clientRepository = $this->prophesize(ClientRepository::class);
         $clientRepository->find(Argument::any())->willReturn($client->reveal())->shouldBeCalled();
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getQueryParams()
-            ->willReturn([
-                'request' => 'eyJhbGciOiJub25lIn0.eyJjbGllbnRfaWQiOiJDTElFTlRfSUQifQ.',
-            ])
-            ->shouldBeCalled();
 
         try {
-            $this->getAuthorizationRequestLoader($clientRepository->reveal())->load(
-                $request->reveal()
-            );
+            $this->getAuthorizationRequestLoader($clientRepository->reveal())->load([
+                'request' => 'eyJhbGciOiJub25lIn0.eyJjbGllbnRfaWQiOiJDTElFTlRfSUQifQ.',
+            ]);
             static::fail('The expected exception has not been thrown.');
         } catch (OAuth2Error $e) {
             static::assertEquals(400, $e->getCode());
@@ -318,17 +271,11 @@ final class AuthorizationRequestLoaderTest extends TestCase
 
         $clientRepository = $this->prophesize(ClientRepository::class);
         $clientRepository->find(Argument::any())->willReturn($client->reveal())->shouldBeCalled();
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getQueryParams()
-            ->willReturn([
-                'request' => 'eyJhbGciOiJub25lIn0.eyJjbGllbnRfaWQiOiJDTElFTlRfSUQifQ.',
-            ])
-            ->shouldBeCalled();
 
         try {
-            $this->getAuthorizationRequestLoader($clientRepository->reveal())->load(
-                $request->reveal()
-            );
+            $this->getAuthorizationRequestLoader($clientRepository->reveal())->load([
+                'request' => 'eyJhbGciOiJub25lIn0.eyJjbGllbnRfaWQiOiJDTElFTlRfSUQifQ.',
+            ]);
             static::fail('The expected exception has not been thrown.');
         } catch (OAuth2Error $e) {
             static::assertEquals(400, $e->getCode());
@@ -354,17 +301,11 @@ final class AuthorizationRequestLoaderTest extends TestCase
 
         $clientRepository = $this->prophesize(ClientRepository::class);
         $clientRepository->find(Argument::any())->willReturn($client->reveal())->shouldBeCalled();
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getQueryParams()
-            ->willReturn([
-                'request' => 'eyJhbGciOiJSUzI1NiJ9.eyJjbGllbnRfaWQiOiJDTElFTlRfSUQifQ.',
-            ])
-            ->shouldBeCalled();
 
         try {
-            $this->getAuthorizationRequestLoader($clientRepository->reveal())->load(
-                $request->reveal()
-            );
+            $this->getAuthorizationRequestLoader($clientRepository->reveal())->load([
+                'request' => 'eyJhbGciOiJSUzI1NiJ9.eyJjbGllbnRfaWQiOiJDTElFTlRfSUQifQ.',
+            ]);
             static::fail('The expected exception has not been thrown.');
         } catch (OAuth2Error $e) {
             static::assertEquals(400, $e->getCode());
@@ -390,16 +331,10 @@ final class AuthorizationRequestLoaderTest extends TestCase
 
         $clientRepository = $this->prophesize(ClientRepository::class);
         $clientRepository->find(Argument::any())->willReturn($client->reveal())->shouldBeCalled();
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getQueryParams()
-            ->willReturn([
-                'request' => 'eyJhbGciOiJSUzI1NiJ9.eyJjbGllbnRfaWQiOiJDTElFTlRfSUQifQ.R09PRF9TSUdOQVRVUkU',
-            ])
-            ->shouldBeCalled();
 
-        $authorization = $this->getAuthorizationRequestLoader($clientRepository->reveal())->load(
-            $request->reveal()
-        );
+        $authorization = $this->getAuthorizationRequestLoader($clientRepository->reveal())->load([
+            'request' => 'eyJhbGciOiJSUzI1NiJ9.eyJjbGllbnRfaWQiOiJDTElFTlRfSUQifQ.R09PRF9TSUdOQVRVUkU',
+        ]);
 
         static::assertTrue($authorization->hasQueryParam('client_id'));
         static::assertTrue($authorization->hasQueryParam('request'));
@@ -427,16 +362,10 @@ final class AuthorizationRequestLoaderTest extends TestCase
 
         $clientRepository = $this->prophesize(ClientRepository::class);
         $clientRepository->find(Argument::any())->willReturn($client->reveal())->shouldBeCalled();
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getQueryParams()
-            ->willReturn([
-                'request_uri' => 'https://www.foo.bar/eyJhbGciOiJSUzI1NiJ9.eyJjbGllbnRfaWQiOiJDTElFTlRfSUQifQ.R09PRF9TSUdOQVRVUkU',
-            ])
-            ->shouldBeCalled();
 
-        $authorization = $this->getAuthorizationRequestLoader($clientRepository->reveal())->load(
-            $request->reveal()
-        );
+        $authorization = $this->getAuthorizationRequestLoader($clientRepository->reveal())->load([
+            'request_uri' => 'https://www.foo.bar/eyJhbGciOiJSUzI1NiJ9.eyJjbGllbnRfaWQiOiJDTElFTlRfSUQifQ.R09PRF9TSUdOQVRVUkU',
+        ]);
 
         static::assertTrue($authorization->hasQueryParam('client_id'));
         static::assertTrue($authorization->hasQueryParam('request_uri'));
@@ -464,17 +393,11 @@ final class AuthorizationRequestLoaderTest extends TestCase
 
         $clientRepository = $this->prophesize(ClientRepository::class);
         $clientRepository->find(Argument::any())->willReturn($client->reveal())->shouldBeCalled();
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getQueryParams()
-            ->willReturn([
-                'request_uri' => 'https://www.bad.host/eyJhbGciOiJSUzI1NiJ9.eyJjbGllbnRfaWQiOiJDTElFTlRfSUQifQ.R09PRF9TSUdOQVRVUkU',
-            ])
-            ->shouldBeCalled();
 
         try {
-            $this->getAuthorizationRequestLoader($clientRepository->reveal())->load(
-                $request->reveal()
-            );
+            $this->getAuthorizationRequestLoader($clientRepository->reveal())->load([
+                'request_uri' => 'https://www.bad.host/eyJhbGciOiJSUzI1NiJ9.eyJjbGllbnRfaWQiOiJDTElFTlRfSUQifQ.R09PRF9TSUdOQVRVUkU',
+            ]);
             static::fail('The expected exception has not been thrown.');
         } catch (OAuth2Error $e) {
             static::assertEquals(400, $e->getCode());
@@ -489,17 +412,11 @@ final class AuthorizationRequestLoaderTest extends TestCase
     public function theRequestUriMustNotContainPathTraversal()
     {
         $clientRepository = $this->prophesize(ClientRepository::class);
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getQueryParams()
-            ->willReturn([
-                'request_uri' => 'https://www.foo.bar/../eyJhbGciOiJSUzI1NiJ9.eyJjbGllbnRfaWQiOiJDTElFTlRfSUQifQ.R09PRF9TSUdOQVRVUkU',
-            ])
-            ->shouldBeCalled();
 
         try {
-            $this->getAuthorizationRequestLoader($clientRepository->reveal())->load(
-                $request->reveal()
-            );
+            $this->getAuthorizationRequestLoader($clientRepository->reveal())->load([
+                'request_uri' => 'https://www.foo.bar/../eyJhbGciOiJSUzI1NiJ9.eyJjbGllbnRfaWQiOiJDTElFTlRfSUQifQ.R09PRF9TSUdOQVRVUkU',
+            ]);
             static::fail('The expected exception has not been thrown.');
         } catch (OAuth2Error $e) {
             static::assertEquals(400, $e->getCode());
@@ -507,11 +424,6 @@ final class AuthorizationRequestLoaderTest extends TestCase
             static::assertEquals('The request Uri is not allowed.', $e->getErrorDescription());
         }
     }
-
-    /**
-     * @var AuthorizationRequestLoader|null
-     */
-    private $authorizationRequestLoader;
 
     private function getAuthorizationRequestLoader(ClientRepository $clientRepository): AuthorizationRequestLoader
     {

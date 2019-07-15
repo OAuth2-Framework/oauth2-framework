@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\TokenIntrospectionEndpoint\Tests;
@@ -29,9 +29,32 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 /**
  * @group TokenIntrospectionEndpoint
+ *
+ * @internal
+ * @coversNothing
  */
 final class TokenIntrospectionEndpointTest extends TestCase
 {
+    /**
+     * @var null|TokenTypeHintManager
+     */
+    private $tokenTypeHintManager;
+
+    /**
+     * @var null|TokenIntrospectionEndpoint
+     */
+    private $tokenIntrospectionEndpoint;
+
+    /**
+     * @var null|ResponseFactoryInterface
+     */
+    private $responseFactory;
+
+    /**
+     * @var null|ResourceServer
+     */
+    private $resourceServer;
+
     /**
      * @test
      */
@@ -97,11 +120,6 @@ final class TokenIntrospectionEndpointTest extends TestCase
         static::assertEquals('{"error":"unsupported_token_type","error_description":"The token type hint \"bar\" is not supported. Please use one of the following values: foo."}', $response->getBody()->getContents());
     }
 
-    /**
-     * @var TokenTypeHintManager|null
-     */
-    private $tokenTypeHintManager;
-
     private function getTokenTypeHintManager(): TokenTypeHintManager
     {
         if (null === $this->tokenTypeHintManager) {
@@ -121,11 +139,6 @@ final class TokenIntrospectionEndpointTest extends TestCase
         return $this->tokenTypeHintManager;
     }
 
-    /**
-     * @var TokenIntrospectionEndpoint|null
-     */
-    private $tokenIntrospectionEndpoint;
-
     private function getTokenIntrospectionEndpoint(): TokenIntrospectionEndpoint
     {
         if (null === $this->tokenIntrospectionEndpoint) {
@@ -138,11 +151,6 @@ final class TokenIntrospectionEndpointTest extends TestCase
         return $this->tokenIntrospectionEndpoint;
     }
 
-    /**
-     * @var ResponseFactoryInterface|null
-     */
-    private $responseFactory;
-
     private function getResponseFactory(): ResponseFactoryInterface
     {
         if (null === $this->responseFactory) {
@@ -151,11 +159,6 @@ final class TokenIntrospectionEndpointTest extends TestCase
 
         return $this->responseFactory;
     }
-
-    /**
-     * @var ResourceServer|null
-     */
-    private $resourceServer;
 
     private function getResourceServer(): ResourceServer
     {
@@ -170,7 +173,7 @@ final class TokenIntrospectionEndpointTest extends TestCase
     private function buildRequest(array $data): ObjectProphecy
     {
         $body = $this->prophesize(StreamInterface::class);
-        $body->getContents()->willReturn(\http_build_query($data));
+        $body->getContents()->willReturn(http_build_query($data));
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->hasHeader('Content-Type')->willReturn(true);
         $request->getHeader('Content-Type')->willReturn(['application/x-www-form-urlencoded']);

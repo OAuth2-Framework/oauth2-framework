@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\AuthorizationCodeGrant;
@@ -18,6 +18,8 @@ use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\Authori
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType\ResponseType;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
+use OAuth2Framework\Component\Core\TokenType\TokenType;
+use function Safe\sprintf;
 
 final class AuthorizationCodeResponseType implements ResponseType
 {
@@ -75,7 +77,7 @@ final class AuthorizationCodeResponseType implements ResponseType
         } else {
             $codeChallengeMethod = \array_key_exists('code_challenge_method', $queryParams) ? $queryParams['code_challenge_method'] : 'plain';
             if (!$this->pkceMethodManager->has($codeChallengeMethod)) {
-                throw OAuth2Error::invalidRequest(\Safe\sprintf('The challenge method "%s" is not supported.', $codeChallengeMethod));
+                throw OAuth2Error::invalidRequest(sprintf('The challenge method "%s" is not supported.', $codeChallengeMethod));
             }
         }
 
@@ -84,7 +86,7 @@ final class AuthorizationCodeResponseType implements ResponseType
             $authorization->getUserAccount()->getUserAccountId(),
             $authorization->getQueryParams(),
             $authorization->getRedirectUri(),
-            (new \DateTimeImmutable())->setTimestamp(\time() + $this->authorizationCodeLifetime),
+            (new \DateTimeImmutable())->setTimestamp(time() + $this->authorizationCodeLifetime),
             new DataBag([]),
             $authorization->getMetadata(),
             null !== $authorization->getResourceServer() ? $authorization->getResourceServer()->getResourceServerId() : null
@@ -93,7 +95,7 @@ final class AuthorizationCodeResponseType implements ResponseType
         $authorization->setResponseParameter('code', $authorizationCode->getId()->getValue());
     }
 
-    public function process(AuthorizationRequest $authorization): void
+    public function process(AuthorizationRequest $authorization, TokenType $tokenType): void
     {
         //Nothing to do
     }

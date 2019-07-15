@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 use OAuth2Framework\Component\Core\Middleware;
@@ -20,7 +20,8 @@ use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 return function (ContainerConfigurator $container) {
     $container = $container->services()->defaults()
         ->private()
-        ->autoconfigure();
+        ->autoconfigure()
+    ;
 
     $container->set('token_endpoint_pipe')
         ->class(Middleware\Pipe::class)
@@ -31,12 +32,14 @@ return function (ContainerConfigurator $container) {
             ref(TokenTypeMiddleware::class),
             ref(TokenEndpoint\TokenEndpoint::class),
         ]])
-        ->tag('controller.service_arguments');
+        ->tag('controller.service_arguments')
+    ;
 
     $container->set(TokenEndpoint\GrantTypeMiddleware::class)
         ->args([
             ref(TokenEndpoint\GrantTypeManager::class),
-        ]);
+        ])
+    ;
 
     $container->set(TokenEndpoint\Extension\TokenEndpointExtensionManager::class);
 
@@ -48,5 +51,6 @@ return function (ContainerConfigurator $container) {
             ref(\Psr\Http\Message\ResponseFactoryInterface::class),
             ref(\OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository::class),
             '%oauth2_server.access_token_lifetime%',
-        ]);
+        ])
+    ;
 };

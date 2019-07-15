@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\Scope;
@@ -98,16 +98,16 @@ final class TokenEndpointScopeExtension implements TokenEndpointExtension
         // * the client configuration
         // * the scope repository
         $availableScope = $grantTypeData->getParameter()->has('scope') ? $grantTypeData->getParameter()->get('scope') : $this->getAvailableScopesForClient($grantTypeData->getClient());
-        $availableScopes = \explode(' ', $availableScope);
-        $requestedScopes = '' === $scope ? [] : \explode(' ', $scope);
-        $diff = \array_diff($requestedScopes, $availableScopes);
+        $availableScopes = explode(' ', $availableScope);
+        $requestedScopes = '' === $scope ? [] : explode(' ', $scope);
+        $diff = array_diff($requestedScopes, $availableScopes);
         if (0 !== \count($diff)) {
-            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_SCOPE, \Safe\sprintf('An unsupported scope was requested. Available scope is/are: %s.', \implode(', ', $availableScopes)));
+            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_SCOPE, \Safe\sprintf('An unsupported scope was requested. Available scope is/are: %s.', implode(', ', $availableScopes)));
         }
     }
 
     private function getAvailableScopesForClient(Client $client): string
     {
-        return ($client->has('scope')) ? $client->get('scope') : \implode(' ', $this->scopeRepository->all());
+        return ($client->has('scope')) ? $client->get('scope') : implode(' ', $this->scopeRepository->all());
     }
 }

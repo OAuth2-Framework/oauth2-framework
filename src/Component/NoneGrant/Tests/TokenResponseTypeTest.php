@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\NoneGrant\Tests;
@@ -26,6 +26,9 @@ use Prophecy\Argument;
 /**
  * @group ResponseType
  * @group None
+ *
+ * @internal
+ * @coversNothing
  */
 final class TokenResponseTypeTest extends TestCase
 {
@@ -61,9 +64,8 @@ final class TokenResponseTypeTest extends TestCase
         $tokenType->getAdditionalInformation()->willReturn(['token_type' => 'FOO']);
 
         $authorization = new AuthorizationRequest($client->reveal(), []);
-        $authorization->setResponseType($responseType);
 
-        $responseType->process($authorization);
+        $responseType->process($authorization, $tokenType->reveal());
 
         static::assertEquals('CLIENT_ID', $authorization->getClient()->getPublicId()->getValue());
         static::assertFalse($authorization->hasResponseParameter('access_token'));

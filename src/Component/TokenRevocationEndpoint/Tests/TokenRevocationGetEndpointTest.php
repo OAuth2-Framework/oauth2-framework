@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\TokenRevocationEndpoint\Tests;
@@ -28,9 +28,32 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 /**
  * @group TokenRevocationEndpoint
+ *
+ * @internal
+ * @coversNothing
  */
 final class TokenRevocationGetEndpointTest extends TestCase
 {
+    /**
+     * @var null|TokenTypeHintManager
+     */
+    private $tokenTypeHintManager;
+
+    /**
+     * @var null|TokenRevocationGetEndpoint
+     */
+    private $tokenRevocationEndpoint;
+
+    /**
+     * @var null|ResponseFactoryInterface
+     */
+    private $responseFactory;
+
+    /**
+     * @var null|Client
+     */
+    private $client;
+
     /**
      * @test
      */
@@ -159,11 +182,6 @@ final class TokenRevocationGetEndpointTest extends TestCase
         static::assertEquals('{"error":"unsupported_token_type","error_description":"The token type hint \"bar\" is not supported. Please use one of the following values: foo."}', $response->getBody()->getContents());
     }
 
-    /**
-     * @var TokenTypeHintManager|null
-     */
-    private $tokenTypeHintManager;
-
     private function getTokenTypeHintManager(): TokenTypeHintManager
     {
         if (null === $this->tokenTypeHintManager) {
@@ -187,11 +205,6 @@ final class TokenRevocationGetEndpointTest extends TestCase
         return $this->tokenTypeHintManager;
     }
 
-    /**
-     * @var TokenRevocationGetEndpoint|null
-     */
-    private $tokenRevocationEndpoint;
-
     private function getTokenRevocationGetEndpoint(): TokenRevocationGetEndpoint
     {
         if (null === $this->tokenRevocationEndpoint) {
@@ -205,11 +218,6 @@ final class TokenRevocationGetEndpointTest extends TestCase
         return $this->tokenRevocationEndpoint;
     }
 
-    /**
-     * @var ResponseFactoryInterface|null
-     */
-    private $responseFactory;
-
     private function getResponseFactory(): ResponseFactoryInterface
     {
         if (null === $this->responseFactory) {
@@ -218,11 +226,6 @@ final class TokenRevocationGetEndpointTest extends TestCase
 
         return $this->responseFactory;
     }
-
-    /**
-     * @var Client|null
-     */
-    private $client;
 
     private function getClient(): Client
     {

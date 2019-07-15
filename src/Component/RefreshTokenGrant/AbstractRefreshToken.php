@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\RefreshTokenGrant;
@@ -57,7 +57,7 @@ abstract class AbstractRefreshToken implements RefreshToken
     private $revoked;
 
     /**
-     * @var ResourceServerId|null
+     * @var null|ResourceServerId
      */
     private $resourceServerId;
 
@@ -105,7 +105,7 @@ abstract class AbstractRefreshToken implements RefreshToken
 
     public function hasExpired(): bool
     {
-        return $this->expiresAt->getTimestamp() < \time();
+        return $this->expiresAt->getTimestamp() < time();
     }
 
     public function getResourceOwnerId(): ResourceOwnerId
@@ -145,24 +145,6 @@ abstract class AbstractRefreshToken implements RefreshToken
 
     public function getExpiresIn(): int
     {
-        return $this->expiresAt->getTimestamp() - \time() < 0 ? 0 : $this->expiresAt->getTimestamp() - \time();
-    }
-
-    public function jsonSerialize(): array
-    {
-        $data = [
-            'refresh_token_id' => $this->getId()->getValue(),
-            'access_token_ids' => \array_keys($this->getAccessTokenIds()),
-            'resource_server_id' => null !== $this->getResourceServerId() ? $this->getResourceServerId()->getValue() : null,
-            'expires_at' => $this->getExpiresAt()->getTimestamp(),
-            'client_id' => $this->getClientId()->getValue(),
-            'parameters' => (object) $this->getParameter()->all(),
-            'metadatas' => (object) $this->getMetadata()->all(),
-            'is_revoked' => $this->isRevoked(),
-            'resource_owner_id' => $this->getResourceOwnerId()->getValue(),
-            'resource_owner_class' => \get_class($this->getResourceOwnerId()),
-        ];
-
-        return $data;
+        return $this->expiresAt->getTimestamp() - time() < 0 ? 0 : $this->expiresAt->getTimestamp() - time();
     }
 }

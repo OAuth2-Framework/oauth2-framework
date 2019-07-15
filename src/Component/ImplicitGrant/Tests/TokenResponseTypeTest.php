@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\ImplicitGrant\Tests;
@@ -30,9 +30,17 @@ use Prophecy\Argument;
 /**
  * @group ResponseType
  * @group Token
+ *
+ * @internal
+ * @coversNothing
  */
 final class TokenResponseTypeTest extends TestCase
 {
+    /**
+     * @var null|TokenResponseType
+     */
+    private $grantType;
+
     /**
      * @test
      */
@@ -65,18 +73,12 @@ final class TokenResponseTypeTest extends TestCase
             []
         );
         $authorization->setUserAccount($userAccount->reveal(), true);
-        $authorization->setTokenType($tokenType->reveal());
 
-        $this->getResponseType()->process($authorization, function (AuthorizationRequest $authorization) {});
+        $this->getResponseType()->process($authorization, $tokenType->reveal());
 
         static::assertEquals('CLIENT_ID', $authorization->getClient()->getPublicId()->getValue());
         static::assertTrue($authorization->hasResponseParameter('access_token'));
     }
-
-    /**
-     * @var TokenResponseType|null
-     */
-    private $grantType;
 
     private function getResponseType(): TokenResponseType
     {
@@ -84,8 +86,9 @@ final class TokenResponseTypeTest extends TestCase
             $accessTokenRepository = $this->prophesize(AccessTokenRepository::class);
             $accessTokenRepository->create(Argument::type(ClientId::class), Argument::type(ResourceOwnerId::class), Argument::type(\DateTimeImmutable::class), Argument::type(DataBag::class), Argument::type(DataBag::class), Argument::any())
                 ->will(function (array $args) {
-                    return new AccessToken(new AccessTokenId(\bin2hex(\random_bytes(32))), $args[0], $args[1], $args[2], $args[3], $args[4], $args[5]);
-                });
+                    return new AccessToken(new AccessTokenId(bin2hex(random_bytes(32))), $args[0], $args[1], $args[2], $args[3], $args[4], $args[5]);
+                })
+            ;
             $accessTokenRepository->save(Argument::type(AccessToken::class))->will(function (array $args) {
             });
 

@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\OpenIdConnect\Rule;
@@ -41,7 +41,7 @@ final class UserParametersRule implements Rule
             if (!\is_array($default_acr_values)) {
                 throw new \InvalidArgumentException('The parameter "default_acr_values" must be an array of strings.');
             }
-            \array_map(function ($default_acr_value) {
+            array_map(function ($default_acr_value) {
                 if (!\is_string($default_acr_value)) {
                     throw new \InvalidArgumentException('The parameter "default_acr_values" must be an array of strings.');
                 }

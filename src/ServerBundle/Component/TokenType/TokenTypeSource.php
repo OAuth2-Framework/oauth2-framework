@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\ServerBundle\Component\TokenType;
@@ -36,10 +36,10 @@ class TokenTypeSource implements Component
         $container->setParameter('oauth2_server.token_type.default', $configs['token_type']['default']);
         $container->setParameter('oauth2_server.token_type.allow_token_type_parameter', $configs['token_type']['allow_token_type_parameter']);
 
-        if (\class_exists(BearerToken::class) && $configs['token_type']['bearer_token']['enabled']) {
+        if (class_exists(BearerToken::class) && $configs['token_type']['bearer_token']['enabled']) {
             $loader->load('bearer_token.php');
         }
-        if (\class_exists(MacToken::class) && $configs['token_type']['mac_token']['enabled']) {
+        if (class_exists(MacToken::class) && $configs['token_type']['mac_token']['enabled']) {
             $container->setParameter('oauth2_server.token_type.mac_token.min_length', $configs['token_type']['mac_token']['min_length']);
             $container->setParameter('oauth2_server.token_type.mac_token.max_length', $configs['token_type']['mac_token']['max_length']);
             $container->setParameter('oauth2_server.token_type.mac_token.algorithm', $configs['token_type']['mac_token']['algorithm']);
@@ -62,18 +62,20 @@ class TokenTypeSource implements Component
             ->defaultFalse()
             ->info('If true, the "token_type" parameter will be allowed in requests.')
             ->end()
-            ->end();
+            ->end()
+        ;
 
-        if (\class_exists(BearerToken::class)) {
+        if (class_exists(BearerToken::class)) {
             $child->children()
                 ->arrayNode('bearer_token')
                 ->addDefaultsIfNotSet()
                 ->canBeDisabled()
                 ->end()
-                ->end();
+                ->end()
+            ;
         }
 
-        if (\class_exists(MacToken::class)) {
+        if (class_exists(MacToken::class)) {
             $child->children()
                 ->arrayNode('mac_token')
                 ->addDefaultsIfNotSet()
@@ -112,7 +114,8 @@ class TokenTypeSource implements Component
                 ->end()
                 ->end()
                 ->end()
-                ->end();
+                ->end()
+            ;
         }
     }
 

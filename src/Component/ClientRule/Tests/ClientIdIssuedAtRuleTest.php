@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\ClientRule\Tests;
@@ -20,6 +20,9 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @group Tests
+ *
+ * @internal
+ * @coversNothing
  */
 final class ClientIdIssuedAtRuleTest extends TestCase
 {
@@ -44,7 +47,7 @@ final class ClientIdIssuedAtRuleTest extends TestCase
     {
         $clientId = new ClientId('CLIENT_ID');
         $commandParameters = new DataBag([
-            'client_id_issued_at' => \time() - 1000,
+            'client_id_issued_at' => time() - 1000,
         ]);
         $rule = new ClientRule\ClientIdIssuedAtRule();
         $validatedParameters = $rule->handle($clientId, $commandParameters, new DataBag([]), $this->getCallable());

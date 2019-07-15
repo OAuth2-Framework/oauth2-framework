@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\AuthorizationCodeGrant;
@@ -20,6 +20,7 @@ use OAuth2Framework\Component\Core\Util\RequestBodyParser;
 use OAuth2Framework\Component\TokenEndpoint\GrantType;
 use OAuth2Framework\Component\TokenEndpoint\GrantTypeData;
 use Psr\Http\Message\ServerRequestInterface;
+use function Safe\sprintf;
 
 final class AuthorizationCodeGrantType implements GrantType
 {
@@ -54,9 +55,9 @@ final class AuthorizationCodeGrantType implements GrantType
         $parameters = RequestBodyParser::parseFormUrlEncoded($request);
         $requiredParameters = ['code', 'redirect_uri'];
 
-        $diff = \array_diff($requiredParameters, \array_keys($parameters));
+        $diff = array_diff($requiredParameters, array_keys($parameters));
         if (0 !== \count($diff)) {
-            throw OAuth2Error::invalidRequest(\Safe\sprintf('Missing grant type parameter(s): %s.', \implode(', ', $diff)));
+            throw OAuth2Error::invalidRequest(sprintf('Missing grant type parameter(s): %s.', implode(', ', $diff)));
         }
     }
 

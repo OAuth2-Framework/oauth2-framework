@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\ImplicitGrant\Tests;
@@ -25,9 +25,17 @@ use Psr\Http\Message\ServerRequestInterface;
 /**
  * @group GrantType
  * @group Implicit
+ *
+ * @internal
+ * @coversNothing
  */
 final class ImplicitGrantTypeTest extends TestCase
 {
+    /**
+     * @var null|ImplicitGrantType
+     */
+    private $grantType;
+
     /**
      * @test
      */
@@ -108,11 +116,6 @@ final class ImplicitGrantTypeTest extends TestCase
             ], $e->getData());
         }
     }
-
-    /**
-     * @var ImplicitGrantType|null
-     */
-    private $grantType;
 
     private function getGrantType(): ImplicitGrantType
     {

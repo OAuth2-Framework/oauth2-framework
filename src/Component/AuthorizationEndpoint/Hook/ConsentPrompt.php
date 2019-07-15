@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\AuthorizationEndpoint\Hook;
@@ -30,16 +30,15 @@ final class ConsentPrompt implements AuthorizationEndpointHook
         $this->consentHandler = $consentHandler;
     }
 
-    public function handle(ServerRequestInterface $request, AuthorizationRequest $authorizationRequest, string $authorizationRequestId): ?ResponseInterface
+    public function handle(ServerRequestInterface $request, string $authorizationRequestId, AuthorizationRequest $authorizationRequest): ?ResponseInterface
     {
         if (!$authorizationRequest->hasPrompt('consent')) {
             return null;
         }
-
         if ($authorizationRequest->hasConsentBeenGiven()) {
             return null;
         }
 
-        return $this->consentHandler->process($request, $authorizationRequestId, $authorizationRequest);
+        return $this->consentHandler->handle($request, $authorizationRequestId);
     }
 }

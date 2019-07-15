@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\Core\Client;
@@ -23,7 +23,7 @@ use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
  * A client is a resource owner with a set of allowed grant types and can perform requests against
  * available endpoints.
  */
-interface Client extends ResourceOwner, \JsonSerializable
+interface Client extends ResourceOwner
 {
     public function getClientId(): ClientId;
 
@@ -52,7 +52,7 @@ interface Client extends ResourceOwner, \JsonSerializable
     public function has(string $key): bool;
 
     /**
-     * @return mixed|null
+     * @return null|mixed
      */
     public function get(string $key);
 

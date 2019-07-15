@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\RefreshTokenGrant\Tests;
@@ -22,6 +22,9 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @group RefreshToken
+ *
+ * @internal
+ * @coversNothing
  */
 final class RefreshTokenTest extends TestCase
 {
@@ -34,7 +37,6 @@ final class RefreshTokenTest extends TestCase
 
         static::assertInstanceOf(RefreshTokenId::class, $refreshTokenId);
         static::assertEquals('REFRESH_TOKEN_ID', $refreshTokenId->getValue());
-        static::assertEquals('"REFRESH_TOKEN_ID"', \Safe\json_encode($refreshTokenId, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
     }
 
     /**
@@ -57,7 +59,6 @@ final class RefreshTokenTest extends TestCase
         $refreshToken->markAsRevoked();
 
         static::assertInstanceOf(RefreshToken::class, $refreshToken);
-        static::assertEquals('{"refresh_token_id":"REFRESH_TOKEN_ID","access_token_ids":["ACCESS_TOKEN_ID"],"resource_server_id":"RESOURCE_SERVER_ID","expires_at":1264683600,"client_id":"CLIENT_ID","parameters":{"refresh_token_id":"REFRESH_TOKEN_ID"},"metadatas":{},"is_revoked":true,"resource_owner_id":"CLIENT_ID","resource_owner_class":"OAuth2Framework\\\\Component\\\\Core\\\\Client\\\\ClientId"}', \Safe\json_encode($refreshToken, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
         static::assertEquals('REFRESH_TOKEN_ID', $refreshToken->getId()->getValue());
     }
 }

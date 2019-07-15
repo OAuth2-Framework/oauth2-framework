@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\OpenIdConnect\IdTokenGrant;
@@ -21,6 +21,7 @@ use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\Authori
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType\ResponseType;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
+use OAuth2Framework\Component\Core\TokenType\TokenType;
 use OAuth2Framework\Component\OpenIdConnect\IdTokenBuilderFactory;
 
 final class IdTokenResponseType implements ResponseType
@@ -36,7 +37,7 @@ final class IdTokenResponseType implements ResponseType
     private $jwsBuilder;
 
     /**
-     * @var JWEBuilder|null
+     * @var null|JWEBuilder
      */
     private $jweBuilder;
 
@@ -85,14 +86,14 @@ final class IdTokenResponseType implements ResponseType
         // Nothing to do
     }
 
-    public function process(AuthorizationRequest $authorization): void
+    public function process(AuthorizationRequest $authorization, TokenType $tokenType): void
     {
-        if ($authorization->hasQueryParam('scope') && \in_array('openid', \explode(' ', $authorization->getQueryParam('scope')), true)) {
+        if ($authorization->hasQueryParam('scope') && \in_array('openid', explode(' ', $authorization->getQueryParam('scope')), true)) {
             if (!\array_key_exists('nonce', $authorization->getQueryParams())) {
                 throw OAuth2Error::invalidRequest('The parameter "nonce" is mandatory using "id_token" response type.');
             }
 
-            $authorization = $this->populateWithIdToken($authorization);
+            $this->populateWithIdToken($authorization);
         }
     }
 

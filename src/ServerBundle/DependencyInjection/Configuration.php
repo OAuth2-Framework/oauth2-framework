@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\ServerBundle\DependencyInjection;
@@ -40,8 +40,8 @@ final class Configuration implements ConfigurationInterface
 
     public function getConfigTreeBuilder()
     {
-        $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root($this->alias);
+        $treeBuilder = new TreeBuilder($this->alias);
+        $rootNode = $treeBuilder->getRootNode();
 
         foreach ($this->components as $component) {
             $component->getNodeDefinition($rootNode, $rootNode);

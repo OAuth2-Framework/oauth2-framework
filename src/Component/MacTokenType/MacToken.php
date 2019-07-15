@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\MacTokenType;
@@ -34,7 +34,7 @@ abstract class MacToken implements TokenType
      */
     public function __construct(string $macAlgorithm, int $timestampLifetime)
     {
-        if (!\in_array($macAlgorithm, \array_keys($this->getAlgorithmMap()), true)) {
+        if (!\in_array($macAlgorithm, array_keys($this->getAlgorithmMap()), true)) {
             throw new \InvalidArgumentException('Unsupported ma algorithm.');
         }
         if ($timestampLifetime <= 0) {
@@ -80,8 +80,8 @@ abstract class MacToken implements TokenType
         $authorization_headers = $request->getHeader('AUTHORIZATION');
 
         foreach ($authorization_headers as $authorization_header) {
-            if ('MAC ' === \mb_substr($authorization_header, 0, 4, '8bit')) {
-                $header = \trim(\mb_substr($authorization_header, 4, null, '8bit'));
+            if ('MAC ' === mb_substr($authorization_header, 0, 4, '8bit')) {
+                $header = trim(mb_substr($authorization_header, 4, null, '8bit'));
                 if (true === $this->isHeaderValid($header, $additionalCredentialValues, $token)) {
                     return $token;
                 }
@@ -105,17 +105,27 @@ abstract class MacToken implements TokenType
 
         $mac = $this->generateMac($request, $token, $additionalCredentialValues);
 
-        return \hash_equals($mac, $additionalCredentialValues['mac']);
+        return hash_equals($mac, $additionalCredentialValues['mac']);
     }
+
+    protected function getAlgorithmMap(): array
+    {
+        return [
+            'hmac-sha-1' => 'sha1',
+            'hmac-sha-256' => 'sha256',
+        ];
+    }
+
+    abstract protected function generateMacKey(): string;
 
     private function getParametersToCheck(): array
     {
         return [
             'id' => function ($value, AccessToken $token) {
-                return \hash_equals($token->getId()->getValue(), $value);
+                return hash_equals($token->getId()->getValue(), $value);
             },
             'ts' => function ($value) {
-                return \time() < $this->getTimestampLifetime() + (int) $value;
+                return time() < $this->getTimestampLifetime() + (int) $value;
             },
             'nonce' => function () {
                 return true;
@@ -147,20 +157,12 @@ abstract class MacToken implements TokenType
             throw new \RuntimeException(\Safe\sprintf('The MAC algorithm "%s" is not supported.', $token->getParameter()->get('mac_algorithm')));
         }
 
-        return \base64_encode(\hash_hmac(
+        return base64_encode(hash_hmac(
             $algorithms[$token->getParameter()->get('mac_algorithm')],
             $basestr,
             $token->getParameter()->get('mac_key'),
             true
         ));
-    }
-
-    protected function getAlgorithmMap(): array
-    {
-        return [
-            'hmac-sha-1' => 'sha1',
-            'hmac-sha-256' => 'sha256',
-        ];
     }
 
     private function isHeaderValid(string $header, array &$additionalCredentialValues, string &$token = null): bool
@@ -188,6 +190,4 @@ abstract class MacToken implements TokenType
 
         return false;
     }
-
-    abstract protected function generateMacKey(): string;
 }

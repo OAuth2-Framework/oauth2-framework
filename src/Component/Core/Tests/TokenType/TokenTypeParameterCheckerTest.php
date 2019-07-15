@@ -8,26 +8,33 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\Core\Tests\TokenType;
 
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
 use OAuth2Framework\Component\Core\TokenType\TokenType;
+use OAuth2Framework\Component\Core\TokenType\TokenTypeGuesser;
 use OAuth2Framework\Component\Core\TokenType\TokenTypeManager;
-use OAuth2Framework\Component\Core\TokenType\TokenTypeParameterChecker;
 use PHPUnit\Framework\TestCase;
-use Prophecy\Argument;
 
 /**
  * @group TokenTypeParameterCheck
+ *
+ * @internal
+ * @coversNothing
  */
 final class TokenTypeParameterCheckerTest extends TestCase
 {
+    /**
+     * @var null|TokenTypeGuesser
+     */
+    private $tokenTypeGuesser;
+
     protected function setUp(): void
     {
-        if (!\class_exists(AuthorizationRequest::class)) {
+        if (!class_exists(AuthorizationRequest::class)) {
             static::markTestSkipped('Authorization Endpoint not available');
         }
     }
@@ -39,11 +46,7 @@ final class TokenTypeParameterCheckerTest extends TestCase
     {
         $authorization = $this->prophesize(AuthorizationRequest::class);
         $authorization->hasQueryParam('token_type')->willReturn(false)->shouldBeCalled();
-        $authorization
-            ->setTokenType(Argument::type(TokenType::class))
-            ->shouldBeCalled()
-            ->will(function () {});
-        $this->getTokenTypeParameterChecker(true)->check(
+        $this->getTokenTypeGuesser(true)->find(
             $authorization->reveal()
         );
     }
@@ -56,11 +59,7 @@ final class TokenTypeParameterCheckerTest extends TestCase
         $authorization = $this->prophesize(AuthorizationRequest::class);
         $authorization->hasQueryParam('token_type')->willReturn(true)->shouldBeCalled();
         $authorization->getQueryParam('token_type')->willReturn('KnownTokenType')->shouldBeCalled();
-        $authorization
-            ->setTokenType(Argument::type(TokenType::class))
-            ->shouldBeCalled()
-            ->will(function () {});
-        $this->getTokenTypeParameterChecker(true)->check(
+        $this->getTokenTypeGuesser(true)->find(
             $authorization->reveal()
         );
     }
@@ -75,7 +74,7 @@ final class TokenTypeParameterCheckerTest extends TestCase
         $authorization->getQueryParam('token_type')->willReturn('UnknownTokenType')->shouldBeCalled();
 
         try {
-            $this->getTokenTypeParameterChecker(true)->check(
+            $this->getTokenTypeGuesser(true)->find(
                 $authorization->reveal()
             );
             static::fail('Expected exception nt thrown.');
@@ -84,14 +83,9 @@ final class TokenTypeParameterCheckerTest extends TestCase
         }
     }
 
-    /**
-     * @var TokenTypeParameterChecker|null
-     */
-    private $tokenTypeParameterChecker;
-
-    private function getTokenTypeParameterChecker(bool $tokenTypeParameterAllowed): TokenTypeParameterChecker
+    private function getTokenTypeGuesser(bool $tokenTypeParameterAllowed): TokenTypeGuesser
     {
-        if (null === $this->tokenTypeParameterChecker) {
+        if (null === $this->tokenTypeGuesser) {
             $defaultTokenType = $this->prophesize(TokenType::class);
             $anotherTokenType = $this->prophesize(TokenType::class);
 
@@ -100,12 +94,12 @@ final class TokenTypeParameterCheckerTest extends TestCase
             $tokenTypeManager->get('KnownTokenType')->willReturn($anotherTokenType->reveal());
             $tokenTypeManager->getDefault()->willReturn($defaultTokenType->reveal());
 
-            $this->tokenTypeParameterChecker = new TokenTypeParameterChecker(
+            $this->tokenTypeGuesser = new TokenTypeGuesser(
                 $tokenTypeManager->reveal(),
                 $tokenTypeParameterAllowed
             );
         }
 
-        return $this->tokenTypeParameterChecker;
+        return $this->tokenTypeGuesser;
     }
 }

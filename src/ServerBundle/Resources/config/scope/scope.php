@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 use OAuth2Framework\Component\Scope\Policy\NoScopePolicy;
@@ -23,12 +23,14 @@ use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 return function (ContainerConfigurator $container) {
     $container = $container->services()->defaults()
         ->private()
-        ->autoconfigure();
+        ->autoconfigure()
+    ;
 
     $container->set(ScopePolicyManager::class);
 
     $container->set(NoScopePolicy::class)
-        ->tag('oauth2_server_scope_policy', ['policy_name' => 'none']);
+        ->tag('oauth2_server_scope_policy', ['policy_name' => 'none'])
+    ;
 
     $container->set(ScopeRule::class);
 
@@ -36,11 +38,13 @@ return function (ContainerConfigurator $container) {
         ->args([
             ref(ScopeRepository::class),
             ref(ScopePolicyManager::class),
-        ]);
+        ])
+    ;
 
     $container->set(TokenEndpointScopeExtension::class)
         ->args([
             ref(ScopeRepository::class),
             ref(ScopePolicyManager::class),
-        ]);
+        ])
+    ;
 };

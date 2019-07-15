@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\RefreshTokenGrant\Tests;
@@ -27,12 +27,20 @@ use Prophecy\Argument;
 /**
  * @group TypeHint
  * @group RefreshTokenTypeHint
+ *
+ * @internal
+ * @coversNothing
  */
 final class RefreshTokenRevocationTypeHintTest extends TestCase
 {
+    /**
+     * @var null|RefreshTokenRevocationTypeHint
+     */
+    private $refreshTokenTypeHint;
+
     protected function setUp(): void
     {
-        if (!\interface_exists(TokenTypeHint::class)) {
+        if (!interface_exists(TokenTypeHint::class)) {
             static::markTestSkipped('The component "oauth2-framework/token-revocation-endpoint" is not installed.');
         }
     }
@@ -65,11 +73,6 @@ final class RefreshTokenRevocationTypeHintTest extends TestCase
         $this->getRefreshTokenTypeHint()->revoke($refreshToken);
         static::assertTrue(true);
     }
-
-    /**
-     * @var RefreshTokenRevocationTypeHint|null
-     */
-    private $refreshTokenTypeHint;
 
     public function getRefreshTokenTypeHint(): RefreshTokenRevocationTypeHint
     {

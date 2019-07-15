@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\ServerBundle\Component\Endpoint\ClientConfiguration;
@@ -30,7 +30,7 @@ class ClientConfigurationSource implements Component
 
     public function load(array $configs, ContainerBuilder $container): void
     {
-        if (!\class_exists(ClientConfigurationEndpoint::class)) {
+        if (!class_exists(ClientConfigurationEndpoint::class)) {
             return;
         }
         $config = $configs['endpoint']['client_configuration'];
@@ -48,7 +48,7 @@ class ClientConfigurationSource implements Component
 
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
-        if (!\class_exists(ClientConfigurationEndpoint::class)) {
+        if (!class_exists(ClientConfigurationEndpoint::class)) {
             return;
         }
         $node->children()
@@ -75,12 +75,13 @@ class ClientConfigurationSource implements Component
             ->end()
             ->end()
             ->end()
-            ->end();
+            ->end()
+        ;
     }
 
     public function build(ContainerBuilder $container): void
     {
-        if (!\class_exists(ClientConfigurationEndpoint::class)) {
+        if (!class_exists(ClientConfigurationEndpoint::class)) {
             return;
         }
         $container->addCompilerPass(new ClientConfigurationEndpointRouteCompilerPass());
@@ -88,7 +89,7 @@ class ClientConfigurationSource implements Component
 
     public function prepend(ContainerBuilder $container, array $config): array
     {
-        if (!\class_exists(ClientConfigurationEndpoint::class)) {
+        if (!class_exists(ClientConfigurationEndpoint::class)) {
             return [];
         }
 

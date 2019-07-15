@@ -17,7 +17,7 @@
     ],
     "require": {
         "php": "^7.2",
-        "oauth2-framework/core": "^0.0@dev",
+        "oauth2-framework/core": "@ 1.0",
         "sensio/framework-extra-bundle": "^5.0",
         "symfony/config": "^4.0",
         "symfony/dependency-injection": "^4.0",
@@ -31,8 +31,8 @@
         "symfony/framework-bundle": "^4.0",
         "symfony/phpunit-bridge": "^4.0",
         "symfony/yaml": "^4.0",
-        "oauth2-framework/bearer-token-type": "^0.0@dev",
-        "oauth2-framework/mac-token-type": "^0.0@dev"
+        "oauth2-framework/bearer-token-type": "@ 1.0",
+        "oauth2-framework/mac-token-type": "@ 1.0"
     },
     "suggest": {
         "symfony/security-bundle": "Mandatory when resource owners can be end users.",

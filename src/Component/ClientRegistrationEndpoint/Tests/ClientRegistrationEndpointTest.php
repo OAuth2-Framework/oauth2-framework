@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\ClientRegistrationEndpoint\Tests;
@@ -29,9 +29,22 @@ use Psr\Http\Message\StreamInterface;
 
 /**
  * @group ClientRegistrationEndpoint
+ *
+ * @internal
+ * @coversNothing
  */
 final class ClientRegistrationEndpointTest extends TestCase
 {
+    /**
+     * @var null|ClientRegistrationEndpoint
+     */
+    private $clientRegistrationEndpoint;
+
+    /**
+     * @var null|ResponseFactoryInterface
+     */
+    private $responseFactory;
+
     /**
      * @test
      */
@@ -47,11 +60,6 @@ final class ClientRegistrationEndpointTest extends TestCase
         $response->getBody()->rewind();
         static::assertEquals('{"client_id":"CLIENT_ID"}', $response->getBody()->getContents());
     }
-
-    /**
-     * @var ClientRegistrationEndpoint|null
-     */
-    private $clientRegistrationEndpoint;
 
     private function getClientRegistrationEndpoint(): ClientRegistrationEndpoint
     {
@@ -86,11 +94,6 @@ final class ClientRegistrationEndpointTest extends TestCase
 
         return $this->clientRegistrationEndpoint;
     }
-
-    /**
-     * @var ResponseFactoryInterface|null
-     */
-    private $responseFactory;
 
     private function getResponseFactory(): ResponseFactoryInterface
     {

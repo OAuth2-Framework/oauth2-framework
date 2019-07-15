@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\Scope\Tests;
@@ -25,9 +25,17 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @group ScopePolicyManager
+ *
+ * @internal
+ * @coversNothing
  */
 final class ScopePolicyManagerTest extends TestCase
 {
+    /**
+     * @var null|ScopePolicyManager
+     */
+    private $scopePolicyManager;
+
     /**
      * @test
      */
@@ -162,11 +170,6 @@ final class ScopePolicyManagerTest extends TestCase
         Checker::checkCharset('foo bar');
         Checker::checkCharset('cookie café');
     }
-
-    /**
-     * @var ScopePolicyManager|null
-     */
-    private $scopePolicyManager;
 
     private function getScopePolicyManager(): ScopePolicyManager
     {

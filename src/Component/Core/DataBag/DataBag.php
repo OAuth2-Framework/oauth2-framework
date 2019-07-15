@@ -8,14 +8,14 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\Core\DataBag;
 
 use ArrayIterator;
 
-class DataBag implements \JsonSerializable, \IteratorAggregate, \Countable
+class DataBag implements \IteratorAggregate, \Countable
 {
     /**
      * @var array
@@ -33,9 +33,9 @@ class DataBag implements \JsonSerializable, \IteratorAggregate, \Countable
     }
 
     /**
-     * @param mixed|null $default
+     * @param null|mixed $default
      *
-     * @return mixed|null
+     * @return null|mixed
      */
     public function get(string $key, $default = null)
     {
@@ -47,7 +47,7 @@ class DataBag implements \JsonSerializable, \IteratorAggregate, \Countable
     }
 
     /**
-     * @param mixed|null $value
+     * @param null|mixed $value
      */
     public function set(string $key, $value): void
     {
@@ -57,11 +57,6 @@ class DataBag implements \JsonSerializable, \IteratorAggregate, \Countable
     public function all(): array
     {
         return $this->parameters;
-    }
-
-    public function jsonSerialize(): array
-    {
-        return $this->all();
     }
 
     public function count(): int

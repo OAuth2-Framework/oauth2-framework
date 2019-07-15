@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\Core\Tests\AccessToken;
@@ -21,6 +21,9 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @group AccessToken
+ *
+ * @internal
+ * @coversNothing
  */
 final class AccessTokenTest extends TestCase
 {
@@ -33,7 +36,6 @@ final class AccessTokenTest extends TestCase
 
         static::assertInstanceOf(AccessTokenId::class, $accessTokenId);
         static::assertEquals('ACCESS_TOKEN_ID', $accessTokenId->getValue());
-        static::assertEquals('"ACCESS_TOKEN_ID"', \Safe\json_encode($accessTokenId, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
     }
 
     /**
@@ -55,7 +57,6 @@ final class AccessTokenTest extends TestCase
         $accessToken->markAsRevoked();
 
         static::assertInstanceOf(AccessToken::class, $accessToken);
-        static::assertEquals('{"access_token_id":"ACCESS_TOKEN_ID","expires_at":1264683600,"client_id":"CLIENT_ID","parameters":{"refresh_token_id":"REFRESH_TOKEN_ID"},"metadatas":{},"is_revoked":true,"resource_owner_id":"CLIENT_ID","resource_owner_class":"OAuth2Framework\\\\Component\\\\Core\\\\Client\\\\ClientId","resource_server_id":"RESOURCE_SERVER_ID"}', \Safe\json_encode($accessToken, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
         static::assertEquals('ACCESS_TOKEN_ID', $accessToken->getId()->getValue());
     }
 }

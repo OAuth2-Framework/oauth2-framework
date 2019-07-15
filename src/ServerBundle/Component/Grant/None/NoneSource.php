@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\ServerBundle\Component\Grant\None;
@@ -29,7 +29,7 @@ class NoneSource implements Component
 
     public function load(array $configs, ContainerBuilder $container): void
     {
-        if (!\class_exists(NoneResponseType::class) || !$configs['grant']['none']['enabled']) {
+        if (!class_exists(NoneResponseType::class) || !$configs['grant']['none']['enabled']) {
             return;
         }
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/grant'));
@@ -38,14 +38,15 @@ class NoneSource implements Component
 
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
-        if (!\class_exists(NoneResponseType::class)) {
+        if (!class_exists(NoneResponseType::class)) {
             return;
         }
         $node->children()
             ->arrayNode($this->name())
             ->canBeEnabled()
             ->end()
-            ->end();
+            ->end()
+        ;
     }
 
     public function build(ContainerBuilder $container): void

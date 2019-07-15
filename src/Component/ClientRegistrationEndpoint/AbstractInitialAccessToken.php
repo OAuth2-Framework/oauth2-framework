@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\ClientRegistrationEndpoint;
@@ -23,12 +23,12 @@ abstract class AbstractInitialAccessToken implements InitialAccessToken
     private $revoked;
 
     /**
-     * @var \DateTimeImmutable|null
+     * @var null|\DateTimeImmutable
      */
     private $expiresAt;
 
     /**
-     * @var UserAccountId|null
+     * @var null|UserAccountId
      */
     private $userAccountId;
 
@@ -51,7 +51,7 @@ abstract class AbstractInitialAccessToken implements InitialAccessToken
 
     public function hasExpired(): bool
     {
-        return null !== $this->expiresAt ? $this->expiresAt->getTimestamp() < \time() : false;
+        return null !== $this->expiresAt ? $this->expiresAt->getTimestamp() < time() : false;
     }
 
     public function isRevoked(): bool
@@ -62,17 +62,5 @@ abstract class AbstractInitialAccessToken implements InitialAccessToken
     public function markAsRevoked(): void
     {
         $this->revoked = true;
-    }
-
-    public function jsonSerialize(): array
-    {
-        $data = [
-            'initial_access_token_id' => $this->getId()->getValue(),
-            'user_account_id' => null !== $this->getUserAccountId() ? $this->getUserAccountId()->getValue() : null,
-            'expires_at' => null !== $this->getExpiresAt() ? $this->getExpiresAt()->getTimestamp() : null,
-            'is_revoked' => $this->isRevoked(),
-        ];
-
-        return $data;
     }
 }

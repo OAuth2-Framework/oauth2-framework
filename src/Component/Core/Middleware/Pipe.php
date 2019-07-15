@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\Core\Middleware;
@@ -48,15 +48,15 @@ class Pipe implements MiddlewareInterface
      */
     public function prependMiddleware(MiddlewareInterface $middleware): void
     {
-        \array_unshift($this->middlewares, $middleware);
+        array_unshift($this->middlewares, $middleware);
     }
 
     public function addMiddlewareAfterFirstOne(MiddlewareInterface $middleware): void
     {
         $count = \count($this->middlewares);
         $temp = \array_slice($this->middlewares, 1, $count);
-        \array_unshift($temp, $middleware);
-        \array_unshift($temp, $this->middlewares[0]);
+        array_unshift($temp, $middleware);
+        array_unshift($temp, $this->middlewares[0]);
         $this->middlewares = $temp;
     }
 
@@ -75,11 +75,8 @@ class Pipe implements MiddlewareInterface
             return $handler->handle($request);
         });*/
 
-        $response = $this->dispatch($request);
-
+        return $this->dispatch($request);
         //\array_pop($this->middlewares);
-
-        return $response;
     }
 
     /**

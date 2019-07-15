@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\ServerBundle\Component\Endpoint\TokenRevocation;
@@ -32,7 +32,7 @@ class TokenRevocationEndpointSource implements Component
 
     public function load(array $configs, ContainerBuilder $container): void
     {
-        if (!\class_exists(TokenRevocationEndpoint::class)) {
+        if (!class_exists(TokenRevocationEndpoint::class)) {
             return;
         }
         $config = $configs['endpoint']['token_revocation'];
@@ -51,7 +51,7 @@ class TokenRevocationEndpointSource implements Component
 
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
-        if (!\class_exists(TokenRevocationEndpoint::class)) {
+        if (!class_exists(TokenRevocationEndpoint::class)) {
             return;
         }
         $node->children()
@@ -74,12 +74,13 @@ class TokenRevocationEndpointSource implements Component
             ->end()
             ->end()
             ->end()
-            ->end();
+            ->end()
+        ;
     }
 
     public function build(ContainerBuilder $container): void
     {
-        if (!\class_exists(TokenRevocationEndpoint::class)) {
+        if (!class_exists(TokenRevocationEndpoint::class)) {
             return;
         }
         $container->addCompilerPass(new TokenTypeHintCompilerPass());

@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\SecurityBundle\Security\Firewall;
@@ -22,14 +22,13 @@ use OAuth2Framework\Component\Core\TokenType\TokenTypeManager;
 use OAuth2Framework\SecurityBundle\Security\Authentication\Token\OAuth2Token;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\Security\Core\Authentication\AuthenticationManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
-use Symfony\Component\Security\Http\Firewall\ListenerInterface;
 use Throwable;
 
-final class OAuth2Listener implements ListenerInterface
+final class OAuth2Listener
 {
     /**
      * @var TokenStorageInterface
@@ -61,12 +60,13 @@ final class OAuth2Listener implements ListenerInterface
      */
     private $httpMessageFactory;
 
-    public function __construct(HttpMessageFactoryInterface $httpMessageFactory,
-                                TokenStorageInterface $tokenStorage,
-                                AuthenticationManagerInterface $authenticationManager,
-                                TokenTypeManager $tokenTypeManager,
-                                AccessTokenHandlerManager $accessTokenHandlerManager,
-                                OAuth2MessageFactoryManager $oauth2ResponseFactoryManager
+    public function __construct(
+        HttpMessageFactoryInterface $httpMessageFactory,
+        TokenStorageInterface $tokenStorage,
+        AuthenticationManagerInterface $authenticationManager,
+        TokenTypeManager $tokenTypeManager,
+        AccessTokenHandlerManager $accessTokenHandlerManager,
+        OAuth2MessageFactoryManager $oauth2ResponseFactoryManager
     ) {
         $this->tokenStorage = $tokenStorage;
         $this->authenticationManager = $authenticationManager;
@@ -76,7 +76,7 @@ final class OAuth2Listener implements ListenerInterface
         $this->httpMessageFactory = $httpMessageFactory;
     }
 
-    public function handle(GetResponseEvent $event): void
+    public function __invoke(RequestEvent $event): void
     {
         $request = $this->httpMessageFactory->createRequest($event->getRequest());
 
@@ -86,7 +86,7 @@ final class OAuth2Listener implements ListenerInterface
             if (null === $accessTokenId) {
                 return;
             }
-            /* @var TokenType $tokenType */
+            // @var TokenType $tokenType
         } catch (Throwable $e) {
             return;
         }

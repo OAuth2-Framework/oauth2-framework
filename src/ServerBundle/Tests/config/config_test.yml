@@ -31,3 +31,7 @@ framework:
 twig:
     debug:            '%kernel.debug%'
     strict_variables: '%kernel.debug%'
+
+services:
+    Psr\EventDispatcher\EventDispatcherInterface:
+        alias: 'event_dispatcher'

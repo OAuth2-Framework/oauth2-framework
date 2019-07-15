@@ -8,13 +8,14 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\TokenRevocationEndpoint;
 
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use function Safe\array_flip;
 
 final class TokenRevocationGetEndpoint extends TokenRevocationEndpoint
 {
@@ -37,6 +38,6 @@ final class TokenRevocationGetEndpoint extends TokenRevocationEndpoint
             $supported_parameters[] = 'callback';
         }
 
-        return \array_intersect_key($parameters, \array_flip($supported_parameters));
+        return array_intersect_key($parameters, array_flip($supported_parameters));
     }
 }

@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\AuthorizationCodeGrant\Tests;
@@ -23,6 +23,7 @@ use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\Authori
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
+use OAuth2Framework\Component\Core\TokenType\TokenType;
 use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use PHPUnit\Framework\TestCase;
@@ -31,9 +32,22 @@ use Prophecy\Argument;
 /**
  * @group ResponseType
  * @group AuthorizationCodeResponseType
+ *
+ * @internal
+ * @coversNothing
  */
 final class AuthorizationCodeResponseTypeTest extends TestCase
 {
+    /**
+     * @var null|AuthorizationCodeResponseType
+     */
+    private $grantType;
+
+    /**
+     * @var null|PKCEMethodManager
+     */
+    private $pkceMethodManager;
+
     /**
      * @test
      */
@@ -57,24 +71,23 @@ final class AuthorizationCodeResponseTypeTest extends TestCase
         $userAccount = $this->prophesize(UserAccount::class);
         $userAccount->getPublicId()->willReturn(new UserAccountId('USER_ACCOUNT_ID'));
         $userAccount->getUserAccountId()->willReturn(new UserAccountId('USER_ACCOUNT_ID'));
+
+        $tokenType = $this->prophesize(TokenType::class);
+        $tokenType->getAdditionalInformation()->willReturn(['token_type' => 'FOO']);
+
         $authorization = new AuthorizationRequest(
             $client->reveal(),
             [
                 'code_challenge' => 'ABCDEFGH',
                 'code_challenge_method' => 'S256',
+                'redirect_uri' => 'http://localhost:8000/',
             ]
         );
         $authorization->setUserAccount($userAccount->reveal(), true);
-        $authorization->setRedirectUri('http://localhost:8000/');
         $this->getResponseType()->preProcess($authorization);
-        $this->getResponseType()->process($authorization);
+        $this->getResponseType()->process($authorization, $tokenType->reveal());
         static::assertTrue($authorization->hasResponseParameter('code'));
     }
-
-    /**
-     * @var AuthorizationCodeResponseType|null
-     */
-    private $grantType;
 
     private function getResponseType(): AuthorizationCodeResponseType
     {
@@ -82,7 +95,7 @@ final class AuthorizationCodeResponseTypeTest extends TestCase
             $authorizationCodeRepository = $this->prophesize(AuthorizationCodeRepository::class);
             $authorizationCodeRepository->create(Argument::type(ClientId::class), Argument::type(UserAccountId::class), Argument::type('array'), Argument::type('string'), Argument::type(\DateTimeImmutable::class), Argument::type(DataBag::class), Argument::type(DataBag::class), Argument::any())->will(function (array $args) {
                 return new AuthorizationCode(
-                    new AuthorizationCodeId(\bin2hex(\random_bytes(32))),
+                    new AuthorizationCodeId(bin2hex(random_bytes(32))),
                     $args[0],
                     $args[1],
                     $args[2],
@@ -106,11 +119,6 @@ final class AuthorizationCodeResponseTypeTest extends TestCase
 
         return $this->grantType;
     }
-
-    /**
-     * @var PKCEMethodManager|null
-     */
-    private $pkceMethodManager;
 
     private function getPkceMethodManager(): PKCEMethodManager
     {

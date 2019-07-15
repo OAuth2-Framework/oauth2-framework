@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\AuthorizationCodeGrant;
@@ -18,6 +18,7 @@ use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
+use function Safe\sprintf;
 
 abstract class AbstractAuthorizationCode implements AuthorizationCode
 {
@@ -67,7 +68,7 @@ abstract class AbstractAuthorizationCode implements AuthorizationCode
     private $revoked;
 
     /**
-     * @var ResourceServerId|null
+     * @var null|ResourceServerId
      */
     private $resourceServerId;
 
@@ -102,7 +103,7 @@ abstract class AbstractAuthorizationCode implements AuthorizationCode
 
     public function getQueryParameter(string $key)
     {
-        Assertion::true($this->hasQueryParameter($key), \Safe\sprintf('Query parameter with key "%s" does not exist.', $key));
+        Assertion::true($this->hasQueryParameter($key), sprintf('Query parameter with key "%s" does not exist.', $key));
 
         return $this->queryParameters[$key];
     }
@@ -131,7 +132,7 @@ abstract class AbstractAuthorizationCode implements AuthorizationCode
 
     public function hasExpired(): bool
     {
-        return $this->expiresAt->getTimestamp() < \time();
+        return $this->expiresAt->getTimestamp() < time();
     }
 
     public function getUserAccountId(): UserAccountId
@@ -161,7 +162,7 @@ abstract class AbstractAuthorizationCode implements AuthorizationCode
 
     public function getExpiresIn(): int
     {
-        return $this->expiresAt->getTimestamp() - \time() < 0 ? 0 : $this->expiresAt->getTimestamp() - \time();
+        return $this->expiresAt->getTimestamp() - time() < 0 ? 0 : $this->expiresAt->getTimestamp() - time();
     }
 
     public function isRevoked(): bool
@@ -172,25 +173,5 @@ abstract class AbstractAuthorizationCode implements AuthorizationCode
     public function markAsRevoked(): void
     {
         $this->revoked = true;
-    }
-
-    public function jsonSerialize(): array
-    {
-        $data = [
-            'auth_code_id' => $this->getId()->getValue(),
-            'query_parameters' => (object) $this->getQueryParameters(),
-            'redirect_uri' => $this->getRedirectUri(),
-            'is_used' => $this->isUsed(),
-            'is_revoked' => $this->isRevoked(),
-            'expires_at' => $this->getExpiresAt()->getTimestamp(),
-            'client_id' => $this->getClientId()->getValue(),
-            'parameters' => (object) $this->getParameter()->all(),
-            'metadatas' => (object) $this->getMetadata()->all(),
-            'resource_owner_id' => $this->getUserAccountId()->getValue(),
-            'resource_owner_class' => \get_class($this->getUserAccountId()),
-            'resource_server_id' => null !== $this->getResourceServerId() ? $this->getResourceServerId()->getValue() : null,
-        ];
-
-        return $data;
     }
 }

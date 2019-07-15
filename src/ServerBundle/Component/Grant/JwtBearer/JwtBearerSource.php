@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\ServerBundle\Component\Grant\JwtBearer;
@@ -32,7 +32,7 @@ class JwtBearerSource implements Component
 
     public function load(array $configs, ContainerBuilder $container): void
     {
-        if (!\class_exists(JwtBearerGrantType::class) || !$configs['grant']['jwt_bearer']['enabled']) {
+        if (!class_exists(JwtBearerGrantType::class) || !$configs['grant']['jwt_bearer']['enabled']) {
             return;
         }
 
@@ -47,7 +47,7 @@ class JwtBearerSource implements Component
 
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
-        if (!\class_exists(JwtBearerGrantType::class)) {
+        if (!class_exists(JwtBearerGrantType::class)) {
             return;
         }
         $node->children()
@@ -104,12 +104,13 @@ class JwtBearerSource implements Component
             ->end()
             ->end()
             ->end()
-            ->end();
+            ->end()
+        ;
     }
 
     public function build(ContainerBuilder $container): void
     {
-        if (!\class_exists(JwtBearerGrantType::class)) {
+        if (!class_exists(JwtBearerGrantType::class)) {
             return;
         }
         $container->addCompilerPass(new TrustedIssuerSupportCompilerPass());
@@ -118,7 +119,7 @@ class JwtBearerSource implements Component
 
     public function prepend(ContainerBuilder $container, array $configs): array
     {
-        if (!\class_exists(JwtBearerGrantType::class) || !$configs['grant']['jwt_bearer']['enabled']) {
+        if (!class_exists(JwtBearerGrantType::class) || !$configs['grant']['jwt_bearer']['enabled']) {
             return [];
         }
         $this->updateJoseBundleConfigurationForVerifier($container, $configs['grant']['jwt_bearer']);

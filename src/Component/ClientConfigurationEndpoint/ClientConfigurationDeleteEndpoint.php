@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\ClientConfigurationEndpoint;
@@ -48,8 +48,7 @@ final class ClientConfigurationDeleteEndpoint implements MiddlewareInterface
 
         $response = $this->responseFactory->createResponse(204);
         $response = $response->withHeader('Cache-Control', 'no-cache, no-store, max-age=0, must-revalidate, private');
-        $response = $response->withHeader('Pragma', 'no-cache, no-store');
 
-        return $response;
+        return $response->withHeader('Pragma', 'no-cache, no-store');
     }
 }

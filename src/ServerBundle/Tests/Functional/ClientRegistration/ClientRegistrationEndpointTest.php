@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\ServerBundle\Tests\Functional\ClientRegistration;
@@ -24,12 +24,15 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
  * @group ServerBundle
  * @group Functional
  * @group ClientRegistration
+ *
+ * @internal
+ * @coversNothing
  */
 class ClientRegistrationEndpointTest extends WebTestCase
 {
     protected function setUp(): void
     {
-        if (!\class_exists(ClientRegistrationEndpoint::class)) {
+        if (!class_exists(ClientRegistrationEndpoint::class)) {
             static::markTestSkipped('The component "oauth2-framework/client-registration-endpoint" is not installed.');
         }
         parent::setUp();

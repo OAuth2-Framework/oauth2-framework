@@ -8,13 +8,14 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker;
 
 use Assert\Assertion;
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
+use function Safe\sprintf;
 
 final class PromptParameterChecker implements ParameterChecker
 {
@@ -32,8 +33,8 @@ final class PromptParameterChecker implements ParameterChecker
             return;
         }
         $prompt = $authorization->getPrompt();
-        $diff = \array_diff($prompt, $this->getAllowedPromptValues());
-        Assertion::noContent($diff, \Safe\sprintf('Invalid parameter "prompt". Allowed values are %s', \implode(', ', $this->getAllowedPromptValues())));
+        $diff = array_diff($prompt, $this->getAllowedPromptValues());
+        Assertion::noContent($diff, sprintf('Invalid parameter "prompt". Allowed values are %s', implode(', ', $this->getAllowedPromptValues())));
 
         if (\in_array('none', $prompt, true)) {
             Assertion::count($prompt, 1, 'Invalid parameter "prompt". Prompt value "none" must be used alone.');

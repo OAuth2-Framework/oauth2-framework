@@ -8,12 +8,13 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\AuthorizationEndpoint\ResponseType;
 
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
+use OAuth2Framework\Component\Core\TokenType\TokenType;
 
 interface ResponseType
 {
@@ -43,5 +44,5 @@ interface ResponseType
 
     public function preProcess(AuthorizationRequest $authorization): void;
 
-    public function process(AuthorizationRequest $authorization): void;
+    public function process(AuthorizationRequest $authorization, TokenType $tokenType): void;
 }

@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\MetadataEndpoint;
@@ -36,17 +36,17 @@ class MetadataEndpoint implements MiddlewareInterface
     private $metadata;
 
     /**
-     * @var JWK|null
+     * @var null|JWK
      */
     private $signatureKey;
 
     /**
-     * @var string|null
+     * @var null|string
      */
     private $signatureAlgorithm;
 
     /**
-     * @var JWSBuilder|null
+     * @var null|JWSBuilder
      */
     private $jwsBuilder;
 
@@ -68,15 +68,14 @@ class MetadataEndpoint implements MiddlewareInterface
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $data = $this->metadata->jsonSerialize();
+        $data = $this->metadata->all();
         if (null !== $this->jwsBuilder) {
             $data['signed_metadata'] = $this->sign($data);
         }
         $response = $this->responseFactory->createResponse();
         $response->getBody()->write(\Safe\json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
-        $response = $response->withHeader('Content-Type', 'application/json; charset=UTF-8');
 
-        return $response;
+        return $response->withHeader('Content-Type', 'application/json; charset=UTF-8');
     }
 
     private function sign(array $metadata): string
@@ -88,7 +87,8 @@ class MetadataEndpoint implements MiddlewareInterface
             ->create()
             ->withPayload(JsonConverter::encode($metadata))
             ->addSignature($this->signatureKey, $header)
-            ->build();
+            ->build()
+        ;
         $serializer = new CompactSerializer();
 
         return $serializer->serialize($jws, 0);

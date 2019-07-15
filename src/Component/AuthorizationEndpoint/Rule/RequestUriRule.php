@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\AuthorizationEndpoint\Rule;
@@ -43,7 +43,7 @@ final class RequestUriRule implements Rule
         Assertion::isArray($value, 'The parameter "request_uris" must be a list of URI.');
         foreach ($value as $redirectUri) {
             Assertion::string($redirectUri, 'The parameter "request_uris" must be a list of URI.');
-            Assertion::true(false !== \filter_var($redirectUri, FILTER_VALIDATE_URL), 'The parameter "request_uris" must be a list of URI.'); //TODO: URN should be allowed
+            Assertion::true(false !== filter_var($redirectUri, FILTER_VALIDATE_URL), 'The parameter "request_uris" must be a list of URI.'); //TODO: URN should be allowed
         }
     }
 }

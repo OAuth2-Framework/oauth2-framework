@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\ClientAuthentication\Tests;
@@ -47,13 +47,22 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
+use function Safe\json_decode;
 
 /**
  * @group TokenEndpoint
  * @group ClientAuthentication
+ *
+ * @internal
+ * @coversNothing
  */
 final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
 {
+    /**
+     * @var null|ClientAssertionJwt
+     */
+    private $method;
+
     /**
      * @test
      */
@@ -324,7 +333,7 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
         $client->get('token_endpoint_auth_method')->willReturn('private_key_jwt');
         $client->getTokenEndpointAuthenticationMethod()->willReturn('private_key_jwt');
         $client->has('jwks')->willReturn(true);
-        $client->get('jwks')->willReturn(\Safe\json_decode('{"keys":[{"kty":"oct","k":"U0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVU"}]}', true));
+        $client->get('jwks')->willReturn(json_decode('{"keys":[{"kty":"oct","k":"U0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVU"}]}', true));
         $client->areClientCredentialsExpired()->willReturn(false);
 
         $request = $this->buildRequest([
@@ -488,12 +497,12 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
         $method = $this->getMethod();
         $commandParameters = new DataBag([
             'token_endpoint_auth_method' => 'private_key_jwt',
-            'jwks' => \Safe\json_decode('{"keys":[{"kty":"oct","k":"U0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVU"}]}', true),
+            'jwks' => json_decode('{"keys":[{"kty":"oct","k":"U0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVU"}]}', true),
         ]);
         $validatedParameters = $method->checkClientConfiguration($commandParameters, new DataBag([]));
 
         static::assertTrue($validatedParameters->has('jwks'));
-        static::assertEquals(\Safe\json_decode('{"keys":[{"kty":"oct","k":"U0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVU"}]}', true), $validatedParameters->get('jwks'));
+        static::assertEquals(json_decode('{"keys":[{"kty":"oct","k":"U0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVU"}]}', true), $validatedParameters->get('jwks'));
     }
 
     /**
@@ -510,11 +519,6 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
 
         static::assertTrue($validatedParameters->has('jwks_uri'));
     }
-
-    /**
-     * @var ClientAssertionJwt|null
-     */
-    private $method;
 
     private function getMethod(): ClientAssertionJwt
     {
@@ -609,13 +613,14 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
                 'iss' => 'ClientId',
                 'sub' => 'ClientId',
                 'aud' => 'My Server',
-                'exp' => \time() + 3600,
+                'exp' => time() + 3600,
             ]))
             ->addSignature(
                 JWK::createFromJson('{"kty":"oct","k":"U0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVU"}'),
                 ['alg' => 'HS256']
             )
-            ->build();
+            ->build()
+        ;
     }
 
     private function createValidClientAssertionSignedByATrustedIssuer(): JWS
@@ -632,7 +637,7 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
                 'iss' => 'TRUSTED_ISSUER',
                 'sub' => 'ClientId',
                 'aud' => 'My Server',
-                'exp' => \time() + 3600,
+                'exp' => time() + 3600,
             ]))
             ->addSignature(
                 new JWK([
@@ -648,7 +653,8 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
                 ]),
                 ['alg' => 'RS256']
             )
-            ->build();
+            ->build()
+        ;
     }
 
     private function createInvalidClientAssertionSignedByTheClient(): JWS
@@ -666,7 +672,8 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
                 JWK::createFromJson('{"kty":"oct","k":"U0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVU"}'),
                 ['alg' => 'HS256']
             )
-            ->build();
+            ->build()
+        ;
     }
 
     private function createInvalidClientAssertionSignedByATrustedIssuer(): JWS
@@ -695,7 +702,8 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
                 ]),
                 ['alg' => 'RS256']
             )
-            ->build();
+            ->build()
+        ;
     }
 
     private function encryptAssertion(string $assertion): string
@@ -716,7 +724,8 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
                 'e' => 'AQAB',
                 'alg' => 'RSA-OAEP-256',
             ]))
-            ->build();
+            ->build()
+        ;
 
         $serializer = new \Jose\Component\Encryption\Serializer\CompactSerializer();
 
@@ -726,7 +735,7 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
     private function buildRequest(array $data): ObjectProphecy
     {
         $body = $this->prophesize(StreamInterface::class);
-        $body->getContents()->willReturn(\http_build_query($data));
+        $body->getContents()->willReturn(http_build_query($data));
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->hasHeader('Content-Type')->willReturn(true);
         $request->getHeader('Content-Type')->willReturn(['application/x-www-form-urlencoded']);

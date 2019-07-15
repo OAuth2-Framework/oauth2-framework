@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\ClientAuthentication;
@@ -42,7 +42,7 @@ final class ClientSecretPost implements AuthenticationMethod
     }
 
     /**
-     * @param mixed|null $clientCredentials
+     * @param null|mixed $clientCredentials
      */
     public function findClientIdAndCredentials(ServerRequestInterface $request, &$clientCredentials = null): ?ClientId
     {
@@ -59,17 +59,17 @@ final class ClientSecretPost implements AuthenticationMethod
     public function checkClientConfiguration(DataBag $command_parameters, DataBag $validatedParameters): DataBag
     {
         $validatedParameters->set('client_secret', $this->createClientSecret());
-        $validatedParameters->set('client_secret_expires_at', (0 === $this->secretLifetime ? 0 : \time() + $this->secretLifetime));
+        $validatedParameters->set('client_secret_expires_at', (0 === $this->secretLifetime ? 0 : time() + $this->secretLifetime));
 
         return $validatedParameters;
     }
 
     /**
-     * @param mixed|null $clientCredentials
+     * @param null|mixed $clientCredentials
      */
     public function isClientAuthenticated(Client $client, $clientCredentials, ServerRequestInterface $request): bool
     {
-        return \hash_equals($client->get('client_secret'), $clientCredentials);
+        return hash_equals($client->get('client_secret'), $clientCredentials);
     }
 
     public function getSupportedMethods(): array
@@ -79,6 +79,6 @@ final class ClientSecretPost implements AuthenticationMethod
 
     private function createClientSecret(): string
     {
-        return Base64Url::encode(\random_bytes(32));
+        return Base64Url::encode(random_bytes(32));
     }
 }

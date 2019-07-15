@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\ServerBundle\Component\Endpoint\Metadata;
@@ -45,7 +45,7 @@ class MetadataEndpointSource implements Component
 
     public function load(array $configs, ContainerBuilder $container): void
     {
-        if (!\class_exists(MetadataEndpoint::class)) {
+        if (!class_exists(MetadataEndpoint::class)) {
             return;
         }
         $config = $configs['endpoint']['metadata'];
@@ -66,12 +66,13 @@ class MetadataEndpointSource implements Component
 
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
-        if (!\class_exists(MetadataEndpoint::class)) {
+        if (!class_exists(MetadataEndpoint::class)) {
             return;
         }
         $childNode = $node->children()
             ->arrayNode($this->name())
-            ->canBeEnabled();
+            ->canBeEnabled()
+        ;
 
         $childNode->children()
             ->scalarNode('path')
@@ -84,7 +85,8 @@ class MetadataEndpointSource implements Component
             ->treatNullLike('')
             ->treatFalseLike('')
             ->end()
-            ->end();
+            ->end()
+        ;
 
         foreach ($this->subComponents as $subComponent) {
             $subComponent->getNodeDefinition($childNode, $node);
@@ -93,7 +95,7 @@ class MetadataEndpointSource implements Component
 
     public function prepend(ContainerBuilder $container, array $configs): array
     {
-        if (!\class_exists(MetadataEndpoint::class)) {
+        if (!class_exists(MetadataEndpoint::class)) {
             return [];
         }
         if (!$configs['endpoint']['metadata']['enabled']) {
@@ -101,7 +103,7 @@ class MetadataEndpointSource implements Component
         }
         $updatedConfig = [];
         foreach ($this->subComponents as $subComponent) {
-            $updatedConfig = \array_merge(
+            $updatedConfig = array_merge(
                 $updatedConfig,
                 $subComponent->prepend($container, $configs)
             );
@@ -112,7 +114,7 @@ class MetadataEndpointSource implements Component
 
     public function build(ContainerBuilder $container): void
     {
-        if (!\class_exists(MetadataEndpoint::class)) {
+        if (!class_exists(MetadataEndpoint::class)) {
             return;
         }
         $container->addCompilerPass(new CommonMetadataCompilerPass());

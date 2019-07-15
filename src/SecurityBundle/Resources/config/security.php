@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 use Doctrine\Common\Annotations\Reader;
@@ -31,15 +31,18 @@ return function (ContainerConfigurator $container) {
     $container = $container->services()->defaults()
         ->private()
         ->autowire()
-        ->autoconfigure();
+        ->autoconfigure()
+    ;
 
     $container->set('oauth2_security.access_token_handler_manager')
-        ->class(AccessTokenHandlerManager::class);
+        ->class(AccessTokenHandlerManager::class)
+    ;
 
     $container->set(OAuth2Provider::class);
 
     $container->set('oauth2_security.token_type_manager')
-        ->class(TokenTypeManager::class);
+        ->class(TokenTypeManager::class)
+    ;
 
     $container->set('oauth2_security.message_factory_manager')
         ->class(Message\OAuth2MessageFactoryManager::class)
@@ -51,7 +54,8 @@ return function (ContainerConfigurator $container) {
         ->call('addFactory', [ref('oauth2_security.message_factory.401')])
         ->call('addFactory', [ref('oauth2_security.message_factory.403')])
         ->call('addFactory', [ref('oauth2_security.message_factory.405')])
-        ->call('addFactory', [ref('oauth2_security.message_factory.501')]);
+        ->call('addFactory', [ref('oauth2_security.message_factory.501')])
+    ;
 
     $container->set('oauth2_security.listener')
         ->class(OAuth2Listener::class)
@@ -62,17 +66,20 @@ return function (ContainerConfigurator $container) {
             ref('oauth2_security.token_type_manager'),
             ref('oauth2_security.access_token_handler_manager'),
             ref('oauth2_security.message_factory_manager'),
-        ]);
+        ])
+    ;
 
     $container->set(DefaultFailureHandler::class)
         ->args([
             ref('oauth2_security.message_factory_manager'),
-        ]);
+        ])
+    ;
 
     $container->set(OAuth2EntryPoint::class)
         ->args([
             ref('oauth2_security.message_factory_manager'),
-        ]);
+        ])
+    ;
 
     $container->set(Annotation\AnnotationDriver::class)
         ->args([
@@ -83,7 +90,8 @@ return function (ContainerConfigurator $container) {
         ->tag('kernel.event_listener', [
             'event' => 'kernel.controller',
             'method' => 'onKernelController',
-        ]);
+        ])
+    ;
     $container->set(Annotation\Checker\ClientIdChecker::class);
     $container->set(Annotation\Checker\ResourceOwnerIdChecker::class);
     $container->set(Annotation\Checker\ScopeChecker::class);
@@ -94,27 +102,33 @@ return function (ContainerConfigurator $container) {
         ->args([
             ref('oauth2_security.token_type_manager'),
         ])
-        ->tag('oauth2_security_message_factory');
+        ->tag('oauth2_security_message_factory')
+    ;
 
     $container->set('oauth2_security.message_factory.403')
         ->class(Message\Factory\AccessDeniedResponseFactory::class)
-        ->tag('oauth2_security_message_factory');
+        ->tag('oauth2_security_message_factory')
+    ;
 
     $container->set('oauth2_security.message_factory.400')
         ->class(Message\Factory\BadRequestResponseFactory::class)
-        ->tag('oauth2_security_message_factory');
+        ->tag('oauth2_security_message_factory')
+    ;
 
     $container->set('oauth2_security.message_factory.405')
         ->class(Message\Factory\MethodNotAllowedResponseFactory::class)
-        ->tag('oauth2_security_message_factory');
+        ->tag('oauth2_security_message_factory')
+    ;
 
     $container->set('oauth2_security.message_factory.501')
         ->class(Message\Factory\NotImplementedResponseFactory::class)
-        ->tag('oauth2_security_message_factory');
+        ->tag('oauth2_security_message_factory')
+    ;
 
     $container->set('oauth2_security.message_factory.303')
         ->class(Message\Factory\RedirectResponseFactory::class)
-        ->tag('oauth2_security_message_factory');
+        ->tag('oauth2_security_message_factory')
+    ;
 
     $container->set(AccessTokenResolver::class);
 };

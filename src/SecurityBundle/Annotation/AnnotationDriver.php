@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\SecurityBundle\Annotation;
@@ -80,7 +80,7 @@ class AnnotationDriver
         $classConfigurations = $this->reader->getClassAnnotations($object);
         $methodConfigurations = $this->reader->getMethodAnnotations($method);
 
-        foreach (\array_merge($classConfigurations, $methodConfigurations) as $configuration) {
+        foreach (array_merge($classConfigurations, $methodConfigurations) as $configuration) {
             if ($configuration instanceof OAuth2) {
                 $this->processOAuth2Annotation($event, $configuration);
             }
@@ -122,8 +122,8 @@ class AnnotationDriver
         $additionalData = null !== $configuration->getScope() ? ['scope' => $configuration->getScope()] : [];
         $response = $this->oauth2ResponseFactoryManager->getResponse(
             new OAuth2Error(
-            403,
-            OAuth2Error::ERROR_ACCESS_DENIED,
+                403,
+                OAuth2Error::ERROR_ACCESS_DENIED,
                 $message,
                 [],
                 $previous

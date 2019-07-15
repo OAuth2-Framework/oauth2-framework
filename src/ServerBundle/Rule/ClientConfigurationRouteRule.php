@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\ServerBundle\Rule;
@@ -38,8 +38,8 @@ final class ClientConfigurationRouteRule extends Base
 
     protected function generateRegistrationAccessToken(): string
     {
-        $length = \random_int(62, 64);
+        $length = random_int(62, 64);
 
-        return Base64Url::encode(\random_bytes($length));
+        return Base64Url::encode(random_bytes($length));
     }
 }

@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\ClientRegistrationEndpoint\Tests;
@@ -28,9 +28,22 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 /**
  * @group InitialAccessTokenMiddleware
+ *
+ * @internal
+ * @coversNothing
  */
 final class InitialAccessTokenMiddlewareTest extends TestCase
 {
+    /**
+     * @var null|InitialAccessTokenMiddleware
+     */
+    private $middleware;
+
+    /**
+     * @var null|InitialAccessTokenRepository
+     */
+    private $repository;
+
     /**
      * @test
      */
@@ -138,11 +151,6 @@ final class InitialAccessTokenMiddlewareTest extends TestCase
         $this->getMiddleware()->process($request->reveal(), $handler->reveal());
     }
 
-    /**
-     * @var InitialAccessTokenMiddleware|null
-     */
-    private $middleware;
-
     private function getMiddleware(): InitialAccessTokenMiddleware
     {
         if (null === $this->middleware) {
@@ -157,11 +165,6 @@ final class InitialAccessTokenMiddlewareTest extends TestCase
 
         return $this->middleware;
     }
-
-    /**
-     * @var InitialAccessTokenRepository|null
-     */
-    private $repository;
 
     private function getRepository(): InitialAccessTokenRepository
     {
@@ -183,9 +186,8 @@ final class InitialAccessTokenMiddlewareTest extends TestCase
                             new UserAccountId('USER_ACCOUNT_ID'),
                             new \DateTimeImmutable('now +1 day')
                         );
-                        $initialAccessToken = $initialAccessToken->markAsRevoked();
 
-                        return $initialAccessToken;
+                        return $initialAccessToken->markAsRevoked();
                     case 'EXPIRED_INITIAL_ACCESS_TOKEN_ID':
                         $initialAccessToken = new InitialAccessToken(
                             $args[0],

@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\ServerBundle\Component\Scope;
@@ -31,7 +31,7 @@ class ScopeSource implements Component
 
     public function load(array $configs, ContainerBuilder $container): void
     {
-        if (!\interface_exists(ScopeRepository::class) || !$configs['scope']['enabled']) {
+        if (!interface_exists(ScopeRepository::class) || !$configs['scope']['enabled']) {
             return;
         }
 
@@ -59,7 +59,7 @@ class ScopeSource implements Component
 
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
-        if (!\interface_exists(ScopeRepository::class)) {
+        if (!interface_exists(ScopeRepository::class)) {
             return;
         }
         $node->children()
@@ -94,7 +94,8 @@ class ScopeSource implements Component
             ->end()
             ->end()
             ->end()
-            ->end();
+            ->end()
+        ;
     }
 
     public function build(ContainerBuilder $container): void

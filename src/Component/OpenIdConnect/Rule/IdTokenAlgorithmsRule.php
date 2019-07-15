@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\OpenIdConnect\Rule;
@@ -28,7 +28,7 @@ final class IdTokenAlgorithmsRule implements Rule
     private $jwsBuilder;
 
     /**
-     * @var JWEBuilder|null
+     * @var null|JWEBuilder
      */
     private $jweBuilder;
 
@@ -62,7 +62,7 @@ final class IdTokenAlgorithmsRule implements Rule
     {
         $algorithm = $commandParameters->get($parameter);
         if (!\is_string($algorithm) || !\in_array($algorithm, $allowedAlgorithms, true)) {
-            throw new \InvalidArgumentException(\Safe\sprintf('The parameter "%s" must be an algorithm supported by this server. Please choose one of the following value(s): %s', $parameter, \implode(', ', $allowedAlgorithms)));
+            throw new \InvalidArgumentException(\Safe\sprintf('The parameter "%s" must be an algorithm supported by this server. Please choose one of the following value(s): %s', $parameter, implode(', ', $allowedAlgorithms)));
         }
     }
 }

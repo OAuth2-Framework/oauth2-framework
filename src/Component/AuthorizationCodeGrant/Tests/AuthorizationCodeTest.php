@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\AuthorizationCodeGrant\Tests;
@@ -22,6 +22,9 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @group AuthorizationCode
+ *
+ * @internal
+ * @coversNothing
  */
 final class AuthorizationCodeTest extends TestCase
 {
@@ -34,7 +37,6 @@ final class AuthorizationCodeTest extends TestCase
 
         static::assertInstanceOf(AuthorizationCodeId::class, $authorizationCodeId);
         static::assertEquals('AUTHORIZATION_CODE_ID', $authorizationCodeId->getValue());
-        static::assertEquals('"AUTHORIZATION_CODE_ID"', \Safe\json_encode($authorizationCodeId, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
     }
 
     /**
@@ -56,7 +58,6 @@ final class AuthorizationCodeTest extends TestCase
         $authorizationCode->markAsUsed();
 
         static::assertInstanceOf(AuthorizationCode::class, $authorizationCode);
-        static::assertEquals('{"auth_code_id":"AUTHORIZATION_CODE_ID","query_parameters":{},"redirect_uri":"http://localhost","is_used":true,"is_revoked":false,"expires_at":1264683600,"client_id":"CLIENT_ID","parameters":{},"metadatas":{},"resource_owner_id":"USER_ACCOUNT_ID","resource_owner_class":"OAuth2Framework\\\\Component\\\\Core\\\\UserAccount\\\\UserAccountId","resource_server_id":"RESOURCE_SERVER_ID"}', \Safe\json_encode($authorizationCode, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
         static::assertEquals('AUTHORIZATION_CODE_ID', $authorizationCode->getId()->getValue());
     }
 }

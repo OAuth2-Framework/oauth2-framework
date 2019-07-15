@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\ServerBundle\Component\Endpoint\TokenIntrospection;
@@ -32,7 +32,7 @@ class TokenIntrospectionEndpointSource implements Component
 
     public function load(array $configs, ContainerBuilder $container): void
     {
-        if (!\class_exists(TokenIntrospectionEndpoint::class)) {
+        if (!class_exists(TokenIntrospectionEndpoint::class)) {
             return;
         }
         $config = $configs['endpoint']['token_introspection'];
@@ -50,7 +50,7 @@ class TokenIntrospectionEndpointSource implements Component
 
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
-        if (!\class_exists(TokenIntrospectionEndpoint::class)) {
+        if (!class_exists(TokenIntrospectionEndpoint::class)) {
             return;
         }
         $rootNode->validate()
@@ -58,7 +58,8 @@ class TokenIntrospectionEndpointSource implements Component
                 return true === $config['endpoint'][$this->name()]['enabled'] && (!isset($config['resource_server']) || !isset($config['resource_server']['repository']) || null === $config['resource_server']['repository']);
             })
             ->thenInvalid('The resource server repository must be set when the introspection endpoint is enabled')
-            ->end();
+            ->end()
+        ;
 
         $node->children()
             ->arrayNode($this->name())
@@ -76,12 +77,13 @@ class TokenIntrospectionEndpointSource implements Component
             ->end()
             ->end()
             ->end()
-            ->end();
+            ->end()
+        ;
     }
 
     public function build(ContainerBuilder $container): void
     {
-        if (!\class_exists(TokenIntrospectionEndpoint::class)) {
+        if (!class_exists(TokenIntrospectionEndpoint::class)) {
             return;
         }
         $container->addCompilerPass(new TokenTypeHintCompilerPass());

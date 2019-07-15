@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\TokenEndpoint\Tests;
@@ -34,9 +34,32 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 /**
  * @group TokenEndpoint
+ *
+ * @internal
+ * @coversNothing
  */
 final class TokenEndpointTest extends TestCase
 {
+    /**
+     * @var null|TokenEndpoint
+     */
+    private $tokenEndpoint;
+
+    /**
+     * @var null|ClientRepository
+     */
+    private $clientRepository;
+
+    /**
+     * @var null|UserAccountRepository
+     */
+    private $userAccountRepository;
+
+    /**
+     * @var null|AccessTokenRepository
+     */
+    private $accessTokenRepository;
+
     /**
      * @test
      */
@@ -134,7 +157,8 @@ final class TokenEndpointTest extends TestCase
 
         $handler = $this->prophesize(RequestHandlerInterface::class);
         $handler->handle(Argument::type(ServerRequestInterface::class))
-            ->shouldNotBeCalled();
+            ->shouldNotBeCalled()
+        ;
 
         $response = $this->getTokenEndpoint()->process($request->reveal(), $handler->reveal());
         $response->getBody()->rewind();
@@ -143,11 +167,6 @@ final class TokenEndpointTest extends TestCase
         static::assertEquals(200, $response->getStatusCode());
         static::assertRegExp('/^\{"token_type_foo"\:"token_type_bar","token_type"\:"TOKEN_TYPE","access_token"\:"[a-f0-9]{64}","expires_in"\:\d{4}\}$/', $body);
     }
-
-    /**
-     * @var TokenEndpoint|null
-     */
-    private $tokenEndpoint;
 
     private function getTokenEndpoint(): TokenEndpoint
     {
@@ -164,11 +183,6 @@ final class TokenEndpointTest extends TestCase
 
         return $this->tokenEndpoint;
     }
-
-    /**
-     * @var ClientRepository|null
-     */
-    private $clientRepository;
 
     private function getClientRepository(): ClientRepository
     {
@@ -191,11 +205,6 @@ final class TokenEndpointTest extends TestCase
         return $this->clientRepository;
     }
 
-    /**
-     * @var UserAccountRepository|null
-     */
-    private $userAccountRepository;
-
     private function getUserAccountRepository(): UserAccountRepository
     {
         if (null === $this->userAccountRepository) {
@@ -207,19 +216,15 @@ final class TokenEndpointTest extends TestCase
         return $this->userAccountRepository;
     }
 
-    /**
-     * @var AccessTokenRepository|null
-     */
-    private $accessTokenRepository;
-
     private function getAccessTokenRepository(): AccessTokenRepository
     {
         if (null === $this->accessTokenRepository) {
             $accessTokenRepository = $this->prophesize(AccessTokenRepository::class);
             $accessTokenRepository->create(Argument::type(ClientId::class), Argument::type(ResourceOwnerId::class), Argument::type(\DateTimeImmutable::class), Argument::type(DataBag::class), Argument::type(DataBag::class), Argument::any())
                 ->will(function (array $args) {
-                    return new AccessToken(new AccessTokenId(\bin2hex(\random_bytes(32))), $args[0], $args[1], $args[2], $args[3], $args[4], $args[5]);
-                });
+                    return new AccessToken(new AccessTokenId(bin2hex(random_bytes(32))), $args[0], $args[1], $args[2], $args[3], $args[4], $args[5]);
+                })
+            ;
             $accessTokenRepository->save(Argument::type(AccessToken::class))->will(function (array $args) {
             });
             $this->accessTokenRepository = $accessTokenRepository->reveal();

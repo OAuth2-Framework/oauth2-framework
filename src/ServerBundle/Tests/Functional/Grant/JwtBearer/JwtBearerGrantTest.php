@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\ServerBundle\Tests\Functional\Grant\JwtBearer;
@@ -28,12 +28,15 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
  * @group Functional
  * @group Grant
  * @group JwtBearer
+ *
+ * @internal
+ * @coversNothing
  */
 class JwtBearerGrantTest extends WebTestCase
 {
     protected function setUp(): void
     {
-        if (!\class_exists(JwtBearerGrantType::class)) {
+        if (!class_exists(JwtBearerGrantType::class)) {
             static::markTestSkipped('The component "oauth2-framework/jwt-bearer-grant" is not installed.');
         }
         parent::setUp();
@@ -204,7 +207,7 @@ class JwtBearerGrantTest extends WebTestCase
             'iss' => 'CLIENT_ID_4',
             'sub' => 'CLIENT_ID_4',
             'aud' => 'https://oauth2.test/',
-            'exp' => \time() + 3600,
+            'exp' => time() + 3600,
         ];
 
         return $this->sign($claims, $jwk);
@@ -218,7 +221,8 @@ class JwtBearerGrantTest extends WebTestCase
             ->create()
             ->withPayload($payload)
             ->addSignature($jwk, ['alg' => 'HS256'])
-            ->build();
+            ->build()
+        ;
 
         return (new CompactSerializer())->serialize($jws);
     }

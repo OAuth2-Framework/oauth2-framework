@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\OpenIdConnect;
@@ -28,17 +28,17 @@ use Psr\Http\Message\ServerRequestInterface;
 class OpenIdConnectExtension implements TokenEndpointExtension
 {
     /**
-     * @var JWKSet|null
+     * @var null|JWKSet
      */
     private $signatureKeys;
 
     /**
-     * @var JWSBuilder|null
+     * @var null|JWSBuilder
      */
     private $jwsBuilder;
 
     /**
-     * @var JWEBuilder|null
+     * @var null|JWEBuilder
      */
     private $jweBuilder;
 
@@ -129,6 +129,6 @@ class OpenIdConnectExtension implements TokenEndpointExtension
 
     private function hasOpenIdScope(AccessToken $accessToken): bool
     {
-        return $accessToken->getParameter()->has('scope') && \in_array('openid', \explode(' ', $accessToken->getParameter()->get('scope')), true);
+        return $accessToken->getParameter()->has('scope') && \in_array('openid', explode(' ', $accessToken->getParameter()->get('scope')), true);
     }
 }

@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 use OAuth2Framework\Component\OpenIdConnect\IdTokenBuilderFactory;
@@ -19,7 +19,8 @@ use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 return function (ContainerConfigurator $container) {
     $container = $container->services()->defaults()
         ->private()
-        ->autoconfigure();
+        ->autoconfigure()
+    ;
 
     $container->set(IdTokenResponseType::class)
         ->args([
@@ -28,5 +29,6 @@ return function (ContainerConfigurator $container) {
             ref('jose.jws_builder.oauth2_server.openid_connect.id_token'),
             ref('jose.key_set.oauth2_server.openid_connect.id_token'),
             ref('jose.encrypter.oauth2_server.openid_connect.id_token')->nullOnInvalid(),
-        ]);
+        ])
+    ;
 };

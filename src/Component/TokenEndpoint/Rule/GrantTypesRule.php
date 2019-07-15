@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\Component\TokenEndpoint\Rule;
@@ -38,10 +38,9 @@ final class GrantTypesRule implements Rule
         }
         $this->checkGrantTypes($commandParameters);
         $validatedParameters->set('grant_types', $commandParameters->get('grant_types'));
-        $validatedParameters = $next->handle($clientId, $commandParameters, $validatedParameters);
-        //$this->checkResponseTypes($validatedParameters);
 
-        return $validatedParameters;
+        return $next->handle($clientId, $commandParameters, $validatedParameters);
+        //$this->checkResponseTypes($validatedParameters);
     }
 
     private function checkGrantTypes(DataBag $parameters): void
@@ -64,16 +63,16 @@ final class GrantTypesRule implements Rule
         $responseTypes = $parameters->has('response_types') ? $parameters->get('response_types') : [];
         $list = [];
         foreach ($responseTypes as $responseType) {
-            $list = \array_merge(
+            $list = array_merge(
                 $list,
-                \explode(' ', $responseType)
+                explode(' ', $responseType)
             );
         }
         foreach ($parameters->get('grant_types') as $grantType) {
             $type = $this->grantTypeManager->get($grantType);
-            $diff = \array_diff($type->associatedResponseTypes(), $list);
+            $diff = array_diff($type->associatedResponseTypes(), $list);
             if (0 !== \count($diff)) {
-                throw new \InvalidArgumentException(\Safe\sprintf('The grant type "%s" requires the following response type(s): %s.', $grantType, \implode(', ', $diff)));
+                throw new \InvalidArgumentException(\Safe\sprintf('The grant type "%s" requires the following response type(s): %s.', $grantType, implode(', ', $diff)));
             }
         }
     }

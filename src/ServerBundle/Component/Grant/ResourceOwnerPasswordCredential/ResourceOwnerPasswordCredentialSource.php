@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Copyright (c) 2014-2019 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE file for details.
+ * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace OAuth2Framework\ServerBundle\Component\Grant\ResourceOwnerPasswordCredential;
@@ -30,7 +30,7 @@ class ResourceOwnerPasswordCredentialSource implements Component
 
     public function load(array $configs, ContainerBuilder $container): void
     {
-        if (!\class_exists(ResourceOwnerPasswordCredentialsGrantType::class) || !$configs['grant']['resource_owner_password_credential']['enabled']) {
+        if (!class_exists(ResourceOwnerPasswordCredentialsGrantType::class) || !$configs['grant']['resource_owner_password_credential']['enabled']) {
             return;
         }
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/grant'));
@@ -41,20 +41,21 @@ class ResourceOwnerPasswordCredentialSource implements Component
 
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
-        if (!\class_exists(ResourceOwnerPasswordCredentialsGrantType::class)) {
+        if (!class_exists(ResourceOwnerPasswordCredentialsGrantType::class)) {
             return;
         }
         $node->children()
             ->arrayNode('resource_owner_password_credential')
-                ->canBeEnabled()
-                ->children()
-                    ->scalarNode('password_credential_manager')
-                        ->info('The password credential manager.')
-                        ->isRequired()
-                    ->end()
-                ->end()
+            ->canBeEnabled()
+            ->children()
+            ->scalarNode('password_credential_manager')
+            ->info('The password credential manager.')
+            ->isRequired()
             ->end()
-        ->end();
+            ->end()
+            ->end()
+            ->end()
+        ;
     }
 
     public function build(ContainerBuilder $container): void
