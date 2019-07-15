@@ -16,7 +16,7 @@
         }
     ],
     "require": {
-        "php": "^7.2",
+        "php": "^7.3",
         "oauth2-framework/core": "@ 1.0"
     },
     "suggest": {
@@ -25,7 +25,7 @@
         "oauth2-framework/token-endpoint": "To add scope support on the token endpoint."
     },
     "require-dev": {
-        "phpunit/phpunit": "^7.0"
+        "phpunit/phpunit": "^8.0"
     },
     "autoload": {
         "psr-4": {

@@ -16,14 +16,14 @@
         }
     ],
     "require": {
-        "php": "^7.2",
+        "php": "^7.3",
         "oauth2-framework/authorization-endpoint": "@ 1.0",
         "oauth2-framework/core": "@ 1.0",
         "oauth2-framework/token-endpoint": "@ 1.0",
         "spomky-labs/base64url": "^1.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^7.0"
+        "phpunit/phpunit": "^8.0"
     },
     "autoload": {
         "psr-4": {
