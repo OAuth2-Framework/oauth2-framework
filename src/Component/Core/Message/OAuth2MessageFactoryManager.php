@@ -57,7 +57,7 @@ class OAuth2MessageFactoryManager
             $message->getData()
         );
         foreach ($this->extensions as $extension) {
-            $data = $extension->process($message, $data);
+            $data = $data + $extension->process($message);
         }
 
         $factory = $this->getFactory($code);

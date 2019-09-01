@@ -14,8 +14,9 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\Core\DataBag;
 
 use ArrayIterator;
+use Assert\Assertion;
 
-class DataBag implements \IteratorAggregate, \Countable
+class DataBag implements \IteratorAggregate, \Countable, \JsonSerializable
 {
     /**
      * @var array
@@ -67,5 +68,19 @@ class DataBag implements \IteratorAggregate, \Countable
     public function getIterator(): ArrayIterator
     {
         return new ArrayIterator($this->parameters);
+    }
+
+    public static function createFromString(string $data): self
+    {
+        $json = json_decode($data, true);
+        Assertion::eq(JSON_ERROR_NONE, json_last_error(), 'Invalid data');
+        Assertion::isArray($json, 'Invalid data');
+
+        return new self($json);
+    }
+
+    public function jsonSerialize(): array
+    {
+        return $this->parameters;
     }
 }

@@ -16,8 +16,7 @@ namespace OAuth2Framework\Component\Core\Message;
 interface MessageExtension
 {
     /**
-     * @param OAuth2Error $code The code of the response
-     * @param array       $data Data that will be sent
+     * @param OAuth2Error $error The code of the response
      */
-    public function process(OAuth2Error $code, array $data): array;
+    public function process(OAuth2Error $error): array;
 }

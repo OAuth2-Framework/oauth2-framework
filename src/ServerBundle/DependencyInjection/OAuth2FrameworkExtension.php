@@ -13,7 +13,9 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\DependencyInjection;
 
+use Doctrine\DBAL\Types\Type;
 use OAuth2Framework\ServerBundle\Component\Component;
+use OAuth2Framework\ServerBundle\Doctrine\Type as DbalType;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
@@ -71,5 +73,38 @@ final class OAuth2FrameworkExtension extends Extension implements PrependExtensi
                 $container->prependExtensionConfig($this->getAlias(), $result);
             }
         }
+        $this->addDoctrineTypes($container);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    private function addDoctrineTypes(ContainerBuilder $container): void
+    {
+        $bundles = $container->getParameter('kernel.bundles');
+        if (!\is_array($bundles) || !\array_key_exists('DoctrineBundle', $bundles) || !class_exists(Type::class)) {
+            return;
+        }
+        $configs = $container->getExtensionConfig('doctrine');
+        if (0 === \count($configs)) {
+            return;
+        }
+        $config = current($configs);
+        if (!isset($config['dbal'])) {
+            $config['dbal'] = [];
+        }
+        if (!isset($config['dbal']['types'])) {
+            $config['dbal']['types'] = [];
+        }
+        $config['dbal']['types'] += [
+            'access_token_id' => DbalType\AccessTokenIdType::class,
+            'client_id' => DbalType\ClientIdType::class,
+            'databag' => DbalType\DatabagType::class,
+            'resource_owner_id' => DbalType\ResourceOwnerIdType::class,
+            'resource_server_id' => DbalType\ResourceServerIdType::class,
+            'user_account_id' => DbalType\UserAccountIdType::class,
+            //FIXME: add optional types (auth code…)
+        ];
+        $container->prependExtensionConfig('doctrine', $config);
     }
 }

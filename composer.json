@@ -40,6 +40,8 @@
         "web-token/jwt-util-ecc": "^2.0"
     },
     "require-dev": {
+        "doctrine/dbal": "^2.9",
+        "doctrine/doctrine-bundle": "^1.10",
         "nyholm/psr7": "^1.0",
         "php-coveralls/php-coveralls": "^2.0",
         "php-http/mock-client": "^1.1",

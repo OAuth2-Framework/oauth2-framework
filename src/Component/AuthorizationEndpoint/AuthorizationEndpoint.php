@@ -133,6 +133,7 @@ class AuthorizationEndpoint
             }
             $authorizationRequest->allow();
         }
+        $this->authorizationRequestStorage->remove($authorizationRequestId);
 
         return $this->processWithAuthorization($request, $authorizationRequest);
     }

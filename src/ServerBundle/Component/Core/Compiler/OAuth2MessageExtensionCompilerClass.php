@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Component\Core\Compiler;
 
-use OAuth2Framework\Component\Core\Message\OAuth2MessageFactoryManager;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
@@ -22,14 +21,20 @@ final class OAuth2MessageExtensionCompilerClass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container): void
     {
-        if (!$container->hasDefinition(OAuth2MessageFactoryManager::class)) {
-            return;
-        }
+        $this->processForService($container, 'oauth2_server.message_factory_manager.for_client_authentication');
+        $this->processForService($container, 'oauth2_server.message_factory_manager.for_authorization_endpoint');
+        $this->processForService($container, 'oauth2_server.message_factory_manager.for_client_registration');
+        $this->processForService($container, 'oauth2_server.message_factory_manager.for_client_configuration');
+    }
 
-        $client_manager = $container->getDefinition(OAuth2MessageFactoryManager::class);
-        $taggedServices = $container->findTaggedServiceIds('oauth2_message_extension');
-        foreach ($taggedServices as $id => $attributes) {
-            $client_manager->addMethodCall('addExtension', [new Reference($id)]);
+    private function processForService(ContainerBuilder $container, string $definition): void
+    {
+        if ($container->hasDefinition($definition)) {
+            $service = $container->getDefinition($definition);
+            $taggedServices = $container->findTaggedServiceIds('oauth2_message_extension');
+            foreach ($taggedServices as $id => $attributes) {
+                $service->addMethodCall('addExtension', [new Reference($id)]);
+            }
         }
     }
 }
