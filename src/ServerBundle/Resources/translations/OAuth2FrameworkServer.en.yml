@@ -4,5 +4,5 @@ authorization:
         accept: 'Accept'
         reject: 'Reject'
         message: 'A client, with public Id "%client_id%", needs your authorization to get access on your resources.'
-        scope: "The client request access to the following scope(s)"
+        scope: "The client requests access to the following scope(s)"
         no_scope: "The client does not request any scope"

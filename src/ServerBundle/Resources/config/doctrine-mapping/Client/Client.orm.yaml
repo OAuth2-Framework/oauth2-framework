@@ -1,0 +1,10 @@
+OAuth2Framework\Component\Core\Client\Client:
+    type: mappedSuperclass
+    fields:
+        ownerId:
+            type: resource_owner_id
+            nullable: true
+        parameter:
+            type: databag
+        deleted:
+            type: boolean

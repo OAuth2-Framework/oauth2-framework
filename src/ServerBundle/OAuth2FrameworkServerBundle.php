@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle;
 
+use Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\DoctrineOrmMappingsPass;
 use OAuth2Framework\ServerBundle\DependencyInjection\OAuth2FrameworkExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
@@ -43,6 +44,18 @@ class OAuth2FrameworkServerBundle extends Bundle
         foreach ($this->components as $component) {
             $component->build($container);
         }
+        $this->loadDoctrineSchemas($container);
+    }
+
+    private function loadDoctrineSchemas(ContainerBuilder $container): void
+    {
+        if (!class_exists(DoctrineOrmMappingsPass::class)) {
+            return;
+        }
+        $container->addCompilerPass(DoctrineOrmMappingsPass::createYamlMappingDriver([
+            realpath(__DIR__.'/Resources/config/doctrine-mapping/AccessToken') => 'OAuth2Framework\Component\Core\AccessToken',
+            realpath(__DIR__.'/Resources/config/doctrine-mapping/Client') => 'OAuth2Framework\Component\Core\Client',
+        ]));
     }
 
     /**
