@@ -1,0 +1,9 @@
+OAuth2Framework\Component\ClientRegistrationEndpoint\AbstractInitialAccessToken:
+    type: mappedSuperclass
+    fields:
+        expiresAt:
+            type: date_immutable
+        userAccountId:
+            type: user_account_id
+        revoked:
+            type: boolean

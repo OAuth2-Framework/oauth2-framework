@@ -1,0 +1,24 @@
+OAuth2Framework\Component\AuthorizationCodeGrant\AbstractAuthorizationCode:
+    type: mappedSuperclass
+    fields:
+        queryParameters:
+            type: array
+        redirectUri:
+            type: string
+        used:
+            type: boolean
+        expiresAt:
+            type: date_immutable
+        userAccountId:
+            type: user_account_id
+        clientId:
+            type: client_id
+        parameter:
+            type: databag
+        metadata:
+            type: databag
+        revoked:
+            type: boolean
+        resourceServerId:
+            type: resource_server_id
+            nullable: true

@@ -14,6 +14,9 @@ declare(strict_types=1);
 namespace OAuth2Framework\ServerBundle\DependencyInjection;
 
 use Doctrine\DBAL\Types\Type;
+use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeId;
+use OAuth2Framework\Component\ClientRegistrationEndpoint\InitialAccessTokenId;
+use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenId;
 use OAuth2Framework\ServerBundle\Component\Component;
 use OAuth2Framework\ServerBundle\Doctrine\Type as DbalType;
 use Symfony\Component\Config\Definition\Processor;
@@ -96,15 +99,26 @@ final class OAuth2FrameworkExtension extends Extension implements PrependExtensi
         if (!isset($config['dbal']['types'])) {
             $config['dbal']['types'] = [];
         }
-        $config['dbal']['types'] += [
+
+        $newTypes = [
             'access_token_id' => DbalType\AccessTokenIdType::class,
             'client_id' => DbalType\ClientIdType::class,
             'databag' => DbalType\DatabagType::class,
             'resource_owner_id' => DbalType\ResourceOwnerIdType::class,
             'resource_server_id' => DbalType\ResourceServerIdType::class,
             'user_account_id' => DbalType\UserAccountIdType::class,
-            //FIXME: add optional types (auth code…)
         ];
+        if (class_exists(AuthorizationCodeId::class)) {
+            $newTypes['authorization_code_id'] = DbalType\AuthorizationCodeIdType::class;
+        }
+        if (class_exists(InitialAccessTokenId::class)) {
+            $newTypes['initial_access_token_id'] = DbalType\InitialAccessTokenIdType::class;
+        }
+        if (class_exists(RefreshTokenId::class)) {
+            $newTypes['refresh_token_id'] = DbalType\RefreshTokenIdType::class;
+        }
+
+        $config['dbal']['types'] += $newTypes;
         $container->prependExtensionConfig('doctrine', $config);
     }
 }
