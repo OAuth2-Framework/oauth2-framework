@@ -14,6 +14,9 @@ declare(strict_types=1);
 namespace OAuth2Framework\ServerBundle;
 
 use Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\DoctrineOrmMappingsPass;
+use OAuth2Framework\Component\AuthorizationCodeGrant\AbstractAuthorizationCode;
+use OAuth2Framework\Component\ClientRegistrationEndpoint\AbstractInitialAccessToken;
+use OAuth2Framework\Component\RefreshTokenGrant\AbstractRefreshToken;
 use OAuth2Framework\ServerBundle\DependencyInjection\OAuth2FrameworkExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
@@ -52,10 +55,20 @@ class OAuth2FrameworkServerBundle extends Bundle
         if (!class_exists(DoctrineOrmMappingsPass::class)) {
             return;
         }
-        $container->addCompilerPass(DoctrineOrmMappingsPass::createYamlMappingDriver([
+        $map = [
             realpath(__DIR__.'/Resources/config/doctrine-mapping/AccessToken') => 'OAuth2Framework\Component\Core\AccessToken',
             realpath(__DIR__.'/Resources/config/doctrine-mapping/Client') => 'OAuth2Framework\Component\Core\Client',
-        ]));
+        ];
+        if (class_exists(AbstractAuthorizationCode::class)) {
+            $map[realpath(__DIR__.'/Resources/config/doctrine-mapping/AuthorizationCodeGrant')] = 'OAuth2Framework\Component\AuthorizationCodeGrant';
+        }
+        if (class_exists(AbstractInitialAccessToken::class)) {
+            $map[realpath(__DIR__.'/Resources/config/doctrine-mapping/ClientRegistrationEndpoint')] = 'OAuth2Framework\Component\ClientRegistrationEndpoint';
+        }
+        if (class_exists(AbstractRefreshToken::class)) {
+            $map[realpath(__DIR__.'/Resources/config/doctrine-mapping/RefreshTokenGrant')] = 'OAuth2Framework\Component\RefreshTokenGrant';
+        }
+        $container->addCompilerPass(DoctrineOrmMappingsPass::createYamlMappingDriver($map));
     }
 
     /**
