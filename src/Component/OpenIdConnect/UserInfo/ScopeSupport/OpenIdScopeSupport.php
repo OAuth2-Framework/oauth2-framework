@@ -17,15 +17,15 @@ class OpenIdScopeSupport implements UserInfoScopeSupport
 {
     public function __toString(): string
     {
-        return $this->name();
+        return $this->getName();
     }
 
-    public function name(): string
+    public function getName(): string
     {
         return 'openid';
     }
 
-    public function parent(): ?string
+    public function getParent(): ?string
     {
         return null;
     }
@@ -44,6 +44,6 @@ class OpenIdScopeSupport implements UserInfoScopeSupport
 
     public function jsonSerialize(): string
     {
-        return $this->name();
+        return $this->getName();
     }
 }

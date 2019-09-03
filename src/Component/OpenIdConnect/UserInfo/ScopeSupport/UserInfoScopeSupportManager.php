@@ -30,7 +30,7 @@ class UserInfoScopeSupportManager
 
     public function add(UserInfoScopeSupport $userinfoScopeSupport): void
     {
-        $this->userinfoScopeSupports[$userinfoScopeSupport->name()] = $userinfoScopeSupport;
+        $this->userinfoScopeSupports[$userinfoScopeSupport->getName()] = $userinfoScopeSupport;
     }
 
     public function has(string $scope): bool

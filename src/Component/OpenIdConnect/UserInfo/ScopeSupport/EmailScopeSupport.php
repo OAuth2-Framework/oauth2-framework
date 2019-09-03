@@ -17,15 +17,15 @@ class EmailScopeSupport implements UserInfoScopeSupport
 {
     public function __toString(): string
     {
-        return $this->name();
+        return $this->getName();
     }
 
-    public function name(): string
+    public function getName(): string
     {
         return 'email';
     }
 
-    public function parent(): ?string
+    public function getParent(): ?string
     {
         return 'openid';
     }
@@ -45,6 +45,6 @@ class EmailScopeSupport implements UserInfoScopeSupport
 
     public function jsonSerialize(): string
     {
-        return $this->name();
+        return $this->getName();
     }
 }

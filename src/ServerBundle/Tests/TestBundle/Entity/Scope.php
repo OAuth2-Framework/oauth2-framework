@@ -44,10 +44,10 @@ final class Scope implements ScopeInterface
 
     public function __toString(): string
     {
-        return $this->name();
+        return $this->getName();
     }
 
-    public function parent(): ?string
+    public function getParent(): ?string
     {
         return $this->parent;
     }
@@ -57,7 +57,7 @@ final class Scope implements ScopeInterface
         return $this->isParentMandatory;
     }
 
-    public function name(): string
+    public function getName(): string
     {
         return $this->name;
     }

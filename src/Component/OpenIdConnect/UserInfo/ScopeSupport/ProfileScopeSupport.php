@@ -17,15 +17,15 @@ class ProfileScopeSupport implements UserInfoScopeSupport
 {
     public function __toString(): string
     {
-        return $this->name();
+        return $this->getName();
     }
 
-    public function name(): string
+    public function getName(): string
     {
         return 'profile';
     }
 
-    public function parent(): ?string
+    public function getParent(): ?string
     {
         return 'openid';
     }
@@ -57,6 +57,6 @@ class ProfileScopeSupport implements UserInfoScopeSupport
 
     public function jsonSerialize(): string
     {
-        return $this->name();
+        return $this->getName();
     }
 }

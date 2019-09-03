@@ -17,9 +17,9 @@ interface Scope
 {
     public function __toString(): string;
 
-    public function name(): string;
+    public function getName(): string;
 
-    public function parent(): ?string;
+    public function getParent(): ?string;
 
     public function isParentMandatory(): bool;
 }
