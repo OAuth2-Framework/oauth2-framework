@@ -23,8 +23,12 @@ final class UserAccountIdType extends Type
     /**
      * {@inheritdoc}
      */
-    public function convertToDatabaseValue($value, AbstractPlatform $platform): string
+    public function convertToDatabaseValue($value, AbstractPlatform $platform): ?string
     {
+        if ($value === null) {
+            return $value;
+        }
+
         Assertion::isInstanceOf($value, UserAccountId::class, 'Invalid object');
 
         return $value->getValue();
@@ -33,8 +37,12 @@ final class UserAccountIdType extends Type
     /**
      * {@inheritdoc}
      */
-    public function convertToPHPValue($value, AbstractPlatform $platform): UserAccountId
+    public function convertToPHPValue($value, AbstractPlatform $platform): ?UserAccountId
     {
+        if ($value === null || $value instanceof UserAccountId) {
+            return $value;
+        }
+
         return new UserAccountId($value);
     }
 

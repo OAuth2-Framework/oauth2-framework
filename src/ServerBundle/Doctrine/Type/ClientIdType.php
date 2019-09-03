@@ -23,8 +23,11 @@ final class ClientIdType extends Type
     /**
      * {@inheritdoc}
      */
-    public function convertToDatabaseValue($value, AbstractPlatform $platform): string
+    public function convertToDatabaseValue($value, AbstractPlatform $platform): ?string
     {
+        if ($value === null) {
+            return $value;
+        }
         Assertion::isInstanceOf($value, ClientId::class, 'Invalid object');
 
         return $value->getValue();
@@ -33,8 +36,12 @@ final class ClientIdType extends Type
     /**
      * {@inheritdoc}
      */
-    public function convertToPHPValue($value, AbstractPlatform $platform): ClientId
+    public function convertToPHPValue($value, AbstractPlatform $platform): ?ClientId
     {
+        if ($value === null || $value instanceof ClientId) {
+            return $value;
+        }
+
         return new ClientId($value);
     }
 

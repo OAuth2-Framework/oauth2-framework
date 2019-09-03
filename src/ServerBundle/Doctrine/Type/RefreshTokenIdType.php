@@ -23,8 +23,12 @@ final class RefreshTokenIdType extends Type
     /**
      * {@inheritdoc}
      */
-    public function convertToDatabaseValue($value, AbstractPlatform $platform): string
+    public function convertToDatabaseValue($value, AbstractPlatform $platform): ?string
     {
+        if ($value === null) {
+            return $value;
+        }
+
         Assertion::isInstanceOf($value, RefreshTokenId::class, 'Invalid object');
 
         return $value->getValue();
@@ -33,8 +37,12 @@ final class RefreshTokenIdType extends Type
     /**
      * {@inheritdoc}
      */
-    public function convertToPHPValue($value, AbstractPlatform $platform): RefreshTokenId
+    public function convertToPHPValue($value, AbstractPlatform $platform): ?RefreshTokenId
     {
+        if ($value === null || $value instanceof RefreshTokenId) {
+            return $value;
+        }
+
         return new RefreshTokenId($value);
     }
 

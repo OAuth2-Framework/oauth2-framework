@@ -23,8 +23,12 @@ final class DatabagType extends Type
     /**
      * {@inheritdoc}
      */
-    public function convertToDatabaseValue($value, AbstractPlatform $platform): string
+    public function convertToDatabaseValue($value, AbstractPlatform $platform): ?string
     {
+        if ($value === null) {
+            return $value;
+        }
+
         Assertion::isInstanceOf($value, DataBag::class, 'Invalid object');
 
         return json_encode($value);
@@ -33,8 +37,12 @@ final class DatabagType extends Type
     /**
      * {@inheritdoc}
      */
-    public function convertToPHPValue($value, AbstractPlatform $platform): Databag
+    public function convertToPHPValue($value, AbstractPlatform $platform): ?Databag
     {
+        if ($value === null || $value instanceof Databag) {
+            return $value;
+        }
+
         return Databag::createFromString($value);
     }
 

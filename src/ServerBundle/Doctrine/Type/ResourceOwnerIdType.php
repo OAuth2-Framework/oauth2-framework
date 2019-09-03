@@ -24,8 +24,12 @@ final class ResourceOwnerIdType extends Type
     /**
      * {@inheritdoc}
      */
-    public function convertToDatabaseValue($value, AbstractPlatform $platform): string
+    public function convertToDatabaseValue($value, AbstractPlatform $platform): ?string
     {
+        if ($value === null) {
+            return $value;
+        }
+
         Assertion::isInstanceOf($value, ResourceOwnerId::class, 'Invalid object');
 
         return sprintf('%s:%s', \get_class($value), $value->getValue());
@@ -34,8 +38,12 @@ final class ResourceOwnerIdType extends Type
     /**
      * {@inheritdoc}
      */
-    public function convertToPHPValue($value, AbstractPlatform $platform): ResourceOwnerId
+    public function convertToPHPValue($value, AbstractPlatform $platform): ?ResourceOwnerId
     {
+        if ($value === null || $value instanceof ResourceOwnerId) {
+            return $value;
+        }
+
         $position = mb_strpos($value, ':');
         Assertion::integer($position, 'Invalid object');
         $class = mb_substr($value, 0, $position);

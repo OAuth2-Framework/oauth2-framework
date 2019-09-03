@@ -23,8 +23,12 @@ final class InitialAccessTokenIdType extends Type
     /**
      * {@inheritdoc}
      */
-    public function convertToDatabaseValue($value, AbstractPlatform $platform): string
+    public function convertToDatabaseValue($value, AbstractPlatform $platform): ?string
     {
+        if ($value === null) {
+            return $value;
+        }
+
         Assertion::isInstanceOf($value, InitialAccessTokenId::class, 'Invalid object');
 
         return $value->getValue();
@@ -33,8 +37,12 @@ final class InitialAccessTokenIdType extends Type
     /**
      * {@inheritdoc}
      */
-    public function convertToPHPValue($value, AbstractPlatform $platform): InitialAccessTokenId
+    public function convertToPHPValue($value, AbstractPlatform $platform): ?InitialAccessTokenId
     {
+        if ($value === null || $value instanceof InitialAccessTokenId) {
+            return $value;
+        }
+
         return new InitialAccessTokenId($value);
     }
 
