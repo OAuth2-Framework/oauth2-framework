@@ -25,7 +25,7 @@ final class UserAccountIdType extends Type
      */
     public function convertToDatabaseValue($value, AbstractPlatform $platform): ?string
     {
-        if ($value === null) {
+        if (null === $value) {
             return $value;
         }
 
@@ -39,7 +39,7 @@ final class UserAccountIdType extends Type
      */
     public function convertToPHPValue($value, AbstractPlatform $platform): ?UserAccountId
     {
-        if ($value === null || $value instanceof UserAccountId) {
+        if (null === $value || $value instanceof UserAccountId) {
             return $value;
         }
 

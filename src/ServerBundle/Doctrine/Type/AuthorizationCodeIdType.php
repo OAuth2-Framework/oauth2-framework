@@ -25,7 +25,7 @@ final class AuthorizationCodeIdType extends Type
      */
     public function convertToDatabaseValue($value, AbstractPlatform $platform): ?string
     {
-        if ($value === null) {
+        if (null === $value) {
             return $value;
         }
 
@@ -39,7 +39,7 @@ final class AuthorizationCodeIdType extends Type
      */
     public function convertToPHPValue($value, AbstractPlatform $platform): ?AuthorizationCodeId
     {
-        if ($value === null || $value instanceof AuthorizationCodeId) {
+        if (null === $value || $value instanceof AuthorizationCodeId) {
             return $value;
         }
 

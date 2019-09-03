@@ -25,7 +25,7 @@ final class RefreshTokenIdType extends Type
      */
     public function convertToDatabaseValue($value, AbstractPlatform $platform): ?string
     {
-        if ($value === null) {
+        if (null === $value) {
             return $value;
         }
 
@@ -39,7 +39,7 @@ final class RefreshTokenIdType extends Type
      */
     public function convertToPHPValue($value, AbstractPlatform $platform): ?RefreshTokenId
     {
-        if ($value === null || $value instanceof RefreshTokenId) {
+        if (null === $value || $value instanceof RefreshTokenId) {
             return $value;
         }
 

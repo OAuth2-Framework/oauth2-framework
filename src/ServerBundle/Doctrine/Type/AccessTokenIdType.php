@@ -25,7 +25,7 @@ final class AccessTokenIdType extends Type
      */
     public function convertToDatabaseValue($value, AbstractPlatform $platform): ?string
     {
-        if ($value === null) {
+        if (null === $value) {
             return $value;
         }
         Assertion::isInstanceOf($value, AccessTokenId::class, 'Invalid object');
@@ -38,7 +38,7 @@ final class AccessTokenIdType extends Type
      */
     public function convertToPHPValue($value, AbstractPlatform $platform): ?AccessTokenId
     {
-        if ($value === null || $value instanceof AccessTokenId) {
+        if (null === $value || $value instanceof AccessTokenId) {
             return $value;
         }
 

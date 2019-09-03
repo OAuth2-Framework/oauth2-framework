@@ -25,7 +25,7 @@ final class ResourceServerIdType extends Type
      */
     public function convertToDatabaseValue($value, AbstractPlatform $platform): ?string
     {
-        if ($value === null) {
+        if (null === $value) {
             return $value;
         }
 
@@ -39,7 +39,7 @@ final class ResourceServerIdType extends Type
      */
     public function convertToPHPValue($value, AbstractPlatform $platform): ?ResourceServerId
     {
-        if ($value === null || $value instanceof ResourceServerId) {
+        if (null === $value || $value instanceof ResourceServerId) {
             return $value;
         }
 

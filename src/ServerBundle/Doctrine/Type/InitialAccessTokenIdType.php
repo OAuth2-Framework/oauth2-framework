@@ -25,7 +25,7 @@ final class InitialAccessTokenIdType extends Type
      */
     public function convertToDatabaseValue($value, AbstractPlatform $platform): ?string
     {
-        if ($value === null) {
+        if (null === $value) {
             return $value;
         }
 
@@ -39,7 +39,7 @@ final class InitialAccessTokenIdType extends Type
      */
     public function convertToPHPValue($value, AbstractPlatform $platform): ?InitialAccessTokenId
     {
-        if ($value === null || $value instanceof InitialAccessTokenId) {
+        if (null === $value || $value instanceof InitialAccessTokenId) {
             return $value;
         }
 
