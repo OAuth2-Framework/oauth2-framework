@@ -15,24 +15,9 @@ namespace OAuth2Framework\Component\OpenIdConnect\UserInfo\ScopeSupport;
 
 class PhoneScopeSupport implements UserInfoScopeSupport
 {
-    public function __toString(): string
-    {
-        return $this->getName();
-    }
-
     public function getName(): string
     {
         return 'phone';
-    }
-
-    public function getParent(): ?string
-    {
-        return 'openid';
-    }
-
-    public function isParentMandatory(): bool
-    {
-        return true;
     }
 
     public function getAssociatedClaims(): array
@@ -41,10 +26,5 @@ class PhoneScopeSupport implements UserInfoScopeSupport
             'phone_number',
             'phone_number_verified',
         ];
-    }
-
-    public function jsonSerialize(): string
-    {
-        return $this->getName();
     }
 }

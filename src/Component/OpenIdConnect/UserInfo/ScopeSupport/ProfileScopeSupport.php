@@ -15,24 +15,9 @@ namespace OAuth2Framework\Component\OpenIdConnect\UserInfo\ScopeSupport;
 
 class ProfileScopeSupport implements UserInfoScopeSupport
 {
-    public function __toString(): string
-    {
-        return $this->getName();
-    }
-
     public function getName(): string
     {
         return 'profile';
-    }
-
-    public function getParent(): ?string
-    {
-        return 'openid';
-    }
-
-    public function isParentMandatory(): bool
-    {
-        return true;
     }
 
     public function getAssociatedClaims(): array
@@ -53,10 +38,5 @@ class ProfileScopeSupport implements UserInfoScopeSupport
             'locale',
             'updated_at',
         ];
-    }
-
-    public function jsonSerialize(): string
-    {
-        return $this->getName();
     }
 }
