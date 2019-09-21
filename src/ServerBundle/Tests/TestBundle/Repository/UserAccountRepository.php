@@ -11,11 +11,12 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\ServerBundle\Tests\TestBundle\Entity;
+namespace OAuth2Framework\ServerBundle\Tests\TestBundle\Repository;
 
 use OAuth2Framework\Component\Core\UserAccount\UserAccount as BaseUserAccount;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountRepository as UserAccountRepositoryInterface;
+use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\UserAccount;
 
 final class UserAccountRepository implements UserAccountRepositoryInterface
 {

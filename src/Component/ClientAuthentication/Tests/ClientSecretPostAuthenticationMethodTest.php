@@ -28,7 +28,6 @@ use Psr\Http\Message\StreamInterface;
  * @group ClientAuthentication
  *
  * @internal
- * @coversNothing
  */
 final class ClientSecretPostAuthenticationMethodTest extends TestCase
 {

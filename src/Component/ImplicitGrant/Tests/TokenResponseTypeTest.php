@@ -32,7 +32,6 @@ use Prophecy\Argument;
  * @group Token
  *
  * @internal
- * @coversNothing
  */
 final class TokenResponseTypeTest extends TestCase
 {

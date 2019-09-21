@@ -58,7 +58,6 @@ use Psr\Http\Server\RequestHandlerInterface;
  * @group ResponseTypeManager
  *
  * @internal
- * @coversNothing
  */
 final class AuthorizationEndpointTest extends TestCase
 {

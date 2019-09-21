@@ -23,7 +23,6 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
  * @group Compiler
  *
  * @internal
- * @coversNothing
  */
 class MetadataEndpointTest extends WebTestCase
 {

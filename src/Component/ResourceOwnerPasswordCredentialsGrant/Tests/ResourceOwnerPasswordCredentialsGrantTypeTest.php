@@ -30,7 +30,6 @@ use Psr\Http\Message\StreamInterface;
  * @group ResourceOwnerPasswordCredential
  *
  * @internal
- * @coversNothing
  */
 final class ResourceOwnerPasswordCredentialsGrantTypeTest extends TestCase
 {

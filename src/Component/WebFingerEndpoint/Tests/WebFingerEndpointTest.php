@@ -31,7 +31,6 @@ use Psr\Http\Server\RequestHandlerInterface;
  * @group WebFingerEndpoint
  *
  * @internal
- * @coversNothing
  */
 final class WebFingerEndpointTest extends TestCase
 {

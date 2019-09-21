@@ -1,5 +1,16 @@
 language: php
 
+sudo: required
+
+services:
+  - docker
+
+addons:
+  hosts:
+    - op-test
+    - rp-test
+    - op
+
 php:
     - 7.2
     - 7.3
@@ -11,6 +22,11 @@ cache:
         - vendor
 
 before_install:
+    - git clone https://github.com/openid-certification/oidctest.git
+    - cd oidctest
+    - git checkout stable-release-1.1.x
+    - docker-compose -f docker/docker-compose.yml up -d
+    - cd -
     - mv ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini{,.disabled} || echo "xdebug not available"
 
 before_script:
@@ -19,14 +35,10 @@ before_script:
     - travis_retry composer update
 
 script:
-    - ./vendor/bin/phpunit --coverage-php build/cov/coverage-framework.cov
-    - ./vendor/bin/phpunit -c webfinger.phpunit.xml --coverage-php build/cov/coverage-webfinger.cov
-    - ./vendor/bin/phpunit -c oauth2_security.phpunit.xml --coverage-php build/cov/coverage-oauth2_security.cov
-    - ./vendor/bin/phpunit -c oauth2_server.phpunit.xml --coverage-php build/cov/coverage-oauth2_server.cov
-
-after_success:
-    - ./vendor/bin/phpcov merge --clover build/logs/clover.xml build/cov
-    - ./vendor/bin/php-coveralls --no-interaction
+    - ./vendor/bin/simple-phpunit
+    - ./vendor/bin/simple-phpunit -c webfinger.phpunit.xml
+    - ./vendor/bin/simple-phpunit -c oauth2_security.phpunit.xml
+    - ./vendor/bin/simple-phpunit -c oauth2_server.phpunit.xml
 
 jobs:
     allow_failures:
@@ -39,10 +51,10 @@ jobs:
               - mv ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini{.disabled,}
               - if [[ ! $(php -m | grep -si xdebug) ]]; then echo "xdebug required for coverage"; exit 1; fi
           script:
-              - ./vendor/bin/phpunit --coverage-php build/cov/coverage-framework.cov
-              - ./vendor/bin/phpunit -c webfinger.phpunit.xml --coverage-php build/cov/coverage-webfinger.cov
-              - ./vendor/bin/phpunit -c oauth2_security.phpunit.xml --coverage-php build/cov/coverage-oauth2_security.cov
-              - ./vendor/bin/phpunit -c oauth2_server.phpunit.xml --coverage-php build/cov/coverage-oauth2_server.cov
+              - ./vendor/bin/simple-phpunit --coverage-php build/cov/coverage-framework.cov
+              - ./vendor/bin/simple-phpunit -c webfinger.phpunit.xml --coverage-php build/cov/coverage-webfinger.cov
+              - ./vendor/bin/simple-phpunit -c oauth2_security.phpunit.xml --coverage-php build/cov/coverage-oauth2_security.cov
+              - ./vendor/bin/simple-phpunit -c oauth2_server.phpunit.xml --coverage-php build/cov/coverage-oauth2_server.cov
           after_script:
               - ./vendor/bin/phpcov merge --clover build/logs/clover.xml build/cov
               - ./vendor/bin/php-coveralls --no-interaction

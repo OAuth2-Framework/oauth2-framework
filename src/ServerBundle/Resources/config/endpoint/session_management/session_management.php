@@ -33,7 +33,7 @@ return function (ContainerConfigurator $container) {
 
     $container->set(IFrameEndpoint::class)
         ->args([
-            ref('templating'),
+            ref('twig'),
             ref('httplug.message_factory'),
             '%oauth2_server.endpoint.session_management.template%',
             '%oauth2_server.endpoint.session_management.storage_name%',

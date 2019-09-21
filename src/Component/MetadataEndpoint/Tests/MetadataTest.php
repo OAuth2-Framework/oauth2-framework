@@ -20,7 +20,6 @@ use PHPUnit\Framework\TestCase;
  * @group Compiler
  *
  * @internal
- * @coversNothing
  */
 final class MetadataTest extends TestCase
 {

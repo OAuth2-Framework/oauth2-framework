@@ -26,7 +26,6 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
  * @group Firewall
  *
  * @internal
- * @coversNothing
  */
 class SecurityBundleTest extends WebTestCase
 {

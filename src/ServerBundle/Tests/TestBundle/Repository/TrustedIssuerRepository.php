@@ -11,7 +11,7 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\ServerBundle\Tests\TestBundle\Entity;
+namespace OAuth2Framework\ServerBundle\Tests\TestBundle\Repository;
 
 use OAuth2Framework\Component\Core\TrustedIssuer\TrustedIssuer;
 use OAuth2Framework\Component\Core\TrustedIssuer\TrustedIssuerRepository as TrustedIssuerRepositoryInterface;

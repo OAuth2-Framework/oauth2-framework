@@ -15,12 +15,13 @@
         </testsuite>
     </testsuites>
     <php>
-        <env name="SYMFONY_DEPRECATIONS_HELPER" value="weak"/>
+        <env name="SYMFONY_DEPRECATIONS_HELPER" value="max[self]=0"/>
         <ini name="error_reporting" value="-1" />
         <ini name="intl.default_locale" value="en" />
         <ini name="intl.error_level" value="0" />
         <ini name="memory_limit" value="-1" />
         <server name="KERNEL_CLASS" value="OAuth2Framework\SecurityBundle\Tests\AppKernel" />
+        <server name="SYMFONY_PHPUNIT_VERSION" value="8"/>
     </php>
     <filter>
         <whitelist>

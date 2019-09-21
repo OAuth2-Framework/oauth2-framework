@@ -29,7 +29,6 @@ use Prophecy\Argument;
  * @group RefreshTokenTypeHint
  *
  * @internal
- * @coversNothing
  */
 final class RefreshTokenRevocationTypeHintTest extends TestCase
 {

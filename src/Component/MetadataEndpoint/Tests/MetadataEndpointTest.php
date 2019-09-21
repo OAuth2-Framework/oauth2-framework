@@ -29,7 +29,6 @@ use Psr\Http\Server\RequestHandlerInterface;
  * @group MetadataEndpoint
  *
  * @internal
- * @coversNothing
  */
 final class MetadataEndpointTest extends TestCase
 {

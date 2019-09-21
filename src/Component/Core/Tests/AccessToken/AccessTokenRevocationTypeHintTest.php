@@ -29,7 +29,6 @@ use Prophecy\Argument;
  * @group AccessTokenRevocationTypeHint
  *
  * @internal
- * @coversNothing
  */
 final class AccessTokenRevocationTypeHintTest extends TestCase
 {

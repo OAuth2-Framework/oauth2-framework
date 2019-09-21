@@ -36,7 +36,6 @@ use Psr\Http\Server\RequestHandlerInterface;
  * @group TokenEndpoint
  *
  * @internal
- * @coversNothing
  */
 final class TokenEndpointTest extends TestCase
 {

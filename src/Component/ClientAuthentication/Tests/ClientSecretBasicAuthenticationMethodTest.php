@@ -27,7 +27,6 @@ use Psr\Http\Message\ServerRequestInterface;
  * @group ClientAuthentication
  *
  * @internal
- * @coversNothing
  */
 final class ClientSecretBasicAuthenticationMethodTest extends TestCase
 {

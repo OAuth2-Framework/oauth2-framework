@@ -23,7 +23,6 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
  * @group RefreshToken
  *
  * @internal
- * @coversNothing
  */
 class RefreshTokenGrantTest extends WebTestCase
 {

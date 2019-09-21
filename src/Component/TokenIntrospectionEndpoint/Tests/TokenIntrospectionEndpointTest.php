@@ -31,7 +31,6 @@ use Psr\Http\Server\RequestHandlerInterface;
  * @group TokenIntrospectionEndpoint
  *
  * @internal
- * @coversNothing
  */
 final class TokenIntrospectionEndpointTest extends TestCase
 {

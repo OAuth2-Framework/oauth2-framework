@@ -28,7 +28,6 @@ use function Safe\json_encode;
  * @group ResponseMode
  *
  * @internal
- * @coversNothing
  */
 final class ResponseModeTest extends TestCase
 {

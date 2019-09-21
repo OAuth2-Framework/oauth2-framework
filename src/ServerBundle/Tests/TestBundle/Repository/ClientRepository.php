@@ -11,7 +11,7 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\ServerBundle\Tests\TestBundle\Entity;
+namespace OAuth2Framework\ServerBundle\Tests\TestBundle\Repository;
 
 use Assert\Assertion;
 use OAuth2Framework\Component\Core\Client\Client as ClientInterface;
@@ -19,6 +19,7 @@ use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\Client\ClientRepository as ClientRepositoryInterface;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
+use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\Client;
 use Psr\Cache\CacheItemPoolInterface;
 
 final class ClientRepository implements ClientRepositoryInterface

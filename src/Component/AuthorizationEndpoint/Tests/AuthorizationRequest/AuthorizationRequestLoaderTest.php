@@ -32,7 +32,6 @@ use Psr\Http\Message\RequestInterface;
  * @group AuthorizationRequest
  *
  * @internal
- * @coversNothing
  */
 final class AuthorizationRequestLoaderTest extends TestCase
 {

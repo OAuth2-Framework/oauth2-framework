@@ -15,15 +15,15 @@ namespace OAuth2Framework\SecurityBundle\Tests\TestBundle\Controller;
 
 use OAuth2Framework\Component\Core\AccessToken\AccessToken;
 use OAuth2Framework\SecurityBundle\Annotation\OAuth2;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @Route("/api")
  */
-final class ApiController extends Controller
+final class ApiController extends AbstractController
 {
     /**
      * @Route("/hello/{name}", name="api_hello")

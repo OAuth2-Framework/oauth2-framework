@@ -26,7 +26,6 @@ use PHPUnit\Framework\TestCase;
  * @group Tests
  *
  * @internal
- * @coversNothing
  */
 final class ScopePolicyRuleTest extends TestCase
 {

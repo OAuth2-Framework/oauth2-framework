@@ -22,7 +22,6 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
  * @group WebFinger
  *
  * @internal
- * @coversNothing
  */
 class WebFingerEndpointTest extends WebTestCase
 {

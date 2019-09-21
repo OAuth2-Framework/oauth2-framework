@@ -28,7 +28,6 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
  * @group Revocation
  *
  * @internal
- * @coversNothing
  */
 class RevocationEndpointTest extends WebTestCase
 {
@@ -86,7 +85,7 @@ class RevocationEndpointTest extends WebTestCase
         $container = $client->getContainer();
 
         /** @var AccessTokenRepository $accessTokenRepository */
-        $accessTokenRepository = $container->get(\OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\AccessTokenRepository::class);
+        $accessTokenRepository = $container->get(\OAuth2Framework\ServerBundle\Tests\TestBundle\Repository\AccessTokenRepository::class);
         $accessToken = $accessTokenRepository->create(
             new ClientId('CLIENT_ID_3'),
             new UserAccountId('john.1'),
@@ -116,7 +115,7 @@ class RevocationEndpointTest extends WebTestCase
         $client = static::createClient();
         $container = $client->getContainer();
         /** @var AccessTokenRepository $accessTokenRepository */
-        $accessTokenRepository = $container->get(\OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\AccessTokenRepository::class);
+        $accessTokenRepository = $container->get(\OAuth2Framework\ServerBundle\Tests\TestBundle\Repository\AccessTokenRepository::class);
         $accessToken = $accessTokenRepository->create(
             new ClientId('CLIENT_ID_2'),
             new UserAccountId('john.1'),

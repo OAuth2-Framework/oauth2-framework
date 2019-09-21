@@ -54,7 +54,6 @@ use function Safe\json_decode;
  * @group ClientAuthentication
  *
  * @internal
- * @coversNothing
  */
 final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
 {

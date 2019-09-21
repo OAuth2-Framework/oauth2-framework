@@ -23,7 +23,6 @@ use PHPUnit\Framework\TestCase;
  * @group TokenTypeParameterCheck
  *
  * @internal
- * @coversNothing
  */
 final class TokenTypeParameterCheckerTest extends TestCase
 {

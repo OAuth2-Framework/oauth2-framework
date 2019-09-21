@@ -30,7 +30,6 @@ use Psr\Http\Server\RequestHandlerInterface;
  * @group GrantTypeMiddleware
  *
  * @internal
- * @coversNothing
  */
 final class GrantTypeMiddlewareTest extends TestCase
 {

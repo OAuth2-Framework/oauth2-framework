@@ -24,7 +24,6 @@ use Prophecy\Argument;
  * @group UserCheckerManager
  *
  * @internal
- * @coversNothing
  */
 final class UserCheckerManagerTest extends TestCase
 {

@@ -32,7 +32,6 @@ use Psr\Http\Server\RequestHandlerInterface;
  * @group ClientAuthenticationMiddleware
  *
  * @internal
- * @coversNothing
  */
 final class ClientAuthenticationMiddlewareTest extends TestCase
 {

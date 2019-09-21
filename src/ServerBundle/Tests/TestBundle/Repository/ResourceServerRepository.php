@@ -11,11 +11,12 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\ServerBundle\Tests\TestBundle\Entity;
+namespace OAuth2Framework\ServerBundle\Tests\TestBundle\Repository;
 
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServer as ResourceServerInterface;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerRepository as ResourceServerRepositoryInterface;
+use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\ResourceServer;
 
 final class ResourceServerRepository implements ResourceServerRepositoryInterface
 {

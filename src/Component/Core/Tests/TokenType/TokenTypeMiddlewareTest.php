@@ -28,7 +28,6 @@ use Psr\Http\Server\RequestHandlerInterface;
  * @group TokenTypeMiddleware
  *
  * @internal
- * @coversNothing
  */
 final class TokenTypeMiddlewareTest extends TestCase
 {

@@ -11,7 +11,7 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace OAuth2Framework\ServerBundle\Tests\TestBundle\Entity;
+namespace OAuth2Framework\ServerBundle\Tests\TestBundle\Repository;
 
 use Assert\Assertion;
 use OAuth2Framework\Component\Core\AccessToken\AccessToken as AccessTokenInterface;
@@ -21,6 +21,7 @@ use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwnerId;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
+use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\AccessToken;
 use Psr\Cache\CacheItemPoolInterface;
 
 final class AccessTokenRepository implements AccessTokenRepositoryInterface

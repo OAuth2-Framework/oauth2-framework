@@ -58,7 +58,6 @@ use Psr\Http\Message\StreamInterface;
  * @group JwtBearer
  *
  * @internal
- * @coversNothing
  */
 final class JwtBearerGrantTypeTest extends TestCase
 {

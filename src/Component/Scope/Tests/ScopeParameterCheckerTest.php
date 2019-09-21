@@ -26,7 +26,6 @@ use Prophecy\Argument;
  * @group ScopeParameterChecker
  *
  * @internal
- * @coversNothing
  */
 final class ScopeParameterCheckerTest extends TestCase
 {

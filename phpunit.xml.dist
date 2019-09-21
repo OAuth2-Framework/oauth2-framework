@@ -16,6 +16,7 @@
     </testsuites>
     <php>
         <env name="SYMFONY_DEPRECATIONS_HELPER" value="weak"/>
+        <server name="SYMFONY_PHPUNIT_VERSION" value="8"/>
     </php>
     <filter>
         <whitelist>
@@ -28,6 +29,9 @@
             </exclude>
         </whitelist>
     </filter>
+    <extensions>
+        <extension class="Symfony\Component\Panther\ServerExtension" />
+    </extensions>
     <listeners>
         <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener" />
     </listeners>

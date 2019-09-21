@@ -24,7 +24,6 @@ use PHPUnit\Framework\TestCase;
  * @group AuthorizationCode
  *
  * @internal
- * @coversNothing
  */
 final class AuthorizationCodeTest extends TestCase
 {

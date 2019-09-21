@@ -37,7 +37,6 @@ use Psr\Http\Message\StreamInterface;
  * @group AuthorizationCodeGrantType
  *
  * @internal
- * @coversNothing
  */
 final class AuthorizationCodeGrantTypeTest extends TestCase
 {

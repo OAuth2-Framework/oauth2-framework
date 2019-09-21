@@ -30,7 +30,6 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
  * @group JwtBearer
  *
  * @internal
- * @coversNothing
  */
 class JwtBearerGrantTest extends WebTestCase
 {

@@ -30,7 +30,6 @@ use Psr\Http\Server\RequestHandlerInterface;
  * @group InitialAccessTokenMiddleware
  *
  * @internal
- * @coversNothing
  */
 final class InitialAccessTokenMiddlewareTest extends TestCase
 {

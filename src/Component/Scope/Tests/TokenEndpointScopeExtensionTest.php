@@ -37,7 +37,6 @@ use Psr\Http\Message\StreamInterface;
  * @group TokenEndpointScopeExtension
  *
  * @internal
- * @coversNothing
  */
 final class TokenEndpointScopeExtensionTest extends TestCase
 {
@@ -175,10 +174,10 @@ final class TokenEndpointScopeExtensionTest extends TestCase
     {
         if (null === $this->extension) {
             $scope1 = $this->prophesize(Scope::class);
-            $scope1->name()->willReturn('scope1');
+            $scope1->getName()->willReturn('scope1');
             $scope1->__toString()->willReturn('scope1');
             $scope2 = $this->prophesize(Scope::class);
-            $scope2->name()->willReturn('scope2');
+            $scope2->getName()->willReturn('scope2');
             $scope2->__toString()->willReturn('scope2');
             $scopeRepository = $this->prophesize(ScopeRepository::class);
             $scopeRepository->all()->willReturn([

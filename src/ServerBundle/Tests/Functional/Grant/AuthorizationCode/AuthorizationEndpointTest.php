@@ -29,7 +29,6 @@ use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
  * @group AuthorizationCode
  *
  * @internal
- * @coversNothing
  */
 class AuthorizationEndpointTest extends WebTestCase
 {

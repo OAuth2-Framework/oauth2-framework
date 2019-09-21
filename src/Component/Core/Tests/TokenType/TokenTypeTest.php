@@ -23,7 +23,6 @@ use Psr\Http\Message\ServerRequestInterface;
  * @group TokenType
  *
  * @internal
- * @coversNothing
  */
 final class TokenTypeTest extends TestCase
 {

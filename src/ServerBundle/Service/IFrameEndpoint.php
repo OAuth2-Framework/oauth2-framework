@@ -18,12 +18,12 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
+use Twig\Environment;
 
 final class IFrameEndpoint implements MiddlewareInterface
 {
     /**
-     * @var EngineInterface
+     * @var Environment
      */
     private $templateEngine;
 
@@ -42,7 +42,7 @@ final class IFrameEndpoint implements MiddlewareInterface
      */
     private $storageName;
 
-    public function __construct(EngineInterface $templateEngine, ResponseFactoryInterface $responseFactory, string $template, string $storageName)
+    public function __construct(Environment $templateEngine, ResponseFactoryInterface $responseFactory, string $template, string $storageName)
     {
         $this->templateEngine = $templateEngine;
         $this->responseFactory = $responseFactory;

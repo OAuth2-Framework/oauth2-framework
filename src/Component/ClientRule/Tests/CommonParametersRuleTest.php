@@ -22,7 +22,6 @@ use PHPUnit\Framework\TestCase;
  * @group Tests
  *
  * @internal
- * @coversNothing
  */
 final class CommonParametersRuleTest extends TestCase
 {

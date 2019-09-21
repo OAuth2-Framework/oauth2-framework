@@ -23,7 +23,6 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
  * @group AuthorizationCode
  *
  * @internal
- * @coversNothing
  */
 class AuthorizationCodeGrantTest extends WebTestCase
 {

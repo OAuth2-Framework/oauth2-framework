@@ -20,7 +20,6 @@ use PHPUnit\Framework\TestCase;
  * @group DataBag
  *
  * @internal
- * @coversNothing
  */
 final class DataBagTest extends TestCase
 {

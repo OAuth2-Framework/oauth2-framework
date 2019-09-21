@@ -30,7 +30,6 @@ use Psr\Http\Message\StreamInterface;
  * @group ClientAuthentication
  *
  * @internal
- * @coversNothing
  */
 final class AuthenticationMethodManagerTest extends TestCase
 {

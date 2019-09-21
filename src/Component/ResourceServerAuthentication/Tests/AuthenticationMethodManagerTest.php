@@ -22,7 +22,6 @@ use PHPUnit\Framework\TestCase;
  * @group ResourceServerAuthentication
  *
  * @internal
- * @coversNothing
  */
 class AuthenticationMethodManagerTest extends TestCase
 {

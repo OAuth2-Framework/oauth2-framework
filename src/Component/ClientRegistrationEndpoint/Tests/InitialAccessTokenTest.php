@@ -21,7 +21,6 @@ use PHPUnit\Framework\TestCase;
  * @group InitialAccessToken
  *
  * @internal
- * @coversNothing
  */
 final class InitialAccessTokenTest extends TestCase
 {

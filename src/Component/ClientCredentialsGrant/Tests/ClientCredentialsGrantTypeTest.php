@@ -26,7 +26,6 @@ use Psr\Http\Message\ServerRequestInterface;
  * @group ClientCredentials
  *
  * @internal
- * @coversNothing
  */
 final class ClientCredentialsGrantTypeTest extends TestCase
 {

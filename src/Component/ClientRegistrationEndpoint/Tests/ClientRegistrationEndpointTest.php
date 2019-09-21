@@ -31,7 +31,6 @@ use Psr\Http\Message\StreamInterface;
  * @group ClientRegistrationEndpoint
  *
  * @internal
- * @coversNothing
  */
 final class ClientRegistrationEndpointTest extends TestCase
 {

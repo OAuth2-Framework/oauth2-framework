@@ -33,7 +33,6 @@ use Psr\Http\Message\StreamInterface;
  * @group RefreshToken
  *
  * @internal
- * @coversNothing
  */
 final class RefreshTokenGrantTypeTest extends TestCase
 {

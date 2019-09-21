@@ -24,7 +24,7 @@ return function (ContainerConfigurator $container) {
 
     $container->set(TwigFormPostResponseRenderer::class)
         ->args([
-            ref('templating'),
+            ref('twig'),
             '%oauth2_server.endpoint.authorization.response_mode.form_post.template%',
         ])
     ;

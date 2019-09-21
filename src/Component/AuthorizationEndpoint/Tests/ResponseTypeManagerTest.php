@@ -22,7 +22,6 @@ use PHPUnit\Framework\TestCase;
  * @group ResponseTypeManager
  *
  * @internal
- * @coversNothing
  */
 final class ResponseTypeManagerTest extends TestCase
 {

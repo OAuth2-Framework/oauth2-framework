@@ -26,7 +26,6 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
  * @group ClientRegistration
  *
  * @internal
- * @coversNothing
  */
 class ClientRegistrationEndpointTest extends WebTestCase
 {
@@ -78,7 +77,7 @@ class ClientRegistrationEndpointTest extends WebTestCase
         /** @var ContainerInterface $container */
         $container = $client->getContainer();
         /** @var ClientRepository $clientRepository */
-        $clientRepository = $container->get(\OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\ClientRepository::class);
+        $clientRepository = $container->get(\OAuth2Framework\ServerBundle\Tests\TestBundle\Repository\ClientRepository::class);
         $client = $clientRepository->find(new ClientId($content['client_id']));
         static::assertInstanceOf(Client::class, $client);
     }

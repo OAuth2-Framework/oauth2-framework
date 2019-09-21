@@ -23,7 +23,6 @@ use PHPUnit\Framework\TestCase;
  * @group AccessToken
  *
  * @internal
- * @coversNothing
  */
 final class AccessTokenTest extends TestCase
 {

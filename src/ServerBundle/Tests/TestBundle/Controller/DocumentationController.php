@@ -13,14 +13,14 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Tests\TestBundle\Controller;
 
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/doc", host="foo.foo")
  */
-final class DocumentationController extends Controller
+final class DocumentationController extends AbstractController
 {
     /**
      * @Route("/service/{hello}", name="service_documentation")

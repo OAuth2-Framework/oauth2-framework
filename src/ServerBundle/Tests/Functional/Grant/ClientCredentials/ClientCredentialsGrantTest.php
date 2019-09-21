@@ -23,7 +23,6 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
  * @group ClientCredentials
  *
  * @internal
- * @coversNothing
  */
 class ClientCredentialsGrantTest extends WebTestCase
 {

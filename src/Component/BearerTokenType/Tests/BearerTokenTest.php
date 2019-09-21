@@ -30,7 +30,6 @@ use Psr\Http\Message\StreamInterface;
  * @group BearerToken
  *
  * @internal
- * @coversNothing
  */
 final class BearerTokenTest extends TestCase
 {

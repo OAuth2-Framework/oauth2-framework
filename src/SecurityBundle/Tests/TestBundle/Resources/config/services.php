@@ -11,6 +11,7 @@ declare(strict_types=1);
  * of the MIT license.  See the LICENSE file for details.
  */
 
+use OAuth2Framework\SecurityBundle\Tests\TestBundle\Controller\ApiController;
 use OAuth2Framework\SecurityBundle\Tests\TestBundle\Service\AccessTokenHandler;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
@@ -21,6 +22,7 @@ return function (ContainerConfigurator $container) {
         ->autoconfigure()
     ;
 
+    $container->set(ApiController::class);
     $container->set(AccessTokenHandler::class)/*
         ->tag('oauth2_server_access_token_handler')*/;
 };

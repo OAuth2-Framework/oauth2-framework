@@ -23,7 +23,6 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
  * @group Implicit
  *
  * @internal
- * @coversNothing
  */
 class ImplicitGrantTest extends WebTestCase
 {

@@ -27,7 +27,6 @@ use Psr\Http\Message\ServerRequestInterface;
  * @group Implicit
  *
  * @internal
- * @coversNothing
  */
 final class ImplicitGrantTypeTest extends TestCase
 {

@@ -34,7 +34,6 @@ use Psr\Http\Server\RequestHandlerInterface;
  * @group ClientConfigurationEndpoint
  *
  * @internal
- * @coversNothing
  */
 final class ClientConfigurationEndpointTest extends TestCase
 {

@@ -29,7 +29,6 @@ use Prophecy\Argument;
  * @group AccessTokenIntrospectionTypeHint
  *
  * @internal
- * @coversNothing
  */
 final class AccessTokenIntrospectionTypeHintTest extends TestCase
 {

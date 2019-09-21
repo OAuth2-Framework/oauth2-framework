@@ -24,7 +24,6 @@ use PHPUnit\Framework\TestCase;
  * @group RefreshToken
  *
  * @internal
- * @coversNothing
  */
 final class RefreshTokenTest extends TestCase
 {

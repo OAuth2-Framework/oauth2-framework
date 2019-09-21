@@ -11,8 +11,11 @@ framework:
         resource: '%kernel.root_dir%/config/routing.yml'
         strict_requirements: ~
     http_method_override: true
-    templating:
-        enabled: false
 
 twig:
     strict_variables: '%kernel.debug%'
+
+sensio_framework_extra:
+    router:
+        annotations:
+            false
