@@ -272,6 +272,7 @@ final class AuthorizationEndpointTest extends TestCase
         $authorizationRequestStorage->getId(Argument::type(ServerRequestInterface::class))->willReturn('___ID___');
         $authorizationRequestStorage->get(Argument::containingString('___ID___'))->willReturn($authorizationRequest);
         $authorizationRequestStorage->has(Argument::containingString('___ID___'))->willReturn(true);
+        $authorizationRequestStorage->remove(Argument::containingString('___ID___'))->will(function () {});
         $authorizationRequestStorage->set(Argument::containingString('___ID___'), Argument::type(AuthorizationRequest::class))->will(function () {});
 
         return $authorizationRequestStorage->reveal();

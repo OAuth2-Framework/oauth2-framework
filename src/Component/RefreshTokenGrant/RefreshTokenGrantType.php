@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\RefreshTokenGrant;
 
+use Assert\Assertion;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use OAuth2Framework\Component\Core\Util\RequestBodyParser;
@@ -72,9 +73,11 @@ final class RefreshTokenGrantType implements GrantType
 
         $grantTypeData->setResourceOwnerId($token->getResourceOwnerId());
         foreach ($token->getMetadata() as $k => $v) {
+            Assertion::string($k, 'Invalid key');
             $grantTypeData->getMetadata()->set($k, $v);
         }
         foreach ($token->getParameter() as $k => $v) {
+            Assertion::string($k, 'Invalid key');
             $grantTypeData->getParameter()->set($k, $v);
         }
     }

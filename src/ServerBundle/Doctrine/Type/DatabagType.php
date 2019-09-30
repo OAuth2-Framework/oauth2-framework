@@ -17,6 +17,7 @@ use Assert\Assertion;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\Type;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
+use function Safe\json_encode;
 
 final class DatabagType extends Type
 {

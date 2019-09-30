@@ -102,12 +102,12 @@ final class WebFingerEndpoint implements MiddlewareInterface
             return $data;
         }
 
-        $data['links'] = array_filter($data['links'], function (Link $link) use ($rels): ?Link {
+        $data['links'] = array_filter($data['links'], static function (Link $link) use ($rels): bool {
             if (\in_array($link->getRel(), $rels, true)) {
-                return $link;
+                return true;
             }
 
-            return null;
+            return false;
         });
 
         if (0 === \count($data['links'])) {

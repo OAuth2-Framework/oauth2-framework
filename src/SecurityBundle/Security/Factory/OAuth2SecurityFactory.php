@@ -31,7 +31,7 @@ final class OAuth2SecurityFactory implements SecurityFactoryInterface
      * @param string           $id
      * @param array            $config
      * @param string           $userProviderId
-     * @param string           $defaultEntryPointId
+     * @param null|string      $defaultEntryPointId
      *
      * @return array
      */

@@ -18,6 +18,7 @@ use OAuth2Framework\Component\AuthorizationCodeGrant\AbstractAuthorizationCode;
 use OAuth2Framework\Component\ClientRegistrationEndpoint\AbstractInitialAccessToken;
 use OAuth2Framework\Component\RefreshTokenGrant\AbstractRefreshToken;
 use OAuth2Framework\ServerBundle\DependencyInjection\OAuth2FrameworkExtension;
+use function Safe\realpath;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 use Symfony\Component\HttpKernel\Bundle\Bundle;

@@ -29,7 +29,7 @@ final class OAuth2FrameworkSecurityBundle extends Bundle
 {
     public function getContainerExtension(): ExtensionInterface
     {
-        return new OAuth2FrameworkSecurityExtension('oauth2_security');
+        return new OAuth2FrameworkSecurityExtension();
     }
 
     public function build(ContainerBuilder $container): void

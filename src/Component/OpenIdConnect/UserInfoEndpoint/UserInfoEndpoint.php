@@ -119,12 +119,12 @@ class UserInfoEndpoint implements MiddlewareInterface
         $requestedClaims = $this->getEndpointClaims($accessToken);
         $idTokenBuilder = $this->idTokenBuilderFactory->createBuilder($client, $userAccount, $accessToken->getMetadata()->get('redirect_uri'));
 
-        if ($client->has('userinfo_signed_response_alg') && null !== $this->jwsBuilder) {
+        if (null !== $this->jwsBuilder && null !== $this->signatureKeys && $client->has('userinfo_signed_response_alg')) {
             $isJwt = true;
             $signatureAlgorithm = $client->get('userinfo_signed_response_alg');
             $idTokenBuilder->withSignature($this->jwsBuilder, $this->signatureKeys, $signatureAlgorithm);
         }
-        if ($client->has('userinfo_encrypted_response_alg') && $client->has('userinfo_encrypted_response_enc') && null !== $this->jweBuilder) {
+        if (null !== $this->jweBuilder && $client->has('userinfo_encrypted_response_alg') && $client->has('userinfo_encrypted_response_enc')) {
             $isJwt = true;
             $keyEncryptionAlgorithm = $client->get('userinfo_encrypted_response_alg');
             $contentEncryptionAlgorithm = $client->get('userinfo_encrypted_response_enc');

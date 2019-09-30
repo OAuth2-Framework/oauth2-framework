@@ -26,21 +26,6 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 final class OAuth2FrameworkSecurityExtension extends Extension
 {
-    /**
-     * @var string
-     */
-    private $alias;
-
-    public function __construct(string $alias)
-    {
-        $this->alias = $alias;
-    }
-
-    public function getAlias(): string
-    {
-        return $this->alias;
-    }
-
     public function load(array $configs, ContainerBuilder $container): void
     {
         $processor = new Processor();
@@ -54,7 +39,7 @@ final class OAuth2FrameworkSecurityExtension extends Extension
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../Resources/config/'));
         $loader->load('security.php');
 
-        if (true === $config['bearer_token']['enabled'] && class_exists(BearerToken::class)) {
+        /*if (true === $config['bearer_token']['enabled'] && class_exists(BearerToken::class)) {
             $container->setParameter('oauth2_security.token_type.bearer_token.realm', $config['bearer_token']['realm']);
             $loader->load('bearer_token.php');
 
@@ -68,18 +53,13 @@ final class OAuth2FrameworkSecurityExtension extends Extension
             if (true === $bearerTokenConfig['request_body']) {
                 $loader->load('request_body_token_finder.php');
             }
-        }
-        if (class_exists(MacToken::class) && $config['mac_token']['enabled']) {
+        }*/
+        /*if (class_exists(MacToken::class) && $config['mac_token']['enabled']) {
             $container->setParameter('oauth2_security.token_type.mac_token.min_length', $config['mac_token']['min_length']);
             $container->setParameter('oauth2_security.token_type.mac_token.max_length', $config['mac_token']['max_length']);
             $container->setParameter('oauth2_security.token_type.mac_token.algorithm', $config['mac_token']['algorithm']);
             $container->setParameter('oauth2_security.token_type.mac_token.timestamp_lifetime', $config['mac_token']['timestamp_lifetime']);
             $loader->load('mac_token.php');
-        }
-    }
-
-    public function getConfiguration(array $configs, ContainerBuilder $container): ConfigurationInterface
-    {
-        return new Configuration($this->getAlias());
+        }*/
     }
 }

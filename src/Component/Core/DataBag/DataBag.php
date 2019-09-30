@@ -15,6 +15,7 @@ namespace OAuth2Framework\Component\Core\DataBag;
 
 use ArrayIterator;
 use Assert\Assertion;
+use function Safe\json_decode;
 
 class DataBag implements \IteratorAggregate, \Countable, \JsonSerializable
 {
