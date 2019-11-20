@@ -41,7 +41,7 @@
     },
     "require-dev": {
         "doctrine/dbal": "^2.9",
-        "doctrine/doctrine-bundle": "^1.10",
+        "doctrine/doctrine-bundle": "^1.10 || ^2.0",
         "doctrine/orm": "^2.6",
         "nyholm/psr7": "^1.0",
         "php-coveralls/php-coveralls": "^2.0",
