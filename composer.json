@@ -58,7 +58,7 @@
         "symfony/dom-crawler": "^4.3",
         "symfony/panther": "^0.5.2",
         "symfony/phpunit-bridge": "^4.3",
-        "symfony/templating": "^4.3",
+        "symfony/templating": "^4.3 || ^5.0",
         "symfony/twig-bundle": "^4.3",
         "symfony/validator": "^4.3",
         "symfony/var-dumper": "^4.3",
