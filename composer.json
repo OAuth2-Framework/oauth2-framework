@@ -60,7 +60,7 @@
         "symfony/phpunit-bridge": "^4.3",
         "symfony/templating": "^4.3",
         "symfony/twig-bundle": "^4.3",
-        "symfony/validator": "^4.3",
+        "symfony/validator": "^4.3 || ^5.0",
         "symfony/var-dumper": "^4.3",
         "symfony/yaml": "^4.3",
         "thecodingmachine/phpstan-safe-rule": "^0.1.0",
