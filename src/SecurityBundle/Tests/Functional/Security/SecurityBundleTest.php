@@ -61,6 +61,7 @@ class SecurityBundleTest extends WebTestCase
         $client = static::createClient();
         $client->request('GET', '/api/hello/World', [], [], ['HTTPS' => 'on', 'HTTP_AUTHORIZATION' => 'Bearer UNKNOWN_ACCESS_TOKEN_ID']);
         $response = $client->getResponse();
+
         static::assertEquals(401, $response->getStatusCode());
         static::assertEquals('', $response->getContent());
         static::assertTrue($response->headers->has('www-authenticate'));

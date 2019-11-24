@@ -64,7 +64,7 @@ final class OAuth2SecurityFactory implements SecurityFactoryInterface
             ->children()
             ->scalarNode('user_provider')->defaultNull()->end()
             ->scalarNode('failure_handler')->defaultValue(DefaultFailureHandler::class)->end()
-            //->scalarNode('http_message_factory')->isRequired()->end()
+            ->scalarNode('http_message_factory')->defaultValue('sensio_framework_extra.psr7.http_message_factory')->end()
             ->end()
         ;
     }
@@ -89,7 +89,7 @@ final class OAuth2SecurityFactory implements SecurityFactoryInterface
          * new Reference('oauth2_security.access_token_handler_manager'),
          * ])
          */
-        //$listener->replaceArgument(0, new Reference($config['http_message_factory']));
+        $listener->replaceArgument(0, new Reference($config['http_message_factory']));
         //$listener->replaceArgument(13, $id);
         //$listener->replaceArgument(14, $config);
         //$listener->replaceArgument(16, new Reference($config['failure_handler']));

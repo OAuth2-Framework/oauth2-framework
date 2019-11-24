@@ -14,7 +14,4 @@ security:
             pattern: '^/api'
             stateless: true
             anonymous: true
-            oauth2:
-                bearer_token:
-                    enabled: true
-                    realm: 'Protected API'
+            oauth2: ~

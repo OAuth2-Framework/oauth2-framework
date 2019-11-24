@@ -60,7 +60,7 @@ return function (ContainerConfigurator $container) {
     $container->set('oauth2_security.listener')
         ->class(OAuth2Listener::class)
         ->args([
-            ref('oauth2_security.psr7_message_factory'),
+            null,
             ref(TokenStorageInterface::class),
             ref(AuthenticationManagerInterface::class),
             ref('oauth2_security.token_type_manager'),
