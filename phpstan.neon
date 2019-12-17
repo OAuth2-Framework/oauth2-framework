@@ -13,9 +13,3 @@ parameters:
         - '#Return type .* of method .* should be covariant with return type .* of method .*#'
         - '#Cannot call method .* on Symfony\\Component\\Config\\Definition\\Builder\\NodeParentInterface|null\.#'
         - '#Variable property access on \$this\(OAuth2Framework\\SecurityBundle\\Annotation\\OAuth2\)\.#'
-includes:
-    - vendor/phpstan/phpstan-strict-rules/rules.neon
-    - vendor/phpstan/phpstan-phpunit/extension.neon
-    - vendor/phpstan/phpstan-deprecation-rules/rules.neon
-    - vendor/thecodingmachine/phpstan-safe-rule/phpstan-safe-rule.neon
-    - vendor/phpstan/phpstan-beberlei-assert/extension.neon

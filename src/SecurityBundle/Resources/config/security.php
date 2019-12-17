@@ -16,14 +16,18 @@ use OAuth2Framework\Component\Core\AccessToken\AccessTokenHandlerManager;
 use OAuth2Framework\Component\Core\Message;
 use OAuth2Framework\Component\Core\TokenType\TokenTypeManager;
 use OAuth2Framework\SecurityBundle\Annotation;
+use OAuth2Framework\SecurityBundle\EventListener\RequestListener;
 use OAuth2Framework\SecurityBundle\Resolver\AccessTokenResolver;
 use OAuth2Framework\SecurityBundle\Security\Authentication\Provider\OAuth2Provider;
 use OAuth2Framework\SecurityBundle\Security\EntryPoint\OAuth2EntryPoint;
+use OAuth2Framework\SecurityBundle\Security\ExpressionLanguageProvider;
 use OAuth2Framework\SecurityBundle\Security\Firewall\OAuth2Listener;
 use OAuth2Framework\SecurityBundle\Security\Handler\DefaultFailureHandler;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
+use Symfony\Component\ExpressionLanguage\ExpressionFunction;
+use Symfony\Component\ExpressionLanguage\ExpressionFunctionProviderInterface;
 use Symfony\Component\Security\Core\Authentication\AuthenticationManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
@@ -131,4 +135,14 @@ return function (ContainerConfigurator $container) {
     ;
 
     $container->set(AccessTokenResolver::class);
+
+    $container->set(RequestListener::class)
+        ->tag('kernel.event_listener', ['event' => 'security.authentication.success', 'method' => 'onKernelRequest'])
+    ;
+
+    if (interface_exists(ExpressionFunctionProviderInterface::class) && class_exists(ExpressionFunction::class)) {
+        $container->set(ExpressionLanguageProvider::class)
+            ->tag('security.expression_language_provider')
+        ;
+    }
 };
