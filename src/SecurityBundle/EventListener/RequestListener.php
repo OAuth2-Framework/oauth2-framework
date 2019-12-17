@@ -40,6 +40,7 @@ class RequestListener
 
         $request->attributes->set('oauth2_resource_owner_id', $token->getResourceOwnerId());
         $request->attributes->set('oauth2_client_id', $token->getClientId());
-        $request->attributes->set('oauth2_resource_server_id', $token->getAccessToken()->getResourceServerId()->getValue());
+        $resourceServerId = $token->getAccessToken()->getResourceServerId();
+        $request->attributes->set('oauth2_resource_server_id', $resourceServerId ? $resourceServerId->getValue() : null);
     }
 }
