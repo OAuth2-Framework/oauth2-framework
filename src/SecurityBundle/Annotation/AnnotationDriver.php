@@ -22,7 +22,7 @@ use Psr\Http\Message\ResponseInterface;
 use ReflectionObject;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
+use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Throwable;
 
@@ -68,7 +68,7 @@ class AnnotationDriver
         return $this->checkers;
     }
 
-    public function onKernelController(FilterControllerEvent $event): void
+    public function onKernelController(ControllerEvent $event): void
     {
         $controller = $event->getController();
         if (!\is_array($controller)) {
@@ -87,7 +87,7 @@ class AnnotationDriver
         }
     }
 
-    private function processOAuth2Annotation(FilterControllerEvent $event, OAuth2 $configuration): void
+    private function processOAuth2Annotation(ControllerEvent $event, OAuth2 $configuration): void
     {
         $token = $this->tokenStorage->getToken();
 
@@ -106,7 +106,7 @@ class AnnotationDriver
         }
     }
 
-    private function createAuthenticationException(FilterControllerEvent $event, string $message, OAuth2 $configuration): void
+    private function createAuthenticationException(ControllerEvent $event, string $message, OAuth2 $configuration): void
     {
         $additionalData = null !== $configuration->getScope() ? ['scope' => $configuration->getScope()] : [];
         $response = $this->oauth2ResponseFactoryManager->getResponse(
@@ -114,10 +114,10 @@ class AnnotationDriver
             $additionalData
         );
 
-        $this->updateFilterControllerEvent($event, $response);
+        $this->updateControllerEvent($event, $response);
     }
 
-    private function createAccessDeniedException(FilterControllerEvent $event, string $message, OAuth2 $configuration, Throwable $previous): void
+    private function createAccessDeniedException(ControllerEvent $event, string $message, OAuth2 $configuration, Throwable $previous): void
     {
         $additionalData = null !== $configuration->getScope() ? ['scope' => $configuration->getScope()] : [];
         $response = $this->oauth2ResponseFactoryManager->getResponse(
@@ -130,10 +130,10 @@ class AnnotationDriver
             ),
             $additionalData
         );
-        $this->updateFilterControllerEvent($event, $response);
+        $this->updateControllerEvent($event, $response);
     }
 
-    private function updateFilterControllerEvent(FilterControllerEvent $event, ResponseInterface $psr7Response): void
+    private function updateControllerEvent(ControllerEvent $event, ResponseInterface $psr7Response): void
     {
         $event->setController(static function () use ($psr7Response): Response {
             $factory = new HttpFoundationFactory();
