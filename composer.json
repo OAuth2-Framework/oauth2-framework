@@ -27,7 +27,7 @@
         "psr/http-server-handler": "^1.0",
         "psr/http-server-middleware": "^1.0",
         "symfony/form": "^4.3|^5.0",
-        "symfony/psr-http-message-bridge": "^1.0",
+        "symfony/psr-http-message-bridge": "^1.0 || ^2.0",
         "symfony/security-bundle": "^4.3|^5.0",
         "symfony/translation": "^4.3|^5.0",
         "thecodingmachine/safe": "^1.0",
