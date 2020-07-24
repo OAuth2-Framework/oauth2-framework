@@ -19,7 +19,7 @@
         "php": "^7.3",
         "ext-json": "*",
         "beberlei/assert": "^3.2",
-        "doctrine/common": "^2.8",
+        "doctrine/common": "^2.8 || ^3.0",
         "league/uri": "^5.3",
         "php-http/httplug-bundle": "^1.7",
         "psr/http-factory": "^1.0",
