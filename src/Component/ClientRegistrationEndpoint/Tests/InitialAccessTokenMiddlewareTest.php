@@ -22,6 +22,7 @@ use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -33,6 +34,8 @@ use Psr\Http\Server\RequestHandlerInterface;
  */
 final class InitialAccessTokenMiddlewareTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var null|InitialAccessTokenMiddleware
      */

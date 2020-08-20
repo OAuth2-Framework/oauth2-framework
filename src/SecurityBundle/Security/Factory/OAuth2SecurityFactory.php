@@ -27,13 +27,10 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 final class OAuth2SecurityFactory implements SecurityFactoryInterface
 {
     /**
-     * @param ContainerBuilder $container
-     * @param string           $id
-     * @param array            $config
-     * @param string           $userProviderId
-     * @param null|string      $defaultEntryPointId
-     *
-     * @return array
+     * @param string      $id
+     * @param array       $config
+     * @param string      $userProviderId
+     * @param null|string $defaultEntryPointId
      */
     public function create(ContainerBuilder $container, $id, $config, $userProviderId, $defaultEntryPointId): array
     {

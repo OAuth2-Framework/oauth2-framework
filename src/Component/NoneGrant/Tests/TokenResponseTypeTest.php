@@ -22,6 +22,7 @@ use OAuth2Framework\Component\NoneGrant\AuthorizationStorage;
 use OAuth2Framework\Component\NoneGrant\NoneResponseType;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 /**
  * @group ResponseType
@@ -31,6 +32,8 @@ use Prophecy\Argument;
  */
 final class TokenResponseTypeTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @test
      */

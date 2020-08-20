@@ -22,6 +22,7 @@ use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
@@ -33,6 +34,8 @@ use Psr\Http\Message\StreamInterface;
  */
 final class BearerTokenTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @test
      */

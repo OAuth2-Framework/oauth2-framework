@@ -26,6 +26,7 @@ use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use OAuth2Framework\Component\ImplicitGrant\TokenResponseType;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 /**
  * @group ResponseType
@@ -35,6 +36,8 @@ use Prophecy\Argument;
  */
 final class TokenResponseTypeTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var null|TokenResponseType
      */

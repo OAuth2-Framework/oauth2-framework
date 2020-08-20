@@ -150,7 +150,7 @@ class AuthorizationCodeGrantTest extends WebTestCase
         $client->request('POST', '/token/get', ['grant_type' => 'authorization_code', 'redirect_uri' => 'http://localhost/callback', 'code' => 'VALID_AUTHORIZATION_CODE', 'client_id' => 'CLIENT_ID_3', 'client_secret' => 'secret'], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
         static::assertEquals(200, $response->getStatusCode());
-        self::assertRegexp('/\{"token_type"\:"Bearer","access_token"\:"[0-9a-zA-Z-_]+","expires_in":[0-9]{4}\}/', $response->getContent());
+        self::assertMatchesRegularExpression('/\{"token_type"\:"Bearer","access_token"\:"[0-9a-zA-Z-_]+","expires_in":[0-9]{4}\}/', $response->getContent());
     }
 
     /**
@@ -162,6 +162,6 @@ class AuthorizationCodeGrantTest extends WebTestCase
         $client->request('POST', '/token/get', ['grant_type' => 'authorization_code', 'redirect_uri' => 'http://localhost/callback', 'code' => 'VALID_AUTHORIZATION_CODE_FOR_CONFIDENTIAL_CLIENT'], [], ['HTTPS' => 'on', 'HTTP_Authorization' => 'Basic '.base64_encode('CLIENT_ID_5:secret')], null);
         $response = $client->getResponse();
         static::assertEquals(200, $response->getStatusCode());
-        self::assertRegexp('/\{"token_type"\:"Bearer","access_token"\:"[0-9a-zA-Z-_]+","expires_in":[0-9]{4}\}/', $response->getContent());
+        self::assertMatchesRegularExpression('/\{"token_type"\:"Bearer","access_token"\:"[0-9a-zA-Z-_]+","expires_in":[0-9]{4}\}/', $response->getContent());
     }
 }

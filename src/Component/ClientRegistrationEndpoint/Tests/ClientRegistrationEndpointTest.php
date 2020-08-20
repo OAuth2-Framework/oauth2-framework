@@ -22,6 +22,7 @@ use OAuth2Framework\Component\Core\Client\ClientRepository;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -34,6 +35,8 @@ use Psr\Http\Message\StreamInterface;
  */
 final class ClientRegistrationEndpointTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var null|ClientRegistrationEndpoint
      */

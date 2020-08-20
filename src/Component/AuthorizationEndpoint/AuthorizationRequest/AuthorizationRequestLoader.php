@@ -233,9 +233,6 @@ class AuthorizationRequestLoader
         return $params;
     }
 
-    /**
-     * @param array $params
-     */
     private function checkIssuerAndClientId(array $params): void
     {
         if (\array_key_exists('iss', $params) && \array_key_exists('client_id', $params)) {

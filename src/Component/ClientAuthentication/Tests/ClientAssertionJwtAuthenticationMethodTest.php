@@ -44,6 +44,7 @@ use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use OAuth2Framework\Component\Core\TrustedIssuer\TrustedIssuer;
 use OAuth2Framework\Component\Core\TrustedIssuer\TrustedIssuerRepository;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
@@ -57,6 +58,8 @@ use function Safe\json_decode;
  */
 final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var null|ClientAssertionJwt
      */

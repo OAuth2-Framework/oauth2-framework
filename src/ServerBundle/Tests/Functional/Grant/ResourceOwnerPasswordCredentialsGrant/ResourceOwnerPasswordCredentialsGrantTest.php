@@ -114,6 +114,6 @@ class ResourceOwnerPasswordCredentialsGrantTest extends WebTestCase
         $client->request('POST', '/token/get', ['grant_type' => 'password', 'username' => 'john.1', 'password' => 'password.1', 'client_id' => 'CLIENT_ID_3', 'client_secret' => 'secret'], [], ['HTTPS' => 'on'], null);
         $response = $client->getResponse();
         static::assertEquals(200, $response->getStatusCode());
-        self::assertRegexp('/\{"token_type"\:"Bearer","access_token"\:"[0-9a-zA-Z-_]+","expires_in":[0-9]{4}\}/', $response->getContent());
+        self::assertMatchesRegularExpression('/\{"token_type"\:"Bearer","access_token"\:"[0-9a-zA-Z-_]+","expires_in":[0-9]{4}\}/', $response->getContent());
     }
 }

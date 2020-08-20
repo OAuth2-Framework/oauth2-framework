@@ -18,6 +18,7 @@ use OAuth2Framework\Component\Core\TokenType\TokenType;
 use OAuth2Framework\Component\Core\TokenType\TokenTypeGuesser;
 use OAuth2Framework\Component\Core\TokenType\TokenTypeManager;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 /**
  * @group TokenTypeParameterCheck
@@ -26,6 +27,8 @@ use PHPUnit\Framework\TestCase;
  */
 final class TokenTypeParameterCheckerTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var null|TokenTypeGuesser
      */

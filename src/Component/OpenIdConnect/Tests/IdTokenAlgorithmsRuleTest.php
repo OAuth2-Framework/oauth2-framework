@@ -23,6 +23,7 @@ use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\OpenIdConnect\Rule\IdTokenAlgorithmsRule;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 /**
  * @group Tests
@@ -31,6 +32,8 @@ use PHPUnit\Framework\TestCase;
  */
 final class IdTokenAlgorithmsRuleTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @test
      */

@@ -25,16 +25,16 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class DataFixtureTestCase extends WebTestCase
 {
-    /** @var Application $application */
+    /** @var Application */
     protected static $application;
 
-    /** @var Client $client */
+    /** @var Client */
     protected $client;
 
-    /** @var ContainerInterface $container */
+    /** @var ContainerInterface */
     protected $container;
 
-    /** @var EntityManager $entityManager */
+    /** @var EntityManager */
     protected $entityManager;
 
     /**

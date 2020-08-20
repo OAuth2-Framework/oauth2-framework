@@ -17,6 +17,8 @@
     ],
     "require": {
         "php": "^7.3",
+        "ext-json": "*",
+        "beberlei/assert": "^3.2",
         "thecodingmachine/safe": "^1.0"
     },
     "require-dev": {

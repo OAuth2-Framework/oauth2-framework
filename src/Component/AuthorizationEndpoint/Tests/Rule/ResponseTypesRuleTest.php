@@ -21,6 +21,7 @@ use OAuth2Framework\Component\ClientRule\RuleHandler;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 /**
  * @group Tests
@@ -29,6 +30,8 @@ use PHPUnit\Framework\TestCase;
  */
 final class ResponseTypesRuleTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var null|ResponseTypesRule
      */

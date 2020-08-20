@@ -69,7 +69,7 @@ class OAuth2FrameworkServerBundle extends Bundle
         if (class_exists(AbstractRefreshToken::class)) {
             $map[realpath(__DIR__.'/Resources/config/doctrine-mapping/RefreshTokenGrant')] = 'OAuth2Framework\Component\RefreshTokenGrant';
         }
-        $container->addCompilerPass(DoctrineOrmMappingsPass::createYamlMappingDriver($map));
+        $container->addCompilerPass(DoctrineOrmMappingsPass::createXmlMappingDriver($map));
     }
 
     /**

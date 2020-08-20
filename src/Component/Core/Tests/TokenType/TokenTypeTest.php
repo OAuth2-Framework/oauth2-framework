@@ -17,6 +17,7 @@ use OAuth2Framework\Component\Core\TokenType\TokenType;
 use OAuth2Framework\Component\Core\TokenType\TokenTypeManager;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
@@ -26,6 +27,8 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 final class TokenTypeTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var null|TokenTypeManager
      */

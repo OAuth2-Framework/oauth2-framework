@@ -49,6 +49,7 @@ use OAuth2Framework\Component\JwtBearerGrant\JwtBearerGrantType;
 use OAuth2Framework\Component\TokenEndpoint\GrantTypeData;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
@@ -61,6 +62,8 @@ use Psr\Http\Message\StreamInterface;
  */
 final class JwtBearerGrantTypeTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var null|JwtBearerGrantType
      */

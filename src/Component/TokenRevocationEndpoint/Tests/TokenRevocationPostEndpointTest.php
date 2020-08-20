@@ -22,6 +22,7 @@ use OAuth2Framework\Component\TokenRevocationEndpoint\TokenRevocationPostEndpoin
 use OAuth2Framework\Component\TokenRevocationEndpoint\TokenTypeHint;
 use OAuth2Framework\Component\TokenRevocationEndpoint\TokenTypeHintManager;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -35,6 +36,8 @@ use Psr\Http\Server\RequestHandlerInterface;
  */
 final class TokenRevocationPostEndpointTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var null|TokenTypeHintManager
      */

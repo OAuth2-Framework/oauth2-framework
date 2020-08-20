@@ -49,6 +49,7 @@ use OAuth2Framework\Component\Core\TokenType\TokenTypeManager;
 use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -61,6 +62,8 @@ use Psr\Http\Server\RequestHandlerInterface;
  */
 final class AuthorizationEndpointTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var null|TokenTypeManager
      */
@@ -160,9 +163,6 @@ final class AuthorizationEndpointTest extends TestCase
         }
     }
 
-    /**
-     * @return AuthorizationEndpoint
-     */
     public function getAuthorizationEndpoint(AuthorizationRequest $authorizationRequest): AuthorizationEndpoint
     {
         $endpoint = new AuthorizationEndpoint(
@@ -184,9 +184,6 @@ final class AuthorizationEndpointTest extends TestCase
         return $endpoint;
     }
 
-    /**
-     * @return TokenTypeManager
-     */
     public function getTokenTypeManager(): TokenTypeManager
     {
         if (null === $this->tokenTypeManager) {
@@ -200,9 +197,6 @@ final class AuthorizationEndpointTest extends TestCase
         return $this->tokenTypeManager;
     }
 
-    /**
-     * @return ResponseTypeManager
-     */
     public function getResponseTypeManager(): ResponseTypeManager
     {
         if (null === $this->responseTypeManager) {
@@ -219,9 +213,6 @@ final class AuthorizationEndpointTest extends TestCase
         return $this->responseTypeManager;
     }
 
-    /**
-     * @return ResponseModeManager
-     */
     public function getResponseModeManager(): ResponseModeManager
     {
         if (null === $this->responseModeManager) {

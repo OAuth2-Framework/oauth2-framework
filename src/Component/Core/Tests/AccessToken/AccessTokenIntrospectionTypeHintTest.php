@@ -23,6 +23,7 @@ use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use OAuth2Framework\Component\TokenIntrospectionEndpoint\TokenTypeHint;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 /**
  * @group TypeHint
@@ -32,6 +33,8 @@ use Prophecy\Argument;
  */
 final class AccessTokenIntrospectionTypeHintTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var null|AccessTokenIntrospectionTypeHint
      */

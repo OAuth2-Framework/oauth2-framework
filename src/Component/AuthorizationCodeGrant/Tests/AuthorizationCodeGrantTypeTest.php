@@ -28,6 +28,7 @@ use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use OAuth2Framework\Component\TokenEndpoint\GrantTypeData;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
@@ -40,6 +41,8 @@ use Psr\Http\Message\StreamInterface;
  */
 final class AuthorizationCodeGrantTypeTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var null|AuthorizationCodeGrantType
      */

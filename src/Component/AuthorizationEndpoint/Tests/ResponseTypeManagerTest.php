@@ -16,6 +16,7 @@ namespace OAuth2Framework\Component\AuthorizationEndpoint\Tests;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType\ResponseType;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType\ResponseTypeManager;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 /**
  * @group AuthorizationEndpoint
@@ -25,6 +26,8 @@ use PHPUnit\Framework\TestCase;
  */
 final class ResponseTypeManagerTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @test
      */

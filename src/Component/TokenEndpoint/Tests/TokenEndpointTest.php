@@ -29,6 +29,7 @@ use OAuth2Framework\Component\TokenEndpoint\Extension\TokenEndpointExtensionMana
 use OAuth2Framework\Component\TokenEndpoint\TokenEndpoint;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
@@ -39,6 +40,8 @@ use Psr\Http\Server\RequestHandlerInterface;
  */
 final class TokenEndpointTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var null|TokenEndpoint
      */
@@ -164,7 +167,7 @@ final class TokenEndpointTest extends TestCase
         $body = $response->getBody()->getContents();
 
         static::assertEquals(200, $response->getStatusCode());
-        static::assertRegExp('/^\{"token_type_foo"\:"token_type_bar","token_type"\:"TOKEN_TYPE","access_token"\:"[a-f0-9]{64}","expires_in"\:\d{4}\}$/', $body);
+        static::assertMatchesRegularExpression('/^\{"token_type_foo"\:"token_type_bar","token_type"\:"TOKEN_TYPE","access_token"\:"[a-f0-9]{64}","expires_in"\:\d{4}\}$/', $body);
     }
 
     private function getTokenEndpoint(): TokenEndpoint

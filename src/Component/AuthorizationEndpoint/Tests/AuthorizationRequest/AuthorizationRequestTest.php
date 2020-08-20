@@ -19,6 +19,7 @@ use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServer;
 use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 /**
  * @group AuthorizationEndpoint
@@ -28,6 +29,8 @@ use PHPUnit\Framework\TestCase;
  */
 final class AuthorizationRequestTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @test
      */

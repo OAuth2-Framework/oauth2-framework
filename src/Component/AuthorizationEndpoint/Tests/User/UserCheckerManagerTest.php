@@ -18,6 +18,7 @@ use OAuth2Framework\Component\AuthorizationEndpoint\User\UserAuthenticationCheck
 use OAuth2Framework\Component\AuthorizationEndpoint\User\UserAuthenticationCheckerManager;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 /**
  * @group UserChecker
@@ -27,6 +28,8 @@ use Prophecy\Argument;
  */
 final class UserCheckerManagerTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @test
      */

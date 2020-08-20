@@ -25,6 +25,7 @@ use OAuth2Framework\Component\Core\Client\ClientRepository;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Http\Message\RequestInterface;
 
 /**
@@ -35,6 +36,8 @@ use Psr\Http\Message\RequestInterface;
  */
 final class AuthorizationRequestLoaderTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var null|AuthorizationRequestLoader
      */

@@ -19,6 +19,7 @@ use OAuth2Framework\Component\TokenEndpoint\GrantTypeManager;
 use OAuth2Framework\Component\TokenEndpoint\GrantTypeMiddleware;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -33,6 +34,8 @@ use Psr\Http\Server\RequestHandlerInterface;
  */
 final class GrantTypeMiddlewareTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var null|GrantTypeManager
      */

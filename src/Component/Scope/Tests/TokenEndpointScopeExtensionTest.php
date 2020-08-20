@@ -29,6 +29,7 @@ use OAuth2Framework\Component\TokenEndpoint\GrantType;
 use OAuth2Framework\Component\TokenEndpoint\GrantTypeData;
 use OAuth2Framework\Component\TokenEndpoint\TokenEndpoint;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
@@ -40,6 +41,8 @@ use Psr\Http\Message\StreamInterface;
  */
 final class TokenEndpointScopeExtensionTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var null|TokenEndpointScopeExtension
      */

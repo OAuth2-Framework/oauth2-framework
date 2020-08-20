@@ -16,6 +16,7 @@ namespace OAuth2Framework\Component\ResourceServerAuthentication\Tests;
 use OAuth2Framework\Component\ResourceServerAuthentication\AuthenticationMethod;
 use OAuth2Framework\Component\ResourceServerAuthentication\AuthenticationMethodManager;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 /**
  * @group TokenEndpoint
@@ -25,6 +26,8 @@ use PHPUnit\Framework\TestCase;
  */
 class AuthenticationMethodManagerTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @test
      */

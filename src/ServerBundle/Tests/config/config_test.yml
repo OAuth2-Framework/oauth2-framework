@@ -28,6 +28,7 @@ framework:
 twig:
     debug:            '%kernel.debug%'
     strict_variables: '%kernel.debug%'
+    exception_controller: null
 
 services:
     Psr\EventDispatcher\EventDispatcherInterface:

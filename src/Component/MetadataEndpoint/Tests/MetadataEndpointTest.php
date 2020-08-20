@@ -21,6 +21,7 @@ use Nyholm\Psr7\Factory\Psr17Factory;
 use OAuth2Framework\Component\MetadataEndpoint\Metadata;
 use OAuth2Framework\Component\MetadataEndpoint\MetadataEndpoint;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -32,6 +33,8 @@ use Psr\Http\Server\RequestHandlerInterface;
  */
 final class MetadataEndpointTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var null|MetadataEndpoint
      */

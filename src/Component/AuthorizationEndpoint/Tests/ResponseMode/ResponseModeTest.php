@@ -22,6 +22,7 @@ use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\ResponseMode;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\ResponseModeManager;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use function Safe\json_encode;
 
 /**
@@ -31,6 +32,8 @@ use function Safe\json_encode;
  */
 final class ResponseModeTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var null|ResponseModeManager
      */

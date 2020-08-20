@@ -28,6 +28,7 @@ use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 /**
  * @group ResponseType
@@ -37,6 +38,8 @@ use Prophecy\Argument;
  */
 final class AuthorizationCodeResponseTypeTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var null|AuthorizationCodeResponseType
      */

@@ -21,6 +21,7 @@ use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 /**
  * @group AccessTokenHandlerManager
@@ -29,6 +30,8 @@ use PHPUnit\Framework\TestCase;
  */
 final class AccessTokenHandlerManagerTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @test
      */

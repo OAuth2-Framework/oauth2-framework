@@ -23,6 +23,7 @@ use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenRevocationTypeHint;
 use OAuth2Framework\Component\TokenIntrospectionEndpoint\TokenTypeHint;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 /**
  * @group TypeHint
@@ -32,6 +33,8 @@ use Prophecy\Argument;
  */
 final class RefreshTokenRevocationTypeHintTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var null|RefreshTokenRevocationTypeHint
      */

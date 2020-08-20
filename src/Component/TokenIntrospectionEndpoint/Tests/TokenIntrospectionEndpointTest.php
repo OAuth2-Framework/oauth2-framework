@@ -21,6 +21,7 @@ use OAuth2Framework\Component\TokenIntrospectionEndpoint\TokenIntrospectionEndpo
 use OAuth2Framework\Component\TokenIntrospectionEndpoint\TokenTypeHint;
 use OAuth2Framework\Component\TokenIntrospectionEndpoint\TokenTypeHintManager;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -34,6 +35,8 @@ use Psr\Http\Server\RequestHandlerInterface;
  */
 final class TokenIntrospectionEndpointTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var null|TokenTypeHintManager
      */

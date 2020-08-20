@@ -23,6 +23,7 @@ use OAuth2Framework\Component\WebFingerEndpoint\ResourceRepository;
 use OAuth2Framework\Component\WebFingerEndpoint\WebFingerEndpoint;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -34,6 +35,8 @@ use Psr\Http\Server\RequestHandlerInterface;
  */
 final class WebFingerEndpointTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @test
      */

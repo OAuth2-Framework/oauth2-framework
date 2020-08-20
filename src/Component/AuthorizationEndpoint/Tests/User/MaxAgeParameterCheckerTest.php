@@ -18,6 +18,7 @@ use OAuth2Framework\Component\AuthorizationEndpoint\User\MaxAgeParameterAuthenti
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 /**
  * @group UserChecker
@@ -27,6 +28,8 @@ use PHPUnit\Framework\TestCase;
  */
 final class MaxAgeParameterCheckerTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @test
      */

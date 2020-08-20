@@ -21,6 +21,7 @@ use OAuth2Framework\Component\ResourceOwnerPasswordCredentialsGrant\ResourceOwne
 use OAuth2Framework\Component\ResourceOwnerPasswordCredentialsGrant\ResourceOwnerPasswordCredentialsGrantType;
 use OAuth2Framework\Component\TokenEndpoint\GrantTypeData;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
@@ -33,6 +34,8 @@ use Psr\Http\Message\StreamInterface;
  */
 final class ResourceOwnerPasswordCredentialsGrantTypeTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var null|ResourceOwnerPasswordCredentialsGrantType
      */

@@ -23,6 +23,7 @@ use OAuth2Framework\Component\Core\Client\ClientRepository;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -35,6 +36,8 @@ use Psr\Http\Server\RequestHandlerInterface;
  */
 final class ClientAuthenticationMiddlewareTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @test
      */

@@ -1,4 +1,4 @@
-cache_dir: "/cache/gitsplit"
+cache_url: "/cache/gitsplit"
 
 splits:
     - prefix: "src/SecurityBundle"

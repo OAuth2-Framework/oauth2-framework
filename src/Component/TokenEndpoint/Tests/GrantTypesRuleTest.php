@@ -21,6 +21,7 @@ use OAuth2Framework\Component\TokenEndpoint\GrantType;
 use OAuth2Framework\Component\TokenEndpoint\GrantTypeManager;
 use OAuth2Framework\Component\TokenEndpoint\Rule\GrantTypesRule;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 /**
  * @group Tests
@@ -29,6 +30,8 @@ use PHPUnit\Framework\TestCase;
  */
 final class GrantTypesRuleTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var null|GrantTypesRule
      */

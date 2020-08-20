@@ -24,6 +24,7 @@ use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenId;
 use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenRepository;
 use OAuth2Framework\Component\TokenEndpoint\GrantTypeData;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
@@ -36,6 +37,8 @@ use Psr\Http\Message\StreamInterface;
  */
 final class RefreshTokenGrantTypeTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var null|RefreshTokenGrantType
      */

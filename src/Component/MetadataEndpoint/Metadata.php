@@ -45,9 +45,6 @@ class Metadata
         $this->values[$key] = $value;
     }
 
-    /**
-     * @return array
-     */
     public function all(): array
     {
         return $this->values;

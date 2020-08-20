@@ -21,6 +21,7 @@ use OAuth2Framework\Component\Scope\ScopeParameterChecker;
 use OAuth2Framework\Component\Scope\ScopeRepository;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 /**
  * @group ScopeParameterChecker
@@ -29,6 +30,8 @@ use Prophecy\Argument;
  */
 final class ScopeParameterCheckerTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var null|ScopeParameterChecker
      */

@@ -29,6 +29,7 @@ use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType\ResponseTypeMan
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 /**
  * @group ParameterCheckerManager
@@ -37,6 +38,8 @@ use PHPUnit\Framework\TestCase;
  */
 final class ParameterCheckerManagerTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var null|ParameterCheckerManager
      */

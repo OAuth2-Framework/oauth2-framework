@@ -20,6 +20,7 @@ use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
@@ -30,6 +31,8 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 final class ClientSecretBasicAuthenticationMethodTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @test
      */

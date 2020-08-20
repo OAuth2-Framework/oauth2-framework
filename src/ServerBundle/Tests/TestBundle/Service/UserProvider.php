@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Tests\TestBundle\Service;
 
-use OAuth2Framework\Component\Core\UserAccount\UserAccount;
+use OAuth2Framework\ServerBundle\Tests\TestBundle\Entity\UserAccount;
 use OAuth2Framework\ServerBundle\Tests\TestBundle\Repository\UserAccountRepository;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
@@ -49,7 +49,7 @@ final class UserProvider implements UserProviderInterface
         return $this->loadUserByUsername($user->getUsername());
     }
 
-    public function supportsClass($class)
+    public function supportsClass($class): bool
     {
         return UserAccount::class === $class;
     }

@@ -22,6 +22,7 @@ use OAuth2Framework\Component\Scope\Policy\ErrorScopePolicy;
 use OAuth2Framework\Component\Scope\Policy\NoScopePolicy;
 use OAuth2Framework\Component\Scope\Policy\ScopePolicyManager;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 /**
  * @group ScopePolicyManager
@@ -30,6 +31,8 @@ use PHPUnit\Framework\TestCase;
  */
 final class ScopePolicyManagerTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var null|ScopePolicyManager
      */

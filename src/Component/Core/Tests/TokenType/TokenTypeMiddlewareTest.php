@@ -18,6 +18,7 @@ use OAuth2Framework\Component\Core\TokenType\TokenTypeManager;
 use OAuth2Framework\Component\Core\TokenType\TokenTypeMiddleware;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -31,6 +32,8 @@ use Psr\Http\Server\RequestHandlerInterface;
  */
 final class TokenTypeMiddlewareTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var null|TokenTypeMiddleware
      */
