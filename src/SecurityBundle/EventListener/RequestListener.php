@@ -15,13 +15,12 @@ namespace OAuth2Framework\SecurityBundle\EventListener;
 
 use OAuth2Framework\SecurityBundle\Security\Authentication\Token\OAuth2Token;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Event\AuthenticationEvent;
 
 class RequestListener
 {
     /**
-     * @var TokenStorageInterface
+     * @var RequestStack
      */
     private $requestStack;
 
@@ -30,7 +29,7 @@ class RequestListener
         $this->requestStack = $requestStack;
     }
 
-    public function onKernelRequest(AuthenticationEvent $event)
+    public function onKernelRequest(AuthenticationEvent $event): void
     {
         $request = $this->requestStack->getMasterRequest();
         $token = $event->getAuthenticationToken();

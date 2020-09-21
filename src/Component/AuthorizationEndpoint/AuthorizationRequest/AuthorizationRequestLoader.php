@@ -82,7 +82,7 @@ class AuthorizationRequestLoader
     private $claimCheckerManager;
 
     /**
-     * @var JWELoader
+     * @var null|JWELoader
      */
     private $jweLoader;
 

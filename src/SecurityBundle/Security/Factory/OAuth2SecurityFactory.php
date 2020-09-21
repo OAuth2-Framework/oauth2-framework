@@ -17,12 +17,10 @@ use OAuth2Framework\SecurityBundle\Security\Authentication\Provider\OAuth2Provid
 use OAuth2Framework\SecurityBundle\Security\EntryPoint\OAuth2EntryPoint;
 use OAuth2Framework\SecurityBundle\Security\Handler\DefaultFailureHandler;
 use Symfony\Bundle\SecurityBundle\DependencyInjection\Security\Factory\SecurityFactoryInterface;
-use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 final class OAuth2SecurityFactory implements SecurityFactoryInterface
 {

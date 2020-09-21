@@ -17,13 +17,15 @@
     ],
     "require": {
         "php": "^7.3",
+        "doctrine/common": "^2.8|^3.0",
         "oauth2-framework/core": "^1.0",
         "sensio/framework-extra-bundle": "^5.0",
         "symfony/config": "^4.3|^5.0",
         "symfony/dependency-injection": "^4.3|^5.0",
         "symfony/http-kernel": "^4.3|^5.0",
         "symfony/psr-http-message-bridge": "^1.0|^2.0",
-        "symfony/routing": "^4.3|^5.0"
+        "symfony/routing": "^4.3|^5.0",
+        "symfony/security-bundle": "^4.3|^5.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.0",

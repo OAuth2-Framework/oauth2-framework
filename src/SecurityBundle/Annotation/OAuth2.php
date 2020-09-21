@@ -42,6 +42,11 @@ class OAuth2
      */
     private $resource_owner_id;
 
+    /**
+     * @var null|array
+     */
+    private $custom;
+
     public function __construct(array $data)
     {
         foreach ($data as $key => $value) {
@@ -70,5 +75,10 @@ class OAuth2
     public function getTokenType(): ?string
     {
         return $this->token_type;
+    }
+
+    public function getCustom(): ?array
+    {
+        return $this->custom;
     }
 }
