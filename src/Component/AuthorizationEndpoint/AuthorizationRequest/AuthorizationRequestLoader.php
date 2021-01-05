@@ -42,23 +42,23 @@ class AuthorizationRequestLoader
 
     private bool $requestObjectReferenceAllowed = false;
 
-    private ?JWKSet $keyEncryptionKeySet;
+    private ?JWKSet $keyEncryptionKeySet = null;
 
     private bool $requireRequestUriRegistration = true;
 
     private bool $requireEncryption = false;
 
-    private ?ClientInterface $client;
+    private ?ClientInterface $client = null;
 
-    private ?JWSVerifier $jwsVerifier;
+    private ?JWSVerifier $jwsVerifier = null;
 
-    private ?ClaimCheckerManager $claimCheckerManager;
+    private ?ClaimCheckerManager $claimCheckerManager = null;
 
-    private ?JWELoader $jweLoader;
+    private ?JWELoader $jweLoader = null;
 
-    private ?JKUFactory $jkuFactory;
+    private ?JKUFactory $jkuFactory = null;
 
-    private ?RequestFactoryInterface $requestFactory;
+    private ?RequestFactoryInterface $requestFactory = null;
 
     public function __construct(ClientRepository $clientRepository)
     {

@@ -28,9 +28,6 @@ final class AccessTokenMiddleware implements MiddlewareInterface
 
     private AccessTokenRepository $accessTokenRepository;
 
-    /**
-     * AccessTokenMiddleware constructor.
-     */
     public function __construct(TokenTypeManager $tokenTypeManager, AccessTokenRepository $accessTokenRepository)
     {
         $this->tokenTypeManager = $tokenTypeManager;

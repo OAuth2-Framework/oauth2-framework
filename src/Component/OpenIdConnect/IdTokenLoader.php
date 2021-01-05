@@ -24,9 +24,6 @@ class IdTokenLoader
 
     private JWSLoader $jwsLoader;
 
-    /**
-     * IdTokenLoader constructor.
-     */
     public function __construct(JWSLoader $jwsLoader, JWKSet $signatureKeySet)
     {
         $this->signatureKeySet = $signatureKeySet;

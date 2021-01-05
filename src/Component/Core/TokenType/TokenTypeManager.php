@@ -23,7 +23,7 @@ class TokenTypeManager
      */
     private array $tokenTypes = [];
 
-    private ?string $defaultTokenType;
+    private ?string $defaultTokenType = null;
 
     public function add(TokenType $tokenType, bool $default = false): void
     {

@@ -30,15 +30,12 @@ class MetadataEndpoint implements MiddlewareInterface
 
     private Metadata $metadata;
 
-    private ?JWK $signatureKey;
+    private ?JWK $signatureKey = null;
 
-    private ?string $signatureAlgorithm;
+    private ?string $signatureAlgorithm = null;
 
-    private ?JWSBuilder $jwsBuilder;
+    private ?JWSBuilder $jwsBuilder = null;
 
-    /**
-     * MetadataEndpoint constructor.
-     */
     public function __construct(ResponseFactoryInterface $responseFactory, Metadata $metadata)
     {
         $this->responseFactory = $responseFactory;

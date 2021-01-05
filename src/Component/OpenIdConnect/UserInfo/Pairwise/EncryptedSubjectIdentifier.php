@@ -26,9 +26,6 @@ final class EncryptedSubjectIdentifier implements PairwiseSubjectIdentifierAlgor
 
     private string $algorithm;
 
-    /**
-     * EncryptedSubjectIdentifier constructor.
-     */
     public function __construct(string $pairwiseEncryptionKey, string $algorithm)
     {
         if (!\in_array($algorithm, openssl_get_cipher_methods(), true)) {

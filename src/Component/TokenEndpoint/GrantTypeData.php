@@ -24,9 +24,9 @@ class GrantTypeData
 
     private DataBag $parameter;
 
-    private ?ResourceOwnerId $resourceOwnerId;
+    private ?ResourceOwnerId $resourceOwnerId = null;
 
-    private ?Client $client;
+    private ?Client $client = null;
 
     public function __construct(?Client $client)
     {

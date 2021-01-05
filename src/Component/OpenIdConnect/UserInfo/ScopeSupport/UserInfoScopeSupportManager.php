@@ -19,14 +19,13 @@ class UserInfoScopeSupportManager
     /**
      * @var UserInfoScopeSupport[]
      */
-    private array $userinfoScopeSupports = [];
+    private array $userinfoScopeSupports;
 
-    /**
-     * UserInfoScopeSupportManager constructor.
-     */
     public function __construct()
     {
-        $this->userinfoScopeSupports['openid'] = new OpenIdScopeSupport();
+        $this->userinfoScopeSupports = [
+            'openid' => new OpenIdScopeSupport()
+        ];
     }
 
     public function add(UserInfoScopeSupport $userinfoScopeSupport): void

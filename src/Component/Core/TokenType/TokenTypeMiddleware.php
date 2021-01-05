@@ -30,9 +30,6 @@ final class TokenTypeMiddleware implements MiddlewareInterface
 
     private TokenTypeManager $tokenTypeManager;
 
-    /**
-     * ClientAuthenticationMiddleware constructor.
-     */
     public function __construct(TokenTypeManager $tokenTypeManager, bool $tokenTypeParameterAllowed)
     {
         $this->tokenTypeManager = $tokenTypeManager;

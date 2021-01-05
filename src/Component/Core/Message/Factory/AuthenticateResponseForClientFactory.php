@@ -20,9 +20,6 @@ final class AuthenticateResponseForClientFactory extends OAuth2ResponseFactory
 {
     private AuthenticationMethodManager $authenticationMethodManager;
 
-    /**
-     * AuthenticateResponseForClientFactory constructor.
-     */
     public function __construct(AuthenticationMethodManager $authenticationMethodManager)
     {
         $this->authenticationMethodManager = $authenticationMethodManager;

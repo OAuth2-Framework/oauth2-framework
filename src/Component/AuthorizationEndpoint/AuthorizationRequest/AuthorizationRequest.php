@@ -32,19 +32,19 @@ class AuthorizationRequest
 
     private Client $client;
 
-    private ?UserAccount $userAccount;
+    private ?UserAccount $userAccount = null;
 
     private DataBag $metadata;
 
-    private ?ResponseMode $responseMode;
+    private ?ResponseMode $responseMode = null;
 
-    private array $queryParameters = [];
+    private array $queryParameters;
 
     private array $responseParameters = [];
 
     private array $responseHeaders = [];
 
-    private ?ResourceServer $resourceServer;
+    private ?ResourceServer $resourceServer = null;
 
     private array $attributes = [];
 

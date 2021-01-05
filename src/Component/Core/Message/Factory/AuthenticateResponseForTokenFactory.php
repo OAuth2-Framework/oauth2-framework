@@ -20,9 +20,6 @@ final class AuthenticateResponseForTokenFactory extends OAuth2ResponseFactory
 {
     private TokenTypeManager $tokenTypeManager;
 
-    /**
-     * AuthenticateResponseForTokenFactory constructor.
-     */
     public function __construct(TokenTypeManager $tokenTypeManager)
     {
         $this->tokenTypeManager = $tokenTypeManager;

@@ -32,7 +32,7 @@ class OpenIdConnectExtension implements TokenEndpointExtension
 
     private JWSBuilder $jwsBuilder;
 
-    private ?JWEBuilder $jweBuilder;
+    private ?JWEBuilder $jweBuilder = null;
 
     private IdTokenBuilderFactory $idTokenBuilderFactory;
 

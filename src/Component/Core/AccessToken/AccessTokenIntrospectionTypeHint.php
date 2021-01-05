@@ -19,9 +19,6 @@ final class AccessTokenIntrospectionTypeHint implements TokenTypeHint
 {
     private AccessTokenRepository $accessTokenRepository;
 
-    /**
-     * AccessToken constructor.
-     */
     public function __construct(AccessTokenRepository $accessTokenRepository)
     {
         $this->accessTokenRepository = $accessTokenRepository;

@@ -28,9 +28,6 @@ final class InitialAccessTokenMiddleware implements MiddlewareInterface
 
     private bool $isRequired;
 
-    /**
-     * InitialAccessTokenMiddleware constructor.
-     */
     public function __construct(BearerToken $bearerToken, InitialAccessTokenRepository $initialAccessTokenRepository, bool $isRequired)
     {
         $this->bearerToken = $bearerToken;

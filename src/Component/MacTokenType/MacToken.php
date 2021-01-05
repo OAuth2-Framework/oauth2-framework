@@ -22,19 +22,13 @@ use Psr\Http\Message\ServerRequestInterface;
 
 abstract class MacToken implements TokenType
 {
-    /**
-     * @var int
-     */
-    private $timestampLifetime;
+    private int $timestampLifetime;
 
     private string $macAlgorithm;
 
-    /**
-     * MacToken constructor.
-     */
     public function __construct(string $macAlgorithm, int $timestampLifetime)
     {
-        if (!\in_array($macAlgorithm, array_keys($this->getAlgorithmMap()), true)) {
+        if (!array_key_exists($macAlgorithm, $this->getAlgorithmMap())) {
             throw new \InvalidArgumentException('Unsupported ma algorithm.');
         }
         if ($timestampLifetime <= 0) {

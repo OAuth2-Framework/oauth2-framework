@@ -13,17 +13,18 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\ClientRegistrationEndpoint;
 
+use DateTimeImmutable;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 
 abstract class AbstractInitialAccessToken implements InitialAccessToken
 {
     private bool $revoked;
 
-    private ?\DateTimeImmutable $expiresAt;
+    private ?DateTimeImmutable $expiresAt;
 
     private ?UserAccountId $userAccountId;
 
-    public function __construct(?UserAccountId $userAccountId, ?\DateTimeImmutable $expiresAt)
+    public function __construct(?UserAccountId $userAccountId, ?DateTimeImmutable $expiresAt)
     {
         $this->expiresAt = $expiresAt;
         $this->userAccountId = $userAccountId;
@@ -35,7 +36,7 @@ abstract class AbstractInitialAccessToken implements InitialAccessToken
         return $this->userAccountId;
     }
 
-    public function getExpiresAt(): ?\DateTimeImmutable
+    public function getExpiresAt(): ?DateTimeImmutable
     {
         return $this->expiresAt;
     }

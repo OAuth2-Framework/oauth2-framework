@@ -21,11 +21,11 @@ class Consent
 
     private string $requestedScope;
 
-    private ?string $grantedScope;
+    private ?string $grantedScope = null;
 
     private string $requestedClaims;
 
-    private ?string $grantedClaims;
+    private ?string $grantedClaims = null;
 
     public function __construct(string $clientId, string $userAccountId, string $scope, string $claims)
     {

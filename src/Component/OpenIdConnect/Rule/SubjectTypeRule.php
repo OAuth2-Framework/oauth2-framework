@@ -24,9 +24,6 @@ final class SubjectTypeRule implements Rule
 {
     private UserInfo $userinfo;
 
-    /**
-     * SubjectTypeRule constructor.
-     */
     public function __construct(UserInfo $userinfo)
     {
         $this->userinfo = $userinfo;

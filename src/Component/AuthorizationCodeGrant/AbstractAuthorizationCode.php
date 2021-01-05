@@ -40,7 +40,7 @@ abstract class AbstractAuthorizationCode implements AuthorizationCode
 
     private bool $revoked;
 
-    private ?ResourceServerId $resourceServerId;
+    private ?ResourceServerId $resourceServerId = null;
 
     public function __construct(ClientId $clientId, UserAccountId $userAccountId, array $queryParameters, string $redirectUri, \DateTimeImmutable $expiresAt, DataBag $parameter, DataBag $metadata, ?ResourceServerId $resourceServerId)
     {

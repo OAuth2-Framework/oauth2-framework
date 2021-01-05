@@ -23,7 +23,7 @@ class ScopePolicyManager
      */
     private array $scopePolicies = [];
 
-    private ?string $defaultScopePolicy;
+    private ?string $defaultScopePolicy = null;
 
     public function add(ScopePolicy $scopePolicy, bool $isDefault = false): void
     {

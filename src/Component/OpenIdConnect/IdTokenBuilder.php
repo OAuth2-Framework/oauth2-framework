@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\OpenIdConnect;
 
+use DateTimeImmutable;
 use function Safe\sprintf;
 use function Safe\json_encode;
 use Base64Url\Base64Url;
@@ -45,35 +46,35 @@ class IdTokenBuilder
 
     private UserInfo $userinfo;
 
-    private ?JWKSet $signatureKeys;
+    private ?JWKSet $signatureKeys = null;
 
     private int $lifetime;
 
-    private ?string $scope;
+    private ?string $scope = null;
 
     private array $requestedClaims = [];
 
-    private ?string $claimsLocales;
+    private ?string $claimsLocales = null;
 
-    private ?AccessTokenId $accessTokenId;
+    private ?AccessTokenId $accessTokenId = null;
 
-    private ?AuthorizationCodeId $authorizationCodeId;
+    private ?AuthorizationCodeId $authorizationCodeId = null;
 
-    private ?string $nonce;
+    private ?string $nonce = null;
 
     private bool $withAuthenticationTime = false;
 
-    private ?JWSBuilder $jwsBuilder;
+    private ?JWSBuilder $jwsBuilder = null;
 
-    private ?string $signatureAlgorithm;
+    private ?string $signatureAlgorithm = null;
 
-    private ?JWEBuilder $jweBuilder;
+    private ?JWEBuilder $jweBuilder = null;
 
-    private ?string $keyEncryptionAlgorithm;
+    private ?string $keyEncryptionAlgorithm = null;
 
-    private ?string $contentEncryptionAlgorithm;
+    private ?string $contentEncryptionAlgorithm = null;
 
-    private ?\DateTimeImmutable $expiresAt;
+    private ?DateTimeImmutable $expiresAt = null;
 
     private ?JKUFactory $jkuFactory;
 
@@ -149,7 +150,7 @@ class IdTokenBuilder
         $this->nonce = $nonce;
     }
 
-    public function withExpirationAt(\DateTimeImmutable $expiresAt): void
+    public function withExpirationAt(DateTimeImmutable $expiresAt): void
     {
         $this->expiresAt = $expiresAt;
     }
@@ -212,7 +213,7 @@ class IdTokenBuilder
     private function updateClaimsWithJwtClaims(array $claims): array
     {
         if (null === $this->expiresAt) {
-            $this->expiresAt = (new \DateTimeImmutable())->setTimestamp(time() + $this->lifetime);
+            $this->expiresAt = (new DateTimeImmutable())->setTimestamp(time() + $this->lifetime);
         }
 
         return $claims + [

@@ -25,11 +25,6 @@ class Pipe implements MiddlewareInterface
      */
     private array $middlewares;
 
-    /**
-     * Dispatcher constructor.
-     *
-     * @param MiddlewareInterface[] $middlewares
-     */
     public function __construct(array $middlewares = [])
     {
         $this->middlewares = $middlewares;

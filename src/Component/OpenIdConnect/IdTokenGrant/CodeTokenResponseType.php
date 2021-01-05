@@ -25,9 +25,6 @@ final class CodeTokenResponseType implements ResponseType
 
     private TokenResponseType $tokenResponseType;
 
-    /**
-     * CodeIdTokenTokenResponseType constructor.
-     */
     public function __construct(AuthorizationCodeResponseType $codeResponseType, TokenResponseType $tokenResponseType)
     {
         $this->codeResponseType = $codeResponseType;

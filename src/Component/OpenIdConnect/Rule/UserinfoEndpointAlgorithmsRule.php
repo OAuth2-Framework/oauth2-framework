@@ -27,9 +27,6 @@ final class UserinfoEndpointAlgorithmsRule implements Rule
 
     private ?JWEBuilder $jweBuilder;
 
-    /**
-     * UserinfoEndpointAlgorithmsRule constructor.
-     */
     public function __construct(?JWSBuilder $jwsBuilder, ?JWEBuilder $jweBuilder)
     {
         $this->jwsBuilder = $jwsBuilder;

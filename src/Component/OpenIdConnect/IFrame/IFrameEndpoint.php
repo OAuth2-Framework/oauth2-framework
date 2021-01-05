@@ -23,9 +23,6 @@ final class IFrameEndpoint implements MiddlewareInterface
 {
     private ResponseFactoryInterface $responseFactory;
 
-    /**
-     * IFrameEndpoint constructor.
-     */
     public function __construct(ResponseFactoryInterface $responseFactory)
     {
         $this->responseFactory = $responseFactory;

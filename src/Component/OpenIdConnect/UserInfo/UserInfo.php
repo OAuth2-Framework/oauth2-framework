@@ -18,21 +18,17 @@ use function Safe\sprintf;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 use OAuth2Framework\Component\OpenIdConnect\UserInfo\Claim\ClaimManager;
-use OAuth2Framework\Component\OpenIdConnect\UserInfo\Claim\ClaimSourceManager;
 use OAuth2Framework\Component\OpenIdConnect\UserInfo\Pairwise\PairwiseSubjectIdentifierAlgorithm;
 use OAuth2Framework\Component\OpenIdConnect\UserInfo\ScopeSupport\UserInfoScopeSupportManager;
 
 class UserInfo
 {
-    private ?PairwiseSubjectIdentifierAlgorithm $pairwiseAlgorithm;
+    private ?PairwiseSubjectIdentifierAlgorithm $pairwiseAlgorithm = null;
 
     private UserInfoScopeSupportManager $userinfoScopeSupportManager;
 
     private ClaimManager $claimManager;
 
-    /**
-     * UserInfo constructor.
-     */
     public function __construct(UserInfoScopeSupportManager $userinfoScopeSupportManager, ClaimManager $claimManager)
     {
         $this->userinfoScopeSupportManager = $userinfoScopeSupportManager;

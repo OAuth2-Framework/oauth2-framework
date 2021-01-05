@@ -33,11 +33,11 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class UserInfoEndpoint implements MiddlewareInterface
 {
-    private ?JWKSet $signatureKeys;
+    private ?JWKSet $signatureKeys = null;
 
-    private ?JWSBuilder $jwsBuilder;
+    private ?JWSBuilder $jwsBuilder = null;
 
-    private ?JWEBuilder $jweBuilder;
+    private ?JWEBuilder $jweBuilder = null;
 
     private ClientRepository $clientRepository;
 
@@ -47,9 +47,6 @@ class UserInfoEndpoint implements MiddlewareInterface
 
     private IdTokenBuilderFactory $idTokenBuilderFactory;
 
-    /**
-     * UserInfoEndpoint constructor.
-     */
     public function __construct(IdTokenBuilderFactory $idTokenBuilderFactory, ClientRepository $clientRepository, UserAccountRepository $userAccountRepository, ResponseFactoryInterface $responseFactory)
     {
         $this->idTokenBuilderFactory = $idTokenBuilderFactory;

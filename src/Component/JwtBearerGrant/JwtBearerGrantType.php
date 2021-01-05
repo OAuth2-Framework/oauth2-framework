@@ -45,8 +45,6 @@ class JwtBearerGrantType implements GrantType
 {
     private JWSVerifier $jwsVerifier;
 
-    private ?JWEDecrypter $jweDecrypter;
-
     private ClaimCheckerManager $claimCheckerManager;
 
     private ClientRepository $clientRepository;
@@ -55,15 +53,14 @@ class JwtBearerGrantType implements GrantType
 
     private bool $encryptionRequired = false;
 
-    private ?JWKSet $keyEncryptionKeySet;
+    private ?JWEDecrypter $jweDecrypter = null;
 
-    private ?TrustedIssuerRepository $trustedIssuerRepository;
+    private ?JWKSet $keyEncryptionKeySet = null;
 
-    private ?JKUFactory $jkuFactory;
+    private ?TrustedIssuerRepository $trustedIssuerRepository = null;
 
-    /**
-     * JWTBearerGrantType constructor.
-     */
+    private ?JKUFactory $jkuFactory = null;
+
     public function __construct(JWSVerifier $jwsVerifier, ClaimCheckerManager $claimCheckerManager, ClientRepository $clientRepository, ?UserAccountRepository $userAccountRepository)
     {
         $this->jwsVerifier = $jwsVerifier;

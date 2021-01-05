@@ -32,15 +32,12 @@ final class IdTokenResponseType implements ResponseType
 
     private JWSBuilder $jwsBuilder;
 
-    private ?JWEBuilder $jweBuilder;
+    private ?JWEBuilder $jweBuilder = null;
 
     private IdTokenBuilderFactory $idTokenBuilderFactory;
 
     private string $defaultSignatureAlgorithm;
 
-    /**
-     * IdTokenResponseType constructor.
-     */
     public function __construct(IdTokenBuilderFactory $idTokenBuilderFactory, string $defaultSignatureAlgorithm, JWSBuilder $jwsBuilder, JWKSet $signatureKeys, ?JWEBuilder $jweBuilder)
     {
         if ('none' === $defaultSignatureAlgorithm) {

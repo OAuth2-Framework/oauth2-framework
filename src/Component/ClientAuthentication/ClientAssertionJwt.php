@@ -42,13 +42,13 @@ class ClientAssertionJwt implements AuthenticationMethod
 
     private JWSVerifier $jwsVerifier;
 
-    private ?TrustedIssuerRepository $trustedIssuerRepository;
+    private ?TrustedIssuerRepository $trustedIssuerRepository = null;
 
-    private ?JKUFactory $jkuFactory;
+    private ?JKUFactory $jkuFactory = null;
 
-    private ?JWELoader $jweLoader;
+    private ?JWELoader $jweLoader = null;
 
-    private ?JWKSet $keyEncryptionKeySet;
+    private ?JWKSet $keyEncryptionKeySet = null;
 
     private bool $encryptionRequired = false;
 

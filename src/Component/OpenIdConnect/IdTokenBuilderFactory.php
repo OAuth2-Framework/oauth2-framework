@@ -27,9 +27,9 @@ class IdTokenBuilderFactory
 
     private int $lifetime;
 
-    private ?JKUFactory $jkuFactory;
+    private ?JKUFactory $jkuFactory = null;
 
-    private ?AuthorizationCodeRepository $authorizationCodeRepository;
+    private ?AuthorizationCodeRepository $authorizationCodeRepository = null;
 
     public function __construct(string $issuer, UserInfo $userinfo, int $lifetime)
     {

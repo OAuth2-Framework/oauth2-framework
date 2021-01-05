@@ -18,13 +18,11 @@ class Source
     /**
      * @var string[]
      */
-    private array $availableClaims = [];
+    private array $availableClaims;
 
-    private array $source = [];
+    private array $source;
 
     /**
-     * Source constructor.
-     *
      * @param string[] $availableClaims
      */
     public function __construct(array $availableClaims, array $source)

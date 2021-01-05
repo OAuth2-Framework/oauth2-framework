@@ -22,15 +22,15 @@ use function Safe\sprintf;
  */
 class OAuth2
 {
-    private ?string $scope;
+    private ?string $scope = null;
 
-    private ?string $token_type;
+    private ?string $token_type = null;
 
-    private ?string $client_id;
+    private ?string $client_id = null;
 
-    private ?string $resource_owner_id;
+    private ?string $resource_owner_id = null;
 
-    private ?array $custom;
+    private ?array $custom = null;
 
     public function __construct(array $data)
     {

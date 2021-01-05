@@ -27,9 +27,6 @@ final class IdTokenAlgorithmsRule implements Rule
 
     private ?JWEBuilder $jweBuilder;
 
-    /**
-     * IdTokenAlgorithmsRule constructor.
-     */
     public function __construct(JWSBuilder $jwsBuilder, ?JWEBuilder $jweBuilder)
     {
         $this->jwsBuilder = $jwsBuilder;
