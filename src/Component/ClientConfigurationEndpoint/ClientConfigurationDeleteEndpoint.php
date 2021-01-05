@@ -23,15 +23,9 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 final class ClientConfigurationDeleteEndpoint implements MiddlewareInterface
 {
-    /**
-     * @var ClientRepository
-     */
-    private $clientRepository;
+    private ClientRepository $clientRepository;
 
-    /**
-     * @var ResponseFactoryInterface
-     */
-    private $responseFactory;
+    private ResponseFactoryInterface $responseFactory;
 
     public function __construct(ClientRepository $clientRepository, ResponseFactoryInterface $responseFactory)
     {

@@ -21,15 +21,9 @@ use function Safe\sprintf;
 
 class ScopeParameterChecker implements ParameterChecker
 {
-    /**
-     * @var ScopeRepository
-     */
-    private $scopeRepository;
+    private ScopeRepository $scopeRepository;
 
-    /**
-     * @var ScopePolicyManager
-     */
-    private $scopePolicyManager;
+    private ScopePolicyManager $scopePolicyManager;
 
     public function __construct(ScopeRepository $scopeRepository, ScopePolicyManager $scopePolicyManager)
     {

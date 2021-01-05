@@ -22,10 +22,7 @@ use Psr\Http\Message\ServerRequestInterface;
 
 final class NonePrompt implements AuthorizationEndpointHook
 {
-    /**
-     * @var null|ConsentRepository
-     */
-    private $consentRepository;
+    private ?ConsentRepository $consentRepository;
 
     public function __construct(?ConsentRepository $consentRepository)
     {

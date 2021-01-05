@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\RefreshTokenGrant;
 
+use function Safe\sprintf;
 use OAuth2Framework\Component\Core\AccessToken\AccessToken;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwner;
@@ -23,15 +24,9 @@ use Psr\Http\Message\ServerRequestInterface;
 
 final class RefreshTokenEndpointExtension implements TokenEndpointExtension
 {
-    /**
-     * @var int
-     */
-    private $lifetime;
+    private int $lifetime;
 
-    /**
-     * @var RefreshTokenRepository
-     */
-    private $refreshTokenRepository;
+    private RefreshTokenRepository $refreshTokenRepository;
 
     public function __construct(int $lifetime, RefreshTokenRepository $refreshTokenRepository)
     {
@@ -49,7 +44,7 @@ final class RefreshTokenEndpointExtension implements TokenEndpointExtension
         $result = $next($client, $resourceOwner, $accessToken);
         $scope = $accessToken->getParameter()->has('scope') ? explode(' ', $accessToken->getParameter()->get('scope')) : [];
         if (\in_array('offline_access', $scope, true)) {
-            $expiresAt = new \DateTimeImmutable(\Safe\sprintf('now +%u seconds', $this->lifetime));
+            $expiresAt = new \DateTimeImmutable(sprintf('now +%u seconds', $this->lifetime));
             $refreshToken = $this->refreshTokenRepository->create(
                 $accessToken->getClientId(),
                 $accessToken->getResourceOwnerId(),

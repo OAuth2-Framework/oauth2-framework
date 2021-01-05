@@ -1,6 +1,10 @@
 <?php
 
 declare(strict_types=1);
+use OAuth2Framework\Component\OpenIdConnect\UserInfo\ScopeSupport\AddressScopeSupport;
+use OAuth2Framework\Component\OpenIdConnect\UserInfo\ScopeSupport\EmailScopeSupport;
+use OAuth2Framework\Component\OpenIdConnect\UserInfo\ScopeSupport\PhoneScopeSupport;
+use OAuth2Framework\Component\OpenIdConnect\UserInfo\ScopeSupport\ProfileScopeSupport;
 
 /*
  * The MIT License (MIT)
@@ -20,8 +24,8 @@ return function (ContainerConfigurator $container) {
         ->autoconfigure()
     ;
 
-    $container->set(ScopeSupport\AddressScopeSupport::class);
-    $container->set(ScopeSupport\EmailScopeSupport::class);
-    $container->set(ScopeSupport\PhoneScopeSupport::class);
-    $container->set(ScopeSupport\ProfileScopeSupport::class);
+    $container->set(AddressScopeSupport::class);
+    $container->set(EmailScopeSupport::class);
+    $container->set(PhoneScopeSupport::class);
+    $container->set(ProfileScopeSupport::class);
 };

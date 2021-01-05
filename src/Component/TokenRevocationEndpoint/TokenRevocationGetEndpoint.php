@@ -19,10 +19,7 @@ use function Safe\array_flip;
 
 final class TokenRevocationGetEndpoint extends TokenRevocationEndpoint
 {
-    /**
-     * @var bool
-     */
-    private $allowJson;
+    private bool $allowJson;
 
     public function __construct(TokenTypeHintManager $tokenTypeHintManager, ResponseFactoryInterface $responseFactory, bool $allowJson)
     {

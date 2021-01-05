@@ -1,6 +1,9 @@
 <?php
 
 declare(strict_types=1);
+use OAuth2Framework\Component\BearerTokenType\BearerToken;
+use OAuth2Framework\Component\Core\TokenType\TokenTypeManager;
+use OAuth2Framework\Component\Core\Middleware\AccessTokenMiddleware;
 
 /*
  * The MIT License (MIT)
@@ -37,7 +40,7 @@ return function (ContainerConfigurator $container) {
     ;
 
     $container->set('oauth2_server.userinfo_security.bearer_token_type')
-        ->class(\OAuth2Framework\Component\BearerTokenType\BearerToken::class)
+        ->class(BearerToken::class)
         ->args([
             'Realm', //FIXME
             true,
@@ -47,14 +50,14 @@ return function (ContainerConfigurator $container) {
     ;
 
     $container->set('oauth2_server.userinfo_security.token_type_manager')
-        ->class(\OAuth2Framework\Component\Core\TokenType\TokenTypeManager::class)
+        ->class(TokenTypeManager::class)
         ->call('add', [
             ref('oauth2_server.userinfo_security.bearer_token_type'),
         ])
     ;
 
     $container->set('userinfo_security_middleware')
-        ->class(\OAuth2Framework\Component\Core\Middleware\AccessTokenMiddleware::class)
+        ->class(AccessTokenMiddleware::class)
         ->args([
             ref('oauth2_server.userinfo_security.token_type_manager'),
             ref(AccessTokenRepository::class),

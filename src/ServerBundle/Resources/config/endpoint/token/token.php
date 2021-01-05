@@ -1,6 +1,15 @@
 <?php
 
 declare(strict_types=1);
+use OAuth2Framework\Component\Core\Middleware\Pipe;
+use OAuth2Framework\Component\TokenEndpoint\GrantTypeMiddleware;
+use OAuth2Framework\Component\TokenEndpoint\TokenEndpoint;
+use OAuth2Framework\Component\TokenEndpoint\GrantTypeManager;
+use OAuth2Framework\Component\TokenEndpoint\Extension\TokenEndpointExtensionManager;
+use OAuth2Framework\Component\Core\Client\ClientRepository;
+use OAuth2Framework\Component\Core\UserAccount\UserAccountRepository;
+use Psr\Http\Message\ResponseFactoryInterface;
+use OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository;
 
 /*
  * The MIT License (MIT)
@@ -24,32 +33,32 @@ return function (ContainerConfigurator $container) {
     ;
 
     $container->set('token_endpoint_pipe')
-        ->class(Middleware\Pipe::class)
+        ->class(Pipe::class)
         ->args([[
             ref('oauth2_server.message_middleware.for_client_authentication'),
             ref('oauth2_server.client_authentication.middleware'),
-            ref(TokenEndpoint\GrantTypeMiddleware::class),
+            ref(GrantTypeMiddleware::class),
             ref(TokenTypeMiddleware::class),
-            ref(TokenEndpoint\TokenEndpoint::class),
+            ref(TokenEndpoint::class),
         ]])
         ->tag('controller.service_arguments')
     ;
 
-    $container->set(TokenEndpoint\GrantTypeMiddleware::class)
+    $container->set(GrantTypeMiddleware::class)
         ->args([
-            ref(TokenEndpoint\GrantTypeManager::class),
+            ref(GrantTypeManager::class),
         ])
     ;
 
-    $container->set(TokenEndpoint\Extension\TokenEndpointExtensionManager::class);
+    $container->set(TokenEndpointExtensionManager::class);
 
-    $container->set(TokenEndpoint\TokenEndpoint::class)
+    $container->set(TokenEndpoint::class)
         ->args([
-            ref(\OAuth2Framework\Component\Core\Client\ClientRepository::class),
-            ref(\OAuth2Framework\Component\Core\UserAccount\UserAccountRepository::class)->nullOnInvalid(),
-            ref(TokenEndpoint\Extension\TokenEndpointExtensionManager::class),
-            ref(\Psr\Http\Message\ResponseFactoryInterface::class),
-            ref(\OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository::class),
+            ref(ClientRepository::class),
+            ref(UserAccountRepository::class)->nullOnInvalid(),
+            ref(TokenEndpointExtensionManager::class),
+            ref(ResponseFactoryInterface::class),
+            ref(AccessTokenRepository::class),
             '%oauth2_server.access_token_lifetime%',
         ])
     ;

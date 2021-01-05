@@ -29,12 +29,9 @@ final class OAuth2FrameworkExtension extends Extension implements PrependExtensi
     /**
      * @var Component[]
      */
-    private $components;
+    private array $components;
 
-    /**
-     * @var string
-     */
-    private $alias;
+    private string $alias;
 
     /**
      * @param Component[] $components

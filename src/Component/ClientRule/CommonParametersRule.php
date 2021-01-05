@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\ClientRule;
 
+use function Safe\sprintf;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 
@@ -46,7 +47,7 @@ final class CommonParametersRule extends AbstractInternationalizedRule
     {
         return function ($k, $v) {
             if (false === filter_var($v, FILTER_VALIDATE_URL)) {
-                throw new \InvalidArgumentException(\Safe\sprintf('The parameter with key "%s" is not a valid URL.', $k));
+                throw new \InvalidArgumentException(sprintf('The parameter with key "%s" is not a valid URL.', $k));
             }
         };
     }

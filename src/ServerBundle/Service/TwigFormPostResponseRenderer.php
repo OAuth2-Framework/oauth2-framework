@@ -18,15 +18,9 @@ use Twig\Environment;
 
 final class TwigFormPostResponseRenderer implements FormPostResponseRenderer
 {
-    /**
-     * @var Environment
-     */
-    private $templateEngine;
+    private Environment $templateEngine;
 
-    /**
-     * @var string
-     */
-    private $template;
+    private string $template;
 
     public function __construct(Environment $templateEngine, string $template)
     {

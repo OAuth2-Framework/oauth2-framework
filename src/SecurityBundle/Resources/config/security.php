@@ -1,6 +1,18 @@
 <?php
 
 declare(strict_types=1);
+use OAuth2Framework\Component\Core\Message\OAuth2MessageFactoryManager;
+use OAuth2Framework\SecurityBundle\Annotation\AnnotationDriver;
+use OAuth2Framework\SecurityBundle\Annotation\Checker\ClientIdChecker;
+use OAuth2Framework\SecurityBundle\Annotation\Checker\ResourceOwnerIdChecker;
+use OAuth2Framework\SecurityBundle\Annotation\Checker\ScopeChecker;
+use OAuth2Framework\SecurityBundle\Annotation\Checker\TokenTypeChecker;
+use OAuth2Framework\Component\Core\Message\Factory\AuthenticateResponseForTokenFactory;
+use OAuth2Framework\Component\Core\Message\Factory\AccessDeniedResponseFactory;
+use OAuth2Framework\Component\Core\Message\Factory\BadRequestResponseFactory;
+use OAuth2Framework\Component\Core\Message\Factory\MethodNotAllowedResponseFactory;
+use OAuth2Framework\Component\Core\Message\Factory\NotImplementedResponseFactory;
+use OAuth2Framework\Component\Core\Message\Factory\RedirectResponseFactory;
 
 /*
  * The MIT License (MIT)
@@ -49,7 +61,7 @@ return function (ContainerConfigurator $container) {
     ;
 
     $container->set('oauth2_security.message_factory_manager')
-        ->class(Message\OAuth2MessageFactoryManager::class)
+        ->class(OAuth2MessageFactoryManager::class)
         ->args([
             ref(ResponseFactoryInterface::class),
         ])
@@ -85,7 +97,7 @@ return function (ContainerConfigurator $container) {
         ])
     ;
 
-    $container->set(Annotation\AnnotationDriver::class)
+    $container->set(AnnotationDriver::class)
         ->args([
             ref(Reader::class),
             ref(TokenStorageInterface::class),
@@ -96,13 +108,13 @@ return function (ContainerConfigurator $container) {
             'method' => 'onKernelController',
         ])
     ;
-    $container->set(Annotation\Checker\ClientIdChecker::class);
-    $container->set(Annotation\Checker\ResourceOwnerIdChecker::class);
-    $container->set(Annotation\Checker\ScopeChecker::class);
-    $container->set(Annotation\Checker\TokenTypeChecker::class);
+    $container->set(ClientIdChecker::class);
+    $container->set(ResourceOwnerIdChecker::class);
+    $container->set(ScopeChecker::class);
+    $container->set(TokenTypeChecker::class);
 
     $container->set('oauth2_security.message_factory.401')
-        ->class(Message\Factory\AuthenticateResponseForTokenFactory::class)
+        ->class(AuthenticateResponseForTokenFactory::class)
         ->args([
             ref('oauth2_security.token_type_manager'),
         ])
@@ -110,27 +122,27 @@ return function (ContainerConfigurator $container) {
     ;
 
     $container->set('oauth2_security.message_factory.403')
-        ->class(Message\Factory\AccessDeniedResponseFactory::class)
+        ->class(AccessDeniedResponseFactory::class)
         ->tag('oauth2_security_message_factory')
     ;
 
     $container->set('oauth2_security.message_factory.400')
-        ->class(Message\Factory\BadRequestResponseFactory::class)
+        ->class(BadRequestResponseFactory::class)
         ->tag('oauth2_security_message_factory')
     ;
 
     $container->set('oauth2_security.message_factory.405')
-        ->class(Message\Factory\MethodNotAllowedResponseFactory::class)
+        ->class(MethodNotAllowedResponseFactory::class)
         ->tag('oauth2_security_message_factory')
     ;
 
     $container->set('oauth2_security.message_factory.501')
-        ->class(Message\Factory\NotImplementedResponseFactory::class)
+        ->class(NotImplementedResponseFactory::class)
         ->tag('oauth2_security_message_factory')
     ;
 
     $container->set('oauth2_security.message_factory.303')
-        ->class(Message\Factory\RedirectResponseFactory::class)
+        ->class(RedirectResponseFactory::class)
         ->tag('oauth2_security_message_factory')
     ;
 

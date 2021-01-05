@@ -17,10 +17,7 @@ use OAuth2Framework\Component\TokenRevocationEndpoint\TokenTypeHint;
 
 final class RefreshTokenRevocationTypeHint implements TokenTypeHint
 {
-    /**
-     * @var RefreshTokenRepository
-     */
-    private $refreshTokenRepository;
+    private RefreshTokenRepository $refreshTokenRepository;
 
     public function __construct(RefreshTokenRepository $refreshTokenRepository)
     {

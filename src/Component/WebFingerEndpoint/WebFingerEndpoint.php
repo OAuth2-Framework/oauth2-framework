@@ -26,20 +26,11 @@ use function Safe\sprintf;
 
 final class WebFingerEndpoint implements MiddlewareInterface
 {
-    /**
-     * @var ResponseFactoryInterface
-     */
-    private $responseFactory;
+    private ResponseFactoryInterface $responseFactory;
 
-    /**
-     * @var IdentifierResolverManager
-     */
-    private $identifierResolverManager;
+    private IdentifierResolverManager $identifierResolverManager;
 
-    /**
-     * @var ResourceRepository
-     */
-    private $resourceRepository;
+    private ResourceRepository $resourceRepository;
 
     public function __construct(ResponseFactoryInterface $responseFactory, ResourceRepository $resourceRepository, IdentifierResolverManager $identifierResolverManager)
     {

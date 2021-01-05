@@ -36,65 +36,29 @@ use function Safe\sprintf;
 
 class AuthorizationRequestLoader
 {
-    /**
-     * @var ClientRepository
-     */
-    private $clientRepository;
+    private ClientRepository $clientRepository;
 
-    /**
-     * @var bool
-     */
-    private $requestObjectAllowed = false;
+    private bool $requestObjectAllowed = false;
 
-    /**
-     * @var bool
-     */
-    private $requestObjectReferenceAllowed = false;
+    private bool $requestObjectReferenceAllowed = false;
 
-    /**
-     * @var JWKSet
-     */
-    private $keyEncryptionKeySet;
+    private ?JWKSet $keyEncryptionKeySet;
 
-    /**
-     * @var bool
-     */
-    private $requireRequestUriRegistration = true;
+    private bool $requireRequestUriRegistration = true;
 
-    /**
-     * @var bool
-     */
-    private $requireEncryption = false;
+    private bool $requireEncryption = false;
 
-    /**
-     * @var null|ClientInterface
-     */
-    private $client;
+    private ?ClientInterface $client;
 
-    /**
-     * @var JWSVerifier
-     */
-    private $jwsVerifier;
+    private ?JWSVerifier $jwsVerifier;
 
-    /**
-     * @var ClaimCheckerManager
-     */
-    private $claimCheckerManager;
+    private ?ClaimCheckerManager $claimCheckerManager;
 
-    /**
-     * @var null|JWELoader
-     */
-    private $jweLoader;
+    private ?JWELoader $jweLoader;
 
-    /**
-     * @var null|JKUFactory
-     */
-    private $jkuFactory;
+    private ?JKUFactory $jkuFactory;
 
-    /**
-     * @var RequestFactoryInterface
-     */
-    private $requestFactory;
+    private ?RequestFactoryInterface $requestFactory;
 
     public function __construct(ClientRepository $clientRepository)
     {

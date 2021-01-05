@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\OpenIdConnect\IdTokenGrant;
 
+use function Safe\sprintf;
+use function Safe\json_decode;
 use Jose\Component\Core\JWKSet;
 use Jose\Component\Encryption\JWEBuilder;
 use Jose\Component\Signature\JWSBuilder;
@@ -26,30 +28,15 @@ use OAuth2Framework\Component\OpenIdConnect\IdTokenBuilderFactory;
 
 final class IdTokenResponseType implements ResponseType
 {
-    /**
-     * @var JWKSet
-     */
-    private $signatureKeys;
+    private JWKSet $signatureKeys;
 
-    /**
-     * @var JWSBuilder
-     */
-    private $jwsBuilder;
+    private JWSBuilder $jwsBuilder;
 
-    /**
-     * @var null|JWEBuilder
-     */
-    private $jweBuilder;
+    private ?JWEBuilder $jweBuilder;
 
-    /**
-     * @var IdTokenBuilderFactory
-     */
-    private $idTokenBuilderFactory;
+    private IdTokenBuilderFactory $idTokenBuilderFactory;
 
-    /**
-     * @var string
-     */
-    private $defaultSignatureAlgorithm;
+    private string $defaultSignatureAlgorithm;
 
     /**
      * IdTokenResponseType constructor.
@@ -127,7 +114,7 @@ final class IdTokenResponseType implements ResponseType
         }
 
         if ($authorization->hasResponseParameter('expires_in')) {
-            $idTokenBuilder->withExpirationAt(new \DateTimeImmutable(\Safe\sprintf('now +%s sec', $authorization->getResponseParameter('expires_in'))));
+            $idTokenBuilder->withExpirationAt(new \DateTimeImmutable(sprintf('now +%s sec', $authorization->getResponseParameter('expires_in'))));
         }
 
         if ($authorization->hasQueryParam('max_age')) {
@@ -162,7 +149,7 @@ final class IdTokenResponseType implements ResponseType
         }
 
         $requestedClaims = $authorization->getQueryParam('claims');
-        $requestedClaims = \Safe\json_decode($requestedClaims, true);
+        $requestedClaims = json_decode($requestedClaims, true);
         if (!\is_array($requestedClaims)) {
             throw new \InvalidArgumentException('Invalid claim request');
         }

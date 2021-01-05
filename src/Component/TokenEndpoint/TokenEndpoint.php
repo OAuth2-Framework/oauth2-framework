@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\TokenEndpoint;
 
+use function Safe\sprintf;
+use function Safe\json_encode;
 use OAuth2Framework\Component\Core\AccessToken\AccessToken;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository;
 use OAuth2Framework\Component\Core\Client\Client;
@@ -33,35 +35,17 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class TokenEndpoint implements MiddlewareInterface
 {
-    /**
-     * @var TokenEndpointExtensionManager
-     */
-    private $tokenEndpointExtensionManager;
+    private TokenEndpointExtensionManager $tokenEndpointExtensionManager;
 
-    /**
-     * @var ClientRepository
-     */
-    private $clientRepository;
+    private ClientRepository $clientRepository;
 
-    /**
-     * @var null|UserAccountRepository
-     */
-    private $userAccountRepository;
+    private ?UserAccountRepository $userAccountRepository;
 
-    /**
-     * @var ResponseFactoryInterface
-     */
-    private $responseFactory;
+    private ResponseFactoryInterface $responseFactory;
 
-    /**
-     * @var AccessTokenRepository
-     */
-    private $accessTokenRepository;
+    private AccessTokenRepository $accessTokenRepository;
 
-    /**
-     * @var int
-     */
-    private $accessTokenLifetime;
+    private int $accessTokenLifetime;
 
     public function __construct(ClientRepository $clientRepository, ?UserAccountRepository $userAccountRepository, TokenEndpointExtensionManager $tokenEndpointExtensionManager, ResponseFactoryInterface $responseFactory, AccessTokenRepository $accessTokenRepository, int $accessLifetime)
     {
@@ -101,7 +85,7 @@ class TokenEndpoint implements MiddlewareInterface
 
         // We check the client is allowed to use the selected grant type
         if (!$grantTypeData->getClient()->isGrantTypeAllowed($grantType->name())) {
-            throw new OAuth2Error(400, OAuth2Error::ERROR_UNAUTHORIZED_CLIENT, \Safe\sprintf('The grant type "%s" is unauthorized for this client.', $grantType->name()));
+            throw new OAuth2Error(400, OAuth2Error::ERROR_UNAUTHORIZED_CLIENT, sprintf('The grant type "%s" is unauthorized for this client.', $grantType->name()));
         }
 
         // We populate the token type parameters
@@ -130,7 +114,7 @@ class TokenEndpoint implements MiddlewareInterface
         foreach ($headers as $k => $v) {
             $response = $response->withHeader($k, $v);
         }
-        $response->getBody()->write(\Safe\json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+        $response->getBody()->write(json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
 
         return $response;
     }
@@ -140,7 +124,7 @@ class TokenEndpoint implements MiddlewareInterface
         $accessToken = $this->accessTokenRepository->create(
             $grantTypeData->getClient()->getClientId(),
             $grantTypeData->getResourceOwnerId(),
-            new \DateTimeImmutable(\Safe\sprintf('now +%d seconds', $this->accessTokenLifetime)),
+            new \DateTimeImmutable(sprintf('now +%d seconds', $this->accessTokenLifetime)),
             $grantTypeData->getParameter(),
             $grantTypeData->getMetadata(),
             null
@@ -174,15 +158,5 @@ class TokenEndpoint implements MiddlewareInterface
         foreach ($info as $k => $v) {
             $grantTypeData->getParameter()->set($k, $v);
         }
-    }
-
-    private function isGrantTypeAllowedForTheClient(Client $client, string $grant_type): bool
-    {
-        $grant_types = $client->has('grant_types') ? $client->get('grant_types') : [];
-        if (!\is_array($grant_types)) {
-            throw new \InvalidArgumentException('The metadata "grant_types" must be an array.');
-        }
-
-        return \in_array($grant_type, $grant_types, true);
     }
 }

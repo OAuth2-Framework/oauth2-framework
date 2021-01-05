@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\OpenIdConnect\Rule;
 
+use function Safe\sprintf;
 use Jose\Component\Encryption\JWEBuilder;
 use Jose\Component\Signature\JWSBuilder;
 use OAuth2Framework\Component\ClientRule\Rule;
@@ -22,15 +23,9 @@ use OAuth2Framework\Component\Core\DataBag\DataBag;
 
 final class IdTokenAlgorithmsRule implements Rule
 {
-    /**
-     * @var JWSBuilder
-     */
-    private $jwsBuilder;
+    private JWSBuilder $jwsBuilder;
 
-    /**
-     * @var null|JWEBuilder
-     */
-    private $jweBuilder;
+    private ?JWEBuilder $jweBuilder;
 
     /**
      * IdTokenAlgorithmsRule constructor.
@@ -62,7 +57,7 @@ final class IdTokenAlgorithmsRule implements Rule
     {
         $algorithm = $commandParameters->get($parameter);
         if (!\is_string($algorithm) || !\in_array($algorithm, $allowedAlgorithms, true)) {
-            throw new \InvalidArgumentException(\Safe\sprintf('The parameter "%s" must be an algorithm supported by this server. Please choose one of the following value(s): %s', $parameter, implode(', ', $allowedAlgorithms)));
+            throw new \InvalidArgumentException(sprintf('The parameter "%s" must be an algorithm supported by this server. Please choose one of the following value(s): %s', $parameter, implode(', ', $allowedAlgorithms)));
         }
     }
 }

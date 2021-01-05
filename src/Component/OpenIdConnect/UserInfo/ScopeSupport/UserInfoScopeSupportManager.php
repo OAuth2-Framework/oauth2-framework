@@ -13,12 +13,13 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\OpenIdConnect\UserInfo\ScopeSupport;
 
+use function Safe\sprintf;
 class UserInfoScopeSupportManager
 {
     /**
      * @var UserInfoScopeSupport[]
      */
-    private $userinfoScopeSupports = [];
+    private array $userinfoScopeSupports = [];
 
     /**
      * UserInfoScopeSupportManager constructor.
@@ -41,7 +42,7 @@ class UserInfoScopeSupportManager
     public function get(string $scope): UserInfoScopeSupport
     {
         if (!$this->has($scope)) {
-            throw new \InvalidArgumentException(\Safe\sprintf('The userinfo scope "%s" is not supported.', $scope));
+            throw new \InvalidArgumentException(sprintf('The userinfo scope "%s" is not supported.', $scope));
         }
 
         return $this->userinfoScopeSupports[$scope];

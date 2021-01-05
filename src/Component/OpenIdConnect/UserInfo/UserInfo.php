@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\OpenIdConnect\UserInfo;
 
+use function Safe\parse_url;
+use function Safe\sprintf;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 use OAuth2Framework\Component\OpenIdConnect\UserInfo\Claim\ClaimManager;
@@ -22,34 +24,19 @@ use OAuth2Framework\Component\OpenIdConnect\UserInfo\ScopeSupport\UserInfoScopeS
 
 class UserInfo
 {
-    /**
-     * @var null|PairwiseSubjectIdentifierAlgorithm
-     */
-    private $pairwiseAlgorithm;
+    private ?PairwiseSubjectIdentifierAlgorithm $pairwiseAlgorithm;
 
-    /**
-     * @var UserInfoScopeSupportManager
-     */
-    private $userinfoScopeSupportManager;
+    private UserInfoScopeSupportManager $userinfoScopeSupportManager;
 
-    /**
-     * @var ClaimSourceManager
-     */
-    private $claimSourceManager;
-
-    /**
-     * @var ClaimManager
-     */
-    private $claimManager;
+    private ClaimManager $claimManager;
 
     /**
      * UserInfo constructor.
      */
-    public function __construct(UserInfoScopeSupportManager $userinfoScopeSupportManager, ClaimManager $claimManager, ClaimSourceManager $claimSourceManager)
+    public function __construct(UserInfoScopeSupportManager $userinfoScopeSupportManager, ClaimManager $claimManager)
     {
         $this->userinfoScopeSupportManager = $userinfoScopeSupportManager;
         $this->claimManager = $claimManager;
-        $this->claimSourceManager = $claimSourceManager;
     }
 
     public function getUserinfo(Client $client, UserAccount $userAccount, string $redirectUri, array $requestedClaims, ?string $scope, ?string $claimsLocales): array
@@ -119,35 +106,6 @@ class UserInfo
         }*/
     }
 
-    /**
-     * @return null|mixed
-     */
-    private function getUserClaim(UserAccount $userAccount, string $claimName, ?array $config)
-    {
-        // FIXME: "acr" claim support has to be added.
-        if ($userAccount->has($claimName)) {
-            $claim = $userAccount->get($claimName);
-            switch (true) {
-                case \is_array($config) && \array_key_exists('value', $config):
-                    if ($claim === $config['value']) {
-                        return $claim;
-                    }
-
-                    break;
-                case \is_array($config) && \array_key_exists('values', $config) && \is_array($config['values']):
-                    if (\in_array($claim, $config['values'], true)) {
-                        return $claim;
-                    }
-
-                    break;
-                default:
-                    return $claim;
-            }
-        }
-
-        return null;
-    }
-
     private function calculateSubjectIdentifier(Client $client, UserAccount $userAccount, string $redirectUri): string
     {
         $sub = $userAccount->getUserAccountId()->getValue();
@@ -174,9 +132,9 @@ class UserInfo
             $uri = $client->get('sector_identifier_uri');
         }
 
-        $data = \Safe\parse_url($uri);
+        $data = parse_url($uri);
         if (!\is_array($data) || !\array_key_exists('host', $data)) {
-            throw new \InvalidArgumentException(\Safe\sprintf('Invalid Sector Identifier Uri "%s".', $uri));
+            throw new \InvalidArgumentException(sprintf('Invalid Sector Identifier Uri "%s".', $uri));
         }
 
         return $data['host'];

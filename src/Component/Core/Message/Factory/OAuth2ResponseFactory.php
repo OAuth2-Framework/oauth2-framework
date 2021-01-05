@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Core\Message\Factory;
 
+use function Safe\json_encode;
 use Psr\Http\Message\ResponseInterface;
 
 abstract class OAuth2ResponseFactory implements ResponseFactory
@@ -30,7 +31,7 @@ abstract class OAuth2ResponseFactory implements ResponseFactory
 
     public function updateBody(array $data, ResponseInterface $response): void
     {
-        $response->getBody()->write(\Safe\json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+        $response->getBody()->write(json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
     }
 
     public function updateHeaders(array $headers, ResponseInterface $response): ResponseInterface

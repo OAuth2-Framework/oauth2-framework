@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\ClientAuthentication;
 
+use Jose\Component\Core\Util\JsonConverter;
 use Assert\Assertion;
 use Base64Url\Base64Url;
 use Jose\Component\Checker\ClaimCheckerManager;
@@ -39,50 +40,23 @@ class ClientAssertionJwt implements AuthenticationMethod
 {
     private const CLIENT_ASSERTION_TYPE = 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer';
 
-    /**
-     * @var JWSVerifier
-     */
-    private $jwsVerifier;
+    private JWSVerifier $jwsVerifier;
 
-    /**
-     * @var null|TrustedIssuerRepository
-     */
-    private $trustedIssuerRepository;
+    private ?TrustedIssuerRepository $trustedIssuerRepository;
 
-    /**
-     * @var null|JKUFactory
-     */
-    private $jkuFactory;
+    private ?JKUFactory $jkuFactory;
 
-    /**
-     * @var null|JWELoader
-     */
-    private $jweLoader;
+    private ?JWELoader $jweLoader;
 
-    /**
-     * @var null|JWKSet
-     */
-    private $keyEncryptionKeySet;
+    private ?JWKSet $keyEncryptionKeySet;
 
-    /**
-     * @var bool
-     */
-    private $encryptionRequired = false;
+    private bool $encryptionRequired = false;
 
-    /**
-     * @var int
-     */
-    private $secretLifetime;
+    private int $secretLifetime;
 
-    /**
-     * @var HeaderCheckerManager
-     */
-    private $headerCheckerManager;
+    private HeaderCheckerManager $headerCheckerManager;
 
-    /**
-     * @var ClaimCheckerManager
-     */
-    private $claimCheckerManager;
+    private ClaimCheckerManager $claimCheckerManager;
 
     public function __construct(JWSVerifier $jwsVerifier, HeaderCheckerManager $headerCheckerManager, ClaimCheckerManager $claimCheckerManager, int $secretLifetime = 0)
     {
@@ -165,7 +139,7 @@ class ClientAssertionJwt implements AuthenticationMethod
             $this->headerCheckerManager->check($jws, 0);
             $payload = $jws->getPayload();
             Assertion::string($payload, 'Unable to get the JWS payload');
-            $claims = \Jose\Component\Core\Util\JsonConverter::decode($payload);
+            $claims = JsonConverter::decode($payload);
             $this->claimCheckerManager->check($claims);
         } catch (OAuth2Error $e) {
             throw $e;
@@ -195,7 +169,7 @@ class ClientAssertionJwt implements AuthenticationMethod
             }
             $payload = $clientCredentials->getPayload();
             Assertion::string($payload, 'No payload available');
-            $claims = \Jose\Component\Core\Util\JsonConverter::decode($payload);
+            $claims = JsonConverter::decode($payload);
             $jwkset = $this->retrieveIssuerKeySet($client, $clientCredentials, $claims);
 
             return $this->jwsVerifier->verifyWithKeySet($clientCredentials, $jwkset, 0);

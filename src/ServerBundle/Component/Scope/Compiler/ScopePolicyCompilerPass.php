@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Component\Scope\Compiler;
 
+use function Safe\sprintf;
 use OAuth2Framework\Component\Scope\Policy\ScopePolicyManager;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -35,7 +36,7 @@ class ScopePolicyCompilerPass implements CompilerPassInterface
         foreach ($taggedServices as $id => $tags) {
             foreach ($tags as $attributes) {
                 if (!\array_key_exists('policy_name', $attributes)) {
-                    throw new \InvalidArgumentException(\Safe\sprintf('The scope policy "%s" does not have any "policy_name" attribute.', $id));
+                    throw new \InvalidArgumentException(sprintf('The scope policy "%s" does not have any "policy_name" attribute.', $id));
                 }
                 $is_default = $default === $attributes['policy_name'];
                 $policy_names[] = $attributes['policy_name'];
@@ -47,7 +48,7 @@ class ScopePolicyCompilerPass implements CompilerPassInterface
         }
 
         if (!$default_found) {
-            throw new \InvalidArgumentException(\Safe\sprintf('Unable to find the scope policy "%s". Available policies are: %s.', $default, implode(', ', $policy_names)));
+            throw new \InvalidArgumentException(sprintf('Unable to find the scope policy "%s". Available policies are: %s.', $default, implode(', ', $policy_names)));
         }
     }
 }

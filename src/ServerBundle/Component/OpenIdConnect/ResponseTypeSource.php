@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Component\OpenIdConnect;
 
+use function Safe\sprintf;
 use OAuth2Framework\ServerBundle\Component\Component;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\FileLocator;
@@ -32,7 +33,7 @@ class ResponseTypeSource implements Component
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../Resources/config/openid_connect/response_type'));
         foreach ($config as $k => $v) {
             if ($config[$k]['enabled']) {
-                $loader->load(\Safe\sprintf('%s.php', $k));
+                $loader->load(sprintf('%s.php', $k));
             }
         }
     }

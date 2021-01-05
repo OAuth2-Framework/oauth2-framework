@@ -20,15 +20,9 @@ use OAuth2Framework\Component\Core\TokenType\TokenType;
 
 final class CodeIdTokenResponseType implements ResponseType
 {
-    /**
-     * @var AuthorizationCodeResponseType
-     */
-    private $codeResponseType;
+    private AuthorizationCodeResponseType $codeResponseType;
 
-    /**
-     * @var IdTokenResponseType
-     */
-    private $idTokenResponseType;
+    private IdTokenResponseType $idTokenResponseType;
 
     /**
      * CodeIdTokenResponseType constructor.

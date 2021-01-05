@@ -30,35 +30,17 @@ use Throwable;
 
 final class OAuth2Listener
 {
-    /**
-     * @var TokenStorageInterface
-     */
-    private $tokenStorage;
+    private TokenStorageInterface $tokenStorage;
 
-    /**
-     * @var AuthenticationManagerInterface
-     */
-    private $authenticationManager;
+    private AuthenticationManagerInterface $authenticationManager;
 
-    /**
-     * @var TokenTypeManager
-     */
-    private $tokenTypeManager;
+    private TokenTypeManager $tokenTypeManager;
 
-    /**
-     * @var AccessTokenHandlerManager
-     */
-    private $accessTokenHandlerManager;
+    private AccessTokenHandlerManager $accessTokenHandlerManager;
 
-    /**
-     * @var OAuth2MessageFactoryManager
-     */
-    private $oauth2ResponseFactoryManager;
+    private OAuth2MessageFactoryManager $oauth2ResponseFactoryManager;
 
-    /**
-     * @var HttpMessageFactoryInterface
-     */
-    private $httpMessageFactory;
+    private HttpMessageFactoryInterface $httpMessageFactory;
 
     public function __construct(
         HttpMessageFactoryInterface $httpMessageFactory,

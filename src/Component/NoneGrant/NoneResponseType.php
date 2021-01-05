@@ -29,10 +29,7 @@ use OAuth2Framework\Component\Core\TokenType\TokenType;
  */
 final class NoneResponseType implements ResponseType
 {
-    /**
-     * @var AuthorizationStorage
-     */
-    private $authorizationStorage;
+    private AuthorizationStorage $authorizationStorage;
 
     /**
      * NoneResponseType constructor.

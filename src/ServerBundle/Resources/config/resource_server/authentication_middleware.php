@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+use OAuth2Framework\Component\Core\ResourceServer\ResourceServerRepository;
 
 /*
  * The MIT License (MIT)
@@ -24,7 +25,7 @@ return function (ContainerConfigurator $container) {
 
     $container->set(AuthenticationMiddleware::class)
         ->args([
-            ref(\OAuth2Framework\Component\Core\ResourceServer\ResourceServerRepository::class),
+            ref(ResourceServerRepository::class),
             ref(AuthenticationMethodManager::class),
         ])
     ;

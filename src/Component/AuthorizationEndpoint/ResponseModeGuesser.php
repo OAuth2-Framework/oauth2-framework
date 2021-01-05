@@ -22,15 +22,9 @@ use function Safe\sprintf;
 
 class ResponseModeGuesser
 {
-    /**
-     * @var ResponseModeManager
-     */
-    private $responseModeManager;
+    private ResponseModeManager $responseModeManager;
 
-    /**
-     * @var bool
-     */
-    private $responseModeParameterInAuthorizationRequestAllowed;
+    private bool $responseModeParameterInAuthorizationRequestAllowed;
 
     public function __construct(ResponseModeManager $responseModeManager, bool $responseModeParameterInAuthorizationRequestAllowed)
     {

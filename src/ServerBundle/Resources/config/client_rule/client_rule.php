@@ -1,6 +1,13 @@
 <?php
 
 declare(strict_types=1);
+use OAuth2Framework\Component\ClientRule\RuleManager;
+use OAuth2Framework\Component\ClientRule\ApplicationTypeParametersRule;
+use OAuth2Framework\Component\ClientRule\ClientIdIssuedAtRule;
+use OAuth2Framework\Component\ClientRule\CommonParametersRule;
+use OAuth2Framework\Component\ClientRule\ContactsParametersRule;
+use OAuth2Framework\Component\ClientRule\RedirectionUriRule;
+use OAuth2Framework\Component\ClientRule\JwksRule;
 
 /*
  * The MIT License (MIT)
@@ -22,14 +29,14 @@ return function (ContainerConfigurator $container) {
         ->autoconfigure()
     ;
 
-    $container->set(ClientRule\RuleManager::class);
+    $container->set(RuleManager::class);
 
-    $container->set(ClientRule\ApplicationTypeParametersRule::class);
-    $container->set(ClientRule\ClientIdIssuedAtRule::class);
-    $container->set(ClientRule\CommonParametersRule::class);
-    $container->set(ClientRule\ContactsParametersRule::class);
-    $container->set(ClientRule\RedirectionUriRule::class);
-    $container->set(ClientRule\JwksRule::class)
+    $container->set(ApplicationTypeParametersRule::class);
+    $container->set(ClientIdIssuedAtRule::class);
+    $container->set(CommonParametersRule::class);
+    $container->set(ContactsParametersRule::class);
+    $container->set(RedirectionUriRule::class);
+    $container->set(JwksRule::class)
         ->args([
             ref(JKUFactory::class)->nullOnInvalid(),
         ])

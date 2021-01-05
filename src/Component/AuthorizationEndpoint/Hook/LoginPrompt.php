@@ -21,15 +21,9 @@ use Psr\Http\Message\ServerRequestInterface;
 
 final class LoginPrompt implements AuthorizationEndpointHook
 {
-    /**
-     * @var UserAuthenticationCheckerManager
-     */
-    private $userAuthenticationCheckerManager;
+    private UserAuthenticationCheckerManager $userAuthenticationCheckerManager;
 
-    /**
-     * @var LoginHandler
-     */
-    private $loginHandler;
+    private LoginHandler $loginHandler;
 
     public function __construct(UserAuthenticationCheckerManager $userAuthenticationCheckerManager, LoginHandler $loginHandler)
     {

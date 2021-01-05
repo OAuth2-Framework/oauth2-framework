@@ -1,4 +1,0 @@
-# API & Login Routes
-test:
-    resource: '@TestBundle/Controller'
-    type:     'annotation'

@@ -22,7 +22,7 @@ class ParameterCheckerManager
     /**
      * @var ParameterChecker[]
      */
-    private $parameterCheckers = [];
+    private array $parameterCheckers = [];
 
     public function add(ParameterChecker $parameterChecker): void
     {

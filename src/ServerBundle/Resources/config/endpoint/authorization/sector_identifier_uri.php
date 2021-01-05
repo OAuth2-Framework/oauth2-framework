@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+use OAuth2Framework\Component\AuthorizationEndpoint\Rule\SectorIdentifierUriRule;
 
 /*
  * The MIT License (MIT)
@@ -22,7 +23,7 @@ return function (ContainerConfigurator $container) {
         ->autoconfigure()
     ;
 
-    $container->set(AuthorizationEndpoint\Rule\SectorIdentifierUriRule::class)
+    $container->set(SectorIdentifierUriRule::class)
         ->args([
             ref(RequestFactoryInterface::class),
             ref('oauth2_server.http_client'),

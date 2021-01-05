@@ -1,6 +1,8 @@
 <?php
 
 declare(strict_types=1);
+use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\FormPostResponseMode;
+use Psr\Http\Message\ResponseFactoryInterface;
 
 /*
  * The MIT License (MIT)
@@ -29,10 +31,10 @@ return function (ContainerConfigurator $container) {
         ])
     ;
 
-    $container->set(AuthorizationEndpoint\ResponseMode\FormPostResponseMode::class)
+    $container->set(FormPostResponseMode::class)
         ->args([
             ref(TwigFormPostResponseRenderer::class),
-            ref(\Psr\Http\Message\ResponseFactoryInterface::class),
+            ref(ResponseFactoryInterface::class),
         ])
     ;
 };

@@ -19,10 +19,7 @@ use function Safe\json_decode;
 
 class DataBag implements \IteratorAggregate, \Countable, \JsonSerializable
 {
-    /**
-     * @var array
-     */
-    private $parameters = [];
+    private array $parameters = [];
 
     public function __construct(array $parameters)
     {

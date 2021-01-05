@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+use OAuth2Framework\Component\Core\Middleware\Pipe;
 
 /*
  * The MIT License (MIT)
@@ -80,7 +81,7 @@ return function (ContainerConfigurator $container) {
     ;
 
     $container->set('authorization_request_entry_endpoint_pipe')
-        ->class(Middleware\Pipe::class)
+        ->class(Pipe::class)
         ->args([[
             ref('oauth2_server.message_middleware.for_authorization_endpoint'),
             ref(AuthorizationExceptionMiddleware::class),
@@ -111,7 +112,7 @@ return function (ContainerConfigurator $container) {
     ;
 
     $container->set('authorization_endpoint_pipe')
-        ->class(Middleware\Pipe::class)
+        ->class(Pipe::class)
         ->args([[
             ref('oauth2_server.message_middleware.for_authorization_endpoint'),
             ref(AuthorizationExceptionMiddleware::class),

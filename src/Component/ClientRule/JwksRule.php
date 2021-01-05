@@ -20,10 +20,7 @@ use OAuth2Framework\Component\Core\DataBag\DataBag;
 
 class JwksRule implements Rule
 {
-    /**
-     * @var null|JKUFactory
-     */
-    private $jkuFactory;
+    private ?JKUFactory $jkuFactory;
 
     public function __construct(?JKUFactory $jkuFactory)
     {

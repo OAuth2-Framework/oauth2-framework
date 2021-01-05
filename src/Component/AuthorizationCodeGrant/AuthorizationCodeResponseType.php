@@ -23,25 +23,13 @@ use function Safe\sprintf;
 
 final class AuthorizationCodeResponseType implements ResponseType
 {
-    /**
-     * @var int
-     */
-    private $authorizationCodeLifetime;
+    private int $authorizationCodeLifetime;
 
-    /**
-     * @var bool
-     */
-    private $pkceForPublicClientsEnforced;
+    private bool $pkceForPublicClientsEnforced;
 
-    /**
-     * @var AuthorizationCodeRepository
-     */
-    private $authorizationCodeRepository;
+    private AuthorizationCodeRepository $authorizationCodeRepository;
 
-    /**
-     * @var PKCEMethodManager
-     */
-    private $pkceMethodManager;
+    private PKCEMethodManager $pkceMethodManager;
 
     public function __construct(AuthorizationCodeRepository $authorizationCodeRepository, int $authorizationCodeLifetime, PKCEMethodManager $pkceMethodManager, bool $pkceForPublicClientsEnforced)
     {

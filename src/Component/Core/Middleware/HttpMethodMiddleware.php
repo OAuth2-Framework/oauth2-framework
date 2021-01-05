@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Core\Middleware;
 
+use function Safe\sprintf;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -24,12 +25,12 @@ class HttpMethodMiddleware implements MiddlewareInterface
     /**
      * @var MiddlewareInterface[]
      */
-    private $methodMap = [];
+    private array $methodMap = [];
 
     public function add(string $method, MiddlewareInterface $middleware): void
     {
         if (\array_key_exists($method, $this->methodMap)) {
-            throw new \InvalidArgumentException(\Safe\sprintf('The method "%s" is already defined.', $method));
+            throw new \InvalidArgumentException(sprintf('The method "%s" is already defined.', $method));
         }
         $this->methodMap[$method] = $middleware;
     }
@@ -42,7 +43,7 @@ class HttpMethodMiddleware implements MiddlewareInterface
             throw new OAuth2Error(
                 405,
                 'not_implemented',
-                \Safe\sprintf('The method "%s" is not supported.', $method)
+                sprintf('The method "%s" is not supported.', $method)
             );
         }
 

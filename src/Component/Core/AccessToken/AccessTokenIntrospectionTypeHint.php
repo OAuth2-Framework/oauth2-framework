@@ -17,10 +17,7 @@ use OAuth2Framework\Component\TokenIntrospectionEndpoint\TokenTypeHint;
 
 final class AccessTokenIntrospectionTypeHint implements TokenTypeHint
 {
-    /**
-     * @var AccessTokenRepository
-     */
-    private $accessTokenRepository;
+    private AccessTokenRepository $accessTokenRepository;
 
     /**
      * AccessToken constructor.

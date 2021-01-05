@@ -1,6 +1,8 @@
 <?php
 
 declare(strict_types=1);
+use OAuth2Framework\Component\Core\Middleware\Pipe;
+use Psr\Http\Message\ResponseFactoryInterface;
 
 /*
  * The MIT License (MIT)
@@ -24,7 +26,7 @@ return function (ContainerConfigurator $container) {
     ;
 
     $container->set('metadata_endpoint_pipe')
-        ->class(Middleware\Pipe::class)
+        ->class(Pipe::class)
         ->args([[
             ref(MetadataController::class),
         ]])
@@ -33,7 +35,7 @@ return function (ContainerConfigurator $container) {
 
     $container->set(MetadataController::class)
         ->args([
-            ref(\Psr\Http\Message\ResponseFactoryInterface::class),
+            ref(ResponseFactoryInterface::class),
             ref(MetadataBuilder::class),
         ])
     ;

@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\MetadataEndpoint;
 
+use function Safe\json_encode;
 use Jose\Component\Core\JWK;
 use Jose\Component\Core\Util\JsonConverter;
 use Jose\Component\Signature\JWSBuilder;
@@ -25,30 +26,15 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class MetadataEndpoint implements MiddlewareInterface
 {
-    /**
-     * @var ResponseFactoryInterface
-     */
-    private $responseFactory;
+    private ResponseFactoryInterface $responseFactory;
 
-    /**
-     * @var Metadata
-     */
-    private $metadata;
+    private Metadata $metadata;
 
-    /**
-     * @var null|JWK
-     */
-    private $signatureKey;
+    private ?JWK $signatureKey;
 
-    /**
-     * @var null|string
-     */
-    private $signatureAlgorithm;
+    private ?string $signatureAlgorithm;
 
-    /**
-     * @var null|JWSBuilder
-     */
-    private $jwsBuilder;
+    private ?JWSBuilder $jwsBuilder;
 
     /**
      * MetadataEndpoint constructor.
@@ -73,7 +59,7 @@ class MetadataEndpoint implements MiddlewareInterface
             $data['signed_metadata'] = $this->sign($data);
         }
         $response = $this->responseFactory->createResponse();
-        $response->getBody()->write(\Safe\json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+        $response->getBody()->write(json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
 
         return $response->withHeader('Content-Type', 'application/json; charset=UTF-8');
     }

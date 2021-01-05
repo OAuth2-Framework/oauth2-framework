@@ -21,15 +21,9 @@ use Symfony\Component\Routing\RouterInterface;
 
 class RedirectAuthorizationRequestHandler implements AuthorizationRequestHandler
 {
-    /**
-     * @var RouterInterface
-     */
-    private $router;
+    private RouterInterface $router;
 
-    /**
-     * @var ResponseFactoryInterface
-     */
-    private $responseFactory;
+    private ResponseFactoryInterface $responseFactory;
 
     public function __construct(RouterInterface $router, ResponseFactoryInterface $responseFactory)
     {

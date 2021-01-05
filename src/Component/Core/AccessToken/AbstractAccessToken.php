@@ -20,40 +20,19 @@ use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
 
 abstract class AbstractAccessToken implements AccessToken
 {
-    /**
-     * @var \DateTimeImmutable
-     */
-    private $expiresAt;
+    private \DateTimeImmutable $expiresAt;
 
-    /**
-     * @var ResourceOwnerId
-     */
-    private $resourceOwnerId;
+    private ResourceOwnerId $resourceOwnerId;
 
-    /**
-     * @var ClientId
-     */
-    private $clientId;
+    private ClientId $clientId;
 
-    /**
-     * @var DataBag
-     */
-    private $parameter;
+    private DataBag $parameter;
 
-    /**
-     * @var DataBag
-     */
-    private $metadata;
+    private DataBag $metadata;
 
-    /**
-     * @var bool
-     */
-    private $revoked;
+    private bool $revoked;
 
-    /**
-     * @var null|ResourceServerId
-     */
-    private $resourceServerId;
+    private ?ResourceServerId $resourceServerId;
 
     public function __construct(ClientId $clientId, ResourceOwnerId $resourceOwnerId, \DateTimeImmutable $expiresAt, DataBag $parameter, DataBag $metadata, ?ResourceServerId $resourceServerId)
     {

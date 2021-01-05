@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\ClientRegistrationEndpoint;
 
+use function Safe\json_encode;
 use OAuth2Framework\Component\ClientRule\RuleManager;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientRepository;
@@ -27,20 +28,11 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 final class ClientRegistrationEndpoint implements MiddlewareInterface
 {
-    /**
-     * @var ResponseFactoryInterface
-     */
-    private $responseFactory;
+    private ResponseFactoryInterface $responseFactory;
 
-    /**
-     * @var ClientRepository
-     */
-    private $clientRepository;
+    private ClientRepository $clientRepository;
 
-    /**
-     * @var RuleManager
-     */
-    private $ruleManager;
+    private RuleManager $ruleManager;
 
     public function __construct(ClientRepository $clientRepository, ResponseFactoryInterface $responseFactory, RuleManager $ruleManager)
     {
@@ -86,7 +78,7 @@ final class ClientRegistrationEndpoint implements MiddlewareInterface
         foreach (['Content-Type' => 'application/json; charset=UTF-8', 'Cache-Control' => 'no-store', 'Pragma' => 'no-cache'] as $k => $v) {
             $response = $response->withHeader($k, $v);
         }
-        $response->getBody()->write(\Safe\json_encode($client->all(), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+        $response->getBody()->write(json_encode($client->all(), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
 
         return $response;
     }

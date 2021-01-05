@@ -21,7 +21,7 @@ class RuleManager
     /**
      * @var Rule[]
      */
-    private $rules = [];
+    private array $rules = [];
 
     /**
      * Appends new middleware for this message bus. Should only be used at configuration time.

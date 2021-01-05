@@ -20,10 +20,7 @@ use function Safe\sprintf;
 
 final class ResponseTypeParameterChecker implements ParameterChecker
 {
-    /**
-     * @var ResponseTypeManager
-     */
-    private $responseTypeManager;
+    private ResponseTypeManager $responseTypeManager;
 
     public function __construct(ResponseTypeManager $responseTypeManager)
     {

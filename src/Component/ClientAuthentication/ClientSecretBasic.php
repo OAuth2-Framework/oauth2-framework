@@ -23,10 +23,7 @@ use function Safe\sprintf;
 
 final class ClientSecretBasic implements AuthenticationMethod
 {
-    /**
-     * @var string
-     */
-    private $realm;
+    private string $realm;
 
     /**
      * @var int
@@ -56,12 +53,10 @@ final class ClientSecretBasic implements AuthenticationMethod
     public function findClientIdAndCredentials(ServerRequestInterface $request, &$clientCredentials = null): ?ClientId
     {
         $authorization_headers = $request->getHeader('Authorization');
-        if (0 < \count($authorization_headers)) {
-            foreach ($authorization_headers as $authorization_header) {
-                $clientId = $this->findClientIdAndCredentialsInAuthorizationHeader($authorization_header, $clientCredentials);
-                if (null !== $clientId) {
-                    return $clientId;
-                }
+        foreach ($authorization_headers as $authorization_header) {
+            $clientId = $this->findClientIdAndCredentialsInAuthorizationHeader($authorization_header, $clientCredentials);
+            if (null !== $clientId) {
+                return $clientId;
             }
         }
 

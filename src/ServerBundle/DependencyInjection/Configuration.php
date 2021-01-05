@@ -22,12 +22,9 @@ final class Configuration implements ConfigurationInterface
     /**
      * @var Component[]
      */
-    private $components;
+    private array $components;
 
-    /**
-     * @var string
-     */
-    private $alias;
+    private string $alias;
 
     /**
      * @param Component[] $components

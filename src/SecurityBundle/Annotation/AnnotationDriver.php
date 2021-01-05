@@ -28,25 +28,16 @@ use Throwable;
 
 class AnnotationDriver
 {
-    /**
-     * @var Reader
-     */
-    private $reader;
+    private Reader $reader;
 
-    /**
-     * @var TokenStorageInterface
-     */
-    private $tokenStorage;
+    private TokenStorageInterface $tokenStorage;
 
     /**
      * @var Checker[]
      */
-    private $checkers = [];
+    private array $checkers = [];
 
-    /**
-     * @var OAuth2MessageFactoryManager
-     */
-    private $oauth2ResponseFactoryManager;
+    private OAuth2MessageFactoryManager $oauth2ResponseFactoryManager;
 
     public function __construct(Reader $reader, TokenStorageInterface $tokenStorage, OAuth2MessageFactoryManager $oauth2ResponseFactoryManager)
     {

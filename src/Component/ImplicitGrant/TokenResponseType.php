@@ -22,15 +22,9 @@ use function Safe\sprintf;
 
 final class TokenResponseType implements ResponseType
 {
-    /**
-     * @var AccessTokenRepository
-     */
-    private $accessTokenRepository;
+    private AccessTokenRepository $accessTokenRepository;
 
-    /**
-     * @var int
-     */
-    private $accessTokenLifetime;
+    private int $accessTokenLifetime;
 
     public function __construct(AccessTokenRepository $accessTokenRepository, int $accessTokenLifetime)
     {

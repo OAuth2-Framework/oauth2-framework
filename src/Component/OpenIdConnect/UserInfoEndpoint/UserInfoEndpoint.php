@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\OpenIdConnect\UserInfoEndpoint;
 
+use function Safe\sprintf;
 use Jose\Component\Core\JWKSet;
 use Jose\Component\Encryption\JWEBuilder;
 use Jose\Component\Signature\JWSBuilder;
@@ -32,40 +33,19 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class UserInfoEndpoint implements MiddlewareInterface
 {
-    /**
-     * @var null|JWKSet
-     */
-    private $signatureKeys;
+    private ?JWKSet $signatureKeys;
 
-    /**
-     * @var null|JWSBuilder
-     */
-    private $jwsBuilder;
+    private ?JWSBuilder $jwsBuilder;
 
-    /**
-     * @var null|JWEBuilder
-     */
-    private $jweBuilder;
+    private ?JWEBuilder $jweBuilder;
 
-    /**
-     * @var ClientRepository
-     */
-    private $clientRepository;
+    private ClientRepository $clientRepository;
 
-    /**
-     * @var UserAccountRepository
-     */
-    private $userAccountRepository;
+    private UserAccountRepository $userAccountRepository;
 
-    /**
-     * @var ResponseFactoryInterface
-     */
-    private $responseFactory;
+    private ResponseFactoryInterface $responseFactory;
 
-    /**
-     * @var IdTokenBuilderFactory
-     */
-    private $idTokenBuilderFactory;
+    private IdTokenBuilderFactory $idTokenBuilderFactory;
 
     /**
      * UserInfoEndpoint constructor.
@@ -105,7 +85,7 @@ class UserInfoEndpoint implements MiddlewareInterface
 
         $response = $this->responseFactory->createResponse();
         $response->getBody()->write($idToken);
-        $headers = ['Content-Type' => \Safe\sprintf('application/%s; charset=UTF-8', $isJwt ? 'jwt' : 'json'), 'Cache-Control' => 'no-cache, no-store, max-age=0, must-revalidate, private', 'Pragma' => 'no-cache'];
+        $headers = ['Content-Type' => sprintf('application/%s; charset=UTF-8', $isJwt ? 'jwt' : 'json'), 'Cache-Control' => 'no-cache, no-store, max-age=0, must-revalidate, private', 'Pragma' => 'no-cache'];
         foreach ($headers as $k => $v) {
             $response = $response->withHeader($k, $v);
         }

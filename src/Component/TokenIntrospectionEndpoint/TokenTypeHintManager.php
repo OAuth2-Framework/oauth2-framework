@@ -18,7 +18,7 @@ class TokenTypeHintManager
     /**
      * @var TokenTypeHint[]
      */
-    private $tokenTypeHints = [];
+    private array $tokenTypeHints = [];
 
     /**
      * @return TokenTypeHint[]

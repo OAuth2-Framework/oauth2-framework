@@ -17,15 +17,9 @@ use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\Authori
 
 class TokenTypeGuesser
 {
-    /**
-     * @var bool
-     */
-    private $tokenTypeParameterAllowed;
+    private bool $tokenTypeParameterAllowed;
 
-    /**
-     * @var TokenTypeManager
-     */
-    private $tokenTypeManager;
+    private TokenTypeManager $tokenTypeManager;
 
     public function __construct(TokenTypeManager $tokenTypeManager, bool $tokenTypeParameterAllowed)
     {

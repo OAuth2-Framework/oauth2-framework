@@ -21,30 +21,15 @@ use OAuth2Framework\Component\OpenIdConnect\UserInfo\UserInfo;
 
 class IdTokenBuilderFactory
 {
-    /**
-     * @var string
-     */
-    private $issuer;
+    private string $issuer;
 
-    /**
-     * @var UserInfo
-     */
-    private $userinfo;
+    private UserInfo $userinfo;
 
-    /**
-     * @var int
-     */
-    private $lifetime;
+    private int $lifetime;
 
-    /**
-     * @var null|JKUFactory
-     */
-    private $jkuFactory;
+    private ?JKUFactory $jkuFactory;
 
-    /**
-     * @var null|AuthorizationCodeRepository
-     */
-    private $authorizationCodeRepository;
+    private ?AuthorizationCodeRepository $authorizationCodeRepository;
 
     public function __construct(string $issuer, UserInfo $userinfo, int $lifetime)
     {

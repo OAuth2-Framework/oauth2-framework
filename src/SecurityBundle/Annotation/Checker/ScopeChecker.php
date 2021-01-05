@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\SecurityBundle\Annotation\Checker;
 
+use function Safe\sprintf;
 use OAuth2Framework\SecurityBundle\Annotation\OAuth2;
 use OAuth2Framework\SecurityBundle\Security\Authentication\Token\OAuth2Token;
 
@@ -30,7 +31,7 @@ final class ScopeChecker implements Checker
         $diff = array_diff($scopes, $tokenScope);
 
         if (0 !== \count($diff)) {
-            throw new \Exception(\Safe\sprintf('Insufficient scope. The required scope is "%s"', $configuration->getScope()));
+            throw new \Exception(sprintf('Insufficient scope. The required scope is "%s"', $configuration->getScope()));
         }
     }
 }

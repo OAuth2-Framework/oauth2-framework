@@ -13,6 +13,10 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode;
 
+use function League\Uri\parse;
+use function League\Uri\parse_query;
+use function League\Uri\build_query;
+use function League\Uri\build;
 use League\Uri;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType\ResponseType;
 use Psr\Http\Message\ResponseInterface;
@@ -26,14 +30,14 @@ final class QueryResponseMode implements ResponseMode
 
     public function buildResponse(ResponseInterface $response, string $redirectUri, array $data): ResponseInterface
     {
-        $uri = Uri\parse($redirectUri);
+        $uri = parse($redirectUri);
         if (\array_key_exists('query', $uri) && null !== $uri['query']) {
-            $query = Uri\parse_query($uri['query']);
+            $query = parse_query($uri['query']);
             $data = array_merge($query, $data);
         }
-        $uri['query'] = Uri\build_query($data);
+        $uri['query'] = build_query($data);
         $uri['fragment'] = '_=_'; //A redirect Uri is not supposed to have fragment so we override it.
-        $uri = Uri\build($uri);
+        $uri = build($uri);
 
         $response = $response->withStatus(303);
 

@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\TokenRevocationEndpoint;
 
+use function Safe\json_encode;
+use function Safe\sprintf;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use Psr\Http\Message\ResponseFactoryInterface;
@@ -23,15 +25,9 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 abstract class TokenRevocationEndpoint implements MiddlewareInterface
 {
-    /**
-     * @var TokenTypeHintManager
-     */
-    private $tokenTypeHintManager;
+    private TokenTypeHintManager $tokenTypeHintManager;
 
-    /**
-     * @var ResponseFactoryInterface
-     */
-    private $responseFactory;
+    private ResponseFactoryInterface $responseFactory;
 
     public function __construct(TokenTypeHintManager $tokenTypeHintManager, ResponseFactoryInterface $responseFactory)
     {
@@ -63,7 +59,7 @@ abstract class TokenRevocationEndpoint implements MiddlewareInterface
 
             return $this->getResponse(200, '', $callback);
         } catch (OAuth2Error $e) {
-            return $this->getResponse($e->getCode(), \Safe\json_encode($e->getData(), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), $callback);
+            return $this->getResponse($e->getCode(), json_encode($e->getData(), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), $callback);
         }
     }
 
@@ -88,7 +84,7 @@ abstract class TokenRevocationEndpoint implements MiddlewareInterface
         if (\array_key_exists('token_type_hint', $params)) {
             $tokenTypeHint = $params['token_type_hint'];
             if (!\array_key_exists($params['token_type_hint'], $tokenTypeHints)) {
-                throw new OAuth2Error(400, 'unsupported_token_type', \Safe\sprintf('The token type hint "%s" is not supported. Please use one of the following values: %s.', $params['token_type_hint'], implode(', ', array_keys($tokenTypeHints))));
+                throw new OAuth2Error(400, 'unsupported_token_type', sprintf('The token type hint "%s" is not supported. Please use one of the following values: %s.', $params['token_type_hint'], implode(', ', array_keys($tokenTypeHints))));
             }
 
             $hint = $tokenTypeHints[$tokenTypeHint];
@@ -114,7 +110,7 @@ abstract class TokenRevocationEndpoint implements MiddlewareInterface
     private function getResponse(int $code, string $data, ?string $callback): ResponseInterface
     {
         if (null !== $callback) {
-            $data = \Safe\sprintf('%s(%s)', $callback, $data);
+            $data = sprintf('%s(%s)', $callback, $data);
         }
 
         $response = $this->responseFactory->createResponse($code);

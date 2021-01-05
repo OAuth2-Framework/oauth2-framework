@@ -25,10 +25,7 @@ class AuthorizationRequestSessionStorage implements AuthorizationRequestStorage
 {
     private const SESSION_AUTHORIZATION_REQUEST_PARAMETER_NAME = 'oauth2_server.authorization_request.session_storage';
 
-    /**
-     * @var SessionInterface
-     */
-    private $session;
+    private SessionInterface $session;
 
     public function __construct(SessionInterface $session)
     {

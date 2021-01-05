@@ -1,6 +1,8 @@
 <?php
 
 declare(strict_types=1);
+use OAuth2Framework\Component\Core\Middleware\Pipe;
+use Psr\Http\Message\ResponseFactoryInterface;
 
 /*
  * The MIT License (MIT)
@@ -27,7 +29,7 @@ return function (ContainerConfigurator $container) {
     ;
 
     $container->set('token_introspection_pipe')
-        ->class(Middleware\Pipe::class)
+        ->class(Pipe::class)
         ->args([
             ref('oauth2_server.message_middleware.for_client_authentication'),
             ref(AuthenticationMiddleware::class),
@@ -41,7 +43,7 @@ return function (ContainerConfigurator $container) {
     $container->set(TokenIntrospectionEndpoint::class)
         ->args([
             ref(TokenTypeHintManager::class),
-            ref(\Psr\Http\Message\ResponseFactoryInterface::class),
+            ref(ResponseFactoryInterface::class),
         ])
     ;
 

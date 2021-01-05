@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\RefreshTokenGrant;
 
+use function Safe\sprintf;
 use Assert\Assertion;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
@@ -23,10 +24,7 @@ use Psr\Http\Message\ServerRequestInterface;
 
 final class RefreshTokenGrantType implements GrantType
 {
-    /**
-     * @var RefreshTokenRepository
-     */
-    private $refreshTokenRepository;
+    private RefreshTokenRepository $refreshTokenRepository;
 
     public function __construct(RefreshTokenRepository $refreshTokenRepository)
     {
@@ -50,7 +48,7 @@ final class RefreshTokenGrantType implements GrantType
 
         $diff = array_diff($requiredParameters, array_keys($parameters));
         if (0 !== \count($diff)) {
-            throw OAuth2Error::invalidRequest(\Safe\sprintf('Missing grant type parameter(s): %s.', implode(', ', $diff)));
+            throw OAuth2Error::invalidRequest(sprintf('Missing grant type parameter(s): %s.', implode(', ', $diff)));
         }
     }
 

@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Core\Util;
 
+use function Safe\json_decode;
 use InvalidArgumentException;
 use League\Uri\QueryParser;
 use Psr\Http\Message\ServerRequestInterface;
@@ -30,7 +31,7 @@ class RequestBodyParser
         }
 
         $body = $request->getBody()->getContents();
-        $json = \Safe\json_decode($body, true);
+        $json = json_decode($body, true);
 
         if (!\is_array($json)) {
             throw new InvalidArgumentException('Invalid body');

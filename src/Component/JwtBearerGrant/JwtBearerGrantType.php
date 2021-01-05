@@ -43,63 +43,30 @@ use function Safe\sprintf;
 
 class JwtBearerGrantType implements GrantType
 {
-    /**
-     * @var JWSVerifier
-     */
-    private $jwsVerifier;
+    private JWSVerifier $jwsVerifier;
 
-    /**
-     * @var null|JWEDecrypter
-     */
-    private $jweDecrypter;
+    private ?JWEDecrypter $jweDecrypter;
 
-    /**
-     * @var HeaderCheckerManager
-     */
-    private $headerCheckerManager;
+    private ClaimCheckerManager $claimCheckerManager;
 
-    /**
-     * @var ClaimCheckerManager
-     */
-    private $claimCheckerManager;
+    private ClientRepository $clientRepository;
 
-    /**
-     * @var ClientRepository
-     */
-    private $clientRepository;
+    private ?UserAccountRepository $userAccountRepository;
 
-    /**
-     * @var null|UserAccountRepository
-     */
-    private $userAccountRepository;
+    private bool $encryptionRequired = false;
 
-    /**
-     * @var bool
-     */
-    private $encryptionRequired = false;
+    private ?JWKSet $keyEncryptionKeySet;
 
-    /**
-     * @var null|JWKSet
-     */
-    private $keyEncryptionKeySet;
+    private ?TrustedIssuerRepository $trustedIssuerRepository;
 
-    /**
-     * @var null|TrustedIssuerRepository
-     */
-    private $trustedIssuerRepository;
-
-    /**
-     * @var null|JKUFactory
-     */
-    private $jkuFactory;
+    private ?JKUFactory $jkuFactory;
 
     /**
      * JWTBearerGrantType constructor.
      */
-    public function __construct(JWSVerifier $jwsVerifier, HeaderCheckerManager $headerCheckerManager, ClaimCheckerManager $claimCheckerManager, ClientRepository $clientRepository, ?UserAccountRepository $userAccountRepository)
+    public function __construct(JWSVerifier $jwsVerifier, ClaimCheckerManager $claimCheckerManager, ClientRepository $clientRepository, ?UserAccountRepository $userAccountRepository)
     {
         $this->jwsVerifier = $jwsVerifier;
-        $this->headerCheckerManager = $headerCheckerManager;
         $this->claimCheckerManager = $claimCheckerManager;
         $this->clientRepository = $clientRepository;
         $this->userAccountRepository = $userAccountRepository;

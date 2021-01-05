@@ -20,10 +20,7 @@ use Psr\Http\Message\ServerRequestInterface;
 
 final class ConsentPrompt implements AuthorizationEndpointHook
 {
-    /**
-     * @var ConsentHandler
-     */
-    private $consentHandler;
+    private ConsentHandler $consentHandler;
 
     public function __construct(ConsentHandler $consentHandler)
     {

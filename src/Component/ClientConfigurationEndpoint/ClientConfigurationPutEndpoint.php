@@ -28,20 +28,11 @@ use function Safe\json_encode;
 
 final class ClientConfigurationPutEndpoint implements MiddlewareInterface
 {
-    /**
-     * @var ClientRepository
-     */
-    private $clientRepository;
+    private ClientRepository $clientRepository;
 
-    /**
-     * @var ResponseFactoryInterface
-     */
-    private $responseFactory;
+    private ResponseFactoryInterface $responseFactory;
 
-    /**
-     * @var RuleManager
-     */
-    private $ruleManager;
+    private RuleManager $ruleManager;
 
     public function __construct(ClientRepository $clientRepository, ResponseFactoryInterface $responseFactory, RuleManager $ruleManager)
     {

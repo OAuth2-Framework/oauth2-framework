@@ -18,10 +18,7 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 class Configuration implements ConfigurationInterface
 {
-    /**
-     * @var string
-     */
-    private $alias;
+    private string $alias;
 
     public function __construct(string $alias)
     {

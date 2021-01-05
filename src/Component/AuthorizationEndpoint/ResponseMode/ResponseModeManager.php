@@ -21,7 +21,7 @@ class ResponseModeManager
     /**
      * @var ResponseMode[]
      */
-    private $responseModes = [];
+    private array $responseModes = [];
 
     /**
      * @return string[]

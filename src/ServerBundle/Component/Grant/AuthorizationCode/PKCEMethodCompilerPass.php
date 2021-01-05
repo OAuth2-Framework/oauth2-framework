@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Component\Grant\AuthorizationCode;
 
+use function Safe\sprintf;
 use OAuth2Framework\Component\AuthorizationCodeGrant\PKCEMethod\PKCEMethodManager;
 use OAuth2Framework\ServerBundle\Service\MetadataBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
@@ -34,7 +35,7 @@ class PKCEMethodCompilerPass implements CompilerPassInterface
         foreach ($taggedServices as $id => $tags) {
             foreach ($tags as $attributes) {
                 if (!\array_key_exists('alias', $attributes)) {
-                    throw new \InvalidArgumentException(\Safe\sprintf('The PKCE method  "%s" does not have any "alias" attribute.', $id));
+                    throw new \InvalidArgumentException(sprintf('The PKCE method  "%s" does not have any "alias" attribute.', $id));
                 }
                 $loaded[] = $attributes['alias'];
                 $definition->addMethodCall('add', [new Reference($id)]);

@@ -20,10 +20,7 @@ final class AuthenticationMethodReference implements Claim
 {
     private const CLAIM_NAME = 'amr';
 
-    /**
-     * @var AuthenticationMethodReferenceSupport
-     */
-    private $authenticationMethodReferenceSupport;
+    private AuthenticationMethodReferenceSupport $authenticationMethodReferenceSupport;
 
     public function __construct(AuthenticationMethodReferenceSupport $authenticationMethodReferenceSupport)
     {

@@ -15,10 +15,7 @@ namespace OAuth2Framework\Component\Core\ResourceServer;
 
 class ResourceServerId
 {
-    /**
-     * @var string
-     */
-    private $value;
+    private string $value;
 
     public function __construct(string $value)
     {

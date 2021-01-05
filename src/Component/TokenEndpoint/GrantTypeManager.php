@@ -13,12 +13,13 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\TokenEndpoint;
 
+use function Safe\sprintf;
 class GrantTypeManager
 {
     /**
      * @var GrantType[]
      */
-    private $grantTypes = [];
+    private array $grantTypes = [];
 
     public function add(GrantType $grantType): void
     {
@@ -33,7 +34,7 @@ class GrantTypeManager
     public function get(string $name): GrantType
     {
         if (!$this->has($name)) {
-            throw new \InvalidArgumentException(\Safe\sprintf('The grant type "%s" is not supported.', $name));
+            throw new \InvalidArgumentException(sprintf('The grant type "%s" is not supported.', $name));
         }
 
         return $this->grantTypes[$name];

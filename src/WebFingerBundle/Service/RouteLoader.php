@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\WebFingerBundle\Service;
 
+use function Safe\sprintf;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\Config\Loader\LoaderResolverInterface;
 use Symfony\Component\Routing\Route;
@@ -20,10 +21,7 @@ use Symfony\Component\Routing\RouteCollection;
 
 class RouteLoader implements LoaderInterface
 {
-    /**
-     * @var RouteCollection
-     */
-    private $routes;
+    private RouteCollection $routes;
 
     public function __construct()
     {
@@ -36,9 +34,9 @@ class RouteLoader implements LoaderInterface
      */
     public function addRoute(string $name, string $controllerId, string $methodName, string $path, array $defaults = [], array $requirements = [], array $options = [], ?string $host = '', array $schemes = [], array $methods = [], string $condition = ''): void
     {
-        $defaults['_controller'] = \Safe\sprintf('%s:%s', $controllerId, $methodName);
+        $defaults['_controller'] = sprintf('%s:%s', $controllerId, $methodName);
         $route = new Route($path, $defaults, $requirements, $options, $host, $schemes, $methods, $condition);
-        $this->routes->add(\Safe\sprintf('webfinger.%s', $name), $route);
+        $this->routes->add(sprintf('webfinger.%s', $name), $route);
     }
 
     public function load($resource, $type = null): RouteCollection

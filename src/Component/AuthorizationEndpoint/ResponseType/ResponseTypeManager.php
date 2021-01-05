@@ -21,7 +21,7 @@ class ResponseTypeManager
     /**
      * @var ResponseType[]
      */
-    private $responseTypes = [];
+    private array $responseTypes = [];
 
     public function add(ResponseType $responseType): void
     {

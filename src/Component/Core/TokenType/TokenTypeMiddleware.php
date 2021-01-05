@@ -26,15 +26,9 @@ use Psr\Http\Server\RequestHandlerInterface;
  */
 final class TokenTypeMiddleware implements MiddlewareInterface
 {
-    /**
-     * @var bool
-     */
-    private $tokenTypeParameterAllowed;
+    private bool $tokenTypeParameterAllowed;
 
-    /**
-     * @var TokenTypeManager
-     */
-    private $tokenTypeManager;
+    private TokenTypeManager $tokenTypeManager;
 
     /**
      * ClientAuthenticationMiddleware constructor.

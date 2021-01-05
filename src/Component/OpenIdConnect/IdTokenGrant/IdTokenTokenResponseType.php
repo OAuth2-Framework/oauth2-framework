@@ -20,15 +20,9 @@ use OAuth2Framework\Component\ImplicitGrant\TokenResponseType;
 
 final class IdTokenTokenResponseType implements ResponseType
 {
-    /**
-     * @var IdTokenResponseType
-     */
-    private $idTokenResponseType;
+    private IdTokenResponseType $idTokenResponseType;
 
-    /**
-     * @var TokenResponseType
-     */
-    private $tokenResponseType;
+    private TokenResponseType $tokenResponseType;
 
     /**
      * IdTokenTokenResponseType constructor.

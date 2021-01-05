@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Core\Client;
 
+use function Safe\sprintf;
 use OAuth2Framework\Component\Core\Client\Client as ClientInterface;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwnerId;
@@ -25,20 +26,11 @@ use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
  */
 abstract class AbstractClient implements ClientInterface
 {
-    /**
-     * @var null|UserAccountId
-     */
-    protected $ownerId;
+    protected ?UserAccountId $ownerId;
 
-    /**
-     * @var DataBag
-     */
-    protected $parameter;
+    protected DataBag $parameter;
 
-    /**
-     * @var bool
-     */
-    protected $deleted;
+    protected bool $deleted;
 
     public function __construct(DataBag $parameters, ?UserAccountId $ownerId)
     {
@@ -132,7 +124,7 @@ abstract class AbstractClient implements ClientInterface
     public function get(string $key)
     {
         if (!$this->has($key)) {
-            throw new \InvalidArgumentException(\Safe\sprintf('Configuration value with key "%s" does not exist.', $key));
+            throw new \InvalidArgumentException(sprintf('Configuration value with key "%s" does not exist.', $key));
         }
 
         return $this->parameter->get($key);

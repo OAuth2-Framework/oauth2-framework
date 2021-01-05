@@ -17,20 +17,11 @@ use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 
 abstract class AbstractInitialAccessToken implements InitialAccessToken
 {
-    /**
-     * @var bool
-     */
-    private $revoked;
+    private bool $revoked;
 
-    /**
-     * @var null|\DateTimeImmutable
-     */
-    private $expiresAt;
+    private ?\DateTimeImmutable $expiresAt;
 
-    /**
-     * @var null|UserAccountId
-     */
-    private $userAccountId;
+    private ?UserAccountId $userAccountId;
 
     public function __construct(?UserAccountId $userAccountId, ?\DateTimeImmutable $expiresAt)
     {
@@ -51,7 +42,7 @@ abstract class AbstractInitialAccessToken implements InitialAccessToken
 
     public function hasExpired(): bool
     {
-        return null !== $this->expiresAt ? $this->expiresAt->getTimestamp() < time() : false;
+        return null !== $this->expiresAt && $this->expiresAt->getTimestamp() < time();
     }
 
     public function isRevoked(): bool

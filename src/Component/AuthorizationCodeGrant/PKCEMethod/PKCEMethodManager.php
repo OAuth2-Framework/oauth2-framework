@@ -18,7 +18,7 @@ class PKCEMethodManager
     /**
      * @var PKCEMethod[]
      */
-    private $pkceMethods = [];
+    private array $pkceMethods = [];
 
     public function add(PKCEMethod $method): void
     {

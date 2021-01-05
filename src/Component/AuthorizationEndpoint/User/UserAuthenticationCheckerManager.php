@@ -20,7 +20,7 @@ class UserAuthenticationCheckerManager
     /**
      * @var UserAuthenticationChecker[]
      */
-    private $checkers = [];
+    private array $checkers = [];
 
     public function add(UserAuthenticationChecker $checker): void
     {

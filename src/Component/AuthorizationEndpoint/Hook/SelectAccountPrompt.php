@@ -20,10 +20,7 @@ use Psr\Http\Message\ServerRequestInterface;
 
 final class SelectAccountPrompt implements AuthorizationEndpointHook
 {
-    /**
-     * @var SelectAccountHandler
-     */
-    private $selectAccountHandler;
+    private SelectAccountHandler $selectAccountHandler;
 
     public function __construct(SelectAccountHandler $selectAccountHandler)
     {

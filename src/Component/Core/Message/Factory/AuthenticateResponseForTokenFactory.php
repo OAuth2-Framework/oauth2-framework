@@ -18,10 +18,7 @@ use Psr\Http\Message\ResponseInterface;
 
 final class AuthenticateResponseForTokenFactory extends OAuth2ResponseFactory
 {
-    /**
-     * @var TokenTypeManager
-     */
-    private $tokenTypeManager;
+    private TokenTypeManager $tokenTypeManager;
 
     /**
      * AuthenticateResponseForTokenFactory constructor.

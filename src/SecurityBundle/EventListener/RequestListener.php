@@ -19,10 +19,7 @@ use Symfony\Component\Security\Core\Event\AuthenticationEvent;
 
 class RequestListener
 {
-    /**
-     * @var RequestStack
-     */
-    private $requestStack;
+    private RequestStack $requestStack;
 
     public function __construct(RequestStack $requestStack)
     {

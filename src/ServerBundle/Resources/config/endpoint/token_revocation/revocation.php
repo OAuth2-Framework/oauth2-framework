@@ -1,6 +1,9 @@
 <?php
 
 declare(strict_types=1);
+use OAuth2Framework\Component\Core\Middleware\Pipe;
+use OAuth2Framework\Component\Core\Middleware\HttpMethodMiddleware;
+use Psr\Http\Message\ResponseFactoryInterface;
 
 /*
  * The MIT License (MIT)
@@ -27,7 +30,7 @@ return function (ContainerConfigurator $container) {
     ;
 
     $container->set('token_revocation_pipe')
-        ->class(Middleware\Pipe::class)
+        ->class(Pipe::class)
         ->args([[
             ref('oauth2_server.message_middleware.for_client_authentication'),
             ref('oauth2_server.client_authentication.middleware'),
@@ -37,7 +40,7 @@ return function (ContainerConfigurator $container) {
     ;
 
     $container->set('token_revocation_method_handler')
-        ->class(\OAuth2Framework\Component\Core\Middleware\HttpMethodMiddleware::class)
+        ->class(HttpMethodMiddleware::class)
         ->call('add', ['POST', ref(TokenRevocationPostEndpoint::class)])
         ->call('add', ['GET', ref(TokenRevocationGetEndpoint::class)])
     ;
@@ -47,14 +50,14 @@ return function (ContainerConfigurator $container) {
     $container->set(TokenRevocationPostEndpoint::class)
         ->args([
             ref(TokenTypeHintManager::class),
-            ref(\Psr\Http\Message\ResponseFactoryInterface::class),
+            ref(ResponseFactoryInterface::class),
         ])
     ;
 
     $container->set(TokenRevocationGetEndpoint::class)
         ->args([
             ref(TokenTypeHintManager::class),
-            ref(\Psr\Http\Message\ResponseFactoryInterface::class),
+            ref(ResponseFactoryInterface::class),
             '%oauth2_server.endpoint.token_revocation.allow_callback%',
         ])
     ;

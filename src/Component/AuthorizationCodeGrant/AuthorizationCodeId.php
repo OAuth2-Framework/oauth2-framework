@@ -15,10 +15,7 @@ namespace OAuth2Framework\Component\AuthorizationCodeGrant;
 
 final class AuthorizationCodeId
 {
-    /**
-     * @var string
-     */
-    private $value;
+    private string $value;
 
     public function __construct(string $value)
     {

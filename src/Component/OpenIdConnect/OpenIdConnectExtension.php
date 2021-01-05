@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\OpenIdConnect;
 
+use function Safe\json_decode;
 use Jose\Component\Core\JWKSet;
 use Jose\Component\Encryption\JWEBuilder;
 use Jose\Component\Signature\JWSBuilder;
@@ -27,30 +28,15 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class OpenIdConnectExtension implements TokenEndpointExtension
 {
-    /**
-     * @var null|JWKSet
-     */
-    private $signatureKeys;
+    private JWKSet $signatureKeys;
 
-    /**
-     * @var null|JWSBuilder
-     */
-    private $jwsBuilder;
+    private JWSBuilder $jwsBuilder;
 
-    /**
-     * @var null|JWEBuilder
-     */
-    private $jweBuilder;
+    private ?JWEBuilder $jweBuilder;
 
-    /**
-     * @var IdTokenBuilderFactory
-     */
-    private $idTokenBuilderFactory;
+    private IdTokenBuilderFactory $idTokenBuilderFactory;
 
-    /**
-     * @var string
-     */
-    private $defaultSignatureAlgorithm;
+    private string $defaultSignatureAlgorithm;
 
     public function __construct(IdTokenBuilderFactory $idTokenBuilderFactory, string $defaultSignatureAlgorithm, JWSBuilder $jwsBuilder, JWKSet $signatureKeys)
     {
@@ -116,7 +102,7 @@ class OpenIdConnectExtension implements TokenEndpointExtension
         }
 
         $requestedClaims = $accessToken->getMetadata()->get('requested_claims');
-        $requestedClaims = \Safe\json_decode($requestedClaims, true);
+        $requestedClaims = json_decode($requestedClaims, true);
         if (!\is_array($requestedClaims)) {
             throw new \InvalidArgumentException('Invalid claim request');
         }

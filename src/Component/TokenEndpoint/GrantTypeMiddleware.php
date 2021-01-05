@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\TokenEndpoint;
 
+use function Safe\sprintf;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use OAuth2Framework\Component\Core\Util\RequestBodyParser;
 use Psr\Http\Message\ResponseInterface;
@@ -22,10 +23,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 final class GrantTypeMiddleware implements MiddlewareInterface
 {
-    /**
-     * @var GrantTypeManager
-     */
-    private $grantTypeManager;
+    private GrantTypeManager $grantTypeManager;
 
     public function __construct(GrantTypeManager $grantTypeManager)
     {
@@ -41,7 +39,7 @@ final class GrantTypeMiddleware implements MiddlewareInterface
             }
             $grant_type = $parameters['grant_type'];
             if (!$this->grantTypeManager->has($grant_type)) {
-                throw new \InvalidArgumentException(\Safe\sprintf('The grant type "%s" is not supported by this server.', $grant_type));
+                throw new \InvalidArgumentException(sprintf('The grant type "%s" is not supported by this server.', $grant_type));
             }
             $type = $this->grantTypeManager->get($grant_type);
             $request = $request->withAttribute('grant_type', $type);

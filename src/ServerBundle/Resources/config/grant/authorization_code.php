@@ -1,6 +1,9 @@
 <?php
 
 declare(strict_types=1);
+use OAuth2Framework\Component\AuthorizationCodeGrant\PKCEMethod\PKCEMethodManager;
+use OAuth2Framework\Component\AuthorizationCodeGrant\PKCEMethod\Plain;
+use OAuth2Framework\Component\AuthorizationCodeGrant\PKCEMethod\S256;
 
 /*
  * The MIT License (MIT)
@@ -27,7 +30,7 @@ return function (ContainerConfigurator $container) {
     $container->set(AuthorizationCodeGrantType::class)
         ->args([
             ref(AuthorizationCodeRepository::class),
-            ref(PKCEMethod\PKCEMethodManager::class),
+            ref(PKCEMethodManager::class),
         ])
     ;
 
@@ -35,16 +38,16 @@ return function (ContainerConfigurator $container) {
         ->args([
             ref(AuthorizationCodeRepository::class),
             '%oauth2_server.grant.authorization_code.lifetime%',
-            ref(PKCEMethod\PKCEMethodManager::class),
+            ref(PKCEMethodManager::class),
             '%oauth2_server.grant.authorization_code.enforce_pkce%',
         ])
     ;
 
-    $container->set(PKCEMethod\PKCEMethodManager::class);
-    $container->set(PKCEMethod\Plain::class)
+    $container->set(PKCEMethodManager::class);
+    $container->set(Plain::class)
         ->tag('oauth2_server_pkce_method', ['alias' => 'plain'])
     ;
-    $container->set(PKCEMethod\S256::class)
+    $container->set(S256::class)
         ->tag('oauth2_server_pkce_method', ['alias' => 'S256'])
     ;
 };

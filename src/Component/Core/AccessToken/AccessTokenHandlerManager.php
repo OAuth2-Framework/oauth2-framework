@@ -18,7 +18,7 @@ class AccessTokenHandlerManager
     /**
      * @var AccessTokenHandler[]
      */
-    private $accessTokenHandlers = [];
+    private array $accessTokenHandlers = [];
 
     public function add(AccessTokenHandler $accessTokenHandler): void
     {

@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\OpenIdConnect;
 
+use function Safe\sprintf;
+use function Safe\json_encode;
 use Base64Url\Base64Url;
 use InvalidArgumentException;
 use Jose\Component\Core\JWK;
@@ -33,115 +35,49 @@ use OAuth2Framework\Component\OpenIdConnect\UserInfo\UserInfo;
 
 class IdTokenBuilder
 {
-    /**
-     * @var string
-     */
-    private $issuer;
+    private string $issuer;
 
-    /**
-     * @var Client
-     */
-    private $client;
+    private Client $client;
 
-    /**
-     * @var UserAccount
-     */
-    private $userAccount;
+    private UserAccount $userAccount;
 
-    /**
-     * @var string
-     */
-    private $redirectUri;
+    private string $redirectUri;
 
-    /**
-     * @var UserInfo
-     */
-    private $userinfo;
+    private UserInfo $userinfo;
 
-    /**
-     * @var JWKSet
-     */
-    private $signatureKeys;
+    private ?JWKSet $signatureKeys;
 
-    /**
-     * @var int
-     */
-    private $lifetime;
+    private int $lifetime;
 
-    /**
-     * @var string
-     */
-    private $scope;
+    private ?string $scope;
 
-    /**
-     * @var array
-     */
-    private $requestedClaims = [];
+    private array $requestedClaims = [];
 
-    /**
-     * @var string
-     */
-    private $claimsLocales;
+    private ?string $claimsLocales;
 
-    /**
-     * @var null|AccessTokenId
-     */
-    private $accessTokenId;
+    private ?AccessTokenId $accessTokenId;
 
-    /**
-     * @var null|AuthorizationCodeId
-     */
-    private $authorizationCodeId;
+    private ?AuthorizationCodeId $authorizationCodeId;
 
-    /**
-     * @var string
-     */
-    private $nonce;
+    private ?string $nonce;
 
-    /**
-     * @var bool
-     */
-    private $withAuthenticationTime = false;
+    private bool $withAuthenticationTime = false;
 
-    /**
-     * @var JWSBuilder
-     */
-    private $jwsBuilder;
+    private ?JWSBuilder $jwsBuilder;
 
-    /**
-     * @var string
-     */
-    private $signatureAlgorithm;
+    private ?string $signatureAlgorithm;
 
-    /**
-     * @var JWEBuilder
-     */
-    private $jweBuilder;
+    private ?JWEBuilder $jweBuilder;
 
-    /**
-     * @var string
-     */
-    private $keyEncryptionAlgorithm;
+    private ?string $keyEncryptionAlgorithm;
 
-    /**
-     * @var string
-     */
-    private $contentEncryptionAlgorithm;
+    private ?string $contentEncryptionAlgorithm;
 
-    /**
-     * @var \DateTimeImmutable
-     */
-    private $expiresAt;
+    private ?\DateTimeImmutable $expiresAt;
 
-    /**
-     * @var null|JKUFactory
-     */
-    private $jkuFactory;
+    private ?JKUFactory $jkuFactory;
 
-    /**
-     * @var null|AuthorizationCodeRepository
-     */
-    private $authorizationCodeRepository;
+    private ?AuthorizationCodeRepository $authorizationCodeRepository;
 
     public function __construct(string $issuer, UserInfo $userinfo, int $lifetime, Client $client, UserAccount $userAccount, string $redirectUri, ?JKUFactory $jkuFactory, ?AuthorizationCodeRepository $authorizationCodeRepository)
     {
@@ -226,7 +162,7 @@ class IdTokenBuilder
     public function withSignature(JWSBuilder $jwsBuilder, JWKSet $signatureKeys, string $signatureAlgorithm): void
     {
         if (!\in_array($signatureAlgorithm, $jwsBuilder->getSignatureAlgorithmManager()->list(), true)) {
-            throw new InvalidArgumentException(\Safe\sprintf('Unsupported signature algorithm "%s". Please use one of the following one: %s', $signatureAlgorithm, implode(', ', $jwsBuilder->getSignatureAlgorithmManager()->list())));
+            throw new InvalidArgumentException(sprintf('Unsupported signature algorithm "%s". Please use one of the following one: %s', $signatureAlgorithm, implode(', ', $jwsBuilder->getSignatureAlgorithmManager()->list())));
         }
         if (0 === $signatureKeys->count()) {
             throw new InvalidArgumentException('The signature key set must contain at least one key.');
@@ -239,10 +175,10 @@ class IdTokenBuilder
     public function withEncryption(JWEBuilder $jweBuilder, string $keyEncryptionAlgorithm, string $contentEncryptionAlgorithm): void
     {
         if (!\in_array($keyEncryptionAlgorithm, $jweBuilder->getKeyEncryptionAlgorithmManager()->list(), true)) {
-            throw new InvalidArgumentException(\Safe\sprintf('Unsupported key encryption algorithm "%s". Please use one of the following one: %s', $keyEncryptionAlgorithm, implode(', ', $jweBuilder->getKeyEncryptionAlgorithmManager()->list())));
+            throw new InvalidArgumentException(sprintf('Unsupported key encryption algorithm "%s". Please use one of the following one: %s', $keyEncryptionAlgorithm, implode(', ', $jweBuilder->getKeyEncryptionAlgorithmManager()->list())));
         }
         if (!\in_array($contentEncryptionAlgorithm, $jweBuilder->getContentEncryptionAlgorithmManager()->list(), true)) {
-            throw new InvalidArgumentException(\Safe\sprintf('Unsupported content encryption algorithm "%s". Please use one of the following one: %s', $contentEncryptionAlgorithm, implode(', ', $jweBuilder->getContentEncryptionAlgorithmManager()->list())));
+            throw new InvalidArgumentException(sprintf('Unsupported content encryption algorithm "%s". Please use one of the following one: %s', $contentEncryptionAlgorithm, implode(', ', $jweBuilder->getContentEncryptionAlgorithmManager()->list())));
         }
         $this->jweBuilder = $jweBuilder;
         $this->keyEncryptionAlgorithm = $keyEncryptionAlgorithm;
@@ -254,7 +190,6 @@ class IdTokenBuilder
         if (null === $this->scope) {
             throw new \LogicException('It is mandatory to set the scope.');
         }
-        $data = $this->userinfo->getUserinfo($this->client, $this->userAccount, $this->redirectUri, $this->requestedClaims, $this->scope, $this->claimsLocales);
         //$data = $this->updateClaimsWithAmrAndAcrInfo($data, $this->userAccount);
         $data = $this->updateClaimsWithAuthenticationTime($data, $this->requestedClaims);
         $data = $this->updateClaimsWithNonce($data);
@@ -264,7 +199,7 @@ class IdTokenBuilder
             $data = $this->updateClaimsAudience($data);
             $result = $this->computeIdToken($data);
         } else {
-            $result = \Safe\json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            $result = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         }
 
         if (null !== $this->keyEncryptionAlgorithm && null !== $this->contentEncryptionAlgorithm) {
@@ -279,15 +214,14 @@ class IdTokenBuilder
         if (null === $this->expiresAt) {
             $this->expiresAt = (new \DateTimeImmutable())->setTimestamp(time() + $this->lifetime);
         }
-        $claims += [
+
+        return $claims + [
             'iat' => time(),
             'nbf' => time(),
             'exp' => $this->expiresAt->getTimestamp(),
             'jti' => Base64Url::encode(random_bytes(16)),
             'iss' => $this->issuer,
         ];
-
-        return $claims;
     }
 
     private function updateClaimsWithAuthenticationTime(array $claims, array $requestedClaims): array
@@ -435,7 +369,7 @@ class IdTokenBuilder
         ];
 
         if (!\array_key_exists($this->signatureAlgorithm, $map)) {
-            throw new InvalidArgumentException(\Safe\sprintf('Algorithm "%s" is not supported', $this->signatureAlgorithm));
+            throw new InvalidArgumentException(sprintf('Algorithm "%s" is not supported', $this->signatureAlgorithm));
         }
 
         return $map[$this->signatureAlgorithm];
@@ -459,7 +393,7 @@ class IdTokenBuilder
         ];
 
         if (!\array_key_exists($this->signatureAlgorithm, $map)) {
-            throw new InvalidArgumentException(\Safe\sprintf('Algorithm "%s" is not supported', $this->signatureAlgorithm));
+            throw new InvalidArgumentException(sprintf('Algorithm "%s" is not supported', $this->signatureAlgorithm));
         }
 
         return $map[$this->signatureAlgorithm];

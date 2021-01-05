@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Scope\Rule;
 
+use function Safe\preg_match;
 use OAuth2Framework\Component\ClientRule\Rule;
 use OAuth2Framework\Component\ClientRule\RuleHandler;
 use OAuth2Framework\Component\Core\Client\ClientId;
@@ -27,7 +28,7 @@ final class ScopeRule implements Rule
             if (!\is_string($scope)) {
                 throw new \InvalidArgumentException('The "scope" parameter must be a string.');
             }
-            if (1 !== \Safe\preg_match('/^[\x20\x23-\x5B\x5D-\x7E]+$/', $scope)) {
+            if (1 !== preg_match('/^[\x20\x23-\x5B\x5D-\x7E]+$/', $scope)) {
                 throw new \InvalidArgumentException('Invalid characters found in the "scope" parameter.');
             }
             $validatedParameters->set('scope', $scope);

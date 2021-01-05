@@ -18,7 +18,7 @@ class IdentifierResolverManager
     /**
      * @var IdentifierResolver[]
      */
-    private $resolvers = [];
+    private array $resolvers = [];
 
     public function add(IdentifierResolver $resolver): void
     {

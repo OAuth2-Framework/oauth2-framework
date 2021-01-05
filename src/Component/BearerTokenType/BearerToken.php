@@ -23,12 +23,9 @@ final class BearerToken implements TokenType
     /**
      * @var TokenFinder[]
      */
-    private $tokenFinders = [];
+    private array $tokenFinders = [];
 
-    /**
-     * @var string
-     */
-    private $realm;
+    private string $realm;
 
     public function __construct(string $realm)
     {

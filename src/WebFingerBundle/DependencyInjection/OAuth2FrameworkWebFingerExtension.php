@@ -23,10 +23,7 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 class OAuth2FrameworkWebFingerExtension extends Extension
 {
-    /**
-     * @var string
-     */
-    private $alias;
+    private string $alias;
 
     public function __construct(string $alias)
     {

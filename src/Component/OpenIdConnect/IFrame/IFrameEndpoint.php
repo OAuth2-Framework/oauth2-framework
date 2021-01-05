@@ -21,10 +21,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 final class IFrameEndpoint implements MiddlewareInterface
 {
-    /**
-     * @var ResponseFactoryInterface
-     */
-    private $responseFactory;
+    private ResponseFactoryInterface $responseFactory;
 
     /**
      * IFrameEndpoint constructor.

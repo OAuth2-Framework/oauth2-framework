@@ -15,25 +15,13 @@ namespace OAuth2Framework\Component\WebFingerEndpoint;
 
 class ResourceDescriptor implements \JsonSerializable
 {
-    /**
-     * @var null|string
-     */
-    private $subject;
+    private ?string $subject;
 
-    /**
-     * @var array|string[]
-     */
-    private $aliases;
+    private array $aliases;
 
-    /**
-     * @var array|mixed[]
-     */
-    private $properties;
+    private array $properties;
 
-    /**
-     * @var array|Link[]
-     */
-    private $links;
+    private array $links;
 
     /**
      * @param string[] $aliases

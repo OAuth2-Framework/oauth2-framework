@@ -26,15 +26,9 @@ use function Safe\sprintf;
 
 final class SectorIdentifierUriRule implements Rule
 {
-    /**
-     * @var ClientInterface
-     */
-    private $client;
+    private ClientInterface $client;
 
-    /**
-     * @var RequestFactoryInterface
-     */
-    private $requestFactory;
+    private RequestFactoryInterface $requestFactory;
 
     public function __construct(RequestFactoryInterface $requestFactory, ClientInterface $client)
     {

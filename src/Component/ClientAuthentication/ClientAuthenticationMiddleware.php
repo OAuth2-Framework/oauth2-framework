@@ -24,15 +24,9 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class ClientAuthenticationMiddleware implements MiddlewareInterface
 {
-    /**
-     * @var AuthenticationMethodManager
-     */
-    private $authenticationMethodManager;
+    private AuthenticationMethodManager $authenticationMethodManager;
 
-    /**
-     * @var ClientRepository
-     */
-    private $clientRepository;
+    private ClientRepository $clientRepository;
 
     public function __construct(ClientRepository $clientRepository, AuthenticationMethodManager $authenticationMethodManager)
     {

@@ -31,7 +31,7 @@ class GrantSource implements Component
     /**
      * @var Component[]
      */
-    private $subComponents;
+    private array $subComponents;
 
     public function __construct()
     {

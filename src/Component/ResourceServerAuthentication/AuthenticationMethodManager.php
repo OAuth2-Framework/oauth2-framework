@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\ResourceServerAuthentication;
 
+use function Safe\sprintf;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServer;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
@@ -23,12 +24,12 @@ class AuthenticationMethodManager
     /**
      * @var AuthenticationMethod[]
      */
-    private $methods = [];
+    private array $methods = [];
 
     /**
      * @var string[]
      */
-    private $names = [];
+    private array $names = [];
 
     public function add(AuthenticationMethod $method): void
     {
@@ -55,7 +56,7 @@ class AuthenticationMethodManager
     public function get(string $name): AuthenticationMethod
     {
         if (!$this->has($name)) {
-            throw new \InvalidArgumentException(\Safe\sprintf('The resource server authentication method "%s" is not supported. Please use one of the following values: %s', $name, implode(', ', $this->list())));
+            throw new \InvalidArgumentException(sprintf('The resource server authentication method "%s" is not supported. Please use one of the following values: %s', $name, implode(', ', $this->list())));
         }
         $class = $this->names[$name];
 

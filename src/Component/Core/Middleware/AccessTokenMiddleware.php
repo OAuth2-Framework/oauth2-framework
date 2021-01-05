@@ -24,15 +24,9 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 final class AccessTokenMiddleware implements MiddlewareInterface
 {
-    /**
-     * @var TokenTypeManager
-     */
-    private $tokenTypeManager;
+    private TokenTypeManager $tokenTypeManager;
 
-    /**
-     * @var AccessTokenRepository
-     */
-    private $accessTokenRepository;
+    private AccessTokenRepository $accessTokenRepository;
 
     /**
      * AccessTokenMiddleware constructor.

@@ -1,6 +1,10 @@
 <?php
 
 declare(strict_types=1);
+use OAuth2Framework\Component\Core\Middleware\Pipe;
+use OAuth2Framework\Component\Core\Client\ClientRepository;
+use OAuth2Framework\Component\Core\Middleware\OAuth2MessageMiddleware;
+use OAuth2Framework\Component\Core\Message\OAuth2MessageFactoryManager;
 
 /*
  * The MIT License (MIT)
@@ -28,7 +32,7 @@ return function (ContainerConfigurator $container) {
     ;
 
     $container->set('client_configuration_endpoint_pipe')
-        ->class(Middleware\Pipe::class)
+        ->class(Pipe::class)
         ->args([[
             ref('oauth2_server.message_middleware.for_client_configuration'),
             ref('oauth2_server.client_configuration.middleware'),
@@ -49,7 +53,7 @@ return function (ContainerConfigurator $container) {
 
     $container->set(ClientConfigurationEndpoint::class)
         ->args([
-            ref(\OAuth2Framework\Component\Core\Client\ClientRepository::class),
+            ref(ClientRepository::class),
             ref('oauth2_server.client_configuration.bearer_token'),
             ref(ResponseFactoryInterface::class), //TODO: change the way the response factory is managed
             ref(RuleManager::class),
@@ -59,7 +63,7 @@ return function (ContainerConfigurator $container) {
     $container->set('oauth2_server.client_configuration.middleware')
         ->class(ClientConfigurationMiddleware::class)
         ->args([
-            ref(\OAuth2Framework\Component\Core\Client\ClientRepository::class),
+            ref(ClientRepository::class),
         ])
     ;
 
@@ -71,13 +75,13 @@ return function (ContainerConfigurator $container) {
     ;
 
     $container->set('oauth2_server.message_middleware.for_client_configuration')
-        ->class(Middleware\OAuth2MessageMiddleware::class)
+        ->class(OAuth2MessageMiddleware::class)
         ->args([
             ref('oauth2_server.message_factory_manager.for_client_configuration'),
         ])
     ;
     $container->set('oauth2_server.message_factory_manager.for_client_configuration')
-        ->class(Message\OAuth2MessageFactoryManager::class)
+        ->class(OAuth2MessageFactoryManager::class)
         ->args([
             ref(ResponseFactoryInterface::class),
         ])

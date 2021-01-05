@@ -21,10 +21,7 @@ use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface
 
 final class OAuth2EntryPoint implements AuthenticationEntryPointInterface
 {
-    /**
-     * @var AuthenticationFailureHandlerInterface
-     */
-    private $failureHandler;
+    private AuthenticationFailureHandlerInterface $failureHandler;
 
     public function __construct(AuthenticationFailureHandlerInterface $failureHandler)
     {

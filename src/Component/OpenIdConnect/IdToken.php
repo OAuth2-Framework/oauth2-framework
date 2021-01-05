@@ -18,15 +18,9 @@ use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 
 class IdToken
 {
-    /**
-     * @var IdTokenId
-     */
-    private $idTokenId;
+    private IdTokenId $idTokenId;
 
-    /**
-     * @var array
-     */
-    private $claims;
+    private array $claims;
 
     public function __construct(IdTokenId $idTokenId, array $claims)
     {

@@ -68,15 +68,9 @@ class OAuth2Error extends \Exception
     //Custom message for this library
     public const ERROR_INVALID_RESOURCE_SERVER = 'invalid_resource_server';
 
-    /**
-     * @var null|string
-     */
-    private $errorDescription;
+    private ?string $errorDescription;
 
-    /**
-     * @var array
-     */
-    private $data;
+    private array $data;
 
     public function __construct(int $code, string $error, ?string $errorDescription, array $data = [], ?Throwable $previous = null)
     {

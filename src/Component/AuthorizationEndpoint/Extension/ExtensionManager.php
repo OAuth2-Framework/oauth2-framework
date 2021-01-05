@@ -21,7 +21,7 @@ class ExtensionManager
     /**
      * @var Extension[]
      */
-    private $extensions = [];
+    private array $extensions = [];
 
     public function add(Extension $extension): void
     {

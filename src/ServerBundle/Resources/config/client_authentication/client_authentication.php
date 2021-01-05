@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+use OAuth2Framework\Component\Core\Client\ClientRepository;
 
 /*
  * The MIT License (MIT)
@@ -27,7 +28,7 @@ return function (ContainerConfigurator $container) {
     $container->set('oauth2_server.client_authentication.middleware')
         ->class(ClientAuthenticationMiddleware::class)
         ->args([
-            ref(\OAuth2Framework\Component\Core\Client\ClientRepository::class),
+            ref(ClientRepository::class),
             ref(AuthenticationMethodManager::class),
         ])
     ;

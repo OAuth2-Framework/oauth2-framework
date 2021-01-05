@@ -22,30 +22,15 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class AuthorizationRequestEntryEndpoint
 {
-    /**
-     * @var ParameterCheckerManager
-     */
-    private $parameterCheckerManager;
+    private ParameterCheckerManager $parameterCheckerManager;
 
-    /**
-     * @var AuthorizationRequestLoader
-     */
-    private $authorizationRequestLoader;
+    private AuthorizationRequestLoader $authorizationRequestLoader;
 
-    /**
-     * @var AuthorizationRequestStorage
-     */
-    private $authorizationRequestStorage;
+    private AuthorizationRequestStorage $authorizationRequestStorage;
 
-    /**
-     * @var AuthorizationRequestHandler
-     */
-    private $authorizationRequestHandler;
+    private AuthorizationRequestHandler $authorizationRequestHandler;
 
-    /**
-     * @var UserAccountDiscovery
-     */
-    private $userAccountDiscovery;
+    private UserAccountDiscovery $userAccountDiscovery;
 
     public function __construct(ParameterCheckerManager $parameterCheckerManager, AuthorizationRequestLoader $authorizationRequestLoader, AuthorizationRequestStorage $authorizationRequestStorage, AuthorizationRequestHandler $authorizationRequestHandler, UserAccountDiscovery $userAccountDiscovery)
     {

@@ -15,20 +15,11 @@ namespace OAuth2Framework\Component\WebFingerEndpoint\IdentifierResolver;
 
 class Identifier
 {
-    /**
-     * @var string
-     */
-    private $id;
+    private string $id;
 
-    /**
-     * @var string
-     */
-    private $domain;
+    private string $domain;
 
-    /**
-     * @var null|int
-     */
-    private $port;
+    private ?int $port;
 
     public function __construct(string $id, string $domain, ?int $port)
     {

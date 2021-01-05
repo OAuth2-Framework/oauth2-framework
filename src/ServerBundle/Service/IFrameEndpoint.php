@@ -22,25 +22,13 @@ use Twig\Environment;
 
 final class IFrameEndpoint implements MiddlewareInterface
 {
-    /**
-     * @var Environment
-     */
-    private $templateEngine;
+    private Environment $templateEngine;
 
-    /**
-     * @var ResponseFactoryInterface
-     */
-    private $responseFactory;
+    private ResponseFactoryInterface $responseFactory;
 
-    /**
-     * @var string
-     */
-    private $template;
+    private string $template;
 
-    /**
-     * @var string
-     */
-    private $storageName;
+    private string $storageName;
 
     public function __construct(Environment $templateEngine, ResponseFactoryInterface $responseFactory, string $template, string $storageName)
     {

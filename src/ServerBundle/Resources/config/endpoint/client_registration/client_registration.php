@@ -1,6 +1,9 @@
 <?php
 
 declare(strict_types=1);
+use OAuth2Framework\Component\Core\Middleware\Pipe;
+use OAuth2Framework\Component\Core\Middleware\OAuth2MessageMiddleware;
+use OAuth2Framework\Component\Core\Message\OAuth2MessageFactoryManager;
 
 /*
  * The MIT License (MIT)
@@ -27,7 +30,7 @@ return function (ContainerConfigurator $container) {
     ;
 
     $container->set('client_registration_endpoint_pipe')
-        ->class(Middleware\Pipe::class)
+        ->class(Pipe::class)
         ->args([[
             ref('oauth2_server.message_middleware.for_client_registration'),
             ref('oauth2_server.client_registration.endpoint'),
@@ -45,13 +48,13 @@ return function (ContainerConfigurator $container) {
     ;
 
     $container->set('oauth2_server.message_middleware.for_client_registration')
-        ->class(Middleware\OAuth2MessageMiddleware::class)
+        ->class(OAuth2MessageMiddleware::class)
         ->args([
             ref('oauth2_server.message_factory_manager.for_client_registration'),
         ])
     ;
     $container->set('oauth2_server.message_factory_manager.for_client_registration')
-        ->class(Message\OAuth2MessageFactoryManager::class)
+        ->class(OAuth2MessageFactoryManager::class)
         ->args([
             ref(ResponseFactoryInterface::class),
         ])

@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\ClientRegistrationEndpoint\Rule;
 
+use function Safe\json_decode;
 use Assert\Assertion;
 use Jose\Component\Core\JWKSet;
 use Jose\Component\Signature\JWSLoader;
@@ -23,25 +24,16 @@ use OAuth2Framework\Component\Core\DataBag\DataBag;
 
 final class SoftwareRule implements Rule
 {
-    /**
-     * @var JWSLoader
-     */
-    private $jwsLoader;
+    private JWSLoader $jwsLoader;
 
-    /**
-     * @var bool
-     */
-    private $isSoftwareStatementRequired;
+    private bool $isSoftwareStatementRequired;
 
-    /**
-     * @var JWKSet
-     */
-    private $softwareStatementSignatureKeySet;
+    private JWKSet $softwareStatementSignatureKeySet;
 
     /**
      * @var string[]
      */
-    private $allowedSignatureAlgorithms;
+    private array $allowedSignatureAlgorithms;
 
     public function __construct(JWSLoader $jwsLoader, JWKSet $signatureKeySet, bool $isSoftwareStatementRequired, array $allowedSignatureAlgorithms)
     {
@@ -96,7 +88,7 @@ final class SoftwareRule implements Rule
             }
             $payload = $jws->getPayload();
             Assertion::string($payload, 'The JWS payload is not available');
-            $claims = \Safe\json_decode($payload, true);
+            $claims = json_decode($payload, true);
             if (!\is_array($claims)) {
                 throw new \InvalidArgumentException('Invalid Software Statement.');
             }

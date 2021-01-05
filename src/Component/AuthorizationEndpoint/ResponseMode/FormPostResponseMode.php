@@ -13,16 +13,15 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode;
 
+use function League\Uri\parse;
+use function League\Uri\build;
 use League\Uri;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType\ResponseType;
 use Psr\Http\Message\ResponseInterface;
 
 final class FormPostResponseMode implements ResponseMode
 {
-    /**
-     * @var FormPostResponseRenderer
-     */
-    private $renderer;
+    private FormPostResponseRenderer $renderer;
 
     public function __construct(FormPostResponseRenderer $renderer)
     {
@@ -36,9 +35,9 @@ final class FormPostResponseMode implements ResponseMode
 
     public function buildResponse(ResponseInterface $response, string $redirectUri, array $data): ResponseInterface
     {
-        $uri = Uri\parse($redirectUri);
+        $uri = parse($redirectUri);
         $uri['fragment'] = '_=_'; //A redirect Uri is not supposed to have fragment so we override it.
-        $uri = Uri\build($uri);
+        $uri = build($uri);
 
         $template = $this->renderer->render($uri, $data);
         $response = $response->withStatus(200);

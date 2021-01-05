@@ -13,6 +13,9 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\MacTokenType;
 
+use function Safe\sprintf;
+use function Safe\preg_match;
+use function Safe\preg_match_all;
 use OAuth2Framework\Component\Core\AccessToken\AccessToken;
 use OAuth2Framework\Component\Core\TokenType\TokenType;
 use Psr\Http\Message\ServerRequestInterface;
@@ -24,10 +27,7 @@ abstract class MacToken implements TokenType
      */
     private $timestampLifetime;
 
-    /**
-     * @var string
-     */
-    private $macAlgorithm;
+    private string $macAlgorithm;
 
     /**
      * MacToken constructor.
@@ -154,7 +154,7 @@ abstract class MacToken implements TokenType
 
         $algorithms = $this->getAlgorithmMap();
         if (!\array_key_exists($token->getParameter()->get('mac_algorithm'), $algorithms)) {
-            throw new \RuntimeException(\Safe\sprintf('The MAC algorithm "%s" is not supported.', $token->getParameter()->get('mac_algorithm')));
+            throw new \RuntimeException(sprintf('The MAC algorithm "%s" is not supported.', $token->getParameter()->get('mac_algorithm')));
         }
 
         return base64_encode(hash_hmac(
@@ -167,8 +167,8 @@ abstract class MacToken implements TokenType
 
     private function isHeaderValid(string $header, array &$additionalCredentialValues, string &$token = null): bool
     {
-        if (1 === \Safe\preg_match('/(\w+)=("((?:[^"\\\\]|\\\\.)+)"|([^\s,$]+))/', $header, $matches)) {
-            \Safe\preg_match_all('/(\w+)=("((?:[^"\\\\]|\\\\.)+)"|([^\s,$]+))/', $header, $matches, PREG_SET_ORDER);
+        if (1 === preg_match('/(\w+)=("((?:[^"\\\\]|\\\\.)+)"|([^\s,$]+))/', $header, $matches)) {
+            preg_match_all('/(\w+)=("((?:[^"\\\\]|\\\\.)+)"|([^\s,$]+))/', $header, $matches, PREG_SET_ORDER);
 
             if (!\is_array($matches)) {
                 return false;

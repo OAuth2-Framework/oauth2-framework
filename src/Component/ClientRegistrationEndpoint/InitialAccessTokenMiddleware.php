@@ -22,20 +22,11 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 final class InitialAccessTokenMiddleware implements MiddlewareInterface
 {
-    /**
-     * @var BearerToken
-     */
-    private $bearerToken;
+    private BearerToken $bearerToken;
 
-    /**
-     * @var InitialAccessTokenRepository
-     */
-    private $initialAccessTokenRepository;
+    private InitialAccessTokenRepository $initialAccessTokenRepository;
 
-    /**
-     * @var bool
-     */
-    private $isRequired;
+    private bool $isRequired;
 
     /**
      * InitialAccessTokenMiddleware constructor.

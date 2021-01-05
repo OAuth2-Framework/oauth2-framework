@@ -1,6 +1,10 @@
 <?php
 
 declare(strict_types=1);
+use OAuth2Framework\Component\WebFingerEndpoint\IdentifierResolver\IdentifierResolverManager;
+use OAuth2Framework\Component\WebFingerEndpoint\IdentifierResolver\UriResolver;
+use OAuth2Framework\Component\WebFingerEndpoint\IdentifierResolver\AccountResolver;
+use OAuth2Framework\Component\WebFingerEndpoint\IdentifierResolver\EmailResolver;
 
 /*
  * The MIT License (MIT)
@@ -46,7 +50,7 @@ return function (ContainerConfigurator $container) {
         ->args([
             ref(ResponseFactoryInterface::class),
             ref('webfinger.resource_repository'),
-            ref(IdentifierResolver\IdentifierResolverManager::class),
+            ref(IdentifierResolverManager::class),
         ])
     ;
 
@@ -58,8 +62,8 @@ return function (ContainerConfigurator $container) {
         ->tag('controller.service_arguments')
     ;
 
-    $container->set(IdentifierResolver\IdentifierResolverManager::class);
-    $container->set(IdentifierResolver\UriResolver::class);
-    $container->set(IdentifierResolver\AccountResolver::class);
-    $container->set(IdentifierResolver\EmailResolver::class);
+    $container->set(IdentifierResolverManager::class);
+    $container->set(UriResolver::class);
+    $container->set(AccountResolver::class);
+    $container->set(EmailResolver::class);
 };

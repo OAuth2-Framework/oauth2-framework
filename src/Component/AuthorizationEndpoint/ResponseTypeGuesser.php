@@ -21,10 +21,7 @@ use function Safe\sprintf;
 
 class ResponseTypeGuesser
 {
-    /**
-     * @var ResponseTypeManager
-     */
-    private $responseTypeManager;
+    private ResponseTypeManager $responseTypeManager;
 
     public function __construct(ResponseTypeManager $responseTypeManager)
     {

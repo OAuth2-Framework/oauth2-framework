@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\ResourceOwnerPasswordCredentialsGrant;
 
+use function Safe\sprintf;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use OAuth2Framework\Component\Core\Util\RequestBodyParser;
 use OAuth2Framework\Component\TokenEndpoint\GrantType;
@@ -21,10 +22,7 @@ use Psr\Http\Message\ServerRequestInterface;
 
 final class ResourceOwnerPasswordCredentialsGrantType implements GrantType
 {
-    /**
-     * @var ResourceOwnerPasswordCredentialManager
-     */
-    private $resourceOwnerPasswordCredentialManager;
+    private ResourceOwnerPasswordCredentialManager $resourceOwnerPasswordCredentialManager;
 
     public function __construct(ResourceOwnerPasswordCredentialManager $resourceOwnerPasswordCredentialManager)
     {
@@ -48,7 +46,7 @@ final class ResourceOwnerPasswordCredentialsGrantType implements GrantType
 
         $diff = array_diff($requiredParameters, array_keys($parameters));
         if (0 !== \count($diff)) {
-            throw OAuth2Error::invalidRequest(\Safe\sprintf('Missing grant type parameter(s): %s.', implode(', ', $diff)));
+            throw OAuth2Error::invalidRequest(sprintf('Missing grant type parameter(s): %s.', implode(', ', $diff)));
         }
     }
 

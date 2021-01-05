@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\OpenIdConnect\UserInfo\Claim;
 
+use function Safe\sprintf;
 use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 
 final class Picture implements Claim
@@ -40,6 +41,6 @@ final class Picture implements Claim
 
     private function getComputedClaimName(?string $claimLocale): string
     {
-        return null !== $claimLocale ? \Safe\sprintf('%s#%s', self::CLAIM_NAME, $claimLocale) : self::CLAIM_NAME;
+        return null !== $claimLocale ? sprintf('%s#%s', self::CLAIM_NAME, $claimLocale) : self::CLAIM_NAME;
     }
 }

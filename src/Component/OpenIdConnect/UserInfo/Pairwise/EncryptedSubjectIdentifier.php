@@ -13,20 +13,18 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\OpenIdConnect\UserInfo\Pairwise;
 
+use function Safe\sprintf;
+use function Safe\openssl_cipher_iv_length;
+use function Safe\openssl_encrypt;
+use function Safe\openssl_decrypt;
 use Base64Url\Base64Url;
 use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 
 final class EncryptedSubjectIdentifier implements PairwiseSubjectIdentifierAlgorithm
 {
-    /**
-     * @var string
-     */
-    private $pairwiseEncryptionKey;
+    private string $pairwiseEncryptionKey;
 
-    /**
-     * @var string
-     */
-    private $algorithm;
+    private string $algorithm;
 
     /**
      * EncryptedSubjectIdentifier constructor.
@@ -34,7 +32,7 @@ final class EncryptedSubjectIdentifier implements PairwiseSubjectIdentifierAlgor
     public function __construct(string $pairwiseEncryptionKey, string $algorithm)
     {
         if (!\in_array($algorithm, openssl_get_cipher_methods(), true)) {
-            throw new \InvalidArgumentException(\Safe\sprintf('The algorithm "%s" is not supported.', $algorithm));
+            throw new \InvalidArgumentException(sprintf('The algorithm "%s" is not supported.', $algorithm));
         }
         $this->pairwiseEncryptionKey = $pairwiseEncryptionKey;
         $this->algorithm = $algorithm;
@@ -42,12 +40,12 @@ final class EncryptedSubjectIdentifier implements PairwiseSubjectIdentifierAlgor
 
     public function calculateSubjectIdentifier(UserAccount $userAccount, string $sectorIdentifierHost): string
     {
-        $prepared = \Safe\sprintf('%s:%s', $sectorIdentifierHost, $userAccount->getUserAccountId()->getValue());
+        $prepared = sprintf('%s:%s', $sectorIdentifierHost, $userAccount->getUserAccountId()->getValue());
         $iv = hash('sha512', $userAccount->getUserAccountId()->getValue(), true);
-        $ivSize = \Safe\openssl_cipher_iv_length($this->algorithm);
+        $ivSize = openssl_cipher_iv_length($this->algorithm);
         $iv = mb_substr($iv, 0, $ivSize, '8bit');
 
-        return Base64Url::encode($iv).':'.Base64Url::encode(\Safe\openssl_encrypt($prepared, $this->algorithm, $this->pairwiseEncryptionKey, OPENSSL_RAW_DATA, $iv));
+        return Base64Url::encode($iv).':'.Base64Url::encode(openssl_encrypt($prepared, $this->algorithm, $this->pairwiseEncryptionKey, OPENSSL_RAW_DATA, $iv));
     }
 
     public function getPublicIdFromSubjectIdentifier(string $subjectIdentifier): ?string
@@ -56,7 +54,7 @@ final class EncryptedSubjectIdentifier implements PairwiseSubjectIdentifierAlgor
         if (2 !== \count($data)) {
             return null;
         }
-        $decoded = \Safe\openssl_decrypt(Base64Url::decode($data[1]), $this->algorithm, $this->pairwiseEncryptionKey, OPENSSL_RAW_DATA, Base64Url::decode($data[0]));
+        $decoded = openssl_decrypt(Base64Url::decode($data[1]), $this->algorithm, $this->pairwiseEncryptionKey, OPENSSL_RAW_DATA, Base64Url::decode($data[0]));
         $parts = explode(':', $decoded);
         if (3 !== \count($parts)) {
             return null;

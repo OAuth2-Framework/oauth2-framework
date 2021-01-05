@@ -15,10 +15,7 @@ namespace OAuth2Framework\Component\RefreshTokenGrant;
 
 class RefreshTokenId
 {
-    /**
-     * @var string
-     */
-    private $value;
+    private string $value;
 
     public function __construct(string $value)
     {

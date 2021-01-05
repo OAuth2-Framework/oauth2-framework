@@ -23,10 +23,7 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationFailureHandlerI
 
 final class DefaultFailureHandler implements AuthenticationFailureHandlerInterface
 {
-    /**
-     * @var OAuth2MessageFactoryManager
-     */
-    private $oauth2ResponseFactoryManager;
+    private OAuth2MessageFactoryManager $oauth2ResponseFactoryManager;
 
     public function __construct(OAuth2MessageFactoryManager $oauth2ResponseFactoryManager)
     {

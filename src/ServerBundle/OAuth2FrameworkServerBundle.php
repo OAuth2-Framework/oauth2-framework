@@ -13,6 +13,19 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle;
 
+use OAuth2Framework\ServerBundle\Component\Core\TrustedIssuerSource;
+use OAuth2Framework\ServerBundle\Component\Core\ClientSource;
+use OAuth2Framework\ServerBundle\Component\Core\AccessTokenSource;
+use OAuth2Framework\ServerBundle\Component\Core\UserAccountSource;
+use OAuth2Framework\ServerBundle\Component\Core\ServicesSource;
+use OAuth2Framework\ServerBundle\Component\Core\ResourceServerSource;
+use OAuth2Framework\ServerBundle\Component\ClientRule\ClientRuleSource;
+use OAuth2Framework\ServerBundle\Component\ClientAuthentication\ClientAuthenticationSource;
+use OAuth2Framework\ServerBundle\Component\Scope\ScopeSource;
+use OAuth2Framework\ServerBundle\Component\TokenType\TokenTypeSource;
+use OAuth2Framework\ServerBundle\Component\Endpoint\EndpointSource;
+use OAuth2Framework\ServerBundle\Component\Grant\GrantSource;
+use OAuth2Framework\ServerBundle\Component\OpenIdConnect\OpenIdConnectSource;
 use Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\DoctrineOrmMappingsPass;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AbstractAuthorizationCode;
 use OAuth2Framework\Component\ClientRegistrationEndpoint\AbstractInitialAccessToken;
@@ -28,7 +41,7 @@ class OAuth2FrameworkServerBundle extends Bundle
     /**
      * @var Component\Component[]
      */
-    private $components = [];
+    private array $components = [];
 
     public function __construct()
     {
@@ -78,20 +91,20 @@ class OAuth2FrameworkServerBundle extends Bundle
     private function getComponents(): array
     {
         return [
-            new Component\Core\TrustedIssuerSource(),
-            new Component\Core\ClientSource(),
-            new Component\Core\AccessTokenSource(),
-            new Component\Core\UserAccountSource(),
-            new Component\Core\ServicesSource(),
-            new Component\Core\ResourceServerSource(),
-            new Component\ClientRule\ClientRuleSource(),
-            new Component\ClientAuthentication\ClientAuthenticationSource(),
+            new TrustedIssuerSource(),
+            new ClientSource(),
+            new AccessTokenSource(),
+            new UserAccountSource(),
+            new ServicesSource(),
+            new ResourceServerSource(),
+            new ClientRuleSource(),
+            new ClientAuthenticationSource(),
 
-            new Component\Scope\ScopeSource(),
-            new Component\TokenType\TokenTypeSource(),
-            new Component\Endpoint\EndpointSource(),
-            new Component\Grant\GrantSource(),
-            new Component\OpenIdConnect\OpenIdConnectSource(),
+            new ScopeSource(),
+            new TokenTypeSource(),
+            new EndpointSource(),
+            new GrantSource(),
+            new OpenIdConnectSource(),
 
             /*
             new Component\HttpSource(),

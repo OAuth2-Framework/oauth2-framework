@@ -23,7 +23,7 @@ class Pipe implements MiddlewareInterface
     /**
      * @var MiddlewareInterface[]
      */
-    private $middlewares;
+    private array $middlewares;
 
     /**
      * Dispatcher constructor.

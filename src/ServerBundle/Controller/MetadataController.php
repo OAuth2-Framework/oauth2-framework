@@ -25,10 +25,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class MetadataController implements MiddlewareInterface
 {
-    /**
-     * @var MetadataEndpoint
-     */
-    private $metadataEndpoint;
+    private MetadataEndpoint $metadataEndpoint;
 
     public function __construct(ResponseFactoryInterface $responseFactory, MetadataBuilder $metadataBuilder)
     {

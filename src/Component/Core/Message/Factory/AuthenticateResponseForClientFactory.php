@@ -18,10 +18,7 @@ use Psr\Http\Message\ResponseInterface;
 
 final class AuthenticateResponseForClientFactory extends OAuth2ResponseFactory
 {
-    /**
-     * @var AuthenticationMethodManager
-     */
-    private $authenticationMethodManager;
+    private AuthenticationMethodManager $authenticationMethodManager;
 
     /**
      * AuthenticateResponseForClientFactory constructor.

@@ -29,14 +29,8 @@ use Throwable;
 
 final class AuthorizationExceptionMiddleware implements MiddlewareInterface
 {
-    /**
-     * @var ResponseTypeGuesser
-     */
-    private $responseTypeGuesser;
-    /**
-     * @var ResponseModeGuesser
-     */
-    private $responseModeGuesser;
+    private ResponseTypeGuesser $responseTypeGuesser;
+    private ResponseModeGuesser $responseModeGuesser;
 
     public function __construct(ResponseTypeGuesser $responseTypeGuesser, ResponseModeGuesser $responseModeGuesser)
     {

@@ -22,55 +22,25 @@ use function Safe\sprintf;
 
 abstract class AbstractAuthorizationCode implements AuthorizationCode
 {
-    /**
-     * @var array
-     */
-    private $queryParameters;
+    private array $queryParameters;
 
-    /**
-     * @var string
-     */
-    private $redirectUri;
+    private string $redirectUri;
 
-    /**
-     * @var bool
-     */
-    private $used;
+    private bool $used;
 
-    /**
-     * @var \DateTimeImmutable
-     */
-    private $expiresAt;
+    private \DateTimeImmutable $expiresAt;
 
-    /**
-     * @var UserAccountId
-     */
-    private $userAccountId;
+    private UserAccountId $userAccountId;
 
-    /**
-     * @var ClientId
-     */
-    private $clientId;
+    private ClientId $clientId;
 
-    /**
-     * @var DataBag
-     */
-    private $parameter;
+    private DataBag $parameter;
 
-    /**
-     * @var DataBag
-     */
-    private $metadata;
+    private DataBag $metadata;
 
-    /**
-     * @var bool
-     */
-    private $revoked;
+    private bool $revoked;
 
-    /**
-     * @var null|ResourceServerId
-     */
-    private $resourceServerId;
+    private ?ResourceServerId $resourceServerId;
 
     public function __construct(ClientId $clientId, UserAccountId $userAccountId, array $queryParameters, string $redirectUri, \DateTimeImmutable $expiresAt, DataBag $parameter, DataBag $metadata, ?ResourceServerId $resourceServerId)
     {

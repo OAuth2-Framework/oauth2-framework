@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\ClientRule;
 
+use function Safe\sprintf;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 
 abstract class AbstractInternationalizedRule implements Rule
@@ -29,7 +30,7 @@ abstract class AbstractInternationalizedRule implements Rule
             }
 
             $sub = mb_substr($k, 0, mb_strlen($base, '8bit') + 1, '8bit');
-            if (\Safe\sprintf('%s#', $base) === $sub && '' !== mb_substr($k, mb_strlen($base, '8bit') + 1, null, '8bit')) {
+            if (sprintf('%s#', $base) === $sub && '' !== mb_substr($k, mb_strlen($base, '8bit') + 1, null, '8bit')) {
                 $closure($k, $v);
                 $result[$k] = $v;
 

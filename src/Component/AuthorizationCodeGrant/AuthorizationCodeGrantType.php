@@ -24,15 +24,9 @@ use function Safe\sprintf;
 
 final class AuthorizationCodeGrantType implements GrantType
 {
-    /**
-     * @var AuthorizationCodeRepository
-     */
-    private $authorizationCodeRepository;
+    private AuthorizationCodeRepository $authorizationCodeRepository;
 
-    /**
-     * @var PKCEMethodManager
-     */
-    private $pkceMethodManager;
+    private PKCEMethodManager $pkceMethodManager;
 
     public function __construct(AuthorizationCodeRepository $authorizationCodeRepository, PKCEMethodManager $pkceMethodManager)
     {

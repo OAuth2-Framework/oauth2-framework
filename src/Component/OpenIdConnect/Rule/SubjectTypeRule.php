@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\OpenIdConnect\Rule;
 
+use function Safe\sprintf;
 use OAuth2Framework\Component\ClientRule\Rule;
 use OAuth2Framework\Component\ClientRule\RuleHandler;
 use OAuth2Framework\Component\Core\Client\ClientId;
@@ -21,10 +22,7 @@ use OAuth2Framework\Component\OpenIdConnect\UserInfo\UserInfo;
 
 final class SubjectTypeRule implements Rule
 {
-    /**
-     * @var UserInfo
-     */
-    private $userinfo;
+    private UserInfo $userinfo;
 
     /**
      * SubjectTypeRule constructor.
@@ -47,7 +45,7 @@ final class SubjectTypeRule implements Rule
             }
 
             if (!\in_array($subjectType, $supported_types, true)) {
-                throw new \InvalidArgumentException(\Safe\sprintf('The subject type "%s" is not supported. Please use one of the following value(s): %s', $subjectType, implode(', ', $supported_types)));
+                throw new \InvalidArgumentException(sprintf('The subject type "%s" is not supported. Please use one of the following value(s): %s', $subjectType, implode(', ', $supported_types)));
             }
             $validatedParameters->set('subject_type', $subjectType);
         }

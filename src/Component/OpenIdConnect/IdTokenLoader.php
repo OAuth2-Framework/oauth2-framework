@@ -13,33 +13,22 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\OpenIdConnect;
 
+use function Safe\json_decode;
 use Assert\Assertion;
 use Jose\Component\Core\JWKSet;
 use Jose\Component\Signature\JWSLoader;
 
 class IdTokenLoader
 {
-    /**
-     * @var JWKSet
-     */
-    private $signatureKeySet;
+    private JWKSet $signatureKeySet;
 
-    /**
-     * @var JWSLoader
-     */
-    private $jwsLoader;
-
-    /**
-     * @var string[]
-     */
-    private $signatureAlgorithms;
+    private JWSLoader $jwsLoader;
 
     /**
      * IdTokenLoader constructor.
      */
-    public function __construct(JWSLoader $jwsLoader, JWKSet $signatureKeySet, array $signatureAlgorithms)
+    public function __construct(JWSLoader $jwsLoader, JWKSet $signatureKeySet)
     {
-        $this->signatureAlgorithms = $signatureAlgorithms;
         $this->signatureKeySet = $signatureKeySet;
         $this->jwsLoader = $jwsLoader;
     }
@@ -61,7 +50,7 @@ class IdTokenLoader
             Assertion::eq(0, $signature, 'Invalid ID Token.');
             $payload = $jwt->getPayload();
             Assertion::string($payload, 'Invalid ID Token.');
-            $claims = \Safe\json_decode($payload, true);
+            $claims = json_decode($payload, true);
             Assertion::isArray($claims, 'Invalid ID Token.');
 
             return new IdToken($idTokenId, $claims);

@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Core\Message;
 
+use function Safe\sprintf;
 use OAuth2Framework\Component\Core\Message\Factory\ResponseFactory;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -22,17 +23,14 @@ class OAuth2MessageFactoryManager
     /**
      * @var MessageExtension[]
      */
-    private $extensions = [];
+    private array $extensions = [];
 
     /**
      * @var ResponseFactory[]
      */
-    private $responseFactories = [];
+    private array $responseFactories = [];
 
-    /**
-     * @var ResponseFactoryInterface
-     */
-    private $responseFactory;
+    private ResponseFactoryInterface $responseFactory;
 
     public function __construct(ResponseFactoryInterface $responseFactory)
     {
@@ -69,7 +67,7 @@ class OAuth2MessageFactoryManager
     private function getFactory(int $code): ResponseFactory
     {
         if (!\array_key_exists($code, $this->responseFactories)) {
-            throw new \InvalidArgumentException(\Safe\sprintf('The response code "%d" is not supported', $code));
+            throw new \InvalidArgumentException(sprintf('The response code "%d" is not supported', $code));
         }
 
         return $this->responseFactories[$code];

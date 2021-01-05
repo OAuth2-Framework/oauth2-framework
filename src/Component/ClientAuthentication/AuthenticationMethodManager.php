@@ -25,12 +25,12 @@ class AuthenticationMethodManager
     /**
      * @var AuthenticationMethod[]
      */
-    private $methods = [];
+    private array $methods = [];
 
     /**
      * @var string[]
      */
-    private $names = [];
+    private array $names = [];
 
     public function add(AuthenticationMethod $method): void
     {

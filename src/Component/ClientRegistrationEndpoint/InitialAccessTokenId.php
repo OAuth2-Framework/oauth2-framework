@@ -15,10 +15,7 @@ namespace OAuth2Framework\Component\ClientRegistrationEndpoint;
 
 class InitialAccessTokenId
 {
-    /**
-     * @var string
-     */
-    private $value;
+    private string $value;
 
     public function __construct(string $value)
     {

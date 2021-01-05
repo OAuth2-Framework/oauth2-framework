@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Scope;
 
+use function Safe\sprintf;
 use OAuth2Framework\Component\Core\AccessToken\AccessToken;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
@@ -26,15 +27,9 @@ use Psr\Http\Message\ServerRequestInterface;
 
 final class TokenEndpointScopeExtension implements TokenEndpointExtension
 {
-    /**
-     * @var ScopeRepository
-     */
-    private $scopeRepository;
+    private ScopeRepository $scopeRepository;
 
-    /**
-     * @var ScopePolicyManager
-     */
-    private $scopePolicyManager;
+    private ScopePolicyManager $scopePolicyManager;
 
     public function __construct(ScopeRepository $scopeRepository, ScopePolicyManager $scopePolicyManager)
     {
@@ -102,7 +97,7 @@ final class TokenEndpointScopeExtension implements TokenEndpointExtension
         $requestedScopes = '' === $scope ? [] : explode(' ', $scope);
         $diff = array_diff($requestedScopes, $availableScopes);
         if (0 !== \count($diff)) {
-            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_SCOPE, \Safe\sprintf('An unsupported scope was requested. Available scope is/are: %s.', implode(', ', $availableScopes)));
+            throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_SCOPE, sprintf('An unsupported scope was requested. Available scope is/are: %s.', implode(', ', $availableScopes)));
         }
     }
 

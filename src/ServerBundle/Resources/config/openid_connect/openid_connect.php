@@ -1,6 +1,32 @@
 <?php
 
 declare(strict_types=1);
+use OAuth2Framework\Component\OpenIdConnect\UserInfo\Claim\ClaimManager;
+use OAuth2Framework\Component\OpenIdConnect\UserInfo\Claim\Address;
+use OAuth2Framework\Component\OpenIdConnect\UserInfo\Claim\AuthenticationTime;
+use OAuth2Framework\Component\OpenIdConnect\UserInfo\Claim\Birthdate;
+use OAuth2Framework\Component\OpenIdConnect\UserInfo\Claim\Email;
+use OAuth2Framework\Component\OpenIdConnect\UserInfo\Claim\EmailVerified;
+use OAuth2Framework\Component\OpenIdConnect\UserInfo\Claim\FamilyName;
+use OAuth2Framework\Component\OpenIdConnect\UserInfo\Claim\Gender;
+use OAuth2Framework\Component\OpenIdConnect\UserInfo\Claim\GivenName;
+use OAuth2Framework\Component\OpenIdConnect\UserInfo\Claim\Locale;
+use OAuth2Framework\Component\OpenIdConnect\UserInfo\Claim\MiddleName;
+use OAuth2Framework\Component\OpenIdConnect\UserInfo\Claim\Name;
+use OAuth2Framework\Component\OpenIdConnect\UserInfo\Claim\Nickname;
+use OAuth2Framework\Component\OpenIdConnect\UserInfo\Claim\PhoneNumber;
+use OAuth2Framework\Component\OpenIdConnect\UserInfo\Claim\PhoneNumberVerified;
+use OAuth2Framework\Component\OpenIdConnect\UserInfo\Claim\Picture;
+use OAuth2Framework\Component\OpenIdConnect\UserInfo\Claim\PreferredUsername;
+use OAuth2Framework\Component\OpenIdConnect\UserInfo\Claim\Profile;
+use OAuth2Framework\Component\OpenIdConnect\UserInfo\Claim\UpdatedAt;
+use OAuth2Framework\Component\OpenIdConnect\UserInfo\Claim\Website;
+use OAuth2Framework\Component\OpenIdConnect\UserInfo\Claim\Zoneinfo;
+use OAuth2Framework\Component\OpenIdConnect\UserInfo\Claim\ClaimSourceManager;
+use OAuth2Framework\Component\OpenIdConnect\Rule\IdTokenAlgorithmsRule;
+use OAuth2Framework\Component\OpenIdConnect\Rule\SubjectTypeRule;
+use OAuth2Framework\Component\OpenIdConnect\ParameterChecker\NonceParameterChecker;
+use OAuth2Framework\Component\OpenIdConnect\ParameterChecker\ClaimsParameterChecker;
 
 /*
  * The MIT License (MIT)
@@ -29,35 +55,35 @@ return function (ContainerConfigurator $container) {
 
     $container->set(UserInfoScopeSupportManager::class);
 
-    $container->set(Claim\ClaimManager::class);
-    $container->set(Claim\Address::class);
-    $container->set(Claim\AuthenticationTime::class);
-    $container->set(Claim\Birthdate::class);
-    $container->set(Claim\Email::class);
-    $container->set(Claim\EmailVerified::class);
-    $container->set(Claim\FamilyName::class);
-    $container->set(Claim\Gender::class);
-    $container->set(Claim\GivenName::class);
-    $container->set(Claim\Locale::class);
-    $container->set(Claim\MiddleName::class);
-    $container->set(Claim\Name::class);
-    $container->set(Claim\Nickname::class);
-    $container->set(Claim\PhoneNumber::class);
-    $container->set(Claim\PhoneNumberVerified::class);
-    $container->set(Claim\Picture::class);
-    $container->set(Claim\PreferredUsername::class);
-    $container->set(Claim\Profile::class);
-    $container->set(Claim\UpdatedAt::class);
-    $container->set(Claim\Website::class);
-    $container->set(Claim\Zoneinfo::class);
+    $container->set(ClaimManager::class);
+    $container->set(Address::class);
+    $container->set(AuthenticationTime::class);
+    $container->set(Birthdate::class);
+    $container->set(Email::class);
+    $container->set(EmailVerified::class);
+    $container->set(FamilyName::class);
+    $container->set(Gender::class);
+    $container->set(GivenName::class);
+    $container->set(Locale::class);
+    $container->set(MiddleName::class);
+    $container->set(Name::class);
+    $container->set(Nickname::class);
+    $container->set(PhoneNumber::class);
+    $container->set(PhoneNumberVerified::class);
+    $container->set(Picture::class);
+    $container->set(PreferredUsername::class);
+    $container->set(Profile::class);
+    $container->set(UpdatedAt::class);
+    $container->set(Website::class);
+    $container->set(Zoneinfo::class);
 
-    $container->set(Claim\ClaimSourceManager::class);
+    $container->set(ClaimSourceManager::class);
 
     $container->set(UserInfo::class)
         ->args([
             ref(UserInfoScopeSupportManager::class),
-            ref(Claim\ClaimManager::class),
-            ref(Claim\ClaimSourceManager::class),
+            ref(ClaimManager::class),
+            ref(ClaimSourceManager::class),
         ])
     ;
 
@@ -78,19 +104,19 @@ return function (ContainerConfigurator $container) {
         ])
     ;
 
-    $container->set(Rule\IdTokenAlgorithmsRule::class)
+    $container->set(IdTokenAlgorithmsRule::class)
         ->args([
             ref('jose.jws_builder.oauth2_server.openid_connect.id_token'),
             ref('jose.jwe_builder.oauth2_server.openid_connect.id_token')->nullOnInvalid(),
         ])
     ;
 
-    $container->set(Rule\SubjectTypeRule::class)
+    $container->set(SubjectTypeRule::class)
         ->args([
             ref(UserInfo::class),
         ])
     ;
 
-    $container->set(ParameterChecker\NonceParameterChecker::class);
-    $container->set(ParameterChecker\ClaimsParameterChecker::class);
+    $container->set(NonceParameterChecker::class);
+    $container->set(ClaimsParameterChecker::class);
 };

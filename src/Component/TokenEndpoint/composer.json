@@ -16,16 +16,13 @@
         }
     ],
     "require": {
-        "php": "^7.3",
+        "php": "^7.4|^8.0",
         "oauth2-framework/core": "^1.0",
         "oauth2-framework/client-authentication": "^1.0",
         "psr/http-message": "^1.0",
         "psr/http-factory": "^1.0",
         "psr/http-server-handler": "^1.0",
         "psr/http-server-middleware": "^1.0"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "^8.0"
     },
     "suggest": {
         "oauth2-framework/bearer-token-type": "To add Bearer token type (RFC6750).",
@@ -42,11 +39,6 @@
     "autoload": {
         "psr-4": {
             "OAuth2Framework\\Component\\TokenEndpoint\\": ""
-        }
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "1.0.x-dev"
         }
     },
     "config": {

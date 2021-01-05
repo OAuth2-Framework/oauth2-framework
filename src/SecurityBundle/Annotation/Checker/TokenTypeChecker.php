@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\SecurityBundle\Annotation\Checker;
 
+use function Safe\sprintf;
 use OAuth2Framework\SecurityBundle\Annotation\OAuth2;
 use OAuth2Framework\SecurityBundle\Security\Authentication\Token\OAuth2Token;
 
@@ -25,7 +26,7 @@ final class TokenTypeChecker implements Checker
         }
 
         if ($configuration->getTokenType() !== $token->getTokenType()) {
-            throw new \Exception(\Safe\sprintf('Token type "%s" not allowed. Please use "%s"', $token->getTokenType(), $configuration->getTokenType()));
+            throw new \Exception(sprintf('Token type "%s" not allowed. Please use "%s"', $token->getTokenType(), $configuration->getTokenType()));
         }
     }
 }

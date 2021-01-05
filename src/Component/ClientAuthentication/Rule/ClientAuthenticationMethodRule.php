@@ -22,10 +22,7 @@ use function Safe\sprintf;
 
 final class ClientAuthenticationMethodRule implements Rule
 {
-    /**
-     * @var AuthenticationMethodManager
-     */
-    private $clientAuthenticationMethodManager;
+    private AuthenticationMethodManager $clientAuthenticationMethodManager;
 
     public function __construct(AuthenticationMethodManager $clientAuthenticationMethodManager)
     {

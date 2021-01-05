@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\OpenIdConnect\UserInfo\Claim;
 
+use function Safe\sprintf;
 use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 
 class ClaimSourceManager
@@ -20,7 +21,7 @@ class ClaimSourceManager
     /**
      * @var ClaimSource[]
      */
-    private $claimSources = [];
+    private array $claimSources = [];
 
     public function add(ClaimSource $claimSource): void
     {
@@ -48,7 +49,7 @@ class ClaimSourceManager
             $result = $claimSource->getUserInfo($userAccount, $scopes, $previousClaims);
             if (null !== $result) {
                 ++$i;
-                $src = \Safe\sprintf('src%d', $i);
+                $src = sprintf('src%d', $i);
                 $_claim_names = [];
                 foreach ($result->getAvailableClaims() as $claim) {
                     if ('sub' !== $claim) {

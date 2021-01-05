@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Scope\Policy;
 
+use function Safe\sprintf;
 use OAuth2Framework\Component\Core\Client\Client;
 
 class ScopePolicyManager
@@ -20,12 +21,9 @@ class ScopePolicyManager
     /**
      * @var ScopePolicy[]
      */
-    private $scopePolicies = [];
+    private array $scopePolicies = [];
 
-    /**
-     * @var null|string
-     */
-    private $defaultScopePolicy;
+    private ?string $defaultScopePolicy;
 
     public function add(ScopePolicy $scopePolicy, bool $isDefault = false): void
     {
@@ -66,7 +64,7 @@ class ScopePolicyManager
     private function get(string $scopePolicyName): ScopePolicy
     {
         if (!$this->has($scopePolicyName)) {
-            throw new \InvalidArgumentException(\Safe\sprintf('The scope policy with name "%s" is not supported', $scopePolicyName));
+            throw new \InvalidArgumentException(sprintf('The scope policy with name "%s" is not supported', $scopePolicyName));
         }
 
         return $this->scopePolicies[$scopePolicyName];

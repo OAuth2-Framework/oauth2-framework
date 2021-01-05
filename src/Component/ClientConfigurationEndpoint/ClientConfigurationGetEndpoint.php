@@ -22,10 +22,7 @@ use function Safe\json_encode;
 
 final class ClientConfigurationGetEndpoint implements MiddlewareInterface
 {
-    /**
-     * @var ResponseFactoryInterface
-     */
-    private $responseFactory;
+    private ResponseFactoryInterface $responseFactory;
 
     public function __construct(ResponseFactoryInterface $responseFactory)
     {

@@ -29,52 +29,25 @@ use Throwable;
 
 class AuthorizationEndpoint
 {
-    /**
-     * @var null|ConsentRepository
-     */
-    private $consentRepository;
+    private ?ConsentRepository $consentRepository;
 
     /**
      * @var AuthorizationEndpointHook[]
      */
-    private $hooks = [];
+    private array $hooks = [];
 
-    /**
-     * @var ResponseFactoryInterface
-     */
-    private $responseFactory;
+    private ResponseFactoryInterface $responseFactory;
 
-    /**
-     * @var ExtensionManager
-     */
-    private $extensionManager;
+    private ExtensionManager $extensionManager;
 
-    /**
-     * @var AuthorizationRequestStorage
-     */
-    private $authorizationRequestStorage;
+    private AuthorizationRequestStorage $authorizationRequestStorage;
 
-    /**
-     * @var LoginHandler
-     */
-    private $loginHandler;
+    private LoginHandler $loginHandler;
 
-    /**
-     * @var ConsentHandler
-     */
-    private $consentHandler;
-    /**
-     * @var TokenTypeGuesser
-     */
-    private $tokenTypeGuesser;
-    /**
-     * @var ResponseTypeGuesser
-     */
-    private $responseTypeGuesser;
-    /**
-     * @var ResponseModeGuesser
-     */
-    private $responseModeGuesser;
+    private ConsentHandler $consentHandler;
+    private TokenTypeGuesser $tokenTypeGuesser;
+    private ResponseTypeGuesser $responseTypeGuesser;
+    private ResponseModeGuesser $responseModeGuesser;
 
     public function __construct(ResponseFactoryInterface $responseFactory, TokenTypeGuesser $tokenTypeGuesser, ResponseTypeGuesser $responseTypeGuesser, ResponseModeGuesser $responseModeGuesser, ?ConsentRepository $consentRepository, ExtensionManager $extensionManager, AuthorizationRequestStorage $authorizationRequestStorage, LoginHandler $loginHandler, ConsentHandler $consentHandler)
     {

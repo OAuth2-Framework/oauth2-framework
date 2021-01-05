@@ -13,12 +13,10 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\MetadataEndpoint;
 
+use function Safe\sprintf;
 class Metadata
 {
-    /**
-     * @var array
-     */
-    private $values = [];
+    private array $values = [];
 
     public function has(string $key): bool
     {
@@ -31,7 +29,7 @@ class Metadata
     public function get(string $key)
     {
         if (!$this->has($key)) {
-            throw new \InvalidArgumentException(\Safe\sprintf('The value with key "%s" does not exist.', $key));
+            throw new \InvalidArgumentException(sprintf('The value with key "%s" does not exist.', $key));
         }
 
         return $this->values[$key];

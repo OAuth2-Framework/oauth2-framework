@@ -28,60 +28,25 @@ class AuthorizationRequest
     public const CONSENT_ALLOW = 'consent_allow';
     public const CONSENT_DENY = 'consent_deny';
 
-    /**
-     * @var string
-     */
-    private $authorized = self::CONSENT_NOT_GIVEN;
+    private string $authorized = self::CONSENT_NOT_GIVEN;
 
-    /**
-     * @var Client
-     */
-    private $client;
+    private Client $client;
 
-    /**
-     * @var null|UserAccount
-     */
-    private $userAccount;
+    private ?UserAccount $userAccount;
 
-    /**
-     * @var DataBag
-     */
-    private $metadata;
+    private DataBag $metadata;
 
-    /**
-     * @var ResponseType]
-     */
-    private $responseType;
+    private ?ResponseMode $responseMode;
 
-    /**
-     * @var null|ResponseMode
-     */
-    private $responseMode;
+    private array $queryParameters = [];
 
-    /**
-     * @var array
-     */
-    private $queryParameters = [];
+    private array $responseParameters = [];
 
-    /**
-     * @var array
-     */
-    private $responseParameters = [];
+    private array $responseHeaders = [];
 
-    /**
-     * @var array
-     */
-    private $responseHeaders = [];
+    private ?ResourceServer $resourceServer;
 
-    /**
-     * @var null|ResourceServer
-     */
-    private $resourceServer;
-
-    /**
-     * @var array
-     */
-    private $attributes = [];
+    private array $attributes = [];
 
     public function __construct(Client $client, array $queryParameters)
     {

@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Scope\Rule;
 
+use function Safe\sprintf;
 use OAuth2Framework\Component\ClientRule\Rule;
 use OAuth2Framework\Component\ClientRule\RuleHandler;
 use OAuth2Framework\Component\Core\Client\ClientId;
@@ -21,10 +22,7 @@ use OAuth2Framework\Component\Scope\Policy\ScopePolicyManager;
 
 final class ScopePolicyRule implements Rule
 {
-    /**
-     * @var ScopePolicyManager
-     */
-    private $scopePolicyManager;
+    private ScopePolicyManager $scopePolicyManager;
 
     public function __construct(ScopePolicyManager $scopePolicyManager)
     {
@@ -39,7 +37,7 @@ final class ScopePolicyRule implements Rule
                 throw new \InvalidArgumentException('The parameter "scope_policy" must be a string.');
             }
             if (!$this->scopePolicyManager->has($policy)) {
-                throw new \InvalidArgumentException(\Safe\sprintf('The scope policy "%s" is not supported.', $policy));
+                throw new \InvalidArgumentException(sprintf('The scope policy "%s" is not supported.', $policy));
             }
             $validatedParameters->set('scope_policy', $commandParameters->get('scope_policy'));
         }
