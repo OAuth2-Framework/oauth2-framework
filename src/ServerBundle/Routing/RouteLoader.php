@@ -2,18 +2,8 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\ServerBundle\Routing;
 
-use function Safe\sprintf;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\Config\Loader\LoaderResolverInterface;
 use Symfony\Component\Routing\Route;
@@ -40,24 +30,33 @@ class RouteLoader implements LoaderInterface
      * @param string[] $schemes      A required URI scheme or an array of restricted schemes
      * @param string[] $methods      A required HTTP method or an array of restricted methods
      * @param string   $condition    A condition that should evaluate to true for the route to match
-     *
-     * @throws \Safe\Exceptions\StringsException
      */
-    public function addRoute($name, $controllerId, $methodName, $path, array $defaults = [], array $requirements = [], array $options = [], $host = '', $schemes = [], $methods = [], $condition = ''): void
-    {
+    public function addRoute(
+        $name,
+        $controllerId,
+        $methodName,
+        $path,
+        array $defaults = [],
+        array $requirements = [],
+        array $options = [],
+        $host = '',
+        $schemes = [],
+        $methods = [],
+        $condition = ''
+    ): void {
         $defaults['_controller'] = sprintf('%s:%s', $controllerId, $methodName);
         $route = new Route($path, $defaults, $requirements, $options, $host, $schemes, $methods, $condition);
         $this->routes->add(sprintf('oauth2_server_%s', $name), $route);
     }
 
-    public function load($resource, $type = null): RouteCollection
+    public function load(mixed $resource, ?string $type = null): RouteCollection
     {
         return $this->routes;
     }
 
-    public function supports($resource, $type = null): bool
+    public function supports(mixed $resource, ?string $type = null): bool
     {
-        return 'oauth2_server' === $type;
+        return $type === 'oauth2_server';
     }
 
     public function getResolver(): ?LoaderResolverInterface

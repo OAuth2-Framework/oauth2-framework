@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\Component\OpenIdConnect\UserInfo\Claim;
 
 use OAuth2Framework\Component\AuthorizationEndpoint\User\AuthenticationMethodReferenceSupport;
@@ -20,11 +11,9 @@ final class AuthenticationMethodReference implements Claim
 {
     private const CLAIM_NAME = 'amr';
 
-    private AuthenticationMethodReferenceSupport $authenticationMethodReferenceSupport;
-
-    public function __construct(AuthenticationMethodReferenceSupport $authenticationMethodReferenceSupport)
-    {
-        $this->authenticationMethodReferenceSupport = $authenticationMethodReferenceSupport;
+    public function __construct(
+        private AuthenticationMethodReferenceSupport $authenticationMethodReferenceSupport
+    ) {
     }
 
     public function name(): string
@@ -34,7 +23,7 @@ final class AuthenticationMethodReference implements Claim
 
     public function isAvailableForUserAccount(UserAccount $userAccount, ?string $claimLocale): bool
     {
-        return null !== $this->authenticationMethodReferenceSupport->getAuthenticationMethodReferenceFor($userAccount);
+        return $this->authenticationMethodReferenceSupport->getAuthenticationMethodReferenceFor($userAccount) !== null;
     }
 
     public function getForUserAccount(UserAccount $userAccount, ?string $claimLocale)

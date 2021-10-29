@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\SecurityBundle\Security\Factory;
 
 use OAuth2Framework\SecurityBundle\Security\Authentication\Provider\OAuth2Provider;
@@ -28,7 +19,7 @@ final class OAuth2SecurityFactory implements SecurityFactoryInterface
      * @param string      $id
      * @param array       $config
      * @param string      $userProviderId
-     * @param null|string $defaultEntryPointId
+     * @param string|null $defaultEntryPointId
      */
     public function create(ContainerBuilder $container, $id, $config, $userProviderId, $defaultEntryPointId): array
     {
@@ -57,22 +48,24 @@ final class OAuth2SecurityFactory implements SecurityFactoryInterface
         // @var ArrayNodeDefinition $node
         $node
             ->children()
-            ->scalarNode('user_provider')->defaultNull()->end()
-            ->scalarNode('failure_handler')->defaultValue(DefaultFailureHandler::class)->end()
-            ->scalarNode('http_message_factory')->defaultValue('sensio_framework_extra.psr7.http_message_factory')->end()
+            ->scalarNode('user_provider')
+            ->defaultNull()
+            ->end()
+            ->scalarNode('failure_handler')
+            ->defaultValue(DefaultFailureHandler::class)->end()
             ->end()
         ;
     }
 
     private function createAuthProvider(ContainerBuilder $container, string $id): string
     {
-        $providerId = 'security.authentication.provider.oauth2.'.$id;
+        $providerId = 'security.authentication.provider.oauth2.' . $id;
         $container->setDefinition($providerId, new ChildDefinition(OAuth2Provider::class));
 
         return $providerId;
     }
 
-    private function createListener(ContainerBuilder $container, string $id, array $config): string
+    private function createListener(ContainerBuilder $container, string $id): string
     {
         $listenerId = 'oauth2_security.listener';
         $listener = new ChildDefinition($listenerId);
@@ -84,11 +77,11 @@ final class OAuth2SecurityFactory implements SecurityFactoryInterface
          * new Reference('oauth2_security.access_token_handler_manager'),
          * ])
          */
-        $listener->replaceArgument(0, new Reference($config['http_message_factory']));
+        //$listener->replaceArgument(0, new Reference($config['http_message_factory']));
         //$listener->replaceArgument(13, $id);
         //$listener->replaceArgument(14, $config);
         //$listener->replaceArgument(16, new Reference($config['failure_handler']));
-        $listenerId .= '.'.$id;
+        $listenerId .= '.' . $id;
         $container->setDefinition($listenerId, $listener);
 
         return $listenerId;
@@ -96,7 +89,7 @@ final class OAuth2SecurityFactory implements SecurityFactoryInterface
 
     private function createEntryPoint(ContainerBuilder $container, string $id, array $config): string
     {
-        $entryPointId = 'oauth2.security.authentication.entrypoint.'.$id;
+        $entryPointId = 'oauth2.security.authentication.entrypoint.' . $id;
         $entryPoint = new ChildDefinition(OAuth2EntryPoint::class);
         $entryPoint->replaceArgument(0, new Reference($config['failure_handler']));
         $container->setDefinition($entryPointId, $entryPoint);

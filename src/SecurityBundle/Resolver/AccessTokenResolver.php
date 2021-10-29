@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\SecurityBundle\Resolver;
 
 use OAuth2Framework\Component\Core\AccessToken\AccessToken;
@@ -22,16 +13,14 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 
 final class AccessTokenResolver implements ArgumentValueResolverInterface
 {
-    private TokenStorageInterface $tokenStorage;
-
-    public function __construct(TokenStorageInterface $tokenStorage)
-    {
-        $this->tokenStorage = $tokenStorage;
+    public function __construct(
+        private TokenStorageInterface $tokenStorage
+    ) {
     }
 
     public function supports(Request $request, ArgumentMetadata $argument): bool
     {
-        if (AccessToken::class !== $argument->getType()) {
+        if ($argument->getType() !== AccessToken::class) {
             return false;
         }
 

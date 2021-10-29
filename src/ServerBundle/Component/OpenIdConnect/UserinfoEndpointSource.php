@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\ServerBundle\Component\OpenIdConnect;
 
 use OAuth2Framework\ServerBundle\Component\Component;
@@ -30,10 +21,7 @@ class UserinfoEndpointSource implements Component
 
     public function __construct()
     {
-        $this->subComponents = [
-            new UserinfoEndpointSignatureSource(),
-            new UserinfoEndpointEncryptionSource(),
-        ];
+        $this->subComponents = [new UserinfoEndpointSignatureSource(), new UserinfoEndpointEncryptionSource()];
     }
 
     public function name(): string
@@ -44,11 +32,11 @@ class UserinfoEndpointSource implements Component
     public function load(array $configs, ContainerBuilder $container): void
     {
         $config = $configs['openid_connect']['userinfo_endpoint'];
-        if (!$config['enabled']) {
+        if (! $config['enabled']) {
             return;
         }
 
-        $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../Resources/config/openid_connect'));
+        $loader = new PhpFileLoader($container, new FileLocator(__DIR__ . '/../../Resources/config/openid_connect'));
         $loader->load('userinfo_endpoint.php');
 
         $container->setParameter('oauth2_server.openid_connect.userinfo_endpoint.path', $config['path']);
@@ -86,10 +74,7 @@ class UserinfoEndpointSource implements Component
     {
         $updatedConfig = [];
         foreach ($this->subComponents as $subComponent) {
-            $updatedConfig = array_merge(
-                $updatedConfig,
-                $subComponent->prepend($container, $config)
-            );
+            $updatedConfig = array_merge($updatedConfig, $subComponent->prepend($container, $config));
         }
 
         return $updatedConfig;

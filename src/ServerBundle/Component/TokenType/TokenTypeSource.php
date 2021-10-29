@@ -2,17 +2,9 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\ServerBundle\Component\TokenType;
 
+use function in_array;
 use OAuth2Framework\Component\BearerTokenType\BearerToken;
 use OAuth2Framework\Component\MacTokenType\MacToken;
 use OAuth2Framework\ServerBundle\Component\Component;
@@ -30,20 +22,35 @@ class TokenTypeSource implements Component
 
     public function load(array $configs, ContainerBuilder $container): void
     {
-        $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../Resources/config/token_type'));
+        $loader = new PhpFileLoader($container, new FileLocator(__DIR__ . '/../../Resources/config/token_type'));
         $loader->load('token_type.php');
 
         $container->setParameter('oauth2_server.token_type.default', $configs['token_type']['default']);
-        $container->setParameter('oauth2_server.token_type.allow_token_type_parameter', $configs['token_type']['allow_token_type_parameter']);
+        $container->setParameter(
+            'oauth2_server.token_type.allow_token_type_parameter',
+            $configs['token_type']['allow_token_type_parameter']
+        );
 
         if (class_exists(BearerToken::class) && $configs['token_type']['bearer_token']['enabled']) {
             $loader->load('bearer_token.php');
         }
         if (class_exists(MacToken::class) && $configs['token_type']['mac_token']['enabled']) {
-            $container->setParameter('oauth2_server.token_type.mac_token.min_length', $configs['token_type']['mac_token']['min_length']);
-            $container->setParameter('oauth2_server.token_type.mac_token.max_length', $configs['token_type']['mac_token']['max_length']);
-            $container->setParameter('oauth2_server.token_type.mac_token.algorithm', $configs['token_type']['mac_token']['algorithm']);
-            $container->setParameter('oauth2_server.token_type.mac_token.timestamp_lifetime', $configs['token_type']['mac_token']['timestamp_lifetime']);
+            $container->setParameter(
+                'oauth2_server.token_type.mac_token.min_length',
+                $configs['token_type']['mac_token']['min_length']
+            );
+            $container->setParameter(
+                'oauth2_server.token_type.mac_token.max_length',
+                $configs['token_type']['mac_token']['max_length']
+            );
+            $container->setParameter(
+                'oauth2_server.token_type.mac_token.algorithm',
+                $configs['token_type']['mac_token']['algorithm']
+            );
+            $container->setParameter(
+                'oauth2_server.token_type.mac_token.timestamp_lifetime',
+                $configs['token_type']['mac_token']['timestamp_lifetime']
+            );
             $loader->load('mac_token.php');
         }
     }
@@ -81,16 +88,18 @@ class TokenTypeSource implements Component
                 ->addDefaultsIfNotSet()
                 ->canBeDisabled()
                 ->validate()
-                ->ifTrue(function ($config) {
+                ->ifTrue(static function ($config): bool {
                     return $config['min_length'] > $config['max_length'];
                 })
                 ->thenInvalid('The option "min_length" must not be greater than "max_length".')
                 ->end()
                 ->validate()
-                ->ifTrue(function ($config) {
-                    return !\in_array($config['algorithm'], ['hmac-sha-256', 'hmac-sha-1'], true);
+                ->ifTrue(static function ($config): bool {
+                    return ! in_array($config['algorithm'], ['hmac-sha-256', 'hmac-sha-1'], true);
                 })
-                ->thenInvalid('The algorithm is not supported. Please use one of the following one: "hmac-sha-1", "hmac-sha-256".')
+                ->thenInvalid(
+                    'The algorithm is not supported. Please use one of the following one: "hmac-sha-1", "hmac-sha-256".'
+                )
                 ->end()
                 ->children()
                 ->integerNode('min_length')

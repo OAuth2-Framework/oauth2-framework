@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\ServerBundle\Component\Core;
 
 use OAuth2Framework\Component\Core\UserAccount\UserAccountRepository;
@@ -28,7 +19,7 @@ class UserAccountSource implements Component
     public function load(array $configs, ContainerBuilder $container): void
     {
         $config = $configs[$this->name()];
-        if (false === $config['enabled']) {
+        if ($config['enabled'] === false) {
             return;
         }
         $container->setAlias(UserAccountRepository::class, $configs['user_account']['repository']);

@@ -2,60 +2,46 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\Component\ClientAuthentication;
 
 use Base64Url\Base64Url;
+use InvalidArgumentException;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use Psr\Http\Message\ServerRequestInterface;
-use function Safe\base64_decode;
-use function Safe\sprintf;
 
 final class ClientSecretBasic implements AuthenticationMethod
 {
-    private string $realm;
+    private int $secretLifetime;
 
-    /**
-     * @var int
-     */
-    private $secretLifetime;
-
-    public function __construct(string $realm, int $secretLifetime = 0)
-    {
+    public function __construct(
+        private string $realm,
+        int $secretLifetime = 0
+    ) {
         if ($secretLifetime < 0) {
-            throw new \InvalidArgumentException('The secret lifetime must be at least 0 (= unlimited).');
+            throw new InvalidArgumentException('The secret lifetime must be at least 0 (= unlimited).');
         }
-
-        $this->realm = $realm;
         $this->secretLifetime = $secretLifetime;
     }
 
     public function getSchemesParameters(): array
     {
-        return [
-            sprintf('Basic realm="%s",charset="UTF-8"', $this->realm),
-        ];
+        return [sprintf('Basic realm="%s",charset="UTF-8"', $this->realm)];
     }
 
     /**
-     * @param null|mixed $clientCredentials
+     * @param mixed|null $clientCredentials
      */
     public function findClientIdAndCredentials(ServerRequestInterface $request, &$clientCredentials = null): ?ClientId
     {
         $authorization_headers = $request->getHeader('Authorization');
         foreach ($authorization_headers as $authorization_header) {
-            $clientId = $this->findClientIdAndCredentialsInAuthorizationHeader($authorization_header, $clientCredentials);
-            if (null !== $clientId) {
+            $clientId = $this->findClientIdAndCredentialsInAuthorizationHeader(
+                $authorization_header,
+                $clientCredentials
+            );
+            if ($clientId !== null) {
                 return $clientId;
             }
         }
@@ -66,13 +52,16 @@ final class ClientSecretBasic implements AuthenticationMethod
     public function checkClientConfiguration(DataBag $command_parameters, DataBag $validated_parameters): DataBag
     {
         $validated_parameters->set('client_secret', $this->createClientSecret());
-        $validated_parameters->set('client_secret_expires_at', (0 === $this->secretLifetime ? 0 : time() + $this->secretLifetime));
+        $validated_parameters->set(
+            'client_secret_expires_at',
+            ($this->secretLifetime === 0 ? 0 : time() + $this->secretLifetime)
+        );
 
         return $validated_parameters;
     }
 
     /**
-     * @param null|mixed $clientCredentials
+     * @param mixed|null $clientCredentials
      */
     public function isClientAuthenticated(Client $client, $clientCredentials, ServerRequestInterface $request): bool
     {
@@ -84,11 +73,21 @@ final class ClientSecretBasic implements AuthenticationMethod
         return ['client_secret_basic'];
     }
 
-    private function findClientIdAndCredentialsInAuthorizationHeader(string $authorization_header, ?string &$clientCredentials = null): ?ClientId
-    {
-        if ('basic ' === mb_strtolower(mb_substr($authorization_header, 0, 6, '8bit'), '8bit')) {
-            list($client_id, $client_secret) = explode(':', base64_decode(mb_substr($authorization_header, 6, mb_strlen($authorization_header, '8bit') - 6, '8bit'), true));
-            if ('' !== $client_id && '' !== $client_secret) {
+    private function findClientIdAndCredentialsInAuthorizationHeader(
+        string $authorization_header,
+        ?string &$clientCredentials = null
+    ): ?ClientId {
+        if (mb_strtolower(mb_substr($authorization_header, 0, 6, '8bit'), '8bit') === 'basic ') {
+            [$client_id, $client_secret] = explode(
+                ':',
+                base64_decode(mb_substr(
+                    $authorization_header,
+                    6,
+                    mb_strlen($authorization_header, '8bit') - 6,
+                    '8bit'
+                ), true)
+            );
+            if ($client_id !== '' && $client_secret !== '') {
                 $clientCredentials = $client_secret;
 
                 return new ClientId($client_id);

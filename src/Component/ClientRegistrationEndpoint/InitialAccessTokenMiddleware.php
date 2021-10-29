@@ -2,17 +2,9 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\Component\ClientRegistrationEndpoint;
 
+use InvalidArgumentException;
 use OAuth2Framework\Component\BearerTokenType\BearerToken;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use Psr\Http\Message\ResponseInterface;
@@ -22,17 +14,11 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 final class InitialAccessTokenMiddleware implements MiddlewareInterface
 {
-    private BearerToken $bearerToken;
-
-    private InitialAccessTokenRepository $initialAccessTokenRepository;
-
-    private bool $isRequired;
-
-    public function __construct(BearerToken $bearerToken, InitialAccessTokenRepository $initialAccessTokenRepository, bool $isRequired)
-    {
-        $this->bearerToken = $bearerToken;
-        $this->initialAccessTokenRepository = $initialAccessTokenRepository;
-        $this->isRequired = $isRequired;
+    public function __construct(
+        private BearerToken $bearerToken,
+        private InitialAccessTokenRepository $initialAccessTokenRepository,
+        private bool $isRequired
+    ) {
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
@@ -40,25 +26,25 @@ final class InitialAccessTokenMiddleware implements MiddlewareInterface
         try {
             $values = [];
             $token = $this->bearerToken->find($request, $values);
-            if (null === $token) {
-                if (!$this->isRequired) {
+            if ($token === null) {
+                if (! $this->isRequired) {
                     return $handler->handle($request);
                 }
 
-                throw new \InvalidArgumentException('Initial Access Token is missing or invalid.');
+                throw new InvalidArgumentException('Initial Access Token is missing or invalid.');
             }
 
             $initialAccessToken = $this->initialAccessTokenRepository->find(new InitialAccessTokenId($token));
 
-            if (null === $initialAccessToken || $initialAccessToken->isRevoked()) {
-                throw new \InvalidArgumentException('Initial Access Token is missing or invalid.');
+            if ($initialAccessToken === null || $initialAccessToken->isRevoked()) {
+                throw new InvalidArgumentException('Initial Access Token is missing or invalid.');
             }
             if ($initialAccessToken->hasExpired()) {
-                throw new \InvalidArgumentException('Initial Access Token expired.');
+                throw new InvalidArgumentException('Initial Access Token expired.');
             }
 
             $request = $request->withAttribute('initial_access_token', $initialAccessToken);
-        } catch (\InvalidArgumentException $e) {
+        } catch (InvalidArgumentException $e) {
             throw OAuth2Error::invalidRequest($e->getMessage(), [], $e);
         }
 

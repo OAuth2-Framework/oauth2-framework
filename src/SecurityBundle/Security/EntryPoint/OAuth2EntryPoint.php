@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\SecurityBundle\Security\EntryPoint;
 
 use Symfony\Component\HttpFoundation\Request;
@@ -21,11 +12,9 @@ use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface
 
 final class OAuth2EntryPoint implements AuthenticationEntryPointInterface
 {
-    private AuthenticationFailureHandlerInterface $failureHandler;
-
-    public function __construct(AuthenticationFailureHandlerInterface $failureHandler)
-    {
-        $this->failureHandler = $failureHandler;
+    public function __construct(
+        private AuthenticationFailureHandlerInterface $failureHandler
+    ) {
     }
 
     public function start(Request $request, AuthenticationException $authException = null): Response

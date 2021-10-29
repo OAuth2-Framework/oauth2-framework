@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\Tests\Component\ClientConfigurationEndpoint;
 
 use Nyholm\Psr7\Factory\Psr17Factory;
@@ -32,90 +23,130 @@ use Psr\Http\Message\StreamInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 /**
- * @group ClientConfigurationEndpoint
- *
  * @internal
  */
 final class ClientConfigurationEndpointTest extends TestCase
 {
     use ProphecyTrait;
 
-    /**
-     * @var null|ClientConfigurationEndpoint
-     */
-    private $clientConfigurationEndpoint;
+    private ?ClientConfigurationEndpoint $clientConfigurationEndpoint = null;
 
-    /**
-     * @var null|ResponseFactoryInterface
-     */
-    private $responseFactory;
+    private ?Psr17Factory $responseFactory = null;
 
     /**
      * @test
      */
-    public function theClientConfigurationEndpointCanReceiveGetRequestsAndRetrieveClientInformation()
+    public function theClientConfigurationEndpointCanReceiveGetRequestsAndRetrieveClientInformation(): void
     {
         $client = $this->prophesize(Client::class);
-        $client->isPublic()->willReturn(false);
-        $client->getPublicId()->willReturn(new ClientId('CLIENT_ID'));
-        $client->getClientId()->willReturn(new ClientId('CLIENT_ID'));
-        $client->has('registration_access_token')->willReturn(true);
-        $client->get('registration_access_token')->willReturn('REGISTRATION_TOKEN');
-        $client->all()->willReturn([
-            'registration_access_token' => 'REGISTRATION_TOKEN',
-            'client_id' => 'CLIENT_ID',
-        ]);
+        $client->isPublic()
+            ->willReturn(false)
+        ;
+        $client->getPublicId()
+            ->willReturn(new ClientId('CLIENT_ID'))
+        ;
+        $client->getClientId()
+            ->willReturn(new ClientId('CLIENT_ID'))
+        ;
+        $client->has('registration_access_token')
+            ->willReturn(true)
+        ;
+        $client->get('registration_access_token')
+            ->willReturn('REGISTRATION_TOKEN')
+        ;
+        $client->all()
+            ->willReturn([
+                'registration_access_token' => 'REGISTRATION_TOKEN',
+                'client_id' => 'CLIENT_ID',
+            ])
+        ;
 
         $clientRepository = $this->prophesize(ClientRepository::class);
 
         $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getMethod()->willReturn('GET');
-        $request->getAttribute('client')->willReturn($client->reveal());
-        $request->getHeader('AUTHORIZATION')->willReturn(['Bearer REGISTRATION_TOKEN']);
+        $request->getMethod()
+            ->willReturn('GET')
+        ;
+        $request->getAttribute('client')
+            ->willReturn($client->reveal())
+        ;
+        $request->getHeader('AUTHORIZATION')
+            ->willReturn(['Bearer REGISTRATION_TOKEN'])
+        ;
 
         $handler = $this->prophesize(RequestHandlerInterface::class);
 
-        $response = $this->getClientConfigurationEndpoint($clientRepository->reveal())->process($request->reveal(), $handler->reveal());
-        $response->getBody()->rewind();
-        static::assertEquals(200, $response->getStatusCode());
-        static::assertEquals('{"registration_access_token":"REGISTRATION_TOKEN","client_id":"CLIENT_ID"}', $response->getBody()->getContents());
+        $response = $this->getClientConfigurationEndpoint($clientRepository->reveal())
+            ->process($request->reveal(), $handler->reveal())
+        ;
+        $response->getBody()
+            ->rewind()
+        ;
+        static::assertSame(200, $response->getStatusCode());
+        static::assertSame(
+            '{"registration_access_token":"REGISTRATION_TOKEN","client_id":"CLIENT_ID"}',
+            $response->getBody()
+                ->getContents()
+        );
     }
 
     /**
      * @test
      */
-    public function theClientConfigurationEndpointCanReceivePutRequestsAndUpdateTheClient()
+    public function theClientConfigurationEndpointCanReceivePutRequestsAndUpdateTheClient(): void
     {
         $client = $this->prophesize(Client::class);
-        $client->isPublic()->willReturn(false);
-        $client->getPublicId()->willReturn(new ClientId('CLIENT_ID'));
-        $client->getClientId()->willReturn(new ClientId('CLIENT_ID'));
-        $client->has('registration_access_token')->willReturn(true);
-        $client->get('registration_access_token')->willReturn('REGISTRATION_TOKEN');
-        $client->all()->willReturn([
-            'client_id' => 'CLIENT_ID',
-        ]);
+        $client->isPublic()
+            ->willReturn(false)
+        ;
+        $client->getPublicId()
+            ->willReturn(new ClientId('CLIENT_ID'))
+        ;
+        $client->getClientId()
+            ->willReturn(new ClientId('CLIENT_ID'))
+        ;
+        $client->has('registration_access_token')
+            ->willReturn(true)
+        ;
+        $client->get('registration_access_token')
+            ->willReturn('REGISTRATION_TOKEN')
+        ;
+        $client->all()
+            ->willReturn([
+                'client_id' => 'CLIENT_ID',
+            ])
+        ;
         $client->setParameter(Argument::type(DataBag::class))->will(function () {});
 
         $clientRepository = $this->prophesize(ClientRepository::class);
         $clientRepository->save(Argument::type(Client::class))->shouldBeCalled();
 
         $request = $this->buildRequest([]);
-        $request->getMethod()->willReturn('PUT');
-        $request->getAttribute('client')->willReturn($client->reveal());
-        $request->getHeader('AUTHORIZATION')->willReturn(['Bearer REGISTRATION_TOKEN']);
+        $request->getMethod()
+            ->willReturn('PUT')
+        ;
+        $request->getAttribute('client')
+            ->willReturn($client->reveal())
+        ;
+        $request->getHeader('AUTHORIZATION')
+            ->willReturn(['Bearer REGISTRATION_TOKEN'])
+        ;
 
         $handler = $this->prophesize(RequestHandlerInterface::class);
 
-        $response = $this->getClientConfigurationEndpoint($clientRepository->reveal())->process($request->reveal(), $handler->reveal());
-        $response->getBody()->rewind();
-        static::assertEquals(200, $response->getStatusCode());
-        static::assertEquals('{"client_id":"CLIENT_ID"}', $response->getBody()->getContents());
+        $response = $this->getClientConfigurationEndpoint($clientRepository->reveal())
+            ->process($request->reveal(), $handler->reveal())
+        ;
+        $response->getBody()
+            ->rewind()
+        ;
+        static::assertSame(200, $response->getStatusCode());
+        static::assertSame('{"client_id":"CLIENT_ID"}', $response->getBody()->getContents());
     }
 
     private function getClientConfigurationEndpoint(ClientRepository $clientRepository): ClientConfigurationEndpoint
     {
-        if (null === $this->clientConfigurationEndpoint) {
+        if ($this->clientConfigurationEndpoint === null) {
             $bearerToken = new BearerToken('Client Manager');
             $bearerToken->addTokenFinder(new AuthorizationHeaderTokenFinder());
             $this->clientConfigurationEndpoint = new ClientConfigurationEndpoint(
@@ -131,7 +162,7 @@ final class ClientConfigurationEndpointTest extends TestCase
 
     private function getResponseFactory(): ResponseFactoryInterface
     {
-        if (null === $this->responseFactory) {
+        if ($this->responseFactory === null) {
             $this->responseFactory = new Psr17Factory();
         }
 
@@ -141,12 +172,22 @@ final class ClientConfigurationEndpointTest extends TestCase
     private function buildRequest(array $data): ObjectProphecy
     {
         $body = $this->prophesize(StreamInterface::class);
-        $body->getContents()->willReturn(\Safe\json_encode($data));
+        $body->getContents()
+            ->willReturn(json_encode($data))
+        ;
         $request = $this->prophesize(ServerRequestInterface::class);
-        $request->hasHeader('Content-Type')->willReturn(true);
-        $request->getHeader('Content-Type')->willReturn(['application/json']);
-        $request->getBody()->willReturn($body->reveal());
-        $request->getParsedBody()->willReturn([]);
+        $request->hasHeader('Content-Type')
+            ->willReturn(true)
+        ;
+        $request->getHeader('Content-Type')
+            ->willReturn(['application/json'])
+        ;
+        $request->getBody()
+            ->willReturn($body->reveal())
+        ;
+        $request->getParsedBody()
+            ->willReturn([])
+        ;
 
         return $request;
     }

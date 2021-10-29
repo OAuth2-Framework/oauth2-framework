@@ -1,9 +1,9 @@
 <?php
 
 declare(strict_types=1);
-use OAuth2Framework\Component\Core\Middleware\Pipe;
-use Psr\Http\Message\ResponseFactoryInterface;
 
+use OAuth2Framework\Component\Core\Middleware\Pipe;
+use OAuth2Framework\ServerBundle\Controller\MetadataController;
 /*
  * The MIT License (MIT)
  *
@@ -13,36 +13,35 @@ use Psr\Http\Message\ResponseFactoryInterface;
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use OAuth2Framework\Component\Core\Middleware;
-use OAuth2Framework\ServerBundle\Controller\MetadataController;
+use OAuth2Framework\ServerBundle\Controller\PipeController;
 use OAuth2Framework\ServerBundle\Service\MetadataBuilder;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
+use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 
-return function (ContainerConfigurator $container) {
-    $container = $container->services()->defaults()
+return static function (ContainerConfigurator $container): void {
+    $container = $container->services()
+        ->defaults()
         ->private()
         ->autoconfigure()
     ;
 
-    $container->set('metadata_endpoint_pipe')
+    $container->set('metadata_pipe')
         ->class(Pipe::class)
-        ->args([[
-            ref(MetadataController::class),
-        ]])
+        ->args([[service(MetadataController::class)]])
+    ;
+
+    $container->set('metadata_endpoint_pipe')
+        ->class(PipeController::class)
+        ->args([service('metadata_pipe')])
         ->tag('controller.service_arguments')
     ;
 
     $container->set(MetadataController::class)
-        ->args([
-            ref(ResponseFactoryInterface::class),
-            ref(MetadataBuilder::class),
-        ])
+        ->args([service(ResponseFactoryInterface::class), service(MetadataBuilder::class)])
     ;
 
     $container->set(MetadataBuilder::class)
-        ->args([
-            ref('router'),
-        ])
+        ->args([service('router')])
     ;
 };

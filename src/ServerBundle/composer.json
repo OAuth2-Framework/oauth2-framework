@@ -16,13 +16,15 @@
         }
     ],
     "require": {
-        "php": "^7.4|^8.0",
+        "php": ">=8.0",
+        "nyholm/psr7": "^1.0",
         "oauth2-framework/core": "^1.0",
-        "sensio/framework-extra-bundle": "^5.0",
+        "sensio/framework-extra-bundle": "^6.0",
         "symfony/config": "^5.0",
         "symfony/dependency-injection": "^5.0",
+        "symfony/http-client": "^5.0",
         "symfony/http-kernel": "^5.0",
-        "symfony/psr-http-message-bridge": "^1.0|^2.0",
+        "symfony/psr-http-message-bridge": "^2.0",
         "symfony/routing": "^5.0",
         "symfony/security-bundle": "^5.0",
         "web-token/jwt-bundle": "^2.0"

@@ -2,18 +2,9 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\Component\OpenIdConnect\UserInfo\Claim;
 
-use function Safe\sprintf;
+use function count;
 use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 
 class ClaimSourceManager
@@ -38,7 +29,7 @@ class ClaimSourceManager
 
     public function getUserInfo(UserAccount $userAccount, string $scope, array $previousClaims): array
     {
-        $scopes = '' === $scope ? [] : explode(' ', $scope);
+        $scopes = $scope === '' ? [] : explode(' ', $scope);
         $claims = [
             '_claim_names' => [],
             '_claim_sources' => [],
@@ -47,23 +38,20 @@ class ClaimSourceManager
 
         foreach ($this->all() as $claimSource) {
             $result = $claimSource->getUserInfo($userAccount, $scopes, $previousClaims);
-            if (null !== $result) {
+            if ($result !== null) {
                 ++$i;
                 $src = sprintf('src%d', $i);
                 $_claim_names = [];
                 foreach ($result->getAvailableClaims() as $claim) {
-                    if ('sub' !== $claim) {
+                    if ($claim !== 'sub') {
                         $_claim_names[$claim] = $src;
                     }
                 }
-                $claims['_claim_names'] = array_merge(
-                    $claims['_claim_names'],
-                    $_claim_names
-                );
+                $claims['_claim_names'] = array_merge($claims['_claim_names'], $_claim_names);
                 $claims['_claim_sources'][$src] = $result->getSource();
             }
         }
 
-        return 0 === \count($claims['_claim_names']) ? [] : $previousClaims;
+        return count($claims['_claim_names']) === 0 ? [] : $previousClaims;
     }
 }

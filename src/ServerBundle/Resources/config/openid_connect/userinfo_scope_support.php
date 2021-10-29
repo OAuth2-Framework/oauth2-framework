@@ -1,11 +1,11 @@
 <?php
 
 declare(strict_types=1);
+
 use OAuth2Framework\Component\OpenIdConnect\UserInfo\ScopeSupport\AddressScopeSupport;
 use OAuth2Framework\Component\OpenIdConnect\UserInfo\ScopeSupport\EmailScopeSupport;
 use OAuth2Framework\Component\OpenIdConnect\UserInfo\ScopeSupport\PhoneScopeSupport;
 use OAuth2Framework\Component\OpenIdConnect\UserInfo\ScopeSupport\ProfileScopeSupport;
-
 /*
  * The MIT License (MIT)
  *
@@ -15,11 +15,11 @@ use OAuth2Framework\Component\OpenIdConnect\UserInfo\ScopeSupport\ProfileScopeSu
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use OAuth2Framework\Component\OpenIdConnect\UserInfo\ScopeSupport;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
-return function (ContainerConfigurator $container) {
-    $container = $container->services()->defaults()
+return static function (ContainerConfigurator $container): void {
+    $container = $container->services()
+        ->defaults()
         ->private()
         ->autoconfigure()
     ;

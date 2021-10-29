@@ -1,8 +1,8 @@
 <?php
 
 declare(strict_types=1);
-use OAuth2Framework\Component\Core\Middleware\Pipe;
 
+use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationEndpoint;
 /*
  * The MIT License (MIT)
  *
@@ -12,7 +12,6 @@ use OAuth2Framework\Component\Core\Middleware\Pipe;
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationEndpoint;
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequestLoader;
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequestEntryEndpoint;
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequestHandler;
@@ -43,81 +42,87 @@ use OAuth2Framework\Component\AuthorizationEndpoint\User\UserAccountDiscovery;
 use OAuth2Framework\Component\AuthorizationEndpoint\User\UserAuthenticationCheckerManager;
 use OAuth2Framework\Component\Core\Client\ClientRepository;
 use OAuth2Framework\Component\Core\Message\OAuth2MessageFactoryManager;
-use OAuth2Framework\Component\Core\Middleware;
 use OAuth2Framework\Component\Core\Middleware\OAuth2MessageMiddleware;
+use OAuth2Framework\Component\Core\Middleware\Pipe;
 use OAuth2Framework\Component\Core\TokenType\TokenTypeGuesser;
 use OAuth2Framework\ServerBundle\Component\Endpoint\Authorization\Compiler\AuthorizationRequestHookCompilerPass;
+use OAuth2Framework\ServerBundle\Controller\PipeController;
 use OAuth2Framework\ServerBundle\Service\AuthorizationRequestSessionStorage;
 use OAuth2Framework\ServerBundle\Service\IgnoreAccountSelectionHandler;
 use OAuth2Framework\ServerBundle\Service\RedirectAuthorizationRequestHandler;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
+use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\RouterInterface;
 
-return function (ContainerConfigurator $container) {
-    $container = $container->services()->defaults()
+return static function (ContainerConfigurator $container): void {
+    $container = $container->services()
+        ->defaults()
         ->private()
         ->autoconfigure()
     ;
 
     $container->set(AuthorizationExceptionMiddleware::class)
-        ->args([
-            ref(ResponseTypeGuesser::class),
-            ref(ResponseModeGuesser::class),
-        ])
+        ->args([service(ResponseTypeGuesser::class), service(ResponseModeGuesser::class)])
     ;
 
     // Controllers and pipes
     $container->set(AuthorizationRequestEntryEndpoint::class)
         ->args([
-            ref(ParameterCheckerManager::class),
-            ref(AuthorizationRequestLoader::class),
-            ref(AuthorizationRequestStorage::class),
-            ref(AuthorizationRequestHandler::class),
-            ref(UserAccountDiscovery::class),
+            service(ParameterCheckerManager::class),
+            service(AuthorizationRequestLoader::class),
+            service(AuthorizationRequestStorage::class),
+            service(AuthorizationRequestHandler::class),
+            service(UserAccountDiscovery::class),
         ])
     ;
 
-    $container->set('authorization_request_entry_endpoint_pipe')
+    $container->set('authorization_request_entry_pipe')
         ->class(Pipe::class)
         ->args([[
-            ref('oauth2_server.message_middleware.for_authorization_endpoint'),
-            ref(AuthorizationExceptionMiddleware::class),
-            ref(AuthorizationRequestEntryEndpoint::class),
+            service('oauth2_server.message_middleware.for_authorization_endpoint'),
+            service(AuthorizationExceptionMiddleware::class),
+            service(AuthorizationRequestEntryEndpoint::class),
         ]])
+    ;
+
+    $container->set('authorization_request_entry_endpoint_pipe')
+        ->class(PipeController::class)
+        ->args([service('authorization_request_entry_pipe')])
         ->tag('controller.service_arguments')
     ;
 
     $container->set(RedirectAuthorizationRequestHandler::class)
-        ->args([
-            ref(RouterInterface::class),
-            ref(ResponseFactoryInterface::class),
-        ])
+        ->args([service(RouterInterface::class), service(ResponseFactoryInterface::class)])
     ;
 
     $container->set(AuthorizationEndpoint::class)
         ->args([
-            ref(ResponseFactoryInterface::class),
-            ref(TokenTypeGuesser::class),
-            ref(ResponseTypeGuesser::class),
-            ref(ResponseModeGuesser::class),
-            ref(ConsentRepository::class)->nullOnInvalid(),
-            ref(ExtensionManager::class),
-            ref(AuthorizationRequestStorage::class),
-            ref(LoginHandler::class),
-            ref(ConsentHandler::class),
+            service(ResponseFactoryInterface::class),
+            service(TokenTypeGuesser::class),
+            service(ResponseTypeGuesser::class),
+            service(ResponseModeGuesser::class),
+            service(ConsentRepository::class)->nullOnInvalid(),
+            service(ExtensionManager::class),
+            service(AuthorizationRequestStorage::class),
+            service(LoginHandler::class),
+            service(ConsentHandler::class),
         ])
     ;
 
-    $container->set('authorization_endpoint_pipe')
+    $container->set('authorization_pipe')
         ->class(Pipe::class)
         ->args([[
-            ref('oauth2_server.message_middleware.for_authorization_endpoint'),
-            ref(AuthorizationExceptionMiddleware::class),
-            ref(AuthorizationEndpoint::class),
+            service('oauth2_server.message_middleware.for_authorization_endpoint'),
+            service(AuthorizationExceptionMiddleware::class),
+            service(AuthorizationEndpoint::class),
         ]])
+    ;
+
+    $container->set('authorization_endpoint_pipe')
+        ->class(PipeController::class)
+        ->args([service('authorization_pipe')])
         ->tag('controller.service_arguments')
     ;
 
@@ -125,46 +130,41 @@ return function (ContainerConfigurator $container) {
 
     //Hooks
     $container->set(ConsentPrompt::class)
-        ->args([
-            ref(ConsentHandler::class),
+        ->args([service(ConsentHandler::class)])
+        ->tag(AuthorizationRequestHookCompilerPass::TAG_NAME, [
+            'priority' => -200,
         ])
-        ->tag(AuthorizationRequestHookCompilerPass::TAG_NAME, ['priority' => -200])
     ;
 
     $container->set(LoginPrompt::class)
-        ->args([
-            ref(UserAuthenticationCheckerManager::class),
-            ref(LoginHandler::class),
+        ->args([service(UserAuthenticationCheckerManager::class), service(LoginHandler::class)])
+        ->tag(AuthorizationRequestHookCompilerPass::TAG_NAME, [
+            'priority' => -100,
         ])
-        ->tag(AuthorizationRequestHookCompilerPass::TAG_NAME, ['priority' => -100])
     ;
 
     $container->set(NonePrompt::class)
-        ->args([
-            ref(ConsentRepository::class)->nullOnInvalid(),
+        ->args([service(ConsentRepository::class)->nullOnInvalid()])
+        ->tag(AuthorizationRequestHookCompilerPass::TAG_NAME, [
+            'priority' => 0,
         ])
-        ->tag(AuthorizationRequestHookCompilerPass::TAG_NAME, ['priority' => 0])
     ;
 
     $container->set(SelectAccountPrompt::class)
-        ->args([
-            ref(SelectAccountHandler::class),
+        ->args([service(SelectAccountHandler::class)])
+        ->tag(AuthorizationRequestHookCompilerPass::TAG_NAME, [
+            'priority' => 0,
         ])
-        ->tag(AuthorizationRequestHookCompilerPass::TAG_NAME, ['priority' => 0])
     ;
 
     $container->set(AuthorizationRequestSessionStorage::class)
-        ->args([
-            ref(SessionInterface::class),
-        ])
+        ->args([service(SessionInterface::class)])
     ;
     $container->set(IgnoreAccountSelectionHandler::class);
 
     //Authorization Request Loader
     $container->set(AuthorizationRequestLoader::class)
-        ->args([
-            ref(ClientRepository::class),
-        ])
+        ->args([service(ClientRepository::class)])
     ;
 
     // Consent Screen Extension
@@ -179,54 +179,39 @@ return function (ContainerConfigurator $container) {
     $container->set(DisplayParameterChecker::class);
     $container->set(PromptParameterChecker::class);
     $container->set(StateParameterChecker::class)
-        ->args([
-            '%oauth2_server.endpoint.authorization.enforce_state%',
-        ])
+        ->args(['%oauth2_server.endpoint.authorization.enforce_state%'])
     ;
 
     // Rules
     $container->set(RequestUriRule::class);
     $container->set(ResponseTypesRule::class)
-        ->args([
-            ref(ResponseTypeManager::class),
-        ])
+        ->args([service(ResponseTypeManager::class)])
     ;
 
     $container->set('oauth2_server.message_middleware.for_authorization_endpoint')
         ->class(OAuth2MessageMiddleware::class)
-        ->args([
-            ref('oauth2_server.message_factory_manager.for_authorization_endpoint'),
-        ])
+        ->args([service('oauth2_server.message_factory_manager.for_authorization_endpoint')])
     ;
 
     $container->set('oauth2_server.message_factory_manager.for_authorization_endpoint')
         ->class(OAuth2MessageFactoryManager::class)
-        ->args([
-            ref(ResponseFactoryInterface::class),
-        ])
-        ->call('addFactory', [ref('oauth2_server.message_factory.303')])
-        ->call('addFactory', [ref('oauth2_server.message_factory.400')])
-        ->call('addFactory', [ref('oauth2_server.message_factory.403')])
-        ->call('addFactory', [ref('oauth2_server.message_factory.405')])
-        ->call('addFactory', [ref('oauth2_server.message_factory.501')])
+        ->args([service(ResponseFactoryInterface::class)])
+        ->call('addFactory', [service('oauth2_server.message_factory.303')])
+        ->call('addFactory', [service('oauth2_server.message_factory.400')])
+        ->call('addFactory', [service('oauth2_server.message_factory.403')])
+        ->call('addFactory', [service('oauth2_server.message_factory.405')])
+        ->call('addFactory', [service('oauth2_server.message_factory.501')])
         ;
 
     $container->set(ResponseModeGuesser::class)
-        ->args([
-            ref(ResponseModeManager::class),
-            false,
-        ])
+        ->args([service(ResponseModeManager::class), false])
     ;
 
     $container->set(ResponseTypeGuesser::class)
-        ->args([
-            ref(ResponseTypeManager::class),
-        ])
+        ->args([service(ResponseTypeManager::class)])
     ;
 
     $container->set(ResponseTypeParameterChecker::class)
-        ->args([
-            ref(ResponseTypeManager::class),
-        ])
+        ->args([service(ResponseTypeManager::class)])
     ;
 };

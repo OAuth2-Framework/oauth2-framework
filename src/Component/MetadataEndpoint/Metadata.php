@@ -2,41 +2,34 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\Component\MetadataEndpoint;
 
-use function Safe\sprintf;
+use function array_key_exists;
+use InvalidArgumentException;
+
 class Metadata
 {
     private array $values = [];
 
     public function has(string $key): bool
     {
-        return \array_key_exists($key, $this->values);
+        return array_key_exists($key, $this->values);
     }
 
     /**
-     * @return null|mixed
+     * @return mixed|null
      */
     public function get(string $key)
     {
-        if (!$this->has($key)) {
-            throw new \InvalidArgumentException(sprintf('The value with key "%s" does not exist.', $key));
+        if (! $this->has($key)) {
+            throw new InvalidArgumentException(sprintf('The value with key "%s" does not exist.', $key));
         }
 
         return $this->values[$key];
     }
 
     /**
-     * @param null|mixed $value
+     * @param mixed|null $value
      */
     public function set(string $key, $value): void
     {

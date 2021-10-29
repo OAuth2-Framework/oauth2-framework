@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\Component\TokenEndpoint;
 
 use Assert\Assertion;
@@ -26,13 +17,11 @@ class GrantTypeData
 
     private ?ResourceOwnerId $resourceOwnerId = null;
 
-    private ?Client $client = null;
-
-    public function __construct(?Client $client)
-    {
+    public function __construct(
+        private ?Client $client
+    ) {
         $this->parameter = new DataBag([]);
         $this->metadata = new DataBag([]);
-        $this->client = $client;
     }
 
     public function getMetadata(): DataBag
@@ -52,7 +41,7 @@ class GrantTypeData
 
     public function hasClient(): bool
     {
-        return null !== $this->client;
+        return $this->client !== null;
     }
 
     public function getClient(): Client
@@ -69,7 +58,7 @@ class GrantTypeData
 
     public function hasResourceOwnerId(): bool
     {
-        return null !== $this->resourceOwnerId;
+        return $this->resourceOwnerId !== null;
     }
 
     public function getResourceOwnerId(): ResourceOwnerId

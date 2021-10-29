@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\ServerBundle\Component\Endpoint\Authorization;
 
 use OAuth2Framework\ServerBundle\Component\Component;
@@ -24,12 +15,20 @@ class FormPostResponseModeSource implements Component
     public function load(array $configs, ContainerBuilder $container): void
     {
         $config = $configs['endpoint']['authorization']['response_mode']['form_post'];
-        $container->setParameter('oauth2_server.endpoint.authorization.response_mode.form_post.enabled', $config['enabled']);
-        if (!$config['enabled']) {
+        $container->setParameter(
+            'oauth2_server.endpoint.authorization.response_mode.form_post.enabled',
+            $config['enabled']
+        );
+        if (! $config['enabled']) {
             return;
         }
-        $container->setParameter('oauth2_server.endpoint.authorization.response_mode.form_post.template', $config['template']);
-        $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint/authorization'));
+        $container->setParameter(
+            'oauth2_server.endpoint.authorization.response_mode.form_post.template',
+            $config['template']
+        );
+        $loader = new PhpFileLoader($container, new FileLocator(
+            __DIR__ . '/../../../Resources/config/endpoint/authorization'
+        ));
         $loader->load('form_post_response_mode.php');
     }
 

@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\ServerBundle\Component\Endpoint\Metadata;
 
 use OAuth2Framework\ServerBundle\Component\Component;
@@ -27,7 +18,10 @@ class CustomRouteSource implements Component
 
     public function load(array $configs, ContainerBuilder $container): void
     {
-        $container->setParameter('oauth2_server.endpoint.metadata.custom_routes', $configs['endpoint']['metadata']['custom_routes']);
+        $container->setParameter(
+            'oauth2_server.endpoint.metadata.custom_routes',
+            $configs['endpoint']['metadata']['custom_routes']
+        );
     }
 
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
@@ -47,7 +41,8 @@ class CustomRouteSource implements Component
             ->arrayNode('route_parameters')
             ->info('Parameters associated to the route (if needed).')
             ->useAttributeAsKey('name')
-            ->variablePrototype()->end()
+            ->variablePrototype()
+            ->end()
             ->treatNullLike([])
             ->end()
             ->end()

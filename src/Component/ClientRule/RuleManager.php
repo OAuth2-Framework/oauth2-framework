@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\Component\ClientRule;
 
 use OAuth2Framework\Component\Core\Client\ClientId;
@@ -41,20 +32,34 @@ class RuleManager
 
     public function handle(ClientId $clientId, DataBag $commandParameters): DataBag
     {
-        return $this->callableForNextRule(0)->handle($clientId, $commandParameters, new DataBag([]));
+        return $this->callableForNextRule(0)
+            ->handle($clientId, $commandParameters, new DataBag([]))
+        ;
     }
 
     private function callableForNextRule(int $index): RuleHandler
     {
-        if (!isset($this->rules[$index])) {
-            return new RuleHandler(function (ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters): DataBag {
+        if (! isset($this->rules[$index])) {
+            return new RuleHandler(function (
+                ClientId $clientId,
+                DataBag $commandParameters,
+                DataBag $validatedParameters
+            ): DataBag {
                 return $validatedParameters;
             });
         }
         $rule = $this->rules[$index];
 
-        return new RuleHandler(function (ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters) use ($rule, $index): DataBag {
-            return $rule->handle($clientId, $commandParameters, $validatedParameters, $this->callableForNextRule($index + 1));
+        return new RuleHandler(function (ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters) use (
+            $rule,
+            $index
+        ): DataBag {
+            return $rule->handle(
+                $clientId,
+                $commandParameters,
+                $validatedParameters,
+                $this->callableForNextRule($index + 1)
+            );
         });
     }
 }

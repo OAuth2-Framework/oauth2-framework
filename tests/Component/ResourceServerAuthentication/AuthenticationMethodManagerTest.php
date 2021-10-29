@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\Tests\Component\ResourceServerAuthentication;
 
 use OAuth2Framework\Component\ResourceServerAuthentication\AuthenticationMethod;
@@ -19,31 +10,32 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
 
 /**
- * @group TokenEndpoint
- * @group ResourceServerAuthentication
- *
  * @internal
  */
-class AuthenticationMethodManagerTest extends TestCase
+final class AuthenticationMethodManagerTest extends TestCase
 {
     use ProphecyTrait;
 
     /**
      * @test
      */
-    public function genericCalls()
+    public function genericCalls(): void
     {
         $method = $this->prophesize(AuthenticationMethod::class);
-        $method->getSupportedMethods()->willReturn(['foo']);
-        $method->getSchemesParameters()->willReturn(['Basic realm="Realm",charset="UTF-8"']);
+        $method->getSupportedMethods()
+            ->willReturn(['foo'])
+        ;
+        $method->getSchemesParameters()
+            ->willReturn(['Basic realm="Realm",charset="UTF-8"'])
+        ;
         $manager = new AuthenticationMethodManager();
         $manager
             ->add($method->reveal())
         ;
         static::assertTrue($manager->has('foo'));
-        static::assertEquals(['foo'], $manager->list());
+        static::assertSame(['foo'], $manager->list());
         static::assertInstanceOf(AuthenticationMethod::class, $manager->get('foo'));
-        static::assertEquals(1, \count($manager->all()));
-        static::assertEquals(['Basic realm="Realm",charset="UTF-8"'], $manager->getSchemesParameters());
+        static::assertCount(1, $manager->all());
+        static::assertSame(['Basic realm="Realm",charset="UTF-8"'], $manager->getSchemesParameters());
     }
 }

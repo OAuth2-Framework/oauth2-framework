@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\Tests\Component\ClientAuthentication;
 
 use OAuth2Framework\Component\ClientAuthentication\AuthenticationMethod;
@@ -27,9 +18,6 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 
 /**
- * @group TokenEndpoint
- * @group ClientAuthentication
- *
  * @internal
  */
 final class AuthenticationMethodManagerTest extends TestCase
@@ -39,22 +27,22 @@ final class AuthenticationMethodManagerTest extends TestCase
     /**
      * @test
      */
-    public function genericCalls()
+    public function genericCalls(): void
     {
         $manager = new AuthenticationMethodManager();
         $manager->add(new None());
         $manager->add(new ClientSecretBasic('Realm'));
         static::assertTrue($manager->has('none'));
-        static::assertEquals(['none', 'client_secret_basic'], $manager->list());
+        static::assertSame(['none', 'client_secret_basic'], $manager->list());
         static::assertInstanceOf(AuthenticationMethod::class, $manager->get('none'));
-        static::assertEquals(2, \count($manager->all()));
-        static::assertEquals(['Basic realm="Realm",charset="UTF-8"'], $manager->getSchemesParameters());
+        static::assertCount(2, $manager->all());
+        static::assertSame(['Basic realm="Realm",charset="UTF-8"'], $manager->getSchemesParameters());
     }
 
     /**
      * @test
      */
-    public function theClientCannotUseSeveralAuthenticationMethods()
+    public function theClientCannotUseSeveralAuthenticationMethods(): void
     {
         $manager = new AuthenticationMethodManager();
         $manager->add(new ClientSecretBasic('My Service'));
@@ -63,14 +51,16 @@ final class AuthenticationMethodManagerTest extends TestCase
             'client_id' => 'CLIENT_ID',
             'client_secret' => 'CLIENT_SECRET',
         ]);
-        $request->getHeader('Authorization')->willReturn(['Basic '.base64_encode('CLIENT_ID:CLIENT_SECRET')]);
+        $request->getHeader('Authorization')
+            ->willReturn(['Basic ' . base64_encode('CLIENT_ID:CLIENT_SECRET')])
+        ;
 
         try {
             $manager->findClientIdAndCredentials($request->reveal(), $method, $credentials);
             static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2Error $e) {
-            static::assertEquals(400, $e->getCode());
-            static::assertEquals([
+            static::assertSame(400, $e->getCode());
+            static::assertSame([
                 'error' => 'invalid_request',
                 'error_description' => 'Only one authentication method may be used to authenticate the client.',
             ], $e->getData());
@@ -80,7 +70,7 @@ final class AuthenticationMethodManagerTest extends TestCase
     /**
      * @test
      */
-    public function theClientCanUseSeveralAuthenticationMethodsWhenOneIsNone()
+    public function theClientCanUseSeveralAuthenticationMethodsWhenOneIsNone(): void
     {
         $manager = new AuthenticationMethodManager();
         $manager->add(new None());
@@ -93,18 +83,28 @@ final class AuthenticationMethodManagerTest extends TestCase
         $clientId = $manager->findClientIdAndCredentials($request->reveal(), $method, $credentials);
         static::assertInstanceOf(ClientSecretPost::class, $method);
         static::assertInstanceOf(ClientId::class, $clientId);
-        static::assertEquals('CLIENT_SECRET', $credentials);
+        static::assertSame('CLIENT_SECRET', $credentials);
     }
 
     private function buildRequest(array $data): ObjectProphecy
     {
         $body = $this->prophesize(StreamInterface::class);
-        $body->getContents()->willReturn(http_build_query($data));
+        $body->getContents()
+            ->willReturn(http_build_query($data))
+        ;
         $request = $this->prophesize(ServerRequestInterface::class);
-        $request->hasHeader('Content-Type')->willReturn(true);
-        $request->getHeader('Content-Type')->willReturn(['application/x-www-form-urlencoded']);
-        $request->getBody()->willReturn($body->reveal());
-        $request->getParsedBody()->willReturn([]);
+        $request->hasHeader('Content-Type')
+            ->willReturn(true)
+        ;
+        $request->getHeader('Content-Type')
+            ->willReturn(['application/x-www-form-urlencoded'])
+        ;
+        $request->getBody()
+            ->willReturn($body->reveal())
+        ;
+        $request->getParsedBody()
+            ->willReturn([])
+        ;
 
         return $request;
     }

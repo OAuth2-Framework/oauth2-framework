@@ -2,17 +2,9 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\Tests\Component\Core\AccessToken;
 
+use DateTimeImmutable;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenHandler;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenHandlerManager;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
@@ -24,8 +16,6 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
 
 /**
- * @group AccessTokenHandlerManager
- *
  * @internal
  */
 final class AccessTokenHandlerManagerTest extends TestCase
@@ -35,20 +25,23 @@ final class AccessTokenHandlerManagerTest extends TestCase
     /**
      * @test
      */
-    public function theAccessTokenHandlerManager()
+    public function theAccessTokenHandlerManager(): void
     {
         $accessTokenId = new AccessTokenId('ACCESS_TOKEN_ID');
         $accessToken = new AccessToken(
             $accessTokenId,
             new ClientId('CLIENT_ID'),
             new UserAccountId('USER_ACCOUNT_ID'),
-            new \DateTimeImmutable('now +1year'),
+            new DateTimeImmutable('now +1year'),
             new DataBag([]),
             new DataBag([]),
             new ResourceServerId('RESOURCE_SERVER_ID')
         );
         $handler = $this->prophesize(AccessTokenHandler::class);
-        $handler->find($accessTokenId)->willReturn($accessToken)->shouldBeCalled();
+        $handler->find($accessTokenId)
+            ->willReturn($accessToken)
+            ->shouldBeCalled()
+        ;
         $handlerManager = new AccessTokenHandlerManager();
         $handlerManager->add($handler->reveal());
 

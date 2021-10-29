@@ -2,57 +2,36 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\Component\AuthorizationCodeGrant;
 
+use function array_key_exists;
 use Assert\Assertion;
+use DateTimeImmutable;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
-use function Safe\sprintf;
 
 abstract class AbstractAuthorizationCode implements AuthorizationCode
 {
     private array $queryParameters;
 
-    private string $redirectUri;
-
     private bool $used;
-
-    private \DateTimeImmutable $expiresAt;
-
-    private UserAccountId $userAccountId;
-
-    private ClientId $clientId;
-
-    private DataBag $parameter;
-
-    private DataBag $metadata;
 
     private bool $revoked;
 
-    private ?ResourceServerId $resourceServerId = null;
-
-    public function __construct(ClientId $clientId, UserAccountId $userAccountId, array $queryParameters, string $redirectUri, \DateTimeImmutable $expiresAt, DataBag $parameter, DataBag $metadata, ?ResourceServerId $resourceServerId)
-    {
+    public function __construct(
+        private ClientId $clientId,
+        private UserAccountId $userAccountId,
+        array $queryParameters,
+        private string $redirectUri,
+        private DateTimeImmutable $expiresAt,
+        private DataBag $parameter,
+        private DataBag $metadata,
+        private ?ResourceServerId $resourceServerId
+    ) {
         $this->queryParameters = $queryParameters;
-        $this->redirectUri = $redirectUri;
         $this->used = false;
-        $this->userAccountId = $userAccountId;
-        $this->clientId = $clientId;
-        $this->parameter = $parameter;
-        $this->metadata = $metadata;
-        $this->expiresAt = $expiresAt;
-        $this->resourceServerId = $resourceServerId;
         $this->revoked = false;
     }
 
@@ -71,7 +50,7 @@ abstract class AbstractAuthorizationCode implements AuthorizationCode
         return $this->queryParameters;
     }
 
-    public function getQueryParameter(string $key)
+    public function getQueryParameter(string $key): mixed
     {
         Assertion::true($this->hasQueryParameter($key), sprintf('Query parameter with key "%s" does not exist.', $key));
 
@@ -80,7 +59,7 @@ abstract class AbstractAuthorizationCode implements AuthorizationCode
 
     public function hasQueryParameter(string $key): bool
     {
-        return \array_key_exists($key, $this->getQueryParameters());
+        return array_key_exists($key, $this->getQueryParameters());
     }
 
     public function getRedirectUri(): string
@@ -91,11 +70,12 @@ abstract class AbstractAuthorizationCode implements AuthorizationCode
     public function toArray(): array
     {
         return [
-            'code' => $this->getId()->getValue(),
+            'code' => $this->getId()
+                ->getValue(),
         ];
     }
 
-    public function getExpiresAt(): \DateTimeImmutable
+    public function getExpiresAt(): DateTimeImmutable
     {
         return $this->expiresAt;
     }

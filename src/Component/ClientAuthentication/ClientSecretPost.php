@@ -2,18 +2,11 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\Component\ClientAuthentication;
 
+use function array_key_exists;
 use Base64Url\Base64Url;
+use InvalidArgumentException;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
@@ -22,15 +15,12 @@ use Psr\Http\Message\ServerRequestInterface;
 
 final class ClientSecretPost implements AuthenticationMethod
 {
-    /**
-     * @var int
-     */
-    private $secretLifetime;
+    private int $secretLifetime;
 
     public function __construct(int $secretLifetime = 0)
     {
         if ($secretLifetime < 0) {
-            throw new \InvalidArgumentException('The secret lifetime must be at least 0 (= unlimited).');
+            throw new InvalidArgumentException('The secret lifetime must be at least 0 (= unlimited).');
         }
 
         $this->secretLifetime = $secretLifetime;
@@ -42,12 +32,12 @@ final class ClientSecretPost implements AuthenticationMethod
     }
 
     /**
-     * @param null|mixed $clientCredentials
+     * @param mixed|null $clientCredentials
      */
     public function findClientIdAndCredentials(ServerRequestInterface $request, &$clientCredentials = null): ?ClientId
     {
         $parameters = RequestBodyParser::parseFormUrlEncoded($request);
-        if (\array_key_exists('client_id', $parameters) && \array_key_exists('client_secret', $parameters)) {
+        if (array_key_exists('client_id', $parameters) && array_key_exists('client_secret', $parameters)) {
             $clientCredentials = $parameters['client_secret'];
 
             return new ClientId($parameters['client_id']);
@@ -59,13 +49,16 @@ final class ClientSecretPost implements AuthenticationMethod
     public function checkClientConfiguration(DataBag $command_parameters, DataBag $validatedParameters): DataBag
     {
         $validatedParameters->set('client_secret', $this->createClientSecret());
-        $validatedParameters->set('client_secret_expires_at', (0 === $this->secretLifetime ? 0 : time() + $this->secretLifetime));
+        $validatedParameters->set(
+            'client_secret_expires_at',
+            ($this->secretLifetime === 0 ? 0 : time() + $this->secretLifetime)
+        );
 
         return $validatedParameters;
     }
 
     /**
-     * @param null|mixed $clientCredentials
+     * @param mixed|null $clientCredentials
      */
     public function isClientAuthenticated(Client $client, $clientCredentials, ServerRequestInterface $request): bool
     {

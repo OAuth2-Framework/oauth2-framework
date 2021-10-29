@@ -2,16 +2,7 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
-namespace OAuth2Framework\Tests\Component\AuthorizationEndpoint\Tests\User;
+namespace OAuth2Framework\Tests\Component\AuthorizationEndpoint\User;
 
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
 use OAuth2Framework\Component\AuthorizationEndpoint\User\UserAuthenticationChecker;
@@ -21,9 +12,6 @@ use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
 
 /**
- * @group UserChecker
- * @group UserCheckerManager
- *
  * @internal
  */
 final class UserCheckerManagerTest extends TestCase
@@ -33,7 +21,7 @@ final class UserCheckerManagerTest extends TestCase
     /**
      * @test
      */
-    public function theUserCheckerManagerCallsAllCheckers()
+    public function theUserCheckerManagerCallsAllCheckers(): void
     {
         $checker1 = $this->prophesize(UserAuthenticationChecker::class);
         $checker1->isAuthenticationNeeded(Argument::any(), Argument::any(), Argument::any())

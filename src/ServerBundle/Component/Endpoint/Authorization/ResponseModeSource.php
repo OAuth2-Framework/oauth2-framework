@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\ServerBundle\Component\Endpoint\Authorization;
 
 use OAuth2Framework\ServerBundle\Component\Component;
@@ -28,16 +19,19 @@ class ResponseModeSource implements Component
 
     public function __construct()
     {
-        $this->subComponents = [
-            new FormPostResponseModeSource(),
-        ];
+        $this->subComponents = [new FormPostResponseModeSource()];
     }
 
     public function load(array $configs, ContainerBuilder $container): void
     {
         $config = $configs['endpoint']['authorization']['response_mode'];
-        $container->setParameter('oauth2_server.endpoint.authorization.response_mode.allow_response_mode_parameter', $config['allow_response_mode_parameter']);
-        $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint/authorization'));
+        $container->setParameter(
+            'oauth2_server.endpoint.authorization.response_mode.allow_response_mode_parameter',
+            $config['allow_response_mode_parameter']
+        );
+        $loader = new PhpFileLoader($container, new FileLocator(
+            __DIR__ . '/../../../Resources/config/endpoint/authorization'
+        ));
         $loader->load('response_mode.php');
 
         foreach ($this->subComponents as $subComponent) {
@@ -75,10 +69,7 @@ class ResponseModeSource implements Component
     {
         $updatedConfig = [];
         foreach ($this->subComponents as $subComponent) {
-            $updatedConfig = array_merge(
-                $updatedConfig,
-                $subComponent->prepend($container, $config)
-            );
+            $updatedConfig = array_merge($updatedConfig, $subComponent->prepend($container, $config));
         }
 
         return $updatedConfig;

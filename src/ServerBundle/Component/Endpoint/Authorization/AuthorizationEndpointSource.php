@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\ServerBundle\Component\Endpoint\Authorization;
 
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationEndpoint;
@@ -55,10 +46,7 @@ class AuthorizationEndpointSource implements Component
 
     public function __construct()
     {
-        $this->subComponents = [
-            new ResponseModeSource(),
-            new RequestObjectSource(),
-        ];
+        $this->subComponents = [new ResponseModeSource(), new RequestObjectSource()];
     }
 
     public function name(): string
@@ -68,23 +56,31 @@ class AuthorizationEndpointSource implements Component
 
     public function load(array $configs, ContainerBuilder $container): void
     {
-        if (!class_exists(AuthorizationEndpoint::class)) {
+        if (! class_exists(AuthorizationEndpoint::class)) {
             return;
         }
         $config = $configs['endpoint']['authorization'];
         $container->setParameter('oauth2_server.endpoint.authorization.enabled', $config['enabled']);
-        if (!$config['enabled']) {
+        if (! $config['enabled']) {
             return;
         }
 
         $container->registerForAutoconfiguration(ResponseType::class)->addTag('oauth2_server_response_type');
         $container->registerForAutoconfiguration(ResponseMode::class)->addTag('oauth2_server_response_mode');
-        $container->registerForAutoconfiguration(ParameterChecker::class)->addTag('oauth2_server_authorization_parameter_checker');
-        $container->registerForAutoconfiguration(UserAuthenticationChecker::class)->addTag('oauth2_server_user_authentication_checker');
+        $container->registerForAutoconfiguration(ParameterChecker::class)->addTag(
+            'oauth2_server_authorization_parameter_checker'
+        );
+        $container->registerForAutoconfiguration(UserAuthenticationChecker::class)->addTag(
+            'oauth2_server_user_authentication_checker'
+        );
         $container->registerForAutoconfiguration(Extension::class)->addTag('oauth2_server_consent_screen_extension');
-        $container->registerForAutoconfiguration(AuthorizationEndpointHook::class)->addTag(AuthorizationRequestHookCompilerPass::TAG_NAME);
+        $container->registerForAutoconfiguration(AuthorizationEndpointHook::class)->addTag(
+            AuthorizationRequestHookCompilerPass::TAG_NAME
+        );
 
-        $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint/authorization'));
+        $loader = new PhpFileLoader($container, new FileLocator(
+            __DIR__ . '/../../../Resources/config/endpoint/authorization'
+        ));
         $loader->load('authorization.php');
 
         $container->setAlias(AuthorizationRequestStorage::class, $config['authorization_request_storage']);
@@ -97,8 +93,14 @@ class AuthorizationEndpointSource implements Component
             $container->setAlias(ConsentRepository::class, $config['consent_repository']);
         }
 
-        $container->setParameter('oauth2_server.endpoint.authorization.authorization_request_entry_endpoint_path', $config['authorization_request_entry_endpoint_path']);
-        $container->setParameter('oauth2_server.endpoint.authorization.authorization_endpoint_path', $config['authorization_endpoint_path']);
+        $container->setParameter(
+            'oauth2_server.endpoint.authorization.authorization_request_entry_endpoint_path',
+            $config['authorization_request_entry_endpoint_path']
+        );
+        $container->setParameter(
+            'oauth2_server.endpoint.authorization.authorization_endpoint_path',
+            $config['authorization_endpoint_path']
+        );
         $container->setParameter('oauth2_server.endpoint.authorization.host', $config['host']);
         $container->setParameter('oauth2_server.endpoint.authorization.enforce_state', $config['enforce_state']);
 
@@ -112,7 +114,7 @@ class AuthorizationEndpointSource implements Component
 
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
-        if (!class_exists(AuthorizationEndpoint::class)) {
+        if (! class_exists(AuthorizationEndpoint::class)) {
             return;
         }
         $childNode = $node->children()
@@ -178,19 +180,16 @@ class AuthorizationEndpointSource implements Component
 
     public function prepend(ContainerBuilder $container, array $config): array
     {
-        if (!class_exists(AuthorizationEndpoint::class)) {
+        if (! class_exists(AuthorizationEndpoint::class)) {
             return [];
         }
-        if (!$config['endpoint']['authorization']['enabled']) {
+        if (! $config['endpoint']['authorization']['enabled']) {
             return [];
         }
 
         $updatedConfig = [];
         foreach ($this->subComponents as $subComponent) {
-            $updatedConfig = array_merge(
-                $updatedConfig,
-                $subComponent->prepend($container, $config)
-            );
+            $updatedConfig = array_merge($updatedConfig, $subComponent->prepend($container, $config));
         }
 
         return $updatedConfig;
@@ -198,7 +197,7 @@ class AuthorizationEndpointSource implements Component
 
     public function build(ContainerBuilder $container): void
     {
-        if (!class_exists(AuthorizationEndpoint::class)) {
+        if (! class_exists(AuthorizationEndpoint::class)) {
             return;
         }
         $container->addCompilerPass(new AuthorizationRequestHookCompilerPass());

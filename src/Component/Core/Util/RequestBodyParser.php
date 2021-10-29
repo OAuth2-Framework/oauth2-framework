@@ -2,19 +2,14 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\Component\Core\Util;
 
-use function Safe\json_decode;
+use function count;
+use function in_array;
 use InvalidArgumentException;
+use function is_array;
+use const JSON_THROW_ON_ERROR;
+use JsonException;
 use League\Uri\QueryParser;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -22,18 +17,27 @@ class RequestBodyParser
 {
     public static function parseJson(ServerRequestInterface $request): array
     {
-        if (!$request->hasHeader('Content-Type') || !\in_array('application/json', $request->getHeader('Content-Type'), true)) {
+        if (! $request->hasHeader('Content-Type') || ! in_array(
+            'application/json',
+            $request->getHeader('Content-Type'),
+            true
+        )) {
             throw new InvalidArgumentException('Unsupported request body content type.');
         }
         $parsedBody = $request->getParsedBody();
-        if (\is_array($parsedBody) && 0 !== \count($parsedBody)) {
+        if (is_array($parsedBody) && count($parsedBody) !== 0) {
             return $parsedBody;
         }
 
-        $body = $request->getBody()->getContents();
-        $json = json_decode($body, true);
-
-        if (!\is_array($json)) {
+        $body = $request->getBody()
+            ->getContents()
+        ;
+        try {
+            $json = json_decode($body, true, 512, JSON_THROW_ON_ERROR);
+            if (! is_array($json)) {
+                throw new InvalidArgumentException('Invalid body');
+            }
+        } catch (JsonException) {
             throw new InvalidArgumentException('Invalid body');
         }
 
@@ -42,15 +46,21 @@ class RequestBodyParser
 
     public static function parseFormUrlEncoded(ServerRequestInterface $request): array
     {
-        if (!$request->hasHeader('Content-Type') || !\in_array('application/x-www-form-urlencoded', $request->getHeader('Content-Type'), true)) {
+        if (! $request->hasHeader('Content-Type') || ! in_array(
+            'application/x-www-form-urlencoded',
+            $request->getHeader('Content-Type'),
+            true
+        )) {
             throw new InvalidArgumentException('Unsupported request body content type.');
         }
         $parsedBody = $request->getParsedBody();
-        if (\is_array($parsedBody) && 0 !== \count($parsedBody)) {
+        if (is_array($parsedBody) && count($parsedBody) !== 0) {
             return $parsedBody;
         }
 
-        $body = $request->getBody()->getContents();
+        $body = $request->getBody()
+            ->getContents()
+        ;
 
         return (new QueryParser())->parse($body, '&', QueryParser::RFC1738_ENCODING);
     }

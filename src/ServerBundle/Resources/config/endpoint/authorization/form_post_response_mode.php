@@ -1,9 +1,9 @@
 <?php
 
 declare(strict_types=1);
-use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\FormPostResponseMode;
-use Psr\Http\Message\ResponseFactoryInterface;
 
+use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\FormPostResponseMode;
+use OAuth2Framework\ServerBundle\Service\TwigFormPostResponseRenderer;
 /*
  * The MIT License (MIT)
  *
@@ -13,28 +13,22 @@ use Psr\Http\Message\ResponseFactoryInterface;
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use OAuth2Framework\Component\AuthorizationEndpoint;
-use OAuth2Framework\ServerBundle\Service\TwigFormPostResponseRenderer;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
+use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 
-return function (ContainerConfigurator $container) {
-    $container = $container->services()->defaults()
+return static function (ContainerConfigurator $container): void {
+    $container = $container->services()
+        ->defaults()
         ->private()
         ->autoconfigure()
     ;
 
     $container->set(TwigFormPostResponseRenderer::class)
-        ->args([
-            ref('twig'),
-            '%oauth2_server.endpoint.authorization.response_mode.form_post.template%',
-        ])
+        ->args([service('twig'), '%oauth2_server.endpoint.authorization.response_mode.form_post.template%'])
     ;
 
     $container->set(FormPostResponseMode::class)
-        ->args([
-            ref(TwigFormPostResponseRenderer::class),
-            ref(ResponseFactoryInterface::class),
-        ])
+        ->args([service(TwigFormPostResponseRenderer::class), service(ResponseFactoryInterface::class)])
     ;
 };

@@ -2,21 +2,14 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\Component\WebFingerEndpoint;
 
-class ResourceDescriptor implements \JsonSerializable
-{
-    private ?string $subject;
+use function count;
+use function is_array;
+use JsonSerializable;
 
+class ResourceDescriptor implements JsonSerializable
+{
     private array $aliases;
 
     private array $properties;
@@ -28,9 +21,12 @@ class ResourceDescriptor implements \JsonSerializable
      * @param mixed[]  $properties
      * @param Link[]   $links
      */
-    public function __construct(?string $subject, array $aliases, array $properties, array $links)
-    {
-        $this->subject = $subject;
+    public function __construct(
+        private ?string $subject,
+        array $aliases,
+        array $properties,
+        array $links
+    ) {
         $this->aliases = $aliases;
         $this->properties = $properties;
         $this->links = $links;
@@ -90,7 +86,7 @@ class ResourceDescriptor implements \JsonSerializable
         ];
 
         foreach ($result as $k => $v) {
-            if (null === $v || (\is_array($v) && 0 === \count($v))) {
+            if ($v === null || (is_array($v) && count($v) === 0)) {
                 unset($result[$k]);
             }
         }

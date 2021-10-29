@@ -2,18 +2,10 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\SecurityBundle\Annotation;
 
 use Doctrine\Common\Annotations\Reader;
+use function is_array;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use OAuth2Framework\Component\Core\Message\OAuth2MessageFactoryManager;
 use OAuth2Framework\SecurityBundle\Annotation\Checker\Checker;
@@ -28,22 +20,16 @@ use Throwable;
 
 class AnnotationDriver
 {
-    private Reader $reader;
-
-    private TokenStorageInterface $tokenStorage;
-
     /**
      * @var Checker[]
      */
     private array $checkers = [];
 
-    private OAuth2MessageFactoryManager $oauth2ResponseFactoryManager;
-
-    public function __construct(Reader $reader, TokenStorageInterface $tokenStorage, OAuth2MessageFactoryManager $oauth2ResponseFactoryManager)
-    {
-        $this->reader = $reader;
-        $this->tokenStorage = $tokenStorage;
-        $this->oauth2ResponseFactoryManager = $oauth2ResponseFactoryManager;
+    public function __construct(
+        private Reader $reader,
+        private TokenStorageInterface $tokenStorage,
+        private OAuth2MessageFactoryManager $oauth2ResponseFactoryManager
+    ) {
     }
 
     public function add(Checker $checker): void
@@ -62,7 +48,7 @@ class AnnotationDriver
     public function onKernelController(ControllerEvent $event): void
     {
         $controller = $event->getController();
-        if (!\is_array($controller)) {
+        if (! is_array($controller)) {
             return;
         }
 
@@ -82,7 +68,7 @@ class AnnotationDriver
     {
         $token = $this->tokenStorage->getToken();
 
-        if (!$token instanceof OAuth2Token) {
+        if (! $token instanceof OAuth2Token) {
             $this->createAuthenticationException($event, 'OAuth2 authentication required', $configuration);
 
             return;
@@ -99,7 +85,9 @@ class AnnotationDriver
 
     private function createAuthenticationException(ControllerEvent $event, string $message, OAuth2 $configuration): void
     {
-        $additionalData = null !== $configuration->getScope() ? ['scope' => $configuration->getScope()] : [];
+        $additionalData = $configuration->getScope() !== null ? [
+            'scope' => $configuration->getScope(),
+        ] : [];
         $response = $this->oauth2ResponseFactoryManager->getResponse(
             OAuth2Error::accessDenied($message),
             $additionalData
@@ -108,17 +96,17 @@ class AnnotationDriver
         $this->updateControllerEvent($event, $response);
     }
 
-    private function createAccessDeniedException(ControllerEvent $event, string $message, OAuth2 $configuration, Throwable $previous): void
-    {
-        $additionalData = null !== $configuration->getScope() ? ['scope' => $configuration->getScope()] : [];
+    private function createAccessDeniedException(
+        ControllerEvent $event,
+        string $message,
+        OAuth2 $configuration,
+        Throwable $previous
+    ): void {
+        $additionalData = $configuration->getScope() !== null ? [
+            'scope' => $configuration->getScope(),
+        ] : [];
         $response = $this->oauth2ResponseFactoryManager->getResponse(
-            new OAuth2Error(
-                403,
-                OAuth2Error::ERROR_ACCESS_DENIED,
-                $message,
-                [],
-                $previous
-            ),
+            new OAuth2Error(403, OAuth2Error::ERROR_ACCESS_DENIED, $message, [], $previous),
             $additionalData
         );
         $this->updateControllerEvent($event, $response);

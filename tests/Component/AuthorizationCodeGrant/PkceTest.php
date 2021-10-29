@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\Tests\Component\AuthorizationCodeGrant;
 
 use OAuth2Framework\Component\AuthorizationCodeGrant\PKCEMethod\PKCEMethodManager;
@@ -19,34 +10,31 @@ use OAuth2Framework\Component\AuthorizationCodeGrant\PKCEMethod\S256;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @group PKCE
- *
  * @internal
  */
 final class PkceTest extends TestCase
 {
-    /**
-     * @var null|PKCEMethodManager
-     */
-    private $pkceMethodManager;
+    private ?PKCEMethodManager $pkceMethodManager = null;
 
     /**
      * @test
      */
-    public function thePkceMethodManagerCanHandleSeveralMethods()
+    public function thePkceMethodManagerCanHandleSeveralMethods(): void
     {
         static::assertTrue($this->getPkceMethodManager()->has('S256'));
         static::assertTrue($this->getPkceMethodManager()->has('plain'));
-        static::assertEquals(['plain', 'S256'], $this->getPkceMethodManager()->names());
+        static::assertSame(['plain', 'S256'], $this->getPkceMethodManager()->names());
     }
 
     /**
      * @test
      * @dataProvider challengeData
      */
-    public function aChallengeCanBeVerified(string $name, string $codeChallenge, string $codeVerifier)
+    public function aChallengeCanBeVerified(string $name, string $codeChallenge, string $codeVerifier): void
     {
-        $method = $this->getPkceMethodManager()->get($name);
+        $method = $this->getPkceMethodManager()
+            ->get($name)
+        ;
 
         static::assertTrue($method->isChallengeVerified($codeVerifier, $codeChallenge));
     }
@@ -69,7 +57,7 @@ final class PkceTest extends TestCase
 
     private function getPkceMethodManager(): PKCEMethodManager
     {
-        if (null === $this->pkceMethodManager) {
+        if ($this->pkceMethodManager === null) {
             $this->pkceMethodManager = new PKCEMethodManager();
             $this->pkceMethodManager->add(new Plain());
             $this->pkceMethodManager->add(new S256());

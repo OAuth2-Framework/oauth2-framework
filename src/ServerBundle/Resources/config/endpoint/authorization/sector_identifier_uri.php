@@ -1,8 +1,8 @@
 <?php
 
 declare(strict_types=1);
-use OAuth2Framework\Component\AuthorizationEndpoint\Rule\SectorIdentifierUriRule;
 
+use OAuth2Framework\Component\AuthorizationEndpoint\Rule\SectorIdentifierUriRule;
 /*
  * The MIT License (MIT)
  *
@@ -12,21 +12,18 @@ use OAuth2Framework\Component\AuthorizationEndpoint\Rule\SectorIdentifierUriRule
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use OAuth2Framework\Component\AuthorizationEndpoint;
 use Psr\Http\Message\RequestFactoryInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
+use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 
-return function (ContainerConfigurator $container) {
-    $container = $container->services()->defaults()
+return static function (ContainerConfigurator $container): void {
+    $container = $container->services()
+        ->defaults()
         ->private()
         ->autoconfigure()
     ;
 
     $container->set(SectorIdentifierUriRule::class)
-        ->args([
-            ref(RequestFactoryInterface::class),
-            ref('oauth2_server.http_client'),
-        ])
+        ->args([service(RequestFactoryInterface::class), service('oauth2_server.http_client')])
     ;
 };

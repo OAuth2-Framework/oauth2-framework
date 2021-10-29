@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\ServerBundle\Component\Endpoint\ClientRegistration;
 
 use OAuth2Framework\Component\ClientRegistrationEndpoint\ClientRegistrationEndpoint;
@@ -30,10 +21,7 @@ class ClientRegistrationSource implements Component
 
     public function __construct()
     {
-        $this->subComponents = [
-            new InitialAccessTokenSource(),
-            new SoftwareStatementSource(),
-        ];
+        $this->subComponents = [new InitialAccessTokenSource(), new SoftwareStatementSource()];
     }
 
     public function name(): string
@@ -43,18 +31,20 @@ class ClientRegistrationSource implements Component
 
     public function load(array $configs, ContainerBuilder $container): void
     {
-        if (!class_exists(ClientRegistrationEndpoint::class)) {
+        if (! class_exists(ClientRegistrationEndpoint::class)) {
             return;
         }
         $config = $configs['endpoint']['client_registration'];
         $container->setParameter('oauth2_server.endpoint.client_registration.enabled', $config['enabled']);
-        if (!$config['enabled']) {
+        if (! $config['enabled']) {
             return;
         }
         $container->setParameter('oauth2_server.endpoint.client_registration.path', $config['path']);
         $container->setParameter('oauth2_server.endpoint.client_registration.host', $config['host']);
 
-        $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint/client_registration'));
+        $loader = new PhpFileLoader($container, new FileLocator(
+            __DIR__ . '/../../../Resources/config/endpoint/client_registration'
+        ));
         $loader->load('client_registration.php');
 
         foreach ($this->subComponents as $subComponent) {
@@ -64,7 +54,7 @@ class ClientRegistrationSource implements Component
 
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
-        if (!class_exists(ClientRegistrationEndpoint::class)) {
+        if (! class_exists(ClientRegistrationEndpoint::class)) {
             return;
         }
         $childNode = $node->children()
@@ -93,18 +83,15 @@ class ClientRegistrationSource implements Component
 
     public function prepend(ContainerBuilder $container, array $config): array
     {
-        if (!class_exists(ClientRegistrationEndpoint::class)) {
+        if (! class_exists(ClientRegistrationEndpoint::class)) {
             return [];
         }
-        if (!$config['endpoint']['client_registration']['enabled']) {
+        if (! $config['endpoint']['client_registration']['enabled']) {
             return [];
         }
         $updatedConfig = [];
         foreach ($this->subComponents as $subComponent) {
-            $updatedConfig = array_merge(
-                $updatedConfig,
-                $subComponent->prepend($container, $config)
-            );
+            $updatedConfig = array_merge($updatedConfig, $subComponent->prepend($container, $config));
         }
 
         return $updatedConfig;
@@ -112,7 +99,7 @@ class ClientRegistrationSource implements Component
 
     public function build(ContainerBuilder $container): void
     {
-        if (!class_exists(ClientRegistrationEndpoint::class)) {
+        if (! class_exists(ClientRegistrationEndpoint::class)) {
             return;
         }
         $container->addCompilerPass(new ClientRegistrationEndpointRouteCompilerPass());

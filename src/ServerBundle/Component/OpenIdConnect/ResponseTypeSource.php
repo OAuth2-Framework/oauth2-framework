@@ -2,18 +2,8 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\ServerBundle\Component\OpenIdConnect;
 
-use function Safe\sprintf;
 use OAuth2Framework\ServerBundle\Component\Component;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\FileLocator;
@@ -30,7 +20,9 @@ class ResponseTypeSource implements Component
     public function load(array $configs, ContainerBuilder $container): void
     {
         $config = $configs['openid_connect']['response_type'];
-        $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../Resources/config/openid_connect/response_type'));
+        $loader = new PhpFileLoader($container, new FileLocator(
+            __DIR__ . '/../../Resources/config/openid_connect/response_type'
+        ));
         foreach ($config as $k => $v) {
             if ($config[$k]['enabled']) {
                 $loader->load(sprintf('%s.php', $k));

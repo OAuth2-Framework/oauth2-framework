@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\Tests\Component\ClientAuthentication;
 
 use OAuth2Framework\Component\ClientAuthentication\ClientSecretPost;
@@ -25,9 +16,6 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 
 /**
- * @group TokenEndpoint
- * @group ClientAuthentication
- *
  * @internal
  */
 final class ClientSecretPostAuthenticationMethodTest extends TestCase
@@ -37,18 +25,18 @@ final class ClientSecretPostAuthenticationMethodTest extends TestCase
     /**
      * @test
      */
-    public function genericCalls()
+    public function genericCalls(): void
     {
         $method = new ClientSecretPost();
 
-        static::assertEquals([], $method->getSchemesParameters());
-        static::assertEquals(['client_secret_post'], $method->getSupportedMethods());
+        static::assertSame([], $method->getSchemesParameters());
+        static::assertSame(['client_secret_post'], $method->getSupportedMethods());
     }
 
     /**
      * @test
      */
-    public function theClientIdCannotBeFoundInTheRequest()
+    public function theClientIdCannotBeFoundInTheRequest(): void
     {
         $method = new ClientSecretPost();
         $request = $this->buildRequest([]);
@@ -61,10 +49,12 @@ final class ClientSecretPostAuthenticationMethodTest extends TestCase
     /**
      * @test
      */
-    public function theClientIdHasBeenFoundInTheRequestButNoClientSecret()
+    public function theClientIdHasBeenFoundInTheRequestButNoClientSecret(): void
     {
         $method = new ClientSecretPost();
-        $request = $this->buildRequest(['client_id' => 'CLIENT_ID']);
+        $request = $this->buildRequest([
+            'client_id' => 'CLIENT_ID',
+        ]);
 
         $clientId = $method->findClientIdAndCredentials($request->reveal(), $credentials);
         static::assertNull($clientId);
@@ -74,7 +64,7 @@ final class ClientSecretPostAuthenticationMethodTest extends TestCase
     /**
      * @test
      */
-    public function theClientIdAndClientSecretHaveBeenFoundInTheRequest()
+    public function theClientIdAndClientSecretHaveBeenFoundInTheRequest(): void
     {
         $method = new ClientSecretPost();
         $request = $this->buildRequest([
@@ -84,13 +74,13 @@ final class ClientSecretPostAuthenticationMethodTest extends TestCase
 
         $clientId = $method->findClientIdAndCredentials($request->reveal(), $credentials);
         static::assertInstanceOf(ClientId::class, $clientId);
-        static::assertEquals('CLIENT_SECRET', $credentials);
+        static::assertSame('CLIENT_SECRET', $credentials);
     }
 
     /**
      * @test
      */
-    public function theClientIsAuthenticated()
+    public function theClientIsAuthenticated(): void
     {
         $method = new ClientSecretPost();
         $request = $this->buildRequest([
@@ -99,17 +89,39 @@ final class ClientSecretPostAuthenticationMethodTest extends TestCase
         ]);
 
         $client = $this->prophesize(Client::class);
-        $client->isPublic()->willReturn(false);
-        $client->getPublicId()->willReturn(new ClientId('CLIENT_ID'));
-        $client->getClientId()->willReturn(new ClientId('CLIENT_ID'));
-        $client->getOwnerId()->willReturn(new UserAccountId('USER_ACCOUNT_ID'));
-        $client->has('token_endpoint_auth_method')->willReturn(true);
-        $client->get('token_endpoint_auth_method')->willReturn('client_secret_basic');
-        $client->getTokenEndpointAuthenticationMethod()->willReturn('client_secret_basic');
-        $client->has('client_secret')->willReturn(true);
-        $client->get('client_secret')->willReturn('CLIENT_SECRET');
-        $client->isDeleted()->willReturn(false);
-        $client->areClientCredentialsExpired()->willReturn(false);
+        $client->isPublic()
+            ->willReturn(false)
+        ;
+        $client->getPublicId()
+            ->willReturn(new ClientId('CLIENT_ID'))
+        ;
+        $client->getClientId()
+            ->willReturn(new ClientId('CLIENT_ID'))
+        ;
+        $client->getOwnerId()
+            ->willReturn(new UserAccountId('USER_ACCOUNT_ID'))
+        ;
+        $client->has('token_endpoint_auth_method')
+            ->willReturn(true)
+        ;
+        $client->get('token_endpoint_auth_method')
+            ->willReturn('client_secret_basic')
+        ;
+        $client->getTokenEndpointAuthenticationMethod()
+            ->willReturn('client_secret_basic')
+        ;
+        $client->has('client_secret')
+            ->willReturn(true)
+        ;
+        $client->get('client_secret')
+            ->willReturn('CLIENT_SECRET')
+        ;
+        $client->isDeleted()
+            ->willReturn(false)
+        ;
+        $client->areClientCredentialsExpired()
+            ->willReturn(false)
+        ;
 
         static::assertTrue($method->isClientAuthenticated($client->reveal(), 'CLIENT_SECRET', $request->reveal()));
     }
@@ -117,7 +129,7 @@ final class ClientSecretPostAuthenticationMethodTest extends TestCase
     /**
      * @test
      */
-    public function theClientConfigurationCanBeChecked()
+    public function theClientConfigurationCanBeChecked(): void
     {
         $method = new ClientSecretPost();
         $validatedParameters = $method->checkClientConfiguration(new DataBag([]), new DataBag([]));
@@ -129,12 +141,22 @@ final class ClientSecretPostAuthenticationMethodTest extends TestCase
     private function buildRequest(array $data): ObjectProphecy
     {
         $body = $this->prophesize(StreamInterface::class);
-        $body->getContents()->willReturn(http_build_query($data));
+        $body->getContents()
+            ->willReturn(http_build_query($data))
+        ;
         $request = $this->prophesize(ServerRequestInterface::class);
-        $request->hasHeader('Content-Type')->willReturn(true);
-        $request->getHeader('Content-Type')->willReturn(['application/x-www-form-urlencoded']);
-        $request->getBody()->willReturn($body->reveal());
-        $request->getParsedBody()->willReturn([]);
+        $request->hasHeader('Content-Type')
+            ->willReturn(true)
+        ;
+        $request->getHeader('Content-Type')
+            ->willReturn(['application/x-www-form-urlencoded'])
+        ;
+        $request->getBody()
+            ->willReturn($body->reveal())
+        ;
+        $request->getParsedBody()
+            ->willReturn([])
+        ;
 
         return $request;
     }

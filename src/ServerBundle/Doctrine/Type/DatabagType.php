@@ -2,22 +2,13 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\ServerBundle\Doctrine\Type;
 
 use Assert\Assertion;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\Type;
+use const JSON_THROW_ON_ERROR;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
-use function Safe\json_encode;
 
 final class DatabagType extends Type
 {
@@ -26,13 +17,13 @@ final class DatabagType extends Type
      */
     public function convertToDatabaseValue($value, AbstractPlatform $platform): ?string
     {
-        if (null === $value) {
+        if ($value === null) {
             return $value;
         }
 
         Assertion::isInstanceOf($value, DataBag::class, 'Invalid object');
 
-        return json_encode($value);
+        return json_encode($value, JSON_THROW_ON_ERROR);
     }
 
     /**
@@ -40,7 +31,7 @@ final class DatabagType extends Type
      */
     public function convertToPHPValue($value, AbstractPlatform $platform): ?Databag
     {
-        if (null === $value || $value instanceof Databag) {
+        if ($value === null || $value instanceof Databag) {
             return $value;
         }
 

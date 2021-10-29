@@ -2,25 +2,16 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\Tests\Component\ClientRule;
 
-use OAuth2Framework\Component\ClientRule;
+use InvalidArgumentException;
+use OAuth2Framework\Component\ClientRule\RedirectionUriRule;
+use OAuth2Framework\Component\ClientRule\RuleHandler;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @group Tests
- *
  * @internal
  */
 final class RedirectionUriRuleTest extends TestCase
@@ -28,60 +19,60 @@ final class RedirectionUriRuleTest extends TestCase
     /**
      * @test
      */
-    public function noResponseTypeIsUsed()
+    public function noResponseTypeIsUsed(): void
     {
         $clientId = new ClientId('CLIENT_ID');
         $commandParameters = new DataBag([
             'redirect_uris' => ['http://foo.com/callback'],
         ]);
-        $rule = new ClientRule\RedirectionUriRule();
+        $rule = new RedirectionUriRule();
         $validatedParameters = $rule->handle($clientId, $commandParameters, new DataBag([]), $this->getCallable());
         static::assertTrue($validatedParameters->has('redirect_uris'));
-        static::assertEquals([], $validatedParameters->get('redirect_uris'));
+        static::assertSame([], $validatedParameters->get('redirect_uris'));
     }
 
     /**
      * @test
      */
-    public function aLeastOneRedirectUriMustBeSetForNonConfidentialClients()
+    public function aLeastOneRedirectUriMustBeSetForNonConfidentialClients(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Non-confidential clients must register at least one redirect URI.');
         $clientId = new ClientId('CLIENT_ID');
-        $commandParameters = new DataBag([
-        ]);
+        $commandParameters = new DataBag([]);
         $validatedParameters = new DataBag([
             'response_types' => ['token', 'code'],
             'token_endpoint_auth_method' => 'none',
         ]);
-        $rule = new ClientRule\RedirectionUriRule();
+        $rule = new RedirectionUriRule();
         $rule->handle($clientId, $commandParameters, $validatedParameters, $this->getCallable());
     }
 
     /**
      * @test
      */
-    public function confidentialClientsUsingTokenResponseTypeMustRegisterAtLeastOneRedirectUri()
+    public function confidentialClientsUsingTokenResponseTypeMustRegisterAtLeastOneRedirectUri(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Confidential clients must register at least one redirect URI when using the "token" response type.');
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            'Confidential clients must register at least one redirect URI when using the "token" response type.'
+        );
         $clientId = new ClientId('CLIENT_ID');
-        $commandParameters = new DataBag([
-        ]);
+        $commandParameters = new DataBag([]);
         $validatedParameters = new DataBag([
             'response_types' => ['token', 'code'],
             'token_endpoint_auth_method' => 'private_key_jwt',
         ]);
-        $rule = new ClientRule\RedirectionUriRule();
+        $rule = new RedirectionUriRule();
         $rule->handle($clientId, $commandParameters, $validatedParameters, $this->getCallable());
     }
 
     /**
      * @test
      */
-    public function theRedirectUrisParameterMustBeAnArray()
+    public function theRedirectUrisParameterMustBeAnArray(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('The parameter "redirect_uris" must be a list of URI or URN.');
         $clientId = new ClientId('CLIENT_ID');
         $commandParameters = new DataBag([
@@ -91,16 +82,16 @@ final class RedirectionUriRuleTest extends TestCase
             'response_types' => ['token', 'code'],
             'token_endpoint_auth_method' => 'none',
         ]);
-        $rule = new ClientRule\RedirectionUriRule();
+        $rule = new RedirectionUriRule();
         $rule->handle($clientId, $commandParameters, $validatedParameters, $this->getCallable());
     }
 
     /**
      * @test
      */
-    public function theRedirectUrisParameterMustBeAnArrayOfString()
+    public function theRedirectUrisParameterMustBeAnArrayOfString(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('The parameter "redirect_uris" must be a list of URI or URN.');
         $clientId = new ClientId('CLIENT_ID');
         $commandParameters = new DataBag([
@@ -110,16 +101,16 @@ final class RedirectionUriRuleTest extends TestCase
             'response_types' => ['token', 'code'],
             'token_endpoint_auth_method' => 'none',
         ]);
-        $rule = new ClientRule\RedirectionUriRule();
+        $rule = new RedirectionUriRule();
         $rule->handle($clientId, $commandParameters, $validatedParameters, $this->getCallable());
     }
 
     /**
      * @test
      */
-    public function theRedirectUrisParameterMustBeAnArrayOfUris()
+    public function theRedirectUrisParameterMustBeAnArrayOfUris(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('The parameter "redirect_uris" must be a list of URI or URN.');
         $clientId = new ClientId('CLIENT_ID');
         $commandParameters = new DataBag([
@@ -129,16 +120,16 @@ final class RedirectionUriRuleTest extends TestCase
             'response_types' => ['token', 'code'],
             'token_endpoint_auth_method' => 'none',
         ]);
-        $rule = new ClientRule\RedirectionUriRule();
+        $rule = new RedirectionUriRule();
         $rule->handle($clientId, $commandParameters, $validatedParameters, $this->getCallable());
     }
 
     /**
      * @test
      */
-    public function theRedirectUrisMustNotContainAnyFragmentParameter()
+    public function theRedirectUrisMustNotContainAnyFragmentParameter(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('The parameter "redirect_uris" must only contain URIs without fragment.');
         $clientId = new ClientId('CLIENT_ID');
         $commandParameters = new DataBag([
@@ -148,17 +139,19 @@ final class RedirectionUriRuleTest extends TestCase
             'response_types' => ['token', 'code'],
             'token_endpoint_auth_method' => 'none',
         ]);
-        $rule = new ClientRule\RedirectionUriRule();
+        $rule = new RedirectionUriRule();
         $rule->handle($clientId, $commandParameters, $validatedParameters, $this->getCallable());
     }
 
     /**
      * @test
      */
-    public function theLocalhostHostIsNotAllowedWhenTheImplicitGrantTypeIsUsed()
+    public function theLocalhostHostIsNotAllowedWhenTheImplicitGrantTypeIsUsed(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('The host "localhost" is not allowed for web applications that use the Implicit Grant Type.');
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            'The host "localhost" is not allowed for web applications that use the Implicit Grant Type.'
+        );
         $clientId = new ClientId('CLIENT_ID');
         $commandParameters = new DataBag([
             'redirect_uris' => ['http://localhost/'],
@@ -167,17 +160,19 @@ final class RedirectionUriRuleTest extends TestCase
             'response_types' => ['token', 'code'],
             'token_endpoint_auth_method' => 'none',
         ]);
-        $rule = new ClientRule\RedirectionUriRule();
+        $rule = new RedirectionUriRule();
         $rule->handle($clientId, $commandParameters, $validatedParameters, $this->getCallable());
     }
 
     /**
      * @test
      */
-    public function theSchemeMustBeHttpsWhenTheImplicitGrantTypeIsUsed()
+    public function theSchemeMustBeHttpsWhenTheImplicitGrantTypeIsUsed(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('The parameter "redirect_uris" must only contain URIs with the HTTPS scheme for web applications that use the Implicit Grant Type.');
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            'The parameter "redirect_uris" must only contain URIs with the HTTPS scheme for web applications that use the Implicit Grant Type.'
+        );
         $clientId = new ClientId('CLIENT_ID');
         $commandParameters = new DataBag([
             'redirect_uris' => ['http://foo.com/'],
@@ -186,17 +181,19 @@ final class RedirectionUriRuleTest extends TestCase
             'response_types' => ['token', 'code'],
             'token_endpoint_auth_method' => 'none',
         ]);
-        $rule = new ClientRule\RedirectionUriRule();
+        $rule = new RedirectionUriRule();
         $rule->handle($clientId, $commandParameters, $validatedParameters, $this->getCallable());
     }
 
     /**
      * @test
      */
-    public function theRedirectUrisMustNotHavePathTraversal()
+    public function theRedirectUrisMustNotHavePathTraversal(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('The URI listed in the "redirect_uris" parameter must not contain any path traversal.');
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            'The URI listed in the "redirect_uris" parameter must not contain any path traversal.'
+        );
         $clientId = new ClientId('CLIENT_ID');
         $commandParameters = new DataBag([
             'redirect_uris' => ['https://foo.com/bar/../bad'],
@@ -205,14 +202,14 @@ final class RedirectionUriRuleTest extends TestCase
             'response_types' => ['token', 'code'],
             'token_endpoint_auth_method' => 'none',
         ]);
-        $rule = new ClientRule\RedirectionUriRule();
+        $rule = new RedirectionUriRule();
         $rule->handle($clientId, $commandParameters, $validatedParameters, $this->getCallable());
     }
 
     /**
      * @test
      */
-    public function theUrisAreValidatedWithTheImplicitGrantType()
+    public function theUrisAreValidatedWithTheImplicitGrantType(): void
     {
         $clientId = new ClientId('CLIENT_ID');
         $commandParameters = new DataBag([
@@ -222,16 +219,16 @@ final class RedirectionUriRuleTest extends TestCase
             'response_types' => ['token', 'code'],
             'token_endpoint_auth_method' => 'none',
         ]);
-        $rule = new ClientRule\RedirectionUriRule();
+        $rule = new RedirectionUriRule();
         $validatedParameters = $rule->handle($clientId, $commandParameters, $validatedParameters, $this->getCallable());
         static::assertTrue($validatedParameters->has('redirect_uris'));
-        static::assertEquals(['https://foo.com/'], $validatedParameters->get('redirect_uris'));
+        static::assertSame(['https://foo.com/'], $validatedParameters->get('redirect_uris'));
     }
 
     /**
      * @test
      */
-    public function theUrisAreValidatedWithOtherGrantTypes()
+    public function theUrisAreValidatedWithOtherGrantTypes(): void
     {
         $clientId = new ClientId('CLIENT_ID');
         $commandParameters = new DataBag([
@@ -241,16 +238,16 @@ final class RedirectionUriRuleTest extends TestCase
             'response_types' => ['id_token', 'code'],
             'token_endpoint_auth_method' => 'none',
         ]);
-        $rule = new ClientRule\RedirectionUriRule();
+        $rule = new RedirectionUriRule();
         $validatedParameters = $rule->handle($clientId, $commandParameters, $validatedParameters, $this->getCallable());
         static::assertTrue($validatedParameters->has('redirect_uris'));
-        static::assertEquals(['http://localhost/'], $validatedParameters->get('redirect_uris'));
+        static::assertSame(['http://localhost/'], $validatedParameters->get('redirect_uris'));
     }
 
     /**
      * @test
      */
-    public function theUrnsAreAllowed()
+    public function theUrnsAreAllowed(): void
     {
         $clientId = new ClientId('CLIENT_ID');
         $commandParameters = new DataBag([
@@ -260,18 +257,21 @@ final class RedirectionUriRuleTest extends TestCase
             'response_types' => ['id_token', 'code'],
             'token_endpoint_auth_method' => 'none',
         ]);
-        $rule = new ClientRule\RedirectionUriRule();
+        $rule = new RedirectionUriRule();
         $validatedParameters = $rule->handle($clientId, $commandParameters, $validatedParameters, $this->getCallable());
         static::assertTrue($validatedParameters->has('redirect_uris'));
-        static::assertEquals(['urn:ietf:wg:oauth:2.0:oob', 'urn:ietf:wg:oauth:2.0:oob:auto'], $validatedParameters->get('redirect_uris'));
+        static::assertSame(
+            ['urn:ietf:wg:oauth:2.0:oob', 'urn:ietf:wg:oauth:2.0:oob:auto'],
+            $validatedParameters->get('redirect_uris')
+        );
     }
 
     /**
      * @test
      */
-    public function theUrnsAreNotValid()
+    public function theUrnsAreNotValid(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('The parameter "redirect_uris" must be a list of URI or URN.');
         $clientId = new ClientId('CLIENT_ID');
         $commandParameters = new DataBag([
@@ -281,13 +281,17 @@ final class RedirectionUriRuleTest extends TestCase
             'response_types' => ['id_token', 'code'],
             'token_endpoint_auth_method' => 'none',
         ]);
-        $rule = new ClientRule\RedirectionUriRule();
+        $rule = new RedirectionUriRule();
         $rule->handle($clientId, $commandParameters, $validatedParameters, $this->getCallable());
     }
 
-    private function getCallable(): ClientRule\RuleHandler
+    private function getCallable(): RuleHandler
     {
-        return new ClientRule\RuleHandler(function (ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters): DataBag {
+        return new RuleHandler(function (
+            ClientId $clientId,
+            DataBag $commandParameters,
+            DataBag $validatedParameters
+        ): DataBag {
             return $validatedParameters;
         });
     }

@@ -2,24 +2,39 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
-use OAuth2Framework\Component\BearerTokenType;
+use Nyholm\Psr7\Factory\Psr17Factory;
+use OAuth2Framework\Component\BearerTokenType\AuthorizationHeaderTokenFinder;
 use OAuth2Framework\Component\BearerTokenType\BearerToken;
-use OAuth2Framework\SecurityBundle\Tests\TestBundle\Controller\ApiController;
-use OAuth2Framework\SecurityBundle\Tests\TestBundle\Service\AccessTokenHandler;
+use OAuth2Framework\Component\BearerTokenType\QueryStringTokenFinder;
+use OAuth2Framework\Component\BearerTokenType\RequestBodyTokenFinder;
+use OAuth2Framework\Component\OpenIdConnect\UserInfo\Pairwise\EncryptedSubjectIdentifier;
+use OAuth2Framework\Tests\TestBundle\Controller\ApiController;
+use OAuth2Framework\Tests\TestBundle\Entity\ResourceRepository;
+use OAuth2Framework\Tests\TestBundle\Repository\AccessTokenRepository;
+use OAuth2Framework\Tests\TestBundle\Repository\AuthorizationCodeRepository;
+use OAuth2Framework\Tests\TestBundle\Repository\ClientRepository;
+use OAuth2Framework\Tests\TestBundle\Repository\ConsentRepository;
+use OAuth2Framework\Tests\TestBundle\Repository\InitialAccessTokenRepository;
+use OAuth2Framework\Tests\TestBundle\Repository\RefreshTokenRepository;
+use OAuth2Framework\Tests\TestBundle\Repository\ResourceOwnerPasswordCredentialRepository;
+use OAuth2Framework\Tests\TestBundle\Repository\ResourceServerRepository;
+use OAuth2Framework\Tests\TestBundle\Repository\ScopeRepository;
+use OAuth2Framework\Tests\TestBundle\Repository\TrustedIssuerRepository;
+use OAuth2Framework\Tests\TestBundle\Repository\UserAccountRepository;
+use OAuth2Framework\Tests\TestBundle\Service\AccessTokenHandler;
+use OAuth2Framework\Tests\TestBundle\Service\ConsentHandler;
+use OAuth2Framework\Tests\TestBundle\Service\LoginHandler;
+use OAuth2Framework\Tests\TestBundle\Service\SymfonyUserAccountDiscovery;
+use OAuth2Framework\Tests\TestBundle\Service\UriPathResolver;
+use OAuth2Framework\Tests\TestBundle\Service\UserProvider;
+use Psr\Http\Message\RequestFactoryInterface;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
+use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 
 return static function (ContainerConfigurator $container) {
-    $container = $container->services()->defaults()
+    $container = $container->services()
+        ->defaults()
         ->public()
         ->autowire()
         ->autoconfigure()
@@ -29,23 +44,52 @@ return static function (ContainerConfigurator $container) {
     $container->set(AccessTokenHandler::class);
 
     $container->set('oauth2_security.bearer_token.authorization_header_token_finder')
-        ->class(BearerTokenType\AuthorizationHeaderTokenFinder::class)
+        ->class(AuthorizationHeaderTokenFinder::class)
     ;
 
     $container->set('oauth2_security.bearer_token.query_string_token_finder')
-        ->class(BearerTokenType\QueryStringTokenFinder::class)
+        ->class(QueryStringTokenFinder::class)
     ;
 
     $container->set('oauth2_security.bearer_token.request_body_token_finder')
-        ->class(BearerTokenType\RequestBodyTokenFinder::class)
+        ->class(RequestBodyTokenFinder::class)
     ;
 
     $container->set('oauth2_security.token_type.bearer_token')
         ->class(BearerToken::class)
         ->args(['Protected API'])
         ->tag('oauth2_security_token_type')
-        ->call('addTokenFinder', [ref('oauth2_security.bearer_token.authorization_header_token_finder')])
-        ->call('addTokenFinder', [ref('oauth2_security.bearer_token.query_string_token_finder')])
-        ->call('addTokenFinder', [ref('oauth2_security.bearer_token.request_body_token_finder')])
+        ->call('addTokenFinder', [service('oauth2_security.bearer_token.authorization_header_token_finder')])
+        ->call('addTokenFinder', [service('oauth2_security.bearer_token.query_string_token_finder')])
+        ->call('addTokenFinder', [service('oauth2_security.bearer_token.request_body_token_finder')])
     ;
+
+    $container->set(LoginHandler::class);
+    $container->set(ConsentHandler::class);
+    $container->set(ClientRepository::class);
+    $container->set(RefreshTokenRepository::class);
+    $container->set(ResourceOwnerPasswordCredentialRepository::class);
+    $container->set(UserAccountRepository::class);
+    $container->set(ResourceServerRepository::class);
+    $container->set(TrustedIssuerRepository::class);
+    $container->set(ConsentRepository::class);
+    $container->set(UserProvider::class);
+    $container->set(SymfonyUserAccountDiscovery::class);
+    $container->set(AccessTokenRepository::class);
+    $container->set(AuthorizationCodeRepository::class);
+    $container->set(ScopeRepository::class);
+    $container->set(InitialAccessTokenRepository::class);
+    $container->set(Psr17Factory::class);
+    $container->alias(ResponseFactoryInterface::class, Psr17Factory::class);
+    $container->alias(RequestFactoryInterface::class, Psr17Factory::class);
+    $container->set(ResourceRepository::class);
+    $container->set(UriPathResolver::class);
+
+    $container->set('MyPairwiseSubjectIdentifier')
+        ->class(EncryptedSubjectIdentifier::class)
+        ->args(['This is my secret Key !!!', 'aes-128-cbc'])
+    ;
+
+    /*$container->set(ResourceServerAuthMethodByIpAddress::class)
+        ->tag('token_introspection_endpoint_auth_method');*/
 };

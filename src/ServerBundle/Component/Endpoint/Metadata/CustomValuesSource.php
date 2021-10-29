@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\ServerBundle\Component\Endpoint\Metadata;
 
 use OAuth2Framework\ServerBundle\Component\Component;
@@ -27,7 +18,10 @@ class CustomValuesSource implements Component
 
     public function load(array $configs, ContainerBuilder $container): void
     {
-        $container->setParameter('oauth2_server.endpoint.metadata.custom_values', $configs['endpoint']['metadata']['custom_values']);
+        $container->setParameter(
+            'oauth2_server.endpoint.metadata.custom_values',
+            $configs['endpoint']['metadata']['custom_values']
+        );
     }
 
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
@@ -36,7 +30,8 @@ class CustomValuesSource implements Component
             ->arrayNode('custom_values')
             ->info('Custom values added to the metadata response.')
             ->useAttributeAsKey('name')
-            ->variablePrototype()->end()
+            ->variablePrototype()
+            ->end()
             ->treatNullLike([])
             ->treatFalseLike([])
             ->end()

@@ -16,10 +16,10 @@
         }
     ],
     "require": {
-        "php": "^7.4|^8.0",
+        "php": ">=8.0",
         "ext-json": "*",
-        "beberlei/assert": "^3.2",
-        "thecodingmachine/safe": "^1.0"
+        "ext-openssl": "*",
+        "beberlei/assert": "^3.2"
     },
     "autoload": {
         "psr-4": {

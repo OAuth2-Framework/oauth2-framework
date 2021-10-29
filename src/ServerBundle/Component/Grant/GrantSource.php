@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\ServerBundle\Component\Grant;
 
 use OAuth2Framework\ServerBundle\Component\Component;
@@ -53,7 +44,7 @@ class GrantSource implements Component
 
     public function load(array $configs, ContainerBuilder $container): void
     {
-        $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../Resources/config/grant'));
+        $loader = new PhpFileLoader($container, new FileLocator(__DIR__ . '/../../Resources/config/grant'));
         $loader->load('grant.php');
 
         foreach ($this->subComponents as $subComponent) {
@@ -77,10 +68,7 @@ class GrantSource implements Component
     {
         $updatedConfig = [];
         foreach ($this->subComponents as $subComponent) {
-            $updatedConfig = array_merge(
-                $updatedConfig,
-                $subComponent->prepend($container, $config)
-            );
+            $updatedConfig = array_merge($updatedConfig, $subComponent->prepend($container, $config));
         }
 
         return $updatedConfig;

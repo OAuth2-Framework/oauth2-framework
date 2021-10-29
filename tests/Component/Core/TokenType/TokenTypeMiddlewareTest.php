@@ -2,17 +2,9 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\Tests\Component\Core\TokenType;
 
+use InvalidArgumentException;
 use OAuth2Framework\Component\Core\TokenType\TokenType;
 use OAuth2Framework\Component\Core\TokenType\TokenTypeManager;
 use OAuth2Framework\Component\Core\TokenType\TokenTypeMiddleware;
@@ -26,28 +18,20 @@ use Psr\Http\Message\StreamInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 /**
- * @group TokenTypeMiddleware
- *
  * @internal
  */
 final class TokenTypeMiddlewareTest extends TestCase
 {
     use ProphecyTrait;
 
-    /**
-     * @var null|TokenTypeMiddleware
-     */
-    private $tokenTypeMiddleware;
+    private ?TokenTypeMiddleware $tokenTypeMiddleware = null;
 
-    /**
-     * @var null|TokenTypeManager
-     */
-    private $tokenTypeManager;
+    private ?TokenTypeManager $tokenTypeManager = null;
 
     /**
      * @test
      */
-    public function noTokenTypeFoundInTheRequest()
+    public function noTokenTypeFoundInTheRequest(): void
     {
         $request = $this->buildRequest([]);
         $request->withAttribute('token_type', Argument::type(TokenType::class))->willReturn($request)->shouldBeCalled();
@@ -57,13 +41,15 @@ final class TokenTypeMiddlewareTest extends TestCase
         $handler = $this->prophesize(RequestHandlerInterface::class);
         $handler->handle(Argument::type(ServerRequestInterface::class))->willReturn($response->reveal());
 
-        $this->getTokenTypeMiddleware()->process($request->reveal(), $handler->reveal());
+        $this->getTokenTypeMiddleware()
+            ->process($request->reveal(), $handler->reveal())
+        ;
     }
 
     /**
      * @test
      */
-    public function aTokenTypeIsFoundInTheRequest()
+    public function aTokenTypeIsFoundInTheRequest(): void
     {
         $request = $this->buildRequest([
             'token_type' => 'foo',
@@ -75,15 +61,17 @@ final class TokenTypeMiddlewareTest extends TestCase
         $handler = $this->prophesize(RequestHandlerInterface::class);
         $handler->handle(Argument::type(ServerRequestInterface::class))->willReturn($response->reveal());
 
-        $this->getTokenTypeMiddleware()->process($request->reveal(), $handler->reveal());
+        $this->getTokenTypeMiddleware()
+            ->process($request->reveal(), $handler->reveal())
+        ;
     }
 
     /**
      * @test
      */
-    public function aTokenTypeIsFoundInTheRequestButNotSupported()
+    public function aTokenTypeIsFoundInTheRequestButNotSupported(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Unsupported token type "bar".');
         $request = $this->buildRequest([
             'token_type' => 'bar',
@@ -94,16 +82,15 @@ final class TokenTypeMiddlewareTest extends TestCase
         $handler = $this->prophesize(RequestHandlerInterface::class);
         $handler->handle(Argument::type(ServerRequestInterface::class))->willReturn($response->reveal());
 
-        $this->getTokenTypeMiddleware()->process($request->reveal(), $handler->reveal());
+        $this->getTokenTypeMiddleware()
+            ->process($request->reveal(), $handler->reveal())
+        ;
     }
 
     private function getTokenTypeMiddleware(): TokenTypeMiddleware
     {
-        if (null === $this->tokenTypeMiddleware) {
-            $this->tokenTypeMiddleware = new TokenTypeMiddleware(
-                $this->getTokenTypeManager(),
-                true
-            );
+        if ($this->tokenTypeMiddleware === null) {
+            $this->tokenTypeMiddleware = new TokenTypeMiddleware($this->getTokenTypeManager(), true);
         }
 
         return $this->tokenTypeMiddleware;
@@ -111,10 +98,14 @@ final class TokenTypeMiddlewareTest extends TestCase
 
     private function getTokenTypeManager(): TokenTypeManager
     {
-        if (null === $this->tokenTypeManager) {
+        if ($this->tokenTypeManager === null) {
             $tokenType = $this->prophesize(TokenType::class);
-            $tokenType->name()->willReturn('foo');
-            $tokenType->getScheme()->willReturn('FOO');
+            $tokenType->name()
+                ->willReturn('foo')
+            ;
+            $tokenType->getScheme()
+                ->willReturn('FOO')
+            ;
             $tokenType->find(Argument::any(), Argument::any(), Argument::any())->willReturn('__--TOKEN--__');
 
             $this->tokenTypeManager = new TokenTypeManager();
@@ -127,12 +118,22 @@ final class TokenTypeMiddlewareTest extends TestCase
     private function buildRequest(array $data): ObjectProphecy
     {
         $body = $this->prophesize(StreamInterface::class);
-        $body->getContents()->willReturn(http_build_query($data));
+        $body->getContents()
+            ->willReturn(http_build_query($data))
+        ;
         $request = $this->prophesize(ServerRequestInterface::class);
-        $request->hasHeader('Content-Type')->willReturn(true);
-        $request->getHeader('Content-Type')->willReturn(['application/x-www-form-urlencoded']);
-        $request->getBody()->willReturn($body->reveal());
-        $request->getParsedBody()->willReturn([]);
+        $request->hasHeader('Content-Type')
+            ->willReturn(true)
+        ;
+        $request->getHeader('Content-Type')
+            ->willReturn(['application/x-www-form-urlencoded'])
+        ;
+        $request->getBody()
+            ->willReturn($body->reveal())
+        ;
+        $request->getParsedBody()
+            ->willReturn([])
+        ;
 
         return $request;
     }

@@ -2,16 +2,7 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
-namespace OAuth2Framework\ServerBundle\Tests\Functional\Grant\JwtBearer;
+namespace OAuth2Framework\Tests\ServerBundle\Functional\Grant\JwtBearer;
 
 use Base64Url\Base64Url;
 use Jose\Component\Core\AlgorithmManager;
@@ -24,18 +15,13 @@ use OAuth2Framework\Component\JwtBearerGrant\JwtBearerGrantType;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
- * @group ServerBundle
- * @group Functional
- * @group Grant
- * @group JwtBearer
- *
  * @internal
  */
-class JwtBearerGrantTest extends WebTestCase
+final class JwtBearerGrantTest extends WebTestCase
 {
     protected function setUp(): void
     {
-        if (!class_exists(JwtBearerGrantType::class)) {
+        if (! class_exists(JwtBearerGrantType::class)) {
             static::markTestSkipped('The component "oauth2-framework/jwt-bearer-grant" is not installed.');
         }
         parent::setUp();
@@ -44,102 +30,162 @@ class JwtBearerGrantTest extends WebTestCase
     /**
      * @test
      */
-    public function theRequestHasNoGrantType()
+    public function theRequestHasNoGrantType(): void
     {
         $client = static::createClient();
-        $client->request('POST', '/token/get', [], [], ['HTTPS' => 'on'], null);
+        $client->request('POST', '/token/get', [], [], [
+            'HTTPS' => 'on',
+        ], null);
         $response = $client->getResponse();
-        static::assertEquals(400, $response->getStatusCode());
-        static::assertEquals('{"error":"invalid_request","error_description":"The \"grant_type\" parameter is missing."}', $response->getContent());
+        static::assertSame(400, $response->getStatusCode());
+        static::assertSame(
+            '{"error":"invalid_request","error_description":"The \"grant_type\" parameter is missing."}',
+            $response->getContent()
+        );
     }
 
     /**
      * @test
      */
-    public function theAssertionIsMissing()
+    public function theAssertionIsMissing(): void
     {
         $client = static::createClient();
-        $client->request('POST', '/token/get', ['grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer'], [], ['HTTPS' => 'on'], null);
+        $client->request('POST', '/token/get', [
+            'grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+        ], [], [
+            'HTTPS' => 'on',
+        ], null);
         $response = $client->getResponse();
-        static::assertEquals(400, $response->getStatusCode());
-        static::assertEquals('{"error":"invalid_request","error_description":"Missing grant type parameter(s): assertion."}', $response->getContent());
+        static::assertSame(400, $response->getStatusCode());
+        static::assertSame(
+            '{"error":"invalid_request","error_description":"Missing grant type parameter(s): assertion."}',
+            $response->getContent()
+        );
     }
 
     /**
      * @test
      */
-    public function theAssertionIsInvalid()
+    public function theAssertionIsInvalid(): void
     {
         $client = static::createClient();
-        $client->request('POST', '/token/get', ['grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer', 'assertion' => 'FOO'], [], ['HTTPS' => 'on'], null);
+        $client->request('POST', '/token/get', [
+            'grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+            'assertion' => 'FOO',
+        ], [], [
+            'HTTPS' => 'on',
+        ], null);
         $response = $client->getResponse();
-        static::assertEquals(400, $response->getStatusCode());
-        static::assertEquals('{"error":"invalid_request","error_description":"Unsupported input"}', $response->getContent());
+        static::assertSame(400, $response->getStatusCode());
+        static::assertSame(
+            '{"error":"invalid_request","error_description":"Unsupported input"}',
+            $response->getContent()
+        );
     }
 
     /**
      * @test
      */
-    public function theAssertionDoesNotContainTheMandatoryClaims()
+    public function theAssertionDoesNotContainTheMandatoryClaims(): void
     {
         $client = static::createClient();
         $assertion = $this->createAnAssertionWithoutClaim();
-        $client->request('POST', '/token/get', ['grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer', 'assertion' => $assertion], [], ['HTTPS' => 'on'], null);
+        $client->request('POST', '/token/get', [
+            'grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+            'assertion' => $assertion,
+        ], [], [
+            'HTTPS' => 'on',
+        ], null);
         $response = $client->getResponse();
-        static::assertEquals(400, $response->getStatusCode());
-        static::assertEquals('{"error":"invalid_request","error_description":"The following claim(s) is/are mandatory: \"iss, sub, aud, exp\"."}', $response->getContent());
+        static::assertSame(400, $response->getStatusCode());
+        static::assertSame(
+            '{"error":"invalid_request","error_description":"The following claim(s) is/are mandatory: \"iss, sub, aud, exp\"."}',
+            $response->getContent()
+        );
     }
 
     /**
      * @test
      */
-    public function theAssertionDoesNotContainTheSubjectClaims()
+    public function theAssertionDoesNotContainTheSubjectClaims(): void
     {
         $client = static::createClient();
         $assertion = $this->createAnAssertionWithoutSubject();
-        $client->request('POST', '/token/get', ['grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer', 'assertion' => $assertion], [], ['HTTPS' => 'on'], null);
+        $client->request('POST', '/token/get', [
+            'grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+            'assertion' => $assertion,
+        ], [], [
+            'HTTPS' => 'on',
+        ], null);
         $response = $client->getResponse();
-        static::assertEquals(400, $response->getStatusCode());
-        static::assertEquals('{"error":"invalid_request","error_description":"The following claim(s) is/are mandatory: \"sub, aud, exp\"."}', $response->getContent());
+        static::assertSame(400, $response->getStatusCode());
+        static::assertSame(
+            '{"error":"invalid_request","error_description":"The following claim(s) is/are mandatory: \"sub, aud, exp\"."}',
+            $response->getContent()
+        );
     }
 
     /**
      * @test
      */
-    public function theAssertionDoesNotContainTheAudienceClaims()
+    public function theAssertionDoesNotContainTheAudienceClaims(): void
     {
         $client = static::createClient();
         $assertion = $this->createAnAssertionWithoutAudience();
-        $client->request('POST', '/token/get', ['grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer', 'assertion' => $assertion], [], ['HTTPS' => 'on'], null);
+        $client->request('POST', '/token/get', [
+            'grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+            'assertion' => $assertion,
+        ], [], [
+            'HTTPS' => 'on',
+        ], null);
         $response = $client->getResponse();
-        static::assertEquals(400, $response->getStatusCode());
-        static::assertEquals('{"error":"invalid_request","error_description":"The following claim(s) is/are mandatory: \"aud, exp\"."}', $response->getContent());
+        static::assertSame(400, $response->getStatusCode());
+        static::assertSame(
+            '{"error":"invalid_request","error_description":"The following claim(s) is/are mandatory: \"aud, exp\"."}',
+            $response->getContent()
+        );
     }
 
     /**
      * @test
      */
-    public function theAssertionDoesNotContainTheExpirationTimeClaims()
+    public function theAssertionDoesNotContainTheExpirationTimeClaims(): void
     {
         $client = static::createClient();
         $assertion = $this->createAnAssertionWithoutExpirationTime();
-        $client->request('POST', '/token/get', ['grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer', 'assertion' => $assertion], [], ['HTTPS' => 'on'], null);
+        $client->request('POST', '/token/get', [
+            'grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+            'assertion' => $assertion,
+        ], [], [
+            'HTTPS' => 'on',
+        ], null);
         $response = $client->getResponse();
-        static::assertEquals(400, $response->getStatusCode());
-        static::assertEquals('{"error":"invalid_request","error_description":"The following claim(s) is/are mandatory: \"exp\"."}', $response->getContent());
+        static::assertSame(400, $response->getStatusCode());
+        static::assertSame(
+            '{"error":"invalid_request","error_description":"The following claim(s) is/are mandatory: \"exp\"."}',
+            $response->getContent()
+        );
     }
 
     /**
      * @test
      */
-    public function theAssertionIsValid()
+    public function theAssertionIsValid(): void
     {
         $client = static::createClient();
         $assertion = $this->createAValidAssertion();
-        $client->request('POST', '/token/get', ['grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer', 'assertion' => $assertion], [], ['HTTPS' => 'on'], null);
+        $client->request('POST', '/token/get', [
+            'grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+            'assertion' => $assertion,
+        ], [], [
+            'HTTPS' => 'on',
+        ], null);
         $response = $client->getResponse();
-        static::assertEquals(200, $response->getStatusCode());
-        self::assertMatchesRegularExpression('/\{"token_type"\:"Bearer","access_token"\:"[0-9a-zA-Z-_]+","expires_in":[0-9]{4}\}/', $response->getContent());
+        static::assertSame(200, $response->getStatusCode());
+        static::assertMatchesRegularExpression(
+            '/\{"token_type"\:"Bearer","access_token"\:"[0-9a-zA-Z-_]+","expires_in":[0-9]{4}\}/',
+            $response->getContent()
+        );
     }
 
     private function createAnAssertionWithoutClaim(): string
@@ -147,7 +193,9 @@ class JwtBearerGrantTest extends WebTestCase
         $jwk = new JWK([
             'kty' => 'oct',
             'use' => 'sig',
-            'k' => Base64Url::encode('secretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecret'),
+            'k' => Base64Url::encode(
+                'secretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecret'
+            ),
         ]);
         $claims = [];
 
@@ -160,9 +208,13 @@ class JwtBearerGrantTest extends WebTestCase
         $jwk = new JWK([
             'kty' => 'oct',
             'use' => 'sig',
-            'k' => Base64Url::encode('secretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecret'),
+            'k' => Base64Url::encode(
+                'secretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecret'
+            ),
         ]);
-        $claims = ['iss' => 'CLIENT_ID_4'];
+        $claims = [
+            'iss' => 'CLIENT_ID_4',
+        ];
 
         return $this->sign($claims, $jwk);
     }
@@ -172,9 +224,14 @@ class JwtBearerGrantTest extends WebTestCase
         $jwk = new JWK([
             'kty' => 'oct',
             'use' => 'sig',
-            'k' => Base64Url::encode('secretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecret'),
+            'k' => Base64Url::encode(
+                'secretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecret'
+            ),
         ]);
-        $claims = ['iss' => 'CLIENT_ID_4', 'sub' => 'CLIENT_ID_4'];
+        $claims = [
+            'iss' => 'CLIENT_ID_4',
+            'sub' => 'CLIENT_ID_4',
+        ];
 
         return $this->sign($claims, $jwk);
     }
@@ -184,7 +241,9 @@ class JwtBearerGrantTest extends WebTestCase
         $jwk = new JWK([
             'kty' => 'oct',
             'use' => 'sig',
-            'k' => Base64Url::encode('secretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecret'),
+            'k' => Base64Url::encode(
+                'secretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecret'
+            ),
         ]);
         $claims = [
             'iss' => 'CLIENT_ID_4',
@@ -200,7 +259,9 @@ class JwtBearerGrantTest extends WebTestCase
         $jwk = new JWK([
             'kty' => 'oct',
             'use' => 'sig',
-            'k' => Base64Url::encode('secretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecret'),
+            'k' => Base64Url::encode(
+                'secretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecret'
+            ),
         ]);
         $claims = [
             'iss' => 'CLIENT_ID_4',
@@ -219,7 +280,9 @@ class JwtBearerGrantTest extends WebTestCase
         $jws = $jwsBuilder
             ->create()
             ->withPayload($payload)
-            ->addSignature($jwk, ['alg' => 'HS256'])
+            ->addSignature($jwk, [
+                'alg' => 'HS256',
+            ])
             ->build()
         ;
 

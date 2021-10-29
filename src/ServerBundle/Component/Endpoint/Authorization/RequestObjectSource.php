@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\ServerBundle\Component\Endpoint\Authorization;
 
 use Jose\Bundle\JoseFramework\Helper\ConfigurationHelper;
@@ -28,10 +19,7 @@ class RequestObjectSource implements Component
 
     public function __construct()
     {
-        $this->subComponents = [
-            new RequestObjectReferenceSource(),
-            new RequestObjectEncryptionSource(),
-        ];
+        $this->subComponents = [new RequestObjectReferenceSource(), new RequestObjectEncryptionSource()];
     }
 
     public function name(): string
@@ -64,7 +52,8 @@ class RequestObjectSource implements Component
             ->arrayNode('signature_algorithms')
             ->info('Supported signature algorithms.')
             ->useAttributeAsKey('name')
-            ->scalarPrototype()->end()
+            ->scalarPrototype()
+            ->end()
             ->treatNullLike([])
             ->end()
             ->end()
@@ -78,20 +67,32 @@ class RequestObjectSource implements Component
     public function prepend(ContainerBuilder $container, array $config): array
     {
         $sourceConfig = $config['endpoint']['authorization']['request_object'];
-        if (true === $sourceConfig['enabled']) {
+        if ($sourceConfig['enabled'] === true) {
             $claim_checkers = ['exp', 'iat', 'nbf'/*'authorization_endpoint_aud'*/]; // FIXME
             $header_checkers = []; // FIXME
-            ConfigurationHelper::addJWSVerifier($container, 'oauth2_server.endpoint.authorization.request_object', $sourceConfig['signature_algorithms'], false);
-            ConfigurationHelper::addHeaderChecker($container, 'oauth2_server.endpoint.authorization.request_object', $header_checkers, false);
-            ConfigurationHelper::addClaimChecker($container, 'oauth2_server.endpoint.authorization.request_object', $claim_checkers, false);
+            ConfigurationHelper::addJWSVerifier(
+                $container,
+                'oauth2_server.endpoint.authorization.request_object',
+                $sourceConfig['signature_algorithms'],
+                false
+            );
+            ConfigurationHelper::addHeaderChecker(
+                $container,
+                'oauth2_server.endpoint.authorization.request_object',
+                $header_checkers,
+                false
+            );
+            ConfigurationHelper::addClaimChecker(
+                $container,
+                'oauth2_server.endpoint.authorization.request_object',
+                $claim_checkers,
+                false
+            );
         }
 
         $updatedConfig = [];
         foreach ($this->subComponents as $subComponent) {
-            $updatedConfig = array_merge(
-                $updatedConfig,
-                $subComponent->prepend($container, $config)
-            );
+            $updatedConfig = array_merge($updatedConfig, $subComponent->prepend($container, $config));
         }
 
         return $updatedConfig;

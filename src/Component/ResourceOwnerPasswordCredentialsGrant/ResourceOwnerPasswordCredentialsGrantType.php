@@ -2,18 +2,9 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\Component\ResourceOwnerPasswordCredentialsGrant;
 
-use function Safe\sprintf;
+use function count;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use OAuth2Framework\Component\Core\Util\RequestBodyParser;
 use OAuth2Framework\Component\TokenEndpoint\GrantType;
@@ -22,11 +13,9 @@ use Psr\Http\Message\ServerRequestInterface;
 
 final class ResourceOwnerPasswordCredentialsGrantType implements GrantType
 {
-    private ResourceOwnerPasswordCredentialManager $resourceOwnerPasswordCredentialManager;
-
-    public function __construct(ResourceOwnerPasswordCredentialManager $resourceOwnerPasswordCredentialManager)
-    {
-        $this->resourceOwnerPasswordCredentialManager = $resourceOwnerPasswordCredentialManager;
+    public function __construct(
+        private ResourceOwnerPasswordCredentialManager $resourceOwnerPasswordCredentialManager
+    ) {
     }
 
     public function associatedResponseTypes(): array
@@ -45,7 +34,7 @@ final class ResourceOwnerPasswordCredentialsGrantType implements GrantType
         $requiredParameters = ['username', 'password'];
 
         $diff = array_diff($requiredParameters, array_keys($parameters));
-        if (0 !== \count($diff)) {
+        if (count($diff) !== 0) {
             throw OAuth2Error::invalidRequest(sprintf('Missing grant type parameter(s): %s.', implode(', ', $diff)));
         }
     }
@@ -60,8 +49,11 @@ final class ResourceOwnerPasswordCredentialsGrantType implements GrantType
         $username = $parameters['username'];
         $password = $parameters['password'];
 
-        $resourceOwnerId = $this->resourceOwnerPasswordCredentialManager->findResourceOwnerIdWithUsernameAndPassword($username, $password);
-        if (null === $resourceOwnerId) {
+        $resourceOwnerId = $this->resourceOwnerPasswordCredentialManager->findResourceOwnerIdWithUsernameAndPassword(
+            $username,
+            $password
+        );
+        if ($resourceOwnerId === null) {
             throw OAuth2Error::invalidGrant('Invalid username and password combination.');
         }
 

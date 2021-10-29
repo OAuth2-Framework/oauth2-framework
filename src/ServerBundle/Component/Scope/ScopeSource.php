@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\ServerBundle\Component\Scope;
 
 use OAuth2Framework\Component\Scope\ScopeRepository;
@@ -31,15 +22,15 @@ class ScopeSource implements Component
 
     public function load(array $configs, ContainerBuilder $container): void
     {
-        if (!interface_exists(ScopeRepository::class) || !$configs['scope']['enabled']) {
+        if (! interface_exists(ScopeRepository::class) || ! $configs['scope']['enabled']) {
             return;
         }
 
         $container->setAlias(ScopeRepository::class, $configs['scope']['repository']);
-        $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../Resources/config/scope'));
+        $loader = new PhpFileLoader($container, new FileLocator(__DIR__ . '/../../Resources/config/scope'));
         $loader->load('scope.php');
 
-        if (!$configs['scope']['policy']['enabled']) {
+        if (! $configs['scope']['policy']['enabled']) {
             $container->setParameter('oauth2_server.scope.policy.by_default', 'none');
 
             return;
@@ -49,7 +40,10 @@ class ScopeSource implements Component
         $loader->load('policy.php');
 
         if ($configs['scope']['policy']['default']['enabled']) {
-            $container->setParameter('oauth2_server.scope.policy.default.scope', $configs['scope']['policy']['default']['scope']);
+            $container->setParameter(
+                'oauth2_server.scope.policy.default.scope',
+                $configs['scope']['policy']['default']['scope']
+            );
             $loader->load('policy_default.php');
         }
         if ($configs['scope']['policy']['error']['enabled']) {
@@ -59,7 +53,7 @@ class ScopeSource implements Component
 
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
-        if (!interface_exists(ScopeRepository::class)) {
+        if (! interface_exists(ScopeRepository::class)) {
             return;
         }
         $node->children()

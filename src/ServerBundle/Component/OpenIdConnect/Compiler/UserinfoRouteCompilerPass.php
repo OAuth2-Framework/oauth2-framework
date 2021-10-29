@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\ServerBundle\Component\OpenIdConnect\Compiler;
 
 use OAuth2Framework\ServerBundle\Routing\RouteLoader;
@@ -22,7 +13,7 @@ class UserinfoRouteCompilerPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container): void
     {
-        if (!$container->hasDefinition('oauth2_server_userinfo_pipe')) {
+        if (! $container->hasDefinition('oauth2_server_userinfo_pipe')) {
             return;
         }
 
@@ -32,7 +23,7 @@ class UserinfoRouteCompilerPass implements CompilerPassInterface
         $route_loader->addMethodCall('addRoute', [
             'openid_connect_userinfo_endpoint',
             'oauth2_server_userinfo_pipe',
-            'dispatch',
+            'handle',
             $path, // path
             [], // defaults
             [], // requirements
@@ -43,7 +34,7 @@ class UserinfoRouteCompilerPass implements CompilerPassInterface
             '', // condition
         ]);
 
-        if (!$container->hasDefinition(MetadataBuilder::class)) {
+        if (! $container->hasDefinition(MetadataBuilder::class)) {
             return;
         }
 

@@ -2,41 +2,25 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\Component\AuthorizationCodeGrant;
 
+use function array_key_exists;
+use DateTimeImmutable;
 use OAuth2Framework\Component\AuthorizationCodeGrant\PKCEMethod\PKCEMethodManager;
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType\ResponseType;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use OAuth2Framework\Component\Core\TokenType\TokenType;
-use function Safe\sprintf;
 
 final class AuthorizationCodeResponseType implements ResponseType
 {
-    private int $authorizationCodeLifetime;
-
-    private bool $pkceForPublicClientsEnforced;
-
-    private AuthorizationCodeRepository $authorizationCodeRepository;
-
-    private PKCEMethodManager $pkceMethodManager;
-
-    public function __construct(AuthorizationCodeRepository $authorizationCodeRepository, int $authorizationCodeLifetime, PKCEMethodManager $pkceMethodManager, bool $pkceForPublicClientsEnforced)
-    {
-        $this->authorizationCodeRepository = $authorizationCodeRepository;
-        $this->authorizationCodeLifetime = $authorizationCodeLifetime;
-        $this->pkceMethodManager = $pkceMethodManager;
-        $this->pkceForPublicClientsEnforced = $pkceForPublicClientsEnforced;
+    public function __construct(
+        private AuthorizationCodeRepository $authorizationCodeRepository,
+        private int $authorizationCodeLifetime,
+        private PKCEMethodManager $pkceMethodManager,
+        private bool $pkceForPublicClientsEnforced
+    ) {
     }
 
     public function associatedGrantTypes(): array
@@ -58,26 +42,35 @@ final class AuthorizationCodeResponseType implements ResponseType
     {
         $queryParams = $authorization->getQueryParams();
 
-        if (!\array_key_exists('code_challenge', $queryParams)) {
-            if (true === $this->pkceForPublicClientsEnforced && $authorization->getClient()->isPublic()) {
-                throw OAuth2Error::invalidRequest('Non-confidential clients must set a proof key (PKCE) for code exchange.');
+        if (! array_key_exists('code_challenge', $queryParams)) {
+            if ($this->pkceForPublicClientsEnforced === true && $authorization->getClient()->isPublic()) {
+                throw OAuth2Error::invalidRequest(
+                    'Non-confidential clients must set a proof key (PKCE) for code exchange.'
+                );
             }
         } else {
-            $codeChallengeMethod = \array_key_exists('code_challenge_method', $queryParams) ? $queryParams['code_challenge_method'] : 'plain';
-            if (!$this->pkceMethodManager->has($codeChallengeMethod)) {
-                throw OAuth2Error::invalidRequest(sprintf('The challenge method "%s" is not supported.', $codeChallengeMethod));
+            $codeChallengeMethod = array_key_exists(
+                'code_challenge_method',
+                $queryParams
+            ) ? $queryParams['code_challenge_method'] : 'plain';
+            if (! $this->pkceMethodManager->has($codeChallengeMethod)) {
+                throw OAuth2Error::invalidRequest(
+                    sprintf('The challenge method "%s" is not supported.', $codeChallengeMethod)
+                );
             }
         }
 
         $authorizationCode = $this->authorizationCodeRepository->create(
-            $authorization->getClient()->getClientId(),
-            $authorization->getUserAccount()->getUserAccountId(),
+            $authorization->getClient()
+                ->getClientId(),
+            $authorization->getUserAccount()
+                ->getUserAccountId(),
             $authorization->getQueryParams(),
             $authorization->getRedirectUri(),
-            (new \DateTimeImmutable())->setTimestamp(time() + $this->authorizationCodeLifetime),
+            (new DateTimeImmutable())->setTimestamp(time() + $this->authorizationCodeLifetime),
             new DataBag([]),
             $authorization->getMetadata(),
-            null !== $authorization->getResourceServer() ? $authorization->getResourceServer()->getResourceServerId() : null
+            $authorization->getResourceServer()?->getResourceServerId()
         );
         $this->authorizationCodeRepository->save($authorizationCode);
         $authorization->setResponseParameter('code', $authorizationCode->getId()->getValue());

@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\Component\WebFingerEndpoint\IdentifierResolver;
 
 use Assert\Assertion;
@@ -22,7 +13,7 @@ final class UriResolver implements IdentifierResolver
     {
         $uri = parse($resource);
 
-        return 'https' === $uri['scheme'] && null !== $uri['user'];
+        return $uri['scheme'] === 'https' && $uri['user'] !== null;
     }
 
     public function resolve(string $resource): Identifier

@@ -2,17 +2,9 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\Tests\Component\BearerTokenType;
 
+use DateTimeImmutable;
 use OAuth2Framework\Component\BearerTokenType\AuthorizationHeaderTokenFinder;
 use OAuth2Framework\Component\BearerTokenType\BearerToken;
 use OAuth2Framework\Component\BearerTokenType\QueryStringTokenFinder;
@@ -28,8 +20,6 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 
 /**
- * @group BearerToken
- *
  * @internal
  */
 final class BearerTokenTest extends TestCase
@@ -39,39 +29,43 @@ final class BearerTokenTest extends TestCase
     /**
      * @test
      */
-    public function genericCalls()
+    public function genericCalls(): void
     {
         $bearerToken = new BearerToken('TEST');
         $bearerToken->addTokenFinder(new AuthorizationHeaderTokenFinder());
 
-        static::assertEquals('Bearer', $bearerToken->name());
-        static::assertEquals('Bearer realm="TEST"', $bearerToken->getScheme());
-        static::assertEquals([], $bearerToken->getAdditionalInformation());
+        static::assertSame('Bearer', $bearerToken->name());
+        static::assertSame('Bearer realm="TEST"', $bearerToken->getScheme());
+        static::assertSame([], $bearerToken->getAdditionalInformation());
     }
 
     /**
      * @test
      */
-    public function anAccessTokenInTheAuthorizationHeaderIsFound()
+    public function anAccessTokenInTheAuthorizationHeaderIsFound(): void
     {
         $bearerToken = new BearerToken('TEST');
         $bearerToken->addTokenFinder(new AuthorizationHeaderTokenFinder());
         $request = $this->buildRequest([]);
-        $request->getHeader('AUTHORIZATION')->willReturn(['Bearer ACCESS_TOKEN_ID']);
+        $request->getHeader('AUTHORIZATION')
+            ->willReturn(['Bearer ACCESS_TOKEN_ID'])
+        ;
 
         $additionalCredentialValues = [];
-        static::assertEquals('ACCESS_TOKEN_ID', $bearerToken->find($request->reveal(), $additionalCredentialValues));
+        static::assertSame('ACCESS_TOKEN_ID', $bearerToken->find($request->reveal(), $additionalCredentialValues));
     }
 
     /**
      * @test
      */
-    public function noAccessTokenInTheAuthorizationHeaderIsFound()
+    public function noAccessTokenInTheAuthorizationHeaderIsFound(): void
     {
         $bearerToken = new BearerToken('TEST');
         $bearerToken->addTokenFinder(new AuthorizationHeaderTokenFinder());
         $request = $this->buildRequest([]);
-        $request->getHeader('AUTHORIZATION')->willReturn(['MAC FOO_MAC_TOKEN']);
+        $request->getHeader('AUTHORIZATION')
+            ->willReturn(['MAC FOO_MAC_TOKEN'])
+        ;
 
         $additionalCredentialValues = [];
         static::assertNull($bearerToken->find($request->reveal(), $additionalCredentialValues));
@@ -80,35 +74,43 @@ final class BearerTokenTest extends TestCase
     /**
      * @test
      */
-    public function anAccessTokenInTheQueryStringIsFound()
+    public function anAccessTokenInTheQueryStringIsFound(): void
     {
         $bearerToken = new BearerToken('TEST');
         $bearerToken->addTokenFinder(new QueryStringTokenFinder());
         $request = $this->buildRequest([]);
-        $request->getQueryParams()->willReturn(['access_token' => 'ACCESS_TOKEN_ID']);
+        $request->getQueryParams()
+            ->willReturn([
+                'access_token' => 'ACCESS_TOKEN_ID',
+            ])
+        ;
 
         $additionalCredentialValues = [];
-        static::assertEquals('ACCESS_TOKEN_ID', $bearerToken->find($request->reveal(), $additionalCredentialValues));
+        static::assertSame('ACCESS_TOKEN_ID', $bearerToken->find($request->reveal(), $additionalCredentialValues));
     }
 
     /**
      * @test
      */
-    public function anAccessTokenInTheRequestBodyIsFound()
+    public function anAccessTokenInTheRequestBodyIsFound(): void
     {
         $bearerToken = new BearerToken('TEST');
         $bearerToken->addTokenFinder(new RequestBodyTokenFinder());
         $request = $this->buildRequest([]);
-        $request->getParsedBody()->willReturn(['access_token' => 'ACCESS_TOKEN_ID']);
+        $request->getParsedBody()
+            ->willReturn([
+                'access_token' => 'ACCESS_TOKEN_ID',
+            ])
+        ;
 
         $additionalCredentialValues = [];
-        static::assertEquals('ACCESS_TOKEN_ID', $bearerToken->find($request->reveal(), $additionalCredentialValues));
+        static::assertSame('ACCESS_TOKEN_ID', $bearerToken->find($request->reveal(), $additionalCredentialValues));
     }
 
     /**
      * @test
      */
-    public function iFoundAValidAccessToken()
+    public function iFoundAValidAccessToken(): void
     {
         $bearerToken = new BearerToken('TEST');
         $bearerToken->addTokenFinder(new AuthorizationHeaderTokenFinder());
@@ -117,8 +119,10 @@ final class BearerTokenTest extends TestCase
             new AccessTokenId('ACCESS_TOKEN_ID'),
             new ClientId('CLIENT_ID'),
             new ClientId('CLIENT_ID'),
-            new \DateTimeImmutable('now'),
-            new DataBag(['token_type' => 'Bearer']),
+            new DateTimeImmutable('now'),
+            new DataBag([
+                'token_type' => 'Bearer',
+            ]),
             new DataBag([]),
             new ResourceServerId('RESOURCE_SERVER_ID')
         );
@@ -130,7 +134,7 @@ final class BearerTokenTest extends TestCase
     /**
      * @test
      */
-    public function iFoundAnInvalidAccessToken()
+    public function iFoundAnInvalidAccessToken(): void
     {
         $bearerToken = new BearerToken('TEST');
         $bearerToken->addTokenFinder(new AuthorizationHeaderTokenFinder());
@@ -139,25 +143,39 @@ final class BearerTokenTest extends TestCase
             new AccessTokenId('ACCESS_TOKEN_ID'),
             new ClientId('CLIENT_ID'),
             new ClientId('CLIENT_ID'),
-            new \DateTimeImmutable('now'),
-            new DataBag(['token_type' => 'MAC']),
+            new DateTimeImmutable('now'),
+            new DataBag([
+                'token_type' => 'MAC',
+            ]),
             new DataBag([]),
             new ResourceServerId('RESOURCE_SERVER_ID')
         );
         $request = $this->prophesize(ServerRequestInterface::class);
 
-        static::assertFalse($bearerToken->isRequestValid($accessToken, $request->reveal(), $additionalCredentialValues));
+        static::assertFalse(
+            $bearerToken->isRequestValid($accessToken, $request->reveal(), $additionalCredentialValues)
+        );
     }
 
     private function buildRequest(array $data): ObjectProphecy
     {
         $body = $this->prophesize(StreamInterface::class);
-        $body->getContents()->willReturn(http_build_query($data));
+        $body->getContents()
+            ->willReturn(http_build_query($data))
+        ;
         $request = $this->prophesize(ServerRequestInterface::class);
-        $request->hasHeader('Content-Type')->willReturn(true);
-        $request->getHeader('Content-Type')->willReturn(['application/x-www-form-urlencoded']);
-        $request->getBody()->willReturn($body->reveal());
-        $request->getParsedBody()->willReturn([]);
+        $request->hasHeader('Content-Type')
+            ->willReturn(true)
+        ;
+        $request->getHeader('Content-Type')
+            ->willReturn(['application/x-www-form-urlencoded'])
+        ;
+        $request->getBody()
+            ->willReturn($body->reveal())
+        ;
+        $request->getParsedBody()
+            ->willReturn([])
+        ;
 
         return $request;
     }

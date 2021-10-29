@@ -1,4 +1,5 @@
 security:
+    enable_authenticator_manager: false
     encoders:
         Symfony\Component\Security\Core\User\UserInterface: 'plaintext'
 
@@ -7,7 +8,7 @@ security:
 
     providers:
         test_bundle:
-            id: 'OAuth2Framework\SecurityBundle\Tests\TestBundle\Service\UserProvider'
+            id: 'OAuth2Framework\Tests\TestBundle\Service\UserProvider'
 
     firewalls:
         api:

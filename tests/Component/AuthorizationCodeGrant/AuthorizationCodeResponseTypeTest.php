@@ -2,17 +2,9 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\Tests\Component\AuthorizationCodeGrant;
 
+use DateTimeImmutable;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeId;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeRepository;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeResponseType;
@@ -31,51 +23,56 @@ use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
 
 /**
- * @group ResponseType
- * @group AuthorizationCodeResponseType
- *
  * @internal
  */
 final class AuthorizationCodeResponseTypeTest extends TestCase
 {
     use ProphecyTrait;
 
-    /**
-     * @var null|AuthorizationCodeResponseType
-     */
-    private $grantType;
+    private ?AuthorizationCodeResponseType $grantType = null;
 
-    /**
-     * @var null|PKCEMethodManager
-     */
-    private $pkceMethodManager;
+    private ?PKCEMethodManager $pkceMethodManager = null;
 
     /**
      * @test
      */
-    public function genericInformation()
+    public function genericInformation(): void
     {
-        static::assertEquals(['authorization_code'], $this->getResponseType()->associatedGrantTypes());
-        static::assertEquals('code', $this->getResponseType()->name());
-        static::assertEquals('query', $this->getResponseType()->getResponseMode());
+        static::assertSame(['authorization_code'], $this->getResponseType()->associatedGrantTypes());
+        static::assertSame('code', $this->getResponseType()->name());
+        static::assertSame('query', $this->getResponseType()->getResponseMode());
     }
 
     /**
      * @test
      */
-    public function theRequestHaveMissingParameters()
+    public function theRequestHaveMissingParameters(): void
     {
         $client = $this->prophesize(Client::class);
-        $client->isPublic()->willReturn(false);
-        $client->getPublicId()->willReturn(new ClientId('CLIENT_ID'));
-        $client->getClientId()->willReturn(new ClientId('CLIENT_ID'));
+        $client->isPublic()
+            ->willReturn(false)
+        ;
+        $client->getPublicId()
+            ->willReturn(new ClientId('CLIENT_ID'))
+        ;
+        $client->getClientId()
+            ->willReturn(new ClientId('CLIENT_ID'))
+        ;
 
         $userAccount = $this->prophesize(UserAccount::class);
-        $userAccount->getPublicId()->willReturn(new UserAccountId('USER_ACCOUNT_ID'));
-        $userAccount->getUserAccountId()->willReturn(new UserAccountId('USER_ACCOUNT_ID'));
+        $userAccount->getPublicId()
+            ->willReturn(new UserAccountId('USER_ACCOUNT_ID'))
+        ;
+        $userAccount->getUserAccountId()
+            ->willReturn(new UserAccountId('USER_ACCOUNT_ID'))
+        ;
 
         $tokenType = $this->prophesize(TokenType::class);
-        $tokenType->getAdditionalInformation()->willReturn(['token_type' => 'FOO']);
+        $tokenType->getAdditionalInformation()
+            ->willReturn([
+                'token_type' => 'FOO',
+            ])
+        ;
 
         $authorization = new AuthorizationRequest(
             $client->reveal(),
@@ -86,28 +83,43 @@ final class AuthorizationCodeResponseTypeTest extends TestCase
             ]
         );
         $authorization->setUserAccount($userAccount->reveal(), true);
-        $this->getResponseType()->preProcess($authorization);
-        $this->getResponseType()->process($authorization, $tokenType->reveal());
+        $this->getResponseType()
+            ->preProcess($authorization)
+        ;
+        $this->getResponseType()
+            ->process($authorization, $tokenType->reveal())
+        ;
         static::assertTrue($authorization->hasResponseParameter('code'));
     }
 
     private function getResponseType(): AuthorizationCodeResponseType
     {
-        if (null === $this->grantType) {
+        if ($this->grantType === null) {
             $authorizationCodeRepository = $this->prophesize(AuthorizationCodeRepository::class);
-            $authorizationCodeRepository->create(Argument::type(ClientId::class), Argument::type(UserAccountId::class), Argument::type('array'), Argument::type('string'), Argument::type(\DateTimeImmutable::class), Argument::type(DataBag::class), Argument::type(DataBag::class), Argument::any())->will(function (array $args) {
-                return new AuthorizationCode(
-                    new AuthorizationCodeId(bin2hex(random_bytes(32))),
-                    $args[0],
-                    $args[1],
-                    $args[2],
-                    $args[3],
-                    $args[4],
-                    $args[5],
-                    $args[6],
-                    $args[7]
-                );
-            });
+            $authorizationCodeRepository->create(
+                Argument::type(ClientId::class),
+                Argument::type(UserAccountId::class),
+                Argument::type('array'),
+                Argument::type('string'),
+                Argument::type(DateTimeImmutable::class),
+                Argument::type(DataBag::class),
+                Argument::type(DataBag::class),
+                Argument::any()
+            )->will(
+                function (array $args) {
+                    return new AuthorizationCode(
+                        new AuthorizationCodeId(bin2hex(random_bytes(32))),
+                        $args[0],
+                        $args[1],
+                        $args[2],
+                        $args[3],
+                        $args[4],
+                        $args[5],
+                        $args[6],
+                        $args[7]
+                    );
+                }
+            );
             $authorizationCodeRepository->save(Argument::type(AuthorizationCode::class))->will(function (array $args) {
             });
 
@@ -124,7 +136,7 @@ final class AuthorizationCodeResponseTypeTest extends TestCase
 
     private function getPkceMethodManager(): PKCEMethodManager
     {
-        if (null === $this->pkceMethodManager) {
+        if ($this->pkceMethodManager === null) {
             $this->pkceMethodManager = new PKCEMethodManager();
             $this->pkceMethodManager->add(new Plain());
             $this->pkceMethodManager->add(new S256());

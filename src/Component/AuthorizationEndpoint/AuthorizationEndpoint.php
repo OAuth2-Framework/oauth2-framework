@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\Component\AuthorizationEndpoint;
 
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
@@ -29,37 +20,22 @@ use Throwable;
 
 class AuthorizationEndpoint
 {
-    private ?ConsentRepository $consentRepository;
-
     /**
      * @var AuthorizationEndpointHook[]
      */
     private array $hooks = [];
 
-    private ResponseFactoryInterface $responseFactory;
-
-    private ExtensionManager $extensionManager;
-
-    private AuthorizationRequestStorage $authorizationRequestStorage;
-
-    private LoginHandler $loginHandler;
-
-    private ConsentHandler $consentHandler;
-    private TokenTypeGuesser $tokenTypeGuesser;
-    private ResponseTypeGuesser $responseTypeGuesser;
-    private ResponseModeGuesser $responseModeGuesser;
-
-    public function __construct(ResponseFactoryInterface $responseFactory, TokenTypeGuesser $tokenTypeGuesser, ResponseTypeGuesser $responseTypeGuesser, ResponseModeGuesser $responseModeGuesser, ?ConsentRepository $consentRepository, ExtensionManager $extensionManager, AuthorizationRequestStorage $authorizationRequestStorage, LoginHandler $loginHandler, ConsentHandler $consentHandler)
-    {
-        $this->consentRepository = $consentRepository;
-        $this->responseFactory = $responseFactory;
-        $this->extensionManager = $extensionManager;
-        $this->authorizationRequestStorage = $authorizationRequestStorage;
-        $this->loginHandler = $loginHandler;
-        $this->consentHandler = $consentHandler;
-        $this->tokenTypeGuesser = $tokenTypeGuesser;
-        $this->responseTypeGuesser = $responseTypeGuesser;
-        $this->responseModeGuesser = $responseModeGuesser;
+    public function __construct(
+        private ResponseFactoryInterface $responseFactory,
+        private TokenTypeGuesser $tokenTypeGuesser,
+        private ResponseTypeGuesser $responseTypeGuesser,
+        private ResponseModeGuesser $responseModeGuesser,
+        private ?ConsentRepository $consentRepository,
+        private ExtensionManager $extensionManager,
+        private AuthorizationRequestStorage $authorizationRequestStorage,
+        private LoginHandler $loginHandler,
+        private ConsentHandler $consentHandler
+    ) {
     }
 
     public function addHook(AuthorizationEndpointHook $hook): void
@@ -70,7 +46,7 @@ class AuthorizationEndpoint
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $authorizationRequestId = $this->authorizationRequestStorage->getId($request);
-        if (!$this->authorizationRequestStorage->has($authorizationRequestId)) {
+        if (! $this->authorizationRequestStorage->has($authorizationRequestId)) {
             throw OAuth2Error::invalidRequest('Unable to find the authorization request');
         }
         $authorizationRequest = $this->authorizationRequestStorage->get($authorizationRequestId);
@@ -79,7 +55,7 @@ class AuthorizationEndpoint
             foreach ($this->hooks as $hook) {
                 $response = $hook->handle($request, $authorizationRequestId, $authorizationRequest);
                 $this->authorizationRequestStorage->set($authorizationRequestId, $authorizationRequest);
-                if (null !== $response) {
+                if ($response !== null) {
                     return $response;
                 }
             }
@@ -91,16 +67,31 @@ class AuthorizationEndpoint
         } catch (OAuth2AuthorizationException $e) {
             throw $e;
         } catch (OAuth2Error $e) {
-            throw new OAuth2AuthorizationException($e->getMessage(), $e->getErrorDescription(), $authorizationRequest, $e);
+            throw new OAuth2AuthorizationException(
+                $e->getMessage(),
+                $e->getErrorDescription(),
+                $authorizationRequest,
+                $e
+            );
         } catch (Throwable $e) {
-            throw new OAuth2AuthorizationException(OAuth2Error::ERROR_INVALID_REQUEST, $e->getMessage(), $authorizationRequest, $e);
+            throw new OAuth2AuthorizationException(
+                OAuth2Error::ERROR_INVALID_REQUEST,
+                $e->getMessage(),
+                $authorizationRequest,
+                $e
+            );
         }
     }
 
-    private function processWithAuthenticatedUser(ServerRequestInterface $request, string $authorizationRequestId, AuthorizationRequest $authorizationRequest): ResponseInterface
-    {
-        if (!$authorizationRequest->hasConsentBeenGiven()) {
-            $isConsentNeeded = null === $this->consentRepository ? true : !$this->consentRepository->hasConsentBeenGiven($authorizationRequest);
+    private function processWithAuthenticatedUser(
+        ServerRequestInterface $request,
+        string $authorizationRequestId,
+        AuthorizationRequest $authorizationRequest
+    ): ResponseInterface {
+        if (! $authorizationRequest->hasConsentBeenGiven()) {
+            $isConsentNeeded = $this->consentRepository === null || ! $this->consentRepository->hasConsentBeenGiven(
+                $authorizationRequest
+            );
             if ($isConsentNeeded) {
                 return $this->consentHandler->handle($request, $authorizationRequestId);
             }
@@ -111,11 +102,17 @@ class AuthorizationEndpoint
         return $this->processWithAuthorization($request, $authorizationRequest);
     }
 
-    private function processWithAuthorization(ServerRequestInterface $request, AuthorizationRequest $authorizationRequest): ResponseInterface
-    {
+    private function processWithAuthorization(
+        ServerRequestInterface $request,
+        AuthorizationRequest $authorizationRequest
+    ): ResponseInterface {
         $this->extensionManager->process($request, $authorizationRequest);
-        if (!$authorizationRequest->isAuthorized()) {
-            throw new OAuth2AuthorizationException(OAuth2Error::ERROR_ACCESS_DENIED, 'The resource owner denied access to your client.', $authorizationRequest);
+        if (! $authorizationRequest->isAuthorized()) {
+            throw new OAuth2AuthorizationException(
+                OAuth2Error::ERROR_ACCESS_DENIED,
+                'The resource owner denied access to your client.',
+                $authorizationRequest
+            );
         }
         $tokenType = $this->tokenTypeGuesser->find($authorizationRequest);
         $responseType = $this->responseTypeGuesser->get($authorizationRequest);

@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\Tests\Component\ClientRegistrationEndpoint;
 
 use Nyholm\Psr7\Factory\Psr17Factory;
@@ -29,63 +20,89 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 
 /**
- * @group ClientRegistrationEndpoint
- *
  * @internal
  */
 final class ClientRegistrationEndpointTest extends TestCase
 {
     use ProphecyTrait;
 
-    /**
-     * @var null|ClientRegistrationEndpoint
-     */
-    private $clientRegistrationEndpoint;
+    private ?ClientRegistrationEndpoint $clientRegistrationEndpoint = null;
 
-    /**
-     * @var null|ResponseFactoryInterface
-     */
-    private $responseFactory;
+    private ?Psr17Factory $responseFactory = null;
 
     /**
      * @test
      */
-    public function theClientRegistrationEndpointCanReceiveRegistrationRequests()
+    public function theClientRegistrationEndpointCanReceiveRegistrationRequests(): void
     {
         $request = $this->buildRequest([]);
-        $request->getMethod()->willReturn('POST');
-        $request->getAttribute('initial_access_token')->willReturn(null);
+        $request->getMethod()
+            ->willReturn('POST')
+        ;
+        $request->getAttribute('initial_access_token')
+            ->willReturn(null)
+        ;
 
-        $response = $this->getClientRegistrationEndpoint()->process($request->reveal());
+        $response = $this->getClientRegistrationEndpoint()
+            ->process($request->reveal())
+        ;
 
-        static::assertEquals(201, $response->getStatusCode());
-        $response->getBody()->rewind();
-        static::assertEquals('{"client_id":"CLIENT_ID"}', $response->getBody()->getContents());
+        static::assertSame(201, $response->getStatusCode());
+        $response->getBody()
+            ->rewind()
+        ;
+        static::assertSame('{"client_id":"CLIENT_ID"}', $response->getBody()->getContents());
     }
 
     private function getClientRegistrationEndpoint(): ClientRegistrationEndpoint
     {
-        if (null === $this->clientRegistrationEndpoint) {
+        if ($this->clientRegistrationEndpoint === null) {
             $client = $this->prophesize(Client::class);
-            $client->isPublic()->willReturn(false);
-            $client->getPublicId()->willReturn(new ClientId('CLIENT_ID'));
-            $client->getClientId()->willReturn(new ClientId('CLIENT_ID'));
+            $client->isPublic()
+                ->willReturn(false)
+            ;
+            $client->getPublicId()
+                ->willReturn(new ClientId('CLIENT_ID'))
+            ;
+            $client->getClientId()
+                ->willReturn(new ClientId('CLIENT_ID'))
+            ;
 
             $clientRepository = $this->prophesize(ClientRepository::class);
             $clientRepository->find(Argument::type(ClientId::class))->willReturn($client->reveal());
             $clientRepository->save(Argument::type(Client::class))->will(function (array $args) {});
-            $clientRepository->createClientId()->willReturn(new ClientId('CLIENT_ID'));
+            $clientRepository->createClientId()
+                ->willReturn(new ClientId('CLIENT_ID'))
+            ;
 
             $client = $this->prophesize(Client::class);
-            $clientRepository->create(Argument::type(ClientId::class), Argument::type(DataBag::class), Argument::any())->will(function (array $args) use ($client) {
-                $client->isPublic()->willReturn(false);
-                $client->getPublicId()->willReturn($args[0]);
-                $client->getClientId()->willReturn($args[0]);
-                $client->getOwnerId()->willReturn($args[2]);
-                $client->all()->willReturn(($args[1])->all() + ['client_id' => (string) $args[0]]);
+            $clientRepository->create(
+                Argument::type(ClientId::class),
+                Argument::type(DataBag::class),
+                Argument::any()
+            )->will(
+                function (array $args) use ($client) {
+                    $client->isPublic()
+                        ->willReturn(false)
+                ;
+                    $client->getPublicId()
+                        ->willReturn($args[0])
+                ;
+                    $client->getClientId()
+                        ->willReturn($args[0])
+                ;
+                    $client->getOwnerId()
+                        ->willReturn($args[2])
+                ;
+                    $client->all()
+                        ->willReturn(($args[1])->all() + [
+                            'client_id' => (string) $args[0],
+                        ])
+                ;
 
-                return $client->reveal();
-            });
+                    return $client->reveal();
+                }
+            );
 
             $this->clientRegistrationEndpoint = new ClientRegistrationEndpoint(
                 $clientRepository->reveal(),
@@ -99,7 +116,7 @@ final class ClientRegistrationEndpointTest extends TestCase
 
     private function getResponseFactory(): ResponseFactoryInterface
     {
-        if (null === $this->responseFactory) {
+        if ($this->responseFactory === null) {
             $this->responseFactory = new Psr17Factory();
         }
 
@@ -109,12 +126,22 @@ final class ClientRegistrationEndpointTest extends TestCase
     private function buildRequest(array $data): ObjectProphecy
     {
         $body = $this->prophesize(StreamInterface::class);
-        $body->getContents()->willReturn(\Safe\json_encode($data));
+        $body->getContents()
+            ->willReturn(json_encode($data))
+        ;
         $request = $this->prophesize(ServerRequestInterface::class);
-        $request->hasHeader('Content-Type')->willReturn(true);
-        $request->getHeader('Content-Type')->willReturn(['application/json']);
-        $request->getBody()->willReturn($body->reveal());
-        $request->getParsedBody()->willReturn([]);
+        $request->hasHeader('Content-Type')
+            ->willReturn(true)
+        ;
+        $request->getHeader('Content-Type')
+            ->willReturn(['application/json'])
+        ;
+        $request->getBody()
+            ->willReturn($body->reveal())
+        ;
+        $request->getParsedBody()
+            ->willReturn([])
+        ;
 
         return $request;
     }

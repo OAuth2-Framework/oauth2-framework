@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\Component\ClientRegistrationEndpoint;
 
 use DateTimeImmutable;
@@ -20,14 +11,10 @@ abstract class AbstractInitialAccessToken implements InitialAccessToken
 {
     private bool $revoked;
 
-    private ?DateTimeImmutable $expiresAt;
-
-    private ?UserAccountId $userAccountId;
-
-    public function __construct(?UserAccountId $userAccountId, ?DateTimeImmutable $expiresAt)
-    {
-        $this->expiresAt = $expiresAt;
-        $this->userAccountId = $userAccountId;
+    public function __construct(
+        private ?UserAccountId $userAccountId,
+        private ?DateTimeImmutable $expiresAt
+    ) {
         $this->revoked = false;
     }
 
@@ -43,7 +30,7 @@ abstract class AbstractInitialAccessToken implements InitialAccessToken
 
     public function hasExpired(): bool
     {
-        return null !== $this->expiresAt && $this->expiresAt->getTimestamp() < time();
+        return $this->expiresAt !== null && $this->expiresAt->getTimestamp() < time();
     }
 
     public function isRevoked(): bool
@@ -51,8 +38,11 @@ abstract class AbstractInitialAccessToken implements InitialAccessToken
         return $this->revoked;
     }
 
-    public function markAsRevoked(): void
+    public function markAsRevoked(): self
     {
-        $this->revoked = true;
+        $clone = clone $this;
+        $clone->revoked = true;
+
+        return $clone;
     }
 }

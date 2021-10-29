@@ -2,18 +2,10 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\ServerBundle\Component\TokenType;
 
-use function Safe\sprintf;
+use function array_key_exists;
+use InvalidArgumentException;
 use OAuth2Framework\Component\Core\TokenType\TokenTypeManager;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -23,7 +15,7 @@ class TokenTypeCompilerPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container): void
     {
-        if (!$container->hasDefinition(TokenTypeManager::class)) {
+        if (! $container->hasDefinition(TokenTypeManager::class)) {
             return;
         }
 
@@ -34,20 +26,27 @@ class TokenTypeCompilerPass implements CompilerPassInterface
         $token_type_names = [];
         foreach ($taggedServices as $id => $tags) {
             foreach ($tags as $attributes) {
-                if (!\array_key_exists('scheme', $attributes)) {
-                    throw new \InvalidArgumentException(sprintf('The token type "%s" does not have any "scheme" attribute.', $id));
+                if (! array_key_exists('scheme', $attributes)) {
+                    throw new InvalidArgumentException(sprintf(
+                        'The token type "%s" does not have any "scheme" attribute.',
+                        $id
+                    ));
                 }
                 $is_default = $default === $attributes['scheme'];
                 $token_type_names[] = $attributes['scheme'];
-                if (true === $is_default) {
+                if ($is_default === true) {
                     $default_found = true;
                 }
                 $definition->addMethodCall('add', [new Reference($id), $is_default]);
             }
         }
 
-        if (!$default_found) {
-            throw new \InvalidArgumentException(sprintf('Unable to find the token type "%s". Available token types are: %s.', $default, implode(', ', $token_type_names)));
+        if (! $default_found) {
+            throw new InvalidArgumentException(sprintf(
+                'Unable to find the token type "%s". Available token types are: %s.',
+                $default,
+                implode(', ', $token_type_names)
+            ));
         }
     }
 }

@@ -2,18 +2,12 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\ServerBundle\DependencyInjection;
 
+use function array_key_exists;
+use function count;
 use Doctrine\DBAL\Types\Type;
+use function is_array;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeId;
 use OAuth2Framework\Component\ClientRegistrationEndpoint\InitialAccessTokenId;
 use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenId;
@@ -27,22 +21,15 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 final class OAuth2FrameworkExtension extends Extension implements PrependExtensionInterface
 {
     /**
-     * @var Component[]
-     */
-    private array $components;
-
-    private string $alias;
-
-    /**
      * @param Component[] $components
      */
-    public function __construct(string $alias, array $components)
-    {
-        $this->alias = $alias;
-        $this->components = $components;
+    public function __construct(
+        private string $alias,
+        private array $components
+    ) {
     }
 
-    public function getAlias()
+    public function getAlias(): string
     {
         return $this->alias;
     }
@@ -69,7 +56,7 @@ final class OAuth2FrameworkExtension extends Extension implements PrependExtensi
 
         foreach ($this->components as $component) {
             $result = $component->prepend($container, $config);
-            if (0 !== \count($result)) {
+            if (count($result) !== 0) {
                 $container->prependExtensionConfig($this->getAlias(), $result);
             }
         }
@@ -82,18 +69,18 @@ final class OAuth2FrameworkExtension extends Extension implements PrependExtensi
     private function addDoctrineTypes(ContainerBuilder $container): void
     {
         $bundles = $container->getParameter('kernel.bundles');
-        if (!\is_array($bundles) || !\array_key_exists('DoctrineBundle', $bundles) || !class_exists(Type::class)) {
+        if (! is_array($bundles) || ! array_key_exists('DoctrineBundle', $bundles) || ! class_exists(Type::class)) {
             return;
         }
         $configs = $container->getExtensionConfig('doctrine');
-        if (0 === \count($configs)) {
+        if (count($configs) === 0) {
             return;
         }
         $config = current($configs);
-        if (!isset($config['dbal'])) {
+        if (! isset($config['dbal'])) {
             $config['dbal'] = [];
         }
-        if (!isset($config['dbal']['types'])) {
+        if (! isset($config['dbal']['types'])) {
             $config['dbal']['types'] = [];
         }
 

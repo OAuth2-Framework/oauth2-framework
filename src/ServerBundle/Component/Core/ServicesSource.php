@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\ServerBundle\Component\Core;
 
 use OAuth2Framework\Component\Core\Message\MessageExtension;
@@ -32,13 +23,13 @@ class ServicesSource implements Component
     public function load(array $configs, ContainerBuilder $container): void
     {
         $container->setParameter('oauth2_server.server_uri', $configs['server_uri']);
-        if (null !== $configs['http_client']) {
+        if ($configs['http_client'] !== null) {
             $container->setAlias('oauth2_server.http_client', $configs['http_client']);
         }
 
         $container->registerForAutoconfiguration(MessageExtension::class)->addTag('oauth2_message_extension');
 
-        $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../Resources/config/core'));
+        $loader = new PhpFileLoader($container, new FileLocator(__DIR__ . '/../../Resources/config/core'));
         $loader->load('services.php');
         $loader->load('message.php');
     }

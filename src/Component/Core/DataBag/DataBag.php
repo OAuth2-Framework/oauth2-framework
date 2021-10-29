@@ -2,22 +2,19 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\Component\Core\DataBag;
 
+use function array_key_exists;
 use ArrayIterator;
 use Assert\Assertion;
-use function Safe\json_decode;
+use function count;
+use Countable;
+use IteratorAggregate;
+use const JSON_ERROR_NONE;
+use const JSON_THROW_ON_ERROR;
+use JsonSerializable;
 
-class DataBag implements \IteratorAggregate, \Countable, \JsonSerializable
+class DataBag implements IteratorAggregate, Countable, JsonSerializable
 {
     private array $parameters = [];
 
@@ -28,13 +25,13 @@ class DataBag implements \IteratorAggregate, \Countable, \JsonSerializable
 
     public function has(string $key): bool
     {
-        return \array_key_exists($key, $this->parameters);
+        return array_key_exists($key, $this->parameters);
     }
 
     /**
-     * @param null|mixed $default
+     * @param mixed|null $default
      *
-     * @return null|mixed
+     * @return mixed|null
      */
     public function get(string $key, $default = null)
     {
@@ -46,7 +43,7 @@ class DataBag implements \IteratorAggregate, \Countable, \JsonSerializable
     }
 
     /**
-     * @param null|mixed $value
+     * @param mixed|null $value
      */
     public function set(string $key, $value): void
     {
@@ -60,7 +57,7 @@ class DataBag implements \IteratorAggregate, \Countable, \JsonSerializable
 
     public function count(): int
     {
-        return \count($this->parameters);
+        return count($this->parameters);
     }
 
     public function getIterator(): ArrayIterator
@@ -70,7 +67,7 @@ class DataBag implements \IteratorAggregate, \Countable, \JsonSerializable
 
     public static function createFromString(string $data): self
     {
-        $json = json_decode($data, true);
+        $json = json_decode($data, true, 512, JSON_THROW_ON_ERROR);
         Assertion::eq(JSON_ERROR_NONE, json_last_error(), 'Invalid data');
         Assertion::isArray($json, 'Invalid data');
 

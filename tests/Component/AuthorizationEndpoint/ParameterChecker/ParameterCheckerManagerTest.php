@@ -2,16 +2,7 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
-namespace OAuth2Framework\Tests\Component\AuthorizationEndpoint\Tests\ParameterChecker;
+namespace OAuth2Framework\Tests\Component\AuthorizationEndpoint\ParameterChecker;
 
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
 use OAuth2Framework\Component\AuthorizationEndpoint\Exception\OAuth2AuthorizationException;
@@ -32,193 +23,281 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
 
 /**
- * @group ParameterCheckerManager
- *
  * @internal
  */
 final class ParameterCheckerManagerTest extends TestCase
 {
     use ProphecyTrait;
 
-    /**
-     * @var null|ParameterCheckerManager
-     */
-    private $parameterCheckerManager;
+    private ?ParameterCheckerManager $parameterCheckerManager = null;
 
     /**
      * @test
      */
-    public function anAuthorizationRequestIsReceivedButTheDisplayParameterIsNotValid()
+    public function anAuthorizationRequestIsReceivedButTheDisplayParameterIsNotValid(): void
     {
         $client = $this->prophesize(Client::class);
-        $client->isPublic()->willReturn(false);
-        $client->getPublicId()->willReturn(new ClientId('CLIENT_ID'));
-        $client->getClientId()->willReturn(new ClientId('CLIENT_ID'));
+        $client->isPublic()
+            ->willReturn(false)
+        ;
+        $client->getPublicId()
+            ->willReturn(new ClientId('CLIENT_ID'))
+        ;
+        $client->getClientId()
+            ->willReturn(new ClientId('CLIENT_ID'))
+        ;
         $authorization = new AuthorizationRequest($client->reveal(), [
             'display' => 'foo',
         ]);
 
         try {
-            $this->getParameterCheckerManager()->check($authorization);
+            $this->getParameterCheckerManager()
+                ->check($authorization)
+            ;
             static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2AuthorizationException $e) {
-            static::assertEquals('invalid_request', $e->getMessage());
-            static::assertEquals('Invalid parameter "display". Allowed values are page, popup, touch, wap', $e->getErrorDescription());
+            static::assertSame('invalid_request', $e->getMessage());
+            static::assertSame(
+                'Invalid parameter "display". Allowed values are page, popup, touch, wap',
+                $e->getErrorDescription()
+            );
         }
     }
 
     /**
      * @test
      */
-    public function anAuthorizationRequestIsReceivedButThePromptParameterIsNotValid()
+    public function anAuthorizationRequestIsReceivedButThePromptParameterIsNotValid(): void
     {
         $client = $this->prophesize(Client::class);
-        $client->isPublic()->willReturn(false);
-        $client->getPublicId()->willReturn(new ClientId('CLIENT_ID'));
-        $client->getClientId()->willReturn(new ClientId('CLIENT_ID'));
+        $client->isPublic()
+            ->willReturn(false)
+        ;
+        $client->getPublicId()
+            ->willReturn(new ClientId('CLIENT_ID'))
+        ;
+        $client->getClientId()
+            ->willReturn(new ClientId('CLIENT_ID'))
+        ;
         $authorization = new AuthorizationRequest($client->reveal(), [
             'prompt' => 'foo',
         ]);
 
         try {
-            $this->getParameterCheckerManager()->check($authorization);
+            $this->getParameterCheckerManager()
+                ->check($authorization)
+            ;
             static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2AuthorizationException $e) {
-            static::assertEquals('invalid_request', $e->getMessage());
-            static::assertEquals('Invalid parameter "prompt". Allowed values are none, login, consent, select_account', $e->getErrorDescription());
+            static::assertSame('invalid_request', $e->getMessage());
+            static::assertSame(
+                'Invalid parameter "prompt". Allowed values are none, login, consent, select_account',
+                $e->getErrorDescription()
+            );
         }
     }
 
     /**
      * @test
      */
-    public function anAuthorizationRequestIsReceivedButThePromptParameterNoneMustBeUsedAlone()
+    public function anAuthorizationRequestIsReceivedButThePromptParameterNoneMustBeUsedAlone(): void
     {
         $client = $this->prophesize(Client::class);
-        $client->isPublic()->willReturn(false);
-        $client->getPublicId()->willReturn(new ClientId('CLIENT_ID'));
-        $client->getClientId()->willReturn(new ClientId('CLIENT_ID'));
+        $client->isPublic()
+            ->willReturn(false)
+        ;
+        $client->getPublicId()
+            ->willReturn(new ClientId('CLIENT_ID'))
+        ;
+        $client->getClientId()
+            ->willReturn(new ClientId('CLIENT_ID'))
+        ;
         $authorization = new AuthorizationRequest($client->reveal(), [
             'prompt' => 'none login',
         ]);
 
         try {
-            $this->getParameterCheckerManager()->check($authorization);
+            $this->getParameterCheckerManager()
+                ->check($authorization)
+            ;
             static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2AuthorizationException $e) {
-            static::assertEquals('invalid_request', $e->getMessage());
-            static::assertEquals('Invalid parameter "prompt". Prompt value "none" must be used alone.', $e->getErrorDescription());
+            static::assertSame('invalid_request', $e->getMessage());
+            static::assertSame(
+                'Invalid parameter "prompt". Prompt value "none" must be used alone.',
+                $e->getErrorDescription()
+            );
         }
     }
 
     /**
      * @test
      */
-    public function anAuthorizationRequestIsReceivedButNoRedirectUriIsSet()
+    public function anAuthorizationRequestIsReceivedButNoRedirectUriIsSet(): void
     {
         $client = $this->prophesize(Client::class);
-        $client->isPublic()->willReturn(false);
-        $client->getPublicId()->willReturn(new ClientId('CLIENT_ID'));
-        $client->getClientId()->willReturn(new ClientId('CLIENT_ID'));
+        $client->isPublic()
+            ->willReturn(false)
+        ;
+        $client->getPublicId()
+            ->willReturn(new ClientId('CLIENT_ID'))
+        ;
+        $client->getClientId()
+            ->willReturn(new ClientId('CLIENT_ID'))
+        ;
         $authorization = new AuthorizationRequest($client->reveal(), []);
 
         try {
-            $this->getParameterCheckerManager()->check($authorization);
+            $this->getParameterCheckerManager()
+                ->check($authorization)
+            ;
             static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2AuthorizationException $e) {
-            static::assertEquals('invalid_request', $e->getMessage());
-            static::assertEquals('The parameter "redirect_uri" is missing.', $e->getErrorDescription());
+            static::assertSame('invalid_request', $e->getMessage());
+            static::assertSame('The parameter "redirect_uri" is missing.', $e->getErrorDescription());
         }
     }
 
     /**
      * @test
      */
-    public function anAuthorizationRequestIsReceivedButNoResponseTypeIsSet()
+    public function anAuthorizationRequestIsReceivedButNoResponseTypeIsSet(): void
     {
         $client = $this->prophesize(Client::class);
-        $client->isPublic()->willReturn(false);
-        $client->getPublicId()->willReturn(new ClientId('CLIENT_ID'));
-        $client->getClientId()->willReturn(new ClientId('CLIENT_ID'));
-        $client->has('redirect_uris')->willReturn(true);
-        $client->get('redirect_uris')->willReturn(['https://www.foo.bar/callback']);
+        $client->isPublic()
+            ->willReturn(false)
+        ;
+        $client->getPublicId()
+            ->willReturn(new ClientId('CLIENT_ID'))
+        ;
+        $client->getClientId()
+            ->willReturn(new ClientId('CLIENT_ID'))
+        ;
+        $client->has('redirect_uris')
+            ->willReturn(true)
+        ;
+        $client->get('redirect_uris')
+            ->willReturn(['https://www.foo.bar/callback'])
+        ;
         $authorization = new AuthorizationRequest($client->reveal(), [
             'redirect_uri' => 'https://www.foo.bar/callback',
         ]);
 
         try {
-            $this->getParameterCheckerManager()->check($authorization);
+            $this->getParameterCheckerManager()
+                ->check($authorization)
+            ;
             static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2AuthorizationException $e) {
-            static::assertEquals('invalid_request', $e->getMessage());
-            static::assertEquals('The parameter "response_type" is mandatory.', $e->getErrorDescription());
+            static::assertSame('invalid_request', $e->getMessage());
+            static::assertSame('The parameter "response_type" is mandatory.', $e->getErrorDescription());
         }
     }
 
     /**
      * @test
      */
-    public function anAuthorizationRequestIsReceivedButTheResponseTypeIsNotSupportedByThisServer()
+    public function anAuthorizationRequestIsReceivedButTheResponseTypeIsNotSupportedByThisServer(): void
     {
         $client = $this->prophesize(Client::class);
-        $client->isPublic()->willReturn(false);
-        $client->getPublicId()->willReturn(new ClientId('CLIENT_ID'));
-        $client->getClientId()->willReturn(new ClientId('CLIENT_ID'));
-        $client->has('redirect_uris')->willReturn(true);
-        $client->get('redirect_uris')->willReturn(['https://www.foo.bar/callback']);
-        $client->isResponseTypeAllowed('foo')->willReturn(true);
+        $client->isPublic()
+            ->willReturn(false)
+        ;
+        $client->getPublicId()
+            ->willReturn(new ClientId('CLIENT_ID'))
+        ;
+        $client->getClientId()
+            ->willReturn(new ClientId('CLIENT_ID'))
+        ;
+        $client->has('redirect_uris')
+            ->willReturn(true)
+        ;
+        $client->get('redirect_uris')
+            ->willReturn(['https://www.foo.bar/callback'])
+        ;
+        $client->isResponseTypeAllowed('foo')
+            ->willReturn(true)
+        ;
         $authorization = new AuthorizationRequest($client->reveal(), [
             'redirect_uri' => 'https://www.foo.bar/callback',
             'response_type' => 'bar',
         ]);
 
         try {
-            $this->getParameterCheckerManager()->check($authorization);
+            $this->getParameterCheckerManager()
+                ->check($authorization)
+            ;
             static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2AuthorizationException $e) {
-            static::assertEquals('invalid_request', $e->getMessage());
-            static::assertEquals('The response type "bar" is not supported by this server', $e->getErrorDescription());
+            static::assertSame('invalid_request', $e->getMessage());
+            static::assertSame('The response type "bar" is not supported by this server', $e->getErrorDescription());
         }
     }
 
     /**
      * @test
      */
-    public function anAuthorizationRequestIsReceivedButTheResponseTypeIsNotAllowedForTheClient()
+    public function anAuthorizationRequestIsReceivedButTheResponseTypeIsNotAllowedForTheClient(): void
     {
         $client = $this->prophesize(Client::class);
-        $client->isPublic()->willReturn(false);
-        $client->getPublicId()->willReturn(new ClientId('CLIENT_ID'));
-        $client->getClientId()->willReturn(new ClientId('CLIENT_ID'));
-        $client->has('redirect_uris')->willReturn(true);
-        $client->get('redirect_uris')->willReturn(['https://www.foo.bar/callback']);
-        $client->isResponseTypeAllowed('foo')->willReturn(false);
+        $client->isPublic()
+            ->willReturn(false)
+        ;
+        $client->getPublicId()
+            ->willReturn(new ClientId('CLIENT_ID'))
+        ;
+        $client->getClientId()
+            ->willReturn(new ClientId('CLIENT_ID'))
+        ;
+        $client->has('redirect_uris')
+            ->willReturn(true)
+        ;
+        $client->get('redirect_uris')
+            ->willReturn(['https://www.foo.bar/callback'])
+        ;
+        $client->isResponseTypeAllowed('foo')
+            ->willReturn(false)
+        ;
         $authorization = new AuthorizationRequest($client->reveal(), [
             'redirect_uri' => 'https://www.foo.bar/callback',
             'response_type' => 'foo',
         ]);
 
         try {
-            $this->getParameterCheckerManager()->check($authorization);
+            $this->getParameterCheckerManager()
+                ->check($authorization)
+            ;
             static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2AuthorizationException $e) {
-            static::assertEquals('invalid_request', $e->getMessage());
-            static::assertEquals('The response type "foo" is not allowed for this client.', $e->getErrorDescription());
+            static::assertSame('invalid_request', $e->getMessage());
+            static::assertSame('The response type "foo" is not allowed for this client.', $e->getErrorDescription());
         }
     }
 
     /**
      * @test
      */
-    public function anAuthorizationRequestIsReceivedAndIsValid()
+    public function anAuthorizationRequestIsReceivedAndIsValid(): void
     {
         $client = $this->prophesize(Client::class);
-        $client->isPublic()->willReturn(false);
-        $client->getPublicId()->willReturn(new ClientId('CLIENT_ID'));
-        $client->getClientId()->willReturn(new ClientId('CLIENT_ID'));
-        $client->has('redirect_uris')->willReturn(true);
-        $client->get('redirect_uris')->willReturn(['https://www.foo.bar/callback']);
-        $client->isResponseTypeAllowed('foo')->willReturn(true);
+        $client->isPublic()
+            ->willReturn(false)
+        ;
+        $client->getPublicId()
+            ->willReturn(new ClientId('CLIENT_ID'))
+        ;
+        $client->getClientId()
+            ->willReturn(new ClientId('CLIENT_ID'))
+        ;
+        $client->has('redirect_uris')
+            ->willReturn(true)
+        ;
+        $client->get('redirect_uris')
+            ->willReturn(['https://www.foo.bar/callback'])
+        ;
+        $client->isResponseTypeAllowed('foo')
+            ->willReturn(true)
+        ;
         $authorization = new AuthorizationRequest($client->reveal(), [
             'redirect_uri' => 'https://www.foo.bar/callback',
             'response_type' => 'foo',
@@ -228,18 +307,24 @@ final class ParameterCheckerManagerTest extends TestCase
             'response_mode' => 'fragment',
         ]);
 
-        $this->getParameterCheckerManager()->check($authorization);
+        $this->getParameterCheckerManager()
+            ->check($authorization)
+        ;
 
-        static::assertEquals(['login', 'consent'], $authorization->getPrompt());
+        static::assertSame(['login', 'consent'], $authorization->getPrompt());
         static::assertFalse($authorization->hasPrompt('none'));
     }
 
     private function getParameterCheckerManager(): ParameterCheckerManager
     {
-        if (null === $this->parameterCheckerManager) {
+        if ($this->parameterCheckerManager === null) {
             $responseType = $this->prophesize(ResponseType::class);
-            $responseType->name()->willReturn('foo');
-            $responseType->getResponseMode()->willReturn('query');
+            $responseType->name()
+                ->willReturn('foo')
+            ;
+            $responseType->getResponseMode()
+                ->willReturn('query')
+            ;
             $responseTypeManager = new ResponseTypeManager();
             $responseTypeManager->add($responseType->reveal());
 

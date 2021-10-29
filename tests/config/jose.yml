@@ -1,5 +1,5 @@
 jose:
     jku_factory:
         enabled: true
-        client: 'httplug.client.mock'
+        client: 'Psr\Http\Client\ClientInterface'
         request_factory: 'Nyholm\Psr7\Factory\Psr17Factory'

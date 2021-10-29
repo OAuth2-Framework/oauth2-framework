@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\ServerBundle\Component\Endpoint\Token;
 
 use OAuth2Framework\Component\TokenEndpoint\Extension\TokenEndpointExtension;
@@ -34,27 +25,29 @@ class TokenEndpointSource implements Component
 
     public function load(array $configs, ContainerBuilder $container): void
     {
-        if (!class_exists(TokenEndpoint::class)) {
+        if (! class_exists(TokenEndpoint::class)) {
             return;
         }
         $config = $configs['endpoint']['token'];
         $container->setParameter('oauth2_server.endpoint.token.enabled', $config['enabled']);
-        if (!$config['enabled']) {
+        if (! $config['enabled']) {
             return;
         }
 
         $container->registerForAutoconfiguration(GrantType::class)->addTag('oauth2_server_grant_type');
-        $container->registerForAutoconfiguration(TokenEndpointExtension::class)->addTag('oauth2_server_token_endpoint_extension');
+        $container->registerForAutoconfiguration(TokenEndpointExtension::class)->addTag(
+            'oauth2_server_token_endpoint_extension'
+        );
         $container->setParameter('oauth2_server.endpoint.token.path', $config['path']);
         $container->setParameter('oauth2_server.endpoint.token.host', $config['host']);
 
-        $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint/token'));
+        $loader = new PhpFileLoader($container, new FileLocator(__DIR__ . '/../../../Resources/config/endpoint/token'));
         $loader->load('token.php');
     }
 
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
-        if (!class_exists(TokenEndpoint::class)) {
+        if (! class_exists(TokenEndpoint::class)) {
             return;
         }
         $node->children()
@@ -79,7 +72,7 @@ class TokenEndpointSource implements Component
 
     public function build(ContainerBuilder $container): void
     {
-        if (!class_exists(TokenEndpoint::class)) {
+        if (! class_exists(TokenEndpoint::class)) {
             return;
         }
         $container->addCompilerPass(new GrantTypeCompilerPass());

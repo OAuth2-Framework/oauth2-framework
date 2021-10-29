@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\SecurityBundle\Security\Handler;
 
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
@@ -23,11 +14,9 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationFailureHandlerI
 
 final class DefaultFailureHandler implements AuthenticationFailureHandlerInterface
 {
-    private OAuth2MessageFactoryManager $oauth2ResponseFactoryManager;
-
-    public function __construct(OAuth2MessageFactoryManager $oauth2ResponseFactoryManager)
-    {
-        $this->oauth2ResponseFactoryManager = $oauth2ResponseFactoryManager;
+    public function __construct(
+        private OAuth2MessageFactoryManager $oauth2ResponseFactoryManager
+    ) {
     }
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): Response

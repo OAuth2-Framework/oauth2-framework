@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\Component\Core\Middleware;
 
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
@@ -22,11 +13,9 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 final class OAuth2MessageMiddleware implements MiddlewareInterface
 {
-    private OAuth2MessageFactoryManager $auth2messageFactoryManager;
-
-    public function __construct(OAuth2MessageFactoryManager $auth2messageFactoryManager)
-    {
-        $this->auth2messageFactoryManager = $auth2messageFactoryManager;
+    public function __construct(
+        private OAuth2MessageFactoryManager $auth2messageFactoryManager
+    ) {
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
@@ -34,7 +23,7 @@ final class OAuth2MessageMiddleware implements MiddlewareInterface
         try {
             return $handler->handle($request);
         } catch (OAuth2Error $e) {
-            return $oauth2Response = $this->auth2messageFactoryManager->getResponse($e);
+            return $this->auth2messageFactoryManager->getResponse($e);
         }
     }
 }

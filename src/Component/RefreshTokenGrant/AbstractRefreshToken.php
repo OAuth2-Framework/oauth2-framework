@@ -2,17 +2,10 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\Component\RefreshTokenGrant;
 
+use function array_key_exists;
+use DateTimeImmutable;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
@@ -26,35 +19,23 @@ abstract class AbstractRefreshToken implements RefreshToken
      */
     private array $accessTokenIds = [];
 
-    private \DateTimeImmutable $expiresAt;
-
-    private ResourceOwnerId $resourceOwnerId;
-
-    private ClientId $clientId;
-
-    private DataBag $parameter;
-
-    private DataBag $metadata;
-
     private bool $revoked;
 
-    private ?ResourceServerId $resourceServerId;
-
-    public function __construct(ClientId $clientId, ResourceOwnerId $resourceOwnerId, \DateTimeImmutable $expiresAt, DataBag $parameter, DataBag $metadata, ?ResourceServerId $resourceServerId)
-    {
-        $this->resourceOwnerId = $resourceOwnerId;
-        $this->clientId = $clientId;
-        $this->parameter = $parameter;
-        $this->metadata = $metadata;
-        $this->expiresAt = $expiresAt;
-        $this->resourceServerId = $resourceServerId;
+    public function __construct(
+        private ClientId $clientId,
+        private ResourceOwnerId $resourceOwnerId,
+        private DateTimeImmutable $expiresAt,
+        private DataBag $parameter,
+        private DataBag $metadata,
+        private ?ResourceServerId $resourceServerId
+    ) {
         $this->revoked = false;
     }
 
     public function addAccessToken(AccessTokenId $accessTokenId): void
     {
         $id = $accessTokenId->getValue();
-        if (!\array_key_exists($id, $this->accessTokenIds)) {
+        if (! array_key_exists($id, $this->accessTokenIds)) {
             $this->accessTokenIds[$id] = $accessTokenId;
         }
     }
@@ -77,7 +58,7 @@ abstract class AbstractRefreshToken implements RefreshToken
         return $data->all();
     }
 
-    public function getExpiresAt(): \DateTimeImmutable
+    public function getExpiresAt(): DateTimeImmutable
     {
         return $this->expiresAt;
     }

@@ -1,21 +1,21 @@
 oauth2_server:
     server_uri: 'https://oauth2.test/'
-    http_client: 'httplug.client.mock'
+    http_client: 'Psr\Http\Client\ClientInterface'
 #    # Key Component
     client:
-        repository: 'OAuth2Framework\ServerBundle\Tests\TestBundle\Repository\ClientRepository'
+        repository: 'OAuth2Framework\Tests\TestBundle\Repository\ClientRepository'
     user_account:
-        repository: 'OAuth2Framework\ServerBundle\Tests\TestBundle\Repository\UserAccountRepository'
+        repository: 'OAuth2Framework\Tests\TestBundle\Repository\UserAccountRepository'
     access_token:
-        repository: 'OAuth2Framework\ServerBundle\Tests\TestBundle\Repository\AccessTokenRepository'
+        repository: 'OAuth2Framework\Tests\TestBundle\Repository\AccessTokenRepository'
         lifetime: 1800
     resource_server:
-        repository: 'OAuth2Framework\ServerBundle\Tests\TestBundle\Repository\ResourceServerRepository'
+        repository: 'OAuth2Framework\Tests\TestBundle\Repository\ResourceServerRepository'
     trusted_issuer:
-        repository: 'OAuth2Framework\ServerBundle\Tests\TestBundle\Repository\TrustedIssuerRepository'
+        repository: 'OAuth2Framework\Tests\TestBundle\Repository\TrustedIssuerRepository'
     scope:
         enabled: true
-        repository: 'OAuth2Framework\ServerBundle\Tests\TestBundle\Repository\ScopeRepository'
+        repository: 'OAuth2Framework\Tests\TestBundle\Repository\ScopeRepository'
         policy:
             enabled: true
             by_default: 'none'
@@ -65,7 +65,7 @@ oauth2_server:
                 enabled: true
                 required: true
                 realm: 'Client Registration'
-                repository: 'OAuth2Framework\ServerBundle\Tests\TestBundle\Repository\InitialAccessTokenRepository'
+                repository: 'OAuth2Framework\Tests\TestBundle\Repository\InitialAccessTokenRepository'
             software_statement:
                 enabled: true
                 required: false
@@ -119,10 +119,10 @@ oauth2_server:
             path: '/session/manager/iframe'
         authorization:
             enabled: true
-            user_discovery: 'OAuth2Framework\ServerBundle\Tests\TestBundle\Service\SymfonyUserAccountDiscovery'
-            consent_repository: 'OAuth2Framework\ServerBundle\Tests\TestBundle\Repository\ConsentRepository'
-            consent_handler: 'OAuth2Framework\ServerBundle\Tests\TestBundle\Service\ConsentHandler'
-            login_handler: 'OAuth2Framework\ServerBundle\Tests\TestBundle\Service\LoginHandler'
+            user_discovery: 'OAuth2Framework\Tests\TestBundle\Service\SymfonyUserAccountDiscovery'
+            consent_repository: 'OAuth2Framework\Tests\TestBundle\Repository\ConsentRepository'
+            consent_handler: 'OAuth2Framework\Tests\TestBundle\Service\ConsentHandler'
+            login_handler: 'OAuth2Framework\Tests\TestBundle\Service\LoginHandler'
             enforce_state: false
             response_mode:
                 allow_response_mode_parameter: true
@@ -145,11 +145,11 @@ oauth2_server:
         authorization_code:
             enabled: true
             enforce_pkce: false
-            repository: 'OAuth2Framework\ServerBundle\Tests\TestBundle\Repository\AuthorizationCodeRepository'
+            repository: 'OAuth2Framework\Tests\TestBundle\Repository\AuthorizationCodeRepository'
         refresh_token:
             enabled: true
             lifetime: 604800
-            repository: 'OAuth2Framework\ServerBundle\Tests\TestBundle\Repository\RefreshTokenRepository'
+            repository: 'OAuth2Framework\Tests\TestBundle\Repository\RefreshTokenRepository'
         none:
             enabled: false #Not fully implemented
         implicit:
@@ -158,7 +158,7 @@ oauth2_server:
             enabled: true
         resource_owner_password_credential:
             enabled: true
-            password_credential_manager: 'OAuth2Framework\ServerBundle\Tests\TestBundle\Repository\ResourceOwnerPasswordCredentialRepository'
+            password_credential_manager: 'OAuth2Framework\Tests\TestBundle\Repository\ResourceOwnerPasswordCredentialRepository'
         jwt_bearer:
             enabled: true
             signature_algorithms: ['RS256', 'RS512', 'HS256', 'HS512', 'ES256', 'ES512']

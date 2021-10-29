@@ -1,15 +1,5 @@
-httplug:
-    profiling: false
-    discovery:
-        client: false
-        async_client: false
-
 services:
     _defaults:
         public: true
-    httplug.client.mock:
-        class: 'Http\Mock\Client'
-    httplug.client.default: '@httplug.client.mock'
-
 
     Nyholm\Psr7\Factory\Psr17Factory: ~

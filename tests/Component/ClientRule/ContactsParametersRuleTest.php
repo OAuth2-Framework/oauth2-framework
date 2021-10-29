@@ -2,25 +2,16 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\Tests\Component\ClientRule;
 
-use OAuth2Framework\Component\ClientRule;
+use InvalidArgumentException;
+use OAuth2Framework\Component\ClientRule\ContactsParametersRule;
+use OAuth2Framework\Component\ClientRule\RuleHandler;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @group Tests
- *
  * @internal
  */
 final class ContactsParametersRuleTest extends TestCase
@@ -28,55 +19,56 @@ final class ContactsParametersRuleTest extends TestCase
     /**
      * @test
      */
-    public function theContactsParameterIsNotAnArray()
+    public function theContactsParameterIsNotAnArray(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('The parameter "contacts" must be a list of e-mail addresses.');
         $clientId = new ClientId('CLIENT_ID');
         $commandParameters = new DataBag([
             'contacts' => 123,
         ]);
-        $rule = new ClientRule\ContactsParametersRule();
+        $rule = new ContactsParametersRule();
         $rule->handle($clientId, $commandParameters, new DataBag([]), $this->getCallable());
     }
 
     /**
      * @test
      */
-    public function theContactsParameterIsNotAnArrayOfEmailAddresses()
+    public function theContactsParameterIsNotAnArrayOfEmailAddresses(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('The parameter "contacts" must be a list of e-mail addresses.');
         $clientId = new ClientId('CLIENT_ID');
         $commandParameters = new DataBag([
             'contacts' => [123],
         ]);
-        $rule = new ClientRule\ContactsParametersRule();
+        $rule = new ContactsParametersRule();
         $rule->handle($clientId, $commandParameters, new DataBag([]), $this->getCallable());
     }
 
     /**
      * @test
      */
-    public function theContactsParameterIsValid()
+    public function theContactsParameterIsValid(): void
     {
         $clientId = new ClientId('CLIENT_ID');
         $commandParameters = new DataBag([
-            'contacts' => [
-                'foo@bar.com',
-                'hello@you.com',
-            ],
+            'contacts' => ['foo@bar.com', 'hello@you.com'],
         ]);
-        $rule = new ClientRule\ContactsParametersRule();
+        $rule = new ContactsParametersRule();
         $validatedParameters = $rule->handle($clientId, $commandParameters, new DataBag([]), $this->getCallable());
 
         static::assertTrue($validatedParameters->has('contacts'));
-        static::assertEquals(['foo@bar.com', 'hello@you.com'], $validatedParameters->get('contacts'));
+        static::assertSame(['foo@bar.com', 'hello@you.com'], $validatedParameters->get('contacts'));
     }
 
-    private function getCallable(): ClientRule\RuleHandler
+    private function getCallable(): RuleHandler
     {
-        return new ClientRule\RuleHandler(function (ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters): DataBag {
+        return new RuleHandler(function (
+            ClientId $clientId,
+            DataBag $commandParameters,
+            DataBag $validatedParameters
+        ): DataBag {
             return $validatedParameters;
         });
     }

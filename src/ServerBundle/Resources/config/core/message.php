@@ -1,17 +1,17 @@
 <?php
 
 declare(strict_types=1);
-use OAuth2Framework\Component\Core\Middleware\OAuth2MessageMiddleware;
-use OAuth2Framework\Component\Core\Message\OAuth2MessageFactoryManager;
+
+use OAuth2Framework\Component\ClientAuthentication\AuthenticationMethodManager;
 use OAuth2Framework\Component\Core\Message\Factory\AccessDeniedResponseFactory;
-use OAuth2Framework\Component\Core\TokenType\TokenTypeManager;
-use OAuth2Framework\Component\Core\Message\Factory\AuthenticateResponseForTokenFactory;
 use OAuth2Framework\Component\Core\Message\Factory\AuthenticateResponseForClientFactory;
+use OAuth2Framework\Component\Core\Message\Factory\AuthenticateResponseForTokenFactory;
 use OAuth2Framework\Component\Core\Message\Factory\BadRequestResponseFactory;
 use OAuth2Framework\Component\Core\Message\Factory\MethodNotAllowedResponseFactory;
 use OAuth2Framework\Component\Core\Message\Factory\NotImplementedResponseFactory;
 use OAuth2Framework\Component\Core\Message\Factory\RedirectResponseFactory;
-
+use OAuth2Framework\Component\Core\Message\OAuth2MessageFactoryManager;
+use OAuth2Framework\Component\Core\Middleware\OAuth2MessageMiddleware;
 /*
  * The MIT License (MIT)
  *
@@ -21,15 +21,14 @@ use OAuth2Framework\Component\Core\Message\Factory\RedirectResponseFactory;
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use OAuth2Framework\Component\ClientAuthentication\AuthenticationMethodManager;
-use OAuth2Framework\Component\Core\Message;
-use OAuth2Framework\Component\Core\Middleware;
+use OAuth2Framework\Component\Core\TokenType\TokenTypeManager;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
+use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 
-return function (ContainerConfigurator $container) {
-    $container = $container->services()->defaults()
+return static function (ContainerConfigurator $container): void {
+    $container = $container->services()
+        ->defaults()
         ->private()
         ->autowire()
         ->autoconfigure()
@@ -37,28 +36,20 @@ return function (ContainerConfigurator $container) {
 
     $container->set('oauth2_server.message_middleware.for_client_authentication')
         ->class(OAuth2MessageMiddleware::class)
-        ->args([
-            ref('oauth2_server.message_factory_manager.for_client_authentication'),
-        ])
+        ->args([service('oauth2_server.message_factory_manager.for_client_authentication')])
     ;
     $container->set('oauth2_server.message_factory_manager.for_client_authentication')
         ->class(OAuth2MessageFactoryManager::class)
-        ->args([
-            ref(ResponseFactoryInterface::class),
-        ])
+        ->args([service(ResponseFactoryInterface::class)])
     ;
 
     $container->set('oauth2_server.message_middleware.for_token_authentication')
         ->class(OAuth2MessageMiddleware::class)
-        ->args([
-            ref('oauth2_server.message_factory_manager.for_token_authentication'),
-        ])
+        ->args([service('oauth2_server.message_factory_manager.for_token_authentication')])
     ;
     $container->set('oauth2_server.message_factory_manager.for_token_authentication')
         ->class(OAuth2MessageFactoryManager::class)
-        ->args([
-            ref(ResponseFactoryInterface::class),
-        ])
+        ->args([service(ResponseFactoryInterface::class)])
     ;
 
     //Factories
@@ -69,17 +60,13 @@ return function (ContainerConfigurator $container) {
     ;
 
     $container->set('oauth2_server.message_factory.401_for_token')
-        ->args([
-            ref(TokenTypeManager::class),
-        ])
+        ->args([service(TokenTypeManager::class)])
         ->class(AuthenticateResponseForTokenFactory::class)
         ->tag('oauth2_server_message_factory_for_token_authentication')
     ;
 
     $container->set('oauth2_server.message_factory.401_for_client')
-        ->args([
-            ref(AuthenticationMethodManager::class),
-        ])
+        ->args([service(AuthenticationMethodManager::class)])
         ->class(AuthenticateResponseForClientFactory::class)
         ->tag('oauth2_server_message_factory_for_client_authentication')
     ;

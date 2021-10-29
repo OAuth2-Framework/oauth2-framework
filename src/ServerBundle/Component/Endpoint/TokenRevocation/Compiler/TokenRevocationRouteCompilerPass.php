@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\ServerBundle\Component\Endpoint\TokenRevocation\Compiler;
 
 use OAuth2Framework\ServerBundle\Routing\RouteLoader;
@@ -22,7 +13,7 @@ class TokenRevocationRouteCompilerPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container): void
     {
-        if (!$container->hasDefinition('token_revocation_pipe')) {
+        if (! $container->hasDefinition('token_revocation_endpoint_pipe')) {
             return;
         }
 
@@ -31,8 +22,8 @@ class TokenRevocationRouteCompilerPass implements CompilerPassInterface
         $route_loader = $container->getDefinition(RouteLoader::class);
         $route_loader->addMethodCall('addRoute', [
             'token_revocation_endpoint',
-            'token_revocation_pipe',
-            'dispatch',
+            'token_revocation_endpoint_pipe',
+            'handle',
             $path, // path
             [], // defaults
             [], // requirements
@@ -43,11 +34,14 @@ class TokenRevocationRouteCompilerPass implements CompilerPassInterface
             '', // condition
         ]);
 
-        if (!$container->hasDefinition(MetadataBuilder::class)) {
+        if (! $container->hasDefinition(MetadataBuilder::class)) {
             return;
         }
 
         $definition = $container->getDefinition(MetadataBuilder::class);
-        $definition->addMethodCall('addRoute', ['token_revocation_endpoint', 'oauth2_server_token_revocation_endpoint']);
+        $definition->addMethodCall(
+            'addRoute',
+            ['token_revocation_endpoint', 'oauth2_server_token_revocation_endpoint']
+        );
     }
 }

@@ -2,17 +2,9 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\Tests\Component\ClientAuthentication;
 
+use InvalidArgumentException;
 use Jose\Component\Checker\ClaimCheckerManager;
 use Jose\Component\Checker\HeaderCheckerManager;
 use Jose\Component\Core\AlgorithmManager;
@@ -48,60 +40,57 @@ use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
-use function Safe\json_decode;
 
 /**
- * @group TokenEndpoint
- * @group ClientAuthentication
- *
  * @internal
  */
 final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
 {
     use ProphecyTrait;
 
-    /**
-     * @var null|ClientAssertionJwt
-     */
-    private $method;
+    private ?ClientAssertionJwt $method = null;
 
     /**
      * @test
      */
-    public function genericCalls()
+    public function genericCalls(): void
     {
         $method = $this->getMethod();
 
-        static::assertEquals([], $method->getSchemesParameters());
-        static::assertEquals(['client_secret_jwt', 'private_key_jwt'], $method->getSupportedMethods());
-        static::assertEquals(['HS256', 'RS256'], $method->getSupportedSignatureAlgorithms());
-        static::assertEquals([], $method->getSupportedKeyEncryptionAlgorithms());
-        static::assertEquals([], $method->getSupportedContentEncryptionAlgorithms());
+        static::assertSame([], $method->getSchemesParameters());
+        static::assertSame(['client_secret_jwt', 'private_key_jwt'], $method->getSupportedMethods());
+        static::assertSame(['HS256', 'RS256'], $method->getSupportedSignatureAlgorithms());
+        static::assertSame([], $method->getSupportedKeyEncryptionAlgorithms());
+        static::assertSame([], $method->getSupportedContentEncryptionAlgorithms());
     }
 
     /**
      * @test
      */
-    public function genericCallsWithEncryptionSupport()
+    public function genericCallsWithEncryptionSupport(): void
     {
         $method = $this->getMethodWithEncryptionSupport(false);
 
-        static::assertEquals([], $method->getSchemesParameters());
-        static::assertEquals(['client_secret_jwt', 'private_key_jwt'], $method->getSupportedMethods());
-        static::assertEquals(['HS256', 'RS256'], $method->getSupportedSignatureAlgorithms());
-        static::assertEquals(['RSA-OAEP-256'], $method->getSupportedKeyEncryptionAlgorithms());
-        static::assertEquals(['A256CBC-HS512'], $method->getSupportedContentEncryptionAlgorithms());
+        static::assertSame([], $method->getSchemesParameters());
+        static::assertSame(['client_secret_jwt', 'private_key_jwt'], $method->getSupportedMethods());
+        static::assertSame(['HS256', 'RS256'], $method->getSupportedSignatureAlgorithms());
+        static::assertSame(['RSA-OAEP-256'], $method->getSupportedKeyEncryptionAlgorithms());
+        static::assertSame(['A256CBC-HS512'], $method->getSupportedContentEncryptionAlgorithms());
     }
 
     /**
      * @test
      */
-    public function theClientIdCannotBeFoundInTheRequest()
+    public function theClientIdCannotBeFoundInTheRequest(): void
     {
         $method = $this->getMethod();
         $request = $this->buildRequest([]);
-        $request->getParsedBody()->willReturn([]);
-        $request->getHeader('Authorization')->willReturn([]);
+        $request->getParsedBody()
+            ->willReturn([])
+        ;
+        $request->getHeader('Authorization')
+            ->willReturn([])
+        ;
 
         $clientId = $method->findClientIdAndCredentials($request->reveal(), $credentials);
         static::assertNull($clientId);
@@ -111,14 +100,16 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
     /**
      * @test
      */
-    public function theClientAssertionTypeIsNotSupported()
+    public function theClientAssertionTypeIsNotSupported(): void
     {
         $method = $this->getMethod();
         $request = $this->buildRequest([
             'client_assertion_type' => 'foo',
         ]);
 
-        $request->getHeader('Authorization')->willReturn([]);
+        $request->getHeader('Authorization')
+            ->willReturn([])
+        ;
         $clientId = $method->findClientIdAndCredentials($request->reveal(), $credentials);
         static::assertNull($clientId);
         static::assertNull($credentials);
@@ -127,28 +118,30 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
     /**
      * @test
      */
-    public function theClientAssertionIsMissing()
+    public function theClientAssertionIsMissing(): void
     {
         $method = $this->getMethod();
         $request = $this->buildRequest([
             'client_assertion_type' => 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
         ]);
 
-        $request->getHeader('Authorization')->willReturn([]);
+        $request->getHeader('Authorization')
+            ->willReturn([])
+        ;
 
         try {
             $method->findClientIdAndCredentials($request->reveal(), $credentials);
             static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2Error $e) {
-            static::assertEquals('invalid_request', $e->getMessage());
-            static::assertEquals('Parameter "client_assertion" is missing.', $e->getErrorDescription());
+            static::assertSame('invalid_request', $e->getMessage());
+            static::assertSame('Parameter "client_assertion" is missing.', $e->getErrorDescription());
         }
     }
 
     /**
      * @test
      */
-    public function theClientAssertionIsInvalid()
+    public function theClientAssertionIsInvalid(): void
     {
         $method = $this->getMethod();
         $request = $this->buildRequest([
@@ -156,76 +149,82 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
             'client_assertion' => 'foo',
         ]);
 
-        $request->getHeader('Authorization')->willReturn([]);
+        $request->getHeader('Authorization')
+            ->willReturn([])
+        ;
 
         try {
             $method->findClientIdAndCredentials($request->reveal(), $credentials);
             static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2Error $e) {
-            static::assertEquals('invalid_request', $e->getMessage());
-            static::assertEquals('Unable to load, decrypt or verify the client assertion.', $e->getErrorDescription());
+            static::assertSame('invalid_request', $e->getMessage());
+            static::assertSame('Unable to load, decrypt or verify the client assertion.', $e->getErrorDescription());
         }
     }
 
     /**
      * @test
      */
-    public function theClientAssertionSignedByTheClientIsInvalidBecauseOfMissingClaims()
+    public function theClientAssertionSignedByTheClientIsInvalidBecauseOfMissingClaims(): void
     {
-        $assertion = $this->serializeJWS(
-            $this->createInvalidClientAssertionSignedByTheClient()
-        );
+        $assertion = $this->serializeJWS($this->createInvalidClientAssertionSignedByTheClient());
         $method = $this->getMethod();
         $request = $this->buildRequest([
             'client_assertion_type' => 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
             'client_assertion' => $assertion,
         ]);
 
-        $request->getHeader('Authorization')->willReturn([]);
+        $request->getHeader('Authorization')
+            ->willReturn([])
+        ;
 
         try {
             $method->findClientIdAndCredentials($request->reveal(), $credentials);
             static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2Error $e) {
-            static::assertEquals('invalid_request', $e->getMessage());
-            static::assertEquals('The following claim(s) is/are mandatory: "iss, sub, aud, exp".', $e->getErrorDescription());
+            static::assertSame('invalid_request', $e->getMessage());
+            static::assertSame(
+                'The following claim(s) is/are mandatory: "iss, sub, aud, exp".',
+                $e->getErrorDescription()
+            );
         }
     }
 
     /**
      * @test
      */
-    public function theClientAssertionSignedByTheClientIsRejectedBecauseEncryptionIsMandatory()
+    public function theClientAssertionSignedByTheClientIsRejectedBecauseEncryptionIsMandatory(): void
     {
-        $assertion = $this->serializeJWS(
-            $this->createInvalidClientAssertionSignedByTheClient()
-        );
+        $assertion = $this->serializeJWS($this->createInvalidClientAssertionSignedByTheClient());
         $method = $this->getMethodWithEncryptionSupport(true);
         $request = $this->buildRequest([
             'client_assertion_type' => 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
             'client_assertion' => $assertion,
         ]);
 
-        $request->getHeader('Authorization')->willReturn([]);
+        $request->getHeader('Authorization')
+            ->willReturn([])
+        ;
 
         try {
             $method->findClientIdAndCredentials($request->reveal(), $credentials);
             static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2Error $e) {
-            static::assertEquals('invalid_request', $e->getMessage());
-            static::assertEquals('The encryption of the assertion is mandatory but the decryption of the assertion failed.', $e->getErrorDescription());
+            static::assertSame('invalid_request', $e->getMessage());
+            static::assertSame(
+                'The encryption of the assertion is mandatory but the decryption of the assertion failed.',
+                $e->getErrorDescription()
+            );
         }
     }
 
     /**
      * @test
      */
-    public function theEncryptedClientAssertionSignedAndEncryptedByTheClientIsInvalidBecauseOfMissingClaims()
+    public function theEncryptedClientAssertionSignedAndEncryptedByTheClientIsInvalidBecauseOfMissingClaims(): void
     {
         $assertion = $this->encryptAssertion(
-            $this->serializeJWS(
-                $this->createInvalidClientAssertionSignedByTheClient()
-            )
+            $this->serializeJWS($this->createInvalidClientAssertionSignedByTheClient())
         );
         $method = $this->getMethodWithEncryptionSupport(false);
         $request = $this->buildRequest([
@@ -233,77 +232,86 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
             'client_assertion' => $assertion,
         ]);
 
-        $request->getHeader('Authorization')->willReturn([]);
+        $request->getHeader('Authorization')
+            ->willReturn([])
+        ;
 
         try {
             $method->findClientIdAndCredentials($request->reveal(), $credentials);
             static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2Error $e) {
-            static::assertEquals('invalid_request', $e->getMessage());
-            static::assertEquals('The following claim(s) is/are mandatory: "iss, sub, aud, exp".', $e->getErrorDescription());
+            static::assertSame('invalid_request', $e->getMessage());
+            static::assertSame(
+                'The following claim(s) is/are mandatory: "iss, sub, aud, exp".',
+                $e->getErrorDescription()
+            );
         }
     }
 
     /**
      * @test
      */
-    public function theClientAssertionIsValidAndTheClientIdIsRetrieved()
+    public function theClientAssertionIsValidAndTheClientIdIsRetrieved(): void
     {
-        $assertion = $this->serializeJWS(
-            $this->createValidClientAssertionSignedByTheClient()
-        );
+        $assertion = $this->serializeJWS($this->createValidClientAssertionSignedByTheClient());
         $method = $this->getMethod();
         $request = $this->buildRequest([
             'client_assertion_type' => 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
             'client_assertion' => $assertion,
         ]);
 
-        $request->getHeader('Authorization')->willReturn([]);
+        $request->getHeader('Authorization')
+            ->willReturn([])
+        ;
         $clientId = $method->findClientIdAndCredentials($request->reveal(), $credentials);
-        static::assertEquals('ClientId', $clientId->getValue());
+        static::assertSame('ClientId', $clientId->getValue());
     }
 
     /**
      * @test
      */
-    public function theEncryptedClientAssertionIsValidAndTheClientIdIsRetrieved()
+    public function theEncryptedClientAssertionIsValidAndTheClientIdIsRetrieved(): void
     {
         $assertion = $this->encryptAssertion(
-            $this->serializeJWS(
-                $this->createValidClientAssertionSignedByTheClient()
-            )
+            $this->serializeJWS($this->createValidClientAssertionSignedByTheClient())
         );
         $method = $this->getMethodWithEncryptionSupport(false);
         $request = $this->buildRequest([
             'client_assertion_type' => 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
             'client_assertion' => $assertion,
         ]);
-        $request->getHeader('Authorization')->willReturn([]);
+        $request->getHeader('Authorization')
+            ->willReturn([])
+        ;
 
         $clientId = $method->findClientIdAndCredentials($request->reveal(), $credentials);
-        static::assertEquals('ClientId', $clientId->getValue());
+        static::assertSame('ClientId', $clientId->getValue());
     }
 
     /**
      * @test
      */
-    public function theClientUsesAnotherAuthenticationMethod()
+    public function theClientUsesAnotherAuthenticationMethod(): void
     {
         $jws = $this->createInvalidClientAssertionSignedByTheClient();
-        $assertion = $this->encryptAssertion(
-            $this->serializeJWS(
-                $jws
-            )
-        );
+        $assertion = $this->encryptAssertion($this->serializeJWS($jws));
         $method = $this->getMethodWithEncryptionSupport(false);
         $manager = new AuthenticationMethodManager();
         $manager->add($method);
 
         $client = $this->prophesize(Client::class);
-        $client->isPublic()->willReturn(false);
-        $client->getPublicId()->willReturn(new ClientId('CLIENT_ID'));
-        $client->getClientId()->willReturn(new ClientId('CLIENT_ID'));
-        $client->get('token_endpoint_auth_method')->willReturn('client_secret_post');
+        $client->isPublic()
+            ->willReturn(false)
+        ;
+        $client->getPublicId()
+            ->willReturn(new ClientId('CLIENT_ID'))
+        ;
+        $client->getClientId()
+            ->willReturn(new ClientId('CLIENT_ID'))
+        ;
+        $client->get('token_endpoint_auth_method')
+            ->willReturn('client_secret_post')
+        ;
 
         $request = $this->buildRequest([
             'client_assertion_type' => 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
@@ -316,27 +324,44 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
     /**
      * @test
      */
-    public function theClientWithPrivateKeyIsAuthenticated()
+    public function theClientWithPrivateKeyIsAuthenticated(): void
     {
         $jws = $this->createValidClientAssertionSignedByTheClient();
-        $assertion = $this->encryptAssertion(
-            $this->serializeJWS(
-                $jws
-            )
-        );
+        $assertion = $this->encryptAssertion($this->serializeJWS($jws));
         $method = $this->getMethodWithEncryptionSupport(false);
         $manager = new AuthenticationMethodManager();
         $manager->add($method);
 
         $client = $this->prophesize(Client::class);
-        $client->isPublic()->willReturn(false);
-        $client->getPublicId()->willReturn(new ClientId('CLIENT_ID'));
-        $client->getClientId()->willReturn(new ClientId('CLIENT_ID'));
-        $client->get('token_endpoint_auth_method')->willReturn('private_key_jwt');
-        $client->getTokenEndpointAuthenticationMethod()->willReturn('private_key_jwt');
-        $client->has('jwks')->willReturn(true);
-        $client->get('jwks')->willReturn(json_decode('{"keys":[{"kty":"oct","k":"U0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVU"}]}', true));
-        $client->areClientCredentialsExpired()->willReturn(false);
+        $client->isPublic()
+            ->willReturn(false)
+        ;
+        $client->getPublicId()
+            ->willReturn(new ClientId('CLIENT_ID'))
+        ;
+        $client->getClientId()
+            ->willReturn(new ClientId('CLIENT_ID'))
+        ;
+        $client->get('token_endpoint_auth_method')
+            ->willReturn('private_key_jwt')
+        ;
+        $client->getTokenEndpointAuthenticationMethod()
+            ->willReturn('private_key_jwt')
+        ;
+        $client->has('jwks')
+            ->willReturn(true)
+        ;
+        $client->get('jwks')
+            ->willReturn(
+                json_decode(
+                    '{"keys":[{"kty":"oct","k":"U0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVU"}]}',
+                    true
+                )
+            )
+        ;
+        $client->areClientCredentialsExpired()
+            ->willReturn(false)
+        ;
 
         $request = $this->buildRequest([
             'client_assertion_type' => 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
@@ -349,28 +374,44 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
     /**
      * @test
      */
-    public function theClientWithClientSecretIsAuthenticated()
+    public function theClientWithClientSecretIsAuthenticated(): void
     {
         $jws = $this->createValidClientAssertionSignedByTheClient();
-        $assertion = $this->encryptAssertion(
-            $this->serializeJWS(
-                $jws
-            )
-        );
+        $assertion = $this->encryptAssertion($this->serializeJWS($jws));
         $method = $this->getMethodWithEncryptionSupport(false);
         $manager = new AuthenticationMethodManager();
         $manager->add($method);
 
         $client = $this->prophesize(Client::class);
-        $client->isPublic()->willReturn(false);
-        $client->getPublicId()->willReturn(new ClientId('CLIENT_ID'));
-        $client->getClientId()->willReturn(new ClientId('CLIENT_ID'));
-        $client->get('token_endpoint_auth_method')->willReturn('client_secret_jwt');
-        $client->getTokenEndpointAuthenticationMethod()->willReturn('client_secret_jwt');
-        $client->has('jwks')->willReturn(false);
-        $client->has('client_secret')->willReturn(true);
-        $client->get('client_secret')->willReturn('SECRETSECRETSECRETSECRETSECRETSECRETSECRETSECRETSECRETSECRETSECRETSECRETSECRETSECRETSECRETSECRETSECRETSECRET');
-        $client->areClientCredentialsExpired()->willReturn(false);
+        $client->isPublic()
+            ->willReturn(false)
+        ;
+        $client->getPublicId()
+            ->willReturn(new ClientId('CLIENT_ID'))
+        ;
+        $client->getClientId()
+            ->willReturn(new ClientId('CLIENT_ID'))
+        ;
+        $client->get('token_endpoint_auth_method')
+            ->willReturn('client_secret_jwt')
+        ;
+        $client->getTokenEndpointAuthenticationMethod()
+            ->willReturn('client_secret_jwt')
+        ;
+        $client->has('jwks')
+            ->willReturn(false)
+        ;
+        $client->has('client_secret')
+            ->willReturn(true)
+        ;
+        $client->get('client_secret')
+            ->willReturn(
+                'SECRETSECRETSECRETSECRETSECRETSECRETSECRETSECRETSECRETSECRETSECRETSECRETSECRETSECRETSECRETSECRETSECRETSECRET'
+            )
+        ;
+        $client->areClientCredentialsExpired()
+            ->willReturn(false)
+        ;
 
         $request = $this->buildRequest([
             'client_assertion_type' => 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
@@ -383,25 +424,39 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
     /**
      * @test
      */
-    public function theClientWithTrustedIssuerAssertionIsAuthenticated()
+    public function theClientWithTrustedIssuerAssertionIsAuthenticated(): void
     {
         $jws = $this->createValidClientAssertionSignedByATrustedIssuer();
-        $assertion = $this->serializeJWS(
-            $jws
-        );
+        $assertion = $this->serializeJWS($jws);
         $method = $this->getMethodWithTrustedIssuerSupport();
         $manager = new AuthenticationMethodManager();
         $manager->add($method);
 
         $client = $this->prophesize(Client::class);
-        $client->isPublic()->willReturn(false);
-        $client->getPublicId()->willReturn(new ClientId('CLIENT_ID'));
-        $client->getClientId()->willReturn(new ClientId('CLIENT_ID'));
-        $client->get('token_endpoint_auth_method')->willReturn('client_secret_jwt');
-        $client->getTokenEndpointAuthenticationMethod()->willReturn('client_secret_jwt');
-        $client->has('jwks')->willReturn(false);
-        $client->has('client_secret')->willReturn(false);
-        $client->areClientCredentialsExpired()->willReturn(false);
+        $client->isPublic()
+            ->willReturn(false)
+        ;
+        $client->getPublicId()
+            ->willReturn(new ClientId('CLIENT_ID'))
+        ;
+        $client->getClientId()
+            ->willReturn(new ClientId('CLIENT_ID'))
+        ;
+        $client->get('token_endpoint_auth_method')
+            ->willReturn('client_secret_jwt')
+        ;
+        $client->getTokenEndpointAuthenticationMethod()
+            ->willReturn('client_secret_jwt')
+        ;
+        $client->has('jwks')
+            ->willReturn(false)
+        ;
+        $client->has('client_secret')
+            ->willReturn(false)
+        ;
+        $client->areClientCredentialsExpired()
+            ->willReturn(false)
+        ;
 
         $request = $this->buildRequest([
             'client_assertion_type' => 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
@@ -414,7 +469,7 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
     /**
      * @test
      */
-    public function theClientConfigurationCanBeCheckedWithClientSecretJwt()
+    public function theClientConfigurationCanBeCheckedWithClientSecretJwt(): void
     {
         $method = $this->getMethod();
         $commandParameters = new DataBag([
@@ -429,9 +484,9 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
     /**
      * @test
      */
-    public function theClientConfigurationCannotBeCheckedWithPrivateKeyJwtIfBothJwksAndJwksUriAreSet()
+    public function theClientConfigurationCannotBeCheckedWithPrivateKeyJwtIfBothJwksAndJwksUriAreSet(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Either the parameter "jwks" or "jwks_uri" must be set.');
         $method = $this->getMethod();
         $commandParameters = new DataBag([
@@ -442,15 +497,15 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
         $validatedParameters = $method->checkClientConfiguration($commandParameters, new DataBag([]));
 
         static::assertTrue($validatedParameters->has('token_endpoint_auth_method'));
-        static::assertEquals('private_key_jwt', $validatedParameters->get('token_endpoint_auth_method'));
+        static::assertSame('private_key_jwt', $validatedParameters->get('token_endpoint_auth_method'));
     }
 
     /**
      * @test
      */
-    public function theClientConfigurationCannotBeCheckedWithPrivateKeyJwtIfBothJwksAndJwksUriAreNotSetBecauseTrustedIssuerSupportIsDisabled()
+    public function theClientConfigurationCannotBeCheckedWithPrivateKeyJwtIfBothJwksAndJwksUriAreNotSetBecauseTrustedIssuerSupportIsDisabled(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Either the parameter "jwks" or "jwks_uri" must be set.');
         $method = $this->getMethod();
         $commandParameters = new DataBag([
@@ -459,13 +514,13 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
         $validatedParameters = $method->checkClientConfiguration($commandParameters, new DataBag([]));
 
         static::assertTrue($validatedParameters->has('token_endpoint_auth_method'));
-        static::assertEquals('private_key_jwt', $validatedParameters->get('token_endpoint_auth_method'));
+        static::assertSame('private_key_jwt', $validatedParameters->get('token_endpoint_auth_method'));
     }
 
     /**
      * @test
      */
-    public function theClientConfigurationCanBeCheckedWithPrivateKeyJwtIfBothJwksAndJwksUriAreNotSetBecauseTrustedIssuerSupportIsEnabled()
+    public function theClientConfigurationCanBeCheckedWithPrivateKeyJwtIfBothJwksAndJwksUriAreNotSetBecauseTrustedIssuerSupportIsEnabled(): void
     {
         $method = $this->getMethodWithTrustedIssuerSupport();
         $commandParameters = new DataBag([
@@ -480,7 +535,7 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
     /**
      * @test
      */
-    public function theClientConfigurationCannotBeCheckedWithPrivateKeyJwtIfJwksIsNotAValidKeySet()
+    public function theClientConfigurationCannotBeCheckedWithPrivateKeyJwtIfJwksIsNotAValidKeySet(): void
     {
         $method = $this->getMethod();
         $commandParameters = new DataBag([
@@ -494,23 +549,32 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
     /**
      * @test
      */
-    public function theClientConfigurationCanBeCheckedWithPrivateKeyJwtIfJwksIsValid()
+    public function theClientConfigurationCanBeCheckedWithPrivateKeyJwtIfJwksIsValid(): void
     {
         $method = $this->getMethod();
         $commandParameters = new DataBag([
             'token_endpoint_auth_method' => 'private_key_jwt',
-            'jwks' => json_decode('{"keys":[{"kty":"oct","k":"U0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVU"}]}', true),
+            'jwks' => json_decode(
+                '{"keys":[{"kty":"oct","k":"U0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVU"}]}',
+                true
+            ),
         ]);
         $validatedParameters = $method->checkClientConfiguration($commandParameters, new DataBag([]));
 
         static::assertTrue($validatedParameters->has('jwks'));
-        static::assertEquals(json_decode('{"keys":[{"kty":"oct","k":"U0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVU"}]}', true), $validatedParameters->get('jwks'));
+        static::assertSame(
+            json_decode(
+                '{"keys":[{"kty":"oct","k":"U0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVU"}]}',
+                true
+            ),
+            $validatedParameters->get('jwks')
+        );
     }
 
     /**
      * @test
      */
-    public function theClientConfigurationCannotBeCheckedWithPrivateKeyJwtIfJwksUriFactoryIsNotAvailable()
+    public function theClientConfigurationCannotBeCheckedWithPrivateKeyJwtIfJwksUriFactoryIsNotAvailable(): void
     {
         $method = $this->getMethod();
         $commandParameters = new DataBag([
@@ -524,7 +588,7 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
 
     private function getMethod(): ClientAssertionJwt
     {
-        if (null === $this->method) {
+        if ($this->method === null) {
             $this->method = new ClientAssertionJwt(
                 new JWSVerifier(new AlgorithmManager([new HS256(), new RS256()])),
                 new HeaderCheckerManager([], [new JWSTokenSupport()]),
@@ -575,19 +639,29 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
         $method = clone $this->getMethod();
 
         $trustedIssuer = $this->prophesize(TrustedIssuer::class);
-        $trustedIssuer->name()->willReturn('TRUSTED_ISSUER');
-        $trustedIssuer->getAllowedAssertionTypes()->willReturn(['urn:ietf:params:oauth:client-assertion-type:jwt-bearer']);
-        $trustedIssuer->getAllowedSignatureAlgorithms()->willReturn(['RS256']);
-        $trustedIssuer->getJWKSet()->willReturn(new JWKSet([new JWK([
-            'kty' => 'RSA',
-            'n' => '33WRDEG5rN7daMgI2N5H8cPwTeQPOnz34uG2fe0yKyHjJDGE2XoESRpu5LelSPdYM_r4AWMFWoDWPd-7xaq7uFEkM8c6zaQIgj4uEiq-pBMvH-e805SFbYOKYqfQe4eeXAk4OrQwcUkSrlGskf6YUaw_3IwbPgzEDTgTZFVtQlE',
-            'e' => 'AQAB',
-            'alg' => 'RS256',
-            'use' => 'sig',
-        ])]));
+        $trustedIssuer->name()
+            ->willReturn('TRUSTED_ISSUER')
+        ;
+        $trustedIssuer->getAllowedAssertionTypes()
+            ->willReturn(['urn:ietf:params:oauth:client-assertion-type:jwt-bearer'])
+        ;
+        $trustedIssuer->getAllowedSignatureAlgorithms()
+            ->willReturn(['RS256'])
+        ;
+        $trustedIssuer->getJWKSet()
+            ->willReturn(new JWKSet([new JWK([
+                'kty' => 'RSA',
+                'n' => '33WRDEG5rN7daMgI2N5H8cPwTeQPOnz34uG2fe0yKyHjJDGE2XoESRpu5LelSPdYM_r4AWMFWoDWPd-7xaq7uFEkM8c6zaQIgj4uEiq-pBMvH-e805SFbYOKYqfQe4eeXAk4OrQwcUkSrlGskf6YUaw_3IwbPgzEDTgTZFVtQlE',
+                'e' => 'AQAB',
+                'alg' => 'RS256',
+                'use' => 'sig',
+            ])]))
+        ;
 
         $trustedIssuerRepository = $this->prophesize(TrustedIssuerRepository::class);
-        $trustedIssuerRepository->find('TRUSTED_ISSUER')->willReturn($trustedIssuer->reveal());
+        $trustedIssuerRepository->find('TRUSTED_ISSUER')
+            ->willReturn($trustedIssuer->reveal())
+        ;
 
         $method->enableTrustedIssuerSupport($trustedIssuerRepository->reveal());
 
@@ -603,11 +677,7 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
 
     private function createValidClientAssertionSignedByTheClient(): JWS
     {
-        $jwsBuilder = new JWSBuilder(
-            new AlgorithmManager([
-                new HS256(),
-            ])
-        );
+        $jwsBuilder = new JWSBuilder(new AlgorithmManager([new HS256()]));
 
         return $jwsBuilder
             ->create()
@@ -618,8 +688,12 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
                 'exp' => time() + 3600,
             ]))
             ->addSignature(
-                JWK::createFromJson('{"kty":"oct","k":"U0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVU"}'),
-                ['alg' => 'HS256']
+                JWK::createFromJson(
+                    '{"kty":"oct","k":"U0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVU"}'
+                ),
+                [
+                    'alg' => 'HS256',
+                ]
             )
             ->build()
         ;
@@ -627,11 +701,7 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
 
     private function createValidClientAssertionSignedByATrustedIssuer(): JWS
     {
-        $jwsBuilder = new JWSBuilder(
-            new AlgorithmManager([
-                new RS256(),
-            ])
-        );
+        $jwsBuilder = new JWSBuilder(new AlgorithmManager([new RS256()]));
 
         return $jwsBuilder
             ->create()
@@ -653,7 +723,9 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
                     'dq' => 'JV2pC7CB50QeZx7C02h3jZyuObC9YHEEoxOXr9ZPjPBVvjV5S6NVajQsdEu4Kgr_8YOqaWgiHovcxTwyqcgZvQ',
                     'qi' => 'VZykPj-ugKQxuWTSE-hA-nJqkl7FzjfzHte4QYUSHLHFq6oLlHhgUoJ_4oFLaBmCvgZLAFRDDD6pnd5Fgzt9ow',
                 ]),
-                ['alg' => 'RS256']
+                [
+                    'alg' => 'RS256',
+                ]
             )
             ->build()
         ;
@@ -661,18 +733,18 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
 
     private function createInvalidClientAssertionSignedByTheClient(): JWS
     {
-        $jwsBuilder = new JWSBuilder(
-            new AlgorithmManager([
-                new HS256(),
-            ])
-        );
+        $jwsBuilder = new JWSBuilder(new AlgorithmManager([new HS256()]));
 
         return $jwsBuilder
             ->create()
             ->withPayload(JsonConverter::encode([]))
             ->addSignature(
-                JWK::createFromJson('{"kty":"oct","k":"U0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVU"}'),
-                ['alg' => 'HS256']
+                JWK::createFromJson(
+                    '{"kty":"oct","k":"U0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVUU0VDUkVU"}'
+                ),
+                [
+                    'alg' => 'HS256',
+                ]
             )
             ->build()
         ;
@@ -680,16 +752,11 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
 
     private function createInvalidClientAssertionSignedByATrustedIssuer(): JWS
     {
-        $jwsBuilder = new JWSBuilder(
-            new AlgorithmManager([
-                new RS256(),
-            ])
-        );
+        $jwsBuilder = new JWSBuilder(new AlgorithmManager([new RS256()]));
 
         return $jwsBuilder
             ->create()
-            ->withPayload(JsonConverter::encode([
-            ]))
+            ->withPayload(JsonConverter::encode([]))
             ->addSignature(
                 new JWK([
                     'kty' => 'RSA',
@@ -702,7 +769,9 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
                     'dq' => 'JV2pC7CB50QeZx7C02h3jZyuObC9YHEEoxOXr9ZPjPBVvjV5S6NVajQsdEu4Kgr_8YOqaWgiHovcxTwyqcgZvQ',
                     'qi' => 'VZykPj-ugKQxuWTSE-hA-nJqkl7FzjfzHte4QYUSHLHFq6oLlHhgUoJ_4oFLaBmCvgZLAFRDDD6pnd5Fgzt9ow',
                 ]),
-                ['alg' => 'RS256']
+                [
+                    'alg' => 'RS256',
+                ]
             )
             ->build()
         ;
@@ -717,7 +786,10 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
         );
         $jwe = $jweBuilder->create()
             ->withPayload($assertion)
-            ->withSharedProtectedHeader(['alg' => 'RSA-OAEP-256', 'enc' => 'A256CBC-HS512'])
+            ->withSharedProtectedHeader([
+                'alg' => 'RSA-OAEP-256',
+                'enc' => 'A256CBC-HS512',
+            ])
             ->addRecipient(new JWK([
                 'kty' => 'RSA',
                 'kid' => 'samwise.gamgee@hobbiton.example',
@@ -737,12 +809,22 @@ final class ClientAssertionJwtAuthenticationMethodTest extends TestCase
     private function buildRequest(array $data): ObjectProphecy
     {
         $body = $this->prophesize(StreamInterface::class);
-        $body->getContents()->willReturn(http_build_query($data));
+        $body->getContents()
+            ->willReturn(http_build_query($data))
+        ;
         $request = $this->prophesize(ServerRequestInterface::class);
-        $request->hasHeader('Content-Type')->willReturn(true);
-        $request->getHeader('Content-Type')->willReturn(['application/x-www-form-urlencoded']);
-        $request->getBody()->willReturn($body->reveal());
-        $request->getParsedBody()->willReturn([]);
+        $request->hasHeader('Content-Type')
+            ->willReturn(true)
+        ;
+        $request->getHeader('Content-Type')
+            ->willReturn(['application/x-www-form-urlencoded'])
+        ;
+        $request->getBody()
+            ->willReturn($body->reveal())
+        ;
+        $request->getParsedBody()
+            ->willReturn([])
+        ;
 
         return $request;
     }

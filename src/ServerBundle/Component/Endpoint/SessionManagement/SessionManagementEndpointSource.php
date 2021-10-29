@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\ServerBundle\Component\Endpoint\SessionManagement;
 
 use OAuth2Framework\ServerBundle\Component\Component;
@@ -31,7 +22,7 @@ class SessionManagementEndpointSource implements Component
     {
         $config = $configs['endpoint']['session_management'];
         $container->setParameter('oauth2_server.endpoint.session_management.enabled', $config['enabled']);
-        if (!$config['enabled']) {
+        if (! $config['enabled']) {
             return;
         }
         $container->setParameter('oauth2_server.endpoint.session_management.path', $config['path']);
@@ -39,7 +30,9 @@ class SessionManagementEndpointSource implements Component
         $container->setParameter('oauth2_server.endpoint.session_management.storage_name', $config['storage_name']);
         $container->setParameter('oauth2_server.endpoint.session_management.template', $config['template']);
 
-        $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint/session_management'));
+        $loader = new PhpFileLoader($container, new FileLocator(
+            __DIR__ . '/../../../Resources/config/endpoint/session_management'
+        ));
         $loader->load('session_management.php');
     }
 
@@ -49,19 +42,19 @@ class SessionManagementEndpointSource implements Component
             ->arrayNode($this->name())
             ->canBeEnabled()
             ->validate()
-            ->ifTrue(function ($config) {
-                return true === $config['enabled'] && null === $config['path'];
+            ->ifTrue(static function ($config): bool {
+                return $config['enabled'] === true && $config['path'] === null;
             })
             ->thenInvalid('The route name must be set.')
             ->end()
             ->validate()
-            ->ifTrue(function ($config) {
-                return true === $config['enabled'] && null === $config['storage_name'];
+            ->ifTrue(static function ($config): bool {
+                return $config['enabled'] === true && $config['storage_name'] === null;
             })->thenInvalid('The option "storage_name" must be set.')
             ->end()
             ->validate()
-            ->ifTrue(function ($config) {
-                return true === $config['enabled'] && null === $config['template'];
+            ->ifTrue(static function ($config): bool {
+                return $config['enabled'] === true && $config['template'] === null;
             })->thenInvalid('The option "template" must be set.')
             ->end()
             ->children()

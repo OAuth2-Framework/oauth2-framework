@@ -1,8 +1,9 @@
 imports:
     - { resource: security.yml }
-        - { resource: http.yml }
-        - { resource: jose.yml }
-        - { resource: oauth2_server.yml }
+    - { resource: http.yml }
+    - { resource: jose.yml }
+    - { resource: oauth2_server.yml }
+    - { resource: webfinger.yml }
 
 
 framework:
@@ -14,13 +15,14 @@ framework:
     session:
         storage_id: session.storage.mock_file
     router:
-        resource: '%kernel.project_dir%/Tests/config/routing.yml'
+        resource: '%kernel.project_dir%/tests/config/routing.yml'
         strict_requirements: ~
     assets:
         enabled: false
     trusted_hosts:   ~
     fragments:       ~
     http_method_override: true
+    http_client: ~
 
 # Twig Configuration
 twig:

@@ -2,45 +2,28 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
+namespace OAuth2Framework\Tests\ServerBundle\Functional;
 
-namespace OAuth2Framework\ServerBundle\Tests\Functional;
-
-use Doctrine\ORM\EntityManager;
-use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
+use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\Console\Input\StringInput;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * @internal
  */
-class DataFixtureTestCase extends WebTestCase
+final class DataFixtureTestCase extends WebTestCase
 {
-    /** @var Application */
-    protected static $application;
+    protected static ?Application $application = null;
 
-    /** @var Client */
-    protected $client;
+    protected KernelBrowser $client;
 
-    /** @var ContainerInterface */
-    protected $container;
-
-    /** @var EntityManager */
-    protected $entityManager;
+    protected ?object $entityManager = null;
 
     /**
      * {@inheritdoc}
      */
-    public function setUp(): void
+    protected function setUp(): void
     {
         self::runCommand('doctrine:database:drop --force');
         self::runCommand('doctrine:database:create');
@@ -57,7 +40,7 @@ class DataFixtureTestCase extends WebTestCase
     /**
      * {@inheritdoc}
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         self::runCommand('doctrine:database:drop --force');
 
@@ -67,16 +50,16 @@ class DataFixtureTestCase extends WebTestCase
         $this->entityManager = null; // avoid memory leaks
     }
 
-    protected static function runCommand($command)
+    protected static function runCommand($command): int
     {
         $command = sprintf('%s --quiet', $command);
 
         return self::getApplication()->run(new StringInput($command));
     }
 
-    protected static function getApplication()
+    protected static function getApplication(): ?Application
     {
-        if (null === self::$application) {
+        if (self::$application === null) {
             $client = static::createClient();
 
             self::$application = new Application($client->getKernel());

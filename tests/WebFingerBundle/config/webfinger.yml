@@ -1,3 +1,0 @@
-webfinger:
-    path: '/.well-known/webfinger'
-    resource_repository: 'OAuth2Framework\WebFingerBundle\Tests\TestBundle\Entity\ResourceRepository'

@@ -2,21 +2,12 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\Component\OpenIdConnect;
 
-use DateTimeImmutable;
-use function Safe\sprintf;
-use function Safe\json_encode;
+use function array_key_exists;
 use Base64Url\Base64Url;
+use DateTimeImmutable;
+use function in_array;
 use InvalidArgumentException;
 use Jose\Component\Core\JWK;
 use Jose\Component\Core\JWKSet;
@@ -26,35 +17,24 @@ use Jose\Component\Encryption\Serializer\CompactSerializer as JweCompactSerializ
 use Jose\Component\KeyManagement\JKUFactory;
 use Jose\Component\Signature\JWSBuilder;
 use Jose\Component\Signature\Serializer\CompactSerializer as JwsCompactSerializer;
+use const JSON_THROW_ON_ERROR;
+use const JSON_UNESCAPED_SLASHES;
+use const JSON_UNESCAPED_UNICODE;
+use LogicException;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeId;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeRepository;
 use OAuth2Framework\Component\Core\AccessToken\AccessToken;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\UserAccount\UserAccount;
-use OAuth2Framework\Component\OpenIdConnect\UserInfo\UserInfo;
 
 class IdTokenBuilder
 {
-    private string $issuer;
-
-    private Client $client;
-
-    private UserAccount $userAccount;
-
-    private string $redirectUri;
-
-    private UserInfo $userinfo;
-
     private ?JWKSet $signatureKeys = null;
-
-    private int $lifetime;
 
     private ?string $scope = null;
 
     private array $requestedClaims = [];
-
-    private ?string $claimsLocales = null;
 
     private ?AccessTokenId $accessTokenId = null;
 
@@ -76,42 +56,41 @@ class IdTokenBuilder
 
     private ?DateTimeImmutable $expiresAt = null;
 
-    private ?JKUFactory $jkuFactory;
-
-    private ?AuthorizationCodeRepository $authorizationCodeRepository;
-
-    public function __construct(string $issuer, UserInfo $userinfo, int $lifetime, Client $client, UserAccount $userAccount, string $redirectUri, ?JKUFactory $jkuFactory, ?AuthorizationCodeRepository $authorizationCodeRepository)
-    {
-        $this->issuer = $issuer;
-        $this->userinfo = $userinfo;
-        $this->lifetime = $lifetime;
-        $this->client = $client;
-        $this->userAccount = $userAccount;
-        $this->redirectUri = $redirectUri;
-        $this->jkuFactory = $jkuFactory;
-        $this->authorizationCodeRepository = $authorizationCodeRepository;
+    public function __construct(
+        private string $issuer,
+        private int $lifetime,
+        private Client $client,
+        private UserAccount $userAccount,
+        private ?JKUFactory $jkuFactory,
+        private ?AuthorizationCodeRepository $authorizationCodeRepository
+    ) {
     }
 
     public function setAccessToken(AccessToken $accessToken): void
     {
         $this->accessTokenId = $accessToken->getId();
         $this->expiresAt = $accessToken->getExpiresAt();
-        $this->scope = $accessToken->getParameter()->has('scope') ? $accessToken->getParameter()->get('scope') : null;
+        $this->scope = $accessToken->getParameter()
+            ->has('scope') ? $accessToken->getParameter()
+            ->get('scope') : null;
 
-        if ($accessToken->getMetadata()->has('authorization_code_id') && null !== $this->authorizationCodeRepository) {
+        if ($accessToken->getMetadata()->has('authorization_code_id') && $this->authorizationCodeRepository !== null) {
             $authorizationCodeId = new AuthorizationCodeId($accessToken->getMetadata()->get('authorization_code_id'));
             $authorizationCode = $this->authorizationCodeRepository->find($authorizationCodeId);
-            if (null === $authorizationCode) {
+            if ($authorizationCode === null) {
                 return;
             }
             $this->authorizationCodeId = $authorizationCodeId;
             $queryParams = $authorizationCode->getQueryParameters();
-            foreach (['nonce' => 'nonce', 'claims_locales' => 'claimsLocales'] as $k => $v) {
-                if (\array_key_exists($k, $queryParams)) {
+            foreach ([
+                'nonce' => 'nonce',
+                'claims_locales' => 'claimsLocales',
+            ] as $k => $v) {
+                if (array_key_exists($k, $queryParams)) {
                     $this->{$v} = $queryParams[$k];
                 }
             }
-            $this->withAuthenticationTime = \array_key_exists('max_age', $authorizationCode->getQueryParameters());
+            $this->withAuthenticationTime = array_key_exists('max_age', $authorizationCode->getQueryParameters());
         }
     }
 
@@ -127,7 +106,6 @@ class IdTokenBuilder
 
     public function withClaimsLocales(string $claimsLocales): void
     {
-        $this->claimsLocales = $claimsLocales;
     }
 
     public function withAuthenticationTime(): void
@@ -162,10 +140,14 @@ class IdTokenBuilder
 
     public function withSignature(JWSBuilder $jwsBuilder, JWKSet $signatureKeys, string $signatureAlgorithm): void
     {
-        if (!\in_array($signatureAlgorithm, $jwsBuilder->getSignatureAlgorithmManager()->list(), true)) {
-            throw new InvalidArgumentException(sprintf('Unsupported signature algorithm "%s". Please use one of the following one: %s', $signatureAlgorithm, implode(', ', $jwsBuilder->getSignatureAlgorithmManager()->list())));
+        if (! in_array($signatureAlgorithm, $jwsBuilder->getSignatureAlgorithmManager()->list(), true)) {
+            throw new InvalidArgumentException(sprintf(
+                'Unsupported signature algorithm "%s". Please use one of the following one: %s',
+                $signatureAlgorithm,
+                implode(', ', $jwsBuilder->getSignatureAlgorithmManager()->list())
+            ));
         }
-        if (0 === $signatureKeys->count()) {
+        if ($signatureKeys->count() === 0) {
             throw new InvalidArgumentException('The signature key set must contain at least one key.');
         }
         $this->jwsBuilder = $jwsBuilder;
@@ -173,13 +155,29 @@ class IdTokenBuilder
         $this->signatureAlgorithm = $signatureAlgorithm;
     }
 
-    public function withEncryption(JWEBuilder $jweBuilder, string $keyEncryptionAlgorithm, string $contentEncryptionAlgorithm): void
-    {
-        if (!\in_array($keyEncryptionAlgorithm, $jweBuilder->getKeyEncryptionAlgorithmManager()->list(), true)) {
-            throw new InvalidArgumentException(sprintf('Unsupported key encryption algorithm "%s". Please use one of the following one: %s', $keyEncryptionAlgorithm, implode(', ', $jweBuilder->getKeyEncryptionAlgorithmManager()->list())));
+    public function withEncryption(
+        JWEBuilder $jweBuilder,
+        string $keyEncryptionAlgorithm,
+        string $contentEncryptionAlgorithm
+    ): void {
+        if (! in_array($keyEncryptionAlgorithm, $jweBuilder->getKeyEncryptionAlgorithmManager()->list(), true)) {
+            throw new InvalidArgumentException(sprintf(
+                'Unsupported key encryption algorithm "%s". Please use one of the following one: %s',
+                $keyEncryptionAlgorithm,
+                implode(', ', $jweBuilder->getKeyEncryptionAlgorithmManager()->list())
+            ));
         }
-        if (!\in_array($contentEncryptionAlgorithm, $jweBuilder->getContentEncryptionAlgorithmManager()->list(), true)) {
-            throw new InvalidArgumentException(sprintf('Unsupported content encryption algorithm "%s". Please use one of the following one: %s', $contentEncryptionAlgorithm, implode(', ', $jweBuilder->getContentEncryptionAlgorithmManager()->list())));
+        if (! in_array(
+            $contentEncryptionAlgorithm,
+            $jweBuilder->getContentEncryptionAlgorithmManager()
+                ->list(),
+            true
+        )) {
+            throw new InvalidArgumentException(sprintf(
+                'Unsupported content encryption algorithm "%s". Please use one of the following one: %s',
+                $contentEncryptionAlgorithm,
+                implode(', ', $jweBuilder->getContentEncryptionAlgorithmManager()->list())
+            ));
         }
         $this->jweBuilder = $jweBuilder;
         $this->keyEncryptionAlgorithm = $keyEncryptionAlgorithm;
@@ -188,22 +186,22 @@ class IdTokenBuilder
 
     public function build(): string
     {
-        if (null === $this->scope) {
-            throw new \LogicException('It is mandatory to set the scope.');
+        if ($this->scope === null) {
+            throw new LogicException('It is mandatory to set the scope.');
         }
         //$data = $this->updateClaimsWithAmrAndAcrInfo($data, $this->userAccount);
         $data = $this->updateClaimsWithAuthenticationTime($data, $this->requestedClaims);
         $data = $this->updateClaimsWithNonce($data);
-        if (null !== $this->signatureAlgorithm) {
+        if ($this->signatureAlgorithm !== null) {
             $data = $this->updateClaimsWithJwtClaims($data);
             $data = $this->updateClaimsWithTokenHash($data);
             $data = $this->updateClaimsAudience($data);
             $result = $this->computeIdToken($data);
         } else {
-            $result = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            $result = json_encode($data, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         }
 
-        if (null !== $this->keyEncryptionAlgorithm && null !== $this->contentEncryptionAlgorithm) {
+        if ($this->keyEncryptionAlgorithm !== null && $this->contentEncryptionAlgorithm !== null) {
             $result = $this->tryToEncrypt($this->client, $result);
         }
 
@@ -212,7 +210,7 @@ class IdTokenBuilder
 
     private function updateClaimsWithJwtClaims(array $claims): array
     {
-        if (null === $this->expiresAt) {
+        if ($this->expiresAt === null) {
             $this->expiresAt = (new DateTimeImmutable())->setTimestamp(time() + $this->lifetime);
         }
 
@@ -227,7 +225,10 @@ class IdTokenBuilder
 
     private function updateClaimsWithAuthenticationTime(array $claims, array $requestedClaims): array
     {
-        if ((true === $this->withAuthenticationTime || \array_key_exists('auth_time', $requestedClaims)) && null !== $this->userAccount->getLastLoginAt()) {
+        if (($this->withAuthenticationTime === true || array_key_exists(
+            'auth_time',
+            $requestedClaims
+        )) && $this->userAccount->getLastLoginAt() !== null) {
             $claims['auth_time'] = $this->userAccount->getLastLoginAt();
         }
 
@@ -236,7 +237,7 @@ class IdTokenBuilder
 
     private function updateClaimsWithNonce(array $claims): array
     {
-        if (null !== $this->nonce) {
+        if ($this->nonce !== null) {
             $claims['nonce'] = $this->nonce;
         }
 
@@ -245,10 +246,7 @@ class IdTokenBuilder
 
     private function updateClaimsAudience(array $claims): array
     {
-        $claims['aud'] = [
-            $this->client->getPublicId()->getValue(),
-            $this->issuer,
-        ];
+        $claims['aud'] = [$this->client->getPublicId()->getValue(), $this->issuer];
         $claims['azp'] = $this->client->getPublicId()->getValue();
 
         return $claims;
@@ -273,9 +271,11 @@ class IdTokenBuilder
     private function tryToEncrypt(Client $client, string $jwt): string
     {
         $clientKeySet = $this->getClientKeySet($client);
-        $keyEncryptionAlgorithm = $this->jweBuilder->getKeyEncryptionAlgorithmManager()->get($this->keyEncryptionAlgorithm);
+        $keyEncryptionAlgorithm = $this->jweBuilder->getKeyEncryptionAlgorithmManager()
+            ->get($this->keyEncryptionAlgorithm)
+        ;
         $encryptionKey = $clientKeySet->selectKey('enc', $keyEncryptionAlgorithm);
-        if (null === $encryptionKey) {
+        if ($encryptionKey === null) {
             throw new InvalidArgumentException('No encryption key available for the client.');
         }
         $header = [
@@ -307,13 +307,21 @@ class IdTokenBuilder
             ]);
             $keys = $keys->with($jwk);
         }
-        $algorithm = $this->jwsBuilder->getSignatureAlgorithmManager()->get($signatureAlgorithm);
-        if ('none' === $algorithm->name()) {
-            return new JWK(['kty' => 'none', 'alg' => 'none', 'use' => 'sig']);
+        $algorithm = $this->jwsBuilder->getSignatureAlgorithmManager()
+            ->get($signatureAlgorithm)
+        ;
+        if ($algorithm->name() === 'none') {
+            return new JWK([
+                'kty' => 'none',
+                'alg' => 'none',
+                'use' => 'sig',
+            ]);
         }
         $signatureKey = $keys->selectKey('sig', $algorithm);
-        if (null === $signatureKey) {
-            throw new InvalidArgumentException('Unable to find a key to sign the ID Token. Please verify the selected key set contains suitable keys.');
+        if ($signatureKey === null) {
+            throw new InvalidArgumentException(
+                'Unable to find a key to sign the ID Token. Please verify the selected key set contains suitable keys.'
+            );
         }
 
         return $signatureKey;
@@ -334,13 +342,13 @@ class IdTokenBuilder
 
     private function updateClaimsWithTokenHash(array $claims): array
     {
-        if ('none' === $this->signatureAlgorithm) {
+        if ($this->signatureAlgorithm === 'none') {
             return $claims;
         }
-        if (null !== $this->accessTokenId) {
+        if ($this->accessTokenId !== null) {
             $claims['at_hash'] = $this->getHash($this->accessTokenId->getValue());
         }
-        if (null !== $this->authorizationCodeId) {
+        if ($this->authorizationCodeId !== null) {
             $claims['c_hash'] = $this->getHash($this->authorizationCodeId->getValue());
         }
 
@@ -349,7 +357,9 @@ class IdTokenBuilder
 
     private function getHash(string $tokenId): string
     {
-        return Base64Url::encode(mb_substr(hash($this->getHashMethod(), $tokenId, true), 0, $this->getHashSize(), '8bit'));
+        return Base64Url::encode(
+            mb_substr(hash($this->getHashMethod(), $tokenId, true), 0, $this->getHashSize(), '8bit')
+        );
     }
 
     private function getHashMethod(): string
@@ -369,7 +379,7 @@ class IdTokenBuilder
             'PS512' => 'sha512',
         ];
 
-        if (!\array_key_exists($this->signatureAlgorithm, $map)) {
+        if (! array_key_exists($this->signatureAlgorithm, $map)) {
             throw new InvalidArgumentException(sprintf('Algorithm "%s" is not supported', $this->signatureAlgorithm));
         }
 
@@ -393,7 +403,7 @@ class IdTokenBuilder
             'PS512' => 32,
         ];
 
-        if (!\array_key_exists($this->signatureAlgorithm, $map)) {
+        if (! array_key_exists($this->signatureAlgorithm, $map)) {
             throw new InvalidArgumentException(sprintf('Algorithm "%s" is not supported', $this->signatureAlgorithm));
         }
 
@@ -417,14 +427,14 @@ class IdTokenBuilder
             ]);
             $keyset = $keyset->with($jwk);
         }
-        if ($client->has('jwks_uri') && null !== $this->jkuFactory) {
+        if ($client->has('jwks_uri') && $this->jkuFactory !== null) {
             $jwksUri = $this->jkuFactory->loadFromUrl($client->get('jwks_uri'));
             foreach ($jwksUri as $jwk) {
                 $keyset = $keyset->with($jwk);
             }
         }
 
-        if (0 === $keyset->count()) {
+        if ($keyset->count() === 0) {
             throw new InvalidArgumentException('The client has no key or key set.');
         }
 

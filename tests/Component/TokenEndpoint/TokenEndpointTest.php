@@ -2,17 +2,9 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\Tests\Component\TokenEndpoint;
 
+use DateTimeImmutable;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository;
@@ -34,38 +26,24 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 /**
- * @group TokenEndpoint
- *
  * @internal
  */
 final class TokenEndpointTest extends TestCase
 {
     use ProphecyTrait;
 
-    /**
-     * @var null|TokenEndpoint
-     */
-    private $tokenEndpoint;
+    private ?TokenEndpoint $tokenEndpoint = null;
 
-    /**
-     * @var null|ClientRepository
-     */
-    private $clientRepository;
+    private ?object $clientRepository = null;
 
-    /**
-     * @var null|UserAccountRepository
-     */
-    private $userAccountRepository;
+    private ?object $userAccountRepository = null;
 
-    /**
-     * @var null|AccessTokenRepository
-     */
-    private $accessTokenRepository;
+    private ?object $accessTokenRepository = null;
 
     /**
      * @test
      */
-    public function unauthenticatedClient()
+    public function unauthenticatedClient(): void
     {
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getAttribute('grant_type')
@@ -80,10 +58,12 @@ final class TokenEndpointTest extends TestCase
         $handler = $this->prophesize(RequestHandlerInterface::class);
 
         try {
-            $this->getTokenEndpoint()->process($request->reveal(), $handler->reveal());
+            $this->getTokenEndpoint()
+                ->process($request->reveal(), $handler->reveal())
+            ;
         } catch (OAuth2Error $e) {
-            static::assertEquals(401, $e->getCode());
-            static::assertEquals([
+            static::assertSame(401, $e->getCode());
+            static::assertSame([
                 'error' => 'invalid_client',
                 'error_description' => 'Client authentication failed.',
             ], $e->getData());
@@ -93,15 +73,27 @@ final class TokenEndpointTest extends TestCase
     /**
      * @test
      */
-    public function theClientIsNotAllowedToUseTheGrantType()
+    public function theClientIsNotAllowedToUseTheGrantType(): void
     {
         $client = $this->prophesize(Client::class);
-        $client->isPublic()->willReturn(false);
-        $client->getPublicId()->willReturn(new ClientId('CLIENT_ID'));
-        $client->getClientId()->willReturn(new ClientId('CLIENT_ID'));
-        $client->getOwnerId()->willReturn(new UserAccountId('OWNER_ID'));
-        $client->isDeleted()->willReturn(false);
-        $client->isGrantTypeAllowed('foo')->willReturn(false);
+        $client->isPublic()
+            ->willReturn(false)
+        ;
+        $client->getPublicId()
+            ->willReturn(new ClientId('CLIENT_ID'))
+        ;
+        $client->getClientId()
+            ->willReturn(new ClientId('CLIENT_ID'))
+        ;
+        $client->getOwnerId()
+            ->willReturn(new UserAccountId('OWNER_ID'))
+        ;
+        $client->isDeleted()
+            ->willReturn(false)
+        ;
+        $client->isGrantTypeAllowed('foo')
+            ->willReturn(false)
+        ;
 
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getAttribute('grant_type')
@@ -116,10 +108,12 @@ final class TokenEndpointTest extends TestCase
         $handler = $this->prophesize(RequestHandlerInterface::class);
 
         try {
-            $this->getTokenEndpoint()->process($request->reveal(), $handler->reveal());
+            $this->getTokenEndpoint()
+                ->process($request->reveal(), $handler->reveal())
+            ;
         } catch (OAuth2Error $e) {
-            static::assertEquals(400, $e->getCode());
-            static::assertEquals([
+            static::assertSame(400, $e->getCode());
+            static::assertSame([
                 'error' => 'unauthorized_client',
                 'error_description' => 'The grant type "foo" is unauthorized for this client.',
             ], $e->getData());
@@ -129,15 +123,27 @@ final class TokenEndpointTest extends TestCase
     /**
      * @test
      */
-    public function theTokenRequestIsValidAndAnAccessTokenIsIssued()
+    public function theTokenRequestIsValidAndAnAccessTokenIsIssued(): void
     {
         $client = $this->prophesize(Client::class);
-        $client->isPublic()->willReturn(false);
-        $client->getPublicId()->willReturn(new ClientId('CLIENT_ID'));
-        $client->getClientId()->willReturn(new ClientId('CLIENT_ID'));
-        $client->getOwnerId()->willReturn(new UserAccountId('OWNER_ID'));
-        $client->isDeleted()->willReturn(false);
-        $client->isGrantTypeAllowed('foo')->willReturn(true);
+        $client->isPublic()
+            ->willReturn(false)
+        ;
+        $client->getPublicId()
+            ->willReturn(new ClientId('CLIENT_ID'))
+        ;
+        $client->getClientId()
+            ->willReturn(new ClientId('CLIENT_ID'))
+        ;
+        $client->getOwnerId()
+            ->willReturn(new UserAccountId('OWNER_ID'))
+        ;
+        $client->isDeleted()
+            ->willReturn(false)
+        ;
+        $client->isGrantTypeAllowed('foo')
+            ->willReturn(true)
+        ;
 
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getAttribute('grant_type')
@@ -150,8 +156,14 @@ final class TokenEndpointTest extends TestCase
         ;
 
         $tokenType = $this->prophesize(TokenType::class);
-        $tokenType->name()->willReturn('TOKEN_TYPE')->shouldBeCalled();
-        $tokenType->getAdditionalInformation()->willReturn(['token_type_foo' => 'token_type_bar'])->shouldBeCalled();
+        $tokenType->name()
+            ->willReturn('TOKEN_TYPE')
+            ->shouldBeCalled()
+        ;
+        $tokenType->getAdditionalInformation()
+            ->willReturn([
+                'token_type_foo' => 'token_type_bar',
+            ])->shouldBeCalled();
         $request->getAttribute('token_type')
             ->willReturn($tokenType->reveal())
             ->shouldBeCalled()
@@ -162,17 +174,26 @@ final class TokenEndpointTest extends TestCase
             ->shouldNotBeCalled()
         ;
 
-        $response = $this->getTokenEndpoint()->process($request->reveal(), $handler->reveal());
-        $response->getBody()->rewind();
-        $body = $response->getBody()->getContents();
+        $response = $this->getTokenEndpoint()
+            ->process($request->reveal(), $handler->reveal())
+        ;
+        $response->getBody()
+            ->rewind()
+        ;
+        $body = $response->getBody()
+            ->getContents()
+        ;
 
-        static::assertEquals(200, $response->getStatusCode());
-        static::assertMatchesRegularExpression('/^\{"token_type_foo"\:"token_type_bar","token_type"\:"TOKEN_TYPE","access_token"\:"[a-f0-9]{64}","expires_in"\:\d{4}\}$/', $body);
+        static::assertSame(200, $response->getStatusCode());
+        static::assertMatchesRegularExpression(
+            '/^\{"token_type_foo"\:"token_type_bar","token_type"\:"TOKEN_TYPE","access_token"\:"[a-f0-9]{64}","expires_in"\:\d{4}\}$/',
+            $body
+        );
     }
 
     private function getTokenEndpoint(): TokenEndpoint
     {
-        if (null === $this->tokenEndpoint) {
+        if ($this->tokenEndpoint === null) {
             $this->tokenEndpoint = new TokenEndpoint(
                 $this->getClientRepository(),
                 $this->getUserAccountRepository(),
@@ -188,15 +209,29 @@ final class TokenEndpointTest extends TestCase
 
     private function getClientRepository(): ClientRepository
     {
-        if (null === $this->clientRepository) {
+        if ($this->clientRepository === null) {
             $client = $this->prophesize(Client::class);
-            $client->isPublic()->willReturn(false);
-            $client->getPublicId()->willReturn(new ClientId('CLIENT_ID'));
-            $client->getClientId()->willReturn(new ClientId('CLIENT_ID'));
-            $client->getOwnerId()->willReturn(new UserAccountId('OWNER_ID'));
-            $client->isDeleted()->willReturn(false);
-            $client->has('grant_types')->willReturn(true);
-            $client->get('grant_types')->willReturn(['foo']);
+            $client->isPublic()
+                ->willReturn(false)
+            ;
+            $client->getPublicId()
+                ->willReturn(new ClientId('CLIENT_ID'))
+            ;
+            $client->getClientId()
+                ->willReturn(new ClientId('CLIENT_ID'))
+            ;
+            $client->getOwnerId()
+                ->willReturn(new UserAccountId('OWNER_ID'))
+            ;
+            $client->isDeleted()
+                ->willReturn(false)
+            ;
+            $client->has('grant_types')
+                ->willReturn(true)
+            ;
+            $client->get('grant_types')
+                ->willReturn(['foo'])
+            ;
 
             $clientRepository = $this->prophesize(ClientRepository::class);
             $clientRepository->find(Argument::type(ClientId::class))->willReturn($client->reveal());
@@ -209,7 +244,7 @@ final class TokenEndpointTest extends TestCase
 
     private function getUserAccountRepository(): UserAccountRepository
     {
-        if (null === $this->userAccountRepository) {
+        if ($this->userAccountRepository === null) {
             $userAccountRepository = $this->prophesize(UserAccountRepository::class);
 
             $this->userAccountRepository = $userAccountRepository->reveal();
@@ -220,11 +255,20 @@ final class TokenEndpointTest extends TestCase
 
     private function getAccessTokenRepository(): AccessTokenRepository
     {
-        if (null === $this->accessTokenRepository) {
+        if ($this->accessTokenRepository === null) {
             $accessTokenRepository = $this->prophesize(AccessTokenRepository::class);
-            $accessTokenRepository->create(Argument::type(ClientId::class), Argument::type(ResourceOwnerId::class), Argument::type(\DateTimeImmutable::class), Argument::type(DataBag::class), Argument::type(DataBag::class), Argument::any())
+            $accessTokenRepository->create(
+                Argument::type(ClientId::class),
+                Argument::type(ResourceOwnerId::class),
+                Argument::type(DateTimeImmutable::class),
+                Argument::type(DataBag::class),
+                Argument::type(DataBag::class),
+                Argument::any()
+            )
                 ->will(function (array $args) {
-                    return new AccessToken(new AccessTokenId(bin2hex(random_bytes(32))), $args[0], $args[1], $args[2], $args[3], $args[4], $args[5]);
+                    return new AccessToken(new AccessTokenId(bin2hex(
+                        random_bytes(32)
+                    )), $args[0], $args[1], $args[2], $args[3], $args[4], $args[5]);
                 })
             ;
             $accessTokenRepository->save(Argument::type(AccessToken::class))->will(function (array $args) {

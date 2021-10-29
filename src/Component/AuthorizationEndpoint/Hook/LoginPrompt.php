@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\Component\AuthorizationEndpoint\Hook;
 
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
@@ -21,25 +12,28 @@ use Psr\Http\Message\ServerRequestInterface;
 
 final class LoginPrompt implements AuthorizationEndpointHook
 {
-    private UserAuthenticationCheckerManager $userAuthenticationCheckerManager;
-
-    private LoginHandler $loginHandler;
-
-    public function __construct(UserAuthenticationCheckerManager $userAuthenticationCheckerManager, LoginHandler $loginHandler)
-    {
-        $this->userAuthenticationCheckerManager = $userAuthenticationCheckerManager;
-        $this->loginHandler = $loginHandler;
+    public function __construct(
+        private UserAuthenticationCheckerManager $userAuthenticationCheckerManager,
+        private LoginHandler $loginHandler
+    ) {
     }
 
-    public function handle(ServerRequestInterface $request, string $authorizationRequestId, AuthorizationRequest $authorizationRequest): ?ResponseInterface
-    {
-        $isAuthenticationNeeded = $this->userAuthenticationCheckerManager->isAuthenticationNeeded($authorizationRequest);
+    public function handle(
+        ServerRequestInterface $request,
+        string $authorizationRequestId,
+        AuthorizationRequest $authorizationRequest
+    ): ?ResponseInterface {
+        $isAuthenticationNeeded = $this->userAuthenticationCheckerManager->isAuthenticationNeeded(
+            $authorizationRequest
+        );
 
-        if (!$isAuthenticationNeeded && !$authorizationRequest->hasPrompt('login')) {
+        if (! $isAuthenticationNeeded && ! $authorizationRequest->hasPrompt('login')) {
             return null;
         }
 
-        if ($authorizationRequest->hasAttribute('user_has_been_authenticated') && true === $authorizationRequest->getAttribute('user_has_been_authenticated')) {
+        if ($authorizationRequest->hasAttribute(
+            'user_has_been_authenticated'
+        ) && $authorizationRequest->getAttribute('user_has_been_authenticated') === true) {
             return null;
         }
 

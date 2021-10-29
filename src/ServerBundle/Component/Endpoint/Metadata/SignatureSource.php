@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\ServerBundle\Component\Endpoint\Metadata;
 
 use Jose\Bundle\JoseFramework\Helper\ConfigurationHelper;
@@ -30,7 +21,7 @@ class SignatureSource implements Component
     {
         $config = $configs['endpoint']['metadata']['signature'];
         $container->setParameter('oauth2_server.endpoint.metadata.signature.enabled', $config['enabled']);
-        if (!$config['enabled']) {
+        if (! $config['enabled']) {
             return;
         }
 
@@ -44,14 +35,14 @@ class SignatureSource implements Component
             ->arrayNode('signature')
             ->canBeEnabled()
             ->validate()
-            ->ifTrue(function ($config) {
-                return true === $config['enabled'] && null === $config['algorithm'];
+            ->ifTrue(static function ($config): bool {
+                return $config['enabled'] === true && $config['algorithm'] === null;
             })
             ->thenInvalid('The signature algorithm must be set.')
             ->end()
             ->validate()
-            ->ifTrue(function ($config) {
-                return true === $config['enabled'] && null === $config['key'];
+            ->ifTrue(static function ($config): bool {
+                return $config['enabled'] === true && $config['key'] === null;
             })
             ->thenInvalid('The signature key must be set.')
             ->end()
@@ -77,8 +68,15 @@ class SignatureSource implements Component
     {
         $config = $configs['endpoint']['metadata']['signature'];
         if ($config['enabled']) {
-            ConfigurationHelper::addJWSBuilder($container, 'oauth2_server.endpoint.metadata.signature', [$config['algorithm']], false);
-            ConfigurationHelper::addKey($container, 'oauth2_server.endpoint.metadata.signature', 'jwk', ['value' => $config['key']]);
+            ConfigurationHelper::addJWSBuilder(
+                $container,
+                'oauth2_server.endpoint.metadata.signature',
+                [$config['algorithm']],
+                false
+            );
+            ConfigurationHelper::addKey($container, 'oauth2_server.endpoint.metadata.signature', 'jwk', [
+                'value' => $config['key'],
+            ]);
         }
 
         return [];

@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\ServerBundle\Component\ClientAuthentication;
 
 use OAuth2Framework\Component\ClientAuthentication\AuthenticationMethod;
@@ -46,12 +37,16 @@ class ClientAuthenticationSource implements Component
 
     public function load(array $configs, ContainerBuilder $container): void
     {
-        if (!class_exists(AuthenticationMethodManager::class)) {
+        if (! class_exists(AuthenticationMethodManager::class)) {
             return;
         }
 
-        $container->registerForAutoconfiguration(AuthenticationMethod::class)->addTag('oauth2_server_client_authentication');
-        $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../Resources/config/client_authentication'));
+        $container->registerForAutoconfiguration(AuthenticationMethod::class)->addTag(
+            'oauth2_server_client_authentication'
+        );
+        $loader = new PhpFileLoader($container, new FileLocator(
+            __DIR__ . '/../../Resources/config/client_authentication'
+        ));
         $loader->load('client_authentication.php');
 
         foreach ($this->subComponents as $subComponent) {
@@ -61,7 +56,7 @@ class ClientAuthenticationSource implements Component
 
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
-        if (!class_exists(AuthenticationMethodManager::class)) {
+        if (! class_exists(AuthenticationMethodManager::class)) {
             return;
         }
         $childNode = $node->children()
@@ -76,15 +71,12 @@ class ClientAuthenticationSource implements Component
 
     public function prepend(ContainerBuilder $container, array $config): array
     {
-        if (!class_exists(AuthenticationMethodManager::class)) {
+        if (! class_exists(AuthenticationMethodManager::class)) {
             return [];
         }
         $updatedConfig = [];
         foreach ($this->subComponents as $subComponent) {
-            $updatedConfig = array_merge(
-                $updatedConfig,
-                $subComponent->prepend($container, $config)
-            );
+            $updatedConfig = array_merge($updatedConfig, $subComponent->prepend($container, $config));
         }
 
         return $updatedConfig;
@@ -92,7 +84,7 @@ class ClientAuthenticationSource implements Component
 
     public function build(ContainerBuilder $container): void
     {
-        if (!class_exists(AuthenticationMethodManager::class)) {
+        if (! class_exists(AuthenticationMethodManager::class)) {
             return;
         }
         $container->addCompilerPass(new ClientAuthenticationMethodCompilerPass());

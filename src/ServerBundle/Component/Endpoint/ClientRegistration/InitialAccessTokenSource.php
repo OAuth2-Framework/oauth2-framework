@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\ServerBundle\Component\Endpoint\ClientRegistration;
 
 use OAuth2Framework\Component\ClientRegistrationEndpoint\InitialAccessTokenRepository;
@@ -31,16 +22,30 @@ class InitialAccessTokenSource implements Component
     public function load(array $configs, ContainerBuilder $container): void
     {
         $config = $configs['endpoint']['client_registration']['initial_access_token'];
-        if (!$config['enabled']) {
+        if (! $config['enabled']) {
             return;
         }
-        $container->setParameter('oauth2_server.endpoint.client_registration.initial_access_token.required', $config['required']);
-        $container->setParameter('oauth2_server.endpoint.client_registration.initial_access_token.realm', $config['realm']);
-        $container->setParameter('oauth2_server.endpoint.client_registration.initial_access_token.min_length', $config['min_length']);
-        $container->setParameter('oauth2_server.endpoint.client_registration.initial_access_token.max_length', $config['max_length']);
+        $container->setParameter(
+            'oauth2_server.endpoint.client_registration.initial_access_token.required',
+            $config['required']
+        );
+        $container->setParameter(
+            'oauth2_server.endpoint.client_registration.initial_access_token.realm',
+            $config['realm']
+        );
+        $container->setParameter(
+            'oauth2_server.endpoint.client_registration.initial_access_token.min_length',
+            $config['min_length']
+        );
+        $container->setParameter(
+            'oauth2_server.endpoint.client_registration.initial_access_token.max_length',
+            $config['max_length']
+        );
         $container->setAlias(InitialAccessTokenRepository::class, $config['repository']);
 
-        $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint/client_registration'));
+        $loader = new PhpFileLoader($container, new FileLocator(
+            __DIR__ . '/../../../Resources/config/endpoint/client_registration'
+        ));
         $loader->load('initial_access_token.php');
     }
 
@@ -50,20 +55,20 @@ class InitialAccessTokenSource implements Component
             ->arrayNode($this->name())
             ->canBeEnabled()
             ->validate()
-            ->ifTrue(function ($config) {
-                return true === $config['enabled'] && null === $config['realm'];
+            ->ifTrue(static function ($config): bool {
+                return $config['enabled'] === true && $config['realm'] === null;
             })
             ->thenInvalid('The option "realm" must be set.')
             ->end()
             ->validate()
-            ->ifTrue(function ($config) {
-                return true === $config['enabled'] && null === $config['repository'];
+            ->ifTrue(static function ($config): bool {
+                return $config['enabled'] === true && $config['repository'] === null;
             })
             ->thenInvalid('The option "repository" must be set.')
             ->end()
             ->validate()
-            ->ifTrue(function ($config) {
-                return true === $config['enabled'] && $config['max_length'] < $config['min_length'];
+            ->ifTrue(static function ($config): bool {
+                return $config['enabled'] === true && $config['max_length'] < $config['min_length'];
             })
             ->thenInvalid('The option "max_length" must be greater than "min_length".')
             ->end()

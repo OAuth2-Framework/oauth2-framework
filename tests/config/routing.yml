@@ -10,3 +10,7 @@ jwkset_endpoint:
 # OAuth2FrameworkServerBundle Routes
 oauth2:
     resource: '@OAuth2FrameworkServerBundle/Resources/config/routing/routing.yml'
+
+# OAuth2FrameworkWebFingerBundle Routes
+webfinger:
+    resource: '@OAuth2FrameworkWebFingerBundle/Resources/config/routing/routing.php'

@@ -1,14 +1,14 @@
 <?php
 
 declare(strict_types=1);
-use OAuth2Framework\Component\ClientRule\RuleManager;
+
+use Jose\Component\KeyManagement\JKUFactory;
 use OAuth2Framework\Component\ClientRule\ApplicationTypeParametersRule;
 use OAuth2Framework\Component\ClientRule\ClientIdIssuedAtRule;
 use OAuth2Framework\Component\ClientRule\CommonParametersRule;
 use OAuth2Framework\Component\ClientRule\ContactsParametersRule;
-use OAuth2Framework\Component\ClientRule\RedirectionUriRule;
 use OAuth2Framework\Component\ClientRule\JwksRule;
-
+use OAuth2Framework\Component\ClientRule\RedirectionUriRule;
 /*
  * The MIT License (MIT)
  *
@@ -18,13 +18,13 @@ use OAuth2Framework\Component\ClientRule\JwksRule;
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use Jose\Component\KeyManagement\JKUFactory;
-use OAuth2Framework\Component\ClientRule;
+use OAuth2Framework\Component\ClientRule\RuleManager;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
+use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 
-return function (ContainerConfigurator $container) {
-    $container = $container->services()->defaults()
+return static function (ContainerConfigurator $container): void {
+    $container = $container->services()
+        ->defaults()
         ->private()
         ->autoconfigure()
     ;
@@ -37,8 +37,6 @@ return function (ContainerConfigurator $container) {
     $container->set(ContactsParametersRule::class);
     $container->set(RedirectionUriRule::class);
     $container->set(JwksRule::class)
-        ->args([
-            ref(JKUFactory::class)->nullOnInvalid(),
-        ])
+        ->args([service(JKUFactory::class)->nullOnInvalid()])
     ;
 };

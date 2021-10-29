@@ -2,16 +2,7 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
-namespace OAuth2Framework\Tests\Component\AuthorizationEndpoint\Tests\AuthorizationRequest;
+namespace OAuth2Framework\Tests\Component\AuthorizationEndpoint\AuthorizationRequest;
 
 use Http\Mock\Client;
 use Jose\Component\Checker\ClaimCheckerManager;
@@ -19,7 +10,9 @@ use Jose\Component\Core\AlgorithmManager;
 use Jose\Component\Core\JWKSet;
 use Jose\Component\Signature\JWS;
 use Jose\Component\Signature\JWSVerifier;
+use League\Uri\Schemes\Uri;
 use Nyholm\Psr7\Factory\Psr17Factory;
+use Nyholm\Psr7\Response;
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequestLoader;
 use OAuth2Framework\Component\Core\Client\ClientRepository;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
@@ -29,32 +22,24 @@ use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Http\Message\RequestInterface;
 
 /**
- * @group AuthorizationEndpoint
- * @group AuthorizationRequest
- *
  * @internal
  */
 final class AuthorizationRequestLoaderTest extends TestCase
 {
     use ProphecyTrait;
 
-    /**
-     * @var null|AuthorizationRequestLoader
-     */
-    private $authorizationRequestLoader;
+    private ?AuthorizationRequestLoader $authorizationRequestLoader = null;
 
     /**
      * @test
      */
-    public function basicCalls()
+    public function basicCalls(): void
     {
         $clientRepository = $this->prophesize(ClientRepository::class);
-        $loader = $this->getAuthorizationRequestLoader(
-            $clientRepository->reveal()
-        );
-        static::assertEquals([], $loader->getSupportedKeyEncryptionAlgorithms());
-        static::assertEquals([], $loader->getSupportedContentEncryptionAlgorithms());
-        static::assertEquals(['RS256'], $loader->getSupportedSignatureAlgorithms());
+        $loader = $this->getAuthorizationRequestLoader($clientRepository->reveal());
+        static::assertSame([], $loader->getSupportedKeyEncryptionAlgorithms());
+        static::assertSame([], $loader->getSupportedContentEncryptionAlgorithms());
+        static::assertSame(['RS256'], $loader->getSupportedSignatureAlgorithms());
         static::assertTrue($loader->isRequestObjectSupportEnabled());
         static::assertTrue($loader->isRequestUriRegistrationRequired());
         static::assertTrue($loader->isRequestObjectReferenceSupportEnabled());
@@ -66,370 +51,547 @@ final class AuthorizationRequestLoaderTest extends TestCase
     /**
      * @test
      */
-    public function theAuthorizationRequestMustContainAClientId()
+    public function theAuthorizationRequestMustContainAClientId(): void
     {
         $clientRepository = $this->prophesize(ClientRepository::class);
 
         try {
-            $this->getAuthorizationRequestLoader($clientRepository->reveal())->load([]);
+            $this->getAuthorizationRequestLoader($clientRepository->reveal())
+                ->load([])
+            ;
             static::fail('The expected exception has not been thrown.');
         } catch (OAuth2Error $e) {
-            static::assertEquals(400, $e->getCode());
-            static::assertEquals('invalid_request', $e->getMessage());
-            static::assertEquals('Parameter "client_id" missing or invalid.', $e->getErrorDescription());
+            static::assertSame(400, $e->getCode());
+            static::assertSame('invalid_request', $e->getMessage());
+            static::assertSame('Parameter "client_id" missing or invalid.', $e->getErrorDescription());
         }
     }
 
     /**
      * @test
      */
-    public function theClientDoesNotExist()
+    public function theClientDoesNotExist(): void
     {
         $clientRepository = $this->prophesize(ClientRepository::class);
         $clientRepository->find(Argument::any())->willReturn(null)->shouldBeCalled();
 
         try {
-            $this->getAuthorizationRequestLoader($clientRepository->reveal())->load([
-                'client_id' => 'BAD_CLIENT_ID',
-            ]);
+            $this->getAuthorizationRequestLoader($clientRepository->reveal())
+                ->load([
+                    'client_id' => 'BAD_CLIENT_ID',
+                ])
+            ;
             static::fail('The expected exception has not been thrown.');
         } catch (OAuth2Error $e) {
-            static::assertEquals(400, $e->getCode());
-            static::assertEquals('invalid_request', $e->getMessage());
-            static::assertEquals('Parameter "client_id" missing or invalid.', $e->getErrorDescription());
+            static::assertSame(400, $e->getCode());
+            static::assertSame('invalid_request', $e->getMessage());
+            static::assertSame('Parameter "client_id" missing or invalid.', $e->getErrorDescription());
         }
     }
 
     /**
      * @test
      */
-    public function theClientIsDeleted()
+    public function theClientIsDeleted(): void
     {
         $client = $this->prophesize(\OAuth2Framework\Component\Core\Client\Client::class);
-        $client->isDeleted()->willReturn(true)->shouldBeCalled();
+        $client->isDeleted()
+            ->willReturn(true)
+            ->shouldBeCalled()
+        ;
 
         $clientRepository = $this->prophesize(ClientRepository::class);
         $clientRepository->find(Argument::any())->willReturn($client->reveal())->shouldBeCalled();
 
         try {
-            $this->getAuthorizationRequestLoader($clientRepository->reveal())->load([
-                'client_id' => 'DELETED_CLIENT_ID',
-            ]);
+            $this->getAuthorizationRequestLoader($clientRepository->reveal())
+                ->load([
+                    'client_id' => 'DELETED_CLIENT_ID',
+                ])
+            ;
             static::fail('The expected exception has not been thrown.');
         } catch (OAuth2Error $e) {
-            static::assertEquals(400, $e->getCode());
-            static::assertEquals('invalid_request', $e->getMessage());
-            static::assertEquals('Parameter "client_id" missing or invalid.', $e->getErrorDescription());
+            static::assertSame(400, $e->getCode());
+            static::assertSame('invalid_request', $e->getMessage());
+            static::assertSame('Parameter "client_id" missing or invalid.', $e->getErrorDescription());
         }
     }
 
     /**
      * @test
      */
-    public function theClientExistsAndTheParametersAreReturned()
+    public function theClientExistsAndTheParametersAreReturned(): void
     {
         $client = $this->prophesize(\OAuth2Framework\Component\Core\Client\Client::class);
-        $client->isDeleted()->willReturn(false)->shouldBeCalled();
+        $client->isDeleted()
+            ->willReturn(false)
+            ->shouldBeCalled()
+        ;
 
         $clientRepository = $this->prophesize(ClientRepository::class);
         $clientRepository->find(Argument::any())->willReturn($client->reveal())->shouldBeCalled();
 
-        $authorization = $this->getAuthorizationRequestLoader($clientRepository->reveal())->load([
-            'client_id' => 'CLIENT_ID',
-        ]);
+        $authorization = $this->getAuthorizationRequestLoader($clientRepository->reveal())
+            ->load([
+                'client_id' => 'CLIENT_ID',
+            ])
+        ;
 
         static::assertTrue($authorization->hasQueryParam('client_id'));
-        static::assertEquals('CLIENT_ID', $authorization->getQueryParam('client_id'));
+        static::assertSame('CLIENT_ID', $authorization->getQueryParam('client_id'));
         static::assertInstanceOf(\OAuth2Framework\Component\Core\Client\Client::class, $authorization->getClient());
     }
 
     /**
      * @test
      */
-    public function theRequestObjectIsNotAValidAssertion()
+    public function theRequestObjectIsNotAValidAssertion(): void
     {
         $clientRepository = $this->prophesize(ClientRepository::class);
 
         try {
-            $this->getAuthorizationRequestLoader($clientRepository->reveal())->load([
-                'request' => 'INVALID_ASSERTION',
-            ]);
+            $this->getAuthorizationRequestLoader($clientRepository->reveal())
+                ->load([
+                    'request' => 'INVALID_ASSERTION',
+                ])
+            ;
             static::fail('The expected exception has not been thrown.');
         } catch (OAuth2Error $e) {
-            static::assertEquals(400, $e->getCode());
-            static::assertEquals('invalid_request_object', $e->getMessage());
-            static::assertEquals('Unsupported input', $e->getErrorDescription());
+            static::assertSame(400, $e->getCode());
+            static::assertSame('invalid_request_object', $e->getMessage());
+            static::assertSame('Unsupported input', $e->getErrorDescription());
         }
     }
 
     /**
      * @test
      */
-    public function theRequestObjectPayloadDoesNotContainClaims()
+    public function theRequestObjectPayloadDoesNotContainClaims(): void
     {
         $clientRepository = $this->prophesize(ClientRepository::class);
 
         try {
-            $this->getAuthorizationRequestLoader($clientRepository->reveal())->load([
-                'request' => 'eyJhbGciOiJub25lIn0.SEVMTE8gV09STEQh.',
-            ]);
+            $this->getAuthorizationRequestLoader($clientRepository->reveal())
+                ->load([
+                    'request' => 'eyJhbGciOiJub25lIn0.SEVMTE8gV09STEQh.',
+                ])
+            ;
             static::fail('The expected exception has not been thrown.');
         } catch (OAuth2Error $e) {
-            static::assertEquals(400, $e->getCode());
-            static::assertEquals('invalid_request_object', $e->getMessage());
-            static::assertEquals('Invalid assertion. The payload must contain claims.', $e->getErrorDescription());
+            static::assertSame(400, $e->getCode());
+            static::assertSame('invalid_request_object', $e->getMessage());
+            static::assertSame('Invalid assertion. The payload must contain claims.', $e->getErrorDescription());
         }
     }
 
     /**
      * @test
      */
-    public function theRequestObjectParametersDoesNotContainAClientId()
+    public function theRequestObjectParametersDoesNotContainAClientId(): void
     {
         $clientRepository = $this->prophesize(ClientRepository::class);
 
         try {
-            $this->getAuthorizationRequestLoader($clientRepository->reveal())->load([
-                'request' => 'eyJhbGciOiJub25lIn0.e30.',
-            ]);
+            $this->getAuthorizationRequestLoader($clientRepository->reveal())
+                ->load([
+                    'request' => 'eyJhbGciOiJub25lIn0.e30.',
+                ])
+            ;
             static::fail('The expected exception has not been thrown.');
         } catch (OAuth2Error $e) {
-            static::assertEquals(400, $e->getCode());
-            static::assertEquals('invalid_request', $e->getMessage());
-            static::assertEquals('Parameter "client_id" missing or invalid.', $e->getErrorDescription());
+            static::assertSame(400, $e->getCode());
+            static::assertSame('invalid_request', $e->getMessage());
+            static::assertSame('Parameter "client_id" missing or invalid.', $e->getErrorDescription());
         }
     }
 
     /**
      * @test
      */
-    public function theClientHasNoPublicKeysAndCannotUseTheRequestObjectParameters()
+    public function theClientHasNoPublicKeysAndCannotUseTheRequestObjectParameters(): void
     {
         $client = $this->prophesize(\OAuth2Framework\Component\Core\Client\Client::class);
-        $client->isDeleted()->willReturn(false)->shouldBeCalled();
-        $client->has('jwks')->willReturn(false)->shouldBeCalled();
-        $client->has('jwks_uri')->willReturn(false)->shouldBeCalled();
-        $client->has('client_secret')->willReturn(false)->shouldBeCalled();
-        $client->has('request_object_signing_alg')->willReturn(false)->shouldNotBeCalled();
+        $client->isDeleted()
+            ->willReturn(false)
+            ->shouldBeCalled()
+        ;
+        $client->has('jwks')
+            ->willReturn(false)
+            ->shouldBeCalled()
+        ;
+        $client->has('client_secret')
+            ->willReturn(false)
+            ->shouldBeCalled()
+        ;
+        $client->has('request_object_signing_alg')
+            ->willReturn(false)
+            ->shouldNotBeCalled()
+        ;
 
         $clientRepository = $this->prophesize(ClientRepository::class);
         $clientRepository->find(Argument::any())->willReturn($client->reveal())->shouldBeCalled();
 
         try {
-            $this->getAuthorizationRequestLoader($clientRepository->reveal())->load([
-                'request' => 'eyJhbGciOiJub25lIn0.eyJjbGllbnRfaWQiOiJOT19LRVlfQ0xJRU5UX0lEIn0.',
-            ]);
+            $this->getAuthorizationRequestLoader($clientRepository->reveal())
+                ->load([
+                    'request' => 'eyJhbGciOiJub25lIn0.eyJjbGllbnRfaWQiOiJOT19LRVlfQ0xJRU5UX0lEIn0.',
+                ])
+            ;
             static::fail('The expected exception has not been thrown.');
         } catch (OAuth2Error $e) {
-            static::assertEquals(400, $e->getCode());
-            static::assertEquals('invalid_request_object', $e->getMessage());
-            static::assertEquals('The client has no key or key set.', $e->getErrorDescription());
+            static::assertSame(400, $e->getCode());
+            static::assertSame('invalid_request_object', $e->getMessage());
+            static::assertSame('The client has no key or key set.', $e->getErrorDescription());
         }
     }
 
     /**
      * @test
      */
-    public function theClientDidNotReferencedAnySignatureAlgorithmAndTheUsedAlgorithmIsNotSupported()
+    public function theClientDidNotReferencedAnySignatureAlgorithmAndTheUsedAlgorithmIsNotSupported(): void
     {
         $client = $this->prophesize(\OAuth2Framework\Component\Core\Client\Client::class);
-        $client->isDeleted()->willReturn(false)->shouldBeCalled();
-        $client->has('jwks')->willReturn(false)->shouldBeCalled();
-        $client->has('jwks_uri')->willReturn(false)->shouldBeCalled();
-        $client->has('client_secret')->willReturn(true)->shouldBeCalled();
-        $client->get('client_secret')->willReturn('SECRET')->shouldBeCalled();
-        $client->has('request_object_signing_alg')->willReturn(false);
-        $client->getTokenEndpointAuthenticationMethod()->willReturn('client_secret_jwt');
+        $client->isDeleted()
+            ->willReturn(false)
+            ->shouldBeCalled()
+        ;
+        $client->has('jwks')
+            ->willReturn(false)
+            ->shouldBeCalled()
+        ;
+        $client->has('client_secret')
+            ->willReturn(true)
+            ->shouldBeCalled()
+        ;
+        $client->get('client_secret')
+            ->willReturn('SECRET')
+            ->shouldBeCalled()
+        ;
+        $client->has('request_object_signing_alg')
+            ->willReturn(false)
+        ;
+        $client->getTokenEndpointAuthenticationMethod()
+            ->willReturn('client_secret_jwt')
+        ;
 
         $clientRepository = $this->prophesize(ClientRepository::class);
         $clientRepository->find(Argument::any())->willReturn($client->reveal())->shouldBeCalled();
 
         try {
-            $this->getAuthorizationRequestLoader($clientRepository->reveal())->load([
-                'request' => 'eyJhbGciOiJub25lIn0.eyJjbGllbnRfaWQiOiJDTElFTlRfSUQifQ.',
-            ]);
+            $this->getAuthorizationRequestLoader($clientRepository->reveal())
+                ->load([
+                    'request' => 'eyJhbGciOiJub25lIn0.eyJjbGllbnRfaWQiOiJDTElFTlRfSUQifQ.',
+                ])
+            ;
             static::fail('The expected exception has not been thrown.');
         } catch (OAuth2Error $e) {
-            static::assertEquals(400, $e->getCode());
-            static::assertEquals('invalid_request_object', $e->getMessage());
-            static::assertEquals('The algorithm "none" is not allowed for request object signatures. Please use one of the following algorithm(s): RS256', $e->getErrorDescription());
+            static::assertSame(400, $e->getCode());
+            static::assertSame('invalid_request_object', $e->getMessage());
+            static::assertSame(
+                'The algorithm "none" is not allowed for request object signatures. Please use one of the following algorithm(s): RS256',
+                $e->getErrorDescription()
+            );
         }
     }
 
     /**
      * @test
      */
-    public function theSignatureAlgorithmIsNotAllowedForThatClient()
+    public function theSignatureAlgorithmIsNotAllowedForThatClient(): void
     {
         $client = $this->prophesize(\OAuth2Framework\Component\Core\Client\Client::class);
-        $client->isDeleted()->willReturn(false)->shouldBeCalled();
-        $client->has('jwks')->willReturn(false)->shouldBeCalled();
-        $client->has('jwks_uri')->willReturn(false)->shouldBeCalled();
-        $client->has('client_secret')->willReturn(true)->shouldBeCalled();
-        $client->get('client_secret')->willReturn('SECRET')->shouldBeCalled();
-        $client->has('request_object_signing_alg')->willReturn(true)->shouldBeCalled();
-        $client->get('request_object_signing_alg')->willReturn('RS256')->shouldBeCalled();
-        $client->getTokenEndpointAuthenticationMethod()->willReturn('client_secret_jwt');
+        $client->isDeleted()
+            ->willReturn(false)
+            ->shouldBeCalled()
+        ;
+        $client->has('jwks')
+            ->willReturn(false)
+            ->shouldBeCalled()
+        ;
+        $client->has('client_secret')
+            ->willReturn(true)
+            ->shouldBeCalled()
+        ;
+        $client->get('client_secret')
+            ->willReturn('SECRET')
+            ->shouldBeCalled()
+        ;
+        $client->has('request_object_signing_alg')
+            ->willReturn(true)
+            ->shouldBeCalled()
+        ;
+        $client->get('request_object_signing_alg')
+            ->willReturn('RS256')
+            ->shouldBeCalled()
+        ;
+        $client->getTokenEndpointAuthenticationMethod()
+            ->willReturn('client_secret_jwt')
+        ;
 
         $clientRepository = $this->prophesize(ClientRepository::class);
         $clientRepository->find(Argument::any())->willReturn($client->reveal())->shouldBeCalled();
 
         try {
-            $this->getAuthorizationRequestLoader($clientRepository->reveal())->load([
-                'request' => 'eyJhbGciOiJub25lIn0.eyJjbGllbnRfaWQiOiJDTElFTlRfSUQifQ.',
-            ]);
+            $this->getAuthorizationRequestLoader($clientRepository->reveal())
+                ->load([
+                    'request' => 'eyJhbGciOiJub25lIn0.eyJjbGllbnRfaWQiOiJDTElFTlRfSUQifQ.',
+                ])
+            ;
             static::fail('The expected exception has not been thrown.');
         } catch (OAuth2Error $e) {
-            static::assertEquals(400, $e->getCode());
-            static::assertEquals('invalid_request_object', $e->getMessage());
-            static::assertEquals('Request Object signature algorithm not allowed for the client.', $e->getErrorDescription());
+            static::assertSame(400, $e->getCode());
+            static::assertSame('invalid_request_object', $e->getMessage());
+            static::assertSame(
+                'Request Object signature algorithm not allowed for the client.',
+                $e->getErrorDescription()
+            );
         }
     }
 
     /**
      * @test
      */
-    public function theSignatureVerificationFailed()
+    public function theSignatureVerificationFailed(): void
     {
         $client = $this->prophesize(\OAuth2Framework\Component\Core\Client\Client::class);
-        $client->isDeleted()->willReturn(false)->shouldBeCalled();
-        $client->has('jwks')->willReturn(false)->shouldBeCalled();
-        $client->has('jwks_uri')->willReturn(false)->shouldBeCalled();
-        $client->has('client_secret')->willReturn(true)->shouldBeCalled();
-        $client->get('client_secret')->willReturn('SECRET')->shouldBeCalled();
-        $client->has('request_object_signing_alg')->willReturn(true)->shouldBeCalled();
-        $client->get('request_object_signing_alg')->willReturn('RS256')->shouldBeCalled();
-        $client->getTokenEndpointAuthenticationMethod()->willReturn('client_secret_jwt');
+        $client->isDeleted()
+            ->willReturn(false)
+            ->shouldBeCalled()
+        ;
+        $client->has('jwks')
+            ->willReturn(false)
+            ->shouldBeCalled()
+        ;
+        $client->has('client_secret')
+            ->willReturn(true)
+            ->shouldBeCalled()
+        ;
+        $client->get('client_secret')
+            ->willReturn('SECRET')
+            ->shouldBeCalled()
+        ;
+        $client->has('request_object_signing_alg')
+            ->willReturn(true)
+            ->shouldBeCalled()
+        ;
+        $client->get('request_object_signing_alg')
+            ->willReturn('RS256')
+            ->shouldBeCalled()
+        ;
+        $client->getTokenEndpointAuthenticationMethod()
+            ->willReturn('client_secret_jwt')
+        ;
 
         $clientRepository = $this->prophesize(ClientRepository::class);
         $clientRepository->find(Argument::any())->willReturn($client->reveal())->shouldBeCalled();
 
         try {
-            $this->getAuthorizationRequestLoader($clientRepository->reveal())->load([
-                'request' => 'eyJhbGciOiJSUzI1NiJ9.eyJjbGllbnRfaWQiOiJDTElFTlRfSUQifQ.',
-            ]);
+            $this->getAuthorizationRequestLoader($clientRepository->reveal())
+                ->load([
+                    'request' => 'eyJhbGciOiJSUzI1NiJ9.eyJjbGllbnRfaWQiOiJDTElFTlRfSUQifQ.',
+                ])
+            ;
             static::fail('The expected exception has not been thrown.');
         } catch (OAuth2Error $e) {
-            static::assertEquals(400, $e->getCode());
-            static::assertEquals('invalid_request_object', $e->getMessage());
-            static::assertEquals('The verification of the request object failed.', $e->getErrorDescription());
+            static::assertSame(400, $e->getCode());
+            static::assertSame('invalid_request_object', $e->getMessage());
+            static::assertSame('The verification of the request object failed.', $e->getErrorDescription());
         }
     }
 
     /**
      * @test
      */
-    public function theAssertionIsVerified()
+    public function theAssertionIsVerified(): void
     {
         $client = $this->prophesize(\OAuth2Framework\Component\Core\Client\Client::class);
-        $client->isDeleted()->willReturn(false)->shouldBeCalled();
-        $client->has('jwks')->willReturn(false)->shouldBeCalled();
-        $client->has('jwks_uri')->willReturn(false)->shouldBeCalled();
-        $client->has('client_secret')->willReturn(true)->shouldBeCalled();
-        $client->get('client_secret')->willReturn('SECRET')->shouldBeCalled();
-        $client->has('request_object_signing_alg')->willReturn(true)->shouldBeCalled();
-        $client->get('request_object_signing_alg')->willReturn('RS256')->shouldBeCalled();
-        $client->getTokenEndpointAuthenticationMethod()->willReturn('client_secret_jwt');
+        $client->isDeleted()
+            ->willReturn(false)
+            ->shouldBeCalled()
+        ;
+        $client->has('jwks')
+            ->willReturn(false)
+            ->shouldBeCalled()
+        ;
+        $client->has('client_secret')
+            ->willReturn(true)
+            ->shouldBeCalled()
+        ;
+        $client->get('client_secret')
+            ->willReturn('SECRET')
+            ->shouldBeCalled()
+        ;
+        $client->has('request_object_signing_alg')
+            ->willReturn(true)
+            ->shouldBeCalled()
+        ;
+        $client->get('request_object_signing_alg')
+            ->willReturn('RS256')
+            ->shouldBeCalled()
+        ;
+        $client->getTokenEndpointAuthenticationMethod()
+            ->willReturn('client_secret_jwt')
+        ;
 
         $clientRepository = $this->prophesize(ClientRepository::class);
         $clientRepository->find(Argument::any())->willReturn($client->reveal())->shouldBeCalled();
 
-        $authorization = $this->getAuthorizationRequestLoader($clientRepository->reveal())->load([
-            'request' => 'eyJhbGciOiJSUzI1NiJ9.eyJjbGllbnRfaWQiOiJDTElFTlRfSUQifQ.R09PRF9TSUdOQVRVUkU',
-        ]);
+        $authorization = $this->getAuthorizationRequestLoader($clientRepository->reveal())
+            ->load([
+                'request' => 'eyJhbGciOiJSUzI1NiJ9.eyJjbGllbnRfaWQiOiJDTElFTlRfSUQifQ.R09PRF9TSUdOQVRVUkU',
+            ])
+        ;
 
         static::assertTrue($authorization->hasQueryParam('client_id'));
         static::assertTrue($authorization->hasQueryParam('request'));
-        static::assertEquals('CLIENT_ID', $authorization->getQueryParam('client_id'));
-        static::assertEquals('eyJhbGciOiJSUzI1NiJ9.eyJjbGllbnRfaWQiOiJDTElFTlRfSUQifQ.R09PRF9TSUdOQVRVUkU', $authorization->getQueryParam('request'));
+        static::assertSame('CLIENT_ID', $authorization->getQueryParam('client_id'));
+        static::assertSame(
+            'eyJhbGciOiJSUzI1NiJ9.eyJjbGllbnRfaWQiOiJDTElFTlRfSUQifQ.R09PRF9TSUdOQVRVUkU',
+            $authorization->getQueryParam('request')
+        );
         static::assertInstanceOf(\OAuth2Framework\Component\Core\Client\Client::class, $authorization->getClient());
     }
 
     /**
      * @test
      */
-    public function theRequestObjectUriIsVerified()
+    public function theRequestObjectUriIsVerified(): void
     {
         $client = $this->prophesize(\OAuth2Framework\Component\Core\Client\Client::class);
-        $client->isDeleted()->willReturn(false)->shouldBeCalled();
-        $client->has('jwks')->willReturn(false)->shouldBeCalled();
-        $client->has('jwks_uri')->willReturn(false)->shouldBeCalled();
-        $client->has('client_secret')->willReturn(true)->shouldBeCalled();
-        $client->get('client_secret')->willReturn('SECRET')->shouldBeCalled();
-        $client->has('request_object_signing_alg')->willReturn(true)->shouldBeCalled();
-        $client->get('request_object_signing_alg')->willReturn('RS256')->shouldBeCalled();
-        $client->has('request_uris')->willReturn(true)->shouldBeCalled();
-        $client->get('request_uris')->willReturn(['https://www.foo.bar/'])->shouldBeCalled();
-        $client->getTokenEndpointAuthenticationMethod()->willReturn('client_secret_jwt');
+        $client->isDeleted()
+            ->willReturn(false)
+            ->shouldBeCalled()
+        ;
+        $client->has('jwks')
+            ->willReturn(false)
+            ->shouldBeCalled()
+        ;
+        $client->has('client_secret')
+            ->willReturn(true)
+            ->shouldBeCalled()
+        ;
+        $client->get('client_secret')
+            ->willReturn('SECRET')
+            ->shouldBeCalled()
+        ;
+        $client->has('request_object_signing_alg')
+            ->willReturn(true)
+            ->shouldBeCalled()
+        ;
+        $client->get('request_object_signing_alg')
+            ->willReturn('RS256')
+            ->shouldBeCalled()
+        ;
+        $client->has('request_uris')
+            ->willReturn(true)
+            ->shouldBeCalled()
+        ;
+        $client->get('request_uris')
+            ->willReturn(['https://www.foo.bar/'])->shouldBeCalled();
+        $client->getTokenEndpointAuthenticationMethod()
+            ->willReturn('client_secret_jwt')
+        ;
 
         $clientRepository = $this->prophesize(ClientRepository::class);
         $clientRepository->find(Argument::any())->willReturn($client->reveal())->shouldBeCalled();
 
-        $authorization = $this->getAuthorizationRequestLoader($clientRepository->reveal())->load([
-            'request_uri' => 'https://www.foo.bar/eyJhbGciOiJSUzI1NiJ9.eyJjbGllbnRfaWQiOiJDTElFTlRfSUQifQ.R09PRF9TSUdOQVRVUkU',
-        ]);
+        $authorization = $this->getAuthorizationRequestLoader($clientRepository->reveal())
+            ->load([
+                'request_uri' => 'https://www.foo.bar/eyJhbGciOiJSUzI1NiJ9.eyJjbGllbnRfaWQiOiJDTElFTlRfSUQifQ.R09PRF9TSUdOQVRVUkU',
+            ])
+        ;
 
         static::assertTrue($authorization->hasQueryParam('client_id'));
         static::assertTrue($authorization->hasQueryParam('request_uri'));
-        static::assertEquals('CLIENT_ID', $authorization->getQueryParam('client_id'));
-        static::assertEquals('https://www.foo.bar/eyJhbGciOiJSUzI1NiJ9.eyJjbGllbnRfaWQiOiJDTElFTlRfSUQifQ.R09PRF9TSUdOQVRVUkU', $authorization->getQueryParam('request_uri'));
+        static::assertSame('CLIENT_ID', $authorization->getQueryParam('client_id'));
+        static::assertSame(
+            'https://www.foo.bar/eyJhbGciOiJSUzI1NiJ9.eyJjbGllbnRfaWQiOiJDTElFTlRfSUQifQ.R09PRF9TSUdOQVRVUkU',
+            $authorization->getQueryParam('request_uri')
+        );
         static::assertInstanceOf(\OAuth2Framework\Component\Core\Client\Client::class, $authorization->getClient());
     }
 
     /**
      * @test
      */
-    public function theRequestUriIsNotAllowedForTheClient()
+    public function theRequestUriIsNotAllowedForTheClient(): void
     {
         $client = $this->prophesize(\OAuth2Framework\Component\Core\Client\Client::class);
-        $client->isDeleted()->willReturn(false)->shouldBeCalled();
-        $client->has('jwks')->willReturn(false)->shouldBeCalled();
-        $client->has('jwks_uri')->willReturn(false)->shouldBeCalled();
-        $client->has('client_secret')->willReturn(true)->shouldBeCalled();
-        $client->get('client_secret')->willReturn('SECRET')->shouldBeCalled();
-        $client->has('request_object_signing_alg')->willReturn(true)->shouldBeCalled();
-        $client->get('request_object_signing_alg')->willReturn('RS256')->shouldBeCalled();
-        $client->has('request_uris')->willReturn(true)->shouldBeCalled();
-        $client->get('request_uris')->willReturn(['https://www.foo.bar/'])->shouldBeCalled();
-        $client->getTokenEndpointAuthenticationMethod()->willReturn('client_secret_jwt');
+        $client->isDeleted()
+            ->willReturn(false)
+            ->shouldBeCalled()
+        ;
+        $client->has('jwks')
+            ->willReturn(false)
+            ->shouldBeCalled()
+        ;
+        $client->has('client_secret')
+            ->willReturn(true)
+            ->shouldBeCalled()
+        ;
+        $client->get('client_secret')
+            ->willReturn('SECRET')
+            ->shouldBeCalled()
+        ;
+        $client->has('request_object_signing_alg')
+            ->willReturn(true)
+            ->shouldBeCalled()
+        ;
+        $client->get('request_object_signing_alg')
+            ->willReturn('RS256')
+            ->shouldBeCalled()
+        ;
+        $client->has('request_uris')
+            ->willReturn(true)
+            ->shouldBeCalled()
+        ;
+        $client->get('request_uris')
+            ->willReturn(['https://www.foo.bar/'])->shouldBeCalled();
+        $client->getTokenEndpointAuthenticationMethod()
+            ->willReturn('client_secret_jwt')
+        ;
 
         $clientRepository = $this->prophesize(ClientRepository::class);
         $clientRepository->find(Argument::any())->willReturn($client->reveal())->shouldBeCalled();
 
         try {
-            $this->getAuthorizationRequestLoader($clientRepository->reveal())->load([
-                'request_uri' => 'https://www.bad.host/eyJhbGciOiJSUzI1NiJ9.eyJjbGllbnRfaWQiOiJDTElFTlRfSUQifQ.R09PRF9TSUdOQVRVUkU',
-            ]);
+            $this->getAuthorizationRequestLoader($clientRepository->reveal())
+                ->load([
+                    'request_uri' => 'https://www.bad.host/eyJhbGciOiJSUzI1NiJ9.eyJjbGllbnRfaWQiOiJDTElFTlRfSUQifQ.R09PRF9TSUdOQVRVUkU',
+                ])
+            ;
             static::fail('The expected exception has not been thrown.');
         } catch (OAuth2Error $e) {
-            static::assertEquals(400, $e->getCode());
-            static::assertEquals('invalid_request_uri', $e->getMessage());
-            static::assertEquals('The request Uri is not allowed.', $e->getErrorDescription());
+            static::assertSame(400, $e->getCode());
+            static::assertSame('invalid_request_uri', $e->getMessage());
+            static::assertSame('The request Uri is not allowed.', $e->getErrorDescription());
         }
     }
 
     /**
      * @test
      */
-    public function theRequestUriMustNotContainPathTraversal()
+    public function theRequestUriMustNotContainPathTraversal(): void
     {
         $clientRepository = $this->prophesize(ClientRepository::class);
 
         try {
-            $this->getAuthorizationRequestLoader($clientRepository->reveal())->load([
-                'request_uri' => 'https://www.foo.bar/../eyJhbGciOiJSUzI1NiJ9.eyJjbGllbnRfaWQiOiJDTElFTlRfSUQifQ.R09PRF9TSUdOQVRVUkU',
-            ]);
+            $this->getAuthorizationRequestLoader($clientRepository->reveal())
+                ->load([
+                    'request_uri' => 'https://www.foo.bar/../eyJhbGciOiJSUzI1NiJ9.eyJjbGllbnRfaWQiOiJDTElFTlRfSUQifQ.R09PRF9TSUdOQVRVUkU',
+                ])
+            ;
             static::fail('The expected exception has not been thrown.');
         } catch (OAuth2Error $e) {
-            static::assertEquals(400, $e->getCode());
-            static::assertEquals('invalid_request_uri', $e->getMessage());
-            static::assertEquals('The request Uri is not allowed.', $e->getErrorDescription());
+            static::assertSame(400, $e->getCode());
+            static::assertSame('invalid_request_uri', $e->getMessage());
+            static::assertSame('The request Uri is not allowed.', $e->getErrorDescription());
         }
     }
 
     private function getAuthorizationRequestLoader(ClientRepository $clientRepository): AuthorizationRequestLoader
     {
-        if (null === $this->authorizationRequestLoader) {
+        if ($this->authorizationRequestLoader === null) {
             $this->authorizationRequestLoader = new AuthorizationRequestLoader($clientRepository);
             $this->authorizationRequestLoader->enableSignedRequestObjectSupport(
                 $this->getJWSVerifier(),
@@ -448,14 +610,16 @@ final class AuthorizationRequestLoaderTest extends TestCase
     private function getJWSVerifier(): JWSVerifier
     {
         $verifier = $this->prophesize(JWSVerifier::class);
-        $verifier->getSignatureAlgorithmManager()->willReturn(
-            $this->getSignatureAlgorithmManager()
-        );
-        $verifier->verifyWithKeySet(Argument::type(JWS::class), Argument::type(JWKSet::class), 0, null)->will(function (array $args) {
-            return
+        $verifier->getSignatureAlgorithmManager()
+            ->willReturn($this->getSignatureAlgorithmManager())
+        ;
+        $verifier->verifyWithKeySet(Argument::type(JWS::class), Argument::type(JWKSet::class), 0, null)->will(
+            function (array $args) {
+                return
                 'RS256' === ($args[0])->getSignature(0)->getProtectedHeaderParameter('alg') &&
                 '' !== ($args[0])->getSignature(0)->getSignature();
-        });
+            }
+        );
 
         return $verifier->reveal();
     }
@@ -463,7 +627,9 @@ final class AuthorizationRequestLoaderTest extends TestCase
     private function getSignatureAlgorithmManager(): AlgorithmManager
     {
         $manager = $this->prophesize(AlgorithmManager::class);
-        $manager->list()->willReturn(['RS256']);
+        $manager->list()
+            ->willReturn(['RS256'])
+        ;
 
         return $manager->reveal();
     }
@@ -486,9 +652,13 @@ final class AuthorizationRequestLoaderTest extends TestCase
             $uri = ($args[0])->getUri();
             switch ($uri->getPath()) {
                 case '/eyJhbGciOiJSUzI1NiJ9.eyJjbGllbnRfaWQiOiJDTElFTlRfSUQifQ.R09PRF9TSUdOQVRVUkU':
-                    $response = new \Nyholm\Psr7\Response();
-                    $response->getBody()->write('eyJhbGciOiJSUzI1NiJ9.eyJjbGllbnRfaWQiOiJDTElFTlRfSUQifQ.R09PRF9TSUdOQVRVUkU');
-                    $response->getBody()->rewind();
+                    $response = new Response();
+                    $response->getBody()
+                        ->write('eyJhbGciOiJSUzI1NiJ9.eyJjbGllbnRfaWQiOiJDTElFTlRfSUQifQ.R09PRF9TSUdOQVRVUkU')
+                    ;
+                    $response->getBody()
+                        ->rewind()
+                    ;
 
                     return $response;
             }

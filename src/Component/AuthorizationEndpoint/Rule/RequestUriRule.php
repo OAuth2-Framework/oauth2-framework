@@ -2,18 +2,11 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\Component\AuthorizationEndpoint\Rule;
 
 use Assert\Assertion;
+use function count;
+use const FILTER_VALIDATE_URL;
 use OAuth2Framework\Component\ClientRule\Rule;
 use OAuth2Framework\Component\ClientRule\RuleHandler;
 use OAuth2Framework\Component\Core\Client\ClientId;
@@ -21,10 +14,14 @@ use OAuth2Framework\Component\Core\DataBag\DataBag;
 
 final class RequestUriRule implements Rule
 {
-    public function handle(ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters, RuleHandler $next): DataBag
-    {
+    public function handle(
+        ClientId $clientId,
+        DataBag $commandParameters,
+        DataBag $validatedParameters,
+        RuleHandler $next
+    ): DataBag {
         $validatedParameters = $next->handle($clientId, $commandParameters, $validatedParameters);
-        if (!$validatedParameters->has('response_types') || 0 === \count($validatedParameters->get('response_types'))) {
+        if (! $validatedParameters->has('response_types') || count($validatedParameters->get('response_types')) === 0) {
             return $validatedParameters;
         }
         if ($commandParameters->has('request_uris')) {
@@ -35,15 +32,15 @@ final class RequestUriRule implements Rule
         return $validatedParameters;
     }
 
-    /**
-     * @param mixed $value
-     */
-    private function checkAllUris($value): void
+    private function checkAllUris(mixed $value): void
     {
         Assertion::isArray($value, 'The parameter "request_uris" must be a list of URI.');
         foreach ($value as $redirectUri) {
             Assertion::string($redirectUri, 'The parameter "request_uris" must be a list of URI.');
-            Assertion::true(false !== filter_var($redirectUri, FILTER_VALIDATE_URL), 'The parameter "request_uris" must be a list of URI.'); //TODO: URN should be allowed
+            Assertion::true(
+                filter_var($redirectUri, FILTER_VALIDATE_URL) !== false,
+                'The parameter "request_uris" must be a list of URI.'
+            ); //TODO: URN should be allowed
         }
     }
 }

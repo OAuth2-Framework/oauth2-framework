@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\ServerBundle\Service;
 
 use OAuth2Framework\Component\AuthorizationCodeGrant\PKCEMethod\PKCEMethodManager;
@@ -28,13 +19,11 @@ use Symfony\Component\Routing\RouterInterface;
 
 class MetadataBuilder
 {
-    private RouterInterface $router;
-
     private Metadata $metadata;
 
-    public function __construct(RouterInterface $router)
-    {
-        $this->router = $router;
+    public function __construct(
+        private RouterInterface $router
+    ) {
         $this->metadata = new Metadata();
     }
 
@@ -56,9 +45,18 @@ class MetadataBuilder
 
     public function setClientAssertionJwt(ClientAssertionJwt $clientAssertionJwt): void
     {
-        $this->metadata->set('token_endpoint_auth_signing_alg_values_supported', $clientAssertionJwt->getSupportedSignatureAlgorithms());
-        $this->metadata->set('token_endpoint_auth_encryption_alg_values_supported', $clientAssertionJwt->getSupportedKeyEncryptionAlgorithms());
-        $this->metadata->set('token_endpoint_auth_encryption_enc_values_supported', $clientAssertionJwt->getSupportedContentEncryptionAlgorithms());
+        $this->metadata->set(
+            'token_endpoint_auth_signing_alg_values_supported',
+            $clientAssertionJwt->getSupportedSignatureAlgorithms()
+        );
+        $this->metadata->set(
+            'token_endpoint_auth_encryption_alg_values_supported',
+            $clientAssertionJwt->getSupportedKeyEncryptionAlgorithms()
+        );
+        $this->metadata->set(
+            'token_endpoint_auth_encryption_enc_values_supported',
+            $clientAssertionJwt->getSupportedContentEncryptionAlgorithms()
+        );
     }
 
     public function setGrantTypeManager(GrantTypeManager $grantTypeManager): void
@@ -88,7 +86,10 @@ class MetadataBuilder
 
     public function setUserinfo(UserInfo $userInfo): void
     {
-        $this->metadata->set('subject_types_supported', $userInfo->isPairwiseSubjectIdentifierSupported() ? ['public', 'pairwise'] : ['public']);
+        $this->metadata->set(
+            'subject_types_supported',
+            $userInfo->isPairwiseSubjectIdentifierSupported() ? ['public', 'pairwise'] : ['public']
+        );
     }
 
     public function setClaimsSupported(ClaimManager $claimManager): void
@@ -97,7 +98,7 @@ class MetadataBuilder
     }
 
     /**
-     * @param null|mixed $value
+     * @param mixed|null $value
      */
     public function addKeyValuePair(string $name, $value): void
     {
@@ -109,11 +110,26 @@ class MetadataBuilder
         $requestObjectSupported = $authorizationRequestLoader->isRequestObjectSupportEnabled();
         $this->metadata->set('request_parameter_supported', $requestObjectSupported);
         if ($requestObjectSupported) {
-            $this->metadata->set('request_uri_parameter_supported', $authorizationRequestLoader->isRequestObjectReferenceSupportEnabled());
-            $this->metadata->set('require_request_uri_registration', $authorizationRequestLoader->isRequestUriRegistrationRequired());
-            $this->metadata->set('request_object_signing_alg_values_supported', $authorizationRequestLoader->getSupportedSignatureAlgorithms());
-            $this->metadata->set('request_object_encryption_alg_values_supported', $authorizationRequestLoader->getSupportedKeyEncryptionAlgorithms());
-            $this->metadata->set('request_object_encryption_enc_values_supported', $authorizationRequestLoader->getSupportedContentEncryptionAlgorithms());
+            $this->metadata->set(
+                'request_uri_parameter_supported',
+                $authorizationRequestLoader->isRequestObjectReferenceSupportEnabled()
+            );
+            $this->metadata->set(
+                'require_request_uri_registration',
+                $authorizationRequestLoader->isRequestUriRegistrationRequired()
+            );
+            $this->metadata->set(
+                'request_object_signing_alg_values_supported',
+                $authorizationRequestLoader->getSupportedSignatureAlgorithms()
+            );
+            $this->metadata->set(
+                'request_object_encryption_alg_values_supported',
+                $authorizationRequestLoader->getSupportedKeyEncryptionAlgorithms()
+            );
+            $this->metadata->set(
+                'request_object_encryption_enc_values_supported',
+                $authorizationRequestLoader->getSupportedContentEncryptionAlgorithms()
+            );
         }
     }
 }

@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\ServerBundle\Component\Endpoint\JwksUri;
 
 use Jose\Bundle\JoseFramework\Helper\ConfigurationHelper;
@@ -27,7 +18,10 @@ class JwksUriEndpointSource implements Component
 
     public function load(array $configs, ContainerBuilder $container): void
     {
-        $container->setParameter('oauth2_server.endpoint.jwks_uri.enabled', $configs['endpoint']['jwks_uri']['enabled']);
+        $container->setParameter(
+            'oauth2_server.endpoint.jwks_uri.enabled',
+            $configs['endpoint']['jwks_uri']['enabled']
+        );
     }
 
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
@@ -57,11 +51,16 @@ class JwksUriEndpointSource implements Component
     public function prepend(ContainerBuilder $container, array $configs): array
     {
         $config = $configs['endpoint']['jwks_uri'];
-        if (!$config['enabled']) {
+        if (! $config['enabled']) {
             return [];
         }
-        ConfigurationHelper::addKeyset($container, 'oauth2_server.endpoint.jwks_uri', 'jwkset', ['value' => $config['key_set']]);
-        ConfigurationHelper::addKeyUri($container, 'oauth2_server.endpoint.jwks_uri', ['id' => 'jose.key_set.oauth2_server.endpoint.jwks_uri', 'path' => $config['path']]);
+        ConfigurationHelper::addKeyset($container, 'oauth2_server.endpoint.jwks_uri', 'jwkset', [
+            'value' => $config['key_set'],
+        ]);
+        ConfigurationHelper::addKeyUri($container, 'oauth2_server.endpoint.jwks_uri', [
+            'id' => 'jose.key_set.oauth2_server.endpoint.jwks_uri',
+            'path' => $config['path'],
+        ]);
 
         return [];
     }

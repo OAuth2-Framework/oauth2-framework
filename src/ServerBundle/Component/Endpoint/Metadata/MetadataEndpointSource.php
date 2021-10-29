@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\ServerBundle\Component\Endpoint\Metadata;
 
 use OAuth2Framework\Component\MetadataEndpoint\MetadataEndpoint;
@@ -31,11 +22,7 @@ class MetadataEndpointSource implements Component
 
     public function __construct()
     {
-        $this->subComponents = [
-            new SignatureSource(),
-            new CustomRouteSource(),
-            new CustomValuesSource(),
-        ];
+        $this->subComponents = [new SignatureSource(), new CustomRouteSource(), new CustomValuesSource()];
     }
 
     public function name(): string
@@ -45,18 +32,20 @@ class MetadataEndpointSource implements Component
 
     public function load(array $configs, ContainerBuilder $container): void
     {
-        if (!class_exists(MetadataEndpoint::class)) {
+        if (! class_exists(MetadataEndpoint::class)) {
             return;
         }
         $config = $configs['endpoint']['metadata'];
         $container->setParameter('oauth2_server.endpoint.metadata.enabled', $config['enabled']);
-        if (!$config['enabled']) {
+        if (! $config['enabled']) {
             return;
         }
         $container->setParameter('oauth2_server.endpoint.metadata.path', $config['path']);
         $container->setParameter('oauth2_server.endpoint.metadata.host', $config['host']);
 
-        $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint/metadata'));
+        $loader = new PhpFileLoader($container, new FileLocator(
+            __DIR__ . '/../../../Resources/config/endpoint/metadata'
+        ));
         $loader->load('metadata.php');
 
         foreach ($this->subComponents as $subComponent) {
@@ -66,7 +55,7 @@ class MetadataEndpointSource implements Component
 
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
-        if (!class_exists(MetadataEndpoint::class)) {
+        if (! class_exists(MetadataEndpoint::class)) {
             return;
         }
         $childNode = $node->children()
@@ -95,18 +84,15 @@ class MetadataEndpointSource implements Component
 
     public function prepend(ContainerBuilder $container, array $configs): array
     {
-        if (!class_exists(MetadataEndpoint::class)) {
+        if (! class_exists(MetadataEndpoint::class)) {
             return [];
         }
-        if (!$configs['endpoint']['metadata']['enabled']) {
+        if (! $configs['endpoint']['metadata']['enabled']) {
             return [];
         }
         $updatedConfig = [];
         foreach ($this->subComponents as $subComponent) {
-            $updatedConfig = array_merge(
-                $updatedConfig,
-                $subComponent->prepend($container, $configs)
-            );
+            $updatedConfig = array_merge($updatedConfig, $subComponent->prepend($container, $configs));
         }
 
         return $updatedConfig;
@@ -114,7 +100,7 @@ class MetadataEndpointSource implements Component
 
     public function build(ContainerBuilder $container): void
     {
-        if (!class_exists(MetadataEndpoint::class)) {
+        if (! class_exists(MetadataEndpoint::class)) {
             return;
         }
         $container->addCompilerPass(new CommonMetadataCompilerPass());

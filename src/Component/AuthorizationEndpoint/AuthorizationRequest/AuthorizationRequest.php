@@ -2,35 +2,26 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest;
 
+use function array_key_exists;
 use Assert\Assertion;
+use function in_array;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\ResponseMode;
-use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType\ResponseType;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServer;
 use OAuth2Framework\Component\Core\UserAccount\UserAccount;
-use function Safe\sprintf;
 
 class AuthorizationRequest
 {
     public const CONSENT_NOT_GIVEN = 'consent_not_given';
+
     public const CONSENT_ALLOW = 'consent_allow';
+
     public const CONSENT_DENY = 'consent_deny';
 
     private string $authorized = self::CONSENT_NOT_GIVEN;
-
-    private Client $client;
 
     private ?UserAccount $userAccount = null;
 
@@ -48,9 +39,10 @@ class AuthorizationRequest
 
     private array $attributes = [];
 
-    public function __construct(Client $client, array $queryParameters)
-    {
-        $this->client = $client;
+    public function __construct(
+        private Client $client,
+        array $queryParameters
+    ) {
         $this->queryParameters = $queryParameters;
         $this->metadata = new DataBag([]);
     }
@@ -62,13 +54,10 @@ class AuthorizationRequest
 
     public function hasQueryParam(string $param): bool
     {
-        return \array_key_exists($param, $this->queryParameters);
+        return array_key_exists($param, $this->queryParameters);
     }
 
-    /**
-     * @return mixed
-     */
-    public function getQueryParam(string $param)
+    public function getQueryParam(string $param): mixed
     {
         Assertion::true($this->hasQueryParam($param), sprintf('The parameter "%s" is missing.', $param));
 
@@ -82,7 +71,7 @@ class AuthorizationRequest
 
     public function hasResponseMode(): bool
     {
-        return null === $this->responseMode;
+        return $this->responseMode === null;
     }
 
     public function getResponseMode(): ResponseMode
@@ -104,7 +93,7 @@ class AuthorizationRequest
 
     public function hasUserAccount(): bool
     {
-        return null !== $this->userAccount;
+        return $this->userAccount !== null;
     }
 
     public function getUserAccount(): UserAccount
@@ -114,10 +103,7 @@ class AuthorizationRequest
         return $this->userAccount;
     }
 
-    /**
-     * @param mixed $value
-     */
-    public function setResponseParameter(string $responseParameter, $value): void
+    public function setResponseParameter(string $responseParameter, mixed $value): void
     {
         $this->responseParameters[$responseParameter] = $value;
     }
@@ -127,10 +113,7 @@ class AuthorizationRequest
         return $this->responseParameters;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getResponseParameter(string $param)
+    public function getResponseParameter(string $param): mixed
     {
         Assertion::true($this->hasResponseParameter($param), sprintf('Invalid response parameter "%s".', $param));
 
@@ -139,13 +122,10 @@ class AuthorizationRequest
 
     public function hasResponseParameter(string $param): bool
     {
-        return \array_key_exists($param, $this->getResponseParameters());
+        return array_key_exists($param, $this->getResponseParameters());
     }
 
-    /**
-     * @param mixed $value
-     */
-    public function setResponseHeader(string $responseHeader, $value): void
+    public function setResponseHeader(string $responseHeader, mixed $value): void
     {
         $this->responseHeaders[$responseHeader] = $value;
     }
@@ -160,7 +140,7 @@ class AuthorizationRequest
      */
     public function getPrompt(): array
     {
-        if (!$this->hasQueryParam('prompt')) {
+        if (! $this->hasQueryParam('prompt')) {
             return [];
         }
 
@@ -182,17 +162,17 @@ class AuthorizationRequest
 
     public function hasPrompt(string $prompt): bool
     {
-        return \in_array($prompt, $this->getPrompt(), true);
+        return in_array($prompt, $this->getPrompt(), true);
     }
 
     public function isAuthorized(): bool
     {
-        return self::CONSENT_ALLOW === $this->authorized;
+        return $this->authorized === self::CONSENT_ALLOW;
     }
 
     public function hasConsentBeenGiven(): bool
     {
-        return self::CONSENT_NOT_GIVEN !== $this->authorized;
+        return $this->authorized !== self::CONSENT_NOT_GIVEN;
     }
 
     public function allow(): void
@@ -232,7 +212,7 @@ class AuthorizationRequest
 
     public function hasAttribute(string $key): bool
     {
-        return \array_key_exists($key, $this->attributes);
+        return array_key_exists($key, $this->attributes);
     }
 
     /**
@@ -244,7 +224,7 @@ class AuthorizationRequest
     }
 
     /**
-     * @return null|mixed $value
+     * @return mixed|null
      */
     public function getAttribute(string $key)
     {

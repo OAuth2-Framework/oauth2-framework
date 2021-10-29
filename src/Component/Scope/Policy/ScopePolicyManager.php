@@ -2,18 +2,11 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\Component\Scope\Policy;
 
-use function Safe\sprintf;
+use function array_key_exists;
+use function count;
+use InvalidArgumentException;
 use OAuth2Framework\Component\Core\Client\Client;
 
 class ScopePolicyManager
@@ -30,17 +23,17 @@ class ScopePolicyManager
         $name = $scopePolicy->name();
         $this->scopePolicies[$name] = $scopePolicy;
 
-        if (true === $isDefault || 1 === \count($this->scopePolicies)) {
+        if ($isDefault === true || count($this->scopePolicies) === 1) {
             $this->defaultScopePolicy = $name;
         }
     }
 
     public function apply(string $scope, Client $client): string
     {
-        if ('' === $scope) {
+        if ($scope === '') {
             $policy = $this->getForClient($client);
 
-            if (null !== $policy) {
+            if ($policy !== null) {
                 return $policy->applyScopePolicy($scope, $client);
             }
         }
@@ -58,13 +51,16 @@ class ScopePolicyManager
 
     public function has(string $scopePolicy): bool
     {
-        return \array_key_exists($scopePolicy, $this->scopePolicies);
+        return array_key_exists($scopePolicy, $this->scopePolicies);
     }
 
     private function get(string $scopePolicyName): ScopePolicy
     {
-        if (!$this->has($scopePolicyName)) {
-            throw new \InvalidArgumentException(sprintf('The scope policy with name "%s" is not supported', $scopePolicyName));
+        if (! $this->has($scopePolicyName)) {
+            throw new InvalidArgumentException(sprintf(
+                'The scope policy with name "%s" is not supported',
+                $scopePolicyName
+            ));
         }
 
         return $this->scopePolicies[$scopePolicyName];
@@ -72,7 +68,7 @@ class ScopePolicyManager
 
     private function default(): ?ScopePolicy
     {
-        if (null === $this->defaultScopePolicy) {
+        if ($this->defaultScopePolicy === null) {
             return null;
         }
 

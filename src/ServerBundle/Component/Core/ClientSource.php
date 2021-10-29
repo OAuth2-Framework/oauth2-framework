@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\ServerBundle\Component\Core;
 
 use OAuth2Framework\Component\Core\Client\ClientRepository;
@@ -31,7 +22,7 @@ class ClientSource implements Component
     {
         $container->setAlias(ClientRepository::class, $configs['client']['repository']);
 
-        $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../Resources/config/core'));
+        $loader = new PhpFileLoader($container, new FileLocator(__DIR__ . '/../../Resources/config/core'));
         $loader->load('client.php');
     }
 

@@ -2,26 +2,15 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\Component\RefreshTokenGrant;
 
 use OAuth2Framework\Component\TokenRevocationEndpoint\TokenTypeHint;
 
 final class RefreshTokenRevocationTypeHint implements TokenTypeHint
 {
-    private RefreshTokenRepository $refreshTokenRepository;
-
-    public function __construct(RefreshTokenRepository $refreshTokenRepository)
-    {
-        $this->refreshTokenRepository = $refreshTokenRepository;
+    public function __construct(
+        private RefreshTokenRepository $refreshTokenRepository
+    ) {
     }
 
     public function hint(): string
@@ -36,9 +25,9 @@ final class RefreshTokenRevocationTypeHint implements TokenTypeHint
         return $this->refreshTokenRepository->find($id);
     }
 
-    public function revoke($token): void
+    public function revoke(mixed $token): void
     {
-        if (!$token instanceof RefreshToken || true === $token->isRevoked()) {
+        if (! $token instanceof RefreshToken || $token->isRevoked() === true) {
             return;
         }
 

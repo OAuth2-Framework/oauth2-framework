@@ -2,17 +2,9 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\Tests\Component\Scope;
 
+use InvalidArgumentException;
 use OAuth2Framework\Component\ClientRule\Rule;
 use OAuth2Framework\Component\ClientRule\RuleHandler;
 use OAuth2Framework\Component\Core\Client\ClientId;
@@ -23,8 +15,6 @@ use OAuth2Framework\Component\Scope\Rule\ScopePolicyRule;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @group Tests
- *
  * @internal
  */
 final class ScopePolicyRuleTest extends TestCase
@@ -34,7 +24,7 @@ final class ScopePolicyRuleTest extends TestCase
      */
     protected function setUp(): void
     {
-        if (!interface_exists(Rule::class)) {
+        if (! interface_exists(Rule::class)) {
             static::markTestSkipped('The component "oauth2-framework/client" is not installed.');
         }
     }
@@ -42,9 +32,9 @@ final class ScopePolicyRuleTest extends TestCase
     /**
      * @test
      */
-    public function theParameterMustBeAString()
+    public function theParameterMustBeAString(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('The parameter "scope_policy" must be a string.');
         $clientId = new ClientId('CLIENT_ID');
         $commandParameters = new DataBag([
@@ -57,9 +47,9 @@ final class ScopePolicyRuleTest extends TestCase
     /**
      * @test
      */
-    public function theScopePolicyIsNotSupported()
+    public function theScopePolicyIsNotSupported(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('The scope policy "foo" is not supported.');
         $clientId = new ClientId('CLIENT_ID');
         $commandParameters = new DataBag([
@@ -72,7 +62,7 @@ final class ScopePolicyRuleTest extends TestCase
     /**
      * @test
      */
-    public function theParameterIsValid()
+    public function theParameterIsValid(): void
     {
         $clientId = new ClientId('CLIENT_ID');
         $commandParameters = new DataBag([
@@ -81,12 +71,16 @@ final class ScopePolicyRuleTest extends TestCase
         $rule = $this->getScopePolicyRule();
         $validatedParameters = $rule->handle($clientId, $commandParameters, new DataBag([]), $this->getCallable());
         static::assertTrue($validatedParameters->has('scope_policy'));
-        static::assertEquals('none', $validatedParameters->get('scope_policy'));
+        static::assertSame('none', $validatedParameters->get('scope_policy'));
     }
 
     private function getCallable(): RuleHandler
     {
-        return new RuleHandler(function (ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters): DataBag {
+        return new RuleHandler(function (
+            ClientId $clientId,
+            DataBag $commandParameters,
+            DataBag $validatedParameters
+        ): DataBag {
             return $validatedParameters;
         });
     }

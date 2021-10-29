@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\Tests\Component\AuthorizationEndpoint;
 
 use Nyholm\Psr7\Factory\Psr17Factory;
@@ -25,12 +16,6 @@ use OAuth2Framework\Component\AuthorizationEndpoint\Hook\LoginPrompt;
 use OAuth2Framework\Component\AuthorizationEndpoint\Hook\NonePrompt;
 use OAuth2Framework\Component\AuthorizationEndpoint\Hook\SelectAccountPrompt;
 use OAuth2Framework\Component\AuthorizationEndpoint\LoginHandler;
-use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\DisplayParameterChecker;
-use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\ParameterCheckerManager;
-use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\PromptParameterChecker;
-use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\RedirectUriParameterChecker;
-use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\ResponseTypeParameterChecker;
-use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\StateParameterChecker;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\FragmentResponseMode;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\QueryResponseMode;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\ResponseModeManager;
@@ -50,69 +35,38 @@ use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
+use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 /**
- * @group AuthorizationEndpoint
- * @group ResponseTypeManager
- *
  * @internal
  */
 final class AuthorizationEndpointTest extends TestCase
 {
     use ProphecyTrait;
 
-    /**
-     * @var null|TokenTypeManager
-     */
-    private $tokenTypeManager;
+    private ?TokenTypeManager $tokenTypeManager = null;
 
-    /**
-     * @var null|ResponseTypeManager
-     */
-    private $responseTypeManager;
+    private ?ResponseTypeManager $responseTypeManager = null;
 
-    /**
-     * @var null|ResponseModeManager
-     */
-    private $responseModeManager;
+    private ?ResponseModeManager $responseModeManager = null;
 
-    /**
-     * @var null|ParameterCheckerManager
-     */
-    private $parameterCheckerManager;
+    private ?ExtensionManager $extensionManager = null;
 
-    /**
-     * @var null|ExtensionManager
-     */
-    private $extensionManager;
+    private ?ObjectProphecy $loginHandler = null;
 
-    /**
-     * @var null|LoginHandler
-     */
-    private $loginHandler;
+    private ?ObjectProphecy $consentHandler = null;
 
-    /**
-     * @var null|ConsentHandler
-     */
-    private $consentHandler;
+    private ?ObjectProphecy $selectAccountHandler = null;
 
-    /**
-     * @var null|SelectAccountHandler
-     */
-    private $selectAccountHandler;
-
-    /**
-     * @var null|UserAuthenticationCheckerManager
-     */
-    private $userAuthenticationCheckerManager;
+    private ?UserAuthenticationCheckerManager $userAuthenticationCheckerManager = null;
 
     /**
      * @test
      */
-    public function aClientAsksForConsentLoginAndAccountSelectionButResourceOwnerRefusedTheDelegation()
+    public function aClientAsksForConsentLoginAndAccountSelectionButResourceOwnerRefusedTheDelegation(): void
     {
         $params = [
             'prompt' => 'consent login select_account',
@@ -121,7 +75,9 @@ final class AuthorizationEndpointTest extends TestCase
             'redirect_uri' => 'https://localhost',
         ];
         $client = $this->prophesize(Client::class);
-        $client->has('default_max_age')->willReturn(false);
+        $client->has('default_max_age')
+            ->willReturn(false)
+        ;
         $userAccount = $this->prophesize(UserAccount::class);
         $resourceServer = $this->prophesize(ResourceServer::class);
         $authorizationRequest = new AuthorizationRequest($client->reveal(), $params);
@@ -134,32 +90,43 @@ final class AuthorizationEndpointTest extends TestCase
         $handler = $this->prophesize(RequestHandlerInterface::class);
         $request = $this->prophesize(ServerRequestInterface::class);
 
-        $response = $this->getAuthorizationEndpoint($authorizationRequest)->process($request->reveal(), $handler->reveal());
+        $response = $this->getAuthorizationEndpoint($authorizationRequest)
+            ->process($request->reveal(), $handler->reveal())
+        ;
 
-        static::assertEquals(303, $response->getStatusCode());
-        static::assertEquals(['https://foo.bar/authorization/___ID___/select_account'], $response->getHeader('location'));
+        static::assertSame(303, $response->getStatusCode());
+        static::assertSame(
+            ['https://foo.bar/authorization/___ID___/select_account'],
+            $response->getHeader('location')
+        );
 
         $authorizationRequest->setAttribute('account_has_been_selected', true);
 
-        $response = $this->getAuthorizationEndpoint($authorizationRequest)->process($request->reveal(), $handler->reveal());
+        $response = $this->getAuthorizationEndpoint($authorizationRequest)
+            ->process($request->reveal(), $handler->reveal())
+        ;
 
-        static::assertEquals(303, $response->getStatusCode());
-        static::assertEquals(['https://foo.bar/authorization/___ID___/login'], $response->getHeader('location'));
+        static::assertSame(303, $response->getStatusCode());
+        static::assertSame(['https://foo.bar/authorization/___ID___/login'], $response->getHeader('location'));
 
         $authorizationRequest->setAttribute('user_has_been_authenticated', true);
 
-        $response = $this->getAuthorizationEndpoint($authorizationRequest)->process($request->reveal(), $handler->reveal());
+        $response = $this->getAuthorizationEndpoint($authorizationRequest)
+            ->process($request->reveal(), $handler->reveal())
+        ;
 
-        static::assertEquals(303, $response->getStatusCode());
-        static::assertEquals(['https://foo.bar/authorization/___ID___/consent'], $response->getHeader('location'));
+        static::assertSame(303, $response->getStatusCode());
+        static::assertSame(['https://foo.bar/authorization/___ID___/consent'], $response->getHeader('location'));
 
         $authorizationRequest->deny();
 
         try {
-            $this->getAuthorizationEndpoint($authorizationRequest)->process($request->reveal(), $handler->reveal());
+            $this->getAuthorizationEndpoint($authorizationRequest)
+                ->process($request->reveal(), $handler->reveal())
+            ;
         } catch (OAuth2AuthorizationException $exception) {
-            static::assertEquals('access_denied', $exception->getMessage());
-            static::assertEquals('The resource owner denied access to your client.', $exception->getErrorDescription());
+            static::assertSame('access_denied', $exception->getMessage());
+            static::assertSame('The resource owner denied access to your client.', $exception->getErrorDescription());
         }
     }
 
@@ -186,9 +153,11 @@ final class AuthorizationEndpointTest extends TestCase
 
     public function getTokenTypeManager(): TokenTypeManager
     {
-        if (null === $this->tokenTypeManager) {
+        if ($this->tokenTypeManager === null) {
             $tokenType = $this->prophesize(TokenType::class);
-            $tokenType->name()->willReturn('bearer');
+            $tokenType->name()
+                ->willReturn('bearer')
+            ;
 
             $this->tokenTypeManager = new TokenTypeManager();
             $this->tokenTypeManager->add($tokenType->reveal());
@@ -199,10 +168,14 @@ final class AuthorizationEndpointTest extends TestCase
 
     public function getResponseTypeManager(): ResponseTypeManager
     {
-        if (null === $this->responseTypeManager) {
+        if ($this->responseTypeManager === null) {
             $responseType = $this->prophesize(ResponseType::class);
-            $responseType->name()->willReturn('foo');
-            $responseType->getResponseMode()->willReturn('query');
+            $responseType->name()
+                ->willReturn('foo')
+            ;
+            $responseType->getResponseMode()
+                ->willReturn('query')
+            ;
             $responseTypeManager = new ResponseTypeManager();
             $responseTypeManager->add($responseType->reveal());
 
@@ -215,7 +188,7 @@ final class AuthorizationEndpointTest extends TestCase
 
     public function getResponseModeManager(): ResponseModeManager
     {
-        if (null === $this->responseModeManager) {
+        if ($this->responseModeManager === null) {
             $this->responseModeManager = new ResponseModeManager();
             $this->responseModeManager->add(new QueryResponseMode());
             $this->responseModeManager->add(new FragmentResponseMode());
@@ -224,60 +197,46 @@ final class AuthorizationEndpointTest extends TestCase
         return $this->responseModeManager;
     }
 
-    private function getParameterCheckerManager(): ParameterCheckerManager
-    {
-        if (null === $this->parameterCheckerManager) {
-            $responseType = $this->prophesize(ResponseType::class);
-            $responseType->name()->willReturn('foo');
-            $responseType->getResponseMode()->willReturn('query');
-            $responseTypeManager = new ResponseTypeManager();
-            $responseTypeManager->add($responseType->reveal());
-
-            $responseModeManager = new ResponseModeManager();
-            $responseModeManager->add(new QueryResponseMode());
-            $responseModeManager->add(new FragmentResponseMode());
-
-            $this->parameterCheckerManager = new ParameterCheckerManager();
-            $this->parameterCheckerManager->add(new DisplayParameterChecker());
-            $this->parameterCheckerManager->add(new PromptParameterChecker());
-            $this->parameterCheckerManager->add(new RedirectUriParameterChecker());
-            $this->parameterCheckerManager->add(new ResponseTypeParameterChecker($responseTypeManager));
-            $this->parameterCheckerManager->add(new StateParameterChecker());
-        }
-
-        return $this->parameterCheckerManager;
-    }
-
     private function getExtensionManager(): ExtensionManager
     {
-        if (null === $this->extensionManager) {
+        if ($this->extensionManager === null) {
             $this->extensionManager = new ExtensionManager();
         }
 
         return $this->extensionManager;
     }
 
-    private function getAuthorizationRequestStorage(AuthorizationRequest $authorizationRequest): AuthorizationRequestStorage
-    {
+    private function getAuthorizationRequestStorage(
+        AuthorizationRequest $authorizationRequest
+    ): AuthorizationRequestStorage {
         $authorizationRequestStorage = $this->prophesize(AuthorizationRequestStorage::class);
         $authorizationRequestStorage->getId(Argument::type(ServerRequestInterface::class))->willReturn('___ID___');
         $authorizationRequestStorage->get(Argument::containingString('___ID___'))->willReturn($authorizationRequest);
         $authorizationRequestStorage->has(Argument::containingString('___ID___'))->willReturn(true);
         $authorizationRequestStorage->remove(Argument::containingString('___ID___'))->will(function () {});
-        $authorizationRequestStorage->set(Argument::containingString('___ID___'), Argument::type(AuthorizationRequest::class))->will(function () {});
+        $authorizationRequestStorage->set(
+            Argument::containingString('___ID___'),
+            Argument::type(AuthorizationRequest::class)
+        )->will(function () {});
 
         return $authorizationRequestStorage->reveal();
     }
 
     private function getLoginHandler(): LoginHandler
     {
-        if (null === $this->loginHandler) {
+        if ($this->loginHandler === null) {
             $response = $this->prophesize(ResponseInterface::class);
-            $response->getStatusCode()->willReturn(303);
-            $response->getHeader('location')->willReturn(['https://foo.bar/authorization/___ID___/login']);
+            $response->getStatusCode()
+                ->willReturn(303)
+            ;
+            $response->getHeader('location')
+                ->willReturn(['https://foo.bar/authorization/___ID___/login'])
+            ;
 
             $this->loginHandler = $this->prophesize(LoginHandler::class);
-            $this->loginHandler->handle(Argument::type(ServerRequestInterface::class), '___ID___')->willReturn($response->reveal());
+            $this->loginHandler->handle(Argument::type(ServerRequestInterface::class), '___ID___')->willReturn(
+                $response->reveal()
+            );
         }
 
         return $this->loginHandler->reveal();
@@ -285,13 +244,19 @@ final class AuthorizationEndpointTest extends TestCase
 
     private function getConsentHandler(): ConsentHandler
     {
-        if (null === $this->consentHandler) {
+        if ($this->consentHandler === null) {
             $response = $this->prophesize(ResponseInterface::class);
-            $response->getStatusCode()->willReturn(303);
-            $response->getHeader('location')->willReturn(['https://foo.bar/authorization/___ID___/consent']);
+            $response->getStatusCode()
+                ->willReturn(303)
+            ;
+            $response->getHeader('location')
+                ->willReturn(['https://foo.bar/authorization/___ID___/consent'])
+            ;
 
             $this->consentHandler = $this->prophesize(ConsentHandler::class);
-            $this->consentHandler->handle(Argument::type(ServerRequestInterface::class), '___ID___')->willReturn($response->reveal());
+            $this->consentHandler->handle(Argument::type(ServerRequestInterface::class), '___ID___')->willReturn(
+                $response->reveal()
+            );
         }
 
         return $this->consentHandler->reveal();
@@ -299,13 +264,19 @@ final class AuthorizationEndpointTest extends TestCase
 
     private function getSelectAccountHandler(): SelectAccountHandler
     {
-        if (null === $this->selectAccountHandler) {
+        if ($this->selectAccountHandler === null) {
             $response = $this->prophesize(ResponseInterface::class);
-            $response->getStatusCode()->willReturn(303);
-            $response->getHeader('location')->willReturn(['https://foo.bar/authorization/___ID___/select_account']);
+            $response->getStatusCode()
+                ->willReturn(303)
+            ;
+            $response->getHeader('location')
+                ->willReturn(['https://foo.bar/authorization/___ID___/select_account'])
+            ;
 
             $this->selectAccountHandler = $this->prophesize(SelectAccountHandler::class);
-            $this->selectAccountHandler->handle(Argument::type(ServerRequestInterface::class), '___ID___')->willReturn($response->reveal());
+            $this->selectAccountHandler->handle(Argument::type(ServerRequestInterface::class), '___ID___')->willReturn(
+                $response->reveal()
+            );
         }
 
         return $this->selectAccountHandler->reveal();
@@ -313,7 +284,7 @@ final class AuthorizationEndpointTest extends TestCase
 
     private function getUserAuthenticationCheckerManager(): UserAuthenticationCheckerManager
     {
-        if (null === $this->userAuthenticationCheckerManager) {
+        if ($this->userAuthenticationCheckerManager === null) {
             $this->userAuthenticationCheckerManager = new UserAuthenticationCheckerManager();
             $this->userAuthenticationCheckerManager->add(new MaxAgeParameterAuthenticationChecker());
         }

@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\ServerBundle\Component\Endpoint\Authorization;
 
 use OAuth2Framework\ServerBundle\Component\Component;
@@ -28,8 +19,14 @@ class RequestObjectReferenceSource implements Component
     public function load(array $configs, ContainerBuilder $container): void
     {
         $config = $configs['endpoint']['authorization']['request_object']['reference'];
-        $container->setParameter('oauth2_server.endpoint.authorization.request_object.reference.enabled', $config['enabled']);
-        $container->setParameter('oauth2_server.endpoint.authorization.request_object.reference.uris_registration_required', $config['uris_registration_required']);
+        $container->setParameter(
+            'oauth2_server.endpoint.authorization.request_object.reference.enabled',
+            $config['enabled']
+        );
+        $container->setParameter(
+            'oauth2_server.endpoint.authorization.request_object.reference.uris_registration_required',
+            $config['uris_registration_required']
+        );
     }
 
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void

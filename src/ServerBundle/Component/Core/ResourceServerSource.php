@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\ServerBundle\Component\Core;
 
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerRepository;
@@ -31,12 +22,14 @@ class ResourceServerSource implements Component
 
     public function load(array $configs, ContainerBuilder $container): void
     {
-        $container->registerForAutoconfiguration(AuthenticationMethodManager::class)->addTag('resource_server_authentication_method');
+        $container->registerForAutoconfiguration(AuthenticationMethodManager::class)->addTag(
+            'resource_server_authentication_method'
+        );
 
-        $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../Resources/config/resource_server'));
+        $loader = new PhpFileLoader($container, new FileLocator(__DIR__ . '/../../Resources/config/resource_server'));
         $loader->load('resource_server.php');
 
-        if (null === $configs['resource_server']['repository']) {
+        if ($configs['resource_server']['repository'] === null) {
             return;
         }
         $container->setAlias(ResourceServerRepository::class, $configs['resource_server']['repository']);

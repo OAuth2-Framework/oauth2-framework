@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\ServerBundle\Component\Grant\AuthorizationCode;
 
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCode;
@@ -30,20 +21,28 @@ class AuthorizationCodeSource implements Component
 
     public function load(array $configs, ContainerBuilder $container): void
     {
-        if (!interface_exists(AuthorizationCode::class) || true !== $configs['grant']['authorization_code']['enabled']) {
+        if (! interface_exists(
+            AuthorizationCode::class
+        ) || $configs['grant']['authorization_code']['enabled'] !== true) {
             return;
         }
-        $container->setParameter('oauth2_server.grant.authorization_code.lifetime', $configs['grant']['authorization_code']['lifetime']);
-        $container->setParameter('oauth2_server.grant.authorization_code.enforce_pkce', $configs['grant']['authorization_code']['enforce_pkce']);
+        $container->setParameter(
+            'oauth2_server.grant.authorization_code.lifetime',
+            $configs['grant']['authorization_code']['lifetime']
+        );
+        $container->setParameter(
+            'oauth2_server.grant.authorization_code.enforce_pkce',
+            $configs['grant']['authorization_code']['enforce_pkce']
+        );
         $container->setAlias(AuthorizationCodeRepository::class, $configs['grant']['authorization_code']['repository']);
 
-        $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/grant'));
+        $loader = new PhpFileLoader($container, new FileLocator(__DIR__ . '/../../../Resources/config/grant'));
         $loader->load('authorization_code.php');
     }
 
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
-        if (!interface_exists(AuthorizationCode::class)) {
+        if (! interface_exists(AuthorizationCode::class)) {
             return;
         }
         $node->children()
@@ -71,7 +70,7 @@ class AuthorizationCodeSource implements Component
 
     public function build(ContainerBuilder $container): void
     {
-        if (!class_exists(AuthorizationCode::class)) {
+        if (! class_exists(AuthorizationCode::class)) {
             return;
         }
         $container->addCompilerPass(new PKCEMethodCompilerPass());

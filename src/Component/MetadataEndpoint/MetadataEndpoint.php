@@ -2,22 +2,15 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\Component\MetadataEndpoint;
 
-use function Safe\json_encode;
 use Jose\Component\Core\JWK;
 use Jose\Component\Core\Util\JsonConverter;
 use Jose\Component\Signature\JWSBuilder;
 use Jose\Component\Signature\Serializer\CompactSerializer;
+use const JSON_THROW_ON_ERROR;
+use const JSON_UNESCAPED_SLASHES;
+use const JSON_UNESCAPED_UNICODE;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -26,20 +19,16 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class MetadataEndpoint implements MiddlewareInterface
 {
-    private ResponseFactoryInterface $responseFactory;
-
-    private Metadata $metadata;
-
     private ?JWK $signatureKey = null;
 
     private ?string $signatureAlgorithm = null;
 
     private ?JWSBuilder $jwsBuilder = null;
 
-    public function __construct(ResponseFactoryInterface $responseFactory, Metadata $metadata)
-    {
-        $this->responseFactory = $responseFactory;
-        $this->metadata = $metadata;
+    public function __construct(
+        private ResponseFactoryInterface $responseFactory,
+        private Metadata $metadata
+    ) {
     }
 
     public function enableSignature(JWSBuilder $jwsBuilder, string $signatureAlgorithm, JWK $signatureKey): void
@@ -52,11 +41,13 @@ class MetadataEndpoint implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $data = $this->metadata->all();
-        if (null !== $this->jwsBuilder) {
+        if ($this->jwsBuilder !== null) {
             $data['signed_metadata'] = $this->sign($data);
         }
         $response = $this->responseFactory->createResponse();
-        $response->getBody()->write(json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+        $response->getBody()
+            ->write(json_encode($data, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES))
+        ;
 
         return $response->withHeader('Content-Type', 'application/json; charset=UTF-8');
     }

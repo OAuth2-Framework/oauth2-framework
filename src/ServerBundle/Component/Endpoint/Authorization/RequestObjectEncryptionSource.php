@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\ServerBundle\Component\Endpoint\Authorization;
 
 use Jose\Bundle\JoseFramework\Helper\ConfigurationHelper;
@@ -24,11 +15,14 @@ class RequestObjectEncryptionSource implements Component
     public function load(array $configs, ContainerBuilder $container): void
     {
         $config = $configs['endpoint']['authorization']['request_object']['encryption'];
-        if (false === $config['enabled']) {
+        if ($config['enabled'] === false) {
             return;
         }
         foreach (['required', 'key_set', 'key_encryption_algorithms', 'content_encryption_algorithms'] as $k) {
-            $container->setParameter('oauth2_server.endpoint.authorization.request_object.encryption.'.$k, $config[$k]);
+            $container->setParameter(
+                'oauth2_server.endpoint.authorization.request_object.encryption.' . $k,
+                $config[$k]
+            );
         }
     }
 
@@ -54,13 +48,15 @@ class RequestObjectEncryptionSource implements Component
             ->arrayNode('key_encryption_algorithms')
             ->info('Supported key encryption algorithms.')
             ->useAttributeAsKey('name')
-            ->scalarPrototype()->end()
+            ->scalarPrototype()
+            ->end()
             ->treatNullLike([])
             ->end()
             ->arrayNode('content_encryption_algorithms')
             ->info('Supported content encryption algorithms.')
             ->useAttributeAsKey('name')
-            ->scalarPrototype()->end()
+            ->scalarPrototype()
+            ->end()
             ->treatNullLike([])
             ->end()
             ->end()
@@ -72,9 +68,25 @@ class RequestObjectEncryptionSource implements Component
     public function prepend(ContainerBuilder $container, array $config): array
     {
         $sourceConfig = $config['endpoint']['authorization']['request_object']['encryption'];
-        if (true === $sourceConfig['enabled']) {
-            ConfigurationHelper::addKeyset($container, 'oauth2_server.endpoint.authorization.request_object', 'jwkset', ['value' => $sourceConfig['key_set']]);
-            ConfigurationHelper::addJWELoader($container, 'oauth2_server.endpoint.authorization.request_object', ['jwe_compact'], $sourceConfig['key_encryption_algorithms'], $sourceConfig['content_encryption_algorithms'], ['DEF'], [], false);
+        if ($sourceConfig['enabled'] === true) {
+            ConfigurationHelper::addKeyset(
+                $container,
+                'oauth2_server.endpoint.authorization.request_object',
+                'jwkset',
+                [
+                    'value' => $sourceConfig['key_set'],
+                ]
+            );
+            ConfigurationHelper::addJWELoader(
+                $container,
+                'oauth2_server.endpoint.authorization.request_object',
+                ['jwe_compact'],
+                $sourceConfig['key_encryption_algorithms'],
+                $sourceConfig['content_encryption_algorithms'],
+                ['DEF'],
+                [],
+                false
+            );
         }
 
         return [];

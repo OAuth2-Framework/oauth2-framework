@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\ServerBundle\Component\ClientAuthentication;
 
 use OAuth2Framework\ServerBundle\Component\Component;
@@ -28,9 +19,14 @@ class NoneSource implements Component
 
     public function load(array $configs, ContainerBuilder $container): void
     {
-        $container->setParameter('oauth2_server.client_authentication.none.enabled', $configs['client_authentication']['none']['enabled']);
+        $container->setParameter(
+            'oauth2_server.client_authentication.none.enabled',
+            $configs['client_authentication']['none']['enabled']
+        );
         if ($configs['client_authentication']['none']['enabled']) {
-            $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../Resources/config/client_authentication'));
+            $loader = new PhpFileLoader($container, new FileLocator(
+                __DIR__ . '/../../Resources/config/client_authentication'
+            ));
             $loader->load('none.php');
         }
     }

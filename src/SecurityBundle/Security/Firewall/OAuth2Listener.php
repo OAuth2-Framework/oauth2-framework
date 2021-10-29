@@ -2,25 +2,17 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\SecurityBundle\Security\Firewall;
 
+use Nyholm\Psr7\Factory\Psr17Factory;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenHandlerManager;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use OAuth2Framework\Component\Core\Message\OAuth2MessageFactoryManager;
-use OAuth2Framework\Component\Core\TokenType\TokenType;
 use OAuth2Framework\Component\Core\TokenType\TokenTypeManager;
 use OAuth2Framework\SecurityBundle\Security\Authentication\Token\OAuth2Token;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
+use Symfony\Bridge\PsrHttpMessage\Factory\PsrHttpFactory;
 use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\Security\Core\Authentication\AuthenticationManagerInterface;
@@ -30,32 +22,21 @@ use Throwable;
 
 final class OAuth2Listener
 {
-    private TokenStorageInterface $tokenStorage;
-
-    private AuthenticationManagerInterface $authenticationManager;
-
-    private TokenTypeManager $tokenTypeManager;
-
-    private AccessTokenHandlerManager $accessTokenHandlerManager;
-
-    private OAuth2MessageFactoryManager $oauth2ResponseFactoryManager;
-
     private HttpMessageFactoryInterface $httpMessageFactory;
 
     public function __construct(
-        HttpMessageFactoryInterface $httpMessageFactory,
-        TokenStorageInterface $tokenStorage,
-        AuthenticationManagerInterface $authenticationManager,
-        TokenTypeManager $tokenTypeManager,
-        AccessTokenHandlerManager $accessTokenHandlerManager,
-        OAuth2MessageFactoryManager $oauth2ResponseFactoryManager
+        private TokenStorageInterface $tokenStorage,
+        private AuthenticationManagerInterface $authenticationManager,
+        private TokenTypeManager $tokenTypeManager,
+        private AccessTokenHandlerManager $accessTokenHandlerManager,
+        private OAuth2MessageFactoryManager $oauth2ResponseFactoryManager
     ) {
-        $this->tokenStorage = $tokenStorage;
-        $this->authenticationManager = $authenticationManager;
-        $this->tokenTypeManager = $tokenTypeManager;
-        $this->accessTokenHandlerManager = $accessTokenHandlerManager;
-        $this->oauth2ResponseFactoryManager = $oauth2ResponseFactoryManager;
-        $this->httpMessageFactory = $httpMessageFactory;
+        $this->httpMessageFactory = new PsrHttpFactory(
+            new Psr17Factory(),
+            new Psr17Factory(),
+            new Psr17Factory(),
+            new Psr17Factory()
+        );
     }
 
     public function __invoke(RequestEvent $event): void
@@ -65,7 +46,7 @@ final class OAuth2Listener
         try {
             $additionalCredentialValues = [];
             $accessTokenId = $this->tokenTypeManager->findToken($request, $additionalCredentialValues, $tokenType);
-            if (null === $accessTokenId) {
+            if ($accessTokenId === null) {
                 return;
             }
             // @var TokenType $tokenType
@@ -75,13 +56,13 @@ final class OAuth2Listener
 
         try {
             $accessToken = $this->accessTokenHandlerManager->find(new AccessTokenId($accessTokenId));
-            if (null === $accessToken || $accessToken->isRevoked()) {
+            if ($accessToken === null || $accessToken->isRevoked()) {
                 throw new AuthenticationException('Invalid access token.');
             }
             if ($accessToken->hasExpired()) {
                 throw new AuthenticationException('The access token expired.');
             }
-            if (!$tokenType->isRequestValid($accessToken, $request, $additionalCredentialValues)) {
+            if (! $tokenType->isRequestValid($accessToken, $request, $additionalCredentialValues)) {
                 throw new AuthenticationException('Invalid access token.');
             }
 
@@ -91,7 +72,7 @@ final class OAuth2Listener
             $this->tokenStorage->setToken($result);
         } catch (AuthenticationException $e) {
             $psr7Response = $this->oauth2ResponseFactoryManager->getResponse(
-                OAuth2Error::accessDenied('OAuth2 authentication required. '.$e->getMessage(), [], $e)
+                OAuth2Error::accessDenied('OAuth2 authentication required. ' . $e->getMessage(), [], $e)
             );
             $factory = new HttpFoundationFactory();
             $event->setResponse($factory->createResponse($psr7Response));

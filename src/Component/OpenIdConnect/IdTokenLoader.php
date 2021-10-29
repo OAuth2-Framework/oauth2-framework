@@ -2,32 +2,20 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\Component\OpenIdConnect;
 
-use function Safe\json_decode;
 use Assert\Assertion;
 use Jose\Component\Core\JWKSet;
 use Jose\Component\Signature\JWSLoader;
+use const JSON_THROW_ON_ERROR;
+use Throwable;
 
 class IdTokenLoader
 {
-    private JWKSet $signatureKeySet;
-
-    private JWSLoader $jwsLoader;
-
-    public function __construct(JWSLoader $jwsLoader, JWKSet $signatureKeySet)
-    {
-        $this->signatureKeySet = $signatureKeySet;
-        $this->jwsLoader = $jwsLoader;
+    public function __construct(
+        private JWSLoader $jwsLoader,
+        private JWKSet $signatureKeySet
+    ) {
     }
 
     /**
@@ -35,7 +23,10 @@ class IdTokenLoader
      */
     public function getSupportedSignatureAlgorithms(): array
     {
-        return $this->jwsLoader->getJwsVerifier()->getSignatureAlgorithmManager()->list();
+        return $this->jwsLoader->getJwsVerifier()
+            ->getSignatureAlgorithmManager()
+            ->list()
+        ;
     }
 
     public function load(IdTokenId $idTokenId): ?IdToken
@@ -47,11 +38,11 @@ class IdTokenLoader
             Assertion::eq(0, $signature, 'Invalid ID Token.');
             $payload = $jwt->getPayload();
             Assertion::string($payload, 'Invalid ID Token.');
-            $claims = json_decode($payload, true);
+            $claims = json_decode($payload, true, 512, JSON_THROW_ON_ERROR);
             Assertion::isArray($claims, 'Invalid ID Token.');
 
             return new IdToken($idTokenId, $claims);
-        } catch (\Throwable $e) {
+        } catch (Throwable) {
             return null;
         }
     }

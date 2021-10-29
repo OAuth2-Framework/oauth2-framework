@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\Component\AuthorizationEndpoint\Middleware;
 
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
@@ -29,13 +20,10 @@ use Throwable;
 
 final class AuthorizationExceptionMiddleware implements MiddlewareInterface
 {
-    private ResponseTypeGuesser $responseTypeGuesser;
-    private ResponseModeGuesser $responseModeGuesser;
-
-    public function __construct(ResponseTypeGuesser $responseTypeGuesser, ResponseModeGuesser $responseModeGuesser)
-    {
-        $this->responseTypeGuesser = $responseTypeGuesser;
-        $this->responseModeGuesser = $responseModeGuesser;
+    public function __construct(
+        private ResponseTypeGuesser $responseTypeGuesser,
+        private ResponseModeGuesser $responseModeGuesser
+    ) {
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
@@ -46,15 +34,24 @@ final class AuthorizationExceptionMiddleware implements MiddlewareInterface
             $authorizationRequest = $e->getAuthorization();
             $data = $authorizationRequest->getResponseParameters();
             $responseType = $this->getResponseType($authorizationRequest);
-            $responseMode = null === $responseType ? null : $this->getResponseMode($authorizationRequest, $responseType);
+            $responseMode = $responseType === null ? null : $this->getResponseMode(
+                $authorizationRequest,
+                $responseType
+            );
 
             switch (true) {
-                case $authorizationRequest->hasQueryParam('redirect_uri') && null !== $responseMode:
-                    $data += ['response_mode' => $responseMode, 'redirect_uri' => $authorizationRequest->getQueryParam('redirect_uri')];
+                case $authorizationRequest->hasQueryParam('redirect_uri') && $responseMode !== null:
+                    $data += [
+                        'response_mode' => $responseMode,
+                        'redirect_uri' => $authorizationRequest->getQueryParam('redirect_uri'),
+                    ];
 
                     throw new OAuth2Error(303, $e->getMessage(), $e->getErrorDescription(), $data, $e);
                 case $authorizationRequest->hasQueryParam('redirect_uri'):
-                    $data += ['response_mode' => new QueryResponseMode(), 'redirect_uri' => $authorizationRequest->getQueryParam('redirect_uri')];
+                    $data += [
+                        'response_mode' => new QueryResponseMode(),
+                        'redirect_uri' => $authorizationRequest->getQueryParam('redirect_uri'),
+                    ];
 
                     throw new OAuth2Error(303, $e->getMessage(), $e->getErrorDescription(), $data, $e);
                 default:
@@ -67,16 +64,18 @@ final class AuthorizationExceptionMiddleware implements MiddlewareInterface
     {
         try {
             return $this->responseTypeGuesser->get($authorizationRequest);
-        } catch (Throwable $throwable) {
+        } catch (Throwable) {
             return null;
         }
     }
 
-    private function getResponseMode(AuthorizationRequest $authorizationRequest, ResponseType $responseType): ?ResponseMode
-    {
+    private function getResponseMode(
+        AuthorizationRequest $authorizationRequest,
+        ResponseType $responseType
+    ): ?ResponseMode {
         try {
             return $this->responseModeGuesser->get($authorizationRequest, $responseType);
-        } catch (Throwable $throwable) {
+        } catch (Throwable) {
             return null;
         }
     }

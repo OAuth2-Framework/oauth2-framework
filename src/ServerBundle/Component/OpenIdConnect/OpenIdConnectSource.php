@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\ServerBundle\Component\OpenIdConnect;
 
 use OAuth2Framework\Component\OpenIdConnect\IdToken;
@@ -49,15 +40,17 @@ class OpenIdConnectSource implements Component
 
     public function load(array $configs, ContainerBuilder $container): void
     {
-        if (!class_exists(IdToken::class) || !$configs['openid_connect']['enabled']) {
+        if (! class_exists(IdToken::class) || ! $configs['openid_connect']['enabled']) {
             return;
         }
 
         $container->registerForAutoconfiguration(Claim::class)->addTag('oauth2_server_claim');
         $container->registerForAutoconfiguration(ClaimSource::class)->addTag('oauth2_server_claim_source');
-        $container->registerForAutoconfiguration(UserInfoScopeSupport::class)->addTag('oauth2_server_userinfo_scope_support');
+        $container->registerForAutoconfiguration(UserInfoScopeSupport::class)->addTag(
+            'oauth2_server_userinfo_scope_support'
+        );
 
-        $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../Resources/config/openid_connect'));
+        $loader = new PhpFileLoader($container, new FileLocator(__DIR__ . '/../../Resources/config/openid_connect'));
         $loader->load('openid_connect.php');
         $loader->load('userinfo_scope_support.php');
 
@@ -68,7 +61,7 @@ class OpenIdConnectSource implements Component
 
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
-        if (!class_exists(IdToken::class)) {
+        if (! class_exists(IdToken::class)) {
             return;
         }
         $childNode = $node->children()
@@ -83,15 +76,12 @@ class OpenIdConnectSource implements Component
 
     public function prepend(ContainerBuilder $container, array $config): array
     {
-        if (!class_exists(IdToken::class)) {
+        if (! class_exists(IdToken::class)) {
             return [];
         }
         $updatedConfig = [];
         foreach ($this->subComponents as $subComponent) {
-            $updatedConfig = array_merge(
-                $updatedConfig,
-                $subComponent->prepend($container, $config)
-            );
+            $updatedConfig = array_merge($updatedConfig, $subComponent->prepend($container, $config));
         }
 
         return $updatedConfig;
@@ -99,7 +89,7 @@ class OpenIdConnectSource implements Component
 
     public function build(ContainerBuilder $container): void
     {
-        if (!class_exists(IdToken::class)) {
+        if (! class_exists(IdToken::class)) {
             return;
         }
         $container->addCompilerPass(new OpenIdConnectExtensionEncryptionCompilerPass());

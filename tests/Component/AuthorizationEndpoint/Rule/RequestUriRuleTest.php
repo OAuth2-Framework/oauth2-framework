@@ -2,17 +2,9 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
+namespace OAuth2Framework\Tests\Component\AuthorizationEndpoint\Rule;
 
-namespace OAuth2Framework\Tests\Component\AuthorizationEndpoint\Tests\Rule;
-
+use InvalidArgumentException;
 use OAuth2Framework\Component\AuthorizationEndpoint\Rule\RequestUriRule;
 use OAuth2Framework\Component\ClientRule\Rule;
 use OAuth2Framework\Component\ClientRule\RuleHandler;
@@ -21,15 +13,13 @@ use OAuth2Framework\Component\Core\DataBag\DataBag;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @group Tests
- *
  * @internal
  */
 final class RequestUriRuleTest extends TestCase
 {
     protected function setUp(): void
     {
-        if (!interface_exists(Rule::class)) {
+        if (! interface_exists(Rule::class)) {
             static::markTestSkipped('The component "oauth2-framework/client-rule" is not installed.');
         }
     }
@@ -37,7 +27,7 @@ final class RequestUriRuleTest extends TestCase
     /**
      * @test
      */
-    public function noResponseType()
+    public function noResponseType(): void
     {
         $clientId = new ClientId('CLIENT_ID');
         $commandParameters = new DataBag([]);
@@ -49,9 +39,9 @@ final class RequestUriRuleTest extends TestCase
     /**
      * @test
      */
-    public function theParameterMustBeAnArray()
+    public function theParameterMustBeAnArray(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('The parameter "request_uris" must be a list of URI.');
         $clientId = new ClientId('CLIENT_ID');
         $commandParameters = new DataBag([
@@ -67,9 +57,9 @@ final class RequestUriRuleTest extends TestCase
     /**
      * @test
      */
-    public function theParameterMustBeAnArrayOfString()
+    public function theParameterMustBeAnArrayOfString(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('The parameter "request_uris" must be a list of URI.');
         $clientId = new ClientId('CLIENT_ID');
         $commandParameters = new DataBag([
@@ -85,9 +75,9 @@ final class RequestUriRuleTest extends TestCase
     /**
      * @test
      */
-    public function theParameterMustBeAnArrayOfUris()
+    public function theParameterMustBeAnArrayOfUris(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('The parameter "request_uris" must be a list of URI.');
         $clientId = new ClientId('CLIENT_ID');
         $commandParameters = new DataBag([
@@ -103,7 +93,7 @@ final class RequestUriRuleTest extends TestCase
     /**
      * @test
      */
-    public function theParameterIsValid()
+    public function theParameterIsValid(): void
     {
         $clientId = new ClientId('CLIENT_ID');
         $commandParameters = new DataBag([
@@ -115,12 +105,16 @@ final class RequestUriRuleTest extends TestCase
         ]);
         $validatedParameters = $rule->handle($clientId, $commandParameters, $validatedParameters, $this->getCallable());
         static::assertTrue($validatedParameters->has('request_uris'));
-        static::assertEquals(['https://foo.com/bar'], $validatedParameters->get('request_uris'));
+        static::assertSame(['https://foo.com/bar'], $validatedParameters->get('request_uris'));
     }
 
     private function getCallable(): RuleHandler
     {
-        return new RuleHandler(function (ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters): DataBag {
+        return new RuleHandler(function (
+            ClientId $clientId,
+            DataBag $commandParameters,
+            DataBag $validatedParameters
+        ): DataBag {
             return $validatedParameters;
         });
     }

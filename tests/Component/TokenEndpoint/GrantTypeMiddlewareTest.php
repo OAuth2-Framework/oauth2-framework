@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\Tests\Component\TokenEndpoint;
 
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
@@ -27,48 +18,41 @@ use Psr\Http\Message\StreamInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 /**
- * @group TokenEndpoint
- * @group GrantTypeMiddleware
- *
  * @internal
  */
 final class GrantTypeMiddlewareTest extends TestCase
 {
     use ProphecyTrait;
 
-    /**
-     * @var null|GrantTypeManager
-     */
-    private $grantTypeManager;
+    private ?GrantTypeManager $grantTypeManager = null;
 
-    /**
-     * @var null|GrantTypeMiddleware
-     */
-    private $grantTypeMiddleware;
+    private ?GrantTypeMiddleware $grantTypeMiddleware = null;
 
     /**
      * @test
      */
-    public function genericCalls()
+    public function genericCalls(): void
     {
-        static::assertEquals(['foo'], $this->getGrantTypeManager()->list());
+        static::assertSame(['foo'], $this->getGrantTypeManager()->list());
         static::assertInstanceOf(GrantType::class, $this->getGrantTypeManager()->get('foo'));
     }
 
     /**
      * @test
      */
-    public function theGrantTypeParameterIsMissing()
+    public function theGrantTypeParameterIsMissing(): void
     {
         $request = $this->buildRequest([]);
         $handler = $this->prophesize(RequestHandlerInterface::class);
 
         try {
-            $this->getGrantTypeMiddleware()->process($request->reveal(), $handler->reveal());
+            $this->getGrantTypeMiddleware()
+                ->process($request->reveal(), $handler->reveal())
+            ;
             static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2Error $e) {
-            static::assertEquals(400, $e->getCode());
-            static::assertEquals([
+            static::assertSame(400, $e->getCode());
+            static::assertSame([
                 'error' => 'invalid_request',
                 'error_description' => 'The "grant_type" parameter is missing.',
             ], $e->getData());
@@ -78,7 +62,7 @@ final class GrantTypeMiddlewareTest extends TestCase
     /**
      * @test
      */
-    public function theGrantTypeIsNotSupported()
+    public function theGrantTypeIsNotSupported(): void
     {
         $request = $this->buildRequest([
             'grant_type' => 'bar',
@@ -86,11 +70,13 @@ final class GrantTypeMiddlewareTest extends TestCase
         $handler = $this->prophesize(RequestHandlerInterface::class);
 
         try {
-            $this->getGrantTypeMiddleware()->process($request->reveal(), $handler->reveal());
+            $this->getGrantTypeMiddleware()
+                ->process($request->reveal(), $handler->reveal())
+            ;
             static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2Error $e) {
-            static::assertEquals(400, $e->getCode());
-            static::assertEquals([
+            static::assertSame(400, $e->getCode());
+            static::assertSame([
                 'error' => 'invalid_request',
                 'error_description' => 'The grant type "bar" is not supported by this server.',
             ], $e->getData());
@@ -100,7 +86,7 @@ final class GrantTypeMiddlewareTest extends TestCase
     /**
      * @test
      */
-    public function theGrantTypeIsFoundAndAssociatedToTheRequest()
+    public function theGrantTypeIsFoundAndAssociatedToTheRequest(): void
     {
         $response = $this->prophesize(ResponseInterface::class);
         $request = $this->buildRequest([
@@ -116,15 +102,19 @@ final class GrantTypeMiddlewareTest extends TestCase
             ->willReturn($response->reveal())
         ;
 
-        $this->getGrantTypeMiddleware()->process($request->reveal(), $handler->reveal());
+        $this->getGrantTypeMiddleware()
+            ->process($request->reveal(), $handler->reveal())
+        ;
     }
 
     private function getGrantTypeManager(): GrantTypeManager
     {
-        if (null === $this->grantTypeManager) {
+        if ($this->grantTypeManager === null) {
             $this->grantTypeManager = new GrantTypeManager();
             $grantType = $this->prophesize(GrantType::class);
-            $grantType->name()->willReturn('foo');
+            $grantType->name()
+                ->willReturn('foo')
+            ;
 
             $this->grantTypeManager->add($grantType->reveal());
         }
@@ -134,10 +124,8 @@ final class GrantTypeMiddlewareTest extends TestCase
 
     private function getGrantTypeMiddleware(): GrantTypeMiddleware
     {
-        if (null === $this->grantTypeMiddleware) {
-            $this->grantTypeMiddleware = new GrantTypeMiddleware(
-                $this->getGrantTypeManager()
-            );
+        if ($this->grantTypeMiddleware === null) {
+            $this->grantTypeMiddleware = new GrantTypeMiddleware($this->getGrantTypeManager());
         }
 
         return $this->grantTypeMiddleware;
@@ -146,12 +134,22 @@ final class GrantTypeMiddlewareTest extends TestCase
     private function buildRequest(array $data): ObjectProphecy
     {
         $body = $this->prophesize(StreamInterface::class);
-        $body->getContents()->willReturn(http_build_query($data));
+        $body->getContents()
+            ->willReturn(http_build_query($data))
+        ;
         $request = $this->prophesize(ServerRequestInterface::class);
-        $request->hasHeader('Content-Type')->willReturn(true);
-        $request->getHeader('Content-Type')->willReturn(['application/x-www-form-urlencoded']);
-        $request->getBody()->willReturn($body->reveal());
-        $request->getParsedBody()->willReturn([]);
+        $request->hasHeader('Content-Type')
+            ->willReturn(true)
+        ;
+        $request->getHeader('Content-Type')
+            ->willReturn(['application/x-www-form-urlencoded'])
+        ;
+        $request->getBody()
+            ->willReturn($body->reveal())
+        ;
+        $request->getParsedBody()
+            ->willReturn([])
+        ;
 
         return $request;
     }

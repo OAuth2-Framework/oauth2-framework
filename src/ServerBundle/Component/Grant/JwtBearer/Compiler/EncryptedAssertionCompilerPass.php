@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\ServerBundle\Component\Grant\JwtBearer\Compiler;
 
 use OAuth2Framework\Component\JwtBearerGrant\JwtBearerGrantType;
@@ -22,7 +13,9 @@ class EncryptedAssertionCompilerPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container): void
     {
-        if (!$container->hasDefinition(JwtBearerGrantType::class) || true !== $container->getParameter('oauth2_server.grant.jwt_bearer.encryption.enabled')) {
+        if (! $container->hasDefinition(JwtBearerGrantType::class) || $container->getParameter(
+            'oauth2_server.grant.jwt_bearer.encryption.enabled'
+        ) !== true) {
             return;
         }
 

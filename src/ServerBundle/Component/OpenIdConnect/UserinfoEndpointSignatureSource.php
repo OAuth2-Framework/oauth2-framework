@@ -2,17 +2,9 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\ServerBundle\Component\OpenIdConnect;
 
+use function count;
 use Jose\Bundle\JoseFramework\Helper\ConfigurationHelper;
 use OAuth2Framework\ServerBundle\Component\Component;
 use OAuth2Framework\ServerBundle\Component\OpenIdConnect\Compiler\UserinfoEndpointSignatureCompilerPass;
@@ -29,12 +21,18 @@ class UserinfoEndpointSignatureSource implements Component
     public function load(array $configs, ContainerBuilder $container): void
     {
         $config = $configs['openid_connect']['userinfo_endpoint']['signature'];
-        $container->setParameter('oauth2_server.openid_connect.userinfo_endpoint.signature.enabled', $config['enabled']);
-        if (!$config['enabled']) {
+        $container->setParameter(
+            'oauth2_server.openid_connect.userinfo_endpoint.signature.enabled',
+            $config['enabled']
+        );
+        if (! $config['enabled']) {
             return;
         }
 
-        $container->setParameter('oauth2_server.openid_connect.userinfo_endpoint.signature.signature_algorithms', $config['signature_algorithms']);
+        $container->setParameter(
+            'oauth2_server.openid_connect.userinfo_endpoint.signature.signature_algorithms',
+            $config['signature_algorithms']
+        );
     }
 
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
@@ -43,8 +41,8 @@ class UserinfoEndpointSignatureSource implements Component
             ->arrayNode($this->name())
             ->canBeEnabled()
             ->validate()
-            ->ifTrue(function ($config) {
-                return true === $config['enabled'] && 0 === \count($config['signature_algorithms']);
+            ->ifTrue(static function ($config): bool {
+                return $config['enabled'] === true && count($config['signature_algorithms']) === 0;
             })
             ->thenInvalid('You must set at least one signature algorithm.')
             ->end()
@@ -52,7 +50,8 @@ class UserinfoEndpointSignatureSource implements Component
             ->arrayNode('signature_algorithms')
             ->info('Signature algorithm used to sign the user information.')
             ->useAttributeAsKey('name')
-            ->scalarPrototype()->end()
+            ->scalarPrototype()
+            ->end()
             ->treatNullLike([])
             ->treatFalseLike([])
             ->end()
@@ -71,7 +70,12 @@ class UserinfoEndpointSignatureSource implements Component
     {
         $sourceConfig = $config['openid_connect']['userinfo_endpoint'][$this->name()];
 
-        ConfigurationHelper::addJWSBuilder($container, 'oauth2_server.openid_connect.id_token_from_userinfo', $sourceConfig['signature_algorithms'], false);
+        ConfigurationHelper::addJWSBuilder(
+            $container,
+            'oauth2_server.openid_connect.id_token_from_userinfo',
+            $sourceConfig['signature_algorithms'],
+            false
+        );
 
         return [];
     }

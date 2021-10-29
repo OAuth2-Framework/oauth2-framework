@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\ServerBundle\Component\Core;
 
 use OAuth2Framework\Component\Core\TrustedIssuer\TrustedIssuerRepository;
@@ -27,10 +18,10 @@ class TrustedIssuerSource implements Component
 
     public function load(array $configs, ContainerBuilder $container): void
     {
-        if (!interface_exists(TrustedIssuerRepository::class)) {
+        if (! interface_exists(TrustedIssuerRepository::class)) {
             return;
         }
-        if (null === $configs['trusted_issuer']['repository']) {
+        if ($configs['trusted_issuer']['repository'] === null) {
             return;
         }
         $container->setAlias(TrustedIssuerRepository::class, $configs['trusted_issuer']['repository']);
@@ -38,7 +29,7 @@ class TrustedIssuerSource implements Component
 
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
-        if (!interface_exists(TrustedIssuerRepository::class)) {
+        if (! interface_exists(TrustedIssuerRepository::class)) {
             return;
         }
         $node->children()

@@ -2,22 +2,17 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\Component\OpenIdConnect\IdTokenGrant;
 
-use function Safe\sprintf;
-use function Safe\json_decode;
+use function array_key_exists;
+use DateTimeImmutable;
+use function in_array;
+use InvalidArgumentException;
+use function is_array;
 use Jose\Component\Core\JWKSet;
 use Jose\Component\Encryption\JWEBuilder;
 use Jose\Component\Signature\JWSBuilder;
+use const JSON_THROW_ON_ERROR;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeId;
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType\ResponseType;
@@ -28,26 +23,21 @@ use OAuth2Framework\Component\OpenIdConnect\IdTokenBuilderFactory;
 
 final class IdTokenResponseType implements ResponseType
 {
-    private JWKSet $signatureKeys;
-
-    private JWSBuilder $jwsBuilder;
-
-    private ?JWEBuilder $jweBuilder = null;
-
-    private IdTokenBuilderFactory $idTokenBuilderFactory;
-
     private string $defaultSignatureAlgorithm;
 
-    public function __construct(IdTokenBuilderFactory $idTokenBuilderFactory, string $defaultSignatureAlgorithm, JWSBuilder $jwsBuilder, JWKSet $signatureKeys, ?JWEBuilder $jweBuilder)
-    {
-        if ('none' === $defaultSignatureAlgorithm) {
-            throw new \InvalidArgumentException('The algorithm "none" is not allowed for ID Tokens issued through the authorization endpoint.');
+    public function __construct(
+        private IdTokenBuilderFactory $idTokenBuilderFactory,
+        string $defaultSignatureAlgorithm,
+        private JWSBuilder $jwsBuilder,
+        private JWKSet $signatureKeys,
+        private ?JWEBuilder $jweBuilder
+    ) {
+        if ($defaultSignatureAlgorithm === 'none') {
+            throw new InvalidArgumentException(
+                'The algorithm "none" is not allowed for ID Tokens issued through the authorization endpoint.'
+            );
         }
-        $this->idTokenBuilderFactory = $idTokenBuilderFactory;
         $this->defaultSignatureAlgorithm = $defaultSignatureAlgorithm;
-        $this->jwsBuilder = $jwsBuilder;
-        $this->signatureKeys = $signatureKeys;
-        $this->jweBuilder = $jweBuilder;
     }
 
     public function associatedGrantTypes(): array
@@ -72,8 +62,12 @@ final class IdTokenResponseType implements ResponseType
 
     public function process(AuthorizationRequest $authorization, TokenType $tokenType): void
     {
-        if ($authorization->hasQueryParam('scope') && \in_array('openid', explode(' ', $authorization->getQueryParam('scope')), true)) {
-            if (!\array_key_exists('nonce', $authorization->getQueryParams())) {
+        if ($authorization->hasQueryParam('scope') && in_array(
+            'openid',
+            explode(' ', $authorization->getQueryParam('scope')),
+            true
+        )) {
+            if (! array_key_exists('nonce', $authorization->getQueryParams())) {
                 throw OAuth2Error::invalidRequest('The parameter "nonce" is mandatory using "id_token" response type.');
             }
 
@@ -99,7 +93,9 @@ final class IdTokenResponseType implements ResponseType
         $idTokenBuilder->withNonce($params['nonce']);
 
         if ($authorization->hasResponseParameter('code')) {
-            $idTokenBuilder->withAuthorizationCodeId(new AuthorizationCodeId($authorization->getResponseParameter('code')));
+            $idTokenBuilder->withAuthorizationCodeId(
+                new AuthorizationCodeId($authorization->getResponseParameter('code'))
+            );
         }
 
         if ($authorization->hasResponseParameter('access_token')) {
@@ -107,11 +103,12 @@ final class IdTokenResponseType implements ResponseType
         }
 
         if ($authorization->hasQueryParam('claims_locales')) {
-            $idTokenBuilder->withClaimsLocales($authorization->getQueryParam('claims_locales'));
         }
 
         if ($authorization->hasResponseParameter('expires_in')) {
-            $idTokenBuilder->withExpirationAt(new \DateTimeImmutable(sprintf('now +%s sec', $authorization->getResponseParameter('expires_in'))));
+            $idTokenBuilder->withExpirationAt(
+                new DateTimeImmutable(sprintf('now +%s sec', $authorization->getResponseParameter('expires_in')))
+            );
         }
 
         if ($authorization->hasQueryParam('max_age')) {
@@ -119,17 +116,29 @@ final class IdTokenResponseType implements ResponseType
         }
 
         if ($authorization->getClient()->has('id_token_signed_response_alg')) {
-            $signatureAlgorithm = $authorization->getClient()->get('id_token_signed_response_alg');
-            if ('none' === $signatureAlgorithm) {
-                throw new OAuth2Error(400, OAuth2Error::ERROR_INVALID_CLIENT, 'The ID Token signature algorithm set for the client (parameter "id_token_signed_response_alg") is "none" but this algorithm is not allowed for ID Tokens issued through the authorization endpoint.');
+            $signatureAlgorithm = $authorization->getClient()
+                ->get('id_token_signed_response_alg')
+            ;
+            if ($signatureAlgorithm === 'none') {
+                throw new OAuth2Error(
+                    400,
+                    OAuth2Error::ERROR_INVALID_CLIENT,
+                    'The ID Token signature algorithm set for the client (parameter "id_token_signed_response_alg") is "none" but this algorithm is not allowed for ID Tokens issued through the authorization endpoint.'
+                );
             }
             $idTokenBuilder->withSignature($this->jwsBuilder, $this->signatureKeys, $signatureAlgorithm);
         } else {
             $idTokenBuilder->withSignature($this->jwsBuilder, $this->signatureKeys, $this->defaultSignatureAlgorithm);
         }
-        if ($authorization->getClient()->has('id_token_encrypted_response_alg') && $authorization->getClient()->has('id_token_encrypted_response_enc') && null !== $this->jweBuilder) {
-            $keyEncryptionAlgorithm = $authorization->getClient()->get('id_token_encrypted_response_alg');
-            $contentEncryptionAlgorithm = $authorization->getClient()->get('id_token_encrypted_response_enc');
+        if ($authorization->getClient()->has('id_token_encrypted_response_alg') && $authorization->getClient()->has(
+            'id_token_encrypted_response_enc'
+        ) && $this->jweBuilder !== null) {
+            $keyEncryptionAlgorithm = $authorization->getClient()
+                ->get('id_token_encrypted_response_alg')
+            ;
+            $contentEncryptionAlgorithm = $authorization->getClient()
+                ->get('id_token_encrypted_response_enc')
+            ;
             $idTokenBuilder->withEncryption($this->jweBuilder, $keyEncryptionAlgorithm, $contentEncryptionAlgorithm);
         }
 
@@ -141,16 +150,16 @@ final class IdTokenResponseType implements ResponseType
 
     private function getIdTokenClaims(AuthorizationRequest $authorization): array
     {
-        if (!$authorization->hasQueryParam('claims')) {
+        if (! $authorization->hasQueryParam('claims')) {
             return [];
         }
 
         $requestedClaims = $authorization->getQueryParam('claims');
-        $requestedClaims = json_decode($requestedClaims, true);
-        if (!\is_array($requestedClaims)) {
-            throw new \InvalidArgumentException('Invalid claim request');
+        $requestedClaims = json_decode($requestedClaims, true, 512, JSON_THROW_ON_ERROR);
+        if (! is_array($requestedClaims)) {
+            throw new InvalidArgumentException('Invalid claim request');
         }
-        if (true === \array_key_exists('id_token', $requestedClaims)) {
+        if (array_key_exists('id_token', $requestedClaims) === true) {
             return $requestedClaims['id_token'];
         }
 

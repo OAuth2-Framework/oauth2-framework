@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\Component\ClientConfigurationEndpoint;
 
 use OAuth2Framework\Component\Core\Client\Client;
@@ -23,14 +14,10 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 final class ClientConfigurationDeleteEndpoint implements MiddlewareInterface
 {
-    private ClientRepository $clientRepository;
-
-    private ResponseFactoryInterface $responseFactory;
-
-    public function __construct(ClientRepository $clientRepository, ResponseFactoryInterface $responseFactory)
-    {
-        $this->clientRepository = $clientRepository;
-        $this->responseFactory = $responseFactory;
+    public function __construct(
+        private ClientRepository $clientRepository,
+        private ResponseFactoryInterface $responseFactory
+    ) {
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $next): ResponseInterface

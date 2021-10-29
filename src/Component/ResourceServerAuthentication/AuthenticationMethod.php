@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\Component\ResourceServerAuthentication;
 
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServer;
@@ -25,24 +16,29 @@ interface AuthenticationMethod
     public function getSupportedMethods(): array;
 
     /**
-     * Find a ResourceServer using the request.
-     * If the ResourceServer is confidential, the ResourceServer credentials must be checked.
+     * Find a ResourceServer using the request. If the ResourceServer is confidential, the ResourceServer credentials
+     * must be checked.
      *
      * @param ServerRequestInterface $request                   The request
-     * @param mixed                  $resourceServerCredentials The resource server credentials found in the request
+     * @param mixed|null $resourceServerCredentials The resource server credentials found in the request
      *
-     * @return null|ResourceServerId Return the  resource server public ID if found else null. If credentials have are needed to authenticate the ResourceServer, they are set to the variable $resourceServerCredentials
+     * @return ResourceServerId|null Return the  resource server public ID if found else null. If credentials have are needed to authenticate the ResourceServer, they are set to the variable $resourceServerCredentials
      */
-    public function findResourceServerIdAndCredentials(ServerRequestInterface $request, &$resourceServerCredentials = null): ?ResourceServerId;
+    public function findResourceServerIdAndCredentials(
+        ServerRequestInterface $request,
+        mixed &$resourceServerCredentials = null
+    ): ?ResourceServerId;
 
     /**
      * This method verifies the ResourceServer credentials in the request.
      *
-     * @param mixed $resourceServerCredentials
-     *
      * @return bool Returns true if the  resource server is authenticated, else false
      */
-    public function isResourceServerAuthenticated(ResourceServer $resourceServer, $resourceServerCredentials, ServerRequestInterface $request): bool;
+    public function isResourceServerAuthenticated(
+        ResourceServer $resourceServer,
+        mixed $resourceServerCredentials,
+        ServerRequestInterface $request
+    ): bool;
 
     /**
      * @return string[]

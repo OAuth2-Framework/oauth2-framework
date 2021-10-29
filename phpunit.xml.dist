@@ -1,26 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" backupGlobals="false" backupStaticAttributes="false" convertErrorsToExceptions="true" convertNoticesToExceptions="true" convertWarningsToExceptions="true" processIsolation="false" stopOnFailure="false" bootstrap="vendor/autoload.php" colors="true" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
+<phpunit
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        backupGlobals="false"
+        backupStaticAttributes="false"
+        convertErrorsToExceptions="true"
+        convertNoticesToExceptions="true"
+        convertWarningsToExceptions="true"
+        processIsolation="false"
+        stopOnFailure="false"
+        bootstrap="vendor/autoload.php"
+        colors="true"
+        xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd"
+>
   <coverage>
     <include>
       <directory suffix=".php">./</directory>
     </include>
     <exclude>
-      <directory>./vendor</directory>
+      <directory>./.github</directory>
       <directory>./tests</directory>
-      <directory>./src/*Bundle/Tests/</directory>
-      <directory>./src/Component/*/Tests/</directory>
-      <directory suffix="Test.php">./src</directory>
+      <directory>./var</directory>
+      <directory>./vendor</directory>
     </exclude>
   </coverage>
   <testsuites>
     <testsuite name="OAuth2 Framework Test Suite">
-      <directory>./src/Component/*/Tests/</directory>
       <directory>./tests</directory>
     </testsuite>
   </testsuites>
   <php>
     <env name="SYMFONY_DEPRECATIONS_HELPER" value="weak"/>
-    <server name="SYMFONY_PHPUNIT_VERSION" value="8"/>
+    <env name="KERNEL_CLASS" value="OAuth2Framework\Tests\AppKernel"/>
+    <server name="SYMFONY_PHPUNIT_VERSION" value="9"/>
+    <ini name="intl.error_level" value="0" />
+    <ini name="memory_limit" value="-1" />
   </php>
   <extensions>
     <extension class="Symfony\Component\Panther\ServerExtension"/>

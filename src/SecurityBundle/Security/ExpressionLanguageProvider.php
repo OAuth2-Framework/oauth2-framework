@@ -2,17 +2,10 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\SecurityBundle\Security;
 
+use function in_array;
+use function is_string;
 use OAuth2Framework\Component\Core\AccessToken\AccessToken;
 use OAuth2Framework\SecurityBundle\Security\Authentication\Token\OAuth2Token;
 use Symfony\Component\ExpressionLanguage\ExpressionFunction;
@@ -26,11 +19,11 @@ final class ExpressionLanguageProvider implements ExpressionFunctionProviderInte
     public function getFunctions(): array
     {
         return [
-            new ExpressionFunction('has_oauth2_scope', static function ($scope) {
+            new ExpressionFunction('has_oauth2_scope', static function ($scope): string {
                 return sprintf('in_array(%s, $scopes)', $scope);
-            }, static function (array $variables, $scope) {
+            }, static function (array $variables, $scope): bool {
                 $accessToken = self::getAccessToken($variables);
-                if (null === $accessToken) {
+                if ($accessToken === null) {
                     return false;
                 }
 
@@ -42,22 +35,22 @@ final class ExpressionLanguageProvider implements ExpressionFunctionProviderInte
     private static function hasScope(AccessToken $accessToken, string $scope): bool
     {
         $parameters = $accessToken->getParameter();
-        if (!$parameters->has('scope')) {
+        if (! $parameters->has('scope')) {
             return false;
         }
         $availableScope = $parameters->get('scope');
-        if (!\is_string($availableScope)) {
+        if (! is_string($availableScope)) {
             return false;
         }
         $availableScopes = explode(' ', $availableScope);
 
-        return \in_array($scope, $availableScopes, true);
+        return in_array($scope, $availableScopes, true);
     }
 
     private static function getSecurityToken(array $variables): ?OAuth2Token
     {
         $securityToken = $variables['token'] ?? null;
-        if (!$securityToken instanceof OAuth2Token) {
+        if (! $securityToken instanceof OAuth2Token) {
             return null;
         }
 
@@ -67,7 +60,7 @@ final class ExpressionLanguageProvider implements ExpressionFunctionProviderInte
     private static function getAccessToken(array $variables): ?AccessToken
     {
         $securityToken = self::getSecurityToken($variables);
-        if (null === $securityToken) {
+        if ($securityToken === null) {
             return null;
         }
 

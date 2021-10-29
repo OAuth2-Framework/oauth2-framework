@@ -2,33 +2,19 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
-namespace OAuth2Framework\ServerBundle\Tests\Functional\Grant\ClientCredentials;
+namespace OAuth2Framework\Tests\ServerBundle\Functional\Grant\ClientCredentials;
 
 use OAuth2Framework\Component\ClientCredentialsGrant\ClientCredentialsGrantType;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
- * @group ServerBundle
- * @group Functional
- * @group Grant
- * @group ClientCredentials
- *
  * @internal
  */
-class ClientCredentialsGrantTest extends WebTestCase
+final class ClientCredentialsGrantTest extends WebTestCase
 {
     protected function setUp(): void
     {
-        if (!class_exists(ClientCredentialsGrantType::class)) {
+        if (! class_exists(ClientCredentialsGrantType::class)) {
             static::markTestSkipped('The component "oauth2-framework/client-credentials-grant" is not installed.');
         }
         parent::setUp();
@@ -37,71 +23,116 @@ class ClientCredentialsGrantTest extends WebTestCase
     /**
      * @test
      */
-    public function theRequestHasNoGrantType()
+    public function theRequestHasNoGrantType(): void
     {
         $client = static::createClient();
-        $client->request('POST', '/token/get', [], [], ['HTTPS' => 'on'], null);
+        $client->request('POST', '/token/get', [], [], [
+            'HTTPS' => 'on',
+        ], null);
         $response = $client->getResponse();
-        static::assertEquals('{"error":"invalid_request","error_description":"The \"grant_type\" parameter is missing."}', $response->getContent());
+        static::assertSame(
+            '{"error":"invalid_request","error_description":"The \"grant_type\" parameter is missing."}',
+            $response->getContent()
+        );
     }
 
     /**
      * @test
      */
-    public function theClientIsNotAuthenticated()
+    public function theClientIsNotAuthenticated(): void
     {
         $client = static::createClient();
-        $client->request('POST', '/token/get', ['grant_type' => 'client_credentials'], [], ['HTTPS' => 'on'], null);
+        $client->request('POST', '/token/get', [
+            'grant_type' => 'client_credentials',
+        ], [], [
+            'HTTPS' => 'on',
+        ], null);
         $response = $client->getResponse();
-        static::assertEquals(401, $response->getStatusCode());
-        static::assertEquals('Basic realm="My OAuth2 Server",charset="UTF-8",error="invalid_client",error_description="Client authentication failed."', $response->headers->get('www-authenticate'));
+        static::assertSame(401, $response->getStatusCode());
+        static::assertSame(
+            'Basic realm="My OAuth2 Server",charset="UTF-8",error="invalid_client",error_description="Client authentication failed."',
+            $response->headers->get('www-authenticate')
+        );
     }
 
     /**
      * @test
      */
-    public function theClientIsNotKnown()
+    public function theClientIsNotKnown(): void
     {
         $client = static::createClient();
-        $client->request('POST', '/token/get', ['grant_type' => 'client_credentials', 'client_id' => 'UNKNOWN_CLIENT_ID'], [], ['HTTPS' => 'on'], null);
+        $client->request('POST', '/token/get', [
+            'grant_type' => 'client_credentials',
+            'client_id' => 'UNKNOWN_CLIENT_ID',
+        ], [], [
+            'HTTPS' => 'on',
+        ], null);
         $response = $client->getResponse();
-        static::assertEquals(401, $response->getStatusCode());
-        static::assertEquals('Basic realm="My OAuth2 Server",charset="UTF-8",error="invalid_client",error_description="Client authentication failed."', $response->headers->get('www-authenticate'));
+        static::assertSame(401, $response->getStatusCode());
+        static::assertSame(
+            'Basic realm="My OAuth2 Server",charset="UTF-8",error="invalid_client",error_description="Client authentication failed."',
+            $response->headers->get('www-authenticate')
+        );
     }
 
     /**
      * @test
      */
-    public function theGrantTypeIsNotAllowedForTheClient()
+    public function theGrantTypeIsNotAllowedForTheClient(): void
     {
         $client = static::createClient();
-        $client->request('POST', '/token/get', ['grant_type' => 'client_credentials', 'client_id' => 'CLIENT_ID_1'], [], ['HTTPS' => 'on'], null);
+        $client->request('POST', '/token/get', [
+            'grant_type' => 'client_credentials',
+            'client_id' => 'CLIENT_ID_1',
+        ], [], [
+            'HTTPS' => 'on',
+        ], null);
         $response = $client->getResponse();
-        static::assertEquals(400, $response->getStatusCode());
-        static::assertEquals('{"error":"unauthorized_client","error_description":"The grant type \"client_credentials\" is unauthorized for this client."}', $response->getContent());
+        static::assertSame(400, $response->getStatusCode());
+        static::assertSame(
+            '{"error":"unauthorized_client","error_description":"The grant type \"client_credentials\" is unauthorized for this client."}',
+            $response->getContent()
+        );
     }
 
     /**
      * @test
      */
-    public function theClientIsNotConfidential()
+    public function theClientIsNotConfidential(): void
     {
         $client = static::createClient();
-        $client->request('POST', '/token/get', ['grant_type' => 'client_credentials', 'client_id' => 'CLIENT_ID_2'], [], ['HTTPS' => 'on'], null);
+        $client->request('POST', '/token/get', [
+            'grant_type' => 'client_credentials',
+            'client_id' => 'CLIENT_ID_2',
+        ], [], [
+            'HTTPS' => 'on',
+        ], null);
         $response = $client->getResponse();
-        static::assertEquals(400, $response->getStatusCode());
-        static::assertEquals('{"error":"invalid_client","error_description":"The client is not a confidential client."}', $response->getContent());
+        static::assertSame(400, $response->getStatusCode());
+        static::assertSame(
+            '{"error":"invalid_client","error_description":"The client is not a confidential client."}',
+            $response->getContent()
+        );
     }
 
     /**
      * @test
      */
-    public function theAccessTokenIsIssued()
+    public function theAccessTokenIsIssued(): void
     {
         $client = static::createClient();
-        $client->request('POST', '/token/get', ['grant_type' => 'client_credentials', 'client_id' => 'CLIENT_ID_3', 'client_secret' => 'secret'], [], ['HTTPS' => 'on'], null);
+        $client->request('POST', '/token/get', [
+            'grant_type' => 'client_credentials',
+            'client_id' => 'CLIENT_ID_3',
+            'client_secret' => 'secret',
+        ], [], [
+            'HTTPS' => 'on',
+        ], null);
         $response = $client->getResponse();
-        static::assertEquals(200, $response->getStatusCode());
-        self::assertMatchesRegularExpression('/\{"token_type"\:"Bearer","access_token"\:"[0-9a-zA-Z-_]+","expires_in":[0-9]{4}\}/', $response->getContent());
+        static::assertSame(200, $response->getStatusCode());
+        static::assertMatchesRegularExpression(
+            '/\{"token_type"\:"Bearer","access_token"\:"[0-9a-zA-Z-_]+","expires_in":[0-9]{4}\}/',
+            $response->getContent()
+        );
     }
 }

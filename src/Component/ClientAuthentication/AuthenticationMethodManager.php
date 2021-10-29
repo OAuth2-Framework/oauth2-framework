@@ -2,23 +2,16 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\Component\ClientAuthentication;
 
+use function array_key_exists;
 use Assert\Assertion;
+use function in_array;
+use function is_string;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use Psr\Http\Message\ServerRequestInterface;
-use function Safe\sprintf;
 
 class AuthenticationMethodManager
 {
@@ -34,7 +27,7 @@ class AuthenticationMethodManager
 
     public function add(AuthenticationMethod $method): void
     {
-        $class = \get_class($method);
+        $class = $method::class;
         $this->methods[$class] = $method;
         foreach ($method->getSupportedMethods() as $name) {
             $this->names[$name] = $class;
@@ -51,12 +44,19 @@ class AuthenticationMethodManager
 
     public function has(string $name): bool
     {
-        return \array_key_exists($name, $this->names);
+        return array_key_exists($name, $this->names);
     }
 
     public function get(string $name): AuthenticationMethod
     {
-        Assertion::true($this->has($name), sprintf('The token endpoint authentication method "%s" is not supported. Please use one of the following values: %s', $name, implode(', ', $this->list())));
+        Assertion::true(
+            $this->has($name),
+            sprintf(
+                'The token endpoint authentication method "%s" is not supported. Please use one of the following values: %s',
+                $name,
+                implode(', ', $this->list())
+            )
+        );
         $class = $this->names[$name];
 
         return $this->methods[$class];
@@ -71,27 +71,32 @@ class AuthenticationMethodManager
     }
 
     /**
-     * @param mixed $clientCredentials The client credentials found in the request
+     * @param mixed|null $clientCredentials The client credentials found in the request
      */
-    public function findClientIdAndCredentials(ServerRequestInterface $request, AuthenticationMethod &$authenticationMethod = null, &$clientCredentials = null): ?ClientId
-    {
+    public function findClientIdAndCredentials(
+        ServerRequestInterface $request,
+        AuthenticationMethod &$authenticationMethod = null,
+        mixed &$clientCredentials = null
+    ): ?ClientId {
         $clientId = null;
         $clientCredentials = null;
         foreach ($this->methods as $method) {
             $tempClientId = $method->findClientIdAndCredentials($request, $clientCredentials);
-            if (null === $tempClientId) {
+            if ($tempClientId === null) {
                 continue;
             }
-            if (null === $clientId) {
+            if ($clientId === null) {
                 $clientId = $tempClientId;
                 $authenticationMethod = $method;
 
                 continue;
             }
-            if (!$method instanceof None && !$authenticationMethod instanceof None) {
-                throw OAuth2Error::invalidRequest('Only one authentication method may be used to authenticate the client.');
+            if (! $method instanceof None && ! $authenticationMethod instanceof None) {
+                throw OAuth2Error::invalidRequest(
+                    'Only one authentication method may be used to authenticate the client.'
+                );
             }
-            if (!$method instanceof None) {
+            if (! $method instanceof None) {
                 $authenticationMethod = $method;
             }
         }
@@ -102,10 +107,14 @@ class AuthenticationMethodManager
     /**
      * @param mixed $clientCredentials The client credentials found in the request
      */
-    public function isClientAuthenticated(ServerRequestInterface $request, Client $client, AuthenticationMethod $authenticationMethod, $clientCredentials): bool
-    {
-        if (\in_array($client->get('token_endpoint_auth_method'), $authenticationMethod->getSupportedMethods(), true)) {
-            if (false === $client->areClientCredentialsExpired()) {
+    public function isClientAuthenticated(
+        ServerRequestInterface $request,
+        Client $client,
+        AuthenticationMethod $authenticationMethod,
+        mixed $clientCredentials
+    ): bool {
+        if (in_array($client->get('token_endpoint_auth_method'), $authenticationMethod->getSupportedMethods(), true)) {
+            if ($client->areClientCredentialsExpired() === false) {
                 return $authenticationMethod->isClientAuthenticated($client, $clientCredentials, $request);
             }
         }
@@ -120,10 +129,7 @@ class AuthenticationMethodManager
     {
         $schemes = [];
         foreach ($this->all() as $method) {
-            $schemes = array_merge(
-                $schemes,
-                $method->getSchemesParameters()
-            );
+            $schemes = array_merge($schemes, $method->getSchemesParameters());
         }
 
         return $schemes;
@@ -133,10 +139,7 @@ class AuthenticationMethodManager
     {
         $schemes = [];
         foreach ($this->all() as $method) {
-            $schemes = array_merge(
-                $schemes,
-                $method->getSchemesParameters()
-            );
+            $schemes = array_merge($schemes, $method->getSchemesParameters());
         }
         foreach ($schemes as $k => $scheme) {
             $schemes[$k] = $this->appendParameters($scheme, $additionalAuthenticationParameters);
@@ -148,11 +151,11 @@ class AuthenticationMethodManager
     private function appendParameters(string $scheme, array $parameters): string
     {
         $position = mb_strpos($scheme, ' ', 0, 'utf-8');
-        $add_comma = false === $position ? false : true;
+        $add_comma = ! ($position === false);
 
         foreach ($parameters as $key => $value) {
-            $value = \is_string($value) ? sprintf('"%s"', $value) : $value;
-            if (false === $add_comma) {
+            $value = is_string($value) ? sprintf('"%s"', $value) : $value;
+            if ($add_comma === false) {
                 $add_comma = true;
                 $scheme = sprintf('%s %s=%s', $scheme, $key, $value);
             } else {

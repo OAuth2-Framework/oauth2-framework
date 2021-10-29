@@ -2,19 +2,10 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\Component\AuthorizationEndpoint\ResponseType;
 
+use function array_key_exists;
 use Assert\Assertion;
-use function Safe\sprintf;
 
 class ResponseTypeManager
 {
@@ -30,7 +21,7 @@ class ResponseTypeManager
 
     public function has(string $responseType): bool
     {
-        return \array_key_exists($responseType, $this->responseTypes);
+        return array_key_exists($responseType, $this->responseTypes);
     }
 
     public function get(string $responseType): ResponseType

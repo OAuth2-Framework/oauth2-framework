@@ -2,17 +2,9 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\Tests\Component\Core\AccessToken;
 
+use DateTimeImmutable;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenIntrospectionTypeHint;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository;
@@ -26,23 +18,17 @@ use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
 
 /**
- * @group TypeHint
- * @group AccessTokenIntrospectionTypeHint
- *
  * @internal
  */
 final class AccessTokenIntrospectionTypeHintTest extends TestCase
 {
     use ProphecyTrait;
 
-    /**
-     * @var null|AccessTokenIntrospectionTypeHint
-     */
-    private $accessTokenTypeHint;
+    private ?AccessTokenIntrospectionTypeHint $accessTokenTypeHint = null;
 
     protected function setUp(): void
     {
-        if (!interface_exists(TokenTypeHint::class)) {
+        if (! interface_exists(TokenTypeHint::class)) {
             static::markTestSkipped('The component "oauth2-framework/token-type" is not installed.');
         }
     }
@@ -50,32 +36,36 @@ final class AccessTokenIntrospectionTypeHintTest extends TestCase
     /**
      * @test
      */
-    public function genericInformation()
+    public function genericInformation(): void
     {
-        static::assertEquals('access_token', $this->getAccessTokenIntrospectionTypeHint()->hint());
+        static::assertSame('access_token', $this->getAccessTokenIntrospectionTypeHint()->hint());
     }
 
     /**
      * @test
      */
-    public function theTokenTypeHintCanFindATokenAndReturnValues()
+    public function theTokenTypeHintCanFindATokenAndReturnValues(): void
     {
         static::assertNull($this->getAccessTokenIntrospectionTypeHint()->find('UNKNOWN_TOKEN_ID'));
-        $accessToken = $this->getAccessTokenIntrospectionTypeHint()->find('ACCESS_TOKEN_ID');
+        $accessToken = $this->getAccessTokenIntrospectionTypeHint()
+            ->find('ACCESS_TOKEN_ID')
+        ;
         static::assertInstanceOf(AccessToken::class, $accessToken);
-        $introspection = $this->getAccessTokenIntrospectionTypeHint()->introspect($accessToken);
+        $introspection = $this->getAccessTokenIntrospectionTypeHint()
+            ->introspect($accessToken)
+        ;
         static::assertArrayHasKey('active', $introspection);
         static::assertTrue($introspection['active']);
     }
 
     public function getAccessTokenIntrospectionTypeHint(): AccessTokenIntrospectionTypeHint
     {
-        if (null === $this->accessTokenTypeHint) {
+        if ($this->accessTokenTypeHint === null) {
             $accessToken = new AccessToken(
                 new AccessTokenId('ACCESS_TOKEN_ID'),
                 new ClientId('CLIENT_ID'),
                 new UserAccountId('USER_ACCOUNT_ID'),
-                new \DateTimeImmutable('now +1hour'),
+                new DateTimeImmutable('now +1hour'),
                 new DataBag([
                     'scope' => 'scope1 scope2',
                 ]),
@@ -83,14 +73,14 @@ final class AccessTokenIntrospectionTypeHintTest extends TestCase
                 new ResourceServerId('RESOURCE_SERVER_ID')
             );
             $accessTokenRepository = $this->prophesize(AccessTokenRepository::class);
-            $accessTokenRepository->find(Argument::type(AccessTokenId::class))->will(function ($args) use ($accessToken) {
-                if ('ACCESS_TOKEN_ID' === $args[0]->getValue()) {
+            $accessTokenRepository->find(Argument::type(AccessTokenId::class))->will(function ($args) use (
+                $accessToken
+            ) {
+                if ($args[0]->getValue() === 'ACCESS_TOKEN_ID') {
                     return $accessToken;
                 }
             });
-            $this->accessTokenTypeHint = new AccessTokenIntrospectionTypeHint(
-                $accessTokenRepository->reveal()
-            );
+            $this->accessTokenTypeHint = new AccessTokenIntrospectionTypeHint($accessTokenRepository->reveal());
         }
 
         return $this->accessTokenTypeHint;

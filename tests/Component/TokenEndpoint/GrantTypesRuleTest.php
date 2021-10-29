@@ -2,17 +2,9 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\Tests\Component\TokenEndpoint;
 
+use InvalidArgumentException;
 use OAuth2Framework\Component\ClientRule\Rule;
 use OAuth2Framework\Component\ClientRule\RuleHandler;
 use OAuth2Framework\Component\Core\Client\ClientId;
@@ -24,22 +16,17 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
 
 /**
- * @group Tests
- *
  * @internal
  */
 final class GrantTypesRuleTest extends TestCase
 {
     use ProphecyTrait;
 
-    /**
-     * @var null|GrantTypesRule
-     */
-    private $grantTypesRule;
+    private ?GrantTypesRule $grantTypesRule = null;
 
     protected function setUp(): void
     {
-        if (!interface_exists(Rule::class)) {
+        if (! interface_exists(Rule::class)) {
             static::markTestSkipped('The component "oauth2-framework/client-rule" is not installed.');
         }
     }
@@ -47,7 +34,7 @@ final class GrantTypesRuleTest extends TestCase
     /**
      * @test
      */
-    public function grantTypesSetAsAnEmptyArray()
+    public function grantTypesSetAsAnEmptyArray(): void
     {
         $clientId = new ClientId('CLIENT_ID');
         $commandParameters = new DataBag([]);
@@ -55,32 +42,34 @@ final class GrantTypesRuleTest extends TestCase
         $validatedParameters = $rule->handle($clientId, $commandParameters, new DataBag([]), $this->getCallable());
 
         static::assertTrue($validatedParameters->has('grant_types'));
-        static::assertEquals([], $validatedParameters->get('grant_types'));
+        static::assertSame([], $validatedParameters->get('grant_types'));
     }
 
     /**
      * @test
      */
-    public function grantTypesCorrectlyDefined()
+    public function grantTypesCorrectlyDefined(): void
     {
         $clientId = new ClientId('CLIENT_ID');
         $commandParameters = new DataBag([
             'grant_types' => ['authorization_code'],
         ]);
-        $validatedParameters = new DataBag(['response_types' => ['code']]);
+        $validatedParameters = new DataBag([
+            'response_types' => ['code'],
+        ]);
         $rule = $this->getGrantTypesRule();
         $validatedParameters = $rule->handle($clientId, $commandParameters, $validatedParameters, $this->getCallable());
 
         static::assertTrue($validatedParameters->has('grant_types'));
-        static::assertEquals(['authorization_code'], $validatedParameters->get('grant_types'));
+        static::assertSame(['authorization_code'], $validatedParameters->get('grant_types'));
     }
 
     /**
      * @test
      */
-    public function theGrantTypeParameterMustBeAnArray()
+    public function theGrantTypeParameterMustBeAnArray(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('The parameter "grant_types" must be an array of strings.');
         $clientId = new ClientId('CLIENT_ID');
         $commandParameters = new DataBag([
@@ -93,9 +82,9 @@ final class GrantTypesRuleTest extends TestCase
     /**
      * @test
      */
-    public function theGrantTypeParameterMustBeAnArrayOfStrings()
+    public function theGrantTypeParameterMustBeAnArrayOfStrings(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('The parameter "grant_types" must be an array of strings.');
         $clientId = new ClientId('CLIENT_ID');
         $commandParameters = new DataBag([
@@ -108,41 +97,49 @@ final class GrantTypesRuleTest extends TestCase
     /**
      * @test
      */
-    public function theAssociatedResponseTypesAreSet()
+    public function theAssociatedResponseTypesAreSet(): void
     {
         $clientId = new ClientId('CLIENT_ID');
         $commandParameters = new DataBag([
             'grant_types' => ['authorization_code'],
         ]);
-        $validatedParameters = new DataBag(['response_types' => ['code id_token token']]);
+        $validatedParameters = new DataBag([
+            'response_types' => ['code id_token token'],
+        ]);
         $rule = $this->getGrantTypesRule();
         $validatedParameters = $rule->handle($clientId, $commandParameters, $validatedParameters, $this->getCallable());
 
         static::assertTrue($validatedParameters->has('grant_types'));
-        static::assertEquals(['authorization_code'], $validatedParameters->get('grant_types'));
+        static::assertSame(['authorization_code'], $validatedParameters->get('grant_types'));
         static::assertTrue($validatedParameters->has('response_types'));
-        static::assertEquals(['code id_token token'], $validatedParameters->get('response_types'));
+        static::assertSame(['code id_token token'], $validatedParameters->get('response_types'));
     }
 
     private function getCallable(): RuleHandler
     {
-        return new RuleHandler(function (ClientId $clientId, DataBag $commandParameters, DataBag $validatedParameters): DataBag {
+        return new RuleHandler(function (
+            ClientId $clientId,
+            DataBag $commandParameters,
+            DataBag $validatedParameters
+        ): DataBag {
             return $validatedParameters;
         });
     }
 
     private function getGrantTypesRule(): GrantTypesRule
     {
-        if (null === $this->grantTypesRule) {
+        if ($this->grantTypesRule === null) {
             $authorizationCodeGrantType = $this->prophesize(GrantType::class);
-            $authorizationCodeGrantType->name()->willReturn('authorization_code');
-            $authorizationCodeGrantType->associatedResponseTypes()->willReturn(['code']);
+            $authorizationCodeGrantType->name()
+                ->willReturn('authorization_code')
+            ;
+            $authorizationCodeGrantType->associatedResponseTypes()
+                ->willReturn(['code'])
+            ;
 
             $grantTypeManager = new GrantTypeManager();
             $grantTypeManager->add($authorizationCodeGrantType->reveal());
-            $this->grantTypesRule = new GrantTypesRule(
-                $grantTypeManager
-            );
+            $this->grantTypesRule = new GrantTypesRule($grantTypeManager);
         }
 
         return $this->grantTypesRule;

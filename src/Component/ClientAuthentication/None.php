@@ -2,17 +2,9 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\Component\ClientAuthentication;
 
+use function array_key_exists;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
@@ -27,12 +19,12 @@ final class None implements AuthenticationMethod
     }
 
     /**
-     * @param null|mixed $clientCredentials
+     * @param mixed|null $clientCredentials
      */
     public function findClientIdAndCredentials(ServerRequestInterface $request, &$clientCredentials = null): ?ClientId
     {
         $parameters = RequestBodyParser::parseFormUrlEncoded($request);
-        if (\array_key_exists('client_id', $parameters)) {
+        if (array_key_exists('client_id', $parameters)) {
             return new ClientId($parameters['client_id']);
         }
 
@@ -45,7 +37,7 @@ final class None implements AuthenticationMethod
     }
 
     /**
-     * @param null|mixed $clientCredentials
+     * @param mixed|null $clientCredentials
      */
     public function isClientAuthenticated(Client $client, $clientCredentials, ServerRequestInterface $request): bool
     {

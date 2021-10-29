@@ -2,18 +2,12 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\Component\OpenIdConnect\UserInfo\Claim;
 
-use function Safe\sprintf;
+use function array_key_exists;
+use function in_array;
+use InvalidArgumentException;
+use function is_array;
 use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 
 class ClaimManager
@@ -46,13 +40,13 @@ class ClaimManager
 
     public function has(string $claim): bool
     {
-        return \array_key_exists($claim, $this->claims);
+        return array_key_exists($claim, $this->claims);
     }
 
     public function get(string $claim): Claim
     {
-        if (!$this->has($claim)) {
-            throw new \InvalidArgumentException(sprintf('Unsupported claim "%s".', $claim));
+        if (! $this->has($claim)) {
+            throw new InvalidArgumentException(sprintf('Unsupported claim "%s".', $claim));
         }
 
         return $this->claims[$claim];
@@ -68,19 +62,24 @@ class ClaimManager
                 foreach ($claimLocales as $claimLocale) {
                     if ($claim->isAvailableForUserAccount($userAccount, $claimLocale)) {
                         $value = $claim->getForUserAccount($userAccount, $claimLocale);
+
                         switch (true) {
-                            case \is_array($config) && \array_key_exists('value', $config):
+                            case is_array($config) && array_key_exists('value', $config):
                                 if ($claim === $config['value']) {
                                     $result[$claimName] = $value;
                                 }
 
                                 break;
-                            case \is_array($config) && \array_key_exists('values', $config) && \is_array($config['values']):
-                                if (\in_array($claim, $config['values'], true)) {
+
+                            case is_array($config) && array_key_exists('values', $config) && is_array(
+                                $config['values']
+                            ):
+                                if (in_array($claim, $config['values'], true)) {
                                     $result[$claimName] = $value;
                                 }
 
                                 break;
+
                             default:
                                 $result[$claimName] = $value;
                         }

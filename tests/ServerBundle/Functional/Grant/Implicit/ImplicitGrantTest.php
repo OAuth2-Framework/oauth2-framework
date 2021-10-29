@@ -2,33 +2,19 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
-namespace OAuth2Framework\ServerBundle\Tests\Functional\Grant\Implicit;
+namespace OAuth2Framework\Tests\ServerBundle\Functional\Grant\Implicit;
 
 use OAuth2Framework\Component\ImplicitGrant\ImplicitGrantType;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
- * @group ServerBundle
- * @group Functional
- * @group Grant
- * @group Implicit
- *
  * @internal
  */
-class ImplicitGrantTest extends WebTestCase
+final class ImplicitGrantTest extends WebTestCase
 {
     protected function setUp(): void
     {
-        if (!class_exists(ImplicitGrantType::class)) {
+        if (! class_exists(ImplicitGrantType::class)) {
             static::markTestSkipped('The component "oauth2-framework/implicit-grant" is not installed.');
         }
         parent::setUp();
@@ -37,23 +23,35 @@ class ImplicitGrantTest extends WebTestCase
     /**
      * @test
      */
-    public function theRequestHasNoGrantType()
+    public function theRequestHasNoGrantType(): void
     {
         $client = static::createClient();
-        $client->request('POST', '/token/get', [], [], ['HTTPS' => 'on'], null);
+        $client->request('POST', '/token/get', [], [], [
+            'HTTPS' => 'on',
+        ], null);
         $response = $client->getResponse();
-        static::assertEquals('{"error":"invalid_request","error_description":"The \"grant_type\" parameter is missing."}', $response->getContent());
+        static::assertSame(
+            '{"error":"invalid_request","error_description":"The \"grant_type\" parameter is missing."}',
+            $response->getContent()
+        );
     }
 
     /**
      * @test
      */
-    public function theImplicitGrantTypeCannotBeCalledFromTheTokenEndpoint()
+    public function theImplicitGrantTypeCannotBeCalledFromTheTokenEndpoint(): void
     {
         $client = static::createClient();
-        $client->request('POST', '/token/get', ['grant_type' => 'implicit'], [], ['HTTPS' => 'on'], null);
+        $client->request('POST', '/token/get', [
+            'grant_type' => 'implicit',
+        ], [], [
+            'HTTPS' => 'on',
+        ], null);
         $response = $client->getResponse();
-        static::assertEquals(400, $response->getStatusCode());
-        static::assertEquals('{"error":"invalid_grant","error_description":"The implicit grant type cannot be called from the token endpoint."}', $response->getContent());
+        static::assertSame(400, $response->getStatusCode());
+        static::assertSame(
+            '{"error":"invalid_grant","error_description":"The implicit grant type cannot be called from the token endpoint."}',
+            $response->getContent()
+        );
     }
 }

@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\ServerBundle\Doctrine\Type;
 
 use Assert\Assertion;
@@ -25,7 +16,7 @@ final class InitialAccessTokenIdType extends Type
      */
     public function convertToDatabaseValue($value, AbstractPlatform $platform): ?string
     {
-        if (null === $value) {
+        if ($value === null) {
             return $value;
         }
 
@@ -39,7 +30,7 @@ final class InitialAccessTokenIdType extends Type
      */
     public function convertToPHPValue($value, AbstractPlatform $platform): ?InitialAccessTokenId
     {
-        if (null === $value || $value instanceof InitialAccessTokenId) {
+        if ($value === null || $value instanceof InitialAccessTokenId) {
             return $value;
         }
 

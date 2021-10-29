@@ -2,18 +2,10 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\ServerBundle\Component\Grant\AuthorizationCode;
 
-use function Safe\sprintf;
+use function array_key_exists;
+use InvalidArgumentException;
 use OAuth2Framework\Component\AuthorizationCodeGrant\PKCEMethod\PKCEMethodManager;
 use OAuth2Framework\ServerBundle\Service\MetadataBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
@@ -24,7 +16,7 @@ class PKCEMethodCompilerPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container): void
     {
-        if (!$container->hasDefinition(PKCEMethodManager::class)) {
+        if (! $container->hasDefinition(PKCEMethodManager::class)) {
             return;
         }
 
@@ -34,15 +26,18 @@ class PKCEMethodCompilerPass implements CompilerPassInterface
         $loaded = [];
         foreach ($taggedServices as $id => $tags) {
             foreach ($tags as $attributes) {
-                if (!\array_key_exists('alias', $attributes)) {
-                    throw new \InvalidArgumentException(sprintf('The PKCE method  "%s" does not have any "alias" attribute.', $id));
+                if (! array_key_exists('alias', $attributes)) {
+                    throw new InvalidArgumentException(sprintf(
+                        'The PKCE method  "%s" does not have any "alias" attribute.',
+                        $id
+                    ));
                 }
                 $loaded[] = $attributes['alias'];
                 $definition->addMethodCall('add', [new Reference($id)]);
             }
         }
 
-        if (!$container->hasDefinition(MetadataBuilder::class)) {
+        if (! $container->hasDefinition(MetadataBuilder::class)) {
             return;
         }
 

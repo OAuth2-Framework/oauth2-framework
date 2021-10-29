@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\ServerBundle\Component\Endpoint\TokenRevocation;
 
 use OAuth2Framework\Component\TokenRevocationEndpoint\TokenRevocationEndpoint;
@@ -32,12 +23,12 @@ class TokenRevocationEndpointSource implements Component
 
     public function load(array $configs, ContainerBuilder $container): void
     {
-        if (!class_exists(TokenRevocationEndpoint::class)) {
+        if (! class_exists(TokenRevocationEndpoint::class)) {
             return;
         }
         $config = $configs['endpoint']['token_revocation'];
         $container->setParameter('oauth2_server.endpoint.token_revocation.enabled', $config['enabled']);
-        if (!$config['enabled']) {
+        if (! $config['enabled']) {
             return;
         }
         $container->registerForAutoconfiguration(TokenTypeHint::class)->addTag('oauth2_server_revocation_type_hint');
@@ -45,13 +36,15 @@ class TokenRevocationEndpointSource implements Component
         $container->setParameter('oauth2_server.endpoint.token_revocation.host', $config['host']);
         $container->setParameter('oauth2_server.endpoint.token_revocation.allow_callback', $config['allow_callback']);
 
-        $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint/token_revocation'));
+        $loader = new PhpFileLoader($container, new FileLocator(
+            __DIR__ . '/../../../Resources/config/endpoint/token_revocation'
+        ));
         $loader->load('revocation.php');
     }
 
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
-        if (!class_exists(TokenRevocationEndpoint::class)) {
+        if (! class_exists(TokenRevocationEndpoint::class)) {
             return;
         }
         $node->children()
@@ -80,7 +73,7 @@ class TokenRevocationEndpointSource implements Component
 
     public function build(ContainerBuilder $container): void
     {
-        if (!class_exists(TokenRevocationEndpoint::class)) {
+        if (! class_exists(TokenRevocationEndpoint::class)) {
             return;
         }
         $container->addCompilerPass(new TokenTypeHintCompilerPass());

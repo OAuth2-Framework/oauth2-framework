@@ -1,8 +1,8 @@
 <?php
 
 declare(strict_types=1);
-use OAuth2Framework\Component\Core\ResourceServer\ResourceServerRepository;
 
+use OAuth2Framework\Component\Core\ResourceServer\ResourceServerRepository;
 /*
  * The MIT License (MIT)
  *
@@ -15,18 +15,16 @@ use OAuth2Framework\Component\Core\ResourceServer\ResourceServerRepository;
 use OAuth2Framework\Component\ResourceServerAuthentication\AuthenticationMethodManager;
 use OAuth2Framework\Component\ResourceServerAuthentication\AuthenticationMiddleware;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
+use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 
-return function (ContainerConfigurator $container) {
-    $container = $container->services()->defaults()
+return static function (ContainerConfigurator $container): void {
+    $container = $container->services()
+        ->defaults()
         ->private()
         ->autoconfigure()
     ;
 
     $container->set(AuthenticationMiddleware::class)
-        ->args([
-            ref(ResourceServerRepository::class),
-            ref(AuthenticationMethodManager::class),
-        ])
+        ->args([service(ResourceServerRepository::class), service(AuthenticationMethodManager::class)])
     ;
 };

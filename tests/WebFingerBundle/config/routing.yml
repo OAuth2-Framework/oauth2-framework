@@ -1,3 +1,0 @@
-# OAuth2FrameworkWebFingerBundle Routes
-webfinger:
-    resource: '@OAuth2FrameworkWebFingerBundle/Resources/config/routing/routing.php'

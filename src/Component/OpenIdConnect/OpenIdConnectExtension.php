@@ -2,21 +2,16 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\Component\OpenIdConnect;
 
-use function Safe\json_decode;
+use function array_key_exists;
+use function in_array;
+use InvalidArgumentException;
+use function is_array;
 use Jose\Component\Core\JWKSet;
 use Jose\Component\Encryption\JWEBuilder;
 use Jose\Component\Signature\JWSBuilder;
+use const JSON_THROW_ON_ERROR;
 use OAuth2Framework\Component\Core\AccessToken\AccessToken;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwner;
@@ -28,22 +23,14 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class OpenIdConnectExtension implements TokenEndpointExtension
 {
-    private JWKSet $signatureKeys;
-
-    private JWSBuilder $jwsBuilder;
-
     private ?JWEBuilder $jweBuilder = null;
 
-    private IdTokenBuilderFactory $idTokenBuilderFactory;
-
-    private string $defaultSignatureAlgorithm;
-
-    public function __construct(IdTokenBuilderFactory $idTokenBuilderFactory, string $defaultSignatureAlgorithm, JWSBuilder $jwsBuilder, JWKSet $signatureKeys)
-    {
-        $this->jwsBuilder = $jwsBuilder;
-        $this->signatureKeys = $signatureKeys;
-        $this->idTokenBuilderFactory = $idTokenBuilderFactory;
-        $this->defaultSignatureAlgorithm = $defaultSignatureAlgorithm;
+    public function __construct(
+        private IdTokenBuilderFactory $idTokenBuilderFactory,
+        private string $defaultSignatureAlgorithm,
+        private JWSBuilder $jwsBuilder,
+        private JWKSet $signatureKeys
+    ) {
     }
 
     public function enableEncryption(JWEBuilder $jweBuilder): void
@@ -51,15 +38,26 @@ class OpenIdConnectExtension implements TokenEndpointExtension
         $this->jweBuilder = $jweBuilder;
     }
 
-    public function beforeAccessTokenIssuance(ServerRequestInterface $request, GrantTypeData $grantTypeData, GrantType $grantType, callable $next): GrantTypeData
-    {
+    public function beforeAccessTokenIssuance(
+        ServerRequestInterface $request,
+        GrantTypeData $grantTypeData,
+        GrantType $grantType,
+        callable $next
+    ): GrantTypeData {
         return $next($request, $grantTypeData, $grantType);
     }
 
-    public function afterAccessTokenIssuance(Client $client, ResourceOwner $resourceOwner, AccessToken $accessToken, callable $next): array
-    {
+    public function afterAccessTokenIssuance(
+        Client $client,
+        ResourceOwner $resourceOwner,
+        AccessToken $accessToken,
+        callable $next
+    ): array {
         $data = $next($client, $resourceOwner, $accessToken);
-        if ($resourceOwner instanceof UserAccount && $this->hasOpenIdScope($accessToken) && $accessToken->getMetadata()->has('redirect_uri')) {
+        if ($resourceOwner instanceof UserAccount && $this->hasOpenIdScope(
+            $accessToken
+        ) && $accessToken->getMetadata()
+            ->has('redirect_uri')) {
             $idToken = $this->issueIdToken($client, $resourceOwner, $accessToken);
             $data['id_token'] = $idToken;
         }
@@ -69,7 +67,9 @@ class OpenIdConnectExtension implements TokenEndpointExtension
 
     private function issueIdToken(Client $client, UserAccount $userAccount, AccessToken $accessToken): string
     {
-        $redirectUri = $accessToken->getMetadata()->get('redirect_uri');
+        $redirectUri = $accessToken->getMetadata()
+            ->get('redirect_uri')
+        ;
         $idTokenBuilder = $this->idTokenBuilderFactory->createBuilder($client, $userAccount, $redirectUri);
 
         $requestedClaims = $this->getIdTokenClaims($accessToken);
@@ -82,7 +82,9 @@ class OpenIdConnectExtension implements TokenEndpointExtension
         } else {
             $idTokenBuilder->withSignature($this->jwsBuilder, $this->signatureKeys, $this->defaultSignatureAlgorithm);
         }
-        if ($client->has('userinfo_encrypted_response_alg') && $client->has('userinfo_encrypted_response_enc') && null !== $this->jweBuilder) {
+        if ($client->has('userinfo_encrypted_response_alg') && $client->has(
+            'userinfo_encrypted_response_enc'
+        ) && $this->jweBuilder !== null) {
             $keyEncryptionAlgorithm = $client->get('userinfo_encrypted_response_alg');
             $contentEncryptionAlgorithm = $client->get('userinfo_encrypted_response_enc');
             $idTokenBuilder->withEncryption($this->jweBuilder, $keyEncryptionAlgorithm, $contentEncryptionAlgorithm);
@@ -97,16 +99,18 @@ class OpenIdConnectExtension implements TokenEndpointExtension
 
     private function getIdTokenClaims(AccessToken $accessToken): array
     {
-        if (!$accessToken->getMetadata()->has('requested_claims')) {
+        if (! $accessToken->getMetadata()->has('requested_claims')) {
             return [];
         }
 
-        $requestedClaims = $accessToken->getMetadata()->get('requested_claims');
-        $requestedClaims = json_decode($requestedClaims, true);
-        if (!\is_array($requestedClaims)) {
-            throw new \InvalidArgumentException('Invalid claim request');
+        $requestedClaims = $accessToken->getMetadata()
+            ->get('requested_claims')
+        ;
+        $requestedClaims = json_decode($requestedClaims, true, 512, JSON_THROW_ON_ERROR);
+        if (! is_array($requestedClaims)) {
+            throw new InvalidArgumentException('Invalid claim request');
         }
-        if (true === \array_key_exists('id_token', $requestedClaims)) {
+        if (array_key_exists('id_token', $requestedClaims) === true) {
             return $requestedClaims['id_token'];
         }
 
@@ -115,6 +119,7 @@ class OpenIdConnectExtension implements TokenEndpointExtension
 
     private function hasOpenIdScope(AccessToken $accessToken): bool
     {
-        return $accessToken->getParameter()->has('scope') && \in_array('openid', explode(' ', $accessToken->getParameter()->get('scope')), true);
+        return $accessToken->getParameter()
+            ->has('scope') && in_array('openid', explode(' ', $accessToken->getParameter()->get('scope')), true);
     }
 }

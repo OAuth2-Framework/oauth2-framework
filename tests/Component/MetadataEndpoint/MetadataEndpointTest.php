@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\Tests\Component\MetadataEndpoint;
 
 use Jose\Component\Core\AlgorithmManager;
@@ -27,55 +18,50 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 /**
- * @group MetadataEndpoint
- *
  * @internal
  */
 final class MetadataEndpointTest extends TestCase
 {
     use ProphecyTrait;
 
-    /**
-     * @var null|MetadataEndpoint
-     */
-    private $metadataEndpoint;
+    private ?MetadataEndpoint $metadataEndpoint = null;
 
-    /**
-     * @var null|ResponseFactoryInterface
-     */
-    private $responseFactory;
+    private ?Psr17Factory $responseFactory = null;
 
     /**
      * @test
      */
-    public function theMetadataEndpointCanReceiveRegistrationRequests()
+    public function theMetadataEndpointCanReceiveRegistrationRequests(): void
     {
         $request = $this->prophesize(ServerRequestInterface::class);
         $handler = $this->prophesize(RequestHandlerInterface::class);
 
-        $response = $this->getMetadataEndpoint()->process($request->reveal(), $handler->reveal());
-        $response->getBody()->rewind();
-        $body = $response->getBody()->getContents();
+        $response = $this->getMetadataEndpoint()
+            ->process($request->reveal(), $handler->reveal())
+        ;
+        $response->getBody()
+            ->rewind()
+        ;
+        $body = $response->getBody()
+            ->getContents()
+        ;
 
         if (class_exists(JWSBuilder::class)) {
-            static::assertEquals('{"foo":"bar","signed_metadata":"eyJhbGciOiJub25lIn0.eyJmb28iOiJiYXIifQ."}', $body);
+            static::assertSame('{"foo":"bar","signed_metadata":"eyJhbGciOiJub25lIn0.eyJmb28iOiJiYXIifQ."}', $body);
         } else {
-            static::assertEquals('{"foo":"bar"}', $body);
+            static::assertSame('{"foo":"bar"}', $body);
         }
-        static::assertEquals(200, $response->getStatusCode());
-        static::assertEquals(['application/json; charset=UTF-8'], $response->getHeader('content-type'));
+        static::assertSame(200, $response->getStatusCode());
+        static::assertSame(['application/json; charset=UTF-8'], $response->getHeader('content-type'));
     }
 
     private function getMetadataEndpoint(): MetadataEndpoint
     {
-        if (null === $this->metadataEndpoint) {
+        if ($this->metadataEndpoint === null) {
             $metadata = new Metadata();
             $metadata->set('foo', 'bar');
 
-            $this->metadataEndpoint = new MetadataEndpoint(
-                $this->getResponseFactory(),
-                $metadata
-            );
+            $this->metadataEndpoint = new MetadataEndpoint($this->getResponseFactory(), $metadata);
 
             if (class_exists(JWSBuilder::class)) {
                 $jwsBuilder = new JWSBuilder(new AlgorithmManager([new None()]));
@@ -91,7 +77,7 @@ final class MetadataEndpointTest extends TestCase
 
     private function getResponseFactory(): ResponseFactoryInterface
     {
-        if (null === $this->responseFactory) {
+        if ($this->responseFactory === null) {
             $this->responseFactory = new Psr17Factory();
         }
 

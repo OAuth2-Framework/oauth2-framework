@@ -2,16 +2,9 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\Component\AuthorizationCodeGrant\PKCEMethod;
+
+use function array_key_exists;
 
 class PKCEMethodManager
 {
@@ -27,7 +20,7 @@ class PKCEMethodManager
 
     public function has(string $method): bool
     {
-        return \array_key_exists($method, $this->pkceMethods);
+        return array_key_exists($method, $this->pkceMethods);
     }
 
     public function get(string $method): PKCEMethod

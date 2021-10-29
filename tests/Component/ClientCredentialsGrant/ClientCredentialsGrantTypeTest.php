@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\Tests\Component\ClientCredentialsGrant;
 
 use OAuth2Framework\Component\ClientCredentialsGrant\ClientCredentialsGrantType;
@@ -23,79 +14,95 @@ use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
- * @group GrantType
- * @group ClientCredentials
- *
  * @internal
  */
 final class ClientCredentialsGrantTypeTest extends TestCase
 {
     use ProphecyTrait;
 
-    /**
-     * @var null|ClientCredentialsGrantType
-     */
-    private $grantType;
+    private ?ClientCredentialsGrantType $grantType = null;
 
     /**
      * @test
      */
-    public function genericInformation()
+    public function genericInformation(): void
     {
-        static::assertEquals([], $this->getGrantType()->associatedResponseTypes());
-        static::assertEquals('client_credentials', $this->getGrantType()->name());
+        static::assertSame([], $this->getGrantType()->associatedResponseTypes());
+        static::assertSame('client_credentials', $this->getGrantType()->name());
     }
 
     /**
      * @test
      */
-    public function theRequestHaveAllRequiredParameters()
+    public function theRequestHaveAllRequiredParameters(): void
     {
         $request = $this->prophesize(ServerRequestInterface::class);
-        $this->getGrantType()->checkRequest($request->reveal());
+        $this->getGrantType()
+            ->checkRequest($request->reveal())
+        ;
         static::assertTrue(true);
     }
 
     /**
      * @test
      */
-    public function theTokenResponseIsCorrectlyPrepared()
+    public function theTokenResponseIsCorrectlyPrepared(): void
     {
         $client = $this->prophesize(Client::class);
-        $client->isPublic()->willReturn(false);
-        $client->getPublicId()->willReturn(new ClientId('CLIENT_ID'));
-        $client->getClientId()->willReturn(new ClientId('CLIENT_ID'));
-        $client->getOwnerId()->willReturn(new UserAccountId('USER_ACCOUNT_ID'));
+        $client->isPublic()
+            ->willReturn(false)
+        ;
+        $client->getPublicId()
+            ->willReturn(new ClientId('CLIENT_ID'))
+        ;
+        $client->getClientId()
+            ->willReturn(new ClientId('CLIENT_ID'))
+        ;
+        $client->getOwnerId()
+            ->willReturn(new UserAccountId('USER_ACCOUNT_ID'))
+        ;
 
         $request = $this->prophesize(ServerRequestInterface::class);
         $grantTypeData = new GrantTypeData($client->reveal());
 
-        $this->getGrantType()->prepareResponse($request->reveal(), $grantTypeData);
+        $this->getGrantType()
+            ->prepareResponse($request->reveal(), $grantTypeData)
+        ;
         static::assertSame($grantTypeData, $grantTypeData);
     }
 
     /**
      * @test
      */
-    public function theGrantTypeCanGrantTheClient()
+    public function theGrantTypeCanGrantTheClient(): void
     {
         $client = $this->prophesize(Client::class);
-        $client->isPublic()->willReturn(false);
-        $client->getPublicId()->willReturn(new ClientId('CLIENT_ID'));
-        $client->getClientId()->willReturn(new ClientId('CLIENT_ID'));
-        $client->getOwnerId()->willReturn(new UserAccountId('USER_ACCOUNT_ID'));
+        $client->isPublic()
+            ->willReturn(false)
+        ;
+        $client->getPublicId()
+            ->willReturn(new ClientId('CLIENT_ID'))
+        ;
+        $client->getClientId()
+            ->willReturn(new ClientId('CLIENT_ID'))
+        ;
+        $client->getOwnerId()
+            ->willReturn(new UserAccountId('USER_ACCOUNT_ID'))
+        ;
 
         $request = $this->prophesize(ServerRequestInterface::class);
         $grantTypeData = new GrantTypeData($client->reveal());
 
-        $this->getGrantType()->grant($request->reveal(), $grantTypeData);
-        static::assertEquals('CLIENT_ID', $grantTypeData->getResourceOwnerId()->getValue());
-        static::assertEquals('CLIENT_ID', $grantTypeData->getClient()->getPublicId()->getValue());
+        $this->getGrantType()
+            ->grant($request->reveal(), $grantTypeData)
+        ;
+        static::assertSame('CLIENT_ID', $grantTypeData->getResourceOwnerId()->getValue());
+        static::assertSame('CLIENT_ID', $grantTypeData->getClient()->getPublicId()->getValue());
     }
 
     private function getGrantType(): ClientCredentialsGrantType
     {
-        if (null === $this->grantType) {
+        if ($this->grantType === null) {
             $this->grantType = new ClientCredentialsGrantType();
         }
 

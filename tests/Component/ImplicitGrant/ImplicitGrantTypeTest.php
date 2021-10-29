@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\Tests\Component\ImplicitGrant;
 
 use OAuth2Framework\Component\Core\Client\Client;
@@ -24,42 +15,38 @@ use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
- * @group GrantType
- * @group Implicit
- *
  * @internal
  */
 final class ImplicitGrantTypeTest extends TestCase
 {
     use ProphecyTrait;
 
-    /**
-     * @var null|ImplicitGrantType
-     */
-    private $grantType;
+    private ?ImplicitGrantType $grantType = null;
 
     /**
      * @test
      */
-    public function genericInformation()
+    public function genericInformation(): void
     {
-        static::assertEquals(['token'], $this->getGrantType()->associatedResponseTypes());
-        static::assertEquals('implicit', $this->getGrantType()->name());
+        static::assertSame(['token'], $this->getGrantType()->associatedResponseTypes());
+        static::assertSame('implicit', $this->getGrantType()->name());
     }
 
     /**
      * @test
      */
-    public function theRequestHaveMissingParameters()
+    public function theRequestHaveMissingParameters(): void
     {
         $request = $this->prophesize(ServerRequestInterface::class);
 
         try {
-            $this->getGrantType()->checkRequest($request->reveal());
+            $this->getGrantType()
+                ->checkRequest($request->reveal())
+            ;
             static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2Error $e) {
-            static::assertEquals(400, $e->getCode());
-            static::assertEquals([
+            static::assertSame(400, $e->getCode());
+            static::assertSame([
                 'error' => 'invalid_grant',
                 'error_description' => 'The implicit grant type cannot be called from the token endpoint.',
             ], $e->getData());
@@ -69,23 +56,37 @@ final class ImplicitGrantTypeTest extends TestCase
     /**
      * @test
      */
-    public function theTokenResponseIsCorrectlyPrepared()
+    public function theTokenResponseIsCorrectlyPrepared(): void
     {
         $client = $this->prophesize(Client::class);
-        $client->isPublic()->willReturn(false);
-        $client->getPublicId()->willReturn(new ClientId('CLIENT_ID'));
-        $client->getClientId()->willReturn(new ClientId('CLIENT_ID'));
-        $client->getOwnerId()->willReturn(new UserAccountId('USER_ACCOUNT_ID'));
+        $client->isPublic()
+            ->willReturn(false)
+        ;
+        $client->getPublicId()
+            ->willReturn(new ClientId('CLIENT_ID'))
+        ;
+        $client->getClientId()
+            ->willReturn(new ClientId('CLIENT_ID'))
+        ;
+        $client->getOwnerId()
+            ->willReturn(new UserAccountId('USER_ACCOUNT_ID'))
+        ;
 
         $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getParsedBody()->willReturn(['implicit' => 'REFRESH_TOKEN_ID']);
+        $request->getParsedBody()
+            ->willReturn([
+                'implicit' => 'REFRESH_TOKEN_ID',
+            ])
+        ;
         $grantTypeData = new GrantTypeData($client->reveal());
 
         try {
-            $this->getGrantType()->prepareResponse($request->reveal(), $grantTypeData);
+            $this->getGrantType()
+                ->prepareResponse($request->reveal(), $grantTypeData)
+            ;
         } catch (OAuth2Error $e) {
-            static::assertEquals(400, $e->getCode());
-            static::assertEquals([
+            static::assertSame(400, $e->getCode());
+            static::assertSame([
                 'error' => 'invalid_grant',
                 'error_description' => 'The implicit grant type cannot be called from the token endpoint.',
             ], $e->getData());
@@ -95,24 +96,40 @@ final class ImplicitGrantTypeTest extends TestCase
     /**
      * @test
      */
-    public function theGrantTypeCanGrantTheClient()
+    public function theGrantTypeCanGrantTheClient(): void
     {
         $client = $this->prophesize(Client::class);
-        $client->isPublic()->willReturn(false);
-        $client->getPublicId()->willReturn(new ClientId('CLIENT_ID'));
-        $client->getClientId()->willReturn(new ClientId('CLIENT_ID'));
-        $client->getOwnerId()->willReturn(new UserAccountId('USER_ACCOUNT_ID'));
+        $client->isPublic()
+            ->willReturn(false)
+        ;
+        $client->getPublicId()
+            ->willReturn(new ClientId('CLIENT_ID'))
+        ;
+        $client->getClientId()
+            ->willReturn(new ClientId('CLIENT_ID'))
+        ;
+        $client->getOwnerId()
+            ->willReturn(new UserAccountId('USER_ACCOUNT_ID'))
+        ;
 
         $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getParsedBody()->willReturn(['implicit' => 'REFRESH_TOKEN_ID']);
-        $request->getAttribute('client')->willReturn($client);
+        $request->getParsedBody()
+            ->willReturn([
+                'implicit' => 'REFRESH_TOKEN_ID',
+            ])
+        ;
+        $request->getAttribute('client')
+            ->willReturn($client)
+        ;
         $grantTypeData = new GrantTypeData($client->reveal());
 
         try {
-            $this->getGrantType()->grant($request->reveal(), $grantTypeData);
+            $this->getGrantType()
+                ->grant($request->reveal(), $grantTypeData)
+            ;
         } catch (OAuth2Error $e) {
-            static::assertEquals(400, $e->getCode());
-            static::assertEquals([
+            static::assertSame(400, $e->getCode());
+            static::assertSame([
                 'error' => 'invalid_grant',
                 'error_description' => 'The implicit grant type cannot be called from the token endpoint.',
             ], $e->getData());
@@ -121,7 +138,7 @@ final class ImplicitGrantTypeTest extends TestCase
 
     private function getGrantType(): ImplicitGrantType
     {
-        if (null === $this->grantType) {
+        if ($this->grantType === null) {
             $this->grantType = new ImplicitGrantType();
         }
 

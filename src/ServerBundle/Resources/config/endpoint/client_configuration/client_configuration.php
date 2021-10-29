@@ -1,11 +1,11 @@
 <?php
 
 declare(strict_types=1);
-use OAuth2Framework\Component\Core\Middleware\Pipe;
-use OAuth2Framework\Component\Core\Client\ClientRepository;
-use OAuth2Framework\Component\Core\Middleware\OAuth2MessageMiddleware;
-use OAuth2Framework\Component\Core\Message\OAuth2MessageFactoryManager;
 
+use OAuth2Framework\Component\BearerTokenType\BearerToken;
+use OAuth2Framework\Component\ClientConfigurationEndpoint\ClientConfigurationEndpoint;
+use OAuth2Framework\Component\ClientRule\RuleManager;
+use OAuth2Framework\Component\Core\Client\ClientRepository;
 /*
  * The MIT License (MIT)
  *
@@ -15,29 +15,34 @@ use OAuth2Framework\Component\Core\Message\OAuth2MessageFactoryManager;
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use OAuth2Framework\Component\BearerTokenType\BearerToken;
-use OAuth2Framework\Component\ClientConfigurationEndpoint\ClientConfigurationEndpoint;
-use OAuth2Framework\Component\ClientRule\RuleManager;
-use OAuth2Framework\Component\Core\Message;
-use OAuth2Framework\Component\Core\Middleware;
+use OAuth2Framework\Component\Core\Message\OAuth2MessageFactoryManager;
+use OAuth2Framework\Component\Core\Middleware\OAuth2MessageMiddleware;
+use OAuth2Framework\Component\Core\Middleware\Pipe;
 use OAuth2Framework\ServerBundle\Controller\ClientConfigurationMiddleware;
+use OAuth2Framework\ServerBundle\Controller\PipeController;
 use OAuth2Framework\ServerBundle\Rule\ClientConfigurationRouteRule;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
+use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 
-return function (ContainerConfigurator $container) {
-    $container = $container->services()->defaults()
+return static function (ContainerConfigurator $container): void {
+    $container = $container->services()
+        ->defaults()
         ->private()
     ;
 
-    $container->set('client_configuration_endpoint_pipe')
+    $container->set('client_configuration_pipe')
         ->class(Pipe::class)
         ->args([[
-            ref('oauth2_server.message_middleware.for_client_configuration'),
-            ref('oauth2_server.client_configuration.middleware'),
-            ref(ClientConfigurationEndpoint::class),
+            service('oauth2_server.message_middleware.for_client_configuration'),
+            service('oauth2_server.client_configuration.middleware'),
+            service(ClientConfigurationEndpoint::class),
         ]])
+    ;
+
+    $container->set('client_configuration_endpoint_pipe')
+        ->class(PipeController::class)
+        ->args([service('client_configuration_pipe')])
         ->tag('controller.service_arguments')
     ;
 
@@ -53,42 +58,34 @@ return function (ContainerConfigurator $container) {
 
     $container->set(ClientConfigurationEndpoint::class)
         ->args([
-            ref(ClientRepository::class),
-            ref('oauth2_server.client_configuration.bearer_token'),
-            ref(ResponseFactoryInterface::class), //TODO: change the way the response factory is managed
-            ref(RuleManager::class),
+            service(ClientRepository::class),
+            service('oauth2_server.client_configuration.bearer_token'),
+            service(ResponseFactoryInterface::class), //TODO: change the way the response factory is managed
+            service(RuleManager::class),
         ])
     ;
 
     $container->set('oauth2_server.client_configuration.middleware')
         ->class(ClientConfigurationMiddleware::class)
-        ->args([
-            ref(ClientRepository::class),
-        ])
+        ->args([service(ClientRepository::class)])
     ;
 
     $container->set(ClientConfigurationRouteRule::class)
         ->autoconfigure()
-        ->args([
-            ref('router'),
-        ])
+        ->args([service('router')])
     ;
 
     $container->set('oauth2_server.message_middleware.for_client_configuration')
         ->class(OAuth2MessageMiddleware::class)
-        ->args([
-            ref('oauth2_server.message_factory_manager.for_client_configuration'),
-        ])
+        ->args([service('oauth2_server.message_factory_manager.for_client_configuration')])
     ;
     $container->set('oauth2_server.message_factory_manager.for_client_configuration')
         ->class(OAuth2MessageFactoryManager::class)
-        ->args([
-            ref(ResponseFactoryInterface::class),
-        ])
-        ->call('addFactory', [ref('oauth2_server.message_factory.303')])
-        ->call('addFactory', [ref('oauth2_server.message_factory.400')])
-        ->call('addFactory', [ref('oauth2_server.message_factory.403')])
-        ->call('addFactory', [ref('oauth2_server.message_factory.405')])
-        ->call('addFactory', [ref('oauth2_server.message_factory.501')])
+        ->args([service(ResponseFactoryInterface::class)])
+        ->call('addFactory', [service('oauth2_server.message_factory.303')])
+        ->call('addFactory', [service('oauth2_server.message_factory.400')])
+        ->call('addFactory', [service('oauth2_server.message_factory.403')])
+        ->call('addFactory', [service('oauth2_server.message_factory.405')])
+        ->call('addFactory', [service('oauth2_server.message_factory.501')])
     ;
 };

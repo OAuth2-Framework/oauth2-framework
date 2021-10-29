@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\ServerBundle\Component\Endpoint\TokenIntrospection;
 
 use OAuth2Framework\Component\TokenIntrospectionEndpoint\TokenIntrospectionEndpoint;
@@ -32,30 +23,33 @@ class TokenIntrospectionEndpointSource implements Component
 
     public function load(array $configs, ContainerBuilder $container): void
     {
-        if (!class_exists(TokenIntrospectionEndpoint::class)) {
+        if (! class_exists(TokenIntrospectionEndpoint::class)) {
             return;
         }
         $config = $configs['endpoint']['token_introspection'];
         $container->setParameter('oauth2_server.endpoint.token_introspection.enabled', $config['enabled']);
-        if (!$config['enabled']) {
+        if (! $config['enabled']) {
             return;
         }
         $container->registerForAutoconfiguration(TokenTypeHint::class)->addTag('oauth2_server_introspection_type_hint');
         $container->setParameter('oauth2_server.endpoint.token_introspection.path', $config['path']);
         $container->setParameter('oauth2_server.endpoint.token_introspection.host', $config['host']);
 
-        $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../../Resources/config/endpoint/token_introspection'));
+        $loader = new PhpFileLoader($container, new FileLocator(
+            __DIR__ . '/../../../Resources/config/endpoint/token_introspection'
+        ));
         $loader->load('introspection.php');
     }
 
     public function getNodeDefinition(ArrayNodeDefinition $node, ArrayNodeDefinition $rootNode): void
     {
-        if (!class_exists(TokenIntrospectionEndpoint::class)) {
+        if (! class_exists(TokenIntrospectionEndpoint::class)) {
             return;
         }
+        $name = $this->name();
         $rootNode->validate()
-            ->ifTrue(function ($config) {
-                return true === $config['endpoint'][$this->name()]['enabled'] && (!isset($config['resource_server']['repository']) || null === $config['resource_server']['repository']);
+            ->ifTrue(static function ($config) use ($name): bool {
+                return $config['endpoint'][$name]['enabled'] === true && (! isset($config['resource_server']['repository']) || $config['resource_server']['repository'] === null);
             })
             ->thenInvalid('The resource server repository must be set when the introspection endpoint is enabled')
             ->end()
@@ -83,7 +77,7 @@ class TokenIntrospectionEndpointSource implements Component
 
     public function build(ContainerBuilder $container): void
     {
-        if (!class_exists(TokenIntrospectionEndpoint::class)) {
+        if (! class_exists(TokenIntrospectionEndpoint::class)) {
             return;
         }
         $container->addCompilerPass(new TokenTypeHintCompilerPass());

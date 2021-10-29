@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\ServerBundle\Component\OpenIdConnect;
 
 use OAuth2Framework\ServerBundle\Component\Component;
@@ -28,7 +19,7 @@ class PairwiseSubjectSource implements Component
     public function load(array $configs, ContainerBuilder $container): void
     {
         $config = $configs['openid_connect']['pairwise_subject'];
-        if (!$config['enabled']) {
+        if (! $config['enabled']) {
             return;
         }
 
@@ -41,8 +32,8 @@ class PairwiseSubjectSource implements Component
             ->arrayNode($this->name())
             ->canBeEnabled()
             ->validate()
-            ->ifTrue(function ($config) {
-                return true === $config['enabled'] && null === $config['service'];
+            ->ifTrue(static function ($config): bool {
+                return $config['enabled'] === true && $config['service'] === null;
             })
             ->thenInvalid('The pairwise subject service must be set.')
             ->end()

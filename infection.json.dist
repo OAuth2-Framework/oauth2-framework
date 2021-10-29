@@ -3,11 +3,6 @@
     "source": {
         "directories": [
             "src"
-        ],
-        "exclude": [
-            "Component\/*\/*\/Tests",
-            "Component\/*\/Tests",
-            "Bundle\/*\/Tests"
         ]
     },
     "logs": {

@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\Tests\Component\ClientAuthentication;
 
 use OAuth2Framework\Component\ClientAuthentication\AuthenticationMethod;
@@ -29,9 +20,6 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 /**
- * @group TokenEndpoint
- * @group ClientAuthenticationMiddleware
- *
  * @internal
  */
 final class ClientAuthenticationMiddlewareTest extends TestCase
@@ -41,11 +29,12 @@ final class ClientAuthenticationMiddlewareTest extends TestCase
     /**
      * @test
      */
-    public function noClientIsFoundInTheRequest()
+    public function noClientIsFoundInTheRequest(): void
     {
         $response = $this->prophesize(ResponseInterface::class);
         $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getHeader('Authorization')->willReturn([])->shouldBeCalled();
+        $request->getHeader('Authorization')
+            ->willReturn([])->shouldBeCalled();
         $handler = $this->prophesize(RequestHandlerInterface::class);
         $clientRepository = $this->prophesize(ClientRepository::class);
         $handler->handle(Argument::type(ServerRequestInterface::class))
@@ -53,19 +42,19 @@ final class ClientAuthenticationMiddlewareTest extends TestCase
             ->willReturn($response->reveal())
         ;
 
-        $this->getClientAuthenticationMiddleware($clientRepository->reveal())->process($request->reveal(), $handler->reveal());
+        $this->getClientAuthenticationMiddleware($clientRepository->reveal())
+            ->process($request->reveal(), $handler->reveal())
+        ;
     }
 
     /**
      * @test
      */
-    public function aClientIdIsSetButTheClientDoesNotExist()
+    public function aClientIdIsSetButTheClientDoesNotExist(): void
     {
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getHeader('Authorization')
-            ->willReturn([
-                'Basic '.base64_encode('FOO:BAR'),
-            ])
+            ->willReturn(['Basic ' . base64_encode('FOO:BAR')])
             ->shouldBeCalled()
         ;
         $handler = $this->prophesize(RequestHandlerInterface::class);
@@ -76,11 +65,13 @@ final class ClientAuthenticationMiddlewareTest extends TestCase
         ;
 
         try {
-            $this->getClientAuthenticationMiddleware($clientRepository->reveal())->process($request->reveal(), $handler->reveal());
+            $this->getClientAuthenticationMiddleware($clientRepository->reveal())
+                ->process($request->reveal(), $handler->reveal())
+            ;
             static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2Error $e) {
-            static::assertEquals(401, $e->getCode());
-            static::assertEquals([
+            static::assertSame(401, $e->getCode());
+            static::assertSame([
                 'error' => 'invalid_client',
                 'error_description' => 'Client authentication failed.',
             ], $e->getData());
@@ -90,19 +81,25 @@ final class ClientAuthenticationMiddlewareTest extends TestCase
     /**
      * @test
      */
-    public function aClientIdIsSetButTheClientIsDeleted()
+    public function aClientIdIsSetButTheClientIsDeleted(): void
     {
         $client = $this->prophesize(Client::class);
-        $client->isPublic()->willReturn(false);
-        $client->getPublicId()->willReturn(new ClientId('FOO'));
-        $client->getClientId()->willReturn(new ClientId('FOO'));
-        $client->isDeleted()->willReturn(true);
+        $client->isPublic()
+            ->willReturn(false)
+        ;
+        $client->getPublicId()
+            ->willReturn(new ClientId('FOO'))
+        ;
+        $client->getClientId()
+            ->willReturn(new ClientId('FOO'))
+        ;
+        $client->isDeleted()
+            ->willReturn(true)
+        ;
 
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getHeader('Authorization')
-            ->willReturn([
-                'Basic '.base64_encode('FOO:BAR'),
-            ])
+            ->willReturn(['Basic ' . base64_encode('FOO:BAR')])
             ->shouldBeCalled()
         ;
         $handler = $this->prophesize(RequestHandlerInterface::class);
@@ -113,11 +110,13 @@ final class ClientAuthenticationMiddlewareTest extends TestCase
         ;
 
         try {
-            $this->getClientAuthenticationMiddleware($clientRepository->reveal())->process($request->reveal(), $handler->reveal());
+            $this->getClientAuthenticationMiddleware($clientRepository->reveal())
+                ->process($request->reveal(), $handler->reveal())
+            ;
             static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2Error $e) {
-            static::assertEquals(401, $e->getCode());
-            static::assertEquals([
+            static::assertSame(401, $e->getCode());
+            static::assertSame([
                 'error' => 'invalid_client',
                 'error_description' => 'Client authentication failed.',
             ], $e->getData());
@@ -127,24 +126,40 @@ final class ClientAuthenticationMiddlewareTest extends TestCase
     /**
      * @test
      */
-    public function aClientIdIsSetButTheClientCredentialsExpired()
+    public function aClientIdIsSetButTheClientCredentialsExpired(): void
     {
         $client = $this->prophesize(Client::class);
-        $client->isPublic()->willReturn(false);
-        $client->getPublicId()->willReturn(new ClientId('FOO'));
-        $client->getClientId()->willReturn(new ClientId('FOO'));
-        $client->get('token_endpoint_auth_method')->willReturn('client_secret_basic');
-        $client->getTokenEndpointAuthenticationMethod()->willReturn('client_secret_basic');
-        $client->isDeleted()->willReturn(false);
-        $client->has('client_secret')->willReturn(false);
-        $client->get('client_secret')->willReturn('BAR');
-        $client->areClientCredentialsExpired()->willReturn(true);
+        $client->isPublic()
+            ->willReturn(false)
+        ;
+        $client->getPublicId()
+            ->willReturn(new ClientId('FOO'))
+        ;
+        $client->getClientId()
+            ->willReturn(new ClientId('FOO'))
+        ;
+        $client->get('token_endpoint_auth_method')
+            ->willReturn('client_secret_basic')
+        ;
+        $client->getTokenEndpointAuthenticationMethod()
+            ->willReturn('client_secret_basic')
+        ;
+        $client->isDeleted()
+            ->willReturn(false)
+        ;
+        $client->has('client_secret')
+            ->willReturn(false)
+        ;
+        $client->get('client_secret')
+            ->willReturn('BAR')
+        ;
+        $client->areClientCredentialsExpired()
+            ->willReturn(true)
+        ;
 
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getHeader('Authorization')
-            ->willReturn([
-                'Basic '.base64_encode('FOO:BAR'),
-            ])
+            ->willReturn(['Basic ' . base64_encode('FOO:BAR')])
             ->shouldBeCalled()
         ;
         $handler = $this->prophesize(RequestHandlerInterface::class);
@@ -155,11 +170,13 @@ final class ClientAuthenticationMiddlewareTest extends TestCase
         ;
 
         try {
-            $this->getClientAuthenticationMiddleware($clientRepository->reveal())->process($request->reveal(), $handler->reveal());
+            $this->getClientAuthenticationMiddleware($clientRepository->reveal())
+                ->process($request->reveal(), $handler->reveal())
+            ;
             static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2Error $e) {
-            static::assertEquals(401, $e->getCode());
-            static::assertEquals([
+            static::assertSame(401, $e->getCode());
+            static::assertSame([
                 'error' => 'invalid_client',
                 'error_description' => 'Client credentials expired.',
             ], $e->getData());
@@ -169,23 +186,37 @@ final class ClientAuthenticationMiddlewareTest extends TestCase
     /**
      * @test
      */
-    public function aClientIdIsSetButTheAuthenticationMethodIsNotSupportedByTheClient()
+    public function aClientIdIsSetButTheAuthenticationMethodIsNotSupportedByTheClient(): void
     {
         $client = $this->prophesize(Client::class);
-        $client->isPublic()->willReturn(false);
-        $client->getPublicId()->willReturn(new ClientId('FOO'));
-        $client->getClientId()->willReturn(new ClientId('FOO'));
-        $client->has('token_endpoint_auth_method')->willReturn(true);
-        $client->get('token_endpoint_auth_method')->willReturn('none');
-        $client->getTokenEndpointAuthenticationMethod()->willReturn('none');
-        $client->isDeleted()->willReturn(false);
-        $client->areClientCredentialsExpired()->willReturn(false);
+        $client->isPublic()
+            ->willReturn(false)
+        ;
+        $client->getPublicId()
+            ->willReturn(new ClientId('FOO'))
+        ;
+        $client->getClientId()
+            ->willReturn(new ClientId('FOO'))
+        ;
+        $client->has('token_endpoint_auth_method')
+            ->willReturn(true)
+        ;
+        $client->get('token_endpoint_auth_method')
+            ->willReturn('none')
+        ;
+        $client->getTokenEndpointAuthenticationMethod()
+            ->willReturn('none')
+        ;
+        $client->isDeleted()
+            ->willReturn(false)
+        ;
+        $client->areClientCredentialsExpired()
+            ->willReturn(false)
+        ;
 
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getHeader('Authorization')
-            ->willReturn([
-                'Basic '.base64_encode('FOO:BAR'),
-            ])
+            ->willReturn(['Basic ' . base64_encode('FOO:BAR')])
             ->shouldBeCalled()
         ;
         $handler = $this->prophesize(RequestHandlerInterface::class);
@@ -196,11 +227,13 @@ final class ClientAuthenticationMiddlewareTest extends TestCase
         ;
 
         try {
-            $this->getClientAuthenticationMiddleware($clientRepository->reveal())->process($request->reveal(), $handler->reveal());
+            $this->getClientAuthenticationMiddleware($clientRepository->reveal())
+                ->process($request->reveal(), $handler->reveal())
+            ;
             static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2Error $e) {
-            static::assertEquals(401, $e->getCode());
-            static::assertEquals([
+            static::assertSame(401, $e->getCode());
+            static::assertSame([
                 'error' => 'invalid_client',
                 'error_description' => 'Client authentication failed.',
             ], $e->getData());
@@ -210,25 +243,43 @@ final class ClientAuthenticationMiddlewareTest extends TestCase
     /**
      * @test
      */
-    public function aClientIdIsSetButTheClientIsNotAuthenticated()
+    public function aClientIdIsSetButTheClientIsNotAuthenticated(): void
     {
         $client = $this->prophesize(Client::class);
-        $client->isPublic()->willReturn(false);
-        $client->getPublicId()->willReturn(new ClientId('FOO'));
-        $client->getClientId()->willReturn(new ClientId('FOO'));
-        $client->has('token_endpoint_auth_method')->willReturn(true);
-        $client->get('token_endpoint_auth_method')->willReturn('client_secret_basic');
-        $client->getTokenEndpointAuthenticationMethod()->willReturn('client_secret_basic');
-        $client->has('client_secret')->willReturn(true);
-        $client->get('client_secret')->willReturn('BAR');
-        $client->isDeleted()->willReturn(false);
-        $client->areClientCredentialsExpired()->willReturn(false);
+        $client->isPublic()
+            ->willReturn(false)
+        ;
+        $client->getPublicId()
+            ->willReturn(new ClientId('FOO'))
+        ;
+        $client->getClientId()
+            ->willReturn(new ClientId('FOO'))
+        ;
+        $client->has('token_endpoint_auth_method')
+            ->willReturn(true)
+        ;
+        $client->get('token_endpoint_auth_method')
+            ->willReturn('client_secret_basic')
+        ;
+        $client->getTokenEndpointAuthenticationMethod()
+            ->willReturn('client_secret_basic')
+        ;
+        $client->has('client_secret')
+            ->willReturn(true)
+        ;
+        $client->get('client_secret')
+            ->willReturn('BAR')
+        ;
+        $client->isDeleted()
+            ->willReturn(false)
+        ;
+        $client->areClientCredentialsExpired()
+            ->willReturn(false)
+        ;
 
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getHeader('Authorization')
-            ->willReturn([
-                'Basic '.base64_encode('FOO:BAD_SECRET'),
-            ])
+            ->willReturn(['Basic ' . base64_encode('FOO:BAD_SECRET')])
             ->shouldBeCalled()
         ;
         $handler = $this->prophesize(RequestHandlerInterface::class);
@@ -239,11 +290,13 @@ final class ClientAuthenticationMiddlewareTest extends TestCase
         ;
 
         try {
-            $this->getClientAuthenticationMiddleware($clientRepository->reveal())->process($request->reveal(), $handler->reveal());
+            $this->getClientAuthenticationMiddleware($clientRepository->reveal())
+                ->process($request->reveal(), $handler->reveal())
+            ;
             static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2Error $e) {
-            static::assertEquals(401, $e->getCode());
-            static::assertEquals([
+            static::assertSame(401, $e->getCode());
+            static::assertSame([
                 'error' => 'invalid_client',
                 'error_description' => 'Client authentication failed.',
             ], $e->getData());
@@ -253,31 +306,60 @@ final class ClientAuthenticationMiddlewareTest extends TestCase
     /**
      * @test
      */
-    public function aClientIsFullyAuthenticated()
+    public function aClientIsFullyAuthenticated(): void
     {
         $client = $this->prophesize(Client::class);
-        $client->isPublic()->willReturn(false);
-        $client->getPublicId()->willReturn(new ClientId('FOO'));
-        $client->getClientId()->willReturn(new ClientId('FOO'));
-        $client->has('token_endpoint_auth_method')->willReturn(true);
-        $client->get('token_endpoint_auth_method')->willReturn('client_secret_basic');
-        $client->getTokenEndpointAuthenticationMethod()->willReturn('client_secret_basic');
-        $client->has('client_secret')->willReturn(true);
-        $client->get('client_secret')->willReturn('BAR');
-        $client->isDeleted()->willReturn(false);
-        $client->areClientCredentialsExpired()->willReturn(false);
+        $client->isPublic()
+            ->willReturn(false)
+        ;
+        $client->getPublicId()
+            ->willReturn(new ClientId('FOO'))
+        ;
+        $client->getClientId()
+            ->willReturn(new ClientId('FOO'))
+        ;
+        $client->has('token_endpoint_auth_method')
+            ->willReturn(true)
+        ;
+        $client->get('token_endpoint_auth_method')
+            ->willReturn('client_secret_basic')
+        ;
+        $client->getTokenEndpointAuthenticationMethod()
+            ->willReturn('client_secret_basic')
+        ;
+        $client->has('client_secret')
+            ->willReturn(true)
+        ;
+        $client->get('client_secret')
+            ->willReturn('BAR')
+        ;
+        $client->isDeleted()
+            ->willReturn(false)
+        ;
+        $client->areClientCredentialsExpired()
+            ->willReturn(false)
+        ;
 
         $response = $this->prophesize(ResponseInterface::class);
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getHeader('Authorization')
-            ->willReturn([
-                'Basic '.base64_encode('FOO:BAR'),
-            ])
+            ->willReturn(['Basic ' . base64_encode('FOO:BAR')])
             ->shouldBeCalled()
         ;
-        $request->withAttribute('client', $client)->shouldBeCalled()->willReturn($request->reveal());
-        $request->withAttribute('client_authentication_method', Argument::type(AuthenticationMethod::class))->shouldBeCalled()->willReturn($request->reveal());
-        $request->withAttribute('client_credentials', 'BAR')->shouldBeCalled()->willReturn($request->reveal());
+        $request->withAttribute('client', $client)
+            ->shouldBeCalled()
+            ->willReturn($request->reveal())
+        ;
+        $request->withAttribute(
+            'client_authentication_method',
+            Argument::type(AuthenticationMethod::class)
+        )->shouldBeCalled()
+            ->willReturn($request->reveal())
+        ;
+        $request->withAttribute('client_credentials', 'BAR')
+            ->shouldBeCalled()
+            ->willReturn($request->reveal())
+        ;
         $handler = $this->prophesize(RequestHandlerInterface::class);
         $clientRepository = $this->prophesize(ClientRepository::class);
         $clientRepository->find(Argument::type(ClientId::class))->willReturn($client)->shouldBeCalled();
@@ -286,17 +368,17 @@ final class ClientAuthenticationMiddlewareTest extends TestCase
             ->willReturn($response->reveal())
         ;
 
-        $this->getClientAuthenticationMiddleware($clientRepository->reveal())->process($request->reveal(), $handler->reveal());
+        $this->getClientAuthenticationMiddleware($clientRepository->reveal())
+            ->process($request->reveal(), $handler->reveal())
+        ;
     }
 
-    private function getClientAuthenticationMiddleware(ClientRepository $clientRepository): ClientAuthenticationMiddleware
-    {
+    private function getClientAuthenticationMiddleware(
+        ClientRepository $clientRepository
+    ): ClientAuthenticationMiddleware {
         $authenticationMethodManager = new AuthenticationMethodManager();
         $authenticationMethodManager->add(new ClientSecretBasic('Real'));
 
-        return new ClientAuthenticationMiddleware(
-            $clientRepository,
-            $authenticationMethodManager
-        );
+        return new ClientAuthenticationMiddleware($clientRepository, $authenticationMethodManager);
     }
 }

@@ -2,25 +2,14 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace OAuth2Framework\Component\WebFingerEndpoint;
 
-class Link implements \JsonSerializable
+use function count;
+use function is_array;
+use JsonSerializable;
+
+class Link implements JsonSerializable
 {
-    private string $rel;
-
-    private ?string $type;
-
-    private ?string $href;
-
     private array $titles;
 
     private array $properties;
@@ -29,11 +18,13 @@ class Link implements \JsonSerializable
      * @param string[] $titles
      * @param mixed[]  $properties
      */
-    public function __construct(string $rel, ?string $type, ?string $href, array $titles, array $properties)
-    {
-        $this->rel = $rel;
-        $this->type = $type;
-        $this->href = $href;
+    public function __construct(
+        private string $rel,
+        private ?string $type,
+        private ?string $href,
+        array $titles,
+        array $properties
+    ) {
         $this->titles = $titles;
         $this->properties = $properties;
     }
@@ -48,7 +39,7 @@ class Link implements \JsonSerializable
         return $this->type;
     }
 
-    public function getHref(): ?string
+    public function getHservice(): ?string
     {
         return $this->href;
     }
@@ -90,7 +81,7 @@ class Link implements \JsonSerializable
         ];
 
         foreach ($result as $k => $v) {
-            if (null === $v || (\is_array($v) && 0 === \count($v))) {
+            if ($v === null || (is_array($v) && count($v) === 0)) {
                 unset($result[$k]);
             }
         }
