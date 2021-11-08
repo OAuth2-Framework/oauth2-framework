@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\Tests\Component\TokenRevocationEndpoint;
 
 use DateTimeImmutable;
+use Nyholm\Psr7\Factory\Psr17Factory;
 use Nyholm\Psr7\ServerRequest;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
 use OAuth2Framework\Component\Core\Client\ClientId;
@@ -47,7 +48,7 @@ final class TokenRevocationGetEndpointTest extends OAuth2TestCase
             ->withAttribute('client', $this->getClient())
         ;
 
-        $response = $endpoint->process($request, new TerminalRequestHandler());
+        $response = $endpoint->process($request, new TerminalRequestHandler(new Psr17Factory()));
 
         static::assertSame(200, $response->getStatusCode());
         $response->getBody()
@@ -83,7 +84,7 @@ final class TokenRevocationGetEndpointTest extends OAuth2TestCase
             ->withAttribute('client', $this->getClient())
         ;
 
-        $response = $endpoint->process($request, new TerminalRequestHandler());
+        $response = $endpoint->process($request, new TerminalRequestHandler(new Psr17Factory()));
 
         static::assertSame(200, $response->getStatusCode());
         $response->getBody()
@@ -119,7 +120,7 @@ final class TokenRevocationGetEndpointTest extends OAuth2TestCase
             ->withAttribute('client', $this->getClient())
         ;
 
-        $response = $endpoint->process($request, new TerminalRequestHandler());
+        $response = $endpoint->process($request, new TerminalRequestHandler(new Psr17Factory()));
 
         static::assertSame(200, $response->getStatusCode());
         $response->getBody()
@@ -143,7 +144,7 @@ final class TokenRevocationGetEndpointTest extends OAuth2TestCase
             ->withAttribute('client', $this->getClient())
         ;
 
-        $response = $endpoint->process($request, new TerminalRequestHandler());
+        $response = $endpoint->process($request, new TerminalRequestHandler(new Psr17Factory()));
 
         static::assertSame(200, $response->getStatusCode());
         $response->getBody()
@@ -167,7 +168,7 @@ final class TokenRevocationGetEndpointTest extends OAuth2TestCase
             ->withAttribute('client', $this->getClient())
         ;
 
-        $response = $endpoint->process($request, new TerminalRequestHandler());
+        $response = $endpoint->process($request, new TerminalRequestHandler(new Psr17Factory()));
 
         static::assertSame(200, $response->getStatusCode());
         $response->getBody()
@@ -191,7 +192,7 @@ final class TokenRevocationGetEndpointTest extends OAuth2TestCase
             ->withAttribute('client', $this->getClient())
         ;
 
-        $response = $endpoint->process($request, new TerminalRequestHandler());
+        $response = $endpoint->process($request, new TerminalRequestHandler(new Psr17Factory()));
 
         static::assertSame(400, $response->getStatusCode());
         $response->getBody()

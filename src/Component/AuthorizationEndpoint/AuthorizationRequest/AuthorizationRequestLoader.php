@@ -19,12 +19,12 @@ use Jose\Component\KeyManagement\JKUFactory;
 use Jose\Component\Signature\JWS;
 use Jose\Component\Signature\JWSVerifier;
 use Jose\Component\Signature\Serializer\CompactSerializer;
-use Nyholm\Psr7\Factory\Psr17Factory;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\Client\ClientRepository;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestFactoryInterface;
 use Throwable;
 
 class AuthorizationRequestLoader
@@ -48,6 +48,8 @@ class AuthorizationRequestLoader
     private ?JWELoader $jweLoader = null;
 
     private ?JKUFactory $jkuFactory = null;
+
+    private ?RequestFactoryInterface $requestFactory = null;
 
     public function __construct(
         private ClientRepository $clientRepository
@@ -109,11 +111,13 @@ class AuthorizationRequestLoader
 
     public function enableRequestObjectReferenceSupport(
         ClientInterface $client,
+        RequestFactoryInterface $requestFactory,
         bool $requireRequestUriRegistration
     ): void {
         Assertion::true($this->isRequestObjectSupportEnabled(), 'Request object support must be enabled first.');
         $this->requestObjectReferenceAllowed = true;
         $this->requireRequestUriRegistration = $requireRequestUriRegistration;
+        $this->requestFactory = $requestFactory;
         $this->client = $client;
     }
 
@@ -310,7 +314,7 @@ class AuthorizationRequestLoader
 
     private function downloadContent(string $url): string
     {
-        $request = (new Psr17Factory())->createRequest('GET', $url);
+        $request = $this->requestFactory->createRequest('GET', $url);
         $response = $this->client->sendRequest($request);
         Assertion::eq(200, $response->getStatusCode(), 'Unable to load the request object');
 

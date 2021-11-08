@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Tests\Component\TokenRevocationEndpoint;
 
+use Nyholm\Psr7\Factory\Psr17Factory;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\Middleware\TerminalRequestHandler;
@@ -38,7 +39,7 @@ final class TokenRevocationPostEndpointTest extends OAuth2TestCase
         ]);
         $request = $request->withAttribute('client', $this->getClient());
 
-        $response = $endpoint->process($request, new TerminalRequestHandler());
+        $response = $endpoint->process($request, new TerminalRequestHandler(new Psr17Factory()));
 
         static::assertSame(200, $response->getStatusCode());
         $response->getBody()
@@ -60,7 +61,7 @@ final class TokenRevocationPostEndpointTest extends OAuth2TestCase
         ]);
         $request = $request->withAttribute('client', $this->getClient());
 
-        $response = $endpoint->process($request, new TerminalRequestHandler());
+        $response = $endpoint->process($request, new TerminalRequestHandler(new Psr17Factory()));
 
         static::assertSame(200, $response->getStatusCode());
         $response->getBody()
@@ -82,7 +83,7 @@ final class TokenRevocationPostEndpointTest extends OAuth2TestCase
         ]);
         $request = $request->withAttribute('client', $this->getClient());
 
-        $response = $endpoint->process($request, new TerminalRequestHandler());
+        $response = $endpoint->process($request, new TerminalRequestHandler(new Psr17Factory()));
 
         static::assertSame(400, $response->getStatusCode());
         $response->getBody()

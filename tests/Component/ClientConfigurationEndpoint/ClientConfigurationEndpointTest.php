@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Tests\Component\ClientConfigurationEndpoint;
 
+use Nyholm\Psr7\Factory\Psr17Factory;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\Middleware\TerminalRequestHandler;
@@ -35,7 +36,7 @@ final class ClientConfigurationEndpointTest extends OAuth2TestCase
         $request = $request->withAttribute('client', $client);
 
         $response = $this->getClientConfigurationEndpoint()
-            ->process($request, new TerminalRequestHandler())
+            ->process($request, new TerminalRequestHandler(new Psr17Factory()))
         ;
         $response->getBody()
             ->rewind()
@@ -71,7 +72,7 @@ final class ClientConfigurationEndpointTest extends OAuth2TestCase
         $request = $request->withAttribute('client', $client);
 
         $response = $this->getClientConfigurationEndpoint()
-            ->process($request, new TerminalRequestHandler())
+            ->process($request, new TerminalRequestHandler(new Psr17Factory()))
         ;
         $response->getBody()
             ->rewind()

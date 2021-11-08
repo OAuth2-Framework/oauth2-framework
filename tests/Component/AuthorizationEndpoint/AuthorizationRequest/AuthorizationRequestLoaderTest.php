@@ -349,7 +349,11 @@ final class AuthorizationRequestLoaderTest extends OAuth2TestCase
                 $this->getJwsVerifier(),
                 $this->getClaimCheckerManager()
             );
-            $this->authorizationRequestLoader->enableRequestObjectReferenceSupport($this->getHttpClient(), true);
+            $this->authorizationRequestLoader->enableRequestObjectReferenceSupport(
+                $this->getHttpClient(),
+                new Psr17Factory(),
+                true
+            );
         }
 
         return $this->authorizationRequestLoader;

@@ -12,6 +12,7 @@ use OAuth2Framework\Component\AuthorizationEndpoint\Rule\SectorIdentifierUriRule
  * of the MIT license.  See the LICENSE file for details.
  */
 
+use Psr\Http\Message\RequestFactoryInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 
@@ -23,6 +24,6 @@ return static function (ContainerConfigurator $container): void {
     ;
 
     $container->set(SectorIdentifierUriRule::class)
-        ->args([service('oauth2_server.http_client')])
+        ->args([service(RequestFactoryInterface::class), service('oauth2_server.http_client')])
     ;
 };

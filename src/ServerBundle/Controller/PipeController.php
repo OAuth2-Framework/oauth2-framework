@@ -30,7 +30,7 @@ class PipeController
         );
         $psrRequest = $psrFactory->createRequest($symfonyRequest);
 
-        $psrResponse = $this->pipe->process($psrRequest, new TerminalRequestHandler());
+        $psrResponse = $this->pipe->process($psrRequest, new TerminalRequestHandler(new Psr17Factory()));
 
         return $httpFoundationFactory->createResponse($psrResponse);
     }

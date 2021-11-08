@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Tests\Component\ClientRegistrationEndpoint;
 
+use Nyholm\Psr7\Factory\Psr17Factory;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use OAuth2Framework\Component\Core\Middleware\TerminalRequestHandler;
 use OAuth2Framework\Tests\Component\OAuth2TestCase;
@@ -24,7 +25,7 @@ final class InitialAccessTokenMiddlewareTest extends OAuth2TestCase
 
         try {
             $this->getInitialAccessTokenMiddleware()
-                ->process($request, new TerminalRequestHandler())
+                ->process($request, new TerminalRequestHandler(new Psr17Factory()))
             ;
         } catch (OAuth2Error $e) {
             static::assertSame(400, $e->getCode());
@@ -46,7 +47,7 @@ final class InitialAccessTokenMiddlewareTest extends OAuth2TestCase
 
         try {
             $this->getInitialAccessTokenMiddleware()
-                ->process($request, new TerminalRequestHandler())
+                ->process($request, new TerminalRequestHandler(new Psr17Factory()))
             ;
         } catch (OAuth2Error $e) {
             static::assertSame(400, $e->getCode());
@@ -68,7 +69,7 @@ final class InitialAccessTokenMiddlewareTest extends OAuth2TestCase
 
         try {
             $this->getInitialAccessTokenMiddleware()
-                ->process($request, new TerminalRequestHandler())
+                ->process($request, new TerminalRequestHandler(new Psr17Factory()))
             ;
         } catch (OAuth2Error $e) {
             static::assertSame(400, $e->getCode());

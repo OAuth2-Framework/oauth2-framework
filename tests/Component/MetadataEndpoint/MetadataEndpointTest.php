@@ -32,7 +32,7 @@ final class MetadataEndpointTest extends OAuth2TestCase
         $request = $this->buildRequest();
 
         $response = $this->getMetadataEndpoint()
-            ->process($request, new TerminalRequestHandler())
+            ->process($request, new TerminalRequestHandler(new Psr17Factory()))
         ;
         $response->getBody()
             ->rewind()

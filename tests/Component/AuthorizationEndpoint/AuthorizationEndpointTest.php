@@ -59,7 +59,7 @@ final class AuthorizationEndpointTest extends OAuth2TestCase
         ;
 
         $response = $this->getAuthorizationEndpoint()
-            ->process($request, new TerminalRequestHandler())
+            ->process($request, new TerminalRequestHandler(new Psr17Factory()))
         ;
 
         static::assertSame(303, $response->getStatusCode());
@@ -71,7 +71,7 @@ final class AuthorizationEndpointTest extends OAuth2TestCase
         $authorizationRequest->setAttribute('account_has_been_selected', true);
 
         $response = $this->getAuthorizationEndpoint()
-            ->process($request, new TerminalRequestHandler())
+            ->process($request, new TerminalRequestHandler(new Psr17Factory()))
         ;
 
         static::assertSame(303, $response->getStatusCode());
@@ -80,7 +80,7 @@ final class AuthorizationEndpointTest extends OAuth2TestCase
         $authorizationRequest->setAttribute('user_has_been_authenticated', true);
 
         $response = $this->getAuthorizationEndpoint()
-            ->process($request, new TerminalRequestHandler())
+            ->process($request, new TerminalRequestHandler(new Psr17Factory()))
         ;
 
         static::assertSame(303, $response->getStatusCode());
@@ -90,7 +90,7 @@ final class AuthorizationEndpointTest extends OAuth2TestCase
 
         try {
             $this->getAuthorizationEndpoint()
-                ->process($request, new TerminalRequestHandler())
+                ->process($request, new TerminalRequestHandler(new Psr17Factory()))
             ;
         } catch (OAuth2AuthorizationException $exception) {
             static::assertSame('access_denied', $exception->getMessage());

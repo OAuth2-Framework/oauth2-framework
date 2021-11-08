@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Tests\Component\TokenEndpoint;
 
+use Nyholm\Psr7\Factory\Psr17Factory;
 use OAuth2Framework\Component\BearerTokenType\BearerToken;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
@@ -30,7 +31,7 @@ final class TokenEndpointTest extends OAuth2TestCase
 
         try {
             $this->getTokenEndpoint()
-                ->process($request, new TerminalRequestHandler())
+                ->process($request, new TerminalRequestHandler(new Psr17Factory()))
             ;
         } catch (OAuth2Error $e) {
             static::assertSame(401, $e->getCode());
@@ -60,7 +61,7 @@ final class TokenEndpointTest extends OAuth2TestCase
 
         try {
             $this->getTokenEndpoint()
-                ->process($request, new TerminalRequestHandler())
+                ->process($request, new TerminalRequestHandler(new Psr17Factory()))
             ;
         } catch (OAuth2Error $e) {
             static::assertSame(400, $e->getCode());
@@ -95,7 +96,7 @@ final class TokenEndpointTest extends OAuth2TestCase
         ;
 
         $response = $this->getTokenEndpoint()
-            ->process($request, new TerminalRequestHandler())
+            ->process($request, new TerminalRequestHandler(new Psr17Factory()))
         ;
         $response->getBody()
             ->rewind()
