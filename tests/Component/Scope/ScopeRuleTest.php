@@ -10,12 +10,12 @@ use OAuth2Framework\Component\ClientRule\RuleHandler;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Scope\Rule\ScopeRule;
-use PHPUnit\Framework\TestCase;
+use OAuth2Framework\Tests\Component\OAuth2TestCase;
 
 /**
  * @internal
  */
-final class ScopeRuleTest extends TestCase
+final class ScopeRuleTest extends OAuth2TestCase
 {
     /**
      * @inheritdoc}
@@ -34,12 +34,12 @@ final class ScopeRuleTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('The "scope" parameter must be a string.');
-        $clientId = new ClientId('CLIENT_ID');
-        $commandParameters = new DataBag([
+        $clientId = ClientId::create('CLIENT_ID');
+        $commandParameters = DataBag::create([
             'scope' => ['foo'],
         ]);
         $rule = new ScopeRule();
-        $rule->handle($clientId, $commandParameters, new DataBag([]), $this->getCallable());
+        $rule->handle($clientId, $commandParameters, DataBag::create([]), $this->getCallable());
     }
 
     /**
@@ -49,12 +49,12 @@ final class ScopeRuleTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid characters found in the "scope" parameter.');
-        $clientId = new ClientId('CLIENT_ID');
-        $commandParameters = new DataBag([
+        $clientId = ClientId::create('CLIENT_ID');
+        $commandParameters = DataBag::create([
             'scope' => 'coffee, café',
         ]);
         $rule = new ScopeRule();
-        $rule->handle($clientId, $commandParameters, new DataBag([]), $this->getCallable());
+        $rule->handle($clientId, $commandParameters, DataBag::create([]), $this->getCallable());
     }
 
     /**
@@ -62,12 +62,12 @@ final class ScopeRuleTest extends TestCase
      */
     public function theParameterIsValid(): void
     {
-        $clientId = new ClientId('CLIENT_ID');
-        $commandParameters = new DataBag([
+        $clientId = ClientId::create('CLIENT_ID');
+        $commandParameters = DataBag::create([
             'scope' => 'coffee cream',
         ]);
         $rule = new ScopeRule();
-        $validatedParameters = $rule->handle($clientId, $commandParameters, new DataBag([]), $this->getCallable());
+        $validatedParameters = $rule->handle($clientId, $commandParameters, DataBag::create([]), $this->getCallable());
         static::assertTrue($validatedParameters->has('scope'));
         static::assertSame('coffee cream', $validatedParameters->get('scope'));
     }

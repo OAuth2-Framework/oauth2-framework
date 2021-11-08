@@ -13,26 +13,22 @@ use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
-use PHPUnit\Framework\TestCase;
-use Prophecy\PhpUnit\ProphecyTrait;
-use Prophecy\Prophecy\ObjectProphecy;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\StreamInterface;
+use OAuth2Framework\Tests\Component\OAuth2TestCase;
+use OAuth2Framework\Tests\TestBundle\Entity\AccessToken;
 
 /**
  * @internal
  */
-final class BearerTokenTest extends TestCase
+final class BearerTokenTest extends OAuth2TestCase
 {
-    use ProphecyTrait;
-
     /**
      * @test
      */
     public function genericCalls(): void
     {
-        $bearerToken = new BearerToken('TEST');
-        $bearerToken->addTokenFinder(new AuthorizationHeaderTokenFinder());
+        $bearerToken = BearerToken::create('TEST')
+            ->addTokenFinder(AuthorizationHeaderTokenFinder::create())
+        ;
 
         static::assertSame('Bearer', $bearerToken->name());
         static::assertSame('Bearer realm="TEST"', $bearerToken->getScheme());
@@ -44,15 +40,15 @@ final class BearerTokenTest extends TestCase
      */
     public function anAccessTokenInTheAuthorizationHeaderIsFound(): void
     {
-        $bearerToken = new BearerToken('TEST');
-        $bearerToken->addTokenFinder(new AuthorizationHeaderTokenFinder());
-        $request = $this->buildRequest([]);
-        $request->getHeader('AUTHORIZATION')
-            ->willReturn(['Bearer ACCESS_TOKEN_ID'])
+        $bearerToken = BearerToken::create('TEST')
+            ->addTokenFinder(AuthorizationHeaderTokenFinder::create())
         ;
+        $request = $this->buildRequest('GET', [], [
+            'AUTHORIZATION' => 'Bearer ACCESS_TOKEN_ID',
+        ]);
 
         $additionalCredentialValues = [];
-        static::assertSame('ACCESS_TOKEN_ID', $bearerToken->find($request->reveal(), $additionalCredentialValues));
+        static::assertSame('ACCESS_TOKEN_ID', $bearerToken->find($request, $additionalCredentialValues));
     }
 
     /**
@@ -60,15 +56,15 @@ final class BearerTokenTest extends TestCase
      */
     public function noAccessTokenInTheAuthorizationHeaderIsFound(): void
     {
-        $bearerToken = new BearerToken('TEST');
-        $bearerToken->addTokenFinder(new AuthorizationHeaderTokenFinder());
-        $request = $this->buildRequest([]);
-        $request->getHeader('AUTHORIZATION')
-            ->willReturn(['MAC FOO_MAC_TOKEN'])
+        $bearerToken = BearerToken::create('TEST')
+            ->addTokenFinder(AuthorizationHeaderTokenFinder::create())
         ;
+        $request = $this->buildRequest('GET', [], [
+            'AUTHORIZATION' => 'MAC FOO_MAC_TOKEN',
+        ]);
 
         $additionalCredentialValues = [];
-        static::assertNull($bearerToken->find($request->reveal(), $additionalCredentialValues));
+        static::assertNull($bearerToken->find($request, $additionalCredentialValues));
     }
 
     /**
@@ -76,17 +72,15 @@ final class BearerTokenTest extends TestCase
      */
     public function anAccessTokenInTheQueryStringIsFound(): void
     {
-        $bearerToken = new BearerToken('TEST');
-        $bearerToken->addTokenFinder(new QueryStringTokenFinder());
-        $request = $this->buildRequest([]);
-        $request->getQueryParams()
-            ->willReturn([
-                'access_token' => 'ACCESS_TOKEN_ID',
-            ])
+        $bearerToken = BearerToken::create('TEST')
+            ->addTokenFinder(QueryStringTokenFinder::create())
         ;
+        $request = $this->buildRequest('GET', [], [], [
+            'access_token' => 'ACCESS_TOKEN_ID',
+        ]);
 
         $additionalCredentialValues = [];
-        static::assertSame('ACCESS_TOKEN_ID', $bearerToken->find($request->reveal(), $additionalCredentialValues));
+        static::assertSame('ACCESS_TOKEN_ID', $bearerToken->find($request, $additionalCredentialValues));
     }
 
     /**
@@ -94,17 +88,15 @@ final class BearerTokenTest extends TestCase
      */
     public function anAccessTokenInTheRequestBodyIsFound(): void
     {
-        $bearerToken = new BearerToken('TEST');
-        $bearerToken->addTokenFinder(new RequestBodyTokenFinder());
-        $request = $this->buildRequest([]);
-        $request->getParsedBody()
-            ->willReturn([
-                'access_token' => 'ACCESS_TOKEN_ID',
-            ])
+        $bearerToken = BearerToken::create('TEST')
+            ->addTokenFinder(RequestBodyTokenFinder::create())
         ;
+        $request = $this->buildRequest('GET', [
+            'access_token' => 'ACCESS_TOKEN_ID',
+        ]);
 
         $additionalCredentialValues = [];
-        static::assertSame('ACCESS_TOKEN_ID', $bearerToken->find($request->reveal(), $additionalCredentialValues));
+        static::assertSame('ACCESS_TOKEN_ID', $bearerToken->find($request, $additionalCredentialValues));
     }
 
     /**
@@ -112,23 +104,24 @@ final class BearerTokenTest extends TestCase
      */
     public function iFoundAValidAccessToken(): void
     {
-        $bearerToken = new BearerToken('TEST');
-        $bearerToken->addTokenFinder(new AuthorizationHeaderTokenFinder());
+        $bearerToken = BearerToken::create('TEST')
+            ->addTokenFinder(AuthorizationHeaderTokenFinder::create())
+        ;
         $additionalCredentialValues = [];
-        $accessToken = new AccessToken(
-            new AccessTokenId('ACCESS_TOKEN_ID'),
-            new ClientId('CLIENT_ID'),
-            new ClientId('CLIENT_ID'),
+        $accessToken = AccessToken::create(
+            AccessTokenId::create('ACCESS_TOKEN_ID'),
+            ClientId::create('CLIENT_ID'),
+            ClientId::create('CLIENT_ID'),
             new DateTimeImmutable('now'),
-            new DataBag([
+            DataBag::create([
                 'token_type' => 'Bearer',
             ]),
-            new DataBag([]),
-            new ResourceServerId('RESOURCE_SERVER_ID')
+            DataBag::create(),
+            ResourceServerId::create('RESOURCE_SERVER_ID')
         );
-        $request = $this->buildRequest([]);
+        $request = $this->buildRequest('GET', []);
 
-        static::assertTrue($bearerToken->isRequestValid($accessToken, $request->reveal(), $additionalCredentialValues));
+        static::assertTrue($bearerToken->isRequestValid($accessToken, $request, $additionalCredentialValues));
     }
 
     /**
@@ -136,47 +129,24 @@ final class BearerTokenTest extends TestCase
      */
     public function iFoundAnInvalidAccessToken(): void
     {
-        $bearerToken = new BearerToken('TEST');
-        $bearerToken->addTokenFinder(new AuthorizationHeaderTokenFinder());
+        $bearerToken = BearerToken::create('TEST')
+            ->addTokenFinder(AuthorizationHeaderTokenFinder::create())
+        ;
         $additionalCredentialValues = [];
-        $accessToken = new AccessToken(
-            new AccessTokenId('ACCESS_TOKEN_ID'),
-            new ClientId('CLIENT_ID'),
-            new ClientId('CLIENT_ID'),
+        $accessToken = AccessToken::create(
+            AccessTokenId::create('ACCESS_TOKEN_ID'),
+            ClientId::create('CLIENT_ID'),
+            ClientId::create('CLIENT_ID'),
             new DateTimeImmutable('now'),
-            new DataBag([
+            DataBag::create([
                 'token_type' => 'MAC',
             ]),
-            new DataBag([]),
-            new ResourceServerId('RESOURCE_SERVER_ID')
+            DataBag::create(),
+            ResourceServerId::create('RESOURCE_SERVER_ID')
         );
-        $request = $this->prophesize(ServerRequestInterface::class);
 
-        static::assertFalse(
-            $bearerToken->isRequestValid($accessToken, $request->reveal(), $additionalCredentialValues)
-        );
-    }
+        $request = $this->buildRequest();
 
-    private function buildRequest(array $data): ObjectProphecy
-    {
-        $body = $this->prophesize(StreamInterface::class);
-        $body->getContents()
-            ->willReturn(http_build_query($data))
-        ;
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->hasHeader('Content-Type')
-            ->willReturn(true)
-        ;
-        $request->getHeader('Content-Type')
-            ->willReturn(['application/x-www-form-urlencoded'])
-        ;
-        $request->getBody()
-            ->willReturn($body->reveal())
-        ;
-        $request->getParsedBody()
-            ->willReturn([])
-        ;
-
-        return $request;
+        static::assertFalse($bearerToken->isRequestValid($accessToken, $request, $additionalCredentialValues));
     }
 }

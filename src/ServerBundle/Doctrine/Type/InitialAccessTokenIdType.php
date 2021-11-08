@@ -34,7 +34,7 @@ final class InitialAccessTokenIdType extends Type
             return $value;
         }
 
-        return new InitialAccessTokenId($value);
+        return InitialAccessTokenId::create($value);
     }
 
     /**

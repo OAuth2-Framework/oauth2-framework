@@ -8,7 +8,7 @@ use function count;
 use function is_array;
 use JsonSerializable;
 
-class Link implements JsonSerializable
+final class Link implements JsonSerializable
 {
     private array $titles;
 
@@ -29,6 +29,20 @@ class Link implements JsonSerializable
         $this->properties = $properties;
     }
 
+    /**
+     * @param string[] $titles
+     * @param mixed[]  $properties
+     */
+    public static function create(
+        string $rel,
+        ?string $type,
+        ?string $href,
+        array $titles,
+        array $properties
+    ): self {
+        return new self($rel, $type, $href, $titles, $properties);
+    }
+
     public function getRel(): string
     {
         return $this->rel;
@@ -39,7 +53,7 @@ class Link implements JsonSerializable
         return $this->type;
     }
 
-    public function getHservice(): ?string
+    public function getHref(): ?string
     {
         return $this->href;
     }
@@ -52,9 +66,11 @@ class Link implements JsonSerializable
         return $this->titles;
     }
 
-    public function addTitle(string $tag, string $title): void
+    public function addTitle(string $tag, string $title): self
     {
         $this->titles[$tag] = $title;
+
+        return $this;
     }
 
     /**
@@ -65,9 +81,11 @@ class Link implements JsonSerializable
         return $this->properties;
     }
 
-    public function addProperty(string $key, string $property): void
+    public function addProperty(string $key, string $property): self
     {
         $this->properties[$key] = $property;
+
+        return $this;
     }
 
     public function jsonSerialize(): array

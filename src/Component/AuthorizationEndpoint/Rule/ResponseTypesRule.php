@@ -12,6 +12,11 @@ use OAuth2Framework\Component\Core\DataBag\DataBag;
 
 final class ResponseTypesRule implements Rule
 {
+    public static function create(): self
+    {
+        return new self();
+    }
+
     public function handle(
         ClientId $clientId,
         DataBag $commandParameters,

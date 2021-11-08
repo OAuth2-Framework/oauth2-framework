@@ -9,12 +9,12 @@ use OAuth2Framework\Component\ClientRule\CommonParametersRule;
 use OAuth2Framework\Component\ClientRule\RuleHandler;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
-use PHPUnit\Framework\TestCase;
+use OAuth2Framework\Tests\Component\OAuth2TestCase;
 
 /**
  * @internal
  */
-final class CommonParametersRuleTest extends TestCase
+final class CommonParametersRuleTest extends OAuth2TestCase
 {
     /**
      * @test
@@ -23,13 +23,13 @@ final class CommonParametersRuleTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('The parameter with key "client_uri" is not a valid URL.');
-        $clientId = new ClientId('CLIENT_ID');
-        $commandParameters = new DataBag([
+        $clientId = ClientId::create('CLIENT_ID');
+        $commandParameters = DataBag::create([
             'client_name' => 'Client name',
             'client_uri' => 'urn:foo:bar:OK',
         ]);
         $rule = new CommonParametersRule();
-        $rule->handle($clientId, $commandParameters, new DataBag([]), $this->getCallable());
+        $rule->handle($clientId, $commandParameters, DataBag::create([]), $this->getCallable());
     }
 
     /**
@@ -37,8 +37,8 @@ final class CommonParametersRuleTest extends TestCase
      */
     public function commonParameterRule(): void
     {
-        $clientId = new ClientId('CLIENT_ID');
-        $commandParameters = new DataBag([
+        $clientId = ClientId::create('CLIENT_ID');
+        $commandParameters = DataBag::create([
             'client_name' => 'Client name',
             'client_name#fr' => 'Nom du client',
             'client_uri' => 'http://localhost/information',
@@ -47,7 +47,7 @@ final class CommonParametersRuleTest extends TestCase
             'policy_uri' => 'http://localhost/policy',
         ]);
         $rule = new CommonParametersRule();
-        $validatedParameters = $rule->handle($clientId, $commandParameters, new DataBag([]), $this->getCallable());
+        $validatedParameters = $rule->handle($clientId, $commandParameters, DataBag::create([]), $this->getCallable());
 
         static::assertTrue($validatedParameters->has('client_name'));
         static::assertSame('Client name', $validatedParameters->get('client_name'));

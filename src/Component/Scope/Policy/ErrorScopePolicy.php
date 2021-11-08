@@ -4,11 +4,16 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Scope\Policy;
 
+use InvalidArgumentException;
 use OAuth2Framework\Component\Core\Client\Client;
-use RuntimeException;
 
 final class ErrorScopePolicy implements ScopePolicy
 {
+    public static function create(): self
+    {
+        return new self();
+    }
+
     public function name(): string
     {
         return 'error';
@@ -16,6 +21,6 @@ final class ErrorScopePolicy implements ScopePolicy
 
     public function applyScopePolicy(string $scope, Client $client): string
     {
-        throw new RuntimeException('No scope was requested.');
+        throw new InvalidArgumentException('No scope was requested.');
     }
 }

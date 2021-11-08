@@ -43,9 +43,11 @@ class Consent
         return $this->grantedScope;
     }
 
-    public function setGrantedScope(string $grantedScope): void
+    public function setGrantedScope(string $grantedScope): self
     {
         $this->grantedScope = $grantedScope;
+
+        return $this;
     }
 
     public function getGrantedClaims(): string
@@ -53,8 +55,10 @@ class Consent
         return $this->grantedClaims;
     }
 
-    public function setGrantedClaims(string $grantedClaims): void
+    public function setGrantedClaims(string $grantedClaims): self
     {
         $this->grantedClaims = $grantedClaims;
+
+        return $this;
     }
 }

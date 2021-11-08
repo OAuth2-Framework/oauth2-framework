@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\SecurityBundle\EventListener;
 
-use OAuth2Framework\SecurityBundle\Security\Authentication\Token\OAuth2Token;
+use OAuth2Framework\SecurityBundle\Security\Authentication\OAuth2Token;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Event\AuthenticationEvent;
 
@@ -28,9 +28,6 @@ class RequestListener
         $resourceServerId = $token->getAccessToken()
             ->getResourceServerId()
         ;
-        $request->attributes->set(
-            'oauth2_resource_server_id',
-            $resourceServerId?->getValue()
-        );
+        $request->attributes->set('oauth2_resource_server_id', $resourceServerId?->getValue());
     }
 }

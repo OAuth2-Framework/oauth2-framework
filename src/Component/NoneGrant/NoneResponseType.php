@@ -9,11 +9,11 @@ use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType\ResponseType;
 use OAuth2Framework\Component\Core\TokenType\TokenType;
 
 /**
- * This response type has been introduced by OpenID Connect It stores the authorization to allow the access token
+ * This response type has been introduced by OpenID Connect. It stores the authorization to allow the access token
  * issuance later on. It returns nothing and only stores the authorization.
  *
- * At this time, this response type is not complete, because it always redirect the client. But if no redirect URI is
- * specified, no redirection should occurred as per OpenID Connect specification.
+ * At this time, this response type is not complete, because it always redirects the client. But if no redirect URI is
+ * specified, no redirection should occur as per OpenID Connect specification.
  *
  * @see http://openid.net/specs/oauth-v2-multiple-response-types-1_0.html#none
  */
@@ -22,6 +22,11 @@ final class NoneResponseType implements ResponseType
     public function __construct(
         private AuthorizationStorage $authorizationStorage
     ) {
+    }
+
+    public static function create(AuthorizationStorage $authorizationStorage): self
+    {
+        return new self($authorizationStorage);
     }
 
     public function associatedGrantTypes(): array

@@ -53,7 +53,7 @@ use OAuth2Framework\ServerBundle\Service\RedirectAuthorizationRequestHandler;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
 
 return static function (ContainerConfigurator $container): void {
@@ -158,7 +158,7 @@ return static function (ContainerConfigurator $container): void {
     ;
 
     $container->set(AuthorizationRequestSessionStorage::class)
-        ->args([service(SessionInterface::class)])
+        ->args([service(RequestStack::class)])
     ;
     $container->set(IgnoreAccountSelectionHandler::class);
 

@@ -6,26 +6,17 @@ namespace OAuth2Framework\Tests\Component\Core\AccessToken;
 
 use DateTimeImmutable;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
-use OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository;
-use OAuth2Framework\Component\Core\AccessToken\AccessTokenRevocationTypeHint;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
-use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
-use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use OAuth2Framework\Component\TokenRevocationEndpoint\TokenTypeHint;
-use PHPUnit\Framework\TestCase;
-use Prophecy\Argument;
-use Prophecy\PhpUnit\ProphecyTrait;
+use OAuth2Framework\Tests\Component\OAuth2TestCase;
+use OAuth2Framework\Tests\TestBundle\Entity\AccessToken;
 
 /**
  * @internal
  */
-final class AccessTokenRevocationTypeHintTest extends TestCase
+final class AccessTokenRevocationTypeHintTest extends OAuth2TestCase
 {
-    use ProphecyTrait;
-
-    private ?AccessTokenRevocationTypeHint $accessTokenTypeHint = null;
-
     protected function setUp(): void
     {
         if (! interface_exists(TokenTypeHint::class)) {
@@ -46,45 +37,30 @@ final class AccessTokenRevocationTypeHintTest extends TestCase
      */
     public function theTokenTypeHintCanFindATokenAndRevokeIt(): void
     {
-        static::assertNull($this->getAccessTokenRevocationTypeHint()->find('UNKNOWN_TOKEN_ID'));
+        $accessToken = AccessToken::create(
+            AccessTokenId::create('ACCESS_TOKEN_ID'),
+            ClientId::create('CLIENT_ID'),
+            ClientId::create('CLIENT_ID'),
+            new DateTimeImmutable('now +1 month'),
+            DataBag::create(),
+            DataBag::create(),
+            null
+        );
+        $this->getAccessTokenRepository()
+            ->save($accessToken)
+        ;
         $accessToken = $this->getAccessTokenRevocationTypeHint()
             ->find('ACCESS_TOKEN_ID')
         ;
         static::assertInstanceOf(AccessToken::class, $accessToken);
+        static::assertFalse($accessToken->isRevoked());
         $this->getAccessTokenRevocationTypeHint()
             ->revoke($accessToken)
         ;
-        static::assertTrue(true);
-    }
 
-    public function getAccessTokenRevocationTypeHint(): AccessTokenRevocationTypeHint
-    {
-        if ($this->accessTokenTypeHint === null) {
-            $accessToken = new AccessToken(
-                new AccessTokenId('ACCESS_TOKEN_ID'),
-                new ClientId('CLIENT_ID'),
-                new UserAccountId('USER_ACCOUNT_ID'),
-                new DateTimeImmutable('now +1hour'),
-                new DataBag([
-                    'scope' => 'scope1 scope2',
-                ]),
-                new DataBag([]),
-                new ResourceServerId('RESOURCE_SERVER_ID')
-            );
-            $accessTokenRepository = $this->prophesize(AccessTokenRepository::class);
-            $accessTokenRepository->find(Argument::type(AccessTokenId::class))->will(function ($args) use (
-                $accessToken
-            ) {
-                if ($args[0]->getValue() === 'ACCESS_TOKEN_ID') {
-                    return $accessToken;
-                }
-            });
-            $accessTokenRepository->save(Argument::type(AccessToken::class))->will(function () {
-            });
-
-            $this->accessTokenTypeHint = new AccessTokenRevocationTypeHint($accessTokenRepository->reveal());
-        }
-
-        return $this->accessTokenTypeHint;
+        $accessToken = $this->getAccessTokenRevocationTypeHint()
+            ->find('ACCESS_TOKEN_ID')
+        ;
+        static::assertTrue($accessToken->isRevoked());
     }
 }

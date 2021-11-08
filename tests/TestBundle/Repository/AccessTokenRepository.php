@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Tests\TestBundle\Repository;
 
-use Assert\Assertion;
 use DateTimeImmutable;
 use OAuth2Framework\Component\Core\AccessToken\AccessToken as AccessTokenInterface;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
@@ -14,31 +13,22 @@ use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwnerId;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
 use OAuth2Framework\Tests\TestBundle\Entity\AccessToken;
-use Psr\Cache\CacheItemPoolInterface;
 
 final class AccessTokenRepository implements AccessTokenRepositoryInterface
 {
-    public function __construct(
-        private CacheItemPoolInterface $cache
-    ) {
-    }
+    /**
+     * @var array<string, AccessTokenInterface>
+     */
+    private array $tokens = [];
 
     public function find(AccessTokenId $accessTokenId): ?AccessTokenInterface
     {
-        $item = $this->cache->getItem('AccessToken-' . $accessTokenId->getValue());
-        if ($item->isHit()) {
-            return $item->get();
-        }
-
-        return null;
+        return $this->tokens[$accessTokenId->getValue()] ?? null;
     }
 
     public function save(AccessTokenInterface $accessToken): void
     {
-        Assertion::isInstanceOf($accessToken, AccessToken::class, 'Unsupported access token class');
-        $item = $this->cache->getItem('AccessToken-' . $accessToken->getId()->getValue());
-        $item->set($accessToken);
-        $this->cache->save($item);
+        $this->tokens[$accessToken->getId()->getValue()] = $accessToken;
     }
 
     public function create(
@@ -49,7 +39,7 @@ final class AccessTokenRepository implements AccessTokenRepositoryInterface
         DataBag $metadata,
         ?ResourceServerId $resourceServerId
     ): AccessTokenInterface {
-        return new AccessToken(new AccessTokenId(bin2hex(
+        return new AccessToken(AccessTokenId::create(bin2hex(
             random_bytes(32)
         )), $clientId, $resourceOwnerId, $expiresAt, $parameter, $metadata, $resourceServerId);
     }

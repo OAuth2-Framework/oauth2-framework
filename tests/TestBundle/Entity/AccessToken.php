@@ -26,6 +26,26 @@ class AccessToken extends AbstractAccessToken
         parent::__construct($clientId, $resourceOwnerId, $expiresAt, $parameter, $metadata, $resourceServerId);
     }
 
+    public static function create(
+        AccessTokenId $accessTokenId,
+        ClientId $clientId,
+        ResourceOwnerId $resourceOwnerId,
+        DateTimeImmutable $expiresAt,
+        DataBag $parameter,
+        DataBag $metadata,
+        ?ResourceServerId $resourceServerId
+    ): self {
+        return new self(
+            $accessTokenId,
+            $clientId,
+            $resourceOwnerId,
+            $expiresAt,
+            $parameter,
+            $metadata,
+            $resourceServerId
+        );
+    }
+
     public function getId(): AccessTokenId
     {
         return $this->accessTokenId;

@@ -26,7 +26,7 @@ final class AccessTokenMiddleware implements MiddlewareInterface
         $additional_credential_values = [];
         $token = $this->tokenTypeManager->findToken($request, $additional_credential_values, $type);
         if ($token !== null) {
-            $tokenId = new AccessTokenId($token);
+            $tokenId = AccessTokenId::create($token);
             $accessToken = $this->accessTokenRepository->find($tokenId);
             if ($accessToken === null || $type->isRequestValid(
                 $accessToken,

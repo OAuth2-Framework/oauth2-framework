@@ -9,24 +9,24 @@ use OAuth2Framework\Component\ClientRule\RedirectionUriRule;
 use OAuth2Framework\Component\ClientRule\RuleHandler;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
-use PHPUnit\Framework\TestCase;
+use OAuth2Framework\Tests\Component\OAuth2TestCase;
 
 /**
  * @internal
  */
-final class RedirectionUriRuleTest extends TestCase
+final class RedirectionUriRuleTest extends OAuth2TestCase
 {
     /**
      * @test
      */
     public function noResponseTypeIsUsed(): void
     {
-        $clientId = new ClientId('CLIENT_ID');
-        $commandParameters = new DataBag([
+        $clientId = ClientId::create('CLIENT_ID');
+        $commandParameters = DataBag::create([
             'redirect_uris' => ['http://foo.com/callback'],
         ]);
         $rule = new RedirectionUriRule();
-        $validatedParameters = $rule->handle($clientId, $commandParameters, new DataBag([]), $this->getCallable());
+        $validatedParameters = $rule->handle($clientId, $commandParameters, DataBag::create([]), $this->getCallable());
         static::assertTrue($validatedParameters->has('redirect_uris'));
         static::assertSame([], $validatedParameters->get('redirect_uris'));
     }
@@ -38,9 +38,9 @@ final class RedirectionUriRuleTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Non-confidential clients must register at least one redirect URI.');
-        $clientId = new ClientId('CLIENT_ID');
-        $commandParameters = new DataBag([]);
-        $validatedParameters = new DataBag([
+        $clientId = ClientId::create('CLIENT_ID');
+        $commandParameters = DataBag::create([]);
+        $validatedParameters = DataBag::create([
             'response_types' => ['token', 'code'],
             'token_endpoint_auth_method' => 'none',
         ]);
@@ -57,9 +57,9 @@ final class RedirectionUriRuleTest extends TestCase
         $this->expectExceptionMessage(
             'Confidential clients must register at least one redirect URI when using the "token" response type.'
         );
-        $clientId = new ClientId('CLIENT_ID');
-        $commandParameters = new DataBag([]);
-        $validatedParameters = new DataBag([
+        $clientId = ClientId::create('CLIENT_ID');
+        $commandParameters = DataBag::create([]);
+        $validatedParameters = DataBag::create([
             'response_types' => ['token', 'code'],
             'token_endpoint_auth_method' => 'private_key_jwt',
         ]);
@@ -74,11 +74,11 @@ final class RedirectionUriRuleTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('The parameter "redirect_uris" must be a list of URI or URN.');
-        $clientId = new ClientId('CLIENT_ID');
-        $commandParameters = new DataBag([
+        $clientId = ClientId::create('CLIENT_ID');
+        $commandParameters = DataBag::create([
             'redirect_uris' => 'hello',
         ]);
-        $validatedParameters = new DataBag([
+        $validatedParameters = DataBag::create([
             'response_types' => ['token', 'code'],
             'token_endpoint_auth_method' => 'none',
         ]);
@@ -93,11 +93,11 @@ final class RedirectionUriRuleTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('The parameter "redirect_uris" must be a list of URI or URN.');
-        $clientId = new ClientId('CLIENT_ID');
-        $commandParameters = new DataBag([
+        $clientId = ClientId::create('CLIENT_ID');
+        $commandParameters = DataBag::create([
             'redirect_uris' => [123],
         ]);
-        $validatedParameters = new DataBag([
+        $validatedParameters = DataBag::create([
             'response_types' => ['token', 'code'],
             'token_endpoint_auth_method' => 'none',
         ]);
@@ -112,11 +112,11 @@ final class RedirectionUriRuleTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('The parameter "redirect_uris" must be a list of URI or URN.');
-        $clientId = new ClientId('CLIENT_ID');
-        $commandParameters = new DataBag([
+        $clientId = ClientId::create('CLIENT_ID');
+        $commandParameters = DataBag::create([
             'redirect_uris' => ['hello'],
         ]);
-        $validatedParameters = new DataBag([
+        $validatedParameters = DataBag::create([
             'response_types' => ['token', 'code'],
             'token_endpoint_auth_method' => 'none',
         ]);
@@ -131,11 +131,11 @@ final class RedirectionUriRuleTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('The parameter "redirect_uris" must only contain URIs without fragment.');
-        $clientId = new ClientId('CLIENT_ID');
-        $commandParameters = new DataBag([
+        $clientId = ClientId::create('CLIENT_ID');
+        $commandParameters = DataBag::create([
             'redirect_uris' => ['http://foo.com/#test=bad'],
         ]);
-        $validatedParameters = new DataBag([
+        $validatedParameters = DataBag::create([
             'response_types' => ['token', 'code'],
             'token_endpoint_auth_method' => 'none',
         ]);
@@ -152,11 +152,11 @@ final class RedirectionUriRuleTest extends TestCase
         $this->expectExceptionMessage(
             'The host "localhost" is not allowed for web applications that use the Implicit Grant Type.'
         );
-        $clientId = new ClientId('CLIENT_ID');
-        $commandParameters = new DataBag([
+        $clientId = ClientId::create('CLIENT_ID');
+        $commandParameters = DataBag::create([
             'redirect_uris' => ['http://localhost/'],
         ]);
-        $validatedParameters = new DataBag([
+        $validatedParameters = DataBag::create([
             'response_types' => ['token', 'code'],
             'token_endpoint_auth_method' => 'none',
         ]);
@@ -173,11 +173,11 @@ final class RedirectionUriRuleTest extends TestCase
         $this->expectExceptionMessage(
             'The parameter "redirect_uris" must only contain URIs with the HTTPS scheme for web applications that use the Implicit Grant Type.'
         );
-        $clientId = new ClientId('CLIENT_ID');
-        $commandParameters = new DataBag([
+        $clientId = ClientId::create('CLIENT_ID');
+        $commandParameters = DataBag::create([
             'redirect_uris' => ['http://foo.com/'],
         ]);
-        $validatedParameters = new DataBag([
+        $validatedParameters = DataBag::create([
             'response_types' => ['token', 'code'],
             'token_endpoint_auth_method' => 'none',
         ]);
@@ -194,11 +194,11 @@ final class RedirectionUriRuleTest extends TestCase
         $this->expectExceptionMessage(
             'The URI listed in the "redirect_uris" parameter must not contain any path traversal.'
         );
-        $clientId = new ClientId('CLIENT_ID');
-        $commandParameters = new DataBag([
+        $clientId = ClientId::create('CLIENT_ID');
+        $commandParameters = DataBag::create([
             'redirect_uris' => ['https://foo.com/bar/../bad'],
         ]);
-        $validatedParameters = new DataBag([
+        $validatedParameters = DataBag::create([
             'response_types' => ['token', 'code'],
             'token_endpoint_auth_method' => 'none',
         ]);
@@ -211,11 +211,11 @@ final class RedirectionUriRuleTest extends TestCase
      */
     public function theUrisAreValidatedWithTheImplicitGrantType(): void
     {
-        $clientId = new ClientId('CLIENT_ID');
-        $commandParameters = new DataBag([
+        $clientId = ClientId::create('CLIENT_ID');
+        $commandParameters = DataBag::create([
             'redirect_uris' => ['https://foo.com/'],
         ]);
-        $validatedParameters = new DataBag([
+        $validatedParameters = DataBag::create([
             'response_types' => ['token', 'code'],
             'token_endpoint_auth_method' => 'none',
         ]);
@@ -230,11 +230,11 @@ final class RedirectionUriRuleTest extends TestCase
      */
     public function theUrisAreValidatedWithOtherGrantTypes(): void
     {
-        $clientId = new ClientId('CLIENT_ID');
-        $commandParameters = new DataBag([
+        $clientId = ClientId::create('CLIENT_ID');
+        $commandParameters = DataBag::create([
             'redirect_uris' => ['http://localhost/'],
         ]);
-        $validatedParameters = new DataBag([
+        $validatedParameters = DataBag::create([
             'response_types' => ['id_token', 'code'],
             'token_endpoint_auth_method' => 'none',
         ]);
@@ -249,11 +249,11 @@ final class RedirectionUriRuleTest extends TestCase
      */
     public function theUrnsAreAllowed(): void
     {
-        $clientId = new ClientId('CLIENT_ID');
-        $commandParameters = new DataBag([
+        $clientId = ClientId::create('CLIENT_ID');
+        $commandParameters = DataBag::create([
             'redirect_uris' => ['urn:ietf:wg:oauth:2.0:oob', 'urn:ietf:wg:oauth:2.0:oob:auto'],
         ]);
-        $validatedParameters = new DataBag([
+        $validatedParameters = DataBag::create([
             'response_types' => ['id_token', 'code'],
             'token_endpoint_auth_method' => 'none',
         ]);
@@ -273,11 +273,11 @@ final class RedirectionUriRuleTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('The parameter "redirect_uris" must be a list of URI or URN.');
-        $clientId = new ClientId('CLIENT_ID');
-        $commandParameters = new DataBag([
+        $clientId = ClientId::create('CLIENT_ID');
+        $commandParameters = DataBag::create([
             'redirect_uris' => ['urn:---------------'],
         ]);
-        $validatedParameters = new DataBag([
+        $validatedParameters = DataBag::create([
             'response_types' => ['id_token', 'code'],
             'token_endpoint_auth_method' => 'none',
         ]);

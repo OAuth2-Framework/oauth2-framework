@@ -10,6 +10,11 @@ use Psr\Http\Message\ServerRequestInterface;
 
 final class FooGrantType implements GrantType
 {
+    public static function create(): self
+    {
+        return new self();
+    }
+
     public function associatedResponseTypes(): array
     {
         return [];

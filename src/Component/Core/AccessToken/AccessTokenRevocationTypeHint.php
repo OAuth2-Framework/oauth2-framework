@@ -13,6 +13,11 @@ final class AccessTokenRevocationTypeHint implements TokenTypeHint
     ) {
     }
 
+    public static function create(AccessTokenRepository $accessTokenRepository): self
+    {
+        return new self($accessTokenRepository);
+    }
+
     public function hint(): string
     {
         return 'access_token';
@@ -20,7 +25,7 @@ final class AccessTokenRevocationTypeHint implements TokenTypeHint
 
     public function find(string $token): ?AccessToken
     {
-        $id = new AccessTokenId($token);
+        $id = AccessTokenId::create($token);
 
         return $this->accessTokenRepository->find($id);
     }

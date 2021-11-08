@@ -18,6 +18,11 @@ class AccessTokenId implements Stringable
         return $this->getValue();
     }
 
+    public static function create(string $value): self
+    {
+        return new self($value);
+    }
+
     public function getValue(): string
     {
         return $this->value;

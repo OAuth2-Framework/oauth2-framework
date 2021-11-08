@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Tests\TestBundle\Repository;
 
-use Assert\Assertion;
 use DateTimeImmutable;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCode as AuthorizationCodeInterface;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeId;
@@ -14,32 +13,27 @@ use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use OAuth2Framework\Tests\TestBundle\Entity\AuthorizationCode;
-use Psr\Cache\CacheItemPoolInterface;
 
 final class AuthorizationCodeRepository implements AuthorizationCodeRepositoryInterface
 {
-    public function __construct(
-        private CacheItemPoolInterface $cache
-    ) {
+    /**
+     * @var array<string, AuthorizationCodeInterface>
+     */
+    private array $authorizationCodes = [];
+
+    public function __construct()
+    {
         $this->load();
     }
 
     public function find(AuthorizationCodeId $authorizationCodeId): ?AuthorizationCodeInterface
     {
-        $item = $this->cache->getItem('AuthorizationCode-' . $authorizationCodeId->getValue());
-        if ($item->isHit()) {
-            return $item->get();
-        }
-
-        return null;
+        return $this->authorizationCodes[$authorizationCodeId->getValue()] ?? null;
     }
 
     public function save(AuthorizationCodeInterface $authorizationCode): void
     {
-        Assertion::isInstanceOf($authorizationCode, AuthorizationCode::class, 'Unsupported authorization code class');
-        $item = $this->cache->getItem('AuthorizationCode-' . $authorizationCode->getId()->getValue());
-        $item->set($authorizationCode);
-        $this->cache->save($item);
+        $this->authorizationCodes[$authorizationCode->getId()->getValue()] = $authorizationCode;
     }
 
     public function create(
@@ -53,7 +47,7 @@ final class AuthorizationCodeRepository implements AuthorizationCodeRepositoryIn
         ?ResourceServerId $resourceServerId
     ): AuthorizationCodeInterface {
         return new AuthorizationCode(
-            new AuthorizationCodeId(bin2hex(random_bytes(32))),
+            AuthorizationCodeId::create(bin2hex(random_bytes(32))),
             $clientId,
             $userAccountId,
             $queryParameters,
@@ -69,7 +63,7 @@ final class AuthorizationCodeRepository implements AuthorizationCodeRepositoryIn
     {
         foreach ($this->getData() as $datum) {
             $authorizationCode = new AuthorizationCode(
-                new AuthorizationCodeId($datum['authorization_code_id']),
+                AuthorizationCodeId::create($datum['authorization_code_id']),
                 new ClientId($datum['client_id']),
                 new UserAccountId($datum['user_account_id']),
                 $datum['query_parameters'],

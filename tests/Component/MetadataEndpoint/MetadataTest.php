@@ -6,12 +6,12 @@ namespace OAuth2Framework\Tests\Component\MetadataEndpoint;
 
 use InvalidArgumentException;
 use OAuth2Framework\Component\MetadataEndpoint\Metadata;
-use PHPUnit\Framework\TestCase;
+use OAuth2Framework\Tests\Component\OAuth2TestCase;
 
 /**
  * @internal
  */
-final class MetadataTest extends TestCase
+final class MetadataTest extends OAuth2TestCase
 {
     /**
      * @test

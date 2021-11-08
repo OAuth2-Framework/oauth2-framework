@@ -4,315 +4,215 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Tests\Component\WebFingerEndpoint;
 
-use Nyholm\Psr7\Factory\Psr17Factory;
+use Nyholm\Psr7\ServerRequest;
+use OAuth2Framework\Component\WebFingerEndpoint\IdentifierResolver\AccountResolver;
+use OAuth2Framework\Component\WebFingerEndpoint\IdentifierResolver\EmailResolver;
 use OAuth2Framework\Component\WebFingerEndpoint\IdentifierResolver\Identifier;
-use OAuth2Framework\Component\WebFingerEndpoint\IdentifierResolver\IdentifierResolver;
 use OAuth2Framework\Component\WebFingerEndpoint\IdentifierResolver\IdentifierResolverManager;
+use OAuth2Framework\Component\WebFingerEndpoint\IdentifierResolver\UriResolver;
 use OAuth2Framework\Component\WebFingerEndpoint\Link;
 use OAuth2Framework\Component\WebFingerEndpoint\ResourceDescriptor;
-use OAuth2Framework\Component\WebFingerEndpoint\ResourceRepository;
 use OAuth2Framework\Component\WebFingerEndpoint\WebFingerEndpoint;
-use PHPUnit\Framework\TestCase;
-use Prophecy\Argument;
-use Prophecy\PhpUnit\ProphecyTrait;
-use Psr\Http\Message\ResponseFactoryInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\RequestHandlerInterface;
+use OAuth2Framework\Tests\Component\OAuth2TestCase;
+use OAuth2Framework\Tests\TestBundle\Service\UriPathResolver;
+use OAuth2Framework\Tests\WebFingerBundle\Functional\ResourceRepository;
+use OAuth2Framework\WebFingerBundle\Middleware\TerminalRequestHandler;
 
 /**
  * @internal
  */
-final class WebFingerEndpointTest extends TestCase
+final class WebFingerEndpointTest extends OAuth2TestCase
 {
-    use ProphecyTrait;
-
     /**
      * @test
+     * @dataProvider generateRequests
      */
-    public function theEndpointCannotFindTheResourceParameter(): void
-    {
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getQueryParams()
-            ->willReturn([
-                'rel' => 'http://openid.net/specs/connect/1.0/issuer',
-                'resource' => '=Foo.Bar',
-            ])
-        ;
-        $repository = $this->prophesize(ResourceRepository::class);
-        $handler = $this->prophesize(RequestHandlerInterface::class);
-        $identifierResolverManager = new IdentifierResolverManager();
-        $endpoint = new WebFingerEndpoint(
-            $this->getResponseFactory(),
-            $repository->reveal(),
-            $identifierResolverManager
-        );
+    public function theEndpointCanHandleRequests(
+        array $queryParams,
+        string $expectedResponseBody,
+        int $expectedCode
+    ): void {
+        $request = new ServerRequest('GET', '/');
+        $request = $request->withQueryParams($queryParams);
+        $endpoint = $this->createEndpoint();
 
-        $response = $endpoint->process($request->reveal(), $handler->reveal());
+        $response = $endpoint->process($request, new TerminalRequestHandler());
 
         $response->getBody()
             ->rewind()
         ;
-        static::assertSame(
-            '{"error":"invalid_request","error_description":"The resource identified with \"=Foo.Bar\" does not exist or is not supported by this server."}',
-            $response->getBody()
-                ->getContents()
-        );
-        static::assertSame(400, $response->getStatusCode());
+        static::assertSame($expectedResponseBody, $response->getBody()->getContents());
+        static::assertSame($expectedCode, $response->getStatusCode());
     }
 
-    /**
-     * @test
-     */
-    public function theEndpointDoesNotSupportXri(): void
+    public function generateRequests(): array
     {
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getQueryParams()
-            ->willReturn([
-                'rel' => 'http://openid.net/specs/connect/1.0/issuer',
-                'resource' => '@foo',
-            ])
-        ;
-        $repository = $this->prophesize(ResourceRepository::class);
-        $handler = $this->prophesize(RequestHandlerInterface::class);
-        $identifierResolverManager = new IdentifierResolverManager();
-        $endpoint = new WebFingerEndpoint(
-            $this->getResponseFactory(),
-            $repository->reveal(),
-            $identifierResolverManager
-        );
-
-        $response = $endpoint->process($request->reveal(), $handler->reveal());
-
-        $response->getBody()
-            ->rewind()
-        ;
-        static::assertSame(
-            '{"error":"invalid_request","error_description":"The resource identified with \"@foo\" does not exist or is not supported by this server."}',
-            $response->getBody()
-                ->getContents()
-        );
-        static::assertSame(400, $response->getStatusCode());
+        return [
+            [
+                [
+                    'resource' => '=Foo.Bar',
+                ],
+                '{"error":"invalid_request","error_description":"The resource identified with \"=Foo.Bar\" does not exist or is not supported by this server."}',
+                404,
+            ],
+            [
+                [
+                    'rel' => 'http://openid.net/specs/connect/1.0/issuer',
+                ],
+                '{"error":"invalid_request","error_description":"The parameter \"resource\" is mandatory."}',
+                400,
+            ],
+            [
+                [
+                    'rel' => 'http://openid.net/specs/connect/1.0/issuer',
+                    'resource' => '=Foo.Bar',
+                ],
+                '{"error":"invalid_request","error_description":"The resource identified with \"=Foo.Bar\" does not exist or is not supported by this server."}',
+                404,
+            ],
+            [
+                [
+                    'rel' => 'http://openid.net/specs/connect/1.0/issuer',
+                    'resource' => '@foo',
+                ],
+                '{"error":"invalid_request","error_description":"The resource identified with \"@foo\" does not exist or is not supported by this server."}',
+                404,
+            ],
+            [
+                [
+                    'rel' => 'http://openid.net/specs/connect/1.0/issuer',
+                    'resource' => 'hello@me.com',
+                ],
+                '{"error":"invalid_request","error_description":"The resource identified with \"hello@me.com\" does not exist or is not supported by this server."}',
+                404,
+            ],
+            [
+                [
+                    'rel' => 'http://openid.net/specs/connect/1.0/issuer',
+                    'resource' => 'bad@www.foo.bar:8000',
+                ],
+                '{"error":"invalid_request","error_description":"The resource identified with \"bad@www.foo.bar:8000\" does not exist or is not supported by this server."}',
+                404,
+            ],
+            [
+                [
+                    'rel' => 'http://openid.net/specs/connect/1.0/issuer',
+                    'resource' => 'hello@www.foo.bar:8000',
+                ],
+                '{"subject":"hello@www.foo.bar:8000","links":[{"rel":"http://openid.net/specs/connect/1.0/issuer","href":"https://my.server.com/hello"}]}',
+                200,
+            ],
+            [
+                [
+                    'rel' => 'http://openid.net/specs/connect/1.0/issuer',
+                    'resource' => 'acct:hello%40you@www.foo.bar:8000',
+                ],
+                '{"subject":"acct:hello%40you@www.foo.bar:8000","links":[{"rel":"http://openid.net/specs/connect/1.0/issuer","href":"https://my.server.com/hello"}]}',
+                200,
+            ],
+            [
+                [
+                    'rel' => 'http://openid.net/specs/connect/1.0/issuer',
+                    'resource' => 'https://www.foo.bar:8000/+hello',
+                ],
+                '{"subject":"https://www.foo.bar:8000/+hello","links":[{"rel":"http://openid.net/specs/connect/1.0/issuer","href":"https://my.server.com/hello"}]}',
+                200,
+            ],
+            [
+                [
+                    'rel' => 'http://openid.net/specs/connect/1.0/issuer',
+                    'resource' => 'https://hello@www.foo.bar:8000',
+                ],
+                '{"subject":"https://hello@www.foo.bar:8000","links":[{"rel":"http://openid.net/specs/connect/1.0/issuer","href":"https://my.server.com/hello"}]}',
+                200,
+            ],
+        ];
     }
 
-    /**
-     * @test
-     */
-    public function theEndpointDoesNotSupportResourceFromOtherHosts(): void
+    private function createEndpoint(): WebFingerEndpoint
     {
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getQueryParams()
-            ->willReturn([
-                'rel' => 'http://openid.net/specs/connect/1.0/issuer',
-                'resource' => 'hello@me.com',
-            ])
-        ;
-        $repository = $this->prophesize(ResourceRepository::class);
-        $handler = $this->prophesize(RequestHandlerInterface::class);
-        $identifierResolverManager = new IdentifierResolverManager();
-        $endpoint = new WebFingerEndpoint(
-            $this->getResponseFactory(),
-            $repository->reveal(),
-            $identifierResolverManager
-        );
-
-        $response = $endpoint->process($request->reveal(), $handler->reveal());
-
-        $response->getBody()
-            ->rewind()
-        ;
-        static::assertSame(
-            '{"error":"invalid_request","error_description":"The resource identified with \"hello@me.com\" does not exist or is not supported by this server."}',
-            $response->getBody()
-                ->getContents()
-        );
-        static::assertSame(400, $response->getStatusCode());
-    }
-
-    /**
-     * @test
-     */
-    public function theResourceIsNotKnown(): void
-    {
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getQueryParams()
-            ->willReturn([
-                'rel' => 'http://openid.net/specs/connect/1.0/issuer',
-                'resource' => 'bad@www.foo.bar:8000',
-            ])
-        ;
-        $repository = $this->prophesize(ResourceRepository::class);
-        $handler = $this->prophesize(RequestHandlerInterface::class);
-        $identifierResolverManager = new IdentifierResolverManager();
-        $endpoint = new WebFingerEndpoint(
-            $this->getResponseFactory(),
-            $repository->reveal(),
-            $identifierResolverManager
-        );
-
-        $response = $endpoint->process($request->reveal(), $handler->reveal());
-
-        $response->getBody()
-            ->rewind()
-        ;
-        static::assertSame(
-            '{"error":"invalid_request","error_description":"The resource identified with \"bad@www.foo.bar:8000\" does not exist or is not supported by this server."}',
-            $response->getBody()
-                ->getContents()
-        );
-        static::assertSame(400, $response->getStatusCode());
-    }
-
-    /**
-     * @test
-     */
-    public function theResourceIsAValidResourceFromEmail(): void
-    {
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getQueryParams()
-            ->willReturn([
-                'resource' => 'hello@www.foo.bar:8000',
-            ])
-        ;
-        $repository = $this->prophesize(ResourceRepository::class);
-        $repository->find(Argument::type('string'), Argument::type(Identifier::class))->willReturn(
-            new ResourceDescriptor(
+        $repository = ResourceRepository::create()
+            ->set(
                 'hello@www.foo.bar:8000',
-                [],
-                [],
-                [new Link('http://openid.net/specs/connect/1.0/issuer', null, 'https://my.server.com/hello', [], [])]
+                Identifier::create('hello', 'www.foo.bar', 8000),
+                ResourceDescriptor::create(
+                    'hello@www.foo.bar:8000',
+                    [],
+                    [],
+                    [
+                        new Link(
+                            'http://openid.net/specs/connect/1.0/issuer',
+                            null,
+                            'https://my.server.com/hello',
+                            [],
+                            []
+                        ),
+                    ]
+                ),
             )
-        );
-        $handler = $this->prophesize(RequestHandlerInterface::class);
-        $resolver = $this->prophesize(IdentifierResolver::class);
-        $resolver->supports('hello@www.foo.bar:8000')
-            ->willReturn(true)
-        ;
-        $resolver->resolve('hello@www.foo.bar:8000')
-            ->willReturn(new Identifier('hello', 'www.foo.bar', 8000))
-        ;
-        $identifierResolverManager = new IdentifierResolverManager();
-        $identifierResolverManager->add($resolver->reveal());
-        $endpoint = new WebFingerEndpoint(
-            $this->getResponseFactory(),
-            $repository->reveal(),
-            $identifierResolverManager
-        );
-
-        $response = $endpoint->process($request->reveal(), $handler->reveal());
-
-        $response->getBody()
-            ->rewind()
-        ;
-        static::assertSame(
-            '{"subject":"hello@www.foo.bar:8000","links":[{"rel":"http://openid.net/specs/connect/1.0/issuer","href":"https://my.server.com/hello"}]}',
-            $response->getBody()
-                ->getContents()
-        );
-        static::assertSame(200, $response->getStatusCode());
-    }
-
-    /**
-     * @test
-     */
-    public function theResourceIsAValidResourceFromAccount(): void
-    {
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getQueryParams()
-            ->willReturn([
-                'rel' => 'http://openid.net/specs/connect/1.0/issuer',
-                'resource' => 'acct:hello%40you@www.foo.bar:8000',
-            ])
-        ;
-        $repository = $this->prophesize(ResourceRepository::class);
-        $repository->find(Argument::type('string'), Argument::type(Identifier::class))->willReturn(
-            new ResourceDescriptor(
+            ->set(
                 'acct:hello%40you@www.foo.bar:8000',
-                [],
-                [],
-                [new Link('http://openid.net/specs/connect/1.0/issuer', null, 'https://my.server.com/hello', [], [])]
+                Identifier::create('hello', 'www.foo.bar', 8000),
+                ResourceDescriptor::create(
+                    'acct:hello%40you@www.foo.bar:8000',
+                    [],
+                    [],
+                    [
+                        new Link(
+                            'http://openid.net/specs/connect/1.0/issuer',
+                            null,
+                            'https://my.server.com/hello',
+                            [],
+                            []
+                        ),
+                    ]
+                )
             )
-        );
-        $handler = $this->prophesize(RequestHandlerInterface::class);
-        $resolver = $this->prophesize(IdentifierResolver::class);
-        $resolver->supports('acct:hello%40you@www.foo.bar:8000')
-            ->willReturn(true)
-        ;
-        $resolver->resolve('acct:hello%40you@www.foo.bar:8000')
-            ->willReturn(new Identifier('hello', 'www.foo.bar', 8000))
-        ;
-        $identifierResolverManager = new IdentifierResolverManager();
-        $identifierResolverManager->add($resolver->reveal());
-        $endpoint = new WebFingerEndpoint(
-            $this->getResponseFactory(),
-            $repository->reveal(),
-            $identifierResolverManager
-        );
-
-        $response = $endpoint->process($request->reveal(), $handler->reveal());
-
-        $response->getBody()
-            ->rewind()
-        ;
-        static::assertSame(
-            '{"subject":"acct:hello%40you@www.foo.bar:8000","links":[{"rel":"http://openid.net/specs/connect/1.0/issuer","href":"https://my.server.com/hello"}]}',
-            $response->getBody()
-                ->getContents()
-        );
-        static::assertSame(200, $response->getStatusCode());
-    }
-
-    /**
-     * @test
-     */
-    public function theResourceIsAValidResourceFromUri(): void
-    {
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getQueryParams()
-            ->willReturn([
-                'rel' => 'http://openid.net/specs/connect/1.0/issuer',
-                'resource' => 'https://www.foo.bar:8000/+hello',
-            ])
-        ;
-        $repository = $this->prophesize(ResourceRepository::class);
-        $repository->find(Argument::type('string'), Argument::type(Identifier::class))->willReturn(
-            new ResourceDescriptor(
+            ->set(
                 'https://www.foo.bar:8000/+hello',
-                [],
-                [],
-                [new Link('http://openid.net/specs/connect/1.0/issuer', null, 'https://my.server.com/hello', [], [])]
+                Identifier::create('hello', 'www.foo.bar', 8000),
+                ResourceDescriptor::create(
+                    'https://www.foo.bar:8000/+hello',
+                    [],
+                    [],
+                    [
+                        new Link(
+                            'http://openid.net/specs/connect/1.0/issuer',
+                            null,
+                            'https://my.server.com/hello',
+                            [],
+                            []
+                        ),
+                    ]
+                )
             )
-        );
-        $handler = $this->prophesize(RequestHandlerInterface::class);
-        $resolver = $this->prophesize(IdentifierResolver::class);
-        $resolver->supports('https://www.foo.bar:8000/+hello')
-            ->willReturn(true)
+            ->set(
+                'https://hello@www.foo.bar:8000',
+                Identifier::create('hello', 'www.foo.bar', 8000),
+                ResourceDescriptor::create(
+                    'https://hello@www.foo.bar:8000',
+                    [],
+                    [],
+                    [
+                        new Link(
+                            'http://openid.net/specs/connect/1.0/issuer',
+                            null,
+                            'https://my.server.com/hello',
+                            [],
+                            []
+                        ),
+                    ]
+                )
+            )
         ;
-        $resolver->resolve('https://www.foo.bar:8000/+hello')
-            ->willReturn(new Identifier('hello', 'www.foo.bar', 8000))
+
+        $identifierResolverManager = IdentifierResolverManager::create()
+            ->add(EmailResolver::create())
+            ->add(UriResolver::create())
+            ->add(AccountResolver::create())
+            ->add(UriPathResolver::create())
         ;
-        $identifierResolverManager = new IdentifierResolverManager();
-        $identifierResolverManager->add($resolver->reveal());
-        $endpoint = new WebFingerEndpoint(
-            $this->getResponseFactory(),
-            $repository->reveal(),
-            $identifierResolverManager
-        );
 
-        $response = $endpoint->process($request->reveal(), $handler->reveal());
-
-        $response->getBody()
-            ->rewind()
-        ;
-        static::assertSame(
-            '{"subject":"https://www.foo.bar:8000/+hello","links":[{"rel":"http://openid.net/specs/connect/1.0/issuer","href":"https://my.server.com/hello"}]}',
-            $response->getBody()
-                ->getContents()
-        );
-        static::assertSame(200, $response->getStatusCode());
-    }
-
-    private function getResponseFactory(): ResponseFactoryInterface
-    {
-        return new Psr17Factory();
+        return WebFingerEndpoint::create($repository, $identifierResolverManager);
     }
 }

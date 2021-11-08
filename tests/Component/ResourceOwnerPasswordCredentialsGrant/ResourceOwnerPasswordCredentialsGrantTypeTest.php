@@ -4,35 +4,26 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Tests\Component\ResourceOwnerPasswordCredentialsGrant;
 
-use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
+use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
-use OAuth2Framework\Component\ResourceOwnerPasswordCredentialsGrant\ResourceOwnerPasswordCredentialManager;
-use OAuth2Framework\Component\ResourceOwnerPasswordCredentialsGrant\ResourceOwnerPasswordCredentialsGrantType;
 use OAuth2Framework\Component\TokenEndpoint\GrantTypeData;
-use PHPUnit\Framework\TestCase;
-use Prophecy\PhpUnit\ProphecyTrait;
-use Prophecy\Prophecy\ObjectProphecy;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\StreamInterface;
+use OAuth2Framework\Tests\Component\OAuth2TestCase;
+use OAuth2Framework\Tests\TestBundle\Entity\Client;
 
 /**
  * @internal
  */
-final class ResourceOwnerPasswordCredentialsGrantTypeTest extends TestCase
+final class ResourceOwnerPasswordCredentialsGrantTypeTest extends OAuth2TestCase
 {
-    use ProphecyTrait;
-
-    private ?ResourceOwnerPasswordCredentialsGrantType $grantType = null;
-
     /**
      * @test
      */
     public function genericInformation(): void
     {
-        static::assertSame([], $this->getGrantType()->associatedResponseTypes());
-        static::assertSame('password', $this->getGrantType()->name());
+        static::assertSame([], $this->getGrantTypeManager()->get('password')->associatedResponseTypes());
+        static::assertSame('password', $this->getGrantTypeManager()->get('password')->name());
     }
 
     /**
@@ -40,13 +31,14 @@ final class ResourceOwnerPasswordCredentialsGrantTypeTest extends TestCase
      */
     public function theRequestHaveMissingParameters(): void
     {
-        $request = $this->buildRequest([
+        $request = $this->buildRequest('GET', [
             'password' => 'PASSWORD',
         ]);
 
         try {
-            $this->getGrantType()
-                ->checkRequest($request->reveal())
+            $this->getGrantTypeManager()
+                ->get('password')
+                ->checkRequest($request)
             ;
             static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2Error $e) {
@@ -63,13 +55,14 @@ final class ResourceOwnerPasswordCredentialsGrantTypeTest extends TestCase
      */
     public function theRequestHaveAllRequiredParameters(): void
     {
-        $request = $this->buildRequest([
+        $request = $this->buildRequest('GET', [
             'password' => 'PASSWORD',
             'username' => 'USERNAME',
         ]);
 
-        $this->getGrantType()
-            ->checkRequest($request->reveal())
+        $this->getGrantTypeManager()
+            ->get('password')
+            ->checkRequest($request)
         ;
         static::assertTrue(true);
     }
@@ -79,28 +72,21 @@ final class ResourceOwnerPasswordCredentialsGrantTypeTest extends TestCase
      */
     public function theTokenResponseIsCorrectlyPrepared(): void
     {
-        $client = $this->prophesize(Client::class);
-        $client->isPublic()
-            ->willReturn(false)
-        ;
-        $client->getPublicId()
-            ->willReturn(new ClientId('CLIENT_ID'))
-        ;
-        $client->getClientId()
-            ->willReturn(new ClientId('CLIENT_ID'))
-        ;
-        $client->getOwnerId()
-            ->willReturn(new UserAccountId('USER_ACCOUNT_ID'))
-        ;
+        $client = Client::create(
+            ClientId::create('CLIENT_ID'),
+            DataBag::create([]),
+            UserAccountId::create('USER_ACCOUNT_ID')
+        );
 
-        $request = $this->buildRequest([
+        $request = $this->buildRequest('GET', [
             'password' => 'PASSWORD',
             'username' => 'USERNAME',
         ]);
-        $grantTypeData = new GrantTypeData($client->reveal());
+        $grantTypeData = GrantTypeData::create($client);
 
-        $this->getGrantType()
-            ->prepareResponse($request->reveal(), $grantTypeData)
+        $this->getGrantTypeManager()
+            ->get('password')
+            ->prepareResponse($request, $grantTypeData)
         ;
         static::assertSame($grantTypeData, $grantTypeData);
     }
@@ -110,69 +96,23 @@ final class ResourceOwnerPasswordCredentialsGrantTypeTest extends TestCase
      */
     public function theGrantTypeCanGrantTheClient(): void
     {
-        $client = $this->prophesize(Client::class);
-        $client->isPublic()
-            ->willReturn(false)
-        ;
-        $client->getPublicId()
-            ->willReturn(new ClientId('CLIENT_ID'))
-        ;
-        $client->getClientId()
-            ->willReturn(new ClientId('CLIENT_ID'))
-        ;
-        $client->getOwnerId()
-            ->willReturn(new UserAccountId('USER_ACCOUNT_ID'))
-        ;
+        $client = Client::create(
+            ClientId::create('CLIENT_ID'),
+            DataBag::create(),
+            UserAccountId::create('USER_ACCOUNT_ID')
+        );
 
-        $request = $this->buildRequest([
-            'password' => 'PASSWORD',
-            'username' => 'USERNAME',
+        $request = $this->buildRequest('GET', [
+            'password' => 'password.1',
+            'username' => 'john.1',
         ]);
-        $grantTypeData = new GrantTypeData($client->reveal());
+        $grantTypeData = GrantTypeData::create($client);
 
-        $this->getGrantType()
-            ->grant($request->reveal(), $grantTypeData)
+        $this->getGrantTypeManager()
+            ->get('password')
+            ->grant($request, $grantTypeData)
         ;
-        static::assertSame('USERNAME', $grantTypeData->getResourceOwnerId()->getValue());
+        static::assertSame('john.1', $grantTypeData->getResourceOwnerId()->getValue());
         static::assertSame('CLIENT_ID', $grantTypeData->getClient()->getPublicId()->getValue());
-    }
-
-    private function getGrantType(): ResourceOwnerPasswordCredentialsGrantType
-    {
-        if ($this->grantType === null) {
-            $resourcOwnerPasswordCredentialManager = $this->prophesize(ResourceOwnerPasswordCredentialManager::class);
-            $resourcOwnerPasswordCredentialManager->findResourceOwnerIdWithUsernameAndPassword('USERNAME', 'PASSWORD')
-                ->willReturn(new UserAccountId('USERNAME'))
-            ;
-
-            $this->grantType = new ResourceOwnerPasswordCredentialsGrantType(
-                $resourcOwnerPasswordCredentialManager->reveal()
-            );
-        }
-
-        return $this->grantType;
-    }
-
-    private function buildRequest(array $data): ObjectProphecy
-    {
-        $body = $this->prophesize(StreamInterface::class);
-        $body->getContents()
-            ->willReturn(http_build_query($data))
-        ;
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->hasHeader('Content-Type')
-            ->willReturn(true)
-        ;
-        $request->getHeader('Content-Type')
-            ->willReturn(['application/x-www-form-urlencoded'])
-        ;
-        $request->getBody()
-            ->willReturn($body->reveal())
-        ;
-        $request->getParsedBody()
-            ->willReturn([])
-        ;
-
-        return $request;
     }
 }

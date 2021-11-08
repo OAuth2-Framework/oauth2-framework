@@ -10,5 +10,5 @@ interface TokenTypeHint
 
     public function find(string $token): mixed;
 
-    public function revoke($token): void;
+    public function revoke(mixed $token): void;
 }

@@ -9,12 +9,12 @@ use OAuth2Framework\Component\ClientRule\ContactsParametersRule;
 use OAuth2Framework\Component\ClientRule\RuleHandler;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
-use PHPUnit\Framework\TestCase;
+use OAuth2Framework\Tests\Component\OAuth2TestCase;
 
 /**
  * @internal
  */
-final class ContactsParametersRuleTest extends TestCase
+final class ContactsParametersRuleTest extends OAuth2TestCase
 {
     /**
      * @test
@@ -23,12 +23,12 @@ final class ContactsParametersRuleTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('The parameter "contacts" must be a list of e-mail addresses.');
-        $clientId = new ClientId('CLIENT_ID');
-        $commandParameters = new DataBag([
+        $clientId = ClientId::create('CLIENT_ID');
+        $commandParameters = DataBag::create([
             'contacts' => 123,
         ]);
         $rule = new ContactsParametersRule();
-        $rule->handle($clientId, $commandParameters, new DataBag([]), $this->getCallable());
+        $rule->handle($clientId, $commandParameters, DataBag::create([]), $this->getCallable());
     }
 
     /**
@@ -38,12 +38,12 @@ final class ContactsParametersRuleTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('The parameter "contacts" must be a list of e-mail addresses.');
-        $clientId = new ClientId('CLIENT_ID');
-        $commandParameters = new DataBag([
+        $clientId = ClientId::create('CLIENT_ID');
+        $commandParameters = DataBag::create([
             'contacts' => [123],
         ]);
         $rule = new ContactsParametersRule();
-        $rule->handle($clientId, $commandParameters, new DataBag([]), $this->getCallable());
+        $rule->handle($clientId, $commandParameters, DataBag::create([]), $this->getCallable());
     }
 
     /**
@@ -51,12 +51,12 @@ final class ContactsParametersRuleTest extends TestCase
      */
     public function theContactsParameterIsValid(): void
     {
-        $clientId = new ClientId('CLIENT_ID');
-        $commandParameters = new DataBag([
+        $clientId = ClientId::create('CLIENT_ID');
+        $commandParameters = DataBag::create([
             'contacts' => ['foo@bar.com', 'hello@you.com'],
         ]);
         $rule = new ContactsParametersRule();
-        $validatedParameters = $rule->handle($clientId, $commandParameters, new DataBag([]), $this->getCallable());
+        $validatedParameters = $rule->handle($clientId, $commandParameters, DataBag::create([]), $this->getCallable());
 
         static::assertTrue($validatedParameters->has('contacts'));
         static::assertSame(['foo@bar.com', 'hello@you.com'], $validatedParameters->get('contacts'));

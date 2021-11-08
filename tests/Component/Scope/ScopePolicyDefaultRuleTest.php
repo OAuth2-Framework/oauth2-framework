@@ -10,12 +10,12 @@ use OAuth2Framework\Component\ClientRule\RuleHandler;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Scope\Rule\ScopePolicyDefaultRule;
-use PHPUnit\Framework\TestCase;
+use OAuth2Framework\Tests\Component\OAuth2TestCase;
 
 /**
  * @internal
  */
-final class ScopePolicyDefaultRuleTest extends TestCase
+final class ScopePolicyDefaultRuleTest extends OAuth2TestCase
 {
     /**
      * @inheritdoc}
@@ -34,12 +34,12 @@ final class ScopePolicyDefaultRuleTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('The "default_scope" parameter must be a string.');
-        $clientId = new ClientId('CLIENT_ID');
-        $commandParameters = new DataBag([
+        $clientId = ClientId::create('CLIENT_ID');
+        $commandParameters = DataBag::create([
             'default_scope' => ['foo'],
         ]);
         $rule = new ScopePolicyDefaultRule();
-        $rule->handle($clientId, $commandParameters, new DataBag([]), $this->getCallable());
+        $rule->handle($clientId, $commandParameters, DataBag::create([]), $this->getCallable());
     }
 
     /**
@@ -49,12 +49,12 @@ final class ScopePolicyDefaultRuleTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid characters found in the "default_scope" parameter.');
-        $clientId = new ClientId('CLIENT_ID');
-        $commandParameters = new DataBag([
+        $clientId = ClientId::create('CLIENT_ID');
+        $commandParameters = DataBag::create([
             'default_scope' => 'coffee, café',
         ]);
         $rule = new ScopePolicyDefaultRule();
-        $rule->handle($clientId, $commandParameters, new DataBag([]), $this->getCallable());
+        $rule->handle($clientId, $commandParameters, DataBag::create([]), $this->getCallable());
     }
 
     /**
@@ -62,12 +62,12 @@ final class ScopePolicyDefaultRuleTest extends TestCase
      */
     public function theParameterIsValid(): void
     {
-        $clientId = new ClientId('CLIENT_ID');
-        $commandParameters = new DataBag([
+        $clientId = ClientId::create('CLIENT_ID');
+        $commandParameters = DataBag::create([
             'default_scope' => 'coffee cream',
         ]);
         $rule = new ScopePolicyDefaultRule();
-        $validatedParameters = $rule->handle($clientId, $commandParameters, new DataBag([]), $this->getCallable());
+        $validatedParameters = $rule->handle($clientId, $commandParameters, DataBag::create([]), $this->getCallable());
         static::assertTrue($validatedParameters->has('default_scope'));
         static::assertSame('coffee cream', $validatedParameters->get('default_scope'));
     }

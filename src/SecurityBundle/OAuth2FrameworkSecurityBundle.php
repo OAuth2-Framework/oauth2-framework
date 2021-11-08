@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\SecurityBundle;
 
-use OAuth2Framework\SecurityBundle\DependencyInjection\Compiler\AccessTokenHandlerCompilerPass;
 use OAuth2Framework\SecurityBundle\DependencyInjection\Compiler\SecurityAnnotationCheckerCompilerPass;
 use OAuth2Framework\SecurityBundle\DependencyInjection\Compiler\TokenTypeCompilerPass;
 use OAuth2Framework\SecurityBundle\DependencyInjection\OAuth2FrameworkSecurityExtension;
-use OAuth2Framework\SecurityBundle\Security\Factory\OAuth2SecurityFactory;
+use OAuth2Framework\SecurityBundle\Security\Authentication\OAuth2SecurityFactory;
 use RuntimeException;
 use Symfony\Bundle\SecurityBundle\DependencyInjection\SecurityExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -34,7 +33,6 @@ final class OAuth2FrameworkSecurityBundle extends Bundle
         $extension->addSecurityListenerFactory(new OAuth2SecurityFactory());
 
         $container->addCompilerPass(new SecurityAnnotationCheckerCompilerPass());
-        $container->addCompilerPass(new AccessTokenHandlerCompilerPass());
         $container->addCompilerPass(new TokenTypeCompilerPass());
     }
 }

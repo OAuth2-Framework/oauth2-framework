@@ -10,21 +10,21 @@ use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
-use PHPUnit\Framework\TestCase;
+use OAuth2Framework\Tests\Component\OAuth2TestCase;
+use OAuth2Framework\Tests\TestBundle\Entity\AuthorizationCode;
 
 /**
  * @internal
  */
-final class AuthorizationCodeTest extends TestCase
+final class AuthorizationCodeTest extends OAuth2TestCase
 {
     /**
      * @test
      */
     public function iCanCreateAnAuthorizationCodeId(): void
     {
-        $authorizationCodeId = new AuthorizationCodeId('AUTHORIZATION_CODE_ID');
+        $authorizationCodeId = AuthorizationCodeId::create('AUTHORIZATION_CODE_ID');
 
-        static::assertInstanceOf(AuthorizationCodeId::class, $authorizationCodeId);
         static::assertSame('AUTHORIZATION_CODE_ID', $authorizationCodeId->getValue());
     }
 
@@ -34,15 +34,15 @@ final class AuthorizationCodeTest extends TestCase
     public function iCanCreateAndRevokedAnAuthorizationCode(): void
     {
         $authorizationCode = new AuthorizationCode(
-            new AuthorizationCodeId('AUTHORIZATION_CODE_ID'),
-            new ClientId('CLIENT_ID'),
-            new UserAccountId('USER_ACCOUNT_ID'),
+            AuthorizationCodeId::create('AUTHORIZATION_CODE_ID'),
+            ClientId::create('CLIENT_ID'),
+            UserAccountId::create('USER_ACCOUNT_ID'),
             [],
             'http://localhost',
             new DateTimeImmutable('2010-01-28T15:00:00+02:00'),
-            new DataBag([]),
-            new DataBag([]),
-            new ResourceServerId('RESOURCE_SERVER_ID')
+            DataBag::create([]),
+            DataBag::create([]),
+            ResourceServerId::create('RESOURCE_SERVER_ID')
         );
         $authorizationCode->markAsUsed();
 

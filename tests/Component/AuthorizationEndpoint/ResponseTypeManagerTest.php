@@ -5,18 +5,13 @@ declare(strict_types=1);
 namespace OAuth2Framework\Tests\Component\AuthorizationEndpoint;
 
 use InvalidArgumentException;
-use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType\ResponseType;
-use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType\ResponseTypeManager;
-use PHPUnit\Framework\TestCase;
-use Prophecy\PhpUnit\ProphecyTrait;
+use OAuth2Framework\Tests\Component\OAuth2TestCase;
 
 /**
  * @internal
  */
-final class ResponseTypeManagerTest extends TestCase
+final class ResponseTypeManagerTest extends OAuth2TestCase
 {
-    use ProphecyTrait;
-
     /**
      * @test
      */
@@ -24,20 +19,12 @@ final class ResponseTypeManagerTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('The response type "bar" is not supported.');
-        $manager = new ResponseTypeManager();
+        $manager = $this->getResponseTypeManager();
 
-        $type = $this->prophesize(ResponseType::class);
-        $type->name()
-            ->willReturn('foo')
-        ;
-
-        $manager->add($type->reveal());
-
-        static::assertTrue($manager->has('foo'));
+        static::assertTrue($manager->has('code'));
         static::assertFalse($manager->has('bar'));
-        static::assertInstanceOf(ResponseType::class, $manager->get('foo'));
-        static::assertSame(['foo'], $manager->list());
-        static::assertCount(1, $manager->all());
+        static::assertSame(['token', 'none', 'code'], $manager->list());
+        static::assertCount(3, $manager->all());
 
         $manager->get('bar');
     }

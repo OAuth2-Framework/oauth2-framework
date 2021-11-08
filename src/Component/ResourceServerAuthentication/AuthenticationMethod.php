@@ -20,7 +20,7 @@ interface AuthenticationMethod
      * must be checked.
      *
      * @param ServerRequestInterface $request                   The request
-     * @param mixed|null $resourceServerCredentials The resource server credentials found in the request
+     * @param mixed|null             $resourceServerCredentials The resource server credentials found in the request
      *
      * @return ResourceServerId|null Return the  resource server public ID if found else null. If credentials have are needed to authenticate the ResourceServer, they are set to the variable $resourceServerCredentials
      */

@@ -6,16 +6,23 @@ namespace OAuth2Framework\Component\WebFingerEndpoint\IdentifierResolver;
 
 use InvalidArgumentException;
 
-class IdentifierResolverManager
+final class IdentifierResolverManager
 {
     /**
      * @var IdentifierResolver[]
      */
     private array $resolvers = [];
 
-    public function add(IdentifierResolver $resolver): void
+    public static function create(): self
+    {
+        return new self();
+    }
+
+    public function add(IdentifierResolver $resolver): self
     {
         $this->resolvers[] = $resolver;
+
+        return $this;
     }
 
     public function resolve(string $resource): Identifier

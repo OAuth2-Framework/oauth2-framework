@@ -18,6 +18,11 @@ class ScopeParameterChecker implements ParameterChecker
     ) {
     }
 
+    public static function create(ScopeRepository $scopeRepository, ScopePolicyManager $scopePolicyManager): self
+    {
+        return new self($scopeRepository, $scopePolicyManager);
+    }
+
     public function check(AuthorizationRequest $authorization): void
     {
         $requestedScope = $this->getRequestedScope($authorization);

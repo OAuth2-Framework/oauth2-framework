@@ -19,7 +19,7 @@ final class ResourceRepository implements ResourceRepositoryInterface
 
     public function __construct()
     {
-        $this->resources['john'] = new ResourceDescriptor(
+        $this->resources['john'] = ResourceDescriptor::create(
             'acct:john@my-service.com:443',
             ['https://my-service.com:443/+john'],
             [],

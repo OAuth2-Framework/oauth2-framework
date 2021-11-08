@@ -20,9 +20,11 @@ class TokenEndpointExtensionManager
      */
     private array $extensions = [];
 
-    public function add(TokenEndpointExtension $tokenEndpointExtension): void
+    public function add(TokenEndpointExtension $tokenEndpointExtension): self
     {
         $this->extensions[] = $tokenEndpointExtension;
+
+        return $this;
     }
 
     public function handleBeforeAccessTokenIssuance(

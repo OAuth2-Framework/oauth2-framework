@@ -25,6 +25,11 @@ final class ClientSecretBasic implements AuthenticationMethod
         $this->secretLifetime = $secretLifetime;
     }
 
+    public static function create(string $realm): self
+    {
+        return new self($realm);
+    }
+
     public function getSchemesParameters(): array
     {
         return [sprintf('Basic realm="%s",charset="UTF-8"', $this->realm)];

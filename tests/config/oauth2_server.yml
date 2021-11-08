@@ -29,12 +29,6 @@ oauth2_server:
         allow_token_type_parameter: true
         bearer_token:
             enabled: true
-        mac_token:
-            enabled: true
-            min_length: 50
-            max_length: 100
-            algorithm: 'hmac-sha-256'
-            timestamp_lifetime: 10
     client_authentication:
         client_secret_basic: # Always available
             secret_lifetime: 3600

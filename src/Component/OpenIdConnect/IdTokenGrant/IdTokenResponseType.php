@@ -40,6 +40,22 @@ final class IdTokenResponseType implements ResponseType
         $this->defaultSignatureAlgorithm = $defaultSignatureAlgorithm;
     }
 
+    public static function create(
+        IdTokenBuilderFactory $idTokenBuilderFactory,
+        string $defaultSignatureAlgorithm,
+        JWSBuilder $jwsBuilder,
+        JWKSet $signatureKeys,
+        ?JWEBuilder $jweBuilder
+    ): self {
+        return new self(
+            $idTokenBuilderFactory,
+            $defaultSignatureAlgorithm,
+            $jwsBuilder,
+            $signatureKeys,
+            $jweBuilder
+        );
+    }
+
     public function associatedGrantTypes(): array
     {
         return [];
@@ -94,12 +110,14 @@ final class IdTokenResponseType implements ResponseType
 
         if ($authorization->hasResponseParameter('code')) {
             $idTokenBuilder->withAuthorizationCodeId(
-                new AuthorizationCodeId($authorization->getResponseParameter('code'))
+                AuthorizationCodeId::create($authorization->getResponseParameter('code'))
             );
         }
 
         if ($authorization->hasResponseParameter('access_token')) {
-            $idTokenBuilder->withAccessTokenId(new AccessTokenId($authorization->getResponseParameter('access_token')));
+            $idTokenBuilder->withAccessTokenId(
+                AccessTokenId::create($authorization->getResponseParameter('access_token'))
+            );
         }
 
         if ($authorization->hasQueryParam('claims_locales')) {

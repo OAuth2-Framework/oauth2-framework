@@ -26,6 +26,18 @@ final class RefreshToken extends AbstractRefreshToken
         parent::__construct($clientId, $resourceOwnerId, $expiresAt, $parameter, $metadata, $resourceServerId);
     }
 
+    public static function create(
+        RefreshTokenId $id,
+        ClientId $clientId,
+        ResourceOwnerId $resourceOwnerId,
+        DateTimeImmutable $expiresAt,
+        DataBag $parameter,
+        DataBag $metadata,
+        ?ResourceServerId $resourceServerId
+    ): self {
+        return new self($id, $clientId, $resourceOwnerId, $expiresAt, $parameter, $metadata, $resourceServerId);
+    }
+
     public function getId(): RefreshTokenId
     {
         return $this->id;

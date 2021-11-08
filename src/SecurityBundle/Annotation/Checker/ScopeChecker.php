@@ -7,7 +7,7 @@ namespace OAuth2Framework\SecurityBundle\Annotation\Checker;
 use function count;
 use Exception;
 use OAuth2Framework\SecurityBundle\Annotation\OAuth2;
-use OAuth2Framework\SecurityBundle\Security\Authentication\Token\OAuth2Token;
+use OAuth2Framework\SecurityBundle\Security\Authentication\OAuth2Token;
 
 final class ScopeChecker implements Checker
 {

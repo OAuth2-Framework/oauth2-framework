@@ -10,6 +10,11 @@ use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\Authori
 
 final class RedirectUriParameterChecker implements ParameterChecker
 {
+    public static function create(): self
+    {
+        return new self();
+    }
+
     public function check(AuthorizationRequest $authorization): void
     {
         $redirectUri = $authorization->getRedirectUri();

@@ -10,20 +10,25 @@ use function League\Uri\parse;
 
 final class EmailResolver implements IdentifierResolver
 {
+    public static function create(): self
+    {
+        return new self();
+    }
+
     public function supports(string $resource): bool
     {
-        $uri = parse('http://' . $resource);
+        $uri = parse('https://' . $resource);
 
-        return $uri['scheme'] === 'http' && $uri['user'] !== null && $uri['host'] !== null && $uri['path'] === '' && $uri['query'] === null && $uri['fragment'] === null;
+        return $uri['scheme'] === 'https' && $uri['user'] !== null && $uri['pass'] === null && $uri['host'] !== null && $uri['path'] === '' && $uri['query'] === null && $uri['fragment'] === null;
     }
 
     public function resolve(string $resource): Identifier
     {
-        $uri = parse('http://' . $resource);
+        $uri = parse('https://' . $resource);
         if (! is_string($uri['user']) || ! is_string($uri['host'])) {
             throw new InvalidArgumentException('Invalid resource.');
         }
 
-        return new Identifier($uri['user'], $uri['host'], $uri['port']);
+        return Identifier::create($uri['user'], $uri['host'], $uri['port']);
     }
 }

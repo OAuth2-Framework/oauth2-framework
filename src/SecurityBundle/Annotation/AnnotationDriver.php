@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\SecurityBundle\Annotation;
 
-use Doctrine\Common\Annotations\Reader;
 use function is_array;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use OAuth2Framework\Component\Core\Message\OAuth2MessageFactoryManager;
 use OAuth2Framework\SecurityBundle\Annotation\Checker\Checker;
-use OAuth2Framework\SecurityBundle\Security\Authentication\Token\OAuth2Token;
+use OAuth2Framework\SecurityBundle\Security\Authentication\OAuth2Token;
 use Psr\Http\Message\ResponseInterface;
 use ReflectionObject;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
@@ -18,7 +17,7 @@ use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Throwable;
 
-class AnnotationDriver
+final class AnnotationDriver
 {
     /**
      * @var Checker[]
@@ -26,15 +25,16 @@ class AnnotationDriver
     private array $checkers = [];
 
     public function __construct(
-        private Reader $reader,
         private TokenStorageInterface $tokenStorage,
         private OAuth2MessageFactoryManager $oauth2ResponseFactoryManager
     ) {
     }
 
-    public function add(Checker $checker): void
+    public function add(Checker $checker): self
     {
         $this->checkers[] = $checker;
+
+        return $this;
     }
 
     /**
@@ -54,13 +54,12 @@ class AnnotationDriver
 
         $object = new ReflectionObject($controller[0]);
         $method = $object->getMethod($controller[1]);
-        $classConfigurations = $this->reader->getClassAnnotations($object);
-        $methodConfigurations = $this->reader->getMethodAnnotations($method);
 
-        foreach (array_merge($classConfigurations, $methodConfigurations) as $configuration) {
-            if ($configuration instanceof OAuth2) {
-                $this->processOAuth2Annotation($event, $configuration);
-            }
+        $attributes = array_merge($object->getAttributes(OAuth2::class), $method->getAttributes(OAuth2::class));
+
+        foreach ($attributes as $attribute) {
+            $annotation = $attribute->newInstance();
+            $this->processOAuth2Annotation($event, $annotation);
         }
     }
 
@@ -69,7 +68,7 @@ class AnnotationDriver
         $token = $this->tokenStorage->getToken();
 
         if (! $token instanceof OAuth2Token) {
-            $this->createAuthenticationException($event, 'OAuth2 authentication required', $configuration);
+            $this->createAuthenticationException($event, $configuration);
 
             return;
         }
@@ -83,13 +82,13 @@ class AnnotationDriver
         }
     }
 
-    private function createAuthenticationException(ControllerEvent $event, string $message, OAuth2 $configuration): void
+    private function createAuthenticationException(ControllerEvent $event, OAuth2 $configuration): void
     {
         $additionalData = $configuration->getScope() !== null ? [
             'scope' => $configuration->getScope(),
         ] : [];
         $response = $this->oauth2ResponseFactoryManager->getResponse(
-            OAuth2Error::accessDenied($message),
+            OAuth2Error::accessDenied('OAuth2 authentication required'),
             $additionalData
         );
 

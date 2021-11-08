@@ -34,7 +34,7 @@ final class RefreshTokenIdType extends Type
             return $value;
         }
 
-        return new RefreshTokenId($value);
+        return RefreshTokenId::create($value);
     }
 
     /**

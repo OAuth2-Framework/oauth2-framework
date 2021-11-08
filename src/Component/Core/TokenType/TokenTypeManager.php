@@ -19,12 +19,19 @@ class TokenTypeManager
 
     private ?string $defaultTokenType = null;
 
-    public function add(TokenType $tokenType, bool $default = false): void
+    public static function create(): self
+    {
+        return new self();
+    }
+
+    public function add(TokenType $tokenType, bool $default = false): self
     {
         $this->tokenTypes[$tokenType->name()] = $tokenType;
         if ($this->defaultTokenType === null || $default === true) {
             $this->defaultTokenType = $tokenType->name();
         }
+
+        return $this;
     }
 
     public function has(string $tokenTypeName): bool
@@ -91,7 +98,7 @@ class TokenTypeManager
     private function appendParameters(string $scheme, array $parameters): string
     {
         $position = mb_strpos($scheme, ' ', 0, 'utf-8');
-        $add_comma = $position === false ? false : true;
+        $add_comma = ! ($position === false);
 
         foreach ($parameters as $key => $value) {
             $value = is_string($value) ? sprintf('"%s"', $value) : $value;

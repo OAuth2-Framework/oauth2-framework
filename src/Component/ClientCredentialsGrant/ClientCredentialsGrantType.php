@@ -11,6 +11,11 @@ use Psr\Http\Message\ServerRequestInterface;
 
 final class ClientCredentialsGrantType implements GrantType
 {
+    public static function create(): self
+    {
+        return new self();
+    }
+
     public function associatedResponseTypes(): array
     {
         return [];

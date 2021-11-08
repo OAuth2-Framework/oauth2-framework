@@ -38,9 +38,11 @@ class AuthorizationEndpoint
     ) {
     }
 
-    public function addHook(AuthorizationEndpointHook $hook): void
+    public function addHook(AuthorizationEndpointHook $hook): self
     {
         $this->hooks[] = $hook;
+
+        return $this;
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface

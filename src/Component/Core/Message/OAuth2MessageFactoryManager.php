@@ -27,14 +27,18 @@ final class OAuth2MessageFactoryManager
     ) {
     }
 
-    public function addFactory(ResponseFactory $responseFactory): void
+    public function addFactory(ResponseFactory $responseFactory): self
     {
         $this->responseFactories[$responseFactory->getSupportedCode()] = $responseFactory;
+
+        return $this;
     }
 
-    public function addExtension(MessageExtension $extension): void
+    public function addExtension(MessageExtension $extension): self
     {
         $this->extensions[] = $extension;
+
+        return $this;
     }
 
     public function getResponse(OAuth2Error $message, array $additionalData = []): ResponseInterface

@@ -4,39 +4,33 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Tests\TestBundle\Repository;
 
-use Assert\Assertion;
 use OAuth2Framework\Component\Core\Client\Client as ClientInterface;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\Client\ClientRepository as ClientRepositoryInterface;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use OAuth2Framework\Tests\TestBundle\Entity\Client;
-use Psr\Cache\CacheItemPoolInterface;
 
 final class ClientRepository implements ClientRepositoryInterface
 {
-    public function __construct(
-        private CacheItemPoolInterface $cache
-    ) {
+    /**
+     * @var array<string, ClientInterface>
+     */
+    private array $clients = [];
+
+    public function __construct()
+    {
         $this->load();
     }
 
     public function find(ClientId $clientId): ?ClientInterface
     {
-        $item = $this->cache->getItem('Client-' . $clientId->getValue());
-        if ($item->isHit()) {
-            return $item->get();
-        }
-
-        return null;
+        return $this->clients[$clientId->getValue()] ?? null;
     }
 
     public function save(ClientInterface $client): void
     {
-        Assertion::isInstanceOf($client, Client::class, 'Unsupported client class');
-        $item = $this->cache->getItem('Client-' . $client->getClientId()->getValue());
-        $item->set($client);
-        $this->cache->save($item);
+        $this->clients[$client->getClientId()->getValue()] = $client;
     }
 
     public function create(ClientId $clientId, DataBag $parameters, ?UserAccountId $ownerId): ClientInterface

@@ -16,9 +16,16 @@ class ParameterCheckerManager
      */
     private array $parameterCheckers = [];
 
-    public function add(ParameterChecker $parameterChecker): void
+    public static function create(): self
+    {
+        return new self();
+    }
+
+    public function add(ParameterChecker $parameterChecker): self
     {
         $this->parameterCheckers[] = $parameterChecker;
+
+        return $this;
     }
 
     public function check(AuthorizationRequest $authorization): void

@@ -12,12 +12,12 @@ use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Scope\Policy\NoScopePolicy;
 use OAuth2Framework\Component\Scope\Policy\ScopePolicyManager;
 use OAuth2Framework\Component\Scope\Rule\ScopePolicyRule;
-use PHPUnit\Framework\TestCase;
+use OAuth2Framework\Tests\Component\OAuth2TestCase;
 
 /**
  * @internal
  */
-final class ScopePolicyRuleTest extends TestCase
+final class ScopePolicyRuleTest extends OAuth2TestCase
 {
     /**
      * @inheritdoc}
@@ -36,12 +36,12 @@ final class ScopePolicyRuleTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('The parameter "scope_policy" must be a string.');
-        $clientId = new ClientId('CLIENT_ID');
-        $commandParameters = new DataBag([
+        $clientId = ClientId::create('CLIENT_ID');
+        $commandParameters = DataBag::create([
             'scope_policy' => ['foo'],
         ]);
         $rule = $this->getScopePolicyRule();
-        $rule->handle($clientId, $commandParameters, new DataBag([]), $this->getCallable());
+        $rule->handle($clientId, $commandParameters, DataBag::create([]), $this->getCallable());
     }
 
     /**
@@ -51,12 +51,12 @@ final class ScopePolicyRuleTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('The scope policy "foo" is not supported.');
-        $clientId = new ClientId('CLIENT_ID');
-        $commandParameters = new DataBag([
+        $clientId = ClientId::create('CLIENT_ID');
+        $commandParameters = DataBag::create([
             'scope_policy' => 'foo',
         ]);
         $rule = $this->getScopePolicyRule();
-        $rule->handle($clientId, $commandParameters, new DataBag([]), $this->getCallable());
+        $rule->handle($clientId, $commandParameters, DataBag::create([]), $this->getCallable());
     }
 
     /**
@@ -64,12 +64,12 @@ final class ScopePolicyRuleTest extends TestCase
      */
     public function theParameterIsValid(): void
     {
-        $clientId = new ClientId('CLIENT_ID');
-        $commandParameters = new DataBag([
+        $clientId = ClientId::create('CLIENT_ID');
+        $commandParameters = DataBag::create([
             'scope_policy' => 'none',
         ]);
         $rule = $this->getScopePolicyRule();
-        $validatedParameters = $rule->handle($clientId, $commandParameters, new DataBag([]), $this->getCallable());
+        $validatedParameters = $rule->handle($clientId, $commandParameters, DataBag::create([]), $this->getCallable());
         static::assertTrue($validatedParameters->has('scope_policy'));
         static::assertSame('none', $validatedParameters->get('scope_policy'));
     }

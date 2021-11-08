@@ -31,11 +31,13 @@ class MetadataEndpoint implements MiddlewareInterface
     ) {
     }
 
-    public function enableSignature(JWSBuilder $jwsBuilder, string $signatureAlgorithm, JWK $signatureKey): void
+    public function enableSignature(JWSBuilder $jwsBuilder, string $signatureAlgorithm, JWK $signatureKey): self
     {
         $this->jwsBuilder = $jwsBuilder;
         $this->signatureKey = $signatureKey;
         $this->signatureAlgorithm = $signatureAlgorithm;
+
+        return $this;
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface

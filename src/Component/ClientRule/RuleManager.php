@@ -17,9 +17,11 @@ class RuleManager
     /**
      * Appends new middleware for this message bus. Should only be used at configuration time.
      */
-    public function add(Rule $rule): void
+    public function add(Rule $rule): self
     {
         $this->rules[] = $rule;
+
+        return $this;
     }
 
     /**

@@ -4,39 +4,26 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Tests\Component\RefreshTokenGrant;
 
-use DateTimeImmutable;
-use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
-use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
-use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenGrantType;
-use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenId;
-use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenRepository;
 use OAuth2Framework\Component\TokenEndpoint\GrantTypeData;
-use PHPUnit\Framework\TestCase;
-use Prophecy\PhpUnit\ProphecyTrait;
-use Prophecy\Prophecy\ObjectProphecy;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\StreamInterface;
+use OAuth2Framework\Tests\Component\OAuth2TestCase;
+use OAuth2Framework\Tests\TestBundle\Entity\Client;
 
 /**
  * @internal
  */
-final class RefreshTokenGrantTypeTest extends TestCase
+final class RefreshTokenGrantTypeTest extends OAuth2TestCase
 {
-    use ProphecyTrait;
-
-    private ?RefreshTokenGrantType $grantType = null;
-
     /**
      * @test
      */
     public function genericInformation(): void
     {
-        static::assertSame([], $this->getGrantType()->associatedResponseTypes());
-        static::assertSame('refresh_token', $this->getGrantType()->name());
+        static::assertSame([], $this->getGrantTypeManager()->get('refresh_token')->associatedResponseTypes());
+        static::assertSame('refresh_token', $this->getGrantTypeManager()->get('refresh_token')->name());
     }
 
     /**
@@ -44,13 +31,14 @@ final class RefreshTokenGrantTypeTest extends TestCase
      */
     public function theRequestHaveMissingParameters(): void
     {
-        $request = $this->buildRequest([
+        $request = $this->buildRequest('GET', [
             'password' => 'PASSWORD',
         ]);
 
         try {
-            $this->getGrantType()
-                ->checkRequest($request->reveal())
+            $this->getGrantTypeManager()
+                ->get('refresh_token')
+                ->checkRequest($request)
             ;
             static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2Error $e) {
@@ -67,12 +55,13 @@ final class RefreshTokenGrantTypeTest extends TestCase
      */
     public function theRequestHaveAllRequiredParameters(): void
     {
-        $request = $this->buildRequest([
+        $request = $this->buildRequest('GET', [
             'refresh_token' => 'REFRESH_TOKEN_ID',
         ]);
 
-        $this->getGrantType()
-            ->checkRequest($request->reveal())
+        $this->getGrantTypeManager()
+            ->get('refresh_token')
+            ->checkRequest($request)
         ;
         static::assertTrue(true);
     }
@@ -82,28 +71,21 @@ final class RefreshTokenGrantTypeTest extends TestCase
      */
     public function theRefreshTokenDoesNotExist(): void
     {
-        $client = $this->prophesize(Client::class);
-        $client->isPublic()
-            ->willReturn(false)
-        ;
-        $client->getPublicId()
-            ->willReturn(new ClientId('CLIENT_ID'))
-        ;
-        $client->getClientId()
-            ->willReturn(new ClientId('CLIENT_ID'))
-        ;
-        $client->getOwnerId()
-            ->willReturn(new UserAccountId('USER_ACCOUNT_ID'))
-        ;
+        $client = Client::create(
+            ClientId::create('CLIENT_ID'),
+            DataBag::create(),
+            UserAccountId::create('USER_ACCOUNT_ID')
+        );
 
-        $grantTypeData = new GrantTypeData($client->reveal());
-        $request = $this->buildRequest([
+        $grantTypeData = GrantTypeData::create($client);
+        $request = $this->buildRequest('GET', [
             'refresh_token' => 'UNKNOWN_REFRESH_TOKEN_ID',
         ]);
 
         try {
-            $this->getGrantType()
-                ->grant($request->reveal(), $grantTypeData)
+            $this->getGrantTypeManager()
+                ->get('refresh_token')
+                ->grant($request, $grantTypeData)
             ;
             static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2Error $e) {
@@ -120,27 +102,20 @@ final class RefreshTokenGrantTypeTest extends TestCase
      */
     public function theTokenResponseIsCorrectlyPrepared(): void
     {
-        $client = $this->prophesize(Client::class);
-        $client->isPublic()
-            ->willReturn(false)
-        ;
-        $client->getPublicId()
-            ->willReturn(new ClientId('CLIENT_ID'))
-        ;
-        $client->getClientId()
-            ->willReturn(new ClientId('CLIENT_ID'))
-        ;
-        $client->getOwnerId()
-            ->willReturn(new UserAccountId('USER_ACCOUNT_ID'))
-        ;
+        $client = Client::create(
+            ClientId::create('CLIENT_ID'),
+            DataBag::create(),
+            UserAccountId::create('USER_ACCOUNT_ID')
+        );
 
-        $request = $this->buildRequest([
+        $request = $this->buildRequest('GET', [
             'refresh_token' => 'REFRESH_TOKEN_ID',
         ]);
-        $grantTypeData = new GrantTypeData($client->reveal());
+        $grantTypeData = GrantTypeData::create($client);
 
-        $this->getGrantType()
-            ->prepareResponse($request->reveal(), $grantTypeData)
+        $this->getGrantTypeManager()
+            ->get('refresh_token')
+            ->prepareResponse($request, $grantTypeData)
         ;
         static::assertSame($grantTypeData, $grantTypeData);
     }
@@ -150,31 +125,23 @@ final class RefreshTokenGrantTypeTest extends TestCase
      */
     public function theRefreshTokenIsRevoked(): void
     {
-        $client = $this->prophesize(Client::class);
-        $client->isPublic()
-            ->willReturn(false)
-        ;
-        $client->getPublicId()
-            ->willReturn(new ClientId('CLIENT_ID'))
-        ;
-        $client->getClientId()
-            ->willReturn(new ClientId('CLIENT_ID'))
-        ;
-        $client->getOwnerId()
-            ->willReturn(new UserAccountId('USER_ACCOUNT_ID'))
-        ;
+        $client = Client::create(
+            ClientId::create('CLIENT_ID'),
+            DataBag::create(),
+            UserAccountId::create('USER_ACCOUNT_ID')
+        );
 
-        $request = $this->buildRequest([
+        $request = $this->buildRequest('GET', [
             'refresh_token' => 'REVOKED_REFRESH_TOKEN_ID',
         ]);
-        $request->getAttribute('client')
-            ->willReturn($client)
-        ;
-        $grantTypeData = new GrantTypeData($client->reveal());
+        $request = $request->withAttribute('client', $client);
+
+        $grantTypeData = GrantTypeData::create($client);
 
         try {
-            $this->getGrantType()
-                ->grant($request->reveal(), $grantTypeData)
+            $this->getGrantTypeManager()
+                ->get('refresh_token')
+                ->grant($request, $grantTypeData)
             ;
             static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2Error $e) {
@@ -191,31 +158,23 @@ final class RefreshTokenGrantTypeTest extends TestCase
      */
     public function theRefreshTokenIsNotForThatClient(): void
     {
-        $client = $this->prophesize(Client::class);
-        $client->isPublic()
-            ->willReturn(false)
-        ;
-        $client->getPublicId()
-            ->willReturn(new ClientId('OTHER_CLIENT_ID'))
-        ;
-        $client->getClientId()
-            ->willReturn(new ClientId('OTHER_CLIENT_ID'))
-        ;
-        $client->getOwnerId()
-            ->willReturn(new UserAccountId('USER_ACCOUNT_ID'))
-        ;
+        $client = Client::create(
+            ClientId::create('OTHER_CLIENT_ID'),
+            DataBag::create(),
+            UserAccountId::create('USER_ACCOUNT_ID')
+        );
 
-        $request = $this->buildRequest([
+        $request = $this->buildRequest('GET', [
             'refresh_token' => 'REFRESH_TOKEN_ID',
         ]);
-        $request->getAttribute('client')
-            ->willReturn($client->reveal())
-        ;
-        $grantTypeData = new GrantTypeData($client->reveal());
+        $request = $request->withAttribute('client', $client);
+
+        $grantTypeData = GrantTypeData::create($client);
 
         try {
-            $this->getGrantType()
-                ->grant($request->reveal(), $grantTypeData)
+            $this->getGrantTypeManager()
+                ->get('refresh_token')
+                ->grant($request, $grantTypeData)
             ;
             static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2Error $e) {
@@ -232,31 +191,23 @@ final class RefreshTokenGrantTypeTest extends TestCase
      */
     public function theRefreshTokenExpired(): void
     {
-        $client = $this->prophesize(Client::class);
-        $client->isPublic()
-            ->willReturn(false)
-        ;
-        $client->getPublicId()
-            ->willReturn(new ClientId('CLIENT_ID'))
-        ;
-        $client->getClientId()
-            ->willReturn(new ClientId('CLIENT_ID'))
-        ;
-        $client->getOwnerId()
-            ->willReturn(new UserAccountId('USER_ACCOUNT_ID'))
-        ;
+        $client = Client::create(
+            ClientId::create('CLIENT_ID'),
+            DataBag::create(),
+            UserAccountId::create('USER_ACCOUNT_ID')
+        );
 
-        $request = $this->buildRequest([
+        $request = $this->buildRequest('GET', [
             'refresh_token' => 'EXPIRED_REFRESH_TOKEN_ID',
         ]);
-        $request->getAttribute('client')
-            ->willReturn($client)
-        ;
-        $grantTypeData = new GrantTypeData($client->reveal());
+        $request = $request->withAttribute('client', $client);
+
+        $grantTypeData = GrantTypeData::create($client);
 
         try {
-            $this->getGrantType()
-                ->grant($request->reveal(), $grantTypeData)
+            $this->getGrantTypeManager()
+                ->get('refresh_token')
+                ->grant($request, $grantTypeData)
             ;
             static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2Error $e) {
@@ -273,124 +224,24 @@ final class RefreshTokenGrantTypeTest extends TestCase
      */
     public function theGrantTypeCanGrantTheClient(): void
     {
-        $client = $this->prophesize(Client::class);
-        $client->isPublic()
-            ->willReturn(false)
-        ;
-        $client->getPublicId()
-            ->willReturn(new ClientId('CLIENT_ID'))
-        ;
-        $client->getClientId()
-            ->willReturn(new ClientId('CLIENT_ID'))
-        ;
-        $client->getOwnerId()
-            ->willReturn(new UserAccountId('USER_ACCOUNT_ID'))
-        ;
+        $client = Client::create(
+            ClientId::create('CLIENT_ID'),
+            DataBag::create(),
+            UserAccountId::create('USER_ACCOUNT_ID')
+        );
 
-        $request = $this->buildRequest([
+        $request = $this->buildRequest('GET', [
             'refresh_token' => 'REFRESH_TOKEN_ID',
         ]);
-        $request->getAttribute('client')
-            ->willReturn($client)
-        ;
-        $grantTypeData = new GrantTypeData($client->reveal());
+        $request = $request->withAttribute('client', $client);
 
-        $this->getGrantType()
-            ->grant($request->reveal(), $grantTypeData)
+        $grantTypeData = GrantTypeData::create($client);
+
+        $this->getGrantTypeManager()
+            ->get('refresh_token')
+            ->grant($request, $grantTypeData)
         ;
         static::assertSame('CLIENT_ID', $grantTypeData->getResourceOwnerId()->getValue());
         static::assertSame('CLIENT_ID', $grantTypeData->getClient()->getPublicId()->getValue());
-    }
-
-    private function getGrantType(): RefreshTokenGrantType
-    {
-        if ($this->grantType === null) {
-            $refreshToken = new RefreshToken(
-                new RefreshTokenId('REFRESH_TOKEN_ID'),
-                new ClientId('CLIENT_ID'),
-                new ClientId('CLIENT_ID'),
-                new DateTimeImmutable('now +1 day'),
-                new DataBag([
-                    'metadata' => 'foo',
-                    'scope' => 'scope1 scope2',
-                ]),
-                new DataBag([
-                    'parameter1' => 'bar',
-                ]),
-                new ResourceServerId('RESOURCE_SERVER_ID')
-            );
-
-            $revokedRefreshToken = new RefreshToken(
-                new RefreshTokenId('REVOKED_REFRESH_TOKEN_ID'),
-                new ClientId('CLIENT_ID'),
-                new ClientId('CLIENT_ID'),
-                new DateTimeImmutable('now +1 day'),
-                new DataBag([
-                    'metadata' => 'foo',
-                    'scope' => 'scope1 scope2',
-                ]),
-                new DataBag([
-                    'parameter1' => 'bar',
-                ]),
-                new ResourceServerId('RESOURCE_SERVER_ID')
-            );
-            $revokedRefreshToken->markAsRevoked();
-
-            $expiredRefreshToken = new RefreshToken(
-                new RefreshTokenId('EXPIRED_REFRESH_TOKEN_ID'),
-                new ClientId('CLIENT_ID'),
-                new ClientId('CLIENT_ID'),
-                new DateTimeImmutable('now -1 day'),
-                new DataBag([
-                    'metadata' => 'foo',
-                    'scope' => 'scope1 scope2',
-                ]),
-                new DataBag([
-                    'parameter1' => 'bar',
-                ]),
-                new ResourceServerId('RESOURCE_SERVER_ID')
-            );
-
-            $refreshTokenRepository = $this->prophesize(RefreshTokenRepository::class);
-            $refreshTokenRepository->find(new RefreshTokenId('REFRESH_TOKEN_ID'))
-                ->willReturn($refreshToken)
-            ;
-            $refreshTokenRepository->find(new RefreshTokenId('UNKNOWN_REFRESH_TOKEN_ID'))
-                ->willReturn(null)
-            ;
-            $refreshTokenRepository->find(new RefreshTokenId('REVOKED_REFRESH_TOKEN_ID'))
-                ->willReturn($revokedRefreshToken)
-            ;
-            $refreshTokenRepository->find(new RefreshTokenId('EXPIRED_REFRESH_TOKEN_ID'))
-                ->willReturn($expiredRefreshToken)
-            ;
-
-            $this->grantType = new RefreshTokenGrantType($refreshTokenRepository->reveal());
-        }
-
-        return $this->grantType;
-    }
-
-    private function buildRequest(array $data): ObjectProphecy
-    {
-        $body = $this->prophesize(StreamInterface::class);
-        $body->getContents()
-            ->willReturn(http_build_query($data))
-        ;
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->hasHeader('Content-Type')
-            ->willReturn(true)
-        ;
-        $request->getHeader('Content-Type')
-            ->willReturn(['application/x-www-form-urlencoded'])
-        ;
-        $request->getBody()
-            ->willReturn($body->reveal())
-        ;
-        $request->getParsedBody()
-            ->willReturn([])
-        ;
-
-        return $request;
     }
 }

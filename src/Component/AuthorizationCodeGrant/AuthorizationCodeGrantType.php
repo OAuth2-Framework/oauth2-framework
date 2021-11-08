@@ -23,6 +23,13 @@ final class AuthorizationCodeGrantType implements GrantType
     ) {
     }
 
+    public static function create(
+        AuthorizationCodeRepository $authorizationCodeRepository,
+        PKCEMethodManager $pkceMethodManager
+    ): self {
+        return new self($authorizationCodeRepository, $pkceMethodManager);
+    }
+
     public function associatedResponseTypes(): array
     {
         return ['code'];
@@ -88,7 +95,7 @@ final class AuthorizationCodeGrantType implements GrantType
 
     private function getAuthorizationCode(string $code): AuthorizationCode
     {
-        $authorizationCode = $this->authorizationCodeRepository->find(new AuthorizationCodeId($code));
+        $authorizationCode = $this->authorizationCodeRepository->find(AuthorizationCodeId::create($code));
 
         if (! $authorizationCode instanceof AuthorizationCode) {
             throw OAuth2Error::invalidGrant('The parameter "code" is invalid.');

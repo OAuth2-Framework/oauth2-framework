@@ -13,6 +13,8 @@ class RouteLoader implements LoaderInterface
 {
     private RouteCollection $routes;
 
+    private LoaderResolverInterface $resolver;
+
     public function __construct()
     {
         $this->routes = new RouteCollection();
@@ -35,7 +37,7 @@ class RouteLoader implements LoaderInterface
         array $methods = [],
         string $condition = ''
     ): void {
-        $defaults['_controller'] = sprintf('%s:%s', $controllerId, $methodName);
+        $defaults['_controller'] = sprintf('%s::%s', $controllerId, $methodName);
         $route = new Route($path, $defaults, $requirements, $options, $host, $schemes, $methods, $condition);
         $this->routes->add(sprintf('webfinger.%s', $name), $route);
     }
@@ -50,11 +52,13 @@ class RouteLoader implements LoaderInterface
         return $type === 'webfinger';
     }
 
-    public function getResolver(): ?LoaderResolverInterface
+    public function getResolver(): LoaderResolverInterface
     {
+        return $this->resolver;
     }
 
     public function setResolver(LoaderResolverInterface $resolver): void
     {
+        $this->resolver = $resolver;
     }
 }

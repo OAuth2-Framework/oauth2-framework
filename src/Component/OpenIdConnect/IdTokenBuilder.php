@@ -66,7 +66,7 @@ class IdTokenBuilder
     ) {
     }
 
-    public function setAccessToken(AccessToken $accessToken): void
+    public function setAccessToken(AccessToken $accessToken): self
     {
         $this->accessTokenId = $accessToken->getId();
         $this->expiresAt = $accessToken->getExpiresAt();
@@ -75,10 +75,13 @@ class IdTokenBuilder
             ->get('scope') : null;
 
         if ($accessToken->getMetadata()->has('authorization_code_id') && $this->authorizationCodeRepository !== null) {
-            $authorizationCodeId = new AuthorizationCodeId($accessToken->getMetadata()->get('authorization_code_id'));
+            $authorizationCodeId = AuthorizationCodeId::create(
+                $accessToken->getMetadata()
+                    ->get('authorization_code_id')
+            );
             $authorizationCode = $this->authorizationCodeRepository->find($authorizationCodeId);
             if ($authorizationCode === null) {
-                return;
+                return $this;
             }
             $this->authorizationCodeId = $authorizationCodeId;
             $queryParams = $authorizationCode->getQueryParameters();
@@ -92,53 +95,72 @@ class IdTokenBuilder
             }
             $this->withAuthenticationTime = array_key_exists('max_age', $authorizationCode->getQueryParameters());
         }
+
+        return $this;
     }
 
-    public function withAccessTokenId(AccessTokenId $accessTokenId): void
+    public function withAccessTokenId(AccessTokenId $accessTokenId): self
     {
         $this->accessTokenId = $accessTokenId;
+
+        return $this;
     }
 
-    public function withAuthorizationCodeId(AuthorizationCodeId $authorizationCodeId): void
+    public function withAuthorizationCodeId(AuthorizationCodeId $authorizationCodeId): self
     {
         $this->authorizationCodeId = $authorizationCodeId;
+
+        return $this;
     }
 
-    public function withClaimsLocales(string $claimsLocales): void
+    public function withClaimsLocales(string $claimsLocales): self
     {
+        return $this;
     }
 
-    public function withAuthenticationTime(): void
+    public function withAuthenticationTime(): self
     {
         $this->withAuthenticationTime = true;
+
+        return $this;
     }
 
-    public function withScope(string $scope): void
+    public function withScope(string $scope): self
     {
         $this->scope = $scope;
+
+        return $this;
     }
 
-    public function withRequestedClaims(array $requestedClaims): void
+    public function withRequestedClaims(array $requestedClaims): self
     {
         $this->requestedClaims = $requestedClaims;
+
+        return $this;
     }
 
-    public function withNonce(string $nonce): void
+    public function withNonce(string $nonce): self
     {
         $this->nonce = $nonce;
+
+        return $this;
     }
 
-    public function withExpirationAt(DateTimeImmutable $expiresAt): void
+    public function withExpirationAt(DateTimeImmutable $expiresAt): self
     {
         $this->expiresAt = $expiresAt;
+
+        return $this;
     }
 
-    public function withoutAuthenticationTime(): void
+    public function withoutAuthenticationTime(): self
     {
         $this->withAuthenticationTime = false;
+
+        return $this;
     }
 
-    public function withSignature(JWSBuilder $jwsBuilder, JWKSet $signatureKeys, string $signatureAlgorithm): void
+    public function withSignature(JWSBuilder $jwsBuilder, JWKSet $signatureKeys, string $signatureAlgorithm): self
     {
         if (! in_array($signatureAlgorithm, $jwsBuilder->getSignatureAlgorithmManager()->list(), true)) {
             throw new InvalidArgumentException(sprintf(
@@ -153,13 +175,15 @@ class IdTokenBuilder
         $this->jwsBuilder = $jwsBuilder;
         $this->signatureKeys = $signatureKeys;
         $this->signatureAlgorithm = $signatureAlgorithm;
+
+        return $this;
     }
 
     public function withEncryption(
         JWEBuilder $jweBuilder,
         string $keyEncryptionAlgorithm,
         string $contentEncryptionAlgorithm
-    ): void {
+    ): self {
         if (! in_array($keyEncryptionAlgorithm, $jweBuilder->getKeyEncryptionAlgorithmManager()->list(), true)) {
             throw new InvalidArgumentException(sprintf(
                 'Unsupported key encryption algorithm "%s". Please use one of the following one: %s',
@@ -182,6 +206,8 @@ class IdTokenBuilder
         $this->jweBuilder = $jweBuilder;
         $this->keyEncryptionAlgorithm = $keyEncryptionAlgorithm;
         $this->contentEncryptionAlgorithm = $contentEncryptionAlgorithm;
+
+        return $this;
     }
 
     public function build(): string

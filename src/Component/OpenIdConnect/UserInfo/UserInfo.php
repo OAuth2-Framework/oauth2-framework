@@ -42,9 +42,11 @@ class UserInfo
         return $claims;
     }
 
-    public function enablePairwiseSubject(PairwiseSubjectIdentifierAlgorithm $pairwiseAlgorithm): void
+    public function enablePairwiseSubject(PairwiseSubjectIdentifierAlgorithm $pairwiseAlgorithm): self
     {
         $this->pairwiseAlgorithm = $pairwiseAlgorithm;
+
+        return $this;
     }
 
     public function isPairwiseSubjectIdentifierSupported(): bool

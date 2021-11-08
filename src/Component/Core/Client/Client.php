@@ -19,9 +19,9 @@ interface Client extends ResourceOwner
 
     public function getOwnerId(): ?UserAccountId;
 
-    public function setParameter(DataBag $parameter): void;
+    public function setParameter(DataBag $parameter): self;
 
-    public function markAsDeleted(): void;
+    public function markAsDeleted(): self;
 
     public function isDeleted(): bool;
 

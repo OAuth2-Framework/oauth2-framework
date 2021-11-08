@@ -4,18 +4,13 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Tests\Component\AuthorizationCodeGrant;
 
-use OAuth2Framework\Component\AuthorizationCodeGrant\PKCEMethod\PKCEMethodManager;
-use OAuth2Framework\Component\AuthorizationCodeGrant\PKCEMethod\Plain;
-use OAuth2Framework\Component\AuthorizationCodeGrant\PKCEMethod\S256;
-use PHPUnit\Framework\TestCase;
+use OAuth2Framework\Tests\Component\OAuth2TestCase;
 
 /**
  * @internal
  */
-final class PkceTest extends TestCase
+final class PkceTest extends OAuth2TestCase
 {
-    private ?PKCEMethodManager $pkceMethodManager = null;
-
     /**
      * @test
      */
@@ -53,16 +48,5 @@ final class PkceTest extends TestCase
                 'verifier' => 'dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk',
             ],
         ];
-    }
-
-    private function getPkceMethodManager(): PKCEMethodManager
-    {
-        if ($this->pkceMethodManager === null) {
-            $this->pkceMethodManager = new PKCEMethodManager();
-            $this->pkceMethodManager->add(new Plain());
-            $this->pkceMethodManager->add(new S256());
-        }
-
-        return $this->pkceMethodManager;
     }
 }

@@ -19,12 +19,12 @@ use Jose\Component\KeyManagement\JKUFactory;
 use Jose\Component\Signature\JWS;
 use Jose\Component\Signature\JWSVerifier;
 use Jose\Component\Signature\Serializer\CompactSerializer;
+use Nyholm\Psr7\Factory\Psr17Factory;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\Client\ClientRepository;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use Psr\Http\Client\ClientInterface;
-use Psr\Http\Message\RequestFactoryInterface;
 use Throwable;
 
 class AuthorizationRequestLoader
@@ -49,11 +49,14 @@ class AuthorizationRequestLoader
 
     private ?JKUFactory $jkuFactory = null;
 
-    private ?RequestFactoryInterface $requestFactory = null;
-
     public function __construct(
         private ClientRepository $clientRepository
     ) {
+    }
+
+    public static function create(ClientRepository $clientRepository): self
+    {
+        return new self($clientRepository);
     }
 
     public function isRequestUriRegistrationRequired(): bool
@@ -106,13 +109,11 @@ class AuthorizationRequestLoader
 
     public function enableRequestObjectReferenceSupport(
         ClientInterface $client,
-        RequestFactoryInterface $requestFactory,
         bool $requireRequestUriRegistration
     ): void {
         Assertion::true($this->isRequestObjectSupportEnabled(), 'Request object support must be enabled first.');
         $this->requestObjectReferenceAllowed = true;
         $this->requireRequestUriRegistration = $requireRequestUriRegistration;
-        $this->requestFactory = $requestFactory;
         $this->client = $client;
     }
 
@@ -128,9 +129,11 @@ class AuthorizationRequestLoader
         $this->keyEncryptionKeySet = $keyEncryptionKeySet;
     }
 
-    public function enableJkuSupport(JKUFactory $jkuFactory): void
+    public function enableJkuSupport(JKUFactory $jkuFactory): self
     {
         $this->jkuFactory = $jkuFactory;
+
+        return $this;
     }
 
     public function isEncryptedRequestSupportEnabled(): bool
@@ -149,7 +152,7 @@ class AuthorizationRequestLoader
             $client = $this->getClient($queryParameters);
         }
 
-        return new AuthorizationRequest($client, $queryParameters);
+        return AuthorizationRequest::create($client, $queryParameters);
     }
 
     private function createFromRequestParameter(array $params, Client &$client = null): array
@@ -284,7 +287,7 @@ class AuthorizationRequestLoader
             Assertion::eq(
                 $signatureAlgorithm,
                 $client->get('request_object_signing_alg'),
-                'Request Object signature algorithm not allowed for the client.'
+                sprintf('The algorithm "%s" is not allowed by the client.', $signatureAlgorithm)
             );
         }
 
@@ -307,7 +310,7 @@ class AuthorizationRequestLoader
 
     private function downloadContent(string $url): string
     {
-        $request = $this->requestFactory->createRequest('GET', $url);
+        $request = (new Psr17Factory())->createRequest('GET', $url);
         $response = $this->client->sendRequest($request);
         Assertion::eq(200, $response->getStatusCode(), 'Unable to load the request object');
 

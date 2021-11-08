@@ -34,7 +34,7 @@ final class InitialAccessTokenMiddleware implements MiddlewareInterface
                 throw new InvalidArgumentException('Initial Access Token is missing or invalid.');
             }
 
-            $initialAccessToken = $this->initialAccessTokenRepository->find(new InitialAccessTokenId($token));
+            $initialAccessToken = $this->initialAccessTokenRepository->find(InitialAccessTokenId::create($token));
 
             if ($initialAccessToken === null || $initialAccessToken->isRevoked()) {
                 throw new InvalidArgumentException('Initial Access Token is missing or invalid.');

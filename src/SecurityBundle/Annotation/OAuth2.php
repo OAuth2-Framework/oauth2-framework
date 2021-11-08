@@ -4,36 +4,18 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\SecurityBundle\Annotation;
 
-use BadMethodCallException;
+use Attribute;
 
-/**
- * @Annotation
- * @Target({"CLASS", "METHOD"})
- */
+#[Attribute(Attribute::TARGET_CLASS | Attribute::TARGET_METHOD)]
 class OAuth2
 {
-    private ?string $scope = null;
-
-    private ?string $token_type = null;
-
-    private ?string $client_id = null;
-
-    private ?string $resource_owner_id = null;
-
-    private ?array $custom = null;
-
-    public function __construct(array $data)
-    {
-        foreach ($data as $key => $value) {
-            if (! property_exists($this, $key)) {
-                throw new BadMethodCallException(sprintf(
-                    'Unknown property "%s" on annotation "%s".',
-                    $key,
-                    static::class
-                ));
-            }
-            $this->{$key} = $value;
-        }
+    public function __construct(
+        private ?string $scope = null,
+        private ?string $token_type = null,
+        private ?string $client_id = null,
+        private ?string $resource_owner_id = null,
+        private ?array $custom = null
+    ) {
     }
 
     public function getClientId(): ?string

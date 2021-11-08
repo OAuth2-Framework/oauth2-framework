@@ -7,22 +7,22 @@ namespace OAuth2Framework\Tests\Component\ClientConfigurationEndpoint;
 use OAuth2Framework\Component\ClientRule\RuleHandler;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
-use PHPUnit\Framework\TestCase;
+use OAuth2Framework\Tests\Component\OAuth2TestCase;
 
 /**
  * @internal
  */
-final class ClientRegistrationManagementRuleTest extends TestCase
+final class ClientRegistrationManagementRuleTest extends OAuth2TestCase
 {
     /**
      * @test
      */
     public function clientRegistrationManagementRuleSetAsDefault(): void
     {
-        $clientId = new ClientId('CLIENT_ID');
-        $commandParameters = new DataBag([]);
+        $clientId = ClientId::create('CLIENT_ID');
+        $commandParameters = DataBag::create([]);
         $rule = new ClientConfigurationRouteRule();
-        $validatedParameters = $rule->handle($clientId, $commandParameters, new DataBag([]), $this->getCallable());
+        $validatedParameters = $rule->handle($clientId, $commandParameters, DataBag::create([]), $this->getCallable());
 
         static::assertTrue($validatedParameters->has('registration_access_token'));
         static::assertTrue($validatedParameters->has('registration_client_uri'));

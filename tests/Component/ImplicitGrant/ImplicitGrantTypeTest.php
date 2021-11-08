@@ -4,32 +4,26 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Tests\Component\ImplicitGrant;
 
-use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
+use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
-use OAuth2Framework\Component\ImplicitGrant\ImplicitGrantType;
 use OAuth2Framework\Component\TokenEndpoint\GrantTypeData;
-use PHPUnit\Framework\TestCase;
-use Prophecy\PhpUnit\ProphecyTrait;
-use Psr\Http\Message\ServerRequestInterface;
+use OAuth2Framework\Tests\Component\OAuth2TestCase;
+use OAuth2Framework\Tests\TestBundle\Entity\Client;
 
 /**
  * @internal
  */
-final class ImplicitGrantTypeTest extends TestCase
+final class ImplicitGrantTypeTest extends OAuth2TestCase
 {
-    use ProphecyTrait;
-
-    private ?ImplicitGrantType $grantType = null;
-
     /**
      * @test
      */
     public function genericInformation(): void
     {
-        static::assertSame(['token'], $this->getGrantType()->associatedResponseTypes());
-        static::assertSame('implicit', $this->getGrantType()->name());
+        static::assertSame(['token'], $this->getGrantTypeManager()->get('implicit')->associatedResponseTypes());
+        static::assertSame('implicit', $this->getGrantTypeManager()->get('implicit')->name());
     }
 
     /**
@@ -37,11 +31,12 @@ final class ImplicitGrantTypeTest extends TestCase
      */
     public function theRequestHaveMissingParameters(): void
     {
-        $request = $this->prophesize(ServerRequestInterface::class);
+        $request = $this->buildRequest();
 
         try {
-            $this->getGrantType()
-                ->checkRequest($request->reveal())
+            $this->getGrantTypeManager()
+                ->get('implicit')
+                ->checkRequest($request)
             ;
             static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2Error $e) {
@@ -58,31 +53,21 @@ final class ImplicitGrantTypeTest extends TestCase
      */
     public function theTokenResponseIsCorrectlyPrepared(): void
     {
-        $client = $this->prophesize(Client::class);
-        $client->isPublic()
-            ->willReturn(false)
-        ;
-        $client->getPublicId()
-            ->willReturn(new ClientId('CLIENT_ID'))
-        ;
-        $client->getClientId()
-            ->willReturn(new ClientId('CLIENT_ID'))
-        ;
-        $client->getOwnerId()
-            ->willReturn(new UserAccountId('USER_ACCOUNT_ID'))
-        ;
+        $client = Client::create(
+            ClientId::create('CLIENT_ID'),
+            DataBag::create(),
+            UserAccountId::create('USER_ACCOUNT_ID')
+        );
 
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getParsedBody()
-            ->willReturn([
-                'implicit' => 'REFRESH_TOKEN_ID',
-            ])
-        ;
-        $grantTypeData = new GrantTypeData($client->reveal());
+        $request = $this->buildRequest('POST', [
+            'implicit' => 'REFRESH_TOKEN_ID',
+        ]);
+        $grantTypeData = GrantTypeData::create($client);
 
         try {
-            $this->getGrantType()
-                ->prepareResponse($request->reveal(), $grantTypeData)
+            $this->getGrantTypeManager()
+                ->get('implicit')
+                ->prepareResponse($request, $grantTypeData)
             ;
         } catch (OAuth2Error $e) {
             static::assertSame(400, $e->getCode());
@@ -98,34 +83,21 @@ final class ImplicitGrantTypeTest extends TestCase
      */
     public function theGrantTypeCanGrantTheClient(): void
     {
-        $client = $this->prophesize(Client::class);
-        $client->isPublic()
-            ->willReturn(false)
-        ;
-        $client->getPublicId()
-            ->willReturn(new ClientId('CLIENT_ID'))
-        ;
-        $client->getClientId()
-            ->willReturn(new ClientId('CLIENT_ID'))
-        ;
-        $client->getOwnerId()
-            ->willReturn(new UserAccountId('USER_ACCOUNT_ID'))
-        ;
+        $client = Client::create(
+            ClientId::create('CLIENT_ID'),
+            DataBag::create(),
+            UserAccountId::create('USER_ACCOUNT_ID')
+        );
 
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getParsedBody()
-            ->willReturn([
-                'implicit' => 'REFRESH_TOKEN_ID',
-            ])
-        ;
-        $request->getAttribute('client')
-            ->willReturn($client)
-        ;
-        $grantTypeData = new GrantTypeData($client->reveal());
+        $request = $this->buildRequest('GET', [
+            'implicit' => 'REFRESH_TOKEN_ID',
+        ])->withAttribute('client', $client);
+        $grantTypeData = GrantTypeData::create($client);
 
         try {
-            $this->getGrantType()
-                ->grant($request->reveal(), $grantTypeData)
+            $this->getGrantTypeManager()
+                ->get('implicit')
+                ->grant($request, $grantTypeData)
             ;
         } catch (OAuth2Error $e) {
             static::assertSame(400, $e->getCode());
@@ -134,14 +106,5 @@ final class ImplicitGrantTypeTest extends TestCase
                 'error_description' => 'The implicit grant type cannot be called from the token endpoint.',
             ], $e->getData());
         }
-    }
-
-    private function getGrantType(): ImplicitGrantType
-    {
-        if ($this->grantType === null) {
-            $this->grantType = new ImplicitGrantType();
-        }
-
-        return $this->grantType;
     }
 }

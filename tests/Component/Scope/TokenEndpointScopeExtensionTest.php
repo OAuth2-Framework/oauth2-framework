@@ -6,35 +6,22 @@ namespace OAuth2Framework\Tests\Component\Scope;
 
 use DateTimeImmutable;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
-use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwner;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
-use OAuth2Framework\Component\Scope\Policy\NoScopePolicy;
-use OAuth2Framework\Component\Scope\Policy\ScopePolicyManager;
-use OAuth2Framework\Component\Scope\Scope;
-use OAuth2Framework\Component\Scope\ScopeRepository;
-use OAuth2Framework\Component\Scope\TokenEndpointScopeExtension;
-use OAuth2Framework\Component\TokenEndpoint\GrantType;
 use OAuth2Framework\Component\TokenEndpoint\GrantTypeData;
 use OAuth2Framework\Component\TokenEndpoint\TokenEndpoint;
-use PHPUnit\Framework\TestCase;
-use Prophecy\PhpUnit\ProphecyTrait;
-use Prophecy\Prophecy\ObjectProphecy;
+use OAuth2Framework\Tests\Component\OAuth2TestCase;
+use OAuth2Framework\Tests\TestBundle\Entity\Client;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\StreamInterface;
 
 /**
  * @internal
  */
-final class TokenEndpointScopeExtensionTest extends TestCase
+final class TokenEndpointScopeExtensionTest extends OAuth2TestCase
 {
-    use ProphecyTrait;
-
-    private ?TokenEndpointScopeExtension $extension = null;
-
     /**
      * @inheritdoc}
      */
@@ -50,39 +37,20 @@ final class TokenEndpointScopeExtensionTest extends TestCase
      */
     public function theRequestHasNoScope(): void
     {
-        $client = $this->prophesize(Client::class);
-        $client->isPublic()
-            ->willReturn(false)
-        ;
-        $client->getPublicId()
-            ->willReturn(new ClientId('CLIENT_ID'))
-        ;
-        $client->getClientId()
-            ->willReturn(new ClientId('CLIENT_ID'))
-        ;
-        $client->getOwnerId()
-            ->willReturn(new UserAccountId('USER_ACCOUNT_ID'))
-        ;
-        $client->has('scope_policy')
-            ->willReturn(false)
-        ;
-        $client->has('scope')
-            ->willReturn(false)
-        ;
+        $client = Client::create(
+            ClientId::create('CLIENT_ID'),
+            DataBag::create([]),
+            UserAccountId::create('USER_ACCOUNT_ID')
+        );
 
-        $request = $this->buildRequest([]);
-        $grantTypeData = new GrantTypeData($client->reveal());
-        $grantType = $this->prophesize(GrantType::class);
-        $next = function (
-            ServerRequestInterface $request,
-            GrantTypeData $grantTypeData,
-            GrantType $grantType
-        ): GrantTypeData {
+        $request = $this->buildRequest('GET', []);
+        $grantTypeData = GrantTypeData::create($client);
+        $next = static function (ServerRequestInterface $request, GrantTypeData $grantTypeData,): GrantTypeData {
             return $grantTypeData;
         };
 
-        $result = $this->getExtension()
-            ->beforeAccessTokenIssuance($request->reveal(), $grantTypeData, $grantType->reveal(), $next)
+        $result = $this->getTokenEndpointScopeExtension()
+            ->beforeAccessTokenIssuance($request, $grantTypeData, $this->getAuthorizationCodeGrantType(), $next)
         ;
         static::assertSame($grantTypeData, $result);
     }
@@ -92,48 +60,29 @@ final class TokenEndpointScopeExtensionTest extends TestCase
      */
     public function theRequestedScopeIsNotSupported(): void
     {
-        $client = $this->prophesize(Client::class);
-        $client->isPublic()
-            ->willReturn(false)
-        ;
-        $client->getPublicId()
-            ->willReturn(new ClientId('CLIENT_ID'))
-        ;
-        $client->getClientId()
-            ->willReturn(new ClientId('CLIENT_ID'))
-        ;
-        $client->getOwnerId()
-            ->willReturn(new UserAccountId('USER_ACCOUNT_ID'))
-        ;
-        $client->has('scope_policy')
-            ->willReturn(false)
-        ;
-        $client->has('scope')
-            ->willReturn(false)
-        ;
+        $client = Client::create(
+            ClientId::create('CLIENT_ID'),
+            DataBag::create([]),
+            UserAccountId::create('USER_ACCOUNT_ID')
+        );
 
-        $request = $this->buildRequest([
+        $request = $this->buildRequest('GET', [
             'scope' => 'café',
         ]);
-        $grantTypeData = new GrantTypeData($client->reveal());
-        $grantType = $this->prophesize(GrantType::class);
-        $next = function (
-            ServerRequestInterface $request,
-            GrantTypeData $grantTypeData,
-            GrantType $grantType
-        ): GrantTypeData {
+        $grantTypeData = GrantTypeData::create($client);
+        $next = static function (ServerRequestInterface $request, GrantTypeData $grantTypeData,): GrantTypeData {
             return $grantTypeData;
         };
 
         try {
-            $this->getExtension()
-                ->beforeAccessTokenIssuance($request->reveal(), $grantTypeData, $grantType->reveal(), $next)
+            $this->getTokenEndpointScopeExtension()
+                ->beforeAccessTokenIssuance($request, $grantTypeData, $this->getAuthorizationCodeGrantType(), $next)
             ;
         } catch (OAuth2Error $e) {
             static::assertSame(400, $e->getCode());
             static::assertSame([
                 'error' => 'invalid_scope',
-                'error_description' => 'An unsupported scope was requested. Available scope is/are: scope1, scope2.',
+                'error_description' => 'An unsupported scope was requested. Available scope is/are: openid, scope1, scope2.',
             ], $e->getData());
         }
     }
@@ -143,41 +92,22 @@ final class TokenEndpointScopeExtensionTest extends TestCase
      */
     public function theRequestedScopeIsValid(): void
     {
-        $client = $this->prophesize(Client::class);
-        $client->isPublic()
-            ->willReturn(false)
-        ;
-        $client->getPublicId()
-            ->willReturn(new ClientId('CLIENT_ID'))
-        ;
-        $client->getClientId()
-            ->willReturn(new ClientId('CLIENT_ID'))
-        ;
-        $client->getOwnerId()
-            ->willReturn(new UserAccountId('USER_ACCOUNT_ID'))
-        ;
-        $client->has('scope_policy')
-            ->willReturn(false)
-        ;
-        $client->has('scope')
-            ->willReturn(false)
-        ;
+        $client = Client::create(
+            ClientId::create('CLIENT_ID'),
+            DataBag::create([]),
+            UserAccountId::create('USER_ACCOUNT_ID')
+        );
 
-        $request = $this->buildRequest([
+        $request = $this->buildRequest('GET', [
             'scope' => 'scope2 scope1',
         ]);
-        $grantTypeData = new GrantTypeData($client->reveal());
-        $grantType = $this->prophesize(GrantType::class);
-        $next = function (
-            ServerRequestInterface $request,
-            GrantTypeData $grantTypeData,
-            GrantType $grantType
-        ): GrantTypeData {
+        $grantTypeData = GrantTypeData::create($client);
+        $next = static function (ServerRequestInterface $request, GrantTypeData $grantTypeData,): GrantTypeData {
             return $grantTypeData;
         };
 
-        $result = $this->getExtension()
-            ->beforeAccessTokenIssuance($request->reveal(), $grantTypeData, $grantType->reveal(), $next)
+        $result = $this->getTokenEndpointScopeExtension()
+            ->beforeAccessTokenIssuance($request, $grantTypeData, $this->getAuthorizationCodeGrantType(), $next)
         ;
         static::assertTrue($result->getParameter()->has('scope'));
         static::assertSame('scope2 scope1', $result->getParameter()->get('scope'));
@@ -188,99 +118,31 @@ final class TokenEndpointScopeExtensionTest extends TestCase
      */
     public function after(): void
     {
-        $client = $this->prophesize(Client::class);
-        $client->isPublic()
-            ->willReturn(false)
-        ;
-        $client->getPublicId()
-            ->willReturn(new ClientId('CLIENT_ID'))
-        ;
-        $client->getClientId()
-            ->willReturn(new ClientId('CLIENT_ID'))
-        ;
-        $client->getOwnerId()
-            ->willReturn(new UserAccountId('USER_ACCOUNT_ID'))
-        ;
-        $client->has('scope_policy')
-            ->willReturn(false)
-        ;
-        $client->has('scope')
-            ->willReturn(false)
-        ;
+        $client = Client::create(
+            ClientId::create('CLIENT_ID'),
+            DataBag::create([]),
+            UserAccountId::create('USER_ACCOUNT_ID')
+        );
 
         $accessToken = new AccessToken(
-            new AccessTokenId('ACCESS_TOKEN_ID'),
-            $client->reveal()
-                ->getPublicId(),
-            $client->reveal()
+            AccessTokenId::create('ACCESS_TOKEN_ID'),
+            $client
+                ->getClientId(),
+            $client
                 ->getPublicId(),
             new DateTimeImmutable('now +1 hour'),
-            new DataBag([]),
-            new DataBag([]),
+            DataBag::create([]),
+            DataBag::create([]),
             null
         );
 
-        $next = function (Client $client, ResourceOwner $resourceOwner, AccessToken $accessToken): array {
+        $next = static function (Client $client, ResourceOwner $resourceOwner, AccessToken $accessToken): array {
             return $accessToken->getResponseData();
         };
 
-        $result = $this->getExtension()
-            ->afterAccessTokenIssuance($client->reveal(), $client->reveal(), $accessToken, $next)
+        $result = $this->getTokenEndpointScopeExtension()
+            ->afterAccessTokenIssuance($client, $client, $accessToken, $next)
         ;
         static::assertCount(2, $result);
-    }
-
-    private function getExtension(): TokenEndpointScopeExtension
-    {
-        if ($this->extension === null) {
-            $scope1 = $this->prophesize(Scope::class);
-            $scope1->getName()
-                ->willReturn('scope1')
-            ;
-            $scope1->__toString()
-                ->willReturn('scope1')
-            ;
-            $scope2 = $this->prophesize(Scope::class);
-            $scope2->getName()
-                ->willReturn('scope2')
-            ;
-            $scope2->__toString()
-                ->willReturn('scope2')
-            ;
-            $scopeRepository = $this->prophesize(ScopeRepository::class);
-            $scopeRepository->all()
-                ->willReturn([$scope1->reveal(), $scope2->reveal()])
-            ;
-
-            $scopePolicyManager = new ScopePolicyManager();
-            $scopePolicyManager->add(new NoScopePolicy(), true);
-
-            $this->extension = new TokenEndpointScopeExtension($scopeRepository->reveal(), $scopePolicyManager);
-        }
-
-        return $this->extension;
-    }
-
-    private function buildRequest(array $data): ObjectProphecy
-    {
-        $body = $this->prophesize(StreamInterface::class);
-        $body->getContents()
-            ->willReturn(http_build_query($data))
-        ;
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->hasHeader('Content-Type')
-            ->willReturn(true)
-        ;
-        $request->getHeader('Content-Type')
-            ->willReturn(['application/x-www-form-urlencoded'])
-        ;
-        $request->getBody()
-            ->willReturn($body->reveal())
-        ;
-        $request->getParsedBody()
-            ->willReturn([])
-        ;
-
-        return $request;
     }
 }

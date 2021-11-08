@@ -32,12 +32,14 @@ abstract class AbstractRefreshToken implements RefreshToken
         $this->revoked = false;
     }
 
-    public function addAccessToken(AccessTokenId $accessTokenId): void
+    public function addAccessToken(AccessTokenId $accessTokenId): self
     {
         $id = $accessTokenId->getValue();
         if (! array_key_exists($id, $this->accessTokenIds)) {
             $this->accessTokenIds[$id] = $accessTokenId;
         }
+
+        return $this;
     }
 
     /**
@@ -93,9 +95,11 @@ abstract class AbstractRefreshToken implements RefreshToken
         return $this->revoked;
     }
 
-    public function markAsRevoked(): void
+    public function markAsRevoked(): self
     {
         $this->revoked = true;
+
+        return $this;
     }
 
     public function getResourceServerId(): ?ResourceServerId

@@ -31,8 +31,6 @@ splits:
       target: "https://${GH_TOKEN}@github.com/oauth2-framework/webfinger-endpoint.git"
     - prefix: "src/Component/JwtBearerGrant"
       target: "https://${GH_TOKEN}@github.com/oauth2-framework/jwt-bearer-grant.git"
-    - prefix: "src/Component/MacTokenType"
-      target: "https://${GH_TOKEN}@github.com/oauth2-framework/mac-token-type.git"
     - prefix: "src/Component/MetadataEndpoint"
       target: "https://${GH_TOKEN}@github.com/oauth2-framework/metadata-endpoint.git"
     - prefix: "src/Component/NoneGrant"

@@ -14,9 +14,16 @@ class ResponseTypeManager
      */
     private array $responseTypes = [];
 
-    public function add(ResponseType $responseType): void
+    public static function create(): self
+    {
+        return new self();
+    }
+
+    public function add(ResponseType $responseType): self
     {
         $this->responseTypes[$responseType->name()] = $responseType;
+
+        return $this;
     }
 
     public function has(string $responseType): bool

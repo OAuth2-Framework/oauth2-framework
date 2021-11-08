@@ -17,9 +17,11 @@ class ClaimManager
      */
     private array $claims = [];
 
-    public function add(Claim $claim): void
+    public function add(Claim $claim): self
     {
         $this->claims[$claim->name()] = $claim;
+
+        return $this;
     }
 
     /**

@@ -14,9 +14,16 @@ class ExtensionManager
      */
     private array $extensions = [];
 
-    public function add(Extension $extension): void
+    public static function create(): self
+    {
+        return new self();
+    }
+
+    public function add(Extension $extension): self
     {
         $this->extensions[] = $extension;
+
+        return $this;
     }
 
     public function process(ServerRequestInterface $request, AuthorizationRequest $authorization): void

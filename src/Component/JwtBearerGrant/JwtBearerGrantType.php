@@ -55,6 +55,22 @@ class JwtBearerGrantType implements GrantType
     ) {
     }
 
+    public static function create(
+        JWSVerifier $jwsVerifier,
+        HeaderCheckerManager $headerCheckerManager,
+        ClaimCheckerManager $claimCheckerManager,
+        ClientRepository $clientRepository,
+        ?UserAccountRepository $userAccountRepository
+    ): self {
+        return new self(
+            $jwsVerifier,
+            $headerCheckerManager,
+            $claimCheckerManager,
+            $clientRepository,
+            $userAccountRepository
+        );
+    }
+
     public function associatedResponseTypes(): array
     {
         return [];
@@ -70,14 +86,18 @@ class JwtBearerGrantType implements GrantType
         $this->keyEncryptionKeySet = $keyEncryptionKeySet;
     }
 
-    public function enableTrustedIssuerSupport(TrustedIssuerRepository $trustedIssuerRepository): void
+    public function enableTrustedIssuerSupport(TrustedIssuerRepository $trustedIssuerRepository): self
     {
         $this->trustedIssuerRepository = $trustedIssuerRepository;
+
+        return $this;
     }
 
-    public function enableJkuSupport(JKUFactory $jkuFactory): void
+    public function enableJkuSupport(JKUFactory $jkuFactory): self
     {
         $this->jkuFactory = $jkuFactory;
+
+        return $this;
     }
 
     public function name(): string

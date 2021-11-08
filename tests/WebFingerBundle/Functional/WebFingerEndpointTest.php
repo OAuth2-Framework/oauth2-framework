@@ -49,7 +49,7 @@ final class WebFingerEndpointTest extends WebTestCase
             'HTTPS' => 'on',
         ], null);
         $response = $client->getResponse();
-        static::assertSame(400, $response->getStatusCode());
+        static::assertSame(404, $response->getStatusCode());
         static::assertSame(
             '{"error":"invalid_request","error_description":"The resource identified with \"@foo\" does not exist or is not supported by this server."}',
             $response->getContent()
@@ -72,7 +72,7 @@ final class WebFingerEndpointTest extends WebTestCase
             'HTTPS' => 'on',
         ], null);
         $response = $client->getResponse();
-        static::assertSame(400, $response->getStatusCode());
+        static::assertSame(404, $response->getStatusCode());
         static::assertSame(
             '{"error":"invalid_request","error_description":"The resource identified with \"acct:john@example.com\" does not exist or is not supported by this server."}',
             $response->getContent()
@@ -95,7 +95,7 @@ final class WebFingerEndpointTest extends WebTestCase
             'HTTPS' => 'on',
         ], null);
         $response = $client->getResponse();
-        static::assertSame(400, $response->getStatusCode());
+        static::assertSame(404, $response->getStatusCode());
         static::assertSame(
             '{"error":"invalid_request","error_description":"The resource identified with \"john@example.com\" does not exist or is not supported by this server."}',
             $response->getContent()
@@ -118,7 +118,7 @@ final class WebFingerEndpointTest extends WebTestCase
             'HTTPS' => 'on',
         ], null);
         $response = $client->getResponse();
-        static::assertSame(400, $response->getStatusCode());
+        static::assertSame(404, $response->getStatusCode());
         static::assertSame(
             '{"error":"invalid_request","error_description":"The resource identified with \"https://example.com:8080/+john\" does not exist or is not supported by this server."}',
             $response->getContent()

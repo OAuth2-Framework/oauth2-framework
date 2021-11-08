@@ -4,17 +4,18 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Service;
 
+use Assert\Assertion;
 use Base64Url\Base64Url;
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
 use OAuth2Framework\Component\OpenIdConnect\ConsentScreen\SessionStateParameterExtension as BaseSessionStateParameterExtension;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\HttpFoundation\Cookie;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class SessionStateParameterExtension extends BaseSessionStateParameterExtension
 {
     public function __construct(
-        private SessionInterface $session,
+        private RequestStack $requestStack,
         private string $storageName,
         private ?string $path = '/',
         private ?string $domain = null,
@@ -27,12 +28,16 @@ class SessionStateParameterExtension extends BaseSessionStateParameterExtension
 
     protected function getBrowserState(ServerRequestInterface $request, AuthorizationRequest $authorization): string
     {
-        if ($this->session->has($this->storageName)) {
-            return $this->session->get($this->storageName);
+        if ($this->requestStack->getSession()->has($this->storageName)) {
+            return $this->requestStack->getSession()
+                ->get($this->storageName)
+            ;
         }
 
         $browserState = Base64Url::encode(random_bytes(64));
-        $this->session->set($this->storageName, $browserState);
+        $this->requestStack->getSession()
+            ->set($this->storageName, $browserState)
+        ;
         $cookie = new Cookie(
             $this->storageName,
             $browserState,
@@ -68,6 +73,9 @@ class SessionStateParameterExtension extends BaseSessionStateParameterExtension
     private function getOriginUri(string $redirectUri): string
     {
         $url_parts = parse_url($redirectUri);
+        Assertion::keyExists($url_parts, 'scheme', 'Invalid URI');
+        Assertion::isArray($url_parts, 'Invalid URI');
+        Assertion::keyExists($url_parts, 'host', 'Invalid URI');
 
         return sprintf(
             '%s://%s%s',

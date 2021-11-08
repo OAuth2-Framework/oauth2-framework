@@ -4,23 +4,18 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Tests\Component\ClientAuthentication;
 
-use OAuth2Framework\Component\ClientAuthentication\AuthenticationMethodManager;
 use OAuth2Framework\Component\ClientAuthentication\ClientSecretBasic;
-use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
-use PHPUnit\Framework\TestCase;
-use Prophecy\PhpUnit\ProphecyTrait;
-use Psr\Http\Message\ServerRequestInterface;
+use OAuth2Framework\Tests\Component\OAuth2TestCase;
+use OAuth2Framework\Tests\TestBundle\Entity\Client;
 
 /**
  * @internal
  */
-final class ClientSecretBasicAuthenticationMethodTest extends TestCase
+final class ClientSecretBasicAuthenticationMethodTest extends OAuth2TestCase
 {
-    use ProphecyTrait;
-
     /**
      * @test
      */
@@ -37,14 +32,11 @@ final class ClientSecretBasicAuthenticationMethodTest extends TestCase
      */
     public function theClientIdCannotBeFoundInTheRequest(): void
     {
-        $manager = new AuthenticationMethodManager();
+        $manager = $this->getAuthenticationMethodManager();
         $manager->add(new ClientSecretBasic('My Service'));
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getHeader('Authorization')
-            ->willReturn([])
-        ;
+        $request = $this->buildRequest();
 
-        $clientId = $manager->findClientIdAndCredentials($request->reveal(), $credentials);
+        $clientId = $manager->findClientIdAndCredentials($request, $credentials);
         static::assertNull($clientId);
         static::assertNull($credentials);
     }
@@ -54,56 +46,28 @@ final class ClientSecretBasicAuthenticationMethodTest extends TestCase
      */
     public function theClientIdAndClientSecretHaveBeenFoundInTheRequest(): void
     {
-        $manager = new AuthenticationMethodManager();
+        $manager = $this->getAuthenticationMethodManager();
         $manager->add(new ClientSecretBasic('My Service'));
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getHeader('Authorization')
-            ->willReturn(['Basic ' . base64_encode('CLIENT_ID:CLIENT_SECRET')])
-        ;
 
-        $clientId = $manager->findClientIdAndCredentials($request->reveal(), $method, $credentials);
+        $request = $this->buildRequest('GET', [], [
+            'Authorization' => 'Basic ' . base64_encode('CLIENT_ID:CLIENT_SECRET'),
+        ]);
+
+        $clientId = $manager->findClientIdAndCredentials($request, $method, $credentials);
         static::assertInstanceOf(ClientSecretBasic::class, $method);
         static::assertInstanceOf(ClientId::class, $clientId);
         static::assertSame('CLIENT_SECRET', $credentials);
 
-        $client = $this->prophesize(Client::class);
-        $client->isPublic()
-            ->willReturn(false)
-        ;
-        $client->getPublicId()
-            ->willReturn(new ClientId('CLIENT_ID'))
-        ;
-        $client->getClientId()
-            ->willReturn(new ClientId('CLIENT_ID'))
-        ;
-        $client->getOwnerId()
-            ->willReturn(new UserAccountId('USER_ACCOUNT_ID'))
-        ;
-        $client->has('token_endpoint_auth_method')
-            ->willReturn(true)
-        ;
-        $client->get('token_endpoint_auth_method')
-            ->willReturn('client_secret_basic')
-        ;
-        $client->getTokenEndpointAuthenticationMethod()
-            ->willReturn('client_secret_basic')
-        ;
-        $client->has('client_secret')
-            ->willReturn(true)
-        ;
-        $client->get('client_secret')
-            ->willReturn('CLIENT_SECRET')
-        ;
-        $client->isDeleted()
-            ->willReturn(false)
-        ;
-        $client->areClientCredentialsExpired()
-            ->willReturn(false)
-        ;
-
-        static::assertTrue(
-            $manager->isClientAuthenticated($request->reveal(), $client->reveal(), $method, 'CLIENT_SECRET')
+        $client = Client::create(
+            ClientId::create('CLIENT_ID'),
+            DataBag::create([
+                'token_endpoint_auth_method' => 'client_secret_basic',
+                'client_secret' => 'CLIENT_SECRET',
+            ]),
+            UserAccountId::create('USER_ACCOUNT_ID')
         );
+
+        static::assertTrue($manager->isClientAuthenticated($request, $client, $method, 'CLIENT_SECRET'));
     }
 
     /**
@@ -112,55 +76,24 @@ final class ClientSecretBasicAuthenticationMethodTest extends TestCase
     public function theClientUsesAnotherAuthenticationMethod(): void
     {
         $method = new ClientSecretBasic('My Service');
-        $manager = new AuthenticationMethodManager();
+        $manager = $this->getAuthenticationMethodManager();
         $manager->add($method);
 
-        $client = $this->prophesize(Client::class);
-        $client->isPublic()
-            ->willReturn(false)
-        ;
-        $client->getPublicId()
-            ->willReturn(new ClientId('CLIENT_ID'))
-        ;
-        $client->getClientId()
-            ->willReturn(new ClientId('CLIENT_ID'))
-        ;
-        $client->getOwnerId()
-            ->willReturn(new UserAccountId('USER_ACCOUNT_ID'))
-        ;
-        $client->has('token_endpoint_auth_method')
-            ->willReturn(true)
-        ;
-        $client->get('token_endpoint_auth_method')
-            ->willReturn('client_secret_post')
-        ;
-        $client->getTokenEndpointAuthenticationMethod()
-            ->willReturn('client_secret_post')
-        ;
-        $client->has('client_secret')
-            ->willReturn(true)
-        ;
-        $client->get('client_secret')
-            ->willReturn('CLIENT_SECRET')
-        ;
-        $client->isDeleted()
-            ->willReturn(false)
-        ;
-        $client->areClientCredentialsExpired()
-            ->willReturn(false)
-        ;
-
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getParsedBody()
-            ->willReturn([
-                'client_id' => 'CLIENT_ID',
+        $client = Client::create(
+            ClientId::create('CLIENT_ID'),
+            DataBag::create([
+                'token_endpoint_auth_method' => 'client_secret_post',
                 'client_secret' => 'CLIENT_SECRET',
-            ])
-        ;
-
-        static::assertFalse(
-            $manager->isClientAuthenticated($request->reveal(), $client->reveal(), $method, 'CLIENT_SECRET')
+            ]),
+            UserAccountId::create('USER_ACCOUNT_ID')
         );
+
+        $request = $this->buildRequest('GET', [
+            'client_id' => 'CLIENT_ID',
+            'client_secret' => 'CLIENT_SECRET',
+        ]);
+
+        static::assertFalse($manager->isClientAuthenticated($request, $client, $method, 'CLIENT_SECRET'));
     }
 
     /**
@@ -169,7 +102,7 @@ final class ClientSecretBasicAuthenticationMethodTest extends TestCase
     public function theClientConfigurationCanBeChecked(): void
     {
         $method = new ClientSecretBasic('My Service');
-        $validatedParameters = $method->checkClientConfiguration(new DataBag([]), new DataBag([]));
+        $validatedParameters = $method->checkClientConfiguration(DataBag::create([]), DataBag::create([]));
 
         static::assertTrue($validatedParameters->has('client_secret'));
         static::assertTrue($validatedParameters->has('client_secret_expires_at'));

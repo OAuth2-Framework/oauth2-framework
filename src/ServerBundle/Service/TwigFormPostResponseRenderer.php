@@ -15,12 +15,12 @@ final class TwigFormPostResponseRenderer implements FormPostResponseRenderer
     ) {
     }
 
-    public function render(string $redirect_uri, array $data): string
+    public function render(string $redirectUri, array $data): string
     {
         return $this->templateEngine->render(
             $this->template,
             [
-                'redirect_uri' => $redirect_uri,
+                'redirect_uri' => $redirectUri,
                 'inputs' => $data,
             ]
         );

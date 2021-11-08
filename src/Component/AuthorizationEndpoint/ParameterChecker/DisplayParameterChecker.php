@@ -17,6 +17,11 @@ final class DisplayParameterChecker implements ParameterChecker
 
     public const DISPLAY_WAP = 'wap';
 
+    public static function create(): self
+    {
+        return new self();
+    }
+
     public function check(AuthorizationRequest $authorization): void
     {
         if ($authorization->hasQueryParam('display')) {

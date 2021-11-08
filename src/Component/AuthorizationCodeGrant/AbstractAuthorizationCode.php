@@ -40,9 +40,11 @@ abstract class AbstractAuthorizationCode implements AuthorizationCode
         return $this->used;
     }
 
-    public function markAsUsed(): void
+    public function markAsUsed(): self
     {
         $this->used = true;
+
+        return $this;
     }
 
     public function getQueryParameters(): array
@@ -120,8 +122,10 @@ abstract class AbstractAuthorizationCode implements AuthorizationCode
         return $this->revoked;
     }
 
-    public function markAsRevoked(): void
+    public function markAsRevoked(): self
     {
         $this->revoked = true;
+
+        return $this;
     }
 }

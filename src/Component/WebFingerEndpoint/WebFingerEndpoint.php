@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\WebFingerEndpoint;
 
 use function array_key_exists;
-use Assert\Assertion;
 use function count;
 use function in_array;
 use InvalidArgumentException;
@@ -16,7 +15,6 @@ use const JSON_UNESCAPED_SLASHES;
 use const JSON_UNESCAPED_UNICODE;
 use OAuth2Framework\Component\WebFingerEndpoint\IdentifierResolver\Identifier;
 use OAuth2Framework\Component\WebFingerEndpoint\IdentifierResolver\IdentifierResolverManager;
-use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -26,38 +24,48 @@ use Throwable;
 final class WebFingerEndpoint implements MiddlewareInterface
 {
     public function __construct(
-        private ResponseFactoryInterface $responseFactory,
         private ResourceRepository $resourceRepository,
         private IdentifierResolverManager $identifierResolverManager
     ) {
     }
 
+    public static function create(
+        ResourceRepository $resourceRepository,
+        IdentifierResolverManager $identifierResolverManager
+    ): self {
+        return new self($resourceRepository, $identifierResolverManager);
+    }
+
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
+        $response = $handler->handle($request);
         try {
             $resource = $this->getResource($request);
             $identifier = $this->getIdentifier($resource);
             $resourceDescriptor = $this->resourceRepository->find($resource, $identifier);
-            Assertion::notNull(
-                $resourceDescriptor,
-                sprintf(
+            if ($resourceDescriptor === null) {
+                throw new InvalidArgumentException(sprintf(
                     'The resource identified with "%s" does not exist or is not supported by this server.',
                     $resource
-                )
-            );
+                ), 404)
+                ;
+            }
 
             $filteredResourceDescriptor = $this->filterLinks($request, $resourceDescriptor);
-            $response = $this->responseFactory->createResponse(200);
             $headers = [
                 'Content-Type' => 'application/jrd+json; charset=UTF-8',
             ];
+            $response = $response->withStatus(200);
             $response->getBody()
                 ->write(
-                    json_encode($filteredResourceDescriptor, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
+                    json_encode(
+                        $filteredResourceDescriptor,
+                        JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
+                    )
                 )
             ;
         } catch (InvalidArgumentException $e) {
-            $response = $this->responseFactory->createResponse(400);
+            $response = $response->withStatus($e->getCode() === 0 ? 400 : $e->getCode());
             $headers = [
                 'Content-Type' => 'application/json; charset=UTF-8',
             ];
@@ -83,14 +91,17 @@ final class WebFingerEndpoint implements MiddlewareInterface
             throw new InvalidArgumentException(sprintf(
                 'The resource identified with "%s" does not exist or is not supported by this server.',
                 $resource
-            ), 400, $e);
+            ), 404, $e);
         }
     }
 
     private function getResource(ServerRequestInterface $request): string
     {
         $query_params = $request->getQueryParams() ?? [];
-        Assertion::keyExists($query_params, 'resource', 'The parameter "resource" is mandatory.');
+        if (! array_key_exists('resource', $query_params)) {
+            throw new InvalidArgumentException('The parameter "resource" is mandatory.', 400)
+            ;
+        }
 
         return $query_params['resource'];
     }

@@ -11,6 +11,11 @@ class TokenTypeHintManager
      */
     private array $tokenTypeHints = [];
 
+    public static function create(): self
+    {
+        return new self();
+    }
+
     /**
      * @return TokenTypeHint[]
      */
@@ -19,8 +24,10 @@ class TokenTypeHintManager
         return $this->tokenTypeHints;
     }
 
-    public function add(TokenTypeHint $tokenTypeHint): void
+    public function add(TokenTypeHint $tokenTypeHint): self
     {
         $this->tokenTypeHints[$tokenTypeHint->hint()] = $tokenTypeHint;
+
+        return $this;
     }
 }

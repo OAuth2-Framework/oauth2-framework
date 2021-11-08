@@ -33,9 +33,11 @@ class OpenIdConnectExtension implements TokenEndpointExtension
     ) {
     }
 
-    public function enableEncryption(JWEBuilder $jweBuilder): void
+    public function enableEncryption(JWEBuilder $jweBuilder): self
     {
         $this->jweBuilder = $jweBuilder;
+
+        return $this;
     }
 
     public function beforeAccessTokenIssuance(

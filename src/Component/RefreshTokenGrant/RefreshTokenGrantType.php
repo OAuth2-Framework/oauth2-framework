@@ -20,6 +20,11 @@ final class RefreshTokenGrantType implements GrantType
     ) {
     }
 
+    public static function create(RefreshTokenRepository $refreshTokenRepository): self
+    {
+        return new self($refreshTokenRepository);
+    }
+
     public function associatedResponseTypes(): array
     {
         return [];
@@ -49,7 +54,7 @@ final class RefreshTokenGrantType implements GrantType
     {
         $parameters = RequestBodyParser::parseFormUrlEncoded($request);
         $refreshToken = $parameters['refresh_token'];
-        $token = $this->refreshTokenRepository->find(new RefreshTokenId($refreshToken));
+        $token = $this->refreshTokenRepository->find(RefreshTokenId::create($refreshToken));
 
         if ($token === null) {
             throw OAuth2Error::invalidGrant('The parameter "refresh_token" is invalid.');

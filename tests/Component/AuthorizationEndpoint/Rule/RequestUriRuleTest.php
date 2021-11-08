@@ -10,12 +10,12 @@ use OAuth2Framework\Component\ClientRule\Rule;
 use OAuth2Framework\Component\ClientRule\RuleHandler;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
-use PHPUnit\Framework\TestCase;
+use OAuth2Framework\Tests\Component\OAuth2TestCase;
 
 /**
  * @internal
  */
-final class RequestUriRuleTest extends TestCase
+final class RequestUriRuleTest extends OAuth2TestCase
 {
     protected function setUp(): void
     {
@@ -29,10 +29,10 @@ final class RequestUriRuleTest extends TestCase
      */
     public function noResponseType(): void
     {
-        $clientId = new ClientId('CLIENT_ID');
-        $commandParameters = new DataBag([]);
+        $clientId = ClientId::create('CLIENT_ID');
+        $commandParameters = DataBag::create([]);
         $rule = new RequestUriRule();
-        $validatedParameters = $rule->handle($clientId, $commandParameters, new DataBag([]), $this->getCallable());
+        $validatedParameters = $rule->handle($clientId, $commandParameters, DataBag::create([]), $this->getCallable());
         static::assertFalse($validatedParameters->has('request_uris'));
     }
 
@@ -43,12 +43,12 @@ final class RequestUriRuleTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('The parameter "request_uris" must be a list of URI.');
-        $clientId = new ClientId('CLIENT_ID');
-        $commandParameters = new DataBag([
+        $clientId = ClientId::create('CLIENT_ID');
+        $commandParameters = DataBag::create([
             'request_uris' => 'hello',
         ]);
         $rule = new RequestUriRule();
-        $validatedParameters = new DataBag([
+        $validatedParameters = DataBag::create([
             'response_types' => ['code'],
         ]);
         $rule->handle($clientId, $commandParameters, $validatedParameters, $this->getCallable());
@@ -61,12 +61,12 @@ final class RequestUriRuleTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('The parameter "request_uris" must be a list of URI.');
-        $clientId = new ClientId('CLIENT_ID');
-        $commandParameters = new DataBag([
+        $clientId = ClientId::create('CLIENT_ID');
+        $commandParameters = DataBag::create([
             'request_uris' => [123],
         ]);
         $rule = new RequestUriRule();
-        $validatedParameters = new DataBag([
+        $validatedParameters = DataBag::create([
             'response_types' => ['code'],
         ]);
         $rule->handle($clientId, $commandParameters, $validatedParameters, $this->getCallable());
@@ -79,12 +79,12 @@ final class RequestUriRuleTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('The parameter "request_uris" must be a list of URI.');
-        $clientId = new ClientId('CLIENT_ID');
-        $commandParameters = new DataBag([
+        $clientId = ClientId::create('CLIENT_ID');
+        $commandParameters = DataBag::create([
             'request_uris' => ['hello'],
         ]);
         $rule = new RequestUriRule();
-        $validatedParameters = new DataBag([
+        $validatedParameters = DataBag::create([
             'response_types' => ['code'],
         ]);
         $rule->handle($clientId, $commandParameters, $validatedParameters, $this->getCallable());
@@ -95,12 +95,12 @@ final class RequestUriRuleTest extends TestCase
      */
     public function theParameterIsValid(): void
     {
-        $clientId = new ClientId('CLIENT_ID');
-        $commandParameters = new DataBag([
+        $clientId = ClientId::create('CLIENT_ID');
+        $commandParameters = DataBag::create([
             'request_uris' => ['https://foo.com/bar'],
         ]);
         $rule = new RequestUriRule();
-        $validatedParameters = new DataBag([
+        $validatedParameters = DataBag::create([
             'response_types' => ['code'],
         ]);
         $validatedParameters = $rule->handle($clientId, $commandParameters, $validatedParameters, $this->getCallable());

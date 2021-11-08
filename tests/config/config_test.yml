@@ -13,8 +13,15 @@ framework:
     validation:
         enable_annotations: true
     session:
-        storage_id: session.storage.mock_file
+        handler_id: null
+        name: oauth2_server
+        cookie_lifetime: 0
+        cookie_httponly: true
+        cookie_secure: auto
+        cookie_samesite: lax
+        storage_factory_id: session.storage.factory.mock_file
     router:
+        utf8: true
         resource: '%kernel.project_dir%/tests/config/routing.yml'
         strict_requirements: ~
     assets:
@@ -33,11 +40,6 @@ twig:
 services:
     Psr\EventDispatcher\EventDispatcherInterface:
         alias: 'event_dispatcher'
-
-sensio_framework_extra:
-    router:
-        annotations:
-            false
 
 doctrine:
     orm:

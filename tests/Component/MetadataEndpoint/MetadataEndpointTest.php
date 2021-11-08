@@ -9,21 +9,17 @@ use Jose\Component\Core\JWK;
 use Jose\Component\Signature\Algorithm\None;
 use Jose\Component\Signature\JWSBuilder;
 use Nyholm\Psr7\Factory\Psr17Factory;
+use OAuth2Framework\Component\Core\Middleware\TerminalRequestHandler;
 use OAuth2Framework\Component\MetadataEndpoint\Metadata;
 use OAuth2Framework\Component\MetadataEndpoint\MetadataEndpoint;
-use PHPUnit\Framework\TestCase;
-use Prophecy\PhpUnit\ProphecyTrait;
+use OAuth2Framework\Tests\Component\OAuth2TestCase;
 use Psr\Http\Message\ResponseFactoryInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\RequestHandlerInterface;
 
 /**
  * @internal
  */
-final class MetadataEndpointTest extends TestCase
+final class MetadataEndpointTest extends OAuth2TestCase
 {
-    use ProphecyTrait;
-
     private ?MetadataEndpoint $metadataEndpoint = null;
 
     private ?Psr17Factory $responseFactory = null;
@@ -33,11 +29,10 @@ final class MetadataEndpointTest extends TestCase
      */
     public function theMetadataEndpointCanReceiveRegistrationRequests(): void
     {
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $handler = $this->prophesize(RequestHandlerInterface::class);
+        $request = $this->buildRequest();
 
         $response = $this->getMetadataEndpoint()
-            ->process($request->reveal(), $handler->reveal())
+            ->process($request, new TerminalRequestHandler())
         ;
         $response->getBody()
             ->rewind()

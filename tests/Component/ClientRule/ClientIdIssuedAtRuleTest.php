@@ -8,22 +8,22 @@ use OAuth2Framework\Component\ClientRule\ClientIdIssuedAtRule;
 use OAuth2Framework\Component\ClientRule\RuleHandler;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
-use PHPUnit\Framework\TestCase;
+use OAuth2Framework\Tests\Component\OAuth2TestCase;
 
 /**
  * @internal
  */
-final class ClientIdIssuedAtRuleTest extends TestCase
+final class ClientIdIssuedAtRuleTest extends OAuth2TestCase
 {
     /**
      * @test
      */
     public function clientIdIssuedAtRuleSetAsDefault(): void
     {
-        $clientId = new ClientId('CLIENT_ID');
-        $commandParameters = new DataBag([]);
+        $clientId = ClientId::create('CLIENT_ID');
+        $commandParameters = DataBag::create([]);
         $rule = new ClientIdIssuedAtRule();
-        $validatedParameters = $rule->handle($clientId, $commandParameters, new DataBag([]), $this->getCallable());
+        $validatedParameters = $rule->handle($clientId, $commandParameters, DataBag::create([]), $this->getCallable());
 
         static::assertTrue($validatedParameters->has('client_id_issued_at'));
         static::assertIsInt($validatedParameters->get('client_id_issued_at'));
@@ -34,12 +34,12 @@ final class ClientIdIssuedAtRuleTest extends TestCase
      */
     public function clientIdIssuedAtRuleDefineInParameters(): void
     {
-        $clientId = new ClientId('CLIENT_ID');
-        $commandParameters = new DataBag([
+        $clientId = ClientId::create('CLIENT_ID');
+        $commandParameters = DataBag::create([
             'client_id_issued_at' => time() - 1000,
         ]);
         $rule = new ClientIdIssuedAtRule();
-        $validatedParameters = $rule->handle($clientId, $commandParameters, new DataBag([]), $this->getCallable());
+        $validatedParameters = $rule->handle($clientId, $commandParameters, DataBag::create([]), $this->getCallable());
 
         static::assertTrue($validatedParameters->has('client_id_issued_at'));
         static::assertIsInt($validatedParameters->get('client_id_issued_at'));

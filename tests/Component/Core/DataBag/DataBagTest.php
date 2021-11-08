@@ -5,19 +5,19 @@ declare(strict_types=1);
 namespace OAuth2Framework\Tests\Component\Core\DataBag;
 
 use OAuth2Framework\Component\Core\DataBag\DataBag;
-use PHPUnit\Framework\TestCase;
+use OAuth2Framework\Tests\Component\OAuth2TestCase;
 
 /**
  * @internal
  */
-final class DataBagTest extends TestCase
+final class DataBagTest extends OAuth2TestCase
 {
     /**
      * @test
      */
     public function iCanCreateADataBag(): void
     {
-        $data = new DataBag([
+        $data = DataBag::create([
             'foo' => 'bar',
         ]);
         $data->set('foo', 'BAR');

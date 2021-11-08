@@ -5,36 +5,26 @@ declare(strict_types=1);
 namespace OAuth2Framework\Tests\Component\Core\TokenType;
 
 use InvalidArgumentException;
-use OAuth2Framework\Component\Core\TokenType\TokenType;
-use OAuth2Framework\Component\Core\TokenType\TokenTypeManager;
-use PHPUnit\Framework\TestCase;
-use Prophecy\Argument;
-use Prophecy\PhpUnit\ProphecyTrait;
-use Psr\Http\Message\ServerRequestInterface;
+use OAuth2Framework\Tests\Component\OAuth2TestCase;
 
 /**
  * @internal
  */
-final class TokenTypeTest extends TestCase
+final class TokenTypeTest extends OAuth2TestCase
 {
-    use ProphecyTrait;
-
-    private ?TokenTypeManager $tokenTypeManager = null;
-
     /**
      * @test
      */
     public function aTokenTypeManagerCanHandleTokenTypes(): void
     {
-        static::assertTrue($this->getTokenTypeManager()->has('foo'));
-        static::assertInstanceOf(TokenType::class, $this->getTokenTypeManager()->get('foo'));
+        static::assertFalse($this->getTokenTypeManager()->has('foo'));
+        static::assertTrue($this->getTokenTypeManager()->has('Bearer'));
         static::assertNotEmpty($this->getTokenTypeManager()->all());
-        static::assertInstanceOf(TokenType::class, $this->getTokenTypeManager()->getDefault());
-        static::assertSame(['FOO foo="bar",OOO=123'], $this->getTokenTypeManager()->getSchemes([
+        static::assertSame(['Bearer realm="Realm",foo="bar",OOO=123'], $this->getTokenTypeManager()->getSchemes([
             'foo' => 'bar',
             'OOO' => 123,
         ]));
-        static::assertSame(['FOO'], $this->getTokenTypeManager()->getSchemes());
+        static::assertSame(['Bearer realm="Realm"'], $this->getTokenTypeManager()->getSchemes());
     }
 
     /**
@@ -52,35 +42,54 @@ final class TokenTypeTest extends TestCase
     /**
      * @test
      */
-    public function aTokenTypeManagerCanFindATokenInARequest(): void
+    public function aTokenTypeManagerCanFindATokenInARequestHeader(): void
     {
         $additionalCredentialValues = [];
 
-        $request = $this->prophesize(ServerRequestInterface::class);
+        $request = $this->buildRequest(headers: [
+            'AUTHORIZATION' => 'Bearer TOKEN',
+        ]);
 
         static::assertSame(
-            '__--TOKEN--__',
+            'TOKEN',
             $this->getTokenTypeManager()
-                ->findToken($request->reveal(), $additionalCredentialValues, $tokenType)
+                ->findToken($request, $additionalCredentialValues, $tokenType)
         );
     }
 
-    private function getTokenTypeManager(): TokenTypeManager
+    /**
+     * @test
+     */
+    public function aTokenTypeManagerCanFindATokenInARequestBody(): void
     {
-        if ($this->tokenTypeManager === null) {
-            $tokenType = $this->prophesize(TokenType::class);
-            $tokenType->name()
-                ->willReturn('foo')
-            ;
-            $tokenType->getScheme()
-                ->willReturn('FOO')
-            ;
-            $tokenType->find(Argument::any(), Argument::any(), Argument::any())->willReturn('__--TOKEN--__');
+        $additionalCredentialValues = [];
 
-            $this->tokenTypeManager = new TokenTypeManager();
-            $this->tokenTypeManager->add($tokenType->reveal());
-        }
+        $request = $this->buildRequest(data: [
+            'access_token' => 'TOKEN',
+        ]);
 
-        return $this->tokenTypeManager;
+        static::assertSame(
+            'TOKEN',
+            $this->getTokenTypeManager()
+                ->findToken($request, $additionalCredentialValues, $tokenType)
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function aTokenTypeManagerCanFindATokenInAQueryString(): void
+    {
+        $additionalCredentialValues = [];
+
+        $request = $this->buildRequest(queryParameters: [
+            'access_token' => 'TOKEN',
+        ]);
+
+        static::assertSame(
+            'TOKEN',
+            $this->getTokenTypeManager()
+                ->findToken($request, $additionalCredentialValues, $tokenType)
+        );
     }
 }

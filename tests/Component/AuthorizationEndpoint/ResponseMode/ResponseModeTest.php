@@ -6,25 +6,13 @@ namespace OAuth2Framework\Tests\Component\AuthorizationEndpoint\Tests\ResponseMo
 
 use InvalidArgumentException;
 use Nyholm\Psr7\Response;
-use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\FormPostResponseMode;
-use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\FormPostResponseRenderer;
-use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\FragmentResponseMode;
-use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\QueryResponseMode;
-use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\ResponseMode;
-use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\ResponseModeManager;
-use PHPUnit\Framework\TestCase;
-use Prophecy\Argument;
-use Prophecy\PhpUnit\ProphecyTrait;
+use OAuth2Framework\Tests\Component\OAuth2TestCase;
 
 /**
  * @internal
  */
-final class ResponseModeTest extends TestCase
+final class ResponseModeTest extends OAuth2TestCase
 {
-    use ProphecyTrait;
-
-    private ?ResponseModeManager $responseModeManager = null;
-
     /**
      * @test
      */
@@ -35,7 +23,6 @@ final class ResponseModeTest extends TestCase
         static::assertSame(['query', 'fragment', 'form_post'], $this->getResponseModeManager()->list());
         static::assertTrue($this->getResponseModeManager()->has('query'));
         static::assertFalse($this->getResponseModeManager()->has('foo'));
-        static::assertInstanceOf(ResponseMode::class, $this->getResponseModeManager()->get('fragment'));
         $this->getResponseModeManager()
             ->get('foo')
         ;
@@ -228,23 +215,5 @@ final class ResponseModeTest extends TestCase
             ->getContents()
         ;
         static::assertSame('["urn:ietf:wg:oauth:2.0:oob#_=_",{"access_token":"ACCESS_TOKEN"}]', $body);
-    }
-
-    private function getResponseModeManager(): ResponseModeManager
-    {
-        if ($this->responseModeManager === null) {
-            $this->responseModeManager = new ResponseModeManager();
-            $this->responseModeManager->add(new QueryResponseMode());
-            $this->responseModeManager->add(new FragmentResponseMode());
-            $formPostResponseRenderer = $this->prophesize(FormPostResponseRenderer::class);
-            $formPostResponseRenderer->render(Argument::type('string'), [
-                'access_token' => 'ACCESS_TOKEN',
-            ])->will(function ($args) {
-                return json_encode($args);
-            });
-            $this->responseModeManager->add(new FormPostResponseMode($formPostResponseRenderer->reveal()));
-        }
-
-        return $this->responseModeManager;
     }
 }

@@ -18,6 +18,12 @@ final class ResourceOwnerPasswordCredentialsGrantType implements GrantType
     ) {
     }
 
+    public static function create(
+        ResourceOwnerPasswordCredentialManager $resourceOwnerPasswordCredentialManager
+    ): self {
+        return new self($resourceOwnerPasswordCredentialManager);
+    }
+
     public function associatedResponseTypes(): array
     {
         return [];

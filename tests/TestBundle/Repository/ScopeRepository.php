@@ -21,6 +21,7 @@ final class ScopeRepository implements ScopeRepositoryInterface
     {
         $this->scopes['openid'] = new Scope('openid');
         $this->scopes['scope1'] = new Scope('scope1');
+        $this->scopes['scope2'] = new Scope('scope2');
     }
 
     public function has(string $scope): bool

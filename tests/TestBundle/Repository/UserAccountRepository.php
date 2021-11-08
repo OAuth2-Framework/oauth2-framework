@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Tests\TestBundle\Repository;
 
-use function array_key_exists;
 use DateTimeImmutable;
 use OAuth2Framework\Component\Core\UserAccount\UserAccount as BaseUserAccount;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
@@ -41,15 +40,17 @@ final class UserAccountRepository implements UserAccountRepositoryInterface
 
     public function find(UserAccountId $publicId): ?BaseUserAccount
     {
-        return array_key_exists(
-            $publicId->getValue(),
-            $this->userAccounts
-        ) ? $this->userAccounts[$publicId->getValue()] : null;
+        return $this->userAccounts[$publicId->getValue()] ?? null;
     }
 
     public function findOneByUsername(string $username): ?BaseUserAccount
     {
-        return array_key_exists($username, $this->usernames) ? $this->usernames[$username] : null;
+        return $this->usernames[$username] ?? null;
+    }
+
+    public function save(UserAccount $userAccount): void
+    {
+        $this->usernames[$userAccount->getPublicId()->getValue()] = $userAccount;
     }
 
     private function getUsers(): array

@@ -6,19 +6,19 @@ namespace OAuth2Framework\Tests\Component\ClientRegistrationEndpoint;
 
 use OAuth2Framework\Component\ClientRegistrationEndpoint\InitialAccessTokenId;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
-use PHPUnit\Framework\TestCase;
+use OAuth2Framework\Tests\Component\OAuth2TestCase;
 
 /**
  * @internal
  */
-final class InitialAccessTokenTest extends TestCase
+final class InitialAccessTokenTest extends OAuth2TestCase
 {
     /**
      * @test
      */
     public function iCanCreateAnInitialAccessTokenId(): void
     {
-        $initialAccessTokenId = new InitialAccessTokenId('INITIAL_ACCESS_TOKEN_ID');
+        $initialAccessTokenId = InitialAccessTokenId::create('INITIAL_ACCESS_TOKEN_ID');
 
         static::assertInstanceOf(InitialAccessTokenId::class, $initialAccessTokenId);
         static::assertSame('INITIAL_ACCESS_TOKEN_ID', $initialAccessTokenId->getValue());
@@ -30,8 +30,8 @@ final class InitialAccessTokenTest extends TestCase
     public function iCanCreateAndRevokedAnInitialAccessToken(): void
     {
         $initialAccessToken = new InitialAccessToken(
-            new InitialAccessTokenId('INITIAL_ACCESS_TOKEN_ID'),
-            new UserAccountId('USER_ACCOUNT_ID'),
+            InitialAccessTokenId::create('INITIAL_ACCESS_TOKEN_ID'),
+            UserAccountId::create('USER_ACCOUNT_ID'),
             null
         );
         $initialAccessToken = $initialAccessToken->markAsRevoked();

@@ -13,6 +13,11 @@ final class RefreshTokenRevocationTypeHint implements TokenTypeHint
     ) {
     }
 
+    public static function create(RefreshTokenRepository $refreshTokenRepository): self
+    {
+        return new self($refreshTokenRepository);
+    }
+
     public function hint(): string
     {
         return 'refresh_token';
@@ -20,7 +25,7 @@ final class RefreshTokenRevocationTypeHint implements TokenTypeHint
 
     public function find(string $token): ?RefreshToken
     {
-        $id = new RefreshTokenId($token);
+        $id = RefreshTokenId::create($token);
 
         return $this->refreshTokenRepository->find($id);
     }

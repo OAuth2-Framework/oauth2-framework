@@ -9,6 +9,11 @@ use function League\Uri\parse;
 
 final class UriResolver implements IdentifierResolver
 {
+    public static function create(): self
+    {
+        return new self();
+    }
+
     public function supports(string $resource): bool
     {
         $uri = parse($resource);
@@ -22,6 +27,6 @@ final class UriResolver implements IdentifierResolver
         Assertion::string($uri['user'], 'Invalid resource.');
         Assertion::string($uri['host'], 'Invalid resource.');
 
-        return new Identifier($uri['user'], $uri['host'], $uri['port']);
+        return Identifier::create($uri['user'], $uri['host'], $uri['port']);
     }
 }

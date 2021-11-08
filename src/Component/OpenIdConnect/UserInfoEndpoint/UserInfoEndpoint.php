@@ -39,15 +39,19 @@ class UserInfoEndpoint implements MiddlewareInterface
     ) {
     }
 
-    public function enableSignature(JWSBuilder $jwsBuilder, JWKSet $signatureKeys): void
+    public function enableSignature(JWSBuilder $jwsBuilder, JWKSet $signatureKeys): self
     {
         $this->jwsBuilder = $jwsBuilder;
         $this->signatureKeys = $signatureKeys;
+
+        return $this;
     }
 
-    public function enableEncryption(JWEBuilder $jweBuilder): void
+    public function enableEncryption(JWEBuilder $jweBuilder): self
     {
         $this->jweBuilder = $jweBuilder;
+
+        return $this;
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface

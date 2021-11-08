@@ -14,6 +14,11 @@ final class ResourceServer implements ResourceServerInterface
     ) {
     }
 
+    public static function create(ResourceServerId $resourceServerId): self
+    {
+        return new self($resourceServerId);
+    }
+
     public function getResourceServerId(): ResourceServerId
     {
         return $this->resourceServerId;

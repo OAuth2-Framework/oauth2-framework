@@ -16,11 +16,14 @@ use JsonSerializable;
 
 class DataBag implements IteratorAggregate, Countable, JsonSerializable
 {
-    private array $parameters = [];
+    public function __construct(
+        private array $parameters
+    ) {
+    }
 
-    public function __construct(array $parameters)
+    public static function create(array $parameters = []): self
     {
-        $this->parameters = $parameters;
+        return new self($parameters);
     }
 
     public function has(string $key): bool
@@ -42,12 +45,11 @@ class DataBag implements IteratorAggregate, Countable, JsonSerializable
         return $default;
     }
 
-    /**
-     * @param mixed|null $value
-     */
-    public function set(string $key, $value): void
+    public function set(string $key, mixed $value): self
     {
         $this->parameters[$key] = $value;
+
+        return $this;
     }
 
     public function all(): array

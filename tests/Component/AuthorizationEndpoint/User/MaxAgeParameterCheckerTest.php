@@ -4,219 +4,104 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Tests\Component\AuthorizationEndpoint\User;
 
+use DateTimeImmutable;
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
 use OAuth2Framework\Component\AuthorizationEndpoint\User\MaxAgeParameterAuthenticationChecker;
-use OAuth2Framework\Component\Core\Client\Client;
-use OAuth2Framework\Component\Core\UserAccount\UserAccount;
-use PHPUnit\Framework\TestCase;
-use Prophecy\PhpUnit\ProphecyTrait;
+use OAuth2Framework\Component\Core\Client\ClientId;
+use OAuth2Framework\Component\Core\DataBag\DataBag;
+use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
+use OAuth2Framework\Tests\Component\OAuth2TestCase;
+use OAuth2Framework\Tests\TestBundle\Entity\Client;
+use OAuth2Framework\Tests\TestBundle\Entity\UserAccount;
 
 /**
  * @internal
  */
-final class MaxAgeParameterCheckerTest extends TestCase
+final class MaxAgeParameterCheckerTest extends OAuth2TestCase
 {
-    use ProphecyTrait;
-
     /**
      * @test
+     * @dataProvider useCases
      */
-    public function theUserHasNeverBeenConnected(): void
-    {
-        $client = $this->prophesize(Client::class);
+    public function theUserHasNeverBeenConnected(
+        array $clientConfiguration,
+        array $authorizationParameters,
+        ?DateTimeImmutable $lastLogin,
+        bool $expectedResult
+    ): void {
+        $client = Client::create(
+            ClientId::create('CLIENT_ID'),
+            DataBag::create($clientConfiguration),
+            UserAccountId::create('john.1')
+        );
 
-        $authorization = $this->prophesize(AuthorizationRequest::class);
-        $authorization->hasQueryParam('max_age')
-            ->willReturn(true)
-        ;
-        $authorization->getQueryParam('max_age')
-            ->willReturn(3600)
-        ;
-        $authorization->hasUserAccount()
-            ->willReturn(false)
-        ;
-        $authorization->getClient()
-            ->willReturn($client->reveal())
-        ;
-        $checker = new MaxAgeParameterAuthenticationChecker();
+        $userAccount = UserAccount::create(UserAccountId::create('john.1'), 'john.1', [], $lastLogin, null, []);
 
-        static::assertTrue($checker->isAuthenticationNeeded($authorization->reveal()));
+        $authorization = AuthorizationRequest::create($client, $authorizationParameters)
+            ->setUserAccount($userAccount)
+        ;
+        $checker = MaxAgeParameterAuthenticationChecker::create();
+
+        static::assertSame($expectedResult, $checker->isAuthenticationNeeded($authorization));
     }
 
-    /**
-     * @test
-     */
-    public function thereIsNoMaxAgeConstraintThenTheCheckSucceeded(): void
+    public function useCases(): array
     {
-        $client = $this->prophesize(Client::class);
-        $client->has('default_max_age')
-            ->willReturn(false)
-        ;
-
-        $userAccount = $this->prophesize(UserAccount::class);
-
-        $authorization = $this->prophesize(AuthorizationRequest::class);
-        $authorization->hasQueryParam('max_age')
-            ->willReturn(false)
-        ;
-        $authorization->hasUserAccount()
-            ->willReturn(true)
-        ;
-        $authorization->getUserAccount()
-            ->willReturn($userAccount->reveal())
-        ;
-        $authorization->getClient()
-            ->willReturn($client->reveal())
-        ;
-        $checker = new MaxAgeParameterAuthenticationChecker();
-
-        $checker->isAuthenticationNeeded($authorization->reveal(), $userAccount->reveal(), false);
-        static::assertTrue(true);
-    }
-
-    /**
-     * @test
-     */
-    public function thereIsConstraintFromTheClientThatIsSatisfied(): void
-    {
-        $client = $this->prophesize(Client::class);
-        $client->has('default_max_age')
-            ->willReturn(true)
-        ;
-        $client->get('default_max_age')
-            ->willReturn(3600)
-        ;
-
-        $userAccount = $this->prophesize(UserAccount::class);
-        $userAccount->getLastLoginAt()
-            ->willReturn(time() - 100)
-        ;
-
-        $authorization = $this->prophesize(AuthorizationRequest::class);
-        $authorization->hasQueryParam('max_age')
-            ->willReturn(false)
-        ;
-        $authorization->hasUserAccount()
-            ->willReturn(true)
-        ;
-        $authorization->getUserAccount()
-            ->willReturn($userAccount->reveal())
-        ;
-        $authorization->getClient()
-            ->willReturn($client->reveal())
-        ;
-        $checker = new MaxAgeParameterAuthenticationChecker();
-
-        $checker->isAuthenticationNeeded($authorization->reveal(), $userAccount->reveal(), false);
-        static::assertTrue(true);
-    }
-
-    /**
-     * @test
-     */
-    public function thereIsConstraintFromTheAuthorizationThatIsSatisfied(): void
-    {
-        $client = $this->prophesize(Client::class);
-        $client->has('default_max_age')
-            ->willReturn(false)
-        ;
-
-        $userAccount = $this->prophesize(UserAccount::class);
-        $userAccount->getLastLoginAt()
-            ->willReturn(time() - 100)
-        ;
-
-        $authorization = $this->prophesize(AuthorizationRequest::class);
-        $authorization->hasQueryParam('max_age')
-            ->willReturn(true)
-        ;
-        $authorization->getQueryParam('max_age')
-            ->willReturn(3600)
-        ;
-        $authorization->hasUserAccount()
-            ->willReturn(true)
-        ;
-        $authorization->getUserAccount()
-            ->willReturn($userAccount->reveal())
-        ;
-        $authorization->getClient()
-            ->willReturn($client->reveal())
-        ;
-        $checker = new MaxAgeParameterAuthenticationChecker();
-
-        $checker->isAuthenticationNeeded($authorization->reveal(), $userAccount->reveal(), false);
-        static::assertTrue(true);
-    }
-
-    /**
-     * @test
-     */
-    public function thereIsAConstraintButTheUserNeverLoggedIn(): void
-    {
-        $client = $this->prophesize(Client::class);
-        $client->has('default_max_age')
-            ->willReturn(false)
-        ;
-
-        $userAccount = $this->prophesize(UserAccount::class);
-        $userAccount->getLastLoginAt()
-            ->willReturn(null)
-        ;
-
-        $authorization = $this->prophesize(AuthorizationRequest::class);
-        $authorization->hasQueryParam('max_age')
-            ->willReturn(true)
-        ;
-        $authorization->getQueryParam('max_age')
-            ->willReturn(3600)
-        ;
-        $authorization->hasUserAccount()
-            ->willReturn(true)
-        ;
-        $authorization->getUserAccount()
-            ->willReturn($userAccount->reveal())
-        ;
-        $authorization->getClient()
-            ->willReturn($client->reveal())
-        ;
-        $checker = new MaxAgeParameterAuthenticationChecker();
-
-        static::assertTrue($checker->isAuthenticationNeeded($authorization->reveal()));
-    }
-
-    /**
-     * @test
-     */
-    public function thereIsAConstraintThatIsNotSatisfied(): void
-    {
-        $client = $this->prophesize(Client::class);
-        $client->has('default_max_age')
-            ->willReturn(false)
-        ;
-
-        $userAccount = $this->prophesize(UserAccount::class);
-        $userAccount->getLastLoginAt()
-            ->willReturn(time() - 10000)
-        ;
-
-        $authorization = $this->prophesize(AuthorizationRequest::class);
-        $authorization->hasQueryParam('max_age')
-            ->willReturn(true)
-        ;
-        $authorization->getQueryParam('max_age')
-            ->willReturn(3600)
-        ;
-        $authorization->hasUserAccount()
-            ->willReturn(true)
-        ;
-        $authorization->getUserAccount()
-            ->willReturn($userAccount->reveal())
-        ;
-        $authorization->getClient()
-            ->willReturn($client->reveal())
-        ;
-        $checker = new MaxAgeParameterAuthenticationChecker();
-
-        static::assertTrue($checker->isAuthenticationNeeded($authorization->reveal()));
+        return [
+            [[], [], null, false],
+            [
+                [
+                    'default_max_age' => 90,
+                ],
+                [],
+                new DateTimeImmutable('now -100 seconds'),
+                true,
+            ],
+            [
+                [
+                    'default_max_age' => 3600,
+                ],
+                [],
+                new DateTimeImmutable('now -100 seconds'),
+                false,
+            ],
+            [
+                [
+                    'default_max_age' => 3600,
+                ],
+                [
+                    'max_age' => 110,
+                ],
+                new DateTimeImmutable('now -100 seconds'),
+                false,
+            ],
+            [
+                [
+                    'default_max_age' => 3600,
+                ],
+                [
+                    'max_age' => 90,
+                ],
+                new DateTimeImmutable('now -100 seconds'),
+                true,
+            ],
+            [[], [], new DateTimeImmutable('now -100 seconds'), false],
+            [
+                [],
+                [
+                    'max_age' => 3600,
+                ],
+                null,
+                true,
+            ],
+            [
+                [],
+                [
+                    'max_age' => 3600,
+                ],
+                new DateTimeImmutable('now -10000 seconds'),
+                true,
+            ],
+        ];
     }
 }

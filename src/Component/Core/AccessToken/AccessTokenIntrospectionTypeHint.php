@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Core\AccessToken;
 
+use function count;
+use function is_array;
 use OAuth2Framework\Component\TokenIntrospectionEndpoint\TokenTypeHint;
 
 final class AccessTokenIntrospectionTypeHint implements TokenTypeHint
@@ -13,6 +15,11 @@ final class AccessTokenIntrospectionTypeHint implements TokenTypeHint
     ) {
     }
 
+    public static function create(AccessTokenRepository $accessTokenRepository): self
+    {
+        return new self($accessTokenRepository);
+    }
+
     public function hint(): string
     {
         return 'access_token';
@@ -20,7 +27,7 @@ final class AccessTokenIntrospectionTypeHint implements TokenTypeHint
 
     public function find(string $token): ?AccessToken
     {
-        $id = new AccessTokenId($token);
+        $id = AccessTokenId::create($token);
 
         return $this->accessTokenRepository->find($id);
     }
@@ -35,16 +42,23 @@ final class AccessTokenIntrospectionTypeHint implements TokenTypeHint
 
         $values = [
             'active' => ! $token->hasExpired(),
-            'client_id' => $token->getClientId(),
-            'resource_owner' => $token->getResourceOwnerId(),
+            'client_id' => (string) $token->getClientId(),
+            'resource_owner' => (string) $token->getResourceOwnerId(),
             'expires_in' => $token->getExpiresIn(),
         ];
         if (! $token->getParameter()->has('scope')) {
             $values['scope'] = $token->getParameter()->get('scope');
         }
 
-        return $values + $token->getParameter()
-            ->all()
-        ;
+        return array_filter(
+            array_merge($values, $token->getParameter()->all()),
+            static function (mixed $value): bool {
+                if (is_array($value) && count($value) === 0) {
+                    return true;
+                }
+
+                return $value !== null;
+            }
+        );
     }
 }

@@ -16,46 +16,53 @@ final class Pipe implements MiddlewareInterface
 {
     public function __construct(
         private array $middlewares = []
-    )
-    {
+    ) {
     }
 
-    public function push(MiddlewareInterface $middleware): void
+    public function push(MiddlewareInterface $middleware): self
     {
         $this->middlewares[] = $middleware;
+
+        return $this;
     }
 
-    public function prepend(MiddlewareInterface $middleware): void
+    public function prepend(MiddlewareInterface $middleware): self
     {
         array_unshift($this->middlewares, $middleware);
+
+        return $this;
     }
 
-    public function addAfterFirstOne(MiddlewareInterface $middleware): void
+    public function addAfterFirstOne(MiddlewareInterface $middleware): self
     {
         $count = count($this->middlewares);
         if ($count === 0) {
             $this->middlewares[] = $middleware;
 
-            return;
+            return $this;
         }
         $temp = array_slice($this->middlewares, 1, $count);
         array_unshift($temp, $middleware);
         array_unshift($temp, $this->middlewares[0]);
         $this->middlewares = $temp;
+
+        return $this;
     }
 
-    public function addBeforeLastOne(MiddlewareInterface $middleware): void
+    public function addBeforeLastOne(MiddlewareInterface $middleware): self
     {
         $count = count($this->middlewares);
         if ($count === 0) {
             $this->middlewares[] = $middleware;
 
-            return;
+            return $this;
         }
         $temp = array_slice($this->middlewares, 0, $count - 1);
         $temp[] = $middleware;
         $temp[] = $this->middlewares[$count - 1];
         $this->middlewares = $temp;
+
+        return $this;
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface

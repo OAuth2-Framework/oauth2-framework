@@ -1,5 +1,5 @@
 parameters:
-    level: 7
+    level: max
     paths:
         - src
     excludes_analyse:
@@ -9,7 +9,7 @@ parameters:
     ignoreErrors:
         - '#Method OAuth2Framework\\Component\\OpenIdConnect\\UserInfo\\Claim\\ClaimManager\:\:list\(\) should return array<OAuth2Framework\\Component\\OpenIdConnect\\UserInfo\\Claim\\Claim> but returns array.*\.#'
         - '#Parameter .* of method .* expects Symfony\\Component\\Config\\Definition\\Builder\\ArrayNodeDefinition, Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition given.#'
-        - '#Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition::(.*)\(\)#'
-        - '#Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeParentInterface.*\.#'
+        - '#Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition::(.*)\(\).#'
+        - '#Cannot call method .* on Symfony\\Component\\Config\\Definition\\Builder\\NodeParentInterface.*\.#'
     checkMissingIterableValueType: false
     checkGenericClassInNonGenericObjectType: false

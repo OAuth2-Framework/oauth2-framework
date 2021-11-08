@@ -19,6 +19,11 @@ class Client extends AbstractClient
         parent::__construct($parameters, $ownerId);
     }
 
+    public static function create(ClientId $clientId, DataBag $parameters, ?UserAccountId $ownerId): self
+    {
+        return new self($clientId, $parameters, $ownerId);
+    }
+
     public function getClientId(): ClientId
     {
         return $this->clientId;

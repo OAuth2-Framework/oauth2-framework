@@ -17,6 +17,14 @@ final class TokenRevocationGetEndpoint extends TokenRevocationEndpoint
         parent::__construct($tokenTypeHintManager, $responseFactory);
     }
 
+    public static function create(
+        TokenTypeHintManager $tokenTypeHintManager,
+        ResponseFactoryInterface $responseFactory,
+        bool $allowJson
+    ): self {
+        return new self($tokenTypeHintManager, $responseFactory, $allowJson);
+    }
+
     protected function getRequestParameters(ServerRequestInterface $request): array
     {
         $parameters = $request->getQueryParams();

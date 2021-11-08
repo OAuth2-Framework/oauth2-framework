@@ -56,24 +56,39 @@ class ClientAssertionJwt implements AuthenticationMethod
         $this->secretLifetime = $secretLifetime;
     }
 
-    public function enableTrustedIssuerSupport(TrustedIssuerRepository $trustedIssuerRepository): void
-    {
-        $this->trustedIssuerRepository = $trustedIssuerRepository;
+    public static function create(
+        JWSVerifier $jwsVerifier,
+        HeaderCheckerManager $headerCheckerManager,
+        ClaimCheckerManager $claimCheckerManager,
+        int $secretLifetime = 0
+    ): self {
+        return new self($jwsVerifier, $headerCheckerManager, $claimCheckerManager, $secretLifetime);
     }
 
-    public function enableJkuSupport(JKUFactory $jkuFactory): void
+    public function enableTrustedIssuerSupport(TrustedIssuerRepository $trustedIssuerRepository): self
+    {
+        $this->trustedIssuerRepository = $trustedIssuerRepository;
+
+        return $this;
+    }
+
+    public function enableJkuSupport(JKUFactory $jkuFactory): self
     {
         $this->jkuFactory = $jkuFactory;
+
+        return $this;
     }
 
     public function enableEncryptedAssertions(
         JWELoader $jweLoader,
         JWKSet $keyEncryptionKeySet,
         bool $encryptionRequired
-    ): void {
+    ): self {
         $this->jweLoader = $jweLoader;
         $this->encryptionRequired = $encryptionRequired;
         $this->keyEncryptionKeySet = $keyEncryptionKeySet;
+
+        return $this;
     }
 
     /**

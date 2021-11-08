@@ -13,38 +13,34 @@ class RouteLoader implements LoaderInterface
 {
     private RouteCollection $routes;
 
+    private LoaderResolverInterface $resolver;
+
     public function __construct()
     {
         $this->routes = new RouteCollection();
     }
 
     /**
-     * @param string   $name         The name of the route
-     * @param string   $controllerId The controller service ID
-     * @param string   $methodName   The controller method name
-     * @param string   $path         The path pattern to match
      * @param array    $defaults     An array of default parameter values
      * @param array    $requirements An array of requirements for parameters (regexes)
      * @param array    $options      An array of options
-     * @param string   $host         The host pattern to match
      * @param string[] $schemes      A required URI scheme or an array of restricted schemes
      * @param string[] $methods      A required HTTP method or an array of restricted methods
-     * @param string   $condition    A condition that should evaluate to true for the route to match
      */
     public function addRoute(
-        $name,
-        $controllerId,
-        $methodName,
-        $path,
+        string $name,
+        string $controllerId,
+        string $methodName,
+        string $path,
         array $defaults = [],
         array $requirements = [],
         array $options = [],
-        $host = '',
-        $schemes = [],
-        $methods = [],
-        $condition = ''
+        string $host = '',
+        array $schemes = [],
+        array $methods = [],
+        string $condition = ''
     ): void {
-        $defaults['_controller'] = sprintf('%s:%s', $controllerId, $methodName);
+        $defaults['_controller'] = sprintf('%s::%s', $controllerId, $methodName);
         $route = new Route($path, $defaults, $requirements, $options, $host, $schemes, $methods, $condition);
         $this->routes->add(sprintf('oauth2_server_%s', $name), $route);
     }
@@ -59,12 +55,13 @@ class RouteLoader implements LoaderInterface
         return $type === 'oauth2_server';
     }
 
-    public function getResolver(): ?LoaderResolverInterface
+    public function getResolver(): LoaderResolverInterface
     {
-        return null;
+        return $this->resolver;
     }
 
     public function setResolver(LoaderResolverInterface $resolver): void
     {
+        $this->resolver = $resolver;
     }
 }

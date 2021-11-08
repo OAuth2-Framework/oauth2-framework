@@ -6,29 +6,63 @@ namespace OAuth2Framework\Tests\TestBundle\Entity;
 
 use function array_key_exists;
 use DateTimeImmutable;
+use DateTimeInterface;
 use InvalidArgumentException;
 use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwnerId;
 use OAuth2Framework\Component\Core\UserAccount\UserAccount as UserAccountInterface;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
-use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Security\Core\User\UserInterface as SymfonyUserInterface;
 
-final class UserAccount implements UserAccountInterface, SymfonyUserInterface, EquatableInterface
+final class UserAccount implements UserAccountInterface, SymfonyUserInterface
 {
-    /**
-     * @var string[]
-     */
-    private $roles;
-
     public function __construct(
         private UserAccountId $userAccountId,
         private string $username,
-        array $roles,
+        private array $roles,
         private ?DateTimeImmutable $lastLoginAt,
         private ?DateTimeImmutable $lastUpdateAt,
         private array $data
     ) {
-        $this->roles = $roles;
+    }
+
+    public static function create(
+        UserAccountId $userAccountId,
+        string $username,
+        array $roles,
+        ?DateTimeImmutable $lastLoginAt,
+        ?DateTimeImmutable $lastUpdateAt,
+        array $data
+    ): self {
+        return new self($userAccountId, $username, $roles, $lastLoginAt, $lastUpdateAt, $data);
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return $this->userAccountId->getValue();
+    }
+
+    public function getRoles()
+    {
+        return $this->roles;
+    }
+
+    public function getPassword(): string
+    {
+        return '';
+    }
+
+    public function getSalt(): ?string
+    {
+        return null;
+    }
+
+    public function eraseCredentials(): void
+    {
+    }
+
+    public function getUsername(): string
+    {
+        return $this->username;
     }
 
     public function getUserAccountId(): UserAccountId
@@ -55,49 +89,13 @@ final class UserAccount implements UserAccountInterface, SymfonyUserInterface, E
         return $this->data[$key];
     }
 
-    public function getLastLoginAt(): ?int
+    public function getLastLoginAt(): ?DateTimeInterface
     {
-        return $this->lastLoginAt ? $this->lastLoginAt->getTimestamp() : null;
+        return $this->lastLoginAt;
     }
 
-    public function getLastUpdateAt(): ?int
+    public function getLastUpdateAt(): ?DateTimeInterface
     {
-        return $this->lastUpdateAt ? $this->lastUpdateAt->getTimestamp() : null;
-    }
-
-    public function getRoles(): array
-    {
-        return $this->roles;
-    }
-
-    public function getSalt()
-    {
-    }
-
-    public function getUsername(): string
-    {
-        return $this->username;
-    }
-
-    public function getPassword(): string
-    {
-        return '';
-    }
-
-    public function eraseCredentials(): void
-    {
-    }
-
-    public function isEqualTo(SymfonyUserInterface $user): bool
-    {
-        if (! $user instanceof self) {
-            return false;
-        }
-
-        if ($this->username !== $user->getUsername()) {
-            return false;
-        }
-
-        return true;
+        return $this->lastUpdateAt;
     }
 }

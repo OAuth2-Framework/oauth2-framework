@@ -34,7 +34,7 @@ final class AuthorizationCodeIdType extends Type
             return $value;
         }
 
-        return new AuthorizationCodeId($value);
+        return AuthorizationCodeId::create($value);
     }
 
     /**

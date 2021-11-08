@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Tests\TestBundle\Repository;
 
-use Assert\Assertion;
 use DateTimeImmutable;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
@@ -15,32 +14,27 @@ use OAuth2Framework\Component\RefreshTokenGrant\RefreshToken as RefreshTokenInte
 use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenId;
 use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenRepository as RefreshTokenRepositoryInterface;
 use OAuth2Framework\Tests\TestBundle\Entity\RefreshToken;
-use Psr\Cache\CacheItemPoolInterface;
 
 final class RefreshTokenRepository implements RefreshTokenRepositoryInterface
 {
-    public function __construct(
-        private CacheItemPoolInterface $cache
-    ) {
+    /**
+     * @var array<string, RefreshTokenInterface>
+     */
+    private array $refreshTokens = [];
+
+    public function __construct()
+    {
         $this->load();
     }
 
     public function find(RefreshTokenId $refreshTokenId): ?RefreshTokenInterface
     {
-        $item = $this->cache->getItem('RefreshToken-' . $refreshTokenId->getValue());
-        if ($item->isHit()) {
-            return $item->get();
-        }
-
-        return null;
+        return $this->refreshTokens[$refreshTokenId->getValue()] ?? null;
     }
 
     public function save(RefreshTokenInterface $refreshToken): void
     {
-        Assertion::isInstanceOf($refreshToken, RefreshToken::class, 'Unsupported refresh token class');
-        $item = $this->cache->getItem('RefreshToken-' . $refreshToken->getId()->getValue());
-        $item->set($refreshToken);
-        $this->cache->save($item);
+        $this->refreshTokens[$refreshToken->getId()->getValue()] = $refreshToken;
     }
 
     public function create(
@@ -52,7 +46,7 @@ final class RefreshTokenRepository implements RefreshTokenRepositoryInterface
         ?ResourceServerId $resourceServerId
     ): RefreshTokenInterface {
         return new RefreshToken(
-            new RefreshTokenId(bin2hex(random_bytes(32))),
+            RefreshTokenId::create(bin2hex(random_bytes(32))),
             $clientId,
             $resourceOwnerId,
             $expiresAt,
@@ -66,7 +60,7 @@ final class RefreshTokenRepository implements RefreshTokenRepositoryInterface
     {
         foreach ($this->getData() as $datum) {
             $refreshToken = new RefreshToken(
-                new RefreshTokenId($datum['refresh_token_id']),
+                RefreshTokenId::create($datum['refresh_token_id']),
                 new ClientId($datum['client_id']),
                 $datum['resource_owner_id'],
                 $datum['expires_at'],

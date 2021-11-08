@@ -24,13 +24,15 @@ class AuthenticationMethodManager
      */
     private array $names = [];
 
-    public function add(AuthenticationMethod $method): void
+    public function add(AuthenticationMethod $method): self
     {
         $class = $method::class;
         $this->methods[$class] = $method;
         foreach ($method->getSupportedMethods() as $name) {
             $this->names[$name] = $class;
         }
+
+        return $this;
     }
 
     /**

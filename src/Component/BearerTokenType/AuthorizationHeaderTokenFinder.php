@@ -8,6 +8,11 @@ use Psr\Http\Message\ServerRequestInterface;
 
 final class AuthorizationHeaderTokenFinder implements TokenFinder
 {
+    public static function create(): self
+    {
+        return new self();
+    }
+
     public function find(ServerRequestInterface $request, array &$additionalCredentialValues): ?string
     {
         $authorizationHeaders = $request->getHeader('AUTHORIZATION');

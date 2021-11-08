@@ -15,6 +15,11 @@ final class ResponseTypeParameterChecker implements ParameterChecker
     ) {
     }
 
+    public static function create(ResponseTypeManager $responseTypeManager): self
+    {
+        return new self($responseTypeManager);
+    }
+
     public function check(AuthorizationRequest $authorization): void
     {
         // @see http://tools.ietf.org/html/rfc6749#section-3.1.1

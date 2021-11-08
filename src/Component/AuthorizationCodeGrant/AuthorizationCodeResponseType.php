@@ -23,6 +23,20 @@ final class AuthorizationCodeResponseType implements ResponseType
     ) {
     }
 
+    public static function create(
+        AuthorizationCodeRepository $authorizationCodeRepository,
+        int $authorizationCodeLifetime,
+        PKCEMethodManager $pkceMethodManager,
+        bool $pkceForPublicClientsEnforced
+    ): self {
+        return new self(
+            $authorizationCodeRepository,
+            $authorizationCodeLifetime,
+            $pkceMethodManager,
+            $pkceForPublicClientsEnforced
+        );
+    }
+
     public function associatedGrantTypes(): array
     {
         return ['authorization_code'];

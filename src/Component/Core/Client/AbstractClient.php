@@ -37,14 +37,18 @@ abstract class AbstractClient implements ClientInterface
         return $this->ownerId;
     }
 
-    public function setParameter(DataBag $parameter): void
+    public function setParameter(DataBag $parameter): self
     {
         $this->parameter = $parameter;
+
+        return $this;
     }
 
-    public function markAsDeleted(): void
+    public function markAsDeleted(): self
     {
         $this->deleted = true;
+
+        return $this;
     }
 
     public function isDeleted(): bool

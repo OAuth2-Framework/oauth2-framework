@@ -13,6 +13,11 @@ use Psr\Http\Message\ServerRequestInterface;
 
 final class None implements AuthenticationMethod
 {
+    public static function create(): self
+    {
+        return new self();
+    }
+
     public function getSchemesParameters(): array
     {
         return [];

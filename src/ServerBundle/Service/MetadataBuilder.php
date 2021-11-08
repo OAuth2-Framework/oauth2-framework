@@ -32,18 +32,22 @@ class MetadataBuilder
         return $this->metadata;
     }
 
-    public function addRoute(string $name, string $routeName, array $routeParameters = []): void
+    public function addRoute(string $name, string $routeName, array $routeParameters = []): self
     {
         $path = $this->router->generate($routeName, $routeParameters, RouterInterface::ABSOLUTE_URL);
         $this->metadata->set($name, $path);
+
+        return $this;
     }
 
-    public function setCodeChallengeMethodsSupported(PKCEMethodManager $PKCEMethodManager): void
+    public function setCodeChallengeMethodsSupported(PKCEMethodManager $PKCEMethodManager): self
     {
         $this->metadata->set('code_challenge_methods_supported', $PKCEMethodManager->names());
+
+        return $this;
     }
 
-    public function setClientAssertionJwt(ClientAssertionJwt $clientAssertionJwt): void
+    public function setClientAssertionJwt(ClientAssertionJwt $clientAssertionJwt): self
     {
         $this->metadata->set(
             'token_endpoint_auth_signing_alg_values_supported',
@@ -57,55 +61,70 @@ class MetadataBuilder
             'token_endpoint_auth_encryption_enc_values_supported',
             $clientAssertionJwt->getSupportedContentEncryptionAlgorithms()
         );
+
+        return $this;
     }
 
-    public function setGrantTypeManager(GrantTypeManager $grantTypeManager): void
+    public function setGrantTypeManager(GrantTypeManager $grantTypeManager): self
     {
         $this->metadata->set('grant_types_supported', $grantTypeManager->list());
+
+        return $this;
     }
 
-    public function setResponseTypeManager(ResponseTypeManager $responseTypeManager): void
+    public function setResponseTypeManager(ResponseTypeManager $responseTypeManager): self
     {
         $this->metadata->set('response_types_supported', $responseTypeManager->list());
+
+        return $this;
     }
 
-    public function setResponseModeManager(ResponseModeManager $responseModeManager): void
+    public function setResponseModeManager(ResponseModeManager $responseModeManager): self
     {
         $this->metadata->set('response_modes_supported', $responseModeManager->list());
+
+        return $this;
     }
 
-    public function setTokenEndpointAuthMethodManager(AuthenticationMethodManager $tokenEndpointAuthMethodManager): void
+    public function setTokenEndpointAuthMethodManager(AuthenticationMethodManager $tokenEndpointAuthMethodManager): self
     {
         $this->metadata->set('token_endpoint_auth_methods_supported', $tokenEndpointAuthMethodManager->list());
+
+        return $this;
     }
 
-    public function setScopeRepository(ScopeRepository $scopeRepository): void
+    public function setScopeRepository(ScopeRepository $scopeRepository): self
     {
         $this->metadata->set('scopes_supported', $scopeRepository->all());
+
+        return $this;
     }
 
-    public function setUserinfo(UserInfo $userInfo): void
+    public function setUserinfo(UserInfo $userInfo): self
     {
         $this->metadata->set(
             'subject_types_supported',
             $userInfo->isPairwiseSubjectIdentifierSupported() ? ['public', 'pairwise'] : ['public']
         );
+
+        return $this;
     }
 
-    public function setClaimsSupported(ClaimManager $claimManager): void
+    public function setClaimsSupported(ClaimManager $claimManager): self
     {
         $this->metadata->set('claims_supported', $claimManager->list());
+
+        return $this;
     }
 
-    /**
-     * @param mixed|null $value
-     */
-    public function addKeyValuePair(string $name, $value): void
+    public function addKeyValuePair(string $name, mixed $value): self
     {
         $this->metadata->set($name, $value);
+
+        return $this;
     }
 
-    public function setAuthorizationRequestLoader(AuthorizationRequestLoader $authorizationRequestLoader): void
+    public function setAuthorizationRequestLoader(AuthorizationRequestLoader $authorizationRequestLoader): self
     {
         $requestObjectSupported = $authorizationRequestLoader->isRequestObjectSupportEnabled();
         $this->metadata->set('request_parameter_supported', $requestObjectSupported);
@@ -131,5 +150,7 @@ class MetadataBuilder
                 $authorizationRequestLoader->getSupportedContentEncryptionAlgorithms()
             );
         }
+
+        return $this;
     }
 }

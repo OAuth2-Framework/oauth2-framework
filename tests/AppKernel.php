@@ -10,7 +10,6 @@ use OAuth2Framework\SecurityBundle\OAuth2FrameworkSecurityBundle;
 use OAuth2Framework\ServerBundle\OAuth2FrameworkServerBundle;
 use OAuth2Framework\Tests\TestBundle\TestBundle;
 use OAuth2Framework\WebFingerBundle\OAuth2FrameworkWebFingerBundle;
-use Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\SecurityBundle\SecurityBundle;
 use Symfony\Bundle\TwigBundle\TwigBundle;
@@ -31,7 +30,6 @@ final class AppKernel extends Kernel
             new FrameworkBundle(),
             new SecurityBundle(),
             new TwigBundle(),
-            new SensioFrameworkExtraBundle(),
             new DoctrineBundle(),
             new JoseFrameworkBundle(),
 

@@ -15,6 +15,11 @@ use Psr\Http\Message\ResponseInterface;
 
 final class QueryResponseMode implements ResponseMode
 {
+    public static function create(): self
+    {
+        return new self();
+    }
+
     public function name(): string
     {
         return ResponseType::RESPONSE_TYPE_MODE_QUERY;

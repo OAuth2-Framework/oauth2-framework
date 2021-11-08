@@ -4,13 +4,18 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\WebFingerEndpoint\IdentifierResolver;
 
-class Identifier
+final class Identifier
 {
     public function __construct(
         private string $id,
         private string $domain,
         private ?int $port
     ) {
+    }
+
+    public static function create(string $id, string $domain, ?int $port): self
+    {
+        return new self($id, $domain, $port);
     }
 
     public function getId(): string

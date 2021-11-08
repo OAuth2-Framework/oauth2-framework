@@ -18,6 +18,11 @@ final class PromptParameterChecker implements ParameterChecker
 
     public const PROMPT_SELECT_ACCOUNT = 'select_account';
 
+    public static function create(): self
+    {
+        return new self();
+    }
+
     public function check(AuthorizationRequest $authorization): void
     {
         if (! $authorization->hasQueryParam('prompt')) {

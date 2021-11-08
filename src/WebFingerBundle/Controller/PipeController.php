@@ -22,7 +22,12 @@ class PipeController
     public function handle(Request $symfonyRequest): Response
     {
         $httpFoundationFactory = new HttpFoundationFactory();
-        $psrFactory = new PsrHttpFactory(new Psr17Factory(), new Psr17Factory(), new Psr17Factory(), new Psr17Factory());
+        $psrFactory = new PsrHttpFactory(
+            new Psr17Factory(),
+            new Psr17Factory(),
+            new Psr17Factory(),
+            new Psr17Factory()
+        );
         $psrRequest = $psrFactory->createRequest($symfonyRequest);
 
         $psrResponse = $this->pipe->process($psrRequest, new TerminalRequestHandler());

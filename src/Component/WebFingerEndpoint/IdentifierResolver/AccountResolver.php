@@ -11,6 +11,11 @@ use function League\Uri\parse;
 
 final class AccountResolver implements IdentifierResolver
 {
+    public static function create(): self
+    {
+        return new self();
+    }
+
     public function supports(string $resource): bool
     {
         $uri = parse($resource);
@@ -28,7 +33,9 @@ final class AccountResolver implements IdentifierResolver
         if (count($parts) !== 2) {
             throw new InvalidArgumentException('Invalid resource.');
         }
+
         $parts[0] = str_replace('%40', '@', $parts[0]);
+
         $pos = mb_strpos($parts[1], ':');
         if ($pos === false) {
             $port = null;
@@ -37,6 +44,6 @@ final class AccountResolver implements IdentifierResolver
             $parts[1] = mb_substr($parts[1], 0, $pos);
         }
 
-        return new Identifier($parts[0], $parts[1], $port);
+        return Identifier::create($parts[0], $parts[1], $port);
     }
 }

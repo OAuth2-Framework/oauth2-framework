@@ -8,4 +8,8 @@ use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwnerId;
 
 class ClientId extends ResourceOwnerId
 {
+    public static function create(string $value): self
+    {
+        return new self($value);
+    }
 }

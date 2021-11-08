@@ -14,6 +14,11 @@ class TokenTypeGuesser
     ) {
     }
 
+    public static function create(TokenTypeManager $tokenTypeManager, bool $tokenTypeParameterAllowed): self
+    {
+        return new self($tokenTypeManager, $tokenTypeParameterAllowed);
+    }
+
     public function find(AuthorizationRequest $authorization): TokenType
     {
         if (! $this->tokenTypeParameterAllowed || ! $authorization->hasQueryParam('token_type')) {

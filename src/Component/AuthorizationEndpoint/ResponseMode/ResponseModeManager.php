@@ -14,6 +14,11 @@ class ResponseModeManager
      */
     private array $responseModes = [];
 
+    public static function create(): self
+    {
+        return new self();
+    }
+
     /**
      * @return string[]
      */
@@ -30,9 +35,11 @@ class ResponseModeManager
         return array_values($this->responseModes);
     }
 
-    public function add(ResponseMode $responseMode): void
+    public function add(ResponseMode $responseMode): self
     {
         $this->responseModes[$responseMode->name()] = $responseMode;
+
+        return $this;
     }
 
     public function has(string $name): bool

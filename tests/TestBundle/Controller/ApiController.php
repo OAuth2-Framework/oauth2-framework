@@ -23,9 +23,7 @@ final class ApiController extends AbstractController
         ]);
     }
 
-    /**
-     * @OAuth2(scope="profile openid")
-     */
+    #[OAuth2(scope: 'profile openid')]
     #[Route(path: '/hello-profile', name: 'api_scope')]
     public function scopeProtectionAction(): Response
     {
@@ -35,9 +33,7 @@ final class ApiController extends AbstractController
         ]);
     }
 
-    /**
-     * @OAuth2(token_type="MAC")
-     */
+    #[OAuth2(token_type: 'MAC')]
     #[Route(path: '/hello-token', name: 'api_token')]
     public function tokenTypeProtectionAction(): Response
     {

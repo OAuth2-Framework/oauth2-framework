@@ -5,13 +5,14 @@ declare(strict_types=1);
 namespace OAuth2Framework\Tests\SecurityBundle\Functional\Security;
 
 use DateTimeImmutable;
+use const JSON_THROW_ON_ERROR;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
-use OAuth2Framework\Tests\SecurityBundle\Functional\AccessToken;
-use OAuth2Framework\Tests\TestBundle\Service\AccessTokenHandler;
+use OAuth2Framework\Tests\TestBundle\Entity\AccessToken;
+use OAuth2Framework\Tests\TestBundle\Repository\AccessTokenRepository;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
@@ -27,8 +28,8 @@ final class SecurityBundleTest extends WebTestCase
         $client = static::createClient();
         $client->request('GET', '/api/hello/World');
         $response = $client->getResponse();
-        static::assertSame(200, $response->getStatusCode());
         static::assertSame('{"name":"World","message":"Hello World!"}', $response->getContent());
+        static::assertSame(200, $response->getStatusCode());
     }
 
     /**
@@ -62,7 +63,7 @@ final class SecurityBundleTest extends WebTestCase
         static::assertSame('', $response->getContent());
         static::assertTrue($response->headers->has('www-authenticate'));
         static::assertSame(
-            'Bearer realm="Protected API",error="access_denied",error_description="OAuth2 authentication required. Invalid access token."',
+            'Bearer realm="Protected API",error="access_denied",error_description="OAuth2 authentication required. Missing or invalid access token."',
             $response->headers->get('www-authenticate')
         );
     }
@@ -73,12 +74,12 @@ final class SecurityBundleTest extends WebTestCase
     public function anApiRequestIsReceivedButTheTokenDoesNotHaveTheRequiredScope(): void
     {
         $client = static::createClient();
-        /** @var AccessTokenHandler $accessTokenHandler */
-        $accessTokenHandler = $client->getContainer()
-            ->get(AccessTokenHandler::class)
+        /** @var AccessTokenRepository $accessTokenRepository */
+        $accessTokenRepository = $client->getContainer()
+            ->get(AccessTokenRepository::class)
         ;
         $accessToken = new AccessToken(
-            new AccessTokenId('ACCESS_TOKEN_WITH_INSUFFICIENT_SCOPE'),
+            AccessTokenId::create('ACCESS_TOKEN_WITH_INSUFFICIENT_SCOPE'),
             new ClientId('CLIENT_ID'),
             new UserAccountId('USER_ACCOUNT_ID'),
             new DateTimeImmutable('now +1 hour'),
@@ -87,9 +88,9 @@ final class SecurityBundleTest extends WebTestCase
                 'scope' => 'openid',
             ]),
             new DataBag([]),
-            new ResourceServerId('RESOURCE_SERVER_ID')
+            ResourceServerId::create('RESOURCE_SERVER_ID')
         );
-        $accessTokenHandler->save($accessToken);
+        $accessTokenRepository->save($accessToken);
 
         $client->request('GET', '/api/hello-profile', [], [], [
             'HTTPS' => 'on',
@@ -109,12 +110,12 @@ final class SecurityBundleTest extends WebTestCase
     public function anApiRequestIsReceivedButTheTokenTypeIsNotAllowed(): void
     {
         $client = static::createClient();
-        /** @var AccessTokenHandler $accessTokenHandler */
-        $accessTokenHandler = $client->getContainer()
-            ->get(AccessTokenHandler::class)
+        /** @var AccessTokenRepository $accessTokenRepository */
+        $accessTokenRepository = $client->getContainer()
+            ->get(AccessTokenRepository::class)
         ;
         $accessToken = new AccessToken(
-            new AccessTokenId('ACCESS_TOKEN_WITH_BAD_TOKEN_TYPE'),
+            AccessTokenId::create('ACCESS_TOKEN_WITH_BAD_TOKEN_TYPE'),
             new ClientId('CLIENT_ID'),
             new UserAccountId('USER_ACCOUNT_ID'),
             new DateTimeImmutable('now +1 hour'),
@@ -123,9 +124,9 @@ final class SecurityBundleTest extends WebTestCase
                 'scope' => 'openid',
             ]),
             new DataBag([]),
-            new ResourceServerId('RESOURCE_SERVER_ID')
+            ResourceServerId::create('RESOURCE_SERVER_ID')
         );
-        $accessTokenHandler->save($accessToken);
+        $accessTokenRepository->save($accessToken);
 
         $client->request('GET', '/api/hello-token', [], [], [
             'HTTPS' => 'on',
@@ -145,12 +146,12 @@ final class SecurityBundleTest extends WebTestCase
     public function aValidApiRequestIsReceivedAndTheAccessTokenResolverIsUsed(): void
     {
         $client = static::createClient();
-        /** @var AccessTokenHandler $accessTokenHandler */
-        $accessTokenHandler = $client->getContainer()
-            ->get(AccessTokenHandler::class)
+        /** @var AccessTokenRepository $accessTokenRepository */
+        $accessTokenRepository = $client->getContainer()
+            ->get(AccessTokenRepository::class)
         ;
         $accessToken = new AccessToken(
-            new AccessTokenId('VALID_ACCESS_TOKEN'),
+            AccessTokenId::create('VALID_ACCESS_TOKEN'),
             new ClientId('CLIENT_ID'),
             new UserAccountId('USER_ACCOUNT_ID'),
             new DateTimeImmutable('now +1 hour'),
@@ -159,9 +160,9 @@ final class SecurityBundleTest extends WebTestCase
                 'scope' => 'openid',
             ]),
             new DataBag([]),
-            new ResourceServerId('RESOURCE_SERVER_ID')
+            ResourceServerId::create('RESOURCE_SERVER_ID')
         );
-        $accessTokenHandler->save($accessToken);
+        $accessTokenRepository->save($accessToken);
 
         $client->request('GET', '/api/hello-resolver', [], [], [
             'HTTPS' => 'on',
@@ -169,6 +170,6 @@ final class SecurityBundleTest extends WebTestCase
         ]);
         $response = $client->getResponse();
         static::assertSame(200, $response->getStatusCode());
-        static::assertSame(json_encode($accessToken), $response->getContent());
+        static::assertSame(json_encode($accessToken, JSON_THROW_ON_ERROR), $response->getContent());
     }
 }

@@ -19,6 +19,14 @@ final class CodeIdTokenTokenResponseType implements ResponseType
     ) {
     }
 
+    public static function create(
+        AuthorizationCodeResponseType $codeResponseType,
+        IdTokenResponseType $idTokenResponseType,
+        TokenResponseType $tokenResponseType
+    ): self {
+        return new self($codeResponseType, $idTokenResponseType, $tokenResponseType);
+    }
+
     public function associatedGrantTypes(): array
     {
         return array_merge(

@@ -13,11 +13,12 @@ abstract class SessionStateParameterExtension implements Extension
 {
     public function process(ServerRequestInterface $request, AuthorizationRequest $authorization): void
     {
-        if ($this->hasOpenIdScope($authorization)) {
-            $browserState = $this->getBrowserState($request, $authorization);
-            $sessionState = $this->calculateSessionState($request, $authorization, $browserState);
-            $authorization->setResponseParameter('session_state', $sessionState);
+        if (! $this->hasOpenIdScope($authorization)) {
+            return;
         }
+        $browserState = $this->getBrowserState($request, $authorization);
+        $sessionState = $this->calculateSessionState($request, $authorization, $browserState);
+        $authorization->setResponseParameter('session_state', $sessionState);
     }
 
     abstract protected function getBrowserState(

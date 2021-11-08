@@ -6,19 +6,19 @@ namespace OAuth2Framework\Tests\Component\Core\TokenType;
 
 use InvalidArgumentException;
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
-use OAuth2Framework\Component\Core\TokenType\TokenType;
+use OAuth2Framework\Component\BearerTokenType\BearerToken;
+use OAuth2Framework\Component\Core\Client\ClientId;
+use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\TokenType\TokenTypeGuesser;
-use OAuth2Framework\Component\Core\TokenType\TokenTypeManager;
-use PHPUnit\Framework\TestCase;
-use Prophecy\PhpUnit\ProphecyTrait;
+use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
+use OAuth2Framework\Tests\Component\OAuth2TestCase;
+use OAuth2Framework\Tests\TestBundle\Entity\Client;
 
 /**
  * @internal
  */
-final class TokenTypeParameterCheckerTest extends TestCase
+final class TokenTypeParameterCheckerTest extends OAuth2TestCase
 {
-    use ProphecyTrait;
-
     private ?TokenTypeGuesser $tokenTypeGuesser = null;
 
     protected function setUp(): void
@@ -33,14 +33,15 @@ final class TokenTypeParameterCheckerTest extends TestCase
      */
     public function anAuthorizationRequestWithNoTokenTypeParameterIsChecked(): void
     {
-        $authorization = $this->prophesize(AuthorizationRequest::class);
-        $authorization->hasQueryParam('token_type')
-            ->willReturn(false)
-            ->shouldBeCalled()
+        $authorization = AuthorizationRequest::create(
+            Client::create(ClientId::create('CLIENT_ID'), DataBag::create(), UserAccountId::create('john.1')),
+            []
+        );
+        $tokenType = $this->getTokenTypeGuesser(true)
+            ->find($authorization)
         ;
-        $this->getTokenTypeGuesser(true)
-            ->find($authorization->reveal())
-        ;
+
+        static::assertInstanceOf(BearerToken::class, $tokenType);
     }
 
     /**
@@ -48,18 +49,17 @@ final class TokenTypeParameterCheckerTest extends TestCase
      */
     public function anAuthorizationRequestWithTokenTypeParameterIsCheckedAndTheTokenTypeIsKnown(): void
     {
-        $authorization = $this->prophesize(AuthorizationRequest::class);
-        $authorization->hasQueryParam('token_type')
-            ->willReturn(true)
-            ->shouldBeCalled()
+        $authorization = AuthorizationRequest::create(
+            Client::create(ClientId::create('CLIENT_ID'), DataBag::create(), UserAccountId::create('john.1')),
+            [
+                'token_type' => 'Bearer',
+            ]
+        );
+        $tokenType = $this->getTokenTypeGuesser(true)
+            ->find($authorization)
         ;
-        $authorization->getQueryParam('token_type')
-            ->willReturn('KnownTokenType')
-            ->shouldBeCalled()
-        ;
-        $this->getTokenTypeGuesser(true)
-            ->find($authorization->reveal())
-        ;
+
+        static::assertInstanceOf(BearerToken::class, $tokenType);
     }
 
     /**
@@ -67,19 +67,16 @@ final class TokenTypeParameterCheckerTest extends TestCase
      */
     public function anAuthorizationRequestWithTokenTypeParameterIsCheckedButTheTokenTypeIsUnknown(): void
     {
-        $authorization = $this->prophesize(AuthorizationRequest::class);
-        $authorization->hasQueryParam('token_type')
-            ->willReturn(true)
-            ->shouldBeCalled()
-        ;
-        $authorization->getQueryParam('token_type')
-            ->willReturn('UnknownTokenType')
-            ->shouldBeCalled()
-        ;
+        $authorization = AuthorizationRequest::create(
+            Client::create(ClientId::create('CLIENT_ID'), DataBag::create(), UserAccountId::create('john.1')),
+            [
+                'token_type' => 'UnknownTokenType',
+            ]
+        );
 
         try {
             $this->getTokenTypeGuesser(true)
-                ->find($authorization->reveal())
+                ->find($authorization)
             ;
             static::fail('Expected exception nt thrown.');
         } catch (InvalidArgumentException $e) {
@@ -90,22 +87,8 @@ final class TokenTypeParameterCheckerTest extends TestCase
     private function getTokenTypeGuesser(bool $tokenTypeParameterAllowed): TokenTypeGuesser
     {
         if ($this->tokenTypeGuesser === null) {
-            $defaultTokenType = $this->prophesize(TokenType::class);
-            $anotherTokenType = $this->prophesize(TokenType::class);
-
-            $tokenTypeManager = $this->prophesize(TokenTypeManager::class);
-            $tokenTypeManager->get('UnknownTokenType')
-                ->willThrow(new InvalidArgumentException('Unsupported token type "UnknownTokenType".'))
-            ;
-            $tokenTypeManager->get('KnownTokenType')
-                ->willReturn($anotherTokenType->reveal())
-            ;
-            $tokenTypeManager->getDefault()
-                ->willReturn($defaultTokenType->reveal())
-            ;
-
-            $this->tokenTypeGuesser = new TokenTypeGuesser(
-                $tokenTypeManager->reveal(),
+            $this->tokenTypeGuesser = TokenTypeGuesser::create(
+                $this->getTokenTypeManager(),
                 $tokenTypeParameterAllowed
             );
         }

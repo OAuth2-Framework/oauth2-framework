@@ -14,9 +14,11 @@ class ClaimSourceManager
      */
     private array $claimSources = [];
 
-    public function add(ClaimSource $claimSource): void
+    public function add(ClaimSource $claimSource): self
     {
         $this->claimSources[] = $claimSource;
+
+        return $this;
     }
 
     /**

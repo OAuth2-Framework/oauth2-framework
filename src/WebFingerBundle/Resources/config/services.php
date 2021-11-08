@@ -19,7 +19,6 @@ use OAuth2Framework\Component\WebFingerEndpoint\WebFingerEndpoint;
 use OAuth2Framework\WebFingerBundle\Controller\PipeController;
 use OAuth2Framework\WebFingerBundle\Middleware\Pipe;
 use OAuth2Framework\WebFingerBundle\Service\RouteLoader;
-use Psr\Http\Message\ResponseFactoryInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 
@@ -48,11 +47,7 @@ return static function (ContainerConfigurator $container): void {
     ;
 
     $container->set(WebFingerEndpoint::class)
-        ->args([
-            service(ResponseFactoryInterface::class),
-            service('webfinger.resource_repository'),
-            service(IdentifierResolverManager::class),
-        ])
+        ->args([service('webfinger.resource_repository'), service(IdentifierResolverManager::class)])
     ;
 
     $container->set('webfinger_pipe')

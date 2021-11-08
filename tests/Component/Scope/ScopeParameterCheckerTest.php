@@ -6,24 +6,17 @@ namespace OAuth2Framework\Tests\Component\Scope;
 
 use InvalidArgumentException;
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
-use OAuth2Framework\Component\Core\Client\Client;
+use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
-use OAuth2Framework\Component\Scope\Policy\ScopePolicyManager;
-use OAuth2Framework\Component\Scope\ScopeParameterChecker;
-use OAuth2Framework\Component\Scope\ScopeRepository;
-use PHPUnit\Framework\TestCase;
-use Prophecy\Argument;
-use Prophecy\PhpUnit\ProphecyTrait;
+use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
+use OAuth2Framework\Tests\Component\OAuth2TestCase;
+use OAuth2Framework\Tests\TestBundle\Entity\Client;
 
 /**
  * @internal
  */
-final class ScopeParameterCheckerTest extends TestCase
+final class ScopeParameterCheckerTest extends OAuth2TestCase
 {
-    use ProphecyTrait;
-
-    private ?ScopeParameterChecker $scopeParameterChecker = null;
-
     /**
      * @inheritdoc}
      */
@@ -37,51 +30,20 @@ final class ScopeParameterCheckerTest extends TestCase
     /**
      * @test
      */
-    public function anAuthorizationRequestWithNoScopeParameterIsChecked(): void
-    {
-        $client = $this->prophesize(Client::class);
-        $authorization = $this->prophesize(AuthorizationRequest::class);
-        $authorization->getClient()
-            ->willReturn($client->reveal())
-        ;
-        $authorization->hasQueryParam('scope')
-            ->willReturn(false)
-            ->shouldBeCalled()
-        ;
-        $authorization->setResponseParameter('scope', Argument::any())->shouldNotBeCalled();
-        $this->getScopeParameterChecker()
-            ->check($authorization->reveal())
-        ;
-    }
-
-    /**
-     * @test
-     */
     public function anAuthorizationRequestWithScopeParameterIsChecked(): void
     {
-        $client = $this->prophesize(Client::class);
-        $authorization = $this->prophesize(AuthorizationRequest::class);
-        $authorization->getClient()
-            ->willReturn($client->reveal())
-        ;
-        $authorization->hasQueryParam('scope')
-            ->willReturn(true)
-            ->shouldBeCalled()
-        ;
-        $authorization->getQueryParam('scope')
-            ->willReturn('scope1')
-            ->shouldBeCalled()
-        ;
-        $authorization->getMetadata()
-            ->willReturn(new DataBag([]))->shouldBeCalled();
-        $authorization
-            ->setResponseParameter('scope', Argument::any())
-            ->shouldBeCalled()
-            ->will(function () {})
-        ;
+        $client = Client::create(ClientId::create('CLIENT_ID'), DataBag::create(), UserAccountId::create('john.1'));
+        $authorization = AuthorizationRequest::create($client, [
+            'scope' => 'scope1',
+        ]);
+
         $this->getScopeParameterChecker()
-            ->check($authorization->reveal())
+            ->check($authorization)
         ;
+
+        static::assertSame([
+            'scope' => 'scope1',
+        ], $authorization->getResponseParameters());
     }
 
     /**
@@ -89,50 +51,21 @@ final class ScopeParameterCheckerTest extends TestCase
      */
     public function anAuthorizationRequestWithAnUnsupportedScopeParameterIsChecked(): void
     {
-        $client = $this->prophesize(Client::class);
-        $authorization = $this->prophesize(AuthorizationRequest::class);
-        $authorization->getClient()
-            ->willReturn($client->reveal())
-        ;
-        $authorization->hasQueryParam('scope')
-            ->willReturn(true)
-            ->shouldBeCalled()
-        ;
-        $authorization->getQueryParam('scope')
-            ->willReturn('invalid_scope')
-            ->shouldBeCalled()
-        ;
-        $authorization->setResponseParameter('scope', Argument::any())->shouldNotBeCalled();
+        $client = Client::create(ClientId::create('CLIENT_ID'), DataBag::create(), UserAccountId::create('john.1'));
+        $authorization = AuthorizationRequest::create($client, [
+            'scope' => 'invalid_scope',
+        ]);
 
         try {
             $this->getScopeParameterChecker()
-                ->check($authorization->reveal())
+                ->check($authorization)
             ;
             static::fail('Expected exception nt thrown.');
         } catch (InvalidArgumentException $e) {
             static::assertSame(
-                'An unsupported scope was requested. Available scopes are scope1, scope2.',
+                'An unsupported scope was requested. Available scopes are openid, scope1, scope2.',
                 $e->getMessage()
             );
         }
-    }
-
-    private function getScopeParameterChecker(): ScopeParameterChecker
-    {
-        if ($this->scopeParameterChecker === null) {
-            $scopeRepository = $this->prophesize(ScopeRepository::class);
-            $scopeRepository->all()
-                ->willReturn(['scope1', 'scope2'])
-            ;
-            $scopePolicyManager = $this->prophesize(ScopePolicyManager::class);
-            $scopePolicyManager->apply(Argument::any(), Argument::type(Client::class))->willReturnArgument(0);
-
-            $this->scopeParameterChecker = new ScopeParameterChecker(
-                $scopeRepository->reveal(),
-                $scopePolicyManager->reveal()
-            );
-        }
-
-        return $this->scopeParameterChecker;
     }
 }

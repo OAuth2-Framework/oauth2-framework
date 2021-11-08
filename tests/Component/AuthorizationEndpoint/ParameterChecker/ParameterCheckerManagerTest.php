@@ -6,47 +6,28 @@ namespace OAuth2Framework\Tests\Component\AuthorizationEndpoint\ParameterChecker
 
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
 use OAuth2Framework\Component\AuthorizationEndpoint\Exception\OAuth2AuthorizationException;
-use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\DisplayParameterChecker;
-use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\ParameterCheckerManager;
-use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\PromptParameterChecker;
-use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\RedirectUriParameterChecker;
-use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\ResponseTypeParameterChecker;
-use OAuth2Framework\Component\AuthorizationEndpoint\ParameterChecker\StateParameterChecker;
-use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\FragmentResponseMode;
-use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\QueryResponseMode;
-use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\ResponseModeManager;
-use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType\ResponseType;
-use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType\ResponseTypeManager;
-use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
-use PHPUnit\Framework\TestCase;
-use Prophecy\PhpUnit\ProphecyTrait;
+use OAuth2Framework\Component\Core\DataBag\DataBag;
+use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
+use OAuth2Framework\Tests\Component\OAuth2TestCase;
+use OAuth2Framework\Tests\TestBundle\Entity\Client;
 
 /**
  * @internal
  */
-final class ParameterCheckerManagerTest extends TestCase
+final class ParameterCheckerManagerTest extends OAuth2TestCase
 {
-    use ProphecyTrait;
-
-    private ?ParameterCheckerManager $parameterCheckerManager = null;
-
     /**
      * @test
      */
     public function anAuthorizationRequestIsReceivedButTheDisplayParameterIsNotValid(): void
     {
-        $client = $this->prophesize(Client::class);
-        $client->isPublic()
-            ->willReturn(false)
-        ;
-        $client->getPublicId()
-            ->willReturn(new ClientId('CLIENT_ID'))
-        ;
-        $client->getClientId()
-            ->willReturn(new ClientId('CLIENT_ID'))
-        ;
-        $authorization = new AuthorizationRequest($client->reveal(), [
+        $client = Client::create(
+            ClientId::create('CLIENT_ID'),
+            DataBag::create([]),
+            UserAccountId::create('john.1')
+        );
+        $authorization = AuthorizationRequest::create($client, [
             'display' => 'foo',
         ]);
 
@@ -69,17 +50,12 @@ final class ParameterCheckerManagerTest extends TestCase
      */
     public function anAuthorizationRequestIsReceivedButThePromptParameterIsNotValid(): void
     {
-        $client = $this->prophesize(Client::class);
-        $client->isPublic()
-            ->willReturn(false)
-        ;
-        $client->getPublicId()
-            ->willReturn(new ClientId('CLIENT_ID'))
-        ;
-        $client->getClientId()
-            ->willReturn(new ClientId('CLIENT_ID'))
-        ;
-        $authorization = new AuthorizationRequest($client->reveal(), [
+        $client = Client::create(
+            ClientId::create('CLIENT_ID'),
+            DataBag::create([]),
+            UserAccountId::create('john.1')
+        );
+        $authorization = AuthorizationRequest::create($client, [
             'prompt' => 'foo',
         ]);
 
@@ -102,17 +78,12 @@ final class ParameterCheckerManagerTest extends TestCase
      */
     public function anAuthorizationRequestIsReceivedButThePromptParameterNoneMustBeUsedAlone(): void
     {
-        $client = $this->prophesize(Client::class);
-        $client->isPublic()
-            ->willReturn(false)
-        ;
-        $client->getPublicId()
-            ->willReturn(new ClientId('CLIENT_ID'))
-        ;
-        $client->getClientId()
-            ->willReturn(new ClientId('CLIENT_ID'))
-        ;
-        $authorization = new AuthorizationRequest($client->reveal(), [
+        $client = Client::create(
+            ClientId::create('CLIENT_ID'),
+            DataBag::create([]),
+            UserAccountId::create('john.1')
+        );
+        $authorization = AuthorizationRequest::create($client, [
             'prompt' => 'none login',
         ]);
 
@@ -135,17 +106,12 @@ final class ParameterCheckerManagerTest extends TestCase
      */
     public function anAuthorizationRequestIsReceivedButNoRedirectUriIsSet(): void
     {
-        $client = $this->prophesize(Client::class);
-        $client->isPublic()
-            ->willReturn(false)
-        ;
-        $client->getPublicId()
-            ->willReturn(new ClientId('CLIENT_ID'))
-        ;
-        $client->getClientId()
-            ->willReturn(new ClientId('CLIENT_ID'))
-        ;
-        $authorization = new AuthorizationRequest($client->reveal(), []);
+        $client = Client::create(
+            ClientId::create('CLIENT_ID'),
+            DataBag::create([]),
+            UserAccountId::create('john.1')
+        );
+        $authorization = AuthorizationRequest::create($client, []);
 
         try {
             $this->getParameterCheckerManager()
@@ -163,23 +129,16 @@ final class ParameterCheckerManagerTest extends TestCase
      */
     public function anAuthorizationRequestIsReceivedButNoResponseTypeIsSet(): void
     {
-        $client = $this->prophesize(Client::class);
-        $client->isPublic()
-            ->willReturn(false)
-        ;
-        $client->getPublicId()
-            ->willReturn(new ClientId('CLIENT_ID'))
-        ;
-        $client->getClientId()
-            ->willReturn(new ClientId('CLIENT_ID'))
-        ;
-        $client->has('redirect_uris')
-            ->willReturn(true)
-        ;
-        $client->get('redirect_uris')
-            ->willReturn(['https://www.foo.bar/callback'])
-        ;
-        $authorization = new AuthorizationRequest($client->reveal(), [
+        $client = Client::create(
+            ClientId::create('CLIENT_ID'),
+            DataBag::create([
+                'redirect_uris' => ['https://www.foo.bar/callback'],
+                'response_types' => ['code'],
+            ]),
+            UserAccountId::create('john.1')
+        );
+
+        $authorization = AuthorizationRequest::create($client, [
             'redirect_uri' => 'https://www.foo.bar/callback',
         ]);
 
@@ -199,26 +158,16 @@ final class ParameterCheckerManagerTest extends TestCase
      */
     public function anAuthorizationRequestIsReceivedButTheResponseTypeIsNotSupportedByThisServer(): void
     {
-        $client = $this->prophesize(Client::class);
-        $client->isPublic()
-            ->willReturn(false)
-        ;
-        $client->getPublicId()
-            ->willReturn(new ClientId('CLIENT_ID'))
-        ;
-        $client->getClientId()
-            ->willReturn(new ClientId('CLIENT_ID'))
-        ;
-        $client->has('redirect_uris')
-            ->willReturn(true)
-        ;
-        $client->get('redirect_uris')
-            ->willReturn(['https://www.foo.bar/callback'])
-        ;
-        $client->isResponseTypeAllowed('foo')
-            ->willReturn(true)
-        ;
-        $authorization = new AuthorizationRequest($client->reveal(), [
+        $client = Client::create(
+            ClientId::create('CLIENT_ID'),
+            DataBag::create([
+                'redirect_uris' => ['https://www.foo.bar/callback'],
+                'response_types' => ['code'],
+            ]),
+            UserAccountId::create('john.1')
+        );
+
+        $authorization = AuthorizationRequest::create($client, [
             'redirect_uri' => 'https://www.foo.bar/callback',
             'response_type' => 'bar',
         ]);
@@ -239,28 +188,19 @@ final class ParameterCheckerManagerTest extends TestCase
      */
     public function anAuthorizationRequestIsReceivedButTheResponseTypeIsNotAllowedForTheClient(): void
     {
-        $client = $this->prophesize(Client::class);
-        $client->isPublic()
-            ->willReturn(false)
-        ;
-        $client->getPublicId()
-            ->willReturn(new ClientId('CLIENT_ID'))
-        ;
-        $client->getClientId()
-            ->willReturn(new ClientId('CLIENT_ID'))
-        ;
-        $client->has('redirect_uris')
-            ->willReturn(true)
-        ;
-        $client->get('redirect_uris')
-            ->willReturn(['https://www.foo.bar/callback'])
-        ;
-        $client->isResponseTypeAllowed('foo')
-            ->willReturn(false)
-        ;
-        $authorization = new AuthorizationRequest($client->reveal(), [
+        $client = Client::create(
+            ClientId::create('CLIENT_ID'),
+            DataBag::create([
+                'redirect_uris',
+                ['https://www.foo.bar/callback'],
+                'response_types' => [],
+            ]),
+            UserAccountId::create('john.1')
+        );
+
+        $authorization = AuthorizationRequest::create($client, [
             'redirect_uri' => 'https://www.foo.bar/callback',
-            'response_type' => 'foo',
+            'response_type' => 'code',
         ]);
 
         try {
@@ -270,7 +210,7 @@ final class ParameterCheckerManagerTest extends TestCase
             static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2AuthorizationException $e) {
             static::assertSame('invalid_request', $e->getMessage());
-            static::assertSame('The response type "foo" is not allowed for this client.', $e->getErrorDescription());
+            static::assertSame('The response type "code" is not allowed for this client.', $e->getErrorDescription());
         }
     }
 
@@ -279,28 +219,18 @@ final class ParameterCheckerManagerTest extends TestCase
      */
     public function anAuthorizationRequestIsReceivedAndIsValid(): void
     {
-        $client = $this->prophesize(Client::class);
-        $client->isPublic()
-            ->willReturn(false)
-        ;
-        $client->getPublicId()
-            ->willReturn(new ClientId('CLIENT_ID'))
-        ;
-        $client->getClientId()
-            ->willReturn(new ClientId('CLIENT_ID'))
-        ;
-        $client->has('redirect_uris')
-            ->willReturn(true)
-        ;
-        $client->get('redirect_uris')
-            ->willReturn(['https://www.foo.bar/callback'])
-        ;
-        $client->isResponseTypeAllowed('foo')
-            ->willReturn(true)
-        ;
-        $authorization = new AuthorizationRequest($client->reveal(), [
+        $client = Client::create(
+            ClientId::create('CLIENT_ID'),
+            DataBag::create([
+                'redirect_uris' => ['https://www.foo.bar/callback'],
+                'response_types' => ['code'],
+            ]),
+            UserAccountId::create('john.1')
+        );
+
+        $authorization = AuthorizationRequest::create($client, [
             'redirect_uri' => 'https://www.foo.bar/callback',
-            'response_type' => 'foo',
+            'response_type' => 'code',
             'state' => '0123456789',
             'prompt' => 'login consent',
             'display' => 'wap',
@@ -313,33 +243,5 @@ final class ParameterCheckerManagerTest extends TestCase
 
         static::assertSame(['login', 'consent'], $authorization->getPrompt());
         static::assertFalse($authorization->hasPrompt('none'));
-    }
-
-    private function getParameterCheckerManager(): ParameterCheckerManager
-    {
-        if ($this->parameterCheckerManager === null) {
-            $responseType = $this->prophesize(ResponseType::class);
-            $responseType->name()
-                ->willReturn('foo')
-            ;
-            $responseType->getResponseMode()
-                ->willReturn('query')
-            ;
-            $responseTypeManager = new ResponseTypeManager();
-            $responseTypeManager->add($responseType->reveal());
-
-            $responseModeManager = new ResponseModeManager();
-            $responseModeManager->add(new QueryResponseMode());
-            $responseModeManager->add(new FragmentResponseMode());
-
-            $this->parameterCheckerManager = new ParameterCheckerManager();
-            $this->parameterCheckerManager->add(new DisplayParameterChecker());
-            $this->parameterCheckerManager->add(new PromptParameterChecker());
-            $this->parameterCheckerManager->add(new RedirectUriParameterChecker());
-            $this->parameterCheckerManager->add(new ResponseTypeParameterChecker($responseTypeManager));
-            $this->parameterCheckerManager->add(new StateParameterChecker());
-        }
-
-        return $this->parameterCheckerManager;
     }
 }

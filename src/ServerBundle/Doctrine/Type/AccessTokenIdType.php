@@ -33,7 +33,7 @@ final class AccessTokenIdType extends Type
             return $value;
         }
 
-        return new AccessTokenId($value);
+        return AccessTokenId::create($value);
     }
 
     /**

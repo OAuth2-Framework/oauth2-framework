@@ -5,30 +5,26 @@ declare(strict_types=1);
 namespace OAuth2Framework\Tests\Component\NoneGrant;
 
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
-use OAuth2Framework\Component\Core\Client\Client;
+use OAuth2Framework\Component\BearerTokenType\BearerToken;
 use OAuth2Framework\Component\Core\Client\ClientId;
-use OAuth2Framework\Component\Core\TokenType\TokenType;
+use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
-use OAuth2Framework\Component\NoneGrant\AuthorizationStorage;
-use OAuth2Framework\Component\NoneGrant\NoneResponseType;
-use PHPUnit\Framework\TestCase;
-use Prophecy\Argument;
-use Prophecy\PhpUnit\ProphecyTrait;
+use OAuth2Framework\Tests\Component\OAuth2TestCase;
+use OAuth2Framework\Tests\TestBundle\Entity\Client;
 
 /**
  * @internal
  */
-final class TokenResponseTypeTest extends TestCase
+final class TokenResponseTypeTest extends OAuth2TestCase
 {
-    use ProphecyTrait;
-
     /**
      * @test
      */
     public function genericInformation(): void
     {
-        $authorizationStorage = $this->prophesize(AuthorizationStorage::class);
-        $responseType = new NoneResponseType($authorizationStorage->reveal());
+        $responseType = $this->getResponseTypeManager()
+            ->get('none')
+        ;
 
         static::assertSame([], $responseType->associatedGrantTypes());
         static::assertSame('none', $responseType->name());
@@ -40,34 +36,19 @@ final class TokenResponseTypeTest extends TestCase
      */
     public function theAuthorizationIsSaved(): void
     {
-        $authorizationStorage = $this->prophesize(AuthorizationStorage::class);
-        $authorizationStorage->save(Argument::type(AuthorizationRequest::class))->shouldBeCalled();
-        $responseType = new NoneResponseType($authorizationStorage->reveal());
-
-        $client = $this->prophesize(Client::class);
-        $client->isPublic()
-            ->willReturn(false)
-        ;
-        $client->getPublicId()
-            ->willReturn(new ClientId('CLIENT_ID'))
-        ;
-        $client->getClientId()
-            ->willReturn(new ClientId('CLIENT_ID'))
-        ;
-        $client->getOwnerId()
-            ->willReturn(new UserAccountId('USER_ACCOUNT_ID'))
+        $responseType = $this->getResponseTypeManager()
+            ->get('none')
         ;
 
-        $tokenType = $this->prophesize(TokenType::class);
-        $tokenType->getAdditionalInformation()
-            ->willReturn([
-                'token_type' => 'FOO',
-            ])
-        ;
+        $client = Client::create(
+            ClientId::create('CLIENT_ID'),
+            DataBag::create([]),
+            UserAccountId::create('USER_ACCOUNT_ID')
+        );
 
-        $authorization = new AuthorizationRequest($client->reveal(), []);
+        $authorization = AuthorizationRequest::create($client, []);
 
-        $responseType->process($authorization, $tokenType->reveal());
+        $responseType->process($authorization, BearerToken::create('REALM'));
 
         static::assertSame('CLIENT_ID', $authorization->getClient()->getPublicId()->getValue());
         static::assertFalse($authorization->hasResponseParameter('access_token'));

@@ -7,7 +7,7 @@ namespace OAuth2Framework\SecurityBundle\Security;
 use function in_array;
 use function is_string;
 use OAuth2Framework\Component\Core\AccessToken\AccessToken;
-use OAuth2Framework\SecurityBundle\Security\Authentication\Token\OAuth2Token;
+use OAuth2Framework\SecurityBundle\Security\Authentication\OAuth2Token;
 use Symfony\Component\ExpressionLanguage\ExpressionFunction;
 use Symfony\Component\ExpressionLanguage\ExpressionFunctionProviderInterface;
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace OAuth2Framework\SecurityBundle\Security\Handler;
+namespace OAuth2Framework\SecurityBundle\Security\Authentication;
 
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use OAuth2Framework\Component\Core\Message\OAuth2MessageFactoryManager;

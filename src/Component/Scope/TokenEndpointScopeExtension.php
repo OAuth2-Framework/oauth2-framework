@@ -26,6 +26,11 @@ final class TokenEndpointScopeExtension implements TokenEndpointExtension
     ) {
     }
 
+    public static function create(ScopeRepository $scopeRepository, ScopePolicyManager $scopePolicyManager): self
+    {
+        return new self($scopeRepository, $scopePolicyManager);
+    }
+
     public function beforeAccessTokenIssuance(
         ServerRequestInterface $request,
         GrantTypeData $grantTypeData,

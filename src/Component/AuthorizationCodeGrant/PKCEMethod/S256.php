@@ -8,6 +8,11 @@ use Base64Url\Base64Url;
 
 final class S256 implements PKCEMethod
 {
+    public static function create(): self
+    {
+        return new self();
+    }
+
     public function name(): string
     {
         return 'S256';

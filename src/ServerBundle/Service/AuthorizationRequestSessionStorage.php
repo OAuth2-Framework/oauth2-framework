@@ -9,14 +9,14 @@ use Base64Url\Base64Url;
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequestStorage;
 use Psr\Http\Message\ServerRequestInterface;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class AuthorizationRequestSessionStorage implements AuthorizationRequestStorage
 {
     private const SESSION_AUTHORIZATION_REQUEST_PARAMETER_NAME = 'oauth2_server.authorization_request.session_storage';
 
     public function __construct(
-        private SessionInterface $session
+        private RequestStack $requestStack
     ) {
     }
 
@@ -35,23 +35,26 @@ class AuthorizationRequestSessionStorage implements AuthorizationRequestStorage
 
     public function set(string $authorizationId, AuthorizationRequest $authorization): void
     {
-        $this->session->set(
-            sprintf('/%s/%s', self::SESSION_AUTHORIZATION_REQUEST_PARAMETER_NAME, $authorizationId),
-            $authorization
-        );
-        $this->session->save();
+        $this->requestStack->getSession()
+            ->set($this->getKey($authorizationId), $authorization)
+        ;
+        $this->requestStack->getSession()
+            ->save()
+        ;
     }
 
     public function remove(string $authorizationId): void
     {
-        $this->session->remove(sprintf('/%s/%s', self::SESSION_AUTHORIZATION_REQUEST_PARAMETER_NAME, $authorizationId));
+        $this->requestStack->getSession()
+            ->remove($this->getKey($authorizationId))
+        ;
     }
 
     public function get(string $authorizationId): AuthorizationRequest
     {
-        $authorization = $this->session->get(
-            sprintf('/%s/%s', self::SESSION_AUTHORIZATION_REQUEST_PARAMETER_NAME, $authorizationId)
-        );
+        $authorization = $this->requestStack->getSession()
+            ->get($this->getKey($authorizationId))
+        ;
         Assertion::isInstanceOf($authorization, AuthorizationRequest::class, 'Invalid authorization ID.');
 
         return $authorization;
@@ -59,8 +62,13 @@ class AuthorizationRequestSessionStorage implements AuthorizationRequestStorage
 
     public function has(string $authorizationId): bool
     {
-        return $this->session->has(
-            sprintf('/%s/%s', self::SESSION_AUTHORIZATION_REQUEST_PARAMETER_NAME, $authorizationId)
-        );
+        return $this->requestStack->getSession()
+            ->has($this->getKey($authorizationId))
+        ;
+    }
+
+    private function getKey(string $authorizationId): string
+    {
+        return sprintf('/%s/%s', self::SESSION_AUTHORIZATION_REQUEST_PARAMETER_NAME, $authorizationId);
     }
 }

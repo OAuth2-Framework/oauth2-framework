@@ -11,6 +11,11 @@ use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\Authori
  */
 final class StateParameterChecker implements ParameterChecker
 {
+    public static function create(): self
+    {
+        return new self();
+    }
+
     public function check(AuthorizationRequest $authorization): void
     {
         if (! $authorization->hasQueryParam('state')) {

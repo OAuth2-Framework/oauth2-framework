@@ -19,6 +19,11 @@ final class TokenResponseType implements ResponseType
     ) {
     }
 
+    public static function create(AccessTokenRepository $accessTokenRepository, int $accessTokenLifetime): self
+    {
+        return new self($accessTokenRepository, $accessTokenLifetime);
+    }
+
     public function associatedGrantTypes(): array
     {
         return ['implicit'];

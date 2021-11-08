@@ -9,6 +9,7 @@ use OAuth2Framework\ServerBundle\Service\SessionStateParameterExtension;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 return static function (ContainerConfigurator $container): void {
     $container = $container->services()
@@ -38,7 +39,7 @@ return static function (ContainerConfigurator $container): void {
     ;
 
     $container->set(SessionStateParameterExtension::class)
-        ->args([service('session'), '%oauth2_server.endpoint.session_management.storage_name%'])
+        ->args([service(RequestStack::class), '%oauth2_server.endpoint.session_management.storage_name%'])
         ->tag('oauth2_server_after_consent_screen')
     ;
 };

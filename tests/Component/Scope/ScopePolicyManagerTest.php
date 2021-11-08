@@ -5,27 +5,18 @@ declare(strict_types=1);
 namespace OAuth2Framework\Tests\Component\Scope;
 
 use InvalidArgumentException;
-use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
+use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use OAuth2Framework\Component\Scope\Checker;
-use OAuth2Framework\Component\Scope\Policy\DefaultScopePolicy;
-use OAuth2Framework\Component\Scope\Policy\ErrorScopePolicy;
-use OAuth2Framework\Component\Scope\Policy\NoScopePolicy;
-use OAuth2Framework\Component\Scope\Policy\ScopePolicyManager;
-use PHPUnit\Framework\TestCase;
-use Prophecy\PhpUnit\ProphecyTrait;
-use RuntimeException;
+use OAuth2Framework\Tests\Component\OAuth2TestCase;
+use OAuth2Framework\Tests\TestBundle\Entity\Client;
 
 /**
  * @internal
  */
-final class ScopePolicyManagerTest extends TestCase
+final class ScopePolicyManagerTest extends OAuth2TestCase
 {
-    use ProphecyTrait;
-
-    private ?ScopePolicyManager $scopePolicyManager = null;
-
     /**
      * @test
      */
@@ -38,189 +29,35 @@ final class ScopePolicyManagerTest extends TestCase
 
     /**
      * @test
+     * @dataProvider useCases
      */
-    public function scopesAreProvided(): void
-    {
-        $client = $this->prophesize(Client::class);
-        $client->isPublic()
-            ->willReturn(false)
-        ;
-        $client->getPublicId()
-            ->willReturn(new ClientId('CLIENT_ID'))
-        ;
-        $client->getClientId()
-            ->willReturn(new ClientId('CLIENT_ID'))
-        ;
-        $client->getOwnerId()
-            ->willReturn(new UserAccountId('USER_ACCOUNT_ID'))
-        ;
+    public function scopePolicyIsCorrectlyApplied(
+        array $clientConfiguration,
+        string $requestedScope,
+        ?string $expectedScope,
+        ?string $expectedException,
+        ?string $expectedExceptionMessage
+    ): void {
+        if ($expectedException !== null) {
+            static::expectException($expectedException);
+        }
+
+        if ($expectedExceptionMessage !== null) {
+            static::expectExceptionMessage($expectedExceptionMessage);
+        }
+
+        $client = Client::create(
+            ClientId::create('CLIENT_ID'),
+            DataBag::create($clientConfiguration),
+            UserAccountId::create('john.1')
+        );
 
         $result = $this->getScopePolicyManager()
-            ->apply('foo', $client->reveal())
+            ->apply($requestedScope, $client)
         ;
-        static::assertSame('foo', $result);
-    }
-
-    /**
-     * @test
-     */
-    public function theClientHasNoScopePolicy(): void
-    {
-        $client = $this->prophesize(Client::class);
-        $client->isPublic()
-            ->willReturn(false)
-        ;
-        $client->getPublicId()
-            ->willReturn(new ClientId('CLIENT_ID'))
-        ;
-        $client->getClientId()
-            ->willReturn(new ClientId('CLIENT_ID'))
-        ;
-        $client->getOwnerId()
-            ->willReturn(new UserAccountId('USER_ACCOUNT_ID'))
-        ;
-        $client->has('scope_policy')
-            ->willReturn(false)
-        ;
-
-        $result = $this->getScopePolicyManager()
-            ->apply('', $client->reveal())
-        ;
-        static::assertSame('', $result);
-    }
-
-    /**
-     * @test
-     */
-    public function usingTheNonePolicy(): void
-    {
-        $client = $this->prophesize(Client::class);
-        $client->isPublic()
-            ->willReturn(false)
-        ;
-        $client->getPublicId()
-            ->willReturn(new ClientId('CLIENT_ID'))
-        ;
-        $client->getClientId()
-            ->willReturn(new ClientId('CLIENT_ID'))
-        ;
-        $client->getOwnerId()
-            ->willReturn(new UserAccountId('USER_ACCOUNT_ID'))
-        ;
-        $client->has('scope_policy')
-            ->willReturn(true)
-        ;
-        $client->get('scope_policy')
-            ->willReturn('none')
-        ;
-
-        $result = $this->getScopePolicyManager()
-            ->apply('', $client->reveal())
-        ;
-        static::assertSame('', $result);
-    }
-
-    /**
-     * @test
-     */
-    public function usingTheDefaultPolicyWithCustomDefaultScope(): void
-    {
-        $client = $this->prophesize(Client::class);
-        $client->isPublic()
-            ->willReturn(false)
-        ;
-        $client->getPublicId()
-            ->willReturn(new ClientId('CLIENT_ID'))
-        ;
-        $client->getClientId()
-            ->willReturn(new ClientId('CLIENT_ID'))
-        ;
-        $client->getOwnerId()
-            ->willReturn(new UserAccountId('USER_ACCOUNT_ID'))
-        ;
-        $client->has('scope_policy')
-            ->willReturn(true)
-        ;
-        $client->get('scope_policy')
-            ->willReturn('default')
-        ;
-        $client->has('default_scope')
-            ->willReturn(true)
-        ;
-        $client->get('default_scope')
-            ->willReturn('openid profile')
-        ;
-
-        $result = $this->getScopePolicyManager()
-            ->apply('', $client->reveal())
-        ;
-        static::assertSame('openid profile', $result);
-    }
-
-    /**
-     * @test
-     */
-    public function usingTheDefaultPolicy(): void
-    {
-        $client = $this->prophesize(Client::class);
-        $client->isPublic()
-            ->willReturn(false)
-        ;
-        $client->getPublicId()
-            ->willReturn(new ClientId('CLIENT_ID'))
-        ;
-        $client->getClientId()
-            ->willReturn(new ClientId('CLIENT_ID'))
-        ;
-        $client->getOwnerId()
-            ->willReturn(new UserAccountId('USER_ACCOUNT_ID'))
-        ;
-        $client->has('scope_policy')
-            ->willReturn(true)
-        ;
-        $client->get('scope_policy')
-            ->willReturn('default')
-        ;
-        $client->has('default_scope')
-            ->willReturn(false)
-        ;
-
-        $result = $this->getScopePolicyManager()
-            ->apply('', $client->reveal())
-        ;
-        static::assertSame('scope1 scope2', $result);
-    }
-
-    /**
-     * @test
-     */
-    public function usingTheErrorPolicy(): void
-    {
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('No scope was requested.');
-        $client = $this->prophesize(Client::class);
-        $client->isPublic()
-            ->willReturn(false)
-        ;
-        $client->getPublicId()
-            ->willReturn(new ClientId('CLIENT_ID'))
-        ;
-        $client->getClientId()
-            ->willReturn(new ClientId('CLIENT_ID'))
-        ;
-        $client->getOwnerId()
-            ->willReturn(new UserAccountId('USER_ACCOUNT_ID'))
-        ;
-        $client->has('scope_policy')
-            ->willReturn(true)
-        ;
-        $client->get('scope_policy')
-            ->willReturn('error')
-        ;
-
-        $this->getScopePolicyManager()
-            ->apply('', $client->reveal())
-        ;
+        if ($expectedScope !== null) {
+            static::assertSame($expectedScope, $result);
+        }
     }
 
     /**
@@ -245,15 +82,64 @@ final class ScopePolicyManagerTest extends TestCase
         Checker::checkCharset('cookie café');
     }
 
-    private function getScopePolicyManager(): ScopePolicyManager
+    public function useCases(): array
     {
-        if ($this->scopePolicyManager === null) {
-            $this->scopePolicyManager = new ScopePolicyManager();
-            $this->scopePolicyManager->add(new NoScopePolicy());
-            $this->scopePolicyManager->add(new DefaultScopePolicy('scope1 scope2'));
-            $this->scopePolicyManager->add(new ErrorScopePolicy());
-        }
-
-        return $this->scopePolicyManager;
+        return [
+            [[], '', '', null, null],
+            [
+                [
+                    'scope_policy' => 'none',
+                ],
+                '',
+                '',
+                null,
+                null,
+            ],
+            [
+                [
+                    'scope_policy' => 'none',
+                ],
+                'scope1 scope2',
+                'scope1 scope2',
+                null,
+                null,
+            ],
+            [
+                [
+                    'scope_policy' => 'default',
+                ],
+                '',
+                'scope1 scope2',
+                null,
+                null,
+            ],
+            [
+                [
+                    'scope_policy' => 'default',
+                ],
+                'openid',
+                'openid',
+                null,
+                null,
+            ],
+            [
+                [
+                    'scope_policy' => 'error',
+                ],
+                '',
+                null,
+                InvalidArgumentException::class,
+                'No scope was requested',
+            ],
+            [
+                [
+                    'scope_policy' => 'error',
+                ],
+                'openid',
+                'openid',
+                null,
+                null,
+            ],
+        ];
     }
 }

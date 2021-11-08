@@ -19,12 +19,14 @@ final class HttpMethodMiddleware implements MiddlewareInterface
      */
     private array $methodMap = [];
 
-    public function add(string $method, MiddlewareInterface $middleware): void
+    public function add(string $method, MiddlewareInterface $middleware): self
     {
         if (array_key_exists($method, $this->methodMap)) {
             throw new InvalidArgumentException(sprintf('The method "%s" is already defined.', $method));
         }
         $this->methodMap[$method] = $middleware;
+
+        return $this;
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface

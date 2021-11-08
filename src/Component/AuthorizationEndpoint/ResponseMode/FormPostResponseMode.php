@@ -17,6 +17,11 @@ final class FormPostResponseMode implements ResponseMode
     ) {
     }
 
+    public static function create(FormPostResponseRenderer $renderer): self
+    {
+        return new self($renderer);
+    }
+
     public function name(): string
     {
         return ResponseType::RESPONSE_TYPE_MODE_FORM_POST;

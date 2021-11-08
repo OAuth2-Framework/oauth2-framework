@@ -5,27 +5,15 @@ declare(strict_types=1);
 namespace OAuth2Framework\Tests\Component\TokenEndpoint;
 
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
-use OAuth2Framework\Component\TokenEndpoint\GrantType;
-use OAuth2Framework\Component\TokenEndpoint\GrantTypeManager;
+use OAuth2Framework\Component\Core\Middleware\TerminalRequestHandler;
 use OAuth2Framework\Component\TokenEndpoint\GrantTypeMiddleware;
-use PHPUnit\Framework\TestCase;
-use Prophecy\Argument;
-use Prophecy\PhpUnit\ProphecyTrait;
-use Prophecy\Prophecy\ObjectProphecy;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\StreamInterface;
-use Psr\Http\Server\RequestHandlerInterface;
+use OAuth2Framework\Tests\Component\OAuth2TestCase;
 
 /**
  * @internal
  */
-final class GrantTypeMiddlewareTest extends TestCase
+final class GrantTypeMiddlewareTest extends OAuth2TestCase
 {
-    use ProphecyTrait;
-
-    private ?GrantTypeManager $grantTypeManager = null;
-
     private ?GrantTypeMiddleware $grantTypeMiddleware = null;
 
     /**
@@ -33,8 +21,15 @@ final class GrantTypeMiddlewareTest extends TestCase
      */
     public function genericCalls(): void
     {
-        static::assertSame(['foo'], $this->getGrantTypeManager()->list());
-        static::assertInstanceOf(GrantType::class, $this->getGrantTypeManager()->get('foo'));
+        static::assertSame([
+            'client_credentials',
+            'password',
+            'implicit',
+            'authorization_code',
+            'urn:ietf:params:oauth:grant-type:jwt-bearer',
+            'refresh_token',
+        ], $this->getGrantTypeManager()
+            ->list());
     }
 
     /**
@@ -42,12 +37,11 @@ final class GrantTypeMiddlewareTest extends TestCase
      */
     public function theGrantTypeParameterIsMissing(): void
     {
-        $request = $this->buildRequest([]);
-        $handler = $this->prophesize(RequestHandlerInterface::class);
+        $request = $this->buildRequest('GET', []);
 
         try {
             $this->getGrantTypeMiddleware()
-                ->process($request->reveal(), $handler->reveal())
+                ->process($request, new TerminalRequestHandler())
             ;
             static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2Error $e) {
@@ -64,14 +58,13 @@ final class GrantTypeMiddlewareTest extends TestCase
      */
     public function theGrantTypeIsNotSupported(): void
     {
-        $request = $this->buildRequest([
+        $request = $this->buildRequest('GET', [
             'grant_type' => 'bar',
         ]);
-        $handler = $this->prophesize(RequestHandlerInterface::class);
 
         try {
             $this->getGrantTypeMiddleware()
-                ->process($request->reveal(), $handler->reveal())
+                ->process($request, new TerminalRequestHandler())
             ;
             static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2Error $e) {
@@ -83,45 +76,6 @@ final class GrantTypeMiddlewareTest extends TestCase
         }
     }
 
-    /**
-     * @test
-     */
-    public function theGrantTypeIsFoundAndAssociatedToTheRequest(): void
-    {
-        $response = $this->prophesize(ResponseInterface::class);
-        $request = $this->buildRequest([
-            'grant_type' => 'foo',
-        ]);
-        $request->withAttribute('grant_type', Argument::type(GrantType::class))
-            ->shouldBeCalled()
-            ->willReturn($request)
-        ;
-        $handler = $this->prophesize(RequestHandlerInterface::class);
-        $handler->handle(Argument::type(ServerRequestInterface::class))
-            ->shouldBeCalled()
-            ->willReturn($response->reveal())
-        ;
-
-        $this->getGrantTypeMiddleware()
-            ->process($request->reveal(), $handler->reveal())
-        ;
-    }
-
-    private function getGrantTypeManager(): GrantTypeManager
-    {
-        if ($this->grantTypeManager === null) {
-            $this->grantTypeManager = new GrantTypeManager();
-            $grantType = $this->prophesize(GrantType::class);
-            $grantType->name()
-                ->willReturn('foo')
-            ;
-
-            $this->grantTypeManager->add($grantType->reveal());
-        }
-
-        return $this->grantTypeManager;
-    }
-
     private function getGrantTypeMiddleware(): GrantTypeMiddleware
     {
         if ($this->grantTypeMiddleware === null) {
@@ -129,28 +83,5 @@ final class GrantTypeMiddlewareTest extends TestCase
         }
 
         return $this->grantTypeMiddleware;
-    }
-
-    private function buildRequest(array $data): ObjectProphecy
-    {
-        $body = $this->prophesize(StreamInterface::class);
-        $body->getContents()
-            ->willReturn(http_build_query($data))
-        ;
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->hasHeader('Content-Type')
-            ->willReturn(true)
-        ;
-        $request->getHeader('Content-Type')
-            ->willReturn(['application/x-www-form-urlencoded'])
-        ;
-        $request->getBody()
-            ->willReturn($body->reveal())
-        ;
-        $request->getParsedBody()
-            ->willReturn([])
-        ;
-
-        return $request;
     }
 }

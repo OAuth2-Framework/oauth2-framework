@@ -19,6 +19,14 @@ final class InitialAccessToken extends AbstractInitialAccessToken
         parent::__construct($userAccountId, $expiresAt);
     }
 
+    public static function create(
+        InitialAccessTokenId $id,
+        ?UserAccountId $userAccountId,
+        ?DateTimeImmutable $expiresAt
+    ): self {
+        return new self($id, $userAccountId, $expiresAt);
+    }
+
     public function getId(): InitialAccessTokenId
     {
         return $this->id;

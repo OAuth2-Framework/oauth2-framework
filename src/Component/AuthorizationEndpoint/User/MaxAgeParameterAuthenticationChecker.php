@@ -8,32 +8,34 @@ use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\Authori
 
 final class MaxAgeParameterAuthenticationChecker implements UserAuthenticationChecker
 {
+    public static function create(): self
+    {
+        return new self();
+    }
+
     public function isAuthenticationNeeded(AuthorizationRequest $authorization): bool
     {
         if (! $authorization->hasUserAccount()) {
             return true;
         }
-
-        switch (true) {
-            case $authorization->hasQueryParam('max_age'):
-                $max_age = (int) $authorization->getQueryParam('max_age');
-
-                break;
-
-            case $authorization->getClient()
-                ->has('default_max_age'):
-                $max_age = (int) $authorization->getClient()
-                    ->get('default_max_age')
-                ;
-
-                break;
-
-            default:
-                return false;
+        $maxAge = null;
+        if ($authorization->getClient()->has('default_max_age')) {
+            $maxAge = (int) $authorization->getClient()
+                ->get('default_max_age')
+            ;
+        }
+        if ($authorization->hasQueryParam('max_age')) {
+            $maxAge = (int) $authorization->getQueryParam('max_age');
         }
 
-        return $authorization->getUserAccount()
-            ->getLastLoginAt() === null || time() - $authorization->getUserAccount()
-            ->getLastLoginAt() > $max_age;
+        if ($maxAge === null) {
+            return false;
+        }
+
+        $lastLogin = $authorization->getUserAccount()
+            ->getLastLoginAt()
+        ;
+
+        return $lastLogin === null || $maxAge < time() - $lastLogin->getTimestamp();
     }
 }

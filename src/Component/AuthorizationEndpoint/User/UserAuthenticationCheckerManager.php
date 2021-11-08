@@ -13,9 +13,16 @@ final class UserAuthenticationCheckerManager
      */
     private array $checkers = [];
 
-    public function add(UserAuthenticationChecker $checker): void
+    public static function create(): self
+    {
+        return new self();
+    }
+
+    public function add(UserAuthenticationChecker $checker): self
     {
         $this->checkers[] = $checker;
+
+        return $this;
     }
 
     public function isAuthenticationNeeded(AuthorizationRequest $authorization): bool

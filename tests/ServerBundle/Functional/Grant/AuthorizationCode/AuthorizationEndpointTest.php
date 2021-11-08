@@ -37,42 +37,42 @@ final class AuthorizationEndpointTest extends WebTestCase
         $client = static::createClient();
         $client->loginUser(
             new UserAccount(
-            new UserAccountId('john.1'),
-            'admin',
-            ['ROLE_ADMIN', 'ROLE_USER'],
-            new DateTimeImmutable('now -25 hours'),
-            new DateTimeImmutable('now -15 days'),
-            [
-                'address',
+                new UserAccountId('john.1'),
+                'admin',
+                ['ROLE_ADMIN', 'ROLE_USER'],
+                new DateTimeImmutable('now -25 hours'),
+                new DateTimeImmutable('now -15 days'),
                 [
-                    'street_address' => '5 rue Sainte Anne',
-                    'region' => 'Île de France',
-                    'postal_code' => '75001',
-                    'locality' => 'Paris',
-                    'country' => 'France',
-                ],
-                'name' => 'John Doe',
-                'given_name' => 'John',
-                'family_name' => 'Doe',
-                'middle_name' => 'Jack',
-                'nickname' => 'Little John',
-                'profile' => 'https://profile.doe.fr/john/',
-                'preferred_username' => 'j-d',
-                'gender' => 'M',
-                'phone_number' => '+0123456789',
-                'phone_number_verified' => true,
-                'zoneinfo' => 'Europe/Paris',
-                'locale' => 'en',
-                'picture' => 'https://www.google.com',
-                'birthdate' => '1950-01-01',
-                'email' => 'root@localhost.com',
-                'email_verified' => false,
-                'website' => 'https://john.doe.com',
-                'website#fr_fr' => 'https://john.doe.fr',
-                'website#fr' => 'https://john.doe.fr',
-                'picture#de' => 'https://john.doe.de/picture',
-            ]
-        )
+                    'address',
+                    [
+                        'street_address' => '5 rue Sainte Anne',
+                        'region' => 'Île de France',
+                        'postal_code' => '75001',
+                        'locality' => 'Paris',
+                        'country' => 'France',
+                    ],
+                    'name' => 'John Doe',
+                    'given_name' => 'John',
+                    'family_name' => 'Doe',
+                    'middle_name' => 'Jack',
+                    'nickname' => 'Little John',
+                    'profile' => 'https://profile.doe.fr/john/',
+                    'preferred_username' => 'j-d',
+                    'gender' => 'M',
+                    'phone_number' => '+0123456789',
+                    'phone_number_verified' => true,
+                    'zoneinfo' => 'Europe/Paris',
+                    'locale' => 'en',
+                    'picture' => 'https://www.google.com',
+                    'birthdate' => '1950-01-01',
+                    'email' => 'root@localhost.com',
+                    'email_verified' => false,
+                    'website' => 'https://john.doe.com',
+                    'website#fr_fr' => 'https://john.doe.fr',
+                    'website#fr' => 'https://john.doe.fr',
+                    'picture#de' => 'https://john.doe.de/picture',
+                ]
+            )
         );
         $client->request('GET', $uri, [], [], [
             'HTTPS' => 'on',
@@ -144,7 +144,7 @@ final class AuthorizationEndpointTest extends WebTestCase
         );
         $client->request('GET', $uri, [], [], [
             'HTTPS' => 'on',
-        ], null);
+        ]);
         $response = $client->getResponse();
 
         static::assertSame(307, $response->getStatusCode());
@@ -156,8 +156,8 @@ final class AuthorizationEndpointTest extends WebTestCase
 
     private function buildUri(array $query): string
     {
-        $query = http_build_query($query);
+        $queryParams = http_build_query($query);
 
-        return empty($query) ? '/authorize' : sprintf('/authorize?%s', $query);
+        return $queryParams === '' ? '/authorize' : sprintf('/authorize?%s', $queryParams);
     }
 }

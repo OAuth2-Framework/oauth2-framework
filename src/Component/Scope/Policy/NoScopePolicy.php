@@ -8,6 +8,11 @@ use OAuth2Framework\Component\Core\Client\Client;
 
 final class NoScopePolicy implements ScopePolicy
 {
+    public static function create(): self
+    {
+        return new self();
+    }
+
     public function name(): string
     {
         return 'none';

@@ -4,33 +4,25 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Tests\Component\TokenRevocationEndpoint;
 
-use Nyholm\Psr7\Factory\Psr17Factory;
-use OAuth2Framework\Component\Core\AccessToken\AccessToken;
-use OAuth2Framework\Component\Core\Client\Client;
+use DateTimeImmutable;
+use Nyholm\Psr7\ServerRequest;
+use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
 use OAuth2Framework\Component\Core\Client\ClientId;
+use OAuth2Framework\Component\Core\DataBag\DataBag;
+use OAuth2Framework\Component\Core\Middleware\TerminalRequestHandler;
+use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
-use OAuth2Framework\Component\TokenRevocationEndpoint\TokenRevocationGetEndpoint;
-use OAuth2Framework\Component\TokenRevocationEndpoint\TokenTypeHint;
-use OAuth2Framework\Component\TokenRevocationEndpoint\TokenTypeHintManager;
-use PHPUnit\Framework\TestCase;
-use Prophecy\PhpUnit\ProphecyTrait;
-use Psr\Http\Message\ResponseFactoryInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\RequestHandlerInterface;
+use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenId;
+use OAuth2Framework\Tests\Component\OAuth2TestCase;
+use OAuth2Framework\Tests\Component\RefreshTokenGrant\RefreshToken;
+use OAuth2Framework\Tests\TestBundle\Entity\AccessToken;
+use OAuth2Framework\Tests\TestBundle\Entity\Client;
 
 /**
  * @internal
  */
-final class TokenRevocationGetEndpointTest extends TestCase
+final class TokenRevocationGetEndpointTest extends OAuth2TestCase
 {
-    use ProphecyTrait;
-
-    private ?TokenTypeHintManager $tokenTypeHintManager = null;
-
-    private ?TokenRevocationGetEndpoint $tokenRevocationEndpoint = null;
-
-    private ?Psr17Factory $responseFactory = null;
-
     private ?object $client = null;
 
     /**
@@ -47,20 +39,15 @@ final class TokenRevocationGetEndpointTest extends TestCase
     public function theTokenRevocationEndpointReceivesAValidGetRequest(): void
     {
         $endpoint = $this->getTokenRevocationGetEndpoint();
-
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getQueryParams()
-            ->willReturn([
+        $request = new ServerRequest('GET', '/');
+        $request = $request
+            ->withQueryParams([
                 'token' => 'VALID_TOKEN',
             ])
-        ;
-        $request->getAttribute('client')
-            ->willReturn($this->getClient())
+            ->withAttribute('client', $this->getClient())
         ;
 
-        $handler = $this->prophesize(RequestHandlerInterface::class);
-
-        $response = $endpoint->process($request->reveal(), $handler->reveal());
+        $response = $endpoint->process($request, new TerminalRequestHandler());
 
         static::assertSame(200, $response->getStatusCode());
         $response->getBody()
@@ -75,21 +62,28 @@ final class TokenRevocationGetEndpointTest extends TestCase
     public function theTokenRevocationEndpointReceivesAValidGetRequestWithTokenTypeHint(): void
     {
         $endpoint = $this->getTokenRevocationGetEndpoint();
+        $this->getAccessTokenRepository()
+            ->save(AccessToken::create(
+                AccessTokenId::create('VALID_TOKEN'),
+                ClientId::create('CLIENT_ID'),
+                ClientId::create('CLIENT_ID'),
+                new DateTimeImmutable('now +1 day'),
+                DataBag::create(),
+                DataBag::create(),
+                ResourceServerId::create('RESOURCE_SERVER_ID'),
+            ))
+        ;
 
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getQueryParams()
-            ->willReturn([
+        $request = new ServerRequest('GET', '/');
+        $request = $request
+            ->withQueryParams([
                 'token' => 'VALID_TOKEN',
-                'token_type_hint' => 'foo',
+                'token_type_hint' => 'access_token',
             ])
-        ;
-        $request->getAttribute('client')
-            ->willReturn($this->getClient())
+            ->withAttribute('client', $this->getClient())
         ;
 
-        $handler = $this->prophesize(RequestHandlerInterface::class);
-
-        $response = $endpoint->process($request->reveal(), $handler->reveal());
+        $response = $endpoint->process($request, new TerminalRequestHandler());
 
         static::assertSame(200, $response->getStatusCode());
         $response->getBody()
@@ -104,21 +98,28 @@ final class TokenRevocationGetEndpointTest extends TestCase
     public function theTokenRevocationEndpointReceivesAValidGetRequestWithCallback(): void
     {
         $endpoint = $this->getTokenRevocationGetEndpoint();
+        $this->getRefreshTokenRepository()
+            ->save(RefreshToken::create(
+                RefreshTokenId::create('VALID_TOKEN'),
+                ClientId::create('CLIENT_ID'),
+                ClientId::create('CLIENT_ID'),
+                new DateTimeImmutable('now +1 day'),
+                DataBag::create(),
+                DataBag::create(),
+                ResourceServerId::create('RESOURCE_SERVER_ID'),
+            ))
+        ;
 
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getQueryParams()
-            ->willReturn([
+        $request = new ServerRequest('GET', '/');
+        $request = $request
+            ->withQueryParams([
                 'token' => 'VALID_TOKEN',
                 'callback' => 'callThisFunctionPlease',
             ])
-        ;
-        $request->getAttribute('client')
-            ->willReturn($this->getClient())
+            ->withAttribute('client', $this->getClient())
         ;
 
-        $handler = $this->prophesize(RequestHandlerInterface::class);
-
-        $response = $endpoint->process($request->reveal(), $handler->reveal());
+        $response = $endpoint->process($request, new TerminalRequestHandler());
 
         static::assertSame(200, $response->getStatusCode());
         $response->getBody()
@@ -133,21 +134,16 @@ final class TokenRevocationGetEndpointTest extends TestCase
     public function theTokenDoesNotExistAndCannotBeRevoked(): void
     {
         $endpoint = $this->getTokenRevocationGetEndpoint();
-
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getQueryParams()
-            ->willReturn([
+        $request = new ServerRequest('GET', '/');
+        $request = $request
+            ->withQueryParams([
                 'token' => 'UNKNOWN_TOKEN',
                 'callback' => 'callThisFunctionPlease',
             ])
-        ;
-        $request->getAttribute('client')
-            ->willReturn($this->getClient())
+            ->withAttribute('client', $this->getClient())
         ;
 
-        $handler = $this->prophesize(RequestHandlerInterface::class);
-
-        $response = $endpoint->process($request->reveal(), $handler->reveal());
+        $response = $endpoint->process($request, new TerminalRequestHandler());
 
         static::assertSame(200, $response->getStatusCode());
         $response->getBody()
@@ -162,31 +158,22 @@ final class TokenRevocationGetEndpointTest extends TestCase
     public function theTokenRevocationEndpointReceivesFromAnotherClient(): void
     {
         $endpoint = $this->getTokenRevocationGetEndpoint();
-
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getQueryParams()
-            ->willReturn([
+        $request = new ServerRequest('GET', '/');
+        $request = $request
+            ->withQueryParams([
                 'token' => 'TOKEN_FOR_ANOTHER_CLIENT',
                 'callback' => 'callThisFunctionPlease',
             ])
-        ;
-        $request->getAttribute('client')
-            ->willReturn($this->getClient())
+            ->withAttribute('client', $this->getClient())
         ;
 
-        $handler = $this->prophesize(RequestHandlerInterface::class);
+        $response = $endpoint->process($request, new TerminalRequestHandler());
 
-        $response = $endpoint->process($request->reveal(), $handler->reveal());
-
-        static::assertSame(400, $response->getStatusCode());
+        static::assertSame(200, $response->getStatusCode());
         $response->getBody()
             ->rewind()
         ;
-        static::assertSame(
-            'callThisFunctionPlease({"error":"invalid_request","error_description":"The parameter \"token\" is invalid."})',
-            $response->getBody()
-                ->getContents()
-        );
+        static::assertSame('callThisFunctionPlease()', $response->getBody()->getContents());
     }
 
     /**
@@ -195,110 +182,36 @@ final class TokenRevocationGetEndpointTest extends TestCase
     public function theTokenRevocationEndpointReceivesARequestWithAnUnsupportedTokenHint(): void
     {
         $endpoint = $this->getTokenRevocationGetEndpoint();
-
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getQueryParams()
-            ->willReturn([
+        $request = new ServerRequest('GET', '/');
+        $request = $request
+            ->withQueryParams([
                 'token' => 'VALID_TOKEN',
                 'token_type_hint' => 'bar',
             ])
-        ;
-        $request->getAttribute('client')
-            ->willReturn($this->getClient())
+            ->withAttribute('client', $this->getClient())
         ;
 
-        $handler = $this->prophesize(RequestHandlerInterface::class);
-
-        $response = $endpoint->process($request->reveal(), $handler->reveal());
+        $response = $endpoint->process($request, new TerminalRequestHandler());
 
         static::assertSame(400, $response->getStatusCode());
         $response->getBody()
             ->rewind()
         ;
         static::assertSame(
-            '{"error":"unsupported_token_type","error_description":"The token type hint \"bar\" is not supported. Please use one of the following values: foo."}',
+            '{"error":"unsupported_token_type","error_description":"The token type hint \"bar\" is not supported. Please use one of the following values: access_token, refresh_token."}',
             $response->getBody()
                 ->getContents()
         );
     }
 
-    private function getTokenTypeHintManager(): TokenTypeHintManager
-    {
-        if ($this->tokenTypeHintManager === null) {
-            $token1 = $this->prophesize(AccessToken::class);
-            $token1->getClientId()
-                ->willReturn(new ClientId('CLIENT_ID'))
-            ;
-
-            $token2 = $this->prophesize(AccessToken::class);
-            $token2->getClientId()
-                ->willReturn(new ClientId('OTHER_CLIENT_ID'))
-            ;
-
-            $tokenType = $this->prophesize(TokenTypeHint::class);
-            $tokenType->find('VALID_TOKEN')
-                ->willReturn($token1->reveal())
-            ;
-            $tokenType->find('TOKEN_FOR_ANOTHER_CLIENT')
-                ->willReturn($token2->reveal())
-            ;
-            $tokenType->find('UNKNOWN_TOKEN')
-                ->willReturn(null)
-            ;
-            $tokenType->hint()
-                ->willReturn('foo')
-            ;
-            $tokenType->revoke($token1)
-                ->will(function () {})
-            ;
-
-            $this->tokenTypeHintManager = new TokenTypeHintManager();
-            $this->tokenTypeHintManager->add($tokenType->reveal());
-        }
-
-        return $this->tokenTypeHintManager;
-    }
-
-    private function getTokenRevocationGetEndpoint(): TokenRevocationGetEndpoint
-    {
-        if ($this->tokenRevocationEndpoint === null) {
-            $this->tokenRevocationEndpoint = new TokenRevocationGetEndpoint(
-                $this->getTokenTypeHintManager(),
-                $this->getResponseFactory(),
-                true
-            );
-        }
-
-        return $this->tokenRevocationEndpoint;
-    }
-
-    private function getResponseFactory(): ResponseFactoryInterface
-    {
-        if ($this->responseFactory === null) {
-            $this->responseFactory = new Psr17Factory();
-        }
-
-        return $this->responseFactory;
-    }
-
     private function getClient(): Client
     {
         if ($this->client === null) {
-            $client = $this->prophesize(Client::class);
-            $client->isPublic()
-                ->willReturn(false)
-            ;
-            $client->getOwnerId()
-                ->willReturn(new UserAccountId('USER_ACCOUNT'))
-            ;
-            $client->getPublicId()
-                ->willReturn(new ClientId('CLIENT_ID'))
-            ;
-            $client->getClientId()
-                ->willReturn(new ClientId('CLIENT_ID'))
-            ;
-
-            $this->client = $client->reveal();
+            $this->client = Client::create(
+                ClientId::create('CLIENT_ID'),
+                DataBag::create(),
+                UserAccountId::create('USER_ACCOUNT')
+            );
         }
 
         return $this->client;

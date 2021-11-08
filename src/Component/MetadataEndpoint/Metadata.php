@@ -28,12 +28,11 @@ class Metadata
         return $this->values[$key];
     }
 
-    /**
-     * @param mixed|null $value
-     */
-    public function set(string $key, $value): void
+    public function set(string $key, mixed $value): self
     {
         $this->values[$key] = $value;
+
+        return $this;
     }
 
     public function all(): array

@@ -24,6 +24,11 @@ class GrantTypeData
         $this->metadata = new DataBag([]);
     }
 
+    public static function create(?Client $client): self
+    {
+        return new self($client);
+    }
+
     public function getMetadata(): DataBag
     {
         return $this->metadata;
@@ -34,9 +39,11 @@ class GrantTypeData
         return $this->parameter;
     }
 
-    public function setClient(Client $client): void
+    public function setClient(Client $client): self
     {
         $this->client = $client;
+
+        return $this;
     }
 
     public function hasClient(): bool
@@ -51,9 +58,11 @@ class GrantTypeData
         return $this->client;
     }
 
-    public function setResourceOwnerId(ResourceOwnerId $resourceOwnerId): void
+    public function setResourceOwnerId(ResourceOwnerId $resourceOwnerId): self
     {
         $this->resourceOwnerId = $resourceOwnerId;
+
+        return $this;
     }
 
     public function hasResourceOwnerId(): bool

@@ -25,6 +25,13 @@ final class TokenIntrospectionEndpoint implements MiddlewareInterface
     ) {
     }
 
+    public static function create(
+        TokenTypeHintManager $tokenTypeHintManager,
+        ResponseFactoryInterface $responseFactory
+    ): self {
+        return new self($tokenTypeHintManager, $responseFactory);
+    }
+
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         try {
@@ -40,7 +47,10 @@ final class TokenIntrospectionEndpoint implements MiddlewareInterface
                         $response = $this->responseFactory->createResponse();
                         $response->getBody()
                             ->write(
-                                json_encode($data, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
+                                json_encode(
+                                    $data,
+                                    JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
+                                )
                             )
                         ;
                         $headers = [

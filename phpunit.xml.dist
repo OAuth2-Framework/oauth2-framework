@@ -1,13 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        backupGlobals="false"
-        backupStaticAttributes="false"
-        convertErrorsToExceptions="true"
-        convertNoticesToExceptions="true"
-        convertWarningsToExceptions="true"
-        processIsolation="false"
-        stopOnFailure="false"
         bootstrap="vendor/autoload.php"
         colors="true"
         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd"
@@ -21,6 +14,8 @@
       <directory>./tests</directory>
       <directory>./var</directory>
       <directory>./vendor</directory>
+      <directory>./ecs.php</directory>
+      <directory>./rector.php</directory>
     </exclude>
   </coverage>
   <testsuites>
@@ -29,7 +24,6 @@
     </testsuite>
   </testsuites>
   <php>
-    <env name="SYMFONY_DEPRECATIONS_HELPER" value="weak"/>
     <env name="KERNEL_CLASS" value="OAuth2Framework\Tests\AppKernel"/>
     <server name="SYMFONY_PHPUNIT_VERSION" value="9"/>
     <ini name="intl.error_level" value="0" />

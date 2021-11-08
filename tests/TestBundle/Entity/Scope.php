@@ -21,6 +21,11 @@ final class Scope implements ScopeInterface, Stringable
         return $this->getName();
     }
 
+    public static function create(string $name, ?string $parent = null, bool $isParentMandatory = false): self
+    {
+        return new self($name, $parent, $isParentMandatory);
+    }
+
     public function getParent(): ?string
     {
         return $this->parent;

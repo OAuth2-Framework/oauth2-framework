@@ -34,7 +34,7 @@ final class ResourceServerIdType extends Type
             return $value;
         }
 
-        return new ResourceServerId($value);
+        return ResourceServerId::create($value);
     }
 
     /**

@@ -47,6 +47,11 @@ class AuthorizationRequest
         $this->metadata = new DataBag([]);
     }
 
+    public static function create(Client $client, array $queryParameters): self
+    {
+        return new self($client, $queryParameters);
+    }
+
     public function getQueryParams(): array
     {
         return $this->queryParameters;
@@ -86,9 +91,11 @@ class AuthorizationRequest
         return $this->getQueryParam('redirect_uri');
     }
 
-    public function setUserAccount(UserAccount $userAccount): void
+    public function setUserAccount(UserAccount $userAccount): self
     {
         $this->userAccount = $userAccount;
+
+        return $this;
     }
 
     public function hasUserAccount(): bool
@@ -103,9 +110,11 @@ class AuthorizationRequest
         return $this->userAccount;
     }
 
-    public function setResponseParameter(string $responseParameter, mixed $value): void
+    public function setResponseParameter(string $responseParameter, mixed $value): self
     {
         $this->responseParameters[$responseParameter] = $value;
+
+        return $this;
     }
 
     public function getResponseParameters(): array
@@ -125,9 +134,11 @@ class AuthorizationRequest
         return array_key_exists($param, $this->getResponseParameters());
     }
 
-    public function setResponseHeader(string $responseHeader, mixed $value): void
+    public function setResponseHeader(string $responseHeader, mixed $value): self
     {
         $this->responseHeaders[$responseHeader] = $value;
+
+        return $this;
     }
 
     public function getResponseHeaders(): array
@@ -175,14 +186,18 @@ class AuthorizationRequest
         return $this->authorized !== self::CONSENT_NOT_GIVEN;
     }
 
-    public function allow(): void
+    public function allow(): self
     {
         $this->authorized = self::CONSENT_ALLOW;
+
+        return $this;
     }
 
-    public function deny(): void
+    public function deny(): self
     {
         $this->authorized = self::CONSENT_DENY;
+
+        return $this;
     }
 
     public function getResourceServer(): ?ResourceServer
@@ -190,9 +205,11 @@ class AuthorizationRequest
         return $this->resourceServer;
     }
 
-    public function setResourceServer(ResourceServer $resourceServer): void
+    public function setResourceServer(ResourceServer $resourceServer): self
     {
         $this->resourceServer = $resourceServer;
+
+        return $this;
     }
 
     public function hasScope(): bool
@@ -215,18 +232,14 @@ class AuthorizationRequest
         return array_key_exists($key, $this->attributes);
     }
 
-    /**
-     * @param null|mixed$value
-     */
-    public function setAttribute(string $key, $value): void
+    public function setAttribute(string $key, mixed $value): self
     {
         $this->attributes[$key] = $value;
+
+        return $this;
     }
 
-    /**
-     * @return mixed|null
-     */
-    public function getAttribute(string $key)
+    public function getAttribute(string $key): mixed
     {
         Assertion::true($this->hasAttribute($key), sprintf('The attribute with key "%s" does not exist', $key));
 

@@ -42,7 +42,7 @@ class TokenEndpoint implements MiddlewareInterface
     {
         // We prepare the Grant Type Data.
         // The client may be null (authenticated by other means).
-        $grantTypeData = new GrantTypeData($request->getAttribute('client'));
+        $grantTypeData = GrantTypeData::create($request->getAttribute('client'));
 
         // We retrieve the Grant Type.
         // This middleware must be behind the GrantTypeMiddleware

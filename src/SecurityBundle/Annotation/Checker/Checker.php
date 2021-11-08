@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace OAuth2Framework\SecurityBundle\Annotation\Checker;
 
 use OAuth2Framework\SecurityBundle\Annotation\OAuth2;
-use OAuth2Framework\SecurityBundle\Security\Authentication\Token\OAuth2Token;
+use OAuth2Framework\SecurityBundle\Security\Authentication\OAuth2Token;
 
 interface Checker
 {

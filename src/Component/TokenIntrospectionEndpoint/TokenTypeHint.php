@@ -10,5 +10,5 @@ interface TokenTypeHint
 
     public function find(string $token): mixed;
 
-    public function introspect($token): array;
+    public function introspect(mixed $token): array;
 }
