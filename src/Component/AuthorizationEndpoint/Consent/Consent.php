@@ -13,6 +13,7 @@ class Consent
     public function __construct(
         private string $clientId,
         private string $userAccountId,
+        private ?string $resourceServerId,
         private string $requestedScope,
         private string $requestedClaims
     ) {
@@ -26,6 +27,11 @@ class Consent
     public function getUserAccountId(): string
     {
         return $this->userAccountId;
+    }
+
+    public function getResourceServerId(): ?string
+    {
+        return $this->resourceServerId;
     }
 
     public function getRequestedScope(): string
@@ -43,7 +49,7 @@ class Consent
         return $this->grantedScope;
     }
 
-    public function setGrantedScope(string $grantedScope): self
+    public function setGrantedScope(string $grantedScope): static
     {
         $this->grantedScope = $grantedScope;
 
@@ -55,7 +61,7 @@ class Consent
         return $this->grantedClaims;
     }
 
-    public function setGrantedClaims(string $grantedClaims): self
+    public function setGrantedClaims(string $grantedClaims): static
     {
         $this->grantedClaims = $grantedClaims;
 

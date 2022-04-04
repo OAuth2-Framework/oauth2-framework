@@ -5,15 +5,6 @@ declare(strict_types=1);
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeGrantType;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeRepository;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeResponseType;
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 use OAuth2Framework\Component\AuthorizationCodeGrant\PKCEMethod\PKCEMethodManager;
 use OAuth2Framework\Component\AuthorizationCodeGrant\PKCEMethod\Plain;
 use OAuth2Framework\Component\AuthorizationCodeGrant\PKCEMethod\S256;

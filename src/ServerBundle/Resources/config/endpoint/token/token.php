@@ -12,7 +12,6 @@ use OAuth2Framework\Component\TokenEndpoint\GrantTypeManager;
 use OAuth2Framework\Component\TokenEndpoint\GrantTypeMiddleware;
 use OAuth2Framework\Component\TokenEndpoint\TokenEndpoint;
 use OAuth2Framework\ServerBundle\Controller\PipeController;
-use Psr\Http\Message\ResponseFactoryInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 
@@ -51,7 +50,6 @@ return static function (ContainerConfigurator $container): void {
             service(ClientRepository::class),
             service(UserAccountRepository::class)->nullOnInvalid(),
             service(TokenEndpointExtensionManager::class),
-            service(ResponseFactoryInterface::class),
             service(AccessTokenRepository::class),
             '%oauth2_server.access_token_lifetime%',
         ])

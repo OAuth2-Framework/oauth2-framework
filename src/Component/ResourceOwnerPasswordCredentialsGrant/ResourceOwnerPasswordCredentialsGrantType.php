@@ -20,7 +20,7 @@ final class ResourceOwnerPasswordCredentialsGrantType implements GrantType
 
     public static function create(
         ResourceOwnerPasswordCredentialManager $resourceOwnerPasswordCredentialManager
-    ): self {
+    ): static {
         return new self($resourceOwnerPasswordCredentialManager);
     }
 

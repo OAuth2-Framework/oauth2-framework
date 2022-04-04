@@ -46,7 +46,7 @@ final class IdTokenResponseType implements ResponseType
         JWSBuilder $jwsBuilder,
         JWKSet $signatureKeys,
         ?JWEBuilder $jweBuilder
-    ): self {
+    ): static {
         return new self(
             $idTokenBuilderFactory,
             $defaultSignatureAlgorithm,

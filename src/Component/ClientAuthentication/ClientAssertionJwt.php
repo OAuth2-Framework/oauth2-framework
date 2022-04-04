@@ -61,18 +61,18 @@ class ClientAssertionJwt implements AuthenticationMethod
         HeaderCheckerManager $headerCheckerManager,
         ClaimCheckerManager $claimCheckerManager,
         int $secretLifetime = 0
-    ): self {
+    ): static {
         return new self($jwsVerifier, $headerCheckerManager, $claimCheckerManager, $secretLifetime);
     }
 
-    public function enableTrustedIssuerSupport(TrustedIssuerRepository $trustedIssuerRepository): self
+    public function enableTrustedIssuerSupport(TrustedIssuerRepository $trustedIssuerRepository): static
     {
         $this->trustedIssuerRepository = $trustedIssuerRepository;
 
         return $this;
     }
 
-    public function enableJkuSupport(JKUFactory $jkuFactory): self
+    public function enableJkuSupport(JKUFactory $jkuFactory): static
     {
         $this->jkuFactory = $jkuFactory;
 
@@ -83,7 +83,7 @@ class ClientAssertionJwt implements AuthenticationMethod
         JWELoader $jweLoader,
         JWKSet $keyEncryptionKeySet,
         bool $encryptionRequired
-    ): self {
+    ): static {
         $this->jweLoader = $jweLoader;
         $this->encryptionRequired = $encryptionRequired;
         $this->keyEncryptionKeySet = $keyEncryptionKeySet;

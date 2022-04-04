@@ -6,7 +6,6 @@ namespace OAuth2Framework\Tests\Component\AuthorizationEndpoint\Rule;
 
 use InvalidArgumentException;
 use OAuth2Framework\Component\AuthorizationEndpoint\Rule\RequestUriRule;
-use OAuth2Framework\Component\ClientRule\Rule;
 use OAuth2Framework\Component\ClientRule\RuleHandler;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
@@ -17,13 +16,6 @@ use OAuth2Framework\Tests\Component\OAuth2TestCase;
  */
 final class RequestUriRuleTest extends OAuth2TestCase
 {
-    protected function setUp(): void
-    {
-        if (! interface_exists(Rule::class)) {
-            static::markTestSkipped('The component "oauth2-framework/client-rule" is not installed.');
-        }
-    }
-
     /**
      * @test
      */

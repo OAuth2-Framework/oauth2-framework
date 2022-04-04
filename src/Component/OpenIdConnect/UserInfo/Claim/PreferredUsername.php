@@ -27,6 +27,6 @@ final class PreferredUsername implements Claim
 
     private function getComputedClaimName(?string $claimLocale): string
     {
-        return $claimLocale !== null ? sprintf('%s#%s', self::CLAIM_NAME, $claimLocale) : self::CLAIM_NAME;
+        return $claimLocale !== null ? sprintf('%s#%s', self::CLAIM_NAME, $claimLocale) : static::CLAIM_NAME;
     }
 }

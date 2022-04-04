@@ -12,7 +12,7 @@ use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 final class InitialAccessToken extends AbstractInitialAccessToken
 {
     public function __construct(
-        private InitialAccessTokenId $id,
+        private readonly InitialAccessTokenId $id,
         ?UserAccountId $userAccountId,
         ?DateTimeImmutable $expiresAt
     ) {

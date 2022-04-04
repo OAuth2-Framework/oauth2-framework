@@ -18,7 +18,7 @@ class ScopeParameterChecker implements ParameterChecker
     ) {
     }
 
-    public static function create(ScopeRepository $scopeRepository, ScopePolicyManager $scopePolicyManager): self
+    public static function create(ScopeRepository $scopeRepository, ScopePolicyManager $scopePolicyManager): static
     {
         return new self($scopeRepository, $scopePolicyManager);
     }

@@ -11,7 +11,7 @@ use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\Authori
  */
 final class StateParameterChecker implements ParameterChecker
 {
-    public static function create(): self
+    public static function create(): static
     {
         return new self();
     }

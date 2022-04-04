@@ -14,12 +14,12 @@ class ExtensionManager
      */
     private array $extensions = [];
 
-    public static function create(): self
+    public static function create(): static
     {
         return new self();
     }
 
-    public function add(Extension $extension): self
+    public function add(Extension $extension): static
     {
         $this->extensions[] = $extension;
 

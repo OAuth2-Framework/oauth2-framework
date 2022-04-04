@@ -13,12 +13,12 @@ final class UserAuthenticationCheckerManager
      */
     private array $checkers = [];
 
-    public static function create(): self
+    public static function create(): static
     {
         return new self();
     }
 
-    public function add(UserAuthenticationChecker $checker): self
+    public function add(UserAuthenticationChecker $checker): static
     {
         $this->checkers[] = $checker;
 

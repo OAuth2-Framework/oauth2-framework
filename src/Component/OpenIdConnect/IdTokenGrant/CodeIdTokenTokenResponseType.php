@@ -23,7 +23,7 @@ final class CodeIdTokenTokenResponseType implements ResponseType
         AuthorizationCodeResponseType $codeResponseType,
         IdTokenResponseType $idTokenResponseType,
         TokenResponseType $tokenResponseType
-    ): self {
+    ): static {
         return new self($codeResponseType, $idTokenResponseType, $tokenResponseType);
     }
 

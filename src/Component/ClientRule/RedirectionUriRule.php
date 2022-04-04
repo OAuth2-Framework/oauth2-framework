@@ -48,7 +48,7 @@ final class RedirectionUriRule implements Rule
         ) : [];
         $usesImplicitGrantType = false;
         foreach ($response_types as $response_type) {
-            $types = explode(' ', $response_type);
+            $types = explode(' ', (string) $response_type);
             if (in_array('token', $types, true)) {
                 $usesImplicitGrantType = true;
 
@@ -71,7 +71,7 @@ final class RedirectionUriRule implements Rule
             if (! is_array($redirectUris)) {
                 throw new InvalidArgumentException('The parameter "redirect_uris" must be a list of URI or URN.');
             }
-            $this->checkAllUris($redirectUris, $applicationType, $usesImplicitGrantType, $isClientPublic);
+            $this->checkAllUris($redirectUris, $applicationType, $usesImplicitGrantType);
         }
 
         $validatedParameters->set('redirect_uris', $redirectUris);
@@ -79,9 +79,12 @@ final class RedirectionUriRule implements Rule
         return $validatedParameters;
     }
 
-    private function checkAllUris(array $value, string $applicationType, bool $usesImplicitGrantType): void
-    {
-        foreach ($value as $redirectUri) {
+    private function checkAllUris(
+        array $redirectUris,
+        string $applicationType,
+        bool $usesImplicitGrantType
+    ): void {
+        foreach ($redirectUris as $redirectUri) {
             if (! is_string($redirectUri)) {
                 throw new InvalidArgumentException('The parameter "redirect_uris" must be a list of URI or URN.');
             }
@@ -98,7 +101,7 @@ final class RedirectionUriRule implements Rule
             if ($parsed['scheme'] === null || $parsed['path'] === null) {
                 throw new InvalidArgumentException('The parameter "redirect_uris" must be a list of URI or URN.');
             }
-            if (preg_match('#/\.\.?(/|$)#', $parsed['path']) === 1) {
+            if (preg_match('#/\.\.?(/|$)#', (string) $parsed['path']) === 1) {
                 throw new InvalidArgumentException(
                     'The URI listed in the "redirect_uris" parameter must not contain any path traversal.'
                 );

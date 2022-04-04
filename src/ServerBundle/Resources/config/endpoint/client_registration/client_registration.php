@@ -5,20 +5,10 @@ declare(strict_types=1);
 use OAuth2Framework\Component\ClientRegistrationEndpoint\ClientRegistrationEndpoint;
 use OAuth2Framework\Component\ClientRule\RuleManager;
 use OAuth2Framework\Component\Core\Client\ClientRepository;
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 use OAuth2Framework\Component\Core\Message\OAuth2MessageFactoryManager;
 use OAuth2Framework\Component\Core\Middleware\OAuth2MessageMiddleware;
 use OAuth2Framework\Component\Core\Middleware\Pipe;
 use OAuth2Framework\ServerBundle\Controller\PipeController;
-use Psr\Http\Message\ResponseFactoryInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 
@@ -45,11 +35,7 @@ return static function (ContainerConfigurator $container): void {
 
     $container->set('oauth2_server.client_registration.endpoint')
         ->class(ClientRegistrationEndpoint::class)
-        ->args([
-            service(ClientRepository::class),
-            service(ResponseFactoryInterface::class), //TODO
-            service(RuleManager::class),
-        ])
+        ->args([service(ClientRepository::class), service(RuleManager::class)])
     ;
 
     $container->set('oauth2_server.message_middleware.for_client_registration')
@@ -58,7 +44,6 @@ return static function (ContainerConfigurator $container): void {
     ;
     $container->set('oauth2_server.message_factory_manager.for_client_registration')
         ->class(OAuth2MessageFactoryManager::class)
-        ->args([service(ResponseFactoryInterface::class)])
         ->call('addFactory', [service('oauth2_server.message_factory.303')])
         ->call('addFactory', [service('oauth2_server.message_factory.400')])
         ->call('addFactory', [service('oauth2_server.message_factory.403')])

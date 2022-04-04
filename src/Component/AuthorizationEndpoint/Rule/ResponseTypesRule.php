@@ -12,7 +12,7 @@ use OAuth2Framework\Component\Core\DataBag\DataBag;
 
 final class ResponseTypesRule implements Rule
 {
-    public static function create(): self
+    public static function create(): static
     {
         return new self();
     }

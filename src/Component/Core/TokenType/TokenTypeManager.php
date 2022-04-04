@@ -19,12 +19,12 @@ class TokenTypeManager
 
     private ?string $defaultTokenType = null;
 
-    public static function create(): self
+    public static function create(): static
     {
         return new self();
     }
 
-    public function add(TokenType $tokenType, bool $default = false): self
+    public function add(TokenType $tokenType, bool $default = false): static
     {
         $this->tokenTypes[$tokenType->name()] = $tokenType;
         if ($this->defaultTokenType === null || $default === true) {

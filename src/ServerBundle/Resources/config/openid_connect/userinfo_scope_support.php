@@ -6,15 +6,6 @@ use OAuth2Framework\Component\OpenIdConnect\UserInfo\ScopeSupport\AddressScopeSu
 use OAuth2Framework\Component\OpenIdConnect\UserInfo\ScopeSupport\EmailScopeSupport;
 use OAuth2Framework\Component\OpenIdConnect\UserInfo\ScopeSupport\PhoneScopeSupport;
 use OAuth2Framework\Component\OpenIdConnect\UserInfo\ScopeSupport\ProfileScopeSupport;
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 return static function (ContainerConfigurator $container): void {

@@ -16,12 +16,12 @@ use Symfony\Component\Security\Core\User\UserInterface as SymfonyUserInterface;
 final class UserAccount implements UserAccountInterface, SymfonyUserInterface
 {
     public function __construct(
-        private UserAccountId $userAccountId,
-        private string $username,
-        private array $roles,
-        private ?DateTimeImmutable $lastLoginAt,
-        private ?DateTimeImmutable $lastUpdateAt,
-        private array $data
+        private readonly UserAccountId $userAccountId,
+        private readonly string $username,
+        private readonly array $roles,
+        private readonly ?DateTimeImmutable $lastLoginAt,
+        private readonly ?DateTimeImmutable $lastUpdateAt,
+        private readonly array $data
     ) {
     }
 
@@ -41,7 +41,7 @@ final class UserAccount implements UserAccountInterface, SymfonyUserInterface
         return $this->userAccountId->getValue();
     }
 
-    public function getRoles()
+    public function getRoles(): array
     {
         return $this->roles;
     }

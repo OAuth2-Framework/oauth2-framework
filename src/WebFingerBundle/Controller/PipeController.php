@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 class PipeController
 {
     public function __construct(
-        private Pipe $pipe
+        private readonly Pipe $pipe
     ) {
     }
 
@@ -30,7 +30,7 @@ class PipeController
         );
         $psrRequest = $psrFactory->createRequest($symfonyRequest);
 
-        $psrResponse = $this->pipe->process($psrRequest, new TerminalRequestHandler(new Psr17Factory()));
+        $psrResponse = $this->pipe->process($psrRequest, new TerminalRequestHandler());
 
         return $httpFoundationFactory->createResponse($psrResponse);
     }

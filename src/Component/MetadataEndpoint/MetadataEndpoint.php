@@ -5,13 +5,11 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\MetadataEndpoint;
 
 use Jose\Component\Core\JWK;
-use Jose\Component\Core\Util\JsonConverter;
 use Jose\Component\Signature\JWSBuilder;
 use Jose\Component\Signature\Serializer\CompactSerializer;
 use const JSON_THROW_ON_ERROR;
 use const JSON_UNESCAPED_SLASHES;
 use const JSON_UNESCAPED_UNICODE;
-use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -26,12 +24,11 @@ class MetadataEndpoint implements MiddlewareInterface
     private ?JWSBuilder $jwsBuilder = null;
 
     public function __construct(
-        private ResponseFactoryInterface $responseFactory,
         private Metadata $metadata
     ) {
     }
 
-    public function enableSignature(JWSBuilder $jwsBuilder, string $signatureAlgorithm, JWK $signatureKey): self
+    public function enableSignature(JWSBuilder $jwsBuilder, string $signatureAlgorithm, JWK $signatureKey): static
     {
         $this->jwsBuilder = $jwsBuilder;
         $this->signatureKey = $signatureKey;
@@ -46,7 +43,8 @@ class MetadataEndpoint implements MiddlewareInterface
         if ($this->jwsBuilder !== null) {
             $data['signed_metadata'] = $this->sign($data);
         }
-        $response = $this->responseFactory->createResponse();
+
+        $response = $handler->handle($request);
         $response->getBody()
             ->write(json_encode($data, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES))
         ;
@@ -59,9 +57,12 @@ class MetadataEndpoint implements MiddlewareInterface
         $header = [
             'alg' => $this->signatureAlgorithm,
         ];
+        if ($this->signatureKey->has('kid')) {
+            $header['kid'] = $this->signatureKey->get('kid');
+        }
         $jws = $this->jwsBuilder
             ->create()
-            ->withPayload(JsonConverter::encode($metadata))
+            ->withPayload(json_encode($metadata, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES))
             ->addSignature($this->signatureKey, $header)
             ->build()
         ;

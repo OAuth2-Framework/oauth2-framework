@@ -6,7 +6,7 @@ namespace OAuth2Framework\Component\AuthorizationCodeGrant\PKCEMethod;
 
 final class Plain implements PKCEMethod
 {
-    public static function create(): self
+    public static function create(): static
     {
         return new self();
     }

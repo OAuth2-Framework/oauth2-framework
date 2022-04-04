@@ -29,9 +29,6 @@
     <ini name="intl.error_level" value="0" />
     <ini name="memory_limit" value="-1" />
   </php>
-  <extensions>
-    <extension class="Symfony\Component\Panther\ServerExtension"/>
-  </extensions>
   <listeners>
     <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener"/>
   </listeners>

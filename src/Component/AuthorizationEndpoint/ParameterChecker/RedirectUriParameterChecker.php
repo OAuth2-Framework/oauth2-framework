@@ -10,7 +10,7 @@ use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\Authori
 
 final class RedirectUriParameterChecker implements ParameterChecker
 {
-    public static function create(): self
+    public static function create(): static
     {
         return new self();
     }

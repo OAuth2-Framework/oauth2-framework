@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Scope;
 
-interface Scope
+use JsonSerializable;
+
+interface Scope extends JsonSerializable
 {
     public function __toString(): string;
 

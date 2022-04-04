@@ -13,7 +13,7 @@ class AuthorizationRequestHookCompilerPass implements CompilerPassInterface
 {
     use PriorityTaggedServiceTrait;
 
-    public const TAG_NAME = 'oauth2_server_authorization_endpoint_hook';
+    final public const TAG_NAME = 'oauth2_server_authorization_endpoint_hook';
 
     public function process(ContainerBuilder $container): void
     {

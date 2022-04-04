@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Tests\ServerBundle\Functional\Grant\ClientCredentials;
 
-use OAuth2Framework\Component\ClientCredentialsGrant\ClientCredentialsGrantType;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
@@ -12,14 +11,6 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
  */
 final class ClientCredentialsGrantTest extends WebTestCase
 {
-    protected function setUp(): void
-    {
-        if (! class_exists(ClientCredentialsGrantType::class)) {
-            static::markTestSkipped('The component "oauth2-framework/client-credentials-grant" is not installed.');
-        }
-        parent::setUp();
-    }
-
     /**
      * @test
      */

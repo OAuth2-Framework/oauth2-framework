@@ -13,12 +13,12 @@ class PKCEMethodManager
      */
     private array $pkceMethods = [];
 
-    public static function create(): self
+    public static function create(): static
     {
         return new self();
     }
 
-    public function add(PKCEMethod $method): self
+    public function add(PKCEMethod $method): static
     {
         $this->pkceMethods[$method->name()] = $method;
 

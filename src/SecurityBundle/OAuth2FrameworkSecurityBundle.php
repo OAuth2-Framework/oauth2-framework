@@ -30,7 +30,7 @@ final class OAuth2FrameworkSecurityBundle extends Bundle
         if (! $extension instanceof SecurityExtension) {
             throw new RuntimeException('Unsupported security extension');
         }
-        $extension->addSecurityListenerFactory(new OAuth2SecurityFactory());
+        $extension->addAuthenticatorFactory(new OAuth2SecurityFactory());
 
         $container->addCompilerPass(new SecurityAnnotationCheckerCompilerPass());
         $container->addCompilerPass(new TokenTypeCompilerPass());

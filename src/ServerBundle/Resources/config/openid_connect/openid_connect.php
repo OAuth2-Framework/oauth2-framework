@@ -28,15 +28,6 @@ use OAuth2Framework\Component\OpenIdConnect\UserInfo\Claim\Picture;
 use OAuth2Framework\Component\OpenIdConnect\UserInfo\Claim\PreferredUsername;
 use OAuth2Framework\Component\OpenIdConnect\UserInfo\Claim\Profile;
 use OAuth2Framework\Component\OpenIdConnect\UserInfo\Claim\UpdatedAt;
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 use OAuth2Framework\Component\OpenIdConnect\UserInfo\Claim\Website;
 use OAuth2Framework\Component\OpenIdConnect\UserInfo\Claim\Zoneinfo;
 use OAuth2Framework\Component\OpenIdConnect\UserInfo\ScopeSupport\UserInfoScopeSupportManager;

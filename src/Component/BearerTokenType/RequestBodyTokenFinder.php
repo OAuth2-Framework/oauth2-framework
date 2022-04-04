@@ -10,7 +10,7 @@ use Throwable;
 
 final class RequestBodyTokenFinder implements TokenFinder
 {
-    public static function create(): self
+    public static function create(): static
     {
         return new self();
     }

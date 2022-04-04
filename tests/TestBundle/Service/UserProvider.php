@@ -14,7 +14,7 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 final class UserProvider implements UserProviderInterface
 {
     public function __construct(
-        private UserAccountRepository $userAccountRepository
+        private readonly UserAccountRepository $userAccountRepository
     ) {
     }
 

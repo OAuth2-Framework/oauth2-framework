@@ -22,5 +22,5 @@ interface InitialAccessToken
     /**
      * This method should be immutable.
      */
-    public function markAsRevoked(): self;
+    public function markAsRevoked(): static;
 }

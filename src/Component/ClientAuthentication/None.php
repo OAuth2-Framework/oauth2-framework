@@ -13,7 +13,7 @@ use Psr\Http\Message\ServerRequestInterface;
 
 final class None implements AuthenticationMethod
 {
-    public static function create(): self
+    public static function create(): static
     {
         return new self();
     }

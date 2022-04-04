@@ -15,7 +15,7 @@ use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
 class AccessToken extends AbstractAccessToken
 {
     public function __construct(
-        private AccessTokenId $accessTokenId,
+        private readonly AccessTokenId $accessTokenId,
         ClientId $clientId,
         ResourceOwnerId $resourceOwnerId,
         DateTimeImmutable $expiresAt,

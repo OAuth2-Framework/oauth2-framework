@@ -9,7 +9,6 @@ use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\Authori
 use OAuth2Framework\Component\BearerTokenType\BearerToken;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
-use OAuth2Framework\Component\Core\TokenType\TokenTypeGuesser;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use OAuth2Framework\Tests\Component\OAuth2TestCase;
 use OAuth2Framework\Tests\TestBundle\Entity\Client;
@@ -19,15 +18,6 @@ use OAuth2Framework\Tests\TestBundle\Entity\Client;
  */
 final class TokenTypeParameterCheckerTest extends OAuth2TestCase
 {
-    private ?TokenTypeGuesser $tokenTypeGuesser = null;
-
-    protected function setUp(): void
-    {
-        if (! class_exists(AuthorizationRequest::class)) {
-            static::markTestSkipped('Authorization Endpoint not available');
-        }
-    }
-
     /**
      * @test
      */
@@ -37,7 +27,7 @@ final class TokenTypeParameterCheckerTest extends OAuth2TestCase
             Client::create(ClientId::create('CLIENT_ID'), DataBag::create(), UserAccountId::create('john.1')),
             []
         );
-        $tokenType = $this->getTokenTypeGuesser(true)
+        $tokenType = $this->getTokenTypeGuesser()
             ->find($authorization)
         ;
 
@@ -55,7 +45,7 @@ final class TokenTypeParameterCheckerTest extends OAuth2TestCase
                 'token_type' => 'Bearer',
             ]
         );
-        $tokenType = $this->getTokenTypeGuesser(true)
+        $tokenType = $this->getTokenTypeGuesser()
             ->find($authorization)
         ;
 
@@ -75,24 +65,12 @@ final class TokenTypeParameterCheckerTest extends OAuth2TestCase
         );
 
         try {
-            $this->getTokenTypeGuesser(true)
+            $this->getTokenTypeGuesser()
                 ->find($authorization)
             ;
             static::fail('Expected exception nt thrown.');
         } catch (InvalidArgumentException $e) {
             static::assertSame('Unsupported token type "UnknownTokenType".', $e->getMessage());
         }
-    }
-
-    private function getTokenTypeGuesser(bool $tokenTypeParameterAllowed): TokenTypeGuesser
-    {
-        if ($this->tokenTypeGuesser === null) {
-            $this->tokenTypeGuesser = TokenTypeGuesser::create(
-                $this->getTokenTypeManager(),
-                $tokenTypeParameterAllowed
-            );
-        }
-
-        return $this->tokenTypeGuesser;
     }
 }

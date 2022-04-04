@@ -20,12 +20,12 @@ final class BearerToken implements TokenType
     ) {
     }
 
-    public static function create(string $realm): self
+    public static function create(string $realm): static
     {
         return new self($realm);
     }
 
-    public function addTokenFinder(TokenFinder $tokenFinder): self
+    public function addTokenFinder(TokenFinder $tokenFinder): static
     {
         $this->tokenFinders[] = $tokenFinder;
 

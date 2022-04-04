@@ -13,7 +13,7 @@ use Symfony\Component\Routing\RouterInterface;
 final class ClientConfigurationRouteRule extends Base
 {
     public function __construct(
-        private RouterInterface $router
+        private readonly RouterInterface $router
     ) {
     }
 

@@ -25,7 +25,7 @@ final class ClientSecretBasic implements AuthenticationMethod
         $this->secretLifetime = $secretLifetime;
     }
 
-    public static function create(string $realm): self
+    public static function create(string $realm): static
     {
         return new self($realm);
     }

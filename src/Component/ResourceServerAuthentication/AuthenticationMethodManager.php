@@ -24,7 +24,7 @@ class AuthenticationMethodManager
      */
     private array $names = [];
 
-    public function add(AuthenticationMethod $method): self
+    public function add(AuthenticationMethod $method): static
     {
         $class = $method::class;
         $this->methods[$class] = $method;

@@ -13,7 +13,7 @@ final class RefreshTokenRevocationTypeHint implements TokenTypeHint
     ) {
     }
 
-    public static function create(RefreshTokenRepository $refreshTokenRepository): self
+    public static function create(RefreshTokenRepository $refreshTokenRepository): static
     {
         return new self($refreshTokenRepository);
     }

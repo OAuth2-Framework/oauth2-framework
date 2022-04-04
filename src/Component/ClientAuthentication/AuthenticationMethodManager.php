@@ -25,12 +25,12 @@ class AuthenticationMethodManager
      */
     private array $names = [];
 
-    public static function create(): self
+    public static function create(): static
     {
         return new self();
     }
 
-    public function add(AuthenticationMethod $method): self
+    public function add(AuthenticationMethod $method): static
     {
         $class = $method::class;
         $this->methods[$class] = $method;

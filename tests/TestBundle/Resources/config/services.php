@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use Nyholm\Psr7\Factory\Psr17Factory;
 use OAuth2Framework\Component\BearerTokenType\AuthorizationHeaderTokenFinder;
 use OAuth2Framework\Component\BearerTokenType\BearerToken;
 use OAuth2Framework\Component\BearerTokenType\QueryStringTokenFinder;
@@ -27,8 +26,6 @@ use OAuth2Framework\Tests\TestBundle\Service\LoginHandler;
 use OAuth2Framework\Tests\TestBundle\Service\SymfonyUserAccountDiscovery;
 use OAuth2Framework\Tests\TestBundle\Service\UriPathResolver;
 use OAuth2Framework\Tests\TestBundle\Service\UserProvider;
-use Psr\Http\Message\RequestFactoryInterface;
-use Psr\Http\Message\ResponseFactoryInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 
@@ -79,9 +76,6 @@ return static function (ContainerConfigurator $container) {
     $container->set(AuthorizationCodeRepository::class);
     $container->set(ScopeRepository::class);
     $container->set(InitialAccessTokenRepository::class);
-    $container->set(Psr17Factory::class);
-    $container->alias(ResponseFactoryInterface::class, Psr17Factory::class);
-    $container->alias(RequestFactoryInterface::class, Psr17Factory::class);
     $container->set(ResourceRepository::class);
     $container->set(UriPathResolver::class);
 

@@ -28,7 +28,7 @@ final class AuthorizationCodeResponseType implements ResponseType
         int $authorizationCodeLifetime,
         PKCEMethodManager $pkceMethodManager,
         bool $pkceForPublicClientsEnforced
-    ): self {
+    ): static {
         return new self(
             $authorizationCodeRepository,
             $authorizationCodeLifetime,

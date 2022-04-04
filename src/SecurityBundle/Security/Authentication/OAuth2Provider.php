@@ -23,18 +23,17 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationFailureHandlerI
 use Symfony\Component\Security\Http\Authenticator\AuthenticatorInterface;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
-use Symfony\Component\Security\Http\Authenticator\Passport\PassportInterface;
 use Throwable;
 
 final class OAuth2Provider implements AuthenticatorInterface
 {
-    private HttpMessageFactoryInterface $psrHttpFactory;
+    private readonly HttpMessageFactoryInterface $psrHttpFactory;
 
     public function __construct(
-        private ?UserProviderInterface $userProvider,
-        private TokenTypeManager $tokenTypeManager,
-        private AccessTokenRepository $accessTokenRepository,
-        private AuthenticationFailureHandlerInterface $failureHandler
+        private readonly ?UserProviderInterface $userProvider,
+        private readonly TokenTypeManager $tokenTypeManager,
+        private readonly AccessTokenRepository $accessTokenRepository,
+        private readonly AuthenticationFailureHandlerInterface $failureHandler
     ) {
         $this->psrHttpFactory = new PsrHttpFactory(
             new Psr17Factory(),
@@ -44,7 +43,7 @@ final class OAuth2Provider implements AuthenticatorInterface
         );
     }
 
-    public function authenticate(Request $request): PassportInterface
+    public function authenticate(Request $request): Passport
     {
         $psrRequest = $this->psrHttpFactory->createRequest($request);
         $additionalCredentialValues = [];
@@ -88,7 +87,7 @@ final class OAuth2Provider implements AuthenticatorInterface
         return $token !== null;
     }
 
-    public function createAuthenticatedToken(PassportInterface $passport, string $firewallName): TokenInterface
+    public function createToken(Passport $passport, string $firewallName): TokenInterface
     {
         $accessTokenBadge = $passport->getBadge(AccessTokenBadge::class);
         if (! $accessTokenBadge instanceof AccessTokenBadge) {
@@ -106,7 +105,6 @@ final class OAuth2Provider implements AuthenticatorInterface
 
         $token = new OAuth2Token($accessTokenBadge->getAccessToken());
         $token->setUser($user);
-        $token->setAuthenticated(true);
 
         return $token;
     }

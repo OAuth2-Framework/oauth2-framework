@@ -30,7 +30,7 @@ final class AnnotationDriver
     ) {
     }
 
-    public function add(Checker $checker): self
+    public function add(Checker $checker): static
     {
         $this->checkers[] = $checker;
 

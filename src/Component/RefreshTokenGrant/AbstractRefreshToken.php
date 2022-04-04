@@ -32,7 +32,7 @@ abstract class AbstractRefreshToken implements RefreshToken
         $this->revoked = false;
     }
 
-    public function addAccessToken(AccessTokenId $accessTokenId): self
+    public function addAccessToken(AccessTokenId $accessTokenId): static
     {
         $id = $accessTokenId->getValue();
         if (! array_key_exists($id, $this->accessTokenIds)) {
@@ -95,7 +95,7 @@ abstract class AbstractRefreshToken implements RefreshToken
         return $this->revoked;
     }
 
-    public function markAsRevoked(): self
+    public function markAsRevoked(): static
     {
         $this->revoked = true;
 

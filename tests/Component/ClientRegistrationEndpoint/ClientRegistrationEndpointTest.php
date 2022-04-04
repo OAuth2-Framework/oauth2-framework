@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Tests\Component\ClientRegistrationEndpoint;
 
+use OAuth2Framework\Component\Core\Middleware\TerminalRequestHandler;
 use OAuth2Framework\Tests\Component\OAuth2TestCase;
 
 /**
@@ -19,7 +20,7 @@ final class ClientRegistrationEndpointTest extends OAuth2TestCase
         $request = $this->buildRequest(method: 'POST', contentType: 'application/json');
 
         $response = $this->getClientRegistrationEndpoint()
-            ->process($request)
+            ->process($request, new TerminalRequestHandler())
         ;
 
         static::assertSame(201, $response->getStatusCode());

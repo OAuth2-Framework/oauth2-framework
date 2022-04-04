@@ -10,7 +10,6 @@ use OAuth2Framework\Component\ClientRule\RuleManager;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientRepository;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
-use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -22,7 +21,6 @@ final class ClientConfigurationEndpoint implements MiddlewareInterface
     public function __construct(
         private ClientRepository $clientRepository,
         private BearerToken $bearerToken,
-        private ResponseFactoryInterface $responseFactory,
         private RuleManager $ruleManager
     ) {
     }
@@ -33,21 +31,17 @@ final class ClientConfigurationEndpoint implements MiddlewareInterface
 
         switch ($request->getMethod()) {
             case 'GET':
-                $get = new ClientConfigurationGetEndpoint($this->responseFactory);
+                $get = new ClientConfigurationGetEndpoint();
 
                 return $get->process($request, $next);
 
             case 'PUT':
-                $put = new ClientConfigurationPutEndpoint(
-                    $this->clientRepository,
-                    $this->responseFactory,
-                    $this->ruleManager
-                );
+                $put = new ClientConfigurationPutEndpoint($this->clientRepository, $this->ruleManager);
 
                 return $put->process($request, $next);
 
             case 'DELETE':
-                $delete = new ClientConfigurationDeleteEndpoint($this->clientRepository, $this->responseFactory);
+                $delete = new ClientConfigurationDeleteEndpoint($this->clientRepository);
 
                 return $delete->process($request, $next);
 

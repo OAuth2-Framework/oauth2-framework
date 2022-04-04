@@ -5,15 +5,6 @@ declare(strict_types=1);
 use OAuth2Framework\Component\BearerTokenType\BearerToken;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository;
 use OAuth2Framework\Component\Core\Client\ClientRepository;
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 use OAuth2Framework\Component\Core\Middleware\AccessTokenMiddleware;
 use OAuth2Framework\Component\Core\Middleware\Pipe;
 use OAuth2Framework\Component\Core\TokenType\TokenTypeManager;
@@ -22,7 +13,6 @@ use OAuth2Framework\Component\OpenIdConnect\IdTokenBuilderFactory;
 use OAuth2Framework\Component\OpenIdConnect\Rule\UserinfoEndpointAlgorithmsRule;
 use OAuth2Framework\Component\OpenIdConnect\UserInfoEndpoint\UserInfoEndpoint;
 use OAuth2Framework\ServerBundle\Controller\PipeController;
-use Psr\Http\Message\ResponseFactoryInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 
@@ -38,7 +28,6 @@ return static function (ContainerConfigurator $container): void {
             service(IdTokenBuilderFactory::class),
             service(ClientRepository::class),
             service(UserAccountRepository::class),
-            service(ResponseFactoryInterface::class),
         ])
     ;
 
@@ -64,7 +53,7 @@ return static function (ContainerConfigurator $container): void {
 
     $container->set('oauth2_server_userinfo_pipe')
         ->class(Pipe::class)
-        ->args([[service('userinfo_security_middleware'), service(UserInfoEndpoint::class)]])
+        ->args([[service('userinfo_security_middleware')]])
     ;
 
     $container->set('oauth2_server_userinfo_endpoint_pipe')

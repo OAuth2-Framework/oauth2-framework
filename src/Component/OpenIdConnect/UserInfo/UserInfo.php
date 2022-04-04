@@ -42,7 +42,7 @@ class UserInfo
         return $claims;
     }
 
-    public function enablePairwiseSubject(PairwiseSubjectIdentifierAlgorithm $pairwiseAlgorithm): self
+    public function enablePairwiseSubject(PairwiseSubjectIdentifierAlgorithm $pairwiseAlgorithm): static
     {
         $this->pairwiseAlgorithm = $pairwiseAlgorithm;
 

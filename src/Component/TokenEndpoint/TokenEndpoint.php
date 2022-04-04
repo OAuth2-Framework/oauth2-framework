@@ -20,7 +20,6 @@ use OAuth2Framework\Component\Core\TokenType\TokenType;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountRepository;
 use OAuth2Framework\Component\TokenEndpoint\Extension\TokenEndpointExtensionManager;
-use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -32,7 +31,6 @@ class TokenEndpoint implements MiddlewareInterface
         private ClientRepository $clientRepository,
         private ?UserAccountRepository $userAccountRepository,
         private TokenEndpointExtensionManager $tokenEndpointExtensionManager,
-        private ResponseFactoryInterface $responseFactory,
         private AccessTokenRepository $accessTokenRepository,
         private int $accessTokenLifetime
     ) {
@@ -96,17 +94,19 @@ class TokenEndpoint implements MiddlewareInterface
             $accessToken
         );
 
-        return $this->createResponse($data);
+        $response = $handler->handle($request);
+
+        return $this->createResponse($data, $response);
     }
 
-    private function createResponse(array $data): ResponseInterface
+    private function createResponse(array $data, ResponseInterface $response): ResponseInterface
     {
         $headers = [
             'Content-Type' => 'application/json; charset=UTF-8',
             'Cache-Control' => 'no-cache, no-store, max-age=0, must-revalidate, private',
             'Pragma' => 'no-cache',
         ];
-        $response = $this->responseFactory->createResponse(200);
+        $response = $response->withStatus(200);
         foreach ($headers as $k => $v) {
             $response = $response->withHeader($k, $v);
         }

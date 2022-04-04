@@ -6,15 +6,6 @@ use OAuth2Framework\Component\WebFingerEndpoint\IdentifierResolver\AccountResolv
 use OAuth2Framework\Component\WebFingerEndpoint\IdentifierResolver\EmailResolver;
 use OAuth2Framework\Component\WebFingerEndpoint\IdentifierResolver\IdentifierResolverManager;
 use OAuth2Framework\Component\WebFingerEndpoint\IdentifierResolver\UriResolver;
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 use OAuth2Framework\Component\WebFingerEndpoint\WebFingerEndpoint;
 use OAuth2Framework\WebFingerBundle\Controller\PipeController;
 use OAuth2Framework\WebFingerBundle\Middleware\Pipe;

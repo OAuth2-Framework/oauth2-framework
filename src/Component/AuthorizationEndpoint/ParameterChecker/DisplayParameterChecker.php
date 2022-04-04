@@ -17,7 +17,7 @@ final class DisplayParameterChecker implements ParameterChecker
 
     public const DISPLAY_WAP = 'wap';
 
-    public static function create(): self
+    public static function create(): static
     {
         return new self();
     }

@@ -37,7 +37,7 @@ final class ResourceDescriptor implements JsonSerializable
      * @param mixed[]  $properties
      * @param Link[]   $links
      */
-    public static function create(?string $subject, array $aliases, array $properties, array $links): self
+    public static function create(?string $subject, array $aliases, array $properties, array $links): static
     {
         return new self($subject, $aliases, $properties, $links);
     }
@@ -55,7 +55,7 @@ final class ResourceDescriptor implements JsonSerializable
         return $this->aliases;
     }
 
-    public function addAlias(string $key, string $alias): self
+    public function addAlias(string $key, string $alias): static
     {
         $this->properties[$key] = $alias;
 
@@ -70,7 +70,7 @@ final class ResourceDescriptor implements JsonSerializable
         return $this->properties;
     }
 
-    public function addProperty(string $key, string $property): self
+    public function addProperty(string $key, string $property): static
     {
         $this->properties[$key] = $property;
 
@@ -85,7 +85,7 @@ final class ResourceDescriptor implements JsonSerializable
         return $this->links;
     }
 
-    public function addLink(string $key, Link $link): self
+    public function addLink(string $key, Link $link): static
     {
         $this->links[$key] = $link;
 

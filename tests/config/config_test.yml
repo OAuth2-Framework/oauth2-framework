@@ -5,7 +5,6 @@ imports:
     - { resource: oauth2_server.yml }
     - { resource: webfinger.yml }
 
-
 framework:
     test: ~
     secret: 'test'
@@ -24,6 +23,7 @@ framework:
         utf8: true
         resource: '%kernel.project_dir%/tests/config/routing.yml'
         strict_requirements: ~
+        default_uri: 'https://example.org:8000/my/path/'
     assets:
         enabled: false
     trusted_hosts:   ~

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Tests\ServerBundle\Functional\Grant\ResourceOwnerPasswordCredentialsGrant;
 
-use OAuth2Framework\Component\ResourceOwnerPasswordCredentialsGrant\ResourceOwnerPasswordCredentialsGrantType;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
@@ -12,16 +11,6 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
  */
 final class ResourceOwnerPasswordCredentialsGrantTest extends WebTestCase
 {
-    protected function setUp(): void
-    {
-        if (! class_exists(ResourceOwnerPasswordCredentialsGrantType::class)) {
-            static::markTestSkipped(
-                'The component "oauth2-framework/resource-owner-password-credentials-grant" is not installed.'
-            );
-        }
-        parent::setUp();
-    }
-
     /**
      * @test
      */

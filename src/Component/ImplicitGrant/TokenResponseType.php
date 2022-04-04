@@ -19,7 +19,7 @@ final class TokenResponseType implements ResponseType
     ) {
     }
 
-    public static function create(AccessTokenRepository $accessTokenRepository, int $accessTokenLifetime): self
+    public static function create(AccessTokenRepository $accessTokenRepository, int $accessTokenLifetime): static
     {
         return new self($accessTokenRepository, $accessTokenLifetime);
     }

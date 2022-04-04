@@ -8,7 +8,6 @@ use DateTimeImmutable;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
-use OAuth2Framework\Component\TokenIntrospectionEndpoint\TokenTypeHint;
 use OAuth2Framework\Tests\Component\OAuth2TestCase;
 use OAuth2Framework\Tests\TestBundle\Entity\AccessToken;
 
@@ -17,13 +16,6 @@ use OAuth2Framework\Tests\TestBundle\Entity\AccessToken;
  */
 final class AccessTokenIntrospectionTypeHintTest extends OAuth2TestCase
 {
-    protected function setUp(): void
-    {
-        if (! interface_exists(TokenTypeHint::class)) {
-            static::markTestSkipped('The component "oauth2-framework/token-type" is not installed.');
-        }
-    }
-
     /**
      * @test
      */
@@ -51,7 +43,7 @@ final class AccessTokenIntrospectionTypeHintTest extends OAuth2TestCase
         ;
 
         $accessToken = $this->getAccessTokenIntrospectionTypeHint()
-            ->find('ACCESS_TOKEN_ID')
+            ->find('ACCESS_TOKEN_ID', null)
         ;
         static::assertInstanceOf(AccessToken::class, $accessToken);
         $introspection = $this->getAccessTokenIntrospectionTypeHint()

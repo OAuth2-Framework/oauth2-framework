@@ -12,7 +12,7 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
 
 return static function (ContainerConfigurator $containerConfigurator): void {
     $containerConfigurator->import(SetList::DEAD_CODE);
-    $containerConfigurator->import(SetList::PHP_80);
+    $containerConfigurator->import(SetList::PHP_81);
     $containerConfigurator->import(SymfonySetList::SYMFONY_52);
     $containerConfigurator->import(SymfonySetList::SYMFONY_CODE_QUALITY);
     $containerConfigurator->import(SymfonySetList::SYMFONY_52_VALIDATOR_ATTRIBUTES);

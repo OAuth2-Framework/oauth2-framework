@@ -13,7 +13,6 @@ use OAuth2Framework\Component\Core\Client\ClientRepository;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use OAuth2Framework\Component\Core\Util\RequestBodyParser;
-use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -24,12 +23,11 @@ final class ClientRegistrationEndpoint implements MiddlewareInterface
 {
     public function __construct(
         private ClientRepository $clientRepository,
-        private ResponseFactoryInterface $responseFactory,
         private RuleManager $ruleManager
     ) {
     }
 
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler = null): ResponseInterface
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $this->checkRequest($request);
         $initialAccessToken = $request->getAttribute('initial_access_token');
@@ -40,10 +38,13 @@ final class ClientRegistrationEndpoint implements MiddlewareInterface
             $commandParameters = new DataBag($parameters);
             $clientId = $this->clientRepository->createClientId();
             $validatedParameters = $this->ruleManager->handle($clientId, $commandParameters);
+
+            $response = $handler->handle($request);
+
             $client = $this->clientRepository->create($clientId, $validatedParameters, $userAccountId);
             $this->clientRepository->save($client);
 
-            return $this->createResponse($client);
+            return $this->createResponse($response, $client);
         } catch (Throwable $e) {
             throw OAuth2Error::invalidRequest($e->getMessage(), [], $e);
         }
@@ -56,9 +57,9 @@ final class ClientRegistrationEndpoint implements MiddlewareInterface
         }
     }
 
-    private function createResponse(Client $client): ResponseInterface
+    private function createResponse(ResponseInterface $response, Client $client): ResponseInterface
     {
-        $response = $this->responseFactory->createResponse(201);
+        $response = $response->withStatus(201);
         foreach ([
             'Content-Type' => 'application/json; charset=UTF-8',
             'Cache-Control' => 'no-store',

@@ -70,7 +70,11 @@ class OAuth2Error extends Exception
         parent::__construct($error, $code, $previous);
     }
 
-    public static function accessDenied(?string $errorDescription, array $data = [], ?Throwable $previous = null): self
+    public static function accessDenied(
+        ?string $errorDescription,
+        array $data = [],
+        ?Throwable $previous = null
+    ): static
     {
         return new self(401, self::ERROR_ACCESS_DENIED, $errorDescription, $data, $previous);
     }
@@ -79,7 +83,7 @@ class OAuth2Error extends Exception
         ?string $errorDescription,
         array $data = [],
         ?Throwable $previous = null
-    ): self {
+    ): static {
         return new self(400, self::ERROR_INVALID_REQUEST_OBJECT, $errorDescription, $data, $previous);
     }
 
@@ -87,7 +91,7 @@ class OAuth2Error extends Exception
         ?string $errorDescription,
         array $data = [],
         ?Throwable $previous = null
-    ): self {
+    ): static {
         return new self(400, self::ERROR_REQUEST_URI_NOT_SUPPORTED, $errorDescription, $data, $previous);
     }
 
@@ -95,7 +99,7 @@ class OAuth2Error extends Exception
         ?string $errorDescription,
         array $data = [],
         ?Throwable $previous = null
-    ): self {
+    ): static {
         return new self(400, self::ERROR_INVALID_REQUEST_URI, $errorDescription, $data, $previous);
     }
 
@@ -103,11 +107,15 @@ class OAuth2Error extends Exception
         ?string $errorDescription,
         array $data = [],
         ?Throwable $previous = null
-    ): self {
+    ): static {
         return new self(400, self::ERROR_REQUEST_NOT_SUPPORTED, $errorDescription, $data, $previous);
     }
 
-    public static function invalidGrant(?string $errorDescription, array $data = [], ?Throwable $previous = null): self
+    public static function invalidGrant(
+        ?string $errorDescription,
+        array $data = [],
+        ?Throwable $previous = null
+    ): static
     {
         return new self(400, self::ERROR_INVALID_GRANT, $errorDescription, $data, $previous);
     }
@@ -116,7 +124,7 @@ class OAuth2Error extends Exception
         ?string $errorDescription,
         array $data = [],
         ?Throwable $previous = null
-    ): self {
+    ): static {
         return new self(400, self::ERROR_INVALID_REQUEST, $errorDescription, $data, $previous);
     }
 

@@ -11,7 +11,6 @@ use Jose\Component\Core\Util\JsonConverter;
 use Jose\Component\Signature\Algorithm\HS256;
 use Jose\Component\Signature\JWSBuilder;
 use Jose\Component\Signature\Serializer\CompactSerializer;
-use OAuth2Framework\Component\JwtBearerGrant\JwtBearerGrantType;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
@@ -19,14 +18,6 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
  */
 final class JwtBearerGrantTest extends WebTestCase
 {
-    protected function setUp(): void
-    {
-        if (! class_exists(JwtBearerGrantType::class)) {
-            static::markTestSkipped('The component "oauth2-framework/jwt-bearer-grant" is not installed.');
-        }
-        parent::setUp();
-    }
-
     /**
      * @test
      */

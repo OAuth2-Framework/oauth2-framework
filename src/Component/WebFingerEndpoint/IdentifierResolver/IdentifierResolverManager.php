@@ -13,12 +13,12 @@ final class IdentifierResolverManager
      */
     private array $resolvers = [];
 
-    public static function create(): self
+    public static function create(): static
     {
         return new self();
     }
 
-    public function add(IdentifierResolver $resolver): self
+    public function add(IdentifierResolver $resolver): static
     {
         $this->resolvers[] = $resolver;
 

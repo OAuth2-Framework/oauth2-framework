@@ -10,7 +10,7 @@ use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 class OAuth2Token extends AbstractToken
 {
     public function __construct(
-        private AccessToken $accessToken
+        private readonly AccessToken $accessToken
     ) {
         parent::__construct();
     }

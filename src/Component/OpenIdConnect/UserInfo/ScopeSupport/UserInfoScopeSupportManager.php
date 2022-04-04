@@ -21,7 +21,7 @@ class UserInfoScopeSupportManager
         ];
     }
 
-    public function add(UserInfoScopeSupport $userinfoScopeSupport): self
+    public function add(UserInfoScopeSupport $userinfoScopeSupport): static
     {
         $this->userinfoScopeSupports[$userinfoScopeSupport->getName()] = $userinfoScopeSupport;
 

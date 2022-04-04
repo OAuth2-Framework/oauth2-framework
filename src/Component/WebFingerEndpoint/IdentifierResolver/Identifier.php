@@ -13,7 +13,7 @@ final class Identifier
     ) {
     }
 
-    public static function create(string $id, string $domain, ?int $port): self
+    public static function create(string $id, string $domain, ?int $port): static
     {
         return new self($id, $domain, $port);
     }

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Service;
 
-use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -14,19 +13,18 @@ use Twig\Environment;
 final class IFrameEndpoint implements MiddlewareInterface
 {
     public function __construct(
-        private Environment $templateEngine,
-        private ResponseFactoryInterface $responseFactory,
-        private string $template,
-        private string $storageName
+        private readonly Environment $templateEngine,
+        private readonly string $template,
+        private readonly string $storageName
     ) {
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
+        $response = $handler->handle($request);
         $content = $this->templateEngine->render($this->template, [
             'storage_name' => $this->storageName,
         ]);
-        $response = $this->responseFactory->createResponse();
         $headers = [
             'Content-Type' => 'text/html; charset=UTF-8',
             'Cache-Control' => 'no-cache, no-store, max-age=0, must-revalidate, private',

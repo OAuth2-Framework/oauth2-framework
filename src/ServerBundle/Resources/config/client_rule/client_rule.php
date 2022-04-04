@@ -9,15 +9,6 @@ use OAuth2Framework\Component\ClientRule\CommonParametersRule;
 use OAuth2Framework\Component\ClientRule\ContactsParametersRule;
 use OAuth2Framework\Component\ClientRule\JwksRule;
 use OAuth2Framework\Component\ClientRule\RedirectionUriRule;
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 use OAuth2Framework\Component\ClientRule\RuleManager;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;

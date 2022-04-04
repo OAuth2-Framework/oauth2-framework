@@ -24,7 +24,7 @@ final class NoneResponseType implements ResponseType
     ) {
     }
 
-    public static function create(AuthorizationStorage $authorizationStorage): self
+    public static function create(AuthorizationStorage $authorizationStorage): static
     {
         return new self($authorizationStorage);
     }

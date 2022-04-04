@@ -26,7 +26,7 @@ final class ClientSecretPost implements AuthenticationMethod
         $this->secretLifetime = $secretLifetime;
     }
 
-    public static function create(int $secretLifetime = 0,): self
+    public static function create(int $secretLifetime = 0): static
     {
         return new self($secretLifetime);
     }

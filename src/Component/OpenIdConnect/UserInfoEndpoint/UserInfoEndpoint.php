@@ -17,7 +17,6 @@ use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountRepository;
 use OAuth2Framework\Component\OpenIdConnect\IdTokenBuilderFactory;
-use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -34,12 +33,11 @@ class UserInfoEndpoint implements MiddlewareInterface
     public function __construct(
         private IdTokenBuilderFactory $idTokenBuilderFactory,
         private ClientRepository $clientRepository,
-        private UserAccountRepository $userAccountRepository,
-        private ResponseFactoryInterface $responseFactory
+        private UserAccountRepository $userAccountRepository
     ) {
     }
 
-    public function enableSignature(JWSBuilder $jwsBuilder, JWKSet $signatureKeys): self
+    public function enableSignature(JWSBuilder $jwsBuilder, JWKSet $signatureKeys): static
     {
         $this->jwsBuilder = $jwsBuilder;
         $this->signatureKeys = $signatureKeys;
@@ -47,7 +45,7 @@ class UserInfoEndpoint implements MiddlewareInterface
         return $this;
     }
 
-    public function enableEncryption(JWEBuilder $jweBuilder): self
+    public function enableEncryption(JWEBuilder $jweBuilder): static
     {
         $this->jweBuilder = $jweBuilder;
 
@@ -68,7 +66,7 @@ class UserInfoEndpoint implements MiddlewareInterface
         $userAccount = $this->getUserAccount($accessToken);
         $idToken = $this->buildUserinfoContent($client, $userAccount, $accessToken, $isJwt);
 
-        $response = $this->responseFactory->createResponse();
+        $response = $handler->handle($request);
         $response->getBody()
             ->write($idToken)
         ;

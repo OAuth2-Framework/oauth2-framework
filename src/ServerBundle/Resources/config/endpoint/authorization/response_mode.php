@@ -6,7 +6,6 @@ use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\FragmentRespons
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\QueryResponseMode;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\ResponseModeManager;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseModeGuesser;
-use Psr\Http\Message\ResponseFactoryInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 
@@ -19,13 +18,8 @@ return static function (ContainerConfigurator $container): void {
 
     // Response Mode
     $container->set(ResponseModeManager::class);
-
-    $container->set(QueryResponseMode::class)
-        ->args([service(ResponseFactoryInterface::class)])
-    ;
-    $container->set(FragmentResponseMode::class)
-        ->args([service(ResponseFactoryInterface::class)])
-    ;
+    $container->set(QueryResponseMode::class);
+    $container->set(FragmentResponseMode::class);
 
     $container->set(ResponseModeGuesser::class)
         ->args([

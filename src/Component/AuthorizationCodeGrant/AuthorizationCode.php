@@ -14,11 +14,11 @@ interface AuthorizationCode
 {
     public function isUsed(): bool;
 
-    public function markAsUsed(): self;
+    public function markAsUsed(): static;
 
     public function isRevoked(): bool;
 
-    public function markAsRevoked(): self;
+    public function markAsRevoked(): static;
 
     public function getQueryParameters(): array;
 

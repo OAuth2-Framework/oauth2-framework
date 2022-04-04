@@ -60,7 +60,7 @@ abstract class AbstractAccessToken implements AccessToken
         return $this->revoked;
     }
 
-    public function markAsRevoked(): self
+    public function markAsRevoked(): static
     {
         $this->revoked = true;
 

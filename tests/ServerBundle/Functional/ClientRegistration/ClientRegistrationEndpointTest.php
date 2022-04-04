@@ -6,7 +6,6 @@ namespace OAuth2Framework\Tests\ServerBundle\Functional\ClientRegistration;
 
 use DateTimeImmutable;
 use const JSON_THROW_ON_ERROR;
-use OAuth2Framework\Component\ClientRegistrationEndpoint\ClientRegistrationEndpoint;
 use OAuth2Framework\Component\ClientRegistrationEndpoint\InitialAccessTokenId;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
@@ -22,14 +21,6 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
  */
 final class ClientRegistrationEndpointTest extends WebTestCase
 {
-    protected function setUp(): void
-    {
-        if (! class_exists(ClientRegistrationEndpoint::class)) {
-            static::markTestSkipped('The component "oauth2-framework/client-registration-endpoint" is not installed.');
-        }
-        parent::setUp();
-    }
-
     /**
      * @test
      */

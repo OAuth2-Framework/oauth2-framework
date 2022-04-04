@@ -15,8 +15,8 @@ use Psr\Http\Server\RequestHandlerInterface;
 final class Consumer implements RequestHandlerInterface
 {
     public function __construct(
-        private Generator $generator,
-        private RequestHandlerInterface $delegate
+        private readonly Generator $generator,
+        private readonly RequestHandlerInterface $delegate
     ) {
     }
 

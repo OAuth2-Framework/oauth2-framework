@@ -15,7 +15,7 @@ use OAuth2Framework\Component\RefreshTokenGrant\RefreshTokenId;
 class RefreshToken extends AbstractRefreshToken
 {
     public function __construct(
-        private RefreshTokenId $refreshTokenId,
+        private readonly RefreshTokenId $refreshTokenId,
         ClientId $clientId,
         ResourceOwnerId $resourceOwnerId,
         DateTimeImmutable $expiresAt,

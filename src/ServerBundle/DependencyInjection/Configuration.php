@@ -14,8 +14,8 @@ final class Configuration implements ConfigurationInterface
      * @param Component[] $components
      */
     public function __construct(
-        private string $alias,
-        private array $components
+        private readonly string $alias,
+        private readonly array $components
     ) {
     }
 

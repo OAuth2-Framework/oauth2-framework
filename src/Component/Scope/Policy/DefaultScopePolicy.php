@@ -13,7 +13,7 @@ final class DefaultScopePolicy implements ScopePolicy
     ) {
     }
 
-    public static function create(string $defaultScopes): self
+    public static function create(string $defaultScopes): static
     {
         return new self($defaultScopes);
     }

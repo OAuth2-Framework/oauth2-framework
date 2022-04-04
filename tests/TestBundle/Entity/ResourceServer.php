@@ -10,7 +10,7 @@ use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
 final class ResourceServer implements ResourceServerInterface
 {
     public function __construct(
-        private ResourceServerId $resourceServerId
+        private readonly ResourceServerId $resourceServerId
     ) {
     }
 

@@ -6,18 +6,19 @@ namespace OAuth2Framework\Component\RefreshTokenGrant;
 
 use function count;
 use function is_array;
+use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
 use OAuth2Framework\Component\TokenIntrospectionEndpoint\TokenTypeHint;
 
 final class RefreshTokenIntrospectionTypeHint implements TokenTypeHint
 {
     public function __construct(
-        private RefreshTokenRepository $accessTokenRepository
+        private RefreshTokenRepository $refreshTokenRepository
     ) {
     }
 
-    public static function create(RefreshTokenRepository $accessTokenRepository): self
+    public static function create(RefreshTokenRepository $refreshTokenRepository): static
     {
-        return new self($accessTokenRepository);
+        return new self($refreshTokenRepository);
     }
 
     public function hint(): string
@@ -25,11 +26,24 @@ final class RefreshTokenIntrospectionTypeHint implements TokenTypeHint
         return 'refresh_token';
     }
 
-    public function find(string $token): ?RefreshToken
+    public function find(string $token, ?ResourceServerId $resourceServerId): ?RefreshToken
     {
         $id = RefreshTokenId::create($token);
+        $refreshToken = $this->refreshTokenRepository->find($id);
 
-        return $this->accessTokenRepository->find($id);
+        if ($refreshToken === null || $refreshToken->getResourceServerId() === null) {
+            return $refreshToken;
+        }
+
+        if ($resourceServerId === null) {
+            return null;
+        }
+
+        if ($refreshToken->getResourceServerId()->getValue() === $resourceServerId->getValue()) {
+            return $refreshToken;
+        }
+
+        return null;
     }
 
     public function introspect(mixed $token): array

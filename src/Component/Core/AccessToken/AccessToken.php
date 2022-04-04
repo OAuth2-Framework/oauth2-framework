@@ -30,7 +30,7 @@ interface AccessToken
 
     public function isRevoked(): bool;
 
-    public function markAsRevoked(): self;
+    public function markAsRevoked(): static;
 
     public function getResourceServerId(): ?ResourceServerId;
 

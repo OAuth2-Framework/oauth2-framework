@@ -6,7 +6,6 @@ use OAuth2Framework\Component\Core\Middleware\Pipe;
 use OAuth2Framework\ServerBundle\Controller\PipeController;
 use OAuth2Framework\ServerBundle\Service\IFrameEndpoint;
 use OAuth2Framework\ServerBundle\Service\SessionStateParameterExtension;
-use Psr\Http\Message\ResponseFactoryInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -32,7 +31,6 @@ return static function (ContainerConfigurator $container): void {
     $container->set(IFrameEndpoint::class)
         ->args([
             service('twig'),
-            service(ResponseFactoryInterface::class),
             '%oauth2_server.endpoint.session_management.template%',
             '%oauth2_server.endpoint.session_management.storage_name%',
         ])

@@ -15,7 +15,7 @@ use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 class AuthorizationCode extends AbstractAuthorizationCode
 {
     public function __construct(
-        private AuthorizationCodeId $authorizationCodeId,
+        private readonly AuthorizationCodeId $authorizationCodeId,
         ClientId $clientId,
         UserAccountId $userAccountId,
         array $queryParameters,

@@ -37,14 +37,14 @@ class IdTokenBuilderFactory
         );
     }
 
-    public function enableJkuSupport(JKUFactory $jkuFactory): self
+    public function enableJkuSupport(JKUFactory $jkuFactory): static
     {
         $this->jkuFactory = $jkuFactory;
 
         return $this;
     }
 
-    public function enableAuthorizationCodeSupport(AuthorizationCodeRepository $authorizationCodeRepository): self
+    public function enableAuthorizationCodeSupport(AuthorizationCodeRepository $authorizationCodeRepository): static
     {
         $this->authorizationCodeRepository = $authorizationCodeRepository;
 

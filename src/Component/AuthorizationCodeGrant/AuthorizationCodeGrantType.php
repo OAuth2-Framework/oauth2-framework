@@ -26,7 +26,7 @@ final class AuthorizationCodeGrantType implements GrantType
     public static function create(
         AuthorizationCodeRepository $authorizationCodeRepository,
         PKCEMethodManager $pkceMethodManager
-    ): self {
+    ): static {
         return new self($authorizationCodeRepository, $pkceMethodManager);
     }
 

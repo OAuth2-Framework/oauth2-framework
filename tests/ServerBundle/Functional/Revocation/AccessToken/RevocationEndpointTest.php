@@ -9,7 +9,6 @@ use OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
-use OAuth2Framework\Component\TokenRevocationEndpoint\TokenRevocationEndpoint;
 use OAuth2Framework\Tests\TestBundle\Entity\AccessToken;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
@@ -18,14 +17,6 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
  */
 final class RevocationEndpointTest extends WebTestCase
 {
-    protected function setUp(): void
-    {
-        if (! class_exists(TokenRevocationEndpoint::class)) {
-            static::markTestSkipped('The component "oauth2-framework/token-revocation-endpoint" is not installed.');
-        }
-        parent::setUp();
-    }
-
     /**
      * @test
      */

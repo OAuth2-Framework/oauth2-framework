@@ -18,12 +18,12 @@ class ScopePolicyManager
 
     private ?string $defaultScopePolicy = null;
 
-    public static function create(): self
+    public static function create(): static
     {
         return new self();
     }
 
-    public function add(ScopePolicy $scopePolicy, bool $isDefault = false): self
+    public function add(ScopePolicy $scopePolicy, bool $isDefault = false): static
     {
         $name = $scopePolicy->name();
         $this->scopePolicies[$name] = $scopePolicy;

@@ -19,21 +19,21 @@ final class Pipe implements MiddlewareInterface
     ) {
     }
 
-    public function push(MiddlewareInterface $middleware): self
+    public function push(MiddlewareInterface $middleware): static
     {
         $this->middlewares[] = $middleware;
 
         return $this;
     }
 
-    public function prepend(MiddlewareInterface $middleware): self
+    public function prepend(MiddlewareInterface $middleware): static
     {
         array_unshift($this->middlewares, $middleware);
 
         return $this;
     }
 
-    public function addAfterFirstOne(MiddlewareInterface $middleware): self
+    public function addAfterFirstOne(MiddlewareInterface $middleware): static
     {
         $count = count($this->middlewares);
         if ($count === 0) {
@@ -49,7 +49,7 @@ final class Pipe implements MiddlewareInterface
         return $this;
     }
 
-    public function addBeforeLastOne(MiddlewareInterface $middleware): self
+    public function addBeforeLastOne(MiddlewareInterface $middleware): static
     {
         $count = count($this->middlewares);
         if ($count === 0) {

@@ -61,7 +61,7 @@ class JwtBearerGrantType implements GrantType
         ClaimCheckerManager $claimCheckerManager,
         ClientRepository $clientRepository,
         ?UserAccountRepository $userAccountRepository
-    ): self {
+    ): static {
         return new self(
             $jwsVerifier,
             $headerCheckerManager,
@@ -86,14 +86,14 @@ class JwtBearerGrantType implements GrantType
         $this->keyEncryptionKeySet = $keyEncryptionKeySet;
     }
 
-    public function enableTrustedIssuerSupport(TrustedIssuerRepository $trustedIssuerRepository): self
+    public function enableTrustedIssuerSupport(TrustedIssuerRepository $trustedIssuerRepository): static
     {
         $this->trustedIssuerRepository = $trustedIssuerRepository;
 
         return $this;
     }
 
-    public function enableJkuSupport(JKUFactory $jkuFactory): self
+    public function enableJkuSupport(JKUFactory $jkuFactory): static
     {
         $this->jkuFactory = $jkuFactory;
 

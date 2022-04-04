@@ -21,7 +21,7 @@ final class CodeTokenResponseType implements ResponseType
     public static function create(
         AuthorizationCodeResponseType $codeResponseType,
         TokenResponseType $tokenResponseType
-    ): self {
+    ): static {
         return new self($codeResponseType, $tokenResponseType);
     }
 

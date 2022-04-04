@@ -11,7 +11,7 @@ use Symfony\Component\Routing\RouteCollection;
 
 class RouteLoader implements LoaderInterface
 {
-    private RouteCollection $routes;
+    private readonly RouteCollection $routes;
 
     private LoaderResolverInterface $resolver;
 

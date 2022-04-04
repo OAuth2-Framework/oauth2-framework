@@ -18,16 +18,6 @@ use OAuth2Framework\Tests\TestBundle\Entity\Client;
 final class ScopeParameterCheckerTest extends OAuth2TestCase
 {
     /**
-     * @inheritdoc}
-     */
-    protected function setUp(): void
-    {
-        if (! class_exists(AuthorizationRequest::class)) {
-            static::markTestSkipped('The component "oauth2-framework/authorization-endpoint" is not installed.');
-        }
-    }
-
-    /**
      * @test
      */
     public function anAuthorizationRequestWithScopeParameterIsChecked(): void

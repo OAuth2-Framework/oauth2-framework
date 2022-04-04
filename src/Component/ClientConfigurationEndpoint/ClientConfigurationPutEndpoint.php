@@ -14,7 +14,6 @@ use OAuth2Framework\Component\Core\Client\ClientRepository;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use OAuth2Framework\Component\Core\Util\RequestBodyParser;
-use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -24,7 +23,6 @@ final class ClientConfigurationPutEndpoint implements MiddlewareInterface
 {
     public function __construct(
         private ClientRepository $clientRepository,
-        private ResponseFactoryInterface $responseFactory,
         private RuleManager $ruleManager
     ) {
     }
@@ -45,7 +43,7 @@ final class ClientConfigurationPutEndpoint implements MiddlewareInterface
             throw OAuth2Error::invalidRequest($e->getMessage(), [], $e);
         }
 
-        $response = $this->responseFactory->createResponse();
+        $response = $next->handle($request);
         $response->getBody()
             ->write(json_encode($client->all(), JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES))
         ;

@@ -15,14 +15,14 @@ use Symfony\Component\HttpFoundation\RequestStack;
 class SessionStateParameterExtension extends BaseSessionStateParameterExtension
 {
     public function __construct(
-        private RequestStack $requestStack,
-        private string $storageName,
-        private ?string $path = '/',
-        private ?string $domain = null,
-        private bool $secure = false,
-        private bool $httpOnly = true,
-        private bool $raw = false,
-        private ?string $sameSite = null
+        private readonly RequestStack $requestStack,
+        private readonly string $storageName,
+        private readonly ?string $path = '/',
+        private readonly ?string $domain = null,
+        private readonly bool $secure = false,
+        private readonly bool $httpOnly = true,
+        private readonly bool $raw = false,
+        private readonly ?string $sameSite = null
     ) {
     }
 

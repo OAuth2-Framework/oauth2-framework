@@ -10,8 +10,8 @@ use Twig\Environment;
 final class TwigFormPostResponseRenderer implements FormPostResponseRenderer
 {
     public function __construct(
-        private Environment $templateEngine,
-        private string $template
+        private readonly Environment $templateEngine,
+        private readonly string $template
     ) {
     }
 

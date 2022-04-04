@@ -15,7 +15,7 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationFailureHandlerI
 final class DefaultFailureHandler implements AuthenticationFailureHandlerInterface
 {
     public function __construct(
-        private OAuth2MessageFactoryManager $oauth2ResponseFactoryManager
+        private readonly OAuth2MessageFactoryManager $oauth2ResponseFactoryManager
     ) {
     }
 

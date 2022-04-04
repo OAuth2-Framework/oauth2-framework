@@ -18,7 +18,7 @@ final class PromptParameterChecker implements ParameterChecker
 
     public const PROMPT_SELECT_ACCOUNT = 'select_account';
 
-    public static function create(): self
+    public static function create(): static
     {
         return new self();
     }

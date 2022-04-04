@@ -10,11 +10,11 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\Credentia
 final class AccessTokenBadge implements CredentialsInterface
 {
     public function __construct(
-        private AccessToken $accessToken
+        private readonly AccessToken $accessToken
     ) {
     }
 
-    public static function create(AccessToken $accessToken): self
+    public static function create(AccessToken $accessToken): static
     {
         return new self($accessToken);
     }

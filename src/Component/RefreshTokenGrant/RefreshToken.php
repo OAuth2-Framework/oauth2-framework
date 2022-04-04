@@ -13,7 +13,7 @@ use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
 
 interface RefreshToken
 {
-    public function addAccessToken(AccessTokenId $accessTokenId): self;
+    public function addAccessToken(AccessTokenId $accessTokenId): static;
 
     /**
      * @return AccessTokenId[]
@@ -40,7 +40,7 @@ interface RefreshToken
 
     public function isRevoked(): bool;
 
-    public function markAsRevoked(): self;
+    public function markAsRevoked(): static;
 
     public function getResourceServerId(): ?ResourceServerId;
 }

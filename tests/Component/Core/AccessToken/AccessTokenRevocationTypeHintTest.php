@@ -8,7 +8,6 @@ use DateTimeImmutable;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
-use OAuth2Framework\Component\TokenRevocationEndpoint\TokenTypeHint;
 use OAuth2Framework\Tests\Component\OAuth2TestCase;
 use OAuth2Framework\Tests\TestBundle\Entity\AccessToken;
 
@@ -17,13 +16,6 @@ use OAuth2Framework\Tests\TestBundle\Entity\AccessToken;
  */
 final class AccessTokenRevocationTypeHintTest extends OAuth2TestCase
 {
-    protected function setUp(): void
-    {
-        if (! interface_exists(TokenTypeHint::class)) {
-            static::markTestSkipped('The component "oauth2-framework/token-type" is not installed.');
-        }
-    }
-
     /**
      * @test
      */

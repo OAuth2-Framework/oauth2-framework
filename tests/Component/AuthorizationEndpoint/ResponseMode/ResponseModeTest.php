@@ -37,7 +37,7 @@ final class ResponseModeTest extends OAuth2TestCase
             ->get('query')
         ;
         $response = new Response();
-        $response = $mode->buildResponse($response, 'https://localhost/foo?bar=bar#foo=foo', [
+        $response = $mode->buildResponse('https://localhost/foo?bar=bar#foo=foo', [
             'access_token' => 'ACCESS_TOKEN',
         ]);
 
@@ -57,7 +57,7 @@ final class ResponseModeTest extends OAuth2TestCase
             ->get('query')
         ;
         $response = new Response();
-        $response = $mode->buildResponse($response, 'com.example.app:/oauth2redirect/example-provider', [
+        $response = $mode->buildResponse('com.example.app:/oauth2redirect/example-provider', [
             'access_token' => 'ACCESS_TOKEN',
         ]);
 
@@ -77,7 +77,7 @@ final class ResponseModeTest extends OAuth2TestCase
             ->get('query')
         ;
         $response = new Response();
-        $response = $mode->buildResponse($response, 'urn:ietf:wg:oauth:2.0:oob', [
+        $response = $mode->buildResponse('urn:ietf:wg:oauth:2.0:oob', [
             'access_token' => 'ACCESS_TOKEN',
         ]);
 
@@ -97,7 +97,7 @@ final class ResponseModeTest extends OAuth2TestCase
             ->get('fragment')
         ;
         $response = new Response();
-        $response = $mode->buildResponse($response, 'https://localhost/foo?bar=bar#foo=foo', [
+        $response = $mode->buildResponse('https://localhost/foo?bar=bar#foo=foo', [
             'access_token' => 'ACCESS_TOKEN',
         ]);
 
@@ -117,7 +117,7 @@ final class ResponseModeTest extends OAuth2TestCase
             ->get('fragment')
         ;
         $response = new Response();
-        $response = $mode->buildResponse($response, 'com.example.app:/oauth2redirect/example-provider', [
+        $response = $mode->buildResponse('com.example.app:/oauth2redirect/example-provider', [
             'access_token' => 'ACCESS_TOKEN',
         ]);
 
@@ -137,7 +137,7 @@ final class ResponseModeTest extends OAuth2TestCase
             ->get('fragment')
         ;
         $response = new Response();
-        $response = $mode->buildResponse($response, 'urn:ietf:wg:oauth:2.0:oob', [
+        $response = $mode->buildResponse('urn:ietf:wg:oauth:2.0:oob', [
             'access_token' => 'ACCESS_TOKEN',
         ]);
 
@@ -157,7 +157,7 @@ final class ResponseModeTest extends OAuth2TestCase
             ->get('form_post')
         ;
         $response = new Response();
-        $response = $mode->buildResponse($response, 'https://localhost/foo?bar=bar#foo=foo', [
+        $response = $mode->buildResponse('https://localhost/foo?bar=bar#foo=foo', [
             'access_token' => 'ACCESS_TOKEN',
         ]);
 
@@ -179,7 +179,7 @@ final class ResponseModeTest extends OAuth2TestCase
             ->get('form_post')
         ;
         $response = new Response();
-        $response = $mode->buildResponse($response, 'com.example.app:/oauth2redirect/example-provider', [
+        $response = $mode->buildResponse('com.example.app:/oauth2redirect/example-provider', [
             'access_token' => 'ACCESS_TOKEN',
         ]);
 
@@ -204,7 +204,7 @@ final class ResponseModeTest extends OAuth2TestCase
             ->get('form_post')
         ;
         $response = new Response();
-        $response = $mode->buildResponse($response, 'urn:ietf:wg:oauth:2.0:oob', [
+        $response = $mode->buildResponse('urn:ietf:wg:oauth:2.0:oob', [
             'access_token' => 'ACCESS_TOKEN',
         ]);
 

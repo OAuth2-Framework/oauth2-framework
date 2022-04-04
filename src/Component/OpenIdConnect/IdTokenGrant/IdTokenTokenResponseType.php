@@ -28,7 +28,7 @@ final class IdTokenTokenResponseType implements ResponseType
     public static function create(
         IdTokenResponseType $idTokenResponseType,
         TokenResponseType $tokenResponseType
-    ): self {
+    ): static {
         return new self($idTokenResponseType, $tokenResponseType);
     }
 

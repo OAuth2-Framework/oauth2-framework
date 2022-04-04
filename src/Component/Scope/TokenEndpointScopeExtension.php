@@ -26,7 +26,7 @@ final class TokenEndpointScopeExtension implements TokenEndpointExtension
     ) {
     }
 
-    public static function create(ScopeRepository $scopeRepository, ScopePolicyManager $scopePolicyManager): self
+    public static function create(ScopeRepository $scopeRepository, ScopePolicyManager $scopePolicyManager): static
     {
         return new self($scopeRepository, $scopePolicyManager);
     }

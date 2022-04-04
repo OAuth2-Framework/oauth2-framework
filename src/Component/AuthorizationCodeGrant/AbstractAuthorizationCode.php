@@ -40,7 +40,7 @@ abstract class AbstractAuthorizationCode implements AuthorizationCode
         return $this->used;
     }
 
-    public function markAsUsed(): self
+    public function markAsUsed(): static
     {
         $this->used = true;
 
@@ -122,7 +122,7 @@ abstract class AbstractAuthorizationCode implements AuthorizationCode
         return $this->revoked;
     }
 
-    public function markAsRevoked(): self
+    public function markAsRevoked(): static
     {
         $this->revoked = true;
 

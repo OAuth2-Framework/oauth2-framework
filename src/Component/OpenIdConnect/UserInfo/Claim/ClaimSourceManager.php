@@ -14,7 +14,7 @@ class ClaimSourceManager
      */
     private array $claimSources = [];
 
-    public function add(ClaimSource $claimSource): self
+    public function add(ClaimSource $claimSource): static
     {
         $this->claimSources[] = $claimSource;
 

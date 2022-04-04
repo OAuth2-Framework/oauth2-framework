@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Tests\ServerBundle\Functional\Grant\Implicit;
 
-use OAuth2Framework\Component\ImplicitGrant\ImplicitGrantType;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
@@ -12,14 +11,6 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
  */
 final class ImplicitGrantTest extends WebTestCase
 {
-    protected function setUp(): void
-    {
-        if (! class_exists(ImplicitGrantType::class)) {
-            static::markTestSkipped('The component "oauth2-framework/implicit-grant" is not installed.');
-        }
-        parent::setUp();
-    }
-
     /**
      * @test
      */

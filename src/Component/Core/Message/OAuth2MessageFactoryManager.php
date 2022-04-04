@@ -6,6 +6,7 @@ namespace OAuth2Framework\Component\Core\Message;
 
 use function array_key_exists;
 use InvalidArgumentException;
+use Nyholm\Psr7\Factory\Psr17Factory;
 use OAuth2Framework\Component\Core\Message\Factory\ResponseFactory;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -22,19 +23,21 @@ final class OAuth2MessageFactoryManager
      */
     private array $responseFactories = [];
 
-    public function __construct(
-        private ResponseFactoryInterface $responseFactory
-    ) {
+    private ResponseFactoryInterface $responseFactory;
+
+    public function __construct()
+    {
+        $this->responseFactory = new Psr17Factory();
     }
 
-    public function addFactory(ResponseFactory $responseFactory): self
+    public function addFactory(ResponseFactory $responseFactory): static
     {
         $this->responseFactories[$responseFactory->getSupportedCode()] = $responseFactory;
 
         return $this;
     }
 
-    public function addExtension(MessageExtension $extension): self
+    public function addExtension(MessageExtension $extension): static
     {
         $this->extensions[] = $extension;
 

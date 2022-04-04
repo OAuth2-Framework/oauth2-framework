@@ -6,6 +6,7 @@ namespace OAuth2Framework\Component\Core\AccessToken;
 
 use function count;
 use function is_array;
+use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
 use OAuth2Framework\Component\TokenIntrospectionEndpoint\TokenTypeHint;
 
 final class AccessTokenIntrospectionTypeHint implements TokenTypeHint
@@ -15,7 +16,7 @@ final class AccessTokenIntrospectionTypeHint implements TokenTypeHint
     ) {
     }
 
-    public static function create(AccessTokenRepository $accessTokenRepository): self
+    public static function create(AccessTokenRepository $accessTokenRepository): static
     {
         return new self($accessTokenRepository);
     }
@@ -25,11 +26,24 @@ final class AccessTokenIntrospectionTypeHint implements TokenTypeHint
         return 'access_token';
     }
 
-    public function find(string $token): ?AccessToken
+    public function find(string $token, ?ResourceServerId $resourceServerId): ?AccessToken
     {
         $id = AccessTokenId::create($token);
+        $accessToken = $this->accessTokenRepository->find($id);
 
-        return $this->accessTokenRepository->find($id);
+        if ($accessToken === null || $accessToken->getResourceServerId() === null) {
+            return $accessToken;
+        }
+
+        if ($resourceServerId === null) {
+            return null;
+        }
+
+        if ($accessToken->getResourceServerId()->getValue() === $resourceServerId->getValue()) {
+            return $accessToken;
+        }
+
+        return null;
     }
 
     public function introspect(mixed $token): array

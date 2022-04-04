@@ -9,7 +9,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 final class ResourceOwner implements UserInterface
 {
     public function __construct(
-        private string $id
+        private readonly string $id
     ) {
     }
 

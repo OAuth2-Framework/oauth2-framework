@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace OAuth2Framework\Tests\ServerBundle\Functional\Grant\AuthorizationCode;
 
 use DateTimeImmutable;
-use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeGrantType;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use OAuth2Framework\Tests\TestBundle\Entity\UserAccount;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -15,14 +14,6 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
  */
 final class AuthorizationEndpointTest extends WebTestCase
 {
-    protected function setUp(): void
-    {
-        if (! class_exists(AuthorizationCodeGrantType::class)) {
-            static::markTestSkipped('The component "oauth2-framework/authorization-code-grant" is not installed.');
-        }
-        parent::setUp();
-    }
-
     /**
      * @test
      */

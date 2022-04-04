@@ -20,7 +20,7 @@ final class RefreshTokenGrantType implements GrantType
     ) {
     }
 
-    public static function create(RefreshTokenRepository $refreshTokenRepository): self
+    public static function create(RefreshTokenRepository $refreshTokenRepository): static
     {
         return new self($refreshTokenRepository);
     }

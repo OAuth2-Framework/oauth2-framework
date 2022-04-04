@@ -20,7 +20,7 @@ class TokenEndpointExtensionManager
      */
     private array $extensions = [];
 
-    public function add(TokenEndpointExtension $tokenEndpointExtension): self
+    public function add(TokenEndpointExtension $tokenEndpointExtension): static
     {
         $this->extensions[] = $tokenEndpointExtension;
 

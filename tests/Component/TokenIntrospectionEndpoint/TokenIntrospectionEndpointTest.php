@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace OAuth2Framework\Tests\Component\TokenIntrospectionEndpoint;
 
 use DateTimeImmutable;
-use Nyholm\Psr7\Factory\Psr17Factory;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenId;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
@@ -17,7 +16,6 @@ use OAuth2Framework\Tests\Component\OAuth2TestCase;
 use OAuth2Framework\Tests\Component\RefreshTokenGrant\RefreshToken;
 use OAuth2Framework\Tests\TestBundle\Entity\AccessToken;
 use OAuth2Framework\Tests\TestBundle\Entity\ResourceServer;
-use Psr\Http\Message\ResponseFactoryInterface;
 
 /**
  * @internal
@@ -25,8 +23,6 @@ use Psr\Http\Message\ResponseFactoryInterface;
 final class TokenIntrospectionEndpointTest extends OAuth2TestCase
 {
     private ?TokenIntrospectionEndpoint $tokenIntrospectionEndpoint = null;
-
-    private ?Psr17Factory $responseFactory = null;
 
     private ?ResourceServer $resourceServer = null;
 
@@ -63,7 +59,7 @@ final class TokenIntrospectionEndpointTest extends OAuth2TestCase
             ->withAttribute('resource_server', $this->getResourceServer())
         ;
 
-        $response = $endpoint->process($request, new TerminalRequestHandler(new Psr17Factory()));
+        $response = $endpoint->process($request, new TerminalRequestHandler());
 
         static::assertSame(200, $response->getStatusCode());
         $response->getBody()
@@ -102,7 +98,7 @@ final class TokenIntrospectionEndpointTest extends OAuth2TestCase
             ->withAttribute('resource_server', $this->getResourceServer())
         ;
 
-        $response = $endpoint->process($request, new TerminalRequestHandler(new Psr17Factory()));
+        $response = $endpoint->process($request, new TerminalRequestHandler());
 
         static::assertSame(200, $response->getStatusCode());
         $response->getBody()
@@ -130,7 +126,7 @@ final class TokenIntrospectionEndpointTest extends OAuth2TestCase
             ->withAttribute('resource_server', $this->getResourceServer())
         ;
 
-        $response = $endpoint->process($request, new TerminalRequestHandler(new Psr17Factory()));
+        $response = $endpoint->process($request, new TerminalRequestHandler());
 
         static::assertSame(400, $response->getStatusCode());
         $response->getBody()
@@ -147,21 +143,11 @@ final class TokenIntrospectionEndpointTest extends OAuth2TestCase
     {
         if ($this->tokenIntrospectionEndpoint === null) {
             $this->tokenIntrospectionEndpoint = TokenIntrospectionEndpoint::create(
-                $this->getTokenIntrospectionTypeHintManager(),
-                $this->getResponseFactory()
+                $this->getTokenIntrospectionTypeHintManager()
             );
         }
 
         return $this->tokenIntrospectionEndpoint;
-    }
-
-    private function getResponseFactory(): ResponseFactoryInterface
-    {
-        if ($this->responseFactory === null) {
-            $this->responseFactory = new Psr17Factory();
-        }
-
-        return $this->responseFactory;
     }
 
     private function getResourceServer(): ResourceServer

@@ -33,8 +33,6 @@ final class DataFixtureTestCase extends WebTestCase
         $this->client = static::createClient();
         $this->container = $this->client->getContainer();
         $this->entityManager = $this->container->get('doctrine.orm.entity_manager');
-
-        parent::setUp();
     }
 
     /**

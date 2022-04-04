@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Tests\Component\TokenEndpoint;
 
-use Nyholm\Psr7\Factory\Psr17Factory;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use OAuth2Framework\Component\Core\Middleware\TerminalRequestHandler;
 use OAuth2Framework\Component\TokenEndpoint\GrantTypeMiddleware;
@@ -42,7 +41,7 @@ final class GrantTypeMiddlewareTest extends OAuth2TestCase
 
         try {
             $this->getGrantTypeMiddleware()
-                ->process($request, new TerminalRequestHandler(new Psr17Factory()))
+                ->process($request, new TerminalRequestHandler())
             ;
             static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2Error $e) {
@@ -65,7 +64,7 @@ final class GrantTypeMiddlewareTest extends OAuth2TestCase
 
         try {
             $this->getGrantTypeMiddleware()
-                ->process($request, new TerminalRequestHandler(new Psr17Factory()))
+                ->process($request, new TerminalRequestHandler())
             ;
             static::fail('An OAuth2 exception should be thrown.');
         } catch (OAuth2Error $e) {

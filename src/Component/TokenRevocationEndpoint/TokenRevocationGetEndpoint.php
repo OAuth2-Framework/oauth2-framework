@@ -4,25 +4,20 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\TokenRevocationEndpoint;
 
-use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 final class TokenRevocationGetEndpoint extends TokenRevocationEndpoint
 {
     public function __construct(
         TokenTypeHintManager $tokenTypeHintManager,
-        ResponseFactoryInterface $responseFactory,
         private bool $allowJson
     ) {
-        parent::__construct($tokenTypeHintManager, $responseFactory);
+        parent::__construct($tokenTypeHintManager);
     }
 
-    public static function create(
-        TokenTypeHintManager $tokenTypeHintManager,
-        ResponseFactoryInterface $responseFactory,
-        bool $allowJson
-    ): self {
-        return new self($tokenTypeHintManager, $responseFactory, $allowJson);
+    public static function create(TokenTypeHintManager $tokenTypeHintManager, bool $allowJson): static
+    {
+        return new self($tokenTypeHintManager, $allowJson);
     }
 
     protected function getRequestParameters(ServerRequestInterface $request): array

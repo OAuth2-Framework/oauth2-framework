@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Tests\Component\RefreshTokenGrant;
 
-use OAuth2Framework\Component\TokenIntrospectionEndpoint\TokenTypeHint;
 use OAuth2Framework\Tests\Component\OAuth2TestCase;
 
 /**
@@ -12,13 +11,6 @@ use OAuth2Framework\Tests\Component\OAuth2TestCase;
  */
 final class RefreshTokenRevocationTypeHintTest extends OAuth2TestCase
 {
-    protected function setUp(): void
-    {
-        if (! interface_exists(TokenTypeHint::class)) {
-            static::markTestSkipped('The component "oauth2-framework/token-revocation-endpoint" is not installed.');
-        }
-    }
-
     /**
      * @test
      */

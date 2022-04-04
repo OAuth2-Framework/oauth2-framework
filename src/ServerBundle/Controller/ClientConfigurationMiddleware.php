@@ -17,7 +17,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 final class ClientConfigurationMiddleware implements MiddlewareInterface
 {
     public function __construct(
-        private ClientRepository $clientRepository
+        private readonly ClientRepository $clientRepository
     ) {
     }
 

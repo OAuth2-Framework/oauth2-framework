@@ -7,6 +7,7 @@ namespace OAuth2Framework\Component\AuthorizationEndpoint\Rule;
 use Assert\Assertion;
 use const JSON_THROW_ON_ERROR;
 use function League\Uri\parse;
+use Nyholm\Psr7\Factory\Psr17Factory;
 use OAuth2Framework\Component\ClientRule\Rule;
 use OAuth2Framework\Component\ClientRule\RuleHandler;
 use OAuth2Framework\Component\Core\Client\ClientId;
@@ -16,10 +17,12 @@ use Psr\Http\Message\RequestFactoryInterface;
 
 final class SectorIdentifierUriRule implements Rule
 {
+    private RequestFactoryInterface $requestFactory;
+
     public function __construct(
-        private RequestFactoryInterface $requestFactory,
         private ClientInterface $client
     ) {
+        $this->requestFactory = new Psr17Factory();
     }
 
     public function handle(

@@ -10,7 +10,7 @@ use function League\Uri\parse;
 
 final class EmailResolver implements IdentifierResolver
 {
-    public static function create(): self
+    public static function create(): static
     {
         return new self();
     }

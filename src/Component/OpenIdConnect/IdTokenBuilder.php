@@ -66,7 +66,7 @@ class IdTokenBuilder
     ) {
     }
 
-    public function setAccessToken(AccessToken $accessToken): self
+    public function setAccessToken(AccessToken $accessToken): static
     {
         $this->accessTokenId = $accessToken->getId();
         $this->expiresAt = $accessToken->getExpiresAt();
@@ -99,68 +99,68 @@ class IdTokenBuilder
         return $this;
     }
 
-    public function withAccessTokenId(AccessTokenId $accessTokenId): self
+    public function withAccessTokenId(AccessTokenId $accessTokenId): static
     {
         $this->accessTokenId = $accessTokenId;
 
         return $this;
     }
 
-    public function withAuthorizationCodeId(AuthorizationCodeId $authorizationCodeId): self
+    public function withAuthorizationCodeId(AuthorizationCodeId $authorizationCodeId): static
     {
         $this->authorizationCodeId = $authorizationCodeId;
 
         return $this;
     }
 
-    public function withClaimsLocales(string $claimsLocales): self
+    public function withClaimsLocales(string $claimsLocales): static
     {
         return $this;
     }
 
-    public function withAuthenticationTime(): self
+    public function withAuthenticationTime(): static
     {
         $this->withAuthenticationTime = true;
 
         return $this;
     }
 
-    public function withScope(string $scope): self
+    public function withScope(string $scope): static
     {
         $this->scope = $scope;
 
         return $this;
     }
 
-    public function withRequestedClaims(array $requestedClaims): self
+    public function withRequestedClaims(array $requestedClaims): static
     {
         $this->requestedClaims = $requestedClaims;
 
         return $this;
     }
 
-    public function withNonce(string $nonce): self
+    public function withNonce(string $nonce): static
     {
         $this->nonce = $nonce;
 
         return $this;
     }
 
-    public function withExpirationAt(DateTimeImmutable $expiresAt): self
+    public function withExpirationAt(DateTimeImmutable $expiresAt): static
     {
         $this->expiresAt = $expiresAt;
 
         return $this;
     }
 
-    public function withoutAuthenticationTime(): self
+    public function withoutAuthenticationTime(): static
     {
         $this->withAuthenticationTime = false;
 
         return $this;
     }
 
-    public function withSignature(JWSBuilder $jwsBuilder, JWKSet $signatureKeys, string $signatureAlgorithm): self
+    public function withSignature(JWSBuilder $jwsBuilder, JWKSet $signatureKeys, string $signatureAlgorithm): static
     {
         if (! in_array($signatureAlgorithm, $jwsBuilder->getSignatureAlgorithmManager()->list(), true)) {
             throw new InvalidArgumentException(sprintf(
@@ -183,7 +183,7 @@ class IdTokenBuilder
         JWEBuilder $jweBuilder,
         string $keyEncryptionAlgorithm,
         string $contentEncryptionAlgorithm
-    ): self {
+    ): static {
         if (! in_array($keyEncryptionAlgorithm, $jweBuilder->getKeyEncryptionAlgorithmManager()->list(), true)) {
             throw new InvalidArgumentException(sprintf(
                 'Unsupported key encryption algorithm "%s". Please use one of the following one: %s',

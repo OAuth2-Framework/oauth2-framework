@@ -15,7 +15,7 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 class OAuth2FrameworkWebFingerExtension extends Extension
 {
     public function __construct(
-        private string $alias
+        private readonly string $alias
     ) {
     }
 

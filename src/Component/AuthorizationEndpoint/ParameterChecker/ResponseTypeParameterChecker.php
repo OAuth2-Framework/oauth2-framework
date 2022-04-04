@@ -15,7 +15,7 @@ final class ResponseTypeParameterChecker implements ParameterChecker
     ) {
     }
 
-    public static function create(ResponseTypeManager $responseTypeManager): self
+    public static function create(ResponseTypeManager $responseTypeManager): static
     {
         return new self($responseTypeManager);
     }

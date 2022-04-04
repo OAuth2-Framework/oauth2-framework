@@ -12,7 +12,6 @@ use OAuth2Framework\Component\AuthorizationEndpoint\Hook\AuthorizationEndpointHo
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\ResponseMode;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use OAuth2Framework\Component\Core\TokenType\TokenTypeGuesser;
-use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -26,7 +25,6 @@ class AuthorizationEndpoint
     private array $hooks = [];
 
     public function __construct(
-        private ResponseFactoryInterface $responseFactory,
         private TokenTypeGuesser $tokenTypeGuesser,
         private ResponseTypeGuesser $responseTypeGuesser,
         private ResponseModeGuesser $responseModeGuesser,
@@ -38,7 +36,7 @@ class AuthorizationEndpoint
     ) {
     }
 
-    public function addHook(AuthorizationEndpointHook $hook): self
+    public function addHook(AuthorizationEndpointHook $hook): static
     {
         $this->hooks[] = $hook;
 
@@ -54,9 +52,9 @@ class AuthorizationEndpoint
         $authorizationRequest = $this->authorizationRequestStorage->get($authorizationRequestId);
 
         try {
+            $this->authorizationRequestStorage->set($authorizationRequestId, $authorizationRequest);
             foreach ($this->hooks as $hook) {
                 $response = $hook->handle($request, $authorizationRequestId, $authorizationRequest);
-                $this->authorizationRequestStorage->set($authorizationRequestId, $authorizationRequest);
                 if ($response !== null) {
                     return $response;
                 }
@@ -91,10 +89,10 @@ class AuthorizationEndpoint
         AuthorizationRequest $authorizationRequest
     ): ResponseInterface {
         if (! $authorizationRequest->hasConsentBeenGiven()) {
-            $isConsentNeeded = $this->consentRepository === null || ! $this->consentRepository->hasConsentBeenGiven(
+            $hasConsentBeenGiven = $this->consentRepository === null || ! $this->consentRepository->hasConsentBeenGiven(
                 $authorizationRequest
             );
-            if ($isConsentNeeded) {
+            if ($hasConsentBeenGiven) {
                 return $this->consentHandler->handle($request, $authorizationRequestId);
             }
             $authorizationRequest->allow();
@@ -129,7 +127,6 @@ class AuthorizationEndpoint
     private function buildResponse(AuthorizationRequest $authorization, ResponseMode $responseMode): ResponseInterface
     {
         $response = $responseMode->buildResponse(
-            $this->responseFactory->createResponse(),
             $authorization->getRedirectUri(),
             $authorization->getResponseParameters()
         );

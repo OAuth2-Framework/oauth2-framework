@@ -10,7 +10,6 @@ use const JSON_UNESCAPED_SLASHES;
 use const JSON_UNESCAPED_UNICODE;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
-use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -19,13 +18,13 @@ use Psr\Http\Server\RequestHandlerInterface;
 abstract class TokenRevocationEndpoint implements MiddlewareInterface
 {
     public function __construct(
-        private TokenTypeHintManager $tokenTypeHintManager,
-        private ResponseFactoryInterface $responseFactory
+        private TokenTypeHintManager $tokenTypeHintManager
     ) {
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
+        $response = $handler->handle($request);
         $callback = $this->getCallback($request);
 
         try {
@@ -39,16 +38,17 @@ abstract class TokenRevocationEndpoint implements MiddlewareInterface
                     if ($client->getPublicId()->getValue() === $result->getClientId()->getValue()) {
                         $hint->revoke($result);
 
-                        return $this->getResponse(200, '', $callback);
+                        return $this->getResponse($response, 200, '', $callback);
                     }
 
                     throw OAuth2Error::invalidRequest('The parameter "token" is invalid.');
                 }
             }
 
-            return $this->getResponse(200, '', $callback);
+            return $this->getResponse($response, 200, '', $callback);
         } catch (OAuth2Error $e) {
             return $this->getResponse(
+                $response,
                 $e->getCode(),
                 json_encode($e->getData(), JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
                 $callback
@@ -106,13 +106,17 @@ abstract class TokenRevocationEndpoint implements MiddlewareInterface
 
     abstract protected function getRequestParameters(ServerRequestInterface $request): array;
 
-    private function getResponse(int $code, string $data, ?string $callback): ResponseInterface
-    {
+    private function getResponse(
+        ResponseInterface $response,
+        int $code,
+        string $data,
+        ?string $callback
+    ): ResponseInterface {
         if ($callback !== null) {
             $data = sprintf('%s(%s)', $callback, $data);
         }
 
-        $response = $this->responseFactory->createResponse($code);
+        $response = $response->withStatus($code);
         $response->getBody()
             ->write($data)
         ;

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\ServerBundle\Service;
 
+use Nyholm\Psr7\Factory\Psr17Factory;
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequestHandler;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -12,10 +13,12 @@ use Symfony\Component\Routing\RouterInterface;
 
 class RedirectAuthorizationRequestHandler implements AuthorizationRequestHandler
 {
+    private readonly ResponseFactoryInterface $responseFactory;
+
     public function __construct(
-        private RouterInterface $router,
-        private ResponseFactoryInterface $responseFactory
+        private readonly RouterInterface $router
     ) {
+        $this->responseFactory = new Psr17Factory();
     }
 
     public function handle(ServerRequestInterface $request, string $authorizationId): ?ResponseInterface

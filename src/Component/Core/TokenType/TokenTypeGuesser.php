@@ -14,7 +14,7 @@ class TokenTypeGuesser
     ) {
     }
 
-    public static function create(TokenTypeManager $tokenTypeManager, bool $tokenTypeParameterAllowed): self
+    public static function create(TokenTypeManager $tokenTypeManager, bool $tokenTypeParameterAllowed): static
     {
         return new self($tokenTypeManager, $tokenTypeParameterAllowed);
     }

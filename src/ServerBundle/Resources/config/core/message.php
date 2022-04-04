@@ -12,17 +12,7 @@ use OAuth2Framework\Component\Core\Message\Factory\NotImplementedResponseFactory
 use OAuth2Framework\Component\Core\Message\Factory\RedirectResponseFactory;
 use OAuth2Framework\Component\Core\Message\OAuth2MessageFactoryManager;
 use OAuth2Framework\Component\Core\Middleware\OAuth2MessageMiddleware;
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 use OAuth2Framework\Component\Core\TokenType\TokenTypeManager;
-use Psr\Http\Message\ResponseFactoryInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 
@@ -40,7 +30,6 @@ return static function (ContainerConfigurator $container): void {
     ;
     $container->set('oauth2_server.message_factory_manager.for_client_authentication')
         ->class(OAuth2MessageFactoryManager::class)
-        ->args([service(ResponseFactoryInterface::class)])
     ;
 
     $container->set('oauth2_server.message_middleware.for_token_authentication')
@@ -49,7 +38,6 @@ return static function (ContainerConfigurator $container): void {
     ;
     $container->set('oauth2_server.message_factory_manager.for_token_authentication')
         ->class(OAuth2MessageFactoryManager::class)
-        ->args([service(ResponseFactoryInterface::class)])
     ;
 
     //Factories

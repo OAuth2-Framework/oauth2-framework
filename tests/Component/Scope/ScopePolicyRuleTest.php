@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace OAuth2Framework\Tests\Component\Scope;
 
 use InvalidArgumentException;
-use OAuth2Framework\Component\ClientRule\Rule;
 use OAuth2Framework\Component\ClientRule\RuleHandler;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
@@ -19,16 +18,6 @@ use OAuth2Framework\Tests\Component\OAuth2TestCase;
  */
 final class ScopePolicyRuleTest extends OAuth2TestCase
 {
-    /**
-     * @inheritdoc}
-     */
-    protected function setUp(): void
-    {
-        if (! interface_exists(Rule::class)) {
-            static::markTestSkipped('The component "oauth2-framework/client" is not installed.');
-        }
-    }
-
     /**
      * @test
      */

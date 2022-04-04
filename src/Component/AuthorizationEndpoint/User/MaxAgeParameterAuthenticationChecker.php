@@ -8,7 +8,7 @@ use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\Authori
 
 final class MaxAgeParameterAuthenticationChecker implements UserAuthenticationChecker
 {
-    public static function create(): self
+    public static function create(): static
     {
         return new self();
     }

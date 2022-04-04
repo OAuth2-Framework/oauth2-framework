@@ -19,6 +19,7 @@ use Jose\Component\KeyManagement\JKUFactory;
 use Jose\Component\Signature\JWS;
 use Jose\Component\Signature\JWSVerifier;
 use Jose\Component\Signature\Serializer\CompactSerializer;
+use Nyholm\Psr7\Factory\Psr17Factory;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\Client\ClientRepository;
@@ -56,7 +57,7 @@ class AuthorizationRequestLoader
     ) {
     }
 
-    public static function create(ClientRepository $clientRepository): self
+    public static function create(ClientRepository $clientRepository): static
     {
         return new self($clientRepository);
     }
@@ -111,13 +112,12 @@ class AuthorizationRequestLoader
 
     public function enableRequestObjectReferenceSupport(
         ClientInterface $client,
-        RequestFactoryInterface $requestFactory,
         bool $requireRequestUriRegistration
     ): void {
         Assertion::true($this->isRequestObjectSupportEnabled(), 'Request object support must be enabled first.');
         $this->requestObjectReferenceAllowed = true;
         $this->requireRequestUriRegistration = $requireRequestUriRegistration;
-        $this->requestFactory = $requestFactory;
+        $this->requestFactory = new Psr17Factory();
         $this->client = $client;
     }
 
@@ -133,7 +133,7 @@ class AuthorizationRequestLoader
         $this->keyEncryptionKeySet = $keyEncryptionKeySet;
     }
 
-    public function enableJkuSupport(JKUFactory $jkuFactory): self
+    public function enableJkuSupport(JKUFactory $jkuFactory): static
     {
         $this->jkuFactory = $jkuFactory;
 

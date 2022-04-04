@@ -10,9 +10,9 @@ use Stringable;
 final class Scope implements ScopeInterface, Stringable
 {
     public function __construct(
-        private string $name,
-        private ?string $parent = null,
-        private bool $isParentMandatory = false
+        private readonly string $name,
+        private readonly ?string $parent = null,
+        private readonly bool $isParentMandatory = false
     ) {
     }
 
@@ -37,6 +37,11 @@ final class Scope implements ScopeInterface, Stringable
     }
 
     public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function jsonSerialize(): string
     {
         return $this->name;
     }

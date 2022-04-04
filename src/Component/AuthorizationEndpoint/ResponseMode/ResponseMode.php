@@ -10,5 +10,5 @@ interface ResponseMode
 {
     public function name(): string;
 
-    public function buildResponse(ResponseInterface $response, string $redirectUri, array $data): ResponseInterface;
+    public function buildResponse(string $redirectUri, array $data): ResponseInterface;
 }

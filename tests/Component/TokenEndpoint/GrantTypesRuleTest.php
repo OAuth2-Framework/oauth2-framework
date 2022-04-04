@@ -5,11 +5,9 @@ declare(strict_types=1);
 namespace OAuth2Framework\Tests\Component\TokenEndpoint;
 
 use InvalidArgumentException;
-use OAuth2Framework\Component\ClientRule\Rule;
 use OAuth2Framework\Component\ClientRule\RuleHandler;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
-use OAuth2Framework\Component\TokenEndpoint\Rule\GrantTypesRule;
 use OAuth2Framework\Tests\Component\OAuth2TestCase;
 
 /**
@@ -17,15 +15,6 @@ use OAuth2Framework\Tests\Component\OAuth2TestCase;
  */
 final class GrantTypesRuleTest extends OAuth2TestCase
 {
-    private ?GrantTypesRule $grantTypesRule = null;
-
-    protected function setUp(): void
-    {
-        if (! interface_exists(Rule::class)) {
-            static::markTestSkipped('The component "oauth2-framework/client-rule" is not installed.');
-        }
-    }
-
     /**
      * @test
      */
@@ -119,14 +108,5 @@ final class GrantTypesRuleTest extends OAuth2TestCase
         ): DataBag {
             return $validatedParameters;
         });
-    }
-
-    private function getGrantTypesRule(): GrantTypesRule
-    {
-        if ($this->grantTypesRule === null) {
-            $this->grantTypesRule = new GrantTypesRule($this->getGrantTypeManager());
-        }
-
-        return $this->grantTypesRule;
     }
 }

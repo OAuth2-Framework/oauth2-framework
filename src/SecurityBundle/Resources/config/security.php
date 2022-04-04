@@ -20,7 +20,6 @@ use OAuth2Framework\SecurityBundle\Resolver\AccessTokenResolver;
 use OAuth2Framework\SecurityBundle\Security\Authentication\DefaultFailureHandler;
 use OAuth2Framework\SecurityBundle\Security\Authentication\OAuth2Provider;
 use OAuth2Framework\SecurityBundle\Security\ExpressionLanguageProvider;
-use Psr\Http\Message\ResponseFactoryInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 use Symfony\Component\ExpressionLanguage\ExpressionFunction;
@@ -43,7 +42,6 @@ return static function (ContainerConfigurator $container): void {
 
     $container->set('oauth2_security.message_factory_manager')
         ->class(OAuth2MessageFactoryManager::class)
-        ->args([service(ResponseFactoryInterface::class)])
         ->call('addFactory', [service('oauth2_security.message_factory.303')])
         ->call('addFactory', [service('oauth2_security.message_factory.400')])
         ->call('addFactory', [service('oauth2_security.message_factory.401')])

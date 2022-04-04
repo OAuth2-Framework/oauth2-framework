@@ -21,7 +21,7 @@ class DataBag implements IteratorAggregate, Countable, JsonSerializable
     ) {
     }
 
-    public static function create(array $parameters = []): self
+    public static function create(array $parameters = []): static
     {
         return new self($parameters);
     }
@@ -45,7 +45,7 @@ class DataBag implements IteratorAggregate, Countable, JsonSerializable
         return $default;
     }
 
-    public function set(string $key, mixed $value): self
+    public function set(string $key, mixed $value): static
     {
         $this->parameters[$key] = $value;
 
@@ -67,7 +67,7 @@ class DataBag implements IteratorAggregate, Countable, JsonSerializable
         return new ArrayIterator($this->parameters);
     }
 
-    public static function createFromString(string $data): self
+    public static function createFromString(string $data): static
     {
         $json = json_decode($data, true, 512, JSON_THROW_ON_ERROR);
         Assertion::eq(JSON_ERROR_NONE, json_last_error(), 'Invalid data');

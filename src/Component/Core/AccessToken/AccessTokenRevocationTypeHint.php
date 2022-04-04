@@ -13,7 +13,7 @@ final class AccessTokenRevocationTypeHint implements TokenTypeHint
     ) {
     }
 
-    public static function create(AccessTokenRepository $accessTokenRepository): self
+    public static function create(AccessTokenRepository $accessTokenRepository): static
     {
         return new self($accessTokenRepository);
     }

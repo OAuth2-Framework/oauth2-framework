@@ -39,7 +39,7 @@ final class Link implements JsonSerializable
         ?string $href,
         array $titles,
         array $properties
-    ): self {
+    ): static {
         return new self($rel, $type, $href, $titles, $properties);
     }
 
@@ -66,7 +66,7 @@ final class Link implements JsonSerializable
         return $this->titles;
     }
 
-    public function addTitle(string $tag, string $title): self
+    public function addTitle(string $tag, string $title): static
     {
         $this->titles[$tag] = $title;
 
@@ -81,7 +81,7 @@ final class Link implements JsonSerializable
         return $this->properties;
     }
 
-    public function addProperty(string $key, string $property): self
+    public function addProperty(string $key, string $property): static
     {
         $this->properties[$key] = $property;
 

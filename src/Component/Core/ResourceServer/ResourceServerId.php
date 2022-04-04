@@ -18,7 +18,7 @@ class ResourceServerId implements Stringable
         return $this->getValue();
     }
 
-    public static function create(string $value): self
+    public static function create(string $value): static
     {
         return new self($value);
     }

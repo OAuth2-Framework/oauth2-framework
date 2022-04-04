@@ -31,7 +31,6 @@ use Jose\Component\Signature\JWSTokenSupport;
 use Jose\Component\Signature\JWSVerifier;
 use Jose\Component\Signature\Serializer\CompactSerializer as JwsCompactSerializer;
 use const JSON_THROW_ON_ERROR;
-use Nyholm\Psr7\Factory\Psr17Factory;
 use Nyholm\Psr7\ServerRequest;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeGrantType;
 use OAuth2Framework\Component\AuthorizationCodeGrant\AuthorizationCodeId;
@@ -54,6 +53,7 @@ use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\FragmentRespons
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\QueryResponseMode;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode\ResponseModeManager;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType\ResponseTypeManager;
+use OAuth2Framework\Component\AuthorizationEndpoint\Rule\ResponseTypesRule;
 use OAuth2Framework\Component\AuthorizationEndpoint\SelectAccountHandler;
 use OAuth2Framework\Component\AuthorizationEndpoint\User\MaxAgeParameterAuthenticationChecker;
 use OAuth2Framework\Component\AuthorizationEndpoint\User\UserAuthenticationCheckerManager;
@@ -77,6 +77,7 @@ use OAuth2Framework\Component\Core\AccessToken\AccessTokenRevocationTypeHint;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 use OAuth2Framework\Component\Core\ResourceServer\ResourceServerId;
+use OAuth2Framework\Component\Core\TokenType\TokenTypeGuesser;
 use OAuth2Framework\Component\Core\TokenType\TokenTypeManager;
 use OAuth2Framework\Component\Core\TokenType\TokenTypeMiddleware;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
@@ -99,6 +100,7 @@ use OAuth2Framework\Component\Scope\ScopeParameterChecker;
 use OAuth2Framework\Component\Scope\TokenEndpointScopeExtension;
 use OAuth2Framework\Component\TokenEndpoint\Extension\TokenEndpointExtensionManager;
 use OAuth2Framework\Component\TokenEndpoint\GrantTypeManager;
+use OAuth2Framework\Component\TokenEndpoint\Rule\GrantTypesRule;
 use OAuth2Framework\Component\TokenEndpoint\TokenEndpoint;
 use OAuth2Framework\Component\TokenIntrospectionEndpoint\TokenTypeHintManager as TokenIntrospectionTypeHintManager;
 use OAuth2Framework\Component\TokenRevocationEndpoint\TokenRevocationGetEndpoint;
@@ -200,6 +202,12 @@ abstract class OAuth2TestCase extends TestCase
     private ?AuthorizationStorage $authorizationStorage = null;
 
     private ?AuthorizationRequestStorage $authorizationRequestStorage = null;
+
+    private ?TokenTypeGuesser $tokenTypeGuesser = null;
+
+    private ?ResponseTypesRule $responseTypesRule = null;
+
+    private ?GrantTypesRule $grantTypesRule = null;
 
     public function getAccessTokenIntrospectionTypeHint(): AccessTokenIntrospectionTypeHint
     {
@@ -341,7 +349,6 @@ abstract class OAuth2TestCase extends TestCase
                 $this->getClientRepository(),
                 $this->getUserAccountRepository(),
                 new TokenEndpointExtensionManager(),
-                new Psr17Factory(),
                 $this->getAccessTokenRepository(),
                 1800
             );
@@ -611,7 +618,6 @@ abstract class OAuth2TestCase extends TestCase
         if ($this->clientRegistrationEndpoint === null) {
             $this->clientRegistrationEndpoint = new ClientRegistrationEndpoint(
                 $this->getClientRepository(),
-                new Psr17Factory(),
                 new RuleManager()
             );
         }
@@ -628,7 +634,6 @@ abstract class OAuth2TestCase extends TestCase
             $this->clientConfigurationEndpoint = new ClientConfigurationEndpoint(
                 $this->getClientRepository(),
                 $bearerToken,
-                new Psr17Factory(),
                 new RuleManager()
             );
         }
@@ -681,10 +686,7 @@ abstract class OAuth2TestCase extends TestCase
     protected function getTokenRevocationPostEndpoint(): TokenRevocationPostEndpoint
     {
         if ($this->tokenRevocationPostEndpoint === null) {
-            $this->tokenRevocationPostEndpoint = new TokenRevocationPostEndpoint(
-                $this->getTokenTypeHintManager(),
-                new Psr17Factory()
-            );
+            $this->tokenRevocationPostEndpoint = new TokenRevocationPostEndpoint($this->getTokenTypeHintManager());
         }
 
         return $this->tokenRevocationPostEndpoint;
@@ -695,7 +697,6 @@ abstract class OAuth2TestCase extends TestCase
         if ($this->tokenRevocationGetEndpoint === null) {
             $this->tokenRevocationGetEndpoint = TokenRevocationGetEndpoint::create(
                 $this->getTokenTypeHintManager(),
-                new Psr17Factory(),
                 true
             );
         }
@@ -963,6 +964,33 @@ abstract class OAuth2TestCase extends TestCase
         return JWK::createFromJson(
             '{"kty":"RSA","n":"sLjaCStJYRr_y7_3GLlDb4bnGJ8XirSdFboYmvA38NXJ6PhIIjr-sFzfwlcpxZxz6zzjXkDFs3AcUOvC3_KRT5tn4XBOHcR6ABrT65dZTe_qalEpYeQG4oxevc01vmD_dD6Ho2O69amT4gscus2pvszFPdraMYybH24aQFztVtc","e":"AQAB","d":"By-tJhxNgpZfeoCW4rl95YYd1aF6iphnnt-PapWEINYAvOmDvWiavL86FiQHPdLr38_9CvMlVvOjIyNDLGonwHynPxAzUsT7M891N9D0cSCv9DlV3uqRVtdqF4MtWtpU5JWJ9q6auL1UPx2tJhOygu9tJ7w0bTGFwrUdb8PSnlE","p":"3p-6HWbX9YcSkeksJXW3_Y2cfZgRCUXH2or1dIidmscb4VVtTUwb-8gGzUDEq4iS_5pgLARl3O4lOHK0n6Qbrw","q":"yzdrGWwgaWqK6e9VFv3NXGeq1TEKHLkXjF7J24XWKm9lSmlssPRv0NwMPVp_CJ39BrLfFtpFr_fh0oG1sVZ5WQ","dp":"UQ6rP0VQ4G77zfCuSD1ibol_LyONIGkt6V6rHHEZoV9ZwWPPVlOd5MDh6R3p_eLOUw6scZpwVE7JcpIhPfcMtQ","dq":"Jg8g_cfkYhnUHm_2bbHm7jF0Ky1eCXcY0-9Eutpb--KVA9SuyI1fC6zKlgsG06RTKRgC9BK5DnXMU1J7ptTdMQ","qi":"17kC87NLUV6z-c-wtmbNqAkDbKmwpb2RMsGUQmhEPJwnWuwEKZpSQz776SUVwoc0xiQ8DpvU_FypflIlm6fq9w"}'
         );
+    }
+
+    protected function getTokenTypeGuesser(): TokenTypeGuesser
+    {
+        if ($this->tokenTypeGuesser === null) {
+            $this->tokenTypeGuesser = TokenTypeGuesser::create($this->getTokenTypeManager(), true);
+        }
+
+        return $this->tokenTypeGuesser;
+    }
+
+    protected function getResponseTypesRule(): ResponseTypesRule
+    {
+        if ($this->responseTypesRule === null) {
+            $this->responseTypesRule = ResponseTypesRule::create();
+        }
+
+        return $this->responseTypesRule;
+    }
+
+    protected function getGrantTypesRule(): GrantTypesRule
+    {
+        if ($this->grantTypesRule === null) {
+            $this->grantTypesRule = new GrantTypesRule($this->getGrantTypeManager());
+        }
+
+        return $this->grantTypesRule;
     }
 
     private function getJwsVerifier(): JWSVerifier

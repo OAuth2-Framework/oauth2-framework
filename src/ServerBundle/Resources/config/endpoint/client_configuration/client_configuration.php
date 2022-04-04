@@ -6,22 +6,12 @@ use OAuth2Framework\Component\BearerTokenType\BearerToken;
 use OAuth2Framework\Component\ClientConfigurationEndpoint\ClientConfigurationEndpoint;
 use OAuth2Framework\Component\ClientRule\RuleManager;
 use OAuth2Framework\Component\Core\Client\ClientRepository;
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 use OAuth2Framework\Component\Core\Message\OAuth2MessageFactoryManager;
 use OAuth2Framework\Component\Core\Middleware\OAuth2MessageMiddleware;
 use OAuth2Framework\Component\Core\Middleware\Pipe;
 use OAuth2Framework\ServerBundle\Controller\ClientConfigurationMiddleware;
 use OAuth2Framework\ServerBundle\Controller\PipeController;
 use OAuth2Framework\ServerBundle\Rule\ClientConfigurationRouteRule;
-use Psr\Http\Message\ResponseFactoryInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 
@@ -60,7 +50,6 @@ return static function (ContainerConfigurator $container): void {
         ->args([
             service(ClientRepository::class),
             service('oauth2_server.client_configuration.bearer_token'),
-            service(ResponseFactoryInterface::class), //TODO: change the way the response factory is managed
             service(RuleManager::class),
         ])
     ;
@@ -81,7 +70,6 @@ return static function (ContainerConfigurator $container): void {
     ;
     $container->set('oauth2_server.message_factory_manager.for_client_configuration')
         ->class(OAuth2MessageFactoryManager::class)
-        ->args([service(ResponseFactoryInterface::class)])
         ->call('addFactory', [service('oauth2_server.message_factory.303')])
         ->call('addFactory', [service('oauth2_server.message_factory.400')])
         ->call('addFactory', [service('oauth2_server.message_factory.403')])

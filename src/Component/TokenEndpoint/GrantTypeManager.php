@@ -14,12 +14,12 @@ class GrantTypeManager
      */
     private array $grantTypes = [];
 
-    public static function create(): self
+    public static function create(): static
     {
         return new self();
     }
 
-    public function add(GrantType $grantType): self
+    public function add(GrantType $grantType): static
     {
         $this->grantTypes[$grantType->name()] = $grantType;
 

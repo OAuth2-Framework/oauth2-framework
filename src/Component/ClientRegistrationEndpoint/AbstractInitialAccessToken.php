@@ -38,7 +38,7 @@ abstract class AbstractInitialAccessToken implements InitialAccessToken
         return $this->revoked;
     }
 
-    public function markAsRevoked(): self
+    public function markAsRevoked(): static
     {
         $clone = clone $this;
         $clone->revoked = true;

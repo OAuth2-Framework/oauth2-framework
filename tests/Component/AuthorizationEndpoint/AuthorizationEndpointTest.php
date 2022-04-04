@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Tests\Component\AuthorizationEndpoint;
 
-use Nyholm\Psr7\Factory\Psr17Factory;
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationEndpoint;
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequest;
 use OAuth2Framework\Component\AuthorizationEndpoint\Exception\OAuth2AuthorizationException;
@@ -59,7 +58,7 @@ final class AuthorizationEndpointTest extends OAuth2TestCase
         ;
 
         $response = $this->getAuthorizationEndpoint()
-            ->process($request, new TerminalRequestHandler(new Psr17Factory()))
+            ->process($request, new TerminalRequestHandler())
         ;
 
         static::assertSame(303, $response->getStatusCode());
@@ -71,7 +70,7 @@ final class AuthorizationEndpointTest extends OAuth2TestCase
         $authorizationRequest->setAttribute('account_has_been_selected', true);
 
         $response = $this->getAuthorizationEndpoint()
-            ->process($request, new TerminalRequestHandler(new Psr17Factory()))
+            ->process($request, new TerminalRequestHandler())
         ;
 
         static::assertSame(303, $response->getStatusCode());
@@ -80,7 +79,7 @@ final class AuthorizationEndpointTest extends OAuth2TestCase
         $authorizationRequest->setAttribute('user_has_been_authenticated', true);
 
         $response = $this->getAuthorizationEndpoint()
-            ->process($request, new TerminalRequestHandler(new Psr17Factory()))
+            ->process($request, new TerminalRequestHandler())
         ;
 
         static::assertSame(303, $response->getStatusCode());
@@ -90,7 +89,7 @@ final class AuthorizationEndpointTest extends OAuth2TestCase
 
         try {
             $this->getAuthorizationEndpoint()
-                ->process($request, new TerminalRequestHandler(new Psr17Factory()))
+                ->process($request, new TerminalRequestHandler())
             ;
         } catch (OAuth2AuthorizationException $exception) {
             static::assertSame('access_denied', $exception->getMessage());
@@ -101,7 +100,6 @@ final class AuthorizationEndpointTest extends OAuth2TestCase
     public function getAuthorizationEndpoint(): AuthorizationEndpoint
     {
         $endpoint = new AuthorizationEndpoint(
-            new Psr17Factory(),
             new TokenTypeGuesser($this->getTokenTypeManager(), true),
             new ResponseTypeGuesser($this->getResponseTypeManager()),
             new ResponseModeGuesser($this->getResponseModeManager(), true),

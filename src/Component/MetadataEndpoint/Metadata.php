@@ -28,7 +28,7 @@ class Metadata
         return $this->values[$key];
     }
 
-    public function set(string $key, mixed $value): self
+    public function set(string $key, mixed $value): static
     {
         $this->values[$key] = $value;
 

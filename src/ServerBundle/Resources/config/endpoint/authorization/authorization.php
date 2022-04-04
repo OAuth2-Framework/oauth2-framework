@@ -3,15 +3,6 @@
 declare(strict_types=1);
 
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationEndpoint;
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2019 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\AuthorizationRequestLoader;
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequestEntryEndpoint;
 use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequestHandler;
@@ -50,7 +41,6 @@ use OAuth2Framework\ServerBundle\Controller\PipeController;
 use OAuth2Framework\ServerBundle\Service\AuthorizationRequestSessionStorage;
 use OAuth2Framework\ServerBundle\Service\IgnoreAccountSelectionHandler;
 use OAuth2Framework\ServerBundle\Service\RedirectAuthorizationRequestHandler;
-use Psr\Http\Message\ResponseFactoryInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -94,12 +84,11 @@ return static function (ContainerConfigurator $container): void {
     ;
 
     $container->set(RedirectAuthorizationRequestHandler::class)
-        ->args([service(RouterInterface::class), service(ResponseFactoryInterface::class)])
+        ->args([service(RouterInterface::class)])
     ;
 
     $container->set(AuthorizationEndpoint::class)
         ->args([
-            service(ResponseFactoryInterface::class),
             service(TokenTypeGuesser::class),
             service(ResponseTypeGuesser::class),
             service(ResponseModeGuesser::class),
@@ -195,7 +184,6 @@ return static function (ContainerConfigurator $container): void {
 
     $container->set('oauth2_server.message_factory_manager.for_authorization_endpoint')
         ->class(OAuth2MessageFactoryManager::class)
-        ->args([service(ResponseFactoryInterface::class)])
         ->call('addFactory', [service('oauth2_server.message_factory.303')])
         ->call('addFactory', [service('oauth2_server.message_factory.400')])
         ->call('addFactory', [service('oauth2_server.message_factory.403')])

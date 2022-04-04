@@ -12,7 +12,6 @@ use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwner;
 use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 use OAuth2Framework\Component\TokenEndpoint\GrantTypeData;
-use OAuth2Framework\Component\TokenEndpoint\TokenEndpoint;
 use OAuth2Framework\Tests\Component\OAuth2TestCase;
 use OAuth2Framework\Tests\TestBundle\Entity\Client;
 use Psr\Http\Message\ServerRequestInterface;
@@ -22,16 +21,6 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 final class TokenEndpointScopeExtensionTest extends OAuth2TestCase
 {
-    /**
-     * @inheritdoc}
-     */
-    protected function setUp(): void
-    {
-        if (! class_exists(TokenEndpoint::class)) {
-            static::markTestSkipped('The component "oauth2-framework/token-endpoint" is not installed.');
-        }
-    }
-
     /**
      * @test
      */
@@ -45,7 +34,7 @@ final class TokenEndpointScopeExtensionTest extends OAuth2TestCase
 
         $request = $this->buildRequest('GET', []);
         $grantTypeData = GrantTypeData::create($client);
-        $next = static function (ServerRequestInterface $request, GrantTypeData $grantTypeData,): GrantTypeData {
+        $next = static function (ServerRequestInterface $request, GrantTypeData $grantTypeData): GrantTypeData {
             return $grantTypeData;
         };
 
@@ -70,7 +59,7 @@ final class TokenEndpointScopeExtensionTest extends OAuth2TestCase
             'scope' => 'café',
         ]);
         $grantTypeData = GrantTypeData::create($client);
-        $next = static function (ServerRequestInterface $request, GrantTypeData $grantTypeData,): GrantTypeData {
+        $next = static function (ServerRequestInterface $request, GrantTypeData $grantTypeData): GrantTypeData {
             return $grantTypeData;
         };
 
@@ -102,7 +91,7 @@ final class TokenEndpointScopeExtensionTest extends OAuth2TestCase
             'scope' => 'scope2 scope1',
         ]);
         $grantTypeData = GrantTypeData::create($client);
-        $next = static function (ServerRequestInterface $request, GrantTypeData $grantTypeData,): GrantTypeData {
+        $next = static function (ServerRequestInterface $request, GrantTypeData $grantTypeData): GrantTypeData {
             return $grantTypeData;
         };
 

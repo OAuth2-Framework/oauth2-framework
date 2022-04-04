@@ -47,7 +47,7 @@ class AuthorizationRequest
         $this->metadata = new DataBag([]);
     }
 
-    public static function create(Client $client, array $queryParameters): self
+    public static function create(Client $client, array $queryParameters): static
     {
         return new self($client, $queryParameters);
     }
@@ -91,7 +91,7 @@ class AuthorizationRequest
         return $this->getQueryParam('redirect_uri');
     }
 
-    public function setUserAccount(UserAccount $userAccount): self
+    public function setUserAccount(UserAccount $userAccount): static
     {
         $this->userAccount = $userAccount;
 
@@ -110,7 +110,7 @@ class AuthorizationRequest
         return $this->userAccount;
     }
 
-    public function setResponseParameter(string $responseParameter, mixed $value): self
+    public function setResponseParameter(string $responseParameter, mixed $value): static
     {
         $this->responseParameters[$responseParameter] = $value;
 
@@ -134,7 +134,7 @@ class AuthorizationRequest
         return array_key_exists($param, $this->getResponseParameters());
     }
 
-    public function setResponseHeader(string $responseHeader, mixed $value): self
+    public function setResponseHeader(string $responseHeader, mixed $value): static
     {
         $this->responseHeaders[$responseHeader] = $value;
 
@@ -186,14 +186,14 @@ class AuthorizationRequest
         return $this->authorized !== self::CONSENT_NOT_GIVEN;
     }
 
-    public function allow(): self
+    public function allow(): static
     {
         $this->authorized = self::CONSENT_ALLOW;
 
         return $this;
     }
 
-    public function deny(): self
+    public function deny(): static
     {
         $this->authorized = self::CONSENT_DENY;
 
@@ -205,7 +205,7 @@ class AuthorizationRequest
         return $this->resourceServer;
     }
 
-    public function setResourceServer(ResourceServer $resourceServer): self
+    public function setResourceServer(ResourceServer $resourceServer): static
     {
         $this->resourceServer = $resourceServer;
 
@@ -232,7 +232,7 @@ class AuthorizationRequest
         return array_key_exists($key, $this->attributes);
     }
 
-    public function setAttribute(string $key, mixed $value): self
+    public function setAttribute(string $key, mixed $value): static
     {
         $this->attributes[$key] = $value;
 

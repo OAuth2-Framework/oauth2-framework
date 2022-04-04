@@ -7,14 +7,15 @@ namespace OAuth2Framework\SecurityBundle\Security\Authentication;
 use OAuth2Framework\Component\Core\AccessToken\AccessTokenRepository;
 use OAuth2Framework\Component\Core\TokenType\TokenTypeManager;
 use Symfony\Bundle\SecurityBundle\DependencyInjection\Security\Factory\AuthenticatorFactoryInterface;
-use Symfony\Bundle\SecurityBundle\DependencyInjection\Security\Factory\SecurityFactoryInterface;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 
-final class OAuth2SecurityFactory implements SecurityFactoryInterface, AuthenticatorFactoryInterface
+final class OAuth2SecurityFactory implements AuthenticatorFactoryInterface
 {
+    public const PRIORITY = 0;
+
     public function createAuthenticator(
         ContainerBuilder $container,
         string $firewallName,
@@ -24,20 +25,9 @@ final class OAuth2SecurityFactory implements SecurityFactoryInterface, Authentic
         return $this->createProvider($container, $firewallName, $config);
     }
 
-    /**
-     * @param string      $id
-     * @param array       $config
-     * @param string      $userProviderId
-     * @param string|null $defaultEntryPointId
-     */
-    public function create(ContainerBuilder $container, $id, $config, $userProviderId, $defaultEntryPointId): array
+    public function getPriority(): int
     {
-        return [];
-    }
-
-    public function getPosition(): string
-    {
-        return 'pre_auth';
+        return self::PRIORITY;
     }
 
     public function getKey(): string
@@ -48,9 +38,9 @@ final class OAuth2SecurityFactory implements SecurityFactoryInterface, Authentic
     /**
      * {@inheritdoc}
      */
-    public function addConfiguration(NodeDefinition $node): void
+    public function addConfiguration(NodeDefinition $builder): void
     {
-        $node
+        $builder
             ->children()
             ->scalarNode('user_provider')
             ->defaultNull()

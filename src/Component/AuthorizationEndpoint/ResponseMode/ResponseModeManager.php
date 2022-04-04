@@ -14,7 +14,7 @@ class ResponseModeManager
      */
     private array $responseModes = [];
 
-    public static function create(): self
+    public static function create(): static
     {
         return new self();
     }
@@ -35,7 +35,7 @@ class ResponseModeManager
         return array_values($this->responseModes);
     }
 
-    public function add(ResponseMode $responseMode): self
+    public function add(ResponseMode $responseMode): static
     {
         $this->responseModes[$responseMode->name()] = $responseMode;
 

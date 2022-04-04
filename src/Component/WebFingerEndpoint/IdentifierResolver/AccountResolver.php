@@ -11,7 +11,7 @@ use function League\Uri\parse;
 
 final class AccountResolver implements IdentifierResolver
 {
-    public static function create(): self
+    public static function create(): static
     {
         return new self();
     }

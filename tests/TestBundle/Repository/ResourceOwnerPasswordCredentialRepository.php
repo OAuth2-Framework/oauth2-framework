@@ -14,7 +14,7 @@ final class ResourceOwnerPasswordCredentialRepository implements ResourceOwnerPa
     /**
      * @var ResourceOwnerId[]
      */
-    private array $usernameAndPasswords;
+    private readonly array $usernameAndPasswords;
 
     public function __construct()
     {

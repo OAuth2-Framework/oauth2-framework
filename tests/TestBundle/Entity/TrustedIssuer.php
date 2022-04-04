@@ -10,10 +10,10 @@ use OAuth2Framework\Component\Core\TrustedIssuer\TrustedIssuer as  TrustedIssuer
 final class TrustedIssuer implements TrustedIssuerInterface
 {
     public function __construct(
-        private string $name,
-        private array $allowedAssertionTypes,
-        private array $allowedSignatureAlgorithms,
-        private JWKSet $jwkset
+        private readonly string $name,
+        private readonly array $allowedAssertionTypes,
+        private readonly array $allowedSignatureAlgorithms,
+        private readonly JWKSet $jwkset
     ) {
     }
 

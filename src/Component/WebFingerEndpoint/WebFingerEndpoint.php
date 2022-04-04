@@ -32,7 +32,7 @@ final class WebFingerEndpoint implements MiddlewareInterface
     public static function create(
         ResourceRepository $resourceRepository,
         IdentifierResolverManager $identifierResolverManager
-    ): self {
+    ): static {
         return new self($resourceRepository, $identifierResolverManager);
     }
 

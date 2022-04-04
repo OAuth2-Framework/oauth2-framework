@@ -11,7 +11,7 @@ use Psr\Http\Message\ServerRequestInterface;
 
 final class ClientCredentialsGrantType implements GrantType
 {
-    public static function create(): self
+    public static function create(): static
     {
         return new self();
     }
