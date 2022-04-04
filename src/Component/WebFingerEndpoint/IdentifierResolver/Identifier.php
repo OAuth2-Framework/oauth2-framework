@@ -7,9 +7,9 @@ namespace OAuth2Framework\Component\WebFingerEndpoint\IdentifierResolver;
 final class Identifier
 {
     public function __construct(
-        private string $id,
-        private string $domain,
-        private ?int $port
+        private readonly string $id,
+        private readonly string $domain,
+        private readonly ?int $port
     ) {
     }
 

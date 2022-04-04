@@ -10,7 +10,8 @@ use InvalidArgumentException;
 use function is_array;
 use const JSON_THROW_ON_ERROR;
 use JsonException;
-use League\Uri\QueryParser;
+use League\Uri\Components\Query;
+use League\Uri\Contracts\QueryInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 class RequestBodyParser
@@ -44,7 +45,7 @@ class RequestBodyParser
         return $json;
     }
 
-    public static function parseFormUrlEncoded(ServerRequestInterface $request): array
+    public static function parseFormUrlEncoded(ServerRequestInterface $request): QueryInterface
     {
         if (! $request->hasHeader('Content-Type') || ! in_array(
             'application/x-www-form-urlencoded',
@@ -55,13 +56,13 @@ class RequestBodyParser
         }
         $parsedBody = $request->getParsedBody();
         if (is_array($parsedBody) && count($parsedBody) !== 0) {
-            return $parsedBody;
+            return Query::createFromParams($parsedBody);
         }
 
         $body = $request->getBody()
             ->getContents()
         ;
 
-        return (new QueryParser())->parse($body, '&', QueryParser::RFC1738_ENCODING);
+        return Query::createFromRFC1738($body);
     }
 }

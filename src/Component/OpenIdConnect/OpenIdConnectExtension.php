@@ -26,10 +26,10 @@ class OpenIdConnectExtension implements TokenEndpointExtension
     private ?JWEBuilder $jweBuilder = null;
 
     public function __construct(
-        private IdTokenBuilderFactory $idTokenBuilderFactory,
-        private string $defaultSignatureAlgorithm,
-        private JWSBuilder $jwsBuilder,
-        private JWKSet $signatureKeys
+        private readonly IdTokenBuilderFactory $idTokenBuilderFactory,
+        private readonly string $defaultSignatureAlgorithm,
+        private readonly JWSBuilder $jwsBuilder,
+        private readonly JWKSet $signatureKeys
     ) {
     }
 
@@ -122,6 +122,10 @@ class OpenIdConnectExtension implements TokenEndpointExtension
     private function hasOpenIdScope(AccessToken $accessToken): bool
     {
         return $accessToken->getParameter()
-            ->has('scope') && in_array('openid', explode(' ', $accessToken->getParameter()->get('scope')), true);
+            ->has('scope') && in_array(
+                'openid',
+                explode(' ', (string) $accessToken->getParameter()->get('scope')),
+                true
+            );
     }
 }

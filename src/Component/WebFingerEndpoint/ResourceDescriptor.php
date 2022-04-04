@@ -10,7 +10,7 @@ use JsonSerializable;
 
 final class ResourceDescriptor implements JsonSerializable
 {
-    private array $aliases;
+    private readonly array $aliases;
 
     private array $properties;
 
@@ -22,7 +22,7 @@ final class ResourceDescriptor implements JsonSerializable
      * @param Link[]   $links
      */
     public function __construct(
-        private ?string $subject,
+        private readonly ?string $subject,
         array $aliases,
         array $properties,
         array $links

@@ -13,8 +13,8 @@ use OAuth2Framework\Component\ImplicitGrant\TokenResponseType;
 final class CodeTokenResponseType implements ResponseType
 {
     public function __construct(
-        private AuthorizationCodeResponseType $codeResponseType,
-        private TokenResponseType $tokenResponseType
+        private readonly AuthorizationCodeResponseType $codeResponseType,
+        private readonly TokenResponseType $tokenResponseType
     ) {
     }
 

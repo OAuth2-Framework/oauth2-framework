@@ -43,7 +43,7 @@ final class ResponseModeTest extends OAuth2TestCase
 
         static::assertTrue($response->hasHeader('Location'));
         static::assertSame(
-            ['https://localhost/foo?bar=bar&access_token=ACCESS_TOKEN#_=_'],
+            ['https://localhost/foo?access_token=ACCESS_TOKEN&bar=bar#_=_'],
             $response->getHeader('Location')
         );
     }

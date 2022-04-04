@@ -12,7 +12,7 @@ use OAuth2Framework\Component\TokenIntrospectionEndpoint\TokenTypeHint;
 final class AccessTokenIntrospectionTypeHint implements TokenTypeHint
 {
     public function __construct(
-        private AccessTokenRepository $accessTokenRepository
+        private readonly AccessTokenRepository $accessTokenRepository
     ) {
     }
 

@@ -11,7 +11,7 @@ use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType\ResponseTypeMan
 final class ResponseTypeParameterChecker implements ParameterChecker
 {
     public function __construct(
-        private ResponseTypeManager $responseTypeManager
+        private readonly ResponseTypeManager $responseTypeManager
     ) {
     }
 

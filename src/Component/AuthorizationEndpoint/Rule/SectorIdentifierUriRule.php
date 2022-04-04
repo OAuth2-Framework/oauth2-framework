@@ -6,7 +6,7 @@ namespace OAuth2Framework\Component\AuthorizationEndpoint\Rule;
 
 use Assert\Assertion;
 use const JSON_THROW_ON_ERROR;
-use function League\Uri\parse;
+use League\Uri\Uri;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use OAuth2Framework\Component\ClientRule\Rule;
 use OAuth2Framework\Component\ClientRule\RuleHandler;
@@ -17,10 +17,10 @@ use Psr\Http\Message\RequestFactoryInterface;
 
 final class SectorIdentifierUriRule implements Rule
 {
-    private RequestFactoryInterface $requestFactory;
+    private readonly RequestFactoryInterface $requestFactory;
 
     public function __construct(
-        private ClientInterface $client
+        private readonly ClientInterface $client
     ) {
         $this->requestFactory = new Psr17Factory();
     }
@@ -46,9 +46,9 @@ final class SectorIdentifierUriRule implements Rule
 
     private function checkSectorIdentifierUri(string $url, array $redirectUris): void
     {
-        $data = parse($url);
-        Assertion::eq('https', $data['scheme'], sprintf('The sector identifier URI "%s" is not valid.', $url));
-        Assertion::notEmpty($data['host'], sprintf('The sector identifier URI "%s" is not valid.', $url));
+        $data = Uri::createFromString($url);
+        Assertion::eq('https', $data->getScheme(), sprintf('The sector identifier URI "%s" is not valid.', $url));
+        Assertion::notEmpty($data->getHost(), sprintf('The sector identifier URI "%s" is not valid.', $url));
 
         $request = $this->requestFactory->createRequest('GET', $url);
         $response = $this->client->sendRequest($request);

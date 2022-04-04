@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\Scope;
 
-use function array_key_exists;
 use function count;
 use InvalidArgumentException;
 use OAuth2Framework\Component\Core\AccessToken\AccessToken;
@@ -21,8 +20,8 @@ use Psr\Http\Message\ServerRequestInterface;
 final class TokenEndpointScopeExtension implements TokenEndpointExtension
 {
     public function __construct(
-        private ScopeRepository $scopeRepository,
-        private ScopePolicyManager $scopePolicyManager
+        private readonly ScopeRepository $scopeRepository,
+        private readonly ScopePolicyManager $scopePolicyManager
     ) {
     }
 
@@ -70,7 +69,7 @@ final class TokenEndpointScopeExtension implements TokenEndpointExtension
         $parameters = RequestBodyParser::parseFormUrlEncoded($request);
 
         return match (true) {
-            array_key_exists('scope', $parameters) => $parameters['scope'],
+            $parameters->has('scope') => $parameters->get('scope'),
             $grantTypeData->getParameter()
                 ->has('scope') => $grantTypeData->getParameter()
                 ->get('scope'),
@@ -99,7 +98,7 @@ final class TokenEndpointScopeExtension implements TokenEndpointExtension
         $availableScope = $grantTypeData->getParameter()
             ->has('scope') ? $grantTypeData->getParameter()
             ->get('scope') : $this->getAvailableScopesForClient($grantTypeData->getClient());
-        $availableScopes = explode(' ', $availableScope);
+        $availableScopes = explode(' ', (string) $availableScope);
         $requestedScopes = $scope === '' ? [] : explode(' ', $scope);
         $diff = array_diff($requestedScopes, $availableScopes);
         if (count($diff) !== 0) {

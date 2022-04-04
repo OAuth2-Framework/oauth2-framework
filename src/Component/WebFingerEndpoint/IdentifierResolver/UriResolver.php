@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\WebFingerEndpoint\IdentifierResolver;
 
-use Assert\Assertion;
-use function League\Uri\parse;
+use League\Uri\Components\UserInfo;
+use League\Uri\Uri;
 
 final class UriResolver implements IdentifierResolver
 {
@@ -16,17 +16,17 @@ final class UriResolver implements IdentifierResolver
 
     public function supports(string $resource): bool
     {
-        $uri = parse($resource);
+        $uri = Uri::createFromString($resource);
+        $userInfo = UserInfo::createFromUri($uri);
 
-        return $uri['scheme'] === 'https' && $uri['user'] !== null;
+        return $uri->getScheme() === 'https' && $uri->getHost() !== null && $userInfo->getUser() !== null;
     }
 
     public function resolve(string $resource): Identifier
     {
-        $uri = parse($resource);
-        Assertion::string($uri['user'], 'Invalid resource.');
-        Assertion::string($uri['host'], 'Invalid resource.');
+        $uri = Uri::createFromString($resource);
+        $userInfo = UserInfo::createFromUri($uri);
 
-        return Identifier::create($uri['user'], $uri['host'], $uri['port']);
+        return Identifier::create($userInfo->getUser(), $uri->getHost(), $uri->getPort());
     }
 }

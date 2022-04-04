@@ -12,8 +12,8 @@ use OAuth2Framework\Component\ImplicitGrant\TokenResponseType;
 final class IdTokenTokenResponseType implements ResponseType
 {
     public function __construct(
-        private IdTokenResponseType $idTokenResponseType,
-        private TokenResponseType $tokenResponseType
+        private readonly IdTokenResponseType $idTokenResponseType,
+        private readonly TokenResponseType $tokenResponseType
     ) {
     }
 

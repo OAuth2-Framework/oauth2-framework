@@ -19,9 +19,9 @@ final class Link implements JsonSerializable
      * @param mixed[]  $properties
      */
     public function __construct(
-        private string $rel,
-        private ?string $type,
-        private ?string $href,
+        private readonly string $rel,
+        private readonly ?string $type,
+        private readonly ?string $href,
         array $titles,
         array $properties
     ) {

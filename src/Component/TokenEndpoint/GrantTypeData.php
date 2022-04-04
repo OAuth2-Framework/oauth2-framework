@@ -11,9 +11,9 @@ use OAuth2Framework\Component\Core\ResourceOwner\ResourceOwnerId;
 
 class GrantTypeData
 {
-    private DataBag $metadata;
+    private readonly DataBag $metadata;
 
-    private DataBag $parameter;
+    private readonly DataBag $parameter;
 
     private ?ResourceOwnerId $resourceOwnerId = null;
 

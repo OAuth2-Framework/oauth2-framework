@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace OAuth2Framework\Tests\TestBundle\Service;
 
 use Assert\Assertion;
-use function League\Uri\parse;
+use League\Uri\Components\UserInfo;
+use League\Uri\Uri;
 use OAuth2Framework\Component\WebFingerEndpoint\IdentifierResolver\Identifier;
 use OAuth2Framework\Component\WebFingerEndpoint\IdentifierResolver\IdentifierResolver;
 
@@ -16,23 +17,22 @@ final class UriPathResolver implements IdentifierResolver
         return new self();
     }
 
-    public function supports(string $resource_name): bool
+    public function supports(string $resource): bool
     {
-        $uri = parse($resource_name);
+        $uri = Uri::createFromString($resource);
+        $userInfo = UserInfo::createFromUri($uri);
 
-        return $uri['scheme'] === 'https'
-            && $uri['user'] === null
-            && $uri['path'] !== null
-            && mb_strpos($uri['path'], '/+') === 0
+        return $uri->getScheme() === 'https'
+            && $userInfo->getUser() === null
+            && str_starts_with($uri->getPath(), '/+')
             ;
     }
 
     public function resolve(string $resource): Identifier
     {
-        $uri = parse($resource);
-        Assertion::string($uri['path'], 'Invalid resource.');
-        Assertion::string($uri['host'], 'Invalid resource.');
+        $uri = Uri::createFromString($resource);
+        Assertion::string($uri->getHost(), 'Invalid resource.');
 
-        return Identifier::create(mb_substr($uri['path'], 2), $uri['host'], $uri['port']);
+        return Identifier::create(mb_substr($uri->getPath(), 2), $uri->getHost(), $uri->getPort());
     }
 }

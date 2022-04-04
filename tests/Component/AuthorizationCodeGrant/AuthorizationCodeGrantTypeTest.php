@@ -33,7 +33,7 @@ final class AuthorizationCodeGrantTypeTest extends OAuth2TestCase
     /**
      * @test
      */
-    public function theRequestHaveMissingParameters(): void
+    public function theRequestHaveMissingParameterCode(): void
     {
         $request = $this->buildRequest('GET', []);
 
@@ -47,7 +47,31 @@ final class AuthorizationCodeGrantTypeTest extends OAuth2TestCase
             static::assertSame(400, $e->getCode());
             static::assertSame([
                 'error' => 'invalid_request',
-                'error_description' => 'Missing grant type parameter(s): code, redirect_uri.',
+                'error_description' => 'Missing grant type parameter(s): code.',
+            ], $e->getData());
+        }
+    }
+
+    /**
+     * @test
+     */
+    public function theRequestHaveMissingParameterRedirectUri(): void
+    {
+        $request = $this->buildRequest('GET', [
+            'code' => 'foo',
+        ]);
+
+        try {
+            $this->getGrantTypeManager()
+                ->get('authorization_code')
+                ->checkRequest($request)
+            ;
+            static::fail('An OAuth2 exception should be thrown.');
+        } catch (OAuth2Error $e) {
+            static::assertSame(400, $e->getCode());
+            static::assertSame([
+                'error' => 'invalid_request',
+                'error_description' => 'Missing grant type parameter(s): redirect_uri.',
             ], $e->getData());
         }
     }

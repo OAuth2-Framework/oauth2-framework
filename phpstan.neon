@@ -1,15 +1,21 @@
 parameters:
-    level: max
+    level: 1
     paths:
         - src
-    excludePaths:
-        - %currentWorkingDirectory%/src/*Bundle/Tests/*
-        - %currentWorkingDirectory%/src/*Bundle/var/*
-        - %currentWorkingDirectory%/src/Component/*/Tests/*
     ignoreErrors:
-        - '#Method OAuth2Framework\\Component\\OpenIdConnect\\UserInfo\\Claim\\ClaimManager\:\:list\(\) should return array<OAuth2Framework\\Component\\OpenIdConnect\\UserInfo\\Claim\\Claim> but returns array.*\.#'
-        - '#Parameter .* of method .* expects Symfony\\Component\\Config\\Definition\\Builder\\ArrayNodeDefinition, Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition given.#'
-        - '#Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition::(.*)\(\).#'
-        - '#Cannot call method .* on Symfony\\Component\\Config\\Definition\\Builder\\NodeParentInterface.*\.#'
-    checkMissingIterableValueType: false
-    checkGenericClassInNonGenericObjectType: false
+#        - '#Method OAuth2Framework\\Component\\OpenIdConnect\\UserInfo\\Claim\\ClaimManager\:\:list\(\) should return array<OAuth2Framework\\Component\\OpenIdConnect\\UserInfo\\Claim\\Claim> but returns array.*\.#'
+#        - '#Parameter .* of method .* expects Symfony\\Component\\Config\\Definition\\Builder\\ArrayNodeDefinition, Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition given.#'
+#        - '#Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition::(.*)\(\).#'
+#        - '#Cannot call method .* on Symfony\\Component\\Config\\Definition\\Builder\\NodeParentInterface.*\.#'
+#    checkMissingIterableValueType: true
+#    checkGenericClassInNonGenericObjectType: true
+#    checkUninitializedProperties: true
+    treatPhpDocTypesAsCertain: false
+includes:
+    - vendor/phpstan/phpstan/conf/bleedingEdge.neon
+    - vendor/phpstan/phpstan-beberlei-assert/extension.neon
+    - vendor/phpstan/phpstan-deprecation-rules/rules.neon
+    - vendor/phpstan/phpstan-phpunit/rules.neon
+    - vendor/phpstan/phpstan-phpunit/extension.neon
+    - vendor/phpstan/phpstan-strict-rules/rules.neon
+    - vendor/ekino/phpstan-banned-code/extension.neon

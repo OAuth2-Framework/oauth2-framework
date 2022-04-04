@@ -16,10 +16,10 @@ use OAuth2Framework\Component\Core\TokenType\TokenType;
 final class AuthorizationCodeResponseType implements ResponseType
 {
     public function __construct(
-        private AuthorizationCodeRepository $authorizationCodeRepository,
-        private int $authorizationCodeLifetime,
-        private PKCEMethodManager $pkceMethodManager,
-        private bool $pkceForPublicClientsEnforced
+        private readonly AuthorizationCodeRepository $authorizationCodeRepository,
+        private readonly int $authorizationCodeLifetime,
+        private readonly PKCEMethodManager $pkceMethodManager,
+        private readonly bool $pkceForPublicClientsEnforced
     ) {
     }
 

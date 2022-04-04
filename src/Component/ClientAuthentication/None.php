@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\ClientAuthentication;
 
-use function array_key_exists;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
@@ -29,16 +28,16 @@ final class None implements AuthenticationMethod
     public function findClientIdAndCredentials(ServerRequestInterface $request, &$clientCredentials = null): ?ClientId
     {
         $parameters = RequestBodyParser::parseFormUrlEncoded($request);
-        if (array_key_exists('client_id', $parameters)) {
-            return new ClientId($parameters['client_id']);
+        if ($parameters->has('client_id')) {
+            return new ClientId($parameters->get('client_id'));
         }
 
         return null;
     }
 
-    public function checkClientConfiguration(DataBag $command_parameters, DataBag $validated_parameters): DataBag
+    public function checkClientConfiguration(DataBag $commandParameters, DataBag $validatedParameters): DataBag
     {
-        return $validated_parameters;
+        return $validatedParameters;
     }
 
     /**

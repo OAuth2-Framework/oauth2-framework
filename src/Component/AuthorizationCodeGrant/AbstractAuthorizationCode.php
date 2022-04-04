@@ -14,21 +14,21 @@ use OAuth2Framework\Component\Core\UserAccount\UserAccountId;
 
 abstract class AbstractAuthorizationCode implements AuthorizationCode
 {
-    private array $queryParameters;
+    private readonly array $queryParameters;
 
     private bool $used;
 
     private bool $revoked;
 
     public function __construct(
-        private ClientId $clientId,
-        private UserAccountId $userAccountId,
+        private readonly ClientId $clientId,
+        private readonly UserAccountId $userAccountId,
         array $queryParameters,
-        private string $redirectUri,
-        private DateTimeImmutable $expiresAt,
-        private DataBag $parameter,
-        private DataBag $metadata,
-        private ?ResourceServerId $resourceServerId
+        private readonly string $redirectUri,
+        private readonly DateTimeImmutable $expiresAt,
+        private readonly DataBag $parameter,
+        private readonly DataBag $metadata,
+        private readonly ?ResourceServerId $resourceServerId
     ) {
         $this->queryParameters = $queryParameters;
         $this->used = false;

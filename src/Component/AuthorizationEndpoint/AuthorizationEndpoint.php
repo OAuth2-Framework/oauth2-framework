@@ -25,14 +25,14 @@ class AuthorizationEndpoint
     private array $hooks = [];
 
     public function __construct(
-        private TokenTypeGuesser $tokenTypeGuesser,
-        private ResponseTypeGuesser $responseTypeGuesser,
-        private ResponseModeGuesser $responseModeGuesser,
-        private ?ConsentRepository $consentRepository,
-        private ExtensionManager $extensionManager,
-        private AuthorizationRequestStorage $authorizationRequestStorage,
-        private LoginHandler $loginHandler,
-        private ConsentHandler $consentHandler
+        private readonly TokenTypeGuesser $tokenTypeGuesser,
+        private readonly ResponseTypeGuesser $responseTypeGuesser,
+        private readonly ResponseModeGuesser $responseModeGuesser,
+        private readonly ?ConsentRepository $consentRepository,
+        private readonly ExtensionManager $extensionManager,
+        private readonly AuthorizationRequestStorage $authorizationRequestStorage,
+        private readonly LoginHandler $loginHandler,
+        private readonly ConsentHandler $consentHandler
     ) {
     }
 

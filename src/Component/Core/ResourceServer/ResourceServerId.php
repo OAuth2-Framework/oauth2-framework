@@ -9,7 +9,7 @@ use Stringable;
 class ResourceServerId implements Stringable
 {
     public function __construct(
-        private string $value
+        private readonly string $value
     ) {
     }
 

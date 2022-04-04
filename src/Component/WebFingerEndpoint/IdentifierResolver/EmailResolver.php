@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\WebFingerEndpoint\IdentifierResolver;
 
 use InvalidArgumentException;
-use function is_string;
-use function League\Uri\parse;
+use League\Uri\Components\UserInfo;
+use League\Uri\Uri;
 
 final class EmailResolver implements IdentifierResolver
 {
@@ -17,18 +17,21 @@ final class EmailResolver implements IdentifierResolver
 
     public function supports(string $resource): bool
     {
-        $uri = parse('https://' . $resource);
+        $uri = Uri::createFromString('https://' . $resource);
+        $userInfo = UserInfo::createFromUri($uri);
 
-        return $uri['scheme'] === 'https' && $uri['user'] !== null && $uri['pass'] === null && $uri['host'] !== null && $uri['path'] === '' && $uri['query'] === null && $uri['fragment'] === null;
+        return $uri->getScheme() === 'https' && $userInfo->getUser() !== null && $userInfo->getPass() === null && $uri->getHost() !== null && $uri->getPath() === '' && $uri->getQuery() === null && $uri->getFragment() === null;
     }
 
     public function resolve(string $resource): Identifier
     {
-        $uri = parse('https://' . $resource);
-        if (! is_string($uri['user']) || ! is_string($uri['host'])) {
+        $uri = Uri::createFromString('https://' . $resource);
+        $userInfo = UserInfo::createFromUri($uri);
+
+        if ($userInfo->getUser() === null || $uri->getHost() === null) {
             throw new InvalidArgumentException('Invalid resource.');
         }
 
-        return Identifier::create($uri['user'], $uri['host'], $uri['port']);
+        return Identifier::create($userInfo->getUser(), $uri->getHost(), $uri->getPort());
     }
 }

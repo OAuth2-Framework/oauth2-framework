@@ -12,8 +12,8 @@ abstract class AbstractInitialAccessToken implements InitialAccessToken
     private bool $revoked;
 
     public function __construct(
-        private ?UserAccountId $userAccountId,
-        private ?DateTimeImmutable $expiresAt
+        private readonly ?UserAccountId $userAccountId,
+        private readonly ?DateTimeImmutable $expiresAt
     ) {
         $this->revoked = false;
     }

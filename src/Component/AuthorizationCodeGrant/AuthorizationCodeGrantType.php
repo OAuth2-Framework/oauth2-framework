@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\AuthorizationCodeGrant;
 
 use function array_key_exists;
-use function count;
 use InvalidArgumentException;
+use League\Uri\Contracts\QueryInterface;
 use OAuth2Framework\Component\AuthorizationCodeGrant\PKCEMethod\PKCEMethodManager;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
@@ -18,8 +18,8 @@ use Psr\Http\Message\ServerRequestInterface;
 final class AuthorizationCodeGrantType implements GrantType
 {
     public function __construct(
-        private AuthorizationCodeRepository $authorizationCodeRepository,
-        private PKCEMethodManager $pkceMethodManager
+        private readonly AuthorizationCodeRepository $authorizationCodeRepository,
+        private readonly PKCEMethodManager $pkceMethodManager
     ) {
     }
 
@@ -44,10 +44,10 @@ final class AuthorizationCodeGrantType implements GrantType
     {
         $parameters = RequestBodyParser::parseFormUrlEncoded($request);
         $requiredParameters = ['code', 'redirect_uri'];
-
-        $diff = array_diff($requiredParameters, array_keys($parameters));
-        if (count($diff) !== 0) {
-            throw OAuth2Error::invalidRequest(sprintf('Missing grant type parameter(s): %s.', implode(', ', $diff)));
+        foreach ($requiredParameters as $requiredParameter) {
+            if (! $parameters->has($requiredParameter)) {
+                throw OAuth2Error::invalidRequest(sprintf('Missing grant type parameter(s): %s.', $requiredParameter));
+            }
         }
     }
 
@@ -58,7 +58,7 @@ final class AuthorizationCodeGrantType implements GrantType
     public function grant(ServerRequestInterface $request, GrantTypeData $grantTypeData): void
     {
         $parameters = RequestBodyParser::parseFormUrlEncoded($request);
-        $authorizationCode = $this->getAuthorizationCode($parameters['code']);
+        $authorizationCode = $this->getAuthorizationCode($parameters->get('code'));
 
         if ($authorizationCode->isUsed() === true || $authorizationCode->isRevoked() === true) {
             throw OAuth2Error::invalidGrant('The parameter "code" is invalid.');
@@ -68,7 +68,7 @@ final class AuthorizationCodeGrantType implements GrantType
         $this->checkAuthorizationCode($authorizationCode, $grantTypeData->getClient());
         $this->checkPKCE($authorizationCode, $parameters);
 
-        $redirectUri = $parameters['redirect_uri'];
+        $redirectUri = $parameters->get('redirect_uri');
         $this->checkRedirectUri($authorizationCode, $redirectUri);
 
         foreach ($authorizationCode->getParameter() as $key => $parameter) {
@@ -104,11 +104,11 @@ final class AuthorizationCodeGrantType implements GrantType
         return $authorizationCode;
     }
 
-    private function checkClient(Client $client, array $parameters): void
+    private function checkClient(Client $client, QueryInterface $parameters): void
     {
         if ($client->isPublic() === true) {
-            if (! array_key_exists('client_id', $parameters) || $client->getPublicId()
-                ->getValue() !== $parameters['client_id']) {
+            if (! $parameters->has('client_id') || $client->getPublicId()
+                ->getValue() !== $parameters->get('client_id')) {
                 throw OAuth2Error::invalidRequest(
                     'The "client_id" parameter is required for non-confidential clients.'
                 );
@@ -116,7 +116,7 @@ final class AuthorizationCodeGrantType implements GrantType
         }
     }
 
-    private function checkPKCE(AuthorizationCode $authorizationCode, array $parameters): void
+    private function checkPKCE(AuthorizationCode $authorizationCode, QueryInterface $parameters): void
     {
         $params = $authorizationCode->getQueryParameters();
         if (! array_key_exists('code_challenge', $params)) {
@@ -130,10 +130,10 @@ final class AuthorizationCodeGrantType implements GrantType
         ) ? $params['code_challenge_method'] : 'plain';
 
         try {
-            if (! array_key_exists('code_verifier', $parameters)) {
+            if (! $parameters->has('code_verifier')) {
                 throw OAuth2Error::invalidGrant('The parameter "code_verifier" is missing or invalid.');
             }
-            $code_verifier = $parameters['code_verifier'];
+            $code_verifier = $parameters->get('code_verifier');
             $method = $this->pkceMethodManager->get($codeChallengeMethod);
         } catch (InvalidArgumentException $e) {
             throw OAuth2Error::invalidRequest($e->getMessage(), [], $e);

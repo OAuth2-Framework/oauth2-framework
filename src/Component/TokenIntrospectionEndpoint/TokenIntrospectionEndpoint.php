@@ -19,7 +19,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 final class TokenIntrospectionEndpoint implements MiddlewareInterface
 {
     public function __construct(
-        private TokenTypeHintManager $tokenTypeHintManager
+        private readonly TokenTypeHintManager $tokenTypeHintManager
     ) {
     }
 
@@ -112,7 +112,12 @@ final class TokenIntrospectionEndpoint implements MiddlewareInterface
     {
         $parameters = RequestBodyParser::parseFormUrlEncoded($request);
 
-        return array_intersect_key($parameters, array_flip(['token', 'token_type_hint']));
+        return array_filter([
+            'token' => $parameters->get('token'),
+            'token_type_hint' => $parameters->get('token_type_hint'),
+        ], static function (null|string $item): bool {
+            return $item === null;
+        });
     }
 
     private function createResponseFor(ResponseInterface $response, array $data, int $code): ResponseInterface

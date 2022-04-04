@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode;
 
-use League\Uri;
-use function League\Uri\build;
-use function League\Uri\parse;
+use League\Uri\Uri;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType\ResponseType;
 use Psr\Http\Message\ResponseFactoryInterface;
@@ -14,10 +12,10 @@ use Psr\Http\Message\ResponseInterface;
 
 final class FormPostResponseMode implements ResponseMode
 {
-    private ResponseFactoryInterface $responseFactory;
+    private readonly ResponseFactoryInterface $responseFactory;
 
     public function __construct(
-        private FormPostResponseRenderer $renderer
+        private readonly FormPostResponseRenderer $renderer
     ) {
         $this->responseFactory = new Psr17Factory();
     }
@@ -34,11 +32,11 @@ final class FormPostResponseMode implements ResponseMode
 
     public function buildResponse(string $redirectUri, array $data): ResponseInterface
     {
-        $uri = parse($redirectUri);
-        $uri['fragment'] = '_=_'; //A redirect Uri is not supposed to have fragment so we override it.
-        $uri = build($uri);
+        $uri = Uri::createFromString($redirectUri)
+            ->withFragment('_=_') //A redirect Uri is not supposed to have fragment so we override it.
+        ;
 
-        $template = $this->renderer->render($uri, $data);
+        $template = $this->renderer->render($uri->toString(), $data);
         $response = $this->responseFactory->createResponse(200);
         $response = $response->withHeader('Content-Type', 'text/html');
         $response->getBody()

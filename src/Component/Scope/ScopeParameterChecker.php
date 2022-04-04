@@ -13,8 +13,8 @@ use OAuth2Framework\Component\Scope\Policy\ScopePolicyManager;
 class ScopeParameterChecker implements ParameterChecker
 {
     public function __construct(
-        private ScopeRepository $scopeRepository,
-        private ScopePolicyManager $scopePolicyManager
+        private readonly ScopeRepository $scopeRepository,
+        private readonly ScopePolicyManager $scopePolicyManager
     ) {
     }
 
@@ -52,7 +52,7 @@ class ScopeParameterChecker implements ParameterChecker
     {
         if ($authorization->hasQueryParam('scope')) {
             $requestedScope = $authorization->getQueryParam('scope');
-            if (preg_match('/^[\x20\x23-\x5B\x5D-\x7E]+$/', $requestedScope) !== 1) {
+            if (preg_match('/^[\x20\x23-\x5B\x5D-\x7E]+$/', (string) $requestedScope) !== 1) {
                 throw new InvalidArgumentException('Invalid characters found in the "scope" parameter.');
             }
         } else {

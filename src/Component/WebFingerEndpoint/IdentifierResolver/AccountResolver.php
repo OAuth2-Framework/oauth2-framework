@@ -6,8 +6,7 @@ namespace OAuth2Framework\Component\WebFingerEndpoint\IdentifierResolver;
 
 use function count;
 use InvalidArgumentException;
-use function is_string;
-use function League\Uri\parse;
+use League\Uri\Uri;
 
 final class AccountResolver implements IdentifierResolver
 {
@@ -18,18 +17,16 @@ final class AccountResolver implements IdentifierResolver
 
     public function supports(string $resource): bool
     {
-        $uri = parse($resource);
-
-        return $uri['scheme'] === 'acct';
+        return Uri::createFromString($resource)->getScheme() === 'acct';
     }
 
     public function resolve(string $resource): Identifier
     {
-        $uri = parse($resource);
-        if (! is_string($uri['path'])) {
+        $uri = Uri::createFromString($resource);
+        if ($uri->getPath() === '') {
             throw new InvalidArgumentException('Invalid resource.');
         }
-        $parts = explode('@', $uri['path']);
+        $parts = explode('@', $uri->getPath());
         if (count($parts) !== 2) {
             throw new InvalidArgumentException('Invalid resource.');
         }

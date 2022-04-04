@@ -15,21 +15,21 @@ use OAuth2Framework\Component\Core\UserAccount\UserAccount;
 
 class AuthorizationRequest
 {
-    public const CONSENT_NOT_GIVEN = 'consent_not_given';
+    final public const CONSENT_NOT_GIVEN = 'consent_not_given';
 
-    public const CONSENT_ALLOW = 'consent_allow';
+    final public const CONSENT_ALLOW = 'consent_allow';
 
-    public const CONSENT_DENY = 'consent_deny';
+    final public const CONSENT_DENY = 'consent_deny';
 
     private string $authorized = self::CONSENT_NOT_GIVEN;
 
     private ?UserAccount $userAccount = null;
 
-    private DataBag $metadata;
+    private readonly DataBag $metadata;
 
     private ?ResponseMode $responseMode = null;
 
-    private array $queryParameters;
+    private readonly array $queryParameters;
 
     private array $responseParameters = [];
 
@@ -40,7 +40,7 @@ class AuthorizationRequest
     private array $attributes = [];
 
     public function __construct(
-        private Client $client,
+        private readonly Client $client,
         array $queryParameters
     ) {
         $this->queryParameters = $queryParameters;
@@ -155,7 +155,7 @@ class AuthorizationRequest
             return [];
         }
 
-        return explode(' ', $this->getQueryParam('prompt'));
+        return explode(' ', (string) $this->getQueryParam('prompt'));
     }
 
     public function hasUiLocales(): bool
@@ -168,7 +168,7 @@ class AuthorizationRequest
      */
     public function getUiLocales(): array
     {
-        return $this->hasQueryParam('ui_locales') ? explode(' ', $this->getQueryParam('ui_locales')) : [];
+        return $this->hasQueryParam('ui_locales') ? explode(' ', (string) $this->getQueryParam('ui_locales')) : [];
     }
 
     public function hasPrompt(string $prompt): bool

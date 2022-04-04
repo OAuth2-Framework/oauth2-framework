@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\ResourceOwnerPasswordCredentialsGrant;
 
-use function count;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use OAuth2Framework\Component\Core\Util\RequestBodyParser;
 use OAuth2Framework\Component\TokenEndpoint\GrantType;
@@ -14,7 +13,7 @@ use Psr\Http\Message\ServerRequestInterface;
 final class ResourceOwnerPasswordCredentialsGrantType implements GrantType
 {
     public function __construct(
-        private ResourceOwnerPasswordCredentialManager $resourceOwnerPasswordCredentialManager
+        private readonly ResourceOwnerPasswordCredentialManager $resourceOwnerPasswordCredentialManager
     ) {
     }
 
@@ -38,10 +37,10 @@ final class ResourceOwnerPasswordCredentialsGrantType implements GrantType
     {
         $parameters = RequestBodyParser::parseFormUrlEncoded($request);
         $requiredParameters = ['username', 'password'];
-
-        $diff = array_diff($requiredParameters, array_keys($parameters));
-        if (count($diff) !== 0) {
-            throw OAuth2Error::invalidRequest(sprintf('Missing grant type parameter(s): %s.', implode(', ', $diff)));
+        foreach ($requiredParameters as $requiredParameter) {
+            if (! $parameters->has($requiredParameter)) {
+                throw OAuth2Error::invalidRequest(sprintf('Missing grant type parameter(s): %s.', $requiredParameter));
+            }
         }
     }
 
@@ -52,8 +51,8 @@ final class ResourceOwnerPasswordCredentialsGrantType implements GrantType
     public function grant(ServerRequestInterface $request, GrantTypeData $grantTypeData): void
     {
         $parameters = RequestBodyParser::parseFormUrlEncoded($request);
-        $username = $parameters['username'];
-        $password = $parameters['password'];
+        $username = $parameters->get('username');
+        $password = $parameters->get('password');
 
         $resourceOwnerId = $this->resourceOwnerPasswordCredentialManager->findResourceOwnerIdWithUsernameAndPassword(
             $username,

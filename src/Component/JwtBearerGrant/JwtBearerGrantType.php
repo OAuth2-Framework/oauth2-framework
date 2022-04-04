@@ -47,11 +47,11 @@ class JwtBearerGrantType implements GrantType
     private ?JKUFactory $jkuFactory = null;
 
     public function __construct(
-        private JWSVerifier $jwsVerifier,
-        private HeaderCheckerManager $headerCheckerManager,
-        private ClaimCheckerManager $claimCheckerManager,
-        private ClientRepository $clientRepository,
-        private ?UserAccountRepository $userAccountRepository
+        private readonly JWSVerifier $jwsVerifier,
+        private readonly HeaderCheckerManager $headerCheckerManager,
+        private readonly ClaimCheckerManager $claimCheckerManager,
+        private readonly ClientRepository $clientRepository,
+        private readonly ?UserAccountRepository $userAccountRepository
     ) {
     }
 
@@ -108,18 +108,15 @@ class JwtBearerGrantType implements GrantType
     public function checkRequest(ServerRequestInterface $request): void
     {
         $parameters = RequestBodyParser::parseFormUrlEncoded($request);
-        $requiredParameters = ['assertion'];
-
-        $diff = array_diff($requiredParameters, array_keys($parameters));
-        if (count($diff) !== 0) {
-            throw OAuth2Error::invalidRequest(sprintf('Missing grant type parameter(s): %s.', implode(', ', $diff)));
+        if (! $parameters->has('assertion')) {
+            throw OAuth2Error::invalidRequest(sprintf('Missing grant type parameter(s): %s.', 'assertion'));
         }
     }
 
     public function prepareResponse(ServerRequestInterface $request, GrantTypeData $grantTypeData): void
     {
         $parameters = RequestBodyParser::parseFormUrlEncoded($request);
-        $assertion = $parameters['assertion'];
+        $assertion = $parameters->get('assertion');
         $assertion = $this->tryToDecryptTheAssertion($assertion);
 
         try {

@@ -20,7 +20,7 @@ use OAuth2Framework\Component\Core\TokenType\TokenType;
 final class NoneResponseType implements ResponseType
 {
     public function __construct(
-        private AuthorizationStorage $authorizationStorage
+        private readonly AuthorizationStorage $authorizationStorage
     ) {
     }
 

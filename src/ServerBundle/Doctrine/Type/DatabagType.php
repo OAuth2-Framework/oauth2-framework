@@ -41,9 +41,9 @@ final class DatabagType extends Type
     /**
      * {@inheritdoc}
      */
-    public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform): string
+    public function getSQLDeclaration(array $column, AbstractPlatform $platform): string
     {
-        return $platform->getJsonTypeDeclarationSQL($fieldDeclaration);
+        return $platform->getJsonTypeDeclarationSQL($column);
     }
 
     /**

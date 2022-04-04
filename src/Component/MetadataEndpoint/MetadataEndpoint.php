@@ -24,7 +24,7 @@ class MetadataEndpoint implements MiddlewareInterface
     private ?JWSBuilder $jwsBuilder = null;
 
     public function __construct(
-        private Metadata $metadata
+        private readonly Metadata $metadata
     ) {
     }
 

@@ -10,7 +10,7 @@ final class TokenRevocationGetEndpoint extends TokenRevocationEndpoint
 {
     public function __construct(
         TokenTypeHintManager $tokenTypeHintManager,
-        private bool $allowJson
+        private readonly bool $allowJson
     ) {
         parent::__construct($tokenTypeHintManager);
     }

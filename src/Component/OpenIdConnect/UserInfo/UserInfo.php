@@ -18,8 +18,8 @@ class UserInfo
     private ?PairwiseSubjectIdentifierAlgorithm $pairwiseAlgorithm = null;
 
     public function __construct(
-        private UserInfoScopeSupportManager $userinfoScopeSupportManager,
-        private ClaimManager $claimManager
+        private readonly UserInfoScopeSupportManager $userinfoScopeSupportManager,
+        private readonly ClaimManager $claimManager
     ) {
     }
 

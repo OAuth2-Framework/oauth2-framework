@@ -14,8 +14,8 @@ use OAuth2Framework\Component\Core\TokenType\TokenType;
 final class TokenResponseType implements ResponseType
 {
     public function __construct(
-        private AccessTokenRepository $accessTokenRepository,
-        private int $accessTokenLifetime
+        private readonly AccessTokenRepository $accessTokenRepository,
+        private readonly int $accessTokenLifetime
     ) {
     }
 

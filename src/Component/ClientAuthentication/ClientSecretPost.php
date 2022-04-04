@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\ClientAuthentication;
 
-use function array_key_exists;
 use Base64Url\Base64Url;
 use InvalidArgumentException;
 use OAuth2Framework\Component\Core\Client\Client;
@@ -15,7 +14,7 @@ use Psr\Http\Message\ServerRequestInterface;
 
 final class ClientSecretPost implements AuthenticationMethod
 {
-    private int $secretLifetime;
+    private readonly int $secretLifetime;
 
     public function __construct(int $secretLifetime = 0)
     {
@@ -36,22 +35,21 @@ final class ClientSecretPost implements AuthenticationMethod
         return [];
     }
 
-    /**
-     * @param mixed|null $clientCredentials
-     */
-    public function findClientIdAndCredentials(ServerRequestInterface $request, &$clientCredentials = null): ?ClientId
-    {
+    public function findClientIdAndCredentials(
+        ServerRequestInterface $request,
+        mixed &$clientCredentials = null
+    ): ?ClientId {
         $parameters = RequestBodyParser::parseFormUrlEncoded($request);
-        if (array_key_exists('client_id', $parameters) && array_key_exists('client_secret', $parameters)) {
-            $clientCredentials = $parameters['client_secret'];
+        if ($parameters->has('client_id') && $parameters->has('client_secret')) {
+            $clientCredentials = $parameters->get('client_secret');
 
-            return new ClientId($parameters['client_id']);
+            return new ClientId($parameters->get('client_id'));
         }
 
         return null;
     }
 
-    public function checkClientConfiguration(DataBag $command_parameters, DataBag $validatedParameters): DataBag
+    public function checkClientConfiguration(DataBag $commandParameters, DataBag $validatedParameters): DataBag
     {
         $validatedParameters->set('client_secret', $this->createClientSecret());
         $validatedParameters->set(
@@ -65,8 +63,11 @@ final class ClientSecretPost implements AuthenticationMethod
     /**
      * @param mixed|null $clientCredentials
      */
-    public function isClientAuthenticated(Client $client, $clientCredentials, ServerRequestInterface $request): bool
-    {
+    public function isClientAuthenticated(
+        Client $client,
+        mixed $clientCredentials,
+        ServerRequestInterface $request
+    ): bool {
         return hash_equals($client->get('client_secret'), $clientCredentials);
     }
 

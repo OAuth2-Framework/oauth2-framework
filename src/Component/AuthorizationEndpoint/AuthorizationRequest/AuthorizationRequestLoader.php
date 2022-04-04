@@ -53,7 +53,7 @@ class AuthorizationRequestLoader
     private ?RequestFactoryInterface $requestFactory = null;
 
     public function __construct(
-        private ClientRepository $clientRepository
+        private readonly ClientRepository $clientRepository
     ) {
     }
 
@@ -181,7 +181,7 @@ class AuthorizationRequestLoader
             throw OAuth2Error::requestUriNotSupported('The parameter "request_uri" is not supported.');
         }
         $requestUri = $params['request_uri'];
-        if (preg_match('#/\.\.?(/|$)#', $requestUri) === 1) {
+        if (preg_match('#/\.\.?(/|$)#', (string) $requestUri) === 1) {
             throw OAuth2Error::invalidRequestUri('The request Uri is not allowed.');
         }
         $content = $this->downloadContent($requestUri);

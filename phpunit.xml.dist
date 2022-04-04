@@ -19,8 +19,14 @@
     </exclude>
   </coverage>
   <testsuites>
-    <testsuite name="OAuth2 Framework Test Suite">
-      <directory>./tests</directory>
+    <testsuite name="Components Test Suite">
+      <directory>./tests/Component</directory>
+    </testsuite>
+    <testsuite name="Security Bundle Test Suite">
+      <directory>./tests/SecurityBundle</directory>
+    </testsuite>
+    <testsuite name="WebFinger Bundle Test Suite">
+      <directory>./tests/WebFingerBundle</directory>
     </testsuite>
   </testsuites>
   <php>

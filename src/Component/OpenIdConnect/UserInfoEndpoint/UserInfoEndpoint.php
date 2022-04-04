@@ -31,9 +31,9 @@ class UserInfoEndpoint implements MiddlewareInterface
     private ?JWEBuilder $jweBuilder = null;
 
     public function __construct(
-        private IdTokenBuilderFactory $idTokenBuilderFactory,
-        private ClientRepository $clientRepository,
-        private UserAccountRepository $userAccountRepository
+        private readonly IdTokenBuilderFactory $idTokenBuilderFactory,
+        private readonly ClientRepository $clientRepository,
+        private readonly UserAccountRepository $userAccountRepository
     ) {
     }
 
@@ -174,7 +174,7 @@ class UserInfoEndpoint implements MiddlewareInterface
     {
         if (! $accessToken->getParameter()->has('scope') || ! in_array(
             'openid',
-            explode(' ', $accessToken->getParameter()->get('scope')),
+            explode(' ', (string) $accessToken->getParameter()->get('scope')),
             true
         )) {
             throw new OAuth2Error(

@@ -9,7 +9,7 @@ use OAuth2Framework\Component\TokenRevocationEndpoint\TokenTypeHint;
 final class AccessTokenRevocationTypeHint implements TokenTypeHint
 {
     public function __construct(
-        private AccessTokenRepository $accessTokenRepository
+        private readonly AccessTokenRepository $accessTokenRepository
     ) {
     }
 

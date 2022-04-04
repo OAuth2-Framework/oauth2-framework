@@ -88,8 +88,7 @@ class MetadataBuilder
 
     public function setTokenEndpointAuthMethodManager(
         AuthenticationMethodManager $tokenEndpointAuthMethodManager
-    ): static
-    {
+    ): static {
         $this->metadata->set('token_endpoint_auth_methods_supported', $tokenEndpointAuthMethodManager->list());
 
         return $this;

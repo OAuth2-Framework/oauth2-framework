@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace OAuth2Framework\Component\RefreshTokenGrant;
 
 use Assert\Assertion;
-use function count;
 use OAuth2Framework\Component\Core\Client\Client;
 use OAuth2Framework\Component\Core\Message\OAuth2Error;
 use OAuth2Framework\Component\Core\Util\RequestBodyParser;
@@ -16,7 +15,7 @@ use Psr\Http\Message\ServerRequestInterface;
 final class RefreshTokenGrantType implements GrantType
 {
     public function __construct(
-        private RefreshTokenRepository $refreshTokenRepository
+        private readonly RefreshTokenRepository $refreshTokenRepository
     ) {
     }
 
@@ -38,11 +37,8 @@ final class RefreshTokenGrantType implements GrantType
     public function checkRequest(ServerRequestInterface $request): void
     {
         $parameters = RequestBodyParser::parseFormUrlEncoded($request);
-        $requiredParameters = ['refresh_token'];
-
-        $diff = array_diff($requiredParameters, array_keys($parameters));
-        if (count($diff) !== 0) {
-            throw OAuth2Error::invalidRequest(sprintf('Missing grant type parameter(s): %s.', implode(', ', $diff)));
+        if (! $parameters->has('refresh_token')) {
+            throw OAuth2Error::invalidRequest(sprintf('Missing grant type parameter(s): %s.', 'refresh_token'));
         }
     }
 
@@ -53,7 +49,7 @@ final class RefreshTokenGrantType implements GrantType
     public function grant(ServerRequestInterface $request, GrantTypeData $grantTypeData): void
     {
         $parameters = RequestBodyParser::parseFormUrlEncoded($request);
-        $refreshToken = $parameters['refresh_token'];
+        $refreshToken = $parameters->get('refresh_token');
         $token = $this->refreshTokenRepository->find(RefreshTokenId::create($refreshToken));
 
         if ($token === null) {

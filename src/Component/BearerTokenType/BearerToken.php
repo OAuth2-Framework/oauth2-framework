@@ -16,7 +16,7 @@ final class BearerToken implements TokenType
     private array $tokenFinders = [];
 
     public function __construct(
-        private string $realm
+        private readonly string $realm
     ) {
     }
 

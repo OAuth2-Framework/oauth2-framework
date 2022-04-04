@@ -13,8 +13,6 @@ final class TerminalRequestHandler implements RequestHandlerInterface
 {
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        $factory = new Psr17Factory();
-
-        return $factory->createResponse();
+        return (new Psr17Factory())->createResponse();
     }
 }

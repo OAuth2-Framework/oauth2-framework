@@ -4,12 +4,8 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\AuthorizationEndpoint\ResponseMode;
 
-use function array_key_exists;
-use League\Uri;
-use function League\Uri\build;
-use function League\Uri\build_query;
-use function League\Uri\parse;
-use function League\Uri\parse_query;
+use League\Uri\Components\Query;
+use League\Uri\Uri;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use OAuth2Framework\Component\AuthorizationEndpoint\ResponseType\ResponseType;
 use Psr\Http\Message\ResponseFactoryInterface;
@@ -17,7 +13,7 @@ use Psr\Http\Message\ResponseInterface;
 
 final class QueryResponseMode implements ResponseMode
 {
-    private ResponseFactoryInterface $responseFactory;
+    private readonly ResponseFactoryInterface $responseFactory;
 
     public function __construct()
     {
@@ -36,17 +32,18 @@ final class QueryResponseMode implements ResponseMode
 
     public function buildResponse(string $redirectUri, array $data): ResponseInterface
     {
-        $uri = parse($redirectUri);
-        if (array_key_exists('query', $uri) && $uri['query'] !== null) {
-            $query = parse_query($uri['query']);
-            $data = array_merge($query, $data);
+        $uri = Uri::createFromString($redirectUri);
+        $query = Query::createFromParams($data);
+        if ($uri->getQuery() !== null) {
+            $query = $query->merge($uri->getQuery());
         }
-        $uri['query'] = build_query($data);
-        $uri['fragment'] = '_=_'; //A redirect Uri is not supposed to have fragments, so we override it.
-        $uri = build($uri);
+        $uri = $uri
+            ->withQuery($query)
+            ->withFragment('_=_') //A redirect Uri is not supposed to have fragments, so we override it.
+        ;
 
-        $response = $this->responseFactory->createResponse(303);
-
-        return $response->withHeader('Location', $uri);
+        return $this->responseFactory->createResponse(303)
+            ->withHeader('Location', $uri->toString())
+        ;
     }
 }

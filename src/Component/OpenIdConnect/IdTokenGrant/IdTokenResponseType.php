@@ -23,14 +23,14 @@ use OAuth2Framework\Component\OpenIdConnect\IdTokenBuilderFactory;
 
 final class IdTokenResponseType implements ResponseType
 {
-    private string $defaultSignatureAlgorithm;
+    private readonly string $defaultSignatureAlgorithm;
 
     public function __construct(
-        private IdTokenBuilderFactory $idTokenBuilderFactory,
+        private readonly IdTokenBuilderFactory $idTokenBuilderFactory,
         string $defaultSignatureAlgorithm,
-        private JWSBuilder $jwsBuilder,
-        private JWKSet $signatureKeys,
-        private ?JWEBuilder $jweBuilder
+        private readonly JWSBuilder $jwsBuilder,
+        private readonly JWKSet $signatureKeys,
+        private readonly ?JWEBuilder $jweBuilder
     ) {
         if ($defaultSignatureAlgorithm === 'none') {
             throw new InvalidArgumentException(
@@ -80,7 +80,7 @@ final class IdTokenResponseType implements ResponseType
     {
         if ($authorization->hasQueryParam('scope') && in_array(
             'openid',
-            explode(' ', $authorization->getQueryParam('scope')),
+            explode(' ', (string) $authorization->getQueryParam('scope')),
             true
         )) {
             if (! array_key_exists('nonce', $authorization->getQueryParams())) {

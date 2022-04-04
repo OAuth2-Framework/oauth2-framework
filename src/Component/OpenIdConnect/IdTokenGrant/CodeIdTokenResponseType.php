@@ -12,8 +12,8 @@ use OAuth2Framework\Component\Core\TokenType\TokenType;
 final class CodeIdTokenResponseType implements ResponseType
 {
     public function __construct(
-        private AuthorizationCodeResponseType $codeResponseType,
-        private IdTokenResponseType $idTokenResponseType
+        private readonly AuthorizationCodeResponseType $codeResponseType,
+        private readonly IdTokenResponseType $idTokenResponseType
     ) {
     }
 

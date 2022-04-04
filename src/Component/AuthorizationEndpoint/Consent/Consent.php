@@ -11,11 +11,11 @@ class Consent
     private ?string $grantedClaims = null;
 
     public function __construct(
-        private string $clientId,
-        private string $userAccountId,
-        private ?string $resourceServerId,
-        private string $requestedScope,
-        private string $requestedClaims
+        private readonly string $clientId,
+        private readonly string $userAccountId,
+        private readonly ?string $resourceServerId,
+        private readonly string $requestedScope,
+        private readonly string $requestedClaims
     ) {
     }
 

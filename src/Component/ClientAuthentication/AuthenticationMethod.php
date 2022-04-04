@@ -24,14 +24,21 @@ interface AuthenticationMethod
      *
      * @return ClientId|null Return the client public ID if found else null. If credentials have are needed to authenticate the client, they are set to the variable $clientCredentials
      */
-    public function findClientIdAndCredentials(ServerRequestInterface $request, &$clientCredentials = null): ?ClientId;
+    public function findClientIdAndCredentials(
+        ServerRequestInterface $request,
+        mixed &$clientCredentials = null
+    ): ?ClientId;
 
-    public function checkClientConfiguration(DataBag $command_parameters, DataBag $validated_parameters): DataBag;
+    public function checkClientConfiguration(DataBag $commandParameters, DataBag $validatedParameters): DataBag;
 
     /**
      * @param mixed $clientCredentials The client credentials found in the request
      */
-    public function isClientAuthenticated(Client $client, $clientCredentials, ServerRequestInterface $request): bool;
+    public function isClientAuthenticated(
+        Client $client,
+        mixed $clientCredentials,
+        ServerRequestInterface $request
+    ): bool;
 
     /**
      * @return string[]

@@ -26,8 +26,10 @@ class RedirectAuthorizationRequestHandler implements AuthorizationRequestHandler
         $route = $this->router->generate('oauth2_server_authorization_endpoint', [
             'authorization_request_id' => $authorizationId,
         ]);
-        $response = $this->responseFactory->createResponse(307);
 
-        return $response->withHeader('location', $route);
+        return $this->responseFactory
+            ->createResponse(307)
+            ->withHeader('location', $route)
+        ;
     }
 }

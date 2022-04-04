@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace OAuth2Framework\Component\ClientAuthentication;
 
-use function array_key_exists;
 use Assert\Assertion;
 use Base64Url\Base64Url;
 use function count;
@@ -44,12 +43,12 @@ class ClientAssertionJwt implements AuthenticationMethod
 
     private bool $encryptionRequired = false;
 
-    private int $secretLifetime;
+    private readonly int $secretLifetime;
 
     public function __construct(
-        private JWSVerifier $jwsVerifier,
-        private HeaderCheckerManager $headerCheckerManager,
-        private ClaimCheckerManager $claimCheckerManager,
+        private readonly JWSVerifier $jwsVerifier,
+        private readonly HeaderCheckerManager $headerCheckerManager,
+        private readonly ClaimCheckerManager $claimCheckerManager,
         int $secretLifetime = 0
     ) {
         Assertion::greaterOrEqualThan($secretLifetime, 0, 'The secret lifetime must be at least 0 (= unlimited).');
@@ -122,26 +121,25 @@ class ClientAssertionJwt implements AuthenticationMethod
         return [];
     }
 
-    /**
-     * @param mixed|null $clientCredentials
-     */
-    public function findClientIdAndCredentials(ServerRequestInterface $request, &$clientCredentials = null): ?ClientId
-    {
+    public function findClientIdAndCredentials(
+        ServerRequestInterface $request,
+        mixed &$clientCredentials = null
+    ): ?ClientId {
         $parameters = RequestBodyParser::parseFormUrlEncoded($request);
-        if (! array_key_exists('client_assertion_type', $parameters)) {
+        if (! $parameters->has('client_assertion_type')) {
             return null;
         }
-        $clientAssertionType = $parameters['client_assertion_type'];
+        $clientAssertionType = $parameters->get('client_assertion_type');
 
         if ($clientAssertionType !== self::CLIENT_ASSERTION_TYPE) {
             return null;
         }
-        if (! array_key_exists('client_assertion', $parameters)) {
+        if (! $parameters->has('client_assertion')) {
             throw OAuth2Error::invalidRequest('Parameter "client_assertion" is missing.');
         }
 
         try {
-            $client_assertion = $parameters['client_assertion'];
+            $client_assertion = $parameters->get('client_assertion');
             $client_assertion = $this->tryToDecryptClientAssertion($client_assertion);
             $serializer = new CompactSerializer();
             $jws = $serializer->unserialize($client_assertion);
@@ -172,8 +170,11 @@ class ClientAssertionJwt implements AuthenticationMethod
     /**
      * @param mixed|null $clientCredentials
      */
-    public function isClientAuthenticated(Client $client, $clientCredentials, ServerRequestInterface $request): bool
-    {
+    public function isClientAuthenticated(
+        Client $client,
+        mixed $clientCredentials,
+        ServerRequestInterface $request
+    ): bool {
         try {
             if (! $clientCredentials instanceof JWS) {
                 return false;

@@ -24,8 +24,8 @@ use Throwable;
 final class WebFingerEndpoint implements MiddlewareInterface
 {
     public function __construct(
-        private ResourceRepository $resourceRepository,
-        private IdentifierResolverManager $identifierResolverManager
+        private readonly ResourceRepository $resourceRepository,
+        private readonly IdentifierResolverManager $identifierResolverManager
     ) {
     }
 

@@ -9,8 +9,8 @@ use OAuth2Framework\Component\AuthorizationEndpoint\AuthorizationRequest\Authori
 class TokenTypeGuesser
 {
     public function __construct(
-        private TokenTypeManager $tokenTypeManager,
-        private bool $tokenTypeParameterAllowed
+        private readonly TokenTypeManager $tokenTypeManager,
+        private readonly bool $tokenTypeParameterAllowed
     ) {
     }
 

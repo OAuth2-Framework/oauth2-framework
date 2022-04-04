@@ -15,12 +15,12 @@ abstract class AbstractAccessToken implements AccessToken
     private bool $revoked;
 
     public function __construct(
-        private ClientId $clientId,
-        private ResourceOwnerId $resourceOwnerId,
-        private DateTimeImmutable $expiresAt,
-        private DataBag $parameter,
-        private DataBag $metadata,
-        private ?ResourceServerId $resourceServerId
+        private readonly ClientId $clientId,
+        private readonly ResourceOwnerId $resourceOwnerId,
+        private readonly DateTimeImmutable $expiresAt,
+        private readonly DataBag $parameter,
+        private readonly DataBag $metadata,
+        private readonly ?ResourceServerId $resourceServerId
     ) {
         $this->revoked = false;
     }

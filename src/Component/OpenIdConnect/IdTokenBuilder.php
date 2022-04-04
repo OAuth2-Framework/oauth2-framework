@@ -57,12 +57,12 @@ class IdTokenBuilder
     private ?DateTimeImmutable $expiresAt = null;
 
     public function __construct(
-        private string $issuer,
-        private int $lifetime,
-        private Client $client,
-        private UserAccount $userAccount,
-        private ?JKUFactory $jkuFactory,
-        private ?AuthorizationCodeRepository $authorizationCodeRepository
+        private readonly string $issuer,
+        private readonly int $lifetime,
+        private readonly Client $client,
+        private readonly UserAccount $userAccount,
+        private readonly ?JKUFactory $jkuFactory,
+        private readonly ?AuthorizationCodeRepository $authorizationCodeRepository
     ) {
     }
 
@@ -74,7 +74,7 @@ class IdTokenBuilder
             ->has('scope') ? $accessToken->getParameter()
             ->get('scope') : null;
 
-        if ($accessToken->getMetadata()->has('authorization_code_id') && $this->authorizationCodeRepository !== null) {
+        if ($this->authorizationCodeRepository !== null && $accessToken->getMetadata()->has('authorization_code_id')) {
             $authorizationCodeId = AuthorizationCodeId::create(
                 $accessToken->getMetadata()
                     ->get('authorization_code_id')
@@ -215,7 +215,7 @@ class IdTokenBuilder
         if ($this->scope === null) {
             throw new LogicException('It is mandatory to set the scope.');
         }
-        //$data = $this->updateClaimsWithAmrAndAcrInfo($data, $this->userAccount);
+        $data = $this->updateClaimsWithAmrAndAcrInfo($data, $this->userAccount);
         $data = $this->updateClaimsWithAuthenticationTime($data, $this->requestedClaims);
         $data = $this->updateClaimsWithNonce($data);
         if ($this->signatureAlgorithm !== null) {

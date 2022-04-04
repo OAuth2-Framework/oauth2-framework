@@ -17,9 +17,9 @@ class IdTokenBuilderFactory
     private ?AuthorizationCodeRepository $authorizationCodeRepository = null;
 
     public function __construct(
-        private string $issuer,
-        private UserInfo $userinfo,
-        private int $lifetime
+        private readonly string $issuer,
+        private readonly UserInfo $userinfo,
+        private readonly int $lifetime
     ) {
     }
 
@@ -27,13 +27,13 @@ class IdTokenBuilderFactory
     {
         return new IdTokenBuilder(
             $this->issuer,
-            $this->userinfo,
             $this->lifetime,
             $client,
             $userAccount,
-            $redirectUri,
             $this->jkuFactory,
-            $this->authorizationCodeRepository
+            $this->authorizationCodeRepository,
+            //$redirectUri,
+            //$this->userinfo
         );
     }
 

@@ -23,7 +23,7 @@ final class OAuth2MessageFactoryManager
      */
     private array $responseFactories = [];
 
-    private ResponseFactoryInterface $responseFactory;
+    private readonly ResponseFactoryInterface $responseFactory;
 
     public function __construct()
     {

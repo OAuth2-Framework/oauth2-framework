@@ -25,8 +25,8 @@ final class AnnotationDriver
     private array $checkers = [];
 
     public function __construct(
-        private TokenStorageInterface $tokenStorage,
-        private OAuth2MessageFactoryManager $oauth2ResponseFactoryManager
+        private readonly TokenStorageInterface $tokenStorage,
+        private readonly OAuth2MessageFactoryManager $oauth2ResponseFactoryManager
     ) {
     }
 

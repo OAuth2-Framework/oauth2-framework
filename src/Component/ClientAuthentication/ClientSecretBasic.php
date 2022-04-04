@@ -13,10 +13,10 @@ use Psr\Http\Message\ServerRequestInterface;
 
 final class ClientSecretBasic implements AuthenticationMethod
 {
-    private int $secretLifetime;
+    private readonly int $secretLifetime;
 
     public function __construct(
-        private string $realm,
+        private readonly string $realm,
         int $secretLifetime = 0
     ) {
         if ($secretLifetime < 0) {
@@ -54,22 +54,25 @@ final class ClientSecretBasic implements AuthenticationMethod
         return null;
     }
 
-    public function checkClientConfiguration(DataBag $command_parameters, DataBag $validated_parameters): DataBag
+    public function checkClientConfiguration(DataBag $commandParameters, DataBag $validatedParameters): DataBag
     {
-        $validated_parameters->set('client_secret', $this->createClientSecret());
-        $validated_parameters->set(
+        $validatedParameters->set('client_secret', $this->createClientSecret());
+        $validatedParameters->set(
             'client_secret_expires_at',
             ($this->secretLifetime === 0 ? 0 : time() + $this->secretLifetime)
         );
 
-        return $validated_parameters;
+        return $validatedParameters;
     }
 
     /**
      * @param mixed|null $clientCredentials
      */
-    public function isClientAuthenticated(Client $client, $clientCredentials, ServerRequestInterface $request): bool
-    {
+    public function isClientAuthenticated(
+        Client $client,
+        mixed $clientCredentials,
+        ServerRequestInterface $request
+    ): bool {
         return hash_equals($client->get('client_secret'), $clientCredentials);
     }
 
@@ -85,7 +88,7 @@ final class ClientSecretBasic implements AuthenticationMethod
         if (mb_strtolower(mb_substr($authorization_header, 0, 6, '8bit'), '8bit') === 'basic ') {
             [$client_id, $client_secret] = explode(
                 ':',
-                base64_decode(mb_substr(
+                (string) base64_decode(mb_substr(
                     $authorization_header,
                     6,
                     mb_strlen($authorization_header, '8bit') - 6,

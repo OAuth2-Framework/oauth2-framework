@@ -9,7 +9,7 @@ use OAuth2Framework\Component\Core\Client\Client;
 final class DefaultScopePolicy implements ScopePolicy
 {
     public function __construct(
-        private string $defaultScopes
+        private readonly string $defaultScopes
     ) {
     }
 

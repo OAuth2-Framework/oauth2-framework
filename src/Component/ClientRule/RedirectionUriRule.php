@@ -9,7 +9,7 @@ use function in_array;
 use InvalidArgumentException;
 use function is_array;
 use function is_string;
-use function League\Uri\parse;
+use League\Uri\Uri;
 use OAuth2Framework\Component\Core\Client\ClientId;
 use OAuth2Framework\Component\Core\DataBag\DataBag;
 
@@ -97,27 +97,27 @@ final class RedirectionUriRule implements Rule
         if (mb_strpos($uri, 'urn:', 0, '8bit') === 0) {
             $this->checkUrn($uri);
         } else {
-            $parsed = parse($uri);
-            if ($parsed['scheme'] === null || $parsed['path'] === null) {
+            $parsed = Uri::createFromString($uri);
+            if ($parsed->getScheme() === null || $parsed->getPath() === '') {
                 throw new InvalidArgumentException('The parameter "redirect_uris" must be a list of URI or URN.');
             }
-            if (preg_match('#/\.\.?(/|$)#', (string) $parsed['path']) === 1) {
+            if (preg_match('#/\.\.?(/|$)#', $parsed->getPath()) === 1) {
                 throw new InvalidArgumentException(
                     'The URI listed in the "redirect_uris" parameter must not contain any path traversal.'
                 );
             }
-            if ($parsed['fragment'] !== null) {
+            if ($parsed->getFragment() !== null) {
                 throw new InvalidArgumentException(
                     'The parameter "redirect_uris" must only contain URIs without fragment.'
                 );
             }
             if ($applicationType === 'web' && $usesImplicitGrantType === true) {
-                if ($parsed['host'] === 'localhost') {
+                if ($parsed->getHost() === 'localhost') {
                     throw new InvalidArgumentException(
                         'The host "localhost" is not allowed for web applications that use the Implicit Grant Type.'
                     );
                 }
-                if ($parsed['scheme'] !== 'https') {
+                if ($parsed->getScheme() !== 'https') {
                     throw new InvalidArgumentException(
                         'The parameter "redirect_uris" must only contain URIs with the HTTPS scheme for web applications that use the Implicit Grant Type.'
                     );
