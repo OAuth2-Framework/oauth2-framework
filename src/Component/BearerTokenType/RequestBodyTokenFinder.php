@@ -18,9 +18,7 @@ final class RequestBodyTokenFinder implements TokenFinder
     public function find(ServerRequestInterface $request, array &$additionalCredentialValues): ?string
     {
         try {
-            $params = RequestBodyParser::parseFormUrlEncoded($request);
-
-            return $params['access_token'] ?? null;
+            return RequestBodyParser::parseFormUrlEncoded($request)->get('access_token');
         } catch (Throwable) {
             return null;
         }

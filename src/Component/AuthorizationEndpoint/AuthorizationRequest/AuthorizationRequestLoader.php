@@ -237,7 +237,6 @@ class AuthorizationRequestLoader
         try {
             $serializer = new CompactSerializer();
             $jwt = $serializer->unserialize($request);
-
             $claims = JsonConverter::decode($jwt->getPayload());
             Assertion::isArray($claims, 'Invalid assertion. The payload must contain claims.');
             $this->claimCheckerManager->check($claims);
@@ -246,16 +245,15 @@ class AuthorizationRequestLoader
 
             $public_key_set = $this->getClientKeySet($client);
             $this->checkAlgorithms($jwt, $client);
-            Assertion::true(
-                $this->jwsVerifier->verifyWithKeySet($jwt, $public_key_set, 0),
-                'The verification of the request object failed.'
-            ); //FIXME: header checker should be used
+            if (! $this->jwsVerifier->verifyWithKeySet($jwt, $public_key_set, 0)) {
+                throw OAuth2Error::invalidRequestObject('The verification of the request object failed.');
+            }//FIXME: header checker should be used
 
             return $parameters;
         } catch (OAuth2Error $e) {
-            throw $e;
+            throw OAuth2Error::invalidRequestObject($e->getErrorDescription(), $e->getData(), $e);
         } catch (Throwable $e) {
-            throw OAuth2Error::invalidRequestObject($e->getMessage(), [], $e);
+            throw OAuth2Error::invalidRequestObject('Invalid assertion.', [], $e);
         }
     }
 
@@ -286,11 +284,13 @@ class AuthorizationRequestLoader
         $signatureAlgorithm = $jws->getSignature(0)
             ->getProtectedHeaderParameter('alg')
         ;
-        Assertion::string($signatureAlgorithm, 'Invalid algorithm parameter in Request Object.');
-        if ($client->has('request_object_signing_alg')) {
-            Assertion::eq(
-                $signatureAlgorithm,
-                $client->get('request_object_signing_alg'),
+        if (! is_string($signatureAlgorithm)) {
+            throw OAuth2Error::invalidRequest('Invalid algorithm parameter in Request Object.');
+        }
+        if ($client->has('request_object_signing_alg') && $signatureAlgorithm !== $client->get(
+            'request_object_signing_alg'
+        )) {
+            throw OAuth2Error::invalidRequest(
                 sprintf('The algorithm "%s" is not allowed by the client.', $signatureAlgorithm)
             );
         }
@@ -301,15 +301,14 @@ class AuthorizationRequestLoader
     private function checkUsedAlgorithm(string $algorithm): void
     {
         $supportedAlgorithms = $this->getSupportedSignatureAlgorithms();
-        Assertion::inArray(
-            $algorithm,
-            $supportedAlgorithms,
-            sprintf(
-                'The algorithm "%s" is not allowed for request object signatures. Please use one of the following algorithm(s): %s',
-                $algorithm,
-                implode(', ', $supportedAlgorithms)
-            )
-        );
+        if (! in_array($algorithm, $supportedAlgorithms, true)) {
+            throw OAuth2Error::invalidRequest(
+                sprintf('The algorithm "%s" is not allowed by the client. Please use one of the following algorithm(s): %s', $algorithm, implode(
+                    ', ',
+                    $supportedAlgorithms
+                ))
+            );
+        }
     }
 
     private function downloadContent(string $url): string
@@ -366,7 +365,9 @@ class AuthorizationRequestLoader
             ]));
         }
 
-        Assertion::greaterThan($keyset->count(), 0, 'The client has no key or key set.');
+        if ($keyset->count() === 0) {
+            throw OAuth2Error::invalidRequest('The client has no key or key set.');
+        }
 
         return $keyset;
     }

@@ -117,7 +117,7 @@ final class AuthorizationRequestLoaderTest extends OAuth2TestCase
         } catch (OAuth2Error $e) {
             static::assertSame(400, $e->getCode());
             static::assertSame('invalid_request_object', $e->getMessage());
-            static::assertSame('Unsupported input', $e->getErrorDescription());
+            static::assertSame('Invalid assertion.', $e->getErrorDescription());
         }
     }
 
@@ -136,7 +136,7 @@ final class AuthorizationRequestLoaderTest extends OAuth2TestCase
         } catch (OAuth2Error $e) {
             static::assertSame(400, $e->getCode());
             static::assertSame('invalid_request_object', $e->getMessage());
-            static::assertSame('Invalid assertion. The payload must contain claims.', $e->getErrorDescription());
+            static::assertSame('Invalid assertion.', $e->getErrorDescription());
         }
     }
 
@@ -154,7 +154,7 @@ final class AuthorizationRequestLoaderTest extends OAuth2TestCase
             static::fail('The expected exception has not been thrown.');
         } catch (OAuth2Error $e) {
             static::assertSame(400, $e->getCode());
-            static::assertSame('invalid_request', $e->getMessage());
+            static::assertSame('invalid_request_object', $e->getMessage());
             static::assertSame('Parameter "client_id" missing or invalid.', $e->getErrorDescription());
         }
     }

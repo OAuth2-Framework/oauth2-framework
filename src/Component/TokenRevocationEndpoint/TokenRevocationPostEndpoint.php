@@ -17,7 +17,7 @@ final class TokenRevocationPostEndpoint extends TokenRevocationEndpoint
             'token' => $parameters->get('token'),
             'token_type_hint' => $parameters->get('token_type_hint'),
         ], static function (null|string $item): bool {
-            return $item === null;
+            return $item !== null;
         });
     }
 }

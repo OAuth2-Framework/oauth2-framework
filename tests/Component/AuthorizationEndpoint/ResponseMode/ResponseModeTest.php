@@ -96,7 +96,6 @@ final class ResponseModeTest extends OAuth2TestCase
         $mode = $this->getResponseModeManager()
             ->get('fragment')
         ;
-        $response = new Response();
         $response = $mode->buildResponse('https://localhost/foo?bar=bar#foo=foo', [
             'access_token' => 'ACCESS_TOKEN',
         ]);
