@@ -43,7 +43,7 @@
     },
     "require-dev": {
         "dms/phpunit-arraysubset-asserts": "^0.3.1",
-        "doctrine/dbal": "^2.9",
+        "doctrine/dbal": "^2.9 || ^3.0",
         "doctrine/doctrine-bundle": "^2.0",
         "doctrine/orm": "^2.6",
         "ekino/phpstan-banned-code": "^1.0",
